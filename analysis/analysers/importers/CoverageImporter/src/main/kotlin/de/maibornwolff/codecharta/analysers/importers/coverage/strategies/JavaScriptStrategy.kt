@@ -15,7 +15,7 @@ class JavaScriptStrategy() : ImporterStrategy {
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Lines
 
-    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
+    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream, keepFullPaths: Boolean) {
         totalTrackingItems = coverageFile.readLines().size.toLong()
         if (totalTrackingItems == 0L) {
             error.println("The coverage file is empty.")
@@ -77,5 +77,7 @@ class JavaScriptStrategy() : ImporterStrategy {
             }
             updateProgress(++currentLine)
         }
+
+        if (!keepFullPaths) removeExtraNodesAroundProject(projectBuilder)
     }
 }

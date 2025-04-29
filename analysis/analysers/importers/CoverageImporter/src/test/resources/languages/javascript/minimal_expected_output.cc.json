@@ -11,23 +11,15 @@
         "link": "",
         "children": [
           {
-            "name": "app",
-            "type": "Folder",
-            "attributes": {},
+            "name": "app.config.ts",
+            "type": "File",
+            "attributes": {
+              "line_coverage": 0,
+              "branch_coverage": 100.0,
+              "statement_coverage": 0
+            },
             "link": "",
-            "children": [
-              {
-                "name": "app.config.ts",
-                "type": "File",
-                "attributes": {
-                  "line_coverage": 0,
-                  "branch_coverage": 100.0,
-                  "statement_coverage": 0
-                },
-                "link": "",
-                "children": []
-              }
-            ]
+            "children": []
           }
         ]
       }

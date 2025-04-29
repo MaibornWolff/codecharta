@@ -49,6 +49,23 @@ class JavaScriptStrategyTest {
         ).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist").isEqualTo(expectedProject)
     }
 
+
+    @Test
+    fun `should keep folders surrounding the project when the flag is set`() {
+        val expectedFilePath = "src/test/resources/languages/javascript/coverage_full_paths.cc.json"
+        val expectedProject = ProjectDeserializer.deserializeProject(File(expectedFilePath).inputStream())
+        val coverageReport = File("src/test/resources/languages/javascript/lcov.info")
+        val projectBuilder = ProjectBuilder()
+
+        JavaScriptStrategy().addNodesToProjectBuilder(coverageReport, projectBuilder, System.err, true)
+
+        val project = projectBuilder.build()
+        assertThat(
+            project
+        ).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist").isEqualTo(expectedProject)
+
+    }
+
     @Test
     fun `should handle empty report and print error`() {
         val emptyReportFilePath = "src/test/resources/languages/javascript/empty_lcov.info"

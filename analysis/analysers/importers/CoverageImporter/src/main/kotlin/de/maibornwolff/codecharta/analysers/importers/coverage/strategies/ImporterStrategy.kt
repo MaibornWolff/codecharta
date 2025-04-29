@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.importers.coverage.strategies
 
+import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
@@ -17,7 +18,7 @@ interface ImporterStrategy {
     var totalTrackingItems: Long
     val parsingUnit: ParsingUnit
 
-    fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream)
+    fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream, keepFullPaths: Boolean = false)
 
     fun updateProgress(parsedLines: Long) {
         progressTracker.updateProgress(totalTrackingItems, parsedLines, parsingUnit.name)
@@ -50,14 +51,21 @@ interface ImporterStrategy {
 
         val lastPathSeparatorIndex = maxOf(lastUnixPathSeparator, lastWindowsPathSeparator)
 
+        if (lastPathSeparatorIndex < 0) return path
+
         if (path[lastPathSeparatorIndex] != File.separatorChar) {
             Logger.warn { "Non-native file paths detected in coverage report! This might result in an incorrect cc.json" }
         }
 
-        return if (lastPathSeparatorIndex >= 0) {
-            path.substring(lastPathSeparatorIndex + 1)
-        } else {
-            path
+        return path.substring(lastPathSeparatorIndex + 1)
+    }
+
+    fun removeExtraNodesAroundProject(projectBuilder: ProjectBuilder) {
+        var newRoot = projectBuilder.rootNode
+        while (newRoot.children.isNotEmpty() && newRoot.children.size == 1 && newRoot.children.first().type == NodeType.Folder) {
+            newRoot = newRoot.children.first()
         }
+        println("new root is ${newRoot.name}")
+        projectBuilder.rootNode.children = newRoot.children
     }
 }

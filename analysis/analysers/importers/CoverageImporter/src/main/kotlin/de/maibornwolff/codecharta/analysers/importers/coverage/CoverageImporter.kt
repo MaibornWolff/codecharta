@@ -64,6 +64,12 @@ class CoverageImporter(
     )
     private var outputFilePath: String? = null
 
+    @CommandLine.Option(
+        names = ["--keep-full-paths"],
+        description = ["Keep all file paths even those around the whole project"]
+    )
+    private var keepFullPaths: Boolean = false
+
     override val name = NAME
     override val description = DESCRIPTION
 
@@ -96,7 +102,7 @@ class CoverageImporter(
 
         val projectBuilder = ProjectBuilder()
 
-        language.strategy.addNodesToProjectBuilder(reportFile, projectBuilder, error)
+        language.strategy.addNodesToProjectBuilder(reportFile, projectBuilder, error, keepFullPaths)
         projectBuilder.addAttributeTypes(getAttributeTypes(language))
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors(language))
         var project = projectBuilder.build()

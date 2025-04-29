@@ -9,15 +9,31 @@
         "link": "",
         "children": [
           {
-            "name": "codeCharta.api.model.ts",
-            "type": "File",
-            "attributes": {
-              "line_coverage": 100.0,
-              "branch_coverage": 100.0,
-              "statement_coverage": 100.0
-            },
+            "name": "app",
+            "type": "Folder",
+            "attributes": {},
             "link": "",
-            "children": []
+            "children": [
+              {
+                "name": "codeCharta",
+                "type": "Folder",
+                "attributes": {},
+                "link": "",
+                "children": [
+                  {
+                    "name": "codeCharta.api.model.ts",
+                    "type": "File",
+                    "attributes": {
+                      "line_coverage": 100.0,
+                      "branch_coverage": 100.0,
+                      "statement_coverage": 100.0
+                    },
+                    "link": "",
+                    "children": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       }
