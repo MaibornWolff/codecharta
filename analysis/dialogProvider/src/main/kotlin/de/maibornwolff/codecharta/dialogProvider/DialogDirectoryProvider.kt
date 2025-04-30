@@ -21,12 +21,13 @@ class DialogDirectoryProvider(
         this.prepareMatches("")
     }
 
-    fun updateCurrentFolder(currentInput: String) {
+    private fun updateCurrentFolder(currentInput: String) {
         if (currentInput.isEmpty()) {
             currentDirectory = Paths.get("")
             return
         }
-        if (currentInput.last() == '\\' || currentInput.last() == '/') {
+        val unifiedInput = currentInput.replace("\\","/").replaceAfterLast("/", "", "")
+        if (unifiedInput.isNotEmpty()) {
             val folder = Paths.get(currentInput)
             currentDirectory = if (folder.isDirectory()) folder else currentDirectory
             return
@@ -47,15 +48,15 @@ class DialogDirectoryProvider(
             path.toString().startsWith(currentInput) &&
                 (path.isDirectory() || (InputValidator.verifyFile(path.toFile(), fileExtensions)))
         }
-        if (possibleMatches.size == 1) {
+        return if (possibleMatches.size == 1) {
             val match = possibleMatches.first()
             if (possibleMatches.first().isDirectory()) {
-                return match.toString() + systemSeparator
+                match.toString() + systemSeparator
             } else {
-                return match.toString()
+                match.toString()
             }
         } else {
-            return ""
+            ""
         }
     }
 
