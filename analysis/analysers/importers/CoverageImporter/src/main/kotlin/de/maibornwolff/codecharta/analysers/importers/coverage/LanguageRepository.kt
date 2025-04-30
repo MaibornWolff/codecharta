@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.importers.coverage
 
+import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.DotnetStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.ImporterStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.JavaScriptStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.JavaStrategy
@@ -36,12 +37,23 @@ internal enum class Language(
             CoverageAttributes.METHOD_COVERAGE,
             CoverageAttributes.CLASS_COVERAGE
         )
+    ),
+    CSHARP(
+        "csharp",
+        DotnetStrategy(),
+        listOf(FileExtension.XML),
+        "coverage.cobertura.xml",
+        listOf(
+            CoverageAttributes.LINE_COVERAGE,
+            CoverageAttributes.BRANCH_COVERAGE
+        )
     )
 }
 
 private val languageChoicesToLanguage = mapOf(
     "javascript/typescript" to Language.JAVASCRIPT,
-    "java" to Language.JAVA
+    "java" to Language.JAVA,
+    "csharp/dotnet" to Language.CSHARP
 )
 
 private val languageInputToLanguage = mapOf(
@@ -49,7 +61,9 @@ private val languageInputToLanguage = mapOf(
     "typescript" to Language.JAVASCRIPT,
     "js" to Language.JAVASCRIPT,
     "ts" to Language.JAVASCRIPT,
-    "java" to Language.JAVA
+    "java" to Language.JAVA,
+    "csharp" to Language.CSHARP,
+    "dotnet" to Language.CSHARP
 )
 
 internal fun getLanguageChoices(): List<String> {

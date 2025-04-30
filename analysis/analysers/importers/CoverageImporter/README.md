@@ -18,10 +18,11 @@ The CoverageImporter generates visualisation data from a coverage report generat
 
 ## Supported Coverage Report Languages/Formats
 
-| Language                | Command                                                 | Default Report File |
-|-------------------------|---------------------------------------------------------|---------------------|
-| JavaScript / TypeScript | `javascript/typescript, javascript, typescript, js, ts` | lcov.info           |
-| Java                    | `java`                                                  | jacoco.xml          |
+| Language                | Command                                                 | Default Report File    |
+|-------------------------|---------------------------------------------------------|------------------------|
+| JavaScript / TypeScript | `javascript/typescript, javascript, typescript, js, ts` | lcov.info              |
+| Java                    | `java`                                                  | jacoco.xml             |
+| C#                      | `csharp, dotnet`                                        | coverage.cobertura.xml |
 
 ## Usage and Parameters
 
