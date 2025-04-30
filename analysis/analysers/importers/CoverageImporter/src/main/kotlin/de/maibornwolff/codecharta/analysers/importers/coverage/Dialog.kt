@@ -39,15 +39,22 @@ class Dialog {
                 onInputReady = testCallback()
             )
 
+            val keepLeadingPaths = session.promptConfirm(
+                message = "Do you want to cut leading file paths which surround the whole project?",
+                onInputReady = testCallback()
+            )
+
             val languageParam = "--language=${language.languageName}"
             val outputFileParam = if (outputFileName.isNotEmpty()) "--output-file=$outputFileName" else null
             val notCompressedParam = if (isCompressed) null else "--not-compressed"
+            val keepLeadingPathsParam = if (keepLeadingPaths) null else "--keep-leading-paths"
 
             return listOfNotNull(
                 reportFile,
                 languageParam,
                 outputFileParam,
-                notCompressedParam
+                notCompressedParam,
+                keepLeadingPathsParam,
             )
         }
 
