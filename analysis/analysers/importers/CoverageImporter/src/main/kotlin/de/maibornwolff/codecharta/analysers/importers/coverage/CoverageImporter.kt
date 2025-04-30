@@ -84,6 +84,8 @@ class CoverageImporter(
 
     @Throws(IOException::class)
     override fun call() {
+        logExecutionStartedSyncSignal()
+
         val languageInput = language.lowercase(Locale.getDefault())
 
         require(isLanguageForLanguageInputSupported(languageInput)) { "Unsupported language: $languageInput" }
