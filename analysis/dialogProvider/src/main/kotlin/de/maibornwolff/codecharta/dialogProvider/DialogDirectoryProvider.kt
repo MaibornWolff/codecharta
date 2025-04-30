@@ -4,25 +4,94 @@ import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.isDirectory
+import kotlin.io.path.listDirectoryEntries
 
 class DialogDirectoryProvider(
     val inputType: InputType,
-    val fileExtensions: List<FileExtension>
-    ) {
+    private val fileExtensions: List<FileExtension>
+) {
+    private val systemSeparator = File.separatorChar
+    private var currentDirectory: Path = Paths.get("")
+    private var currentDirectoryContent = listOf<Path>()
+    private var possibleDirectories = listOf<Path>()
+    private var possibleFiles = listOf<Path>()
 
-    val systemSeparator = File.separatorChar
-    var currentFolder = Paths.get("")
-
-
-
-    fun updateMatches(): List<Path> {
-
-
-    // return list of possible matches, specifically folders and files with fitting extension
+    init {
+        this.prepareMatches("")
     }
 
-    fun formatMatches(validMatches: List<Path>): String {
-        // return up to two lines of results, with (x more) at the end. To be displayed below the input
+    fun updateCurrentFolder(currentInput: String) {
+        if (currentInput.isEmpty()) {
+            currentDirectory = Paths.get("")
+            return
+        }
+        if (currentInput.last() == '\\' || currentInput.last() == '/') {
+            val folder = Paths.get(currentInput)
+            currentDirectory = if (folder.isDirectory()) folder else currentDirectory
+            return
+        }
     }
 
+    fun prepareMatches(currentInput: String) {
+        updateCurrentFolder(currentInput)
+        currentDirectoryContent = currentDirectory.listDirectoryEntries()
+        possibleDirectories = currentDirectoryContent.filter { it.isDirectory() }.filter { it.toString().startsWith(currentInput) }
+        possibleFiles = currentDirectoryContent.filter {
+            InputValidator.verifyFile(it.toFile(), fileExtensions)
+        }.filter { it.toString().startsWith(currentInput) }
+    }
+
+    fun getHint(currentInput: String): String {
+        val possibleMatches = currentDirectoryContent.filter { path ->
+            path.toString().startsWith(currentInput) &&
+                (path.isDirectory() || (InputValidator.verifyFile(path.toFile(), fileExtensions)))
+        }
+        if (possibleMatches.size == 1) {
+            val match = possibleMatches.first()
+            if (possibleMatches.first().isDirectory()) {
+                return match.toString() + systemSeparator
+            } else {
+                return match.toString()
+            }
+        } else {
+            return ""
+        }
+    }
+
+    fun getMatches(): String {
+        var currentCharSize = 0
+        val maximumCharSize = 120
+        var secondLine = false
+        var outputString = ""
+        val totalMatches = possibleDirectories.size + possibleFiles.size
+        var addedMatches = 0
+        possibleDirectories.forEach {
+            val dirName = it.toFile().name
+            if (secondLine && currentCharSize > maximumCharSize * 2) {
+                outputString += "($addedMatches/$totalMatches)"
+                return outputString
+            } else if (!secondLine && currentCharSize + dirName.length > maximumCharSize) {
+                secondLine = true
+                outputString += "\n"
+            }
+            outputString = outputString + dirName + systemSeparator + "\t"
+            currentCharSize += dirName.length
+            addedMatches += 1
+        }
+        possibleFiles.forEach {
+            val fileName = it.toFile().name
+            if (secondLine && currentCharSize > maximumCharSize * 2) {
+                outputString += "($addedMatches/$totalMatches)"
+                return outputString
+            } else if (!secondLine && currentCharSize + fileName.length > maximumCharSize) {
+                secondLine = true
+                outputString += "\n"
+            }
+            outputString = outputString + fileName + "\t"
+            currentCharSize += fileName.length
+            addedMatches += 1
+        }
+        return outputString
+    }
 }

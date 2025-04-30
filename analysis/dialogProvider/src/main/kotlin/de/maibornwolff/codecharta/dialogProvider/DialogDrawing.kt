@@ -11,12 +11,8 @@ import com.varabyte.kotter.foundation.text.green
 import com.varabyte.kotter.foundation.text.red
 import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.textLine
+import com.varabyte.kotter.foundation.text.white
 import com.varabyte.kotter.runtime.MainRenderScope
-import java.nio.file.Path
-import java.nio.file.Paths
-import kotlin.io.path.isDirectory
-import kotlin.io.path.isRegularFile
-import kotlin.io.path.listDirectoryEntries
 
 fun MainRenderScope.drawInput(
     message: String,
@@ -42,15 +38,13 @@ fun MainRenderScope.drawInput(
 
 fun MainRenderScope.drawInputWithInfo(
     message: String,
-    hint: String,
     isInputValid: Boolean,
     allowEmptyInput: Boolean,
-    invalidInputMessage: String,
     lastInputEmpty: Boolean,
-    lastInput: String,
-    allowedExtension: String = ".cc.json"
+    invalidInputMessage: String,
+    subtextInfo: String,
+    hint: String
 ) {
-    var inputCompleter = Completions("")
     bold {
         green { text("? ") }
         text(message)
@@ -61,70 +55,17 @@ fun MainRenderScope.drawInputWithInfo(
         }
     }
 
-
-    // Get input
-    // Check if input is directory or file with allowed extension
-    // if dir -> listDirectoryEntries
-    // else use last valid result and filter by
-
-    val currentPosition = try {
-        Paths.get(lastInput)
-    } catch (e: Exception) {
-        Paths.get(lastInput.substringBeforeLast("/"))
-    }
-    textLine(currentPosition.toString())
-    if(currentPosition.isDirectory()) {
-        lastGood = currentPosition.listDirectoryEntries()
-        inputCompleter = Completions(*lastGood.map { it.toString() }.toTypedArray())
-    }
-    val floatingInput = lastInput.substringAfterLast("/")
-    val possibleMatches = lastGood.filter { it.startsWith(floatingInput) && ( it.isDirectory() || ( it.isRegularFile()) && it.endsWith(allowedExtension) ) }
-//    val filter = if (lastInput.isEmpty() ) "*" else lastInput + "*"
-//    val currentFolders = cwd.listDirectoryEntries(filter).filter { it.isDirectory() }
-//    if (currentFolders.size == 1) {
-//        inputCompleter = Completions(currentFolders.first().toString()+ "/")
-//    }
-
-
-    val someResults = getSomeEntries(possibleMatches)
-
     text("> ")
-    input(inputCompleter, initialText = "")
-    textLine("")
+    white {
+        input(Completions(hint), initialText = "")
+    }
+
+    text("\n")
 
     black(isBright = true) {
-        textLine(someResults)
+        text(subtextInfo)
     }
-
 }
-
-fun getSomeEntries(paths: List<Path>, charLimit : Int = 120): String {
-    var usedChars = 0
-    var secondLine = false
-    var availableFolders = ""
-    paths.forEach {
-        val pathLength = it.toString().length
-        if (usedChars + pathLength > charLimit) {
-            if (secondLine) {
-                return availableFolders
-            } else {
-                secondLine = true
-                if (pathLength > charLimit) {
-                    return availableFolders
-                } else {
-                    availableFolders += "\n" + "${it}/ "
-                    usedChars = pathLength
-                }
-            }
-        } else {
-            availableFolders += "${it}/ "
-            usedChars += pathLength
-        }
-    }
-    return availableFolders
-}
-
-
 
 fun MainRenderScope.drawConfirm(message: String, hint: String, choice: Boolean) {
     bold {
