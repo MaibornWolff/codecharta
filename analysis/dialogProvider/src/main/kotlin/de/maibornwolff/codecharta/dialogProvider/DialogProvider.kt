@@ -8,6 +8,7 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.foundation.input.onInputChanged
 import com.varabyte.kotter.foundation.input.onInputEntered
 import com.varabyte.kotter.foundation.input.onKeyPressed
+import com.varabyte.kotter.foundation.input.sendKeys
 import com.varabyte.kotter.foundation.liveVarOf
 import com.varabyte.kotter.foundation.runUntilSignal
 import com.varabyte.kotter.runtime.RunScope
@@ -56,40 +57,51 @@ fun Session.promptInput(
 
 fun Session.promptInputComplete(
     message: String,
-    hint: String = "",
-    allowEmptyInput: Boolean = false,
     invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
     inputValidator: (String) -> Boolean = { true },
-    inputCompleter: InputCompleter = Completions(hint),
+    dialogDirectoryProvider: DialogDirectoryProvider,
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     var lastUserInput = ""
-    var lastUserInputLive = ""
-    var hintText = hint
     var isInputValid by liveVarOf(true)
+    var subtextInfo = dialogDirectoryProvider.getMatches()
+    var hint = dialogDirectoryProvider.getHint("")
     section {
-        drawInputWithInfo(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty(), lastUserInputLive)
+        drawInputWithInfo(
+            message = message,
+            isInputValid = isInputValid,
+            allowEmptyInput = false,
+            lastInputEmpty = lastUserInput.isEmpty(),
+            invalidInputMessage = invalidInputMessage,
+            subtextInfo,
+            hint
+        )
     }.runUntilSignal {
+        onKeyPressed {
+            if (key == Keys.TAB) {
+                sendKeys(Keys.RIGHT)
+            }
+        }
         onInputChanged {
             isInputValid = true
-            lastUserInputLive  = input
+            lastUserInput = input
+            dialogDirectoryProvider.prepareMatches(input)
+            hint = dialogDirectoryProvider.getHint(input)
+            subtextInfo = dialogDirectoryProvider.getMatches()
         }
         onInputEntered {
-            if ((allowEmptyInput && input.isEmpty()) || (inputValidator(input) && input.isNotEmpty())) {
+            if (inputValidator(input) && input.isNotEmpty()) {
                 isInputValid = true
-                hintText = ""
                 signal()
             } else {
                 isInputValid = false
             }
-
             lastUserInput = input
         }
         onInputReady()
     }
     return lastUserInput
 }
-
 
 fun Session.promptInputNumber(
     message: String,
@@ -103,7 +115,15 @@ fun Session.promptInputNumber(
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty(), inputCompleter = Completions(hint))
+        drawInput(
+            message,
+            hintText,
+            isInputValid,
+            allowEmptyInput,
+            invalidInputMessage,
+            lastUserInput.isEmpty(),
+            inputCompleter = Completions(hint)
+        )
     }.runUntilSignal {
         onInputChanged {
             isInputValid = true
