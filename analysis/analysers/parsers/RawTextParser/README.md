@@ -11,6 +11,7 @@ This parser analyzes code, regardless of the programming language, to generate t
 ## Supported Metrics
 
 - Indentation Level: The number of lines of code of a file, with a certain indentation level or higher.
+- Lines of Code: The total number of lines in a file, including blank lines.
 
 ## Usage and Parameters
 
@@ -46,7 +47,7 @@ ccsh rawtextparser foo/bar/project
 ```
 
 ```
-ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=IndentationLevel
+ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=IndentationLevel, LinesOfCode
 ```
 
 ```
@@ -55,3 +56,4 @@ ccsh rawtextparser foo -o out.cc.json --exclude=*.html --exclude=bar
 
 If a project is piped into the RawTextParser, the results and the piped project are merged.
 The resulting project has the project name specified for the RawTextParser.
+

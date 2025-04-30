@@ -1,5 +1,4 @@
 {
-  "checksum": "281a7a9ebe86b84f113ad9e0f3f57e25",
   "data": {
     "projectName": "",
     "nodes": [
@@ -13,17 +12,18 @@
             "name": "tabs.included",
             "type": "File",
             "attributes": {
-              "indentation_level_0+": 6,
-              "indentation_level_1+": 3,
-              "indentation_level_2+": 1,
-              "indentation_level_3+": 1,
-              "indentation_level_4+": 0,
-              "indentation_level_5+": 0,
-              "indentation_level_6+": 0,
-              "indentation_level_7+": 0,
-              "indentation_level_8+": 0,
-              "indentation_level_9+": 0,
-              "indentation_level_10+": 0
+              "loc": 7.0,
+              "indentation_level_0+": 6.0,
+              "indentation_level_1+": 3.0,
+              "indentation_level_2+": 1.0,
+              "indentation_level_3+": 1.0,
+              "indentation_level_4+": 0.0,
+              "indentation_level_5+": 0.0,
+              "indentation_level_6+": 0.0,
+              "indentation_level_7+": 0.0,
+              "indentation_level_8+": 0.0,
+              "indentation_level_9+": 0.0,
+              "indentation_level_10+": 0.0
             },
             "link": "",
             "children": []
@@ -122,8 +122,17 @@
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
         "direction": -1
+      },
+      "loc": {
+        "title": "Lines of Code",
+        "description": "Lines of code including empty lines and comments",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/raw-text",
+        "direction": -1
       }
     },
     "blacklist": []
-  }
+  },
+  "checksum": "a79efa963b588938270443376e9599ff"
 }
