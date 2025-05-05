@@ -156,7 +156,7 @@ class CoverageImporterTest {
 
         val input = File(alreadyImportedCoverage).bufferedReader().readLines()
             .joinToString(separator = "\n") { it }
-        val cliResult = executeForOutput(input, arrayOf(reportFilePath, "-l=js", "--keep-full-paths"))
+        val cliResult = executeForOutput(input, arrayOf(reportFilePath, "-l=js", "--strip-leading-path"))
 
         assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\"", "app.config.ts", "codeCharta.api.model.ts"))
         assertThat(JSONParser.parseJSON(cliResult)).usingRecursiveComparison().isEqualTo(JSONParser.parseJSON(expectedOutput))

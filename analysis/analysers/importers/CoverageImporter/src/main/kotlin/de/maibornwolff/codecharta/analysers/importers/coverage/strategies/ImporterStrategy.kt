@@ -54,7 +54,7 @@ interface ImporterStrategy {
         if (lastPathSeparatorIndex < 0) return path
 
         if (path[lastPathSeparatorIndex] != File.separatorChar) {
-            Logger.warn { "Non-native file paths detected in coverage report! This might result in an incorrect cc.json" }
+            Logger.warn { "Non-native file paths detected in coverage report! This might result in an incorrect cc.json file" }
         }
 
         return path.substring(lastPathSeparatorIndex + 1)

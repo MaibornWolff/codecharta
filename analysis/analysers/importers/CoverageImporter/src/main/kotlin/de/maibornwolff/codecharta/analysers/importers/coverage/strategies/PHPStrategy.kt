@@ -17,7 +17,7 @@ class PHPStrategy : ImporterStrategy {
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Files
 
-    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
+    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream, keepFullPaths: Boolean) {
         try {
             val document: Document = parseXML(coverageFile.absolutePath)
 

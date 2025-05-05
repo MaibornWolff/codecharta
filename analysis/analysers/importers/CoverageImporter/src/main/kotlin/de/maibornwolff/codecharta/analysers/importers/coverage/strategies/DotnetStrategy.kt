@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
-import de.maibornwolff.codecharta.util.Logger
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -18,7 +17,7 @@ class DotnetStrategy : ImporterStrategy {
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Packages
 
-    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
+    override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream, keepFullPaths: Boolean) {
         try {
             val document: Document = parseXML(coverageFile.absolutePath)
 
@@ -64,21 +63,6 @@ class DotnetStrategy : ImporterStrategy {
             val path = PathFactory.fromFileSystemPath(filePath).parent
             projectBuilder.insertByPath(path, fileNode)
         }
-    }
-
-    private fun extractFileNameFromPath(path: String): String {
-        val lastUnixPathSeparator = path.lastIndexOf('/')
-        val lastWindowsPathSeparator = path.lastIndexOf('\\')
-
-        val lastPathSeparatorIndex = maxOf(lastUnixPathSeparator, lastWindowsPathSeparator)
-
-        if (lastPathSeparatorIndex < 0) return path
-
-        if (path[lastPathSeparatorIndex] != File.separatorChar) {
-            Logger.warn { "Non-native file paths detected in coverage report! This might result in an incorrect cc.json file" }
-        }
-
-        return path.substring(lastPathSeparatorIndex + 1)
     }
 
     private fun createFileNode(fileName: String, classElement: Element): MutableNode {
