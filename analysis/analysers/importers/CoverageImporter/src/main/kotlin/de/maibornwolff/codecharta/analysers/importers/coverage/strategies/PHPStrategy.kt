@@ -43,7 +43,7 @@ class PHPStrategy : ImporterStrategy {
 
     private fun processFileElement(fileElement: Element, projectBuilder: ProjectBuilder) {
         val fileNode = createFileNode(fileElement)
-        val pathRelativeToProjectRoot = PathFactory.fromFileSystemPath(fileElement.getAttribute("href")).parent
+        val pathRelativeToProjectRoot = PathFactory.extractOSIndependentPath(fileElement.getAttribute("href")).parent
         projectBuilder.insertByPath(pathRelativeToProjectRoot, fileNode)
     }
 

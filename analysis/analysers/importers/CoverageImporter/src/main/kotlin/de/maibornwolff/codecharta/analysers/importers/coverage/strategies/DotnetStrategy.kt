@@ -60,7 +60,7 @@ class DotnetStrategy : ImporterStrategy {
             val filePath = seenFile.key
             val fileNode = seenFile.value
 
-            val path = PathFactory.fromFileSystemPath(filePath).parent
+            val path = PathFactory.extractOSIndependentPath(filePath).parent
             projectBuilder.insertByPath(path, fileNode)
         }
     }
