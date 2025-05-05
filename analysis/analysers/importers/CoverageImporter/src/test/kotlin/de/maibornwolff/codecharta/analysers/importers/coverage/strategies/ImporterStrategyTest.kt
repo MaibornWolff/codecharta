@@ -18,7 +18,12 @@ class ImporterStrategyTest {
         override var totalTrackingItems: Long = 0
         override val parsingUnit: ParsingUnit = ParsingUnit.Lines
 
-        override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream) {
+        override fun addNodesToProjectBuilder(
+            coverageFile: File,
+            projectBuilder: ProjectBuilder,
+            error: PrintStream,
+            keepFullPaths: Boolean
+        ) {
             // Implementation not needed for this test
         }
     }
