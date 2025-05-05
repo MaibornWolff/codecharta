@@ -51,10 +51,8 @@ class JavaScriptStrategy() : ImporterStrategy {
                 line.startsWith("BRH:") -> branchesHit = line.substringAfter("BRH:").trim().toInt()
                 line == "end_of_record" -> {
                     currentFilePath?.let { filePath ->
-                        val file = File(filePath)
-                        val fileName = file.name
-                        val directoryPath = file.parent ?: ""
-                        val path = PathFactory.fromFileSystemPath(directoryPath, File.separatorChar)
+                        val fileName = File(filePath).name
+                        val directoryPath = PathFactory.extractOSIndependentPath(filePath).parent
 
                         val lineCoverage = calculatePercentage(linesHit, linesFound)
                         val branchCoverage = calculatePercentage(branchesHit, branchesFound)
@@ -70,7 +68,7 @@ class JavaScriptStrategy() : ImporterStrategy {
                             )
                         )
 
-                        projectBuilder.insertByPath(path, node)
+                        projectBuilder.insertByPath(directoryPath, node)
                     }
                     currentFilePath = null
                 }

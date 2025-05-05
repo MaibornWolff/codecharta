@@ -45,7 +45,7 @@ class CloverXMLStrategy : ImporterStrategy {
 
     private fun processFileElement(fileElement: Element, projectBuilder: ProjectBuilder) {
         val fileNode = createFileNode(fileElement)
-        val pathRelativeToProjectRoot = PathFactory.fromFileSystemPath(fileElement.getAttribute("name")).parent
+        val pathRelativeToProjectRoot = PathFactory.extractOSIndependentPath(fileElement.getAttribute("name")).parent
         projectBuilder.insertByPath(pathRelativeToProjectRoot, fileNode)
     }
 
