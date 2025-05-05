@@ -49,7 +49,6 @@ class JavaScriptStrategyTest {
         ).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist").isEqualTo(expectedProject)
     }
 
-
     @Test
     fun `should keep folders surrounding the project when the flag is set`() {
         val expectedFilePath = "src/test/resources/languages/javascript/coverage_full_paths.cc.json"
@@ -63,7 +62,6 @@ class JavaScriptStrategyTest {
         assertThat(
             project
         ).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist").isEqualTo(expectedProject)
-
     }
 
     @Test

@@ -39,7 +39,6 @@ class CloverXMLStrategyTest {
 
         assertThat(project).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist")
             .isEqualTo(expectedProject)
-
     }
 
     @Test
