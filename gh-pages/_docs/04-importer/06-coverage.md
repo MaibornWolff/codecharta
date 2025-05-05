@@ -29,6 +29,7 @@ The CoverageImporter generates visualisation data from a coverage report generat
 |-------------------------|---------------------------------------------------------|---------------------|
 | JavaScript / TypeScript | `javascript/typescript, javascript, typescript, js, ts` | lcov.info           |
 | Java                    | `java`                                                  | jacoco.xml          |
+| C#                      | `csharp, dotnet`                                        | coverage.cobertura.xml |
 | PHP                     | `php`                                                   | index.xml           |
 
 ## Usage and Parameters

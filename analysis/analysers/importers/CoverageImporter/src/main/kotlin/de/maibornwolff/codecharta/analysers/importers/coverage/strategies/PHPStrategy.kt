@@ -1,7 +1,6 @@
-package de.maibornwolff.codecharta.importer.coverage.strategies
+package de.maibornwolff.codecharta.analysers.importers.coverage.strategies
 
-import de.maibornwolff.codecharta.analysis.importer.coverage.CoverageAttributes
-import de.maibornwolff.codecharta.analysis.importer.coverage.strategies.ImporterStrategy
+import de.maibornwolff.codecharta.analysers.importers.coverage.CoverageAttributes
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.PathFactory
@@ -10,12 +9,8 @@ import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import org.w3c.dom.Document
 import org.w3c.dom.Element
-import org.xml.sax.InputSource
 import java.io.File
-import java.io.FileInputStream
 import java.io.PrintStream
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
 
 class PHPStrategy : ImporterStrategy {
     override val progressTracker: ProgressTracker = ProgressTracker()
@@ -44,15 +39,6 @@ class PHPStrategy : ImporterStrategy {
             error.println("Error while parsing XML file: ${e.message}")
             return
         }
-    }
-
-    private fun parseXML(filePath: String): Document {
-        val factory = DocumentBuilderFactory.newInstance()
-        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false)
-        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
-
-        val builder: DocumentBuilder = factory.newDocumentBuilder()
-        return builder.parse(InputSource(FileInputStream(filePath)))
     }
 
     private fun processFileElement(fileElement: Element, projectBuilder: ProjectBuilder) {
