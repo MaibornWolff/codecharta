@@ -1,0 +1,2656 @@
+{
+    "policies": [
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "AFL-1-1",
+            "id": "AFL-1.1",
+            "name": "Academic Free License v1.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/AFL-1.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "AFL-1-2",
+            "id": "AFL-1.2",
+            "name": "Academic Free License v1.2",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/AFL-1.2.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "AFL-2-0",
+            "id": "AFL-2.0",
+            "name": "Academic Free License v2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/AFL-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "AFL-2-1",
+            "id": "AFL-2.1",
+            "name": "Academic Free License v2.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/AFL-2.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "AFL-3-0",
+            "id": "AFL-3.0",
+            "name": "Academic Free License v3.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/AFL-3.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Apache-1-0",
+            "id": "Apache-1.0",
+            "name": "Apache License 1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Apache-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Apache-1-1",
+            "id": "Apache-1.1",
+            "name": "Apache License 1.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Apache-1.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Apache-2-0",
+            "id": "Apache-2.0",
+            "name": "Apache License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Apache-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Beerware",
+            "id": "Beerware",
+            "name": "Beerware License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Beerware.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "BSD-2-Clause",
+            "id": "BSD-2-Clause",
+            "name": "BSD 2-Clause \"Simplified\" License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/BSD-2-Clause.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "BSD-3-Clause",
+            "id": "BSD-3-Clause",
+            "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/BSD-3-Clause.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "BSD-4-Clause",
+            "id": "BSD-4-Clause",
+            "name": "BSD 4-Clause \"Original\" or \"Old\" License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/BSD-4-Clause.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "BSL-1-0",
+            "id": "BSL-1.0",
+            "name": "Boost Software License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/BSL-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "CECILL-B",
+            "id": "CECILL-B",
+            "name": "CeCILL-B Free Software License Agreement",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/CECILL-B.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "CNRI-Jython",
+            "id": "CNRI-Jython",
+            "name": "CNRI Jython License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/CNRI-Jython.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "CNRI-Python",
+            "id": "CNRI-Python",
+            "name": "CNRI Python License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/CNRI-Python.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Condor-1-1",
+            "id": "Condor-1.1",
+            "name": "Condor Public License v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Condor-1.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "curl",
+            "id": "curl",
+            "name": "curl License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/curl.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "ECL-1-0",
+            "id": "ECL-1.0",
+            "name": "Educational Community License v1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/ECL-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "ECL-2-0",
+            "id": "ECL-2.0",
+            "name": "Educational Community License v2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/ECL-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "EFL-1-0",
+            "id": "EFL-1.0",
+            "name": "Eiffel Forum License v1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/EFL-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "EFL-2-0",
+            "id": "EFL-2.0",
+            "name": "Eiffel Forum License v2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/EFL-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Entessa",
+            "id": "Entessa",
+            "name": "Entessa Public License v1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Entessa.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "EPL-1-0",
+            "id": "EPL-1.0",
+            "name": "Eclipse Public License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/EPL-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "EUDatagrid",
+            "id": "EUDatagrid",
+            "name": "EU DataGrid Software License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/EUDatagrid.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Fair",
+            "id": "Fair",
+            "name": "Fair License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Fair.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "FSFUL",
+            "id": "FSFUL",
+            "name": "FSF Unlimited License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/FSFUL.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "FTL",
+            "id": "FTL",
+            "name": "Freetype Project License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/FTL.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "GD",
+            "id": "GD",
+            "name": "GD License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GD.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "HPND",
+            "id": "HPND",
+            "name": "Historical Permission Notice and Disclaimer",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/HPND.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "ICU",
+            "id": "ICU",
+            "name": "ICU License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/ICU.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "IJG",
+            "id": "IJG",
+            "name": "Independent JPEG Group License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/IJG.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "IJG-short",
+            "id": "IJG-short",
+            "name": "Independent JPEG Group License - short",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/IJG-short.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "ImageMagick",
+            "id": "ImageMagick",
+            "name": "ImageMagick License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/ImageMagick.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Intel",
+            "id": "Intel",
+            "name": "Intel Open Source License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Intel.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "ISC",
+            "id": "ISC",
+            "name": "ISC License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/ISC.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "JasPer-2-0",
+            "id": "JasPer-2.0",
+            "name": "JasPer License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/JasPer-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "JSON",
+            "id": "JSON",
+            "name": "JSON License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/JSON.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Libpng",
+            "id": "Libpng",
+            "name": "libpng License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Libpng.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "libpng-2-0",
+            "id": "libpng-2.0",
+            "name": "PNG Reference Library version 2",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/libpng-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "LPL-1-0",
+            "id": "LPL-1.0",
+            "name": "Lucent Public License Version 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LPL-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "LPL-1-02",
+            "id": "LPL-1.02",
+            "name": "Lucent Public License v1.02",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LPL-1.02.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "MirOS",
+            "id": "MirOS",
+            "name": "The MirOS Licence",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/MirOS.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "MIT",
+            "id": "MIT",
+            "name": "MIT License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/MIT.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "MS-PL",
+            "id": "MS-PL",
+            "name": "Microsoft Public License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/MS-PL.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "MulanPSL-1-0",
+            "id": "MulanPSL-1.0",
+            "name": "Mulan Permissive Software License, Version 1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/MulanPSL-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "MulanPSL-2-0",
+            "id": "MulanPSL-2.0",
+            "name": "Mulan Permissive Software License, Version 2",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/MulanPSL-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Naumen",
+            "id": "Naumen",
+            "name": "Naumen Public License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Naumen.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "NCSA",
+            "id": "NCSA",
+            "name": "University of Illinois/NCSA Open Source License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/NCSA.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "NTP",
+            "id": "NTP",
+            "name": "NTP License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/NTP.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": true,
+            "family": "Nunit",
+            "id": "Nunit",
+            "name": "Nunit License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Nunit.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OGC-1-0",
+            "id": "OGC-1.0",
+            "name": "OGC Software License, Version 1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OGC-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OGTSL",
+            "id": "OGTSL",
+            "name": "Open Group Test Suite License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/OGTSL.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-1-1",
+            "id": "OLDAP-1.1",
+            "name": "Open LDAP Public License v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-1.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-1-2",
+            "id": "OLDAP-1.2",
+            "name": "Open LDAP Public License v1.2",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-1.2.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-1-3",
+            "id": "OLDAP-1.3",
+            "name": "Open LDAP Public License v1.3",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-1.3.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-1-4",
+            "id": "OLDAP-1.4",
+            "name": "Open LDAP Public License v1.4",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-1.4.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-0",
+            "id": "OLDAP-2.0",
+            "name": "Open LDAP Public License v2.0 (or possibly 2.0A and 2.0B)",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-0-1",
+            "id": "OLDAP-2.0.1",
+            "name": "Open LDAP Public License v2.0.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.0.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-1",
+            "id": "OLDAP-2.1",
+            "name": "Open LDAP Public License v2.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-2",
+            "id": "OLDAP-2.2",
+            "name": "Open LDAP Public License v2.2",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.2.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-2-1",
+            "id": "OLDAP-2.2.1",
+            "name": "Open LDAP Public License v2.2.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.2.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-2-2",
+            "id": "OLDAP-2.2.2",
+            "name": "Open LDAP Public License 2.2.2",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.2.2.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-3",
+            "id": "OLDAP-2.3",
+            "name": "Open LDAP Public License v2.3",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.3.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-4",
+            "id": "OLDAP-2.4",
+            "name": "Open LDAP Public License v2.4",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.4.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-5",
+            "id": "OLDAP-2.5",
+            "name": "Open LDAP Public License v2.5",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.5.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-6",
+            "id": "OLDAP-2.6",
+            "name": "Open LDAP Public License v2.6",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.6.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-7",
+            "id": "OLDAP-2.7",
+            "name": "Open LDAP Public License v2.7",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OLDAP-2.7.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OLDAP-2-8",
+            "id": "OLDAP-2.8",
+            "name": "Open LDAP Public License v2.8",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/OLDAP-2.8.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "OpenSSL",
+            "id": "OpenSSL",
+            "name": "OpenSSL License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OpenSSL.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "PHP-3-0",
+            "id": "PHP-3.0",
+            "name": "PHP License v3.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/PHP-3.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "PHP-3-01",
+            "id": "PHP-3.01",
+            "name": "PHP License v3.01",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/PHP-3.01.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "PostgreSQL",
+            "id": "PostgreSQL",
+            "name": "PostgreSQL License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/PostgreSQL.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "PSF-2-0",
+            "id": "PSF-2.0",
+            "name": "Python Software Foundation License 2.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/PSF-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Python-2-0",
+            "id": "Python-2.0",
+            "name": "Python License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Python-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Python-2-0-1",
+            "id": "Python-2.0.1",
+            "name": "Python License 2.0.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Python-2.0.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Ruby",
+            "id": "Ruby",
+            "name": "Ruby License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Ruby.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Sendmail",
+            "id": "Sendmail",
+            "name": "Sendmail License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Sendmail.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "SMLNJ",
+            "id": "SMLNJ",
+            "name": "Standard ML of New Jersey License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/SMLNJ.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": true,
+            "family": "StandardML-NJ",
+            "id": "StandardML-NJ",
+            "name": "Standard ML of New Jersey License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/StandardML-NJ.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "TCL",
+            "id": "TCL",
+            "name": "TCL/TK License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/TCL.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "TOSL",
+            "id": "TOSL",
+            "name": "Trusster Open Source License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/TOSL.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Unlicense",
+            "id": "Unlicense",
+            "name": "The Unlicense",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Unlicense.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "UPL-1-0",
+            "id": "UPL-1.0",
+            "name": "Universal Permissive License v1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/UPL-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "VSL-1-0",
+            "id": "VSL-1.0",
+            "name": "Vovida Software License v1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/VSL-1.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "W3C",
+            "id": "W3C",
+            "name": "W3C Software Notice and License (2002-12-31)",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/W3C.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "W3C-19980720",
+            "id": "W3C-19980720",
+            "name": "W3C Software Notice and License (1998-07-20)",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/W3C-19980720.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "W3C-20150513",
+            "id": "W3C-20150513",
+            "name": "W3C Software Notice and Document License (2015-05-13)",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/W3C-20150513.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "WTFPL",
+            "id": "WTFPL",
+            "name": "Do What The F*ck You Want To Public License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/WTFPL.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "X11",
+            "id": "X11",
+            "name": "X11 License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/X11.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "XFree86-1-1",
+            "id": "XFree86-1.1",
+            "name": "XFree86 License 1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/XFree86-1.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "xinetd",
+            "id": "xinetd",
+            "name": "xinetd License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/xinetd.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Xnet",
+            "id": "Xnet",
+            "name": "X.Net License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Xnet.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "Zlib",
+            "id": "Zlib",
+            "name": "zlib License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Zlib.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "ZPL-1-1",
+            "id": "ZPL-1.1",
+            "name": "Zope Public License 1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/ZPL-1.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "ZPL-2-0",
+            "id": "ZPL-2.0",
+            "name": "Zope Public License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/ZPL-2.0.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "ALLOWED"
+            ],
+            "deprecated": false,
+            "family": "ZPL-2-1",
+            "id": "ZPL-2.1",
+            "name": "Zope Public License 2.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/ZPL-2.1.html",
+            "usagePolicy": "allow"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "AGPL-1-0",
+            "id": "AGPL-1.0",
+            "name": "Affero General Public License v1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/AGPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "AGPL-1-0-only",
+            "id": "AGPL-1.0-only",
+            "name": "Affero General Public License v1.0 only",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/AGPL-1.0-only.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "AGPL-1-0-or-later",
+            "id": "AGPL-1.0-or-later",
+            "name": "Affero General Public License v1.0 or later",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/AGPL-1.0-or-later.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "AGPL-3-0",
+            "id": "AGPL-3.0",
+            "name": "GNU Affero General Public License v3.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/AGPL-3.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "AGPL-3-0-only",
+            "id": "AGPL-3.0-only",
+            "name": "GNU Affero General Public License v3.0 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/AGPL-3.0-only.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "AGPL-3-0-or-later",
+            "id": "AGPL-3.0-or-later",
+            "name": "GNU Affero General Public License v3.0 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/AGPL-3.0-or-later.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "eCos-2-0",
+            "id": "eCos-2.0",
+            "name": "eCos license version 2.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/eCos-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-1-0",
+            "id": "GPL-1.0",
+            "name": "GNU General Public License v1.0 only",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-1-0-",
+            "id": "GPL-1.0+",
+            "name": "GNU General Public License v1.0 or later",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GPL-1.0+.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "GPL-1-0-only",
+            "id": "GPL-1.0-only",
+            "name": "GNU General Public License v1.0 only",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GPL-1.0-only.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "GPL-1-0-or-later",
+            "id": "GPL-1.0-or-later",
+            "name": "GNU General Public License v1.0 or later",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GPL-1.0-or-later.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-2-0",
+            "id": "GPL-2.0",
+            "name": "GNU General Public License v2.0 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/GPL-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-2-0-",
+            "id": "GPL-2.0+",
+            "name": "GNU General Public License v2.0 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/GPL-2.0+.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "GPL-2-0-only",
+            "id": "GPL-2.0-only",
+            "name": "GNU General Public License v2.0 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/GPL-2.0-only.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "GPL-2-0-or-later",
+            "id": "GPL-2.0-or-later",
+            "name": "GNU General Public License v2.0 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/GPL-2.0-or-later.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-3-0",
+            "id": "GPL-3.0",
+            "name": "GNU General Public License v3.0 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/GPL-3.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-3-0-",
+            "id": "GPL-3.0+",
+            "name": "GNU General Public License v3.0 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/GPL-3.0+.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "GPL-3-0-only",
+            "id": "GPL-3.0-only",
+            "name": "GNU General Public License v3.0 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/GPL-3.0-only.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "GPL-3-0-or-later",
+            "id": "GPL-3.0-or-later",
+            "name": "GNU General Public License v3.0 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/GPL-3.0-or-later.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "NGPL",
+            "id": "NGPL",
+            "name": "Nethack General Public License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/NGPL.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "SimPL-2-0",
+            "id": "SimPL-2.0",
+            "name": "Simple Public License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/SimPL-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Arphic-1999",
+            "id": "Arphic-1999",
+            "name": "Arphic Public License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Arphic-1999.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CAL-1-0",
+            "id": "CAL-1.0",
+            "name": "Cryptographic Autonomy License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/CAL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CECILL-1-0",
+            "id": "CECILL-1.0",
+            "name": "CeCILL Free Software License Agreement v1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/CECILL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CECILL-1-1",
+            "id": "CECILL-1.1",
+            "name": "CeCILL Free Software License Agreement v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/CECILL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CECILL-2-0",
+            "id": "CECILL-2.0",
+            "name": "CeCILL Free Software License Agreement v2.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/CECILL-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CECILL-2-1",
+            "id": "CECILL-2.1",
+            "name": "CeCILL Free Software License Agreement v2.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/CECILL-2.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CPL-1-0",
+            "id": "CPL-1.0",
+            "name": "Common Public License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/CPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "D-FSL-1-0",
+            "id": "D-FSL-1.0",
+            "name": "Deutsche Freie Software Lizenz",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/D-FSL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "EUPL-1-0",
+            "id": "EUPL-1.0",
+            "name": "European Union Public License 1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/EUPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "EUPL-1-1",
+            "id": "EUPL-1.1",
+            "name": "European Union Public License 1.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/EUPL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "EUPL-1-2",
+            "id": "EUPL-1.2",
+            "name": "European Union Public License 1.2",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/EUPL-1.2.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "IPA",
+            "id": "IPA",
+            "name": "IPA Font License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/IPA.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "IPL-1-0",
+            "id": "IPL-1.0",
+            "name": "IBM Public License v1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/IPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "NLPL",
+            "id": "NLPL",
+            "name": "No Limit Public License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/NLPL.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "NPOSL-3-0",
+            "id": "NPOSL-3.0",
+            "name": "Non-Profit Open Software License 3.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/NPOSL-3.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OFL-1-0",
+            "id": "OFL-1.0",
+            "name": "SIL Open Font License 1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OFL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OFL-1-1",
+            "id": "OFL-1.1",
+            "name": "SIL Open Font License 1.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/OFL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OSL-1-0",
+            "id": "OSL-1.0",
+            "name": "Open Software License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/OSL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OSL-1-1",
+            "id": "OSL-1.1",
+            "name": "Open Software License 1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OSL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OSL-2-0",
+            "id": "OSL-2.0",
+            "name": "Open Software License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/OSL-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OSL-2-1",
+            "id": "OSL-2.1",
+            "name": "Open Software License 2.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/OSL-2.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OSL-3-0",
+            "id": "OSL-3.0",
+            "name": "Open Software License 3.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/OSL-3.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "RPL-1-1",
+            "id": "RPL-1.1",
+            "name": "Reciprocal Public License 1.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/RPL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "RPL-1-5",
+            "id": "RPL-1.5",
+            "name": "Reciprocal Public License 1.5",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/RPL-1.5.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "TGPPL-1-0",
+            "id": "TGPPL-1.0",
+            "name": "Transitive Grace Period Public Licence 1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/TGPPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "VOSTROM",
+            "id": "VOSTROM",
+            "name": "VOSTROM Public License for Open Source",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/VOSTROM.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CATOSL-1-1",
+            "id": "CATOSL-1.1",
+            "name": "Computer Associates Trusted Open Source License 1.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/CATOSL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CDDL-1-0",
+            "id": "CDDL-1.0",
+            "name": "Common Development and Distribution License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/CDDL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CDDL-1-1",
+            "id": "CDDL-1.1",
+            "name": "Common Development and Distribution License 1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/CDDL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CPAL-1-0",
+            "id": "CPAL-1.0",
+            "name": "Common Public Attribution License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/CPAL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CUA-OPL-1-0",
+            "id": "CUA-OPL-1.0",
+            "name": "CUA Office Public License v1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/CUA-OPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "ErlPL-1-1",
+            "id": "ErlPL-1.1",
+            "name": "Erlang Public License v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/ErlPL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "gSOAP-1-3b",
+            "id": "gSOAP-1.3b",
+            "name": "gSOAP Public License v1.3b",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/gSOAP-1.3b.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Interbase-1-0",
+            "id": "Interbase-1.0",
+            "name": "Interbase Public License v1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Interbase-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "MPL-1-0",
+            "id": "MPL-1.0",
+            "name": "Mozilla Public License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/MPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "MPL-1-1",
+            "id": "MPL-1.1",
+            "name": "Mozilla Public License 1.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/MPL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "MPL-2-0",
+            "id": "MPL-2.0",
+            "name": "Mozilla Public License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/MPL-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "NASA-1-3",
+            "id": "NASA-1.3",
+            "name": "NASA Open Source Agreement 1.3",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/NASA-1.3.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Nokia",
+            "id": "Nokia",
+            "name": "Nokia Open Source License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Nokia.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "NOSL",
+            "id": "NOSL",
+            "name": "Netizen Open Source License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/NOSL.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OPL-1-0",
+            "id": "OPL-1.0",
+            "name": "Open Public License v1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "RHeCos-1-1",
+            "id": "RHeCos-1.1",
+            "name": "Red Hat eCos Public License v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/RHeCos-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "RSCPL",
+            "id": "RSCPL",
+            "name": "Ricoh Source Code Public License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/RSCPL.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "SISSL",
+            "id": "SISSL",
+            "name": "Sun Industry Standards Source License v1.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/SISSL.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "SISSL-1-2",
+            "id": "SISSL-1.2",
+            "name": "Sun Industry Standards Source License v1.2",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/SISSL-1.2.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "SNIA",
+            "id": "SNIA",
+            "name": "SNIA Public License 1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/SNIA.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "SPL-1-0",
+            "id": "SPL-1.0",
+            "name": "Sun Public License v1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/SPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "SugarCRM-1-1-3",
+            "id": "SugarCRM-1.1.3",
+            "name": "SugarCRM Public License v1.1.3",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/SugarCRM-1.1.3.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Watcom-1-0",
+            "id": "Watcom-1.0",
+            "name": "Sybase Open Watcom Public License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Watcom-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Zend-2-0",
+            "id": "Zend-2.0",
+            "name": "Zend License v2.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Zend-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Zimbra-1-3",
+            "id": "Zimbra-1.3",
+            "name": "Zimbra Public License v1.3",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Zimbra-1.3.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Zimbra-1-4",
+            "id": "Zimbra-1.4",
+            "name": "Zimbra Public License v1.4",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Zimbra-1.4.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Artistic-1-0",
+            "id": "Artistic-1.0",
+            "name": "Artistic License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Artistic-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Artistic-2-0",
+            "id": "Artistic-2.0",
+            "name": "Artistic License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Artistic-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "ClArtistic",
+            "id": "ClArtistic",
+            "name": "Clarified Artistic License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/ClArtistic.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Frameworx-1-0",
+            "id": "Frameworx-1.0",
+            "name": "Frameworx Open License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Frameworx-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LPPL-1-0",
+            "id": "LPPL-1.0",
+            "name": "LaTeX Project Public License v1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/LPPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LPPL-1-1",
+            "id": "LPPL-1.1",
+            "name": "LaTeX Project Public License v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/LPPL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LPPL-1-2",
+            "id": "LPPL-1.2",
+            "name": "LaTeX Project Public License v1.2",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/LPPL-1.2.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LPPL-1-3a",
+            "id": "LPPL-1.3a",
+            "name": "LaTeX Project Public License v1.3a",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/LPPL-1.3a.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LPPL-1-3c",
+            "id": "LPPL-1.3c",
+            "name": "LaTeX Project Public License v1.3c",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LPPL-1.3c.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "SGI-B-1-0",
+            "id": "SGI-B-1.0",
+            "name": "SGI Free Software License B v1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/SGI-B-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "SGI-B-1-1",
+            "id": "SGI-B-1.1",
+            "name": "SGI Free Software License B v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/SGI-B-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Sleepycat",
+            "id": "Sleepycat",
+            "name": "Sleepycat License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Sleepycat.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Vim",
+            "id": "Vim",
+            "name": "Vim License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/Vim.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "APSL-1-0",
+            "id": "APSL-1.0",
+            "name": "Apple Public Source License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/APSL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "APSL-1-1",
+            "id": "APSL-1.1",
+            "name": "Apple Public Source License 1.1",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/APSL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "APSL-1-2",
+            "id": "APSL-1.2",
+            "name": "Apple Public Source License 1.2",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/APSL-1.2.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "NPL-1-0",
+            "id": "NPL-1.0",
+            "name": "Netscape Public License v1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/NPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "NPL-1-1",
+            "id": "NPL-1.1",
+            "name": "Netscape Public License v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/NPL-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OCLC-2-0",
+            "id": "OCLC-2.0",
+            "name": "OCLC Research Public License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/OCLC-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "QPL-1-0",
+            "id": "QPL-1.0",
+            "name": "Q Public License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/QPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "RPSL-1-0",
+            "id": "RPSL-1.0",
+            "name": "RealNetworks Public Source License v1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/RPSL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "APL-1-0",
+            "id": "APL-1.0",
+            "name": "Adaptive Public License 1.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/APL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "APSL-2-0",
+            "id": "APSL-2.0",
+            "name": "Apple Public Source License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/APSL-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "BitTorrent-1-0",
+            "id": "BitTorrent-1.0",
+            "name": "BitTorrent Open Source License v1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/BitTorrent-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "BitTorrent-1-1",
+            "id": "BitTorrent-1.1",
+            "name": "BitTorrent Open Source License v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/BitTorrent-1.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "CECILL-C",
+            "id": "CECILL-C",
+            "name": "CeCILL-C Free Software License Agreement",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/CECILL-C.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "EPL-2-0",
+            "id": "EPL-2.0",
+            "name": "Eclipse Public License 2.0",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/EPL-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-2-0-with-bison-exception",
+            "id": "GPL-2.0-with-bison-exception",
+            "name": "GNU General Public License v2.0 w/Bison exception",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GPL-2.0-with-bison-exception.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-2-0-with-classpath-exception",
+            "id": "GPL-2.0-with-classpath-exception",
+            "name": "GNU General Public License v2.0 w/Classpath exception",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GPL-2.0-with-classpath-exception.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-2-0-with-font-exception",
+            "id": "GPL-2.0-with-font-exception",
+            "name": "GNU General Public License v2.0 w/Font exception",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GPL-2.0-with-font-exception.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-2-0-with-GCC-exception",
+            "id": "GPL-2.0-with-GCC-exception",
+            "name": "GNU General Public License v2.0 w/GCC Runtime Library exception",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GPL-2.0-with-GCC-exception.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-3-0-with-autoconf-exception",
+            "id": "GPL-3.0-with-autoconf-exception",
+            "name": "GNU General Public License v3.0 w/Autoconf exception",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/GPL-3.0-with-autoconf-exception.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "GPL-3-0-with-GCC-exception",
+            "id": "GPL-3.0-with-GCC-exception",
+            "name": "GNU General Public License v3.0 w/GCC Runtime Library exception",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/GPL-3.0-with-GCC-exception.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "LGPL-2-0",
+            "id": "LGPL-2.0",
+            "name": "GNU Library General Public License v2 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-2.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "LGPL-2-0-",
+            "id": "LGPL-2.0+",
+            "name": "GNU Library General Public License v2 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-2.0+.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LGPL-2-0-only",
+            "id": "LGPL-2.0-only",
+            "name": "GNU Library General Public License v2 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-2.0-only.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LGPL-2-0-or-later",
+            "id": "LGPL-2.0-or-later",
+            "name": "GNU Library General Public License v2 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-2.0-or-later.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "LGPL-2-1",
+            "id": "LGPL-2.1",
+            "name": "GNU Lesser General Public License v2.1 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-2.1.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "LGPL-2-1-",
+            "id": "LGPL-2.1+",
+            "name": "GNU Lesser General Public License v2.1 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-2.1+.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LGPL-2-1-only",
+            "id": "LGPL-2.1-only",
+            "name": "GNU Lesser General Public License v2.1 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-2.1-only.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LGPL-2-1-or-later",
+            "id": "LGPL-2.1-or-later",
+            "name": "GNU Lesser General Public License v2.1 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-2.1-or-later.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "LGPL-3-0",
+            "id": "LGPL-3.0",
+            "name": "GNU Lesser General Public License v3.0 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-3.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "LGPL-3-0-",
+            "id": "LGPL-3.0+",
+            "name": "GNU Lesser General Public License v3.0 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-3.0+.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LGPL-3-0-only",
+            "id": "LGPL-3.0-only",
+            "name": "GNU Lesser General Public License v3.0 only",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-3.0-only.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "LGPL-3-0-or-later",
+            "id": "LGPL-3.0-or-later",
+            "name": "GNU Lesser General Public License v3.0 or later",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/LGPL-3.0-or-later.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "Motosoto",
+            "id": "Motosoto",
+            "name": "Motosoto License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/Motosoto.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "MS-RL",
+            "id": "MS-RL",
+            "name": "Microsoft Reciprocal License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/MS-RL.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "OCCT-PL",
+            "id": "OCCT-PL",
+            "name": "Open CASCADE Technology Public License",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/OCCT-PL.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": true,
+            "family": "wxWindows",
+            "id": "wxWindows",
+            "name": "wxWindows Library License",
+            "osi": true,
+            "reference": "https://spdx.org/licenses/wxWindows.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "YPL-1-0",
+            "id": "YPL-1.0",
+            "name": "Yahoo! Public License v1.0",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/YPL-1.0.html",
+            "usagePolicy": "deny"
+        },
+        {
+            "annotationRefs": [
+                "FORBIDDEN"
+            ],
+            "deprecated": false,
+            "family": "YPL-1-1",
+            "id": "YPL-1.1",
+            "name": "Yahoo! Public License v1.1",
+            "osi": false,
+            "reference": "https://spdx.org/licenses/YPL-1.1.html",
+            "usagePolicy": "deny"
+        }
+    ]
+}
