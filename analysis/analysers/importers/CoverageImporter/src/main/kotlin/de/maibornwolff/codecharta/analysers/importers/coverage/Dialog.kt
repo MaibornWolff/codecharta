@@ -47,7 +47,7 @@ class Dialog {
             val languageParam = "--language=${language.languageName}"
             val outputFileParam = if (outputFileName.isNotEmpty()) "--output-file=$outputFileName" else null
             val notCompressedParam = if (isCompressed) null else "--not-compressed"
-            val keepLeadingPathsParam = if (keepLeadingPaths) null else "--strip-leading-path"
+            val keepLeadingPathsParam = if (keepLeadingPaths) "--keep-leading-path" else null
 
             return listOfNotNull(
                 reportFile,
