@@ -279,6 +279,25 @@ class CoverageImporterTest {
             .isInstanceOf(FileNotFoundException::class.java)
             .hasMessageContaining("Multiple files matching lcov.info found in directory:")
     }
+
+    @Test
+    fun `should produce same maps independently of the os-specific paths in the report files`() {
+        val reportFromWindowsPaths = executeForOutput(
+            "",
+            arrayOf(
+                "src/test/resources/reports_windows_paths/clover_windows.xml",
+                "--language=clover"
+            )
+        )
+        val reportFromUnixPaths = executeForOutput(
+            "",
+            arrayOf(
+                "src/test/resources/languages/clover/clover.xml",
+                "--language=clover"
+            )
+        )
+        assertThat(reportFromWindowsPaths).isEqualTo(reportFromUnixPaths)
+    }
 }
 
 fun executeForOutput(input: String, args: Array<String> = emptyArray()): String {
