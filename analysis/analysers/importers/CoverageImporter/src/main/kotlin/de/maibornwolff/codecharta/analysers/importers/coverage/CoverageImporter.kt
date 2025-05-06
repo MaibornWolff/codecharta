@@ -65,8 +65,8 @@ class CoverageImporter(
     private var outputFilePath: String? = null
 
     @CommandLine.Option(
-        names = ["-slp", "--strip-leading-path"],
-        description = ["Keep all file paths even those around the whole project"]
+        names = ["-klp", "--keep-leading-paths"],
+        description = ["Keep full file paths, including segments before the project root directory"]
     )
     private var keepLeadingPaths: Boolean = false
 

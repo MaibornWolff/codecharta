@@ -18,12 +18,13 @@ The CoverageImporter generates visualisation data from a coverage report generat
 
 ## Supported Coverage Report Languages/Formats
 
-| Language                | Command                                                 | Default Report File    |
+| Language or Format       | Command                                                 | Default Report File    |
 |-------------------------|---------------------------------------------------------|------------------------|
 | JavaScript / TypeScript | `javascript/typescript, javascript, typescript, js, ts` | lcov.info              |
 | Java                    | `java`                                                  | jacoco.xml             |
 | C#                      | `csharp, dotnet`                                        | coverage.cobertura.xml |
-| PHP                     | `php`                                                   | index.xml           |
+| PHP                     | `php`                                                   | index.xml              |
+| Clover Report Format    | `clover, clover.xml`                                    | clover.xml             |
 
 ## Usage and Parameters
 
@@ -34,9 +35,10 @@ The CoverageImporter generates visualisation data from a coverage report generat
 | `-h, --help`                         | displays help and exits                                                                                                                  |
 | `-nc, --not-compressed`              | save uncompressed output File                                                                                                            |
 | `-o, --output-file=<outputFilePath>` | output File (or empty for stdout)                                                                                                        |
+| `-klp, --keep-leading-paths`         | Keep full file paths, including segments before the project root directory                                                               |
 
 ```
-Usage: ccsh coverageimport <pathToReportFile> [--language] [-h] [-nc] [-o=<outputFile>]...
+Usage: ccsh coverageimport <pathToReportFile> [--language] [-h] [-nc] [-klp] [-o=<outputFile>]...
 ```
 
 ## Example
