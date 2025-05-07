@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
 import org.w3c.dom.Document
+import org.w3c.dom.Element
 import org.xml.sax.InputSource
 import java.io.File
 import java.io.FileInputStream
@@ -33,6 +34,36 @@ interface ImporterStrategy {
             Math.round(percentage * 100) / 100.0
         } else {
             100.0
+        }
+    }
+
+    fun processXMLReport(
+        reportFile: File,
+        projectBuilder: ProjectBuilder,
+        error: PrintStream,
+        elementTag: String,
+        elementProcessor: (Element, ProjectBuilder) -> Unit
+    ) {
+        try {
+            val document: Document = parseXML(reportFile.absolutePath)
+
+            val fileElements = document.getElementsByTagName(elementTag)
+
+            if (fileElements.length == 0) {
+                error.println("The coverage report file does not contain any $elementTag elements.")
+                return
+            }
+            totalTrackingItems = fileElements.length.toLong()
+            updateProgress(0)
+
+            for (fileIndex in 0 until fileElements.length) {
+                val fileElement = fileElements.item(fileIndex) as Element
+                elementProcessor(fileElement, projectBuilder)
+                updateProgress(fileIndex.toLong() + 1)
+            }
+        } catch (e: Exception) {
+            error.println("Error while parsing XML file: ${e.message}")
+            return
         }
     }
 
@@ -65,7 +96,6 @@ interface ImporterStrategy {
         while (newRoot.children.isNotEmpty() && newRoot.children.size == 1 && newRoot.children.first().type == NodeType.Folder) {
             newRoot = newRoot.children.first()
         }
-        println("new root is ${newRoot.name}")
         projectBuilder.rootNode.children = newRoot.children
     }
 }

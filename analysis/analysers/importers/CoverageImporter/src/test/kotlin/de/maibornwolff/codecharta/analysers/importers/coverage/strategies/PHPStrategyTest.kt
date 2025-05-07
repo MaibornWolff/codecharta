@@ -50,7 +50,7 @@ class PHPStrategyTest {
         PHPStrategy().addNodesToProjectBuilder(File(noFilesReportFilePath), projectBuilder, PrintStream(errorStreamContent))
 
         assertThat(projectBuilder.rootNode.toString()).isEqualTo(expectedRootNode.toString())
-        assertThat(errorStreamContent.toString()).contains("The coverage report file does not contain any files.")
+        assertThat(errorStreamContent.toString()).contains("The coverage report file does not contain any file elements.")
     }
 
     @Test

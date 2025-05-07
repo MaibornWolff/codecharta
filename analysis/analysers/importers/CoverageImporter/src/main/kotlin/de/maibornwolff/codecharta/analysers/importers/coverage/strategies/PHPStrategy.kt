@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
-import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
 import java.io.PrintStream
@@ -18,27 +17,8 @@ class PHPStrategy : ImporterStrategy {
     override val parsingUnit: ParsingUnit = ParsingUnit.Files
 
     override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream, keepFullPaths: Boolean) {
-        try {
-            val document: Document = parseXML(coverageFile.absolutePath)
-
-            val fileElements = document.getElementsByTagName("file")
-
-            if (fileElements.length == 0) {
-                error.println("The coverage report file does not contain any files.")
-                return
-            }
-            totalTrackingItems = fileElements.length.toLong()
-            updateProgress(0)
-
-            for (fileIndex in 0 until fileElements.length) {
-                val fileElement = fileElements.item(fileIndex) as Element
-                processFileElement(fileElement, projectBuilder)
-                updateProgress(fileIndex.toLong() + 1)
-            }
-        } catch (e: Exception) {
-            error.println("Error while parsing XML file: ${e.message}")
-            return
-        }
+        processXMLReport(coverageFile, projectBuilder, error, "file") { element, builder -> processFileElement(element, builder) }
+        if (!keepFullPaths) removeExtraNodesAroundProject(projectBuilder)
     }
 
     private fun processFileElement(fileElement: Element, projectBuilder: ProjectBuilder) {
