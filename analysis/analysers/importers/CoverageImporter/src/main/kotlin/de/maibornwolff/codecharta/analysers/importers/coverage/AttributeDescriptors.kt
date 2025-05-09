@@ -74,17 +74,17 @@ enum class CoverageAttributes(
     )
 }
 
-internal fun getAttributeDescriptors(language: Language? = null): Map<String, AttributeDescriptor> {
-    if (language == null) {
+internal fun getAttributeDescriptors(format: Format? = null): Map<String, AttributeDescriptor> {
+    if (format == null) {
         return CoverageAttributes.entries.associateBy({ it.attributeName }, { it.attributeDescriptor })
     }
 
-    return language.coverageAttributes.associateBy({ it.attributeName }, { it.attributeDescriptor })
+    return format.coverageAttributes.associateBy({ it.attributeName }, { it.attributeDescriptor })
 }
 
-internal fun getAttributeTypes(language: Language): AttributeTypes {
+internal fun getAttributeTypes(format: Format): AttributeTypes {
     val attributeTypes: MutableMap<String, AttributeType> =
-        language.coverageAttributes.associateBy(
+        format.coverageAttributes.associateBy(
             { it.attributeName },
             { it.attributeType }
         ) as MutableMap<String, AttributeType>

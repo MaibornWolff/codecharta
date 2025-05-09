@@ -13,17 +13,17 @@ import java.util.Locale
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectAnalyserArgs(session: Session): List<String> {
-            val languageChoice: String = session.promptList(
-                message = "Specify the language of the coverage report",
-                choices = getLanguageChoices(),
+            val formatChoice: String = session.promptList(
+                message = "Specify the format of the coverage report",
+                choices = getFormatNames(),
                 onInputReady = testCallback()
             ).lowercase(Locale.getDefault())
 
-            val language = getLanguageForLanguageChoice(languageChoice)
+            val format = getFormatByName(formatChoice)
 
             val reportFile: String = session.promptDefaultFileFolderInput(
                 inputType = InputType.FOLDER_AND_FILE,
-                fileExtensionList = language.fileExtensions,
+                fileExtensionList = listOf(format.fileExtension),
                 onInputReady = testCallback()
             )
 
@@ -44,14 +44,14 @@ class Dialog {
                 onInputReady = testCallback()
             )
 
-            val languageParam = "--language=${language.languageName}"
+            val formatParam = "--format=${format.formatName}"
             val outputFileParam = if (outputFileName.isNotEmpty()) "--output-file=$outputFileName" else null
             val notCompressedParam = if (isCompressed) null else "--not-compressed"
             val keepLeadingPathsParam = if (keepLeadingPaths) "--keep-leading-paths" else null
 
             return listOfNotNull(
                 reportFile,
-                languageParam,
+                formatParam,
                 outputFileParam,
                 notCompressedParam,
                 keepLeadingPathsParam
