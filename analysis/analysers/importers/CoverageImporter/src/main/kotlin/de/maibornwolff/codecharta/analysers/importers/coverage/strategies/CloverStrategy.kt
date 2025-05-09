@@ -11,7 +11,7 @@ import org.w3c.dom.Element
 import java.io.File
 import java.io.PrintStream
 
-class CloverXMLStrategy : ImporterStrategy {
+class CloverStrategy : ImporterStrategy {
     override val progressTracker: ProgressTracker = ProgressTracker()
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Files

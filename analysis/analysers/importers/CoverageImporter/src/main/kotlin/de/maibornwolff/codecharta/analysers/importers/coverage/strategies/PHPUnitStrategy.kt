@@ -11,7 +11,7 @@ import org.w3c.dom.Element
 import java.io.File
 import java.io.PrintStream
 
-class PHPStrategy : ImporterStrategy {
+class PHPUnitStrategy : ImporterStrategy {
     override val progressTracker: ProgressTracker = ProgressTracker()
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Files
@@ -30,16 +30,13 @@ class PHPStrategy : ImporterStrategy {
     private fun createFileNode(fileElement: Element): MutableNode {
         val fileName = fileElement.getAttribute("name")
         val linesForFile = fileElement.getElementsByTagName("lines")
-        if (linesForFile.length == 0) {
-            throw IllegalStateException(
-                "No line-coverage information was found for the $fileName file! Please ensure the xml file is correctly formatted."
-            )
+        require(linesForFile.length != 0) {
+            "No line-coverage information was found for the $fileName file! Please ensure the xml file is correctly formatted."
         }
-        if (linesForFile.length > 1) {
-            throw IllegalStateException(
-                "More than one line-coverage was found for a file! Please ensure the xml file is in the default output format of phpunit."
-            )
+        require(linesForFile.length == 1) {
+            "More than one line-coverage was found for a file! Please ensure the xml file is in the default output format of phpunit."
         }
+
         val lineReportForFile = linesForFile.item(0) as Element
         val lineCoverage = lineReportForFile.getAttribute("percent").toDouble()
 
