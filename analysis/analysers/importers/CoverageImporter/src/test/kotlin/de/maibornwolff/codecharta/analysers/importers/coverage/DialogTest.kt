@@ -35,7 +35,7 @@ class DialogTest {
                 format.formatName,
                 Format.entries.indexOf(format),
                 // ensure this default report file exists, otherwise the test will not complete and run into timeout
-                "$testResourceBaseFolder/${format.formatName}/${format.defaultReportFileName}",
+                "$testResourceBaseFolder/${format.formatName.lowercase()}/${format.defaultReportFileName}",
                 "coverage_${format.formatName}_out.cc.json"
             )
         }
