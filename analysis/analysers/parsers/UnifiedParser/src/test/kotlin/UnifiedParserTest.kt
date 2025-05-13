@@ -1,4 +1,4 @@
-import de.maibornwolff.codecharta.analysers.parsers.smart.SmartParser
+import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -11,7 +11,7 @@ import java.io.File
 import java.io.PrintStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SmartParserTest {
+class UnifiedParserTest {
     private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
 
@@ -26,7 +26,7 @@ class SmartParserTest {
         val outputStream = ByteArrayOutputStream()
         val printStream = PrintStream(outputStream)
         val errorStream = System.err
-        val configuredParser = SmartParser(inputStream, printStream, errorStream)
+        val configuredParser = UnifiedParser(inputStream, printStream, errorStream)
         CommandLine(configuredParser).execute(*args)
         return outputStream.toString()
     }
