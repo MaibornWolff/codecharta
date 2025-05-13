@@ -29,4 +29,4 @@ include(
 
 rootProject.name = "codecharta"
 include("analysers")
-include("analysers:parsers:SmartParser")
+include("analysers:parsers:UnifiedParser")

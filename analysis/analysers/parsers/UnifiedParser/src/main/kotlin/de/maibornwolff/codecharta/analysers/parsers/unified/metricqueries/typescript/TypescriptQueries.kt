@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.smart.metricqueries.typescript
+package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.typescript
 
 class TypescriptQueries {
 

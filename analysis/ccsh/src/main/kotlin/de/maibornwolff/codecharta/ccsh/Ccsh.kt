@@ -16,7 +16,7 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.SourceCodeParser
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
-import de.maibornwolff.codecharta.analysers.parsers.smart.SmartParser
+import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
 import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.ccsh.analyser.AnalyserService
@@ -54,7 +54,7 @@ import kotlin.system.exitProcess
         CodeMaatImporter::class,
         TokeiImporter::class,
         RawTextParser::class,
-        SmartParser::class
+        UnifiedParser::class
     ],
     versionProvider = Ccsh.ManifestVersionProvider::class,
     footer = [CodeChartaConstants.GENERIC_FOOTER]
