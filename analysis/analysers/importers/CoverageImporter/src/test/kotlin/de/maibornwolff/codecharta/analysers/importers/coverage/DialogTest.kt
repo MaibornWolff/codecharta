@@ -21,22 +21,22 @@ import picocli.CommandLine
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DialogTest {
     private val outputFileName = "coverage_out.cc.json"
-    private val testResourceBaseFolder = "src/test/resources/languages"
-    private val reportFileName = "$testResourceBaseFolder/javascript/minimal_lcov.info"
+    private val testResourceBaseFolder = "src/test/resources/formats"
+    private val reportFileName = "$testResourceBaseFolder/lcov/minimal_lcov.info"
 
     @BeforeEach
     fun setup() {
         mockkObject(Dialog)
     }
 
-    private fun languageChoicesProvider(): List<Arguments> {
-        return Language.entries.map { language ->
+    private fun formatChoicesProvider(): List<Arguments> {
+        return Format.entries.map { format ->
             Arguments.of(
-                language.languageName,
-                Language.entries.indexOf(language),
+                format.formatName,
+                Format.entries.indexOf(format),
                 // ensure this default report file exists, otherwise the test will not complete and run into timeout
-                "$testResourceBaseFolder/${language.languageName}/${language.defaultReportFileName}",
-                "coverage_${language.languageName}_out.cc.json"
+                "$testResourceBaseFolder/${format.formatName.lowercase()}/${format.defaultReportFileName}",
+                "coverage_${format.formatName}_out.cc.json"
             )
         }
     }
@@ -44,7 +44,7 @@ class DialogTest {
     @Test
     fun `should output correct arguments when valid input is provided`() {
         testSession { terminal ->
-            val languageCallback: suspend RunScope.() -> Unit = {
+            val formatCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
@@ -64,7 +64,7 @@ class DialogTest {
             }
 
             every { Dialog.testCallback() } returnsMany listOf(
-                languageCallback,
+                formatCallback,
                 reportFileCallback,
                 outputFileCallback,
                 compressCallback
@@ -76,7 +76,7 @@ class DialogTest {
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
             assertThat(parseResult.matchedPositionals()[0].getValue<String>()).isEqualTo(reportFileName)
-            assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo("javascript")
+            assertThat(parseResult.matchedOption("format").getValue<String>()).isEqualTo("lcov")
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isFalse()
         }
@@ -85,7 +85,7 @@ class DialogTest {
     @Test
     fun `should output correct arguments when output file is not provided`() {
         testSession { terminal ->
-            val languageCallback: suspend RunScope.() -> Unit = {
+            val formatCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
@@ -99,7 +99,7 @@ class DialogTest {
             }
 
             every { Dialog.testCallback() } returnsMany listOf(
-                languageCallback,
+                formatCallback,
                 reportFileCallback,
                 outputFileCallback
             )
@@ -110,23 +110,23 @@ class DialogTest {
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
             assertThat(parseResult.matchedPositionals()[0].getValue<String>()).isEqualTo(reportFileName)
-            assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo("javascript")
+            assertThat(parseResult.matchedOption("format").getValue<String>()).isEqualTo("lcov")
             assertThat(parseResult.matchedOption("output-file")).isNull()
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
     }
 
     @ParameterizedTest
-    @MethodSource("languageChoicesProvider")
-    fun `should handle different supported languages correctly`(
-        languageName: String,
-        languageIndex: Int,
+    @MethodSource("formatChoicesProvider")
+    fun `should handle different supported formats correctly`(
+        formatName: String,
+        formatIndex: Int,
         expectedReportFile: String,
         expectedOutputFile: String
     ) {
         testSession { terminal ->
-            val languageCallback: suspend RunScope.() -> Unit = {
-                repeat(languageIndex) {
+            val formatCallback: suspend RunScope.() -> Unit = {
+                repeat(formatIndex) {
                     terminal.press(Keys.DOWN)
                 }
                 terminal.press(Keys.ENTER)
@@ -147,7 +147,7 @@ class DialogTest {
             }
 
             every { Dialog.testCallback() } returnsMany listOf(
-                languageCallback,
+                formatCallback,
                 reportFileCallback,
                 outputFileCallback,
                 compressCallback
@@ -159,7 +159,7 @@ class DialogTest {
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
             assertThat(parseResult.matchedPositionals()[0].getValue<String>()).isEqualTo(expectedReportFile)
-            assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo(languageName)
+            assertThat(parseResult.matchedOption("format").getValue<String>()).isEqualTo(formatName)
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(expectedOutputFile)
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }
@@ -171,7 +171,7 @@ class DialogTest {
         val validReportFile = reportFileName
 
         testSession { terminal ->
-            val languageCallback: suspend RunScope.() -> Unit = {
+            val formatCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
@@ -197,7 +197,7 @@ class DialogTest {
             }
 
             every { Dialog.testCallback() } returnsMany listOf(
-                languageCallback,
+                formatCallback,
                 reportFileCallback,
                 outputFileCallback,
                 compressCallback
@@ -209,7 +209,7 @@ class DialogTest {
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
             assertThat(parseResult.matchedPositionals()[0].getValue<String>()).isEqualTo(validReportFile)
-            assertThat(parseResult.matchedOption("language").getValue<String>()).isEqualTo("javascript")
+            assertThat(parseResult.matchedOption("format").getValue<String>()).isEqualTo("lcov")
             assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
         }

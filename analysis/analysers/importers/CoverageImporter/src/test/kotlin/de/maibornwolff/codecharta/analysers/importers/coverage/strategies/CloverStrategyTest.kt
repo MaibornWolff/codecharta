@@ -10,15 +10,15 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-class CloverXMLStrategyTest {
-    private val testReportFilePath = "src/test/resources/languages/clover/clover.xml"
+class CloverStrategyTest {
+    private val testReportFilePath = "src/test/resources/formats/clover/clover.xml"
 
     @Test
     fun `should correctly import coverage report and build project structure`() {
-        val expectedOutputPath = "src/test/resources/languages/clover/coverage.cc.json"
+        val expectedOutputPath = "src/test/resources/formats/clover/coverage.cc.json"
         val projectBuilder = ProjectBuilder()
 
-        CloverXMLStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err)
+        CloverStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err)
 
         val project = projectBuilder.build()
         val expectedProject = ProjectDeserializer.deserializeProject(File(expectedOutputPath).inputStream())
@@ -29,10 +29,10 @@ class CloverXMLStrategyTest {
 
     @Test
     fun `should keep folders surrounding the project when the flag is set`() {
-        val expectedOutputPath = "src/test/resources/languages/clover/coverage_full_paths.cc.json"
+        val expectedOutputPath = "src/test/resources/formats/clover/coverage_full_paths.cc.json"
         val projectBuilder = ProjectBuilder()
 
-        CloverXMLStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err, true)
+        CloverStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err, true)
 
         val project = projectBuilder.build()
         val expectedProject = ProjectDeserializer.deserializeProject(File(expectedOutputPath).inputStream())
@@ -43,12 +43,12 @@ class CloverXMLStrategyTest {
 
     @Test
     fun `should handle empty report files gracefully and print error`() {
-        val emptyReportFilePath = "src/test/resources/languages/clover/empty_clover.xml"
+        val emptyReportFilePath = "src/test/resources/formats/clover/empty_clover.xml"
         val expectedRootNode = MutableNode("root", NodeType.Folder)
         val projectBuilder = ProjectBuilder()
         val errorStreamContent = ByteArrayOutputStream()
 
-        CloverXMLStrategy().addNodesToProjectBuilder(File(emptyReportFilePath), projectBuilder, PrintStream(errorStreamContent))
+        CloverStrategy().addNodesToProjectBuilder(File(emptyReportFilePath), projectBuilder, PrintStream(errorStreamContent))
 
         assertThat(projectBuilder.rootNode.toString()).isEqualTo(expectedRootNode.toString())
         assertThat(errorStreamContent.toString()).contains("Error while parsing XML file:")
@@ -56,14 +56,14 @@ class CloverXMLStrategyTest {
 
     @Test
     fun `should handle report without packages gracefully and print error`() {
-        val noPackagesReportFilePath = "src/test/resources/languages/clover/no_files_clover.xml"
+        val noPackagesReportFilePath = "src/test/resources/formats/clover/no_files_clover.xml"
         val expectedRootNode = MutableNode("root", NodeType.Folder)
         val projectBuilder = ProjectBuilder()
         val errorStreamContent = ByteArrayOutputStream()
 
-        CloverXMLStrategy().addNodesToProjectBuilder(File(noPackagesReportFilePath), projectBuilder, PrintStream(errorStreamContent))
+        CloverStrategy().addNodesToProjectBuilder(File(noPackagesReportFilePath), projectBuilder, PrintStream(errorStreamContent))
 
         assertThat(projectBuilder.rootNode.toString()).isEqualTo(expectedRootNode.toString())
-        assertThat(errorStreamContent.toString()).contains("The coverage report file does not contain any files.")
+        assertThat(errorStreamContent.toString()).contains("The coverage report file does not contain any file elements.")
     }
 }

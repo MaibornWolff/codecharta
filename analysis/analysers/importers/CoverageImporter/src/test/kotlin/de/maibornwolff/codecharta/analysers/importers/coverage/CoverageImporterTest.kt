@@ -16,7 +16,7 @@ import java.io.FileNotFoundException
 import java.io.PrintStream
 
 class CoverageImporterTest {
-    private val reportFilePath = "src/test/resources/languages/javascript/minimal_lcov.info"
+    private val reportFilePath = "src/test/resources/formats/lcov/minimal_lcov.info"
 
     @AfterEach
     fun afterTest() {
@@ -29,7 +29,7 @@ class CoverageImporterTest {
             "",
             arrayOf(
                 reportFilePath,
-                "--language=javascript"
+                "--format=lcov"
             )
         )
 
@@ -37,7 +37,7 @@ class CoverageImporterTest {
     }
 
     @Test
-    fun `should throw exception if no language is provided`() {
+    fun `should throw exception if no format is provided`() {
         val errContent = ByteArrayOutputStream()
         val originalErr = System.err
 
@@ -45,7 +45,7 @@ class CoverageImporterTest {
         CommandLine(CoverageImporter()).execute()
         System.setErr(originalErr)
 
-        assertThat(errContent.toString()).startsWith("Missing required option: '--language=<language>'")
+        assertThat(errContent.toString()).startsWith("Missing required option: '--format=<reportFormat>'")
     }
 
     @Test
@@ -56,7 +56,7 @@ class CoverageImporterTest {
         val originalErr = System.err
 
         System.setErr(PrintStream(errContent))
-        CommandLine(CoverageImporter()).execute(notExistingFile.path, "--language=javascript")
+        CommandLine(CoverageImporter()).execute(notExistingFile.path, "--format=lcov")
         System.setErr(originalErr)
 
         assertThat(errContent.toString()).startsWith("java.io.FileNotFoundException: File not found: ${notExistingFile.path}")
@@ -71,7 +71,7 @@ class CoverageImporterTest {
         val originalErr = System.err
 
         System.setErr(PrintStream(errContent))
-        CommandLine(CoverageImporter()).execute(directory.path, "--language=javascript")
+        CommandLine(CoverageImporter()).execute(directory.path, "--format=lcov")
         System.setErr(originalErr)
 
         assertThat(errContent.toString()).contains("No files matching lcov.info found in directory:")
@@ -83,7 +83,7 @@ class CoverageImporterTest {
         val originalErr = System.err
 
         System.setErr(PrintStream(errContent))
-        CommandLine(CoverageImporter()).execute("--language=javascript")
+        CommandLine(CoverageImporter()).execute("--format=lcov")
         System.setErr(originalErr)
 
         assertThat(errContent.toString()).contains("Multiple files matching lcov.info found in directory:")
@@ -95,7 +95,7 @@ class CoverageImporterTest {
             "",
             arrayOf(
                 reportFilePath,
-                "--language=javascript"
+                "--format=lcov"
             )
         )
 
@@ -103,15 +103,15 @@ class CoverageImporterTest {
     }
 
     @Test
-    fun `should throw error when an illegal language is provided`() {
+    fun `should throw error when an illegal format is provided`() {
         val errContent = ByteArrayOutputStream()
         val originalErr = System.err
 
         System.setErr(PrintStream(errContent))
-        CommandLine(CoverageImporter()).execute("--language=illegal_language")
+        CommandLine(CoverageImporter()).execute("--format=illegal_format")
         System.setErr(originalErr)
 
-        assertThat(errContent.toString()).startsWith("java.lang.IllegalArgumentException: Unsupported language: illegal_language")
+        assertThat(errContent.toString()).startsWith("java.lang.IllegalArgumentException: Unsupported format found: illegal_format")
     }
 
     @Test
@@ -120,7 +120,7 @@ class CoverageImporterTest {
             "",
             arrayOf(
                 reportFilePath,
-                "--language=js",
+                "--format=lcov",
                 "-o=src/test/resources/output",
                 "--not-compressed"
             )
@@ -137,7 +137,7 @@ class CoverageImporterTest {
             "",
             arrayOf(
                 reportFilePath,
-                "--language=js",
+                "--format=lcov",
                 "-o=src/test/resources/output"
             )
         )
@@ -149,14 +149,14 @@ class CoverageImporterTest {
 
     @Test
     fun `should handle piped input`() {
-        val alreadyImportedCoverage = "src/test/resources/languages/javascript/coverage_full_paths.cc.json"
-        val expectedOutputFileName = "src/test/resources/languages/javascript/expected_piped_output.cc.json"
+        val alreadyImportedCoverage = "src/test/resources/formats/lcov/coverage_full_paths.cc.json"
+        val expectedOutputFileName = "src/test/resources/formats/lcov/expected_piped_output.cc.json"
         val expectedOutput = File(expectedOutputFileName).bufferedReader().readLines()
             .joinToString(separator = "\n") { it }
 
         val input = File(alreadyImportedCoverage).bufferedReader().readLines()
             .joinToString(separator = "\n") { it }
-        val cliResult = executeForOutput(input, arrayOf(reportFilePath, "-l=js", "--keep-leading-paths"))
+        val cliResult = executeForOutput(input, arrayOf(reportFilePath, "-f=lcov", "--keep-leading-paths"))
 
         assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\"", "app.config.ts", "codeCharta.api.model.ts"))
         assertThat(JSONParser.parseJSON(cliResult)).usingRecursiveComparison().isEqualTo(JSONParser.parseJSON(expectedOutput))
@@ -168,7 +168,7 @@ class CoverageImporterTest {
             "",
             arrayOf(
                 reportFilePath,
-                "--language=typescript"
+                "--format=lcov"
             )
         )
 
@@ -189,7 +189,7 @@ class CoverageImporterTest {
             "",
             arrayOf(
                 reportFilePath,
-                "--language=typescript"
+                "--format=lcov"
             )
         )
 
@@ -208,8 +208,8 @@ class CoverageImporterTest {
         val cliResult = executeForOutput(
             "",
             arrayOf(
-                "src/test/resources/languages/javascript/empty_lcov.info",
-                "--language=javascript"
+                "src/test/resources/formats/lcov/empty_lcov.info",
+                "--format=lcov"
             )
         )
 
@@ -218,28 +218,28 @@ class CoverageImporterTest {
 
     @Test
     fun `should find the default report file`() {
-        val directory = File("src/test/resources/languages/javascript/nested")
-        val expectedFile = File("src/test/resources/languages/javascript/nested/lcov.info")
+        val directory = File("src/test/resources/formats/lcov/nested")
+        val expectedFile = File("src/test/resources/formats/lcov/nested/lcov.info")
 
-        val result = CoverageImporter().getReportFileFromString(directory.path, Language.JAVASCRIPT)
+        val result = CoverageImporter().getReportFileFromString(directory.path, Format.LCOV)
 
         assertThat(result).isEqualTo(expectedFile)
     }
 
     @Test
     fun `should return file if input is a file matching the default file`() {
-        val file = File("src/test/resources/languages/javascript/lcov.info")
+        val file = File("src/test/resources/formats/lcov/lcov.info")
 
-        val result = CoverageImporter().getReportFileFromString(file.path, Language.JAVASCRIPT)
+        val result = CoverageImporter().getReportFileFromString(file.path, Format.LCOV)
 
         assertThat(result).isEqualTo(file)
     }
 
     @Test
     fun `should return file if input is a file with correct extension`() {
-        val file = File("src/test/resources/languages/javascript/minimal_lcov.info")
+        val file = File("src/test/resources/formats/lcov/minimal_lcov.info")
 
-        val result = CoverageImporter().getReportFileFromString(file.path, Language.JAVASCRIPT)
+        val result = CoverageImporter().getReportFileFromString(file.path, Format.LCOV)
 
         assertThat(result).isEqualTo(file)
     }
@@ -248,34 +248,34 @@ class CoverageImporterTest {
     fun `should throw no file found if there is no matching file`() {
         val directory = File("src/test/kotlin")
 
-        assertThatThrownBy { CoverageImporter().getReportFileFromString(directory.path, Language.JAVASCRIPT) }
+        assertThatThrownBy { CoverageImporter().getReportFileFromString(directory.path, Format.LCOV) }
             .isInstanceOf(FileNotFoundException::class.java)
             .hasMessageContaining("No files matching lcov.info found in directory:")
     }
 
     @Test
     fun `should throw file not found if file does not exist`() {
-        val file = File("src/test/resources/languages/javascript/non_existent_file.info")
+        val file = File("src/test/resources/formats/lcov/non_existent_file.info")
 
-        assertThatThrownBy { CoverageImporter().getReportFileFromString(file.path, Language.JAVASCRIPT) }
+        assertThatThrownBy { CoverageImporter().getReportFileFromString(file.path, Format.LCOV) }
             .isInstanceOf(FileNotFoundException::class.java)
             .hasMessageContaining("File not found")
     }
 
     @Test
     fun `should throw no matching file extension if file does not match any known file extension`() {
-        val file = File("src/test/resources/languages/javascript/invalid_existing_file.txt")
+        val file = File("src/test/resources/formats/lcov/invalid_existing_file.txt")
 
-        assertThatThrownBy { CoverageImporter().getReportFileFromString(file.path, Language.JAVASCRIPT) }
+        assertThatThrownBy { CoverageImporter().getReportFileFromString(file.path, Format.LCOV) }
             .isInstanceOf(FileNotFoundException::class.java)
             .hasMessageContaining("does not match any known file extension")
     }
 
     @Test
     fun `should throw multiple files found if multiple files match the default file`() {
-        val directory = File("src/test/resources/languages/javascript")
+        val directory = File("src/test/resources/formats/lcov")
 
-        assertThatThrownBy { CoverageImporter().getReportFileFromString(directory.path, Language.JAVASCRIPT) }
+        assertThatThrownBy { CoverageImporter().getReportFileFromString(directory.path, Format.LCOV) }
             .isInstanceOf(FileNotFoundException::class.java)
             .hasMessageContaining("Multiple files matching lcov.info found in directory:")
     }

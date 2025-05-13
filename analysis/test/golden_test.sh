@@ -143,44 +143,47 @@ check_sourcecodeparser() {
 }
 
 check_coverageimporter_javascript() {
-    echo " ---- expect CoverageImporter to produce valid cc.json file for javascript"
-    ACTUAL_JAVASCRIPT_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_javascript.cc.json"
-    "${CCSH}" coverageimport "${DATA}/coverageReports/lcov.info" --language=javascript -o "${ACTUAL_JAVASCRIPT_COVERAGE_JSON}" -nc
-    validate "${ACTUAL_JAVASCRIPT_COVERAGE_JSON}"
+    echo " ---- expect CoverageImporter to produce valid cc.json file for lcov"
+    ACTUAL_LCOV_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_lcov.cc.json"
+    "${CCSH}" coverageimport "${DATA}/coverageReports/lcov.info" --format=lcov -o "${ACTUAL_LCOV_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_LCOV_COVERAGE_JSON}"
 }
 
 check_coverageimporter_java() {
-    echo " ---- expect CoverageImporter to produce valid cc.json file for java"
-    ACTUAL_JAVA_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_java.cc.json"
-    "${CCSH}" coverageimport "${DATA}/coverageReports/jacoco.xml" --language=java -o "${ACTUAL_JAVA_COVERAGE_JSON}" -nc
-    validate "${ACTUAL_JAVA_COVERAGE_JSON}"
+    echo " ---- expect CoverageImporter to produce valid cc.json file for jacoco"
+    ACTUAL_JACOCO_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_jacoco.cc.json"
+    "${CCSH}" coverageimport "${DATA}/coverageReports/jacoco.xml" --format=jacoco -o "${ACTUAL_JACOCO_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_JACOCO_COVERAGE_JSON}"
 }
 
 check_coverageimporter_clover() {
-    echo " ---- expect CoverageImporter to produce valid cc.json file for clover.xml format"
+    echo " ---- expect CoverageImporter to produce valid cc.json file for clover"
     ACTUAL_CLOVER_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_clover.cc.json"
-    "${CCSH}" coverageimport "${DATA}/coverageReports/clover.xml" --language=clover -o "${ACTUAL_CLOVER_COVERAGE_JSON}" -nc
+    "${CCSH}" coverageimport "${DATA}/coverageReports/clover.xml" --format=clover -o "${ACTUAL_CLOVER_COVERAGE_JSON}" -nc
     validate "${ACTUAL_CLOVER_COVERAGE_JSON}"
 }
 
-check_coverageimporter_csharp() {
-    echo " ---- expect CoverageImporter to produce valid cc.json file for csharp"
-    ACTUAL_CSHARP_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_csharp.cc.json"
-    "${CCSH}" coverageimport "${DATA}/coverageReports/coverage.cobertura.xml" --language=csharp -o "${ACTUAL_CSHARP_COVERAGE_JSON}" -nc
-    validate "${ACTUAL_CSHARP_COVERAGE_JSON}"
+check_coverageimporter_cobertura() {
+    echo " ---- expect CoverageImporter to produce valid cc.json file for cobertura"
+    ACTUAL_COBERTURA_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_cobertura.cc.json"
+    "${CCSH}" coverageimport "${DATA}/coverageReports/coverage.cobertura.xml" --format=cobertura -o "${ACTUAL_COBERTURA_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_COBERTURA_COVERAGE_JSON}"
 }
 
-check_codemaatimporter_php() {
-    echo " ---- expect CoverageImporter to produce valid cc.json file for php"
-    ACTUAL_PHP_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_php.cc.json"
-    "${CCSH}" coverageimport "${DATA}/coverageReports/phpunit.xml" --language=php -o "${ACTUAL_PHP_COVERAGE_JSON}" -nc
-    validate "${ACTUAL_PHP_COVERAGE_JSON}"
+check_codemaatimporter_phpunit() {
+    echo " ---- expect CoverageImporter to produce valid cc.json file for phpunit"
+    ACTUAL_PHPUNIT_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_phpunit.cc.json"
+    "${CCSH}" coverageimport "${DATA}/coverageReports/phpunit.xml" --format=phpunit -o "${ACTUAL_PHPUNIT_COVERAGE_JSON}" -nc
+    validate "${ACTUAL_PHPUNIT_COVERAGE_JSON}"
 }
 
 check_coverageimporter() {
     echo " -- expect CoverageImporter to produce valid cc.json files for all supported languages"
     check_coverageimporter_javascript
     check_coverageimporter_java
+    check_coverageimporter_clover
+    check_coverageimporter_cobertura
+    check_codemaatimporter_phpunit
 }
 
 check_svnlog() {

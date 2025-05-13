@@ -18,7 +18,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
 import java.io.PrintWriter
-import java.util.Locale
 
 @CommandLine.Command(
     name = CoverageImporter.NAME,
@@ -31,16 +30,16 @@ class CoverageImporter(
     private val error: PrintStream = System.err
 ) : AnalyserInterface, AttributeGenerator {
     @CommandLine.Option(
-        names = ["-l", "--language"],
-        description = ["Specify the language of the coverage report (e.g., javascript, typescript, js, ts)"],
+        names = ["-f", "--format"],
+        description = ["Specify the format of the coverage report (e.g.jacoco, lcov, clover, etc.)"],
         required = true
     )
-    private var language: String = "Not specified"
+    private var reportFormat: String = "Not specified"
 
     @CommandLine.Parameters(
         arity = "0..1",
         paramLabel = "pathToReportFile",
-        description = ["Path to the coverage report file (leave empty for default)"]
+        description = ["Path to the coverage report file (leave empty to scan current directory)"]
     )
     private var reportFileName: String? = null
 
@@ -92,19 +91,15 @@ class CoverageImporter(
     override fun call() {
         logExecutionStartedSyncSignal()
 
-        val languageInput = language.lowercase(Locale.getDefault())
+        val format = getFormatByName(reportFormat)
 
-        require(isLanguageForLanguageInputSupported(languageInput)) { "Unsupported language: $languageInput" }
-
-        val language = getLanguageForLanguageInput(languageInput)
-
-        val reportFile = getReportFileFromString(reportFileName ?: ".", language)
+        val reportFile = getReportFileFromString(reportFileName ?: ".", format)
 
         val projectBuilder = ProjectBuilder()
 
-        language.strategy.addNodesToProjectBuilder(reportFile, projectBuilder, error, keepLeadingPaths)
-        projectBuilder.addAttributeTypes(getAttributeTypes(language))
-        projectBuilder.addAttributeDescriptions(getAttributeDescriptors(language))
+        format.strategy.addNodesToProjectBuilder(reportFile, projectBuilder, error, keepLeadingPaths)
+        projectBuilder.addAttributeTypes(getAttributeTypes(format))
+        projectBuilder.addAttributeDescriptions(getAttributeDescriptors(format))
         var project = projectBuilder.build()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
@@ -126,33 +121,33 @@ class CoverageImporter(
         return getAttributeDescriptors()
     }
 
-    internal fun getReportFileFromString(resourceToSearch: String, language: Language): File {
+    internal fun getReportFileFromString(resourceToSearch: String, format: Format): File {
         val existingFileOrDirectory = getFileFromStringIfExists(resourceToSearch)
             ?: throw FileNotFoundException("File not found: $resourceToSearch")
         if (existingFileOrDirectory.isFile) {
-            if (endsWithAtLeastOne(existingFileOrDirectory.name, language.fileExtensions)) {
+            if (endsWithAtLeastOne(existingFileOrDirectory.name, listOf(format.fileExtension))) {
                 return existingFileOrDirectory
             }
             throw FileNotFoundException(
-                "File: $resourceToSearch does not match any known file extension: ${language.fileExtensions.map { it.extension }}"
+                "File: $resourceToSearch does not match any known file extension: ${format.fileExtension.extension}"
             )
         }
 
         println("Scanning directory `${existingFileOrDirectory.absolutePath}` for matching files.")
 
         val foundFiles = existingFileOrDirectory.walk().asSequence().filter {
-            it.isFile && it.name == language.defaultReportFileName
+            it.isFile && it.name == format.defaultReportFileName
         }.toList()
 
         if (foundFiles.isEmpty()) {
             throw FileNotFoundException(
-                "No files matching ${language.defaultReportFileName} found in directory: ${existingFileOrDirectory.absolutePath}"
+                "No files matching ${format.defaultReportFileName} found in directory: ${existingFileOrDirectory.absolutePath}"
             )
         }
 
         if (foundFiles.size > 1) {
             throw FileNotFoundException(
-                "Multiple files matching ${language.defaultReportFileName} found in directory: ${existingFileOrDirectory.absolutePath}. " +
+                "Multiple files matching ${format.defaultReportFileName} found in directory: ${existingFileOrDirectory.absolutePath}. " +
                     "Please specify only one."
             )
         }

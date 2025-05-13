@@ -7,40 +7,18 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
-import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
 import java.io.PrintStream
 
-class JavaStrategy : ImporterStrategy {
+class JacocoStrategy : ImporterStrategy {
     override val progressTracker: ProgressTracker = ProgressTracker()
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Packages
 
     override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream, keepFullPaths: Boolean) {
-        try {
-            val document: Document = parseXML(coverageFile.absolutePath)
-
-            val packageElements = document.getElementsByTagName("package")
-
-            if (packageElements.length == 0) {
-                error.println("The coverage report file does not contain any package elements.")
-                return
-            }
-            totalTrackingItems = packageElements.length.toLong()
-            updateProgress(0)
-
-            for (packageIndex in 0 until packageElements.length) {
-                val packageElement = packageElements.item(packageIndex) as Element
-                processPackageElement(packageElement, projectBuilder)
-                updateProgress(packageIndex.toLong() + 1)
-            }
-
-            if (!keepFullPaths) removeExtraNodesAroundProject(projectBuilder)
-        } catch (e: Exception) {
-            error.println("Error while parsing XML file: ${e.message}")
-            return
-        }
+        processXMLReport(coverageFile, projectBuilder, error, "package") { element, builder -> processPackageElement(element, builder) }
+        if (!keepFullPaths) removeExtraNodesAroundProject(projectBuilder)
     }
 
     private fun processPackageElement(packageElement: Element, projectBuilder: ProjectBuilder) {
