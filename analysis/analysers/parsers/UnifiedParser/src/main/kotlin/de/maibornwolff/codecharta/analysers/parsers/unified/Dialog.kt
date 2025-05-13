@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.smart
+package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session

@@ -1,10 +1,10 @@
-package de.maibornwolff.codecharta.analysers.parsers.smart
+package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
-import de.maibornwolff.codecharta.analysers.parsers.smart.metriccollectors.TypescriptCollector
-import de.maibornwolff.codecharta.analysers.parsers.smart.metricqueries.typescript.TypescriptQueries
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.typescript.TypescriptQueries
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import java.io.InputStream
@@ -14,11 +14,11 @@ import java.io.File
 import org.treesitter.*
 
 @CommandLine.Command(
-    name = SmartParser.NAME,
-    description = [SmartParser.DESCRIPTION],
+    name = UnifiedParser.NAME,
+    description = [UnifiedParser.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class SmartParser(
+class UnifiedParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
@@ -46,7 +46,7 @@ class SmartParser(
     override val description = DESCRIPTION
 
     companion object {
-        const val NAME = "smartparser"
+        const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
 
         private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
@@ -56,7 +56,7 @@ class SmartParser(
     override fun call(): Unit? {
         //TODO: this function should handle going through the files and call the correct parsers for each file type
 
-        println("calling smartParser...")
+        println("calling UnifiedParser...")
 
         val fileContent = inputFile!!.readText()
         val nodesTree = parseCode(fileContent)

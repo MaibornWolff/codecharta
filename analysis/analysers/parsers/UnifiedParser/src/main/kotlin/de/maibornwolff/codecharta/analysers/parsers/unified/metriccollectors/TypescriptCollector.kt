@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.smart.metriccollectors
+package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
 import org.treesitter.TSNode
 import org.treesitter.TSQuery
