@@ -1,4 +1,6 @@
-import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
+package de.maibornwolff.codecharta.analysers.parsers.unified
+
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.typescript.TypescriptQueries
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -14,7 +16,6 @@ import java.io.PrintStream
 class UnifiedParserTest {
     private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
-
 
     @AfterEach
     fun afterTest() {
@@ -36,12 +37,24 @@ class UnifiedParserTest {
         // given
         val pipedProject = ""
         val inputFilePath = "src/test/resources/typescriptSample.ts"
-        val expectedResultFile = File("src/test/resources/typescriptSample.cc.json") //TODO: change path
+        val expectedResultFile = File("src/test/resources/typescriptSample.cc.json")
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
         assertThat(result).isEqualTo(expectedResultFile)
+    }
+
+    @Test
+    fun `temp test`() {
+        val inputFilePath = "src/"
+
+        val tmp = TypescriptQueries.complexityQuery
+
+        val result = executeForOutput("", arrayOf(inputFilePath))
+
+        println(result)
+        assertThat(false)
     }
 }
