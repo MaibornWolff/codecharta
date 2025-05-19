@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.model
 
-import java.io.File
-
 object PathFactory {
-    fun fromFileSystemPath(path: String, pathSeparator: Char = File.separatorChar): Path {
+    fun fromFileSystemPath(path: String, pathSeparator: Char = '/'): Path {
         return Path(
             path.split(pathSeparator).dropLastWhile {
                 it.isEmpty()

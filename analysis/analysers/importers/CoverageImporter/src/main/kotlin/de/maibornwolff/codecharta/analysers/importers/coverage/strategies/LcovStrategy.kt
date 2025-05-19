@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import java.io.File
 import java.io.PrintStream
 
-class JavaScriptStrategy() : ImporterStrategy {
+class LcovStrategy() : ImporterStrategy {
     override val progressTracker: ProgressTracker = ProgressTracker()
     override var totalTrackingItems: Long = 0
     override val parsingUnit: ParsingUnit = ParsingUnit.Lines
