@@ -18,11 +18,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Coverage Importer now works on coverage report formats instead of languages [#4063](https://github.com/MaibornWolff/codecharta/pull/4063)
+  - Java is replaced with Jacoco
+  - Javascript/Typescript is replaced with LCOV
+- Coverage Importer can now handle both unix and windows paths in report formats [#4055](https://github.com/MaibornWolff/codecharta/pull/4055)
 - Removed Metric Gardener Support [#4004](https://github.com/MaibornWolff/codecharta/pull/4004)
 
 ### Fixed 🐞
 
 - Fix ccsh visually breaking on windows cmd [#4027](https://github.com/MaibornWolff/codecharta/pull/4027)
+- Fix Coverage Importer sometimes producing extra parent folders [#4025](https://github.com/MaibornWolff/codecharta/pull/4025)
 
 ## [1.132.0] - 2025-03-25
 
