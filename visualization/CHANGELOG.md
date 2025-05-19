@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.135.3] - 2025-05-19
+
 ### Fixed 🐞
 
 - Fix folder coloring not working in some browsers (e.g. Arc) [#4066](https://github.com/MaibornWolff/codecharta/pull/4066)
