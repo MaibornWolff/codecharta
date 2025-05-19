@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.133.0] - 2025-05-19
+
 ### Added 🚀
 
 - Add support for multi file input in dialogs [#4030](https://github.com/MaibornWolff/codecharta/pull/4030)
