@@ -89,15 +89,10 @@ class UnifiedParser(
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
-        val filesList = inputFile!!.walk().filter { it.isFile }.toList()
-        filesList.forEach { file -> println(file.toString()) }
-
         val projectBuilder = ProjectBuilder()
 
-        // TODO: call functions here that walk through the input and fill the cc.json
-        //parseInputProject(inputFile!!, projectBuilder)
         val projectScanner = ProjectScanner(inputFile!!, projectBuilder, exclude)
-        projectScanner.traverseInputProject()
+        projectScanner.traverseInputProject(verbose)
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
         var project = projectBuilder.build()
