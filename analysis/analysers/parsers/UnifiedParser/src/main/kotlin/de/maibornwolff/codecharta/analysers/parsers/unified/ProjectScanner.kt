@@ -12,17 +12,19 @@ class ProjectScanner(
     val exclude: List<String> = listOf()
 ) {
 
-    fun traverseInputProject() {
+    fun traverseInputProject(verbose: Boolean) {
         val files = root.walk().filter { it.isFile }.toList()
 
         val excludePatterns = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
         //TODO: sollten wir das launch einbauen wie beim rawTextParser? -> großes projekt testen und laufzeit vergleichen
         files.forEach { file ->
-            val relativeFilePath = getRelativeFileName(file.name)
+            val relativeFilePath = getRelativeFileName(file.toString())
             if (file.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(relativeFilePath))) {
                 applyCorrectCollector(file, projectBuilder)
+                if (verbose) Logger.info { "Parsing file $relativeFilePath" }
             }
+            else if (verbose) Logger.warn { "Ignoring file $relativeFilePath" }
         }
     }
 
