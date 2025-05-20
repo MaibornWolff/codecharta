@@ -126,7 +126,6 @@ function initializeFileSettings(target: CustomConfig) {
 
 function deepMapOneToOther<T>(source: CcState, target: T) {
     for (const [key, value] of Object.entries(source)) {
-        console.log("mapping key:", key)
         // if a property of source is missing, we don't want to copy it into target.
         if (!Object.prototype.hasOwnProperty.call(target, key)) {
             continue
