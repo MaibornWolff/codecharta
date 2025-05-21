@@ -30,9 +30,7 @@ class ProjectMetricsCollector(
         val projectMetrics = ProjectMetrics()
 
         runBlocking(Dispatchers.Default) {
-            val files =
-                root.walk().asSequence()
-                    .filter { it.isFile }
+            val files = root.walk().filter { it.isFile }
 
             totalFiles = files.count().toLong()
 
