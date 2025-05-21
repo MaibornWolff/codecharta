@@ -31,6 +31,13 @@ class Dialog {
                         onInputReady = testCallback()
                     )
 
+            val metrics = session.promptInput(
+                message = "Do you want to specify which metrics should be computed?",
+                hint = "metric1, metric2, ... (Leave empty to compute all)",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
+
             val askExcludeInclude = session.promptList(
                 message = "Do you want to exclude files/folders based on regex patterns or limit the analysis to specific file extensions?",
                 choices = listOf(
@@ -80,6 +87,7 @@ class Dialog {
                 "--output-file=$outputFileName",
                 if (isCompressed) null else "--not-compressed",
                 "--verbose=${!verbose}",
+                "--metrics=$metrics",
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
                 if (withoutDefaultExcludes) "--without-default-excludes" else null

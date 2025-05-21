@@ -11,6 +11,7 @@ abstract class MetricCollector<LanguageNode>(
     private val queryProvider: MetricQueries
 ) {
     abstract fun getMetricFromQuery(node: LanguageNode, query: String): Int
+
     abstract fun createTreeNodes(code: String): LanguageNode
 
     fun calculateMetricsForFile(file: File, metricNameToQuery: Map<String, String>): Map<String, Int> {
@@ -23,10 +24,14 @@ abstract class MetricCollector<LanguageNode>(
         return metricNameToValue
     }
 
-    fun collectMetricsForFile(file: File, projectBuilder: ProjectBuilder) {
+    fun collectMetricsForFile(file: File, projectBuilder: ProjectBuilder, metricsToCompute: List<String>) {
         val rootNode = createTreeNodes(file.readText())
 
-        val metricQueries = queryProvider.getAllQueries()
+        var metricQueries = queryProvider.getAllQueries()
+
+        if (metricsToCompute.isNotEmpty()) {
+            metricQueries = metricQueries.filter { metricsToCompute.contains(it.key) }
+        }
 
         val metricNameToValue = mutableMapOf<String, Int>()
         for (metricName in metricQueries.keys) {
@@ -39,6 +44,7 @@ abstract class MetricCollector<LanguageNode>(
             attributes = metricNameToValue
         )
 
+        // TODO: hier irgendwie einbauen, dass der path relativ zu root und nicht absolut ist
         val path = PathFactory.fromFileSystemPath(file.toString()).parent
         projectBuilder.insertByPath(path, node)
     }
