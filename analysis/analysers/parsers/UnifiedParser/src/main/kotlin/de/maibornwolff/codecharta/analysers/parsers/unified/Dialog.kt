@@ -82,7 +82,7 @@ class Dialog {
                 "--verbose=${!verbose}",
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
-                if (withoutDefaultExcludes) "--without-default-excludes" else null,
+                if (withoutDefaultExcludes) "--without-default-excludes" else null
             )
         }
 
