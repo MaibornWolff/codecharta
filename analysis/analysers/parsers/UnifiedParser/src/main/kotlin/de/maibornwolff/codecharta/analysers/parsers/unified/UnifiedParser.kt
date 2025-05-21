@@ -68,7 +68,13 @@ class UnifiedParser(
     )
     private var fileExtensionsToAnalyse: List<String> = listOf()
 
-    // TODO: add option for metrics
+    @CommandLine.Option(
+        names = ["-m", "--metrics"],
+        description = ["comma-separated list of which metrics to compute (default: all available metrics)"],
+        converter = [(CommaSeparatedStringToListConverter::class)],
+        preprocessor = CommaSeparatedParameterPreprocessor::class
+    )
+    private var metricsToCompute: List<String> = listOf()
 
     override val name = NAME
     override val description = DESCRIPTION
@@ -91,7 +97,7 @@ class UnifiedParser(
 
         val projectBuilder = ProjectBuilder()
 
-        val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
+        val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, metricsToCompute)
         projectScanner.traverseInputProject(verbose)
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 

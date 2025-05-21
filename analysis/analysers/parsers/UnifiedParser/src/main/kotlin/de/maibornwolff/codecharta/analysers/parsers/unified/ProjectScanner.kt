@@ -15,7 +15,8 @@ class ProjectScanner(
     val root: File,
     val projectBuilder: ProjectBuilder,
     val excludePatterns: List<String> = listOf(),
-    val includeExtensions: List<String> = listOf()
+    val includeExtensions: List<String> = listOf(),
+    val metricsToCompute: List<String> = listOf()
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -37,7 +38,7 @@ class ProjectScanner(
                     val relativeFilePath = getRelativeFileName(file.toString())
                     require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
                     if (!isPathExcluded(excludePatterns, relativeFilePath) && isParsableFileExtension(relativeFilePath)) {
-                        applyCorrectCollector(file, projectBuilder)
+                        applyCorrectCollector(file, projectBuilder, metricsToCompute)
                         logProgress(file.name, filesParsed)
                         lastFileName = file.name
                         if (verbose) Logger.info { "Parsing file $relativeFilePath" }
@@ -66,11 +67,11 @@ class ProjectScanner(
             .replace('\\', '/')
     }
 
-    private fun applyCorrectCollector(file: File, projectBuilder: ProjectBuilder) {
+    private fun applyCorrectCollector(file: File, projectBuilder: ProjectBuilder, metricsToCompute: List<String>) {
         val tsCollector = TypescriptCollector()
 
         when (file.extension) {
-            "ts" -> tsCollector.collectMetricsForFile(file, projectBuilder)
+            "ts" -> tsCollector.collectMetricsForFile(file, projectBuilder, metricsToCompute)
             // TODO: maybe add something which file types were skipped
         }
     }
