@@ -52,7 +52,7 @@ class UnifiedParser(
         converter = [(CommaSeparatedStringToListConverter::class)],
         preprocessor = CommaSeparatedParameterPreprocessor::class
     )
-    private var exclude: List<String> = listOf()
+    private var patternsToExclude: List<String> = listOf()
 
     @CommandLine.Option(
         names = ["--without-default-excludes"],
@@ -66,9 +66,9 @@ class UnifiedParser(
         converter = [(FileExtensionConverter::class)],
         preprocessor = CommaSeparatedParameterPreprocessor::class
     )
-    private var fileExtensions: List<String> = listOf()
+    private var fileExtensionsToAnalyse: List<String> = listOf()
 
-    // TODO: add more options when the skeleton walks (e.g. metrics, exclude, file-extensions, without-default-excludes; all taken from rawTextParser)
+    // TODO: add option for metrics
 
     override val name = NAME
     override val description = DESCRIPTION
@@ -87,11 +87,11 @@ class UnifiedParser(
             "Input invalid file for UnifiedParser, stopping execution..."
         }
 
-        if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
+        if (!withoutDefaultExcludes) patternsToExclude += DEFAULT_EXCLUDES
 
         val projectBuilder = ProjectBuilder()
 
-        val projectScanner = ProjectScanner(inputFile!!, projectBuilder, exclude)
+        val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
         projectScanner.traverseInputProject(verbose)
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
@@ -114,6 +114,6 @@ class UnifiedParser(
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        TODO("Not yet implemented")
+        return getAttributeDescriptors()
     }
 }
