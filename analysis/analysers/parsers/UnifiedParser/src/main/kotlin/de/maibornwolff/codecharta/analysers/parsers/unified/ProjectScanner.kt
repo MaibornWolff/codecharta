@@ -2,7 +2,12 @@ package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Paths
 
@@ -11,21 +16,35 @@ class ProjectScanner(
     val projectBuilder: ProjectBuilder,
     val exclude: List<String> = listOf()
 ) {
+    private var totalFiles = 0L
+    private var filesParsed = 0L
+    private val parsingUnit = ParsingUnit.Files
+    private val progressTracker = ProgressTracker()
 
     fun traverseInputProject(verbose: Boolean) {
-        val files = root.walk().filter { it.isFile }.toList()
-
         val excludePatterns = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
+        var lastFileName = ""
 
-        //TODO: sollten wir das launch einbauen wie beim rawTextParser? -> großes projekt testen und laufzeit vergleichen
-        files.forEach { file ->
-            val relativeFilePath = getRelativeFileName(file.toString())
-            if (file.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(relativeFilePath))) {
-                applyCorrectCollector(file, projectBuilder)
-                if (verbose) Logger.info { "Parsing file $relativeFilePath" }
+        runBlocking(Dispatchers.Default) {
+            val files = root.walk().filter { it.isFile }
+            lastFileName = files.last().toString()
+            totalFiles = files.count().toLong()
+
+            files.forEach { file ->
+                launch {
+                    filesParsed++
+                    val relativeFilePath = getRelativeFileName(file.toString())
+                    if (file.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(relativeFilePath))) {
+                        applyCorrectCollector(file, projectBuilder)
+                        logProgress(file.name, filesParsed)
+                        lastFileName = file.name
+                        if (verbose) Logger.info { "Parsing file $relativeFilePath" }
+                    } else if (verbose) Logger.warn { "Ignoring file $relativeFilePath" }
+                }
             }
-            else if (verbose) Logger.warn { "Ignoring file $relativeFilePath" }
         }
+
+        logProgress(lastFileName, totalFiles)
     }
 
     private fun getRelativeFileName(fileName: String): String {
@@ -42,5 +61,9 @@ class ProjectScanner(
             "ts" -> tsCollector.collectMetricsForFile(file, projectBuilder)
             //TODO: maybe add something which file types were skipped
         }
+    }
+
+    private fun logProgress(fileName: String, parsedFiles: Long) {
+        progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
     }
 }
