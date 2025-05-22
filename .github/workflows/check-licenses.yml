@@ -10,7 +10,7 @@ permissions: read-all
 
 jobs:
   scan_licenses_analysis:
-    if: github.repository == 'MaibornWolff/codecharta'
+    # if: github.repository == 'MaibornWolff/codecharta'
     runs-on: ubuntu-latest
     steps:
       -
@@ -28,11 +28,12 @@ jobs:
           ./gradlew cyclonedxbom
       -
         name: Import analysis SBOM
-        uses: MaibornWolff/secobserve_actions_templates/dev/actions/upload_sbom@4d912c43b32b6cbe448dce6bd8d60a9933fcc90c # dev
+        uses: MaibornWolff/secobserve_actions_templates/dev/actions/upload_sbom@eacb7af59653b127f4f926aff7e4d50de6089c10 # 2025_05
         with:
           so_product_name: 'CodeCharta'
           so_file_name: 'analysis/build/reports/sbom_analysis.cdx.json'
           so_branch_name: 'main'
+          so_origin_service: 'analysis'
           so_api_base_url: "https://secobserve-backend.maibornwolff.de"
           so_api_token: ${{ secrets.SO_API_TOKEN }}
       - 
@@ -44,7 +45,7 @@ jobs:
           BREAK_ENABLED: false
 
   scan_licenses_visualization:
-    if: github.repository == 'MaibornWolff/codecharta'
+    # if: github.repository == 'MaibornWolff/codecharta'
     runs-on: ubuntu-latest
     steps:
       - 
@@ -61,11 +62,12 @@ jobs:
           npm run sbom
       -
         name: Import visualization SBOM
-        uses: MaibornWolff/secobserve_actions_templates/dev/actions/upload_sbom@4d912c43b32b6cbe448dce6bd8d60a9933fcc90c # dev
+        uses: MaibornWolff/secobserve_actions_templates/dev/actions/upload_sbom@eacb7af59653b127f4f926aff7e4d50de6089c10 # 2025_05
         with:
           so_product_name: 'CodeCharta'
           so_file_name: 'visualization/build/reports/sbom_visualization.cdx.json'
           so_branch_name: 'main'
+          so_origin_service: 'visualization'
           so_api_base_url: "https://secobserve-backend.maibornwolff.de"
           so_api_token: ${{ secrets.SO_API_TOKEN }}
       - 
