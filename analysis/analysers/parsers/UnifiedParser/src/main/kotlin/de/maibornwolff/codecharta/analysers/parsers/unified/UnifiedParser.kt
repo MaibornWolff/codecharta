@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.mapNamesToMetrics
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -95,9 +96,11 @@ class UnifiedParser(
 
         if (!withoutDefaultExcludes) patternsToExclude += DEFAULT_EXCLUDES
 
+        val metrics = mapNamesToMetrics(metricsToCompute)
+
         val projectBuilder = ProjectBuilder()
 
-        val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, metricsToCompute)
+        val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, metrics)
         projectScanner.traverseInputProject(verbose)
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
