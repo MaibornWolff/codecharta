@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.rawtext
+package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.promptConfirm
 import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
 import de.maibornwolff.codecharta.dialogProvider.promptInput
-import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
+import de.maibornwolff.codecharta.dialogProvider.promptList
 
 class Dialog {
     companion object : AnalyserDialogInterface {
@@ -31,55 +31,56 @@ class Dialog {
                         onInputReady = testCallback()
                     )
 
-            val verbose: Boolean = session.promptConfirm(
-                message = "Do you want to suppress command line output?",
-                onInputReady = testCallback()
-            )
-
-            val metrics: String = session.promptInput(
-                message = "What are the metrics to import (comma separated)?",
-                hint = "metric1,metric2,metric3 (leave empty for all metrics)",
+            val metrics = session.promptInput(
+                message = "Do you want to specify which metrics should be computed?",
+                hint = "metric1, metric2, ... (Leave empty to compute all)",
                 allowEmptyInput = true,
                 onInputReady = testCallback()
             )
 
-            val tabWidth: String = session.promptInputNumber(
-                message = "How many spaces represent one indentation level when using spaces for indentation (estimated if empty)?",
-                allowEmptyInput = true,
+            val askExcludeInclude = session.promptList(
+                message = "Do you want to exclude files/folders based on regex patterns or limit the analysis to specific file extensions?",
+                choices = listOf(
+                    "Only exclude",
+                    "Only include",
+                    "Both",
+                    "None"
+                ),
                 onInputReady = testCallback()
             )
 
-            val tabWidthValue = tabWidth.toIntOrNull() ?: 0
-
-            val maxIndentationLevel: String = session.promptInputNumber(
-                message = "What is the maximum Indentation Level?",
-                hint = "10",
-                allowEmptyInput = false,
-                onInputReady = testCallback()
-            )
-
-            val exclude: String =
+            val exclude: String = if (askExcludeInclude == "Only exclude" || askExcludeInclude == "Both") {
                 session.promptInput(
-                    message = "Do you want to exclude file/folder according to regex pattern?",
+                    message = "Which regex patterns do you want to use to exclude files/folders from the analysis",
                     hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)",
                     allowEmptyInput = true,
                     onInputReady = testCallback()
                 )
+            } else {
+                ""
+            }
 
-            val fileExtensions: String =
+            val fileExtensions: String = if (askExcludeInclude == "Only include" || askExcludeInclude == "Both") {
                 session.promptInput(
-                    message = "Do you only want to parse files with specific file-extensions?",
+                    message = "Which file extensions do you want to include in the analysis?",
                     hint = "fileType1, fileType2... (leave empty to include all file-extensions)",
                     allowEmptyInput = true,
                     onInputReady = testCallback()
                 )
+            } else {
+                ""
+            }
 
-            val withoutDefaultExcludes: Boolean =
-                session.promptConfirm(
-                    message = "Do you want to include build, target, dist, resources" +
-                        " and out folders as well as files/folders starting with '.'?",
-                    onInputReady = testCallback()
-                )
+            val withoutDefaultExcludes: Boolean = session.promptConfirm(
+                message = "Do you want to include build, target, dist, resources" +
+                    " and out folders as well as files/folders starting with '.'?",
+                onInputReady = testCallback()
+            )
+
+            val verbose: Boolean = session.promptConfirm(
+                message = "Do you want to suppress command line output?",
+                onInputReady = testCallback()
+            )
 
             return listOfNotNull(
                 inputFileName,
@@ -87,11 +88,9 @@ class Dialog {
                 if (isCompressed) null else "--not-compressed",
                 "--verbose=${!verbose}",
                 "--metrics=$metrics",
-                "--tab-width=$tabWidthValue",
-                "--max-indentation-level=$maxIndentationLevel",
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
-                "--without-default-excludes=$withoutDefaultExcludes"
+                if (withoutDefaultExcludes) "--without-default-excludes" else null
             )
         }
 
