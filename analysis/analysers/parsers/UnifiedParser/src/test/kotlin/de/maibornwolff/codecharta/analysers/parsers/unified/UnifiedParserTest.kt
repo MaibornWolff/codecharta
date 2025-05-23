@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.typescript.TypescriptQueries
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.TypescriptQueries
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -50,9 +50,7 @@ class UnifiedParserTest {
     fun `temp test`() {
         val inputFilePath = "src/"
 
-        val tmp = TypescriptQueries.complexityQuery
-
-        val result = executeForOutput("", arrayOf(inputFilePath))
+        val result = executeForOutput("", arrayOf(inputFilePath, "--without-default-excludes"))
 
         println(result)
         assertThat(false)
