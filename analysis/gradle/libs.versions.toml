@@ -2,6 +2,7 @@
 kotlin-logging = "6.0.9"
 boon = "0.34"
 commons-lang3 = "3.17.0"
+cyclonedx = "2.2.0"
 gson = "2.10.1"
 jackson = "2.18.3"
 jacoco = "0.8.11"
@@ -68,3 +69,4 @@ json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+cyclonedx = { id = "org.cyclonedx.bom", version.ref = "cyclonedx" }
