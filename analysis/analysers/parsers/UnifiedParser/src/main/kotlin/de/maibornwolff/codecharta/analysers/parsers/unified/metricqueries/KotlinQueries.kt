@@ -18,7 +18,7 @@ class KotlinQueries : MetricQueries {
 //            "for_in_statement",
             "do_while_statement",
             "catch_block",
-//            "throw", theres a problem with this somehow
+//            "throw",
 //            "ternary_expression"
         )
         private val commentNodes = listOf(

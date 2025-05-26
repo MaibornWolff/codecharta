@@ -1,8 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.KotlinCollector
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.MetricCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.AvailableMetrics
+import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
@@ -24,10 +26,6 @@ class ProjectScanner(
     private var filesParsed = 0L
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
-    private val collectors = mapOf(
-        "ts" to TypescriptCollector(),
-        "kt" to KotlinCollector()
-    )
     private val ignoredFileTypes = mutableSetOf<String>()
 
     fun traverseInputProject(verbose: Boolean) {
@@ -54,6 +52,9 @@ class ProjectScanner(
         }
     }
 
+    fun getIgnoredFileTypes(): Set<String> {
+        return ignoredFileTypes
+    }
 
     private fun parseFile(
         file: File,
@@ -69,7 +70,7 @@ class ProjectScanner(
             lastParsedFile = file.name
             if (verbose) Logger.info { "Calculating metrics for file $relativeFilePath" }
 
-            applyLanguageSpecificCollector(file, projectBuilder, metricsToCompute)
+            applyLanguageSpecificCollector(file, relativeFilePath, projectBuilder, metricsToCompute)
         } else if (verbose) {
             Logger.warn { "Ignoring file $relativeFilePath" }
         }
@@ -91,14 +92,21 @@ class ProjectScanner(
             .replace('\\', '/')
     }
 
-    private fun applyLanguageSpecificCollector(file: File, projectBuilder: ProjectBuilder, metricsToCompute: List<AvailableMetrics>) {
+    private fun applyLanguageSpecificCollector(file: File, relativePath: String, projectBuilder: ProjectBuilder, metricsToCompute: List<AvailableMetrics>) {
         val fileExtension = file.extension
-        val collector = collectors[fileExtension]
-        if (collector == null) {
-            ignoredFileTypes += file.extension
-            return
+        val collector: MetricCollector
+        when (fileExtension) {
+            "ts" -> collector = TypescriptCollector()
+            "kt" -> collector = KotlinCollector()
+            else -> {
+                ignoredFileTypes += file.extension
+                return
+            }
         }
-        collector.collectMetricsForFile(file, projectBuilder, metricsToCompute)
+        val fileNode = collector.collectMetricsForFile(file, metricsToCompute)
+
+        val path = PathFactory.fromFileSystemPath(relativePath).parent
+        projectBuilder.insertByPath(path, fileNode)
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {

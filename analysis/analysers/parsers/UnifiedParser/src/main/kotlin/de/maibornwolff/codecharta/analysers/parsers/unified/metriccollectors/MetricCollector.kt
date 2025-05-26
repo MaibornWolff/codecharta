@@ -4,8 +4,6 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.Availa
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.MetricQueries
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.model.PathFactory
-import de.maibornwolff.codecharta.model.ProjectBuilder
 import org.treesitter.TSLanguage
 import org.treesitter.TSNode
 import org.treesitter.TSParser
@@ -29,7 +27,7 @@ abstract class MetricCollector(
         parser.setLanguage(treeSitterLanguage)
     }
 
-    fun collectMetricsForFile(file: File, projectBuilder: ProjectBuilder, metricsToCompute: List<AvailableMetrics>) {
+    fun collectMetricsForFile(file: File, metricsToCompute: List<AvailableMetrics>): MutableNode {
         val rootNode = parser.parseString(null, file.readText()).rootNode
 
         var metricsToCalculate = queryProvider.getAvailableMetrics()
@@ -45,15 +43,11 @@ abstract class MetricCollector(
             metricNameToValue[metric.name.lowercase()] = function(rootNode)
         }
 
-        val node = MutableNode(
+        return MutableNode(
             name = file.name,
             type = NodeType.File,
             attributes = metricNameToValue
         )
-
-        // TODO: hier irgendwie einbauen, dass der path relativ zu root und nicht absolut ist
-        val path = PathFactory.fromFileSystemPath(file.toString()).parent
-        projectBuilder.insertByPath(path, node)
     }
 
     fun getComplexity(root: TSNode): Int {
