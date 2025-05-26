@@ -50,7 +50,8 @@
     "e2e:ci": "npm run e2e -- --runInBand",
     "package": "node script/appMain.js",
     "package:local": "npm run package -- --local",
-    "schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json"
+    "schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json",
+    "sbom": "cyclonedx-npm --omit dev --gather-license-texts --spec-version 1.6 --output-format json --output-file build/reports/sbom_visualization.cdx.json"
   },
   "bin": {
     "codecharta-visualization": "cli.js"
@@ -106,6 +107,7 @@
     "@angular/compiler": "^18.2.9",
     "@angular/compiler-cli": "^18.2.9",
     "@babel/plugin-transform-class-static-block": "^7.23.3",
+    "@cyclonedx/cyclonedx-npm": "^2.1.0",
     "@electron/get": "^3.1.0",
     "@electron/packager": "^18.3.3",
     "@testing-library/angular": "^14.5.1",
