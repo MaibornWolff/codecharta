@@ -1341,14 +1341,14 @@
       "usagePolicy": "deny"
     },
     {
-      "annotationRefs": ["FORBIDDEN"],
+      "annotationRefs": ["REVIEW REQUIRED"],
       "deprecated": false,
       "family": "OFL-1-1",
       "id": "OFL-1.1",
       "name": "SIL Open Font License 1.1",
       "osi": true,
       "reference": "https://spdx.org/licenses/OFL-1.1.html",
-      "usagePolicy": "deny"
+      "usagePolicy": "needs-review"
     },
     {
       "annotationRefs": ["FORBIDDEN"],
@@ -1461,14 +1461,14 @@
       "usagePolicy": "deny"
     },
     {
-      "annotationRefs": ["FORBIDDEN"],
+      "annotationRefs": ["REVIEW REQUIRED"],
       "deprecated": false,
       "family": "CDDL-1-1",
       "id": "CDDL-1.1",
       "name": "Common Development and Distribution License 1.1",
       "osi": false,
       "reference": "https://spdx.org/licenses/CDDL-1.1.html",
-      "usagePolicy": "deny"
+      "usagePolicy": "needs-review"
     },
     {
       "annotationRefs": ["FORBIDDEN"],
@@ -1531,14 +1531,14 @@
       "usagePolicy": "deny"
     },
     {
-      "annotationRefs": ["FORBIDDEN"],
+      "annotationRefs": ["REVIEW REQUIRED"],
       "deprecated": false,
       "family": "MPL-1-1",
       "id": "MPL-1.1",
       "name": "Mozilla Public License 1.1",
       "osi": true,
       "reference": "https://spdx.org/licenses/MPL-1.1.html",
-      "usagePolicy": "deny"
+      "usagePolicy": "needs-review"
     },
     {
       "annotationRefs": ["FORBIDDEN"],
@@ -1961,14 +1961,14 @@
       "usagePolicy": "deny"
     },
     {
-      "annotationRefs": ["FORBIDDEN"],
+      "annotationRefs": ["REVIEW REQUIRED"],
       "deprecated": false,
       "family": "EPL-2-0",
       "id": "EPL-2.0",
       "name": "Eclipse Public License 2.0",
       "osi": true,
       "reference": "https://spdx.org/licenses/EPL-2.0.html",
-      "usagePolicy": "deny"
+      "usagePolicy": "needs-review"
     },
     {
       "annotationRefs": ["FORBIDDEN"],
@@ -1981,14 +1981,14 @@
       "usagePolicy": "deny"
     },
     {
-      "annotationRefs": ["FORBIDDEN"],
+      "annotationRefs": ["REVIEW REQUIRED"],
       "deprecated": true,
       "family": "GPL-2-0-with-classpath-exception",
       "id": "GPL-2.0-with-classpath-exception",
       "name": "GNU General Public License v2.0 w/Classpath exception",
       "osi": false,
       "reference": "https://spdx.org/licenses/GPL-2.0-with-classpath-exception.html",
-      "usagePolicy": "deny"
+      "usagePolicy": "needs-review"
     },
     {
       "annotationRefs": ["FORBIDDEN"],
@@ -2091,24 +2091,24 @@
       "usagePolicy": "deny"
     },
     {
-      "annotationRefs": ["FORBIDDEN"],
+      "annotationRefs": ["REVIEW REQUIRED"],
       "deprecated": false,
       "family": "LGPL-2-1-only",
       "id": "LGPL-2.1-only",
       "name": "GNU Lesser General Public License v2.1 only",
       "osi": true,
       "reference": "https://spdx.org/licenses/LGPL-2.1-only.html",
-      "usagePolicy": "deny"
+      "usagePolicy": "needs-review"
     },
     {
-      "annotationRefs": ["FORBIDDEN"],
+      "annotationRefs": ["REVIEW REQUIRED"],
       "deprecated": false,
       "family": "LGPL-2-1-or-later",
       "id": "LGPL-2.1-or-later",
       "name": "GNU Lesser General Public License v2.1 or later",
       "osi": true,
       "reference": "https://spdx.org/licenses/LGPL-2.1-or-later.html",
-      "usagePolicy": "deny"
+      "usagePolicy": "needs-review"
     },
     {
       "annotationRefs": ["FORBIDDEN"],
@@ -2209,6 +2209,47 @@
       "osi": false,
       "reference": "https://spdx.org/licenses/YPL-1.1.html",
       "usagePolicy": "deny"
+    },
+    {
+      "annotationRefs": ["ALLOWED"],
+      "deprecated": false,
+      "family": "0BSD",
+      "id": "0BSD",
+      "name": "BSD Zero Clause License",
+      "notes": ["Permissive, but not yet in MW Standard policy"],
+      "osi": true,
+      "reference": "https://spdx.org/licenses/0BSD.html",
+      "usagePolicy": "allow"
+    },
+    {
+      "annotationRefs": ["REVIEW REQUIRED"],
+      "deprecated": false,
+      "family": "CC0-1-0",
+      "id": "CC0-1.0",
+      "name": "Creative Commons Zero v1.0 Universal",
+      "osi": false,
+      "reference": "https://spdx.org/licenses/CC0-1.0.html",
+      "usagePolicy": "needs-review"
+    },
+    {
+      "annotationRefs": ["REVIEW REQUIRED"],
+      "deprecated": false,
+      "family": "GNU-LGPL-3",
+      "id": "",
+      "name": "GNU LGPL 3",
+      "osi": false,
+      "reference": "",
+      "usagePolicy": "needs-review"
+    },
+    {
+      "annotationRefs": ["REVIEW REQUIRED"],
+      "deprecated": false,
+      "family": "Go-License",
+      "id": "",
+      "name": "Go License",
+      "osi": false,
+      "reference": "",
+      "usagePolicy": "needs-review"
     }
   ]
 }
