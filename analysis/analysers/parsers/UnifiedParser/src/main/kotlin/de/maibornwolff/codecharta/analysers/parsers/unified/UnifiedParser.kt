@@ -14,6 +14,7 @@ import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.FileExtensionConverter
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -102,6 +103,11 @@ class UnifiedParser(
 
         val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, metrics)
         projectScanner.traverseInputProject(verbose)
+
+        val ignoredFileTypes = projectScanner.getIgnoredFileTypes()
+        println()
+        Logger.info { "Files of types $ignoredFileTypes were ignored!" }
+
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
         var project = projectBuilder.build()
