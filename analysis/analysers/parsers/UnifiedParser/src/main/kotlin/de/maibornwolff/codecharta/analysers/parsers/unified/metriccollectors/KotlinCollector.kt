@@ -4,6 +4,6 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.Kotlin
 import org.treesitter.TreeSitterKotlin
 
 class KotlinCollector : MetricCollector(
-    queryProvider = KotlinQueries(),
-    treeSitterLanguage = TreeSitterKotlin()
+    treeSitterLanguage = TreeSitterKotlin(),
+    queryProvider = KotlinQueries()
 )

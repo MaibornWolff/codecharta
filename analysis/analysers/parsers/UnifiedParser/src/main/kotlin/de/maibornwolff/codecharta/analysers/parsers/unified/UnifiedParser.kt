@@ -14,7 +14,6 @@ import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.FileExtensionConverter
 import de.maibornwolff.codecharta.util.InputHelper
-import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -105,8 +104,9 @@ class UnifiedParser(
         projectScanner.traverseInputProject(verbose)
 
         val ignoredFileTypes = projectScanner.getIgnoredFileTypes()
-        println()
-        Logger.info { "Files of types $ignoredFileTypes were ignored!" }
+
+        System.err.println()
+        System.err.println("Files with extensions [${formatFileExtensions(ignoredFileTypes)}] were ignored as they are currently not supported!")
 
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
@@ -130,5 +130,9 @@ class UnifiedParser(
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
         return getAttributeDescriptors()
+    }
+
+    private fun formatFileExtensions(fileExtensions: Set<String>): String {
+        return fileExtensions.joinToString(separator = ", ") { ".$it" }
     }
 }
