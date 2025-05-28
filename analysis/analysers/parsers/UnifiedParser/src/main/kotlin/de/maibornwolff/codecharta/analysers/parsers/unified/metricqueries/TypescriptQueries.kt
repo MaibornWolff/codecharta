@@ -6,10 +6,13 @@ class TypescriptQueries : MetricQueries {
             "if_statement",
             "optional_chain",
             "binary_expression operator: \"&&\"",
+            "binary_expression operator: \"??\"",
             "binary_expression operator: \"||\"",
             "for_statement",
             "switch_case",
             "function_declaration",
+            "generator_function_declaration",
+            "generator_function",
             "method_definition",
             "function_expression",
             "arrow_function",
@@ -18,11 +21,13 @@ class TypescriptQueries : MetricQueries {
             "do_statement",
             "catch_clause",
             "throw_statement",
-            "ternary_expression"
+            "ternary_expression",
+            "conditional_type"
         )
 
         private val commentNodes = listOf(
             "comment",
+            "html_comment"
         )
     }
 

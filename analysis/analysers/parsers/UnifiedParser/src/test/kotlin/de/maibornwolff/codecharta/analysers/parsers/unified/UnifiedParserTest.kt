@@ -1,11 +1,11 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.TypescriptQueries
 import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.skyscreamer.jsonassert.JSONAssert
+import org.skyscreamer.jsonassert.JSONCompareMode
 import picocli.CommandLine
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -43,16 +43,20 @@ class UnifiedParserTest {
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
-        assertThat(result).isEqualTo(expectedResultFile)
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
-    fun `temp test`() {
-        val inputFilePath = "src/"
+    fun `Should produce correct output when given folder `() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "src/test/resources/sampleproject"
+        val expectedResultFile = File("src/test/resources/sampleFolder.cc.json").absoluteFile
 
-        val result = executeForOutput("", arrayOf(inputFilePath, "--without-default-excludes"))
+        // when
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
-        println(result)
-        assertThat(false)
+        // then
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 }
