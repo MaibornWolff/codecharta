@@ -9,9 +9,6 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Paths
 
@@ -30,26 +27,22 @@ class ProjectScanner(
 
     fun traverseInputProject(verbose: Boolean) {
         val excludePatterns = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
-        var lastParsedFile = ""
+        var lastParsedFile: String
 
-        runBlocking(Dispatchers.Default) {
+//        runBlocking(Dispatchers.Default) {
             val files = root.walk().filter { it.isFile }
             lastParsedFile = files.last().toString()
             totalFiles = files.count().toLong()
 
             files.forEach { file ->
-                launch {
+//                launch {
                     filesParsed++
                     lastParsedFile = parseFile(file, excludePatterns, verbose)
-                }
+//                }
             }
-        }
+//        }
 
-        logProgress(lastParsedFile, totalFiles)
-
-        if (includeExtensions.isNotEmpty()) {
-            Logger.info { "Files with extensions '${ignoredFileTypes}' were ignored as they are not yet supported." }
-        }
+        if (!verbose) logProgress(lastParsedFile, totalFiles)
     }
 
     fun getIgnoredFileTypes(): Set<String> {
@@ -66,11 +59,14 @@ class ProjectScanner(
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
 
         if (!isPathExcluded(excludePatterns, relativeFilePath) && isParsableFileExtension(relativeFilePath)) {
-            logProgress(file.name, filesParsed)
-            lastParsedFile = file.name
-            if (verbose) Logger.info { "Calculating metrics for file $relativeFilePath" }
+            if (verbose) {
+                Logger.info { "Calculating metrics for file $relativeFilePath" }
+            } else {
+                logProgress(file.name, filesParsed)
+            }
 
             applyLanguageSpecificCollector(file, relativeFilePath, projectBuilder, metricsToCompute)
+            lastParsedFile = file.name
         } else if (verbose) {
             Logger.warn { "Ignoring file $relativeFilePath" }
         }
