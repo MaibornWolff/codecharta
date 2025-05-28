@@ -87,10 +87,11 @@ class SourceCodeParser(
 
     companion object {
         const val NAME = "sourcecodeparser"
-        const val DESCRIPTION = "generates cc.json from source code"
+        const val DESCRIPTION = "generates cc.json from source code --- NOTE: this parser is deprecated and will soon be removed!"
         const val FOOTER =
             "This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\n" +
-                CodeChartaConstants.GENERIC_FOOTER
+                CodeChartaConstants.GENERIC_FOOTER +
+                "DEPRECATION NOTE: This parser is no longer supported and will soon be disabled!"
 
         @JvmStatic
         fun main(args: Array<String>) {
