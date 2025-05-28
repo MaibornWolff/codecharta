@@ -12,8 +12,8 @@ import org.treesitter.TSQueryCursor
 import java.io.File
 
 abstract class MetricCollector(
-    private val queryProvider: MetricQueries,
-    private val treeSitterLanguage: TSLanguage
+    private val treeSitterLanguage: TSLanguage,
+    private val queryProvider: MetricQueries
 ) {
     private val cursor = TSQueryCursor()
     private val parser = TSParser()
