@@ -3,23 +3,22 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
 class KotlinQueries : MetricQueries {
     companion object {
         private val complexityNodes = listOf(
-            //TODO: check if this query is good enough
             "if_expression",
-            //"optional_chain",
-//            "binary_expression operator: \"&&\"",
-//            "binary_expression operator: \"||\"",
             "for_statement",
-            "when_expression",
-            "function_declaration",
-//            "method_definition",
-//            "function_expression",
-            "anonymous_function",
             "while_statement",
-//            "for_in_statement",
             "do_while_statement",
+            "elvis_expression",
+            "when_entry",
             "catch_block",
-//            "throw",
-//            "ternary_expression"
+            "function_declaration",
+            "anonymous_function",
+            "anonymous_initializer",
+            "lambda_literal",
+            "secondary_constructor",
+            "setter",
+            "getter"
+
+
         )
         private val commentNodes = listOf(
             "line_comment",
