@@ -43,7 +43,10 @@ fun MainRenderScope.drawInputWithInfo(
     lastInputEmpty: Boolean,
     invalidInputMessage: String,
     subtextInfo: String,
-    hint: String
+    debugInfo1: String,
+    debugInfo2: String,
+    debugInfo3: String,
+    vararg hint: String
 ) {
     bold {
         green { text("? ") }
@@ -56,14 +59,20 @@ fun MainRenderScope.drawInputWithInfo(
     }
 
     text("> ")
-    white {
-        input(Completions(hint), initialText = "")
-    }
+
+        input(Completions(*hint), initialText = "")
+
 
     text("\n")
 
     black(isBright = true) {
         text(subtextInfo)
+        text("\n")
+    }
+    white {
+        textLine(debugInfo1)
+        textLine(debugInfo2)
+        textLine(debugInfo3)
     }
 }
 
