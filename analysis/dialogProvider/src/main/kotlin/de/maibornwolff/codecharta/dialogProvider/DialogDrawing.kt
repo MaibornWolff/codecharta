@@ -12,6 +12,7 @@ import com.varabyte.kotter.foundation.text.red
 import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.textLine
 import com.varabyte.kotter.foundation.text.white
+import com.varabyte.kotter.foundation.text.yellow
 import com.varabyte.kotter.runtime.MainRenderScope
 
 fun MainRenderScope.drawInput(
@@ -60,15 +61,15 @@ fun MainRenderScope.drawInputWithInfo(
 
     text("> ")
 
-        input(Completions(*hint), initialText = "")
+    input(Completions(*hint), initialText = "")
 
-
+    text("\n")
     text("\n")
 
     black(isBright = true) {
-        text(subtextInfo)
-        text("\n")
-    }
+            text(subtextInfo)
+        }
+    text("\n")
     white {
         textLine(debugInfo1)
         textLine(debugInfo2)

@@ -6,6 +6,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
+import kotlin.math.max
 
 class DialogDirectoryProvider(
     val inputType: InputType,
@@ -16,6 +17,7 @@ class DialogDirectoryProvider(
     var currentDirectoryContent = listOf<Path>()
     private var possibleDirectories = listOf<Path>()
     private var possibleFiles = listOf<Path>()
+    private val TARGET_LINE_LENGTH = 120
 
     init {
         this.prepareMatches("")
@@ -27,7 +29,7 @@ class DialogDirectoryProvider(
             return
         }
 
-        val unifiedInput = currentInput.replace("\\","/").replaceAfterLast("/", "", "")
+        val unifiedInput = currentInput.replace("\\", "/").replaceAfterLast("/", "", "")
         val folder = Paths.get(unifiedInput)
         currentDirectory = if (folder.isDirectory()) folder else currentDirectory
     }
@@ -43,45 +45,59 @@ class DialogDirectoryProvider(
 
     fun getHints(): Array<String> {
         val possibleMatches = currentDirectoryContent.filter { path ->
-                (path.isDirectory() || (InputValidator.verifyFile(path.toFile(), fileExtensions)))
-        }.map { if (it.isDirectory()) it.toString()+systemSeparator else it.toString() }
+            (path.isDirectory() || (InputValidator.verifyFile(path.toFile(), fileExtensions)))
+        }.map { if (it.isDirectory()) it.toString() + systemSeparator else it.toString() }
 
         return possibleMatches.toTypedArray()
     }
 
     fun getMatches(): String {
-        var currentCharSize = 0
-        val maximumCharSize = 120
-        var secondLine = false
-        var outputString = ""
+        val currentEntries = mutableListOf<String>()
+        var minimumSize = 0
+
         val totalMatches = possibleDirectories.size + possibleFiles.size
-        var addedMatches = 0
+
         possibleDirectories.forEach {
             val dirName = it.toFile().name
-            if (secondLine && currentCharSize > maximumCharSize * 2) {
-                outputString += "($addedMatches/$totalMatches)"
-                return outputString
-            } else if (!secondLine && currentCharSize + dirName.length > maximumCharSize) {
-                secondLine = true
-                outputString += "\n"
+            val nameLength = dirName.length + 1
+            if (!checkPossibleEntry(currentEntries.size, minimumSize, nameLength, TARGET_LINE_LENGTH*2)) {
+                currentEntries.add("(${currentEntries.size}/$totalMatches)")
+                return finalizeOutputString(currentEntries, minimumSize )
             }
-            outputString = outputString + dirName + systemSeparator + "\t"
-            currentCharSize += dirName.length
-            addedMatches += 1
+            currentEntries.add(dirName + systemSeparator)
+            minimumSize = max(nameLength, minimumSize)
         }
+
         possibleFiles.forEach {
             val fileName = it.toFile().name
-            if (secondLine && currentCharSize > maximumCharSize * 2) {
-                outputString += "($addedMatches/$totalMatches)"
-                return outputString
-            } else if (!secondLine && currentCharSize + fileName.length > maximumCharSize) {
-                secondLine = true
-                outputString += "\n"
+            val nameLength = fileName.length
+            if (!checkPossibleEntry(currentEntries.size, minimumSize, nameLength, TARGET_LINE_LENGTH*2)) {
+                currentEntries.add("(${currentEntries.size}/$totalMatches)")
+                return finalizeOutputString(currentEntries, minimumSize)
             }
-            outputString = outputString + fileName + "\t"
-            currentCharSize += fileName.length
-            addedMatches += 1
+            currentEntries.add(fileName)
+            minimumSize = max(nameLength, minimumSize)
         }
-        return outputString
+
+        return finalizeOutputString(currentEntries, minimumSize)
+    }
+
+    fun checkPossibleEntry(entryCount: Int, entrySize: Int, newEntrySize: Int, maxLineLength: Int): Boolean {
+        return (entryCount + 1) * max(entrySize, newEntrySize) < maxLineLength
+    }
+
+    fun finalizeOutputString(folders: List<String>, minimumSize: Int): String {
+        val paddedEntries = folders.map { it.padEnd(minimumSize) }
+        var outputString = ""
+        var secondLine = false
+        paddedEntries.forEach {
+            if (!secondLine && it.length + outputString.length > TARGET_LINE_LENGTH) {
+                outputString += "${it.trimEnd()}\n"
+                secondLine = true
+            } else {
+                outputString += "$it "
+            }
+        }
+        return outputString.trimEnd()
     }
 }
