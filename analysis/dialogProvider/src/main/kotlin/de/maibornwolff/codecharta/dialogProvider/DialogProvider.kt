@@ -65,7 +65,10 @@ fun Session.promptInputComplete(
     var lastUserInput = ""
     var isInputValid by liveVarOf(true)
     var subtextInfo = dialogDirectoryProvider.getMatches()
-    var hint = dialogDirectoryProvider.getHint("")
+    var hint = dialogDirectoryProvider.getHints()
+    var d1 = ""
+    var d2 = ""
+    var d3 = ""
     section {
         drawInputWithInfo(
             message = message,
@@ -74,7 +77,10 @@ fun Session.promptInputComplete(
             lastInputEmpty = lastUserInput.isEmpty(),
             invalidInputMessage = invalidInputMessage,
             subtextInfo,
-            hint
+            d1,
+            d2,
+            d3,
+            *hint
         )
     }.runUntilSignal {
         onKeyPressed {
@@ -86,8 +92,11 @@ fun Session.promptInputComplete(
             isInputValid = true
             lastUserInput = input
             dialogDirectoryProvider.prepareMatches(input)
-            hint = dialogDirectoryProvider.getHint(input)
             subtextInfo = dialogDirectoryProvider.getMatches()
+            hint = dialogDirectoryProvider.getHints()
+            d1 = dialogDirectoryProvider.currentDirectory.toString()
+            d2 = dialogDirectoryProvider.getHints().joinToString()
+            d3 = dialogDirectoryProvider.getMatches().length.toString()
         }
         onInputEntered {
             if (inputValidator(input) && input.isNotEmpty()) {

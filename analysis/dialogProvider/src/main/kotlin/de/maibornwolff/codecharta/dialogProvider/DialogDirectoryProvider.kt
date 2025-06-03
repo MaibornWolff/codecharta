@@ -12,8 +12,8 @@ class DialogDirectoryProvider(
     private val fileExtensions: List<FileExtension>
 ) {
     private val systemSeparator = File.separatorChar
-    private var currentDirectory: Path = Paths.get("")
-    private var currentDirectoryContent = listOf<Path>()
+    var currentDirectory: Path = Paths.get("")
+    var currentDirectoryContent = listOf<Path>()
     private var possibleDirectories = listOf<Path>()
     private var possibleFiles = listOf<Path>()
 
@@ -26,12 +26,10 @@ class DialogDirectoryProvider(
             currentDirectory = Paths.get("")
             return
         }
+
         val unifiedInput = currentInput.replace("\\","/").replaceAfterLast("/", "", "")
-        if (unifiedInput.isNotEmpty()) {
-            val folder = Paths.get(currentInput)
-            currentDirectory = if (folder.isDirectory()) folder else currentDirectory
-            return
-        }
+        val folder = Paths.get(unifiedInput)
+        currentDirectory = if (folder.isDirectory()) folder else currentDirectory
     }
 
     fun prepareMatches(currentInput: String) {
@@ -43,21 +41,12 @@ class DialogDirectoryProvider(
         }.filter { it.toString().startsWith(currentInput) }
     }
 
-    fun getHint(currentInput: String): String {
+    fun getHints(): Array<String> {
         val possibleMatches = currentDirectoryContent.filter { path ->
-            path.toString().startsWith(currentInput) &&
                 (path.isDirectory() || (InputValidator.verifyFile(path.toFile(), fileExtensions)))
-        }
-        return if (possibleMatches.size == 1) {
-            val match = possibleMatches.first()
-            if (possibleMatches.first().isDirectory()) {
-                match.toString() + systemSeparator
-            } else {
-                match.toString()
-            }
-        } else {
-            ""
-        }
+        }.map { if (it.isDirectory()) it.toString()+systemSeparator else it.toString() }
+
+        return possibleMatches.toTypedArray()
     }
 
     fun getMatches(): String {

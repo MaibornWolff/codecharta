@@ -9,6 +9,6 @@ class DialogDirectoryProviderTest {
     fun `this should provide a good change directory experience`() {
         val uut = DialogDirectoryProvider(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON))
         uut.prepareMatches("")
-        assertThat(uut.getHint("someInput")).isEqualTo("")
+        assertThat(uut.getHints()).isEqualTo("")
     }
 }
