@@ -11,8 +11,6 @@ import com.varabyte.kotter.foundation.text.green
 import com.varabyte.kotter.foundation.text.red
 import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.textLine
-import com.varabyte.kotter.foundation.text.white
-import com.varabyte.kotter.foundation.text.yellow
 import com.varabyte.kotter.runtime.MainRenderScope
 
 fun MainRenderScope.drawInput(
@@ -43,10 +41,7 @@ fun MainRenderScope.drawInputWithInfo(
     allowEmptyInput: Boolean,
     lastInputEmpty: Boolean,
     invalidInputMessage: String,
-    subtextInfo: String,
-    debugInfo1: String,
-    debugInfo2: String,
-    debugInfo3: String,
+    subInputText: String,
     vararg hint: String
 ) {
     bold {
@@ -62,18 +57,9 @@ fun MainRenderScope.drawInputWithInfo(
     text("> ")
 
     input(Completions(*hint), initialText = "")
-
     text("\n")
-    text("\n")
-
     black(isBright = true) {
-            text(subtextInfo)
-        }
-    text("\n")
-    white {
-        textLine(debugInfo1)
-        textLine(debugInfo2)
-        textLine(debugInfo3)
+        text(subInputText)
     }
 }
 
