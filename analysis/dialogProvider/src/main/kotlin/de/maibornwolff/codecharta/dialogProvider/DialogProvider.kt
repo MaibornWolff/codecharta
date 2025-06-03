@@ -13,7 +13,6 @@ import com.varabyte.kotter.foundation.liveVarOf
 import com.varabyte.kotter.foundation.runUntilSignal
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import com.varabyte.kotter.runtime.terminal.TerminalSize
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.nio.file.Paths
 
@@ -65,13 +64,8 @@ fun Session.promptInputComplete(
 ): String {
     var lastUserInput = ""
     var isInputValid by liveVarOf(true)
-    var subtextInfo = dialogDirectoryProvider.getMatches()
-    var hint = dialogDirectoryProvider.getHints()
-    var initialSizeH = TerminalSize.Default.height.toString()
-    var initialSizeW = TerminalSize.Default.width.toString()
-    var d1 = ""
-    var d2 = initialSizeH
-    var d3 = initialSizeW
+    var subInfoText = dialogDirectoryProvider.getMatches()
+    var hints = dialogDirectoryProvider.getHints()
     section {
         drawInputWithInfo(
             message = message,
@@ -79,11 +73,8 @@ fun Session.promptInputComplete(
             allowEmptyInput = false,
             lastInputEmpty = lastUserInput.isEmpty(),
             invalidInputMessage = invalidInputMessage,
-            subtextInfo,
-            d1,
-            d2,
-            d3,
-            *hint
+            subInfoText,
+            *hints
         )
     }.runUntilSignal {
         onKeyPressed {
@@ -95,11 +86,8 @@ fun Session.promptInputComplete(
             isInputValid = true
             lastUserInput = input
             dialogDirectoryProvider.prepareMatches(input)
-            subtextInfo = dialogDirectoryProvider.getMatches()
-            hint = dialogDirectoryProvider.getHints()
-            d1 = dialogDirectoryProvider.currentDirectory.toString()
-            d2 = ""
-            d3 = TerminalSize.Unbounded.width.toString()
+            subInfoText = dialogDirectoryProvider.getMatches()
+            hints = dialogDirectoryProvider.getHints()
         }
         onInputEntered {
             if (inputValidator(input) && input.isNotEmpty()) {
