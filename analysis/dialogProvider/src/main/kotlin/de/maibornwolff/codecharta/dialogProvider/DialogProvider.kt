@@ -13,6 +13,7 @@ import com.varabyte.kotter.foundation.liveVarOf
 import com.varabyte.kotter.foundation.runUntilSignal
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
+import com.varabyte.kotter.runtime.terminal.TerminalSize
 import de.maibornwolff.codecharta.serialization.FileExtension
 import java.nio.file.Paths
 
@@ -66,9 +67,11 @@ fun Session.promptInputComplete(
     var isInputValid by liveVarOf(true)
     var subtextInfo = dialogDirectoryProvider.getMatches()
     var hint = dialogDirectoryProvider.getHints()
+    var initialSizeH = TerminalSize.Default.height.toString()
+    var initialSizeW = TerminalSize.Default.width.toString()
     var d1 = ""
-    var d2 = ""
-    var d3 = ""
+    var d2 = initialSizeH
+    var d3 = initialSizeW
     section {
         drawInputWithInfo(
             message = message,
@@ -95,8 +98,8 @@ fun Session.promptInputComplete(
             subtextInfo = dialogDirectoryProvider.getMatches()
             hint = dialogDirectoryProvider.getHints()
             d1 = dialogDirectoryProvider.currentDirectory.toString()
-            d2 = dialogDirectoryProvider.getHints().joinToString()
-            d3 = dialogDirectoryProvider.getMatches().length.toString()
+            d2 = ""
+            d3 = TerminalSize.Unbounded.width.toString()
         }
         onInputEntered {
             if (inputValidator(input) && input.isNotEmpty()) {
