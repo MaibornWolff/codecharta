@@ -4,13 +4,19 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.Kot
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.MetricCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.AvailableMetrics
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Paths
+import java.util.concurrent.ConcurrentHashMap
 
 class ProjectScanner(
     private val root: File,
@@ -24,36 +30,38 @@ class ProjectScanner(
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
     private val ignoredFileTypes = mutableSetOf<String>()
+    private val fileMetrics = ConcurrentHashMap<Path, MutableNode>()
+
+    fun isProjectEmpty(): Boolean {
+        return fileMetrics.isEmpty()
+    }
 
     fun traverseInputProject(verbose: Boolean) {
         val excludePatterns = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
         var lastParsedFile: String
 
-//        runBlocking(Dispatchers.Default) {
+        runBlocking(Dispatchers.Default) {
             val files = root.walk().filter { it.isFile }
             lastParsedFile = files.last().toString()
             totalFiles = files.count().toLong()
 
             files.forEach { file ->
-//                launch {
+                launch {
                     filesParsed++
                     lastParsedFile = parseFile(file, excludePatterns, verbose)
-//                }
+                }
             }
-//        }
+        }
 
         if (!verbose) logProgress(lastParsedFile, totalFiles)
+        addNodesToProjectBuilder()
     }
 
     fun getIgnoredFileTypes(): Set<String> {
         return ignoredFileTypes
     }
 
-    private fun parseFile(
-        file: File,
-        excludePatterns: Regex,
-        verbose: Boolean
-    ): String {
+    private fun parseFile(file: File, excludePatterns: Regex, verbose: Boolean): String {
         var lastParsedFile = ""
         val relativeFilePath = getRelativeFileName(file.toString())
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
@@ -65,7 +73,7 @@ class ProjectScanner(
                 logProgress(file.name, filesParsed)
             }
 
-            applyLanguageSpecificCollector(file, relativeFilePath, projectBuilder, metricsToCompute)
+            applyLanguageSpecificCollector(file, relativeFilePath)
             lastParsedFile = file.name
         } else if (verbose) {
             Logger.warn { "Ignoring file $relativeFilePath" }
@@ -88,7 +96,7 @@ class ProjectScanner(
             .replace('\\', '/')
     }
 
-    private fun applyLanguageSpecificCollector(file: File, relativePath: String, projectBuilder: ProjectBuilder, metricsToCompute: List<AvailableMetrics>) {
+    private fun applyLanguageSpecificCollector(file: File, relativePath: String) {
         val fileExtension = file.extension
         val collector: MetricCollector
         when (fileExtension) {
@@ -100,12 +108,17 @@ class ProjectScanner(
             }
         }
         val fileNode = collector.collectMetricsForFile(file, metricsToCompute)
-
         val path = PathFactory.fromFileSystemPath(relativePath).parent
-        projectBuilder.insertByPath(path, fileNode)
+        fileMetrics[path] = fileNode
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
         progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
+    }
+
+    private fun addNodesToProjectBuilder() {
+        for ((path, node) in fileMetrics) {
+            projectBuilder.insertByPath(path.parent, node)
+        }
     }
 }
