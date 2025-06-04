@@ -15,8 +15,8 @@ class Dialog {
             print("Which file do you want to validate?")
             val inputFileName: String = session.promptInputComplete(
                 message = "Validate file",
-                inputValidator = InputValidator.isFileOrFolderValid(InputType.FILE, listOf(FileExtension.CCJSON, FileExtension.CCGZ)),
-                dialogDirectoryProvider = DialogDirectoryProvider(InputType.FILE, listOf(FileExtension.CCJSON, FileExtension.CCJSON)),
+                inputValidator = InputValidator.isFileOrFolderValid(InputType.FILE, listOf(FileExtension.CCJSON, FileExtension.CCGZ), true),
+                dialogDirectoryProvider = DialogDirectoryProvider(InputType.FILE, listOf(FileExtension.CCJSON, FileExtension.CCJSON), true),
                 onInputReady = testCallback()
             )
 
