@@ -14,6 +14,7 @@ import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.FileExtensionConverter
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -103,12 +104,20 @@ class UnifiedParser(
         val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, metrics)
         projectScanner.traverseInputProject(verbose)
 
+        if (projectScanner.isProjectEmpty()) {
+            println()
+            Logger.error {  "No files with specified file extension(s) were found within the given folder - not generating an output file!"  }
+            return null
+        }
+
         val ignoredFileTypes = projectScanner.getIgnoredFileTypes()
 
-        System.err.println()
-        System.err.println(
-            "Files with extensions [${formatFileExtensions(ignoredFileTypes)}] were ignored as they are currently not supported!"
-        )
+        if (ignoredFileTypes.isNotEmpty()) {
+            System.err.println()
+            System.err.println(
+                "Files with extensions [${formatFileExtensions(ignoredFileTypes)}] were ignored as they are currently not supported!"
+            )
+        }
 
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
