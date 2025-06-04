@@ -10,12 +10,14 @@ import kotlin.math.max
 
 class DialogDirectoryProvider(
     val inputType: InputType,
-    private val fileExtensions: List<FileExtension>
+    private val fileExtensions: List<FileExtension>,
+    val multiple: Boolean
 ) {
     private val systemSeparator = File.separatorChar
     private var filesAllowed = true
     private var currentDirectory: Path = Paths.get("")
     private var currentDirectoryContent = listOf<Path>()
+    private var completedInput = ""
     private var possibleDirectories = listOf<Path>()
     private var possibleFiles = listOf<Path>()
     private val targetLineLength = 120
@@ -25,6 +27,13 @@ class DialogDirectoryProvider(
         this.filesAllowed = inputType == InputType.FILE || inputType == InputType.FOLDER_AND_FILE
     }
 
+    private fun updateCompletedInput(currentInput: String) {
+        if (multiple) {
+            val commaIndex = currentInput.lastIndexOf(',')
+            completedInput = if (commaIndex >= 0) currentInput.substring(0,commaIndex+1) else ""
+        }
+    }
+
     private fun updateCurrentFolder(currentInput: String) {
         val unifiedInput = currentInput.replace("\\", "/").replaceAfterLast("/", "", "")
         val folder = Paths.get(unifiedInput)
@@ -32,21 +41,26 @@ class DialogDirectoryProvider(
     }
 
     fun prepareMatches(currentInput: String) {
-        updateCurrentFolder(currentInput)
+        updateCompletedInput(currentInput)
+        val splitInput = if (multiple) currentInput.substringAfterLast(',') else currentInput
+
+        updateCurrentFolder(splitInput)
         currentDirectoryContent = currentDirectory.listDirectoryEntries()
-        possibleDirectories = currentDirectoryContent.filter { it.isDirectory() }.filter { it.toString().startsWith(currentInput) }
+        possibleDirectories = currentDirectoryContent.filter { it.isDirectory() }.filter { it.toString().startsWith(splitInput) }
         if (filesAllowed) {
             possibleFiles = currentDirectoryContent.filter {
                 InputValidator.verifyFile(it.toFile(), fileExtensions)
-            }.filter { it.toString().startsWith(currentInput) }
+            }.filter { it.toString().startsWith(splitInput) }
         }
     }
+
+
 
     fun getHints(): Array<String> {
         val possibleMatches = currentDirectoryContent.filter { path ->
             (path.isDirectory() ||
                 ( filesAllowed && InputValidator.verifyFile(path.toFile(), fileExtensions)) )
-        }.map { if (it.isDirectory()) it.toString() + systemSeparator else it.toString() }
+        }.map { if (it.isDirectory())  completedInput + it.toString() + systemSeparator else completedInput + it.toString() }
 
         return possibleMatches.toTypedArray()
     }
