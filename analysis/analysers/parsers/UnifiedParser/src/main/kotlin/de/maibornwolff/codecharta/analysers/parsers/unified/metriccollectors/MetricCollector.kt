@@ -66,6 +66,4 @@ abstract class MetricCollector(
         for (hit in cursor.matches) metricHits++
         return metricHits
     }
-
-
 }

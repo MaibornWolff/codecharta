@@ -17,15 +17,13 @@ class KotlinQueries : MetricQueries {
             "secondary_constructor",
             "setter",
             "getter"
-
-
         )
         private val commentNodes = listOf(
             "line_comment",
-            "multiline_comment",
+            "multiline_comment"
         )
     }
+
     override val complexityQuery = buildQuery(AvailableMetrics.COMPLEXITY, complexityNodes)
     override val commentQuery = buildQuery(AvailableMetrics.COMMENT, commentNodes)
-
 }
