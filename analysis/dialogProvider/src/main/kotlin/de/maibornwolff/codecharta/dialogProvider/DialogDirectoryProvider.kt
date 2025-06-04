@@ -13,6 +13,7 @@ class DialogDirectoryProvider(
     private val fileExtensions: List<FileExtension>
 ) {
     private val systemSeparator = File.separatorChar
+    private var filesAllowed = true
     private var currentDirectory: Path = Paths.get("")
     private var currentDirectoryContent = listOf<Path>()
     private var possibleDirectories = listOf<Path>()
@@ -21,14 +22,10 @@ class DialogDirectoryProvider(
 
     init {
         this.prepareMatches("")
+        this.filesAllowed = inputType == InputType.FILE || inputType == InputType.FOLDER_AND_FILE
     }
 
     private fun updateCurrentFolder(currentInput: String) {
-        if (currentInput.isEmpty()) {
-            currentDirectory = Paths.get("")
-            return
-        }
-
         val unifiedInput = currentInput.replace("\\", "/").replaceAfterLast("/", "", "")
         val folder = Paths.get(unifiedInput)
         currentDirectory = if (folder.isDirectory()) folder else currentDirectory
@@ -38,14 +35,17 @@ class DialogDirectoryProvider(
         updateCurrentFolder(currentInput)
         currentDirectoryContent = currentDirectory.listDirectoryEntries()
         possibleDirectories = currentDirectoryContent.filter { it.isDirectory() }.filter { it.toString().startsWith(currentInput) }
-        possibleFiles = currentDirectoryContent.filter {
-            InputValidator.verifyFile(it.toFile(), fileExtensions)
-        }.filter { it.toString().startsWith(currentInput) }
+        if (filesAllowed) {
+            possibleFiles = currentDirectoryContent.filter {
+                InputValidator.verifyFile(it.toFile(), fileExtensions)
+            }.filter { it.toString().startsWith(currentInput) }
+        }
     }
 
     fun getHints(): Array<String> {
         val possibleMatches = currentDirectoryContent.filter { path ->
-            (path.isDirectory() || (InputValidator.verifyFile(path.toFile(), fileExtensions)))
+            (path.isDirectory() ||
+                ( filesAllowed && InputValidator.verifyFile(path.toFile(), fileExtensions)) )
         }.map { if (it.isDirectory()) it.toString() + systemSeparator else it.toString() }
 
         return possibleMatches.toTypedArray()
@@ -86,7 +86,7 @@ class DialogDirectoryProvider(
         return (entryCount + 1) * max(entrySize, newEntrySize) < targetLineLength * 2
     }
 
-    fun finalizeOutputString(entries: List<String>, minimumSize: Int): String {
+    private fun finalizeOutputString(entries: List<String>, minimumSize: Int): String {
         val paddedEntries = entries.map { it.padEnd(minimumSize) }
         var outputString = ""
         var secondLine = false
