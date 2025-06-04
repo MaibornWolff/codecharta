@@ -11,7 +11,6 @@ dependencies {
     implementation("io.github.bonede:tree-sitter-typescript:0.21.1")
     implementation("io.github.bonede:tree-sitter-kotlin:0.3.8.1")
 
-
     testImplementation(libs.jsonassert)
 }
 

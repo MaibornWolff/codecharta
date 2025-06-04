@@ -106,7 +106,9 @@ class UnifiedParser(
         val ignoredFileTypes = projectScanner.getIgnoredFileTypes()
 
         System.err.println()
-        System.err.println("Files with extensions [${formatFileExtensions(ignoredFileTypes)}] were ignored as they are currently not supported!")
+        System.err.println(
+            "Files with extensions [${formatFileExtensions(ignoredFileTypes)}] were ignored as they are currently not supported!"
+        )
 
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 

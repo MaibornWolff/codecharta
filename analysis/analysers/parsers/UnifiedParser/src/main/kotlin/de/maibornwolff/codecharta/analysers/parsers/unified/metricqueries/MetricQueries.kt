@@ -23,7 +23,7 @@ interface MetricQueries {
 
 enum class AvailableMetrics {
     COMPLEXITY,
-    COMMENT,
+    COMMENT
 }
 
 fun mapNamesToMetrics(metricNames: List<String>): List<AvailableMetrics> {
@@ -33,4 +33,3 @@ fun mapNamesToMetrics(metricNames: List<String>): List<AvailableMetrics> {
 
     return metrics
 }
-
