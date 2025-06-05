@@ -84,7 +84,6 @@ class UnifiedParser(
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
-
         private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
     }
 
@@ -94,7 +93,6 @@ class UnifiedParser(
         require(InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
             "Input invalid file for UnifiedParser, stopping execution..."
         }
-
         if (!withoutDefaultExcludes) patternsToExclude += DEFAULT_EXCLUDES
 
         val metrics = mapNamesToMetrics(metricsToCompute)
@@ -104,14 +102,13 @@ class UnifiedParser(
         val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, metrics)
         projectScanner.traverseInputProject(verbose)
 
-        if (projectScanner.isProjectEmpty()) {
+        if (!projectScanner.foundParsableFiles()) {
             println()
             Logger.error { "No files with specified file extension(s) were found within the given folder - not generating an output file!" }
             return null
         }
 
         val ignoredFileTypes = projectScanner.getIgnoredFileTypes()
-
         if (ignoredFileTypes.isNotEmpty()) {
             System.err.println()
             System.err.println(
@@ -136,7 +133,8 @@ class UnifiedParser(
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        TODO("Not yet implemented")
+        // TODO: maybe we want to use this function?
+        return false
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {

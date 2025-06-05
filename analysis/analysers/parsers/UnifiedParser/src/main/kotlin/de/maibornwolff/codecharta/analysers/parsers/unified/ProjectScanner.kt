@@ -31,12 +31,16 @@ class ProjectScanner(
     private val ignoredFileTypes = mutableSetOf<String>()
     private val fileMetrics = ConcurrentHashMap<String, MutableNode>()
 
-    fun isProjectEmpty(): Boolean {
-        return fileMetrics.isEmpty()
+    fun foundParsableFiles(): Boolean {
+        return fileMetrics.isNotEmpty()
+    }
+
+    fun getIgnoredFileTypes(): Set<String> {
+        return ignoredFileTypes
     }
 
     fun traverseInputProject(verbose: Boolean) {
-        val excludePatterns = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
+        val excludePatternRegex = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
         var lastParsedFile: String
 
         runBlocking(Dispatchers.Default) {
@@ -47,7 +51,7 @@ class ProjectScanner(
             files.forEach { file ->
                 launch {
                     filesParsed++
-                    lastParsedFile = parseFile(file, excludePatterns, verbose)
+                    lastParsedFile = parseFile(file, excludePatternRegex, verbose)
                 }
             }
         }
@@ -56,16 +60,12 @@ class ProjectScanner(
         addAllNodesToProjectBuilder()
     }
 
-    fun getIgnoredFileTypes(): Set<String> {
-        return ignoredFileTypes
-    }
-
-    private fun parseFile(file: File, excludePatterns: Regex, verbose: Boolean): String {
+    private fun parseFile(file: File, excludePatternRegex: Regex, verbose: Boolean): String {
         var lastParsedFile = ""
         val relativeFilePath = getRelativeFileName(file.toString())
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
 
-        if (!isPathExcluded(excludePatterns, relativeFilePath) && isParsableFileExtension(relativeFilePath)) {
+        if (!isPathExcluded(excludePatternRegex, relativeFilePath) && isParsableFileExtension(relativeFilePath)) {
             if (verbose) {
                 Logger.info { "Calculating metrics for file $relativeFilePath" }
             } else {
@@ -80,8 +80,8 @@ class ProjectScanner(
         return lastParsedFile
     }
 
-    private fun isPathExcluded(excludePatterns: Regex, relativeFilePath: String): Boolean {
-        return this.excludePatterns.isNotEmpty() && excludePatterns.containsMatchIn(relativeFilePath)
+    private fun isPathExcluded(excludePatternRegex: Regex, relativeFilePath: String): Boolean {
+        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn(relativeFilePath)
     }
 
     private fun isParsableFileExtension(path: String): Boolean {
@@ -106,8 +106,7 @@ class ProjectScanner(
                 return
             }
         }
-        val fileNode = collector.collectMetricsForFile(file, metricsToCompute)
-        fileMetrics[relativePath] = fileNode
+        fileMetrics[relativePath] = collector.collectMetricsForFile(file, metricsToCompute)
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
