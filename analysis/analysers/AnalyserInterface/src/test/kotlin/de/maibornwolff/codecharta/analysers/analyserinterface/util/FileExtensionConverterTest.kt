@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.util
+package de.maibornwolff.codecharta.analysers.analyserinterface.util
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test

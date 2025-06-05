@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.analysers.importers.sonar
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.importers.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.analysers.importers.sonar.dataaccess.SonarMetricsAPIDatasource
@@ -11,8 +13,6 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
-import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.File
@@ -105,9 +105,7 @@ class SonarImporter(
     }
 
     override fun call(): Unit? {
-        if (url == "" || projectId == "") {
-            throw IllegalArgumentException("Input invalid Url or ProjectID for SonarImporter, stopping execution...")
-        }
+        require(!(url == "" || projectId == "")) { "Input invalid Url or ProjectID for SonarImporter, stopping execution..." }
 
         val importer = createMeasuresAPIImporter()
         var project = importer.getProjectFromMeasureAPI(projectId, metrics)
