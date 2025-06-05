@@ -1,5 +1,5 @@
 {
-  "checksum": "91db21aa9f5eb6f1939f8ec0ca408dd5",
+  "checksum": "e231c5b04c8da43b879fab11c6dbc28d",
   "data": {
     "projectName": "",
     "nodes": [
@@ -17,6 +17,34 @@
             "children": [
               {
                 "name": "something.kt",
+                "type": "File",
+                "attributes": {
+                  "complexity": 1,
+                  "comment": 0
+                },
+                "link": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "bar",
+            "type": "Folder",
+            "attributes": {},
+            "link": "",
+            "children": [
+              {
+                "name": "foo.kt",
+                "type": "File",
+                "attributes": {
+                  "complexity": 7,
+                  "comment": 6
+                },
+                "link": "",
+                "children": []
+              },
+              {
+                "name": "hello.kt",
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
@@ -46,34 +74,6 @@
             },
             "link": "",
             "children": []
-          },
-          {
-            "name": "bar",
-            "type": "Folder",
-            "attributes": {},
-            "link": "",
-            "children": [
-              {
-                "name": "foo.kt",
-                "type": "File",
-                "attributes": {
-                  "complexity": 7,
-                  "comment": 6
-                },
-                "link": "",
-                "children": []
-              },
-              {
-                "name": "hello.kt",
-                "type": "File",
-                "attributes": {
-                  "complexity": 1,
-                  "comment": 0
-                },
-                "link": "",
-                "children": []
-              }
-            ]
           }
         ]
       }

@@ -1,5 +1,5 @@
 {
-  "checksum": "f4769a286fdc5de0a04a952de3736629",
+  "checksum": "b7776acda80c20edda8cdbb02b53c71b",
   "data": {
     "projectName": "",
     "nodes": [
@@ -45,26 +45,6 @@
             ]
           },
           {
-            "name": "foo.kt",
-            "type": "File",
-            "attributes": {
-              "complexity": 6,
-              "comment": 4
-            },
-            "link": "",
-            "children": []
-          },
-          {
-            "name": "whenCase.kt",
-            "type": "File",
-            "attributes": {
-              "complexity": 5,
-              "comment": 0
-            },
-            "link": "",
-            "children": []
-          },
-          {
             "name": "bar",
             "type": "Folder",
             "attributes": {},
@@ -91,6 +71,26 @@
                 "children": []
               }
             ]
+          },
+          {
+            "name": "foo.kt",
+            "type": "File",
+            "attributes": {
+              "complexity": 6,
+              "comment": 4
+            },
+            "link": "",
+            "children": []
+          },
+          {
+            "name": "whenCase.kt",
+            "type": "File",
+            "attributes": {
+              "complexity": 5,
+              "comment": 0
+            },
+            "link": "",
+            "children": []
           }
         ]
       }

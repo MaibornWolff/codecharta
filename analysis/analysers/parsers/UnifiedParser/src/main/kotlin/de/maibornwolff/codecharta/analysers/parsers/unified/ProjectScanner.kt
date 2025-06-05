@@ -5,7 +5,6 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.Met
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.AvailableMetrics
 import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
@@ -30,7 +29,7 @@ class ProjectScanner(
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
     private val ignoredFileTypes = mutableSetOf<String>()
-    private val fileMetrics = ConcurrentHashMap<Path, MutableNode>()
+    private val fileMetrics = ConcurrentHashMap<String, MutableNode>()
 
     fun isProjectEmpty(): Boolean {
         return fileMetrics.isEmpty()
@@ -54,7 +53,7 @@ class ProjectScanner(
         }
 
         if (!verbose) logProgress(lastParsedFile, totalFiles)
-        addNodesToProjectBuilder()
+        addAllNodesToProjectBuilder()
     }
 
     fun getIgnoredFileTypes(): Set<String> {
@@ -108,17 +107,18 @@ class ProjectScanner(
             }
         }
         val fileNode = collector.collectMetricsForFile(file, metricsToCompute)
-        val path = PathFactory.fromFileSystemPath(relativePath).parent
-        fileMetrics[path] = fileNode
+        fileMetrics[relativePath] = fileNode
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
         progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
     }
 
-    private fun addNodesToProjectBuilder() {
-        for ((path, node) in fileMetrics) {
-            projectBuilder.insertByPath(path.parent, node)
+    private fun addAllNodesToProjectBuilder() {
+        val sortedFileMetrics = fileMetrics.entries.sortedBy { (relativePath, _) -> relativePath }
+        for ((relativePath, node) in sortedFileMetrics) {
+            val path = PathFactory.fromFileSystemPath(relativePath).parent
+            projectBuilder.insertByPath(path, node)
         }
     }
 }

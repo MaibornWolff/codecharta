@@ -106,7 +106,7 @@ class UnifiedParser(
 
         if (projectScanner.isProjectEmpty()) {
             println()
-            Logger.error {  "No files with specified file extension(s) were found within the given folder - not generating an output file!"  }
+            Logger.error { "No files with specified file extension(s) were found within the given folder - not generating an output file!" }
             return null
         }
 
