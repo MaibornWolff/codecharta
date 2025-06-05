@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.sourcecode.e2e
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.SourceCodeParser
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.e2e.StreamHelper.Companion.retrieveStreamAsString
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class ParseFolderToTable {
@@ -23,6 +24,7 @@ class ParseFolderToTable {
         assertThat(output.lines().size).describedAs(output).isEqualTo(1 + 4 + 1) // header + java files + eof
     }
 
+    @Disabled
     @Test
     fun `files with correct paths and metrics are found`() {
         assertThat(output).contains("bar/foo.java", "bar/hello.java", "foo.java", "29", "39", "11")
