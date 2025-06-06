@@ -64,6 +64,14 @@ class UnifiedParser(
             return null
         }
 
+        val notFoundButSpecifiedFormats = projectScanner.getNotFoundFileExtensions()
+        if (notFoundButSpecifiedFormats.isNotEmpty()) {
+            System.err.println()
+            System.err.println(
+                "From the specified file extensions to parse, [${formatFileExtensions(notFoundButSpecifiedFormats)}] were not found in the given input!"
+            )
+        }
+
         val ignoredFileTypes = projectScanner.getIgnoredFileTypes()
         if (ignoredFileTypes.isNotEmpty()) {
             System.err.println()

@@ -1,5 +1,5 @@
 {
-  "checksum": "e231c5b04c8da43b879fab11c6dbc28d",
+  "checksum": "25f6d3581d9e74f015c943dd065ace8c",
   "data": {
     "projectName": "",
     "nodes": [
@@ -61,6 +61,16 @@
             "attributes": {
               "complexity": 6,
               "comment": 4
+            },
+            "link": "",
+            "children": []
+          },
+          {
+            "name": "helloWorld.ts",
+            "type": "File",
+            "attributes": {
+              "complexity": 1,
+              "comment": 2
             },
             "link": "",
             "children": []

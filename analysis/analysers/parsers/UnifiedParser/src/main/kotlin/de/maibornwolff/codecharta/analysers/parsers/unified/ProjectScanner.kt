@@ -39,6 +39,16 @@ class ProjectScanner(
         return ignoredFileTypes
     }
 
+    fun getNotFoundFileExtensions(): Set<String> {
+        val result = mutableSetOf<String>()
+        for (extension in includeExtensions) {
+            if (!fileMetrics.keys().toList().any {it.endsWith(extension)}) {
+                result.add(extension)
+            }
+        }
+        return result
+    }
+
     fun traverseInputProject(verbose: Boolean) {
         val excludePatternRegex = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
         var lastParsedFile: String
@@ -66,13 +76,9 @@ class ProjectScanner(
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
 
         if (!isPathExcluded(excludePatternRegex, relativeFilePath) && isParsableFileExtension(relativeFilePath)) {
-            if (verbose) {
-                Logger.info { "Calculating metrics for file $relativeFilePath" }
-            } else {
-                logProgress(file.name, filesParsed)
-            }
+            if (!verbose) logProgress(file.name, filesParsed)
 
-            applyLanguageSpecificCollector(file, relativeFilePath)
+            applyLanguageSpecificCollector(file, relativeFilePath, verbose)
             lastParsedFile = file.name
         } else if (verbose) {
             Logger.warn { "Ignoring file $relativeFilePath" }
@@ -95,7 +101,7 @@ class ProjectScanner(
             .replace('\\', '/')
     }
 
-    private fun applyLanguageSpecificCollector(file: File, relativePath: String) {
+    private fun applyLanguageSpecificCollector(file: File, relativePath: String, verbose: Boolean) {
         val fileExtension = file.extension
         val collector: MetricCollector
         when (fileExtension) {
@@ -103,9 +109,11 @@ class ProjectScanner(
             "kt" -> collector = KotlinCollector()
             else -> {
                 ignoredFileTypes += file.extension
+                if (verbose) Logger.warn { "Ignoring file $relativePath" }
                 return
             }
         }
+        if (verbose) Logger.info { "Calculating metrics for file $relativePath" }
         fileMetrics[relativePath] = collector.collectMetricsForFile(file, metricsToCompute)
     }
 
