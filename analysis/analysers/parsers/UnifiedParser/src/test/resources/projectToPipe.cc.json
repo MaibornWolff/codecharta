@@ -1,0 +1,56 @@
+{
+  "checksum": "93ee595b162af2ecdb95d3f8012ba25a",
+  "data": {
+    "projectName": "",
+    "nodes": [
+      {
+        "name": "root",
+        "type": "Folder",
+        "attributes": {},
+        "link": "",
+        "children": [
+          {
+            "name": "piped",
+            "type": "Folder",
+            "attributes": {},
+            "link": "",
+            "children": [
+              {
+                "name": "sampleFile.ts",
+                "type": "File",
+                "attributes": {
+                  "complexity": 42,
+                  "comment": 69
+                },
+                "link": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "apiVersion": "1.3",
+    "edges": [],
+    "attributeTypes": {},
+    "attributeDescriptors": {
+      "complexity": {
+        "title": "Complexity",
+        "description": "TODO",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "comment": {
+        "title": "comment",
+        "description": "",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1
+      }
+    },
+    "blacklist": []
+  }
+}

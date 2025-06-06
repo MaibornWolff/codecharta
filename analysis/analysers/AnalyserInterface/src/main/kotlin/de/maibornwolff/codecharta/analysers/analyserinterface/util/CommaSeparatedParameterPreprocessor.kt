@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.util
+package de.maibornwolff.codecharta.analysers.analyserinterface.util
 
 import picocli.CommandLine
 import java.util.Stack

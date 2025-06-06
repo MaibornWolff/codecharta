@@ -3,13 +3,13 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.FileExtensionConverter
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
-import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
-import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
-import de.maibornwolff.codecharta.util.FileExtensionConverter
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
@@ -99,8 +99,8 @@ class RawTextParser(
     override fun call(): Unit? {
         logExecutionStartedSyncSignal()
 
-        if (!InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
-            throw IllegalArgumentException("Input invalid file for RawTextParser, stopping execution...")
+        require(InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
+            "Input invalid file for RawTextParser, stopping execution..."
         }
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES

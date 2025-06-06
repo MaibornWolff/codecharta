@@ -68,7 +68,7 @@ class Dialog {
 
             val fileExtensions: String =
                 session.promptInput(
-                    message = "Do you only want to parse files with specific file-extensions? ",
+                    message = "Do you only want to parse files with specific file-extensions?",
                     hint = "fileType1, fileType2... (leave empty to include all file-extensions)",
                     allowEmptyInput = true,
                     onInputReady = testCallback()
@@ -85,7 +85,7 @@ class Dialog {
                 inputFileName,
                 "--output-file=$outputFileName",
                 if (isCompressed) null else "--not-compressed",
-                "--verbose=$verbose",
+                "--verbose=${!verbose}",
                 "--metrics=$metrics",
                 "--tab-width=$tabWidthValue",
                 "--max-indentation-level=$maxIndentationLevel",
