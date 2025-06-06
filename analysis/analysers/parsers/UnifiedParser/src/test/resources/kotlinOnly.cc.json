@@ -1,5 +1,5 @@
 {
-  "checksum": "a85247c9b87f8613e9088323cc22686b",
+  "checksum": "2d747e899dda608f40f6185484b77485",
   "data": {
     "projectName": "",
     "nodes": [
@@ -7,25 +7,8 @@
         "name": "root",
         "type": "Folder",
         "attributes": {},
+        "link": "",
         "children": [
-          {
-            "name": "piped",
-            "type": "Folder",
-            "attributes": {},
-            "link": "",
-            "children": [
-              {
-                "name": "sampleFile.ts",
-                "type": "File",
-                "attributes": {
-                  "complexity": 42.0,
-                  "comment": 69.0
-                },
-                "link": "",
-                "children": []
-              }
-            ]
-          },
           {
             "name": "bar",
             "type": "Folder",
@@ -60,16 +43,6 @@
             "attributes": {
               "complexity": 6,
               "comment": 4
-            },
-            "link": "",
-            "children": []
-          },
-          {
-            "name": "helloWorld.ts",
-            "type": "File",
-            "attributes": {
-              "complexity": 1,
-              "comment": 2
             },
             "link": "",
             "children": []

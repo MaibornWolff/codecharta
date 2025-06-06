@@ -52,7 +52,7 @@ class UnifiedParserTest {
         // given
         val pipedProject = ""
         val inputFilePath = "src/test/resources/sampleproject"
-        val expectedResultFile = File("src/test/resources/sampleFolder.cc.json").absoluteFile
+        val expectedResultFile = File("src/test/resources/sampleProject.cc.json").absoluteFile
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
@@ -115,5 +115,81 @@ class UnifiedParserTest {
         System.setErr(originalErr)
     }
 
-    // TODO: add more tests/error messages when included/excluded extensions did not behave as planned (e.g. none were found)
+    @Test
+    fun `should display message for each file when verbose mode was set`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "src/test/resources/sampleproject"
+        val ignoredFiles = listOf(
+            ".whatever/something.kt",
+            "bar/something.strange",
+            "foo.py",
+        )
+        val parsedFiles = listOf(
+            "bar/hello.kt",
+            "bar/foo.kt",
+            "foo.kt",
+            "whenCase.kt",
+            "helloWorld.ts"
+        )
+        System.setErr(PrintStream(errContent))
+
+        // when
+        executeForOutput(pipedProject, arrayOf(inputFilePath, "--verbose"))
+
+        // then
+        for (file in ignoredFiles) {
+            Assertions.assertThat(errContent.toString()).contains("Ignoring file $file")
+        }
+        for (file in parsedFiles) {
+            Assertions.assertThat(errContent.toString()).contains("Calculating metrics for file $file")
+        }
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should only include file extensions that we specified when file-extensions flag is set`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "src/test/resources/sampleproject"
+        val expectedResultFile = File("src/test/resources/kotlinOnly.cc.json").absoluteFile
+
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.kt"))
+
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+    }
+
+    @Test
+    fun `should display warning when a file extension specified to be included was not found in project`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "src/test/resources/sampleproject"
+        val expectedResultFile = File("src/test/resources/kotlinOnly.cc.json").absoluteFile
+        val invalidFileExtension = ".invalid"
+        System.setErr(PrintStream(errContent))
+
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.kt, $invalidFileExtension"))
+
+        Assertions.assertThat(errContent.toString()).contains("From the specified file extensions to parse, [$invalidFileExtension] were not found in the given input!")
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should include normally excluded folders when without-default-excludes flag is set`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "src/test/resources/sampleproject"
+        val expectedResultFile = File("src/test/resources/includeAll.cc.json").absoluteFile
+
+        // when
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--without-default-excludes"))
+
+        // then
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+    }
 }
