@@ -4,10 +4,10 @@ import de.maibornwolff.codecharta.serialization.FileExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class DialogDirectoryProviderTest {
+class DirectoryNavigatorTest {
     @Test
     fun `this should provide a good change directory experience`() {
-        val uut = DialogDirectoryProvider(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON))
+        val uut = DirectoryNavigator(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), false)
         uut.prepareMatches("")
         assertThat(uut.getHints()).isEqualTo("")
     }
