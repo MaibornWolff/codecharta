@@ -8,11 +8,12 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.math.max
 
-class DialogDirectoryProvider(
+class DirectoryNavigator(
     val inputType: InputType,
     private val fileExtensions: List<FileExtension>,
     val multiple: Boolean
 ) {
+    var validate: (String) -> Boolean
     private val systemSeparator = File.separatorChar
     private var filesAllowed = true
     private var currentDirectory: Path = Paths.get("")
@@ -25,6 +26,7 @@ class DialogDirectoryProvider(
     init {
         this.prepareMatches("")
         this.filesAllowed = inputType == InputType.FILE || inputType == InputType.FOLDER_AND_FILE
+        this.validate = InputValidator.isFileOrFolderValid(inputType, fileExtensions, multiple)
     }
 
     private fun updateCompletedInput(currentInput: String) {
