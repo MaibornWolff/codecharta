@@ -55,25 +55,24 @@ fun Session.promptInput(
     return lastUserInput
 }
 
-fun Session.promptInputComplete(
+fun Session.promptInputDirectoryAssisted(
     message: String,
     invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
-    inputValidator: (String) -> Boolean = { true },
-    dialogDirectoryProvider: DialogDirectoryProvider,
+    directoryNavigator: DirectoryNavigator,
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     var lastUserInput = ""
     var isInputValid by liveVarOf(true)
-    var subInfoText = dialogDirectoryProvider.getMatches()
-    var hints = dialogDirectoryProvider.getHints()
+    var subInputText = directoryNavigator.getMatches()
+    var hints = directoryNavigator.getHints()
     section {
-        drawInputWithInfo(
+        drawInputWithSubInputText(
             message = message,
             isInputValid = isInputValid,
             allowEmptyInput = false,
             lastInputEmpty = lastUserInput.isEmpty(),
             invalidInputMessage = invalidInputMessage,
-            subInfoText,
+            subInputText,
             *hints
         )
     }.runUntilSignal {
@@ -85,12 +84,12 @@ fun Session.promptInputComplete(
         onInputChanged {
             isInputValid = true
             lastUserInput = input
-            dialogDirectoryProvider.prepareMatches(input)
-            subInfoText = dialogDirectoryProvider.getMatches()
-            hints = dialogDirectoryProvider.getHints()
+            directoryNavigator.prepareMatches(input)
+            subInputText = directoryNavigator.getMatches()
+            hints = directoryNavigator.getHints()
         }
         onInputEntered {
-            if (inputValidator(input) && input.isNotEmpty()) {
+            if (directoryNavigator.validate(input) && input.isNotEmpty()) {
                 isInputValid = true
                 signal()
             } else {

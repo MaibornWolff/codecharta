@@ -3,20 +3,18 @@ package de.maibornwolff.codecharta.analysers.tools.validation
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
-import de.maibornwolff.codecharta.dialogProvider.DialogDirectoryProvider
+import de.maibornwolff.codecharta.dialogProvider.DirectoryNavigator
 import de.maibornwolff.codecharta.dialogProvider.InputType
-import de.maibornwolff.codecharta.dialogProvider.InputValidator
-import de.maibornwolff.codecharta.dialogProvider.promptInputComplete
+import de.maibornwolff.codecharta.dialogProvider.promptInputDirectoryAssisted
 import de.maibornwolff.codecharta.serialization.FileExtension
 
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectAnalyserArgs(session: Session): List<String> {
             print("Which file do you want to validate?")
-            val inputFileName: String = session.promptInputComplete(
+            val inputFileName: String = session.promptInputDirectoryAssisted(
                 message = "Validate file",
-                inputValidator = InputValidator.isFileOrFolderValid(InputType.FILE, listOf(FileExtension.CCJSON, FileExtension.CCGZ), true),
-                dialogDirectoryProvider = DialogDirectoryProvider(InputType.FILE, listOf(FileExtension.CCJSON, FileExtension.CCJSON), true),
+                directoryNavigator = DirectoryNavigator(InputType.FILE, listOf(FileExtension.CCJSON, FileExtension.CCJSON), true),
                 onInputReady = testCallback()
             )
 

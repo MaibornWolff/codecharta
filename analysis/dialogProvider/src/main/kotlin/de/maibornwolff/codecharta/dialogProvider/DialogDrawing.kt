@@ -35,7 +35,7 @@ fun MainRenderScope.drawInput(
     input(inputCompleter, initialText = "")
 }
 
-fun MainRenderScope.drawInputWithInfo(
+fun MainRenderScope.drawInputWithSubInputText(
     message: String,
     isInputValid: Boolean,
     allowEmptyInput: Boolean,
