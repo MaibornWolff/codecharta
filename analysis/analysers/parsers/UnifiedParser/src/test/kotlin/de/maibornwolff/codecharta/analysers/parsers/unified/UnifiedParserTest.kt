@@ -17,6 +17,7 @@ import java.io.PrintStream
 class UnifiedParserTest {
     private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
+    private val testResourceBaseFolder = "src/test/resources/"
 
     @AfterEach
     fun afterTest() {
@@ -37,8 +38,8 @@ class UnifiedParserTest {
     fun `Should produce correct output when given single file`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/typescriptSample.ts"
-        val expectedResultFile = File("src/test/resources/typescriptSample.cc.json")
+        val inputFilePath = "${testResourceBaseFolder}typescriptSample.ts"
+        val expectedResultFile = File("${testResourceBaseFolder}typescriptSample.cc.json")
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
@@ -51,8 +52,8 @@ class UnifiedParserTest {
     fun `Should produce correct output when given a project folder`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject"
-        val expectedResultFile = File("src/test/resources/sampleProject.cc.json").absoluteFile
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val expectedResultFile = File("${testResourceBaseFolder}sampleProject.cc.json").absoluteFile
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
@@ -64,9 +65,9 @@ class UnifiedParserTest {
     @Test
     fun `Should correctly merge when piped into another project`() {
         // given
-        val pipedProject = File("src/test/resources/projectToPipe.cc.json").readText()
-        val inputFilePath = "src/test/resources/sampleproject"
-        val expectedResultFile = File("src/test/resources/mergeResult.cc.json").absoluteFile
+        val pipedProject = File("${testResourceBaseFolder}projectToPipe.cc.json").readText()
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val expectedResultFile = File("${testResourceBaseFolder}mergeResult.cc.json").absoluteFile
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
@@ -81,7 +82,7 @@ class UnifiedParserTest {
     fun `should stop execution and throw error when input file could not be found`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/file.invalid"
+        val inputFilePath = "${testResourceBaseFolder}file.invalid"
         System.setErr(PrintStream(errContent))
 
         // when
@@ -100,7 +101,7 @@ class UnifiedParserTest {
     fun `should stop execution and throw error when no parsable files were found in project`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject"
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
         System.setErr(PrintStream(errContent))
 
         // when
@@ -119,7 +120,7 @@ class UnifiedParserTest {
     fun `should display message for each file when verbose mode was set`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject"
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val ignoredFiles = listOf(
             ".whatever/something.kt",
             "bar/something.strange",
@@ -153,8 +154,8 @@ class UnifiedParserTest {
     fun `should only include file extensions that we specified when file-extensions flag is set`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject"
-        val expectedResultFile = File("src/test/resources/kotlinOnly.cc.json").absoluteFile
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val expectedResultFile = File("${testResourceBaseFolder}kotlinOnly.cc.json").absoluteFile
 
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.kt"))
 
@@ -165,8 +166,8 @@ class UnifiedParserTest {
     fun `should display warning when a file extension specified to be included was not found in project`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject"
-        val expectedResultFile = File("src/test/resources/kotlinOnly.cc.json").absoluteFile
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val expectedResultFile = File("${testResourceBaseFolder}kotlinOnly.cc.json").absoluteFile
         val invalidFileExtension = ".invalid"
         System.setErr(PrintStream(errContent))
 
@@ -183,8 +184,8 @@ class UnifiedParserTest {
     fun `should include normally excluded folders when without-default-excludes flag is set`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject"
-        val expectedResultFile = File("src/test/resources/includeAll.cc.json").absoluteFile
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val expectedResultFile = File("${testResourceBaseFolder}includeAll.cc.json").absoluteFile
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--without-default-excludes"))
