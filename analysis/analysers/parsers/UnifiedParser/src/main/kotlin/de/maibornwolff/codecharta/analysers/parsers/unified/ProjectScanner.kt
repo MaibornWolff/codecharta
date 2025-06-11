@@ -42,7 +42,7 @@ class ProjectScanner(
     fun getNotFoundFileExtensions(): Set<String> {
         val result = mutableSetOf<String>()
         for (extension in includeExtensions) {
-            if (!fileMetrics.keys().toList().any {it.endsWith(extension)}) {
+            if (!fileMetrics.keys().toList().any { it.endsWith(extension) }) {
                 result.add(extension)
             }
         }

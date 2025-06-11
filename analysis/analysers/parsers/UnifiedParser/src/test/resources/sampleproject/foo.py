@@ -6,6 +6,7 @@ user1 = "Jack"
 user2 = "Jill"
 
 #control that the user belongs to the list of allowed users
+#when used is not found access is denied
 if username == user1:
     print "Access granted"
 elif username == user2:
