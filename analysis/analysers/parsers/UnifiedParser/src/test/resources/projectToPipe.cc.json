@@ -37,10 +37,10 @@
     "attributeDescriptors": {
       "complexity": {
         "title": "Complexity",
-        "description": "TODO",
+        "description": "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/unified",
+        "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
         "direction": -1
       },
       "metric_from_other_source": {
