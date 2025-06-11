@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.promptConfirm
-import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultDirectoryAssistedInput
 import de.maibornwolff.codecharta.dialogProvider.promptInput
 import de.maibornwolff.codecharta.dialogProvider.promptList
 import java.util.Locale
@@ -21,7 +21,7 @@ class Dialog {
 
             val format = getFormatByName(formatChoice)
 
-            val reportFile: String = session.promptDefaultFileFolderInput(
+            val reportFile: String = session.promptDefaultDirectoryAssistedInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(format.fileExtension),
                 onInputReady = testCallback()
