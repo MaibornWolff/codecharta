@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+- Add new UnifiedParser that is based on treesitter and works without external tools [#4070](https://github.com/MaibornWolff/codecharta/pull/4070)
+  - It currently supports:
+    - Typescript
+    - Kotlin
+
 ## [1.133.0] - 2025-05-19
 
 ### Added 🚀
