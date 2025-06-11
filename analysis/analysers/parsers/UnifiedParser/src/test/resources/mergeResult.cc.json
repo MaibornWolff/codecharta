@@ -1,5 +1,5 @@
 {
-  "checksum": "a85247c9b87f8613e9088323cc22686b",
+  "checksum": "792bacf531c501bd09e80300ca31cf86",
   "data": {
     "projectName": "",
     "nodes": [
@@ -19,7 +19,8 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 42.0,
-                  "comment": 69.0
+                  "comment_lines": 69.0,
+                  "metric_from_other_source": 55.0
                 },
                 "link": "",
                 "children": []
@@ -37,7 +38,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 7,
-                  "comment": 6
+                  "comment_lines": 6
                 },
                 "link": "",
                 "children": []
@@ -47,7 +48,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
-                  "comment": 0
+                  "comment_lines": 0
                 },
                 "link": "",
                 "children": []
@@ -59,7 +60,7 @@
             "type": "File",
             "attributes": {
               "complexity": 6,
-              "comment": 4
+              "comment_lines": 4
             },
             "link": "",
             "children": []
@@ -69,7 +70,7 @@
             "type": "File",
             "attributes": {
               "complexity": 1,
-              "comment": 2
+              "comment_lines": 2
             },
             "link": "",
             "children": []
@@ -79,7 +80,7 @@
             "type": "File",
             "attributes": {
               "complexity": 5,
-              "comment": 0
+              "comment_lines": 0
             },
             "link": "",
             "children": []
@@ -93,18 +94,26 @@
     "attributeDescriptors": {
       "complexity": {
         "title": "Complexity",
-        "description": "TODO",
+        "description": "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/unified",
+        "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
         "direction": -1
       },
-      "comment": {
-        "title": "comment",
-        "description": "",
+      "metric_from_other_source": {
+        "title": "other metric",
+        "description": "metric to test merging with the unifiedParser",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
+        "direction": -1
+      },
+      "comment_lines": {
+        "title": "Comment lines",
+        "description": "Number of lines containing either a comment or commented-out code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
         "direction": -1
       }
     },

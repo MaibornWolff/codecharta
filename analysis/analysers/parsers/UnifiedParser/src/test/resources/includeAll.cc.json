@@ -1,5 +1,5 @@
 {
-  "checksum": "25f6d3581d9e74f015c943dd065ace8c",
+  "checksum": "b02e1abdf5b8ca36322ce107735e4d16",
   "data": {
     "projectName": "",
     "nodes": [
@@ -20,7 +20,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
-                  "comment": 0
+                  "comment_lines": 0
                 },
                 "link": "",
                 "children": []
@@ -38,7 +38,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 7,
-                  "comment": 6
+                  "comment_lines": 6
                 },
                 "link": "",
                 "children": []
@@ -48,7 +48,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
-                  "comment": 0
+                  "comment_lines": 0
                 },
                 "link": "",
                 "children": []
@@ -60,7 +60,7 @@
             "type": "File",
             "attributes": {
               "complexity": 6,
-              "comment": 4
+              "comment_lines": 4
             },
             "link": "",
             "children": []
@@ -70,7 +70,7 @@
             "type": "File",
             "attributes": {
               "complexity": 1,
-              "comment": 2
+              "comment_lines": 2
             },
             "link": "",
             "children": []
@@ -80,7 +80,7 @@
             "type": "File",
             "attributes": {
               "complexity": 5,
-              "comment": 0
+              "comment_lines": 0
             },
             "link": "",
             "children": []
@@ -94,18 +94,18 @@
     "attributeDescriptors": {
       "complexity": {
         "title": "Complexity",
-        "description": "TODO",
+        "description": "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
+        "direction": -1
+      },
+      "comment_lines": {
+        "title": "Comment lines",
+        "description": "Number of lines containing either a comment or commented-out code",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
-        "direction": -1
-      },
-      "comment": {
-        "title": "comment",
-        "description": "",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
         "direction": -1
       }
     },

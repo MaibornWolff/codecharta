@@ -20,7 +20,8 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 42,
-                  "comment": 69
+                  "comment_lines": 69,
+                  "metric_from_other_source": 55
                 },
                 "link": "",
                 "children": []
@@ -42,9 +43,9 @@
         "link": "https://codecharta.com/docs/parser/unified",
         "direction": -1
       },
-      "comment": {
-        "title": "comment",
-        "description": "",
+      "metric_from_other_source": {
+        "title": "other metric",
+        "description": "metric to test merging with the unifiedParser",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",

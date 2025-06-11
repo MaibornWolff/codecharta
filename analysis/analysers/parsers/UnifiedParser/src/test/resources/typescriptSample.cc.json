@@ -1,5 +1,5 @@
 {
-  "checksum": "93ee595b162af2ecdb95d3f8012ba25a",
+  "checksum": "f016d08fd1d57e6035217da1ac696155",
   "data": {
     "projectName": "",
     "nodes": [
@@ -14,7 +14,7 @@
             "type": "File",
             "attributes": {
               "complexity": 32,
-              "comment": 29
+              "comment_lines": 29
             },
             "link": "",
             "children": []
@@ -28,18 +28,18 @@
     "attributeDescriptors": {
       "complexity": {
         "title": "Complexity",
-        "description": "TODO",
+        "description": "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
+        "direction": -1
+      },
+      "comment_lines": {
+        "title": "Comment lines",
+        "description": "Number of lines containing either a comment or commented-out code",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
-        "direction": -1
-      },
-      "comment": {
-        "title": "comment",
-        "description": "",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
         "direction": -1
       }
     },
