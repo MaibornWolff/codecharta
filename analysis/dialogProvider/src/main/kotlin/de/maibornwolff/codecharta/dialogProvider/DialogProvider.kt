@@ -11,6 +11,8 @@ import com.varabyte.kotter.foundation.input.onKeyPressed
 import com.varabyte.kotter.foundation.input.sendKeys
 import com.varabyte.kotter.foundation.liveVarOf
 import com.varabyte.kotter.foundation.runUntilSignal
+import com.varabyte.kotter.foundation.text.text
+import com.varabyte.kotter.foundation.text.yellow
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
@@ -21,6 +23,13 @@ enum class InputType(val inputType: String) {
     FOLDER("folder"),
     FILE("file"),
     FOLDER_AND_FILE("folder or file")
+}
+
+fun Session.displayInfo(message: String) {
+    section {
+        yellow { text("! ") }
+        text(message)
+    }.run()
 }
 
 fun Session.promptInput(
@@ -263,7 +272,6 @@ fun Session.promptDefaultDirectoryAssistedInput(
     inputType: InputType,
     fileExtensionList: List<FileExtension>,
     multiple: Boolean = false,
-    prefixMessage: String = "",
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     val messageFileExtension = "[${fileExtensionList.joinToString(", ") { fileExtension -> fileExtension.extension }}]"
@@ -312,7 +320,7 @@ fun Session.promptDefaultDirectoryAssistedInput(
     )
 
     return promptInputDirectoryAssisted(
-        message = "${prefixMessage}What ${if (multiple) "are" else "is"} the input $inputMessage.$messageExtension",
+        message = "What ${if (multiple) "are" else "is"} the input $inputMessage.$messageExtension",
         invalidInputMessage = "Please input a valid ${inputType.inputType}",
         directoryNavigator = directoryNavigator,
         onInputReady = onInputReady
