@@ -27,6 +27,9 @@ mockito-core = "3.12.4"
 mockito-kotlin = "2.2.0"
 mockk = "1.13.17"
 wiremock = "2.35.2"
+tree-sitter = "0.24.5"
+tree-sitter-typescript = "0.21.1"
+tree-sitter-kotlin = "0.3.8.1"
 
 [libraries]
 kotlin-logging-jvm = { group = "io.github.oshai", name = "kotlin-logging-jvm", version.ref = "kotlin-logging" }
@@ -64,6 +67,9 @@ mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mo
 commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.13.1" }
 junit-platform-runner = { group = "org.junit.platform", name = "junit-platform-runner", version.ref = "junit-platform" }
 json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.json.schema", version.ref = "json-schema" }
+treesitter = { group = "io.github.bonede", name = "tree-sitter", version.ref = "tree-sitter"}
+treesitter-typescript = { group = "io.github.bonede", name = "tree-sitter-typescript", version.ref = "tree-sitter-typescript"}
+treesitter-kotlin = { group = "io.github.bonede", name = "tree-sitter-kotlin", version.ref = "tree-sitter-kotlin"}
 
 [plugins]
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

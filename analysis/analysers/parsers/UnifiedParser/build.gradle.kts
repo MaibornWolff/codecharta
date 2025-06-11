@@ -8,9 +8,9 @@ dependencies {
     implementation(libs.kotter)
     implementation(libs.kotter.test)
 
-    implementation("io.github.bonede:tree-sitter:0.24.5")
-    implementation("io.github.bonede:tree-sitter-typescript:0.21.1")
-    implementation("io.github.bonede:tree-sitter-kotlin:0.3.8.1")
+    implementation(libs.treesitter)
+    implementation(libs.treesitter.typescript)
+    implementation(libs.treesitter.kotlin)
 
     testImplementation(libs.jsonassert)
 }
