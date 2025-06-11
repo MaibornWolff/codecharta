@@ -47,18 +47,25 @@ ccsh csvimport --path-column-name=file -o ws_complexity.$fileext $debugparam ws_
 echo "
 Analyzing Git repository (for larger or older repositories this might take some minutes) ...
 ============================================================================================"
-ccsh gitlogparser repo-scan --repo-path . -o git.$fileext $debugparam 
+ccsh gitlogparser repo-scan --repo-path . -o git.$fileext $debugparam
 
 echo "
 Gathering Tokei metrics ...
 ==========================="
 tokei . -o json > tokei.json
-ccsh tokeiimporter tokei.json -r . -o tokei.$fileext $debugparam 
+ccsh tokeiimporter tokei.json -r . -o tokei.$fileext $debugparam
+
+
+echo "
+Analyzing rawtext ...
+==========================="
+ccsh rawtextparser . -o rawtext.$fileext $debugparam
+
 
 echo "
 Combining all data ...
 ======================"
-ccsh merge -o $targetfile $debugparam ws_complexity.$fileext git.$fileext tokei.$fileext
+ccsh merge -o $targetfile $debugparam ws_complexity.$fileext git.$fileext tokei.$fileext rawtext.$fileext
 
 if [ $debug == true ]; then
     echo "
@@ -67,12 +74,12 @@ NOT deleting temporary files in debug mode.
 
 If you want to delete temporary files please execute manually:
 
-rm ws_complexity.$fileext git.$fileext tokei.$fileext tokei.json ws_complexity.csv"
+rm ws_complexity.$fileext git.$fileext tokei.$fileext tokei.json ws_complexity.csv rawtext.$fileext"
 else
     echo "
 Deleting temporary files ...
 ============================"
-rm ws_complexity.$fileext git.$fileext tokei.$fileext tokei.json ws_complexity.csv
+rm ws_complexity.$fileext git.$fileext tokei.$fileext tokei.json ws_complexity.csv rawtext.$fileext
 fi
 
     echo "
@@ -83,7 +90,7 @@ All done.
 
 if [ -f $targetfile ]; then
     echo "
-Created $targetfile. 
+Created $targetfile.
 
 
 Open it using CodeCharta Web Studio at https://codecharta.com/visualization/app/
@@ -93,6 +100,6 @@ Recommended defaults are:
 - Height Metrix: whitespace_complexity
 - Color Metric: number_of_commits or weeks_with_commits"
 else
-    echo "Arg! Something wrent wrong :/ 
+    echo "Arg! Something wrent wrong :/
 Please check outputs above for errors and/or enable debug mode by appending --debug at the end of command to manually check generated files."
 fi

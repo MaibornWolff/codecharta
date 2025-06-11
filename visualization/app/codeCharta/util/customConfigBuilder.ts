@@ -39,6 +39,7 @@ export function buildCustomConfigFromState(
 
     // Override the default state settings with the stored CustomConfig values
     deepMapOneToOther(state, customConfig.stateSettings)
+    customConfig.stateSettings.fileSettings.edges = []
 
     customConfig.id = md5(JSON.stringify(customConfig, stateObjectReplacer))
     return customConfig

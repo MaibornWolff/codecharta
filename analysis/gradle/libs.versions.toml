@@ -2,6 +2,7 @@
 kotlin-logging = "6.0.9"
 boon = "0.34"
 commons-lang3 = "3.17.0"
+cyclonedx = "2.2.0"
 gson = "2.10.1"
 jackson = "2.18.3"
 jacoco = "0.8.11"
@@ -13,7 +14,7 @@ juniversalchardet = "1.0.3"
 kotlin = "1.9.25"
 kotlinx-coroutines = "1.8.1"
 kotter = "1.2.1"
-picocli = "4.7.6"
+picocli = "4.7.7"
 slf4j = "2.0.17"
 sonar-java = "6.8.0.23379"
 sonarqube = "6.1.0.5360"
@@ -63,7 +64,7 @@ sonar-java-plugin = { group = "org.sonarsource.java", name = "sonar-java-plugin"
 jaxb-api = { group = "javax.xml.bind", name = "jaxb-api", version.ref = "jaxb-api" }
 mockito-kotlin = { group = "com.nhaarman.mockitokotlin2", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito-core" }
-commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.13.0" }
+commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.13.1" }
 junit-platform-runner = { group = "org.junit.platform", name = "junit-platform-runner", version.ref = "junit-platform" }
 json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.json.schema", version.ref = "json-schema" }
 treesitter = { group = "io.github.bonede", name = "tree-sitter", version.ref = "tree-sitter"}
@@ -74,3 +75,4 @@ treesitter-kotlin = { group = "io.github.bonede", name = "tree-sitter-kotlin", v
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+cyclonedx = { id = "org.cyclonedx.bom", version.ref = "cyclonedx" }
