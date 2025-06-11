@@ -47,7 +47,7 @@ class DirectoryNavigator(
         val splitInput = if (multiple) currentInput.substringAfterLast(',') else currentInput
 
         updateCurrentFolder(splitInput)
-        currentDirectoryContent = currentDirectory.listDirectoryEntries()
+        currentDirectoryContent = currentDirectory.listDirectoryEntries().sorted()
         possibleDirectories = currentDirectoryContent.filter { it.isDirectory() }.filter { it.toString().startsWith(splitInput) }
         if (filesAllowed) {
             possibleFiles = currentDirectoryContent.filter {
