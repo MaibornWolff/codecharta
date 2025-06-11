@@ -1,5 +1,5 @@
 {
-  "checksum": "8badcb8e8a86aa45581309ded27a57a6",
+  "checksum": "b0e7c3494d378ac2887d182e8dfeb26d",
   "data": {
     "projectName": "",
     "nodes": [
@@ -20,7 +20,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 7,
-                  "comment_lines": 6
+                  "comment_lines": 9
                 },
                 "link": "",
                 "children": []
@@ -42,7 +42,7 @@
             "type": "File",
             "attributes": {
               "complexity": 6,
-              "comment_lines": 4
+              "comment_lines": 6
             },
             "link": "",
             "children": []

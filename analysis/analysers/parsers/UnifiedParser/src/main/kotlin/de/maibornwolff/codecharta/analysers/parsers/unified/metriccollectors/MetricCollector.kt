@@ -53,14 +53,24 @@ abstract class MetricCollector(
     }
 
     open fun getComplexity(root: TSNode): Int {
-        return calculateCountingMetric(root, queryProvider.complexityQuery)
+        return calculateCountableMetric(root, queryProvider.complexityQuery)
     }
 
     open fun getCommentLines(root: TSNode): Int {
-        return calculateCountingMetric(root, queryProvider.commentLinesQuery)
+        val tsQuery = TSQuery(treeSitterLanguage, queryProvider.commentLinesQuery)
+        cursor.exec(tsQuery, root)
+
+        var metricHits = 0
+        for (hit in cursor.matches) {
+            val matchingTreeNode = hit.captures[0].node
+            val commentStartRow = matchingTreeNode.startPoint.row
+            val commentEndRow = matchingTreeNode.endPoint.row
+            metricHits += commentEndRow - commentStartRow + 1
+        }
+        return metricHits
     }
 
-    private fun calculateCountingMetric(root: TSNode, query: String): Int {
+    private fun calculateCountableMetric(root: TSNode, query: String): Int {
         val tsQuery = TSQuery(treeSitterLanguage, query)
         cursor.exec(tsQuery, root)
 
