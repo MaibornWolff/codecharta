@@ -18,10 +18,12 @@ abstract class MetricCollector(
     private val cursor = TSQueryCursor()
     private val parser = TSParser()
 
-    private val metricToCalculation = mapOf(
-        AvailableMetrics.COMPLEXITY to this::getComplexity,
-        AvailableMetrics.COMMENT_LINES to this::getCommentLines
-    )
+    private val metricToCalculation by lazy {
+        mapOf(
+            AvailableMetrics.COMPLEXITY to this::getComplexity,
+            AvailableMetrics.COMMENT_LINES to this::getCommentLines
+        )
+    }
 
     init {
         parser.setLanguage(treeSitterLanguage)
@@ -50,11 +52,11 @@ abstract class MetricCollector(
         )
     }
 
-    fun getComplexity(root: TSNode): Int {
+    open fun getComplexity(root: TSNode): Int {
         return calculateCountingMetric(root, queryProvider.complexityQuery)
     }
 
-    fun getCommentLines(root: TSNode): Int {
+    open fun getCommentLines(root: TSNode): Int {
         return calculateCountingMetric(root, queryProvider.commentLinesQuery)
     }
 
