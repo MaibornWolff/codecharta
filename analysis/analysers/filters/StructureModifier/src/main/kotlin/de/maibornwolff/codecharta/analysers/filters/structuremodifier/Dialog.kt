@@ -4,7 +4,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
-import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultDirectoryAssistedInput
 import de.maibornwolff.codecharta.dialogProvider.promptInput
 import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
 import de.maibornwolff.codecharta.dialogProvider.promptList
@@ -14,7 +14,7 @@ class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectAnalyserArgs(session: Session): List<String> {
             val inputFileName: String =
-                session.promptDefaultFileFolderInput(
+                session.promptDefaultDirectoryAssistedInput(
                     inputType = InputType.FILE,
                     fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                     onInputReady = testCallback()

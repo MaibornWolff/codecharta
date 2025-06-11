@@ -14,7 +14,6 @@ import com.varabyte.kotter.foundation.runUntilSignal
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
-import java.nio.file.Paths
 
 const val DEFAULT_INVALID_INPUT_MESSAGE = "Input is invalid!"
 
@@ -260,25 +259,22 @@ private fun getSelectedChoices(choices: List<String>, selection: List<Boolean>):
     return result
 }
 
-fun Session.promptDefaultFileFolderInput(
+fun Session.promptDefaultDirectoryAssistedInput(
     inputType: InputType,
     fileExtensionList: List<FileExtension>,
     multiple: Boolean = false,
+    prefixMessage: String = "",
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     val messageFileExtension = "[${fileExtensionList.joinToString(", ") { fileExtension -> fileExtension.extension }}]"
 
     val pluralSuffix: String
-    val hintText: String
     val messageExtension: String
     if (multiple) {
         pluralSuffix = "(s)"
-        val sampleFileExtension = if (fileExtensionList.isEmpty()) "" else fileExtensionList.first().extension
-        hintText = "input1$sampleFileExtension, input2$sampleFileExtension, ..."
         messageExtension = " Enter multiple files comma separated."
     } else {
         pluralSuffix = ""
-        hintText = Paths.get("").toAbsolutePath().toString()
         messageExtension = ""
     }
 
@@ -309,16 +305,16 @@ fun Session.promptDefaultFileFolderInput(
             }
         }
 
-    return promptInput(
-        message = "What ${if (multiple) "are" else "is"} the input $inputMessage.$messageExtension",
-        hint = hintText,
-        allowEmptyInput = false,
+    val directoryNavigator = DirectoryNavigator(
+        inputType = inputType,
+        fileExtensions = fileExtensionList,
+        multiple = multiple
+    )
+
+    return promptInputDirectoryAssisted(
+        message = "${prefixMessage}What ${if (multiple) "are" else "is"} the input $inputMessage.$messageExtension",
         invalidInputMessage = "Please input a valid ${inputType.inputType}",
-        inputValidator = InputValidator.isFileOrFolderValid(
-            inputType,
-            fileExtensionList,
-            multiple = multiple
-        ),
+        directoryNavigator = directoryNavigator,
         onInputReady = onInputReady
     )
 }
