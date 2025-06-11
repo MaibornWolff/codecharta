@@ -23,7 +23,7 @@ class Validator {
    * @returns True if email is valid
    */
   public static isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //this should cover most emails
     return emailRegex.test(email);
   }
 
