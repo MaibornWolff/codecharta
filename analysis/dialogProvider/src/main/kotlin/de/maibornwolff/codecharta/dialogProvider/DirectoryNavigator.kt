@@ -32,7 +32,7 @@ class DirectoryNavigator(
     private fun updateCompletedInput(currentInput: String) {
         if (multiple) {
             val commaIndex = currentInput.lastIndexOf(',')
-            completedInput = if (commaIndex >= 0) currentInput.substring(0,commaIndex+1) else ""
+            completedInput = if (commaIndex >= 0) currentInput.substring(0, commaIndex + 1) else ""
         }
     }
 
@@ -56,13 +56,13 @@ class DirectoryNavigator(
         }
     }
 
-
-
     fun getHints(): Array<String> {
         val possibleMatches = currentDirectoryContent.filter { path ->
-            (path.isDirectory() ||
-                ( filesAllowed && InputValidator.verifyFile(path.toFile(), fileExtensions)) )
-        }.map { if (it.isDirectory())  completedInput + it.toString() + systemSeparator else completedInput + it.toString() }
+            (
+                path.isDirectory() ||
+                    (filesAllowed && InputValidator.verifyFile(path.toFile(), fileExtensions))
+            )
+        }.map { if (it.isDirectory()) completedInput + it.toString() + systemSeparator else completedInput + it.toString() }
 
         return possibleMatches.toTypedArray()
     }

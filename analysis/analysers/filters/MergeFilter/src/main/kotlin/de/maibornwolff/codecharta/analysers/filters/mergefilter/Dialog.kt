@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.InputValidator
 import de.maibornwolff.codecharta.dialogProvider.promptCheckbox
 import de.maibornwolff.codecharta.dialogProvider.promptConfirm
-import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultDirectoryAssistedInput
 import de.maibornwolff.codecharta.dialogProvider.promptInput
 import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
 import de.maibornwolff.codecharta.dialogProvider.promptList
@@ -18,7 +18,7 @@ class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectAnalyserArgs(session: Session): List<String> {
             val inputFileNames: String =
-                session.promptDefaultFileFolderInput(
+                session.promptDefaultDirectoryAssistedInput(
                     inputType = InputType.FOLDER_AND_FILE,
                     fileExtensionList = listOf(FileExtension.CCJSON, FileExtension.CCGZ),
                     multiple = true,
