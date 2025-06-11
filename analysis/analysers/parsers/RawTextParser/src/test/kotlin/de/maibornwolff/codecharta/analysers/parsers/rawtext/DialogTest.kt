@@ -28,10 +28,9 @@ class DialogTest {
     @Test
     fun `should output correct arguments when provided with valid input`() {
         val isCompressed = false
-        val verbose = false
+        val verbose = true
         val metrics = "metric1"
-        val tabWidth = "5"
-        val tabWidthValue = 5
+        val tabWidth = 5
         val maxIndentLvl = 10
         val exclude = "file1"
         val withoutDefaultExcludes = false
@@ -62,7 +61,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
             val tabCallback: suspend RunScope.() -> Unit = {
-                terminal.type(tabWidth)
+                terminal.type(tabWidth.toString())
                 terminal.press(Keys.ENTER)
             }
             val indentationCallback: suspend RunScope.() -> Unit = {
@@ -103,7 +102,7 @@ class DialogTest {
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
         assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl)
-        assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
+        assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidth)
         assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
         assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(verbose)
@@ -133,7 +132,6 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
             val verboseCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
             val metricCallback: suspend RunScope.() -> Unit = {
