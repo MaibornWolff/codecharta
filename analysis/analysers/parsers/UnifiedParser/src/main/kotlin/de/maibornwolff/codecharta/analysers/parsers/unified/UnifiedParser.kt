@@ -68,7 +68,9 @@ class UnifiedParser(
         if (notFoundButSpecifiedFormats.isNotEmpty()) {
             System.err.println()
             System.err.println(
-                "From the specified file extensions to parse, [${formatFileExtensions(notFoundButSpecifiedFormats)}] were not found in the given input!"
+                "From the specified file extensions to parse, " +
+                    "[${formatFileExtensions(notFoundButSpecifiedFormats)}] " +
+                    "were not found in the given input!"
             )
         }
 

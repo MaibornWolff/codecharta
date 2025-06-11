@@ -124,7 +124,7 @@ class UnifiedParserTest {
         val ignoredFiles = listOf(
             ".whatever/something.kt",
             "bar/something.strange",
-            "foo.py",
+            "foo.py"
         )
         val parsedFiles = listOf(
             "bar/hello.kt",
@@ -173,7 +173,8 @@ class UnifiedParserTest {
 
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.kt, $invalidFileExtension"))
 
-        Assertions.assertThat(errContent.toString()).contains("From the specified file extensions to parse, [$invalidFileExtension] were not found in the given input!")
+        Assertions.assertThat(errContent.toString())
+            .contains("From the specified file extensions to parse, [$invalidFileExtension] were not found in the given input!")
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
 
         // clean up

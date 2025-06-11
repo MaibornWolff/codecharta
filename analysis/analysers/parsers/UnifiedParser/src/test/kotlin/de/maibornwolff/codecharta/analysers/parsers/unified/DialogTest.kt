@@ -100,67 +100,67 @@ class DialogTest {
 
     @Test
     fun `should skip questions about exclude and include when it was selected that none should be set`() {
-    val isCompressed = false
-    val isVerbose = false
-    val metrics = "testMetric"
+        val isCompressed = false
+        val isVerbose = false
+        val metrics = "testMetric"
 
-    mockkObject(Dialog.Companion)
+        mockkObject(Dialog.Companion)
 
-    var parserArguments: List<String> = emptyList()
+        var parserArguments: List<String> = emptyList()
 
-    testSession { terminal ->
-        val fileCallback: suspend RunScope.() -> Unit = {
-            terminal.type(inputFileName)
-            terminal.press(Keys.ENTER)
-        }
-        val outFileCallback: suspend RunScope.() -> Unit = {
-            terminal.type(outputFileName)
-            terminal.press(Keys.ENTER)
-        }
-        val compressCallback: suspend RunScope.() -> Unit = {
-            terminal.press(Keys.RIGHT)
-            terminal.press(Keys.ENTER)
-        }
-        val metricCallback: suspend RunScope.() -> Unit = {
-            terminal.type(metrics)
-            terminal.press(Keys.ENTER)
-        }
-        val excludeOrIncludeCallback: suspend RunScope.() -> Unit = {
-            terminal.press(Keys.DOWN)
-            terminal.press(Keys.DOWN)
-            terminal.press(Keys.DOWN)
-            terminal.press(Keys.ENTER)
-        }
-        val defaultExcludesCallback: suspend RunScope.() -> Unit = {
-            terminal.press(Keys.ENTER)
-        }
-        val verboseCallback: suspend RunScope.() -> Unit = {
-            terminal.press(Keys.ENTER)
-        }
+        testSession { terminal ->
+            val fileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(inputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val outFileCallback: suspend RunScope.() -> Unit = {
+                terminal.type(outputFileName)
+                terminal.press(Keys.ENTER)
+            }
+            val compressCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val metricCallback: suspend RunScope.() -> Unit = {
+                terminal.type(metrics)
+                terminal.press(Keys.ENTER)
+            }
+            val excludeOrIncludeCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.DOWN)
+                terminal.press(Keys.ENTER)
+            }
+            val defaultExcludesCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val verboseCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
 
-        every { Dialog.Companion.testCallback() } returnsMany listOf(
-            fileCallback,
-            outFileCallback,
-            compressCallback,
-            metricCallback,
-            excludeOrIncludeCallback,
-            defaultExcludesCallback,
-            verboseCallback
-        )
+            every { Dialog.Companion.testCallback() } returnsMany listOf(
+                fileCallback,
+                outFileCallback,
+                compressCallback,
+                metricCallback,
+                excludeOrIncludeCallback,
+                defaultExcludesCallback,
+                verboseCallback
+            )
 
-        parserArguments = collectAnalyserArgs(this)
-    }
-    val commandLine = CommandLine(UnifiedParser())
-    val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
+            parserArguments = collectAnalyserArgs(this)
+        }
+        val commandLine = CommandLine(UnifiedParser())
+        val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-    assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
-    assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
-    assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
-    assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
-    assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
-    assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf<String>())
-    assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
-    assertThat(parseResult.hasMatchedOption("without-default-excludes")).isTrue()
+        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
+        assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
+        assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
+        assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
+        assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf<String>())
+        assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
+        assertThat(parseResult.hasMatchedOption("without-default-excludes")).isTrue()
     }
 
     @Test
