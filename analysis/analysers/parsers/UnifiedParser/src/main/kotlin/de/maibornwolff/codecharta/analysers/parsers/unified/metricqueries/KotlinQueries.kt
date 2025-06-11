@@ -16,7 +16,9 @@ class KotlinQueries : MetricQueries {
             "lambda_literal",
             "secondary_constructor",
             "setter",
-            "getter"
+            "getter",
+            "conjunction_expression",
+            "disjunction_expression"
         )
         private val commentNodes = listOf(
             "line_comment",
