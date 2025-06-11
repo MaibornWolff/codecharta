@@ -25,5 +25,5 @@ class KotlinQueries : MetricQueries {
     }
 
     override val complexityQuery = buildQuery(AvailableMetrics.COMPLEXITY, complexityNodes)
-    override val commentQuery = buildQuery(AvailableMetrics.COMMENT, commentNodes)
+    override val commentLinesQuery = buildQuery(AvailableMetrics.COMMENT_LINES, commentNodes)
 }

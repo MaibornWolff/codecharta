@@ -20,7 +20,7 @@ abstract class MetricCollector(
 
     private val metricToCalculation = mapOf(
         AvailableMetrics.COMPLEXITY to this::getComplexity,
-        AvailableMetrics.COMMENT to this::getCommentLines
+        AvailableMetrics.COMMENT_LINES to this::getCommentLines
     )
 
     init {
@@ -55,7 +55,7 @@ abstract class MetricCollector(
     }
 
     fun getCommentLines(root: TSNode): Int {
-        return calculateCountingMetric(root, queryProvider.commentQuery)
+        return calculateCountingMetric(root, queryProvider.commentLinesQuery)
     }
 
     private fun calculateCountingMetric(root: TSNode, query: String): Int {
