@@ -1,5 +1,5 @@
 {
-  "checksum": "366d84d4b98ec8ad9d202e24a8ee9e73",
+  "checksum": "5fabb0f0bd73de3f58156870f1c6292c",
   "data": {
     "projectName": "",
     "nodes": [
@@ -14,7 +14,8 @@
             "type": "File",
             "attributes": {
               "complexity": 32,
-              "comment_lines": 60
+              "comment_lines": 60,
+              "loc": 200
             },
             "link": "",
             "children": []
@@ -37,6 +38,14 @@
       "comment_lines": {
         "title": "Comment lines",
         "description": "Number of lines containing either a comment or commented-out code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "loc": {
+        "title": "Lines of Code",
+        "description": "Lines of code including empty lines and comments",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",

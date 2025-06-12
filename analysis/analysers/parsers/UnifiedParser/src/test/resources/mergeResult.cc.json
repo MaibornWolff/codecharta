@@ -1,5 +1,5 @@
 {
-  "checksum": "02384ebfd531f997f19f055b37621bb4",
+  "checksum": "404f89a5614ce35e7c53e9c72719a69a",
   "data": {
     "projectName": "",
     "nodes": [
@@ -38,7 +38,8 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 7,
-                  "comment_lines": 9
+                  "comment_lines": 9,
+                  "loc": 48
                 },
                 "link": "",
                 "children": []
@@ -48,7 +49,8 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
-                  "comment_lines": 0
+                  "comment_lines": 0,
+                  "loc": 8
                 },
                 "link": "",
                 "children": []
@@ -60,7 +62,8 @@
             "type": "File",
             "attributes": {
               "complexity": 6,
-              "comment_lines": 6
+              "comment_lines": 6,
+              "loc": 41
             },
             "link": "",
             "children": []
@@ -70,7 +73,8 @@
             "type": "File",
             "attributes": {
               "complexity": 1,
-              "comment_lines": 2
+              "comment_lines": 2,
+              "loc": 8
             },
             "link": "",
             "children": []
@@ -80,7 +84,8 @@
             "type": "File",
             "attributes": {
               "complexity": 5,
-              "comment_lines": 0
+              "comment_lines": 0,
+              "loc": 13
             },
             "link": "",
             "children": []
@@ -111,6 +116,14 @@
       "comment_lines": {
         "title": "Comment lines",
         "description": "Number of lines containing either a comment or commented-out code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "loc": {
+        "title": "Lines of Code",
+        "description": "Lines of code including empty lines and comments",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",

@@ -21,7 +21,8 @@ abstract class MetricCollector(
     private val metricToCalculation by lazy {
         mapOf(
             AvailableMetrics.COMPLEXITY to this::getComplexity,
-            AvailableMetrics.COMMENT_LINES to this::getCommentLines
+            AvailableMetrics.COMMENT_LINES to this::getCommentLines,
+            AvailableMetrics.LOC to this::getLinesOfCode,
         )
     }
 
@@ -68,6 +69,10 @@ abstract class MetricCollector(
             metricHits += commentEndRow - commentStartRow + 1
         }
         return metricHits
+    }
+
+    open fun getLinesOfCode(root: TSNode): Int {
+        return root.endPoint.row
     }
 
     private fun calculateCountableMetric(root: TSNode, query: String): Int {
