@@ -891,7 +891,6 @@ class DialogProviderTest {
 
         @Test
         fun `directoryNavigator should provide repeated auto-completion`() {
-
         }
     }
 }
