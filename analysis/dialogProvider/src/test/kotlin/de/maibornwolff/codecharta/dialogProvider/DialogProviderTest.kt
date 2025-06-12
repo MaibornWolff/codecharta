@@ -20,6 +20,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.io.File
 
 class DialogProviderTest {
     private val testInput = "this is text to simulate user input."
@@ -753,10 +754,14 @@ class DialogProviderTest {
         }
     }
 
+    @Test
+    fun `displayInfo should print message as expected`() {
+    }
+
     @Nested
-    @DisplayName("defaultFileOrFolderInput > ")
-    inner class DefaultFileOrFolderInputTests {
-        // defaultFileOrFolderInput
+    @DisplayName("defaultDirectoryAssistedInput > ")
+    inner class DefaultDirectoryAssistedInput {
+        // defaultDirectoryAssistedInput
 
         @Test
         fun `should prompt file type correctly`() {
@@ -767,7 +772,7 @@ class DialogProviderTest {
 
             testSession { terminal ->
                 result =
-                    promptDefaultFileFolderInput(InputType.FILE, listOf(), onInputReady = {
+                    promptDefaultDirectoryAssistedInput(InputType.FILE, listOf(), onInputReady = {
                         terminal.type(inputFileName)
                         terminal.press(Keys.ENTER)
                     })
@@ -790,7 +795,7 @@ class DialogProviderTest {
 
             testSession { terminal ->
                 result =
-                    promptDefaultFileFolderInput(InputType.FILE, listOf(FileExtension.CCJSON), onInputReady = {
+                    promptDefaultDirectoryAssistedInput(InputType.FILE, listOf(FileExtension.CCJSON), onInputReady = {
                         terminal.type(inputFileName)
                         terminal.press(Keys.ENTER)
                     })
@@ -810,11 +815,12 @@ class DialogProviderTest {
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/valid.log"
             val testMessage = "What are the input file(s). Enter multiple files comma separated."
-            val multiTestHint = "input1, input2, ..."
+            val initialHint = "build" + File.separatorChar
+            val directoryContent = "build${File.separatorChar}           src${File.separatorChar}             build.gradle.kts"
 
             testSession { terminal ->
                 result =
-                    promptDefaultFileFolderInput(InputType.FILE, listOf(), multiple = true, onInputReady = {
+                    promptDefaultDirectoryAssistedInput(InputType.FILE, listOf(), multiple = true, onInputReady = {
                         terminal.assertMatches {
                             bold {
                                 green { text("? ") }
@@ -822,8 +828,12 @@ class DialogProviderTest {
                             }
                             text("> ")
                             black(isBright = true) {
-                                invert { text(multiTestHint[0]) }
-                                text("${multiTestHint.drop(1)} ")
+                                invert { text(initialHint[0]) }
+                                text("${initialHint.drop(1)} ")
+                            }
+                            text("\n")
+                            black(isBright = true) {
+                                text(directoryContent)
                             }
                         }
                         terminal.type(inputFileName)
@@ -845,11 +855,12 @@ class DialogProviderTest {
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/validExtension.cc.json"
             val testMessage = "What are the input [.cc.json] file(s). Enter multiple files comma separated."
-            val multiTestHint = "input1.cc.json, input2.cc.json, ..."
+            val initialHint = "build" + File.separatorChar
+            val directoryContent = "build" + File.separatorChar + " src" + File.separatorChar
 
             testSession { terminal ->
                 result =
-                    promptDefaultFileFolderInput(InputType.FILE, listOf(FileExtension.CCJSON), multiple = true, onInputReady = {
+                    promptDefaultDirectoryAssistedInput(InputType.FILE, listOf(FileExtension.CCJSON), multiple = true, onInputReady = {
                         terminal.assertMatches {
                             bold {
                                 green { text("? ") }
@@ -857,8 +868,12 @@ class DialogProviderTest {
                             }
                             text("> ")
                             black(isBright = true) {
-                                invert { text(multiTestHint[0]) }
-                                text("${multiTestHint.drop(1)} ")
+                                invert { text(initialHint[0]) }
+                                text("${initialHint.drop(1)} ")
+                            }
+                            text("\n")
+                            black(isBright = true) {
+                                text(directoryContent)
                             }
                         }
                         terminal.type(inputFileName)
@@ -872,6 +887,11 @@ class DialogProviderTest {
 
                 assertThat(result).isEqualTo(inputFileName)
             }
+        }
+
+        @Test
+        fun `directoryNavigator should provide repeated auto-completion`() {
+
         }
     }
 }
