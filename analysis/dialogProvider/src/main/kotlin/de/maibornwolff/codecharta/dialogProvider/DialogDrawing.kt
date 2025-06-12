@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.dialogProvider
 
 import com.varabyte.kotter.foundation.collections.LiveList
 import com.varabyte.kotter.foundation.input.Completions
+import com.varabyte.kotter.foundation.input.InputCompleter
 import com.varabyte.kotter.foundation.input.input
 import com.varabyte.kotter.foundation.text.black
 import com.varabyte.kotter.foundation.text.bold
@@ -18,7 +19,8 @@ fun MainRenderScope.drawInput(
     isInputValid: Boolean,
     allowEmptyInput: Boolean,
     invalidInputMessage: String,
-    lastInputEmpty: Boolean
+    lastInputEmpty: Boolean,
+    inputCompleter: InputCompleter
 ) {
     bold {
         green { text("? ") }
@@ -30,7 +32,35 @@ fun MainRenderScope.drawInput(
         }
     }
     text("> ")
-    input(Completions(hint), initialText = "")
+    input(inputCompleter, initialText = "")
+}
+
+fun MainRenderScope.drawInputWithSubInputText(
+    message: String,
+    isInputValid: Boolean,
+    allowEmptyInput: Boolean,
+    lastInputEmpty: Boolean,
+    invalidInputMessage: String,
+    subInputText: String,
+    vararg hint: String
+) {
+    bold {
+        green { text("? ") }
+        text(message)
+        if (isInputValid) {
+            black(isBright = true) { textLine(if (allowEmptyInput) "  Empty input is allowed" else "") }
+        } else {
+            red { textLine(if (lastInputEmpty) "  Empty input is not allowed!" else "  $invalidInputMessage") }
+        }
+    }
+
+    text("> ")
+
+    input(Completions(*hint), initialText = "")
+    text("\n")
+    black(isBright = true) {
+        text(subInputText)
+    }
 }
 
 fun MainRenderScope.drawConfirm(message: String, hint: String, choice: Boolean) {

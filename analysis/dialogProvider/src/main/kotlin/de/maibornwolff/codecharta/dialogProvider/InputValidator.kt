@@ -44,7 +44,7 @@ class InputValidator {
             input.toInt() > minValue
         }
 
-        private fun verifyFile(objectToVerify: File, fileExtensionList: List<FileExtension>): Boolean {
+        fun verifyFile(objectToVerify: File, fileExtensionList: List<FileExtension>): Boolean {
             return objectToVerify.isFile &&
                 (fileExtensionList.isEmpty() || fileExtensionList.any { objectToVerify.name.endsWith(it.extension) })
         }
