@@ -43,6 +43,12 @@
       "matchPackageNames": ["@types/three", "org.sonarsource.java:sonar-java-plugin", "three"],
       "groupName": "Almost always breaking changes",
       "enabled": false
+    },
+    {
+      "matchPackageNames": ["org.json:json"],
+      "versioning": "regex:^(?<major>\\d{4})(?<minor>\\d{2})(?<patch>\\d{2})$",
+      "enabled": true,
+      "automerge": true
     }
   ],
   "timezone": "Europe/Berlin",
