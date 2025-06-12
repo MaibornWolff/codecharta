@@ -41,9 +41,7 @@ object NodeInserter {
     }
 
     private fun rootContainsNodeAlready(root: MutableNode, node: MutableNode): Boolean {
-        return root.children.filter {
-            it.name == node.name
-        }.count() > 0
+        return root.children.any { it.name == node.name }
     }
 
     private fun createFolderNode(name: String): MutableNode {

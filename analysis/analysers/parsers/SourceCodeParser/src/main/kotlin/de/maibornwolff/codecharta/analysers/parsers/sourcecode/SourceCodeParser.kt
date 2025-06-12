@@ -3,6 +3,8 @@ package de.maibornwolff.codecharta.analysers.parsers.sourcecode
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
+import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.CSVMetricWriter
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.analysers.parsers.sourcecode.metricwriters.MetricWriter
@@ -11,8 +13,6 @@ import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
-import de.maibornwolff.codecharta.util.CommaSeparatedParameterPreprocessor
-import de.maibornwolff.codecharta.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
@@ -87,10 +87,11 @@ class SourceCodeParser(
 
     companion object {
         const val NAME = "sourcecodeparser"
-        const val DESCRIPTION = "generates cc.json from source code"
+        const val DESCRIPTION = "generates cc.json from source code --- NOTE: this parser is deprecated and will soon be removed!"
         const val FOOTER =
             "This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\n" +
-                CodeChartaConstants.GENERIC_FOOTER
+                CodeChartaConstants.GENERIC_FOOTER +
+                "DEPRECATION NOTE: This parser is no longer supported and will soon be disabled!"
 
         @JvmStatic
         fun main(args: Array<String>) {

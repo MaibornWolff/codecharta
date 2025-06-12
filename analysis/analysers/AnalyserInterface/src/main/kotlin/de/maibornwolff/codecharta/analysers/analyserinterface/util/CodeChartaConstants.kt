@@ -11,5 +11,7 @@ class CodeChartaConstants {
          * Contains the flag an analyser sends to signal they started execution
          */
         const val EXECUTION_STARTED_SYNC_FLAG = "\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E"
+
+        val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "(/|^)\\..*")
     }
 }

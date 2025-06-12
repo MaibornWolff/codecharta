@@ -28,6 +28,7 @@ dependencies {
             ":analysers:parsers:RawTextParser",
             ":analysers:tools:InspectionTool",
             ":analysers:AnalyserInterface",
+            ":analysers:parsers:UnifiedParser",
             ":dialogProvider",
             ":analysers:importers:SourceMonitorImporter"
         )
