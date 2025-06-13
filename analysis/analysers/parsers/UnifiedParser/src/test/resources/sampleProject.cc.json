@@ -1,5 +1,5 @@
 {
-  "checksum": "be7f08dd5661f70b4361ec1e0221e81d",
+  "checksum": "f5e93df9e55abfe832fa428121bd1d6a",
   "data": {
     "projectName": "",
     "nodes": [
@@ -21,7 +21,8 @@
                 "attributes": {
                   "complexity": 7,
                   "comment_lines": 9,
-                  "loc": 48
+                  "loc": 48,
+                  "rloc": 31
                 },
                 "link": "",
                 "children": []
@@ -32,7 +33,8 @@
                 "attributes": {
                   "complexity": 1,
                   "comment_lines": 0,
-                  "loc": 8
+                  "loc": 8,
+                  "rloc": 6
                 },
                 "link": "",
                 "children": []
@@ -45,7 +47,8 @@
             "attributes": {
               "complexity": 6,
               "comment_lines": 6,
-              "loc": 41
+              "loc": 41,
+              "rloc": 30
             },
             "link": "",
             "children": []
@@ -56,7 +59,8 @@
             "attributes": {
               "complexity": 1,
               "comment_lines": 2,
-              "loc": 8
+              "loc": 8,
+              "rloc": 5
             },
             "link": "",
             "children": []
@@ -67,7 +71,8 @@
             "attributes": {
               "complexity": 5,
               "comment_lines": 0,
-              "loc": 13
+              "loc": 13,
+              "rloc": 11
             },
             "link": "",
             "children": []
@@ -98,6 +103,14 @@
       "loc": {
         "title": "Lines of Code",
         "description": "Lines of code including empty lines and comments",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "rloc": {
+        "title": "Real Lines of Code",
+        "description": "Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
