@@ -30,6 +30,7 @@ wiremock = "3.0.1"
 tree-sitter = "0.24.5"
 tree-sitter-typescript = "0.21.1"
 tree-sitter-kotlin = "0.3.8.1"
+tree-sitter-csharp = "0.23.1"
 
 [libraries]
 kotlin-logging-jvm = { group = "io.github.oshai", name = "kotlin-logging-jvm", version.ref = "kotlin-logging" }
@@ -70,6 +71,8 @@ json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.
 treesitter = { group = "io.github.bonede", name = "tree-sitter", version.ref = "tree-sitter"}
 treesitter-typescript = { group = "io.github.bonede", name = "tree-sitter-typescript", version.ref = "tree-sitter-typescript"}
 treesitter-kotlin = { group = "io.github.bonede", name = "tree-sitter-kotlin", version.ref = "tree-sitter-kotlin"}
+treesitter-csharp = { group = "io.github.bonede", name = "tree-sitter-c-sharp", version.ref = "tree-sitter-csharp"}
+
 
 [plugins]
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

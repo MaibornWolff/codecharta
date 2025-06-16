@@ -5,6 +5,9 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.skyscreamer.jsonassert.JSONAssert
 import org.skyscreamer.jsonassert.JSONCompareMode
 import picocli.CommandLine
@@ -34,12 +37,18 @@ class UnifiedParserTest {
         return outputStream.toString()
     }
 
-    @Test
-    fun `Should produce correct output when given single file`() {
+    private fun provideSupportedLanguages() = listOf(
+        Arguments.of("typescript", ".ts"),
+        Arguments.of("cSharp", ".cs")
+    )
+
+    @ParameterizedTest
+    @MethodSource("provideSupportedLanguages")
+    fun `Should produce correct output for a single source file of each supported language`(language: String, fileExtension: String) {
         // given
         val pipedProject = ""
-        val inputFilePath = "${testResourceBaseFolder}typescriptSample.ts"
-        val expectedResultFile = File("${testResourceBaseFolder}typescriptSample.cc.json")
+        val inputFilePath = "${testResourceBaseFolder}${language}Sample${fileExtension}"
+        val expectedResultFile = File("${testResourceBaseFolder}${language}Sample.cc.json")
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
