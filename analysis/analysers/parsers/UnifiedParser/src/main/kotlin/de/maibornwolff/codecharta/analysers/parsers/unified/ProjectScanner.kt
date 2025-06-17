@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.CSharpCollector
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.JavaCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.KotlinCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.MetricCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
@@ -108,6 +109,7 @@ class ProjectScanner(
         when (fileExtension) {
             "ts" -> collector = TypescriptCollector()
             "kt" -> collector = KotlinCollector()
+            "java" -> collector = JavaCollector()
             "cs" -> collector = CSharpCollector()
             else -> {
                 ignoredFileTypes += file.extension
