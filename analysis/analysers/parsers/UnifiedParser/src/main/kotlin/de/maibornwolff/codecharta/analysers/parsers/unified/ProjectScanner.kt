@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.CSharpCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.JavaCollector
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.JavascriptCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.KotlinCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.MetricCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
@@ -108,6 +109,7 @@ class ProjectScanner(
         val collector: MetricCollector
         when (fileExtension) {
             "ts" -> collector = TypescriptCollector()
+            "js" -> collector = JavascriptCollector()
             "kt" -> collector = KotlinCollector()
             "java" -> collector = JavaCollector()
             "cs" -> collector = CSharpCollector()

@@ -10,6 +10,7 @@ dependencies {
 
     implementation(libs.treesitter)
     implementation(libs.treesitter.typescript)
+    implementation(libs.treesitter.javascript)
     implementation(libs.treesitter.kotlin)
     implementation(libs.treesitter.java)
     implementation(libs.treesitter.csharp)

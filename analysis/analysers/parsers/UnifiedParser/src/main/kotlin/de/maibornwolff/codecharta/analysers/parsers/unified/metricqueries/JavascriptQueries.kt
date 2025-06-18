@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
 
-class TypescriptQueries : MetricQueries {
+class JavascriptQueries : MetricQueries {
     companion object {
         private val complexityNodes = listOf(
             //if
@@ -12,8 +12,7 @@ class TypescriptQueries : MetricQueries {
             "for_in_statement",
             //conditional
             "ternary_expression",
-            "conditional_type",
-            //logical
+            //logical binary
             "binary_expression operator: \"&&\"",
             "binary_expression operator: \"??\"",
             "binary_expression operator: \"||\"",
