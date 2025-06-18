@@ -891,6 +891,84 @@ class DialogProviderTest {
 
         @Test
         fun `directoryNavigator should provide repeated auto-completion`() {
+            var result: String
+            val testFilePath = "src/test/resources"
+            val inputFileName = "$testFilePath/validExtension.cc.json"
+            val testMessage = "What are the input folder(s) or [.cc.json] file(s). Enter multiple files comma separated."
+            val slash = File.separatorChar
+            val initialHint = "build$slash"
+            val directoryContent = "build$slash src$slash"
+
+            testSession { terminal ->
+                result =
+                    promptDefaultDirectoryAssistedInput(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), multiple = true, onInputReady = {
+                        terminal.assertMatches {
+                            bold {
+                                green { text("? ") }
+                                textLine(testMessage)
+                            }
+                            text("> ")
+                            black(isBright = true) {
+                                invert { text(initialHint[0]) }
+                                text("${initialHint.drop(1)} ")
+                            }
+                            text("\n")
+                            black(isBright = true) {
+                                text(directoryContent)
+                            }
+                        }
+                        terminal.type("sr")
+//                        assertThat( terminal.resolveRerenders().stripFormatting()).containsExactly(
+//                            "? $testMessage",
+//                            "> $inputFileName ",
+//                            ""
+//                        )
+//                        terminal.assertMatches {
+//                            bold {
+//                                green { text("? ") }
+//                                textLine(testMessage)
+//                            }
+//                            text("> ")
+//                            black(isBright = true) {
+//                                text("sr")
+//                                invert { text("c") }
+//                            }
+//                            text("\n")
+//                            black(isBright = true) {
+//                                text("src$slash")
+//                            }
+//                        }
+                        terminal.press(Keys.TAB)
+                        terminal.type("test${slash}resour")
+                        terminal.resolveRerenders()
+//                        terminal.assertMatches {
+//                            bold {
+//                                green { text("? ") }
+//                                textLine(testMessage)
+//                            }
+//                            text("> ")
+//                            black(isBright = true) {
+//                                text("src${slash}test${slash}resour")
+//                                invert { text("c") }
+//                            }
+//                            text("\n")
+//                            black(isBright = true) {
+//                                text("es$slash")
+//                            }
+//                        }
+                        terminal.press(Keys.RIGHT)
+                        terminal.type("valid")
+                        terminal.press(Keys.TAB)
+                        terminal.press(Keys.ENTER)
+                    })
+                assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
+                    "? $testMessage",
+                    "> $inputFileName ",
+                    ""
+                )
+
+                assertThat(result).isEqualTo(inputFileName)
+            }
         }
     }
 }
