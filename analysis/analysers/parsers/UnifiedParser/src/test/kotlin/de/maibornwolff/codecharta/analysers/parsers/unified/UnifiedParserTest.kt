@@ -39,6 +39,7 @@ class UnifiedParserTest {
 
     private fun provideSupportedLanguages() = listOf(
         Arguments.of("typescript", ".ts"),
+        Arguments.of("javascript", ".js"),
         Arguments.of("java", ".java"),
         Arguments.of("cSharp", ".cs")
     )
@@ -85,8 +86,6 @@ class UnifiedParserTest {
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
-
-    // tests about correctly stopping in error case
 
     @Test
     fun `should stop execution and throw error when input file could not be found`() {
