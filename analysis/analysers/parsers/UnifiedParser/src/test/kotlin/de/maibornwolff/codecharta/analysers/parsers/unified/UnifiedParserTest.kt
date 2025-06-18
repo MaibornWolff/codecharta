@@ -90,7 +90,7 @@ class UnifiedParserTest {
 
         // then
         Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(errContent.toString()).contains("Could not find resource `$inputFilePath`!")
+        Assertions.assertThat(errContent.toString()).contains("Could not find resource `${File(inputFilePath)}`!")
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for UnifiedParser, stopping execution...")
 
         // clean up
