@@ -42,7 +42,8 @@ class UnifiedParserTest {
         Arguments.of("javascript", ".js"),
         Arguments.of("java", ".java"),
         Arguments.of("kotlin", ".kt"),
-        Arguments.of("cSharp", ".cs")
+        Arguments.of("cSharp", ".cs"),
+        Arguments.of("python", ".py")
     )
 
     @ParameterizedTest

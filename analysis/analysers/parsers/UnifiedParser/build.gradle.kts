@@ -14,6 +14,7 @@ dependencies {
     implementation(libs.treesitter.kotlin)
     implementation(libs.treesitter.java)
     implementation(libs.treesitter.csharp)
+    implementation(libs.treesitter.python)
 
     testImplementation(libs.jsonassert)
 }
