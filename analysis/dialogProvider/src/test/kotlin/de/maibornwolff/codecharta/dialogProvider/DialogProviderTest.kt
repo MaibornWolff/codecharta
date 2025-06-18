@@ -16,6 +16,8 @@ import com.varabyte.kotterx.test.runtime.blockUntilRenderWhen
 import com.varabyte.kotterx.test.runtime.stripFormatting
 import com.varabyte.kotterx.test.terminal.assertMatches
 import de.maibornwolff.codecharta.serialization.FileExtension
+import io.mockk.every
+import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -899,75 +901,47 @@ class DialogProviderTest {
             val initialHint = "build$slash"
             val directoryContent = "build$slash src$slash"
 
+            mockkObject(InputValidator)
+            every { InputValidator.isFileOrFolderValid(any(), any()) } returns { true }
+
             testSession { terminal ->
                 result =
-                    promptDefaultDirectoryAssistedInput(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), multiple = true, onInputReady = {
-                        terminal.assertMatches {
-                            bold {
-                                green { text("? ") }
-                                textLine(testMessage)
+                    promptDefaultDirectoryAssistedInput(
+                        InputType.FOLDER_AND_FILE,
+                        listOf(FileExtension.CCJSON),
+                        multiple = true,
+                        onInputReady = {
+                            terminal.assertMatches {
+                                bold {
+                                    green { text("? ") }
+                                    textLine(testMessage)
+                                }
+                                text("> ")
+                                black(isBright = true) {
+                                    invert { text(initialHint[0]) }
+                                    text("${initialHint.drop(1)} ")
+                                }
+                                text("\n")
+                                black(isBright = true) {
+                                    text(directoryContent)
+                                }
                             }
-                            text("> ")
-                            black(isBright = true) {
-                                invert { text(initialHint[0]) }
-                                text("${initialHint.drop(1)} ")
-                            }
-                            text("\n")
-                            black(isBright = true) {
-                                text(directoryContent)
-                            }
+                            terminal.type("sr")
+                            terminal.press(Keys.RIGHT)
+                            terminal.type("test${slash}resour")
+                            terminal.press(Keys.RIGHT)
+                            terminal.type("valid")
+                            terminal.press(Keys.RIGHT)
+                            terminal.press(Keys.ENTER)
                         }
-                        terminal.type("sr")
-//                        assertThat( terminal.resolveRerenders().stripFormatting()).containsExactly(
-//                            "? $testMessage",
-//                            "> $inputFileName ",
-//                            ""
-//                        )
-//                        terminal.assertMatches {
-//                            bold {
-//                                green { text("? ") }
-//                                textLine(testMessage)
-//                            }
-//                            text("> ")
-//                            black(isBright = true) {
-//                                text("sr")
-//                                invert { text("c") }
-//                            }
-//                            text("\n")
-//                            black(isBright = true) {
-//                                text("src$slash")
-//                            }
-//                        }
-                        terminal.press(Keys.TAB)
-                        terminal.type("test${slash}resour")
-                        terminal.resolveRerenders()
-//                        terminal.assertMatches {
-//                            bold {
-//                                green { text("? ") }
-//                                textLine(testMessage)
-//                            }
-//                            text("> ")
-//                            black(isBright = true) {
-//                                text("src${slash}test${slash}resour")
-//                                invert { text("c") }
-//                            }
-//                            text("\n")
-//                            black(isBright = true) {
-//                                text("es$slash")
-//                            }
-//                        }
-                        terminal.press(Keys.RIGHT)
-                        terminal.type("valid")
-                        terminal.press(Keys.TAB)
-                        terminal.press(Keys.ENTER)
-                    })
+                    )
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
-                    "> $inputFileName ",
+                    "> ${File(inputFileName)} ",
+                    File(inputFileName).name,
                     ""
                 )
-
-                assertThat(result).isEqualTo(inputFileName)
+                assertThat(result).isEqualTo(File(inputFileName).toString())
             }
         }
     }
