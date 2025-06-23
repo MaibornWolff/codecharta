@@ -20,11 +20,13 @@ command_exists() {
         exit 1
     fi
 }
-command_exists "jq" "https://github.com/thoughtbot/complexity"
+command_exists "jq" "https://jqlang.org/download/"
 command_exists "complexity" "https://github.com/thoughtbot/complexity"
 command_exists "tokei" "https://github.com/XAMPPRocky/tokei"
 command_exists "ccsh" "https://codecharta.com/docs/overview/getting-started#installation"
 command_exists "git" "https://git-scm.com/"
+command_exists "sonar-scanner" "https://docs.sonarsource.com/sonarqube-server/10.8/analyzing-source-code/scanners/sonarscanner/"
+
 # 1. Input Validation
 # --------------------------------------------------
 set -e # Exit immediately if a command exits with a non-zero status.
@@ -60,7 +62,6 @@ echo "----------------------------------------"
 # 2. Check if Project Exists and Create if Necessary
 # --------------------------------------------------
 echo "➡️  Step 1: Checking if project '$PROJECT_KEY' exists on SonarQube..."
-
 PROJECT_EXISTS_RESPONSE=$(curl -s -u "${SONAR_TOKEN}:" "${SONAR_URL}/api/projects/search?projects=${PROJECT_KEY}")
 PROJECT_COUNT=$(echo "$PROJECT_EXISTS_RESPONSE" | jq '.paging.total')
 
