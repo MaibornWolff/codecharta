@@ -3,32 +3,32 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
 class TypescriptQueries : MetricQueries {
     companion object {
         private val complexityNodes = listOf(
-            //if
+            // if
             "if_statement",
-            //loop
+            // loop
             "do_statement",
             "for_statement",
             "while_statement",
             "for_in_statement",
-            //conditional
+            // conditional
             "ternary_expression",
             "conditional_type",
-            //logical
+            // logical
             "binary_expression operator: \"&&\"",
             "binary_expression operator: \"??\"",
             "binary_expression operator: \"||\"",
-            //case
+            // case
             "switch_case",
-            //catch
+            // catch
             "catch_clause",
-            //function
+            // function
             "function_declaration",
             "generator_function_declaration",
             "arrow_function",
             "generator_function",
             "method_definition",
             "class_static_block",
-            "function_expression",
+            "function_expression"
         )
 
         private val commentNodes = listOf(
