@@ -18,6 +18,7 @@ import com.varabyte.kotterx.test.terminal.assertMatches
 import de.maibornwolff.codecharta.serialization.FileExtension
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -943,6 +944,7 @@ class DialogProviderTest {
                 )
                 assertThat(result).isEqualTo(File(inputFileName).toString())
             }
+            unmockkAll()
         }
     }
 }
