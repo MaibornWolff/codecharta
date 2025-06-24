@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
 class PythonQueries : MetricQueries {
     companion object {
         private val complexityNodes = listOf(
-            //if
+            // if
             "if_statement",
             "elif_clause",
             "if_clause",
@@ -13,20 +13,22 @@ class PythonQueries : MetricQueries {
             "for_in_clause",
             // conditional
             "conditional_expression",
-            "list", //in MG deactivated TODO: warum?
+            "list",
             "boolean_operator",
-            //logical binary
-            //case label
+            // logical binary
+            // case label
             "case_pattern",
-            //catch block
+            // catch block
             "except_clause",
-            //function
+            // function
             "function_definition",
-            "lambda",
+            "lambda"
         )
 
+        // in python unassigned strings are used as block comments, meaning an expression that only has string as a child
         private val commentNodes = listOf(
-            "comment"
+            "comment",
+            "expression_statement (string)"
         )
     }
 

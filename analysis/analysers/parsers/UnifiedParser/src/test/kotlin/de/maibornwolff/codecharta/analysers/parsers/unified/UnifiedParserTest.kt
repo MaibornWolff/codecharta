@@ -133,13 +133,13 @@ class UnifiedParserTest {
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val ignoredFiles = listOf(
             ".whatever/something.kt",
-            "bar/something.strange",
-            "foo.py"
+            "bar/something.strange"
         )
         val parsedFiles = listOf(
             "bar/hello.kt",
             "bar/foo.kt",
             "foo.kt",
+            "foo.py",
             "whenCase.kt",
             "helloWorld.ts"
         )
