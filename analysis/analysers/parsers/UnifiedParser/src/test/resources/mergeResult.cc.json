@@ -1,5 +1,5 @@
 {
-  "checksum": "02384ebfd531f997f19f055b37621bb4",
+  "checksum": "6e89384da8cd75847e14644bebfa2e60",
   "data": {
     "projectName": "",
     "nodes": [
@@ -38,7 +38,9 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 7,
-                  "comment_lines": 9
+                  "comment_lines": 9,
+                  "loc": 48,
+                  "rloc": 31
                 },
                 "link": "",
                 "children": []
@@ -48,7 +50,9 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
-                  "comment_lines": 0
+                  "comment_lines": 0,
+                  "loc": 8,
+                  "rloc": 6
                 },
                 "link": "",
                 "children": []
@@ -60,7 +64,9 @@
             "type": "File",
             "attributes": {
               "complexity": 6,
-              "comment_lines": 6
+              "comment_lines": 6,
+              "loc": 41,
+              "rloc": 30
             },
             "link": "",
             "children": []
@@ -70,7 +76,9 @@
             "type": "File",
             "attributes": {
               "complexity": 1,
-              "comment_lines": 2
+              "comment_lines": 2,
+              "loc": 8,
+              "rloc": 5
             },
             "link": "",
             "children": []
@@ -80,7 +88,9 @@
             "type": "File",
             "attributes": {
               "complexity": 5,
-              "comment_lines": 0
+              "comment_lines": 0,
+              "loc": 13,
+              "rloc": 11
             },
             "link": "",
             "children": []
@@ -111,6 +121,22 @@
       "comment_lines": {
         "title": "Comment lines",
         "description": "Number of lines containing either a comment or commented-out code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "loc": {
+        "title": "Lines of Code",
+        "description": "Lines of code including empty lines and comments",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "rloc": {
+        "title": "Real Lines of Code",
+        "description": "Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",

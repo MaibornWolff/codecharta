@@ -1,5 +1,5 @@
 {
-  "checksum": "366d84d4b98ec8ad9d202e24a8ee9e73",
+  "checksum": "b693a0f06900613229ce4db5db9f29f1",
   "data": {
     "projectName": "",
     "nodes": [
@@ -14,7 +14,9 @@
             "type": "File",
             "attributes": {
               "complexity": 32,
-              "comment_lines": 60
+              "comment_lines": 60,
+              "loc": 200,
+              "rloc": 115
             },
             "link": "",
             "children": []
@@ -37,6 +39,22 @@
       "comment_lines": {
         "title": "Comment lines",
         "description": "Number of lines containing either a comment or commented-out code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "loc": {
+        "title": "Lines of Code",
+        "description": "Lines of code including empty lines and comments",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "rloc": {
+        "title": "Real Lines of Code",
+        "description": "Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",

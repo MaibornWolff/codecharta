@@ -19,7 +19,8 @@ include(
     "analysers:parsers:RawTextParser",
     "analysers:parsers:GitLogParser",
     "analysers:parsers:SourceCodeParser",
-    "analysers:parsers:SVNLogParser"
+    "analysers:parsers:SVNLogParser",
+    "analysers:parsers:UnifiedParser"
 )
 include("analysers:exporters:CSVExporter")
 include(
@@ -29,4 +30,3 @@ include(
 
 rootProject.name = "codecharta"
 include("analysers")
-include("analysers:parsers:UnifiedParser")

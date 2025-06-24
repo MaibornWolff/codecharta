@@ -7,10 +7,17 @@ The Unified Parser is parser to generate code metrics from a source code file or
 ## Supported Languages
 
 - Typescript
+- Kotlin
 
 ## Supported Metrics
 
-- Complexity
+| Metric                    | Description                                                                                                              |
+|---------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| Complexity                | Complexity of a file based on the number of paths through the code (McCabe Complexity)                                   |
+| Comment lines             | The number of comment lines found in a file                                                                              |
+| Lines of code (LOC)       | Lines of code including empty lines and comments                                                                         |
+| Real lines of code (RLOC) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment |
+
 
 ## Usage and Parameters
 

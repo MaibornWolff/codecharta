@@ -16,6 +16,18 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             description = "Number of lines containing either a comment or commented-out code",
             link = ghLink,
             direction = -1
+        ),
+        "loc" to AttributeDescriptor(
+            title = "Lines of Code",
+            description = "Lines of code including empty lines and comments", link = ghLink,
+            direction = -1
+        ),
+        "rloc" to AttributeDescriptor(
+            title = "Real Lines of Code",
+            description = "Number of lines that contain at least one character " +
+                "which is neither a whitespace nor a tabulation nor part of a comment",
+            link = ghLink,
+            direction = -1
         )
     )
 }
