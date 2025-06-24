@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
 
-
 class CSharpQueries : MetricQueries {
     companion object {
         private val complexityNodes = listOf(
@@ -23,7 +22,7 @@ class CSharpQueries : MetricQueries {
             "method_declaration",
             "lambda_expression",
             "local_function_statement",
-            "accessor_declaration",
+            "accessor_declaration"
         )
 
         private val commentNodes = listOf(
