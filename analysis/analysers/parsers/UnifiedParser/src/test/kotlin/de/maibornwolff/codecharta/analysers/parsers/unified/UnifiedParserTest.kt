@@ -47,7 +47,7 @@ class UnifiedParserTest {
     fun `Should produce correct output for a single source file of each supported language`(language: String, fileExtension: String) {
         // given
         val pipedProject = ""
-        val inputFilePath = "${testResourceBaseFolder}${language}Sample${fileExtension}"
+        val inputFilePath = "${testResourceBaseFolder}${language}Sample$fileExtension"
         val expectedResultFile = File("${testResourceBaseFolder}${language}Sample.cc.json")
 
         // when
