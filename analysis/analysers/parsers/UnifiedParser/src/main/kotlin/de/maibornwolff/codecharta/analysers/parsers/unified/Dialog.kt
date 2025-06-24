@@ -5,7 +5,7 @@ import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.promptConfirm
-import de.maibornwolff.codecharta.dialogProvider.promptDefaultFileFolderInput
+import de.maibornwolff.codecharta.dialogProvider.promptDefaultDirectoryAssistedInput
 import de.maibornwolff.codecharta.dialogProvider.promptInput
 import de.maibornwolff.codecharta.dialogProvider.promptList
 
@@ -44,7 +44,7 @@ class Dialog {
         }
 
         private fun inputFileQuestion(session: Session): String {
-            return session.promptDefaultFileFolderInput(
+            return session.promptDefaultDirectoryAssistedInput(
                 inputType = InputType.FOLDER_AND_FILE,
                 fileExtensionList = listOf(),
                 onInputReady = testCallback()
