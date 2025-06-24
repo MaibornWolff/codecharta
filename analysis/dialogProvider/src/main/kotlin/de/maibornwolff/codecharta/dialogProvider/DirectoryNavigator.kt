@@ -24,9 +24,9 @@ class DirectoryNavigator(
     private val targetLineLength = 120
 
     init {
-        this.prepareMatches("")
         this.filesAllowed = inputType == InputType.FILE || inputType == InputType.FOLDER_AND_FILE
         this.validate = InputValidator.isFileOrFolderValid(inputType, fileExtensions, multiple)
+        this.prepareMatches("")
     }
 
     private fun updateCompletedInput(currentInput: String) {
