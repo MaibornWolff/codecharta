@@ -49,7 +49,7 @@ class DirectoryNavigatorTest {
         val matchingFile = "${resourcePath}validExtension.cc.json"
         val navigator = DirectoryNavigator(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), false)
 
-        navigator.prepareMatches(File(resourcePath).toString()+slash)
+        navigator.prepareMatches(File(resourcePath).toString() + slash)
         val hints = navigator.getHints()
         val matchesString = navigator.getMatches()
 
@@ -57,5 +57,4 @@ class DirectoryNavigatorTest {
         assertThat(hints).containsExactly(File(matchingFile).toString())
         assertThat(matchesString).isEqualTo("validExtension.cc.json")
     }
-
 }
