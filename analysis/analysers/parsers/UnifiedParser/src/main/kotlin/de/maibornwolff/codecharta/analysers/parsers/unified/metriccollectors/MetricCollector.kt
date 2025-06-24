@@ -18,6 +18,7 @@ abstract class MetricCollector(
 ) {
     private var lastCountedCommentLine = -1
     private var lastCountedCodeLine = -1
+    private var rootNodeType: String = "" //TODO: schauen wie wir für alle kinder vom rootnode berechnen
 
     // maps a metric to its index for the more performant IntArray and the function how to calculate the metric
     private val metricInfo = mapOf(

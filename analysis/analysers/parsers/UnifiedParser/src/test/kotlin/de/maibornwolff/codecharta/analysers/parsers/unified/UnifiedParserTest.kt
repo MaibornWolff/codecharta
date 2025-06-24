@@ -136,6 +136,7 @@ class UnifiedParserTest {
             "bar/hello.kt",
             "bar/foo.kt",
             "foo.kt",
+            "foo.py",
             "whenCase.kt",
             "helloWorld.ts"
         )
