@@ -15,12 +15,12 @@ class DirectoryNavigator(
 ) {
     var validate: (String) -> Boolean
     private val systemSeparator = File.separatorChar
-    private var filesAllowed = true
+    internal var filesAllowed = true
     private var currentDirectory: Path = Paths.get("")
-    private var currentDirectoryContent = listOf<Path>()
+    internal var currentDirectoryContent = listOf<Path>()
     private var completedInput = ""
-    private var possibleDirectories = listOf<Path>()
-    private var possibleFiles = listOf<Path>()
+    internal var possibleDirectories = listOf<Path>()
+    internal var possibleFiles = listOf<Path>()
     private val targetLineLength = 120
 
     init {
