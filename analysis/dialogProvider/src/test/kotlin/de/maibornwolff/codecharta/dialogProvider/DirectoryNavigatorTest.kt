@@ -45,9 +45,18 @@ class DirectoryNavigatorTest {
 
     @Test
     fun `should perform an update cycle as expected `() {
+        val partialResourcePath = "src/test/"
         val resourcePath = "src/test/resources/"
         val matchingFile = "${resourcePath}validExtension.cc.json"
         val navigator = DirectoryNavigator(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), false)
+
+        navigator.prepareMatches(File(partialResourcePath).toString() + slash)
+        assertThat(navigator.getHints().size).isEqualTo(2)
+        assertThat(navigator.getHints()).containsExactly(
+            File("src/test/kotlin/").toString() + slash,
+            File("src/test/resources/").toString() + slash
+        )
+        assertThat(navigator.getMatches()).isEqualTo("kotlin$slash    resources$slash")
 
         navigator.prepareMatches(File(resourcePath).toString() + slash)
         val hints = navigator.getHints()
