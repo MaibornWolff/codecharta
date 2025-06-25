@@ -318,7 +318,7 @@ fun Session.promptDefaultDirectoryAssistedInput(
     )
 
     return promptInputDirectoryAssisted(
-        message = "What ${if (multiple) "are" else "is"} the input $inputMessage.$messageExtension",
+        message = "What ${if (multiple) "are" else "is"} the input $inputMessage?$messageExtension",
         invalidInputMessage = "Please input a valid ${inputType.inputType}",
         directoryNavigator = directoryNavigator,
         onInputReady = onInputReady
