@@ -987,7 +987,7 @@ class DialogProviderTest {
                             }
                             terminal.type("sr")
                             terminal.press(Keys.RIGHT)
-                            terminal.type("test${slash}")
+                            terminal.type("test$slash")
                             terminal.press(Keys.ENTER)
                         }
                     )
@@ -996,7 +996,7 @@ class DialogProviderTest {
                     "> ${File(testFilePath)}$slash ",
                     ""
                 )
-                assertThat(result).isEqualTo(File(testFilePath).toString()+slash)
+                assertThat(result).isEqualTo(File(testFilePath).toString() + slash)
             }
         }
     }
