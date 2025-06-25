@@ -119,3 +119,8 @@ Example Output file: `typescript_coverage.cc.json`
 }
 ```
 
+## Extending the Coverage Importer
+
+The coverage importer has different implementations (or strategies) based on the format of the coverage report.
+
+To add support for a new report format, it is necessary to create a new strategy which implements the 'ImporterStrategy' interface. This new strategy handles extracting the relevant information from the coverage report and inserting them into the projectBuilder, which will generate the final output (this does not need to be implemented). If the report is in xml format, the Interface provides some functionality to find the relevant elements in the report based on their xml-tag. After this implementation is done, add the new strategy to the 'SupportedFormats' enum, so that it will be available for execution. It is recommended to also add some dummy reports of the new format and tests, that they will be correctly handled.
