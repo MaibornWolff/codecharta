@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.dialogProvider
 
 import com.varabyte.kotter.foundation.collections.LiveList
 import com.varabyte.kotter.foundation.input.Completions
-import com.varabyte.kotter.foundation.input.InputCompleter
 import com.varabyte.kotter.foundation.input.input
 import com.varabyte.kotter.foundation.text.black
 import com.varabyte.kotter.foundation.text.bold
@@ -19,8 +18,7 @@ fun MainRenderScope.drawInput(
     isInputValid: Boolean,
     allowEmptyInput: Boolean,
     invalidInputMessage: String,
-    lastInputEmpty: Boolean,
-    inputCompleter: InputCompleter
+    lastInputEmpty: Boolean
 ) {
     bold {
         green { text("? ") }
@@ -32,7 +30,7 @@ fun MainRenderScope.drawInput(
         }
     }
     text("> ")
-    input(inputCompleter, initialText = "")
+    input(Completions(hint), initialText = "")
 }
 
 fun MainRenderScope.drawInputWithSubInputText(
