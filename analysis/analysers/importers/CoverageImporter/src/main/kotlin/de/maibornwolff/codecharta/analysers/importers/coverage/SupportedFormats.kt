@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.importers.coverage
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.CloverStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.CoberturaStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.ImporterStrategy
+import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.JUnitStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.JacocoStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.LcovStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.PHPUnitStrategy
@@ -67,6 +68,13 @@ internal enum class Format(
         FileExtension.XML,
         "index.xml",
         listOf(CoverageAttributes.LINE_COVERAGE)
+    ),
+    JUNIT(
+        "JUnit",
+        JUnitStrategy(),
+        FileExtension.XML,
+        "junit.xml",
+        listOf()
     )
 }
 

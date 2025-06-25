@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="28" failures="2" errors="0" time="0.236">
+    <testsuite name="tests/index.test.js" errors="0" failures="1" skipped="0" timestamp="2025-06-24T14:27:06" time="0.11" tests="1">
+        <testcase classname="Index module" name="runExample function executes without errors" time="0.001">
+            <failure>TypeError: Cannot read properties of undefined (reading &apos;name&apos;)
+                at Object.name [as runExample] (/Users/testuser/path/to/testproject/src/index.js:27:29)
+                at Object.runExample (/Users/testuser/path/to/testproject/tests/index.test.js:52:11)
+                at Promise.then.completed (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/utils.js:298:28)
+                at new Promise (&lt;anonymous&gt;)
+                at callAsyncCircusFn (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/utils.js:231:10)
+                at _callCircusTest (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:316:40)
+                at processTicksAndRejections (node:internal/process/task_queues:95:5)
+                at _runTest (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:252:3)
+                at _runTestsForDescribeBlock (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:126:9)
+                at _runTestsForDescribeBlock (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:121:9)
+                at run (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:71:3)
+                at runAndTransformResultsToJestFormat (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+                at jestAdapter (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+                at runTestInternal (/Users/testuser/path/to/testproject/node_modules/jest-runner/build/runTest.js:367:16)
+                at runTest (/Users/testuser/path/to/testproject/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/utils/validator.test.js" errors="0" failures="1" skipped="0" timestamp="2025-06-24T14:27:06" time="0.021" tests="5">
+        <testcase classname="DataValidator › validateEmail" name="validates correct email addresses" time="0.001">
+        </testcase>
+        <testcase classname="DataValidator › validateEmail" name="rejects invalid email addresses" time="0.001">
+        </testcase>
+        <testcase classname="DataValidator › validatePhone" name="validates correct phone numbers" time="0">
+        </testcase>
+        <testcase classname="DataValidator › validatePhone" name="rejects invalid phone numbers" time="0.001">
+            <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+                Expected: false
+                Received: true
+                at Object.toBe (/Users/testuser/path/to/testproject/tests/utils/validator.test.js:34:46)
+                at Promise.then.completed (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/utils.js:298:28)
+                at new Promise (&lt;anonymous&gt;)
+                at callAsyncCircusFn (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/utils.js:231:10)
+                at _callCircusTest (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:316:40)
+                at _runTest (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:252:3)
+                at _runTestsForDescribeBlock (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:126:9)
+                at _runTestsForDescribeBlock (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:121:9)
+                at _runTestsForDescribeBlock (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:121:9)
+                at run (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/run.js:71:3)
+                at runAndTransformResultsToJestFormat (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+                at jestAdapter (/Users/testuser/path/to/testproject/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+                at runTestInternal (/Users/testuser/path/to/testproject/node_modules/jest-runner/build/runTest.js:367:16)
+                at runTest (/Users/testuser/path/to/testproject/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+        </testcase>
+        <testcase classname="DataValidator › hasMinLength" name="correctly validates string lengths" time="0.001">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/services/api/apiHandler.test.js" errors="0" failures="0" skipped="0" timestamp="2025-06-24T14:27:06" time="0.016" tests="8">
+        <testcase classname="ApiHandler" name="handles invalid requests" time="0.001">
+        </testcase>
+        <testcase classname="ApiHandler" name="handles GET /users request" time="0">
+        </testcase>
+        <testcase classname="ApiHandler" name="handles GET /products request" time="0.001">
+        </testcase>
+        <testcase classname="ApiHandler" name="handles GET /users/:id request with valid id" time="0">
+        </testcase>
+        <testcase classname="ApiHandler" name="handles GET /users/:id request with invalid id" time="0">
+        </testcase>
+        <testcase classname="ApiHandler" name="handles GET /products/:id request with valid id" time="0.001">
+        </testcase>
+        <testcase classname="ApiHandler" name="handles GET /products/:id request with invalid id" time="0">
+        </testcase>
+        <testcase classname="ApiHandler" name="handles unsupported paths" time="0">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/services/userService.test.js" errors="0" failures="0" skipped="0" timestamp="2025-06-24T14:27:06" time="0.019" tests="5">
+        <testcase classname="UserService" name="getUser returns correct user by id" time="0">
+        </testcase>
+        <testcase classname="UserService" name="getUser returns null for non-existent id" time="0.001">
+        </testcase>
+        <testcase classname="UserService" name="getAllUsers returns all users" time="0">
+        </testcase>
+        <testcase classname="UserService" name="addUser adds a new user and assigns an id" time="0">
+        </testcase>
+        <testcase classname="UserService" name="addUser throws error when required fields are missing" time="0.003">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/utils/calculator.test.js" errors="0" failures="0" skipped="0" timestamp="2025-06-24T14:27:06" time="0.016" tests="5">
+        <testcase classname="Calculator" name="adds two numbers correctly" time="0">
+        </testcase>
+        <testcase classname="Calculator" name="subtracts two numbers correctly" time="0">
+        </testcase>
+        <testcase classname="Calculator" name="multiplies two numbers correctly" time="0">
+        </testcase>
+        <testcase classname="Calculator" name="divides two numbers correctly" time="0">
+        </testcase>
+        <testcase classname="Calculator" name="throws error when dividing by zero" time="0.002">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/models/product.test.js" errors="0" failures="0" skipped="0" timestamp="2025-06-24T14:27:06" time="0.013" tests="4">
+        <testcase classname="Product" name="constructor sets properties correctly" time="0">
+        </testcase>
+        <testcase classname="Product" name="getPriceWithTax calculates tax correctly" time="0">
+        </testcase>
+        <testcase classname="Product" name="getFormattedPrice formats price correctly" time="0">
+        </testcase>
+        <testcase classname="Product" name="toString returns correct string representation" time="0">
+        </testcase>
+    </testsuite>
+</testsuites>
