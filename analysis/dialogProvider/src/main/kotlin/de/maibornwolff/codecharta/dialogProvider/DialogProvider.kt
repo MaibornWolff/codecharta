@@ -68,8 +68,8 @@ fun Session.promptInputDirectoryAssisted(
 ): String {
     var lastUserInput = ""
     var isInputValid by liveVarOf(true)
-    var subInputText = directoryNavigator.getMatches()
-    var hints = directoryNavigator.getHints()
+    var subInputText by liveVarOf(directoryNavigator.getMatches())
+    var hints by liveVarOf(directoryNavigator.getHints())
     section {
         drawInputWithSubInputText(
             message = message,
@@ -96,6 +96,8 @@ fun Session.promptInputDirectoryAssisted(
         onInputEntered {
             if (directoryNavigator.validate(input) && input.isNotEmpty()) {
                 isInputValid = true
+                subInputText = ""
+                hints = arrayOf("")
                 signal()
             } else {
                 isInputValid = false
