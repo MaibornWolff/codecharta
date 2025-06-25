@@ -1,11 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.CSharpCollector
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.JavaCollector
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.JavascriptCollector
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.KotlinCollector
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.MetricCollector
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.AvailableMetrics
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
@@ -105,22 +100,17 @@ class ProjectScanner(
     }
 
     private fun applyLanguageSpecificCollector(file: File, relativePath: String, verbose: Boolean) {
-        val fileExtension = file.extension
-        val collector: MetricCollector
-        when (fileExtension) {
-            "ts" -> collector = TypescriptCollector()
-            "js" -> collector = JavascriptCollector()
-            "kt" -> collector = KotlinCollector()
-            "java" -> collector = JavaCollector()
-            "cs" -> collector = CSharpCollector()
-            else -> {
-                ignoredFileTypes += file.extension
-                if (verbose) Logger.warn { "Ignoring file $relativePath" }
-                return
-            }
+        val fileExtension = ".${file.extension}"
+        val collector = AvailableCollectors.entries.find { it.fileExtension.extension == fileExtension }?.collectorFactory
+
+        if (collector == null) {
+            ignoredFileTypes += file.extension
+            if (verbose) Logger.warn { "Ignoring file $relativePath" }
+            return
+        } else {
+            if (verbose) Logger.info { "Calculating metrics for file $relativePath" }
+            fileMetrics[relativePath] = collector().collectMetricsForFile(file, metricsToCompute)
         }
-        if (verbose) Logger.info { "Calculating metrics for file $relativePath" }
-        fileMetrics[relativePath] = collector.collectMetricsForFile(file, metricsToCompute)
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
