@@ -2,8 +2,6 @@ package de.maibornwolff.codecharta.dialogProvider
 
 import com.varabyte.kotter.foundation.collections.LiveList
 import com.varabyte.kotter.foundation.collections.liveListOf
-import com.varabyte.kotter.foundation.input.Completions
-import com.varabyte.kotter.foundation.input.InputCompleter
 import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.foundation.input.onInputChanged
 import com.varabyte.kotter.foundation.input.onInputEntered
@@ -38,14 +36,13 @@ fun Session.promptInput(
     allowEmptyInput: Boolean = false,
     invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
     inputValidator: (String) -> Boolean = { true },
-    inputCompleter: InputCompleter = Completions(hint),
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     var lastUserInput = ""
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty(), inputCompleter)
+        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
@@ -128,8 +125,7 @@ fun Session.promptInputNumber(
             isInputValid,
             allowEmptyInput,
             invalidInputMessage,
-            lastUserInput.isEmpty(),
-            inputCompleter = Completions(hint)
+            lastUserInput.isEmpty()
         )
     }.runUntilSignal {
         onInputChanged {
