@@ -771,21 +771,22 @@ class DialogProviderTest {
             var result: String
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/valid.log"
+            val inputFile = File(inputFileName)
             val testMessage = "What is the input file."
 
             testSession { terminal ->
                 result =
                     promptDefaultDirectoryAssistedInput(InputType.FILE, listOf(), onInputReady = {
-                        terminal.type(inputFileName)
+                        terminal.type(inputFile.toString())
                         terminal.press(Keys.ENTER)
                     })
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
-                    "> $inputFileName ",
+                    "> $inputFile ",
+                    inputFile.name,
                     ""
                 )
-
-                assertThat(result).isEqualTo(inputFileName)
+                assertThat(result).isEqualTo(inputFile.toString())
             }
         }
 
@@ -794,21 +795,23 @@ class DialogProviderTest {
             var result: String
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/validExtension.cc.json"
+            val inputFile = File(inputFileName)
             val testMessage = "What is the input [.cc.json] file."
 
             testSession { terminal ->
                 result =
                     promptDefaultDirectoryAssistedInput(InputType.FILE, listOf(FileExtension.CCJSON), onInputReady = {
-                        terminal.type(inputFileName)
+                        terminal.type(inputFile.toString())
                         terminal.press(Keys.ENTER)
                     })
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
-                    "> $inputFileName ",
+                    "> $inputFile ",
+                    inputFile.name,
                     ""
                 )
 
-                assertThat(result).isEqualTo(inputFileName)
+                assertThat(result).isEqualTo(inputFile.toString())
             }
         }
 
@@ -817,6 +820,7 @@ class DialogProviderTest {
             var result: String
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/valid.log"
+            val inputFile = File(inputFileName)
             val testMessage = "What are the input file(s). Enter multiple files comma separated."
             val initialHint = "build" + File.separatorChar
             val directoryContent = "build${File.separatorChar}           src${File.separatorChar}             build.gradle.kts"
@@ -839,16 +843,17 @@ class DialogProviderTest {
                                 text(directoryContent)
                             }
                         }
-                        terminal.type(inputFileName)
+                        terminal.type(inputFile.toString())
                         terminal.press(Keys.ENTER)
                     })
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
-                    "> $inputFileName ",
+                    "> $inputFile ",
+                    inputFile.name,
                     ""
                 )
 
-                assertThat(result).isEqualTo(inputFileName)
+                assertThat(result).isEqualTo(inputFile.toString())
             }
         }
 
@@ -857,6 +862,7 @@ class DialogProviderTest {
             var result: String
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/validExtension.cc.json"
+            val inputFile = File(inputFileName)
             val testMessage = "What are the input [.cc.json] file(s). Enter multiple files comma separated."
             val initialHint = "build" + File.separatorChar
             val directoryContent = "build" + File.separatorChar + " src" + File.separatorChar
@@ -879,16 +885,17 @@ class DialogProviderTest {
                                 text(directoryContent)
                             }
                         }
-                        terminal.type(inputFileName)
+                        terminal.type(inputFile.toString())
                         terminal.press(Keys.ENTER)
                     })
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
-                    "> $inputFileName ",
+                    "> $inputFile ",
+                    inputFile.name,
                     ""
                 )
 
-                assertThat(result).isEqualTo(inputFileName)
+                assertThat(result).isEqualTo(inputFile.toString())
             }
         }
 
