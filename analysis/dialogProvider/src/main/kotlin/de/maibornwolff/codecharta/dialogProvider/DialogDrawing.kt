@@ -54,7 +54,7 @@ fun MainRenderScope.drawInputWithSubInputText(
 
     text("> ")
 
-    input(Completions(*hint), initialText = "")
+    input(Completions(*hint, ignoreCase = false), initialText = "")
     text("\n")
     black(isBright = true) {
         text(subInputText)

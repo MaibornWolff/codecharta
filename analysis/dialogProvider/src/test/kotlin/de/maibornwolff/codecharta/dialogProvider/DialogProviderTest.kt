@@ -20,6 +20,7 @@ import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -44,6 +45,11 @@ class DialogProviderTest {
             "element 2",
             "element 3"
         )
+
+    @AfterEach
+    fun afterTest() {
+        unmockkAll()
+    }
 
     @Nested
     @DisplayName("promptInput > ")
@@ -772,7 +778,7 @@ class DialogProviderTest {
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/valid.log"
             val inputFile = File(inputFileName)
-            val testMessage = "What is the input file."
+            val testMessage = "What is the input file?"
 
             testSession { terminal ->
                 result =
@@ -783,7 +789,6 @@ class DialogProviderTest {
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
                     "> $inputFile ",
-                    inputFile.name,
                     ""
                 )
                 assertThat(result).isEqualTo(inputFile.toString())
@@ -796,7 +801,7 @@ class DialogProviderTest {
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/validExtension.cc.json"
             val inputFile = File(inputFileName)
-            val testMessage = "What is the input [.cc.json] file."
+            val testMessage = "What is the input [.cc.json] file?"
 
             testSession { terminal ->
                 result =
@@ -807,7 +812,6 @@ class DialogProviderTest {
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
                     "> $inputFile ",
-                    inputFile.name,
                     ""
                 )
 
@@ -821,7 +825,7 @@ class DialogProviderTest {
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/valid.log"
             val inputFile = File(inputFileName)
-            val testMessage = "What are the input file(s). Enter multiple files comma separated."
+            val testMessage = "What are the input file(s)? Enter multiple files comma separated."
             val initialHint = "build" + File.separatorChar
             val directoryContent = "build${File.separatorChar}           src${File.separatorChar}             build.gradle.kts"
 
@@ -849,7 +853,6 @@ class DialogProviderTest {
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
                     "> $inputFile ",
-                    inputFile.name,
                     ""
                 )
 
@@ -863,7 +866,7 @@ class DialogProviderTest {
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/validExtension.cc.json"
             val inputFile = File(inputFileName)
-            val testMessage = "What are the input [.cc.json] file(s). Enter multiple files comma separated."
+            val testMessage = "What are the input [.cc.json] file(s)? Enter multiple files comma separated."
             val initialHint = "build" + File.separatorChar
             val directoryContent = "build" + File.separatorChar + " src" + File.separatorChar
 
@@ -891,7 +894,6 @@ class DialogProviderTest {
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
                     "> $inputFile ",
-                    inputFile.name,
                     ""
                 )
 
@@ -904,7 +906,7 @@ class DialogProviderTest {
             var result: String
             val testFilePath = "src/test/resources"
             val inputFileName = "$testFilePath/validExtension.cc.json"
-            val testMessage = "What are the input folder(s) or [.cc.json] file(s). Enter multiple files comma separated."
+            val testMessage = "What are the input folder(s) or [.cc.json] file(s)? Enter multiple files comma separated."
             val slash = File.separatorChar
             val initialHint = "build$slash"
             val directoryContent = "build$slash src$slash"
@@ -946,12 +948,56 @@ class DialogProviderTest {
                 assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
                     "? $testMessage",
                     "> ${File(inputFileName)} ",
-                    File(inputFileName).name,
                     ""
                 )
                 assertThat(result).isEqualTo(File(inputFileName).toString())
             }
-            unmockkAll()
+        }
+
+        @Test
+        fun `should clean hints from terminal if an input is accepted`() {
+            var result: String
+            val testFilePath = "src/test/"
+            val testMessage = "What is the input folder?"
+            val slash = File.separatorChar
+            val initialHint = "build$slash"
+            val directoryContent = "build$slash src$slash"
+
+            testSession { terminal ->
+                result =
+                    promptDefaultDirectoryAssistedInput(
+                        InputType.FOLDER,
+                        listOf(),
+                        multiple = false,
+                        onInputReady = {
+                            terminal.assertMatches {
+                                bold {
+                                    green { text("? ") }
+                                    textLine(testMessage)
+                                }
+                                text("> ")
+                                black(isBright = true) {
+                                    invert { text(initialHint[0]) }
+                                    text("${initialHint.drop(1)} ")
+                                }
+                                text("\n")
+                                black(isBright = true) {
+                                    text(directoryContent)
+                                }
+                            }
+                            terminal.type("sr")
+                            terminal.press(Keys.RIGHT)
+                            terminal.type("test${slash}")
+                            terminal.press(Keys.ENTER)
+                        }
+                    )
+                assertThat(terminal.resolveRerenders().stripFormatting()).containsExactly(
+                    "? $testMessage",
+                    "> ${File(testFilePath)}$slash ",
+                    ""
+                )
+                assertThat(result).isEqualTo(File(testFilePath).toString()+slash)
+            }
         }
     }
 }
