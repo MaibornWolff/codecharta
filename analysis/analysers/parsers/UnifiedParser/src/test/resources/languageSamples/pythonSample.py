@@ -32,7 +32,13 @@ class UserService:
         if username in self.users or username == "admin":
             raise ValueError(f"Username '{username}' already exists")
 
-        user = User(username, email, password, first_name, last_name)
+        user = User(
+            username,
+            email,
+            password,
+            first_name,
+            last_name
+        )
         self.users[username] = user
         return user
 

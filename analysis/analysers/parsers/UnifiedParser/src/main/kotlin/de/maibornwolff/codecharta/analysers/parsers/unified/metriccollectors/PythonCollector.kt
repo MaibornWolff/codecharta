@@ -72,6 +72,8 @@ class PythonCollector : MetricCollector(
     }
 
     private fun areAllChildrenInLineCommentNodes(node: TSNode, line: Int, commentTypes: List<Pair<String, String?>>): Boolean {
+        if (node.childCount == 0) return isCommentNode(node, commentTypes)
+
         val lookAheadCursor = TSTreeCursor(node)
         if (lookAheadCursor.gotoFirstChild()) {
             do {
