@@ -1,5 +1,5 @@
 {
-  "checksum": "d39de639c38fb69dc5e7e5220d3b54a9",
+  "checksum": "5f0f11de52d3447ee8ea6b248e72502f",
   "data": {
     "projectName": "",
     "nodes": [
@@ -15,8 +15,8 @@
             "attributes": {
               "complexity": 12,
               "comment_lines": 61,
-              "loc": 104,
-              "rloc": 32
+              "loc": 110,
+              "rloc": 38
             },
             "link": "",
             "children": []
