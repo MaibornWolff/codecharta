@@ -8,6 +8,7 @@ import com.varabyte.kotter.foundation.text.green
 import com.varabyte.kotter.foundation.text.invert
 import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.textLine
+import com.varabyte.kotter.foundation.text.yellow
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.resolveRerenders
 import com.varabyte.kotter.runtime.terminal.inmemory.type
@@ -765,6 +766,14 @@ class DialogProviderTest {
 
     @Test
     fun `displayInfo should print message as expected`() {
+        val testString = "testString"
+        testSession { terminal ->
+            displayInfo(testString)
+            terminal.assertMatches {
+                yellow { text("! ") }
+                text(testString)
+            }
+        }
     }
 
     @Nested

@@ -15,6 +15,7 @@ class LogScanDialog {
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(),
                 multiple = false,
+                postMessageText = " (Git Log)",
                 onInputReady = testCallback()
             )
 
@@ -23,6 +24,7 @@ class LogScanDialog {
                 inputType = InputType.FILE,
                 fileExtensionList = listOf(),
                 multiple = false,
+                postMessageText = " (File Name List)",
                 onInputReady = testCallback()
             )
 
