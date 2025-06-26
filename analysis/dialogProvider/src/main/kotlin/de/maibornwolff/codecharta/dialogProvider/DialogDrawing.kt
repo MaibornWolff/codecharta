@@ -14,50 +14,30 @@ import com.varabyte.kotter.runtime.MainRenderScope
 
 fun MainRenderScope.drawInput(
     message: String,
-    hint: String,
     isInputValid: Boolean,
     allowEmptyInput: Boolean,
     invalidInputMessage: String,
-    lastInputEmpty: Boolean
-) {
-    bold {
-        green { text("? ") }
-        text(message)
-        if (isInputValid) {
-            black(isBright = true) { textLine(if (allowEmptyInput) "  Empty input is allowed" else "") }
-        } else {
-            red { textLine(if (lastInputEmpty) "  Empty input is not allowed!" else "  $invalidInputMessage") }
-        }
-    }
-    text("> ")
-    input(Completions(hint), initialText = "")
-}
-
-fun MainRenderScope.drawInputWithSubInputText(
-    message: String,
-    isInputValid: Boolean,
-    allowEmptyInput: Boolean,
     lastInputEmpty: Boolean,
-    invalidInputMessage: String,
-    subInputText: String,
-    vararg hint: String
+    vararg hint: String,
+    displaySubInputText: Boolean = false,
+    subInputText: String = ""
 ) {
     bold {
-        green { text("? ") }
-        text(message)
+        this.green { this.text("? ") }
+        this.text(message)
         if (isInputValid) {
-            black(isBright = true) { textLine(if (allowEmptyInput) "  Empty input is allowed" else "") }
+            this.black(isBright = true) { this.textLine(if (allowEmptyInput) "  Empty input is allowed" else "") }
         } else {
-            red { textLine(if (lastInputEmpty) "  Empty input is not allowed!" else "  $invalidInputMessage") }
+            this.red { this.textLine(if (lastInputEmpty) "  Empty input is not allowed!" else "  $invalidInputMessage") }
         }
     }
-
     text("> ")
-
     input(Completions(*hint, ignoreCase = false), initialText = "")
-    text("\n")
-    black(isBright = true) {
-        text(subInputText)
+    if (displaySubInputText) {
+        text("\n")
+        black(isBright = true) {
+            text(subInputText)
+        }
     }
 }
 

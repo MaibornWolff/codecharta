@@ -48,7 +48,7 @@ class DirectoryNavigator(
 
         updateCurrentFolder(splitInput)
         currentDirectoryContent = currentDirectory.listDirectoryEntries().sorted()
-        possibleDirectories = currentDirectoryContent.filter { it.isDirectory() }.filter { it.toString().startsWith(splitInput) }
+        possibleDirectories = currentDirectoryContent.filter { it.isDirectory() && it.toString().startsWith(splitInput) }
         if (filesAllowed) {
             possibleFiles = currentDirectoryContent.filter {
                 InputValidator.verifyFile(it.toFile(), fileExtensions)
@@ -76,7 +76,7 @@ class DirectoryNavigator(
         possibleDirectories.forEach {
             val dirName = it.toFile().name
             val nameLength = dirName.length + 1
-            if (!checkPossibleEntry(currentMatches.size, paddedSize, nameLength)) {
+            if (!isEntryPossible(currentMatches.size, paddedSize, nameLength)) {
                 currentMatches.add("(${currentMatches.size}/$totalMatches)")
                 return finalizeOutputString(currentMatches, paddedSize)
             }
@@ -87,7 +87,7 @@ class DirectoryNavigator(
         possibleFiles.forEach {
             val fileName = it.toFile().name
             val nameLength = fileName.length
-            if (!checkPossibleEntry(currentMatches.size, paddedSize, nameLength)) {
+            if (!isEntryPossible(currentMatches.size, paddedSize, nameLength)) {
                 currentMatches.add("(${currentMatches.size}/$totalMatches)")
                 return finalizeOutputString(currentMatches, paddedSize)
             }
@@ -98,7 +98,7 @@ class DirectoryNavigator(
         return finalizeOutputString(currentMatches, paddedSize)
     }
 
-    private fun checkPossibleEntry(entryCount: Int, entrySize: Int, newEntrySize: Int): Boolean {
+    private fun isEntryPossible(entryCount: Int, entrySize: Int, newEntrySize: Int): Boolean {
         return (entryCount + 1) * max(entrySize, newEntrySize) < targetLineLength * 2
     }
 

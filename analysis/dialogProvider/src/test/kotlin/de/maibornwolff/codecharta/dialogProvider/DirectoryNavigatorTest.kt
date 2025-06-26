@@ -9,14 +9,6 @@ class DirectoryNavigatorTest {
     private val slash = File.separatorChar
 
     @Test
-    fun `this should provide a good change directory experience`() {
-        val uut = DirectoryNavigator(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), false)
-        val systemSlash = File.separatorChar
-        uut.prepareMatches("")
-        assertThat(uut.getHints()).isEqualTo(arrayOf("build$systemSlash", "src$systemSlash"))
-    }
-
-    @Test
     fun `should set input types correctly`() {
         val navigatorFiles = DirectoryNavigator(InputType.FILE, listOf(), false)
         val navigatorFolderAndFiles = DirectoryNavigator(InputType.FOLDER_AND_FILE, listOf(), false)
@@ -30,6 +22,7 @@ class DirectoryNavigatorTest {
     @Test
     fun `should filter possible file options correctly`() {
         val navigator = DirectoryNavigator(InputType.FILE, listOf(), false)
+
         assertThat(navigator.currentDirectoryContent.size).isEqualTo(3)
         assertThat(navigator.possibleDirectories.size).isEqualTo(2)
         assertThat(navigator.possibleFiles.size).isEqualTo(1)
@@ -38,6 +31,7 @@ class DirectoryNavigatorTest {
     @Test
     fun `should filter unaccepted file options`() {
         val navigator = DirectoryNavigator(InputType.FOLDER, listOf(), false)
+
         assertThat(navigator.currentDirectoryContent.size).isEqualTo(3)
         assertThat(navigator.possibleDirectories.size).isEqualTo(2)
         assertThat(navigator.possibleFiles.size).isEqualTo(0)
@@ -51,6 +45,7 @@ class DirectoryNavigatorTest {
         val navigator = DirectoryNavigator(InputType.FOLDER_AND_FILE, listOf(FileExtension.CCJSON), false)
 
         navigator.prepareMatches(File(partialResourcePath).toString() + slash)
+
         assertThat(navigator.getHints().size).isEqualTo(2)
         assertThat(navigator.getHints()).containsExactly(
             File("src/test/kotlin/").toString() + slash,

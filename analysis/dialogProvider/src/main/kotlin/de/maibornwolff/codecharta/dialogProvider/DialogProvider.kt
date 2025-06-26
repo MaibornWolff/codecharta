@@ -42,7 +42,7 @@ fun Session.promptInput(
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
+        drawInput(message, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty(), hintText)
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
@@ -71,14 +71,15 @@ fun Session.promptInputDirectoryAssisted(
     var subInputText by liveVarOf(directoryNavigator.getMatches())
     var hints by liveVarOf(directoryNavigator.getHints())
     section {
-        drawInputWithSubInputText(
+        drawInput(
             message = message,
             isInputValid = isInputValid,
             allowEmptyInput = false,
             lastInputEmpty = lastUserInput.isEmpty(),
             invalidInputMessage = invalidInputMessage,
-            subInputText,
-            *hints
+            hint = hints,
+            displaySubInputText = true,
+            subInputText = subInputText
         )
     }.runUntilSignal {
         onKeyPressed {
@@ -123,11 +124,11 @@ fun Session.promptInputNumber(
     section {
         drawInput(
             message,
-            hintText,
             isInputValid,
             allowEmptyInput,
             invalidInputMessage,
-            lastUserInput.isEmpty()
+            lastUserInput.isEmpty(),
+            hintText
         )
     }.runUntilSignal {
         onInputChanged {
@@ -270,6 +271,7 @@ fun Session.promptDefaultDirectoryAssistedInput(
     inputType: InputType,
     fileExtensionList: List<FileExtension>,
     multiple: Boolean = false,
+    postMessageText: String = "",
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     val messageFileExtension = "[${fileExtensionList.joinToString(", ") { fileExtension -> fileExtension.extension }}]"
@@ -318,7 +320,7 @@ fun Session.promptDefaultDirectoryAssistedInput(
     )
 
     return promptInputDirectoryAssisted(
-        message = "What ${if (multiple) "are" else "is"} the input $inputMessage?$messageExtension",
+        message = "What ${if (multiple) "are" else "is"} the input $inputMessage?$postMessageText$messageExtension",
         invalidInputMessage = "Please input a valid ${inputType.inputType}",
         directoryNavigator = directoryNavigator,
         onInputReady = onInputReady
