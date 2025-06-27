@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.Jav
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.JavascriptCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.KotlinCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.MetricCollector
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.PythonCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.AvailableMetrics
 import de.maibornwolff.codecharta.model.MutableNode
@@ -113,6 +114,7 @@ class ProjectScanner(
             "kt" -> collector = KotlinCollector()
             "java" -> collector = JavaCollector()
             "cs" -> collector = CSharpCollector()
+            "py" -> collector = PythonCollector()
             else -> {
                 ignoredFileTypes += file.extension
                 if (verbose) Logger.warn { "Ignoring file $relativePath" }

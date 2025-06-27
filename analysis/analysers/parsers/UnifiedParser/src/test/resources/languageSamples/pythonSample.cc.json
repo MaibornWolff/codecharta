@@ -1,5 +1,5 @@
 {
-  "checksum": "b693a0f06900613229ce4db5db9f29f1",
+  "checksum": "5f0f11de52d3447ee8ea6b248e72502f",
   "data": {
     "projectName": "",
     "nodes": [
@@ -10,13 +10,13 @@
         "link": "",
         "children": [
           {
-            "name": "typescriptSample.ts",
+            "name": "pythonSample.py",
             "type": "File",
             "attributes": {
-              "complexity": 32,
-              "comment_lines": 60,
-              "loc": 200,
-              "rloc": 115
+              "complexity": 12,
+              "comment_lines": 61,
+              "loc": 110,
+              "rloc": 38
             },
             "link": "",
             "children": []

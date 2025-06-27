@@ -41,7 +41,8 @@ class UnifiedParserTest {
         Arguments.of("typescript", ".ts"),
         Arguments.of("javascript", ".js"),
         Arguments.of("java", ".java"),
-        Arguments.of("cSharp", ".cs")
+        Arguments.of("cSharp", ".cs"),
+        Arguments.of("python", ".py")
     )
 
     @ParameterizedTest
@@ -49,8 +50,8 @@ class UnifiedParserTest {
     fun `Should produce correct output for a single source file of each supported language`(language: String, fileExtension: String) {
         // given
         val pipedProject = ""
-        val inputFilePath = "${testResourceBaseFolder}${language}Sample$fileExtension"
-        val expectedResultFile = File("${testResourceBaseFolder}${language}Sample.cc.json")
+        val inputFilePath = "${testResourceBaseFolder}languageSamples/${language}Sample$fileExtension"
+        val expectedResultFile = File("${testResourceBaseFolder}languageSamples/${language}Sample.cc.json")
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
@@ -132,13 +133,13 @@ class UnifiedParserTest {
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val ignoredFiles = listOf(
             ".whatever/something.kt",
-            "bar/something.strange",
-            "foo.py"
+            "bar/something.strange"
         )
         val parsedFiles = listOf(
             "bar/hello.kt",
             "bar/foo.kt",
             "foo.kt",
+            "foo.py",
             "whenCase.kt",
             "helloWorld.ts"
         )
