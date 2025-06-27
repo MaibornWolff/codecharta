@@ -19,6 +19,7 @@ class CoberturaStrategy : ImporterStrategy {
     override fun addNodesToProjectBuilder(coverageFile: File, projectBuilder: ProjectBuilder, error: PrintStream, keepFullPaths: Boolean) {
         processXMLReport(coverageFile, projectBuilder, error, "package") { element, builder -> processPackageElement(element, builder) }
         if (!keepFullPaths) removeExtraNodesAroundProject(projectBuilder)
+        printPackageWarning()
     }
 
     private fun processPackageElement(packageElement: Element, projectBuilder: ProjectBuilder) {
