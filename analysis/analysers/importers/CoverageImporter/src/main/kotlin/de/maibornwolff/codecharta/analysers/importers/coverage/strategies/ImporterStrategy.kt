@@ -98,4 +98,11 @@ interface ImporterStrategy {
         }
         projectBuilder.rootNode.children = newRoot.children
     }
+
+    fun printPackageWarning() {
+        println("\n")
+        Logger.warn { "NOTE: The selected coverage report format contains only package information! " }
+        Logger.warn { "NOTE: The resulting cc.json might contain file paths not starting from the project root." }
+        Logger.warn { "NOTE: Consider running another analyser on the project (e.g. unifiedParser) and merging the results." }
+    }
 }
