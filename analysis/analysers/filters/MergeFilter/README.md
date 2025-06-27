@@ -75,3 +75,15 @@ ccsh merge aa.cc.json bb.cc.json cc.cc.json --large -o myOutputFile -nc
 # - - cc
 # - - - *
 ```
+
+## Leaf Merging
+
+Leaf merging can be used in cases when we have one `cc.json` representing a whole project and others representing only parts of it. This can happen for example when calculating basic metrics for the whole project using the UnifiedParser and generating coverage metrics using the CoverageImporter and a Jacoco report, which only contains package level information and not the whole filepaths.
+
+In such cases it is possible to merge the coverage report into the main cc.json by using leaf merging:
+
+```
+ccsh merge project.cc.json testCoverage.cc.json -o=mergeResult --leaf --ignore-case
+```
+
+This will insert the metrics of the `testCoverage.cc.json` into the project structure of the `project.cc.json`.
