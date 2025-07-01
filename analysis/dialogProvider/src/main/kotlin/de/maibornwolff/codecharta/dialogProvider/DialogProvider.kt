@@ -6,12 +6,14 @@ import com.varabyte.kotter.foundation.input.Keys
 import com.varabyte.kotter.foundation.input.onInputChanged
 import com.varabyte.kotter.foundation.input.onInputEntered
 import com.varabyte.kotter.foundation.input.onKeyPressed
+import com.varabyte.kotter.foundation.input.sendKeys
 import com.varabyte.kotter.foundation.liveVarOf
 import com.varabyte.kotter.foundation.runUntilSignal
+import com.varabyte.kotter.foundation.text.text
+import com.varabyte.kotter.foundation.text.yellow
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
 import de.maibornwolff.codecharta.serialization.FileExtension
-import java.nio.file.Paths
 
 const val DEFAULT_INVALID_INPUT_MESSAGE = "Input is invalid!"
 
@@ -19,6 +21,13 @@ enum class InputType(val inputType: String) {
     FOLDER("folder"),
     FILE("file"),
     FOLDER_AND_FILE("folder or file")
+}
+
+fun Session.displayInfo(message: String) {
+    section {
+        yellow { text("! ") }
+        text(message)
+    }.run()
 }
 
 fun Session.promptInput(
@@ -33,13 +42,63 @@ fun Session.promptInput(
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
+        drawInput(message, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty(), hintText)
     }.runUntilSignal {
         onInputChanged { isInputValid = true }
         onInputEntered {
             if ((allowEmptyInput && input.isEmpty()) || (inputValidator(input) && input.isNotEmpty())) {
                 isInputValid = true
                 hintText = ""
+                signal()
+            } else {
+                isInputValid = false
+            }
+            lastUserInput = input
+        }
+        onInputReady()
+    }
+    return lastUserInput
+}
+
+fun Session.promptInputDirectoryAssisted(
+    message: String,
+    invalidInputMessage: String = DEFAULT_INVALID_INPUT_MESSAGE,
+    directoryNavigator: DirectoryNavigator,
+    onInputReady: suspend RunScope.() -> Unit
+): String {
+    var lastUserInput = ""
+    var isInputValid by liveVarOf(true)
+    var subInputText by liveVarOf(directoryNavigator.getMatches())
+    var hints by liveVarOf(directoryNavigator.getHints())
+    section {
+        drawInput(
+            message = message,
+            isInputValid = isInputValid,
+            allowEmptyInput = false,
+            lastInputEmpty = lastUserInput.isEmpty(),
+            invalidInputMessage = invalidInputMessage,
+            hint = hints,
+            displaySubInputText = true,
+            subInputText = subInputText
+        )
+    }.runUntilSignal {
+        onKeyPressed {
+            if (key == Keys.TAB) {
+                sendKeys(Keys.RIGHT)
+            }
+        }
+        onInputChanged {
+            isInputValid = true
+            lastUserInput = input
+            directoryNavigator.prepareMatches(input)
+            subInputText = directoryNavigator.getMatches()
+            hints = directoryNavigator.getHints()
+        }
+        onInputEntered {
+            if (directoryNavigator.validate(input) && input.isNotEmpty()) {
+                isInputValid = true
+                subInputText = ""
+                hints = arrayOf("")
                 signal()
             } else {
                 isInputValid = false
@@ -63,7 +122,14 @@ fun Session.promptInputNumber(
     var hintText = hint
     var isInputValid by liveVarOf(true)
     section {
-        drawInput(message, hintText, isInputValid, allowEmptyInput, invalidInputMessage, lastUserInput.isEmpty())
+        drawInput(
+            message,
+            isInputValid,
+            allowEmptyInput,
+            invalidInputMessage,
+            lastUserInput.isEmpty(),
+            hintText
+        )
     }.runUntilSignal {
         onInputChanged {
             isInputValid = true
@@ -201,25 +267,22 @@ private fun getSelectedChoices(choices: List<String>, selection: List<Boolean>):
     return result
 }
 
-fun Session.promptDefaultFileFolderInput(
+fun Session.promptDefaultDirectoryAssistedInput(
     inputType: InputType,
     fileExtensionList: List<FileExtension>,
     multiple: Boolean = false,
+    postMessageText: String = "",
     onInputReady: suspend RunScope.() -> Unit
 ): String {
     val messageFileExtension = "[${fileExtensionList.joinToString(", ") { fileExtension -> fileExtension.extension }}]"
 
     val pluralSuffix: String
-    val hintText: String
     val messageExtension: String
     if (multiple) {
         pluralSuffix = "(s)"
-        val sampleFileExtension = if (fileExtensionList.isEmpty()) "" else fileExtensionList.first().extension
-        hintText = "input1$sampleFileExtension, input2$sampleFileExtension, ..."
         messageExtension = " Enter multiple files comma separated."
     } else {
         pluralSuffix = ""
-        hintText = Paths.get("").toAbsolutePath().toString()
         messageExtension = ""
     }
 
@@ -250,16 +313,16 @@ fun Session.promptDefaultFileFolderInput(
             }
         }
 
-    return promptInput(
-        message = "What ${if (multiple) "are" else "is"} the input $inputMessage.$messageExtension",
-        hint = hintText,
-        allowEmptyInput = false,
+    val directoryNavigator = DirectoryNavigator(
+        inputType = inputType,
+        fileExtensions = fileExtensionList,
+        multiple = multiple
+    )
+
+    return promptInputDirectoryAssisted(
+        message = "What ${if (multiple) "are" else "is"} the input $inputMessage?$postMessageText$messageExtension",
         invalidInputMessage = "Please input a valid ${inputType.inputType}",
-        inputValidator = InputValidator.isFileOrFolderValid(
-            inputType,
-            fileExtensionList,
-            multiple = multiple
-        ),
+        directoryNavigator = directoryNavigator,
         onInputReady = onInputReady
     )
 }

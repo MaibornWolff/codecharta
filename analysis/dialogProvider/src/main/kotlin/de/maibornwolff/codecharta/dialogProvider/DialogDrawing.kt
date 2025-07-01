@@ -14,23 +14,31 @@ import com.varabyte.kotter.runtime.MainRenderScope
 
 fun MainRenderScope.drawInput(
     message: String,
-    hint: String,
     isInputValid: Boolean,
     allowEmptyInput: Boolean,
     invalidInputMessage: String,
-    lastInputEmpty: Boolean
+    lastInputEmpty: Boolean,
+    vararg hint: String,
+    displaySubInputText: Boolean = false,
+    subInputText: String = ""
 ) {
     bold {
-        green { text("? ") }
-        text(message)
+        this.green { this.text("? ") }
+        this.text(message)
         if (isInputValid) {
-            black(isBright = true) { textLine(if (allowEmptyInput) "  Empty input is allowed" else "") }
+            this.black(isBright = true) { this.textLine(if (allowEmptyInput) "  Empty input is allowed" else "") }
         } else {
-            red { textLine(if (lastInputEmpty) "  Empty input is not allowed!" else "  $invalidInputMessage") }
+            this.red { this.textLine(if (lastInputEmpty) "  Empty input is not allowed!" else "  $invalidInputMessage") }
         }
     }
     text("> ")
-    input(Completions(hint), initialText = "")
+    input(Completions(*hint, ignoreCase = false), initialText = "")
+    if (displaySubInputText) {
+        text("\n")
+        black(isBright = true) {
+            text(subInputText)
+        }
+    }
 }
 
 fun MainRenderScope.drawConfirm(message: String, hint: String, choice: Boolean) {
