@@ -101,7 +101,7 @@ class UnifiedParser(
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        println("Checking if SourceCodeParser is applicable...")
+        println("Checking if UnifiedParser is applicable...")
         return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(
             resourceToBeParsed,
             AvailableCollectors.entries.map { it.fileExtension }
