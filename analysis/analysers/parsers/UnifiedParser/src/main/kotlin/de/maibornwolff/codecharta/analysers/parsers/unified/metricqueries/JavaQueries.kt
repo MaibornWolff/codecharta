@@ -3,16 +3,23 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
 class JavaQueries : MetricQueries {
     companion object {
         private val complexityNodes = listOf(
+            // if
             "if_statement",
+            // loop
             "do_statement",
             "for_statement",
             "while_statement",
             "enhanced_for_statement",
+            // conditional
             "ternary_expression",
+            // logical
             "binary_expression operator: \"&&\"",
             "binary_expression operator: \"||\"",
+            // case
             "switch_label",
+            // catch
             "catch_clause",
+            // function
             "constructor_declaration",
             "method_declaration",
             "lambda_expression",
