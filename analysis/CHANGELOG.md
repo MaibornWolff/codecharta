@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   - It currently supports:
     - Typescript
     - Kotlin
+  - It is also available when calling the ccsh without parameters [#4102](https://github.com/MaibornWolff/codecharta/pull/4102)
 - Add auto-completing file input to all interactive dialogs [#4081](https://github.com/MaibornWolff/codecharta/pull/4081)
 
 ## [1.133.0] - 2025-05-19
