@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     - Kotlin
 - Add auto-completing file input to all interactive dialogs [#4081](https://github.com/MaibornWolff/codecharta/pull/4081)
 
+###  Fixed 🐞
+
+- Fix progressbar sometimes showing parts of previous filenames [#4111](https://github.com/MaibornWolff/codecharta/pull/4111)
+
 ## [1.133.0] - 2025-05-19
 
 ### Added 🚀
