@@ -13,12 +13,13 @@ import org.treesitter.TSTreeCursor
 import java.io.File
 
 abstract class MetricCollector(
-    private val treeSitterLanguage: TSLanguage,
-    private val queryProvider: MetricQueries
+    protected val treeSitterLanguage: TSLanguage,
+    protected val queryProvider: MetricQueries
 ) {
     private val cursor = TSQueryCursor()
     private val parser = TSParser()
-    private var lastCountedLine = -1
+    protected var lastCountedLine = -1
+    protected var rootNodeType: String = ""
 
     private val metricToCalculation by lazy {
         mapOf(
@@ -86,13 +87,15 @@ abstract class MetricCollector(
     open fun getRealLinesOfCode(root: TSNode): Int {
         if (root.childCount == 0) return 0
 
+        rootNodeType = root.type
         val commentTypes = getTypesFromQuery(queryProvider.commentLinesQuery)
         return walkTree(TSTreeCursor(root), commentTypes)
     }
 
     private fun getTypesFromQuery(query: String): List<String> {
-        val matches = Regex("\\((\\w+)\\)").findAll(query)
-        return matches.map { it.groupValues[1] }.toList()
+        val regex = Regex("""\((.*?)\)\s*@""", RegexOption.MULTILINE)
+        val result = regex.findAll(query).map { it.groupValues[1] }.toList()
+        return result
     }
 
     private fun walkTree(cursor: TSTreeCursor, commentTypes: List<String>): Int {
@@ -100,7 +103,7 @@ abstract class MetricCollector(
         val currentNode = cursor.currentNode()
 
         if (!commentTypes.contains(currentNode.type)) {
-            if (currentNode.startPoint.row > lastCountedLine) {
+            if (currentNode.startPoint.row > lastCountedLine && currentNode.type != rootNodeType) {
                 lastCountedLine = currentNode.startPoint.row
                 realLinesOfCode++
             }
