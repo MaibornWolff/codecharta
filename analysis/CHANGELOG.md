@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   - It is also available when calling the ccsh without parameters [#4102](https://github.com/MaibornWolff/codecharta/pull/4102)
 - Add auto-completing file input to all interactive dialogs [#4081](https://github.com/MaibornWolff/codecharta/pull/4081)
 
+###  Fixed 🐞
+
+- Fix progressbar sometimes showing parts of previous filenames [#4111](https://github.com/MaibornWolff/codecharta/pull/4111)
+
 ## [1.133.0] - 2025-05-19
 
 ### Added 🚀
