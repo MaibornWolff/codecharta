@@ -129,7 +129,7 @@
     "marked": "^5.0.2",
     "puppeteer": "^23.6.0",
     "ts-jest": "^29.0.5",
-    "typescript": "5.4",
+    "typescript": "5.8",
     "webpack-glsl-loader": "^1.0.1"
   },
   "optionalDependencies": {
