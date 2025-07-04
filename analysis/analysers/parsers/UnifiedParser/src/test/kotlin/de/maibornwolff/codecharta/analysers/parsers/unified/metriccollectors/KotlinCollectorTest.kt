@@ -119,7 +119,7 @@ class KotlinCollectorTest {
 
                 return true
             }
-        """.trimIndent()
+        """.trimIndent() + "\n" // this newline simulates end of file
         val node = parser.parseString(null, input).rootNode
 
         // when
@@ -135,6 +135,7 @@ class KotlinCollectorTest {
         val input = """
             if (x == 2) {
                 // comment
+
 
                 return true
             }
