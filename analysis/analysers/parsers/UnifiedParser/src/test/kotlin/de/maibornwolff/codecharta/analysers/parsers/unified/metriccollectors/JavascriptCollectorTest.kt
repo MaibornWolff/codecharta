@@ -123,7 +123,7 @@ class JavascriptCollectorTest {
 
             return true;
             }
-        """.trimIndent() + "\n" //this newline simulates end of file
+        """.trimIndent() + "\n" // this newline simulates end of file
         val node = parser.parseString(null, input).rootNode
 
         // when
