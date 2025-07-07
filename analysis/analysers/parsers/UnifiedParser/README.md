@@ -71,11 +71,11 @@ This Parser is built with extensibility in mind and can be extended in two ways:
 
 Adding a new language to the parser is done by creating a new language specific 'collector', which inherits from the abstract class 'MetricCollector'. Such a collector requires two parameters. First a reference to the treesitter implementation for the language. For many language, this can be found [here](https://github.com/bonede/tree-sitter-ng) and can be added as a dependency via the 'libs.versions.toml'. Second, the collector requires language specific queries in form of a query provider.
 
-As the treesitter grammars differ by language, these queries need to be adjusted for each language. Creating a new query provider is done by inheriting from the 'MetricQueries' interface and creating one query for each member. This interface has one member for each of the metrics currently supported by this parser. It is also possible to only provide queries for only some of the metrics. Fot this, the 'getAvailableMetrics' function can be overwritten to only include the metric this language supports
+As the treesitter grammars differ by language, these queries need to be adjusted for each language. Creating a new query provider is done by inheriting from the 'MetricQueries' interface and creating one query for each member. This interface has one member for each of the metrics currently supported by this parser. It is also possible to provide queries for only some of the metrics. Fot this, the 'getAvailableMetrics' function can be overwritten to only include the metric this language supports
 
 By default, it is not necessary to implement any functionality in the language specific collectors. If however the calculation for one metric is different from the base implementation, the function to calculate that metric can be overwritten
 
-Finally, to make the newly created collector accessible, set for which file types it should be applied in the 'applyLanguageSpecificCollector' function of the 'ProjectScanner'.
+Finally, to make the newly created collector accessible, add it to the 'AvailableCollectors' enum.
 
 ### Adding a new metric
 
