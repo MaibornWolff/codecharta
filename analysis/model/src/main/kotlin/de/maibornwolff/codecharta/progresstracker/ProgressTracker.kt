@@ -6,6 +6,7 @@ import kotlin.math.log10
 
 class ProgressTracker() {
     private var startTime = System.currentTimeMillis()
+    private var lastLineLength = 0
 
     // function based on java implementation by Alexander Shuev: https://stackoverflow.com/questions/1001290/console-based-progress-in-java
     fun updateProgress(total: Long, parsed: Long, unit: String, filename: String = "") {
@@ -55,8 +56,19 @@ class ProgressTracker() {
 
             if (filename != "") {
                 string.append(" parsed file: $filename")
+                val currentLength = string.length - 1 // -1 because we don't count the \r at the start of the line
+                string.append(getClearingSpaces(currentLength))
             }
             System.err.print(string)
         }
+    }
+
+    private fun getClearingSpaces(currentLength: Int): String {
+        var result = ""
+        if (currentLength < lastLineLength) {
+            result = " ".repeat(lastLineLength - currentLength)
+        }
+        lastLineLength = currentLength
+        return result
     }
 }

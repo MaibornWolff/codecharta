@@ -26,7 +26,7 @@ ktlint = "12.1.2"
 mockito-core = "3.12.4"
 mockito-kotlin = "2.2.0"
 mockk = "1.13.17"
-wiremock = "3.0.1"
+wiremock = "3.13.1"
 tree-sitter = "0.24.5"
 tree-sitter-typescript = "0.21.1"
 tree-sitter-javascript = "0.23.1"
@@ -61,7 +61,7 @@ jackson-dataformat-xml = { group = "com.fasterxml.jackson.dataformat", name = "j
 jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jersey-hk2 = { group = "org.glassfish.jersey.inject", name = "jersey-hk2", version.ref = "jersey" }
 javax-activation = { group = "com.sun.activation", name = "javax.activation", version = "1.2.0" }
-wiremock = { group = "com.github.tomakehurst", name = "wiremock", version.ref = "wiremock" }
+wiremock = { group = "org.wiremock", name = "wiremock", version.ref = "wiremock" }
 json = { group = "org.json", name = "json", version.ref = "json" }
 sonar-java-plugin = { group = "org.sonarsource.java", name = "sonar-java-plugin", version.ref = "sonar-java" }
 jaxb-api = { group = "javax.xml.bind", name = "jaxb-api", version.ref = "jaxb-api" }
