@@ -80,17 +80,18 @@ abstract class MetricCollector(
     }
 
     open fun getCommentLines(root: TSNode): Int {
+        lastCountedLine = -1
         val linesWithComments = walkForCommentLines(TSTreeCursor(root))
-        return linesWithComments.count()
+        return linesWithComments
     }
 
-    private val walkForCommentLines = DeepRecursiveFunction<TSTreeCursor, Set<Int>> { cursor ->
-        val linesWithComments = mutableSetOf<Int>()
+    private val walkForCommentLines = DeepRecursiveFunction<TSTreeCursor, Int> { cursor ->
+        var linesWithComments = 0
         val currentNode = cursor.currentNode()
-        if (isCommentNode(currentNode, queryProvider.commentLineNodeTypes)) {
-            for (i in currentNode.startPoint.row .. currentNode.endPoint.row) {
-                linesWithComments.add(i)
-            }
+
+        if (currentNode.startPoint.row > lastCountedLine && isCommentNode(currentNode, queryProvider.commentLineNodeTypes)) {
+            lastCountedLine = currentNode.startPoint.row
+            linesWithComments += currentNode.endPoint.row - currentNode.startPoint.row + 1
         }
 
         if (cursor.gotoFirstChild()) linesWithComments += callRecursive(cursor)
@@ -110,6 +111,7 @@ abstract class MetricCollector(
 
     open fun getRealLinesOfCode(root: TSNode): Int {
         if (root.childCount == 0) return 0
+        lastCountedLine = -1
         return walkTree(TSTreeCursor(root))
     }
 
