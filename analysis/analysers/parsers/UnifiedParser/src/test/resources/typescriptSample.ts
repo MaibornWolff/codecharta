@@ -87,7 +87,7 @@ class UserService {
     // Check if user with email already exists
     if (this.getUserByEmail(email)) {
       console.error('User with this email already exists');
-      return null;
+      /* example for */ return null; /* multiple comments in one line */
     }
 
     // Create new user

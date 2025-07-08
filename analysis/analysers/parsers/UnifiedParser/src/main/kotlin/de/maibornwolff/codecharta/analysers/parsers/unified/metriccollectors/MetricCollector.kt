@@ -7,8 +7,6 @@ import de.maibornwolff.codecharta.model.NodeType
 import org.treesitter.TSLanguage
 import org.treesitter.TSNode
 import org.treesitter.TSParser
-import org.treesitter.TSQuery
-import org.treesitter.TSQueryCursor
 import org.treesitter.TSTreeCursor
 import java.io.File
 
@@ -16,8 +14,6 @@ abstract class MetricCollector(
     private val treeSitterLanguage: TSLanguage,
     private val queryProvider: MetricQueries
 ) {
-    private val cursor = TSQueryCursor()
-    private val parser = TSParser()
     private var lastCountedLine = -1
 
     private val metricToCalculation by lazy {
@@ -29,11 +25,9 @@ abstract class MetricCollector(
         )
     }
 
-    init {
-        parser.setLanguage(treeSitterLanguage)
-    }
-
     fun collectMetricsForFile(file: File, metricsToCompute: List<AvailableMetrics>): MutableNode {
+        val parser = TSParser()
+        parser.setLanguage(treeSitterLanguage)
         val rootNode = parser.parseString(null, file.readText()).rootNode
 
         var metricsToCalculate = queryProvider.getAvailableMetrics()
@@ -57,26 +51,57 @@ abstract class MetricCollector(
     }
 
     open fun getComplexity(root: TSNode): Int {
-        val tsQuery = TSQuery(treeSitterLanguage, queryProvider.complexityQuery)
-        cursor.exec(tsQuery, root)
+        return walkForComplexity(TSTreeCursor(root))
+    }
 
-        var metricHits = 0
-        for (hit in cursor.matches) metricHits++
-        return metricHits
+    private fun walkForComplexity(cursor: TSTreeCursor): Int {
+        var complexity = 0
+        val currentNode = cursor.currentNode()
+        if (isComplexityNode(currentNode, queryProvider.complexityNodeTypes)) complexity++
+
+        if (cursor.gotoFirstChild()) complexity += walkForComplexity(cursor)
+        if (cursor.gotoNextSibling()) complexity += walkForComplexity(cursor)
+        else cursor.gotoParent()
+
+        return complexity
+    }
+
+    private fun isComplexityNode(currentNode: TSNode, allowedType: Set<String>): Boolean {
+        if (allowedType.contains(currentNode.type)) return true
+
+        if (currentNode.type == "binary_expression") {
+            val allowedOperators = allowedType
+                .filter { it.contains("binary_expression") }
+                .map { it.split(" ", "operator:").last() }
+            val operatorNode = currentNode.getChildByFieldName("operator")
+            if (allowedOperators.contains(operatorNode.type)) return true
+        }
+        return false
     }
 
     open fun getCommentLines(root: TSNode): Int {
-        val tsQuery = TSQuery(treeSitterLanguage, queryProvider.commentLinesQuery)
-        cursor.exec(tsQuery, root)
+        val linesWithComments = walkForCommentLines(TSTreeCursor(root))
+        return linesWithComments.count()
+    }
 
-        var metricHits = 0
-        for (hit in cursor.matches) {
-            val matchingTreeNode = hit.captures[0].node
-            val commentStartRow = matchingTreeNode.startPoint.row
-            val commentEndRow = matchingTreeNode.endPoint.row
-            metricHits += commentEndRow - commentStartRow + 1
+    private fun walkForCommentLines(cursor: TSTreeCursor): Set<Int> {
+        val linesWithComments = mutableSetOf<Int>()
+        val currentNode = cursor.currentNode()
+        if (isCommentNode(currentNode, queryProvider.commentLineNodeTypes)) {
+            for (i in currentNode.startPoint.row .. currentNode.endPoint.row) {
+                linesWithComments.add(i)
+            }
         }
-        return metricHits
+
+        if (cursor.gotoFirstChild()) linesWithComments += walkForCommentLines(cursor)
+        if (cursor.gotoNextSibling()) linesWithComments += walkForCommentLines(cursor)
+        else cursor.gotoParent()
+
+        return linesWithComments
+    }
+
+    private fun isCommentNode(currentNode: TSNode, allowedType: Set<String>): Boolean {
+        return (allowedType.contains(currentNode.type))
     }
 
     open fun getLinesOfCode(root: TSNode): Int {
@@ -85,17 +110,10 @@ abstract class MetricCollector(
 
     open fun getRealLinesOfCode(root: TSNode): Int {
         if (root.childCount == 0) return 0
-
-        val commentTypes = getTypesFromQuery(queryProvider.commentLinesQuery)
-        return walkTree(TSTreeCursor(root), commentTypes)
+        return walkTree(TSTreeCursor(root), queryProvider.commentLineNodeTypes)
     }
 
-    private fun getTypesFromQuery(query: String): List<String> {
-        val matches = Regex("\\((\\w+)\\)").findAll(query)
-        return matches.map { it.groupValues[1] }.toList()
-    }
-
-    private fun walkTree(cursor: TSTreeCursor, commentTypes: List<String>): Int {
+    private fun walkTree(cursor: TSTreeCursor, commentTypes: Set<String>): Int {
         var realLinesOfCode = 0
         val currentNode = cursor.currentNode()
 
