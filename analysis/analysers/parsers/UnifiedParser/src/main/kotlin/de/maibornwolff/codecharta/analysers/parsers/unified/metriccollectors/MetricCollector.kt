@@ -54,16 +54,16 @@ abstract class MetricCollector(
         return walkForComplexity(TSTreeCursor(root))
     }
 
-    private fun walkForComplexity(cursor: TSTreeCursor): Int {
+    private val walkForComplexity = DeepRecursiveFunction<TSTreeCursor, Int> { cursor ->
         var complexity = 0
         val currentNode = cursor.currentNode()
         if (isComplexityNode(currentNode, queryProvider.complexityNodeTypes)) complexity++
 
-        if (cursor.gotoFirstChild()) complexity += walkForComplexity(cursor)
-        if (cursor.gotoNextSibling()) complexity += walkForComplexity(cursor)
+        if (cursor.gotoFirstChild()) complexity += callRecursive(cursor)
+        if (cursor.gotoNextSibling()) complexity += callRecursive(cursor)
         else cursor.gotoParent()
 
-        return complexity
+        complexity
     }
 
     private fun isComplexityNode(currentNode: TSNode, allowedType: Set<String>): Boolean {
@@ -84,7 +84,7 @@ abstract class MetricCollector(
         return linesWithComments.count()
     }
 
-    private fun walkForCommentLines(cursor: TSTreeCursor): Set<Int> {
+    private val walkForCommentLines = DeepRecursiveFunction<TSTreeCursor, Set<Int>> { cursor ->
         val linesWithComments = mutableSetOf<Int>()
         val currentNode = cursor.currentNode()
         if (isCommentNode(currentNode, queryProvider.commentLineNodeTypes)) {
@@ -93,11 +93,11 @@ abstract class MetricCollector(
             }
         }
 
-        if (cursor.gotoFirstChild()) linesWithComments += walkForCommentLines(cursor)
-        if (cursor.gotoNextSibling()) linesWithComments += walkForCommentLines(cursor)
+        if (cursor.gotoFirstChild()) linesWithComments += callRecursive(cursor)
+        if (cursor.gotoNextSibling()) linesWithComments += callRecursive(cursor)
         else cursor.gotoParent()
 
-        return linesWithComments
+        linesWithComments
     }
 
     private fun isCommentNode(currentNode: TSNode, allowedType: Set<String>): Boolean {
@@ -110,14 +110,14 @@ abstract class MetricCollector(
 
     open fun getRealLinesOfCode(root: TSNode): Int {
         if (root.childCount == 0) return 0
-        return walkTree(TSTreeCursor(root), queryProvider.commentLineNodeTypes)
+        return walkTree(TSTreeCursor(root))
     }
 
-    private fun walkTree(cursor: TSTreeCursor, commentTypes: Set<String>): Int {
+    private val walkTree = DeepRecursiveFunction<TSTreeCursor, Int> { cursor ->
         var realLinesOfCode = 0
         val currentNode = cursor.currentNode()
 
-        if (!commentTypes.contains(currentNode.type)) {
+        if (!queryProvider.commentLineNodeTypes.contains(currentNode.type)) {
             if (currentNode.startPoint.row > lastCountedLine) {
                 lastCountedLine = currentNode.startPoint.row
                 realLinesOfCode++
@@ -129,16 +129,16 @@ abstract class MetricCollector(
                     lastCountedLine = currentNode.endPoint.row
                 }
             } else if (currentNode.endPoint.row > currentNode.startPoint.row && cursor.gotoFirstChild()) {
-                realLinesOfCode += walkTree(cursor, commentTypes)
+                realLinesOfCode += callRecursive(cursor)
             }
         }
 
         if (cursor.gotoNextSibling()) {
-            realLinesOfCode += walkTree(cursor, commentTypes)
+            realLinesOfCode += callRecursive(cursor)
         } else {
             cursor.gotoParent()
         }
 
-        return realLinesOfCode
+        realLinesOfCode
     }
 }
