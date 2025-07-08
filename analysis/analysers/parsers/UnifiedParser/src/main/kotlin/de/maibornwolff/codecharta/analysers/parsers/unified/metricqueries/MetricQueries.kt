@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
 
 interface MetricQueries {
-    val complexityQuery: String
-    val commentLinesQuery: String
-    // a query for lines_of_code (LOC) is not needed as it is independent of the language
-    // a query for real_lines_of_code (RLOC) is also not needed as it uses the commentLinesQuery
+    val complexityNodeTypes: Set<String>
+    val commentLineNodeTypes: Set<String>
+    // node types for lines_of_code (LOC) is not needed as it is independent of the language
+    // node types for real_lines_of_code (RLOC) is also not needed as it counts everything thats not a comment
 
     // if a language does not support all metrics, this can be overwritten to only contain the ones the language supports
     fun getAvailableMetrics(): List<AvailableMetrics> {
@@ -14,14 +14,6 @@ interface MetricQueries {
             AvailableMetrics.LOC,
             AvailableMetrics.RLOC
         )
-    }
-
-    fun buildQuery(metric: AvailableMetrics, includedNodes: List<String>): String {
-        var result = ""
-        for (node in includedNodes) {
-            result += "($node) @${metric.name}\n"
-        }
-        return result
     }
 }
 
