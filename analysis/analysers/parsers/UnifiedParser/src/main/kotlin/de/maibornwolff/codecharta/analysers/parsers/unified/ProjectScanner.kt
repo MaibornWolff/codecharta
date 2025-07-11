@@ -110,7 +110,7 @@ class ProjectScanner(
             return
         } else {
             if (verbose) Logger.info { "Calculating metrics for file $relativePath" }
-            fileMetrics[relativePath] = collector().collectMetricsForFile(file, metricsToCompute)
+            fileMetrics[relativePath] = collector().collectMetricsForFile(file)
         }
     }
 
