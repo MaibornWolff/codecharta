@@ -36,11 +36,6 @@ abstract class MetricCollector(
         .map { it.split(" ", "operator:").last() }
         .toSet()
 
-    // TODO: remove these
-    private var complexity = 0
-    private var commentLines = 0
-    private var rloc = 0
-
     fun collectMetricsForFile(file: File, metricsToCompute: List<AvailableMetrics>): MutableNode {
         val parser = TSParser()
         parser.setLanguage(treeSitterLanguage)
@@ -52,21 +47,18 @@ abstract class MetricCollector(
 //            metricsToCalculate = metricsToCalculate.filter { metricsToCompute.contains(it) }
 //        }
 
-        //TODO: solve this without class variables
-        complexity = 0
-        commentLines = 0
-        rloc = 0
-
         lastCountedCommentLine = -1
         lastCountedCodeLine = -1
 
-        walkTree(TSTreeCursor(rootNode))
+        val metrics = intArrayOf(0, 0, 0) // complexity, comment_lines, rloc
+        walkTree(Pair(TSTreeCursor(rootNode), metrics))
 
         val metricNameToValue = mutableMapOf(
-            "complexity" to complexity,
-            "comment_lines" to commentLines,
+            "complexity" to metrics[0],
+            "comment_lines" to metrics[1],
             "loc" to rootNode.endPoint.row,
-            "rloc" to rloc
+            "rloc" to metrics[2],
+//            "nrofNodes" to result[3]
         )
 
         return MutableNode(
@@ -76,66 +68,65 @@ abstract class MetricCollector(
         )
     }
 
-    private val walkTree = DeepRecursiveFunction<TSTreeCursor, Unit> { cursor ->
+    private val walkTree = DeepRecursiveFunction<Pair<TSTreeCursor, IntArray>, Unit> { (cursor, metrics) ->
         val currentNode = cursor.currentNode()
 
-        // TODO: here call different functions that either calculate or dont calculate metrics
-        complexity += calculateComplexityForNode(currentNode)
-        commentLines += calculateCommentLinesForNode(currentNode)
-        rloc += calculateRlocForNode(currentNode)
+        val nodeType = currentNode.type
+        val startRow = currentNode.startPoint.row
+        val endRow = currentNode.endPoint.row
 
+        // Calculate and accumulate metrics for current node
+        metrics[0] += calculateComplexityForNode(currentNode, nodeType)
+        metrics[1] += calculateCommentLinesForNode(nodeType, startRow, endRow)
+        metrics[2] += calculateRlocForNode(nodeType, startRow, endRow, currentNode.childCount)
+
+        // Process all children
         if (cursor.gotoFirstChild()) {
-            callRecursive(cursor)
-        }
-        if (cursor.gotoNextSibling()) {
-            callRecursive(cursor)
-        } else {
+            do {
+                callRecursive(Pair(cursor, metrics))
+            } while (cursor.gotoNextSibling())
             cursor.gotoParent()
         }
     }
 
-    private fun calculateComplexityForNode(node: TSNode): Int {
-        if (isNodeAllowedType(node, queryProvider.complexityNodeTypes)) return 1
+    private fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
+        if (isNodeAllowedType(nodeType, queryProvider.complexityNodeTypes)) return 1
 
-        else if (node.type == "binary_expression") {
+        else if (nodeType == "binary_expression") {
             val operatorNode = node.getChildByFieldName("operator") //TODO: anschauen ob das bottleneck ist
-            if (isNodeAllowedType(operatorNode, allowedOperatorsForComplexity)) return 1
+            if (isNodeAllowedType(operatorNode.type, allowedOperatorsForComplexity)) return 1
         }
         return 0
     }
 
-    private fun calculateCommentLinesForNode(node: TSNode): Int {
-        if (node.startPoint.row > lastCountedCommentLine && isNodeAllowedType(node, queryProvider.commentLineNodeTypes)) {
-            lastCountedCommentLine = node.startPoint.row
-            return node.endPoint.row - node.startPoint.row + 1
+    private fun calculateCommentLinesForNode(nodeType: String, startRow: Int, endRow: Int): Int {
+        if (startRow > lastCountedCommentLine && isNodeAllowedType(nodeType, queryProvider.commentLineNodeTypes)) {
+            lastCountedCommentLine = startRow
+            return endRow - startRow + 1
         }
         return 0
     }
 
-    private fun isNodeAllowedType(currentNode: TSNode, allowedType: Set<String>): Boolean {
-        return allowedType.contains(currentNode.type)
+    private fun isNodeAllowedType(nodeType: String, allowedType: Set<String>): Boolean {
+        return allowedType.contains(nodeType)
     }
 
-    private fun calculateRlocForNode(node: TSNode): Int {
-        if (isNodeAllowedType(node, queryProvider.commentLineNodeTypes)) return 0
+    private fun calculateRlocForNode(nodeType: String, startRow: Int, endRow: Int, childCount: Int): Int {
+        if (isNodeAllowedType(nodeType, queryProvider.commentLineNodeTypes)) return 0
 
         var rlocForNode = 0
 
-        if (node.startPoint.row > lastCountedCodeLine) {
-            lastCountedCodeLine = node.startPoint.row
+        if (startRow > lastCountedCodeLine) {
+            lastCountedCodeLine = startRow
             rlocForNode++
         }
 
-        if (isLeafNode(node) && node.endPoint.row > lastCountedCodeLine) {
-            lastCountedCodeLine = node.endPoint.row
-            rlocForNode += node.endPoint.row - node.startPoint.row
+        if (childCount == 0 && endRow > lastCountedCodeLine) {
+            lastCountedCodeLine = endRow
+            rlocForNode += endRow - startRow
         }
 
         return rlocForNode
-    }
-
-    private fun isLeafNode(node: TSNode): Boolean {
-        return node.childCount == 0
     }
 
     // TODO: remove
