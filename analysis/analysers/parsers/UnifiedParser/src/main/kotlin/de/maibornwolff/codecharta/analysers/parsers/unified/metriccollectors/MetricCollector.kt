@@ -1,53 +1,56 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.AvailableMetrics
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.MetricQueries
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.MetricNodeTypes
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.TreeNodeTypes
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import org.treesitter.TSLanguage
 import org.treesitter.TSNode
 import org.treesitter.TSParser
-import org.treesitter.TSQuery
-import org.treesitter.TSQueryCursor
 import org.treesitter.TSTreeCursor
 import java.io.File
 
 abstract class MetricCollector(
     private val treeSitterLanguage: TSLanguage,
-    private val queryProvider: MetricQueries
+    private val queryProvider: MetricNodeTypes
 ) {
-    private val cursor = TSQueryCursor()
-    private val parser = TSParser()
-    private var lastCountedLine = -1
+    private var lastCountedCommentLine = -1
+    private var lastCountedCodeLine = -1
 
-    private val metricToCalculation by lazy {
-        mapOf(
-            AvailableMetrics.COMPLEXITY to this::getComplexity,
-            AvailableMetrics.COMMENT_LINES to this::getCommentLines,
-            AvailableMetrics.LOC to this::getLinesOfCode,
-            AvailableMetrics.RLOC to this::getRealLinesOfCode
-        )
-    }
+    // maps a metric to its index for the more performant IntArray and the function how to calculate the metric
+    private val metricInfo = mapOf(
+        AvailableMetrics.COMPLEXITY to Pair(0) { node: TSNode, nodeType: String, _: Int, _: Int ->
+            calculateComplexityForNode(node, nodeType)
+        },
+        AvailableMetrics.COMMENT_LINES to Pair(1) { node: TSNode, nodeType: String, startRow: Int, endRow: Int ->
+            calculateCommentLinesForNode(node, nodeType, startRow, endRow)
+        },
+        AvailableMetrics.REAL_LINES_OF_CODE to Pair(2) { node: TSNode, nodeType: String, startRow: Int, endRow: Int ->
+            calculateRealLinesOfCodeForNode(node, nodeType, startRow, endRow)
+        }
+    )
 
-    init {
+    fun collectMetricsForFile(file: File): MutableNode {
+        val parser = TSParser()
         parser.setLanguage(treeSitterLanguage)
-    }
-
-    fun collectMetricsForFile(file: File, metricsToCompute: List<AvailableMetrics>): MutableNode {
         val rootNode = parser.parseString(null, file.readText()).rootNode
 
-        var metricsToCalculate = queryProvider.getAvailableMetrics()
+        lastCountedCommentLine = -1
+        lastCountedCodeLine = -1
 
-        if (metricsToCompute.isNotEmpty()) {
-            metricsToCalculate = metricsToCalculate.filter { metricsToCompute.contains(it) }
-        }
+        // we use an IntArray and not a map here as it improves performance
+        val metrics = IntArray(metricInfo.size) { 0 }
+        walkTree(Pair(TSTreeCursor(rootNode), metrics))
 
         val metricNameToValue = mutableMapOf<String, Int>()
-        for ((metric, function) in metricToCalculation) {
-            if (!metricsToCalculate.contains(metric)) continue
-
-            metricNameToValue[metric.name.lowercase()] = function(rootNode)
+        for ((metric, indexAndCalculator) in metricInfo) {
+            val (index, _) = indexAndCalculator
+            metricNameToValue[metric.metricName] = metrics[index]
         }
+
+        // lines of code is added here manually to improve performance as no tree walk is necessary
+        metricNameToValue[AvailableMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row
 
         return MutableNode(
             name = file.name,
@@ -56,71 +59,66 @@ abstract class MetricCollector(
         )
     }
 
-    open fun getComplexity(root: TSNode): Int {
-        val tsQuery = TSQuery(treeSitterLanguage, queryProvider.complexityQuery)
-        cursor.exec(tsQuery, root)
-
-        var metricHits = 0
-        for (hit in cursor.matches) metricHits++
-        return metricHits
-    }
-
-    open fun getCommentLines(root: TSNode): Int {
-        val tsQuery = TSQuery(treeSitterLanguage, queryProvider.commentLinesQuery)
-        cursor.exec(tsQuery, root)
-
-        var metricHits = 0
-        for (hit in cursor.matches) {
-            val matchingTreeNode = hit.captures[0].node
-            val commentStartRow = matchingTreeNode.startPoint.row
-            val commentEndRow = matchingTreeNode.endPoint.row
-            metricHits += commentEndRow - commentStartRow + 1
-        }
-        return metricHits
-    }
-
-    open fun getLinesOfCode(root: TSNode): Int {
-        return root.endPoint.row
-    }
-
-    open fun getRealLinesOfCode(root: TSNode): Int {
-        if (root.childCount == 0) return 0
-
-        val commentTypes = getTypesFromQuery(queryProvider.commentLinesQuery)
-        return walkTree(TSTreeCursor(root), commentTypes)
-    }
-
-    private fun getTypesFromQuery(query: String): List<String> {
-        val matches = Regex("\\((\\w+)\\)").findAll(query)
-        return matches.map { it.groupValues[1] }.toList()
-    }
-
-    private fun walkTree(cursor: TSTreeCursor, commentTypes: List<String>): Int {
-        var realLinesOfCode = 0
+    private val walkTree = DeepRecursiveFunction<Pair<TSTreeCursor, IntArray>, Unit> { (cursor, metrics) ->
         val currentNode = cursor.currentNode()
 
-        if (!commentTypes.contains(currentNode.type)) {
-            if (currentNode.startPoint.row > lastCountedLine) {
-                lastCountedLine = currentNode.startPoint.row
-                realLinesOfCode++
-            }
+        val nodeType = currentNode.type
+        val startRow = currentNode.startPoint.row
+        val endRow = currentNode.endPoint.row
 
-            if (currentNode.childCount == 0) {
-                if (currentNode.endPoint.row > lastCountedLine) {
-                    realLinesOfCode += currentNode.endPoint.row - currentNode.startPoint.row
-                    lastCountedLine = currentNode.endPoint.row
-                }
-            } else if (currentNode.endPoint.row > currentNode.startPoint.row && cursor.gotoFirstChild()) {
-                realLinesOfCode += walkTree(cursor, commentTypes)
-            }
+        for ((_, indexAndCalculator) in metricInfo) {
+            val (index, calculator) = indexAndCalculator
+            metrics[index] += calculator(currentNode, nodeType, startRow, endRow)
         }
 
-        if (cursor.gotoNextSibling()) {
-            realLinesOfCode += walkTree(cursor, commentTypes)
-        } else {
+        if (cursor.gotoFirstChild()) {
+            do {
+                callRecursive(Pair(cursor, metrics))
+            } while (cursor.gotoNextSibling())
             cursor.gotoParent()
         }
+    }
 
-        return realLinesOfCode
+    protected open fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
+        return if (isNodeTypeAllowed(node, nodeType, queryProvider.complexityNodeTypes)) 1 else 0
+    }
+
+    protected open fun calculateCommentLinesForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
+        if (startRow > lastCountedCommentLine && isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) {
+            lastCountedCommentLine = startRow
+            return endRow - startRow + 1
+        }
+        return 0
+    }
+
+    private fun isNodeTypeAllowed(node: TSNode, nodeType: String, allowedTypes: TreeNodeTypes): Boolean {
+        if (allowedTypes.simpleNodeTypes.contains(nodeType)) return true
+        else if (allowedTypes.nestedNodeTypes != null){
+            for (nestedType in allowedTypes.nestedNodeTypes) {
+                if (nestedType.baseNodeType == nodeType) {
+                    val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
+                    if (nestedType.childNodeTypes.contains(childNode.type)) return true
+                }
+            }
+        }
+        return false
+    }
+
+    protected open fun calculateRealLinesOfCodeForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
+        if (isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) return 0
+
+        var rlocForNode = 0
+
+        if (startRow > lastCountedCodeLine) {
+            lastCountedCodeLine = startRow
+            rlocForNode++
+        }
+
+        if (node.childCount == 0 && endRow > lastCountedCodeLine) {
+            lastCountedCodeLine = endRow
+            rlocForNode += endRow - startRow
+        }
+
+        return rlocForNode
     }
 }

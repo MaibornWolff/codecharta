@@ -4,11 +4,8 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.mapNamesToMetrics
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -39,14 +36,6 @@ class UnifiedParser(
     override val name = NAME
     override val description = DESCRIPTION
 
-    @CommandLine.Option(
-        names = ["-m", "--metrics"],
-        description = ["comma-separated list of which metrics to compute (default: all available metrics)"],
-        converter = [(CommaSeparatedStringToListConverter::class)],
-        preprocessor = CommaSeparatedParameterPreprocessor::class
-    )
-    private var metricsToCompute: List<String> = listOf()
-
     override fun call(): Unit? {
         logExecutionStartedSyncSignal()
 
@@ -56,8 +45,7 @@ class UnifiedParser(
 
         if (!withoutDefaultExcludes) patternsToExclude += CodeChartaConstants.DEFAULT_EXCLUDES
         val projectBuilder = ProjectBuilder()
-        val metrics = mapNamesToMetrics(metricsToCompute)
-        val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, metrics)
+        val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
         projectScanner.traverseInputProject(verbose)
 
         if (!projectScanner.foundParsableFiles()) {

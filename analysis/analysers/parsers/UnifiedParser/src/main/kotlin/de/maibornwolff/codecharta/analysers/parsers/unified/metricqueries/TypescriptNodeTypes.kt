@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
 
-class JavascriptQueries : MetricQueries {
-    companion object {
-        private val complexityNodes = listOf(
+class TypescriptNodeTypes : MetricNodeTypes {
+    override val complexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
             // if
             "if_statement",
             // loop
@@ -12,10 +12,7 @@ class JavascriptQueries : MetricQueries {
             "for_in_statement",
             // conditional
             "ternary_expression",
-            // logical binary
-            "binary_expression operator: \"&&\"",
-            "binary_expression operator: \"??\"",
-            "binary_expression operator: \"||\"",
+            "conditional_type",
             // case
             "switch_case",
             // catch
@@ -28,14 +25,20 @@ class JavascriptQueries : MetricQueries {
             "method_definition",
             "class_static_block",
             "function_expression"
+        ),
+        nestedNodeTypes = setOf(
+            NestedNodeType(
+                baseNodeType = "binary_expression",
+                childNodeFieldName = "operator",
+                childNodeTypes = setOf("&&", "||", "??")
+            )
         )
+    )
 
-        private val commentNodes = listOf(
+    override val commentLineNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
             "comment",
             "html_comment"
         )
-    }
-
-    override val complexityQuery = buildQuery(AvailableMetrics.COMPLEXITY, complexityNodes)
-    override val commentLinesQuery = buildQuery(AvailableMetrics.COMMENT_LINES, commentNodes)
+    )
 }

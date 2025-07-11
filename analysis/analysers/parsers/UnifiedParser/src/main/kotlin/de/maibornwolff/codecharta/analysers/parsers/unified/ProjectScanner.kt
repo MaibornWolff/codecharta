@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.AvailableMetrics
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -20,7 +19,6 @@ class ProjectScanner(
     private val projectBuilder: ProjectBuilder,
     private val excludePatterns: List<String> = listOf(),
     private val includeExtensions: List<String> = listOf(),
-    private val metricsToCompute: List<AvailableMetrics> = listOf()
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -52,9 +50,15 @@ class ProjectScanner(
         var lastParsedFile: String
 
         runBlocking(Dispatchers.Default) {
-            val files = root.walk().filter { it.isFile }
+            val files = root.walk().filter {
+                it.isFile
+                && findCollectorForFileType(it.extension) != null
+                && !isPathExcluded(excludePatternRegex, getRelativeFileName(it.toString()))
+            }
             lastParsedFile = files.last().toString()
             totalFiles = files.count().toLong()
+
+            //TODO: save the number of and types of files that were filtered out and display them again
 
             files.forEach { file ->
                 launch {
@@ -69,11 +73,15 @@ class ProjectScanner(
     }
 
     private fun parseFile(file: File, excludePatternRegex: Regex, verbose: Boolean): String {
-        var lastParsedFile = ""
         val relativeFilePath = getRelativeFileName(file.toString())
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
 
-        if (!isPathExcluded(excludePatternRegex, relativeFilePath) && isParsableFileExtension(relativeFilePath)) {
+        var lastParsedFile = ""
+
+        //TODO: remove extra isPathExcluded
+        if (
+//            !isPathExcluded(excludePatternRegex, relativeFilePath) &&
+            isParsableFileExtension(relativeFilePath)) {
             if (!verbose) logProgress(file.name, filesParsed)
 
             applyLanguageSpecificCollector(file, relativeFilePath, verbose)
@@ -100,8 +108,7 @@ class ProjectScanner(
     }
 
     private fun applyLanguageSpecificCollector(file: File, relativePath: String, verbose: Boolean) {
-        val fileExtension = ".${file.extension}"
-        val collector = AvailableCollectors.entries.find { it.fileExtension.extension == fileExtension }?.collectorFactory
+        val collector = findCollectorForFileType(file.extension)?.collectorFactory
 
         if (collector == null) {
             ignoredFileTypes += file.extension
@@ -109,8 +116,12 @@ class ProjectScanner(
             return
         } else {
             if (verbose) Logger.info { "Calculating metrics for file $relativePath" }
-            fileMetrics[relativePath] = collector().collectMetricsForFile(file, metricsToCompute)
+            fileMetrics[relativePath] = collector().collectMetricsForFile(file)
         }
+    }
+
+    private fun findCollectorForFileType(fileExtension: String): AvailableCollectors? {
+        return AvailableCollectors.entries.find { it.fileExtension.extension == ".$fileExtension" }
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
