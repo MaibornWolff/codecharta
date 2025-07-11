@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
 
-interface MetricQueries {
-    val complexityNodeTypes: Set<String>
-    val commentLineNodeTypes: Set<String>
+interface MetricNodeTypes {
+    val complexityNodeTypes: TreeNodeTypes
+    val commentLineNodeTypes: TreeNodeTypes
     // node types for lines_of_code (LOC) is not needed as it is independent of the language
     // node types for real_lines_of_code (RLOC) is also not needed as it counts everything that's not a comment
 }
@@ -13,3 +13,14 @@ enum class AvailableMetrics(val metricName: String) {
     LINES_OF_CODE("loc"),
     REAL_LINES_OF_CODE("rloc")
 }
+
+class TreeNodeTypes(
+    val simpleNodeTypes: Set<String>,
+    val nestedNodeTypes: Set<NestedNodeType>? = null,
+)
+
+class NestedNodeType(
+    val baseNodeType: String,
+    val childNodeFieldName: String?,
+    val childNodeTypes: Set<String>,
+)
