@@ -17,49 +17,43 @@ abstract class MetricCollector(
     private var lastCountedCommentLine = -1
     private var lastCountedCodeLine = -1
 
-    // TODO: change this from functions that get the metric for a file to functions that decide if the metric should be incremented for a node
-    private val metricToCalculation by lazy {
-        mapOf(
-//            AvailableMetrics.COMPLEXITY to this::getComplexity,
-//            AvailableMetrics.COMMENT_LINES to this::getCommentLines,
-//            AvailableMetrics.LOC to this::getLinesOfCode,
-//            AvailableMetrics.RLOC to this::getRealLinesOfCode
-            AvailableMetrics.COMPLEXITY to this::calculateComplexityForNode,
-            AvailableMetrics.COMMENT_LINES to this::calculateCommentLinesForNode,
-            AvailableMetrics.RLOC to this::calculateRlocForNode
-        )
-    }
-
-    //TODO: reqork queries to directly include this
+    // maps a metric to its index for the more performant IntArray and the function how to calculate the metric
+    private val metricInfo = mapOf(
+        AvailableMetrics.COMPLEXITY to Pair(0) { node: TSNode, nodeType: String, _: Int, _: Int, _: Int ->
+            calculateComplexityForNode(node, nodeType)
+        },
+        AvailableMetrics.COMMENT_LINES to Pair(1) { _: TSNode, nodeType: String, startRow: Int, endRow: Int, _: Int ->
+            calculateCommentLinesForNode(nodeType, startRow, endRow)
+        },
+        AvailableMetrics.REAL_LINES_OF_CODE to Pair(2) { _: TSNode, nodeType: String, startRow: Int, endRow: Int, childCount: Int ->
+            calculateRealLinesOfCodeForNode(nodeType, startRow, endRow, childCount)
+        }
+    )
     private val allowedOperatorsForComplexity = queryProvider.complexityNodeTypes
         .filter { it.contains("binary_expression") }
         .map { it.split(" ", "operator:").last() }
         .toSet()
 
-    fun collectMetricsForFile(file: File, metricsToCompute: List<AvailableMetrics>): MutableNode {
+    fun collectMetricsForFile(file: File): MutableNode {
         val parser = TSParser()
         parser.setLanguage(treeSitterLanguage)
         val rootNode = parser.parseString(null, file.readText()).rootNode
 
-//        var metricsToCalculate = queryProvider.getAvailableMetrics()
-
-//        if (metricsToCompute.isNotEmpty()) {
-//            metricsToCalculate = metricsToCalculate.filter { metricsToCompute.contains(it) }
-//        }
-
         lastCountedCommentLine = -1
         lastCountedCodeLine = -1
 
-        val metrics = intArrayOf(0, 0, 0) // complexity, comment_lines, rloc
+        // we use an IntArray and not a map here as it improves performance
+        val metrics = IntArray(metricInfo.size) { 0 }
         walkTree(Pair(TSTreeCursor(rootNode), metrics))
 
-        val metricNameToValue = mutableMapOf(
-            "complexity" to metrics[0],
-            "comment_lines" to metrics[1],
-            "loc" to rootNode.endPoint.row,
-            "rloc" to metrics[2],
-//            "nrofNodes" to result[3]
-        )
+        val metricNameToValue = mutableMapOf<String, Int>()
+        for ((metric, indexAndCalculator) in metricInfo) {
+            val (index, _) = indexAndCalculator
+            metricNameToValue[metric.metricName] = metrics[index]
+        }
+
+        // lines of code is added here manually to improve performance as no tree walk is necessary
+        metricNameToValue[AvailableMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row
 
         return MutableNode(
             name = file.name,
@@ -74,13 +68,13 @@ abstract class MetricCollector(
         val nodeType = currentNode.type
         val startRow = currentNode.startPoint.row
         val endRow = currentNode.endPoint.row
+        val childCount = currentNode.childCount
 
-        // Calculate and accumulate metrics for current node
-        metrics[0] += calculateComplexityForNode(currentNode, nodeType)
-        metrics[1] += calculateCommentLinesForNode(nodeType, startRow, endRow)
-        metrics[2] += calculateRlocForNode(nodeType, startRow, endRow, currentNode.childCount)
+        for ((_, indexAndCalculator) in metricInfo) {
+            val (index, calculator) = indexAndCalculator
+            metrics[index] += calculator(currentNode, nodeType, startRow, endRow, childCount)
+        }
 
-        // Process all children
         if (cursor.gotoFirstChild()) {
             do {
                 callRecursive(Pair(cursor, metrics))
@@ -89,17 +83,18 @@ abstract class MetricCollector(
         }
     }
 
-    private fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
-        if (isNodeAllowedType(nodeType, queryProvider.complexityNodeTypes)) return 1
-
+    protected open fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
+        if (isNodeAllowedType(nodeType, queryProvider.complexityNodeTypes)) {
+            return 1
+        }
         else if (nodeType == "binary_expression") {
-            val operatorNode = node.getChildByFieldName("operator") //TODO: anschauen ob das bottleneck ist
+            val operatorNode = node.getChildByFieldName("operator")
             if (isNodeAllowedType(operatorNode.type, allowedOperatorsForComplexity)) return 1
         }
         return 0
     }
 
-    private fun calculateCommentLinesForNode(nodeType: String, startRow: Int, endRow: Int): Int {
+    protected open fun calculateCommentLinesForNode(nodeType: String, startRow: Int, endRow: Int): Int {
         if (startRow > lastCountedCommentLine && isNodeAllowedType(nodeType, queryProvider.commentLineNodeTypes)) {
             lastCountedCommentLine = startRow
             return endRow - startRow + 1
@@ -111,7 +106,7 @@ abstract class MetricCollector(
         return allowedType.contains(nodeType)
     }
 
-    private fun calculateRlocForNode(nodeType: String, startRow: Int, endRow: Int, childCount: Int): Int {
+    protected open fun calculateRealLinesOfCodeForNode(nodeType: String, startRow: Int, endRow: Int, childCount: Int): Int {
         if (isNodeAllowedType(nodeType, queryProvider.commentLineNodeTypes)) return 0
 
         var rlocForNode = 0
@@ -127,25 +122,5 @@ abstract class MetricCollector(
         }
 
         return rlocForNode
-    }
-
-    // TODO: remove
-    open fun getComplexity(root: TSNode): Int {
-        return 0
-    }
-
-    // TODO: remove
-    open fun getCommentLines(root: TSNode): Int {
-        return 0
-    }
-
-    // TODO: remove
-    open fun getLinesOfCode(root: TSNode): Int {
-        return 0
-    }
-
-    // TODO: remove
-    open fun getRealLinesOfCode(root: TSNode): Int {
-        return 0
     }
 }

@@ -35,7 +35,6 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                               |
 | `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)              |
 | `-h, --help`                              | displays this help and exits                                                                  |
-| `-m, --metrics=<metrics>`                 | comma-separated list of metrics to compute (default: compute all available metrics)           |
 | `-nc, --not-compressed`                   | save uncompressed output File                                                                 |
 | `-o, --output-file=<outputFile>`          | output File (or empty for stdout)                                                             |
 | `--verbose`                               | displays messages about parsed and ignored files                                              |
@@ -43,8 +42,8 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 ```
 Usage: ccsh unifiedparser [-h] [-nc] [--verbose] [--without-default-excludes]
-                          [-o=<outputFile>] [-e=<exclude>]...
-                          [-fe=<fileExtensions>]... FILE or FOLDER
+                          [-o=<outputFile>] [-e=<patternsToExclude>]...
+                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER
 ```
 
 ## Examples
