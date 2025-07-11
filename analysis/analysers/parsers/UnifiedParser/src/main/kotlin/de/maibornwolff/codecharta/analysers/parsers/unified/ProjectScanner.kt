@@ -69,9 +69,10 @@ class ProjectScanner(
     }
 
     private fun parseFile(file: File, excludePatternRegex: Regex, verbose: Boolean): String {
-        var lastParsedFile = ""
         val relativeFilePath = getRelativeFileName(file.toString())
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
+
+        var lastParsedFile = ""
 
         if (!isPathExcluded(excludePatternRegex, relativeFilePath) && isParsableFileExtension(relativeFilePath)) {
             if (!verbose) logProgress(file.name, filesParsed)
