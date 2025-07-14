@@ -22,17 +22,20 @@ class ProjectScanner(
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
+    private var ignoredFiles = 0L
+    private val ignoredFileTypes = mutableSetOf<String>()
+
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
-    private val ignoredFileTypes = mutableSetOf<String>()
     private val fileMetrics = ConcurrentHashMap<String, MutableNode>()
+    private val excludePatternRegex = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
     fun foundParsableFiles(): Boolean {
         return fileMetrics.isNotEmpty()
     }
 
-    fun getIgnoredFileTypes(): Set<String> {
-        return ignoredFileTypes
+    fun getIgnoredFiles(): Pair<Long, Set<String>> {
+        return Pair(ignoredFiles, ignoredFileTypes)
     }
 
     fun getNotFoundFileExtensions(): Set<String> {
@@ -46,58 +49,50 @@ class ProjectScanner(
     }
 
     fun traverseInputProject(verbose: Boolean) {
-        val excludePatternRegex = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
-        var lastParsedFile: String
-
         runBlocking(Dispatchers.Default) {
-            val files = root.walk().filter {
-                it.isFile
-                && findCollectorForFileType(it.extension) != null
-                && !isPathExcluded(excludePatternRegex, getRelativeFileName(it.toString()))
-            }
-            lastParsedFile = files.last().toString()
-            totalFiles = files.count().toLong()
+            val parsableFiles = root.walk().filter {isParsableFile(it)}.toList()
+            totalFiles = parsableFiles.size.toLong()
 
-            //TODO: save the number of and types of files that were filtered out and display them again
-
-            files.forEach { file ->
+            parsableFiles.forEach { file ->
                 launch {
                     filesParsed++
-                    lastParsedFile = parseFile(file, excludePatternRegex, verbose)
+                    parseFile(file, verbose)
                 }
             }
         }
 
-        if (!verbose) logProgress(lastParsedFile, totalFiles)
+        progressTracker.updateProgress(totalFiles, totalFiles, parsingUnit.name)
+        if (verbose) Logger.warn { "Analysis of files complete, creating output file..." }
         addAllNodesToProjectBuilder()
     }
 
-    private fun parseFile(file: File, excludePatternRegex: Regex, verbose: Boolean): String {
+    private fun isParsableFile(file: File): Boolean {
+        if (!file.isFile) return false
+
+        return if(findCollectorForFileType(file.extension) != null && !isPathExcluded(file) && isParsableFileExtension(file.extension)) {
+            true
+        } else {
+            ignoredFileTypes += file.extension
+            ignoredFiles++
+            false
+        }
+    }
+
+    private fun parseFile(file: File, verbose: Boolean) {
         val relativeFilePath = getRelativeFileName(file.toString())
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
 
-        var lastParsedFile = ""
+        if (!verbose) logProgress(file.name, filesParsed)
 
-        //TODO: remove extra isPathExcluded
-        if (
-//            !isPathExcluded(excludePatternRegex, relativeFilePath) &&
-            isParsableFileExtension(relativeFilePath)) {
-            if (!verbose) logProgress(file.name, filesParsed)
-
-            applyLanguageSpecificCollector(file, relativeFilePath, verbose)
-            lastParsedFile = file.name
-        } else if (verbose) {
-            Logger.warn { "Ignoring file $relativeFilePath" }
-        }
-        return lastParsedFile
+        applyLanguageSpecificCollector(file, relativeFilePath, verbose)
     }
 
-    private fun isPathExcluded(excludePatternRegex: Regex, relativeFilePath: String): Boolean {
-        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn(relativeFilePath)
+    private fun isPathExcluded(file: File): Boolean {
+        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn(getRelativeFileName(file.toString()))
     }
 
-    private fun isParsableFileExtension(path: String): Boolean {
-        return includeExtensions.isEmpty() || includeExtensions.contains(path.substringAfterLast("."))
+    private fun isParsableFileExtension(fileExtension: String): Boolean {
+        return includeExtensions.isEmpty() || includeExtensions.contains(fileExtension)
     }
 
     private fun getRelativeFileName(fileName: String): String {

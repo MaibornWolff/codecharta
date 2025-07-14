@@ -64,11 +64,11 @@ class UnifiedParser(
             )
         }
 
-        val ignoredFileTypes = projectScanner.getIgnoredFileTypes()
+        val (nrofIgnoredFiles, ignoredFileTypes) = projectScanner.getIgnoredFiles()
         if (ignoredFileTypes.isNotEmpty()) {
             System.err.println()
             System.err.println(
-                "Files with extensions [${formatFileExtensions(ignoredFileTypes)}] were ignored as they are currently not supported!"
+                "$nrofIgnoredFiles Files with the following extensions were ignored as they are currently not supported:\n[${formatFileExtensions(ignoredFileTypes)}]"
             )
         }
 
