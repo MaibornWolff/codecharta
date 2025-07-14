@@ -31,54 +31,6 @@ abstract class MetricCollector(
         }
     )
 
-    fun collectMetricsForFile(file: File): MutableNode {
-        val parser = TSParser()
-        parser.setLanguage(treeSitterLanguage)
-        val rootNode = parser.parseString(null, file.readText()).rootNode
-
-        lastCountedCommentLine = -1
-        lastCountedCodeLine = -1
-
-        // we use an IntArray and not a map here as it improves performance
-        val metrics = IntArray(metricInfo.size) { 0 }
-        walkTree(Pair(TSTreeCursor(rootNode), metrics))
-
-        val metricNameToValue = mutableMapOf<String, Int>()
-        for ((metric, indexAndCalculator) in metricInfo) {
-            val (index, _) = indexAndCalculator
-            metricNameToValue[metric.metricName] = metrics[index]
-        }
-
-        // lines of code is added here manually to improve performance as no tree walk is necessary
-        metricNameToValue[AvailableMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row
-
-        return MutableNode(
-            name = file.name,
-            type = NodeType.File,
-            attributes = metricNameToValue
-        )
-    }
-
-    private val walkTree = DeepRecursiveFunction<Pair<TSTreeCursor, IntArray>, Unit> { (cursor, metrics) ->
-        val currentNode = cursor.currentNode()
-
-        val nodeType = currentNode.type
-        val startRow = currentNode.startPoint.row
-        val endRow = currentNode.endPoint.row
-
-        for ((_, indexAndCalculator) in metricInfo) {
-            val (index, calculator) = indexAndCalculator
-            metrics[index] += calculator(currentNode, nodeType, startRow, endRow)
-        }
-
-        if (cursor.gotoFirstChild()) {
-            do {
-                callRecursive(Pair(cursor, metrics))
-            } while (cursor.gotoNextSibling())
-            cursor.gotoParent()
-        }
-    }
-
     protected open fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
         return if (isNodeTypeAllowed(node, nodeType, queryProvider.complexityNodeTypes)) 1 else 0
     }
@@ -120,5 +72,64 @@ abstract class MetricCollector(
         }
 
         return rlocForNode
+    }
+
+    fun collectMetricsForFile(file: File): MutableNode {
+        val rootNode = getRootNode(file)
+
+        lastCountedCommentLine = -1
+        lastCountedCodeLine = -1
+
+        // we use an IntArray and not a map here as it improves performance
+        val metricValues = IntArray(metricInfo.size) { 0 }
+        walkTree(Pair(TSTreeCursor(rootNode), metricValues))
+
+        val metricNameToValue = mapMetricValuesToNodeAttributes(metricValues)
+
+        // lines of code is added here manually to improve performance as no tree walk is necessary
+        metricNameToValue[AvailableMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row
+
+        return MutableNode(
+            name = file.name,
+            type = NodeType.File,
+            attributes = metricNameToValue
+        )
+    }
+
+    private fun getRootNode(file: File): TSNode {
+        val parser = TSParser() //TODO: sollten wir das als klassenvariable lassen und hier resetten?
+        parser.setLanguage(treeSitterLanguage)
+        return parser.parseString(null, file.readText()).rootNode
+    }
+
+    private val walkTree = DeepRecursiveFunction<Pair<TSTreeCursor, IntArray>, Unit> { (cursor, metrics) ->
+        val currentNode = cursor.currentNode()
+
+        val nodeType = currentNode.type
+        val startRow = currentNode.startPoint.row
+        val endRow = currentNode.endPoint.row
+
+        for ((_, indexAndCalculator) in metricInfo) {
+            val (index, metricCalculator) = indexAndCalculator
+            metrics[index] += metricCalculator(currentNode, nodeType, startRow, endRow)
+        }
+
+        if (cursor.gotoFirstChild()) {
+            do {
+                callRecursive(Pair(cursor, metrics))
+            } while (cursor.gotoNextSibling())
+            cursor.gotoParent()
+        }
+    }
+
+    private fun mapMetricValuesToNodeAttributes(metricValues: IntArray): MutableMap<String, Int> {
+        val metricNameToValue = mutableMapOf<String, Int>()
+
+        for ((metric, indexAndCalculator) in metricInfo) {
+            val (index, _) = indexAndCalculator
+            metricNameToValue[metric.metricName] = metricValues[index]
+        }
+
+        return metricNameToValue
     }
 }
