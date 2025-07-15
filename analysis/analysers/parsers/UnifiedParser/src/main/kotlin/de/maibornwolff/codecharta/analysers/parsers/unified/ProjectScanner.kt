@@ -18,7 +18,7 @@ class ProjectScanner(
     private val root: File,
     private val projectBuilder: ProjectBuilder,
     private val excludePatterns: List<String> = listOf(),
-    private val includeExtensions: List<String> = listOf(),
+    private val includeExtensions: List<String> = listOf()
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -50,7 +50,7 @@ class ProjectScanner(
 
     fun traverseInputProject(verbose: Boolean) {
         runBlocking(Dispatchers.Default) {
-            val parsableFiles = root.walk().filter {isParsableFile(it)}.toList()
+            val parsableFiles = root.walk().filter { isParsableFile(it) }.toList()
             totalFiles = parsableFiles.size.toLong()
 
             parsableFiles.forEach { file ->
@@ -63,7 +63,10 @@ class ProjectScanner(
         }
 
         progressTracker.updateProgress(totalFiles, totalFiles, parsingUnit.name)
-        if (verbose) Logger.info { "Analysis of files complete, creating output file..." }
+        if (verbose) {
+            System.err.println()
+            Logger.info { "Analysis of files complete, creating output file..." }
+        }
         addAllNodesToProjectBuilder()
     }
 

@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.unified
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -126,17 +125,11 @@ class UnifiedParserTest {
         System.setErr(originalErr)
     }
 
-    @Disabled("rewrite this test, verbose mode now shows different stuff")
     @Test
     fun `should display message for each file when verbose mode was set`() {
         // given
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
-        val ignoredFiles = listOf(
-            ".whatever/something.kt",
-            "bar/something.strange",
-            "foo.py"
-        )
         val parsedFiles = listOf(
             "bar/hello.kt",
             "bar/foo.kt",
@@ -150,12 +143,10 @@ class UnifiedParserTest {
         executeForOutput(pipedProject, arrayOf(inputFilePath, "--verbose"))
 
         // then
-        for (file in ignoredFiles) {
-            Assertions.assertThat(errContent.toString()).contains("Ignoring file $file")
-        }
         for (file in parsedFiles) {
             Assertions.assertThat(errContent.toString()).contains("Calculating metrics for file $file")
         }
+        Assertions.assertThat(errContent.toString()).contains("Analysis of files complete, creating output file...")
 
         // clean up
         System.setErr(originalErr)
@@ -173,9 +164,9 @@ class UnifiedParserTest {
         executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
-        Assertions.assertThat(errContent.toString())
-            .contains("2 Files with the following extensions were ignored as they are currently not supported:\n" +
-                "[.strange, .py]")
+        Assertions.assertThat(errContent.toString()).contains(
+            "2 Files with the following extensions were ignored as they are currently not supported:\n[.strange, .py]"
+        )
 
         // clean up
         System.setErr(originalErr)

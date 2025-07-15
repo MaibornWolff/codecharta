@@ -68,7 +68,8 @@ class UnifiedParser(
         if (ignoredFileTypes.isNotEmpty()) {
             System.err.println()
             System.err.println(
-                "$nrofIgnoredFiles Files with the following extensions were ignored as they are currently not supported:\n[${formatFileExtensions(ignoredFileTypes)}]"
+                "$nrofIgnoredFiles Files with the following extensions were ignored as " +
+                    "they are currently not supported:\n[${formatFileExtensions(ignoredFileTypes)}]"
             )
         }
 

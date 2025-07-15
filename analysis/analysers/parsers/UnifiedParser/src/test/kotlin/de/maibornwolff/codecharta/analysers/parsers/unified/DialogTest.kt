@@ -25,7 +25,6 @@ class DialogTest {
     fun `should output correct arguments when provided with valid input`() {
         val isCompressed = false
         val isVerbose = false
-        val metrics = "testMetric"
         val exclude = "testExtension"
         val include = "onlyThis"
 
@@ -44,10 +43,6 @@ class DialogTest {
             }
             val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
-                terminal.press(Keys.ENTER)
-            }
-            val metricCallback: suspend RunScope.() -> Unit = {
-                terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
             val excludeOrIncludeCallback: suspend RunScope.() -> Unit = {
@@ -75,7 +70,6 @@ class DialogTest {
                 fileCallback,
                 outFileCallback,
                 compressCallback,
-                metricCallback,
                 excludeOrIncludeCallback,
                 excludeCallback,
                 includeCallback,
@@ -92,7 +86,6 @@ class DialogTest {
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
-        assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf(include))
         assertThat(parseResult.hasMatchedOption("without-default-excludes")).isFalse()
@@ -102,7 +95,6 @@ class DialogTest {
     fun `should skip questions about exclude and include when it was selected that none should be set`() {
         val isCompressed = false
         val isVerbose = false
-        val metrics = "testMetric"
 
         mockkObject(Dialog.Companion)
 
@@ -119,10 +111,6 @@ class DialogTest {
             }
             val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.RIGHT)
-                terminal.press(Keys.ENTER)
-            }
-            val metricCallback: suspend RunScope.() -> Unit = {
-                terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
             val excludeOrIncludeCallback: suspend RunScope.() -> Unit = {
@@ -142,7 +130,6 @@ class DialogTest {
                 fileCallback,
                 outFileCallback,
                 compressCallback,
-                metricCallback,
                 excludeOrIncludeCallback,
                 defaultExcludesCallback,
                 verboseCallback
@@ -157,7 +144,6 @@ class DialogTest {
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
-        assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf<String>())
         assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
         assertThat(parseResult.hasMatchedOption("without-default-excludes")).isTrue()
@@ -166,7 +152,6 @@ class DialogTest {
     @Test
     fun `should not include flag for not compressed when output should be compressed`() {
         val isVerbose = false
-        val metrics = "testMetric"
         val exclude = "testExtension"
         val include = "onlyThis"
 
@@ -184,10 +169,6 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
             val compressCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.ENTER)
-            }
-            val metricCallback: suspend RunScope.() -> Unit = {
-                terminal.type(metrics)
                 terminal.press(Keys.ENTER)
             }
             val excludeOrIncludeCallback: suspend RunScope.() -> Unit = {
@@ -215,7 +196,6 @@ class DialogTest {
                 fileCallback,
                 outFileCallback,
                 compressCallback,
-                metricCallback,
                 excludeOrIncludeCallback,
                 excludeCallback,
                 includeCallback,
@@ -232,7 +212,6 @@ class DialogTest {
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.hasMatchedOption("not-compressed")).isFalse()
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
-        assertThat(parseResult.matchedOption("metrics").getValue<List<String>>()).isEqualTo(listOf(metrics))
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf(include))
         assertThat(parseResult.hasMatchedOption("without-default-excludes")).isFalse()

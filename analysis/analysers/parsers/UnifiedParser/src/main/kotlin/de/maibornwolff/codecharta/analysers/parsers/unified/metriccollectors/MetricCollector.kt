@@ -44,8 +44,9 @@ abstract class MetricCollector(
     }
 
     private fun isNodeTypeAllowed(node: TSNode, nodeType: String, allowedTypes: TreeNodeTypes): Boolean {
-        if (allowedTypes.simpleNodeTypes.contains(nodeType)) return true
-        else if (allowedTypes.nestedNodeTypes != null){
+        if (allowedTypes.simpleNodeTypes.contains(nodeType)) {
+            return true
+        } else if (allowedTypes.nestedNodeTypes != null) {
             for (nestedType in allowedTypes.nestedNodeTypes) {
                 if (nestedType.baseNodeType == nodeType) {
                     val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
@@ -97,7 +98,7 @@ abstract class MetricCollector(
     }
 
     private fun getRootNode(file: File): TSNode {
-        val parser = TSParser() //TODO: sollten wir das als klassenvariable lassen und hier resetten?
+        val parser = TSParser() // TODO: sollten wir das als klassenvariable lassen und hier resetten?
         parser.setLanguage(treeSitterLanguage)
         return parser.parseString(null, file.readText()).rootNode
     }
