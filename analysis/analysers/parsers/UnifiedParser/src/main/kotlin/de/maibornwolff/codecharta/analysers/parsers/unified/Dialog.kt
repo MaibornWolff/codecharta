@@ -18,8 +18,6 @@ class Dialog {
 
             val isCompressed = outputFileName.isEmpty() || compressedQuestion(session)
 
-            val metrics = metricsQuestion(session)
-
             val askExcludeInclude = includeOrExcludeQuestion(session)
 
             val exclude = if (askExcludeInclude == "Only exclude" || askExcludeInclude == "Both") excludeQuestion(session) else ""
@@ -36,7 +34,6 @@ class Dialog {
                 "--output-file=$outputFileName",
                 if (isCompressed) null else "--not-compressed",
                 "--verbose=${!verbose}",
-                "--metrics=$metrics",
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
                 if (withoutDefaultExcludes) "--without-default-excludes" else null
@@ -62,15 +59,6 @@ class Dialog {
         private fun compressedQuestion(session: Session): Boolean {
             return session.promptConfirm(
                 message = "Do you want to compress the output file?",
-                onInputReady = testCallback()
-            )
-        }
-
-        private fun metricsQuestion(session: Session): String {
-            return session.promptInput(
-                message = "Do you want to specify which metrics should be computed?",
-                hint = "metric1, metric2, ... (Leave empty to compute all)",
-                allowEmptyInput = true,
                 onInputReady = testCallback()
             )
         }

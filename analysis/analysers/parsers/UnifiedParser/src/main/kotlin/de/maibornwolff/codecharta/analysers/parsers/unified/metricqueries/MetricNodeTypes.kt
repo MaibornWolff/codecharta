@@ -16,11 +16,11 @@ enum class AvailableMetrics(val metricName: String) {
 
 class TreeNodeTypes(
     val simpleNodeTypes: Set<String>,
-    val nestedNodeTypes: Set<NestedNodeType>? = null,
+    val nestedNodeTypes: Set<NestedNodeType>? = null
 )
 
 class NestedNodeType(
     val baseNodeType: String,
     val childNodeFieldName: String?,
-    val childNodeTypes: Set<String>,
+    val childNodeTypes: Set<String>
 )
