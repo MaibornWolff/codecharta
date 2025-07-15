@@ -63,8 +63,8 @@ class ProjectScanner(
         }
 
         progressTracker.updateProgress(totalFiles, totalFiles, parsingUnit.name)
+        System.err.println()
         if (verbose) {
-            System.err.println()
             Logger.info { "Analysis of files complete, creating output file..." }
         }
         addAllNodesToProjectBuilder()
