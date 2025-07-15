@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.AvailableMetrics
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.MetricNodeTypes
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.NestedNodeType
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.TreeNodeTypes
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
@@ -47,11 +48,16 @@ abstract class MetricCollector(
         if (allowedTypes.simpleNodeTypes.contains(nodeType)) {
             return true
         } else if (allowedTypes.nestedNodeTypes != null) {
-            for (nestedType in allowedTypes.nestedNodeTypes) {
-                if (nestedType.baseNodeType == nodeType) {
-                    val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
-                    if (nestedType.childNodeTypes.contains(childNode.type)) return true
-                }
+            return isNestedTypeAllowed(node, nodeType, allowedTypes.nestedNodeTypes)
+        }
+        return false
+    }
+
+    private fun isNestedTypeAllowed(node: TSNode, nodeType: String, nestedTypes: Set<NestedNodeType>): Boolean {
+        for (nestedType in nestedTypes) {
+            if (nestedType.baseNodeType == nodeType) {
+                val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
+                if (nestedType.childNodeTypes.contains(childNode.type)) return true
             }
         }
         return false
@@ -98,7 +104,7 @@ abstract class MetricCollector(
     }
 
     private fun getRootNode(file: File): TSNode {
-        val parser = TSParser() // TODO: sollten wir das als klassenvariable lassen und hier resetten?
+        val parser = TSParser()
         parser.setLanguage(treeSitterLanguage)
         return parser.parseString(null, file.readText()).rootNode
     }

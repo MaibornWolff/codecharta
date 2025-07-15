@@ -17,6 +17,8 @@ import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.InputStream
 import java.io.PrintStream
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @CommandLine.Command(
     name = UnifiedParser.NAME,
@@ -37,6 +39,7 @@ class UnifiedParser(
     override val description = DESCRIPTION
 
     override fun call(): Unit? {
+        val startTime = System.currentTimeMillis()
         logExecutionStartedSyncSignal()
 
         require(InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
@@ -56,7 +59,6 @@ class UnifiedParser(
 
         val notFoundButSpecifiedFormats = projectScanner.getNotFoundFileExtensions()
         if (notFoundButSpecifiedFormats.isNotEmpty()) {
-            System.err.println()
             System.err.println(
                 "From the specified file extensions to parse, " +
                     "[${formatFileExtensions(notFoundButSpecifiedFormats)}] " +
@@ -66,12 +68,15 @@ class UnifiedParser(
 
         val (nrofIgnoredFiles, ignoredFileTypes) = projectScanner.getIgnoredFiles()
         if (ignoredFileTypes.isNotEmpty()) {
-            System.err.println()
             System.err.println(
                 "$nrofIgnoredFiles Files with the following extensions were ignored as " +
                     "they are currently not supported:\n[${formatFileExtensions(ignoredFileTypes)}]"
             )
         }
+
+        val executionTimeMs = System.currentTimeMillis() - startTime
+        val formattedTime = formatTime(executionTimeMs.milliseconds)
+        System.err.println("UnifiedParser completed in $formattedTime")
 
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
@@ -103,5 +108,18 @@ class UnifiedParser(
 
     private fun formatFileExtensions(fileExtensions: Set<String>): String {
         return fileExtensions.joinToString(separator = ", ") { ".$it" }
+    }
+
+    private fun formatTime(duration: Duration): String {
+        val totalSeconds = duration.inWholeSeconds
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = duration.inWholeMilliseconds / 1000.0 % 60
+
+        return when {
+            hours > 0 -> String.format(java.util.Locale.US, "%d:%02d:%05.2f", hours, minutes, seconds)
+            minutes > 0 -> String.format(java.util.Locale.US, "%d:%05.2f", minutes, seconds)
+            else -> String.format(java.util.Locale.US, "%.2f seconds", seconds)
+        }
     }
 }
