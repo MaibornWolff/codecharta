@@ -32,55 +32,6 @@ abstract class MetricCollector(
         }
     )
 
-    protected open fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
-        return if (isNodeTypeAllowed(node, nodeType, queryProvider.complexityNodeTypes)) 1 else 0
-    }
-
-    protected open fun calculateCommentLinesForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
-        if (startRow > lastCountedCommentLine && isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) {
-            lastCountedCommentLine = startRow
-            return endRow - startRow + 1
-        }
-        return 0
-    }
-
-    private fun isNodeTypeAllowed(node: TSNode, nodeType: String, allowedTypes: TreeNodeTypes): Boolean {
-        if (allowedTypes.simpleNodeTypes.contains(nodeType)) {
-            return true
-        } else if (allowedTypes.nestedNodeTypes != null) {
-            return isNestedTypeAllowed(node, nodeType, allowedTypes.nestedNodeTypes)
-        }
-        return false
-    }
-
-    private fun isNestedTypeAllowed(node: TSNode, nodeType: String, nestedTypes: Set<NestedNodeType>): Boolean {
-        for (nestedType in nestedTypes) {
-            if (nestedType.baseNodeType == nodeType) {
-                val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
-                if (nestedType.childNodeTypes.contains(childNode.type)) return true
-            }
-        }
-        return false
-    }
-
-    protected open fun calculateRealLinesOfCodeForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
-        if (isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) return 0
-
-        var rlocForNode = 0
-
-        if (startRow > lastCountedCodeLine) {
-            lastCountedCodeLine = startRow
-            rlocForNode++
-        }
-
-        if (node.childCount == 0 && endRow > lastCountedCodeLine) {
-            lastCountedCodeLine = endRow
-            rlocForNode += endRow - startRow
-        }
-
-        return rlocForNode
-    }
-
     fun collectMetricsForFile(file: File): MutableNode {
         val rootNode = getRootNode(file)
 
@@ -116,9 +67,9 @@ abstract class MetricCollector(
         val startRow = currentNode.startPoint.row
         val endRow = currentNode.endPoint.row
 
-        for ((_, indexAndCalculator) in metricInfo) {
-            val (index, metricCalculator) = indexAndCalculator
-            metrics[index] += metricCalculator(currentNode, nodeType, startRow, endRow)
+        for ((_, indexAndCalculateMetricForNodeFn) in metricInfo) {
+            val (index, calculateMetricForNodeFn) = indexAndCalculateMetricForNodeFn
+            metrics[index] += calculateMetricForNodeFn(currentNode, nodeType, startRow, endRow)
         }
 
         if (cursor.gotoFirstChild()) {
@@ -132,11 +83,60 @@ abstract class MetricCollector(
     private fun mapMetricValuesToNodeAttributes(metricValues: IntArray): MutableMap<String, Int> {
         val metricNameToValue = mutableMapOf<String, Int>()
 
-        for ((metric, indexAndCalculator) in metricInfo) {
-            val (index, _) = indexAndCalculator
+        for ((metric, indexAndCalculateMetricForNodeFn) in metricInfo) {
+            val (index, _) = indexAndCalculateMetricForNodeFn
             metricNameToValue[metric.metricName] = metricValues[index]
         }
 
         return metricNameToValue
+    }
+
+    protected open fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
+        return if (isNodeTypeAllowed(node, nodeType, queryProvider.complexityNodeTypes)) 1 else 0
+    }
+
+    protected open fun calculateCommentLinesForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
+        if (startRow > lastCountedCommentLine && isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) {
+            lastCountedCommentLine = startRow
+            return endRow - startRow + 1
+        }
+        return 0
+    }
+
+    protected open fun calculateRealLinesOfCodeForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
+        if (isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) return 0
+
+        var rlocForNode = 0
+
+        if (startRow > lastCountedCodeLine) {
+            lastCountedCodeLine = startRow
+            rlocForNode++
+        }
+
+        if (node.childCount == 0 && endRow > lastCountedCodeLine) {
+            lastCountedCodeLine = endRow
+            rlocForNode += endRow - startRow
+        }
+
+        return rlocForNode
+    }
+
+    private fun isNodeTypeAllowed(node: TSNode, nodeType: String, allowedTypes: TreeNodeTypes): Boolean {
+        if (allowedTypes.simpleNodeTypes.contains(nodeType)) {
+            return true
+        } else if (allowedTypes.nestedNodeTypes != null) {
+            return isNestedTypeAllowed(node, nodeType, allowedTypes.nestedNodeTypes)
+        }
+        return false
+    }
+
+    private fun isNestedTypeAllowed(node: TSNode, nodeType: String, nestedTypes: Set<NestedNodeType>): Boolean {
+        for (nestedType in nestedTypes) {
+            if (nestedType.baseNodeType == nodeType) {
+                val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
+                if (nestedType.childNodeTypes.contains(childNode.type)) return true
+            }
+        }
+        return false
     }
 }
