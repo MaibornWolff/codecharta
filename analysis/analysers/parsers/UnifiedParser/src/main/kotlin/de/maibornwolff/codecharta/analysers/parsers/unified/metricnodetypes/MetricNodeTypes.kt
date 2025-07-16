@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
+package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
 interface MetricNodeTypes {
     val complexityNodeTypes: TreeNodeTypes

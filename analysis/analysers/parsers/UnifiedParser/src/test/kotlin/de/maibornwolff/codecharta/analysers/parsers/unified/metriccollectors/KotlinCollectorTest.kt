@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.treesitter.TSParser
 import org.treesitter.TreeSitterKotlin
+import java.io.File
 
 class KotlinCollectorTest {
     private var parser = TSParser()
@@ -15,81 +16,88 @@ class KotlinCollectorTest {
         parser.setLanguage(TreeSitterKotlin())
     }
 
+    private fun createTestFile(content: String): File {
+        val tempFile = File.createTempFile("testFile", ".txt")
+        tempFile.writeText(content)
+        tempFile.deleteOnExit()
+        return tempFile
+    }
+
     @Test
     fun `should count elvis operator for complexity`() {
         // given
-        val input = """val y = x ?: 2"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """val y = x ?: 2"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(1)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(1)
     }
 
     @Test
     fun `should count conjunction expressions for complexity`() {
         // given
-        val input = """if (x == 0 && y < 1) return true"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """if (x == 0 && y < 1) return true"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(2)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(2)
     }
 
     @Test
     fun `should count lambda expressions for complexity`() {
         // given
-        val input = """val sum = { x: Int, y: Int -> x + y }"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """val sum = { x: Int, y: Int -> x + y }"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(1)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(1)
     }
 
     @Test
     fun `should count each possibility in when case for complexity`() {
         // given
-        val input = """
+        val fileContent = """
             when (x) {
                 1 -> print("x == 1")
                 2 -> print("x == 2")
                 else -> print("x is neither 1 nor 2")
             }
         """.trimIndent()
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(3)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(3)
     }
 
     @Test
     fun `should count filters and maps for complexity`() {
         // given
-        val input = """numberList.filter { it % 2 == 0 }.map { it * 2 }"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """numberList.filter { it % 2 == 0 }.map { it * 2 }"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(2)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(2)
     }
 
     @Test
     fun `should count line and block comments for comment_lines`() {
         // given
-        val input = """
+        val fileContent = """
             /**
              * docstring comment
              * over
@@ -100,19 +108,19 @@ class KotlinCollectorTest {
                 println("Hello") /* comment in code */; println("world")
             }
         """.trimIndent()
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val commentLines = collector.getCommentLines(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(commentLines).isEqualTo(7)
+        Assertions.assertThat(result.attributes["comment_lines"]).isEqualTo(7)
     }
 
     @Test
     fun `should not include comments or empty lines for rloc`() {
         // given
-        val input = """
+        val fileContent = """
             if (x == 2) {
                 // comment
 
@@ -120,19 +128,19 @@ class KotlinCollectorTest {
                 return true
             }
         """.trimIndent() + "\n" // this newline simulates end of file
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val rloc = collector.getRealLinesOfCode(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(rloc).isEqualTo(3)
+        Assertions.assertThat(result.attributes["rloc"]).isEqualTo(3)
     }
 
     @Test
     fun `should count empty lines and comments for loc`() {
         // given
-        val input = """
+        val fileContent = """
             if (x == 2) {
                 // comment
 
@@ -140,12 +148,12 @@ class KotlinCollectorTest {
                 return true
             }
         """.trimIndent() + "\n" // this newline simulates end of file
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val loc = collector.getLinesOfCode(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(loc).isEqualTo(6)
+        Assertions.assertThat(result.attributes["loc"]).isEqualTo(6)
     }
 }

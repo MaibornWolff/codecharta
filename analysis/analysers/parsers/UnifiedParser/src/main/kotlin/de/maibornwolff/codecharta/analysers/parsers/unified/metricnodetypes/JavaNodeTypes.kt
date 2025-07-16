@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
+package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
-class JavascriptNodeTypes : MetricNodeTypes {
+class JavaNodeTypes : MetricNodeTypes {
     override val complexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
@@ -9,35 +9,33 @@ class JavascriptNodeTypes : MetricNodeTypes {
             "do_statement",
             "for_statement",
             "while_statement",
-            "for_in_statement",
+            "enhanced_for_statement",
             // conditional
             "ternary_expression",
             // case
-            "switch_case",
+            "switch_label",
             // catch
             "catch_clause",
             // function
-            "function_declaration",
-            "generator_function_declaration",
-            "arrow_function",
-            "generator_function",
-            "method_definition",
-            "class_static_block",
-            "function_expression"
+            "constructor_declaration",
+            "method_declaration",
+            "lambda_expression",
+            "static_initializer",
+            "compact_constructor_declaration"
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(
                 baseNodeType = "binary_expression",
                 childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||", "??")
+                childNodeTypes = setOf("&&", "||")
             )
         )
     )
 
     override val commentLineNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
-            "comment",
-            "html_comment"
+            "block_comment",
+            "line_comment"
         )
     )
 }

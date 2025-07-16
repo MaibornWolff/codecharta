@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.treesitter.TSParser
 import org.treesitter.TreeSitterJava
+import java.io.File
 
 class JavaCollectorTest {
     private var parser = TSParser()
@@ -15,53 +16,60 @@ class JavaCollectorTest {
         parser.setLanguage(TreeSitterJava())
     }
 
+    private fun createTestFile(content: String): File {
+        val tempFile = File.createTempFile("testFile", ".txt")
+        tempFile.writeText(content)
+        tempFile.deleteOnExit()
+        return tempFile
+    }
+
     @Test
     fun `should count lambda expressions for complexity`() {
         // given
-        val input = """int sum = (int x, int y) -> x + y;"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """int sum = (int x, int y) -> x + y;"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(1)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(1)
     }
 
     @Test
     fun `should count ternary operator for complexity`() {
         // given
-        val input = """x = (y>0) ? 1 : -1;"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """x = (y>0) ? 1 : -1;"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(1)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(1)
     }
 
     @Test
     fun `should count enhanced for loop for complexity`() {
         // given
-        val input = """
+        val fileContent = """
             for (char item: vowels) {
                 System.out.println(item);
             }
         """.trimIndent()
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(1)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(1)
     }
 
     @Test
     fun `should count line and block comments for comment_lines`() {
         // given
-        val input = """
+        val fileContent = """
             /**
              * docstring comment
              * over
@@ -72,19 +80,19 @@ class JavaCollectorTest {
                 System.out.println("Hello"); /* comment in code */ System.out.println("world");
             }
         """.trimIndent()
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val commentLines = collector.getCommentLines(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(commentLines).isEqualTo(7)
+        Assertions.assertThat(result.attributes["comment_lines"]).isEqualTo(7)
     }
 
     @Test
     fun `should not include comments or empty lines for rloc`() {
         // given
-        val input = """
+        val fileContent = """
             if (x == 2) {
                 // comment
 
@@ -92,19 +100,19 @@ class JavaCollectorTest {
                 return true;
             }
         """.trimIndent()
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val rloc = collector.getRealLinesOfCode(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(rloc).isEqualTo(3)
+        Assertions.assertThat(result.attributes["rloc"]).isEqualTo(3)
     }
 
     @Test
     fun `should count empty lines and comments for loc`() {
         // given
-        val input = """
+        val fileContent = """
             if (x == 2) {
                 // comment
 
@@ -112,12 +120,12 @@ class JavaCollectorTest {
                 return true;
             }
         """.trimIndent() + "\n" // this newline simulates end of file
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val loc = collector.getLinesOfCode(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(loc).isEqualTo(6)
+        Assertions.assertThat(result.attributes["loc"]).isEqualTo(6)
     }
 }

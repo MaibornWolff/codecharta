@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.AvailableMetrics
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.MetricNodeTypes
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.NestedNodeType
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries.TreeNodeTypes
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableMetrics
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.MetricNodeTypes
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.NestedNodeType
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.TreeNodeTypes
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import org.treesitter.TSLanguage
