@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.analysers.parsers.unified.metricqueries
+package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
-class TypescriptNodeTypes : MetricNodeTypes {
+class JavascriptNodeTypes : MetricNodeTypes {
     override val complexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
@@ -12,7 +12,6 @@ class TypescriptNodeTypes : MetricNodeTypes {
             "for_in_statement",
             // conditional
             "ternary_expression",
-            "conditional_type",
             // case
             "switch_case",
             // catch

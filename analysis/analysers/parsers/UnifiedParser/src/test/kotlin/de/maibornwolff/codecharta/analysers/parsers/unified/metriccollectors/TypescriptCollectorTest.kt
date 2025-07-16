@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.treesitter.TSParser
 import org.treesitter.TreeSitterTypescript
+import java.io.File
 
 class TypescriptCollectorTest {
     private var parser = TSParser()
@@ -15,79 +16,86 @@ class TypescriptCollectorTest {
         parser.setLanguage(TreeSitterTypescript())
     }
 
+    private fun createTestFile(content: String): File {
+        val tempFile = File.createTempFile("testFile", ".txt")
+        tempFile.writeText(content)
+        tempFile.deleteOnExit()
+        return tempFile
+    }
+
     @Test
     fun `should count for in loop for complexity`() {
         // given
-        val input = """
+        val fileContent = """
             for (const x in person) {
               text += person[x];
             }
         """.trimIndent()
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(1)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(1)
     }
 
     @Test
     fun `should count ternary operator for complexity`() {
         // given
-        val input = """const x: number = (y > 0) ? 1 : -1"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """const x: number = (y > 0) ? 1 : -1"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(1)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(1)
     }
 
     @Test
     fun `should count conditional type for complexity`() {
         // given
-        val input = """type IsString<T> = T extends string ? true : false;"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """type IsString<T> = T extends string ? true : false;"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(1)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(1)
     }
 
     @Test
     fun `should count and operator for complexity`() {
         // given
-        val input = """if (x === 0 && y < 1) return true"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """if (x === 0 && y < 1) return true"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(2)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(2)
     }
 
     @Test
     fun `should count nullish operator for complexity`() {
         // given
-        val input = """const x: number = y ?? 0"""
-        val node = parser.parseString(null, input).rootNode
+        val fileContent = """const x: number = y ?? 0"""
+        val input = createTestFile(fileContent)
 
         // when
-        val complexity = collector.getComplexity(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(complexity).isEqualTo(1)
+        Assertions.assertThat(result.attributes["complexity"]).isEqualTo(1)
     }
 
     @Test
     fun `should count line and block comments for comment_lines`() {
         // given
-        val input = """
+        val fileContent = """
             /**
              * docstring comment
              * over
@@ -98,19 +106,19 @@ class TypescriptCollectorTest {
                  console.log("Hello"); /* comment in code */ console.log("world")
              }
         """.trimIndent()
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val commentLines = collector.getCommentLines(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(commentLines).isEqualTo(7)
+        Assertions.assertThat(result.attributes["comment_lines"]).isEqualTo(7)
     }
 
     @Test
     fun `should not include comments or empty lines for rloc`() {
         // given
-        val input = """
+        val fileContent = """
             if (x === 2) {
                 // comment
 
@@ -118,19 +126,19 @@ class TypescriptCollectorTest {
                 return true;
             }
         """.trimIndent()
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val rloc = collector.getRealLinesOfCode(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(rloc).isEqualTo(3)
+        Assertions.assertThat(result.attributes["rloc"]).isEqualTo(3)
     }
 
     @Test
     fun `should count empty lines and comments for loc`() {
         // given
-        val input = """
+        val fileContent = """
             if (x === 2) {
                 // comment
 
@@ -138,12 +146,12 @@ class TypescriptCollectorTest {
                 return true;
             }
         """.trimIndent() + "\n" // this newline simulates end of file
-        val node = parser.parseString(null, input).rootNode
+        val input = createTestFile(fileContent)
 
         // when
-        val loc = collector.getLinesOfCode(node)
+        val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(loc).isEqualTo(6)
+        Assertions.assertThat(result.attributes["loc"]).isEqualTo(6)
     }
 }
