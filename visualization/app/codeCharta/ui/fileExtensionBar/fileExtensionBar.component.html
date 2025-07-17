@@ -25,19 +25,4 @@
             </span>
         }
     </div>
-
-    <button class="cc-show-details-button" (click)="toggleShowDetails()">
-        <i class="fa {{ showDetails ? 'fa-caret-up' : 'fa-caret-down' }}"></i>
-    </button>
-</div>
-
-<div class="cc-distribution-details" [class.cc-hidden]="!showDetails" (click)="toggleShowAbsoluteValues()">
-    @for (item of metricDistribution; track item) {
-        <div class="cc-distribution-details-entry">
-            <span class="cc-dot" [style.background]="item.color"></span>{{ item.fileExtension }} :
-            <span class="cc-detail-metric-value">
-                {{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
-            </span>
-        </div>
-    }
 </div>

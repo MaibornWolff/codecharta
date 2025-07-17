@@ -15,12 +15,11 @@ import { DistributionMetricChooserComponent } from "./distributionMetricChooser/
 })
 export class FileExtensionBarComponent {
     showAbsoluteValues = false
-    showDetails = false
     metricDistribution: MetricDistribution[]
 
     constructor(
-        private store: Store<CcState>,
-        private threeSceneService: ThreeSceneService
+        private readonly store: Store<CcState>,
+        private readonly threeSceneService: ThreeSceneService
     ) {
         this.store.select(metricDistributionSelector).subscribe(metricDistribution => {
             this.metricDistribution = metricDistribution
@@ -52,10 +51,6 @@ export class FileExtensionBarComponent {
 
     onUnhoverFileExtensionBar() {
         this.threeSceneService.applyClearHightlights()
-    }
-
-    toggleShowDetails() {
-        this.showDetails = !this.showDetails
     }
 
     toggleShowAbsoluteValues() {

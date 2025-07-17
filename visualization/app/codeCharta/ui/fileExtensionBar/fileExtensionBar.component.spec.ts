@@ -64,14 +64,6 @@ describe("fileExtensionBarComponent", () => {
         await waitFor(() => expect(screen.getByText("ts 1,120")).toBeTruthy())
     })
 
-    it("should show details on click of details button", async () => {
-        const { container } = await render(FileExtensionBarComponent)
-        expect(container.querySelector(".cc-distribution-details").classList).toContain("cc-hidden")
-
-        await userEvent.click(container.querySelector(".cc-show-details-button"))
-        await waitFor(() => expect(container.querySelector(".cc-distribution-details").classList).not.toContain("cc-hidden"))
-    })
-
     it("should highlight buildings on hover", async () => {
         await render(FileExtensionBarComponent)
         const fileExtensionElement = screen.getByText("ts 100.00%")
