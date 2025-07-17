@@ -21,17 +21,25 @@ class PythonNodeTypes : MetricNodeTypes {
             // catch block
             "except_clause",
             // function
-            "function_definition",
-            "lambda"
+            "function_definition"
+        ),
+        nestedNodeTypes = setOf(
+            // lambda needs to be complex to not be counted double as type of first child is also lambda
+            NestedNodeType(
+                baseNodeType = "lambda",
+                childNodePosition = 0,
+                childNodeCount = 4,
+                childNodeTypes = setOf("lambda")
+            )
         )
     )
 
-    // in python unassigned strings are used as block comments, meaning an expression that only has string as a child
     override val commentLineNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             "comment"
         ),
         nestedNodeTypes = setOf(
+            // in python unassigned strings are used as block comments, meaning an expression that only has string as a child
             NestedNodeType(
                 baseNodeType = "expression_statement",
                 childNodeCount = 1,
