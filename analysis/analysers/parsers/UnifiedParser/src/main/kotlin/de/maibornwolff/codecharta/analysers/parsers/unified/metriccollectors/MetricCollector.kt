@@ -18,7 +18,7 @@ abstract class MetricCollector(
 ) {
     private var lastCountedCommentLine = -1
     private var lastCountedCodeLine = -1
-    private var rootNodeType: String = "" //TODO: schauen wie wir für alle kinder vom rootnode berechnen
+    private var rootNodeType: String = ""
 
     // maps a metric to its index for the more performant IntArray and the function how to calculate the metric
     private val metricInfo = mapOf(
@@ -58,7 +58,9 @@ abstract class MetricCollector(
     private fun getRootNode(file: File): TSNode {
         val parser = TSParser()
         parser.setLanguage(treeSitterLanguage)
-        return parser.parseString(null, file.readText()).rootNode
+        val rootNode = parser.parseString(null, file.readText()).rootNode
+        rootNodeType = rootNode.type
+        return rootNode
     }
 
     private val walkTree = DeepRecursiveFunction<Pair<TSTreeCursor, IntArray>, Unit> { (cursor, metrics) ->
@@ -68,9 +70,11 @@ abstract class MetricCollector(
         val startRow = currentNode.startPoint.row
         val endRow = currentNode.endPoint.row
 
-        for ((_, indexAndCalculateMetricForNodeFn) in metricInfo) {
-            val (index, calculateMetricForNodeFn) = indexAndCalculateMetricForNodeFn
-            metrics[index] += calculateMetricForNodeFn(currentNode, nodeType, startRow, endRow)
+        if (nodeType != rootNodeType) {
+            for ((_, indexAndCalculateMetricForNodeFn) in metricInfo) {
+                val (index, calculateMetricForNodeFn) = indexAndCalculateMetricForNodeFn
+                metrics[index] += calculateMetricForNodeFn(currentNode, nodeType, startRow, endRow)
+            }
         }
 
         if (cursor.gotoFirstChild()) {
@@ -134,8 +138,15 @@ abstract class MetricCollector(
     private fun isNestedTypeAllowed(node: TSNode, nodeType: String, nestedTypes: Set<NestedNodeType>): Boolean {
         for (nestedType in nestedTypes) {
             if (nestedType.baseNodeType == nodeType) {
-                val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
-                if (nestedType.childNodeTypes.contains(childNode.type)) return true
+                if (nestedType.childNodePosition != null &&
+                    nestedType.childNodeCount == node.childCount
+                ) {
+                    val childNode = node.getChild(nestedType.childNodePosition)
+                    if (nestedType.childNodeTypes.contains(childNode.type)) return true
+                } else if (nestedType.childNodeFieldName != null) {
+                    val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
+                    if (nestedType.childNodeTypes.contains(childNode.type)) return true
+                }
             }
         }
         return false
