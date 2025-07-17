@@ -16,7 +16,7 @@ import { AsyncPipe } from "@angular/common"
 export class DistributionMetricChooserComponent {
     distributionMetric$ = this.store.select(distributionMetricSelector)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     handleDistributionMetricChanged(value: string) {
         this.store.dispatch(setDistributionMetric({ value }))
