@@ -70,7 +70,8 @@ abstract class MetricCollector(
         val startRow = currentNode.startPoint.row
         val endRow = currentNode.endPoint.row
 
-        if (nodeType != rootNodeType) {
+        val skipRootToAvoidDoubleCountingLines = nodeType != rootNodeType
+        if (skipRootToAvoidDoubleCountingLines) {
             for ((_, indexAndCalculateMetricForNodeFn) in metricInfo) {
                 val (index, calculateMetricForNodeFn) = indexAndCalculateMetricForNodeFn
                 metrics[index] += calculateMetricForNodeFn(currentNode, nodeType, startRow, endRow)
