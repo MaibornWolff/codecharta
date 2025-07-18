@@ -1,16 +1,16 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore, MockStore } from "@ngrx/store/testing"
-import { selectedColorMetricDataSelector } from "../../../selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { selectedColorMetricDataSelector } from "../../selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { ResetColorRangeEffect } from "./resetColorRange.effect"
 import { EffectsModule } from "@ngrx/effects"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { BehaviorSubject } from "rxjs"
 import { Action } from "@ngrx/store"
-import { setStandard } from "../../files/files.actions"
-import { getLastAction } from "../../../../util/testUtils/store.utils"
-import { setColorMetric } from "../colorMetric/colorMetric.actions"
-import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../../util/dataMocks"
-import { FileSelectionState } from "../../../../model/files/files"
+import { setStandard } from "../../store/files/files.actions"
+import { getLastAction } from "../../../util/testUtils/store.utils"
+import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
+import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
+import { FileSelectionState } from "../../../model/files/files"
 
 describe("ResetColorRangeEffect", () => {
     const modifiedDefaultState = {

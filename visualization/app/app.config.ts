@@ -20,8 +20,8 @@ import { UpdateFileSettingsEffect } from "app/codeCharta/state/effects/updateFil
 import { UpdateMapColorsEffect } from "app/codeCharta/state/effects/updateMapColors/updateMapColors.effect"
 import { UpdateQueryParametersEffect } from "app/codeCharta/state/effects/updateQueryParameters/updateQueryParameters.effect"
 import { UpdateVisibleTopLabelsEffect } from "app/codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
-import { ResetColorRangeEffect } from "app/codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
-import { BlacklistSearchPatternEffect } from "app/codeCharta/ui/ribbonBar/searchPanel/searchBar/blacklistSearchPattern.effect"
+import { ResetColorRangeEffect } from "app/codeCharta/state/effects/resetColorRange/resetColorRange.effect"
+import { BlacklistSearchPatternEffect } from "app/codeCharta/state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { UpdateShowLabelsEffect } from "./codeCharta/state/effects/updateShowLabels/updateShowLabels.effect"
 import { UpdateAmountOfEdgePreviewsEffect } from "./codeCharta/state/effects/amountOfEdgePreviews/updateAmountOfEdgePreviews.effect"
 
