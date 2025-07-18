@@ -38,11 +38,11 @@ class UnifiedParserTest {
     }
 
     private fun provideSupportedLanguages() = listOf(
-//        Arguments.of("typescript", ".ts"),
-//        Arguments.of("javascript", ".js"),
-//        Arguments.of("java", ".java"),
-//        Arguments.of("kotlin", ".kt"),
-//        Arguments.of("cSharp", ".cs"),
+        Arguments.of("typescript", ".ts"),
+        Arguments.of("javascript", ".js"),
+        Arguments.of("java", ".java"),
+        Arguments.of("kotlin", ".kt"),
+        Arguments.of("cSharp", ".cs"),
         Arguments.of("python", ".py")
     )
 
