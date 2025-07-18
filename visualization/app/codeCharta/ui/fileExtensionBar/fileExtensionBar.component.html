@@ -16,13 +16,13 @@
                     title="{{
                         item.fileExtension.toString() +
                             ' ' +
-                            (showAbsoluteValues ? item.absoluteMetricValue.toFixed(0) : item.relativeMetricValue.toFixed(2) + '%')
+                            (showAbsoluteValues ? item.absoluteMetricValue : item.relativeMetricValue.toFixed(2) + '%')
                     }}"
                 >
-                    {{ item.relativeMetricValue >= item.fileExtension.length / 2 + 1 ? item.fileExtension : "" }}
-                    {{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
+                    {{ item.fileExtension }} {{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
                 </div>
             </span>
         }
+
     </div>
 </div>
