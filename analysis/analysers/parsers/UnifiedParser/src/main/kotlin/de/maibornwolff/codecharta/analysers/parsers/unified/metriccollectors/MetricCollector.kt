@@ -35,6 +35,7 @@ abstract class MetricCollector(
 
     fun collectMetricsForFile(file: File): MutableNode {
         val rootNode = getRootNode(file)
+        rootNodeType = rootNode.type
 
         lastCountedCommentLine = -1
         lastCountedCodeLine = -1
@@ -59,7 +60,6 @@ abstract class MetricCollector(
         val parser = TSParser()
         parser.setLanguage(treeSitterLanguage)
         val rootNode = parser.parseString(null, file.readText()).rootNode
-        rootNodeType = rootNode.type
         return rootNode
     }
 
@@ -137,16 +137,14 @@ abstract class MetricCollector(
 
     private fun isNestedTypeAllowed(node: TSNode, nodeType: String, nestedTypes: Set<NestedNodeType>): Boolean {
         for (nestedType in nestedTypes) {
-            if (nestedType.baseNodeType == nodeType) {
-                if (nestedType.childNodePosition != null &&
-                    nestedType.childNodeCount == node.childCount
-                ) {
-                    val childNode = node.getChild(nestedType.childNodePosition)
-                    if (nestedType.childNodeTypes.contains(childNode.type)) return true
-                } else if (nestedType.childNodeFieldName != null) {
-                    val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
-                    if (nestedType.childNodeTypes.contains(childNode.type)) return true
-                }
+            if (nestedType.baseNodeType != nodeType) continue
+
+            if (nestedType.childNodePosition != null && nestedType.childNodeCount == node.childCount) {
+                val childNode = node.getChild(nestedType.childNodePosition)
+                if (nestedType.childNodeTypes.contains(childNode.type)) return true
+            } else if (nestedType.childNodeFieldName != null) {
+                val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
+                if (nestedType.childNodeTypes.contains(childNode.type)) return true
             }
         }
         return false
