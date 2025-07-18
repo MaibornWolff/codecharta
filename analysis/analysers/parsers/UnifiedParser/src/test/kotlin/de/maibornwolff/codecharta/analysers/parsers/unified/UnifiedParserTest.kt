@@ -168,7 +168,9 @@ class UnifiedParserTest {
 
         // then
         Assertions.assertThat(errContent.toString()).contains(
-            "2 Files with the following extensions were ignored as they are currently not supported:\n[.json, .strange]"
+            "2 Files with the following extensions were ignored as they are currently not supported:",
+            ".json",
+            ".strange"
         )
 
         // clean up
