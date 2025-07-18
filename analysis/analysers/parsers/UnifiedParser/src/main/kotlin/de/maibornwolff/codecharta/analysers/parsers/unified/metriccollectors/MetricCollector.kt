@@ -118,7 +118,7 @@ abstract class MetricCollector(
             rlocForNode++
         }
 
-        if (node.childCount == 0 && endRow > lastCountedCodeLine) {
+        if (endRow > lastCountedCodeLine && countWholeNodeLength(node)) {
             lastCountedCodeLine = endRow
             rlocForNode += endRow - startRow
         }
@@ -150,5 +150,9 @@ abstract class MetricCollector(
             }
         }
         return false
+    }
+
+    protected open fun countWholeNodeLength(node: TSNode): Boolean {
+        return node.childCount == 0
     }
 }

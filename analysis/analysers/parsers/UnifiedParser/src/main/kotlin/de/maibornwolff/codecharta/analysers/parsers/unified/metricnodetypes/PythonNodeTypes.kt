@@ -27,8 +27,8 @@ class PythonNodeTypes : MetricNodeTypes {
             // lambda needs to be complex to not be counted double as type of first child is also lambda
             NestedNodeType(
                 baseNodeType = "lambda",
-                childNodePosition = 0,
                 childNodeCount = 4,
+                childNodePosition = 0,
                 childNodeTypes = setOf("lambda")
             )
         )
