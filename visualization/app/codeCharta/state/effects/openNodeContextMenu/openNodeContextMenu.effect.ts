@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { createEffect, ofType, Actions } from "@ngrx/effects"
-import { NodeContextMenuService } from "./nodeContextMenu.service"
+import { NodeContextMenuService } from "../../../ui/nodeContextMenu/nodeContextMenu.service"
 import { setRightClickedNodeData } from "../../store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { tap } from "rxjs"
 

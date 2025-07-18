@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { FlattenButtonsComponent } from "./flattenButtons.component"
-import { NodeType } from "../../../../codeCharta.model"
+import { NodeType } from "../../../codeCharta.model"
 import userEvent from "@testing-library/user-event"
 import { Store } from "@ngrx/store"
-import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItem, removeBlacklistItem } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("flattenButtonsComponent", () => {
     let mockedStore: { dispatch: jest.Mock }

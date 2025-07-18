@@ -1,10 +1,10 @@
 import { Component } from "@angular/core"
-import { markPackages, unmarkPackage } from "../../../store/fileSettings/markedPackages/markedPackages.actions"
+import { markPackages, unmarkPackage } from "../../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { markFolderItemsSelector } from "./selectors/markFolderItems.selector"
-import { CcState } from "../../../../codeCharta.model"
-import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
+import { CcState } from "../../../codeCharta.model"
+import { rightClickedCodeMapNodeSelector } from "../../../state/selectors/rightClickedCodeMapNode.selector"
 import { Store } from "@ngrx/store"
-import { ColorPickerComponent } from "../../../../ui/colorPicker/colorPicker.component"
+import { ColorPickerComponent } from "../../colorPicker/colorPicker.component"
 import { AsyncPipe } from "@angular/common"
 
 @Component({

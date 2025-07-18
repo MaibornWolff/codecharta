@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from "@angular/core"
-import { CodeMapNode } from "../../../../codeCharta.model"
-import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
+import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 import { MatButton } from "@angular/material/button"
 
 @Component({

@@ -2,10 +2,10 @@ import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import userEvent from "@testing-library/user-event"
 import { HighlightButtonsComponent } from "./highlightButtons.component"
-import { CodeMapNode } from "../../../../codeCharta.model"
-import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
-import { CodeMapBuilding } from "../../../../ui/codeMap/rendering/codeMapBuilding"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
+import { CodeMapBuilding } from "../../codeMap/rendering/codeMapBuilding"
+import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
 
 describe("flattenButtonsComponent", () => {
     beforeEach(() => {

@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
-import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
-import { VALID_FILE_NODE_WITH_ID, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
+import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
+import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
+import { VALID_FILE_NODE_WITH_ID, VALID_NODE_WITH_PATH } from "../../../util/dataMocks"
 import { NodeContextMenuCardComponent } from "./nodeContextMenuCard.component"
 import { provideMockStore } from "@ngrx/store/testing"
-import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
+import { rightClickedCodeMapNodeSelector } from "../../../state/selectors/rightClickedCodeMapNode.selector"
 
 describe("NodeContextMenuCardComponent", () => {
     beforeEach(() => {

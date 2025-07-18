@@ -1,9 +1,9 @@
 import { createSelector } from "@ngrx/store"
-import { MarkedPackage } from "../../../../../codeCharta.model"
-import { mapColorsSelector } from "../../../../store/appSettings/mapColors/mapColors.selector"
-import { markedPackagesSelector } from "../../../../store/fileSettings/markedPackages/markedPackages.selector"
-import { findIndexOfMarkedPackageOrParent } from "../../../../store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
-import { rightClickedCodeMapNodeSelector } from "../../rightClickedCodeMapNode.selector"
+import { MarkedPackage } from "../../../../codeCharta.model"
+import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
+import { markedPackagesSelector } from "../../../../state/store/fileSettings/markedPackages/markedPackages.selector"
+import { findIndexOfMarkedPackageOrParent } from "../../../../state/store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
+import { rightClickedCodeMapNodeSelector } from "../../../../state/selectors/rightClickedCodeMapNode.selector"
 
 export type MarkFolderItem = {
     color: string

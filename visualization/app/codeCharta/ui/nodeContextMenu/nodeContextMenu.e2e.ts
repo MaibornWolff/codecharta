@@ -1,8 +1,8 @@
-import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
+import { clearIndexedDB, goto } from "../../../puppeteer.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
-import { MapTreeViewLevelPageObject } from "../../../ui/ribbonBar/searchPanel/mapTreeView/mapTreeView.level.po"
-import { CodeMapPageObject } from "../../../ui/codeMap/codeMap.po"
-import { SearchPanelPageObject } from "../../../ui/ribbonBar/searchPanel/searchPanel.po"
+import { MapTreeViewLevelPageObject } from "../ribbonBar/searchPanel/mapTreeView/mapTreeView.level.po"
+import { CodeMapPageObject } from "../codeMap/codeMap.po"
+import { SearchPanelPageObject } from "../ribbonBar/searchPanel/searchPanel.po"
 
 describe("NodeContextMenu", () => {
     let contextMenu: NodeContextMenuPageObject

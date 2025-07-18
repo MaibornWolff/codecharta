@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CodeMapNode } from "../../../../codeCharta.model"
-import { addBlacklistItem, removeBlacklistItem } from "../../../store/fileSettings/blacklist/blacklist.actions"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { addBlacklistItem, removeBlacklistItem } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
 import { MatButton } from "@angular/material/button"
 
 @Component({

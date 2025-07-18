@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core"
 
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode } from "../../../codeCharta.model"
 import { MatButton } from "@angular/material/button"
 import { LastPartOfNodePathPipe } from "../nodeContextMenuCard/lastPartOfNodePath.pipe"
 

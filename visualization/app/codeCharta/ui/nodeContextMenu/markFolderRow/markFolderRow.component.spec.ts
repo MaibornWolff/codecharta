@@ -3,9 +3,9 @@ import { fireEvent, render } from "@testing-library/angular"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { markFolderItemsSelector } from "./selectors/markFolderItems.selector"
-import { rightClickedCodeMapNodeSelector } from "../rightClickedCodeMapNode.selector"
-import { getLastAction } from "../../../../util/testUtils/store.utils"
-import { markPackages, unmarkPackage } from "../../../store/fileSettings/markedPackages/markedPackages.actions"
+import { rightClickedCodeMapNodeSelector } from "../../../state/selectors/rightClickedCodeMapNode.selector"
+import { getLastAction } from "../../../util/testUtils/store.utils"
+import { markPackages, unmarkPackage } from "../../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 describe("markFolderRow component", () => {
     beforeEach(() => {
