@@ -5,5 +5,5 @@ import org.treesitter.TreeSitterCSharp
 
 class CSharpCollector : MetricCollector(
     treeSitterLanguage = TreeSitterCSharp(),
-    queryProvider = CSharpNodeTypes()
+    nodeTypeProvider = CSharpNodeTypes()
 )

@@ -11,5 +11,6 @@ enum class AvailableCollectors(
     KOTLIN(FileExtension.KOTLIN, ::KotlinCollector),
     JAVA(FileExtension.JAVA, ::JavaCollector),
     CSHARP(FileExtension.CSHARP, ::CSharpCollector),
+    CPP(FileExtension.CPP, ::CppCollector),
     PYTHON(FileExtension.PYTHON, ::PythonCollector)
 }

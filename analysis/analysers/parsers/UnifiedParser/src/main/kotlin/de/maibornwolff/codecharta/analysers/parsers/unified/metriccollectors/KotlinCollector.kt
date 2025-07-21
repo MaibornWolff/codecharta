@@ -5,5 +5,5 @@ import org.treesitter.TreeSitterKotlin
 
 class KotlinCollector : MetricCollector(
     treeSitterLanguage = TreeSitterKotlin(),
-    queryProvider = KotlinNodeTypes()
+    nodeTypeProvider = KotlinNodeTypes()
 )

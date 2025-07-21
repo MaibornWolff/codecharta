@@ -5,5 +5,5 @@ import org.treesitter.TreeSitterTypescript
 
 class TypescriptCollector : MetricCollector(
     treeSitterLanguage = TreeSitterTypescript(),
-    queryProvider = TypescriptNodeTypes()
+    nodeTypeProvider = TypescriptNodeTypes()
 )

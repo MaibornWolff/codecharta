@@ -6,7 +6,7 @@ import org.treesitter.TreeSitterPython
 
 class PythonCollector : MetricCollector(
     treeSitterLanguage = TreeSitterPython(),
-    queryProvider = PythonNodeTypes()
+    nodeTypeProvider = PythonNodeTypes()
 ) {
     override fun calculateRealLinesOfCodeForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
         if (shouldIgnoreNodeType(node, nodeType) || doesNodeStartWithComment(node)) return 0

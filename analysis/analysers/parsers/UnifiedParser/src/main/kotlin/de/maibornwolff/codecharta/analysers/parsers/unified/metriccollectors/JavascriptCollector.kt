@@ -5,5 +5,5 @@ import org.treesitter.TreeSitterJavascript
 
 class JavascriptCollector : MetricCollector(
     treeSitterLanguage = TreeSitterJavascript(),
-    queryProvider = JavascriptNodeTypes()
+    nodeTypeProvider = JavascriptNodeTypes()
 )
