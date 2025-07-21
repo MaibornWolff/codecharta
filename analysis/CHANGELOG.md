@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.134.0] - 2025-07-21
+
 ### Added 🚀
 
 - Add new UnifiedParser that is based on [treesitter](https://tree-sitter.github.io/tree-sitter/index.html) and works without external tools [#4070](https://github.com/MaibornWolff/codecharta/pull/4070)
