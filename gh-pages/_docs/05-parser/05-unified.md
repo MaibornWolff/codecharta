@@ -15,8 +15,12 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 ## Supported Languages
 
+- Javascript
 - Typescript
+- Java
 - Kotlin
+- C#
+- Python
 
 ## Supported Metrics
 

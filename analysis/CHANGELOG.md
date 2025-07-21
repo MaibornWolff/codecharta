@@ -9,10 +9,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Add new UnifiedParser that is based on treesitter and works without external tools [#4070](https://github.com/MaibornWolff/codecharta/pull/4070)
-  - It currently supports:
+- Add new UnifiedParser that is based on [treesitter](https://tree-sitter.github.io/tree-sitter/index.html) and works without external tools [#4070](https://github.com/MaibornWolff/codecharta/pull/4070)
+  - Currently supported Languages (will be further extended):
+    - Javascript
     - Typescript
+    - Java
     - Kotlin
+    - C#
+    - Python
+  - Currently supported Metrics (will be further extended):
+    - Complexity
+    - Comment lines
+    - Lines of code
+    - Real lines of code
   - It is also available when calling the ccsh without parameters [#4102](https://github.com/MaibornWolff/codecharta/pull/4102)
 - Add auto-completing file input to all interactive dialogs [#4081](https://github.com/MaibornWolff/codecharta/pull/4081)
 
