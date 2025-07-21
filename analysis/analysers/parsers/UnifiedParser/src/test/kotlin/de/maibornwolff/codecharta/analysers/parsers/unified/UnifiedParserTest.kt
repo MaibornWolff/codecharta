@@ -43,6 +43,7 @@ class UnifiedParserTest {
         Arguments.of("java", ".java"),
         Arguments.of("kotlin", ".kt"),
         Arguments.of("cSharp", ".cs"),
+        Arguments.of("cpp", ".cpp"),
         Arguments.of("python", ".py")
     )
 

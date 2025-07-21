@@ -14,7 +14,7 @@ import java.io.File
 
 abstract class MetricCollector(
     private val treeSitterLanguage: TSLanguage,
-    private val queryProvider: MetricNodeTypes
+    private val nodeTypeProvider: MetricNodeTypes
 ) {
     private var lastCountedCommentLine = -1
     private var lastCountedCodeLine = -1
@@ -98,11 +98,11 @@ abstract class MetricCollector(
     }
 
     protected open fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
-        return if (isNodeTypeAllowed(node, nodeType, queryProvider.complexityNodeTypes)) 1 else 0
+        return if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.complexityNodeTypes)) 1 else 0
     }
 
     protected open fun calculateCommentLinesForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
-        if (startRow > lastCountedCommentLine && isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) {
+        if (startRow > lastCountedCommentLine && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)) {
             lastCountedCommentLine = startRow
             return endRow - startRow + 1
         }
@@ -110,7 +110,7 @@ abstract class MetricCollector(
     }
 
     protected open fun calculateRealLinesOfCodeForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
-        if (isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) return 0
+        if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)) return 0
 
         var rlocForNode = 0
 
