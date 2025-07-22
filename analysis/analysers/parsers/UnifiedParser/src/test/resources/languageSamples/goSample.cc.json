@@ -1,0 +1,66 @@
+{
+  "checksum": "e95c593f316eb0852d81ad82dca7838f",
+  "data": {
+    "projectName": "",
+    "nodes": [
+      {
+        "name": "root",
+        "type": "Folder",
+        "attributes": {},
+        "link": "",
+        "children": [
+          {
+            "name": "goSample.go",
+            "type": "File",
+            "attributes": {
+              "complexity": 8,
+              "comment_lines": 4,
+              "rloc": 33,
+              "loc": 43
+            },
+            "link": "",
+            "children": []
+          }
+        ]
+      }
+    ],
+    "apiVersion": "1.3",
+    "edges": [],
+    "attributeTypes": {},
+    "attributeDescriptors": {
+      "complexity": {
+        "title": "Complexity",
+        "description": "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
+        "direction": -1
+      },
+      "comment_lines": {
+        "title": "Comment lines",
+        "description": "Number of lines containing either a comment or commented-out code",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "loc": {
+        "title": "Lines of Code",
+        "description": "Lines of code including empty lines and comments",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "rloc": {
+        "title": "Real Lines of Code",
+        "description": "Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      }
+    },
+    "blacklist": []
+  }
+}
