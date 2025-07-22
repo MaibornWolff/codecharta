@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.treesitter.java)
     implementation(libs.treesitter.csharp)
     implementation(libs.treesitter.cpp)
+    implementation(libs.treesitter.c)
     implementation(libs.treesitter.python)
 
     testImplementation(libs.jsonassert)

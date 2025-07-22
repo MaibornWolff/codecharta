@@ -16,6 +16,7 @@ enum class FileExtension(
     TYPESCRIPT(".ts"),
     CSHARP(".cs"),
     CPP(".cpp"),
+    C(".c"),
     JAVA(".java"),
     JAVASCRIPT(".js"),
     KOTLIN(".kt"),

@@ -12,5 +12,6 @@ enum class AvailableCollectors(
     JAVA(FileExtension.JAVA, ::JavaCollector),
     CSHARP(FileExtension.CSHARP, ::CSharpCollector),
     CPP(FileExtension.CPP, ::CppCollector),
+    C(FileExtension.C, ::CCollector),
     PYTHON(FileExtension.PYTHON, ::PythonCollector)
 }

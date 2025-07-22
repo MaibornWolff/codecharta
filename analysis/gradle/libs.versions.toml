@@ -34,6 +34,7 @@ tree-sitter-kotlin = "0.3.8.1"
 tree-sitter-java = "0.23.4"
 tree-sitter-csharp = "0.23.1"
 tree-sitter-cpp = "0.23.4"
+tree-sitter-c = "0.23.2"
 tree-sitter-python = "0.23.4"
 
 [libraries]
@@ -79,6 +80,7 @@ treesitter-kotlin = { group = "io.github.bonede", name = "tree-sitter-kotlin", v
 treesitter-java = { group = "io.github.bonede", name = "tree-sitter-java", version.ref = "tree-sitter-java"}
 treesitter-csharp = { group = "io.github.bonede", name = "tree-sitter-c-sharp", version.ref = "tree-sitter-csharp"}
 treesitter-cpp = { group = "io.github.bonede", name = "tree-sitter-cpp", version.ref = "tree-sitter-cpp"}
+treesitter-c = { group = "io.github.bonede", name = "tree-sitter-c", version.ref = "tree-sitter-c"}
 treesitter-python = { group = "io.github.bonede", name = "tree-sitter-python", version.ref = "tree-sitter-python"}
 
 [plugins]
