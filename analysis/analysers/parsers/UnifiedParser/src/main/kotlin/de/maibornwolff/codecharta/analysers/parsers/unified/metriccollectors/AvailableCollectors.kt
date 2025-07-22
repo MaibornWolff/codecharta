@@ -13,5 +13,6 @@ enum class AvailableCollectors(
     CSHARP(FileExtension.CSHARP, ::CSharpCollector),
     CPP(FileExtension.CPP, ::CppCollector),
     C(FileExtension.C, ::CCollector),
-    PYTHON(FileExtension.PYTHON, ::PythonCollector)
+    PYTHON(FileExtension.PYTHON, ::PythonCollector),
+    GO(FileExtension.GO, ::GoCollector)
 }
