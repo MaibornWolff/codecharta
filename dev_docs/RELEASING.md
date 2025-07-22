@@ -2,6 +2,17 @@
 
 This document explains the release workflows and processes for CodeCharta.
 
+## TL;DR how to make a release
+- Go to Actions → "Prepare Release - Visualization/Analysis" → "Run workflow"
+- Input repository and type of version increment
+- Click "Run workflow"
+- Wait (around 1 min)
+- This automatically triggers everything else necessary
+- Go to "Pull requests"
+- Wait for test pipelines to run (around 10-15 min)
+- Approve PR if everything works
+- Everything should be done after around 10 min
+
 ## Overview
 
 CodeCharta uses several GitHub Actions workflows to manage releases for both the Visualization and Analysis components. These workflows handle:
