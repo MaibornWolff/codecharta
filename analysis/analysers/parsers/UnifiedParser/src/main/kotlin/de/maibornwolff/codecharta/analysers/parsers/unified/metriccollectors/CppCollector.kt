@@ -4,11 +4,10 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.CppN
 import org.treesitter.TSNode
 import org.treesitter.TreeSitterCpp
 
-class CppCollector: MetricCollector(
+class CppCollector : MetricCollector(
     treeSitterLanguage = TreeSitterCpp(),
     nodeTypeProvider = CppNodeTypes()
 ) {
-
     override fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
         if (isAbstractFunctionInLambda(node, nodeType) || isFnDeclarationInFnDefinition(node, nodeType)) return 0
         return super.calculateComplexityForNode(node, nodeType)

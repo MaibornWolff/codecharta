@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
-class CNodeTypes: MetricNodeTypes {
+class CNodeTypes : MetricNodeTypes {
     override val complexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
@@ -18,7 +18,7 @@ class CNodeTypes: MetricNodeTypes {
             // function
             "function_definition",
             "abstract_function_declarator",
-            "function_declarator",
+            "function_declarator"
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(
@@ -35,4 +35,3 @@ class CNodeTypes: MetricNodeTypes {
         )
     )
 }
-

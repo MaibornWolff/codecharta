@@ -15,6 +15,7 @@ class TypescriptNodeTypes : MetricNodeTypes {
             "conditional_type",
             // case
             "switch_case",
+            "switch_default",
             // catch
             "catch_clause",
             // function

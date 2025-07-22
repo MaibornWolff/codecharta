@@ -81,6 +81,28 @@ class JavascriptCollectorTest {
     }
 
     @Test
+    fun `should count switch statement for complexity`() {
+        // given
+        val fileContent = """
+            switch (value) {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default:
+                    break;
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(3)
+    }
+
+    @Test
     fun `should count line and block comments for comment_lines`() {
         val fileContent = """
             /**
