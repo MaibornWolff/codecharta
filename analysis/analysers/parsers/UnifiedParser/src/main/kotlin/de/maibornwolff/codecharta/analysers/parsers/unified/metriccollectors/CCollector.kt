@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.CNod
 import org.treesitter.TSNode
 import org.treesitter.TreeSitterC
 
-class CCollector: MetricCollector(
+class CCollector : MetricCollector(
     treeSitterLanguage = TreeSitterC(),
     nodeTypeProvider = CNodeTypes()
 ) {

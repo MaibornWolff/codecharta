@@ -14,6 +14,7 @@ class JavascriptNodeTypes : MetricNodeTypes {
             "ternary_expression",
             // case
             "switch_case",
+            "switch_default",
             // catch
             "catch_clause",
             // function

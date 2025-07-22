@@ -207,7 +207,6 @@ class CppCollectorTest {
         Assertions.assertThat(result.attributes[AvailableMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3)
     }
 
-
     @Test
     fun `should count empty lines and comments for loc`() {
         // given
