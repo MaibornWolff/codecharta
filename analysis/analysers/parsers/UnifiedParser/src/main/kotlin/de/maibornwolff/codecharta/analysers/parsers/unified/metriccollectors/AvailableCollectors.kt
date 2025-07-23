@@ -14,5 +14,6 @@ enum class AvailableCollectors(
     CPP(FileExtension.CPP, ::CppCollector),
     C(FileExtension.C, ::CCollector),
     PYTHON(FileExtension.PYTHON, ::PythonCollector),
-    GO(FileExtension.GO, ::GoCollector)
+    GO(FileExtension.GO, ::GoCollector),
+    PHP(FileExtension.PHP, ::PhpCollector)
 }

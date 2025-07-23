@@ -19,6 +19,7 @@ class GoNodeTypes : MetricNodeTypes {
             "method_spec"
         ),
         nestedNodeTypes = setOf(
+            // logical binary
             NestedNodeType(
                 baseNodeType = "binary_expression",
                 childNodeFieldName = "operator",

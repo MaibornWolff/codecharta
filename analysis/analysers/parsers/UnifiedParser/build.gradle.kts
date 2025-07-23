@@ -18,6 +18,7 @@ dependencies {
     implementation(libs.treesitter.c)
     implementation(libs.treesitter.python)
     implementation(libs.treesitter.go)
+    implementation(libs.treesitter.php)
 
     testImplementation(libs.jsonassert)
 }

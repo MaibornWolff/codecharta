@@ -24,6 +24,7 @@ class CppNodeTypes : MetricNodeTypes {
             "function_declarator"
         ),
         nestedNodeTypes = setOf(
+            // logical binary
             NestedNodeType(
                 baseNodeType = "binary_expression",
                 childNodeFieldName = "operator",

@@ -37,6 +37,7 @@ tree-sitter-cpp = "0.23.4"
 tree-sitter-c = "0.23.2"
 tree-sitter-python = "0.23.4"
 tree-sitter-go = "0.23.3"
+tree-sitter-php = "0.23.11"
 
 [libraries]
 kotlin-logging-jvm = { group = "io.github.oshai", name = "kotlin-logging-jvm", version.ref = "kotlin-logging" }
@@ -84,6 +85,7 @@ treesitter-cpp = { group = "io.github.bonede", name = "tree-sitter-cpp", version
 treesitter-c = { group = "io.github.bonede", name = "tree-sitter-c", version.ref = "tree-sitter-c"}
 treesitter-python = { group = "io.github.bonede", name = "tree-sitter-python", version.ref = "tree-sitter-python"}
 treesitter-go = { group = "io.github.bonede", name = "tree-sitter-go", version.ref = "tree-sitter-go"}
+treesitter-php = { group = "io.github.bonede", name = "tree-sitter-php", version.ref = "tree-sitter-php"}
 
 [plugins]
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

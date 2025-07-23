@@ -46,7 +46,8 @@ class UnifiedParserTest {
         Arguments.of("cpp", ".cpp"),
         Arguments.of("c", ".c"),
         Arguments.of("python", ".py"),
-        Arguments.of("go", ".go")
+        Arguments.of("go", ".go"),
+        Arguments.of("php", ".php")
     )
 
     @ParameterizedTest

@@ -27,6 +27,7 @@ class JavascriptNodeTypes : MetricNodeTypes {
             "function_expression"
         ),
         nestedNodeTypes = setOf(
+            // logical binary
             NestedNodeType(
                 baseNodeType = "binary_expression",
                 childNodeFieldName = "operator",

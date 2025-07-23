@@ -1,38 +1,39 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
-class CSharpNodeTypes : MetricNodeTypes {
+class PhpNodeTypes : MetricNodeTypes {
     override val complexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if_statement",
+            "else_if_clause",
             // loop
             "do_statement",
-            "foreach_statement",
             "for_statement",
             "while_statement",
+            "foreach_statement",
             // conditional
             "conditional_expression",
-            "is_expression",
-            "and_pattern",
-            "or_pattern",
             // case
-            "switch_section",
-            "switch_expression_arm",
+            "case_statement",
+            "default_statement",
+            "match_conditional_expression",
+            "match_default_expression",
             // catch
             "catch_clause",
             // function
-            "constructor_declaration",
             "method_declaration",
             "lambda_expression",
-            "local_function_statement",
-            "accessor_declaration"
+            "arrow_function",
+            "anonymous_function",
+            "function_definition",
+            "function_static_declaration"
         ),
         nestedNodeTypes = setOf(
             // logical binary
             NestedNodeType(
                 baseNodeType = "binary_expression",
                 childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||", "??")
+                childNodeTypes = setOf("&&", "||", "??", "and", "or", "xor")
             )
         )
     )
