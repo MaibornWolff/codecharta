@@ -15,5 +15,6 @@ enum class AvailableCollectors(
     C(FileExtension.C, ::CCollector),
     PYTHON(FileExtension.PYTHON, ::PythonCollector),
     GO(FileExtension.GO, ::GoCollector),
-    PHP(FileExtension.PHP, ::PhpCollector)
+    PHP(FileExtension.PHP, ::PhpCollector),
+    RUBY(FileExtension.RUBY, ::RubyCollector)
 }
