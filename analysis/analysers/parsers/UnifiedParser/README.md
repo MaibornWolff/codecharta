@@ -17,6 +17,7 @@ The Unified Parser is parser to generate code metrics from a source code file or
 - Go
 - PHP
 - Ruby
+- Bash
 
 ## Supported Metrics
 
