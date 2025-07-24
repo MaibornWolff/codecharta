@@ -15,6 +15,8 @@ The Unified Parser is parser to generate code metrics from a source code file or
 - C
 - Python
 - Go
+- PHP
+- Ruby
 
 ## Supported Metrics
 
@@ -81,6 +83,8 @@ As the treesitter grammars differ by language, these queries need to be adjusted
 By default, it is not necessary to implement any functionality in the language specific collectors. If however the calculation for one metric is different from the base implementation, the function to calculate that metric can be overwritten
 
 Finally, to make the newly created collector accessible, add it to the 'AvailableCollectors' enum.
+
+It is also recommended to add tests for the new language by creating a test file for the collector, which tests both generic functionality but also special cases of the language.
 
 ### Adding a new metric
 

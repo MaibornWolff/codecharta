@@ -20,5 +20,6 @@ enum class FileExtension(
     JAVA(".java"),
     JAVASCRIPT(".js"),
     KOTLIN(".kt"),
-    PYTHON(".py")
+    PYTHON(".py"),
+    RUBY(".rb")
 }
