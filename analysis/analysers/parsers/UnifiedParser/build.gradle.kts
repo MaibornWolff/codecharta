@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.treesitter.go)
     implementation(libs.treesitter.php)
     implementation(libs.treesitter.ruby)
+    implementation(libs.treesitter.bash)
 
     testImplementation(libs.jsonassert)
 }
