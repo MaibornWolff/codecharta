@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add support for more languages to unifiedParser [4119](https://github.com/MaibornWolff/codecharta/pull/4119)
+  - Newly added languages:
+    - C
+    - C++
+    - Go
+    - PHP
+    - Ruby
+    - Bash
+
 ## [1.134.0] - 2025-07-21
 
 ### Added 🚀
