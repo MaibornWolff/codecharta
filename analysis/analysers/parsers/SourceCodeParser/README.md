@@ -2,7 +2,7 @@
 
 **Category**: Parser (takes in source code and outputs cc.json)
 
-DEPRECATION WARNING: This parser is no longer supported and will soon be disabled!
+DEPRECATION WARNING: This parser has been replaced by the UnifiedParser and will soon be disabled!
 
 The Source-Code-Parser is parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv file.
 
