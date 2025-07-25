@@ -247,7 +247,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         if (this.labelSelectedBuilding !== null) {
             this.codeMapLabelService.clearTemporaryLabel(this.labelSelectedBuilding)
         }
-        if (!codeMapBuilding.node.isLeaf) {
+        if (!codeMapBuilding?.node?.isLeaf) {
             return
         }
 
