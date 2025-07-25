@@ -46,7 +46,8 @@ class UnifiedParser(
             "Input invalid file for UnifiedParser, stopping execution..."
         }
 
-        if (!withoutDefaultExcludes) patternsToExclude += CodeChartaConstants.DEFAULT_EXCLUDES
+        if (!includeBuildFolders) patternsToExclude += CodeChartaConstants.BUILD_FOLDERS
+        if (excludeCommonResources) patternsToExclude += CodeChartaConstants.COMMON_RESOURCES
         val projectBuilder = ProjectBuilder()
         val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
         projectScanner.traverseInputProject(verbose)
