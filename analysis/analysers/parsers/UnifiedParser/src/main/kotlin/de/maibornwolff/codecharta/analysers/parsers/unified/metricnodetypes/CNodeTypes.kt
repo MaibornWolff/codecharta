@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
+import org.treesitter.TSNode
+
 class CNodeTypes : MetricNodeTypes {
     override val complexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
@@ -35,4 +37,9 @@ class CNodeTypes : MetricNodeTypes {
             "comment"
         )
     )
+
+    // every function definition contains a function declarator, so the inner declarator can be ignored
+    fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {
+        return nodeType == "function_declarator" && node.parent.type == "function_definition"
+    }
 }

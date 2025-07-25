@@ -9,15 +9,13 @@ class CppCollector : MetricCollector(
     nodeTypeProvider = CppNodeTypes()
 ) {
     override fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
-        if (isAbstractFunctionInLambda(node, nodeType) || isFnDeclarationInFnDefinition(node, nodeType)) return 0
+        if (shouldIgnoreNodeType(node, nodeType)) return 0
         return super.calculateComplexityForNode(node, nodeType)
     }
 
-    private fun isAbstractFunctionInLambda(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "abstract_function_declarator" && node.parent.type == "lambda_expression"
-    }
-
-    private fun isFnDeclarationInFnDefinition(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "function_declarator" && node.parent.type == "function_definition"
+    private fun shouldIgnoreNodeType(node: TSNode, nodeType: String): Boolean {
+        val cppNodeTypes = nodeTypeProvider as CppNodeTypes
+        return cppNodeTypes.shouldIgnoreAbstractFunctionInLambda(node, nodeType) ||
+            cppNodeTypes.shouldIgnoreFnDeclaratorInFnDefinition(node, nodeType)
     }
 }

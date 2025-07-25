@@ -14,7 +14,7 @@ import java.io.File
 
 abstract class MetricCollector(
     private val treeSitterLanguage: TSLanguage,
-    private val nodeTypeProvider: MetricNodeTypes
+    protected val nodeTypeProvider: MetricNodeTypes
 ) {
     private var lastCountedCommentLine = -1
     private var lastCountedCodeLine = -1

@@ -9,11 +9,12 @@ class CCollector : MetricCollector(
     nodeTypeProvider = CNodeTypes()
 ) {
     override fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
-        if (isFnDeclarationInFnDefinition(node, nodeType)) return 0
+        if (shouldIgnoreNodeType(node, nodeType)) return 0
         return super.calculateComplexityForNode(node, nodeType)
     }
 
-    private fun isFnDeclarationInFnDefinition(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "function_declarator" && node.parent.type == "function_definition"
+    private fun shouldIgnoreNodeType(node: TSNode, nodeType: String): Boolean {
+        val cNodeTypes = nodeTypeProvider as CNodeTypes
+        return cNodeTypes.shouldIgnoreFnDeclaratorInFnDefinition(node, nodeType)
     }
 }
