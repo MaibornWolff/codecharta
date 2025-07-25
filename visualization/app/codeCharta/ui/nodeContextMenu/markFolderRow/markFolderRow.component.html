@@ -1,6 +1,6 @@
 @if (codeMapNode$ | async; as codeMapNode) {
     <div class="row">
-        @for (markFolderItem of markFolderItems$ | async; track markFolderItem) {
+        @for (markFolderItem of markFolderItems$ | async; track markFolderItem.color) {
             <button
                 [style.background-color]="markFolderItem.color"
                 (click)="markFolderItem.isMarked ? unmarkFolder(codeMapNode.path) : markFolder(codeMapNode.path, markFolderItem.color)"

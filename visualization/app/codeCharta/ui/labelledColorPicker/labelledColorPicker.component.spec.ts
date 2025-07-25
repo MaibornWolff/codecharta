@@ -17,9 +17,11 @@ describe("LabelledColorPickerComponent", () => {
     it("should display label and handle brush visibility", async () => {
         const { container } = await render(LabelledColorPickerComponent, {
             excludeComponentDeclaration: true,
+            componentInputs: {
+                labels: ["pretty color"]
+            },
             componentProperties: {
                 hexColor: "#000000",
-                labels: ["pretty color"],
                 onColorChange: { emit: handleColorChange } as unknown as EventEmitter<string>
             }
         })

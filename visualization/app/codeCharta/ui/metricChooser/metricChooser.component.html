@@ -22,7 +22,7 @@
         </mat-form-field>
 
         <div class="cc-metric-chooser-option-container">
-            @for (option of metricData$ | async | filterMetricDataBySearchTerm: searchTerm; track option) {
+            @for (option of metricData$ | async | filterMetricDataBySearchTerm: searchTerm; track option.name) {
                 <mat-option [value]="option.name" [title]="attributeDescriptors[option.name] | attributeDescriptorTooltip: option.name">
                     {{ option.name }}
 

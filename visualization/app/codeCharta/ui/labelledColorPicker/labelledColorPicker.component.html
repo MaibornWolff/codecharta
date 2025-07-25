@@ -17,9 +17,9 @@
             </span>
         </div>
         <div class="cc-labelled-color-picker-label">
-            @for (label of labels; track label; let last = $last) {
+            @for (label of labelsToTrackByName(); track label.name; let last = $last) {
                 <span>
-                    {{ label }}
+                    {{ label.name }}
                     @if (!last) {
                         <br />
                     }

@@ -1,4 +1,4 @@
-@for (customConfigItemGroup of customConfigItemGroups | keyvalue; track customConfigItemGroup) {
+@for (customConfigItemGroup of customConfigItemGroups | keyvalue; track customConfigItemGroup.key) {
     <mat-expansion-panel
         #matExpansionPanel
         class="custom-config-item-group"
