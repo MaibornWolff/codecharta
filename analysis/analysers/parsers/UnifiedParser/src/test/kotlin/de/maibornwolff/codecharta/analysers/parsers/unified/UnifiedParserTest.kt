@@ -226,7 +226,7 @@ class UnifiedParserTest {
         val expectedResultFile = File("${testResourceBaseFolder}includeAll.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--without-default-excludes"))
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--include-build-folders"))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)

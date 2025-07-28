@@ -88,7 +88,7 @@ class DialogTest {
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf(include))
-        assertThat(parseResult.hasMatchedOption("without-default-excludes")).isFalse()
+        assertThat(parseResult.hasMatchedOption("include-build-folders")).isFalse()
     }
 
     @Test
@@ -119,7 +119,7 @@ class DialogTest {
                 terminal.press(Keys.DOWN)
                 terminal.press(Keys.ENTER)
             }
-            val defaultExcludesCallback: suspend RunScope.() -> Unit = {
+            val includeBuildCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
             val verboseCallback: suspend RunScope.() -> Unit = {
@@ -131,7 +131,7 @@ class DialogTest {
                 outFileCallback,
                 compressCallback,
                 excludeOrIncludeCallback,
-                defaultExcludesCallback,
+                includeBuildCallback,
                 verboseCallback
             )
 
@@ -146,7 +146,7 @@ class DialogTest {
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf<String>())
         assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
-        assertThat(parseResult.hasMatchedOption("without-default-excludes")).isTrue()
+        assertThat(parseResult.hasMatchedOption("include-build-folders")).isTrue()
     }
 
     @Test
@@ -214,6 +214,6 @@ class DialogTest {
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
         assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf(include))
-        assertThat(parseResult.hasMatchedOption("without-default-excludes")).isFalse()
+        assertThat(parseResult.hasMatchedOption("include-build-folders")).isFalse()
     }
 }
