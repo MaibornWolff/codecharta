@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.135.0] - 2025-07-28
+
 ### Added 🚀
 
 - Add support for more languages to unifiedParser [4119](https://github.com/MaibornWolff/codecharta/pull/4119)
