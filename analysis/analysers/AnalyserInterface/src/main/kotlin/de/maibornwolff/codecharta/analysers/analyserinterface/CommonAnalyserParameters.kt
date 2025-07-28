@@ -34,10 +34,13 @@ abstract class CommonAnalyserParameters {
     protected var patternsToExclude: List<String> = listOf()
 
     @CommandLine.Option(
-        names = ["--without-default-excludes"],
-        description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "]
+        names = ["-ibf", "--include-build-folders"],
+        description = [
+            "include build folders (out, build, dist and target) and " +
+                "common resource folders (e.g. resources, node_modules or files/folders starting with '.')"
+        ]
     )
-    protected var withoutDefaultExcludes = false
+    protected var includeBuildFolders = false
 
     @CommandLine.Option(
         names = ["-fe", "--file-extensions"],

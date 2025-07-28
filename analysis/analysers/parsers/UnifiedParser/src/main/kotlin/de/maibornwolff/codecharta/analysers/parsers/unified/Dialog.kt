@@ -25,7 +25,7 @@ class Dialog {
             val fileExtensions =
                 if (askExcludeInclude == "Only include" || askExcludeInclude == "Both") includeFileExtensionsQuestion(session) else ""
 
-            val withoutDefaultExcludes = defaultExcludesQuestion(session)
+            val includeBuildFolders = includeBuildFolderQuestion(session)
 
             val verbose = verboseQuestion(session)
 
@@ -36,7 +36,7 @@ class Dialog {
                 "--verbose=${!verbose}",
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
-                if (withoutDefaultExcludes) "--without-default-excludes" else null
+                if (includeBuildFolders) "--include-build-folders" else null
             )
         }
 
@@ -94,10 +94,10 @@ class Dialog {
             )
         }
 
-        private fun defaultExcludesQuestion(session: Session): Boolean {
+        private fun includeBuildFolderQuestion(session: Session): Boolean {
             return session.promptConfirm(
-                message = "Do you want to include build, target, dist, resources" +
-                    " and out folders as well as files/folders starting with '.'?",
+                message = "Do you want to include build folders (build, target, dist, out) and common resource folders " +
+                    "e.g. resources, node_modules or files/folders starting with '.'?",
                 onInputReady = testCallback()
             )
         }

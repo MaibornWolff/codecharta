@@ -79,7 +79,10 @@ class RawTextParser(
 
     @CommandLine.Option(
         names = ["--without-default-excludes"],
-        description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "]
+        description = [
+            "DEPRECATION WARNING: this flag will soon be disabled and replaced by '--include-build-folders'" +
+                "include build, target, dist, resources and out folders as well as files/folders starting with '.' "
+        ]
     )
     private var withoutDefaultExcludes = false
 

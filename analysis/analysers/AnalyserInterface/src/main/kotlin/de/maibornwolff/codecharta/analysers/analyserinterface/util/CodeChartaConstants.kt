@@ -12,6 +12,6 @@ class CodeChartaConstants {
          */
         const val EXECUTION_STARTED_SYNC_FLAG = "\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E"
 
-        val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/node_modules/", "(/|^)\\..*")
+        val BUILD_FOLDERS = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/node_modules/", "(/|^)\\..*")
     }
 }
