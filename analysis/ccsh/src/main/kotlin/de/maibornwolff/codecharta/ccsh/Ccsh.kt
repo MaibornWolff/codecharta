@@ -26,6 +26,7 @@ import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserReposi
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
+import java.io.InputStream
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -92,14 +93,11 @@ class Ccsh : Callable<Unit?> {
             commandLine.executionStrategy = CommandLine.RunAll()
             return when {
                 args.isEmpty() -> executeAnalyserSuggestions(commandLine)
-                (
-                    !isAnalyserKnown(args, commandLine) && !isCommandKnown(args, commandLine) ||
-                        args.contains(
-                            "--interactive"
-                        ) || args.contains("-i")
-                ) -> selectAndExecuteAnalyser(commandLine)
 
-                isAnalyserKnownButWithoutArgs(args, commandLine) -> executeAnalyser(args.first(), commandLine)
+                (shouldStartInteractiveMode(args) || isUnknownAnalyser(args, commandLine)) -> selectAndExecuteAnalyser(commandLine)
+
+                (isAnalyserKnownButWithoutArgs(args, commandLine) && !hasPipedInput()) -> executeAnalyser(args.first(), commandLine)
+
                 else -> commandLine.execute(*sanitizeArgs(args))
             }
         }
@@ -182,7 +180,6 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun executeConfiguredAnalyser(commandLine: CommandLine, configuredAnalyser: Map.Entry<String, List<String>>): Int {
-            Logger.info { "Executing ${configuredAnalyser.key}" }
             val exitCode =
                 AnalyserService.executePreconfiguredAnalyser(
                     commandLine,
@@ -196,13 +193,31 @@ class Ccsh : Callable<Unit?> {
             return exitCode
         }
 
+        private fun isUnknownAnalyser(args: Array<String>, commandLine: CommandLine): Boolean {
+            val boldCode = "\u001b[1m"
+            val redColorCode = "\u001b[31m"
+            val resetColorCode = "\u001b[0m"
+            val firstArg = args.first()
+            val isAnalyserAndNotFlag = !firstArg.startsWith("-")
+            val isUnknownAnalyser = !isAnalyserKnown(args, commandLine)
+            val result = isAnalyserAndNotFlag && isUnknownAnalyser
+            if (result) {
+                println(boldCode + redColorCode + "Unknown command: '$firstArg'" + resetColorCode)
+                println("Select an analyser to execute from the list below")
+            }
+            return result
+        }
+
+        private fun shouldStartInteractiveMode(args: Array<String>): Boolean {
+            return args.contains("--interactive") || args.contains("-i")
+        }
+
         private fun selectAndExecuteAnalyser(commandLine: CommandLine): Int {
             val selectedAnalyser = AnalyserService.selectAnalyser(commandLine, PicocliAnalyserRepository())
             return executeAnalyser(selectedAnalyser, commandLine)
         }
 
         private fun executeAnalyser(selectedAnalyser: String, commandLine: CommandLine): Int {
-            Logger.info { "Executing $selectedAnalyser" }
             return AnalyserService.executeSelectedAnalyser(commandLine, selectedAnalyser)
         }
 
@@ -212,14 +227,15 @@ class Ccsh : Callable<Unit?> {
             return analyserList.contains(firstArg)
         }
 
-        private fun isCommandKnown(args: Array<String>, commandLine: CommandLine): Boolean {
-            val firstArg = args.first()
-            val optionsList = commandLine.commandSpec.options().map { it.names().toMutableList() }.flatten()
-            return optionsList.contains(firstArg)
-        }
-
         private fun isAnalyserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean {
             return isAnalyserKnown(args, commandLine) && args.size == 1
+        }
+
+        private fun hasPipedInput(): Boolean {
+            val isCalledInInteractiveConsole = System.console() != null
+            val input: InputStream = System.`in`
+            val isInputAvailable = input.available() > 0
+            return !isCalledInInteractiveConsole && isInputAvailable
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
