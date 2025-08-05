@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.analyserinterface
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
+import java.io.PrintStream
 import java.util.concurrent.Callable
 
 interface AnalyserInterface : Callable<Unit?> {
@@ -19,8 +20,7 @@ interface AnalyserInterface : Callable<Unit?> {
         return description
     }
 
-    // print 12 invisible characters so signal to other parsers that execution has started
-    fun logExecutionStartedSyncSignal() {
-        print(CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG)
+    fun logExecutionStartedSyncSignal(out: PrintStream) {
+        out.print(CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG)
     }
 }

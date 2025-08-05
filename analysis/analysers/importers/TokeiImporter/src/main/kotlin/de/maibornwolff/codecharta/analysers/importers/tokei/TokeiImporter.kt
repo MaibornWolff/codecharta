@@ -84,7 +84,7 @@ class TokeiImporter(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logExecutionStartedSyncSignal()
+        logExecutionStartedSyncSignal(output)
 
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
