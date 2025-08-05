@@ -6,12 +6,11 @@ This document explains the release workflows and processes for CodeCharta.
 - Go to Actions → "Prepare Release - Visualization/Analysis" → "Run workflow"
 - Input repository and type of version increment
 - Click "Run workflow"
-- Wait (around 1 min)
-- This automatically triggers everything else necessary
+- This automatically triggers everything else necessary and opens a PR for the release
 - Go to "Pull requests"
 - Wait for test pipelines to run (around 10-15 min)
 - Approve PR if everything works
-- Everything should be done after around 10 min
+- Final release should be done after around 10 min
 
 ## Overview
 
