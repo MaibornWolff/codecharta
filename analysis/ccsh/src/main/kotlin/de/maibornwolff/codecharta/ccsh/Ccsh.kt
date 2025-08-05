@@ -26,7 +26,6 @@ import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserReposi
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
-import java.io.InputStream
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -94,9 +93,11 @@ class Ccsh : Callable<Unit?> {
             return when {
                 args.isEmpty() -> executeAnalyserSuggestions(commandLine)
 
-                (shouldStartInteractiveMode(args) || isUnknownAnalyser(args, commandLine)) -> selectAndExecuteAnalyser(commandLine)
+                (shouldStartInteractiveMode(args) || isUnknownAnalyser(args, commandLine)) ->
+                    selectAndExecuteInteractiveAnalyser(commandLine)
 
-                (isAnalyserKnownButWithoutArgs(args, commandLine) && !hasPipedInput()) -> executeAnalyser(args.first(), commandLine)
+                (isAnalyserKnownButWithoutArgs(args, commandLine) && !isInInteractiveTerminal()) ->
+                    executeInteractiveAnalyser(args.first(), commandLine)
 
                 else -> commandLine.execute(*sanitizeArgs(args))
             }
@@ -194,14 +195,15 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun isUnknownAnalyser(args: Array<String>, commandLine: CommandLine): Boolean {
-            val boldCode = "\u001b[1m"
-            val redColorCode = "\u001b[31m"
-            val resetColorCode = "\u001b[0m"
             val firstArg = args.first()
             val isAnalyserAndNotFlag = !firstArg.startsWith("-")
             val isUnknownAnalyser = !isAnalyserKnown(args, commandLine)
             val result = isAnalyserAndNotFlag && isUnknownAnalyser
             if (result) {
+                val boldCode = "\u001b[1m"
+                val redColorCode = "\u001b[31m"
+                val resetColorCode = "\u001b[0m"
+
                 println(boldCode + redColorCode + "Unknown command: '$firstArg'" + resetColorCode)
                 println("Select an analyser to execute from the list below")
             }
@@ -212,12 +214,12 @@ class Ccsh : Callable<Unit?> {
             return args.contains("--interactive") || args.contains("-i")
         }
 
-        private fun selectAndExecuteAnalyser(commandLine: CommandLine): Int {
+        private fun selectAndExecuteInteractiveAnalyser(commandLine: CommandLine): Int {
             val selectedAnalyser = AnalyserService.selectAnalyser(commandLine, PicocliAnalyserRepository())
-            return executeAnalyser(selectedAnalyser, commandLine)
+            return executeInteractiveAnalyser(selectedAnalyser, commandLine)
         }
 
-        private fun executeAnalyser(selectedAnalyser: String, commandLine: CommandLine): Int {
+        private fun executeInteractiveAnalyser(selectedAnalyser: String, commandLine: CommandLine): Int {
             return AnalyserService.executeSelectedAnalyser(commandLine, selectedAnalyser)
         }
 
@@ -231,11 +233,10 @@ class Ccsh : Callable<Unit?> {
             return isAnalyserKnown(args, commandLine) && args.size == 1
         }
 
-        private fun hasPipedInput(): Boolean {
-            val isCalledInInteractiveConsole = System.console() != null
-            val input: InputStream = System.`in`
-            val isInputAvailable = input.available() > 0
-            return !isCalledInInteractiveConsole && isInputAvailable
+        // e.g. when command is in a pipe we do not have access to an interactive terminal
+        // and cannot start a kotter session (our interactive mode) so we wait for piped input
+        private fun isInInteractiveTerminal(): Boolean {
+            return System.console() != null
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {

@@ -89,7 +89,7 @@ class CoverageImporter(
 
     @Throws(IOException::class)
     override fun call() {
-        logExecutionStartedSyncSignal()
+        logExecutionStartedSyncSignal(output)
 
         val format = getFormatByName(reportFormat)
 
