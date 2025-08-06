@@ -102,7 +102,7 @@ class ProjectScanner(
     }
 
     private fun isPathExcluded(file: File): Boolean {
-        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn(getRelativeFileName(file.toString()))
+        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn("/" + getRelativeFileName(file.toString()))
     }
 
     private fun isFileExtensionIncluded(fileExtension: String): Boolean {

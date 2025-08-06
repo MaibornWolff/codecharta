@@ -219,6 +219,21 @@ class UnifiedParserTest {
     }
 
     @Test
+    fun `should correctly exclude files and folders if exclude pattern was specified`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val expectedResultFile = File("${testResourceBaseFolder}excludePattern.cc.json").absoluteFile
+        val excludePattern = "/bar/, foo.kt, .*.py"
+
+        // when
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "-e=$excludePattern"))
+
+        // then
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+    }
+
+    @Test
     fun `should include normally excluded folders when without-default-excludes flag is set`() {
         // given
         val pipedProject = ""
