@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Rename `--without-default-excludes` flag of UnifiedParser to `--include-build-folders` [#4144](https://github.com/MaibornWolff/codecharta/pull/4144)
 
+### Fixed 🐞
+
+- Fix exclude patterns starting with a `/` not working for direct children of project root [#4149](https://github.com/MaibornWolff/codecharta/pull/4149)
+
 ## [1.135.0] - 2025-07-28
 
 ### Added 🚀
