@@ -6,7 +6,9 @@ import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog
 import de.maibornwolff.codecharta.util.Logger
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
@@ -272,6 +274,8 @@ class CcshTest {
     fun `should execute the selected interactive analyser when only called with name and no args`() {
         // given
         mockSuccessfulAnalyserService()
+        mockkStatic(System::class)
+        every { System.console() } returns mockk(relaxed = true)
 
         // when
         val exitCode = Ccsh.executeCommandLine(arrayOf("sonarimport"))

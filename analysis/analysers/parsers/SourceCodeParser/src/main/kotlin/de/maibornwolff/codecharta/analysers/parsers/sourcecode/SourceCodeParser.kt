@@ -115,7 +115,7 @@ class SourceCodeParser(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logExecutionStartedSyncSignal(output)
+        logExecutionStartedSyncSignal()
 
         require(InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = true)) {
             "Input invalid file for SourceCodeParser, stopping execution..."

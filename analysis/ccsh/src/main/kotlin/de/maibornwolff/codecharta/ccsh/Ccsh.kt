@@ -96,7 +96,7 @@ class Ccsh : Callable<Unit?> {
                 (shouldStartInteractiveMode(args) || isUnknownAnalyser(args, commandLine)) ->
                     selectAndExecuteInteractiveAnalyser(commandLine)
 
-                (isAnalyserKnownButWithoutArgs(args, commandLine) && !isInInteractiveTerminal()) ->
+                (isAnalyserKnownButWithoutArgs(args, commandLine) && isInInteractiveTerminal()) ->
                     executeInteractiveAnalyser(args.first(), commandLine)
 
                 else -> commandLine.execute(*sanitizeArgs(args))
@@ -220,6 +220,7 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun executeInteractiveAnalyser(selectedAnalyser: String, commandLine: CommandLine): Int {
+            Logger.info { "Executing $selectedAnalyser" }
             return AnalyserService.executeSelectedAnalyser(commandLine, selectedAnalyser)
         }
 

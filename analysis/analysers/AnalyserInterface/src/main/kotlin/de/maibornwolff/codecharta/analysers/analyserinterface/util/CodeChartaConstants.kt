@@ -9,7 +9,7 @@ class CodeChartaConstants {
 
         /**
          * Contains the flag an analyser sends to signal they started execution.
-         * As the result is always a json, we send this already to show an analyser is running
+         * This signal consists of 12 invisible characters
          */
         const val EXECUTION_STARTED_SYNC_FLAG = "\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E\u000E"
 
