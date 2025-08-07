@@ -100,7 +100,7 @@ class RawTextParser(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logExecutionStartedSyncSignal(output)
+        logExecutionStartedSyncSignal()
 
         require(InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
             "Input invalid file for RawTextParser, stopping execution..."

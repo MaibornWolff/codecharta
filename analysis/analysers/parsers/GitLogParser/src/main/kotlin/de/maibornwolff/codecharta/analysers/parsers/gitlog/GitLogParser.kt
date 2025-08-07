@@ -96,7 +96,7 @@ class GitLogParser(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logExecutionStartedSyncSignal(output)
+        logExecutionStartedSyncSignal()
         return null
     }
 
