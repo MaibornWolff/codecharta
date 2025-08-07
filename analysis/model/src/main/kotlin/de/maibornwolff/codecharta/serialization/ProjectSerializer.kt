@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.GsonBuilder
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypeSerializer
 import de.maibornwolff.codecharta.model.BlacklistType
@@ -35,11 +34,7 @@ object ProjectSerializer {
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false) {
         val wrappedProject = getWrappedProject(project)
-        var jsonResult = GSON.toJson(wrappedProject)
-        if (!writeToFile && jsonResult.startsWith(CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG)) {
-            jsonResult = jsonResult.substring(1)
-        }
-        out.write(jsonResult)
+        GSON.toJson(wrappedProject, out)
         out.flush()
         if (writeToFile) {
             out.close()

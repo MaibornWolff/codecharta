@@ -108,7 +108,7 @@ class SVNLogParser(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        logExecutionStartedSyncSignal(output)
+        logExecutionStartedSyncSignal()
 
         if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
             throw IllegalArgumentException("Input invalid file for SVNLogParser, stopping execution...")

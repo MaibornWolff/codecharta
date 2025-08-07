@@ -82,7 +82,7 @@ class DialogTest {
         val commandLine = CommandLine(UnifiedParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name).isEqualTo(File(inputFileName).name)
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
@@ -140,7 +140,7 @@ class DialogTest {
         val commandLine = CommandLine(UnifiedParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name).isEqualTo(File(inputFileName).name)
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.matchedOption("not-compressed").getValue<Boolean>()).isEqualTo(isCompressed)
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
@@ -208,7 +208,7 @@ class DialogTest {
         val commandLine = CommandLine(UnifiedParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name).isEqualTo(File(inputFileName).name)
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.hasMatchedOption("not-compressed")).isFalse()
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(isVerbose)
