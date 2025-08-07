@@ -10,7 +10,7 @@
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
   "name": "codecharta-analysis",
-  "version": "1.135.0",
+  "version": "1.135.1",
   "engines": {
     "node": ">=20"
   },

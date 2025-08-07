@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.135.1] - 2025-08-07
+
 ### Changed
 
 - Rename `--without-default-excludes` flag of UnifiedParser to `--include-build-folders` [#4144](https://github.com/MaibornWolff/codecharta/pull/4144)
