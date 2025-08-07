@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
+import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -15,6 +16,7 @@ import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
+import java.io.File
 import java.io.InputStream
 import java.io.PrintStream
 import kotlin.time.Duration
@@ -39,16 +41,35 @@ class UnifiedParser(
     override val description = DESCRIPTION
 
     override fun call(): Unit? {
-        val startTime = System.currentTimeMillis()
-        logExecutionStartedSyncSignal()
+        val inputFileIndex = extractNonPipedInputIndex(inputFiles)
+        val inputFile = inputFiles[inputFileIndex]
 
         require(InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
             "Input invalid file for UnifiedParser, stopping execution..."
         }
 
         if (!includeBuildFolders) patternsToExclude += CodeChartaConstants.BUILD_FOLDERS
+
+        var project = scanInputProject(inputFiles[0]) ?: return null
+
+        if (hasPipedInput(inputFiles)) {
+            val pipedProject = extractPipedProject(input)
+            if (pipedProject != null) {
+                project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
+            } else {
+                Logger.warn { "Skipping piped project..." }
+            }
+        }
+
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
+
+        return null
+    }
+
+    private fun scanInputProject(inputFile: File): Project? {
+        val startTime = System.currentTimeMillis()
         val projectBuilder = ProjectBuilder()
-        val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
+        val projectScanner = ProjectScanner(inputFile, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
         projectScanner.traverseInputProject(verbose)
 
         if (!projectScanner.foundParsableFiles()) {
@@ -76,20 +97,17 @@ class UnifiedParser(
 
         val executionTimeMs = System.currentTimeMillis() - startTime
         val formattedTime = formatTime(executionTimeMs.milliseconds)
-        System.err.println("UnifiedParser completed in $formattedTime")
+        System.err.println("UnifiedParser completed in $formattedTime, building project...")
 
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
-        var project = projectBuilder.build()
+        return projectBuilder.build()
+    }
 
-        val pipedProject = ProjectDeserializer.deserializeProject(input)
-        if (pipedProject != null) {
-            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
-        }
+    private fun extractPipedProject(input: InputStream): Project? {
+        while (input.available() == 0) Thread.sleep(100)
 
-        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
-
-        return null
+        return ProjectDeserializer.deserializeProject(input)
     }
 
     override fun getDialog(): AnalyserDialogInterface = Dialog

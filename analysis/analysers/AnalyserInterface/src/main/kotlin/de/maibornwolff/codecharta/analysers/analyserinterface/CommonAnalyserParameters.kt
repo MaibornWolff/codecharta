@@ -10,8 +10,8 @@ abstract class CommonAnalyserParameters {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     protected var help = false
 
-    @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
-    protected var inputFile: File? = null
+    @CommandLine.Parameters(arity = "1..2", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
+    protected var inputFiles: List<File> = mutableListOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     protected var outputFile: String? = null
@@ -49,4 +49,21 @@ abstract class CommonAnalyserParameters {
         preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     protected var fileExtensionsToAnalyse: List<String> = listOf()
+
+    fun hasPipedInput(allInputFiles: List<File>): Boolean {
+        return allInputFiles.any { it.toString() == "-" } || System.console() == null
+    }
+
+    fun extractNonPipedInputIndex(allInputFiles: List<File>): Int {
+        if (allInputFiles.isEmpty()) return -1
+
+        val nonPipedFileIndices = allInputFiles
+            .mapIndexed { index, file -> if (file.toString() != "-") index else null }
+            .filterNotNull()
+
+        require(nonPipedFileIndices.isNotEmpty()) { "No input file/folder detected, stopping execution..." }
+        require(nonPipedFileIndices.size == 1) { "Multiple input files/folders detected, stopping execution..." }
+
+        return nonPipedFileIndices.first()
+    }
 }
