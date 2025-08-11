@@ -1,4 +1,4 @@
-FROM sapmachine:11.0.27-ubuntu-24.04
+FROM sapmachine:11.0.28-ubuntu-24.04
 
 ARG USER_ADD
 ARG USER_ID=1000
