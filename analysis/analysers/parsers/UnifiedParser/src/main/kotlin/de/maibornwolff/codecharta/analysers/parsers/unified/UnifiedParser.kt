@@ -50,9 +50,9 @@ class UnifiedParser(
 
         if (!includeBuildFolders) patternsToExclude += CodeChartaConstants.BUILD_FOLDERS
 
-        var project = scanInputProject(inputFiles[0]) ?: return null
+        var project = scanInputProject(inputFiles[inputFileIndex]) ?: return null
 
-        if (hasPipedInput(inputFiles)) {
+        if (shouldProcessPipedInput(inputFiles)) {
             val pipedProject = extractPipedProject(input)
             if (pipedProject != null) {
                 project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
