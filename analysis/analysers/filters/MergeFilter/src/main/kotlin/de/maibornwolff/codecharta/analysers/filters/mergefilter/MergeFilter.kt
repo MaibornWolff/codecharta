@@ -3,13 +3,13 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.askForceMerge
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.requestMimoFileSelection
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.mimo.Mimo
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine

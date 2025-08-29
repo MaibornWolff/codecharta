@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.InputFormatNames.GIT_LOG_NUMSTAT_RAW_REVERSED
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.converter.ProjectConverter
@@ -16,6 +15,7 @@ import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine

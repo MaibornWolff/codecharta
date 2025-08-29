@@ -2,13 +2,13 @@ package de.maibornwolff.codecharta.analysers.importers.coverage
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.endsWithAtLeastOne
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.getFileFromStringIfExists
 import picocli.CommandLine

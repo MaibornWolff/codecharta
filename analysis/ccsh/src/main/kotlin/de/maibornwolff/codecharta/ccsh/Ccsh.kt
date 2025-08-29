@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.ccsh
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
@@ -24,6 +23,7 @@ import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog
 import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserRepository
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.util.concurrent.Callable
