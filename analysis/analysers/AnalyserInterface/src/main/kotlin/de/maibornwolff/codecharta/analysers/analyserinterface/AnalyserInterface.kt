@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.analyserinterface
 
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import java.util.concurrent.Callable
 
 interface AnalyserInterface : Callable<Unit?> {

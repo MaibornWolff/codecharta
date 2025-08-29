@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.analyserinterface.util
+package de.maibornwolff.codecharta.util
 
 class CodeChartaConstants {
     companion object {
