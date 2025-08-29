@@ -32,7 +32,7 @@ class UnifiedParserTest {
     private fun createMockedUnifiedParser(parser: UnifiedParser, input: String): UnifiedParser {
         val spyParser = spyk(parser)
 
-        every { spyParser.hasPipedInput(any()) } answers {
+        every { spyParser.shouldProcessPipedInput(any()) } answers {
             val files = firstArg<List<File>>()
             files.any { it.toString() == "-" } || input.isNotEmpty()
         }

@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.analyserinterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.FileExtensionConverter
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 
@@ -10,7 +11,14 @@ abstract class CommonAnalyserParameters {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     protected var help = false
 
-    @CommandLine.Parameters(arity = "1..2", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
+    @CommandLine.Parameters(
+        arity = "1..2",
+        paramLabel = "FILE or FOLDER",
+        description = [
+            "file/project to parse. To merge the result with an existing project piped into STDIN, " +
+                "pass a '-' as an additional argument"
+        ]
+    )
     protected var inputFiles: List<File> = mutableListOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -50,8 +58,16 @@ abstract class CommonAnalyserParameters {
     )
     protected var fileExtensionsToAnalyse: List<String> = listOf()
 
-    fun hasPipedInput(allInputFiles: List<File>): Boolean {
-        return allInputFiles.any { it.toString() == "-" } || System.console() == null
+    fun shouldProcessPipedInput(allInputFiles: List<File>): Boolean {
+        val isInVirtualConsole = System.console() == null
+        val inputFilesContainPipedFlag = allInputFiles.any { it.toString() == "-" }
+
+        if (!inputFilesContainPipedFlag) return false
+        if (!isInVirtualConsole) {
+            Logger.warn { "Flag for piped input specified but command is not executed in a pipe, ignoring piped input..." }
+            return false
+        }
+        return true
     }
 
     fun extractNonPipedInputIndex(allInputFiles: List<File>): Int {
