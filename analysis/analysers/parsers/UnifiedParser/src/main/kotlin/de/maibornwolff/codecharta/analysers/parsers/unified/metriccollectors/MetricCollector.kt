@@ -58,7 +58,7 @@ abstract class MetricCollector(
 
     private fun getRootNode(file: File): TSNode {
         val parser = TSParser()
-        parser.setLanguage(treeSitterLanguage)
+        parser.language = treeSitterLanguage
         val rootNode = parser.parseString(null, file.readText()).rootNode
         return rootNode
     }
