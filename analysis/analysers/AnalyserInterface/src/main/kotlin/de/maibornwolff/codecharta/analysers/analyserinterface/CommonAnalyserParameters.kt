@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.analyserinterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.FileExtensionConverter
-import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 
@@ -57,29 +56,4 @@ abstract class CommonAnalyserParameters {
         preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     protected var fileExtensionsToAnalyse: List<String> = listOf()
-
-    fun shouldProcessPipedInput(allInputFiles: List<File>): Boolean {
-        val isInVirtualConsole = System.console() == null
-        val inputFilesContainPipedFlag = allInputFiles.any { it.toString() == "-" }
-
-        if (!inputFilesContainPipedFlag) return false
-        if (!isInVirtualConsole) {
-            Logger.warn { "Flag for piped input specified but command is not executed in a pipe, ignoring piped input..." }
-            return false
-        }
-        return true
-    }
-
-    fun extractNonPipedInputIndex(allInputFiles: List<File>): Int {
-        if (allInputFiles.isEmpty()) return -1
-
-        val nonPipedFileIndices = allInputFiles
-            .mapIndexed { index, file -> if (file.toString() != "-") index else null }
-            .filterNotNull()
-
-        require(nonPipedFileIndices.isNotEmpty()) { "No input file/folder detected, stopping execution..." }
-        require(nonPipedFileIndices.size == 1) { "Multiple input files/folders detected, stopping execution..." }
-
-        return nonPipedFileIndices.first()
-    }
 }
