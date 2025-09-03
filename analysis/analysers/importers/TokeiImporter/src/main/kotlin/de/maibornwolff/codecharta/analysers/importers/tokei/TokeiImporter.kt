@@ -86,7 +86,7 @@ class TokeiImporter(
     override fun call(): Unit? {
         logExecutionStartedSyncSignal()
 
-        projectBuilder = ProjectBuilder()
+        projectBuilder = ProjectBuilder(listOf("TokeiImporter"))
         val root = getInput() ?: return null
         unescapeWindowsPathSeparator()
         runBlocking(Dispatchers.Default) {

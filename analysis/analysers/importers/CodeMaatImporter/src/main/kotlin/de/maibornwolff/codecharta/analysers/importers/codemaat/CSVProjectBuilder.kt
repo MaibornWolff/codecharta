@@ -25,7 +25,7 @@ class CSVProjectBuilder(
             true
         }
     private val projectBuilder =
-        ProjectBuilder()
+        ProjectBuilder(listOf("CodeMaatImporter"))
             .withMetricTranslator(metricNameTranslator)
             .addAttributeTypes(attributeTypes)
             .addAttributeDescriptions(attributeDescriptors)

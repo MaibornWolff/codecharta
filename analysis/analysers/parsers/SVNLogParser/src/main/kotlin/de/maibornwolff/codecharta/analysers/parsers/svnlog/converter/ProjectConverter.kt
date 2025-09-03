@@ -43,7 +43,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     }
 
     fun convert(versionControlledFiles: List<VersionControlledFile>, metricsFactory: MetricsFactory): Project {
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("SVNLogParser"))
 
         versionControlledFiles.filter { vc -> !vc.markedDeleted() }
             .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }

@@ -18,12 +18,17 @@ class EdgeProjectBuilder(
 ) {
     private val projectBuilder =
         ProjectBuilder(
+            getAnalyzerSource(),
             listOf(MutableNode("root", NodeType.Folder)),
             mutableListOf(),
             getAttributeTypes(),
             getAttributeDescriptors(),
             getBlacklist()
         )
+
+    private fun getAnalyzerSource(): List<String> {
+        return project.analyzers
+    }
 
     private fun getAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
         val newAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()

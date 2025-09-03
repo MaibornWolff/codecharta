@@ -6,6 +6,7 @@ import org.apache.commons.text.similarity.JaccardSimilarity
 import org.apache.commons.text.similarity.JaroWinklerSimilarity
 
 open class ProjectBuilder(
+    private val analyserSource: List<String>,
     private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
     private var edges: MutableList<Edge> = mutableListOf(),
     private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
@@ -87,7 +88,8 @@ open class ProjectBuilder(
                     nodes.map {
                         it.toNode()
                     }.toList(),
-                attributeDescriptors = attributeDescriptors.toMap()
+                attributeDescriptors = attributeDescriptors.toMap(),
+                analyzers = analyserSource
             )
 
         System.err.println()

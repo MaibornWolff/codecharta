@@ -18,6 +18,7 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
 
         val listOfNodesType = object : TypeToken<List<Node>>() {}.type
         val listOfEdgesType = object : TypeToken<List<Edge>>() {}.type
+        val listOfAnalyzerType = object : TypeToken<List<String>>() {}.type
         val listOfBlacklistType = object : TypeToken<List<BlacklistItem>>() {}.type
         val mapOfAttributeTypes = object : TypeToken<Map<String, Map<String, AttributeType>>>() {}.type
         val mapOfAttributeDescriptors = object : TypeToken<Map<String, AttributeDescriptor>>() {}.type
@@ -25,6 +26,7 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
         val projectName = jsonNode.get("projectName")?.asString ?: ""
         val nodes = context.deserialize<List<Node>>(jsonNode.get("nodes"), listOfNodesType) ?: listOf()
         val apiVersion = jsonNode.get("apiVersion")?.asString ?: Project.API_VERSION
+        val analyzers = context.deserialize<List<String>>(jsonNode.get("analyzers"), listOfAnalyzerType) ?: listOf("Unknown")
         val edges = context.deserialize<List<Edge>>(jsonNode.get("edges"), listOfEdgesType) ?: listOf()
         val attributeTypes =
             context.deserialize<Map<String, MutableMap<String, AttributeType>>>(
@@ -39,6 +41,6 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
         val blacklist =
             context.deserialize<List<BlacklistItem>>(jsonNode.get("blacklist"), listOfBlacklistType) ?: listOf()
 
-        return Project(projectName, nodes, apiVersion, edges, attributeTypes, attributeDescriptors, blacklist)
+        return Project(projectName, nodes, apiVersion, analyzers, edges, attributeTypes, attributeDescriptors, blacklist)
     }
 }

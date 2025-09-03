@@ -13,6 +13,7 @@ class LargeMerge {
                 project.projectName,
                 moveNodesIntoFolder(project.rootNode, prefix),
                 project.apiVersion,
+                project.analyzers,
                 addFolderToEdgePaths(project.edges, prefix),
                 project.attributeTypes,
                 project.attributeDescriptors,

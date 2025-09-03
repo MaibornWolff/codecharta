@@ -17,6 +17,7 @@ class ProjectMerger(
         return when {
             areAllAPIVersionsCompatible() ->
                 ProjectBuilder(
+                    mergeAnalyserSources(),
                     mergeProjectNodes(),
                     mergeEdges(),
                     mergeAttributeTypes(),
@@ -37,6 +38,10 @@ class ProjectMerger(
             }
 
         return unsupportedAPIVersions.isEmpty()
+    }
+
+    private fun mergeAnalyserSources(): List<String> {
+        return projects.flatMap { it.analyzers }.distinct()
     }
 
     private fun mergeProjectNodes(): List<MutableNode> {

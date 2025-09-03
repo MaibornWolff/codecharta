@@ -47,7 +47,7 @@ class UnifiedParser(
         }
 
         if (!includeBuildFolders) patternsToExclude += CodeChartaConstants.BUILD_FOLDERS
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("UnifiedParser"))
         val projectScanner = ProjectScanner(inputFile!!, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
         projectScanner.traverseInputProject(verbose)
 

@@ -50,7 +50,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     }
 
     fun convert(versionControlledFiles: VersionControlledFilesList, metricsFactory: MetricsFactory, filesInLog: List<String>): Project {
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("GitLogParser"))
 
         val vcFList = versionControlledFiles.getList()
 

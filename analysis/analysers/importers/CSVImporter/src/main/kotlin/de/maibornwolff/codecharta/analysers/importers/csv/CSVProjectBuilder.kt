@@ -16,10 +16,11 @@ class CSVProjectBuilder(
     private val csvDelimiter: Char,
     private val pathColumnName: String = "path",
     private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-    private val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf()
+    private val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf(),
+    private val analyzerSource: String = "CsvImporter"
 ) {
     private val includeRows: (Array<String>) -> Boolean = { true }
-    private val projectBuilder = ProjectBuilder().withMetricTranslator(metricNameTranslator)
+    private val projectBuilder = ProjectBuilder(listOf(analyzerSource)).withMetricTranslator(metricNameTranslator)
 
     fun parseCSVStream(inStream: InputStream): ProjectBuilder {
         val parser = createParser(inStream)

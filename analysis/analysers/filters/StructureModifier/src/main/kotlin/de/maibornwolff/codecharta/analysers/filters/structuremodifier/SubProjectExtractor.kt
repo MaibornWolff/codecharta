@@ -21,12 +21,17 @@ class SubProjectExtractor(
                 it.isNotEmpty()
             }
         return ProjectBuilder(
+            copyAnalyzerSource(),
             addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
             extractEdges(path),
             copyAttributeTypes(),
             copyAttributeDescriptors(),
             copyBlacklist()
         ).build(cleanAttributeDescriptors = true)
+    }
+
+    private fun copyAnalyzerSource(): List<String> {
+        return project.analyzers
     }
 
     private fun extractNodes(extractionPattern: List<String>, node: MutableNode): MutableList<MutableNode> {

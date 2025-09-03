@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 
-class ProjectGenerator(private val projectBuilder: ProjectBuilder = ProjectBuilder()) {
+class ProjectGenerator(private val projectBuilder: ProjectBuilder = ProjectBuilder(listOf("RawTextParser"))) {
     fun generate(projectMetrics: ProjectMetrics, maxIndentLevel: Int, pipedProject: Project?): Project {
         addMetricsAsNodes(projectMetrics.metricsMap)
         var project =
