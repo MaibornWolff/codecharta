@@ -129,7 +129,7 @@ class CoverageImporter(
                 return existingFileOrDirectory
             }
             throw FileNotFoundException(
-                "File: $resourceToSearch does not match any known file extension: ${format.fileExtension.extension}"
+                "File: $resourceToSearch does not match any known file extension: ${format.fileExtension.primaryExtension}"
             )
         }
 

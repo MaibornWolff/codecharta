@@ -274,7 +274,7 @@ fun Session.promptDefaultDirectoryAssistedInput(
     postMessageText: String = "",
     onInputReady: suspend RunScope.() -> Unit
 ): String {
-    val messageFileExtension = "[${fileExtensionList.joinToString(", ") { fileExtension -> fileExtension.extension }}]"
+    val messageFileExtension = "[${fileExtensionList.joinToString(", ") { fileExtension -> fileExtension.primaryExtension }}]"
 
     val pluralSuffix: String
     val messageExtension: String
