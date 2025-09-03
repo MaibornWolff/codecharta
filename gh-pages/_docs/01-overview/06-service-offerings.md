@@ -19,4 +19,4 @@ Get a report about your hotspots and areas for improvement. This is currently fr
 # Software Health Check
 
 A full Software Health Check for your codebase and everything around it.
-<b>Click</b> the link to learn more: [Software Health Check](https://www.maibornwolff.de/en/service/software-health-check/)
+<b>Click</b> the link to learn more: [Software Health Check](https://www.maibornwolff.de/software-health-check/)
