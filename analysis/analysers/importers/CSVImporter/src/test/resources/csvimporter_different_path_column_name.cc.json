@@ -1,5 +1,5 @@
 {
-  "checksum": "d93d91e8128c2744fe3f172003eb24b8",
+  "checksum": "0480f1728208d62163eb9f2dd2036208",
   "data": {
     "projectName": "",
     "nodes": [
@@ -1679,7 +1679,10 @@
         ]
       }
     ],
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
+    "analyzers": [
+      "CSVImporter"
+    ],
     "edges": [],
     "attributeTypes": {},
     "attributeDescriptors": {

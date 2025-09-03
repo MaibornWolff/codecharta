@@ -47,7 +47,10 @@
         ]
       }
     ],
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
+    "analyzers": [
+      "CoverageImporter"
+    ],
     "edges": [],
     "attributeTypes": {
       "nodes": {
@@ -84,5 +87,5 @@
     },
     "blacklist": []
   },
-  "checksum": "5f0ff4d7dc8ee4282666fe44a45e9d31"
+  "checksum": "3ce5bd1b60b3b99c711876ae4ba953b9"
 }

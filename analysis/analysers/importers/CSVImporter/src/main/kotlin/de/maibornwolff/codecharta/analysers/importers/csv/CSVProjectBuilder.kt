@@ -17,7 +17,7 @@ class CSVProjectBuilder(
     private val pathColumnName: String = "path",
     private val metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
     private val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf(),
-    private val analyzerSource: String = "CsvImporter"
+    private val analyzerSource: String = "CSVImporter"
 ) {
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder(listOf(analyzerSource)).withMetricTranslator(metricNameTranslator)
