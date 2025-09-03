@@ -10,6 +10,7 @@ import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.util.Logger
 import java.lang.reflect.Type
 
 class ProjectJsonDeserializer : JsonDeserializer<Project> {
@@ -40,6 +41,10 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
             ) ?: mapOf()
         val blacklist =
             context.deserialize<List<BlacklistItem>>(jsonNode.get("blacklist"), listOfBlacklistType) ?: listOf()
+
+        if (analyzers == listOf("Unknown")) {
+            Logger.warn { "The given cc.json does not contain a analyzer-field, using 'Unknown'" }
+        }
 
         return Project(projectName, nodes, apiVersion, analyzers, edges, attributeTypes, attributeDescriptors, blacklist)
     }
