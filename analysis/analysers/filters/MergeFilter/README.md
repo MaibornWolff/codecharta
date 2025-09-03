@@ -86,4 +86,4 @@ In such cases it is possible to merge the coverage report into the main cc.json 
 ccsh merge unifiedProject.cc.json testCoverage.cc.json -o=mergeResult --leaf --ignore-case
 ```
 
-This will insert the metrics of the `testCoverage.cc.json` into the project structure of the `project.cc.json`.
+This will insert the metrics of the `testCoverage.cc.json` into the project structure of the `unifiedProject.cc.json`.
