@@ -90,7 +90,7 @@ Leaf merging can be used in cases when we have one `cc.json` representing a whol
 In such cases it is possible to merge the coverage report into the main cc.json by using leaf merging:
 
 ```
-ccsh merge project.cc.json testCoverage.cc.json -o=mergeResult --leaf --ignore-case
+ccsh merge unifiedProject.cc.json testCoverage.cc.json -o=mergeResult --leaf --ignore-case
 ```
 
 This will insert the metrics of the `testCoverage.cc.json` into the project structure of the `project.cc.json`.
