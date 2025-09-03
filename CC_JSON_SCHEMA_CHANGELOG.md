@@ -71,3 +71,21 @@ export interface Fixed {
   }
 }
 ```
+
+## 1.5
+
+- An additional `analyzer` property has been added to the `data`, specifying which analyzer was used to generate the `cc.json`. This can contain multiple values if the `cc.json` is merged.
+```json
+{
+  "checksum": "a30746ae9d919c891992ab1dea88471b",
+  "data": {
+    "projectName": "bar",
+    "apiVersion": "1.5",
+    "analyzer": ["unifiedParser"],
+    "nodes": [],
+    "edges": [],
+    "attributeTypes": {},
+    "blacklist": []
+  }
+}
+```

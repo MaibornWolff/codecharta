@@ -17,7 +17,7 @@ The first file with visualisation data is used as reference for the merging stra
 - leaf (beta): fit leaf nodes into reference structure according to their name (and tail of their path),
   either adding missing leaves (`--add-missing`) or ignoring them (default)
 
-Both strategies will merge the unique list entries for `attributeTypes` and `blacklist`.
+Both strategies will merge the unique list entries for `attributeTypes`, `analyzer` and `blacklist`.
 
 ## Usage and Parameters
 
