@@ -45,6 +45,8 @@ class UnifiedParserTest {
         Arguments.of("cSharp", ".cs"),
         Arguments.of("cpp", ".cpp"),
         Arguments.of("c", ".c"),
+        Arguments.of("cHeader", ".h"),
+        Arguments.of("cppHeader", ".hpp"),
         Arguments.of("python", ".py"),
         Arguments.of("go", ".go"),
         Arguments.of("php", ".php"),
