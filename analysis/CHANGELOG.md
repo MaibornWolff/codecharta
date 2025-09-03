@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add warning to SonarImporter when used token is of wrong type [#4165](https://github.com/MaibornWolff/codecharta/pull/4165)
+
 ## [1.135.1] - 2025-08-07
 
 ### Changed
