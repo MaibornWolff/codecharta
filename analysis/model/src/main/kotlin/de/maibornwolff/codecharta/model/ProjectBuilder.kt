@@ -6,7 +6,7 @@ import org.apache.commons.text.similarity.JaccardSimilarity
 import org.apache.commons.text.similarity.JaroWinklerSimilarity
 
 open class ProjectBuilder(
-    private val analyserSource: List<String>,
+    private val analyserSource: List<String> = listOf("Unknown"),
     private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
     private var edges: MutableList<Edge> = mutableListOf(),
     private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
@@ -82,7 +82,7 @@ open class ProjectBuilder(
             Project(
                 edges = edges.toList(),
                 blacklist = blacklist.toList(),
-                projectName = Companion.DUMMY_PROJECT_NAME,
+                projectName = DUMMY_PROJECT_NAME,
                 attributeTypes = attributeTypes.toMap(),
                 nodes =
                     nodes.map {
@@ -281,7 +281,8 @@ open class ProjectBuilder(
     }
 
     override fun toString(): String {
-        return "Project{nodes=$nodes," +
+        return "Project{analyzer=$analyserSource," +
+            " nodes=$nodes," +
             " edges=$edges," +
             " attributeTypes=$attributeTypes," +
             " attributeDescriptors=$attributeDescriptors," +

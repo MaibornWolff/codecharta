@@ -31,6 +31,7 @@ class Project(
     override fun toString(): String {
         return "Project{projectName=$projectName," +
             " apiVersion=$apiVersion," +
+            " analyzers=$analyzers," +
             " nodes=$nodes, edges=$edges," +
             " attributeTypes=$attributeTypes," +
             " attributeDescriptors=$attributeDescriptors," +
