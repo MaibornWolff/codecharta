@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Add parsing of multiple file extensions for some languages (e.g. cpp or js) [#4170](https://github.com/MaibornWolff/codecharta/pull/4170)
 - Add warning to SonarImporter when used token is of wrong type [#4165](https://github.com/MaibornWolff/codecharta/pull/4165)
 
 ## [1.135.1] - 2025-08-07
