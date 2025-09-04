@@ -41,21 +41,21 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 ## Usage and Parameters
 
-| Parameter                                 | Description                                                                                                                                       |
-|-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `FOLDER or FILE`                          | The project folder or code file to parse                                                                                                          |
-| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                                                                   |
-| `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                  |
-| `-h, --help`                              | displays this help and exits                                                                                                                      |
+| Parameter                                 | Description                                                                                   |
+|-------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `FOLDER or FILE`                          | The project folder or code file to parse. To merge the result with an existing project piped into STDIN, pass a '-' as an additional argument |
+| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                               |
+| `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)              |
+| `-h, --help`                              | displays this help and exits                                                                  |
 | `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.') |
-| `-nc, --not-compressed`                   | save uncompressed output File                                                                                                                     |
-| `-o, --output-file=<outputFile>`          | output File (or empty for stdout)                                                                                                                 |
-| `--verbose`                               | displays messages about parsed and ignored files                                                                                                  |
+| `-nc, --not-compressed`                   | save uncompressed output File                                                                 |
+| `-o, --output-file=<outputFile>`          | output File (or empty for stdout)                                                             |
+| `--verbose`                               | displays messages about parsed and ignored files                                              |
 
 ```
 Usage: ccsh unifiedparser [-h] [-ibf] [-nc] [--verbose] [-o=<outputFile>]
                           [-e=<patternsToExclude>]...
-                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER
+                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
 ```
 
 ## Examples
@@ -80,3 +80,6 @@ ccsh unifiedparser src/test/resources -o foo.cc.json --include-build-folders -e=
 
 If a project is piped into the UnifiedParser, the results and the piped project are merged.
 The resulting project has the project name specified for the UnifiedParser.
+```
+cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.json
+```
