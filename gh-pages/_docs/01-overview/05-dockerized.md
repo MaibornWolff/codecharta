@@ -32,7 +32,7 @@ The visualization is [published to Docker Hub](https://hub.docker.com/r/codechar
 
 ```bash
 # run visualization with
-docker run -p 80:8080 codecharta/codecharta-visualization
+docker run -p 9000:80 codecharta/codecharta-visualization
 ```
 
 ## Sonar
