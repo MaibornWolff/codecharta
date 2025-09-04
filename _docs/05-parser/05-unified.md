@@ -15,16 +15,20 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 ## Supported Languages
 
-- Javascript
-- Typescript
-- Java
-- Kotlin
-- C#
-- C++
-- C
-- Python
-- Go
-- Bash
+| Language   | Supported file extensions              |
+|------------|----------------------------------------|
+| Javascript | .js, .cjs, .mjs                        |
+| Typescript | .ts, .cts, .mts                        |
+| Java       | .java                                  |
+| Kotlin     | .kt                                    |
+| C#         | .cs                                    |
+| C++        | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
+| C          | .c, .h                                 |
+| Python     | .py                                    |
+| Go         | .go                                    |
+| PHP        | .php                                   |
+| Ruby       | .rb                                    |
+| Bash       | .sh                                    |
 
 ## Supported Metrics
 
