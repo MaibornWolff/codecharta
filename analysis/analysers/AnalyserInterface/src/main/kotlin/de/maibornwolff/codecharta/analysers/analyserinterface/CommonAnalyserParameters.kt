@@ -10,8 +10,15 @@ abstract class CommonAnalyserParameters {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     protected var help = false
 
-    @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
-    protected var inputFile: File? = null
+    @CommandLine.Parameters(
+        arity = "1..2",
+        paramLabel = "FILE or FOLDER",
+        description = [
+            "file/project to parse. To merge the result with an existing project piped into STDIN, " +
+                "pass a '-' as an additional argument"
+        ]
+    )
+    protected var inputFiles: List<File> = mutableListOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     protected var outputFile: String? = null
