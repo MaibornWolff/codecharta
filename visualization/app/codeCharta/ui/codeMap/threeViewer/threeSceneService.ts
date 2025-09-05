@@ -15,6 +15,7 @@ import { defaultMapColors } from "../../../state/store/appSettings/mapColors/map
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 import { EventEmitter } from "../../../util/EventEmitter"
 import { State, Store } from "@ngrx/store"
+import { FileExtensionCalculator, NO_EXTENSION } from "../../fileExtensionBar/selectors/fileExtensionCalculator"
 
 type BuildingSelectedEvents = {
     onBuildingSelected: (data: { building: CodeMapBuilding }) => void
@@ -178,12 +179,12 @@ export class ThreeSceneService implements OnDestroy {
 
     highlightSingleBuilding(building: CodeMapBuilding) {
         this.highlighted = []
-        this.addBuildingToHighlightingList(building)
+        this.addBuildingsToHighlightingList(building)
         this.applyHighlights()
     }
 
-    addBuildingToHighlightingList(building: CodeMapBuilding) {
-        this.highlighted.push(building)
+    addBuildingsToHighlightingList(...buildings: CodeMapBuilding[]) {
+        this.highlighted.push(...buildings)
     }
 
     clearHoverHighlight() {
@@ -443,5 +444,29 @@ export class ThreeSceneService implements OnDestroy {
         this.eventEmitter.on(key, (data?) => {
             callback(data)
         })
+    }
+
+    highlightBuildingsWithoutExtensions() {
+        const shouldExtensionBeHighlighted = (buildingExtension: string) => buildingExtension === NO_EXTENSION
+        this.highlight(shouldExtensionBeHighlighted)
+    }
+
+    highlightBuildingsByExtension(extensionsToHighlight: Set<string>) {
+        const shouldExtensionBeHighlighted = (buildingExtension: string) => extensionsToHighlight.has(buildingExtension)
+        this.highlight(shouldExtensionBeHighlighted)
+    }
+
+    private highlight(shouldExtensionBeHighlighted: (buildingExtension: string) => boolean) {
+        const buildingsToHighlight = this.mapMesh.getMeshDescription().buildings.filter(building => {
+            if (!building.node.isLeaf) {
+                return false
+            }
+
+            const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
+            return shouldExtensionBeHighlighted(buildingExtension)
+        })
+
+        this.addBuildingsToHighlightingList(...buildingsToHighlight)
+        this.applyHighlights()
     }
 }

@@ -3,6 +3,15 @@ import { hierarchy } from "d3-hierarchy"
 import { HSL } from "../../../util/color/hsl"
 import { isLeaf } from "../../../util/codeMapHelper"
 
+export const OTHER_EXTENSION = "other"
+export const NO_EXTENSION = "None"
+
+export interface CategorizedMetricDistribution {
+    visible: MetricDistribution[]
+    others: MetricDistribution[]
+    none: MetricDistribution[]
+}
+
 export interface MetricDistribution {
     fileExtension: string
     absoluteMetricValue: number
@@ -11,13 +20,11 @@ export interface MetricDistribution {
 }
 
 export class FileExtensionCalculator {
-    private static readonly NO_EXTENSION = "None"
-    private static readonly OTHER_EXTENSION = "other"
-    private static OTHER_GROUP_THRESHOLD_VALUE = 3
+    private static readonly OTHER_GROUP_THRESHOLD_VALUE = 3
 
-    static getMetricDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
+    static getMetricDistribution(map: CodeMapNode, metric: string): CategorizedMetricDistribution {
         if (!map) {
-            return []
+            return { visible: [], others: [], none: [] }
         }
 
         const distributions: Map<string, MetricDistribution> = new Map()
@@ -38,10 +45,10 @@ export class FileExtensionCalculator {
             }
         }
         if (sumOfAllMetricValues === 0) {
-            return [FileExtensionCalculator.getNoneExtension()]
+            return { visible: [FileExtensionCalculator.getNoneExtension()], others: [], none: [FileExtensionCalculator.getNoneExtension()] }
         }
 
-        let metrics = []
+        const metrics = []
         for (const distribution of distributions.values()) {
             if (distribution.absoluteMetricValue !== 0) {
                 distribution.relativeMetricValue = (distribution.absoluteMetricValue * 100) / sumOfAllMetricValues
@@ -49,36 +56,64 @@ export class FileExtensionCalculator {
             }
         }
         metrics.sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
-        metrics = FileExtensionCalculator.getMetricDistributionWithOthers(metrics)
-        return metrics.length > 0 ? metrics : [FileExtensionCalculator.getNoneExtension()]
+
+        const distribution = FileExtensionCalculator.getMetricDistributionWithOthers(metrics)
+        return distribution.visible.length > 0
+            ? distribution
+            : {
+                  visible: [FileExtensionCalculator.getNoneExtension()],
+                  others: [],
+                  none: [FileExtensionCalculator.getNoneExtension()]
+              }
     }
 
-    private static getMetricDistributionWithOthers(distribution: MetricDistribution[]) {
+    private static getMetricDistributionWithOthers(distribution: MetricDistribution[]): CategorizedMetricDistribution {
         const otherExtension = FileExtensionCalculator.getOtherExtension()
-        const visibleDistributions: MetricDistribution[] = []
+        const noneExtension = FileExtensionCalculator.getNoExtension()
+
+        const visible: MetricDistribution[] = []
+        const others: MetricDistribution[] = []
+        const none: MetricDistribution[] = []
 
         for (const metric of distribution) {
-            if (metric.relativeMetricValue > FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
-                visibleDistributions.push(metric)
+            if (metric.fileExtension === NO_EXTENSION) {
+                noneExtension.absoluteMetricValue += metric.absoluteMetricValue
+                noneExtension.relativeMetricValue += metric.relativeMetricValue
+                continue
+            }
+
+            if (metric.relativeMetricValue >= this.OTHER_GROUP_THRESHOLD_VALUE) {
+                visible.push(metric)
             } else {
                 otherExtension.absoluteMetricValue += metric.absoluteMetricValue
                 otherExtension.relativeMetricValue += metric.relativeMetricValue
+                others.push(metric)
             }
         }
 
-        if (otherExtension.relativeMetricValue > 0) {
-            visibleDistributions.push(otherExtension)
+        if (noneExtension.absoluteMetricValue > 0) {
+            none.push(noneExtension)
+            if (noneExtension.relativeMetricValue >= this.OTHER_GROUP_THRESHOLD_VALUE || otherExtension.relativeMetricValue === 0) {
+                visible.push(noneExtension)
+            } else {
+                otherExtension.absoluteMetricValue += noneExtension.absoluteMetricValue
+                otherExtension.relativeMetricValue += noneExtension.relativeMetricValue
+            }
         }
 
-        return visibleDistributions
+        if (others.length > 0) {
+            visible.push(otherExtension)
+        }
+
+        return { visible: visible, others: others, none: none }
     }
 
     private static getOtherExtension(): MetricDistribution {
         return {
-            fileExtension: FileExtensionCalculator.OTHER_EXTENSION,
+            fileExtension: OTHER_EXTENSION,
             absoluteMetricValue: 0,
             relativeMetricValue: 0,
-            color: FileExtensionCalculator.getColor(FileExtensionCalculator.OTHER_EXTENSION)
+            color: FileExtensionCalculator.getColor(OTHER_EXTENSION)
         }
     }
 
@@ -97,20 +132,29 @@ export class FileExtensionCalculator {
             const extension = fileName.slice(lastDotPosition + 1)
             return extension.toLowerCase()
         }
-        return FileExtensionCalculator.NO_EXTENSION
+        return NO_EXTENSION
+    }
+
+    private static getNoExtension(): MetricDistribution {
+        return {
+            fileExtension: NO_EXTENSION,
+            absoluteMetricValue: 0,
+            relativeMetricValue: 0,
+            color: FileExtensionCalculator.getColor(NO_EXTENSION)
+        }
     }
 
     private static getNoneExtension(): MetricDistribution {
         return {
-            fileExtension: FileExtensionCalculator.NO_EXTENSION,
+            fileExtension: NO_EXTENSION,
             absoluteMetricValue: null,
             relativeMetricValue: 100,
-            color: FileExtensionCalculator.getColor(FileExtensionCalculator.NO_EXTENSION)
+            color: FileExtensionCalculator.getColor(NO_EXTENSION)
         }
     }
 
     private static getColor(fileExtension: string): string {
-        if (fileExtension === FileExtensionCalculator.NO_EXTENSION || fileExtension === FileExtensionCalculator.OTHER_EXTENSION) {
+        if (fileExtension === NO_EXTENSION || fileExtension === OTHER_EXTENSION) {
             return "#676867"
         }
 

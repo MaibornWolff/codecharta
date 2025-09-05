@@ -6,7 +6,7 @@
                     <tr>
                         <th scope="col" colspan="2">Secondary Metrics</th>
                     </tr>
-                    @for (secondaryMetric of secondaryMetrics$ | async; track secondaryMetric) {
+                    @for (secondaryMetric of secondaryMetrics$ | async; track secondaryMetric.name) {
                         <tr [title]="attributeDescriptors[secondaryMetric.name] | attributeDescriptorTooltip: secondaryMetric.name">
                             <td class="secondary-metric-box">
                                 <div class="secondary-metric-row">

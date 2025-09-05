@@ -5,7 +5,7 @@ import { isSearchPatternEmptySelector } from "./selectors/isSearchPatternEmpty.s
 import { isFlattenPatternDisabledSelector } from "./selectors/isFlattenPatternDisabled.selector"
 import { isExcludePatternDisabledSelector } from "./selectors/isExcludePatternDisabled.selector"
 import { BlacklistType, CcState } from "../../../../codeCharta.model"
-import { blacklistSearchPattern } from "./blacklistSearchPattern.effect"
+import { blacklistSearchPattern } from "../../../../state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { debounce } from "../../../../util/debounce"
 import { Store } from "@ngrx/store"
 import { MatMenuTrigger, MatMenu, MatMenuItem } from "@angular/material/menu"
@@ -26,7 +26,7 @@ export class SearchBarComponent {
     isExcludePatternDisabled$ = this.store.select(isExcludePatternDisabledSelector)
     setSearchPatternDebounced = debounce((event: Event) => this.setSearchPattern(event), 400)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     setSearchPattern(event: Event) {
         const eventTarget = event.target as HTMLInputElement

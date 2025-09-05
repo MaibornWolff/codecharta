@@ -27,7 +27,7 @@
         </div>
         <div class="tree-element-children tree-element-children-{{ depth }}">
             @if (isOpen) {
-                @for (childNode of node.children; track childNode) {
+                @for (childNode of node.children; track childNode.name) {
                     <div>
                         <cc-map-tree-view-level [node]="childNode" [depth]="depth + 1"></cc-map-tree-view-level>
                     </div>

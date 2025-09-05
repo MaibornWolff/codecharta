@@ -3,7 +3,6 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { artificialIntelligenceSelector } from "./selectors/artificialIntelligence.selector"
 import { SuspiciousMetricsComponent } from "./suspiciousMetrics/suspiciousMetrics.component"
-import { HighRiskProfileComponent } from "./highRiskProfile/highRiskProfile.component"
 import { AsyncPipe } from "@angular/common"
 
 @Component({
@@ -11,10 +10,10 @@ import { AsyncPipe } from "@angular/common"
     templateUrl: "./artificialIntelligence.component.html",
     styleUrls: ["./artificialIntelligence.component.scss"],
     standalone: true,
-    imports: [SuspiciousMetricsComponent, HighRiskProfileComponent, AsyncPipe]
+    imports: [SuspiciousMetricsComponent, AsyncPipe]
 })
 export class ArtificialIntelligenceComponent {
     data$ = this.store.select(artificialIntelligenceSelector)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 }

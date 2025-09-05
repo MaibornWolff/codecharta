@@ -162,7 +162,7 @@ describe("codeMapMouseEventService", () => {
             getSelectedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
             getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
             getConstantHighlight: jest.fn().mockReturnValue(new Map()),
-            addBuildingToHighlightingList: jest.fn(),
+            addBuildingsToHighlightingList: jest.fn(),
             applyHighlights: jest.fn(),
             resetLabel: jest.fn()
         })()
@@ -436,7 +436,7 @@ describe("codeMapMouseEventService", () => {
 
             codeMapMouseEventService.updateHovering()
 
-            expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
+            expect(threeSceneService.addBuildingsToHighlightingList).toHaveBeenCalled()
             expect(threeSceneService.applyHighlights).toHaveBeenCalled()
             expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
             expect(threeSceneService.animateLabel).toHaveBeenCalled()
@@ -453,7 +453,7 @@ describe("codeMapMouseEventService", () => {
 
             codeMapMouseEventService.updateHovering()
 
-            expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
+            expect(threeSceneService.addBuildingsToHighlightingList).not.toHaveBeenCalled()
             expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
             expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
         })
@@ -468,7 +468,7 @@ describe("codeMapMouseEventService", () => {
 
             codeMapMouseEventService.updateHovering()
 
-            expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
+            expect(threeSceneService.addBuildingsToHighlightingList).not.toHaveBeenCalled()
             expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
             expect(document.body.style.cursor).toEqual(CursorType.Moving)
         })
@@ -788,7 +788,7 @@ describe("codeMapMouseEventService", () => {
         it("should set the highlight when to is not null", () => {
             codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
 
-            expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
+            expect(threeSceneService.addBuildingsToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
             expect(threeSceneService.applyHighlights).toHaveBeenCalled()
         })
     })

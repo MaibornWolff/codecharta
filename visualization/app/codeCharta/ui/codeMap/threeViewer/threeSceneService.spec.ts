@@ -1,9 +1,11 @@
-import { Store, State, StoreModule } from "@ngrx/store"
+import { State, Store, StoreModule } from "@ngrx/store"
 import {
     CODE_MAP_BUILDING,
     CODE_MAP_BUILDING_TS_NODE,
     CONSTANT_HIGHLIGHT,
+    TEST_LEAF_NODE_WITHOUT_EXTENSION,
     TEST_NODE_LEAF,
+    TEST_NODE_LEAF_0_LENGTH,
     TEST_NODES,
     VALID_FILE_NODE_WITH_ID,
     VALID_NODES_WITH_ID
@@ -45,7 +47,6 @@ describe("ThreeSceneService", () => {
 
         threeSceneService = TestBed.inject(ThreeSceneService)
         threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, state.getValue(), false)
-        threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
         threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
     })
 
@@ -66,11 +67,11 @@ describe("ThreeSceneService", () => {
         })
     })
 
-    describe("addBuildingToHighlightingList", () => {
+    describe("addBuildingsToHighlightingList", () => {
         it("should add the given building to the HighlightingList ", () => {
             threeSceneService["highlighted"] = []
 
-            threeSceneService.addBuildingToHighlightingList(CODE_MAP_BUILDING)
+            threeSceneService.addBuildingsToHighlightingList(CODE_MAP_BUILDING)
 
             expect(threeSceneService["highlighted"]).toEqual([CODE_MAP_BUILDING])
         })
@@ -183,13 +184,13 @@ describe("ThreeSceneService", () => {
 
     describe("highlightSingleBuilding", () => {
         it("should add a building to the highlighting list and call the highlight function", () => {
-            threeSceneService.addBuildingToHighlightingList = jest.fn()
+            threeSceneService.addBuildingsToHighlightingList = jest.fn()
             threeSceneService.applyHighlights = jest.fn()
             threeSceneService["highlighted"] = []
 
             threeSceneService.highlightSingleBuilding(CODE_MAP_BUILDING)
 
-            expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
+            expect(threeSceneService.addBuildingsToHighlightingList).toHaveBeenCalled()
             expect(threeSceneService.applyHighlights).toHaveBeenCalled()
         })
     })
@@ -470,6 +471,28 @@ describe("ThreeSceneService", () => {
             threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
             expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
+        })
+    })
+
+    describe("Highlighting by extensioins", () => {
+        beforeEach(() => {
+            threeSceneService["mapMesh"] = new CodeMapMesh(
+                [TEST_NODE_LEAF, TEST_NODE_LEAF_0_LENGTH, TEST_LEAF_NODE_WITHOUT_EXTENSION],
+                state.getValue(),
+                false
+            )
+        })
+
+        it("WHEN highlighting buildings without extensions then only files without extensions are highlighted", () => {
+            threeSceneService.highlightBuildingsWithoutExtensions()
+            const fileNames = threeSceneService["highlighted"].map(it => it.node.name)
+            expect(fileNames).toEqual([TEST_LEAF_NODE_WITHOUT_EXTENSION.name])
+        })
+
+        it("WHEN highlighting buildings with extensions then only files without extensions are highlighted", () => {
+            threeSceneService.highlightBuildingsByExtension(new Set<string>(["ts"]))
+            const fileNames = threeSceneService["highlighted"].map(it => it.node.name)
+            expect(fileNames).toEqual([TEST_NODE_LEAF.name, TEST_NODE_LEAF_0_LENGTH.name])
         })
     })
 })

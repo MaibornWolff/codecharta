@@ -1,0 +1,35 @@
+<span class="cc-bar-section"
+      (click)="toggleShowAbsoluteValues.emit()"
+      [cdkContextMenuTriggerFor]="contextMenu">
+
+      <div class="cc-bar-section-text"
+           data-test-id="formattedTitle"
+           (mouseover)="onHoverFileExtensionBar(fileExtension())"
+           (mouseleave)="onUnhoverFileExtensionBar()"
+           [title]="formattedTitle()">
+          {{ formattedTitle() }}
+      </div>
+</span>
+
+<ng-template #contextMenu>
+    @if (hasFileExtension()) {
+        <mat-card cdkMenu>
+            @if (isFlattened()) {
+                <button mat-menu-item data-test-id="showBuilding" (click)="show(fileExtension())">
+                    <i class="fa fa-eye menu-icon"></i>
+                    <span>Show</span>
+                </button>
+            } @else {
+                <button mat-menu-item data-test-id="flattenBuilding" (click)="flatten(fileExtension())">
+                    <img alt="flattenIcon" class="png-icon menu-icon" ngSrc="codeCharta/assets/flatten.png" [width]="17" [height]="17"/>
+                    <span>Flatten</span>
+                </button>
+            }
+
+            <button mat-menu-item data-test-id="excludeBuilding" (click)="exclude(fileExtension())">
+                <i class="fa fa-ban menu-icon"></i>
+                <span>Exclude</span>
+            </button>
+        </mat-card>
+    }
+</ng-template>

@@ -2435,75 +2435,6 @@ export const SCENARIO_ATTRIBUTE_CONTENT: ScenarioMetricProperty[] = [
     }
 ]
 
-export const SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED: ScenarioMetricProperty[] = [
-    {
-        metricType: "Camera-Position",
-        metricName: null,
-        savedValues: new Vector3(0, 300, 1000),
-        isSelected: false,
-        isDisabled: false
-    },
-    {
-        metricType: "Area-Metric",
-        metricName: "rloc",
-        savedValues: 48,
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Height-Metric",
-        metricName: "mcc",
-        savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Color-Metric",
-        metricName: "mcc",
-        savedValues: { from: 19, to: 67 },
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Edge-Metric",
-        metricName: "pairingRate",
-        savedValues: { edgePreview: 5, edgeHeight: 4 },
-        isSelected: true,
-        isDisabled: false
-    }
-]
-
-export const SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: ScenarioMetricProperty[] = [
-    {
-        metricType: "Area-Metric",
-        metricName: "rloc",
-        savedValues: 48,
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Height-Metric",
-        metricName: "mcc",
-        savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Color-Metric",
-        metricName: "mcc",
-        savedValues: { from: 19, to: 67 },
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Edge-Metric",
-        metricName: "pairingRate",
-        savedValues: { edgePreview: 5, edgeHeight: 4 },
-        isSelected: true,
-        isDisabled: false
-    }
-]
-
 export const SCENARIO_ITEMS: ScenarioItem[] = [
     {
         scenarioName: "Scenario",
@@ -2698,7 +2629,7 @@ export const TEST_NODE_LEAF: Node = {
 }
 
 export const TEST_NODE_LEAF_0_LENGTH: Node = {
-    name: "root/big leaf.ts",
+    name: "root/short big leaf.ts",
     id: 1,
     width: 1,
     height: 2,
@@ -2804,6 +2735,31 @@ export const OUTGOING_NODE: Node = {
     outgoingEdgePoint: new Vector3(1, 2, 3)
 }
 
+export const TEST_LEAF_NODE_WITHOUT_EXTENSION: Node = {
+    name: "root/leaf_without_extension",
+    id: 4,
+    width: 0,
+    height: 0,
+    length: 0,
+    depth: 0,
+    mapNodeDepth: 0,
+    x0: 0,
+    z0: 0,
+    y0: 0,
+    isLeaf: true,
+    deltas: { a: 1, b: 2 },
+    attributes: { a: 20, b: 15, mcc: 14 },
+    edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+    heightDelta: 20,
+    visible: true,
+    path: "/root",
+    link: "NO_LINK",
+    markingColor: "0xFFFFFF",
+    flat: false,
+    color: "#AABBCC",
+    incomingEdgePoint: new Vector3(1, 2, 3),
+    outgoingEdgePoint: new Vector3(1, 2, 3)
+}
 export const DIFFERENT_NODE: Node = {
     name: "root/different leaf",
     id: 3,

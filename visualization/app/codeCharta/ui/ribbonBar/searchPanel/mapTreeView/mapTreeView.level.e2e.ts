@@ -1,6 +1,6 @@
 import { clearIndexedDB, goto } from "../../../../../puppeteer.helper"
 import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
-import { NodeContextMenuPageObject } from "../../../../state/effects/nodeContextMenu/nodeContextMenu.po"
+import { NodeContextMenuPageObject } from "../../../nodeContextMenu/nodeContextMenu.po"
 import { SearchPanelPageObject } from "../searchPanel.po"
 
 describe("MapTreeViewLevel", () => {

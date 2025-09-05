@@ -9,7 +9,7 @@ import { VersionService } from "app/codeCharta/services/version/version.service"
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
 import { AutoFitCodeMapEffect } from "app/codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
 import { LinkColorMetricToHeightMetricEffect } from "app/codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
-import { OpenNodeContextMenuEffect } from "app/codeCharta/state/effects/nodeContextMenu/openNodeContextMenu.effect"
+import { OpenNodeContextMenuEffect } from "app/codeCharta/state/effects/openNodeContextMenu/openNodeContextMenu.effect"
 import { RenderCodeMapEffect } from "app/codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { ResetChosenMetricsEffect } from "app/codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "app/codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
@@ -20,10 +20,11 @@ import { UpdateFileSettingsEffect } from "app/codeCharta/state/effects/updateFil
 import { UpdateMapColorsEffect } from "app/codeCharta/state/effects/updateMapColors/updateMapColors.effect"
 import { UpdateQueryParametersEffect } from "app/codeCharta/state/effects/updateQueryParameters/updateQueryParameters.effect"
 import { UpdateVisibleTopLabelsEffect } from "app/codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
-import { ResetColorRangeEffect } from "app/codeCharta/state/store/dynamicSettings/colorRange/resetColorRange.effect"
-import { BlacklistSearchPatternEffect } from "app/codeCharta/ui/ribbonBar/searchPanel/searchBar/blacklistSearchPattern.effect"
+import { ResetColorRangeEffect } from "app/codeCharta/state/effects/resetColorRange/resetColorRange.effect"
+import { BlacklistSearchPatternEffect } from "app/codeCharta/state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { UpdateShowLabelsEffect } from "./codeCharta/state/effects/updateShowLabels/updateShowLabels.effect"
 import { UpdateAmountOfEdgePreviewsEffect } from "./codeCharta/state/effects/amountOfEdgePreviews/updateAmountOfEdgePreviews.effect"
+import { BlacklistExtensionEffect } from "./codeCharta/state/effects/blacklistExtension/blacklistExtension.effect"
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -38,6 +39,7 @@ export const appConfig: ApplicationConfig = {
             UpdateAmountOfEdgePreviewsEffect,
             OpenNodeContextMenuEffect,
             BlacklistSearchPatternEffect,
+            BlacklistExtensionEffect,
             ResetColorRangeEffect,
             ResetChosenMetricsEffect,
             UpdateEdgePreviewsEffect,
