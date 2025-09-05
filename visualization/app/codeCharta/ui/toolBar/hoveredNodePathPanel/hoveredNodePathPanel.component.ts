@@ -16,7 +16,8 @@ export class HoveredNodePathPanelComponent {
     hoveredNodePathPanelData$ = this.store.select(hoveredNodePathPanelDataSelector).pipe(
         filter(it => !!it),
         map(items => {
-            const paths = items.path.map(it => ({
+            const paths = items.path.map((it, index) => ({
+                key: `${index}${it}`,
                 path: it
             }))
 
