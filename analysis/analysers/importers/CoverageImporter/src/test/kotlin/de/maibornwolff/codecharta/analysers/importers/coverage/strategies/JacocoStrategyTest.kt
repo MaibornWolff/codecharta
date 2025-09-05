@@ -16,7 +16,7 @@ class JacocoStrategyTest {
     @Test
     fun `should correctly import coverage report and build project structure`() {
         val expectedOutputPath = "src/test/resources/formats/jacoco/coverage.cc.json"
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("CoverageImporter"))
 
         JacocoStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err)
 
@@ -29,7 +29,7 @@ class JacocoStrategyTest {
 
     @Test
     fun `should keep folders surrounding the project when the flag is set`() {
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("CoverageImporter"))
         val expectedOutputPath = "src/test/resources/formats/jacoco/coverage_full_paths.cc.json"
 
         JacocoStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err, true)

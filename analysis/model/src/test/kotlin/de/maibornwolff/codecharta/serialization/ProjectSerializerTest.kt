@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.serialization
 
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.util.Logger
-import io.github.oshai.kotlinlogging.KLogger
 import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk
@@ -30,11 +29,10 @@ class ProjectSerializerTest {
     private val tempDir = createTempDirectory()
     private val filename = tempDir.absolute().toString() + "test.cc.json"
     private val project = mockk<Project>()
-    private val loggerMock = mockk<KLogger>()
     private val lambdaSlot = mutableListOf<() -> String>()
 
     companion object {
-        private const val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
+        private const val EXAMPLE_JSON_VERSION_1_5 = "example_api_version_1.5.cc.json"
     }
 
     @BeforeAll
@@ -56,8 +54,8 @@ class ProjectSerializerTest {
     @Test
     fun `should correctly serialize the specified project when provided as input`() {
         // given
-        val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3)!!.reader()
-        val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json")!!.readText()
+        val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_5)!!.reader()
+        val expectedJsonString = this.javaClass.classLoader.getResource(EXAMPLE_JSON_VERSION_1_5)!!.readText()
         val testProject = ProjectDeserializer.deserializeProject(jsonReader)
 
         // when

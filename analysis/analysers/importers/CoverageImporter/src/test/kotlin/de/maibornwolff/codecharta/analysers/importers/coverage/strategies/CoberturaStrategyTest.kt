@@ -16,7 +16,7 @@ class CoberturaStrategyTest {
 
     @Test
     fun `should correctly import coverage report and build project structure`() {
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("CoverageImporter"))
 
         CoberturaStrategy().addNodesToProjectBuilder(File(testReportFilePath), projectBuilder, System.err)
 

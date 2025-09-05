@@ -16,7 +16,7 @@ class PHPUnitStrategyTest {
 
     @Test
     fun `should correctly import coverage report and build project structure when valid report was given`() {
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("CoverageImporter"))
 
         PHPUnitStrategy().addNodesToProjectBuilder(File(complexTestReportFilePath), projectBuilder, System.err)
 

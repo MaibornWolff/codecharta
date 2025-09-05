@@ -24,12 +24,17 @@ class MetricRenamer(
         val updatedAttributesDescriptors = updatedAttributeDescriptors(project.attributeDescriptors)
 
         return ProjectBuilder(
+            copyAnalyzerSource(),
             listOf(updatedRoot),
             copyEdges(),
             updatedAttributeTypes.toMutableMap(),
             updatedAttributesDescriptors.toMutableMap(),
             copyBlacklist()
         ).build()
+    }
+
+    private fun copyAnalyzerSource(): List<String> {
+        return project.analyzers
     }
 
     private fun renameMCCRecursivelyInNodes(node: MutableNode): MutableNode {

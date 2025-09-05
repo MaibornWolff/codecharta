@@ -26,7 +26,7 @@ class LcovStrategyTest {
         val expectedFilePath = "src/test/resources/formats/lcov/minimal_expected_output.cc.json"
         val expectedProject = ProjectDeserializer.deserializeProject(File(expectedFilePath).inputStream())
         val coverageReport = File("src/test/resources/formats/lcov/minimal_lcov.info")
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("CoverageImporter"))
 
         LcovStrategy().addNodesToProjectBuilder(coverageReport, projectBuilder, System.err)
 
@@ -39,7 +39,7 @@ class LcovStrategyTest {
         val expectedFilePath = "src/test/resources/formats/lcov/coverage.cc.json"
         val expectedProject = ProjectDeserializer.deserializeProject(File(expectedFilePath).inputStream())
         val coverageReport = File("src/test/resources/formats/lcov/lcov.info")
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("CoverageImporter"))
 
         LcovStrategy().addNodesToProjectBuilder(coverageReport, projectBuilder, System.err)
 
@@ -54,7 +54,7 @@ class LcovStrategyTest {
         val expectedFilePath = "src/test/resources/formats/lcov/coverage_full_paths.cc.json"
         val expectedProject = ProjectDeserializer.deserializeProject(File(expectedFilePath).inputStream())
         val coverageReport = File("src/test/resources/formats/lcov/lcov.info")
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("CoverageImporter"))
 
         LcovStrategy().addNodesToProjectBuilder(coverageReport, projectBuilder, System.err, true)
 

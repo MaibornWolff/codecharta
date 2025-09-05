@@ -1,5 +1,5 @@
 {
-  "checksum": "595ba57961df876c22c06eb0b42f864f",
+  "checksum": "be9db106be64b528e855bb9042f919ac",
   "data": {
     "projectName": "",
     "nodes": [
@@ -24,7 +24,10 @@
         ]
       }
     ],
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
+    "analyzers": [
+      "UnifiedParser"
+    ],
     "edges": [],
     "attributeTypes": {},
     "attributeDescriptors": {

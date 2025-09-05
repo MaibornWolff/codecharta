@@ -4,6 +4,7 @@ class Project(
     val projectName: String,
     private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
     val apiVersion: String = API_VERSION,
+    val analyzers: List<String> = listOf(),
     val edges: List<Edge> = listOf(),
     val attributeTypes: Map<String, MutableMap<String, AttributeType>> = mapOf(),
     val attributeDescriptors: Map<String, AttributeDescriptor> = mapOf(),
@@ -30,6 +31,7 @@ class Project(
     override fun toString(): String {
         return "Project{projectName=$projectName," +
             " apiVersion=$apiVersion," +
+            " analyzers=$analyzers," +
             " nodes=$nodes, edges=$edges," +
             " attributeTypes=$attributeTypes," +
             " attributeDescriptors=$attributeDescriptors," +
@@ -38,7 +40,7 @@ class Project(
 
     companion object {
         private const val API_VERSION_MAJOR = "1"
-        private const val API_VERSION_MINOR = "3"
+        private const val API_VERSION_MINOR = "5"
         const val API_VERSION = "$API_VERSION_MAJOR.$API_VERSION_MINOR"
 
         fun isAPIVersionCompatible(apiVersion: String): Boolean {

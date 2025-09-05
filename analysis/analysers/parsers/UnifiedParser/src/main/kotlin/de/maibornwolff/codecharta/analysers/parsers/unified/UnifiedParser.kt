@@ -68,7 +68,7 @@ class UnifiedParser(
 
     private fun scanInputProject(inputFile: File): Project? {
         val startTime = System.currentTimeMillis()
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("UnifiedParser"))
         val projectScanner = ProjectScanner(inputFile, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
         projectScanner.traverseInputProject(verbose)
 

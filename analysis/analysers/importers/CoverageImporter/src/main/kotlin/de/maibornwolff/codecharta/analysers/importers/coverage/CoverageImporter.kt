@@ -95,7 +95,7 @@ class CoverageImporter(
 
         val reportFile = getReportFileFromString(reportFileName ?: ".", format)
 
-        val projectBuilder = ProjectBuilder()
+        val projectBuilder = ProjectBuilder(listOf("CoverageImporter"))
 
         format.strategy.addNodesToProjectBuilder(reportFile, projectBuilder, error, keepLeadingPaths)
         projectBuilder.addAttributeTypes(getAttributeTypes(format))

@@ -31,7 +31,10 @@
         ]
       }
     ],
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
+    "analyzers":[
+      "RawTextParser"
+    ],
     "edges": [],
     "attributeTypes": {},
     "attributeDescriptors": {
@@ -134,5 +137,5 @@
     },
     "blacklist": []
   },
-  "checksum": "a79efa963b588938270443376e9599ff"
+  "checksum": "5daa2f88dfb5f0bac6bac99b2bde2aad"
 }
