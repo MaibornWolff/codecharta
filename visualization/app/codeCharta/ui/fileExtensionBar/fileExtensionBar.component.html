@@ -1,28 +1,11 @@
 <div class="cc-distribution">
-    <cc-distribution-metric-chooser title="Distribution metric"></cc-distribution-metric-chooser>
-
+    <cc-distribution-metric title="Distribution metric"></cc-distribution-metric>
     <div class="cc-bar">
-        @for (item of metricDistribution; track item) {
-            <span
-                [style.width]="item.relativeMetricValue + '%'"
-                [style.background]="item.color"
-                class="cc-bar-section"
-                (click)="toggleShowAbsoluteValues()"
-            >
-                <div
-                    class="cc-bar-section-text"
-                    (mouseover)="onHoverFileExtensionBar(item.fileExtension)"
-                    (mouseleave)="onUnhoverFileExtensionBar()"
-                    title="{{
-                        item.fileExtension.toString() +
-                            ' ' +
-                            (showAbsoluteValues ? item.absoluteMetricValue : item.relativeMetricValue.toFixed(2) + '%')
-                    }}"
-                >
-                    {{ item.fileExtension }} {{ showAbsoluteValues ? item.absoluteMetricValue.toLocaleString() : item.relativeMetricValue.toFixed(2) + "%" }}
-                </div>
-            </span>
+        @for (item of metricDistribution.visible; track item.fileExtension) {
+            <cc-file-extension-bar-segment [item]="item"
+                                           [showAbsoluteValues]="showAbsoluteValues"
+                                           (toggleShowAbsoluteValues)="toggleShowAbsoluteValues()">
+            </cc-file-extension-bar-segment>
         }
-
     </div>
 </div>

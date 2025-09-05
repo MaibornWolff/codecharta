@@ -8,7 +8,7 @@ import { parseBlacklistItems } from "../../../ui/ribbonBar/searchPanel/searchBar
 
 const ACTION_IDENTIFIER = "BlacklistExtensionAction"
 
-type BlacklistExtensionAction = {
+export type BlacklistExtensionAction = {
     type: typeof ACTION_IDENTIFIER
     action: { type: BlacklistType }
     extensions: string[]

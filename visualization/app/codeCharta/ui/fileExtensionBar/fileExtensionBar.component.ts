@@ -1,56 +1,26 @@
-import { Component } from "@angular/core"
-import { MetricDistribution, FileExtensionCalculator } from "./selectors/fileExtensionCalculator"
-import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../codeCharta.model"
-import { DistributionMetricChooserComponent } from "./distributionMetricChooser/distributionMetricChooser.component"
+import { Component, OnInit } from "@angular/core"
+import { CategorizedMetricDistribution } from "./selectors/fileExtensionCalculator"
+import { DistributionMetricComponent } from "./distributionMetric/distributionMetric.component"
+import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment/fileExtensionBarSegment.component"
+import { BlackListExtensionService } from "./blackListExtension.service"
 
 @Component({
     selector: "cc-file-extension-bar",
     templateUrl: "./fileExtensionBar.component.html",
     styleUrls: ["./fileExtensionBar.component.scss"],
     standalone: true,
-    imports: [DistributionMetricChooserComponent]
+    imports: [DistributionMetricComponent, FileExtensionBarSegmentComponent]
 })
-export class FileExtensionBarComponent {
+export class FileExtensionBarComponent implements OnInit {
     showAbsoluteValues = false
-    metricDistribution: MetricDistribution[]
+    metricDistribution: CategorizedMetricDistribution
 
-    constructor(
-        private readonly store: Store<CcState>,
-        private readonly threeSceneService: ThreeSceneService
-    ) {
-        this.store.select(metricDistributionSelector).subscribe(metricDistribution => {
+    constructor(private readonly blackListExtensionService: BlackListExtensionService) {}
+
+    ngOnInit(): void {
+        this.blackListExtensionService.metricDistribution$.subscribe(metricDistribution => {
             this.metricDistribution = metricDistribution
         })
-    }
-
-    onHoverFileExtensionBar(hoveredExtension: string) {
-        const visibleFileExtensions = new Set()
-        for (const metric of this.metricDistribution) {
-            if (metric.fileExtension !== "other") {
-                visibleFileExtensions.add(metric.fileExtension)
-            }
-        }
-
-        for (const building of this.threeSceneService.getMapMesh().getMeshDescription().buildings) {
-            if (building.node.isLeaf) {
-                const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
-                if (
-                    buildingExtension === hoveredExtension ||
-                    (hoveredExtension === "other" && !visibleFileExtensions.has(buildingExtension))
-                ) {
-                    this.threeSceneService.addBuildingToHighlightingList(building)
-                }
-            }
-        }
-
-        this.threeSceneService.applyHighlights()
-    }
-
-    onUnhoverFileExtensionBar() {
-        this.threeSceneService.applyClearHightlights()
     }
 
     toggleShowAbsoluteValues() {
