@@ -185,4 +185,37 @@ class PythonCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(8)
     }
+
+    @Test
+    fun `should count function declaration for number of functions`() {
+        // given
+        val fileContent = """
+            def my_function():
+                print("Hello from a function")
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count lambda functions for number of functions only when they are assigned to a variable`() {
+        // given
+        val fileContent = """
+            myLambda = lambda x, y: x + y
+
+            list(map(lambda n: n * 2, [1, 2, 3, 4, 5]))
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }
