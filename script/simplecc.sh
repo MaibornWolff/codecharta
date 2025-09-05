@@ -61,11 +61,15 @@ Analyzing rawtext ...
 ==========================="
 ccsh rawtextparser . -o rawtext.$fileext $debugparam
 
+echo "
+Analyzing code with the unified parser ...
+==========================="
+ccsh unifiedparser . -o unified.$fileext $debugparam
 
 echo "
 Combining all data ...
 ======================"
-ccsh merge -o $targetfile $debugparam ws_complexity.$fileext git.$fileext tokei.$fileext rawtext.$fileext
+ccsh merge -o $targetfile $debugparam ws_complexity.$fileext git.$fileext tokei.$fileext rawtext.$fileext unified.$fileext
 
 if [ $debug == true ]; then
     echo "
@@ -74,12 +78,12 @@ NOT deleting temporary files in debug mode.
 
 If you want to delete temporary files please execute manually:
 
-rm ws_complexity.$fileext git.$fileext tokei.$fileext tokei.json ws_complexity.csv rawtext.$fileext"
+rm ws_complexity.$fileext git.$fileext tokei.$fileext tokei.json ws_complexity.csv rawtext.$fileext unified.$fileext"
 else
     echo "
 Deleting temporary files ...
 ============================"
-rm ws_complexity.$fileext git.$fileext tokei.$fileext tokei.json ws_complexity.csv rawtext.$fileext
+rm ws_complexity.$fileext git.$fileext tokei.$fileext tokei.json ws_complexity.csv rawtext.$fileext unified.$fileext
 fi
 
     echo "

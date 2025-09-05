@@ -1,5 +1,5 @@
 {
-  "checksum": "cba50e4765cefed97feacc767e7f1d6b",
+  "checksum": "c80c43bf12d26252f2932d8e136c23d5",
   "data": {
     "projectName": "",
     "nodes": [
@@ -10,13 +10,25 @@
         "link": "",
         "children": [
           {
-            "name": "typescriptSample.ts",
+            "name": "helloWorld.ts",
             "type": "File",
             "attributes": {
-              "complexity": 32,
-              "comment_lines": 61,
-              "loc": 200,
-              "rloc": 115
+              "complexity": 1,
+              "comment_lines": 2,
+              "rloc": 5,
+              "loc": 8
+            },
+            "link": "",
+            "children": []
+          },
+          {
+            "name": "whenCase.kt",
+            "type": "File",
+            "attributes": {
+              "complexity": 5,
+              "comment_lines": 0,
+              "rloc": 11,
+              "loc": 13
             },
             "link": "",
             "children": []

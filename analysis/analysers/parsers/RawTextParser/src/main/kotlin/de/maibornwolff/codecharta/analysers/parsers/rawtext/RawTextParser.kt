@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.FileExtensionConverter
@@ -10,6 +9,7 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
@@ -79,7 +79,10 @@ class RawTextParser(
 
     @CommandLine.Option(
         names = ["--without-default-excludes"],
-        description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "]
+        description = [
+            "DEPRECATION WARNING: this flag will soon be disabled and replaced by '--include-build-folders'" +
+                "include build, target, dist, resources and out folders as well as files/folders starting with '.' "
+        ]
     )
     private var withoutDefaultExcludes = false
 

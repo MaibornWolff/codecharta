@@ -77,6 +77,8 @@ docs:
             url: "/docs/parser/git-log"
           - title: "SVN Log"
             url: "/docs/parser/svn-log"
+          - title: "Unified"
+            url: "/docs/parser/unified"
     - title: "CCSH - Exporter"
       children:
           - title: "Csv"

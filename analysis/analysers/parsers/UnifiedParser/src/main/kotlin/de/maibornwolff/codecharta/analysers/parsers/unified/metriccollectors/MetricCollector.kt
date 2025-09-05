@@ -14,10 +14,11 @@ import java.io.File
 
 abstract class MetricCollector(
     private val treeSitterLanguage: TSLanguage,
-    private val queryProvider: MetricNodeTypes
+    protected val nodeTypeProvider: MetricNodeTypes
 ) {
     private var lastCountedCommentLine = -1
     private var lastCountedCodeLine = -1
+    private var rootNodeType: String = ""
 
     // maps a metric to its index for the more performant IntArray and the function how to calculate the metric
     private val metricInfo = mapOf(
@@ -34,6 +35,7 @@ abstract class MetricCollector(
 
     fun collectMetricsForFile(file: File): MutableNode {
         val rootNode = getRootNode(file)
+        rootNodeType = rootNode.type
 
         lastCountedCommentLine = -1
         lastCountedCodeLine = -1
@@ -56,8 +58,9 @@ abstract class MetricCollector(
 
     private fun getRootNode(file: File): TSNode {
         val parser = TSParser()
-        parser.setLanguage(treeSitterLanguage)
-        return parser.parseString(null, file.readText()).rootNode
+        parser.language = treeSitterLanguage
+        val rootNode = parser.parseString(null, file.readText()).rootNode
+        return rootNode
     }
 
     private val walkTree = DeepRecursiveFunction<Pair<TSTreeCursor, IntArray>, Unit> { (cursor, metrics) ->
@@ -67,9 +70,12 @@ abstract class MetricCollector(
         val startRow = currentNode.startPoint.row
         val endRow = currentNode.endPoint.row
 
-        for ((_, indexAndCalculateMetricForNodeFn) in metricInfo) {
-            val (index, calculateMetricForNodeFn) = indexAndCalculateMetricForNodeFn
-            metrics[index] += calculateMetricForNodeFn(currentNode, nodeType, startRow, endRow)
+        val skipRootToAvoidDoubleCountingLines = nodeType != rootNodeType
+        if (skipRootToAvoidDoubleCountingLines) {
+            for ((_, indexAndCalculateMetricForNodeFn) in metricInfo) {
+                val (index, calculateMetricForNodeFn) = indexAndCalculateMetricForNodeFn
+                metrics[index] += calculateMetricForNodeFn(currentNode, nodeType, startRow, endRow)
+            }
         }
 
         if (cursor.gotoFirstChild()) {
@@ -92,11 +98,11 @@ abstract class MetricCollector(
     }
 
     protected open fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
-        return if (isNodeTypeAllowed(node, nodeType, queryProvider.complexityNodeTypes)) 1 else 0
+        return if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.complexityNodeTypes)) 1 else 0
     }
 
     protected open fun calculateCommentLinesForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
-        if (startRow > lastCountedCommentLine && isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) {
+        if (startRow > lastCountedCommentLine && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)) {
             lastCountedCommentLine = startRow
             return endRow - startRow + 1
         }
@@ -104,7 +110,7 @@ abstract class MetricCollector(
     }
 
     protected open fun calculateRealLinesOfCodeForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
-        if (isNodeTypeAllowed(node, nodeType, queryProvider.commentLineNodeTypes)) return 0
+        if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)) return 0
 
         var rlocForNode = 0
 
@@ -113,7 +119,7 @@ abstract class MetricCollector(
             rlocForNode++
         }
 
-        if (node.childCount == 0 && endRow > lastCountedCodeLine) {
+        if (endRow > lastCountedCodeLine && countWholeNodeLength(node)) {
             lastCountedCodeLine = endRow
             rlocForNode += endRow - startRow
         }
@@ -132,11 +138,20 @@ abstract class MetricCollector(
 
     private fun isNestedTypeAllowed(node: TSNode, nodeType: String, nestedTypes: Set<NestedNodeType>): Boolean {
         for (nestedType in nestedTypes) {
-            if (nestedType.baseNodeType == nodeType) {
+            if (nestedType.baseNodeType != nodeType) continue
+
+            if (nestedType.childNodePosition != null && nestedType.childNodeCount == node.childCount) {
+                val childNode = node.getChild(nestedType.childNodePosition)
+                if (nestedType.childNodeTypes.contains(childNode.type)) return true
+            } else if (nestedType.childNodeFieldName != null) {
                 val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
                 if (nestedType.childNodeTypes.contains(childNode.type)) return true
             }
         }
         return false
+    }
+
+    protected open fun countWholeNodeLength(node: TSNode): Boolean {
+        return node.childCount == 0
     }
 }

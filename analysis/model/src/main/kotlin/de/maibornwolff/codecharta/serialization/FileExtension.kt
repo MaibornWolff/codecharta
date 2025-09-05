@@ -1,23 +1,27 @@
 package de.maibornwolff.codecharta.serialization
 
 enum class FileExtension(
-    val extension: String
+    val primaryExtension: String,
+    val otherValidExtensions: Set<String> = setOf()
 ) {
     JSON(".json"),
     CSV(".csv"),
     CODECHARTA(".cc"),
     GZIP(".gz"),
-    CCJSON(CODECHARTA.extension + JSON.extension),
-    CCGZ(CCJSON.extension + GZIP.extension),
+    CCJSON(CODECHARTA.primaryExtension + JSON.primaryExtension),
+    CCGZ(CCJSON.primaryExtension + GZIP.primaryExtension),
     INFO(".info"),
     XML(".xml"),
     GO(".go"),
     PHP(".php"),
-    TYPESCRIPT(".ts"),
+    TYPESCRIPT(".ts", setOf("cts", ".mts")),
     CSHARP(".cs"),
-    CPP(".cpp"),
+    CPP(".cpp", setOf(".cc", ".cxx", ".c++", ".hh", ".hpp", ".hxx")),
+    C(".c", setOf(".h")),
     JAVA(".java"),
-    JAVASCRIPT(".js"),
+    JAVASCRIPT(".js", setOf(".cjs", ".mjs")),
     KOTLIN(".kt"),
-    PYTHON(".py")
+    PYTHON(".py"),
+    RUBY(".rb"),
+    BASH(".sh")
 }

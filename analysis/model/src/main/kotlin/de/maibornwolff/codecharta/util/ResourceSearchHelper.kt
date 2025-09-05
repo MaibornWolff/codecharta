@@ -59,7 +59,7 @@ class ResourceSearchHelper {
 
         fun endsWithAtLeastOne(inputString: String, endings: List<FileExtension>): Boolean {
             for (ending in endings) {
-                if (inputString.endsWith(ending.extension)) {
+                if (inputString.endsWith(ending.primaryExtension)) {
                     return true
                 }
             }

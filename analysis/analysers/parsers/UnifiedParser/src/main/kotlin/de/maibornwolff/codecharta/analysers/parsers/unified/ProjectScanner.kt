@@ -102,7 +102,7 @@ class ProjectScanner(
     }
 
     private fun isPathExcluded(file: File): Boolean {
-        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn(getRelativeFileName(file.toString()))
+        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn("/" + getRelativeFileName(file.toString()))
     }
 
     private fun isFileExtensionIncluded(fileExtension: String): Boolean {
@@ -110,7 +110,10 @@ class ProjectScanner(
     }
 
     private fun findCollectorForFileType(fileExtension: String): AvailableCollectors? {
-        return AvailableCollectors.entries.find { it.fileExtension.extension == ".$fileExtension" }
+        return AvailableCollectors.entries.find {
+            val extension = ".$fileExtension"
+            it.fileExtension.primaryExtension == extension || it.fileExtension.otherValidExtensions.contains(extension)
+        }
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {

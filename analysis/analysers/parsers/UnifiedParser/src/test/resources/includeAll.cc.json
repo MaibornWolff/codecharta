@@ -1,5 +1,5 @@
 {
-  "checksum": "ff9abfcd28324a978ef8b8f7da6a338a",
+  "checksum": "8116f44f6e2be3a83f516a33d690214a",
   "data": {
     "projectName": "",
     "nodes": [
@@ -69,6 +69,18 @@
               "comment_lines": 6,
               "loc": 41,
               "rloc": 30
+            },
+            "link": "",
+            "children": []
+          },
+          {
+            "name": "foo.py",
+            "type": "File",
+            "attributes": {
+              "complexity": 2,
+              "comment_lines": 4,
+              "loc": 14,
+              "rloc": 9
             },
             "link": "",
             "children": []

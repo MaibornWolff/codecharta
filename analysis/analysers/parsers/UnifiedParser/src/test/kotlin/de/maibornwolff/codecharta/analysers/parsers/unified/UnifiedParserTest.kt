@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
+import io.mockk.every
+import io.mockk.spyk
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
@@ -27,13 +29,27 @@ class UnifiedParserTest {
         unmockkAll()
     }
 
+    private fun createMockedUnifiedParser(parser: UnifiedParser, input: String): UnifiedParser {
+        val spyParser = spyk(parser)
+
+        every { spyParser.shouldProcessPipedInput(any()) } answers {
+            val files = firstArg<List<File>>()
+            files.any { it.toString() == "-" } || input.isNotEmpty()
+        }
+
+        return spyParser
+    }
+
     private fun executeForOutput(input: String, args: Array<String>): String {
         val inputStream = ByteArrayInputStream(input.toByteArray())
         val outputStream = ByteArrayOutputStream()
         val printStream = PrintStream(outputStream)
         val errorStream = System.err
+
         val configuredParser = UnifiedParser(inputStream, printStream, errorStream)
-        CommandLine(configuredParser).execute(*args)
+        val mockedParser = createMockedUnifiedParser(configuredParser, input)
+        CommandLine(mockedParser).execute(*args)
+
         return outputStream.toString()
     }
 
@@ -42,7 +58,16 @@ class UnifiedParserTest {
         Arguments.of("javascript", ".js"),
         Arguments.of("java", ".java"),
         Arguments.of("kotlin", ".kt"),
-        Arguments.of("cSharp", ".cs")
+        Arguments.of("cSharp", ".cs"),
+        Arguments.of("cpp", ".cpp"),
+        Arguments.of("c", ".c"),
+        Arguments.of("cHeader", ".h"),
+        Arguments.of("cppHeader", ".hpp"),
+        Arguments.of("python", ".py"),
+        Arguments.of("go", ".go"),
+        Arguments.of("php", ".php"),
+        Arguments.of("ruby", ".rb"),
+        Arguments.of("bash", ".sh")
     )
 
     @ParameterizedTest
@@ -50,8 +75,8 @@ class UnifiedParserTest {
     fun `Should produce correct output for a single source file of each supported language`(language: String, fileExtension: String) {
         // given
         val pipedProject = ""
-        val inputFilePath = "${testResourceBaseFolder}${language}Sample$fileExtension"
-        val expectedResultFile = File("${testResourceBaseFolder}${language}Sample.cc.json")
+        val inputFilePath = "${testResourceBaseFolder}languageSamples/${language}Sample$fileExtension"
+        val expectedResultFile = File("${testResourceBaseFolder}languageSamples/${language}Sample.cc.json")
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
@@ -135,6 +160,7 @@ class UnifiedParserTest {
             "bar/hello.kt",
             "bar/foo.kt",
             "foo.kt",
+            "foo.py",
             "whenCase.kt",
             "helloWorld.ts"
         )
@@ -166,7 +192,9 @@ class UnifiedParserTest {
 
         // then
         Assertions.assertThat(errContent.toString()).contains(
-            "2 Files with the following extensions were ignored as they are currently not supported:\n[.strange, .py]"
+            "2 Files with the following extensions were ignored as they are currently not supported:",
+            ".json",
+            ".strange"
         )
 
         // clean up
@@ -209,6 +237,21 @@ class UnifiedParserTest {
     }
 
     @Test
+    fun `should correctly exclude files and folders if exclude pattern was specified`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val expectedResultFile = File("${testResourceBaseFolder}excludePattern.cc.json").absoluteFile
+        val excludePattern = "/bar/, foo.kt, .*.py"
+
+        // when
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "-e=$excludePattern"))
+
+        // then
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+    }
+
+    @Test
     fun `should include normally excluded folders when without-default-excludes flag is set`() {
         // given
         val pipedProject = ""
@@ -216,7 +259,7 @@ class UnifiedParserTest {
         val expectedResultFile = File("${testResourceBaseFolder}includeAll.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--without-default-excludes"))
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--include-build-folders"))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)

@@ -9,10 +9,55 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Add new UnifiedParser that is based on treesitter and works without external tools [#4070](https://github.com/MaibornWolff/codecharta/pull/4070)
-  - It currently supports:
+- Add parsing of multiple file extensions for some languages (e.g. cpp or js) [#4170](https://github.com/MaibornWolff/codecharta/pull/4170)
+- Add warning to SonarImporter when used token is of wrong type [#4165](https://github.com/MaibornWolff/codecharta/pull/4165)
+
+### Changed
+- Changed pipe behaviour of UnifiedParser to use new '-' flag to indicate piped input [#4151](https://github.com/MaibornWolff/codecharta/pull/4151)
+
+## [1.135.1] - 2025-08-07
+
+### Changed
+
+- Rename `--without-default-excludes` flag of UnifiedParser to `--include-build-folders` [#4144](https://github.com/MaibornWolff/codecharta/pull/4144)
+
+### Fixed 🐞
+
+- Fix exclude patterns starting with a `/` not working for direct children of project root [#4149](https://github.com/MaibornWolff/codecharta/pull/4149)
+
+### Changed
+- Changed pipe behaviour of UnifiedParser to use new '-' flag to indicate piped input [#4151](https://github.com/MaibornWolff/codecharta/pull/4151)
+
+## [1.135.0] - 2025-07-28
+
+### Added 🚀
+
+- Add support for more languages to unifiedParser [4119](https://github.com/MaibornWolff/codecharta/pull/4119)
+  - Newly added languages:
+    - C
+    - C++
+    - Go
+    - PHP
+    - Ruby
+    - Bash
+
+## [1.134.0] - 2025-07-21
+
+### Added 🚀
+
+- Add new UnifiedParser that is based on [treesitter](https://tree-sitter.github.io/tree-sitter/index.html) and works without external tools [#4070](https://github.com/MaibornWolff/codecharta/pull/4070)
+  - Currently supported Languages (will be further extended):
+    - Javascript
     - Typescript
+    - Java
     - Kotlin
+    - C#
+    - Python
+  - Currently supported Metrics (will be further extended):
+    - Complexity
+    - Comment lines
+    - Lines of code
+    - Real lines of code
   - It is also available when calling the ccsh without parameters [#4102](https://github.com/MaibornWolff/codecharta/pull/4102)
 - Add auto-completing file input to all interactive dialogs [#4081](https://github.com/MaibornWolff/codecharta/pull/4081)
 

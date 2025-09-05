@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.analysers.importers.sonar
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
@@ -13,6 +12,8 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.util.CodeChartaConstants
+import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.File
@@ -106,6 +107,13 @@ class SonarImporter(
 
     override fun call(): Unit? {
         require(!(url == "" || projectId == "")) { "Input invalid Url or ProjectID for SonarImporter, stopping execution..." }
+
+        if (!userToken.startsWith("squ_")) {
+            Logger.error {
+                "Could not verify that given token is of type 'User Token'. Please ensure the used token is of this type, " +
+                    "tokens of type 'Project Analysis token' or 'Global Analysis token' might result in 'Insufficient privileges' error."
+            }
+        }
 
         val importer = createMeasuresAPIImporter()
         var project = importer.getProjectFromMeasureAPI(projectId, metrics)

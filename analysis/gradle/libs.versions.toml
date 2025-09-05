@@ -22,7 +22,7 @@ univocity-parsers = "2.9.1"
 assertj = "3.26.3"
 junit5 = "5.9.3"
 junit-platform = "1.9.3"
-ktlint = "12.1.2"
+ktlint = "12.3.0"
 mockito-core = "3.12.4"
 mockito-kotlin = "2.2.0"
 mockk = "1.13.17"
@@ -33,6 +33,13 @@ tree-sitter-javascript = "0.23.1"
 tree-sitter-kotlin = "0.3.8.1"
 tree-sitter-java = "0.23.4"
 tree-sitter-csharp = "0.23.1"
+tree-sitter-cpp = "0.23.4"
+tree-sitter-c = "0.23.2"
+tree-sitter-python = "0.23.4"
+tree-sitter-go = "0.23.3"
+tree-sitter-php = "0.23.11"
+tree-sitter-ruby = "0.23.1"
+tree-sitter-bash = "0.23.3"
 
 [libraries]
 kotlin-logging-jvm = { group = "io.github.oshai", name = "kotlin-logging-jvm", version.ref = "kotlin-logging" }
@@ -76,7 +83,13 @@ treesitter-javascript = { group = "io.github.bonede", name = "tree-sitter-javasc
 treesitter-kotlin = { group = "io.github.bonede", name = "tree-sitter-kotlin", version.ref = "tree-sitter-kotlin"}
 treesitter-java = { group = "io.github.bonede", name = "tree-sitter-java", version.ref = "tree-sitter-java"}
 treesitter-csharp = { group = "io.github.bonede", name = "tree-sitter-c-sharp", version.ref = "tree-sitter-csharp"}
-
+treesitter-cpp = { group = "io.github.bonede", name = "tree-sitter-cpp", version.ref = "tree-sitter-cpp"}
+treesitter-c = { group = "io.github.bonede", name = "tree-sitter-c", version.ref = "tree-sitter-c"}
+treesitter-python = { group = "io.github.bonede", name = "tree-sitter-python", version.ref = "tree-sitter-python"}
+treesitter-go = { group = "io.github.bonede", name = "tree-sitter-go", version.ref = "tree-sitter-go"}
+treesitter-php = { group = "io.github.bonede", name = "tree-sitter-php", version.ref = "tree-sitter-php"}
+treesitter-ruby = { group = "io.github.bonede", name = "tree-sitter-ruby", version.ref = "tree-sitter-ruby"}
+treesitter-bash = { group = "io.github.bonede", name = "tree-sitter-bash", version.ref = "tree-sitter-bash"}
 
 [plugins]
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

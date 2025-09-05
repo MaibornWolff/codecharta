@@ -6,9 +6,20 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 ## Supported Languages
 
-- Typescript
-- Kotlin
-- C#
+| Language   | Supported file extensions              |
+|------------|----------------------------------------|
+| Javascript | .js, .cjs, .mjs                        |
+| Typescript | .ts, .cts, .mts                        |
+| Java       | .java                                  |
+| Kotlin     | .kt                                    |
+| C#         | .cs                                    |
+| C++        | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
+| C          | .c, .h                                 |
+| Python     | .py                                    |
+| Go         | .go                                    |
+| PHP        | .php                                   |
+| Ruby       | .rb                                    |
+| Bash       | .sh                                    |
 
 ## Supported Metrics
 
@@ -24,19 +35,19 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 | Parameter                                 | Description                                                                                   |
 |-------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `FOLDER or FILE`                          | The project folder or code file to parse                                                      |
+| `FOLDER or FILE`                          | The project folder or code file to parse. To merge the result with an existing project piped into STDIN, pass a '-' as an additional argument |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                               |
 | `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)              |
 | `-h, --help`                              | displays this help and exits                                                                  |
+| `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.') |
 | `-nc, --not-compressed`                   | save uncompressed output File                                                                 |
 | `-o, --output-file=<outputFile>`          | output File (or empty for stdout)                                                             |
 | `--verbose`                               | displays messages about parsed and ignored files                                              |
-| `--without-default-excludes`              | do not exclude build, target, dist and out folders as well as files/folders starting with '.' |
 
 ```
-Usage: ccsh unifiedparser [-h] [-nc] [--verbose] [--without-default-excludes]
-                          [-o=<outputFile>] [-e=<patternsToExclude>]...
-                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER
+Usage: ccsh unifiedparser [-h] [-ibf] [-nc] [--verbose] [-o=<outputFile>]
+                          [-e=<patternsToExclude>]...
+                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
 ```
 
 ## Examples
@@ -56,11 +67,14 @@ ccsh unifiedparser src/test/resources -o foo.cc.json -nc --verbose
 ```
 
 ```
-ccsh unifiedparser src/test/resources -o foo.cc.json --without-default-excludes -e=something -e=/.*\.foo
+ccsh unifiedparser src/test/resources -o foo.cc.json --include-build-folders -e=something -e=/.*\.foo
 ```
 
 If a project is piped into the UnifiedParser, the results and the piped project are merged.
 The resulting project has the project name specified for the UnifiedParser.
+```
+cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.json
+```
 
 ## Extending the UnifiedParser
 
@@ -75,6 +89,8 @@ As the treesitter grammars differ by language, these queries need to be adjusted
 By default, it is not necessary to implement any functionality in the language specific collectors. If however the calculation for one metric is different from the base implementation, the function to calculate that metric can be overwritten
 
 Finally, to make the newly created collector accessible, add it to the 'AvailableCollectors' enum.
+
+It is also recommended to add tests for the new language by creating a test file for the collector, which tests both generic functionality but also special cases of the language.
 
 ### Adding a new metric
 

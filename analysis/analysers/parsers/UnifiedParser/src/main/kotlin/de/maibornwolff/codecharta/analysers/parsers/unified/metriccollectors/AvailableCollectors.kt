@@ -10,5 +10,12 @@ enum class AvailableCollectors(
     JAVASCRIPT(FileExtension.JAVASCRIPT, ::JavascriptCollector),
     KOTLIN(FileExtension.KOTLIN, ::KotlinCollector),
     JAVA(FileExtension.JAVA, ::JavaCollector),
-    CSHARP(FileExtension.CSHARP, ::CSharpCollector)
+    CSHARP(FileExtension.CSHARP, ::CSharpCollector),
+    CPP(FileExtension.CPP, ::CppCollector),
+    C(FileExtension.C, ::CCollector),
+    PYTHON(FileExtension.PYTHON, ::PythonCollector),
+    GO(FileExtension.GO, ::GoCollector),
+    PHP(FileExtension.PHP, ::PhpCollector),
+    RUBY(FileExtension.RUBY, ::RubyCollector),
+    BASH(FileExtension.BASH, ::BashCollector)
 }

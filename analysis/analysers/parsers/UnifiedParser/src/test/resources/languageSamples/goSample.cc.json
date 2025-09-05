@@ -1,5 +1,5 @@
 {
-  "checksum": "d65e9fd093e285977c0fd3b66de6ff4d",
+  "checksum": "e95c593f316eb0852d81ad82dca7838f",
   "data": {
     "projectName": "",
     "nodes": [
@@ -10,13 +10,13 @@
         "link": "",
         "children": [
           {
-            "name": "javascriptSample.js",
+            "name": "goSample.go",
             "type": "File",
             "attributes": {
-              "complexity": 33,
-              "comment_lines": 57,
-              "loc": 191,
-              "rloc": 110
+              "complexity": 8,
+              "comment_lines": 4,
+              "rloc": 33,
+              "loc": 43
             },
             "link": "",
             "children": []

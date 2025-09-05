@@ -14,9 +14,9 @@ CodeCharta is a **communication tool** that helps you understand and manage comp
 It turns metrics and your code base into a **city-like map** and makes your code **tangible**! A map where you can move around and find hotspots where your team has always had problems.
 So you can finally tackle the problems that have always been on your mind. But never talked about.
 
-# Why did we develope CodeCharta?
+# Why did we develop CodeCharta?
 
-CodeCharta was mainly developed by MaibornWolff to help us with our [Software Health Checks](https://www.maibornwolff.de/en/service/software-health-check/).
+CodeCharta was mainly developed by MaibornWolff to help us with our [Software Health Checks](https://www.maibornwolff.de/en/software-health-check/).
 We needed something to help us find potential issues to discuss with customers or to show the management where their teams are struggling.
 The latter has no connection or understanding of code at all, but CodeCharta makes it easy to understand and helps you map your
 understanding of code onto a visual and understandable map.

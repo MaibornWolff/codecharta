@@ -21,6 +21,8 @@ class TreeNodeTypes(
 
 class NestedNodeType(
     val baseNodeType: String,
-    val childNodeFieldName: String?,
+    val childNodeFieldName: String? = null,
+    val childNodeCount: Int? = null,
+    val childNodePosition: Int? = null,
     val childNodeTypes: Set<String>
 )

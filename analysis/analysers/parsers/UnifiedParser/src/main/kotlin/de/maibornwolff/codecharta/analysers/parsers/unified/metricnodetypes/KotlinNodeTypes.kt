@@ -29,6 +29,7 @@ class KotlinNodeTypes : MetricNodeTypes {
         )
     )
     override val commentLineNodeTypes = TreeNodeTypes(
+        // logical binary
         simpleNodeTypes = setOf(
             "line_comment",
             "multiline_comment"

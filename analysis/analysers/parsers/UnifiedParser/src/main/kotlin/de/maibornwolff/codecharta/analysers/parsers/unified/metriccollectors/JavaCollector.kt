@@ -5,5 +5,5 @@ import org.treesitter.TreeSitterJava
 
 class JavaCollector : MetricCollector(
     treeSitterLanguage = TreeSitterJava(),
-    queryProvider = JavaNodeTypes()
+    nodeTypeProvider = JavaNodeTypes()
 )
