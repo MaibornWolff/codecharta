@@ -42,4 +42,9 @@ class CSharpNodeTypes : MetricNodeTypes {
             "comment"
         )
     )
+
+    // TODO: fill up
+    override val numberOfFunctionsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
 }

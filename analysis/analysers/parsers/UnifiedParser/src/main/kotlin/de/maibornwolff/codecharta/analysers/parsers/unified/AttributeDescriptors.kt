@@ -28,6 +28,13 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
                 "which is neither a whitespace nor a tabulation nor part of a comment",
             link = ghLink,
             direction = -1
+        ),
+        "number_of_functions" to AttributeDescriptor(
+            title = "Number of functions",
+            description = "The number of functions or methods present in the file. " +
+                "Does not include anonymous or lambda functions.",
+            link = ghLink,
+            direction = -1
         )
     )
 }

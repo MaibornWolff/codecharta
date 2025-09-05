@@ -43,4 +43,9 @@ class PhpNodeTypes : MetricNodeTypes {
             "comment"
         )
     )
+
+    // TODO: fill up
+    override val numberOfFunctionsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
 }

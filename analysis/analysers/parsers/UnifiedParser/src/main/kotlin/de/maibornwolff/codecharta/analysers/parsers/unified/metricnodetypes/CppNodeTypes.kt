@@ -41,6 +41,11 @@ class CppNodeTypes : MetricNodeTypes {
         )
     )
 
+    // TODO: fill up
+    override val numberOfFunctionsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
+
     // every lambda expression contains an abstract function declarator, which can be ignored
     fun shouldIgnoreAbstractFunctionInLambda(node: TSNode, nodeType: String): Boolean {
         return nodeType == "abstract_function_declarator" && node.parent.type == "lambda_expression"

@@ -42,4 +42,9 @@ class JavascriptNodeTypes : MetricNodeTypes {
             "html_comment"
         )
     )
+
+    // TODO: fill up
+    override val numberOfFunctionsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
 }

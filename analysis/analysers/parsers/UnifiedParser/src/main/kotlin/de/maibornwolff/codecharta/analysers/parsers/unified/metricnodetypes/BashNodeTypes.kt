@@ -33,4 +33,9 @@ class BashNodeTypes : MetricNodeTypes {
             "comment"
         )
     )
+
+    // TODO: fill up
+    override val numberOfFunctionsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
 }
