@@ -36,8 +36,18 @@ class KotlinNodeTypes : MetricNodeTypes {
         )
     )
 
-    // TODO: fill up
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "function_declaration",
+            "setter",
+            "getter"),
+        nestedNodeTypes = setOf(
+            NestedNodeType(
+                baseNodeType = "property_declaration",
+                childNodeCount = 4,
+                childNodePosition = 3,
+                childNodeTypes = setOf("lambda_literal", "anonymous_function", "anonymous_initializer")
+            )
+        )
     )
 }
