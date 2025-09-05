@@ -10,13 +10,10 @@
           {{ formattedTitle() }}
       </div>
 </span>
+
 <ng-template #contextMenu>
-    <mat-card cdkMenu>
-        <button mat-menu-item data-test-id="screenshotDistribution" (click)="screenshotFileExtensionBar.emit()">
-            <i class="fa fa-camera menu-icon"></i>
-            <span>Screenshot distribution</span>
-        </button>
-        @if (hasFileExtension()) {
+    @if (hasFileExtension()) {
+        <mat-card cdkMenu>
             @if (isFlattened()) {
                 <button mat-menu-item data-test-id="showBuilding" (click)="show(fileExtension())">
                     <i class="fa fa-eye menu-icon"></i>
@@ -33,6 +30,6 @@
                 <i class="fa fa-ban menu-icon"></i>
                 <span>Exclude</span>
             </button>
-        }
-    </mat-card>
+        </mat-card>
+    }
 </ng-template>

@@ -19,7 +19,6 @@ export class FileExtensionBarSegmentComponent implements OnInit, OnDestroy {
     item = input.required<MetricDistribution>()
     showAbsoluteValues = input.required<boolean>()
     toggleShowAbsoluteValues = output<void>()
-    screenshotFileExtensionBar = output<void>()
 
     readonly isFlattened = signal<boolean>(false)
 
