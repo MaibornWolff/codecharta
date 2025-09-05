@@ -1,4 +1,4 @@
-import { addItemToArray, compareContentIgnoringOrder, removeItemFromArray } from "./arrayHelper"
+import { addItemToArray, compareContentIgnoringOrder, removeItemFromArray, removeItemsFromArray } from "./arrayHelper"
 
 function mutateObject(object: Record<string, number>) {
     object.x = 10_000
@@ -7,11 +7,13 @@ function mutateObject(object: Record<string, number>) {
 describe("arrayHelper", () => {
     let object1: { x: number; y: number }
     let object2: { x: number; y: number }
+    let object3: { x: number; y: number }
     let array: { x: number; y: number }[]
 
     beforeEach(() => {
         object1 = { x: 1, y: 2 }
         object2 = { x: 3, y: 4 }
+        object3 = { x: 5, y: 7 }
         array = []
     })
 
@@ -23,6 +25,15 @@ describe("arrayHelper", () => {
             mutateObject(object1)
 
             expect(result).toEqual([{ x: 3, y: 4 }])
+        })
+    })
+
+    describe("removeItemsFromArray", () => {
+        it("should deepClone an array and remove the items", () => {
+            array.push(object1, object2, object3)
+            const result = removeItemsFromArray(array, [object1, object2])
+            mutateObject(object1)
+            expect(result).toEqual([{ x: 5, y: 7 }])
         })
     })
 
