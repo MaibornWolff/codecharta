@@ -24,6 +24,7 @@ import { ResetColorRangeEffect } from "app/codeCharta/state/effects/resetColorRa
 import { BlacklistSearchPatternEffect } from "app/codeCharta/state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { UpdateShowLabelsEffect } from "./codeCharta/state/effects/updateShowLabels/updateShowLabels.effect"
 import { UpdateAmountOfEdgePreviewsEffect } from "./codeCharta/state/effects/amountOfEdgePreviews/updateAmountOfEdgePreviews.effect"
+import { BlacklistExtensionEffect } from "./codeCharta/state/effects/blacklistExtension/blacklistExtension.effect"
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -38,6 +39,7 @@ export const appConfig: ApplicationConfig = {
             UpdateAmountOfEdgePreviewsEffect,
             OpenNodeContextMenuEffect,
             BlacklistSearchPatternEffect,
+            BlacklistExtensionEffect,
             ResetColorRangeEffect,
             ResetChosenMetricsEffect,
             UpdateEdgePreviewsEffect,
