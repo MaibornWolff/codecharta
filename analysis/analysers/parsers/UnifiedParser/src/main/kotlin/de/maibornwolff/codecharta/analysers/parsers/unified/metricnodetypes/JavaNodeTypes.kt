@@ -40,8 +40,14 @@ class JavaNodeTypes : MetricNodeTypes {
         )
     )
 
-    // TODO: fill up
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf("method_declaration"),
+        nestedNodeTypes = setOf(
+            NestedNodeType(
+                baseNodeType = "variable_declarator",
+                childNodeFieldName = "value",
+                childNodeTypes = setOf("lambda_expression")
+            )
+        )
     )
 }

@@ -129,4 +129,43 @@ class JavaCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
     }
+
+    @Test
+    fun `should count normal function declaration for number of functions`() {
+        // given
+        val fileContent = """
+            public void testFun() {
+                System.out.println("normal method declaration");
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count lambda functions for number of functions only when they are assigned to a variable`() {
+        // given
+        val fileContent = """
+            // Lambda assigned to a variable (should be counted)
+            java.util.function.Consumer<String> tester = (content) -> {
+                System.out.println("Logging" + content);
+            };
+
+            // Inline lambda in method call (should not be counted)
+            java.util.List<String> x = java.util.Arrays.asList("a", "b", "c");
+            x.forEach((it) -> { System.out.println(it); });
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }

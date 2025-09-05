@@ -230,7 +230,7 @@ class TypescriptCollectorTest {
     }
 
     @Test
-    fun `should count arrow functions only for number of functions only when they are assigned to a variable`() {
+    fun `should count arrow functions for number of functions only when they are assigned to a variable`() {
         // given
         val fileContent = """
             const tester = (content: String) => {
