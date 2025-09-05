@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
+import io.mockk.every
+import io.mockk.spyk
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
@@ -27,13 +29,27 @@ class UnifiedParserTest {
         unmockkAll()
     }
 
+    private fun createMockedUnifiedParser(parser: UnifiedParser, input: String): UnifiedParser {
+        val spyParser = spyk(parser)
+
+        every { spyParser.shouldProcessPipedInput(any()) } answers {
+            val files = firstArg<List<File>>()
+            files.any { it.toString() == "-" } || input.isNotEmpty()
+        }
+
+        return spyParser
+    }
+
     private fun executeForOutput(input: String, args: Array<String>): String {
         val inputStream = ByteArrayInputStream(input.toByteArray())
         val outputStream = ByteArrayOutputStream()
         val printStream = PrintStream(outputStream)
         val errorStream = System.err
+
         val configuredParser = UnifiedParser(inputStream, printStream, errorStream)
-        CommandLine(configuredParser).execute(*args)
+        val mockedParser = createMockedUnifiedParser(configuredParser, input)
+        CommandLine(mockedParser).execute(*args)
+
         return outputStream.toString()
     }
 
@@ -45,6 +61,8 @@ class UnifiedParserTest {
         Arguments.of("cSharp", ".cs"),
         Arguments.of("cpp", ".cpp"),
         Arguments.of("c", ".c"),
+        Arguments.of("cHeader", ".h"),
+        Arguments.of("cppHeader", ".hpp"),
         Arguments.of("python", ".py"),
         Arguments.of("go", ".go"),
         Arguments.of("php", ".php"),

@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.ccsh
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
@@ -24,6 +23,7 @@ import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog
 import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserRepository
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.util.concurrent.Callable
@@ -92,14 +92,13 @@ class Ccsh : Callable<Unit?> {
             commandLine.executionStrategy = CommandLine.RunAll()
             return when {
                 args.isEmpty() -> executeAnalyserSuggestions(commandLine)
-                (
-                    !isAnalyserKnown(args, commandLine) && !isCommandKnown(args, commandLine) ||
-                        args.contains(
-                            "--interactive"
-                        ) || args.contains("-i")
-                ) -> selectAndExecuteAnalyser(commandLine)
 
-                isAnalyserKnownButWithoutArgs(args, commandLine) -> executeAnalyser(args.first(), commandLine)
+                (shouldStartInteractiveMode(args) || isUnknownAnalyser(args, commandLine)) ->
+                    selectAndExecuteInteractiveAnalyser(commandLine)
+
+                (isAnalyserKnownButWithoutArgs(args, commandLine) && isInInteractiveTerminal()) ->
+                    executeInteractiveAnalyser(args.first(), commandLine)
+
                 else -> commandLine.execute(*sanitizeArgs(args))
             }
         }
@@ -182,7 +181,6 @@ class Ccsh : Callable<Unit?> {
         }
 
         private fun executeConfiguredAnalyser(commandLine: CommandLine, configuredAnalyser: Map.Entry<String, List<String>>): Int {
-            Logger.info { "Executing ${configuredAnalyser.key}" }
             val exitCode =
                 AnalyserService.executePreconfiguredAnalyser(
                     commandLine,
@@ -196,12 +194,32 @@ class Ccsh : Callable<Unit?> {
             return exitCode
         }
 
-        private fun selectAndExecuteAnalyser(commandLine: CommandLine): Int {
-            val selectedAnalyser = AnalyserService.selectAnalyser(commandLine, PicocliAnalyserRepository())
-            return executeAnalyser(selectedAnalyser, commandLine)
+        private fun isUnknownAnalyser(args: Array<String>, commandLine: CommandLine): Boolean {
+            val firstArg = args.first()
+            val isAnalyserAndNotFlag = !firstArg.startsWith("-")
+            val isUnknownAnalyser = !isAnalyserKnown(args, commandLine)
+            val result = isAnalyserAndNotFlag && isUnknownAnalyser
+            if (result) {
+                val boldCode = "\u001b[1m"
+                val redColorCode = "\u001b[31m"
+                val resetColorCode = "\u001b[0m"
+
+                println(boldCode + redColorCode + "Unknown command: '$firstArg'" + resetColorCode)
+                println("Select an analyser to execute from the list below")
+            }
+            return result
         }
 
-        private fun executeAnalyser(selectedAnalyser: String, commandLine: CommandLine): Int {
+        private fun shouldStartInteractiveMode(args: Array<String>): Boolean {
+            return args.contains("--interactive") || args.contains("-i")
+        }
+
+        private fun selectAndExecuteInteractiveAnalyser(commandLine: CommandLine): Int {
+            val selectedAnalyser = AnalyserService.selectAnalyser(commandLine, PicocliAnalyserRepository())
+            return executeInteractiveAnalyser(selectedAnalyser, commandLine)
+        }
+
+        private fun executeInteractiveAnalyser(selectedAnalyser: String, commandLine: CommandLine): Int {
             Logger.info { "Executing $selectedAnalyser" }
             return AnalyserService.executeSelectedAnalyser(commandLine, selectedAnalyser)
         }
@@ -212,14 +230,14 @@ class Ccsh : Callable<Unit?> {
             return analyserList.contains(firstArg)
         }
 
-        private fun isCommandKnown(args: Array<String>, commandLine: CommandLine): Boolean {
-            val firstArg = args.first()
-            val optionsList = commandLine.commandSpec.options().map { it.names().toMutableList() }.flatten()
-            return optionsList.contains(firstArg)
-        }
-
         private fun isAnalyserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean {
             return isAnalyserKnown(args, commandLine) && args.size == 1
+        }
+
+        // e.g. when command is in a pipe we do not have access to an interactive terminal
+        // and cannot start a kotter session (our interactive mode) so we wait for piped input
+        private fun isInInteractiveTerminal(): Boolean {
+            return System.console() != null
         }
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {

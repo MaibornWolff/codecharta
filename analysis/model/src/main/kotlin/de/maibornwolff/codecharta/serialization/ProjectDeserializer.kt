@@ -32,8 +32,7 @@ object ProjectDeserializer {
     }
 
     fun deserializeProject(input: FileInputStream): Project {
-        val projectWrapper =
-            GSON.fromJson(CompressedStreamHandler.wrapInput(input).bufferedReader(), ProjectWrapper::class.java)
+        val projectWrapper = GSON.fromJson(CompressedStreamHandler.wrapInput(input).bufferedReader(), ProjectWrapper::class.java)
         return projectWrapper.data
     }
 

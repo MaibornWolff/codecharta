@@ -95,6 +95,6 @@ object ProjectSerializer {
 
     private fun getWrappedProject(project: Project): ProjectWrapper {
         val projectJsonString = GSON.toJson(project, Project::class.java)
-        return ProjectWrapper(project, projectJsonString.toString())
+        return ProjectWrapper(project, projectJsonString)
     }
 }

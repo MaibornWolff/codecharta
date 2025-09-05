@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

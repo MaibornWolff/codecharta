@@ -4,7 +4,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.CodeChartaConstants
 import de.maibornwolff.codecharta.analysers.importers.tokei.strategy.ImporterStrategy
 import de.maibornwolff.codecharta.analysers.importers.tokei.strategy.TokeiInnerStrategy
 import de.maibornwolff.codecharta.analysers.importers.tokei.strategy.TokeiTwelveStrategy
@@ -15,6 +14,7 @@ import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectInputReader
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import kotlinx.coroutines.Dispatchers

@@ -16,7 +16,7 @@ So you can finally tackle the problems that have always been on your mind. But n
 
 # Why did we develop CodeCharta?
 
-CodeCharta was mainly developed by MaibornWolff to help us with our [Software Health Checks](https://www.maibornwolff.de/en/service/software-health-check/).
+CodeCharta was mainly developed by MaibornWolff to help us with our [Software Health Checks](https://www.maibornwolff.de/en/software-health-check/).
 We needed something to help us find potential issues to discuss with customers or to show the management where their teams are struggling.
 The latter has no connection or understanding of code at all, but CodeCharta makes it easy to understand and helps you map your
 understanding of code onto a visual and understandable map.

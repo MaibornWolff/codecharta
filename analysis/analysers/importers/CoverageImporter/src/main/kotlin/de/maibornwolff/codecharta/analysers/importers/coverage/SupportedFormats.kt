@@ -78,7 +78,7 @@ internal fun getFormatByName(formatName: String): Format {
     val element = Format.entries.firstOrNull {
         val currentNameLower = it.formatName.lowercase()
         val nameToCheckLower = formatName.lowercase()
-        currentNameLower == nameToCheckLower || currentNameLower + it.fileExtension.extension == nameToCheckLower
+        currentNameLower == nameToCheckLower || currentNameLower + it.fileExtension.primaryExtension == nameToCheckLower
     }
     require(element != null) { "Unsupported format found: $formatName" }
     return element
