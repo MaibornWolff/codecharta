@@ -1,6 +1,6 @@
 import { TestBed, waitForAsync } from "@angular/core/testing"
 
-import { BlackListExtensionService } from "./blackListExtension.service"
+import { addPrefixWildcard, BlackListExtensionService } from "./blackListExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CategorizedMetricDistribution, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
 import { BlacklistItem, BlacklistType, CcState, ColorMode, NodeType, SortingOption } from "../../codeCharta.model"
@@ -173,7 +173,3 @@ describe("BlackListServiceService", () => {
         })
     })
 })
-
-function addPrefixWildcard(extension: string) {
-    return `*.${extension}`
-}

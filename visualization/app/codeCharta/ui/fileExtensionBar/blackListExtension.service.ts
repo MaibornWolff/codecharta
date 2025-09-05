@@ -8,6 +8,10 @@ import { metricDistributionSelector } from "./selectors/metricDistribution.selec
 import { removeBlacklistItem, removeBlacklistItems } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { map, Observable } from "rxjs"
 
+export function addPrefixWildcard(extension: string) {
+    return `*.${extension}`
+}
+
 @Injectable({
     providedIn: "root"
 })
@@ -41,22 +45,24 @@ export class BlackListExtensionService {
 
     show(fileExtension: string) {
         if (fileExtension === OTHER_EXTENSION) {
-            const flattenedItemsToShow = this.metricDistribution.others.map(it => this.flattenedItems.get(`*.${it.fileExtension}`))
+            const flattenedItemsToShow = this.metricDistribution.others.map(it =>
+                this.flattenedItems.get(addPrefixWildcard(it.fileExtension))
+            )
             this.store.dispatch(removeBlacklistItems({ items: flattenedItemsToShow }))
         } else {
-            const blackListedItem = this.flattenedItems.get(`*.${fileExtension}`)
-            this.store.dispatch(removeBlacklistItem({ item: blackListedItem }))
+            const flattenedItemToShow = this.flattenedItems.get(addPrefixWildcard(fileExtension))
+            this.store.dispatch(removeBlacklistItem({ item: flattenedItemToShow }))
         }
     }
 
     getIsFlattenedByFileExtension(fileExtension: string): Observable<boolean> {
         return this.flattenedItems$.pipe(
             map(items => {
-                const extension = `*.${fileExtension}`
+                const extension = addPrefixWildcard(fileExtension)
                 const flattenedFileExtensions = items.map(item => item.path)
                 if (fileExtension === OTHER_EXTENSION) {
                     return this.metricDistribution.others
-                        .map(it => `*.${it.fileExtension}`)
+                        .map(it => addPrefixWildcard(it.fileExtension))
                         .some(it => flattenedFileExtensions.includes(it))
                 }
                 return flattenedFileExtensions.includes(extension)
@@ -68,10 +74,10 @@ export class BlackListExtensionService {
         if (fileExtension === OTHER_EXTENSION) {
             const fileExtensionsToExclude = this.metricDistribution.others
                 .filter(it => it.fileExtension !== NO_EXTENSION)
-                .map(it => `*.${it.fileExtension}`)
+                .map(it => addPrefixWildcard(it.fileExtension))
             this.store.dispatch(blacklistExtensionsPattern(type, ...fileExtensionsToExclude))
         } else {
-            this.store.dispatch(blacklistExtensionsPattern(type, `*.${fileExtension}`))
+            this.store.dispatch(blacklistExtensionsPattern(type, addPrefixWildcard(fileExtension)))
         }
     }
 }

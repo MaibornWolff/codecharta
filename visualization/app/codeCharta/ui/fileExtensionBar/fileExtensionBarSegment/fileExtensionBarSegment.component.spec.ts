@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing"
 import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment.component"
-import { BlackListExtensionService } from "../blackListExtension.service"
+import { addPrefixWildcard, BlackListExtensionService } from "../blackListExtension.service"
 import { HighlightBuildingsByFileExtensionService } from "../highlightBuildingsByFileExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
@@ -95,7 +95,7 @@ describe("FileExtensionBarSegment", () => {
         // THEN
         expect(dispatchSpy).toHaveBeenCalledWith({
             action: { type: "flatten" },
-            extensions: [`*.${mockItem.fileExtension}`],
+            extensions: [addPrefixWildcard(mockItem.fileExtension)],
             type: "BlacklistExtensionAction"
         })
         updateStoreWithBlacklistedItems(store, { path: "*.ts", type: "flatten" })
@@ -130,7 +130,7 @@ describe("FileExtensionBarSegment", () => {
     })
 
     describe("Context Menu", () => {
-        let dispatchSpy: jest.SpyInstance<void, [action: Action<string>], any>
+        let dispatchSpy: jest.SpyInstance<void, [action: Action]>
 
         beforeEach(() => {
             dispatchSpy = jest.spyOn(store, "dispatch")
@@ -247,7 +247,7 @@ describe("FileExtensionBarSegment", () => {
                 none: []
             }
 
-            const otherFileExtensionsWithWildcards = mockedDistribution.others.map(it => `*.${it.fileExtension}`)
+            const otherFileExtensionsWithWildcards = mockedDistribution.others.map(it => addPrefixWildcard(it.fileExtension))
 
             store.overrideSelector(metricDistributionSelector, mockedDistribution)
             store.refreshState()
