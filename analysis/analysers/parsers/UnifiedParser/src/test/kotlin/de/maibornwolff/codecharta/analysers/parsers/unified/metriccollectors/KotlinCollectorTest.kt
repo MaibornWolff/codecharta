@@ -157,4 +157,80 @@ class KotlinCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
     }
+
+    @Test
+    fun `should count normal function declaration for number of functions`() {
+        // given
+        val fileContent = """
+            fun main() {
+                println("Hello, World!")
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count getter and setter functions for number of functions`() {
+        // given
+        val fileContent = """
+            class Point(var x: Int, var y: Int) {
+                var coordinates: String
+                    get() = "${'$'}x,${'$'}y"
+                    set(value) {
+                        val parts = value.split(",")
+                        x = parts[0].toInt()
+                        y = parts[1].toInt()
+                    }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2)
+    }
+
+    @Test
+    fun `should count lambda function for number of functions only when they are assigned to a variable`() {
+        // given
+        val fileContent = """
+            val sum = { x: Int, y: Int -> x + y }
+
+            val product = items.fold(1) { acc, e -> acc * e }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count anonymous function for number of functions only when they are assigned to a variable`() {
+        // given
+        val fileContent = """
+            val adder = fun(x: Int, y: Int): Int {
+                return x + y
+            }
+
+            ints.filter(fun(item) = item > 0)
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }
