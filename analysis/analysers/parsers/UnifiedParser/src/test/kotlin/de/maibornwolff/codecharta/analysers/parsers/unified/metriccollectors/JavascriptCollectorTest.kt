@@ -163,4 +163,100 @@ class JavascriptCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
     }
+
+    @Test
+    fun `should count normal function declaration for number of functions`() {
+        // given
+        val fileContent = """
+            function printSomething() {
+                console.log("Something");
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count generator function declaration for number of functions`() {
+        // given
+        val fileContent = """
+            function* generator() {
+                console.log("Returns a generator type");
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count function expression for number of functions`() {
+        // given
+        val fileContent = """
+            const fun_expr = function (expression) {
+                console.log("This is a function expression:" + expression);
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count arrow functions only for number of functions only when they are assigned to a variable`() {
+        // given
+        val fileContent = """
+            const tester = (content) => {
+                console.log("Logging" + content)
+            }
+
+            //inline arrow function (should not be counted)
+            const x = ["a", "b", "c"]
+            x.map((it) => {console.log(it)})
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count method definitions in class for number of functions`() {
+        // given
+        val fileContent = """
+            class TestClass {
+                method() {
+                    console.log("This is a method")
+                }
+
+                // should not count static block in class
+                static {
+                    console.log("this is a static block")
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }
