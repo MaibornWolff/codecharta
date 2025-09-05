@@ -416,7 +416,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         for (const { data } of hierarchy(codeMapNode)) {
             const building = this.idToBuilding.get(data.id)
             if (building) {
-                this.threeSceneService.addBuildingToHighlightingList(building)
+                this.threeSceneService.addBuildingsToHighlightingList(building)
             }
         }
         this.threeSceneService.applyHighlights()

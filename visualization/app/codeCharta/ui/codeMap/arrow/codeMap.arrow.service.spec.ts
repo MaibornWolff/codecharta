@@ -59,7 +59,7 @@ describe("CodeMapArrowService", () => {
                 selectBuilding: jest.fn()
             }),
             applyHighlights: jest.fn(),
-            addBuildingToHighlightingList: jest.fn(),
+            addBuildingsToHighlightingList: jest.fn(),
             getSelectedBuilding: jest.fn().mockReturnValue({
                 value: "value"
             })
@@ -324,7 +324,7 @@ describe("CodeMapArrowService", () => {
             codeMapArrowService["highlightBuilding"](OUTGOING_NODE)
 
             expect(threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath).toHaveBeenCalled()
-            expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
+            expect(threeSceneService.addBuildingsToHighlightingList).toHaveBeenCalled()
         })
     })
 
