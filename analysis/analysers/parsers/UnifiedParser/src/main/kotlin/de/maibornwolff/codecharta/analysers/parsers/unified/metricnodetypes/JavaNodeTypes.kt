@@ -39,4 +39,9 @@ class JavaNodeTypes : MetricNodeTypes {
             "line_comment"
         )
     )
+
+    // TODO: fill up
+    override val numberOfFunctionsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
 }

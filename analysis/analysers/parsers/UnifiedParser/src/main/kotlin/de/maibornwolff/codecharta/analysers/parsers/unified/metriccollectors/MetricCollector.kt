@@ -28,7 +28,10 @@ abstract class MetricCollector(
         AvailableMetrics.COMMENT_LINES to Pair(1) { node: TSNode, nodeType: String, startRow: Int, endRow: Int ->
             calculateCommentLinesForNode(node, nodeType, startRow, endRow)
         },
-        AvailableMetrics.REAL_LINES_OF_CODE to Pair(2) { node: TSNode, nodeType: String, startRow: Int, endRow: Int ->
+        AvailableMetrics.NUMBER_OF_FUNCTIONS to Pair(2) { node: TSNode, nodeType: String, _: Int, _: Int ->
+            calculateNumberOfFunctionsForNode(node, nodeType)
+        },
+        AvailableMetrics.REAL_LINES_OF_CODE to Pair(3) { node: TSNode, nodeType: String, startRow: Int, endRow: Int ->
             calculateRealLinesOfCodeForNode(node, nodeType, startRow, endRow)
         }
     )
@@ -107,6 +110,10 @@ abstract class MetricCollector(
             return endRow - startRow + 1
         }
         return 0
+    }
+
+    protected open fun calculateNumberOfFunctionsForNode(node: TSNode, nodeType: String): Int {
+        return if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.numberOfFunctionsNodeTypes)) 1 else 0
     }
 
     protected open fun calculateRealLinesOfCodeForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {

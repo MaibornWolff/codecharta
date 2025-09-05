@@ -51,6 +51,11 @@ class PythonNodeTypes : MetricNodeTypes {
         )
     )
 
+    // TODO: fill up
+    override val numberOfFunctionsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
+
     val nodeTypesToIgnore = setOf(
         "string_start",
         "string_content",

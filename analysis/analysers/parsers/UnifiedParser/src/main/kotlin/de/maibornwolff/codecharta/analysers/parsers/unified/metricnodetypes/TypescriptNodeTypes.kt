@@ -43,4 +43,20 @@ class TypescriptNodeTypes : MetricNodeTypes {
             "html_comment"
         )
     )
+
+    override val numberOfFunctionsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "function_declaration",
+            "generator_function_declaration",
+            "method_definition",
+            "function_expression"
+        ),
+        nestedNodeTypes = setOf(
+            NestedNodeType(
+                baseNodeType = "variable_declarator",
+                childNodeFieldName = "value",
+                childNodeTypes = setOf("arrow_function")
+            )
+        )
+    )
 }

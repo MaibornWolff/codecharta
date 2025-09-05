@@ -39,6 +39,11 @@ class RubyNodeTypes : MetricNodeTypes {
         )
     )
 
+    // TODO: fill up
+    override val numberOfFunctionsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
+
     val nodeTypesToIgnore = setOf(
         "then"
     )
