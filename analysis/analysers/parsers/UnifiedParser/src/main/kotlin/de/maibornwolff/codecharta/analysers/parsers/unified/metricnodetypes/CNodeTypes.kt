@@ -38,9 +38,12 @@ class CNodeTypes : MetricNodeTypes {
         )
     )
 
-    // TODO: fill up
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "function_definition",
+            "abstract_function_declarator",
+            "function_declarator"
+        )
     )
 
     // every function definition contains a function declarator, so the inner declarator can be ignored
