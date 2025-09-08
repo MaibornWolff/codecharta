@@ -34,8 +34,11 @@ class GoNodeTypes : MetricNodeTypes {
         )
     )
 
-    // TODO: fill up
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "method_declaration",
+            "func_literal",
+            "function_declaration",
+            "method_spec")
     )
 }
