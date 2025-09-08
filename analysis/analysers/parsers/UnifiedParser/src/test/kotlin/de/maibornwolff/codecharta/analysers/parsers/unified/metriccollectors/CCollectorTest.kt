@@ -179,4 +179,23 @@ class CCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
     }
+
+    @Test
+    fun `should count function definition and declaration for number of functions`() {
+        // given
+        val fileContent = """
+            void testDeclaration()
+
+            void myFunction() {
+                printf("I just got executed!");
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2)
+    }
 }
