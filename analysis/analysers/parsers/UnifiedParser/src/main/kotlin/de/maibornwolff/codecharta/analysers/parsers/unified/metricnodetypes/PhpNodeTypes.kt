@@ -44,8 +44,18 @@ class PhpNodeTypes : MetricNodeTypes {
         )
     )
 
-    // TODO: fill up
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "method_declaration",
+            "function_definition",
+            "function_static_declaration"
+        ),
+        nestedNodeTypes = setOf(
+            NestedNodeType(
+                baseNodeType = "assignment_expression",
+                childNodeFieldName = "right",
+                childNodeTypes = setOf("anonymous_function", "arrow_function", "lambda_expression")
+            )
+        )
     )
 }

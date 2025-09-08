@@ -278,4 +278,82 @@ class PhpCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(7)
     }
+
+    @Test
+    fun `should count normal function definitions for number of functions`() {
+        // given
+        val fileContent = """
+            <?php
+            function myMessage() {
+              echo "Hello world!";
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count method definitions in class for number of functions`() {
+        // given
+        val fileContent = """
+            <?php
+            class Foo {
+                function myMessage() {
+                    echo "Hello world!";
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count anonymous function definitions for number of functions only when assigned to a variable`() {
+        // given
+        val fileContent = """
+            <?php
+            ${'$'}greet = function(${'$'}name) {
+                printf("Hello %s\r\n", ${'$'}name);
+            };
+
+            array_map(function(${'$'}name) {
+                printf("Hello %s\r\n", ${'$'}name);
+            }, ["Alice", "Bob"]);
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count arrow function definitions for number of functions only when assigned to a variable`() {
+        // given
+        val fileContent = """
+            <?php
+            ${'$'}double = fn(${'$'}x) => ${'$'}x * 2;
+
+            ${'$'}result = array_map(fn(${'$'}x) => ${'$'}x * 2, [1, 2, 3]);
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }
