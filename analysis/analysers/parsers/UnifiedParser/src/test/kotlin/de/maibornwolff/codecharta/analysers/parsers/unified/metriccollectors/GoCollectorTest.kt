@@ -182,4 +182,55 @@ class GoCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
     }
+
+    @Test
+    fun `should count normal function declaration for number of functions`() {
+        // given
+        val fileContent = """
+            func add(x int, y int) int {
+                return x + y
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count function literal for number of functions`() {
+        // given
+        val fileContent = """
+            f := func() {
+                fmt.Println("I am a function literal!")
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count method declaration for number of functions`() {
+        // given
+        val fileContent = """
+            func (v Vertex) Abs() float64 {
+                return math.Sqrt(v.X*v.X + v.Y*v.Y)
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }
