@@ -43,8 +43,18 @@ class CSharpNodeTypes : MetricNodeTypes {
         )
     )
 
-    // TODO: fill up
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "method_declaration",
+            "local_function_statement"
+        ),
+        nestedNodeTypes = setOf(
+            NestedNodeType(
+                baseNodeType = "variable_declarator",
+                childNodeCount = 3,
+                childNodePosition = 2,
+                childNodeTypes = setOf("lambda_expression")
+            )
+        )
     )
 }
