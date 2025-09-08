@@ -226,4 +226,42 @@ class CppCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
     }
+
+    @Test
+    fun `should count function definition and declaration for number of functions`() {
+        // given
+        val fileContent = """
+            void testDeclaration()
+
+            void myFunction() {
+                printf("I just got executed!");
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2)
+    }
+
+    @Test
+    fun `should count lambda expression for number of functions only when assigned to a variable`() {
+        // given
+        val fileContent = """
+            auto doubleValue = [](int x) { return x * 2; };
+
+            std::for_each(numbers.begin(), numbers.end(), [](int x) {
+                std::cout << x * 2 << " ";
+            });
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }
