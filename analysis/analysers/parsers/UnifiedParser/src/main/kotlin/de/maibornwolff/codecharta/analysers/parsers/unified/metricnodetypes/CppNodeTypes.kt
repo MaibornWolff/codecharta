@@ -41,9 +41,19 @@ class CppNodeTypes : MetricNodeTypes {
         )
     )
 
-    // TODO: fill up
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "function_definition",
+            "abstract_function_declarator",
+            "function_declarator"
+        ),
+        nestedNodeTypes = setOf(
+            NestedNodeType(
+                baseNodeType = "init_declarator",
+                childNodeFieldName = "value",
+                childNodeTypes = setOf("lambda_expression")
+            )
+        )
     )
 
     // every lambda expression contains an abstract function declarator, which can be ignored
