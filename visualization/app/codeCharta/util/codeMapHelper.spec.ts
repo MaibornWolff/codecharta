@@ -1,10 +1,39 @@
-import { CCFile } from "../codeCharta.model"
+import { CCFile, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import packageJson from "../../../package.json"
-import { getAllNodes, getMapResolutionScaleFactor, MAP_RESOLUTION_SCALE } from "./codeMapHelper"
+import { getAllNodes, getMapResolutionScaleFactor, getMarkingColor, MAP_RESOLUTION_SCALE } from "./codeMapHelper"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { VALID_NODE_WITH_PATH } from "./dataMocks"
 
 describe("CodeMapHelper", () => {
+    describe("getMarkingColor", () => {
+        const markedRootPackage: MarkedPackage = { path: "folder/to/mark", color: "#ffffff" }
+
+        it("should return the marked color for the marked root package", () => {
+            const rootNodeToMark: CodeMapNode = { name: "RootFolder", type: NodeType.FOLDER, path: markedRootPackage.path }
+            expect(getMarkingColor(rootNodeToMark, [markedRootPackage])).toEqual(markedRootPackage.color)
+        })
+
+        it("should return no color for siblings that match the same name as the marked package", () => {
+            const siblingNode: CodeMapNode = {
+                name: "SiblingFolderWithTheSameStartingPath",
+                type: NodeType.FOLDER,
+                path: `${markedRootPackage.path}-extra-text`
+            }
+            expect(getMarkingColor(siblingNode, [markedRootPackage])).toBeUndefined()
+        })
+
+        it("should return the marked color for all childrens of the marked root package", () => {
+            const childNode1: CodeMapNode = { name: "ChildFolder", type: NodeType.FOLDER, path: `${markedRootPackage.path}/sibling` }
+            const childNode2: CodeMapNode = {
+                name: "DeeperChildFolder",
+                type: NodeType.FOLDER,
+                path: `${markedRootPackage.path}/deeper/sibling`
+            }
+
+            expect(getMarkingColor(childNode1, [markedRootPackage])).toEqual(markedRootPackage.color)
+            expect(getMarkingColor(childNode2, [markedRootPackage])).toEqual(markedRootPackage.color)
+        })
+    })
     describe("getMapResolutionScaleFactor", () => {
         it("should get map resolution scale factor SMALL for a single and multiple maps", () => {
             const smallFile1 = {
