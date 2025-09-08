@@ -212,4 +212,57 @@ class CSharpCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
     }
+
+    @Test
+    fun `should count method declaration for number of functions`() {
+        // given
+        val fileContent = """
+            namespace ExampleSpace
+            {
+                abstract class MyClass
+                {
+                    public void someMethod() {/* Method statements here */ }
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count local function statement for number of functions`() {
+        // given
+        val fileContent = """
+            public void someMethod() {/* Method statements here */ }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count lambda expression for number of functions only when assigned to a variable`() {
+        // given
+        val fileContent = """
+            Func<int, int> doubleValue = x => x * 2;
+
+            var results = new[] { 1, 2, 3 }.Select(x => x * 2);
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }
