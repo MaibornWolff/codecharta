@@ -199,7 +199,7 @@ export class CodeMapArrowService implements OnDestroy {
 
     private highlightBuilding(node: Node) {
         const building = this.threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath(node.path)
-        this.threeSceneService.addBuildingToHighlightingList(building)
+        this.threeSceneService.addBuildingsToHighlightingList(building)
     }
 
     private setCurveColor(bezier: CubicBezierCurve3, color: number, bezierPoints = 50) {

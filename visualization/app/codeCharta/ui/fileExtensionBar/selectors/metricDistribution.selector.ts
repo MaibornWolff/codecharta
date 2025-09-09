@@ -1,11 +1,11 @@
 import { createSelector } from "@ngrx/store"
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { distributionMetricSelector } from "../../../state/store/dynamicSettings/distributionMetric/distributionMetric.selector"
 import { FileExtensionCalculator } from "./fileExtensionCalculator"
+import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 
 export const metricDistributionSelector = createSelector(
     accumulatedDataSelector,
-    distributionMetricSelector,
+    areaMetricSelector,
     (accumulatedData, distributionMetric) =>
         FileExtensionCalculator.getMetricDistribution(accumulatedData.unifiedMapNode, distributionMetric)
 )
