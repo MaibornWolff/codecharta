@@ -448,15 +448,15 @@ export class ThreeSceneService implements OnDestroy {
 
     highlightBuildingsWithoutExtensions() {
         const shouldExtensionBeHighlighted = (buildingExtension: string) => buildingExtension === NO_EXTENSION
-        this.highlight(shouldExtensionBeHighlighted)
+        this.applyHighlightingForExtensions(shouldExtensionBeHighlighted)
     }
 
     highlightBuildingsByExtension(extensionsToHighlight: Set<string>) {
         const shouldExtensionBeHighlighted = (buildingExtension: string) => extensionsToHighlight.has(buildingExtension)
-        this.highlight(shouldExtensionBeHighlighted)
+        this.applyHighlightingForExtensions(shouldExtensionBeHighlighted)
     }
 
-    private highlight(shouldExtensionBeHighlighted: (buildingExtension: string) => boolean) {
+    private applyHighlightingForExtensions(shouldExtensionBeHighlighted: (buildingExtension: string) => boolean) {
         const buildingsToHighlight = this.mapMesh.getMeshDescription().buildings.filter(building => {
             if (!building.node.isLeaf) {
                 return false

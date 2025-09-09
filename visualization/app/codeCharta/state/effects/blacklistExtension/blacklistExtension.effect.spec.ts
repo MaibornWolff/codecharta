@@ -29,7 +29,7 @@ describe("BlackListExtensionEffect", () => {
         actions$.complete()
     })
 
-    it.each<[BlacklistType]>([["flatten"], ["exclude"]])("should dispatch flatten", blackListType => {
+    it.each<[BlacklistType]>([["flatten"], ["exclude"]])("should dispatch %s", blackListType => {
         // Arrange
         const extensionsToExclude = ["*.ts", "*.js"]
         const parsedItems: BlacklistItem[] = [
