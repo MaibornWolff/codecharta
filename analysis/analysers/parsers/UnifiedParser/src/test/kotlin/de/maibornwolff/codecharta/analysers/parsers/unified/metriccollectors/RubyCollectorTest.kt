@@ -293,4 +293,53 @@ class RubyCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
     }
+
+    @Test
+    fun `should count method definition for number of functions`() {
+        // given
+        val fileContent = """
+            def greet(name)
+                puts "Hello, #{name}!"
+            end
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count singleton methods for number of functions`() {
+        // given
+        val fileContent = """
+            def object.singleton_method
+              "This is a singleton method"
+            end
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
+
+    @Test
+    fun `should count lambda expression for number of functions`() {
+        // given
+        val fileContent = """
+            a_lambda = -> { puts "Hello world!" }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }
