@@ -39,6 +39,7 @@ class GoNodeTypes : MetricNodeTypes {
             "method_declaration",
             "func_literal",
             "function_declaration",
-            "method_spec")
+            "method_spec"
+        )
     )
 }
