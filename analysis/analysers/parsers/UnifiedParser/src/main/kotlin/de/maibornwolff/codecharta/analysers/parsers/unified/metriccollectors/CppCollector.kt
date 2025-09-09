@@ -13,11 +13,6 @@ class CppCollector : MetricCollector(
         return super.calculateComplexityForNode(node, nodeType)
     }
 
-    override fun calculateNumberOfFunctionsForNode(node: TSNode, nodeType: String): Int {
-        if (shouldIgnoreNodeType(node, nodeType)) return 0
-        return super.calculateNumberOfFunctionsForNode(node, nodeType)
-    }
-
     private fun shouldIgnoreNodeType(node: TSNode, nodeType: String): Boolean {
         val cppNodeTypes = nodeTypeProvider as CppNodeTypes
         return cppNodeTypes.shouldIgnoreAbstractFunctionInLambda(node, nodeType) ||

@@ -39,6 +39,7 @@ class KotlinNodeTypes : MetricNodeTypes {
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             "function_declaration",
+            "secondary_constructor",
             "setter",
             "getter"
         ),

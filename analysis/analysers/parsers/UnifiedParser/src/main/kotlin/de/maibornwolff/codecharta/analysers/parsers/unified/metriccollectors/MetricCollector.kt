@@ -149,10 +149,10 @@ abstract class MetricCollector(
 
             if (nestedType.childNodePosition != null && nestedType.childNodeCount == node.childCount) {
                 val childNode = node.getChild(nestedType.childNodePosition)
-                if (nestedType.childNodeTypes.contains(childNode.type)) return true
+                if (!childNode.isNull && nestedType.childNodeTypes.contains(childNode.type)) return true
             } else if (nestedType.childNodeFieldName != null) {
                 val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
-                if (nestedType.childNodeTypes.contains(childNode.type)) return true
+                if (!childNode.isNull && nestedType.childNodeTypes.contains(childNode.type)) return true
             }
         }
         return false

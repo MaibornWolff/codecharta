@@ -265,4 +265,26 @@ class CSharpCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
     }
+
+    @Test
+    fun `should count constructor for number of functions`() {
+        // given
+        val fileContent = """
+            class Car {
+                public string model;  // Create a field
+
+                // Create a class constructor for the Car class
+                public Car() {
+                    model = "Mustang"; // Set the initial value for model
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }

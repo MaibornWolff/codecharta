@@ -233,4 +233,24 @@ class KotlinCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
     }
+
+    @Test
+    fun `should count secondary constructor for number of functions`() {
+        // given
+        val fileContent = """
+            class Person(val name: String) {
+                val children: MutableList<Person> = mutableListOf()
+                constructor(name: String, parent: Person) : this(name) {
+                    parent.children.add(this)
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+    }
 }
