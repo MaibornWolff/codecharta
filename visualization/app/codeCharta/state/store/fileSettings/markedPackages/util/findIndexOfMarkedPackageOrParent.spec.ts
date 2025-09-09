@@ -25,6 +25,10 @@ describe("findIndexOfMarkedPackageOrParent", () => {
         ).toBe(1)
     })
 
+    it("should return -1 if a sibling has the marked package as prefix", () => {
+        expect(findIndexOfMarkedPackageOrParent([{ path: "/root/marked", color: "#ffffff" }], "/root/marked-sibling")).toBe(-1)
+    })
+
     it("should find closest parent if given path is not marked", () => {
         expect(
             findIndexOfMarkedPackageOrParent(

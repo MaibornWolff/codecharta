@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Add a scrollbar to the flatten/exclude menu when too many entries are present [#4164](https://github.com/MaibornWolff/codecharta/pull/4164)
+- Change the behavior when coloring a folder, which lead to coloring sibling paths that matched the colored folder [#4154](https://github.com/MaibornWolff/codecharta/issues/4154)
 - Improve performance of the whole application by preventing rerendering [4054](https://github.com/MaibornWolff/codecharta/issues/4054)
 - Fix styling for the file extension bar to always see the whole extension [#4141](https://github.com/MaibornWolff/codecharta/issues/4114)
 
