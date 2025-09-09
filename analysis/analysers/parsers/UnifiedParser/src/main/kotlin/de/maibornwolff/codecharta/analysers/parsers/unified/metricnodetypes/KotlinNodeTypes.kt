@@ -40,7 +40,8 @@ class KotlinNodeTypes : MetricNodeTypes {
         simpleNodeTypes = setOf(
             "function_declaration",
             "setter",
-            "getter"),
+            "getter"
+        ),
         nestedNodeTypes = setOf(
             NestedNodeType(
                 baseNodeType = "property_declaration",
