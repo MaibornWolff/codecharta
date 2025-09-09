@@ -181,7 +181,7 @@ class CCollectorTest {
     }
 
     @Test
-    fun `should count function definition and declaration for number of functions`() {
+    fun `should count function definition but not declaration for number of functions`() {
         // given
         val fileContent = """
             void testDeclaration()
@@ -196,6 +196,6 @@ class CCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
     }
 }

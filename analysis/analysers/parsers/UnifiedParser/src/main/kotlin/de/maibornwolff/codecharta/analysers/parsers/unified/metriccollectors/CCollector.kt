@@ -13,11 +13,6 @@ class CCollector : MetricCollector(
         return super.calculateComplexityForNode(node, nodeType)
     }
 
-    override fun calculateNumberOfFunctionsForNode(node: TSNode, nodeType: String): Int {
-        if (shouldIgnoreNodeType(node, nodeType)) return 0
-        return super.calculateNumberOfFunctionsForNode(node, nodeType)
-    }
-
     private fun shouldIgnoreNodeType(node: TSNode, nodeType: String): Boolean {
         val cNodeTypes = nodeTypeProvider as CNodeTypes
         return cNodeTypes.shouldIgnoreFnDeclaratorInFnDefinition(node, nodeType)

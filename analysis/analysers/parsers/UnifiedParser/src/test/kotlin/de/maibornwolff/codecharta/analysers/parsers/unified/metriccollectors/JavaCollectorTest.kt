@@ -168,4 +168,29 @@ class JavaCollectorTest {
         // then
         Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
     }
+
+    @Test
+    fun `should count constructor and compact constructor for number of functions`() {
+        // given
+        val fileContent = """
+            public class Main {
+                int x;
+
+                public Main() { // normal constructor
+                    x = 5;
+                }
+
+                Main { // compact constructor
+                    x = 6
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2)
+    }
 }

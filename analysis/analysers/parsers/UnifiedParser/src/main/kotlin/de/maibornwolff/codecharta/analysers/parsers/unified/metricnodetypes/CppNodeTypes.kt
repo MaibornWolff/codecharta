@@ -43,9 +43,7 @@ class CppNodeTypes : MetricNodeTypes {
 
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
-            "function_definition",
-            "abstract_function_declarator",
-            "function_declarator"
+            "function_definition"
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(

@@ -45,8 +45,10 @@ class CSharpNodeTypes : MetricNodeTypes {
 
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
+            "constructor_declaration",
             "method_declaration",
-            "local_function_statement"
+            "local_function_statement",
+            "accessor_declaration"
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(

@@ -41,7 +41,11 @@ class JavaNodeTypes : MetricNodeTypes {
     )
 
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf("method_declaration"),
+        simpleNodeTypes = setOf(
+            "method_declaration",
+            "constructor_declaration",
+            "compact_constructor_declaration"
+        ),
         nestedNodeTypes = setOf(
             NestedNodeType(
                 baseNodeType = "variable_declarator",
