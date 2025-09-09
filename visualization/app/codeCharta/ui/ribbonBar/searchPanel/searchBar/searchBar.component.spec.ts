@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
-import { BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
+import { BlacklistSearchPatternEffect } from "../../../../state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { SearchBarComponent } from "./searchBar.component"
 import userEvent from "@testing-library/user-event"
 import { searchPatternSelector } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"

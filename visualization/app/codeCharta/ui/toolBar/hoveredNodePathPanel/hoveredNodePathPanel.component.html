@@ -1,10 +1,10 @@
 @if (hoveredNodePathPanelData$ | async; as hoveredNodePathPanelData) {
-    @for (step of hoveredNodePathPanelData.path; track step; let last = $last) {
+    @for (step of hoveredNodePathPanelData.paths; track step.key; let last = $last) {
         <span>
             @if (last) {
                 <i class="fa" [class.fa-file-o]="hoveredNodePathPanelData.isFile" [class.fa-folder]="!hoveredNodePathPanelData.isFile"></i>
             }
-            <span [class.bold]="last">{{ step }}</span>
+            <span [class.bold]="last">{{ step.path }}</span>
             @if (!last) {
                 <i class="fa fa-angle-right"></i>
             }

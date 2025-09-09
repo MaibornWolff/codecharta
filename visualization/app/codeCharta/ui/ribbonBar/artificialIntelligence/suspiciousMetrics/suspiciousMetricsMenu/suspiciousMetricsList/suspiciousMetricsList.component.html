@@ -13,7 +13,7 @@
 
     @if (isSuspiciuosMetricsVisible) {
         <div class="text-content grid-container-suspicious">
-            @for (item of data.suspiciousMetricSuggestionLinks; track item) {
+            @for (item of data.suspiciousMetricSuggestionLinks; track item.metric) {
                 <div id="spacer"></div>
                 <div title="{{ getNameAndDescriptionOfMetric(item.metric) }}">
                     <b>{{ item.metric | truncateText: 40 }}</b>

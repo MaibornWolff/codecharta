@@ -5,6 +5,7 @@ export const setBlacklist = createAction("SET_BLACKLIST", props<{ value: Blackli
 export const addBlacklistItem = createAction("ADD_BLACKLIST_ITEM", props<{ item: BlacklistItem }>())
 export const addBlacklistItems = createAction("ADD_BLACKLIST_ITEMS", props<{ items: BlacklistItem[] }>())
 export const removeBlacklistItem = createAction("REMOVE_BLACKLIST_ITEM", props<{ item: BlacklistItem }>())
+export const removeBlacklistItems = createAction("REMOVE_BLACKLIST_ITEMS", props<{ items: BlacklistItem[] }>())
 export const addBlacklistItemsIfNotResultsInEmptyMap = createAction(
     "ADD_BLACKLIST_ITEMS_IF_NOT_RESULTS_IN_EMPTY_MAP",
     props<{ items: BlacklistItem[] }>()

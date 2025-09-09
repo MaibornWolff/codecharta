@@ -7,10 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add context menu to the file extension bar to faster exclude and flatten code. [#4141](https://github.com/MaibornWolff/codecharta/issues/4114)
+
+### Changed
+
+- In order to improve the user flow we flipped the ribbon and file extension bar. [#4141](https://github.com/MaibornWolff/codecharta/issues/4114)
+- Additionally, the distribtuion is now always connected to the area metric. [#4141](https://github.com/MaibornWolff/codecharta/issues/4114)
+
+### Removed
+
+- Remove dropdown and accordion on the file extension bar. [#4141](https://github.com/MaibornWolff/codecharta/issues/4114)
+- Remove risk profiles, this is the first step of cleaning up our ribbon bar. In the future we will merge metric scenarios, custom views and the suspicious metrics.
+
 ### Fixed 🐞
 
 - Add a scrollbar to the flatten/exclude menu when too many entries are present [#4164](https://github.com/MaibornWolff/codecharta/pull/4164)
 - Change the behavior when coloring a folder, which lead to coloring sibling paths that matched the colored folder [#4154](https://github.com/MaibornWolff/codecharta/issues/4154)
+- Improve performance of the whole application by preventing rerendering [4054](https://github.com/MaibornWolff/codecharta/issues/4054)
+- Fix styling for the file extension bar to always see the whole extension [#4141](https://github.com/MaibornWolff/codecharta/issues/4114)
 
 ## [1.135.3] - 2025-05-19
 

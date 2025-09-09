@@ -247,7 +247,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         if (this.labelSelectedBuilding !== null) {
             this.codeMapLabelService.clearTemporaryLabel(this.labelSelectedBuilding)
         }
-        if (!codeMapBuilding.node.isLeaf) {
+        if (!codeMapBuilding?.node?.isLeaf) {
             return
         }
 
@@ -416,7 +416,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         for (const { data } of hierarchy(codeMapNode)) {
             const building = this.idToBuilding.get(data.id)
             if (building) {
-                this.threeSceneService.addBuildingToHighlightingList(building)
+                this.threeSceneService.addBuildingsToHighlightingList(building)
             }
         }
         this.threeSceneService.applyHighlights()
