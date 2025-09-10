@@ -68,7 +68,10 @@
       "description": "a",
       "hintLowValue": "b",
       "hintHighValue": "c",
-      "link": "d"
+      "link": "d",
+      "analyzers": [
+        "e"
+      ]
     },
     "merge": {
       "description": "w",
