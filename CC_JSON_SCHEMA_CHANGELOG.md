@@ -71,3 +71,24 @@ export interface Fixed {
   }
 }
 ```
+
+## 1.5
+
+- An additional `analyzers` property has been added to the attribute descriptors, specifying which analyzer was used to generate the metric. This can contain multiple values if the `cc.json` is merged.
+```json
+{
+  "attributeDescriptors": {
+    "rloc": {
+      "title": "Real Lines of Code",
+      "description": "Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+      "hintLowValue": "",
+      "hintHighValue": "",
+      "link": "https://codecharta.com/docs/parser/unified",
+      "direction": -1,
+      "analyzers": [
+        "unifiedParser"
+      ]
+    }
+  }
+}
+```
