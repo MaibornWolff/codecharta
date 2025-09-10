@@ -20,7 +20,7 @@ class SonarComponentProjectBuilder(
 ) {
     private var totalComponents = 0
     private var processedComponents = -1
-    private val projectBuilder = ProjectBuilder()
+    private val projectBuilder = ProjectBuilder(listOf("SonarImporter"))
     val size: Int
         get() = projectBuilder.size
 

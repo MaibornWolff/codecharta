@@ -22,7 +22,10 @@
         ]
       }
     ],
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
+    "analyzers": [
+      "CoverageImporter"
+    ],
     "edges": [],
     "attributeTypes": {
       "nodes": {

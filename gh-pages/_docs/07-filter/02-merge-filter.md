@@ -17,7 +17,7 @@ The first file with visualisation data is used as reference for the merging stra
 - leaf (beta): fit leaf nodes into reference structure according to their name (and tail of their path),
   either adding missing leaves (`--add-missing`) or ignoring them (default)
 
-Both strategies will merge the unique list entries for `attributeTypes` and `blacklist`.
+Both strategies will merge the unique list entries for `attributeTypes`, `analyzer` and `blacklist`. If multiple files contain the same metric, the max value will be used for the output.
 
 ## Usage and Parameters
 
@@ -90,7 +90,7 @@ Leaf merging can be used in cases when we have one `cc.json` representing a whol
 In such cases it is possible to merge the coverage report into the main cc.json by using leaf merging:
 
 ```
-ccsh merge project.cc.json testCoverage.cc.json -o=mergeResult --leaf --ignore-case
+ccsh merge unifiedProject.cc.json testCoverage.cc.json -o=mergeResult --leaf --ignore-case
 ```
 
-This will insert the metrics of the `testCoverage.cc.json` into the project structure of the `project.cc.json`.
+This will insert the metrics of the `testCoverage.cc.json` into the project structure of the `unifiedProject.cc.json`.

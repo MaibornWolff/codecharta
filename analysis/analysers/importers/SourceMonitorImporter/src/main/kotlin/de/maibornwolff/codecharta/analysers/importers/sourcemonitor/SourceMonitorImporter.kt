@@ -64,7 +64,8 @@ class SourceMonitorImporter(
                 csvDelimiter,
                 "File Name",
                 sourceMonitorReplacement,
-                getAttributeDescriptors()
+                getAttributeDescriptors(),
+                "SourceMonitorImporter"
             )
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build(cleanAttributeDescriptors = true)

@@ -24,12 +24,17 @@ class FolderMover(
         }
 
         return ProjectBuilder(
+            copyAnalyzerSource(),
             moveNodes(moveFrom, moveTo),
             extractEdges(moveFrom, moveTo),
             copyAttributeTypes(),
             copyAttributeDescriptors(),
             copyBlacklist(moveFrom, moveTo)
         ).build()
+    }
+
+    private fun copyAnalyzerSource(): List<String> {
+        return project.analyzers
     }
 
     private fun getPathSegments(path: String): List<String> {

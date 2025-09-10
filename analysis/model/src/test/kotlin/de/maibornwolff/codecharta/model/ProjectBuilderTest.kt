@@ -18,13 +18,13 @@ class ProjectBuilderTest {
     @Test
     fun `it should throw an exception when initialization is incorrect`() { // then
         assertThatIllegalStateException().isThrownBy {
-            ProjectBuilder(listOf())
+            ProjectBuilder(nodes = listOf())
         }.withMessageContaining("No unique root node was found, instead 0 candidates identified.")
     }
 
     @Test
     fun `it should insert a new node as child of root when there is no root node `() {
-// when
+        // when
         val projectBuilder = ProjectBuilder()
         val nodeForInsertion = MutableNode("someNode", NodeType.File)
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
@@ -37,9 +37,9 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should create a project with root when inserting a new node into a project with root-node`() {
-// when
+        // when
         val root = MutableNode("root", NodeType.Folder)
-        val projectBuilder = ProjectBuilder(listOf(root))
+        val projectBuilder = ProjectBuilder(nodes = listOf(root))
 
         val nodeForInsertion = MutableNode("someNode", NodeType.File)
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
@@ -53,7 +53,7 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should filter out empty folders`() {
-// when
+        // when
         val projectBuilder = ProjectBuilder()
         val nodeForInsertion = MutableNode("someNode", NodeType.Folder)
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
@@ -67,7 +67,7 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should add the correct attribute-types`() {
-// when
+        // when
         val projectBuilder =
             ProjectBuilder(
                 attributeTypes = mutableMapOf("nodes" to mutableMapOf("nodeMetric" to AttributeType.ABSOLUTE))
@@ -273,7 +273,7 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should print the correct content keys`() {
-// when
+        // when
         val projectBuilder = ProjectBuilder()
 
         // then

@@ -39,7 +39,7 @@ class InputHelperTest {
         val inputFiles =
             arrayOf(
                 File("src/test/resources/example.cc.json"),
-                File("src/test/resources/example_api_version_1.3.cc.json"),
+                File("src/test/resources/example_api_version_1.5.cc.json"),
                 invalidFile1,
                 invalidFile2
             )
@@ -62,7 +62,7 @@ class InputHelperTest {
         val inputFiles =
             arrayOf(
                 File("src/test/resources/example.cc.json"),
-                File("src/test/resources/example_api_version_1.3.cc.json"),
+                File("src/test/resources/example_api_version_1.5.cc.json"),
                 File("src/test/resources/thisDoesNotExist1.json")
             )
 
@@ -104,7 +104,7 @@ class InputHelperTest {
     @MethodSource("provideBooleanValues")
     fun `should return valid if input only contains existing files`(canInputContainFolders: Boolean) {
         val validFile1 = File("src/test/resources/example.cc.json")
-        val validFile2 = File("src/test/resources/example_api_version_1.3.cc.json")
+        val validFile2 = File("src/test/resources/example_api_version_1.5.cc.json")
         val validFile3 = File("src/test/resources/exampleUncompressed.txt")
 
         val inputFiles = arrayOf(validFile1, validFile2, validFile3)
@@ -128,7 +128,7 @@ class InputHelperTest {
     @Test
     fun `should return list of all contained input files in valid directory`() {
         val validFile1 = File("src/test/resources/example.cc.json")
-        val validFile2 = File("src/test/resources/example_api_version_1.3.cc.json")
+        val validFile2 = File("src/test/resources/example_api_version_1.5.cc.json")
         val validFile3 = File("src/test/resources/exampleUncompressed.txt")
 
         val inputFiles = arrayOf(validFile1, validFile2, validFile3)

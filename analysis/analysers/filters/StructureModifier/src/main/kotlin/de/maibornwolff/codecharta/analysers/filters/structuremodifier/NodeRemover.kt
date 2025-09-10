@@ -29,12 +29,17 @@ class NodeRemover(
         }
 
         return ProjectBuilder(
+            copyAnalyzerSource(),
             removeNodes(pathSegments),
             removeEdges(paths),
             copyAttributeTypes(),
             copyAttributeDescriptors(),
             removeBlacklistItems(paths)
         ).build(cleanAttributeDescriptors = true)
+    }
+
+    private fun copyAnalyzerSource(): List<String> {
+        return project.analyzers
     }
 
     private fun removeNodes(paths: List<List<String>>): List<MutableNode> {
