@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Add parsing of multiple file extensions for some languages (e.g. cpp or js) [#4170](https://github.com/MaibornWolff/codecharta/pull/4170)
 - Add warning to SonarImporter when used token is of wrong type [#4165](https://github.com/MaibornWolff/codecharta/pull/4165)
+- Add 'number_of_functions' metric to the unifiedParser [#4184](https://github.com/MaibornWolff/codecharta/pull/4184)
 
 ### Changed
 - Changed pipe behaviour of UnifiedParser to use new '-' flag to indicate piped input [#4151](https://github.com/MaibornWolff/codecharta/pull/4151)
