@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.importers.codemaat
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
 internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
+    val analyzerName = setOf("codemaatImporter")
     return mapOf(
         "pairingRate" to
             AttributeDescriptor(
@@ -11,7 +12,8 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
                 "Indicates that the given file is not often committed together with the other file",
                 "Indicates the the given files are often committed together",
                 "https://github.com/adamtornhill/code-maat#mining-logical-coupling",
-                -1
+                -1,
+                analyzers = analyzerName
             ),
         "avgCommits" to
             AttributeDescriptor(
@@ -20,7 +22,8 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
                 "Indicates that a file is not committed often",
                 "Indicates that a file is committed often",
                 "https://github.com/adamtornhill/code-maat#mining-logical-coupling",
-                -1
+                -1,
+                analyzers = analyzerName
             )
     )
 }
