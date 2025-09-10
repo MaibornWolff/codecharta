@@ -6,5 +6,6 @@ data class AttributeDescriptor(
     val hintLowValue: String = "",
     val hintHighValue: String = "",
     val link: String = "",
-    val direction: Int = -1
+    val direction: Int = -1,
+    val analyzers: Set<String> = setOf(),
 )
