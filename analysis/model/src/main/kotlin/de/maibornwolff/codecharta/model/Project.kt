@@ -10,7 +10,7 @@ class Project(
     var blacklist: List<BlacklistItem> = listOf()
 ) {
     init {
-        if (nodes.size != 1) throw IllegalStateException("no root node present in project")
+        check(nodes.size == 1) { "no root node present in project" }
     }
 
     val rootNode: Node
@@ -38,7 +38,7 @@ class Project(
 
     companion object {
         private const val API_VERSION_MAJOR = "1"
-        private const val API_VERSION_MINOR = "3"
+        private const val API_VERSION_MINOR = "5"
         const val API_VERSION = "$API_VERSION_MAJOR.$API_VERSION_MINOR"
 
         fun isAPIVersionCompatible(apiVersion: String): Boolean {
