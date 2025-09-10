@@ -10,24 +10,24 @@ The first file with visualisation data is used as reference for the merging stra
 - leaf (beta): fit leaf nodes into reference structure according to their name (and tail of their path),
   either adding missing leaves (`--add-missing`) or ignoring them (default)
 
-Both strategies will merge the unique list entries for `attributeTypes` and `blacklist`.
+Both strategies will merge the unique list entries for `attributeTypes`, `analyzers` and `blacklist`. If multiple files contain the same metric, the max value will be used for the output.
 
 ## Usage and Parameters
 
-| Parameters                      | Description                                                                      |
-|---------------------------------|----------------------------------------------------------------------------------|
-| `FILE`                          | files to merge                                                                   |
-| `-a, --add-missing`             | [Leaf Merging Strategy] enable adding missing nodes to reference                 |
-| `-h, --help`                    | displays help and exits                                                          |
-| `--ignore-case`                 | ignores case when checking node names                                            |
-| `--leaf`                        | use leaf merging strategy                                                        |
-| `-nc, --not-compressed`         | save uncompressed output File                                                    |
+| Parameters                       | Description                                                                      |
+|----------------------------------|----------------------------------------------------------------------------------|
+| `FILE`                           | files to merge                                                                   |
+| `-a, --add-missing`              | [Leaf Merging Strategy] enable adding missing nodes to reference                 |
+| `-h, --help`                     | displays help and exits                                                          |
+| `--ignore-case`                  | ignores case when checking node names                                            |
+| `--leaf`                         | use leaf merging strategy                                                        |
+| `-nc, --not-compressed`          | save uncompressed output File                                                    |
 | `-o, --output-file=<outputFile>` | output File (or empty for stdout; [MIMO mode] output folder))                    |
-| `--recursive`                   | use recursive merging strategy (default)                                         |
-| `--mimo`                        | merge multiple files with the same prefix into multiple output files             |
-| `-ld, --levenshtein-distance`   | [MIMO mode] levenshtein distance for name match suggestions                      |
-| `-f`                            | force merge non-overlapping modules at the top-level structure                   |
-| `--large`                       | merge multiple project files into one output file, separated by their dot-prefix |
+| `--recursive`                    | use recursive merging strategy (default)                                         |
+| `--mimo`                         | merge multiple files with the same prefix into multiple output files             |
+| `-ld, --levenshtein-distance`    | [MIMO mode] levenshtein distance for name match suggestions                      |
+| `-f`                             | force merge non-overlapping modules at the top-level structure                   |
+| `--large`                        | merge multiple project files into one output file, separated by their dot-prefix |
 
 ```
 Usage: ccsh merge [-ah] [--ignore-case] [--leaf] [-nc] [--recursive]
@@ -83,7 +83,7 @@ Leaf merging can be used in cases when we have one `cc.json` representing a whol
 In such cases it is possible to merge the coverage report into the main cc.json by using leaf merging:
 
 ```
-ccsh merge project.cc.json testCoverage.cc.json -o=mergeResult --leaf --ignore-case
+ccsh merge unifiedProject.cc.json testCoverage.cc.json -o=mergeResult --leaf --ignore-case
 ```
 
-This will insert the metrics of the `testCoverage.cc.json` into the project structure of the `project.cc.json`.
+This will insert the metrics of the `testCoverage.cc.json` into the project structure of the `unifiedProject.cc.json`.
