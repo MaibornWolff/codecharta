@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.136.0] - 2025-09-10
+
 ### Added 🚀
 
 - Add parsing of multiple file extensions for some languages (e.g. cpp or js) [#4170](https://github.com/MaibornWolff/codecharta/pull/4170)
