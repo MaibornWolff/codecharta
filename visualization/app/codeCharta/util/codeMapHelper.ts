@@ -4,16 +4,6 @@ import ignore from "ignore"
 import { FileState } from "../model/files/files"
 import { getSelectedFilesSize } from "./fileHelper"
 
-export function getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode) {
-    const matchingNode = hierarchy(root).find(({ data }) => data.path === path)
-    return matchingNode?.data
-}
-
-export function getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode) {
-    const matchingNode = hierarchy(root).find(({ data }) => data.path === path && data.type === nodeType)
-    return matchingNode?.data
-}
-
 export function transformPath(toTransform: string) {
     let removeNumberOfCharactersFromStart = 2
 
@@ -84,28 +74,27 @@ export function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>,
 }
 
 export function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string | void {
-    if (markedPackages) {
-        let longestPathParentPackage: MarkedPackage
-        for (const markedPackage of markedPackages) {
-            if (
-                (!longestPathParentPackage || longestPathParentPackage.path.length < markedPackage.path.length) &&
-                node.path.startsWith(markedPackage.path)
-            ) {
-                longestPathParentPackage = markedPackage
-            }
-        }
+    if (!markedPackages) {
+        return
+    }
 
-        if (longestPathParentPackage) {
-            return longestPathParentPackage.color
+    let longestPathParentPackage: MarkedPackage
+    for (const markedPackage of markedPackages) {
+        if (
+            (!longestPathParentPackage || longestPathParentPackage.path.length < markedPackage.path.length) &&
+            (node.path.startsWith(`${markedPackage.path}/`) || node.path === markedPackage.path)
+        ) {
+            longestPathParentPackage = markedPackage
         }
+    }
+
+    if (longestPathParentPackage) {
+        return longestPathParentPackage.color
     }
 }
 
-export function isBlacklisted(node: CodeMapNode) {
-    return node.isExcluded || node.isFlattened
-}
-
 export type MaybeLeaf = { children?: unknown[] }
+
 export function isLeaf(node: MaybeLeaf) {
     return node.children === undefined || node.children.length === 0
 }

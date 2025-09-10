@@ -1,0 +1,16 @@
+:host {
+    min-width: max-content;
+    cursor: pointer;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+}
+
+.cc-bar-section {
+    .cc-bar-section-text {
+        font-size: 10px;
+        margin: 2px 0 2px 0;
+        white-space: nowrap;
+        padding: 0 10px 0 10px;
+    }
+}

@@ -11,7 +11,7 @@ export const findIndexOfMarkedPackageOrParent = (markedPackages: MarkedPackage[]
     for (let loopIndex = 0; loopIndex < markedPackages.length; loopIndex++) {
         const markedPackage = markedPackages[loopIndex]
         if (
-            nodePath.startsWith(markedPackage.path) &&
+            (nodePath.startsWith(`${markedPackage.path}/`) || nodePath === markedPackage.path) &&
             (indexOfNearestParent === -1 || markedPackages[indexOfNearestParent].path.length < markedPackage.path.length)
         ) {
             indexOfNearestParent = loopIndex
