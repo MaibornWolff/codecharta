@@ -38,7 +38,6 @@ class KotlinNodeTypes : MetricNodeTypes {
 
     override val numberOfFunctionsNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
-            "function_declaration",
             "secondary_constructor",
             "setter",
             "getter"
@@ -49,6 +48,30 @@ class KotlinNodeTypes : MetricNodeTypes {
                 childNodeCount = 4,
                 childNodePosition = 3,
                 childNodeTypes = setOf("lambda_literal", "anonymous_function", "anonymous_initializer")
+            ),
+            NestedNodeType(
+                baseNodeType = "function_declaration",
+                childNodeCount = 4,
+                childNodePosition = 3,
+                childNodeTypes = setOf("function_body")
+            ),
+            NestedNodeType(
+                baseNodeType = "function_declaration",
+                childNodeCount = 5,
+                childNodePosition = 4,
+                childNodeTypes = setOf("function_body")
+            ),
+            NestedNodeType(
+                baseNodeType = "function_declaration",
+                childNodeCount = 6,
+                childNodePosition = 5,
+                childNodeTypes = setOf("function_body")
+            ),
+            NestedNodeType(
+                baseNodeType = "function_declaration",
+                childNodeCount = 7,
+                childNodePosition = 6,
+                childNodeTypes = setOf("function_body")
             )
         )
     )
