@@ -141,14 +141,14 @@ class ProjectMergerTest {
                 "single" to
                     AttributeDescriptor(
                         description = "a", hintLowValue = "b", hintHighValue = "c",
-                        link = "d", direction = -1
+                        link = "d", direction = -1, analyzers = setOf("e")
                     ),
                 "merge" to
                     AttributeDescriptor(
-                        description = "1", hintLowValue = "2", hintHighValue = "3",
-                        link = "4", direction = -1
+                        description = "w", hintLowValue = "x", hintHighValue = "y",
+                        link = "z", direction = -1, analyzers = setOf("Unknown", "5")
                     ),
-                "somethingElse" to AttributeDescriptor()
+                "somethingElse" to AttributeDescriptor(analyzers = setOf("Unknown"))
             )
         assertEquals(project.attributeDescriptors, expectedResult)
     }

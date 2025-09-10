@@ -68,7 +68,10 @@
       "description": "1",
       "hintLowValue": "2",
       "hintHighValue": "3",
-      "link": "4"
+      "link": "4",
+      "analyzers": [
+        "5"
+      ]
     },
     "somethingElse": {
       "description": "",
