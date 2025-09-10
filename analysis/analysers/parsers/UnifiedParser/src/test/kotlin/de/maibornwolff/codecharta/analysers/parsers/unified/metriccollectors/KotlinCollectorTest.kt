@@ -159,12 +159,18 @@ class KotlinCollectorTest {
     }
 
     @Test
-    fun `should count normal function declaration for number of functions`() {
+    fun `should count function declaration for number of functions only when it includes implementation`() {
         // given
         val fileContent = """
-            fun main() {
-                println("Hello, World!")
-            }
+        private fun main() {
+            println("Hello, World!")
+        }
+
+        private fun otherFunction(): String {
+            return "Hello, World!"
+        }
+
+        fun turn(direction: Direction, radius: Double, startSpeed: Double, endSpeed: Double)
         """.trimIndent()
         val input = createTestFile(fileContent)
 
@@ -172,7 +178,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2)
     }
 
     @Test

@@ -1,5 +1,5 @@
 {
-  "checksum": "9e6eddf7576da29ac3409b4749eb271d",
+  "checksum": "0d50f18359bbe5a51944d7d72c63dd67",
   "data": {
     "projectName": "",
     "nodes": [
@@ -15,6 +15,7 @@
             "attributes": {
               "complexity": 4,
               "comment_lines": 0,
+              "number_of_functions": 0,
               "rloc": 7,
               "loc": 9
             },
@@ -55,6 +56,14 @@
       "rloc": {
         "title": "Real Lines of Code",
         "description": "Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "number_of_functions": {
+        "title": "Number of functions",
+        "description": "The number of functions or methods present in the file. Does not include anonymous or lambda functions.",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
