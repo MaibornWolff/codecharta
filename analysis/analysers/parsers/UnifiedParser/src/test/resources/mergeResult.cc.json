@@ -1,5 +1,5 @@
 {
-  "checksum": "57c8e122387ce42a8ab80a3caed435aa",
+  "checksum": "5e14861bb6e54e6a70f602b6edd989f4",
   "data": {
     "projectName": "",
     "nodes": [
@@ -39,8 +39,9 @@
                 "attributes": {
                   "complexity": 7,
                   "comment_lines": 9,
-                  "loc": 48,
-                  "rloc": 31
+                  "number_of_functions": 2,
+                  "rloc": 31,
+                  "loc": 48
                 },
                 "link": "",
                 "children": []
@@ -51,8 +52,9 @@
                 "attributes": {
                   "complexity": 1,
                   "comment_lines": 0,
-                  "loc": 8,
-                  "rloc": 6
+                  "number_of_functions": 1,
+                  "rloc": 6,
+                  "loc": 8
                 },
                 "link": "",
                 "children": []
@@ -65,8 +67,9 @@
             "attributes": {
               "complexity": 6,
               "comment_lines": 6,
-              "loc": 41,
-              "rloc": 30
+              "number_of_functions": 3,
+              "rloc": 30,
+              "loc": 41
             },
             "link": "",
             "children": []
@@ -77,8 +80,9 @@
             "attributes": {
               "complexity": 2,
               "comment_lines": 4,
-              "loc": 14,
-              "rloc": 9
+              "number_of_functions": 0,
+              "rloc": 9,
+              "loc": 14
             },
             "link": "",
             "children": []
@@ -89,8 +93,9 @@
             "attributes": {
               "complexity": 1,
               "comment_lines": 2,
-              "loc": 8,
-              "rloc": 5
+              "number_of_functions": 1,
+              "rloc": 5,
+              "loc": 8
             },
             "link": "",
             "children": []
@@ -101,8 +106,9 @@
             "attributes": {
               "complexity": 5,
               "comment_lines": 0,
-              "loc": 13,
-              "rloc": 11
+              "number_of_functions": 1,
+              "rloc": 11,
+              "loc": 13
             },
             "link": "",
             "children": []
@@ -149,6 +155,14 @@
       "rloc": {
         "title": "Real Lines of Code",
         "description": "Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1
+      },
+      "number_of_functions": {
+        "title": "Number of functions",
+        "description": "The number of functions or methods present in the file. Does not include anonymous or lambda functions.",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
