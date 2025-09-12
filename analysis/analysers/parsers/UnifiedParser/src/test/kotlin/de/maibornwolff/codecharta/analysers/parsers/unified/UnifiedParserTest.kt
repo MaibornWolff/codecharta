@@ -133,25 +133,6 @@ class UnifiedParserTest {
     }
 
     @Test
-    fun `should stop execution and throw error when no parsable files were found in project`() {
-        // given
-        val pipedProject = ""
-        val inputFilePath = "${testResourceBaseFolder}sampleproject"
-        System.setErr(PrintStream(errContent))
-
-        // when
-        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.invalid"))
-
-        // then
-        Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(errContent.toString())
-            .contains("No files with specified file extension(s) were found within the given folder - not generating an output file!")
-
-        // clean up
-        System.setErr(originalErr)
-    }
-
-    @Test
     fun `should display message for each file when verbose mode was set`() {
         // given
         val pipedProject = ""
@@ -260,6 +241,20 @@ class UnifiedParserTest {
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--include-build-folders"))
+
+        // then
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+    }
+
+    @Test
+    fun `should produce empty output file when no parsable files were found in project`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val expectedResultFile = File("${testResourceBaseFolder}empty.cc.json").absoluteFile
+
+        // when
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.invalid"))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
