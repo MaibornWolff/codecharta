@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
 
+val analyzerName = setOf("coverageImporter")
+
 enum class CoverageAttributes(
     val attributeName: String,
     val attributeDescriptor: AttributeDescriptor,
@@ -14,7 +16,8 @@ enum class CoverageAttributes(
         AttributeDescriptor(
             title = "Line Coverage",
             description = "Percentage of lines covered by tests",
-            direction = 1
+            direction = 1,
+            analyzers = analyzerName
         ),
         AttributeType.RELATIVE
     ),
@@ -23,7 +26,8 @@ enum class CoverageAttributes(
         AttributeDescriptor(
             title = "Branch Coverage",
             description = "Percentage of branches covered by tests",
-            direction = 1
+            direction = 1,
+            analyzers = analyzerName
         ),
         AttributeType.RELATIVE
     ),
@@ -32,7 +36,8 @@ enum class CoverageAttributes(
         AttributeDescriptor(
             title = "Statement Coverage",
             description = "Percentage of statements covered by tests",
-            direction = 1
+            direction = 1,
+            analyzers = analyzerName
         ),
         AttributeType.RELATIVE
     ),
@@ -41,7 +46,8 @@ enum class CoverageAttributes(
         AttributeDescriptor(
             title = "Instruction Coverage",
             description = "Percentage of instructions covered by tests",
-            direction = 1
+            direction = 1,
+            analyzers = analyzerName
         ),
         AttributeType.RELATIVE
     ),
@@ -50,7 +56,8 @@ enum class CoverageAttributes(
         AttributeDescriptor(
             title = "Complexity Coverage",
             description = "Percentage of complexity covered by tests",
-            direction = 1
+            direction = 1,
+            analyzers = analyzerName
         ),
         AttributeType.RELATIVE
     ),
@@ -59,7 +66,8 @@ enum class CoverageAttributes(
         AttributeDescriptor(
             title = "Method Coverage",
             description = "Percentage of methods covered by tests",
-            direction = 1
+            direction = 1,
+            analyzers = analyzerName
         ),
         AttributeType.RELATIVE
     ),
@@ -68,7 +76,8 @@ enum class CoverageAttributes(
         AttributeDescriptor(
             title = "Class Coverage",
             description = "Percentage of classes covered by tests",
-            direction = 1
+            direction = 1,
+            analyzers = analyzerName
         ),
         AttributeType.RELATIVE
     )

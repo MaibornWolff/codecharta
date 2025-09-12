@@ -2,7 +2,7 @@
   "checksum": "foo",
   "data": {
     "projectName": "",
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
     "nodes": [
       {
         "name": "root",
@@ -96,7 +96,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/svn-log",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "svnLogParser"
+        ]
       },
       "weeks_with_commits": {
         "title": "Weeks with Commits",
@@ -104,7 +107,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/svn-log",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "svnLogParser"
+        ]
       },
       "number_of_authors": {
         "title": "Number of Authors",
@@ -112,7 +118,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/svn-log",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "svnLogParser"
+        ]
       },
       "successive_weeks_with_commits": {
         "title": "Successive Weeks with Commits",
@@ -120,7 +129,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/svn-log",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "svnLogParser"
+        ]
       },
       "range_of_weeks_with_commits": {
         "title": "Week Range of Commits",
@@ -128,7 +140,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/svn-log",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "svnLogParser"
+        ]
       },
       "authors": {
         "title": "Authors",
@@ -136,7 +151,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/svn-log",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "svnLogParser"
+        ]
       }
     },
     "blacklist": []

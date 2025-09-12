@@ -4,13 +4,16 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 
 internal fun getAttributeDescriptors(maxOccurringIndentationLevel: Int): Map<String, AttributeDescriptor> {
     val ghLink = "https://codecharta.com/docs/parser/raw-text"
+    val analyzerName = setOf("rawtextParser")
     val descriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
     for (i in 0..maxOccurringIndentationLevel) {
         descriptors["indentation_level_$i+"] =
             AttributeDescriptor(
                 title = "Statements with indentation level greater or equal $i",
-                description = "Statements with indentation level greater or equal $i", link = ghLink,
-                direction = -1
+                description = "Statements with indentation level greater or equal $i",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             )
     }
 
@@ -19,7 +22,8 @@ internal fun getAttributeDescriptors(maxOccurringIndentationLevel: Int): Map<Str
             title = "Lines of Code",
             description = "Lines of code including empty lines and comments",
             link = ghLink,
-            direction = -1
+            direction = -1,
+            analyzers = analyzerName
         )
 
     return descriptors.toMap()

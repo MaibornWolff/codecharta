@@ -1,5 +1,5 @@
 {
-  "checksum": "f5a795450a3e7d553bd9768f8be867e3",
+  "checksum": "26e231ed4d397df334c52f58163830e6",
   "data": {
     "projectName": "",
     "nodes": [
@@ -98,7 +98,7 @@
         ]
       }
     ],
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
     "edges": [],
     "attributeTypes": {},
     "attributeDescriptors": {
@@ -108,7 +108,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
       },
       "comment_lines": {
         "title": "Comment lines",
@@ -116,7 +119,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
       },
       "loc": {
         "title": "Lines of Code",
@@ -124,7 +130,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
       },
       "rloc": {
         "title": "Real Lines of Code",
@@ -132,7 +141,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
       },
       "number_of_functions": {
         "title": "Number of functions",
@@ -140,7 +152,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
       }
     },
     "blacklist": []

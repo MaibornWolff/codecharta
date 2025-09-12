@@ -104,10 +104,39 @@ class ProjectMerger(
 
     private fun mergeAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
         val mergedAttributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
-        projects.forEach {
-            mergedAttributeDescriptors.putAll(it.attributeDescriptors)
+        projects.forEach { project ->
+            project.attributeDescriptors.forEach {
+                val existingAttributeDescriptor = mergedAttributeDescriptors[it.key]
+                if (it.value.analyzers.isEmpty()) it.value.analyzers = setOf("Unknown")
+
+                if (existingAttributeDescriptor == null) {
+                    mergedAttributeDescriptors[it.key] = it.value
+                } else {
+                    showWarningIfAttributeDescriptorsDiffer(existingAttributeDescriptor, it.key, it.value)
+                    existingAttributeDescriptor.analyzers = existingAttributeDescriptor.analyzers union it.value.analyzers
+                }
+            }
         }
         return mergedAttributeDescriptors
+    }
+
+    private fun showWarningIfAttributeDescriptorsDiffer(
+        existingAttributeDescriptor: AttributeDescriptor,
+        metric: String,
+        newAttributeDescriptor: AttributeDescriptor
+    ) {
+        if (existingAttributeDescriptor.title != newAttributeDescriptor.title) {
+            Logger.warn { "Title of '$metric' metric differs between files! Using value of first file..." }
+        }
+        if (existingAttributeDescriptor.description != newAttributeDescriptor.description) {
+            Logger.warn { "Description of '$metric' metric differs between files! Using value of first file..." }
+        }
+        if (existingAttributeDescriptor.link != newAttributeDescriptor.link) {
+            Logger.warn { "Link of '$metric' metric differs between files! Using value of first file..." }
+        }
+        if (existingAttributeDescriptor.direction != newAttributeDescriptor.direction) {
+            Logger.warn { "Direction of '$metric' metric differs between files! Using value of first file..." }
+        }
     }
 
     private fun mergeBlacklist(): MutableList<BlacklistItem> {

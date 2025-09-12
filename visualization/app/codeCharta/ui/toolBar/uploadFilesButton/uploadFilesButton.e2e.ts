@@ -105,7 +105,7 @@ describe("UploadFileButton", () => {
         ])
 
         const dialogMessage = await dialogError.getMessage()
-        expect(dialogMessage).toContain(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.5`)
+        expect(dialogMessage).toContain(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.9`)
         expect(dialogMessage).toContain(` ${ERROR_MESSAGES.fileIsInvalid}`)
         await dialogError.clickOk()
 

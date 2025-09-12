@@ -17,7 +17,7 @@ class ProjectGeneratorTest {
         val fileMetricsOne =
             FileMetrics()
                 .addMetric("foo", 0)
-                .addMetric("bar", 18)
+                .addMetric("loc", 18)
 
         val filePathTwo = "foo.java"
         val fileMetricsTwo =
@@ -51,7 +51,7 @@ class ProjectGeneratorTest {
         val filePathOne = "foo.java"
         val fileMetricsOne =
             FileMetrics()
-                .addMetric("bar", 18)
+                .addMetric("loc", 5)
 
         val projectMetrics =
             ProjectMetrics()

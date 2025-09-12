@@ -6,83 +6,119 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 
 internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val ghLink = "https://codecharta.com/docs/parser/source-code"
+    val analyzerName = setOf("sourceCodeParser")
     return mapOf(
         "rloc" to
             AttributeDescriptor(
                 title = "Real Lines of Code",
                 description = "Number of code lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment",
-                link = ghLink, direction = -1
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "classes" to
             AttributeDescriptor(
                 title = "Number of Classes",
                 description = "Number of classes (including nested classes, interfaces, enums and annotations)",
-                link = ghLink, direction = -1
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "functions" to
             AttributeDescriptor(
-                title = "Number of Functions", description = "Number of functions",
-                link = ghLink, direction = -1
+                title = "Number of Functions",
+                description = "Number of functions",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "statements" to
             AttributeDescriptor(
-                title = "Number of Statements", description = "Number of statements",
-                link = ghLink, direction = -1
+                title = "Number of Statements",
+                description = "Number of statements",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "comment_lines" to
             AttributeDescriptor(
                 title = "Comment Lines",
                 description = "Number of lines containing either a comment or commented-out code",
                 link = ghLink,
-                direction = -1
+                direction = -1,
+                analyzers = analyzerName
             ),
         "complexity" to
             AttributeDescriptor(
                 title = "Cyclomatic Complexity",
                 description = "Cyclomatic complexity based on the number of paths through the code",
                 link = "https://docs.sonarsource.com/sonarqube/latest/user-guide/metric-definitions/",
-                direction = -1
+                direction = -1,
+                analyzers = analyzerName
             ),
         "cognitive_complexity" to
             AttributeDescriptor(
                 title = "Cognitive Complexity",
                 description = "How hard is it to understand the code's control flow",
-                link = "https://www.sonarsource.com/resources/cognitive-complexity/", direction = -1
+                link = "https://www.sonarsource.com/resources/cognitive-complexity/",
+                direction = -1,
+                analyzers = analyzerName
             ),
         "commented_out_code_blocks" to
             AttributeDescriptor(
                 title = "Commented-out Code Blocks",
-                description = "Number of blocks of commented-out code", link = ghLink, direction = -1
+                description = "Number of blocks of commented-out code",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "max_nesting_level" to
             AttributeDescriptor(
                 title = "Maximum Nesting Level",
-                description = "Maximum nested level/depth found", link = ghLink, direction = -1
+                description = "Maximum nested level/depth found",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "code_smell" to
             AttributeDescriptor(
-                title = "Code Smells", description = "Total count of code smell issues",
-                link = ghLink, direction = -1
+                title = "Code Smells",
+                description = "Total count of code smell issues",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "security_hotspot" to
             AttributeDescriptor(
                 title = "Security Hotspots",
-                description = "Number of security hotspots", link = ghLink, direction = -1
+                description = "Number of security hotspots",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "vulnerability" to
             AttributeDescriptor(
                 title = "Number of Vulnerabilities",
-                description = "Number of vulnerability issues", link = ghLink, direction = -1
+                description = "Number of vulnerability issues",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "bug" to
             AttributeDescriptor(
-                title = "Number of Bugs", description = "Number of bug issues", link = ghLink,
-                direction = -1
+                title = "Number of Bugs",
+                description = "Number of bug issues",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             ),
         "sonar_issue_other" to
             AttributeDescriptor(
                 title = "Other Sonar Issues",
-                description = "Total number of other sonar issues", link = ghLink, direction = -1
+                description = "Total number of other sonar issues",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             )
     )
 }
