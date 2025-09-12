@@ -50,7 +50,7 @@ class UnifiedParser(
 
         if (!includeBuildFolders) patternsToExclude += CodeChartaConstants.BUILD_FOLDERS
 
-        var project = scanInputProject(inputFiles[inputFileIndex]) ?: return null
+        var project = scanInputProject(inputFiles[inputFileIndex])
 
         if (shouldProcessPipedInput(inputFiles)) {
             val pipedProject = extractPipedProject(input)
@@ -66,17 +66,11 @@ class UnifiedParser(
         return null
     }
 
-    private fun scanInputProject(inputFile: File): Project? {
+    private fun scanInputProject(inputFile: File): Project {
         val startTime = System.currentTimeMillis()
         val projectBuilder = ProjectBuilder()
         val projectScanner = ProjectScanner(inputFile, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
         projectScanner.traverseInputProject(verbose)
-
-        if (!projectScanner.foundParsableFiles()) {
-            println()
-            Logger.error { "No files with specified file extension(s) were found within the given folder - not generating an output file!" }
-            return null
-        }
 
         val notFoundButSpecifiedFormats = projectScanner.getNotFoundFileExtensions()
         if (notFoundButSpecifiedFormats.isNotEmpty()) {
