@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.136.0] - 2025-09-10
+
 ### Added 🚀
 
 - Add context menu to the file extension bar to faster exclude and flatten code. [#4141](https://github.com/MaibornWolff/codecharta/issues/4114)
