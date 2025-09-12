@@ -31,7 +31,7 @@
         ]
       }
     ],
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
     "edges": [],
     "attributeTypes": {},
     "attributeDescriptors": {
@@ -41,7 +41,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_1+": {
         "title": "Statements with indentation level greater or equal 1",
@@ -49,7 +52,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_2+": {
         "title": "Statements with indentation level greater or equal 2",
@@ -57,7 +63,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_3+": {
         "title": "Statements with indentation level greater or equal 3",
@@ -65,7 +74,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_4+": {
         "title": "Statements with indentation level greater or equal 4",
@@ -73,7 +85,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_5+": {
         "title": "Statements with indentation level greater or equal 5",
@@ -81,7 +96,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_6+": {
         "title": "Statements with indentation level greater or equal 6",
@@ -89,7 +107,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_7+": {
         "title": "Statements with indentation level greater or equal 7",
@@ -97,7 +118,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_8+": {
         "title": "Statements with indentation level greater or equal 8",
@@ -105,7 +129,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_9+": {
         "title": "Statements with indentation level greater or equal 9",
@@ -113,7 +140,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "indentation_level_10+": {
         "title": "Statements with indentation level greater or equal 10",
@@ -121,7 +151,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       },
       "loc": {
         "title": "Lines of Code",
@@ -129,10 +162,13 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "rawtextParser"
+        ]
       }
     },
     "blacklist": []
   },
-  "checksum": "a79efa963b588938270443376e9599ff"
+  "checksum": "9bc26c769e60d5c80877279cbec5cc91"
 }
