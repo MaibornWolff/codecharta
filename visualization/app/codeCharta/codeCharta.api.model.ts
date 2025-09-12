@@ -43,7 +43,8 @@ export enum APIVersions {
     ONE_POINT_ZERO = "1.0",
     ONE_POINT_ONE = "1.1",
     ONE_POINT_TWO = "1.2",
-    ONE_POINT_THREE = "1.3"
+    ONE_POINT_THREE = "1.3",
+    ONE_POINT_FIVE = "1.5"
 }
 
 export interface ExportScenario {
