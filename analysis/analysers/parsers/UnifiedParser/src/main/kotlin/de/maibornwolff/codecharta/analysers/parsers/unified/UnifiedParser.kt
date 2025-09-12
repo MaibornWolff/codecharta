@@ -89,6 +89,11 @@ class UnifiedParser(
             )
         }
 
+        if (!projectScanner.foundParsableFiles()) {
+            println()
+            Logger.warn { "No files with specified file extension(s) were found within the given folder - generating empty output file!" }
+        }
+
         val executionTimeMs = System.currentTimeMillis() - startTime
         val formattedTime = formatTime(executionTimeMs.milliseconds)
         System.err.println("UnifiedParser completed in $formattedTime, building project...")
