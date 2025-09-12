@@ -3,7 +3,7 @@
 exports[`AggregationGenerator aggregation of four maps 1`] = `
 {
   "fileMeta": {
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
     "exportedFileSize": 1200000,
     "fileChecksum": "md5-file1;md5-file2;md5-file1;md5-file2",
     "fileName": "file_aggregation_of_file1_and_file2_and_file1_and_file2",
@@ -222,7 +222,7 @@ exports[`AggregationGenerator aggregation of four maps 1`] = `
 exports[`AggregationGenerator aggregation of two maps 1`] = `
 {
   "fileMeta": {
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
     "exportedFileSize": 600000,
     "fileChecksum": "md5-file1;md5-file2",
     "fileName": "file_aggregation_of_file1_and_file2",
@@ -350,7 +350,7 @@ exports[`AggregationGenerator aggregation of two maps 1`] = `
 exports[`AggregationGenerator aggregation one map 1`] = `
 {
   "fileMeta": {
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
     "exportedFileSize": 300000,
     "fileChecksum": "md5-file1",
     "fileName": "file1",
