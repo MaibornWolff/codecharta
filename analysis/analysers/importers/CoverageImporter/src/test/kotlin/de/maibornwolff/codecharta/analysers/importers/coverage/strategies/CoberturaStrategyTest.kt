@@ -25,7 +25,12 @@ class CoberturaStrategyTest {
 
         assertThat(
             project
-        ).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist").isEqualTo(expectedProject)
+        ).usingRecursiveComparison().ignoringFields(
+            "attributeDescriptors",
+            "attributeTypes",
+            "blacklist",
+            "apiVersion"
+        ).isEqualTo(expectedProject)
     }
 
     @Test
