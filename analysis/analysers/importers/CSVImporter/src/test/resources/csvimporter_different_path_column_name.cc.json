@@ -1,5 +1,5 @@
 {
-  "checksum": "d93d91e8128c2744fe3f172003eb24b8",
+  "checksum": "9b631efc9796355c0b445cebb8927282",
   "data": {
     "projectName": "",
     "nodes": [
@@ -1679,7 +1679,7 @@
         ]
       }
     ],
-    "apiVersion": "1.3",
+    "apiVersion": "1.5",
     "edges": [],
     "attributeTypes": {},
     "attributeDescriptors": {
@@ -1689,7 +1689,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements": {
         "title": "Statements",
@@ -1697,7 +1698,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Percent Branch Statements": {
         "title": "Percent Branch Statements",
@@ -1705,7 +1707,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Method Call Statements": {
         "title": "Method Call Statements",
@@ -1713,7 +1716,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Percent Lines with Comments": {
         "title": "Percent Lines with Comments",
@@ -1721,7 +1725,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Classes and Interfaces": {
         "title": "Classes and Interfaces",
@@ -1729,7 +1734,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Methods per Class": {
         "title": "Methods per Class",
@@ -1737,7 +1743,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Average Statements per Method": {
         "title": "Average Statements per Method",
@@ -1745,7 +1752,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Line Number of Most Complex Method*": {
         "title": "Line Number of Most Complex Method*",
@@ -1753,7 +1761,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Maximum Complexity*": {
         "title": "Maximum Complexity*",
@@ -1761,7 +1770,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Line Number of Deepest Block": {
         "title": "Line Number of Deepest Block",
@@ -1769,7 +1779,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Maximum Block Depth": {
         "title": "Maximum Block Depth",
@@ -1777,7 +1788,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Average Block Depth": {
         "title": "Average Block Depth",
@@ -1785,7 +1797,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Average Complexity*": {
         "title": "Average Complexity*",
@@ -1793,7 +1806,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 0": {
         "title": "Statements at block level 0",
@@ -1801,7 +1815,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 1": {
         "title": "Statements at block level 1",
@@ -1809,7 +1824,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 2": {
         "title": "Statements at block level 2",
@@ -1817,7 +1833,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 3": {
         "title": "Statements at block level 3",
@@ -1825,7 +1842,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 4": {
         "title": "Statements at block level 4",
@@ -1833,7 +1851,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 5": {
         "title": "Statements at block level 5",
@@ -1841,7 +1860,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 6": {
         "title": "Statements at block level 6",
@@ -1849,7 +1869,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 7": {
         "title": "Statements at block level 7",
@@ -1857,7 +1878,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 8": {
         "title": "Statements at block level 8",
@@ -1865,7 +1887,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       },
       "Statements at block level 9": {
         "title": "Statements at block level 9",
@@ -1873,7 +1896,8 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "",
-        "direction": -1
+        "direction": -1,
+        "analyzers": []
       }
     },
     "blacklist": []

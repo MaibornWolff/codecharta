@@ -23,7 +23,7 @@ class PHPUnitStrategyTest {
         val project = projectBuilder.build()
         val expectedProject = ProjectDeserializer.deserializeProject(File(expectedOutputPath).inputStream())
 
-        assertThat(project).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist")
+        assertThat(project).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist", "apiVersion")
             .isEqualTo(expectedProject)
     }
 

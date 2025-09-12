@@ -44,10 +44,9 @@ class SVNLogProjectCreatorGoldenTest {
         val expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader)
         val resource = this.javaClass.classLoader.getResource(logFilename)
         val logStream = Files.lines(Paths.get(resource!!.toURI())) // when
-        val svnProject =
-            svnSVNLogProjectCreator.parse(
-                logStream
-            ) // This step is necessary because the comparison of the attribute map in MutableNode fails if the project is used directly;
+        val svnProject = svnSVNLogProjectCreator.parse(
+            logStream
+        ) // This step is necessary because the comparison of the attribute map in MutableNode fails if the project is used directly;
         val svnProjectForComparison = serializeAndDeserializeProject(svnProject)
 
         // then
