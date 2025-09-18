@@ -54,13 +54,15 @@ class CppNodeTypes : MetricNodeTypes {
         )
     )
 
-    // every lambda expression contains an abstract function declarator, which can be ignored
-    fun shouldIgnoreAbstractFunctionInLambda(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "abstract_function_declarator" && node.parent.type == "lambda_expression"
-    }
+    companion object {
+        // every lambda expression contains an abstract function declarator, which can be ignored
+        fun shouldIgnoreAbstractFunctionInLambda(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "abstract_function_declarator" && node.parent.type == "lambda_expression"
+        }
 
-    // every function definition contains a function declarator, which can be ignored
-    fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "function_declarator" && node.parent.type == "function_definition"
+        // every function definition contains a function declarator, which can be ignored
+        fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "function_declarator" && node.parent.type == "function_definition"
+        }
     }
 }

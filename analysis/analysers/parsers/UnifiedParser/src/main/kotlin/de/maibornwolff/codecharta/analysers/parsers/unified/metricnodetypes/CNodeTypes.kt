@@ -44,8 +44,10 @@ class CNodeTypes : MetricNodeTypes {
         )
     )
 
-    // every function definition contains a function declarator, so the inner declarator can be ignored
-    fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "function_declarator" && node.parent.type == "function_definition"
+    companion object {
+        // every function definition contains a function declarator, so the inner declarator can be ignored
+        fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "function_declarator" && node.parent.type == "function_definition"
+        }
     }
 }

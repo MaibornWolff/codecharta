@@ -62,20 +62,22 @@ class PythonNodeTypes : MetricNodeTypes {
         )
     )
 
-    val nodeTypesToIgnore = setOf(
-        "string_start",
-        "string_content",
-        "string_end"
-    )
+    companion object {
+        // as python doesn't use brackets a comment at the start of a function/class would result in wrong rloc
+        fun shouldIgnoreNodeStartingWithComment(node: TSNode): Boolean {
+            val childNode = node.getChild(0)
+            if (childNode.isNull) return false
+            return childNode.type == "expression_statement" && childNode.childCount == 1
+        }
 
-    // as python doesn't use brackets a comment at the start of a function/class would result in wrong rloc
-    fun shouldIgnoreNodeStartingWithComment(node: TSNode): Boolean {
-        val childNode = node.getChild(0)
-        if (childNode.isNull) return false
-        return childNode.type == "expression_statement" && childNode.childCount == 1
-    }
+        fun shouldIgnoreStringInBlockComment(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "string" && node.parent.childCount == 1
+        }
 
-    fun shouldIgnoreStringInBlockComment(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "string" && node.parent.childCount == 1
+        val nodeTypesToIgnore = setOf(
+            "string_start",
+            "string_content",
+            "string_end"
+        )
     }
 }

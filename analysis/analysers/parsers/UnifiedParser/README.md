@@ -91,7 +91,7 @@ Adding a new language to the parser is done by creating a new language specific 
 
 As the treesitter grammars differ by language, these queries need to be adjusted for each language. Creating a new query provider is done by inheriting from the 'MetricQueries' interface and creating one query for each member. This interface has one member for each of the metrics currently supported by this parser. It is also possible to provide queries for only some of the metrics. Fot this, the 'getAvailableMetrics' function can be overwritten to only include the metric this language supports
 
-By default, it is not necessary to implement any functionality in the language specific collectors. If however the calculation for one metric is different from the base implementation, the function to calculate that metric can be overwritten
+By default, it is not necessary to implement further logic in the language specific collectors. If however the calculation for one metric differs from the base implementation (most often some specific treesitter-nodes would be wrongfully counted), it is possible to adjust the base implementation using code injection.
 
 Finally, to make the newly created collector accessible, add it to the 'AvailableCollectors' enum.
 
@@ -99,10 +99,8 @@ It is also recommended to add tests for the new language by creating a test file
 
 ### Adding a new metric
 
-To add a new metric, it is necessary to adjust the 'MetricQueries' interface by adding a new member representing the query that the inheriting classes need to implement. Further, the enum in the same file needs to be extended to include the new metric as well.
+Adding a new metric is done by creating a new metric specific 'calculator', which inherits from the 'MetricCalculator' interface. Calculation of metrics happens individually for each iterated treesitter-node.
 
-After this, for each language either a query for the new metric has to be implemented or the language has to be adjusted to set this metric as not supported by overwriting the 'getAvailableMetrics' function.
+After the calculation logic is implemented, adjust the 'AvailableMetrics' enum in the 'MetricNodeTypes' file to add the new metric and the 'MetricsToCalculatorsMap' to connect the new metric with iths calculation logic.
 
-The 'MetricCollector' abstract class also has to be adjusted by adding a new function how the metric is calculated, as well as registering this new method in the 'metricToCalculation' map.
-
-Finally, the 'AttributeDescriptors' file needs to be adjusted to include information about the new metric.
+Finally, the 'AttributeDescriptors' file needs to be adjusted to include information about the new metric and tests should be run to check if any resource files need to be updated to include the new metric.

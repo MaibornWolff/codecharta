@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators.CalculationExtensions
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators.MetricsToCalculatorsMap
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableMetrics
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.MetricNodeTypes
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.NestedNodeType
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.TreeNodeTypes
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import org.treesitter.TSLanguage
@@ -14,34 +14,16 @@ import java.io.File
 
 abstract class MetricCollector(
     private val treeSitterLanguage: TSLanguage,
-    protected val nodeTypeProvider: MetricNodeTypes
+    protected val nodeTypeProvider: MetricNodeTypes,
+    calculationExtensions: CalculationExtensions = CalculationExtensions()
 ) {
-    private var lastCountedCommentLine = -1
-    private var lastCountedCodeLine = -1
     private var rootNodeType: String = ""
 
-    // maps a metric to its index for the more performant IntArray and the function how to calculate the metric
-    private val metricInfo = mapOf(
-        AvailableMetrics.COMPLEXITY to Pair(0) { node: TSNode, nodeType: String, _: Int, _: Int ->
-            calculateComplexityForNode(node, nodeType)
-        },
-        AvailableMetrics.COMMENT_LINES to Pair(1) { node: TSNode, nodeType: String, startRow: Int, endRow: Int ->
-            calculateCommentLinesForNode(node, nodeType, startRow, endRow)
-        },
-        AvailableMetrics.NUMBER_OF_FUNCTIONS to Pair(2) { node: TSNode, nodeType: String, _: Int, _: Int ->
-            calculateNumberOfFunctionsForNode(node, nodeType)
-        },
-        AvailableMetrics.REAL_LINES_OF_CODE to Pair(3) { node: TSNode, nodeType: String, startRow: Int, endRow: Int ->
-            calculateRealLinesOfCodeForNode(node, nodeType, startRow, endRow)
-        }
-    )
+    private val metricInfo = MetricsToCalculatorsMap.getMetricInfo(nodeTypeProvider, calculationExtensions)
 
     fun collectMetricsForFile(file: File): MutableNode {
         val rootNode = getRootNode(file)
         rootNodeType = rootNode.type
-
-        lastCountedCommentLine = -1
-        lastCountedCodeLine = -1
 
         // we use an IntArray and not a map here as it improves performance
         val metricValues = IntArray(metricInfo.size) { 0 }
@@ -75,9 +57,8 @@ abstract class MetricCollector(
 
         val skipRootToAvoidDoubleCountingLines = nodeType != rootNodeType
         if (skipRootToAvoidDoubleCountingLines) {
-            for ((_, indexAndCalculateMetricForNodeFn) in metricInfo) {
-                val (index, calculateMetricForNodeFn) = indexAndCalculateMetricForNodeFn
-                metrics[index] += calculateMetricForNodeFn(currentNode, nodeType, startRow, endRow)
+            for ((metric, calculateMetricForNodeFn) in metricInfo) {
+                metrics[metric.ordinal] += calculateMetricForNodeFn(currentNode, nodeType, startRow, endRow)
             }
         }
 
@@ -92,73 +73,10 @@ abstract class MetricCollector(
     private fun mapMetricValuesToNodeAttributes(metricValues: IntArray): MutableMap<String, Int> {
         val metricNameToValue = mutableMapOf<String, Int>()
 
-        for ((metric, indexAndCalculateMetricForNodeFn) in metricInfo) {
-            val (index, _) = indexAndCalculateMetricForNodeFn
-            metricNameToValue[metric.metricName] = metricValues[index]
+        for ((metric, _) in metricInfo) {
+            metricNameToValue[metric.metricName] = metricValues[metric.ordinal]
         }
 
         return metricNameToValue
-    }
-
-    protected open fun calculateComplexityForNode(node: TSNode, nodeType: String): Int {
-        return if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.complexityNodeTypes)) 1 else 0
-    }
-
-    protected open fun calculateCommentLinesForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
-        if (startRow > lastCountedCommentLine && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)) {
-            lastCountedCommentLine = startRow
-            return endRow - startRow + 1
-        }
-        return 0
-    }
-
-    protected open fun calculateNumberOfFunctionsForNode(node: TSNode, nodeType: String): Int {
-        return if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.numberOfFunctionsNodeTypes)) 1 else 0
-    }
-
-    protected open fun calculateRealLinesOfCodeForNode(node: TSNode, nodeType: String, startRow: Int, endRow: Int): Int {
-        if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)) return 0
-
-        var rlocForNode = 0
-
-        if (startRow > lastCountedCodeLine) {
-            lastCountedCodeLine = startRow
-            rlocForNode++
-        }
-
-        if (endRow > lastCountedCodeLine && countWholeNodeLength(node)) {
-            lastCountedCodeLine = endRow
-            rlocForNode += endRow - startRow
-        }
-
-        return rlocForNode
-    }
-
-    private fun isNodeTypeAllowed(node: TSNode, nodeType: String, allowedTypes: TreeNodeTypes): Boolean {
-        if (allowedTypes.simpleNodeTypes.contains(nodeType)) {
-            return true
-        } else if (allowedTypes.nestedNodeTypes != null) {
-            return isNestedTypeAllowed(node, nodeType, allowedTypes.nestedNodeTypes)
-        }
-        return false
-    }
-
-    private fun isNestedTypeAllowed(node: TSNode, nodeType: String, nestedTypes: Set<NestedNodeType>): Boolean {
-        for (nestedType in nestedTypes) {
-            if (nestedType.baseNodeType != nodeType) continue
-
-            if (nestedType.childNodePosition != null && nestedType.childNodeCount == node.childCount) {
-                val childNode = node.getChild(nestedType.childNodePosition)
-                if (!childNode.isNull && nestedType.childNodeTypes.contains(childNode.type)) return true
-            } else if (nestedType.childNodeFieldName != null) {
-                val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
-                if (!childNode.isNull && nestedType.childNodeTypes.contains(childNode.type)) return true
-            }
-        }
-        return false
-    }
-
-    protected open fun countWholeNodeLength(node: TSNode): Boolean {
-        return node.childCount == 0
     }
 }
