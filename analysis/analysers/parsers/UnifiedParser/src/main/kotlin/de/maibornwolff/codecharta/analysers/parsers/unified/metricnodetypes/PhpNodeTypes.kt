@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
 class PhpNodeTypes : MetricNodeTypes {
-    override val complexityNodeTypes = TreeNodeTypes(
+    override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if_statement",
@@ -19,14 +19,7 @@ class PhpNodeTypes : MetricNodeTypes {
             "match_conditional_expression",
             "match_default_expression",
             // catch
-            "catch_clause",
-            // function
-            "method_declaration",
-            "lambda_expression",
-            "arrow_function",
-            "anonymous_function",
-            "function_definition",
-            "function_static_declaration"
+            "catch_clause"
         ),
         nestedNodeTypes = setOf(
             // logical binary
@@ -35,6 +28,17 @@ class PhpNodeTypes : MetricNodeTypes {
                 childNodeFieldName = "operator",
                 childNodeTypes = setOf("&&", "||", "??", "and", "or", "xor")
             )
+        )
+    )
+
+    override val functionComplexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "method_declaration",
+            "lambda_expression",
+            "arrow_function",
+            "anonymous_function",
+            "function_definition",
+            "function_static_declaration"
         )
     )
 

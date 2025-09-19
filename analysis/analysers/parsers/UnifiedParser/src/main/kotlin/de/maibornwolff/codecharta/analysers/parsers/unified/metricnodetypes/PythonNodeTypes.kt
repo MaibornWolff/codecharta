@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 import org.treesitter.TSNode
 
 class PythonNodeTypes : MetricNodeTypes {
-    override val complexityNodeTypes = TreeNodeTypes(
+    override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if_statement",
@@ -21,9 +21,7 @@ class PythonNodeTypes : MetricNodeTypes {
             // case label
             "case_pattern",
             // catch block
-            "except_clause",
-            // function
-            "function_definition"
+            "except_clause"
         ),
         nestedNodeTypes = setOf(
             // lambda needs to be complex to not be counted double as type of first child is also lambda
@@ -33,6 +31,13 @@ class PythonNodeTypes : MetricNodeTypes {
                 childNodePosition = 0,
                 childNodeTypes = setOf("lambda")
             )
+        )
+    )
+
+    override val functionComplexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            // function
+            "function_definition"
         )
     )
 

@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 import org.treesitter.TSNode
 
 class CNodeTypes : MetricNodeTypes {
-    override val complexityNodeTypes = TreeNodeTypes(
+    override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if_statement",
@@ -16,11 +16,7 @@ class CNodeTypes : MetricNodeTypes {
             // case
             "case_statement",
             // catch
-            "seh_except_clause",
-            // function
-            "function_definition",
-            "abstract_function_declarator",
-            "function_declarator"
+            "seh_except_clause"
         ),
         nestedNodeTypes = setOf(
             // logical binary
@@ -29,6 +25,14 @@ class CNodeTypes : MetricNodeTypes {
                 childNodeFieldName = "operator",
                 childNodeTypes = setOf("&&", "||")
             )
+        )
+    )
+
+    override val functionComplexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "function_definition",
+            "abstract_function_declarator",
+            "function_declarator"
         )
     )
 
