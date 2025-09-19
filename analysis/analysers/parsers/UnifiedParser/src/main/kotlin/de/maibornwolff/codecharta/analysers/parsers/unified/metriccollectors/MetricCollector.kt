@@ -31,6 +31,11 @@ abstract class MetricCollector(
 
         val metricNameToValue = mapMetricValuesToNodeAttributes(metricValues)
 
+        // the actual complexity is calculated here from its previous value and logic_complexity to improve performance
+        val functionComplexity = metricNameToValue[AvailableMetrics.COMPLEXITY.metricName] ?: 0
+        val logicComplexity = metricNameToValue[AvailableMetrics.LOGIC_COMPLEXITY.metricName] ?: 0
+        metricNameToValue[AvailableMetrics.COMPLEXITY.metricName] = logicComplexity + functionComplexity
+
         // lines of code is added here manually to improve performance as no tree walk is necessary
         metricNameToValue[AvailableMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row
 

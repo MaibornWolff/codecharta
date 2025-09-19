@@ -7,6 +7,6 @@ data class CalculationContext(
     val nodeType: String,
     val startRow: Int = -1,
     val endRow: Int = -1,
-    val shouldIgnoreNode: (TSNode, String) -> Boolean = { _, _ -> false },
+    val shouldIgnoreNode: (TSNode, String) -> Boolean,
     val countNodeAsLeafNode: (TSNode) -> Boolean = { false }
 )

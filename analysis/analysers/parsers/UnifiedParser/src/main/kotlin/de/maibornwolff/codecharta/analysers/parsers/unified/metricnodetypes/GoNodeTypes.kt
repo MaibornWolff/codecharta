@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
 class GoNodeTypes : MetricNodeTypes {
-    override val complexityNodeTypes = TreeNodeTypes(
+    override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if_statement",
@@ -11,12 +11,7 @@ class GoNodeTypes : MetricNodeTypes {
             "communication_case",
             "expression_case",
             "type_case",
-            "default_case",
-            // function
-            "method_declaration",
-            "func_literal",
-            "function_declaration",
-            "method_spec"
+            "default_case"
         ),
         nestedNodeTypes = setOf(
             // logical binary
@@ -25,6 +20,15 @@ class GoNodeTypes : MetricNodeTypes {
                 childNodeFieldName = "operator",
                 childNodeTypes = setOf("&&", "||")
             )
+        )
+    )
+
+    override val functionComplexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "method_declaration",
+            "func_literal",
+            "function_declaration",
+            "method_spec"
         )
     )
 

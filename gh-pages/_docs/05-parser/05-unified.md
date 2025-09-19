@@ -32,13 +32,14 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 ## Supported Metrics
 
-| Metric                    | Description                                                                                                              |
-|---------------------------|--------------------------------------------------------------------------------------------------------------------------|
-| Complexity                | Complexity of a file based on the number of paths through the code (McCabe Complexity)                                   |
-| Comment lines             | The number of comment lines found in a file                                                                              |
-| Number of functions       | The number of functions and methods in a file                                                                            |
-| Lines of code (LOC)       | Lines of code including empty lines and comments                                                                         |
-| Real lines of code (RLOC) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment |
+| Metric                    | Description                                                                                                                                                                                                                |
+|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Complexity                | Complexity of the file based on the number of paths through the code. Also includes complexity introduced by definition of functions, classes, etc. (Represents the 'cognitive load' necessary to overlook the whole file) |
+| Logic Complexity          | Complexity of the file based on number of paths through the code, similar to cyclomatic complexity (only counts complexity in code, not complexity introduced by definition of functions, classes, etc.)                   |
+| Comment lines             | The number of comment lines found in a file                                                                                                                                                                                |
+| Number of functions       | The number of functions and methods in a file                                                                                                                                                                              |
+| Lines of code (LOC)       | Lines of code including empty lines and comments                                                                                                                                                                           |
+| Real lines of code (RLOC) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
 
 ## Usage and Parameters
 

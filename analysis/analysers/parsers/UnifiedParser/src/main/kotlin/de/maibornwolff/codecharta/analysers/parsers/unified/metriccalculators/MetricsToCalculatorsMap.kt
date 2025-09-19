@@ -17,6 +17,15 @@ class MetricsToCalculatorsMap() {
 
             return mapOf(
                 AvailableMetrics.COMPLEXITY to { node: TSNode, nodeType: String, _: Int, _: Int ->
+                    complexityCalc.calculateFunctionComplexityForNode(
+                        CalculationContext(
+                            node,
+                            nodeType,
+                            shouldIgnoreNode = calcExtensions.ignoreNodeForComplexity
+                        )
+                    )
+                },
+                AvailableMetrics.LOGIC_COMPLEXITY to { node: TSNode, nodeType: String, _: Int, _: Int ->
                     complexityCalc.calculateMetricForNode(
                         CalculationContext(
                             node,

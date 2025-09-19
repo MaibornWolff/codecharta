@@ -8,7 +8,13 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     return mapOf(
         "complexity" to AttributeDescriptor(
             title = "Complexity",
-            description = "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
+            description = "Complexity of the file representing how much cognitive load is needed to overview the whole file",
+            link = ghLink,
+            direction = -1
+        ),
+        "logic_complexity" to AttributeDescriptor(
+            title = "Logic complexity",
+            description = "Complexity of the file based on number of paths through the code, similar to cyclomatic complexity",
             link = "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
             direction = -1,
             analyzers = analyzerName

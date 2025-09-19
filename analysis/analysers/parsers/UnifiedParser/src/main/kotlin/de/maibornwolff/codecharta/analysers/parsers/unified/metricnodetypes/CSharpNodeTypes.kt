@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
 class CSharpNodeTypes : MetricNodeTypes {
-    override val complexityNodeTypes = TreeNodeTypes(
+    override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if_statement",
@@ -19,13 +19,7 @@ class CSharpNodeTypes : MetricNodeTypes {
             "switch_section",
             "switch_expression_arm",
             // catch
-            "catch_clause",
-            // function
-            "constructor_declaration",
-            "method_declaration",
-            "lambda_expression",
-            "local_function_statement",
-            "accessor_declaration"
+            "catch_clause"
         ),
         nestedNodeTypes = setOf(
             // logical binary
@@ -34,6 +28,16 @@ class CSharpNodeTypes : MetricNodeTypes {
                 childNodeFieldName = "operator",
                 childNodeTypes = setOf("&&", "||", "??")
             )
+        )
+    )
+
+    override val functionComplexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "constructor_declaration",
+            "method_declaration",
+            "lambda_expression",
+            "local_function_statement",
+            "accessor_declaration"
         )
     )
 
