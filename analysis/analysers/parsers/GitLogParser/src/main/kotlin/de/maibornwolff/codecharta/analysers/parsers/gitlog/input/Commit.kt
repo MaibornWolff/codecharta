@@ -6,7 +6,8 @@ class Commit(
     val author: String,
     modifications: List<Modification>,
     val commitDate: OffsetDateTime,
-    private val mergeCommit: Boolean = false
+    private val mergeCommit: Boolean = false,
+    val message: String = ""
 ) {
     val modifications: List<Modification>
 

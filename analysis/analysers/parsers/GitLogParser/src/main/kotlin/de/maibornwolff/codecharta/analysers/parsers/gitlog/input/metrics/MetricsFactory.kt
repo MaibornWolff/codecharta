@@ -37,7 +37,13 @@ class MetricsFactory {
             AbsoluteCoupledChurn(),
             AverageCodeChurnPerCommit(),
             NumberOfRenames(),
-            AgeInWeeks()
+            AgeInWeeks(),
+            FeatCommits(),
+            FixCommits(),
+            DocsCommits(),
+            StyleCommits(),
+            RefactorCommits(),
+            TestCommits()
         )
     }
 

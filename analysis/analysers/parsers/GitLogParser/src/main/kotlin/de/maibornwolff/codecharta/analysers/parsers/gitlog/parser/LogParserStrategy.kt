@@ -17,4 +17,6 @@ interface LogParserStrategy {
     fun parseDate(commitLines: List<String>): OffsetDateTime
 
     fun parseIsMergeCommit(commitLines: List<String>): Boolean
+
+    fun parseMessage(commitLines: List<String>): String
 }

@@ -64,6 +64,35 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
         return commitLines.any { commitLine -> commitLine.startsWith(MERGE_COMMIT_INDICATOR) }
     }
 
+    override fun parseMessage(commitLines: List<String>): String {
+        val messageLines = mutableListOf<String>()
+        var inMessageSection = false
+
+        for (line in commitLines) {
+            when {
+                line.startsWith("    ") -> {
+                    inMessageSection = true
+                    messageLines.add(line.substring(4)) // Remove 4-space indentation
+                }
+                line.isEmpty() && inMessageSection -> {
+                    // Check if next non-empty line is also a message line
+                    val nextMessageLineIndex = commitLines.indexOf(line) + 1
+                    val hasMoreMessageLines = commitLines.drop(nextMessageLineIndex).any { it.startsWith("    ") }
+                    if (hasMoreMessageLines) {
+                        messageLines.add("") // Add empty line for paragraph separation
+                    }
+                }
+                else -> {
+                    if (inMessageSection && !isFileLine(line)) {
+                        break // End of message section
+                    }
+                }
+            }
+        }
+
+        return messageLines.joinToString("\n").trim()
+    }
+
     companion object {
         private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
 
