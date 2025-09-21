@@ -108,8 +108,23 @@ class SemanticCommitMetricsTest {
     @MethodSource("semanticCommitMetricsWithParenthesesFormats")
     fun should_match_flexible_format_with_parentheses(metric: Metric, parenthesesMessage: String) {
         // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, parenthesesMessage))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, parenthesesMessage.replaceFirstChar { it.uppercase() }))
+        metric.registerCommit(
+            Commit(
+                "author",
+                emptyList(),
+                OffsetDateTime.now(),
+                false, parenthesesMessage
+            )
+        )
+        metric.registerCommit(
+            Commit(
+                "author",
+                emptyList(),
+                OffsetDateTime.now(),
+                false,
+                parenthesesMessage.replaceFirstChar { it.uppercase() }
+            )
+        )
 
         // then
         assertThat(metric.value()).isEqualTo(2L)
@@ -119,8 +134,23 @@ class SemanticCommitMetricsTest {
     @MethodSource("semanticCommitMetricsWithSpaceFormats")
     fun should_match_flexible_format_with_space(metric: Metric, spaceMessage: String) {
         // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, spaceMessage))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, spaceMessage.replaceFirstChar { it.uppercase() }))
+        metric.registerCommit(
+            Commit(
+                "author",
+                emptyList(),
+                OffsetDateTime.now(),
+                false, spaceMessage
+            )
+        )
+        metric.registerCommit(
+            Commit(
+            "author",
+            emptyList(),
+            OffsetDateTime.now(),
+            false,
+            spaceMessage.replaceFirstChar { it.uppercase() }
+            )
+        )
 
         // then
         assertThat(metric.value()).isEqualTo(2L)
