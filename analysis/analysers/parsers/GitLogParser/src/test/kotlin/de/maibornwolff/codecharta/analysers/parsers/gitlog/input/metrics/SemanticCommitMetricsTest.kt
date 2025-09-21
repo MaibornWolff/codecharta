@@ -113,7 +113,8 @@ class SemanticCommitMetricsTest {
                 "author",
                 emptyList(),
                 OffsetDateTime.now(),
-                false, parenthesesMessage
+                false,
+                parenthesesMessage
             )
         )
         metric.registerCommit(
@@ -139,16 +140,17 @@ class SemanticCommitMetricsTest {
                 "author",
                 emptyList(),
                 OffsetDateTime.now(),
-                false, spaceMessage
+                false,
+                spaceMessage
             )
         )
         metric.registerCommit(
             Commit(
-            "author",
-            emptyList(),
-            OffsetDateTime.now(),
-            false,
-            spaceMessage.replaceFirstChar { it.uppercase() }
+                "author",
+                emptyList(),
+                OffsetDateTime.now(),
+                false,
+                spaceMessage.replaceFirstChar { it.uppercase() }
             )
         )
 
