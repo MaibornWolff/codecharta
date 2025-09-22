@@ -54,20 +54,20 @@ class UnifiedParserTest {
     }
 
     private fun provideSupportedLanguages() = listOf(
-        Arguments.of("typescript", ".ts"),
-        Arguments.of("javascript", ".js"),
-        Arguments.of("java", ".java"),
-        Arguments.of("kotlin", ".kt"),
-        Arguments.of("cSharp", ".cs"),
-        Arguments.of("cpp", ".cpp"),
-        Arguments.of("c", ".c"),
+        Arguments.of("bash", ".sh"),
         Arguments.of("cHeader", ".h"),
         Arguments.of("cppHeader", ".hpp"),
-        Arguments.of("python", ".py"),
+        Arguments.of("cpp", ".cpp"),
+        Arguments.of("c", ".c"),
+        Arguments.of("cSharp", ".cs"),
         Arguments.of("go", ".go"),
+        Arguments.of("java", ".java"),
+        Arguments.of("javascript", ".js"),
+        Arguments.of("kotlin", ".kt"),
         Arguments.of("php", ".php"),
+        Arguments.of("python", ".py"),
         Arguments.of("ruby", ".rb"),
-        Arguments.of("bash", ".sh")
+        Arguments.of("typescript", ".ts")
     )
 
     @ParameterizedTest
@@ -100,17 +100,24 @@ class UnifiedParserTest {
     }
 
     @Test
-    fun `Should correctly merge when piped into another project`() {
+    fun `Should correctly merge and show warnings for mismatched attribute descriptors when piped into another project`() {
         // given
         val pipedProject = File("${testResourceBaseFolder}projectToPipe.cc.json").readText()
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val expectedResultFile = File("${testResourceBaseFolder}mergeResult.cc.json").absoluteFile
+        System.setErr(PrintStream(errContent))
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+        Assertions.assertThat(errContent.toString()).contains("6 nodes were processed, 5 were added and 1 were merged")
+        Assertions.assertThat(errContent.toString()).contains("Description of 'complexity' metric differs between files! Using value of first file...")
+        Assertions.assertThat(errContent.toString()).contains("Link of 'complexity' metric differs between files! Using value of first file...")
+
+        // clean up
+        System.setErr(originalErr)
     }
 
     @Test

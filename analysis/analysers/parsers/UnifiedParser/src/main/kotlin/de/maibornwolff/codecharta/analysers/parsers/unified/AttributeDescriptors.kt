@@ -10,7 +10,8 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             title = "Complexity",
             description = "Complexity of the file representing how much cognitive load is needed to overview the whole file",
             link = ghLink,
-            direction = -1
+            direction = -1,
+            analyzers = analyzerName
         ),
         "logic_complexity" to AttributeDescriptor(
             title = "Logic complexity",
