@@ -1,5 +1,5 @@
 {
-  "checksum": "02f474f801a9ba905ef6fdc49d907211",
+  "checksum": "bc33cf96fe6766e68d9a2920759bb0cc",
   "data": {
     "projectName": "",
     "nodes": [
@@ -191,7 +191,10 @@
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
-        "direction": -1
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
       }
     },
     "blacklist": []
