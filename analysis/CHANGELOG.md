@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add commit message parsing to recognize semantic commit messages https://codecharta.com/docs/parser/git-log
+
 ## [1.136.0] - 2025-09-10
 
 ### Added 🚀
