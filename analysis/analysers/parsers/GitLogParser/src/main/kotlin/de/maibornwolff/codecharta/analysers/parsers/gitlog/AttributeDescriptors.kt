@@ -63,37 +63,37 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         "feat_commits" to
             AttributeDescriptor(
                 title = "Feature Commits",
-                description = "Number of feature commits (starting with 'feat:') for this file",
+                description = "Number of commits starting with 'feat' for this file",
                 link = ghLink, direction = -1
             ),
         "fix_commits" to
             AttributeDescriptor(
                 title = "Fix Commits",
-                description = "Number of bug fix commits (starting with 'fix:') for this file",
+                description = "Number of commits starting with 'fix' for this file",
                 link = ghLink, direction = -1
             ),
         "docs_commits" to
             AttributeDescriptor(
                 title = "Documentation Commits",
-                description = "Number of documentation commits (starting with 'docs:') for this file",
+                description = "Number of commits starting with 'docs' for this file",
                 link = ghLink, direction = -1
             ),
         "style_commits" to
             AttributeDescriptor(
                 title = "Style Commits",
-                description = "Number of code style commits (starting with 'style:') for this file",
+                description = "Number of commits starting with 'style' for this file",
                 link = ghLink, direction = -1
             ),
         "refactor_commits" to
             AttributeDescriptor(
                 title = "Refactor Commits",
-                description = "Number of refactoring commits (starting with 'refactor:') for this file",
+                description = "Number of commits starting with 'refactor' for this file",
                 link = ghLink, direction = -1
             ),
         "test_commits" to
             AttributeDescriptor(
                 title = "Test Commits",
-                description = "Number of test commits (starting with 'test:') for this file",
+                description = "Number of commits starting with 'test' for this file",
                 link = ghLink, direction = -1
             )
     )
