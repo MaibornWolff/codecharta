@@ -47,6 +47,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
                     null -> mergeModifications(
                         currentModification
                     )
+
                     else -> mergeModifications(
                         aggregatedModification,
                         currentModification
@@ -65,32 +66,13 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
     }
 
     override fun parseMessage(commitLines: List<String>): String {
-        val messageLines = mutableListOf<String>()
-        var inMessageSection = false
+        val commitMessages = extractCommitMessages(commitLines)
+        return commitMessages.joinToString("\n").trim()
+    }
 
-        for (line in commitLines) {
-            when {
-                line.startsWith("    ") -> {
-                    inMessageSection = true
-                    messageLines.add(line.substring(4)) // Remove 4-space indentation
-                }
-                line.isEmpty() && inMessageSection -> {
-                    // Check if next non-empty line is also a message line
-                    val nextMessageLineIndex = commitLines.indexOf(line) + 1
-                    val hasMoreMessageLines = commitLines.drop(nextMessageLineIndex).any { it.startsWith("    ") }
-                    if (hasMoreMessageLines) {
-                        messageLines.add("") // Add empty line for paragraph separation
-                    }
-                }
-                else -> {
-                    if (inMessageSection && !isFileLine(line)) {
-                        break // End of message section
-                    }
-                }
-            }
-        }
-
-        return messageLines.joinToString("\n").trim()
+    private fun extractCommitMessages(commitLines: List<String>): List<String> {
+        val isCommitMessage: (commitLine: String) -> Boolean = { it.isNotEmpty() && it.isNotBlank() && it.startsWith("    ") }
+        return commitLines.filter { isCommitMessage(it) }.map { it.substring(4) }
     }
 
     companion object {
@@ -110,8 +92,8 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
 
         private fun mergeModifications(vararg a: Modification): Modification {
             val filename = a[0].currentFilename
-            val additions = a.map { it.additions }.sum()
-            val deletions = a.map { it.deletions }.sum()
+            val additions = a.sumOf { it.additions }
+            val deletions = a.sumOf { it.deletions }
 
             val tmpModification = a.firstOrNull { modification -> modification.type != Modification.Type.UNKNOWN }
             var type = Modification.Type.UNKNOWN

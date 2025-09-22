@@ -46,7 +46,7 @@ class GitLogMessageParsingTest {
         val message = strategy.parseMessage(commitLines)
 
         // then
-        assertThat(message).isEqualTo("feat: add new feature\n\nThis is a detailed description\nof the new feature implementation.")
+        assertThat(message).isEqualTo("feat: add new feature\nThis is a detailed description\nof the new feature implementation.")
     }
 
     @Test
