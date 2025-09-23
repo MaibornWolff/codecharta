@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - Add commit message parsing to recognize semantic commit messages https://codecharta.com/docs/parser/git-log
+- Add on top of commit message parsing ratios to see where often hotfixes appear https://codecharta.com/docs/parser/git-log
 
 ## [1.136.0] - 2025-09-10
 
