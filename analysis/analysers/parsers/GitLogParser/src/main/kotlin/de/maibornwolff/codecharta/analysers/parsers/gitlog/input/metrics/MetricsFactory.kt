@@ -43,7 +43,8 @@ class MetricsFactory {
             DocsCommits(),
             StyleCommits(),
             RefactorCommits(),
-            TestCommits()
+            TestCommits(),
+            HotfixCommits()
         )
     }
 

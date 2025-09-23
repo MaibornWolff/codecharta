@@ -95,6 +95,12 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
                 title = "Test Commits",
                 description = "Number of commits starting with 'test' for this file",
                 link = ghLink, direction = -1
+            ),
+        "hotfix_commits" to
+            AttributeDescriptor(
+                title = "Hotfix Commits",
+                description = "Number of commits containing 'hotfix' keyword for this file",
+                link = ghLink, direction = -1
             )
     )
 }
