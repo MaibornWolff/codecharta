@@ -113,8 +113,12 @@ class UnifiedParserTest {
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
         Assertions.assertThat(errContent.toString()).contains("6 nodes were processed, 5 were added and 1 were merged")
-        Assertions.assertThat(errContent.toString()).contains("Description of 'complexity' metric differs between files! Using value of first file...")
-        Assertions.assertThat(errContent.toString()).contains("Link of 'complexity' metric differs between files! Using value of first file...")
+        Assertions.assertThat(
+            errContent.toString()
+        ).contains("Description of 'complexity' metric differs between files! Using value of first file...")
+        Assertions.assertThat(
+            errContent.toString()
+        ).contains("Link of 'complexity' metric differs between files! Using value of first file...")
 
         // clean up
         System.setErr(originalErr)
