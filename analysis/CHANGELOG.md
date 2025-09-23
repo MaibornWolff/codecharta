@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
 ### Added 🚀
-
 - Add commit message parsing to recognize semantic commit messages https://codecharta.com/docs/parser/git-log
 - Add on top of commit message parsing ratios to see where often hotfixes appear https://codecharta.com/docs/parser/git-log
+
+### Chore 👨‍💻 👩‍💻
+- Bump cc.json API version to 1.5 (for details see [cc.json schema changelog](https://github.com/MaibornWolff/codecharta/blob/main/CC_JSON_SCHEMA_CHANGELOG.md)) [#4187](https://github.com/MaibornWolff/codecharta/pull/4187)
 
 ## [1.136.0] - 2025-09-10
 

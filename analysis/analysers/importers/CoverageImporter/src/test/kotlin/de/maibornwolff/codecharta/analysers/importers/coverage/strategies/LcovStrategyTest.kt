@@ -31,7 +31,7 @@ class LcovStrategyTest {
         LcovStrategy().addNodesToProjectBuilder(coverageReport, projectBuilder, System.err)
 
         val project = projectBuilder.build()
-        assertThat(project).usingRecursiveComparison().isEqualTo(expectedProject)
+        assertThat(project).usingRecursiveComparison().ignoringFields("apiVersion").isEqualTo(expectedProject)
     }
 
     @Test
@@ -46,7 +46,12 @@ class LcovStrategyTest {
         val project = projectBuilder.build()
         assertThat(
             project
-        ).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist").isEqualTo(expectedProject)
+        ).usingRecursiveComparison().ignoringFields(
+            "attributeDescriptors",
+            "attributeTypes",
+            "blacklist",
+            "apiVersion"
+        ).isEqualTo(expectedProject)
     }
 
     @Test

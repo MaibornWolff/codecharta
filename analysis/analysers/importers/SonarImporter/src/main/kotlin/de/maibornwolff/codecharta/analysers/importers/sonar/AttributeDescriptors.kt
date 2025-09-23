@@ -446,5 +446,11 @@ private fun getAttributeDescriptorsWithPositiveDirection(metricLink: String): Ma
 }
 
 private fun createAttributeDescriptor(title: String, description: String, direction: Int, link: String): AttributeDescriptor {
-    return AttributeDescriptor(title = title, description = description, link = link, direction = direction)
+    return AttributeDescriptor(
+        title = title,
+        description = description,
+        link = link,
+        direction = direction,
+        analyzers = setOf("sonarImporter")
+    )
 }
