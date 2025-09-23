@@ -71,6 +71,21 @@ class SemanticCommitDetectorTest {
     }
 
     @Test
+    fun should_detect_hotfix_commits() {
+        assertThat(SemanticCommitDetector.isHotfixCommit("hotfix: critical security fix")).isTrue
+        assertThat(SemanticCommitDetector.isHotfixCommit("HOTFIX: urgent patch")).isTrue
+        assertThat(SemanticCommitDetector.isHotfixCommit("apply emergency hotfix")).isTrue
+        assertThat(SemanticCommitDetector.isHotfixCommit("production hotfix deployment")).isTrue
+        assertThat(SemanticCommitDetector.isHotfixCommit("urgent hotfix for API")).isTrue
+        assertThat(SemanticCommitDetector.isHotfixCommit("hotfix(api): fix endpoint")).isTrue
+        assertThat(SemanticCommitDetector.isHotfixCommit("fix(security): hotfix vulnerability")).isTrue
+        assertThat(SemanticCommitDetector.isHotfixCommit("feat: add feature")).isFalse
+        assertThat(SemanticCommitDetector.isHotfixCommit("fix: photoshop fix")).isFalse
+        assertThat(SemanticCommitDetector.isHotfixCommit("hot-fix: hyphenated")).isFalse
+        assertThat(SemanticCommitDetector.isHotfixCommit("")).isFalse
+    }
+
+    @Test
     fun should_detect_semantic_commits() {
         assertThat(SemanticCommitDetector.isSemanticCommit("feat: add feature")).isTrue
         assertThat(SemanticCommitDetector.isSemanticCommit("fix: fix bug")).isTrue

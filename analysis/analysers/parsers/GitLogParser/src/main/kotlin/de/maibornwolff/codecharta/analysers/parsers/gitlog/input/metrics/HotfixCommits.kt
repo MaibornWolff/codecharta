@@ -14,7 +14,7 @@ class HotfixCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        if (commit.message.contains("hotfix", ignoreCase = true)) {
+        if (SemanticCommitDetector.isHotfixCommit(commit.message)) {
             hotfixCommitsCount++
         }
     }

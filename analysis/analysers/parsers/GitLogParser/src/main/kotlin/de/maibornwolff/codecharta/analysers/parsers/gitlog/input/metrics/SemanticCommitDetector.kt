@@ -29,6 +29,10 @@ object SemanticCommitDetector {
         return startsWithIgnoreCase(message, "test")
     }
 
+    fun isHotfixCommit(message: String): Boolean {
+        return message.contains("hotfix", ignoreCase = true)
+    }
+
     fun isSemanticCommit(message: String): Boolean {
         return isFeatCommit(message) ||
             isFixCommit(message) ||

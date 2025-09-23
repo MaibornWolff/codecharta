@@ -45,7 +45,8 @@ class MetricsFactory {
             RefactorCommits(),
             TestCommits(),
             HotfixCommits(),
-            SemanticCommitRatio()
+            SemanticCommitRatio(),
+            HotfixCommitRatio()
         )
     }
 
