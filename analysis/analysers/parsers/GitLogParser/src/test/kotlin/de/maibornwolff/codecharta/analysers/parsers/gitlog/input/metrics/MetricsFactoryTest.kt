@@ -27,6 +27,6 @@ class MetricsFactoryTest {
     fun defaultConstructorShouldCreateAllMetrics() {
         val factory = MetricsFactory()
 
-        assertThat(factory.createMetrics()).hasSize(21)
+        assertThat(factory.createMetrics()).hasSize(22)
     }
 }

@@ -92,7 +92,8 @@ class GitLogParser(
                     "docs_commits",
                     "style_commits",
                     "refactor_commits",
-                    "test_commits"
+                    "test_commits",
+                    "semantic_commit_ratio"
                 )
 
             return when (inputFormatNames) {

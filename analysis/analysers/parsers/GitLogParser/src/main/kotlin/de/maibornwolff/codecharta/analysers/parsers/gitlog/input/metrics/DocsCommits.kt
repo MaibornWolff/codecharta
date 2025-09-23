@@ -14,7 +14,7 @@ class DocsCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        if (commit.message.trim().startsWith("docs", ignoreCase = true)) {
+        if (SemanticCommitDetector.isDocsCommit(commit.message)) {
             docsCommitsCount++
         }
     }

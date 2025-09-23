@@ -101,6 +101,13 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
                 title = "Hotfix Commits",
                 description = "Number of commits containing 'hotfix' keyword for this file",
                 link = ghLink, direction = -1
+            ),
+        "semantic_commit_ratio" to
+            AttributeDescriptor(
+                title = "Semantic Commit Ratio",
+                description = "Ratio of semantic commits (which start with feat, fix, docs, style, refactor or test)" +
+                    " to total commits for this file",
+                link = ghLink, direction = 1
             )
     )
 }

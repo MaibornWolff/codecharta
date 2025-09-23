@@ -14,7 +14,7 @@ class FeatCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        if (commit.message.trim().startsWith("feat", ignoreCase = true)) {
+        if (SemanticCommitDetector.isFeatCommit(commit.message)) {
             featCommitsCount++
         }
     }

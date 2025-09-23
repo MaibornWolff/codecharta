@@ -14,7 +14,7 @@ class RefactorCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        if (commit.message.trim().startsWith("refactor", ignoreCase = true)) {
+        if (SemanticCommitDetector.isRefactorCommit(commit.message)) {
             refactorCommitsCount++
         }
     }

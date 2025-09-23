@@ -14,7 +14,7 @@ class FixCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        if (commit.message.trim().startsWith("fix", ignoreCase = true)) {
+        if (SemanticCommitDetector.isFixCommit(commit.message)) {
             fixCommitsCount++
         }
     }

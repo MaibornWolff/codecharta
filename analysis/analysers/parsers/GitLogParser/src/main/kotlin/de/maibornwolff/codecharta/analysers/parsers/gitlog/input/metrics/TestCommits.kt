@@ -14,7 +14,7 @@ class TestCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        if (commit.message.trim().startsWith("test", ignoreCase = true)) {
+        if (SemanticCommitDetector.isTestCommit(commit.message)) {
             testCommitsCount++
         }
     }

@@ -14,7 +14,7 @@ class StyleCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        if (commit.message.trim().startsWith("style", ignoreCase = true)) {
+        if (SemanticCommitDetector.isStyleCommit(commit.message)) {
             styleCommitsCount++
         }
     }
