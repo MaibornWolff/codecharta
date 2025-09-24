@@ -85,6 +85,79 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
                 link = ghLink,
                 direction = -1,
                 analyzers = analyzerName
+            ),
+        "feat_commits" to
+            AttributeDescriptor(
+                title = "Feature Commits",
+                description = "Number of commits starting with 'feat' for this file",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
+            ),
+        "fix_commits" to
+            AttributeDescriptor(
+                title = "Fix Commits",
+                description = "Number of commits starting with 'fix' for this file",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
+            ),
+        "docs_commits" to
+            AttributeDescriptor(
+                title = "Documentation Commits",
+                description = "Number of commits starting with 'docs' for this file",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
+            ),
+        "style_commits" to
+            AttributeDescriptor(
+                title = "Style Commits",
+                description = "Number of commits starting with 'style' for this file",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
+            ),
+        "refactor_commits" to
+            AttributeDescriptor(
+                title = "Refactor Commits",
+                description = "Number of commits starting with 'refactor' for this file",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
+            ),
+        "test_commits" to
+            AttributeDescriptor(
+                title = "Test Commits",
+                description = "Number of commits starting with 'test' for this file",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
+            ),
+        "hotfix_commits" to
+            AttributeDescriptor(
+                title = "Hotfix Commits",
+                description = "Number of commits containing 'hotfix' keyword for this file",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
+            ),
+        "semantic_commit_ratio" to
+            AttributeDescriptor(
+                title = "Semantic Commit Ratio",
+                description = "Ratio of semantic commits (which start with feat, fix, docs, style, refactor or test)" +
+                    " to total commits for this file",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
+            ),
+        "hotfix_commit_ratio" to
+            AttributeDescriptor(
+                title = "Hotfix Commit Ratio",
+                description = "Ratio of hotfix commits (containing 'hotfix' keyword) to total commits for this file",
+                link = ghLink,
+                direction = -1,
+                analyzers = analyzerName
             )
     )
 }

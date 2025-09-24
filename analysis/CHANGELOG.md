@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
 ### Added 🚀
+- Add commit message parsing to recognize semantic commit messages https://codecharta.com/docs/parser/git-log
+- Add on top of commit message parsing ratios to see where often hotfixes appear https://codecharta.com/docs/parser/git-log
 - Add new 'logic_complexity' metric to unifiedParser [#4192](https://github.com/MaibornWolff/codecharta/pull/4192)
 
 ### Chore 👨‍💻 👩‍💻

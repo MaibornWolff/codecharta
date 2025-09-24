@@ -86,7 +86,15 @@ class GitLogParser(
                     "successive_weeks_of_commits",
                     "weeks_with_commits",
                     "highly_coupled_files",
-                    "median_coupled_files"
+                    "median_coupled_files",
+                    "feat_commits",
+                    "fix_commits",
+                    "docs_commits",
+                    "style_commits",
+                    "refactor_commits",
+                    "test_commits",
+                    "semantic_commit_ratio",
+                    "hotfix_commit_ratio"
                 )
 
             return when (inputFormatNames) {
