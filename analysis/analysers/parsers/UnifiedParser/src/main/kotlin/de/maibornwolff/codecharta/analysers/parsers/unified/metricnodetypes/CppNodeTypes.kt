@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 import org.treesitter.TSNode
 
 class CppNodeTypes : MetricNodeTypes {
-    override val complexityNodeTypes = TreeNodeTypes(
+    override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if_statement",
@@ -18,12 +18,7 @@ class CppNodeTypes : MetricNodeTypes {
             "case_statement",
             // catch
             "catch_clause",
-            "seh_except_clause",
-            // function
-            "lambda_expression",
-            "function_definition",
-            "abstract_function_declarator",
-            "function_declarator"
+            "seh_except_clause"
         ),
         nestedNodeTypes = setOf(
             // logical binary
@@ -32,6 +27,15 @@ class CppNodeTypes : MetricNodeTypes {
                 childNodeFieldName = "operator",
                 childNodeTypes = setOf("&&", "||", "and", "or", "xor")
             )
+        )
+    )
+
+    override val functionComplexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "lambda_expression",
+            "function_definition",
+            "abstract_function_declarator",
+            "function_declarator"
         )
     )
 
@@ -54,13 +58,15 @@ class CppNodeTypes : MetricNodeTypes {
         )
     )
 
-    // every lambda expression contains an abstract function declarator, which can be ignored
-    fun shouldIgnoreAbstractFunctionInLambda(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "abstract_function_declarator" && node.parent.type == "lambda_expression"
-    }
+    companion object {
+        // every lambda expression contains an abstract function declarator, which can be ignored
+        fun shouldIgnoreAbstractFunctionInLambda(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "abstract_function_declarator" && node.parent.type == "lambda_expression"
+        }
 
-    // every function definition contains a function declarator, which can be ignored
-    fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "function_declarator" && node.parent.type == "function_definition"
+        // every function definition contains a function declarator, which can be ignored
+        fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "function_declarator" && node.parent.type == "function_definition"
+        }
     }
 }

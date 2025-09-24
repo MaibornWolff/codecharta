@@ -1,5 +1,5 @@
 {
-  "checksum": "53458a46f23a63c5898de0291f968c9c",
+  "checksum": "bc33cf96fe6766e68d9a2920759bb0cc",
   "data": {
     "projectName": "",
     "nodes": [
@@ -20,6 +20,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
+                  "logic_complexity": 0,
                   "comment_lines": 0,
                   "number_of_functions": 1,
                   "rloc": 6,
@@ -41,6 +42,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 7,
+                  "logic_complexity": 1,
                   "comment_lines": 9,
                   "number_of_functions": 2,
                   "rloc": 31,
@@ -54,6 +56,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
+                  "logic_complexity": 0,
                   "comment_lines": 0,
                   "number_of_functions": 1,
                   "rloc": 6,
@@ -69,6 +72,7 @@
             "type": "File",
             "attributes": {
               "complexity": 6,
+              "logic_complexity": 2,
               "comment_lines": 6,
               "number_of_functions": 3,
               "rloc": 30,
@@ -82,6 +86,7 @@
             "type": "File",
             "attributes": {
               "complexity": 2,
+              "logic_complexity": 2,
               "comment_lines": 4,
               "number_of_functions": 0,
               "rloc": 9,
@@ -95,6 +100,7 @@
             "type": "File",
             "attributes": {
               "complexity": 1,
+              "logic_complexity": 0,
               "comment_lines": 2,
               "number_of_functions": 1,
               "rloc": 5,
@@ -108,6 +114,7 @@
             "type": "File",
             "attributes": {
               "complexity": 5,
+              "logic_complexity": 4,
               "comment_lines": 0,
               "number_of_functions": 1,
               "rloc": 11,
@@ -125,7 +132,18 @@
     "attributeDescriptors": {
       "complexity": {
         "title": "Complexity",
-        "description": "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
+        "description": "Complexity of the file representing how much cognitive load is needed to overview the whole file",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "logic_complexity": {
+        "title": "Logic complexity",
+        "description": "Complexity of the file based on number of paths through the code, similar to cyclomatic complexity",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",

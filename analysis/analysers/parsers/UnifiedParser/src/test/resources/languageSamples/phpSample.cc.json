@@ -1,5 +1,5 @@
 {
-  "checksum": "6211d50758b19a2dd5281b2753b85f9a",
+  "checksum": "8ad7670536c836a999e5603cfa00d485",
   "data": {
     "projectName": "",
     "nodes": [
@@ -14,6 +14,7 @@
             "type": "File",
             "attributes": {
               "complexity": 8,
+              "logic_complexity": 5,
               "comment_lines": 1,
               "number_of_functions": 3,
               "rloc": 30,
@@ -31,7 +32,18 @@
     "attributeDescriptors": {
       "complexity": {
         "title": "Complexity",
-        "description": "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
+        "description": "Complexity of the file representing how much cognitive load is needed to overview the whole file",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "logic_complexity": {
+        "title": "Logic complexity",
+        "description": "Complexity of the file based on number of paths through the code, similar to cyclomatic complexity",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",

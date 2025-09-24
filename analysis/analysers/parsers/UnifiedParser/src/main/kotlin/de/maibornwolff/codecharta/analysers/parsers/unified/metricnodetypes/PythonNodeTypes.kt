@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 import org.treesitter.TSNode
 
 class PythonNodeTypes : MetricNodeTypes {
-    override val complexityNodeTypes = TreeNodeTypes(
+    override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if_statement",
@@ -21,9 +21,7 @@ class PythonNodeTypes : MetricNodeTypes {
             // case label
             "case_pattern",
             // catch block
-            "except_clause",
-            // function
-            "function_definition"
+            "except_clause"
         ),
         nestedNodeTypes = setOf(
             // lambda needs to be complex to not be counted double as type of first child is also lambda
@@ -33,6 +31,13 @@ class PythonNodeTypes : MetricNodeTypes {
                 childNodePosition = 0,
                 childNodeTypes = setOf("lambda")
             )
+        )
+    )
+
+    override val functionComplexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            // function
+            "function_definition"
         )
     )
 
@@ -62,20 +67,22 @@ class PythonNodeTypes : MetricNodeTypes {
         )
     )
 
-    val nodeTypesToIgnore = setOf(
-        "string_start",
-        "string_content",
-        "string_end"
-    )
+    companion object {
+        // as python doesn't use brackets a comment at the start of a function/class would result in wrong rloc
+        fun shouldIgnoreNodeStartingWithComment(node: TSNode): Boolean {
+            val childNode = node.getChild(0)
+            if (childNode.isNull) return false
+            return childNode.type == "expression_statement" && childNode.childCount == 1
+        }
 
-    // as python doesn't use brackets a comment at the start of a function/class would result in wrong rloc
-    fun shouldIgnoreNodeStartingWithComment(node: TSNode): Boolean {
-        val childNode = node.getChild(0)
-        if (childNode.isNull) return false
-        return childNode.type == "expression_statement" && childNode.childCount == 1
-    }
+        fun shouldIgnoreStringInBlockComment(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "string" && node.parent.childCount == 1
+        }
 
-    fun shouldIgnoreStringInBlockComment(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "string" && node.parent.childCount == 1
+        val nodeTypesToIgnore = setOf(
+            "string_start",
+            "string_content",
+            "string_end"
+        )
     }
 }

@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
 class KotlinNodeTypes : MetricNodeTypes {
-    override val complexityNodeTypes = TreeNodeTypes(
+    override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if_expression",
@@ -17,8 +17,12 @@ class KotlinNodeTypes : MetricNodeTypes {
             // case
             "when_entry",
             // catch
-            "catch_block",
-            // function
+            "catch_block"
+        )
+    )
+
+    override val functionComplexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
             "function_declaration",
             "anonymous_function",
             "anonymous_initializer",
@@ -28,6 +32,7 @@ class KotlinNodeTypes : MetricNodeTypes {
             "getter"
         )
     )
+
     override val commentLineNodeTypes = TreeNodeTypes(
         // logical binary
         simpleNodeTypes = setOf(

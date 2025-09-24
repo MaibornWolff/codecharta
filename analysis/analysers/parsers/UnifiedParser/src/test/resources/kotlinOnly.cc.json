@@ -1,5 +1,5 @@
 {
-  "checksum": "ded759ec863fba8174b8b2e734df8513",
+  "checksum": "98c507a2e8c3523be01d595d0ee1ef4b",
   "data": {
     "projectName": "",
     "nodes": [
@@ -20,6 +20,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 7,
+                  "logic_complexity": 1,
                   "comment_lines": 9,
                   "number_of_functions": 2,
                   "rloc": 31,
@@ -33,6 +34,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
+                  "logic_complexity": 0,
                   "comment_lines": 0,
                   "number_of_functions": 1,
                   "rloc": 6,
@@ -48,6 +50,7 @@
             "type": "File",
             "attributes": {
               "complexity": 6,
+              "logic_complexity": 2,
               "comment_lines": 6,
               "number_of_functions": 3,
               "rloc": 30,
@@ -61,6 +64,7 @@
             "type": "File",
             "attributes": {
               "complexity": 5,
+              "logic_complexity": 4,
               "comment_lines": 0,
               "number_of_functions": 1,
               "rloc": 11,
@@ -78,7 +82,18 @@
     "attributeDescriptors": {
       "complexity": {
         "title": "Complexity",
-        "description": "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
+        "description": "Complexity of the file representing how much cognitive load is needed to overview the whole file",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "logic_complexity": {
+        "title": "Logic complexity",
+        "description": "Complexity of the file based on number of paths through the code, similar to cyclomatic complexity",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",

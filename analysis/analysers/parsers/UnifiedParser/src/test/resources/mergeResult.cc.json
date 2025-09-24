@@ -1,5 +1,5 @@
 {
-  "checksum": "79b649de43d6d5229be8875e67459338",
+  "checksum": "0b2fb9293ad114389903d391e48f9eb5",
   "data": {
     "projectName": "",
     "nodes": [
@@ -38,6 +38,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 7,
+                  "logic_complexity": 1,
                   "comment_lines": 9,
                   "number_of_functions": 2,
                   "rloc": 31,
@@ -51,6 +52,7 @@
                 "type": "File",
                 "attributes": {
                   "complexity": 1,
+                  "logic_complexity": 0,
                   "comment_lines": 0,
                   "number_of_functions": 1,
                   "rloc": 6,
@@ -66,6 +68,7 @@
             "type": "File",
             "attributes": {
               "complexity": 6,
+              "logic_complexity": 2,
               "comment_lines": 6,
               "number_of_functions": 3,
               "rloc": 30,
@@ -79,6 +82,7 @@
             "type": "File",
             "attributes": {
               "complexity": 2,
+              "logic_complexity": 2,
               "comment_lines": 4,
               "number_of_functions": 0,
               "rloc": 9,
@@ -92,6 +96,7 @@
             "type": "File",
             "attributes": {
               "complexity": 1,
+              "logic_complexity": 0,
               "comment_lines": 2,
               "number_of_functions": 1,
               "rloc": 5,
@@ -105,6 +110,7 @@
             "type": "File",
             "attributes": {
               "complexity": 5,
+              "logic_complexity": 4,
               "comment_lines": 0,
               "number_of_functions": 1,
               "rloc": 11,
@@ -141,6 +147,17 @@
         "direction": -1,
         "analyzers": [
           "Unknown"
+        ]
+      },
+      "logic_complexity": {
+        "title": "Logic complexity",
+        "description": "Complexity of the file based on number of paths through the code, similar to cyclomatic complexity",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
         ]
       },
       "comment_lines": {

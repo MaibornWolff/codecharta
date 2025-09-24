@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 import org.treesitter.TSNode
 
 class RubyNodeTypes : MetricNodeTypes {
-    override val complexityNodeTypes = TreeNodeTypes(
+    override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             // if
             "if",
@@ -17,11 +17,7 @@ class RubyNodeTypes : MetricNodeTypes {
             "when",
             "else",
             // catch
-            "rescue",
-            // function
-            "lambda",
-            "method",
-            "singleton_method"
+            "rescue"
         ),
         nestedNodeTypes = setOf(
             // logical binary
@@ -30,6 +26,14 @@ class RubyNodeTypes : MetricNodeTypes {
                 childNodeFieldName = "operator",
                 childNodeTypes = setOf("&&", "||", "and", "or")
             )
+        )
+    )
+
+    override val functionComplexityNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "lambda",
+            "method",
+            "singleton_method"
         )
     )
 
@@ -53,27 +57,32 @@ class RubyNodeTypes : MetricNodeTypes {
         )
     )
 
-    val nodeTypesToIgnore = setOf(
-        "then"
-    )
+    companion object {
+        // some node types equal their string literal in code, which is captured in a child node and can be ignored to prevent double counting
+        fun shouldIgnoreChildWithEqualParentType(node: TSNode, nodeType: String): Boolean {
+            if (nodeType == "if") {
+                println()
+            }
+            return nodesWhereTypeEqualsCodeLiteral.contains(nodeType) && nodeType == node.parent.type
+        }
 
-    // some node types equal their string literal in code, which is captured in a child node and can be ignored to prevent double counting
-    fun shouldIgnoreChildWithEqualParentType(node: TSNode, nodeType: String): Boolean {
-        return nodesWhereTypeEqualsCodeLiteral.contains(nodeType) && nodeType == node.parent.type
+        fun shouldIgnoreElseNotInCaseStatement(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "else" && node.parent.type != "case"
+        }
+
+        val nodeTypesToIgnore = setOf(
+            "then"
+        )
+
+        private val nodesWhereTypeEqualsCodeLiteral = setOf(
+            "if",
+            "elsif",
+            "for",
+            "until",
+            "while",
+            "when",
+            "else",
+            "rescue"
+        )
     }
-
-    fun shouldIgnoreElseNotInCaseStatement(node: TSNode, nodeType: String): Boolean {
-        return nodeType == "else" && node.parent.type != "case"
-    }
-
-    private val nodesWhereTypeEqualsCodeLiteral = setOf(
-        "if",
-        "elsif",
-        "for",
-        "until",
-        "while",
-        "when",
-        "else",
-        "rescue"
-    )
 }

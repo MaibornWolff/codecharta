@@ -1,4 +1,4 @@
-FROM sapmachine:11.0.28-ubuntu-24.04
+FROM sapmachine:21-jre-ubuntu
 
 ARG USER_ADD
 ARG USER_ID=1000
@@ -6,6 +6,7 @@ ARG USER_GID=$USER_ID
 ARG USERNAME=ubuntu
 
 COPY ./build/distributions/codecharta-analysis-*.tar /usr/local/
+COPY ./script/simplecc.sh /usr/local/bin/
 
 WORKDIR /usr/local
 
@@ -31,6 +32,9 @@ RUN wget -qO codemaat.jar https://github.com/adamtornhill/code-maat/releases/dow
 RUN curl -sL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh; \
     bash /tmp/nodesource_setup.sh; \
     apt-get install nodejs make gcc build-essential -y;
+
+RUN curl -L https://github.com/thoughtbot/complexity/releases/download/0.4.2/complexity-0.4.2-x86_64-unknown-linux-musl.tar.gz \
+    | tar -xz --strip-components=1 -C /usr/local/bin
 
 RUN wget -qO /tmp/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.1.0.4477-linux-x64.zip; \
     apt-get install unzip -y; \
