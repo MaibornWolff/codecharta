@@ -19,7 +19,7 @@ you can create a pretty informative software quality map for (almost) every prog
 ## How to use
 1. Install CodeCharta analysis
 2. Install git, tokei and complexity
-3. Download the [script](https://github.com/MaibornWolff/codecharta/tree/main/script/simplecc.sh) from GitHub
+3. Download the [script](https://github.com/MaibornWolff/codecharta/tree/main/analysis/script/simplecc.sh) from GitHub
 4. Inside any git working copy execute the script
 ```bash
    ./simplecc.sh create <filename> [--debug]

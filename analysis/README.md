@@ -113,6 +113,9 @@ To containerize the analysis, please follow the below listed steps.
   3. Start the docker container and directly use a specific
      parser: `docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis ccsh rawtextparser .`.
      This starts the RawTextParser in the current working directory in a container.
+  4. Start the docker container using the simplecc.sh script
+     parser: `docker run -v .:/mnt/src codecharta/codecharta-analysis bash -c 'git config --global --add safe.directory /mnt/src; cd
+     /mnt/src/; simplecc.sh create <YourProjectName>'`
 - After executing the run command once, you can repeat the same docker configuration
   with `docker start codecharta-analysis` or you have to change the name or delete the old container if you want
   to `docker run` a different configuration.
