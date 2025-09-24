@@ -26,7 +26,9 @@ Please note that you will need to copy finished cc.json files to **your** hard-d
 
 # Docker Hub Install
 
-The visualization is [published to Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization).
+Both the visualization and the analysis are published on Docker Hub:
+- [codecharta-visualization](https://hub.docker.com/r/codecharta/codecharta-visualization/)
+- [codecharta-analysis](https://hub.docker.com/r/codecharta/codecharta-analysis)
 
 ## Visualization
 
