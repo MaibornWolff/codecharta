@@ -17,17 +17,25 @@ This parser specializes in tracking file changes across different file-versions 
 
 ## Supported Metrics
 
-| Metric                          | Description                                                         |
-| ------------------------------- | ------------------------------------------------------------------- |
-| `age_in_weeks`                  | The file's age measured in weeks since creation.                    |
-| `number_of_authors`             | The count of distinct authors who have contributed commits.         |
-| `number_of_commits`             | The total commits made to the file.                                 |
-| `number_of_renames`             | How many times the file has been renamed.                           |
-| `range_of_weeks_with_commits`   | The span of weeks during which commits were made.                   |
-| `successive_weeks_with_commits` | Consecutive weeks during which the file received commits.           |
-| `weeks_with_commits`            | The number of weeks in which the file was modified.                 |
+| Metric                          | Description                                                       |
+|---------------------------------|-------------------------------------------------------------------|
+| `age_in_weeks`                  | The file's age measured in weeks since creation.                  |
+| `number_of_authors`             | The count of distinct authors who have contributed commits.       |
+| `number_of_commits`             | The total commits made to the file.                               |
+| `number_of_renames`             | How many times the file has been renamed.                         |
+| `range_of_weeks_with_commits`   | The span of weeks during which commits were made.                 |
+| `successive_weeks_with_commits` | Consecutive weeks during which the file received commits.         |
+| `weeks_with_commits`            | The number of weeks in which the file was modified.               |
 | `highly_coupled_files`          | Files often modified together with this file (35% overlap or more). |
-| `median_coupled_files`          | The median number of files modified in tandem with this file.       |
+| `median_coupled_files`          | The median number of files modified in tandem with this file.     |
+| `feat_commits`                  | Number of commits starting with 'feat' for this file.             |
+| `fix_commits`                   | Number of commits starting with 'fix' for this file.              |
+| `docs_commits`                  | Number of commits starting with 'docs' for this file.             |
+| `style_commits`                 | Number of commits starting with 'style' for this file.            |
+| `refactor_commits`              | Number of commits starting with 'refactor' for this file.         |
+| `test_commits`                  | Number of commits starting with 'test' for this file.             |
+| `hotfix_commit_ratio`           | Ratio of semantic commits (which start with feat, fix, docs, style, refactor or test) to total commits for this file.             |
+| `semantic_commit_ratio`         | Ratio of hotfix commits (containing 'hotfix' keyword) to total commits for this file             |
 
 Additionally, the following Edge Metrics are calculated:
 
