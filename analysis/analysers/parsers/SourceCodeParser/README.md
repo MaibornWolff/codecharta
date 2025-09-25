@@ -4,6 +4,14 @@
 
 DEPRECATION WARNING: This parser has been replaced by the UnifiedParser and will soon be disabled!
 
+## Replacement Options
+
+Please use one of these alternatives:
+- **Unified Parser + Coverage Importer + Merge Filter** - For comprehensive analysis
+- **Sonar Importer** - For SonarQube-based analysis
+
+For detailed documentation on these alternatives, see the [CodeCharta documentation](https://maibornwolff.github.io/codecharta/docs/).
+
 The Source-Code-Parser is parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv file.
 
 ## Supported Languages

@@ -69,7 +69,7 @@ docs:
             url: "/docs/importer/code-maat"
     - title: "CCSH - Parser"
       children:
-          - title: "Souce Code"
+          - title: "Source Code"
             url: "/docs/parser/source-code"
           - title: "Raw Text"
             url: "/docs/parser/raw-text"
