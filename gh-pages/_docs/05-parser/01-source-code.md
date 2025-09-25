@@ -13,6 +13,12 @@ toc_label: "Jump to Section"
 
 DEPRECATION WARNING: This parser has been replaced by the UnifiedParser and will soon be disabled!
 
+## Replacement Options
+
+Please use one of these alternatives:
+- **[Unified Parser](/docs/parser/unified) + [Coverage Importer](/docs/importer/coverage) + [Merge Filter](/docs/filter/merge-filter)** - For comprehensive analysis
+- **[Sonar Importer](/docs/importer/sonar)** - For SonarQube-based analysis
+
 The Source-Code-Parser is parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv file.
 
 ## Supported Languages
