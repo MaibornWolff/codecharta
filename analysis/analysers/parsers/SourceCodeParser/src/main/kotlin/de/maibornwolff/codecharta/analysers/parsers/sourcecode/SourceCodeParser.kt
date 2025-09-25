@@ -93,7 +93,7 @@ class SourceCodeParser(
         const val FOOTER =
             "This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\n" +
                 CodeChartaConstants.GENERIC_FOOTER +
-                "DEPRECATION NOTE: This parser has been replaced by the UnifiedParser and will soon be disabled! " +
+                "DEPRECATION NOTE: This parser will be replaced and soon be disabled! " +
                 "Use 'unifiedparser + coverageimporter + mergefilter' or 'sonarimporter' instead."
 
         @JvmStatic
