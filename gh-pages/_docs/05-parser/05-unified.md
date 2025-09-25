@@ -42,13 +42,61 @@ CodeCharta. It generates either a cc.json or a csv file.
 | Lines of code (LOC)       | Lines of code including empty lines and comments                                                                                                                                                                           |
 | Real lines of code (RLOC) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
 
+
+## Usage and Parameters
+
+| Parameter                                 | Description                                                                                                                                       |
+|-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `FOLDER or FILE`                          | The project folder or code file to parse. To merge the result with an existing project piped into STDIN, pass a '-' as an additional argument     |
+| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                                                                   |
+| `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                  |
+| `-h, --help`                              | displays this help and exits                                                                                                                      |
+| `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.') |
+| `-nc, --not-compressed`                   | save uncompressed output File                                                                                                                     |
+| `-o, --output-file=<outputFile>`          | output File (or empty for stdout)                                                                                                                 |
+| `--verbose`                               | displays messages about parsed and ignored files                                                                                                  |
+
+```
+Usage: ccsh unifiedparser [-h] [-ibf] [-nc] [--verbose] [-o=<outputFile>]
+                          [-e=<patternsToExclude>]...
+                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
+```
+
+## Examples
+
+The Unified Parser can analyze either a single file or a project folder; here are some sample commands:
+
+```
+ccsh unifiedparser src/test/resources -o foo.cc.json
+```
+
+```
+ccsh unifiedparser src/test/resources/foo.ts -o foo.cc.json
+```
+
+```
+ccsh unifiedparser src/test/resources -o foo.cc.json -nc --verbose
+```
+
+```
+ccsh unifiedparser src/test/resources -o foo.cc.json --include-build-folders -e=something -e=/.*\.foo
+```
+
+If a project is piped into the UnifiedParser, the results and the piped project are merged.
+The resulting project has the project name specified for the UnifiedParser.
+
+```
+cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.json
+```
+
+## Known issues
+
+- In ruby the 'lambda' keyword is not counted correctly for complexity and number of functions
+
 ## Detailed Metric Calculation
 
 This section describes what is counted for each metric per language. The parser uses Tree-sitter to parse source code and identifies
 specific AST node types for each metric.
-
-<details>
-  <summary>Complexity</summary>
 
 ### Complexity
 
@@ -141,11 +189,6 @@ contribute to complexity:
 - **Functions**: `function_definition`
 - **Logical operators**: `&&`, `||` in binary expressions
 
-</details>
-
-<details>
-  <summary>Comment Lines</summary>
-
 ### Comment Lines
 
 Comment lines are counted based on language-specific comment syntax:
@@ -160,11 +203,6 @@ Comment lines are counted based on language-specific comment syntax:
 - **PHP**: `comment`
 - **Ruby**: `comment`
 - **Bash**: `comment`
-
-</details>
-
-<details>
-  <summary>Number of Functions</summary>
 
 ### Number of Functions
 
@@ -229,19 +267,10 @@ Function counting identifies different types of function definitions per languag
 
 - **Functions**: `function_definition`
 
-</details>
-
-<details>
-  <summary>Lines of Code (LOC)</summary>
-
 ### Lines of Code (LOC)
 
 LOC is calculated as the total number of lines in the file, including empty lines and comments. This metric is language-independent and
 simply counts from the first line to the last line of the file.
-</details>
-
-<details>
-  <summary>Real Lines of Code (RLOC)</summary>
 
 ### Real Lines of Code (RLOC)
 
@@ -252,54 +281,3 @@ RLOC counts only lines that contain actual code, excluding:
 - Lines that are part of multi-line comments
 
 This metric is calculated by counting all lines that are not identified as comment nodes by the Tree-sitter parser for each language.
-</details>
-
-## Usage and Parameters
-
-| Parameter                                 | Description                                                                                                                                       |
-|-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| `FOLDER or FILE`                          | The project folder or code file to parse. To merge the result with an existing project piped into STDIN, pass a '-' as an additional argument     |
-| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                                                                   |
-| `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                  |
-| `-h, --help`                              | displays this help and exits                                                                                                                      |
-| `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.') |
-| `-nc, --not-compressed`                   | save uncompressed output File                                                                                                                     |
-| `-o, --output-file=<outputFile>`          | output File (or empty for stdout)                                                                                                                 |
-| `--verbose`                               | displays messages about parsed and ignored files                                                                                                  |
-
-```
-Usage: ccsh unifiedparser [-h] [-ibf] [-nc] [--verbose] [-o=<outputFile>]
-                          [-e=<patternsToExclude>]...
-                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
-```
-
-## Examples
-
-The Unified Parser can analyze either a single file or a project folder; here are some sample commands:
-
-```
-ccsh unifiedparser src/test/resources -o foo.cc.json
-```
-
-```
-ccsh unifiedparser src/test/resources/foo.ts -o foo.cc.json
-```
-
-```
-ccsh unifiedparser src/test/resources -o foo.cc.json -nc --verbose
-```
-
-```
-ccsh unifiedparser src/test/resources -o foo.cc.json --include-build-folders -e=something -e=/.*\.foo
-```
-
-If a project is piped into the UnifiedParser, the results and the piped project are merged.
-The resulting project has the project name specified for the UnifiedParser.
-
-```
-cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.json
-```
-
-## Known issues
-
-- In ruby the 'lambda' keyword is not counted correctly for complexity and number of functions
