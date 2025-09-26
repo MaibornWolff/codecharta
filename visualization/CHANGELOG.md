@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.136.1] - 2025-09-26
+
 ### Changed
 
 - Bump cc.json format version to 1.5. This will later be used to show the source of our metrics.
