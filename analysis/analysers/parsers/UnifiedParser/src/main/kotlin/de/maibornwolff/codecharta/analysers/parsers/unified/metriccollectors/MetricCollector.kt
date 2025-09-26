@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators.CalculationExtensions
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators.MetricsToCalculatorsMap
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableMetrics
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFileMetrics
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.MetricNodeTypes
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
@@ -19,25 +19,28 @@ abstract class MetricCollector(
 ) {
     private var rootNodeType: String = ""
 
-    private val metricInfo = MetricsToCalculatorsMap.getMetricInfo(nodeTypeProvider, calculationExtensions)
+    private val metricCalculators = MetricsToCalculatorsMap(nodeTypeProvider, calculationExtensions)
+    private val metricPerFileInfo = metricCalculators.getPerFileMetricInfo()
 
     fun collectMetricsForFile(file: File): MutableNode {
         val rootNode = getRootNode(file)
         rootNodeType = rootNode.type
 
         // we use an IntArray and not a map here as it improves performance
-        val metricValues = IntArray(metricInfo.size) { 0 }
+        val metricValues = IntArray(metricPerFileInfo.size) { 0 }
         walkTree(Pair(TSTreeCursor(rootNode), metricValues))
 
         val metricNameToValue = mapMetricValuesToNodeAttributes(metricValues)
 
         // the actual complexity is calculated here from its previous value and logic_complexity to improve performance
-        val functionComplexity = metricNameToValue[AvailableMetrics.COMPLEXITY.metricName] ?: 0
-        val logicComplexity = metricNameToValue[AvailableMetrics.LOGIC_COMPLEXITY.metricName] ?: 0
-        metricNameToValue[AvailableMetrics.COMPLEXITY.metricName] = logicComplexity + functionComplexity
+        val functionComplexity = metricNameToValue[AvailableFileMetrics.COMPLEXITY.metricName] ?: 0.0
+        val logicComplexity = metricNameToValue[AvailableFileMetrics.LOGIC_COMPLEXITY.metricName] ?: 0.0
+        metricNameToValue[AvailableFileMetrics.COMPLEXITY.metricName] = logicComplexity + functionComplexity
 
         // lines of code is added here manually to improve performance as no tree walk is necessary
-        metricNameToValue[AvailableMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row
+        metricNameToValue[AvailableFileMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row.toDouble()
+
+        metricNameToValue.putAll(metricCalculators.getMeasuresOfPerFunctionMetrics())
 
         return MutableNode(
             name = file.name,
@@ -62,10 +65,11 @@ abstract class MetricCollector(
 
         val skipRootToAvoidDoubleCountingLines = nodeType != rootNodeType
         if (skipRootToAvoidDoubleCountingLines) {
-            for ((metric, calculateMetricForNodeFn) in metricInfo) {
+            for ((metric, calculateMetricForNodeFn) in metricPerFileInfo) {
                 metrics[metric.ordinal] += calculateMetricForNodeFn(currentNode, nodeType, startRow, endRow)
             }
         }
+        metricCalculators.processPerFunctionMetricsForNode(currentNode, nodeType, startRow, endRow)
 
         if (cursor.gotoFirstChild()) {
             do {
@@ -75,11 +79,11 @@ abstract class MetricCollector(
         }
     }
 
-    private fun mapMetricValuesToNodeAttributes(metricValues: IntArray): MutableMap<String, Int> {
-        val metricNameToValue = mutableMapOf<String, Int>()
+    private fun mapMetricValuesToNodeAttributes(metricValues: IntArray): MutableMap<String, Double> {
+        val metricNameToValue = mutableMapOf<String, Double>()
 
-        for ((metric, _) in metricInfo) {
-            metricNameToValue[metric.metricName] = metricValues[metric.ordinal]
+        for ((metric, _) in metricPerFileInfo) {
+            metricNameToValue[metric.metricName] = metricValues[metric.ordinal].toDouble()
         }
 
         return metricNameToValue

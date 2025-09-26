@@ -48,6 +48,34 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             link = ghLink,
             direction = -1,
             analyzers = analyzerName
+        ),
+        "max_parameters_per_function" to AttributeDescriptor(
+            title = "Maximum parameters per function",
+            description = "The maximum number of parameters a function or method has for this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "min_parameters_per_function" to AttributeDescriptor(
+            title = "Minimum parameters per function",
+            description = "The minimum number of parameters a function or method has for this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "median_parameters_per_function" to AttributeDescriptor(
+            title = "Median parameters per function",
+            description = "The median number of parameters a function or method has for this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "mean_parameters_per_function" to AttributeDescriptor(
+            title = "Mean parameters per function",
+            description = "The mean number of parameters a function or method has for this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
         )
     )
 }

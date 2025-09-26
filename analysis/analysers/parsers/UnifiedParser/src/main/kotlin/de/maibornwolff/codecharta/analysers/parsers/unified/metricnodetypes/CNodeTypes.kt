@@ -48,6 +48,12 @@ class CNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "parameter_declaration"
+        )
+    )
+
     companion object {
         // every function definition contains a function declarator, so the inner declarator can be ignored
         fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {

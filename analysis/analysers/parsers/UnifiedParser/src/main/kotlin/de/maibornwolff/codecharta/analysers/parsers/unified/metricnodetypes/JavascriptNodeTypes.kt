@@ -62,4 +62,10 @@ class JavascriptNodeTypes : MetricNodeTypes {
             )
         )
     )
+
+    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "required_parameter"
+        )
+    )
 }

@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.MetricNodeTypes
 
-class NumberOfFunctionsCalc(val nodeTypeProvider: MetricNodeTypes) : MetricCalculator {
+class NumberOfFunctionsCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFileCalc {
     override fun calculateMetricForNode(params: CalculationContext): Int {
         val node = params.node
         val nodeType = params.nodeType

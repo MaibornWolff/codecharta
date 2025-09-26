@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.MetricNodeTypes
 
-class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricCalculator {
+class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFileCalc {
     private var lastCountedLine = -1
 
     override fun calculateMetricForNode(params: CalculationContext): Int {

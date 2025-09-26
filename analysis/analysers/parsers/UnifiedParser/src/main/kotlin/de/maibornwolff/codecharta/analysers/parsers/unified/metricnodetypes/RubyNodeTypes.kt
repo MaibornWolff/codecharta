@@ -57,6 +57,12 @@ class RubyNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "identifier"
+        )
+    )
+
     companion object {
         // some node types equal their string literal in code, which is captured in a child node and can be ignored to prevent double counting
         fun shouldIgnoreChildWithEqualParentType(node: TSNode, nodeType: String): Boolean {
