@@ -62,4 +62,10 @@ class PhpNodeTypes : MetricNodeTypes {
             )
         )
     )
+
+    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "single_parameter"
+        )
+    )
 }

@@ -4,9 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.Nest
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.TreeNodeTypes
 import org.treesitter.TSNode
 
-interface MetricCalculator {
-    fun calculateMetricForNode(params: CalculationContext): Int
-
+interface MetricCalc {
     fun isNodeTypeAllowed(node: TSNode, nodeType: String, allowedTypes: TreeNodeTypes): Boolean {
         if (allowedTypes.simpleNodeTypes.contains(nodeType)) {
             return true
