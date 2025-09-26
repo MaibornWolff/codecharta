@@ -80,4 +80,10 @@ class KotlinNodeTypes : MetricNodeTypes {
             )
         )
     )
+
+    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "parameter"
+        )
+    )
 }

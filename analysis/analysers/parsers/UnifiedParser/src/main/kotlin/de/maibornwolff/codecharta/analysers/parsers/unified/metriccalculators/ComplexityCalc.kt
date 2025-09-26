@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.Tree
 
 // first, we calculate complexity as only function_complexity and later add logic_complexity to improve performance as:
 // complexity = logic_complexity + function_complexity
-class ComplexityCalculator(val nodeTypeProvider: MetricNodeTypes) : MetricCalculator {
+class ComplexityCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFileCalc {
     override fun calculateMetricForNode(params: CalculationContext): Int {
         return getComplexityForAllowedNodeTypes(params, nodeTypeProvider.logicComplexityNodeTypes)
     }
@@ -22,10 +22,6 @@ class ComplexityCalculator(val nodeTypeProvider: MetricNodeTypes) : MetricCalcul
             return 0
         }
 
-        return if (isNodeTypeAllowed(node, nodeType, allowedNodeTypes)) {
-            1
-        } else {
-            0
-        }
+        return if (isNodeTypeAllowed(node, nodeType, allowedNodeTypes)) 1 else 0
     }
 }

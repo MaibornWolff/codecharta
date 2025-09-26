@@ -67,6 +67,12 @@ class PythonNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "identifier"
+        )
+    )
+
     companion object {
         // as python doesn't use brackets a comment at the start of a function/class would result in wrong rloc
         fun shouldIgnoreNodeStartingWithComment(node: TSNode): Boolean {
