@@ -64,6 +64,12 @@ class TypescriptNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val functionParameterListNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "formal_parameters"
+        )
+    )
+
     override val parameterOfFunctionNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             "required_parameter"
