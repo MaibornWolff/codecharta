@@ -34,7 +34,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -47,7 +47,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -60,7 +60,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -79,7 +79,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3.0)
     }
 
     @Test
@@ -92,7 +92,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -115,7 +115,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_LINES.metricName]).isEqualTo(7)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_LINES.metricName]).isEqualTo(7.0)
     }
 
     @Test
@@ -135,7 +135,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3.0)
     }
 
     @Test
@@ -155,7 +155,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.LINES_OF_CODE.metricName]).isEqualTo(6.0)
     }
 
     @Test
@@ -178,7 +178,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -201,7 +201,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -218,7 +218,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -237,7 +237,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -257,6 +257,38 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should correctly calculate all measures for parameters per function metric`() {
+        // given
+        val fileContent = """
+            fun printSomething() {
+                println("Something")
+            }
+
+            fun anotherFun(a: Int, b: Int): Int {
+                return a + b
+            }
+
+            fun power(x: Int, y: Int): Int {
+                return x.toDouble().pow(y.toDouble()).toInt()
+            }
+
+            fun oneParameter(x: Int): Int {
+                return x * 2
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_parameters_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["min_parameters_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_parameters_per_function"]).isEqualTo(1.25)
+        Assertions.assertThat(result.attributes["median_parameters_per_function"]).isEqualTo(1.5)
     }
 }

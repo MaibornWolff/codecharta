@@ -21,11 +21,11 @@ interface MetricPerFunctionCalc : MetricCalc {
     fun getMetricPerFunction(): List<Int>
 
     private fun getMaxMetricForFile(): Int {
-        return getMetricPerFunction().max()
+        return getMetricPerFunction().maxOrNull() ?: 0
     }
 
     private fun getMinMetricForFile(): Int {
-        return getMetricPerFunction().min()
+        return getMetricPerFunction().minOrNull() ?: 0
     }
 
     private fun getMeanMetricForFile(): Double {

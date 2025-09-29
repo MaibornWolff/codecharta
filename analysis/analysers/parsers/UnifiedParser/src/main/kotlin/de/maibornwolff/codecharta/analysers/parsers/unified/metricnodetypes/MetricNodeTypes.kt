@@ -5,6 +5,7 @@ interface MetricNodeTypes {
     val functionComplexityNodeTypes: TreeNodeTypes
     val commentLineNodeTypes: TreeNodeTypes
     val numberOfFunctionsNodeTypes: TreeNodeTypes
+    val functionParameterListNodeTypes: TreeNodeTypes
     val parameterOfFunctionNodeTypes: TreeNodeTypes
     // node types for lines_of_code (LOC) is not needed as it is independent of the language
     // node types for real_lines_of_code (RLOC) is also not needed as it counts everything that's not a comment

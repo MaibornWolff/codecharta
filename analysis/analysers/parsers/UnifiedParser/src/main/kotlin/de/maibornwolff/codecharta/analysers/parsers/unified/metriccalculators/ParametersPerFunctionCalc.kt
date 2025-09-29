@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.Metr
 class ParametersPerFunctionCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFunctionCalc {
     override val metric = AvailableFunctionMetrics.PARAMETERS
 
-    var isInFunction = false
+    var isInFunctionParameterList = false
     var idOfCurrentFunction = -1
     var endRowOfLastFunction = -1
     var endColumnOfLastFunction = -1
@@ -23,15 +23,15 @@ class ParametersPerFunctionCalc(val nodeTypeProvider: MetricNodeTypes) : MetricP
         val startRow = params.startRow
         val endRow = params.endRow
 
-        if (isInFunction &&
+        if (isInFunctionParameterList &&
             startRow > endRowOfLastFunction ||
             (startRow == endRowOfLastFunction && node.startPoint.column > endColumnOfLastFunction)
         ) {
-            isInFunction = false
+            isInFunctionParameterList = false
         }
 
-        if (!isInFunction && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.numberOfFunctionsNodeTypes)) {
-            isInFunction = true
+        if (!isInFunctionParameterList && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionParameterListNodeTypes)) {
+            isInFunctionParameterList = true
             idOfCurrentFunction++
             functionsToNrofParams.add(0)
             endRowOfLastFunction = endRow
@@ -40,7 +40,7 @@ class ParametersPerFunctionCalc(val nodeTypeProvider: MetricNodeTypes) : MetricP
 
         if (params.shouldIgnoreNode(node, nodeType)) return
 
-        if (isInFunction && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.parameterOfFunctionNodeTypes)) {
+        if (isInFunctionParameterList && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.parameterOfFunctionNodeTypes)) {
             functionsToNrofParams[idOfCurrentFunction]++
         }
     }
