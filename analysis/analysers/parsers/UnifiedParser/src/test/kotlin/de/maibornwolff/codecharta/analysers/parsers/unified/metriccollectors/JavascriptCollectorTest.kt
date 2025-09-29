@@ -38,7 +38,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -51,7 +51,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -64,7 +64,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -77,7 +77,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -99,7 +99,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3.0)
     }
 
     @Test
@@ -121,7 +121,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_LINES.metricName]).isEqualTo(7)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_LINES.metricName]).isEqualTo(7.0)
     }
 
     @Test
@@ -141,7 +141,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3.0)
     }
 
     @Test
@@ -161,7 +161,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.LINES_OF_CODE.metricName]).isEqualTo(6.0)
     }
 
     @Test
@@ -178,7 +178,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -195,7 +195,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -212,7 +212,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -233,7 +233,7 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -257,6 +257,38 @@ class JavascriptCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should correctly calculate all measures for parameters per function metric`() {
+        // given
+        val fileContent = """
+            function printSomething() {
+                console.log("Something");
+            }
+
+            function anotherFun(a, b) {
+                return a + b;
+            }
+
+            function power(x, y) {
+                return x ** y;
+            }
+
+            function oneParameter(x) {
+                return x * 2;
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_parameters_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["min_parameters_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_parameters_per_function"]).isEqualTo(1.25)
+        Assertions.assertThat(result.attributes["median_parameters_per_function"]).isEqualTo(1.5)
     }
 }

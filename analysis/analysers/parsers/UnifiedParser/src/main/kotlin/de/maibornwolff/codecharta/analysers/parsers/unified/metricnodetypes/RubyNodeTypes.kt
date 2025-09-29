@@ -57,6 +57,12 @@ class RubyNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val functionParameterListNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "method_parameters"
+        )
+    )
+
     override val parameterOfFunctionNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             "identifier"
