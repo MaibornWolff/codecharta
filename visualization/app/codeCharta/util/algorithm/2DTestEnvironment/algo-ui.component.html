@@ -1,0 +1,411 @@
+<div class="container">
+    <!-- Add spinner -->
+    <div *ngIf="isLoading" class="loading-spinner"></div>
+    <div class="header-row">
+        <div class="switch-2d-3d-container">
+            <label for="switch2D3D">3D:</label>
+            <input
+                type="checkbox"
+                id="switch2D3D"
+                [(ngModel)]="is3DView"
+                (change)="onSwitchViewChange()"
+            />
+        </div>
+        <div class="file-upload-container">
+            <label for="fileUploader" class="file-upload-button">Upload File</label>
+            <input type="file" id="fileUploader" (change)="onFileUpload($event)" />
+            <span class="file-name">{{ currentFileName }}</span>
+        </div>
+        <div class="margin-input-container">
+            <label for="marginInput">Margin:</label>
+            <input
+                type="number"
+                id="marginInput"
+                [(ngModel)]="margin"
+                (input)="onMarginChange()"
+                min="0"
+                step="0.1" />
+        </div>
+        <div class="algorithm-selector-container">
+            <label for="algorithmSelector">Layout Algorithm:</label>
+            <select
+                id="algorithmSelector"
+                [(ngModel)]="selectedAlgorithm"
+                (change)="onAlgorithmChange()">
+                <option *ngFor="let algorithm of layoutAlgorithms" [value]="algorithm">
+                    {{ algorithm }}
+                </option>
+            </select>
+        </div>
+        <div class="color-mode-indicator">
+            <label for="colorModeSelector">Color Mode:</label>
+            <select
+                id="colorModeSelector"
+                [(ngModel)]="selectedColorMode"
+                (change)="onColorModeChange()">
+                <option *ngFor="let colorMode of  Object.values(ColorMode)" [value]="colorMode">
+                    {{ colorMode }}
+                </option>
+            </select>
+        </div>
+        <div *ngIf="selectedColorMode === ColorMode.METRIC" class="form-group">
+            <label for="colorMetricSelect">Color Metric:</label>
+            <select
+                id="colorMetricSelect"
+                class="form-control"
+                [(ngModel)]="selectedColorMetric"
+                (change)="onColorMetricChange()">
+                <option *ngFor="let metric of availableColorMetrics" [value]="metric">{{ metric }}</option>
+            </select>
+        </div>
+        <!-- Add threshold sliders for metric coloring -->
+        <div *ngIf="selectedColorMode === ColorMode.METRIC" class="threshold-slider-container">
+            <label for="minThresholdSlider">Min Threshold:</label>
+            <input
+                type="number"
+                id="minThresholdInput"
+                [(ngModel)]="colorMetricMinThreshold"
+                (change)="onColorThresholdChange()"
+                step="1" />
+            <input
+                type="range"
+                id="minThresholdSlider"
+                [(ngModel)]="colorMetricMinThreshold"
+                (input)="onColorThresholdChange()"
+                [min]="0"
+                [max]="colorMetricMaxThreshold"
+                step="1" />
+        </div>
+        <div *ngIf="selectedColorMode === ColorMode.METRIC" class="threshold-slider-container">
+            <label for="maxThresholdSlider">Max Threshold:</label>
+            <input
+                type="number"
+                id="maxThresholdInput"
+                [(ngModel)]="colorMetricMaxThreshold"
+                (change)="onColorThresholdChange()"
+                step="1" />
+            <input
+                type="range"
+                id="maxThresholdSlider"
+                [(ngModel)]="colorMetricMaxThreshold"
+                (input)="onColorThresholdChange()"
+                [min]="colorMetricMinThreshold"
+                [max]="1000"
+                step="1" />
+        </div>
+        <div *ngIf="selectedColorMode === ColorMode.METRIC" class="invert-color-container">
+            <button
+                class="invert-color-button"
+                [class.active]="invertColors"
+                (click)="onInvertColorsChange()">
+                Invert Colors
+            </button>
+        </div>
+        <div class="color-mode-indicator">
+            <label for="heightMetricSelect">Height Metric:</label>
+            <select
+                id="heightMetricSelect"
+                [(ngModel)]="selectedHeightMetric"
+                (change)="onHeightMetricChange()">
+                <option value="">None</option>
+                <option *ngFor="let metric of availableHeightMetrics" [value]="metric">{{ metric }}</option>
+            </select>
+        </div>
+        <div class="area-metric-selector-container">
+            <label for="areaMetricSelector">Area Metric:</label>
+            <select
+                id="areaMetricSelector"
+                [(ngModel)]="selectedAreaMetric"
+                (change)="onAreaMetricChange()">
+                <option *ngFor="let metric of availableAreaMetrics" [value]="metric">
+                    {{ metric }}
+                </option>
+            </select>
+        </div>
+        <div class="floor-labels-container">
+            <label for="floorLabelsToggle">Floor Labels:</label>
+            <input
+                type="checkbox"
+                id="floorLabelsToggle"
+                [(ngModel)]="showFloorLabels"
+                (change)="onFloorLabelsChange()" />
+        </div>
+        <!-- Show amountOfFloorLabels input only if showFloorLabels is true -->
+        <div class="floor-labels-container" *ngIf="showFloorLabels">
+            <label for="amountOfFloorLabelsInput">Amount of Floor Labels:</label>
+            <input
+                type="number"
+                id="amountOfFloorLabelsInput"
+                [(ngModel)]="amountOfFloorLabels"
+                (change)="onFloorLabelsChange()"
+                min="-1"
+                step="1" />
+        </div>
+        <!-- Add new input for floor label size -->
+        <div class="floor-labels-container" *ngIf="showFloorLabels">
+            <label for="floorLabelSizeInput">Label Length:</label>
+            <input
+                type="number"
+                id="floorLabelSizeInput"
+                [(ngModel)]="floorLabelLength"
+                (change)="onFloorLabelLengthChange()"
+                min="0.1"
+                step="0.1" />
+        </div>
+        <!-- New: Render label names checkbox -->
+        <div class="floor-labels-container" *ngIf="showFloorLabels">
+            <label for="renderLabelNamesToggle">Render label names:</label>
+            <input
+                type="checkbox"
+                id="renderLabelNamesToggle"
+                [(ngModel)]="renderLabelNames"
+                (change)="onRenderLabelNamesChange()" />
+        </div>
+        <div class="floor-labels-container">
+            <label for="showEdgesToggle">Show Edges:</label>
+            <input
+                type="checkbox"
+                id="showEdgesToggle"
+                [(ngModel)]="showEdges"
+                (change)="onShowEdgesChange()" />
+        </div>
+        <div class="search-container">
+            <label for="searchInput">Search File:</label>
+            <input
+                type="text"
+                id="searchInput"
+                [(ngModel)]="searchTerm"
+                (input)="onSearchChange()"
+                placeholder="Enter file name" />
+        </div>
+        <div class="filter-input-container">
+            <label for="filterInput">File Filter:</label>
+            <input
+                type="text"
+                id="filterInput"
+                [(ngModel)]="filter"
+                (input)="onFilterChange()"
+                placeholder="e.g. *.js, *.jsx" />
+        </div>
+        <div class="height-slider-container">
+            <label for="folderHeightSlider">Folder Height:</label>
+            <input
+                type="number"
+                id="folderHeightInput"
+                [(ngModel)]="folderHeightMultiplier"
+                (change)="onHeightChange()"
+                min="0.1"
+                max="50"
+                step="0.1" />
+            <input
+                type="range"
+                id="folderHeightSlider"
+                [(ngModel)]="folderHeightMultiplier"
+                (input)="onHeightChange()"
+                min="0.1"
+                max="50"
+                step="0.1" />
+            <span class="slider-value">{{ folderHeightMultiplier.toFixed(1) }}</span>
+        </div>
+        <div class="height-slider-container">
+            <label for="leafHeightSlider">Leaf Height:</label>
+            <input
+                type="number"
+                id="leafHeightInput"
+                [(ngModel)]="leafHeightMultiplier"
+                (change)="onHeightChange()"
+                min="0.1"
+                max="50"
+                step="0.1" />
+            <input
+                type="range"
+                id="leafHeightSlider"
+                [(ngModel)]="leafHeightMultiplier"
+                (input)="onHeightChange()"
+                min="0.1"
+                max="50"
+                step="0.1" />
+            <span class="slider-value">{{ leafHeightMultiplier.toFixed(1) }}</span>
+        </div>
+        <div>
+            <span class="zero-area-nodes-count">NoAreaNodes: {{ numberOfZeroAreaNodes }}</span>
+        </div>
+    </div>
+
+    <div class="algorithm-settings-row" *ngIf="selectedAlgorithm === 'Sunburst'">
+        <div class="algorithm-settings-label">Algorithm Settings:</div>
+        <div class="algorithm-select-container">
+            <label for="sortingSelector">Sorting:</label>
+            <select
+                id="sortingSelector"
+                [(ngModel)]="selectedSorting"
+                (change)="onAlgorithmSettingsChange()">
+                <option *ngFor="let option of sortingOptions" [value]="option">
+                    {{ option }}
+                </option>
+            </select>
+        </div>
+        <div class="algorithm-checkbox-container">
+            <label for="maxSunburstRadiusInput">Max Radius:</label>
+            <input
+                type="number"
+                id="maxSunburstRadiusInput"
+                [(ngModel)]="maxSunburstRadius"
+                (change)="onMaxSunburstRadiusChange()"
+                min="10"
+                max="360"
+                step="1" />
+        </div>
+        <div class="height-slider-container">
+            <label for="folderLengthSlider">Folder Length:</label>
+            <input
+                type="number"
+                id="folderLengthInput"
+                [(ngModel)]="folderLengthMultiplier"
+                (change)="onLengthChange()"
+                min="0.1"
+                max="10"
+                step="0.1" />
+            <input
+                type="range"
+                id="folderLengthSlider"
+                [(ngModel)]="folderLengthMultiplier"
+                (input)="onLengthChange()"
+                min="0.1"
+                max="10"
+                step="0.1" />
+            <span class="slider-value">{{ folderLengthMultiplier.toFixed(1) }}</span>
+        </div>
+        <div class="height-slider-container">
+            <label for="fileLengthSlider">File Length:</label>
+            <input
+                type="number"
+                id="fileLengthInput"
+                [(ngModel)]="fileLengthMultiplier"
+                (change)="onLengthChange()"
+                min="0.1"
+                max="10"
+                step="0.1" />
+            <input
+                type="range"
+                id="fileLengthSlider"
+                [(ngModel)]="fileLengthMultiplier"
+                (input)="onLengthChange()"
+                min="0.1"
+                max="10"
+                step="0.1" />
+            <span class="slider-value">{{ fileLengthMultiplier.toFixed(1) }}</span>
+        </div>
+    </div>
+
+    <!-- Algorithm settings section - shown only when ImprovedSquarifying is selected -->
+    <div class="algorithm-settings-row" *ngIf="selectedAlgorithm === 'Improved Squarifying'">
+        <div class="algorithm-settings-label">Algorithm Settings:</div>
+        <div class="algorithm-checkbox-container">
+            <label for="numberOfPassesInput">Number of Passes:</label>
+            <input
+                type="number"
+                id="numberOfPassesInput"
+                [(ngModel)]="numberOfPasses"
+                (change)="onAlgorithmSettingsChange()"
+                min="1"
+                step="1" />
+        </div>
+        <div class="algorithm-checkbox-container">
+            <input
+                type="checkbox"
+                id="scaleToggle"
+                [(ngModel)]="useScale"
+                (change)="onAlgorithmSettingsChange()" />
+            <label for="scaleToggle">Apply Scaling</label>
+        </div>
+        <div class="algorithm-checkbox-container">
+            <input
+                type="checkbox"
+                id="simpleIncreaseValuesToggle"
+                [(ngModel)]="useSimpleIncreaseValues"
+                (change)="onAlgorithmSettingsChange()" />
+            <label for="simpleIncreaseValuesToggle">Simple Increase Values</label>
+        </div>
+        <div class="algorithm-select-container">
+            <label for="keepOrderSelector">Keep Order:</label>
+            <select
+                id="keepOrderSelector"
+                [(ngModel)]="selectedOrderOption"
+                (change)="onAlgorithmSettingsChange()">
+                <option *ngFor="let option of orderOptions" [value]="option">
+                    {{ option }}
+                </option>
+            </select>
+        </div>
+        <div class="algorithm-checkbox-container">
+            <input
+                type="checkbox"
+                id="incrementMarginToggle"
+                [(ngModel)]="incrementMargin"
+                (change)="onAlgorithmSettingsChange()" />
+            <label for="incrementMarginToggle">Increment Margin</label>
+        </div>
+        <div class="algorithm-checkbox-container">
+            <input
+                type="checkbox"
+                id="applySiblingMarginToggle"
+                [(ngModel)]="applySiblingMargin"
+                (change)="onAlgorithmSettingsChange()" />
+            <label for="applySiblingMarginToggle">Sibling Margin</label>
+        </div>
+        <div class="algorithm-checkbox-container">
+            <input
+                type="checkbox"
+                id="collapseFoldersToggle"
+                [(ngModel)]="collapseFolders"
+                (change)="onAlgorithmSettingsChange()" />
+            <label for="collapseFoldersToggle">Collapse Folders</label>
+        </div>
+        <div class="algorithm-select-container">
+            <label for="sortingSelector">Sorting:</label>
+            <select
+                id="sortingSelector"
+                [(ngModel)]="selectedSorting"
+                (change)="onAlgorithmSettingsChange()">
+                <option *ngFor="let option of sortingOptions" [value]="option">
+                    {{ option }}
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="node-info" *ngIf="hoveredNode">
+        <div><strong>Name:</strong> {{hoveredNode.name}}</div>
+        <div><strong>Width:</strong> {{hoveredNode.width?.toFixed(4)}} Length: {{hoveredNode.length?.toFixed(4)}}</div>
+        <div><strong>Size:</strong> {{(calculateAreaSize(hoveredNode)).toFixed(4)}}</div>
+        <div><strong>Value:</strong> {{hoveredNode.attributes[selectedAreaMetric]?.toFixed(4)}}</div>
+        <div><strong>UpdatedValue</strong> {{hoveredNode.heightDelta.toFixed(4)}}</div>
+        <div><strong>S. V. Ratio:</strong> {{(calculateAreaSizeValueRatio(hoveredNode)).toFixed(4)}}</div>
+        <div><strong>Depth:</strong> {{hoveredNode.depth}}</div>
+        <div><strong>Position:</strong> {{hoveredNode.x0?.toFixed(4)}} × {{hoveredNode.y0?.toFixed(4)}}</div>
+        <div><strong>IsLeaf</strong> {{hoveredNode.isLeaf}}</div>
+    </div>
+
+    <div class="evaluation-metrics-info" *ngIf="showEvaluationMetrics && evaluationMetrics" (dblclick)="toggleEvaluationMetricsVisibility()">
+        <div><strong>Evaluated Average Margin:</strong> {{evaluationMetrics.evaluatedAverageMargin.toFixed(4)}}</div>
+        <div><strong>Aimed Relative Margin:</strong> {{evaluationMetrics.aimedRelativeMargin.toFixed(4)}}</div>
+        <div><strong>Aimed Absoulte Margin:</strong> {{evaluationMetrics.aimedAbsoluteMargin.toFixed(4)}}</div>
+        <div><strong>Space For Leaf Nodes Ratio:</strong> {{evaluationMetrics.spaceForLeafNodesRatio.toFixed(4)}}</div>
+        <div><strong>Number Of Zero Width Nodes:</strong> {{evaluationMetrics.numberOfZeroWidthNodes.toFixed(4)}}</div>
+        <div><strong>Number Of Zero Length Nodes:</strong> {{evaluationMetrics.numberOfZeroLengthNodes.toFixed(4)}}</div>
+        <div><strong>Number Of Zero Area Nodes:</strong> {{evaluationMetrics.numberOfZeroAreaNodes.toFixed(4)}}</div>
+        <div><strong>Total Number Of CodeMap Nodes:</strong> {{evaluationMetrics.totalNumberOfCodeMapNodes.toFixed(4)}}</div>
+        <div><strong>Total Number Of Layout Nodes:</strong> {{evaluationMetrics.totalNumberOfLayoutNodes.toFixed(4)}}</div>
+        <div><strong>Missed Nodes:</strong> {{evaluationMetrics.missedNodes.toFixed(4)}}</div>
+        <div><strong>Time Needed In Ms:</strong> {{evaluationMetrics.timeNeededInMs.toFixed(4)}}</div>
+        <div><strong>Ms Per Node:</strong> {{evaluationMetrics.msPerNode.toFixed(4)}}</div>
+        <div><strong>Average Ratio:</strong> {{evaluationMetrics.averageRatio.toFixed(4)}}</div>
+        <div><strong>Variance Of Area Differences:</strong> {{evaluationMetrics.varianceOfAreaDifferences.toFixed(4)}}</div>
+        <div><strong>Var. Of Leaf Area Differences:</strong> {{evaluationMetrics.varianceOfLeafNodeAreaDifferences.toFixed(4)}}</div>
+        <div><strong>Layout Node Violations Count:</strong> {{evaluationMetrics.layoutNodeViolationsCount.toFixed(4)}}</div>
+        <div><strong>rel label length:</strong> {{evaluationMetrics.relativelabelLength.toFixed(4)}}</div>
+    </div>
+
+    <div #threeContainer id="threeContainer" (dblclick)="toggleEvaluationMetricsVisibility()"></div>
+</div>

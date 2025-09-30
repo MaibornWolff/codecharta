@@ -39,6 +39,7 @@
     "start": "electron dist/webpack",
     "build": "ng build && cp electron/* package.json dist/webpack",
     "dev": "ng serve",
+    "algo-dev": "ng serve --configuration=algo-dev",
     "test": "npm run test:ci -- --maxWorkers=25%",
     "test:ci": "jest --config conf/jestUnit.config.json .*\\.spec\\.ts",
     "test:auto": "npm test -- --watch",

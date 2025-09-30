@@ -19,7 +19,14 @@ export interface NameDataPair {
 export enum LayoutAlgorithm {
     SquarifiedTreeMap = "Squarified TreeMap",
     StreetMap = "StreetMap",
-    TreeMapStreet = "TreeMapStreet"
+    TreeMapStreet = "TreeMapStreet",
+    myAlgo = "Custom Original Squarified",
+    NestedTreemap = "Clean NestedTreemap",
+    CodeCity = "CodeCity",
+    Squarifying = "Clean Squarifying",
+    ImprovedSquarifying = "Improved Squarifying",
+    Sunburst = "Sunburst",
+    CirclePacking = "Circle Packing"
 }
 
 export enum SharpnessMode {

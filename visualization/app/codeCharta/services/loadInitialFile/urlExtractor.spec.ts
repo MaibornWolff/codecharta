@@ -10,6 +10,7 @@ describe("urlExtractor", () => {
     beforeEach(() => {
         // window.location is not mockable by default provided jsdom
         delete window.location
+        // @ts-ignore
         window.location = {} as unknown as Location
 
         mockedHttpClient = {

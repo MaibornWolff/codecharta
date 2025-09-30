@@ -84,7 +84,7 @@ export class ThreeSceneService implements OnDestroy {
         this.floorLabelPlanes.clear()
 
         const { layoutAlgorithm, enableFloorLabels } = this.state.getValue().appSettings
-        if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap || !enableFloorLabels) {
+        if ((layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap && layoutAlgorithm !== LayoutAlgorithm.myAlgo) || !enableFloorLabels) {
             return
         }
 

@@ -243,6 +243,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     drawLabelSelectedBuilding(codeMapBuilding: CodeMapBuilding) {
+        console.log(codeMapBuilding, { width: codeMapBuilding.node.width, length: codeMapBuilding.node.length })
         this.clearLabelHoveredBuilding()
         if (this.labelSelectedBuilding !== null) {
             this.codeMapLabelService.clearTemporaryLabel(this.labelSelectedBuilding)

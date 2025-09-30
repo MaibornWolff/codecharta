@@ -1,0 +1,12 @@
+/bin
+/include
+/lib
+/share
+/assets
+pyvenv.cfg
+*.ipynb
+*.csv
+*.env
+*.tex
+*.png
+

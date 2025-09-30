@@ -76,7 +76,7 @@ export class CodeMapRenderService implements OnDestroy {
         this.setLabels(this.unflattenedNodes)
     }
 
-    getNodes(map: CodeMapNode) {
+    getNodes(map: CodeMapNode): Node[] {
         const state = this.state.getValue() as CcState
         const nodeMetricData = metricDataSelector(state).nodeMetricData
         const {

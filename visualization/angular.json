@@ -49,6 +49,21 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "algo-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "app/main.ts",
+                  "with": "app/codeCharta/util/algorithm/2DTestEnvironment/main.algo.ts"
+                }
+              ],
+              "index": "app/codeCharta/util/algorithm/2DTestEnvironment/index.algo.html",
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
@@ -62,6 +77,11 @@
             "development": {
               "buildTarget": "visualization:build:development",
               "port": 3000,
+              "open": true
+            },
+            "algo-dev": {
+              "buildTarget": "visualization:build:algo-dev",
+              "port": 4200,
               "open": true
             }
           },
