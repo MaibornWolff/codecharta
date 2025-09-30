@@ -7,7 +7,8 @@ class Commit(
     modifications: List<Modification>,
     val commitDate: OffsetDateTime,
     private val mergeCommit: Boolean = false,
-    val message: String = ""
+    val message: String = "",
+    val coauthors: List<String> = emptyList()
 ) {
     val modifications: List<Modification>
 

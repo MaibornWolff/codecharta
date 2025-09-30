@@ -94,6 +94,51 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
             .containsExactly("src/RenameNew.java", "src/RenameOld.java", Modification.Type.RENAME, 9L, 2L)
     }
 
+    @Test
+    fun parseCoauthorsWithMultipleCoAuthors() {
+        val commitLines =
+            listOf(
+                "commit ca1fe2ba3be4",
+                "Author: Main Author <main@example.com>",
+                "Date:   Tue May 9 19:57:57 2017 +0200",
+                "    the commit message",
+                "    ",
+                "    Co-authored-by: First Coauthor <first@example.com>",
+                "    Co-Authored-By: Second Coauthor <second@example.com>"
+            )
+        val coauthors = parserStrategy.parseCoAuthors(commitLines)
+        assertThat(coauthors).containsExactly("First Coauthor", "Second Coauthor")
+    }
+
+    @Test
+    fun parseCoauthorsWithNoCoAuthors() {
+        val commitLines =
+            listOf(
+                "commit ca1fe2ba3be4",
+                "Author: Main Author <main@example.com>",
+                "Date:   Tue May 9 19:57:57 2017 +0200",
+                "    the commit message"
+            )
+        val coauthors = parserStrategy.parseCoAuthors(commitLines)
+        assertThat(coauthors).isEmpty()
+    }
+
+    @Test
+    fun parseCoAuthorsWithCaseVariations() {
+        val commitLines =
+            listOf(
+                "commit ca1fe2ba3be4",
+                "Author: Main Author <main@example.com>",
+                "Date:   Tue May 9 19:57:57 2017 +0200",
+                "    the commit message",
+                "    ",
+                "    co-authored-by: First Coauthor <first@example.com>",
+                "    CO-AUTHORED-BY: Second Coauthor <second@example.com>"
+            )
+        val coauthors = parserStrategy.parseCoAuthors(commitLines)
+        assertThat(coauthors).containsExactly("First Coauthor", "Second Coauthor")
+    }
+
     companion object {
         private val FULL_COMMIT =
             listOf(

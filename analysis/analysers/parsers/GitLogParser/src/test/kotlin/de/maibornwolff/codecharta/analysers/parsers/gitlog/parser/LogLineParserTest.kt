@@ -21,6 +21,7 @@ class LogLineParserTest {
     fun parseCommit() { // given
         val parserStrategy = mockk<LogParserStrategy>()
         val author = "An Author"
+        val coAuthors = listOf("Co-Author One", "Co-Author Two")
         val commitDate = OffsetDateTime.now()
         val filenames = listOf("src/Main.java", "src/Util.java")
         val input = emptyList<String>()
@@ -30,6 +31,7 @@ class LogLineParserTest {
         every { parserStrategy.parseModifications(input) } returns filenames.map { Modification(it) }
         every { parserStrategy.parseIsMergeCommit(input) } returns false
         every { parserStrategy.parseMessage(any()) } returns "commit message"
+        every { parserStrategy.parseCoAuthors(any()) } returns coAuthors
 
         val parser = LogLineParser(parserStrategy, metricsFactory)
 
@@ -40,5 +42,6 @@ class LogLineParserTest {
         assertThat(commit.author).isEqualTo(author)
         assertThat(commit.fileNameList).isEqualTo(filenames)
         assertThat(commit.commitDate).isEqualTo(commitDate)
+        assertThat(commit.coauthors).isEqualTo(coAuthors)
     }
 }
