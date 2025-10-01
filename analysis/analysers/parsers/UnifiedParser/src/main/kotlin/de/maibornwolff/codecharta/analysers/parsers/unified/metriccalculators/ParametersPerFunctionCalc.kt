@@ -14,9 +14,11 @@ class ParametersPerFunctionCalc(val nodeTypeProvider: MetricNodeTypes) : MetricP
 
         updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider)
 
-        if (params.shouldIgnoreNode(node, nodeType)) return
-
-        if (isInFunction && !isInFunctionBody && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionParameterNodeTypes)) {
+        if (isInFunction &&
+            !isInFunctionBody &&
+            isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionParameterNodeTypes) &&
+            !params.shouldIgnoreNode(node, nodeType)
+        ) {
             addToMetricForFunction(1)
         }
     }
