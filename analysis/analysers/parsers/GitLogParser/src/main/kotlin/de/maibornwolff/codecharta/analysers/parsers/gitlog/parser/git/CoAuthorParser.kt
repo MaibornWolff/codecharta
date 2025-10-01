@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git
 
 internal object CoAuthorParser {
-    private val coAuthorPattern = Regex("""Co-Authored-By:\s*(.+?)\s*<.*>""", RegexOption.IGNORE_CASE)
+    private val coAuthorPattern = Regex("""Co-Authored-By:\s*(.+?)(?:\s*<.*>)?$""", RegexOption.IGNORE_CASE)
     private const val COAUTHOR_ROW_INDICATOR = "Co-authored-by:"
 
     fun parseCoAuthors(commitMessages: List<String>): List<String> {

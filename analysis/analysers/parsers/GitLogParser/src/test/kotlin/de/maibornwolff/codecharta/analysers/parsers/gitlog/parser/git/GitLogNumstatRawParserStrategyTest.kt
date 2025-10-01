@@ -135,8 +135,24 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
                 "    co-authored-by: First Coauthor <first@example.com>",
                 "    CO-AUTHORED-BY: Second Coauthor <second@example.com>"
             )
-        val coauthors = parserStrategy.parseCoAuthors(commitLines)
-        assertThat(coauthors).containsExactly("First Coauthor", "Second Coauthor")
+        val coAuthors = parserStrategy.parseCoAuthors(commitLines)
+        assertThat(coAuthors).containsExactly("First Coauthor", "Second Coauthor")
+    }
+
+    @Test
+    fun parseCoAuthorsWithoutEmail() {
+        val commitLines =
+            listOf(
+                "commit ca1fe2ba3be4",
+                "Author: Main Author <main@example.com>",
+                "Date:   Tue May 9 19:57:57 2017 +0200",
+                "    the commit message",
+                "    ",
+                "    Co-authored-by: First Coauthor",
+                "    Co-authored-by: Second Coauthor <second@example.com>"
+            )
+        val coAuthors = parserStrategy.parseCoAuthors(commitLines)
+        assertThat(coAuthors).containsExactly("First Coauthor", "Second Coauthor")
     }
 
     companion object {
