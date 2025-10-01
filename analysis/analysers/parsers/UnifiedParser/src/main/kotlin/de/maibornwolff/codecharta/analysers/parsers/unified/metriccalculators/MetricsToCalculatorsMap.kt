@@ -66,7 +66,7 @@ class MetricsToCalculatorsMap(
                         endRow,
                         calcExtensions.ignoreNodeForRealLinesOfCode,
                         calcExtensions.countNodeAsLeafNode,
-                        calcExtensions.languageUsesBrackets,
+                        calcExtensions.hasFunctionBodyStartOrEndNode,
                     )
                 )
             }
