@@ -10,7 +10,6 @@ class Commit(
     val message: String = "",
     val coAuthors: List<String> = emptyList()
 ) {
-
     val fileNameList: List<String>
         get() = modifications.map { it.currentFilename }
 
