@@ -14,6 +14,9 @@ class PythonCollector : MetricCollector(
                 PythonNodeTypes.shouldIgnoreStringInBlockComment(node, nodeType) ||
                 PythonNodeTypes.shouldIgnoreNodeStartingWithComment(node)
         },
+        ignoreNodeForParameterOfFunctions = { node: TSNode, nodeType: String ->
+            PythonNodeTypes.shouldIgnoreMethodNameAsParameter(node, nodeType)
+        },
         countNodeAsLeafNode = { node: TSNode ->
             node.type == "string" && node.parent.childCount != 1
         }
