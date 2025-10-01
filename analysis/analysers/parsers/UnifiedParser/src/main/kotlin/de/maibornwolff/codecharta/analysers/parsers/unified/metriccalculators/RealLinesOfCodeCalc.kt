@@ -24,7 +24,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
         val startRow = params.startRow
         val endRow = params.endRow
 
-        updateInFunctionStatusForRloc(node, nodeType, startRow, endRow, nodeTypeProvider)
+        updateInFunctionStatusForRloc(node, nodeType, startRow, endRow, nodeTypeProvider, params.languageUsesBrackets)
 
         if (params.shouldIgnoreNode(node, nodeType) ||
             isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)
@@ -59,7 +59,8 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
         nodeType: String,
         startRow: Int,
         endRow: Int,
-        nodeTypeProvider: MetricNodeTypes
+        nodeTypeProvider: MetricNodeTypes,
+        languageUsesBrackets: Boolean
     ) {
         updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider)
 
@@ -74,9 +75,12 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
                 functionBodyEndColumn = endCol
             }
 
-            val isFirstNode = (startRow == functionBodyStartRow && startCol == functionBodyStartColumn)
-            val isLastNode = (endRow == functionBodyEndRow && endCol == functionBodyEndColumn)
-            isFirstOrLastNodeInFunction = isFirstNode || isLastNode
+            // if language uses brackets for function body
+            if (languageUsesBrackets) {
+                val isFirstNode = (startRow == functionBodyStartRow && startCol == functionBodyStartColumn)
+                val isLastNode = (endRow == functionBodyEndRow && endCol == functionBodyEndColumn)
+                isFirstOrLastNodeInFunction = isFirstNode || isLastNode
+            }
         } else {
             resetBoundaries()
             isFirstOrLastNodeInFunction = false
