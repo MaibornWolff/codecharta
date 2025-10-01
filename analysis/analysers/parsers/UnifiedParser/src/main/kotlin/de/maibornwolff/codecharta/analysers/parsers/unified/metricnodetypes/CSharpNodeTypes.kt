@@ -64,13 +64,13 @@ class CSharpNodeTypes : MetricNodeTypes {
         )
     )
 
-    override val functionParameterListNodeTypes = TreeNodeTypes(
+    override val functionBodyNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
-            "parameter_list"
+            "block"
         )
     )
 
-    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+    override val functionParameterNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             "parameter"
         )

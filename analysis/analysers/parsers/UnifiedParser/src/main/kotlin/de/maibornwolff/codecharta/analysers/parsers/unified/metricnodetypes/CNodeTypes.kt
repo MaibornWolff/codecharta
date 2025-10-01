@@ -48,13 +48,13 @@ class CNodeTypes : MetricNodeTypes {
         )
     )
 
-    override val functionParameterListNodeTypes = TreeNodeTypes(
+    override val functionBodyNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
-            "parameter_list"
+            "compound_statement"
         )
     )
 
-    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+    override val functionParameterNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             "parameter_declaration"
         )

@@ -57,13 +57,13 @@ class RubyNodeTypes : MetricNodeTypes {
         )
     )
 
-    override val functionParameterListNodeTypes = TreeNodeTypes(
+    override val functionBodyNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
-            "method_parameters"
+            "body_statement"
         )
     )
 
-    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+    override val functionParameterNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             "identifier"
         )
@@ -72,14 +72,15 @@ class RubyNodeTypes : MetricNodeTypes {
     companion object {
         // some node types equal their string literal in code, which is captured in a child node and can be ignored to prevent double counting
         fun shouldIgnoreChildWithEqualParentType(node: TSNode, nodeType: String): Boolean {
-            if (nodeType == "if") {
-                println()
-            }
             return nodesWhereTypeEqualsCodeLiteral.contains(nodeType) && nodeType == node.parent.type
         }
 
         fun shouldIgnoreElseNotInCaseStatement(node: TSNode, nodeType: String): Boolean {
             return nodeType == "else" && node.parent.type != "case"
+        }
+
+        fun shouldIgnoreMethodNameAsParameter(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "identifier" && node.parent.type == "method"
         }
 
         val nodeTypesToIgnore = setOf(

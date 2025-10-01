@@ -67,14 +67,13 @@ class PythonNodeTypes : MetricNodeTypes {
         )
     )
 
-    override val functionParameterListNodeTypes = TreeNodeTypes(
+    override val functionBodyNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
-            "parameters",
-            "lambda_parameters"
+            "block"
         )
     )
 
-    override val parameterOfFunctionNodeTypes = TreeNodeTypes(
+    override val functionParameterNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             "identifier"
         )
@@ -90,6 +89,10 @@ class PythonNodeTypes : MetricNodeTypes {
 
         fun shouldIgnoreStringInBlockComment(node: TSNode, nodeType: String): Boolean {
             return nodeType == "string" && node.parent.childCount == 1
+        }
+
+        fun shouldIgnoreMethodNameAsParameter(node: TSNode, nodeType: String): Boolean {
+            return nodeType == "identifier" && node.parent.type == "function_definition"
         }
 
         val nodeTypesToIgnore = setOf(

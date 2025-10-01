@@ -1,11 +1,22 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFunctionMetrics
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.MetricNodeTypes
+import org.treesitter.TSNode
 
-interface MetricPerFunctionCalc : MetricCalc {
-    val metric: AvailableFunctionMetrics
+abstract class MetricPerFunctionCalc : MetricCalc {
+    abstract val metric: AvailableFunctionMetrics
 
-    fun processMetricForNode(params: CalculationContext)
+    protected var isInFunction = false
+    private var idOfCurrentFunction = -1
+    private var endRowOfLastFunction = -1
+    private var endColumnOfLastFunction = -1
+
+    protected var isInFunctionBody = false
+
+    private val metricPerFunction = mutableListOf<Int>()
+
+    abstract fun processMetricForNode(params: CalculationContext)
 
     fun getMeasureMetricsForMetricType(): Map<String, Double> {
         val metricName = metric.metricName
@@ -18,7 +29,9 @@ interface MetricPerFunctionCalc : MetricCalc {
         return metricsMap
     }
 
-    fun getMetricPerFunction(): List<Int>
+    fun getMetricPerFunction(): List<Int> {
+        return metricPerFunction
+    }
 
     private fun getMaxMetricForFile(): Int {
         return getMetricPerFunction().maxOrNull() ?: 0
@@ -48,5 +61,36 @@ interface MetricPerFunctionCalc : MetricCalc {
         } else {
             (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0
         }
+    }
+
+    protected fun updateInFunctionStatus(
+        node: TSNode,
+        nodeType: String,
+        startRow: Int,
+        endRow: Int,
+        nodeTypeProvider: MetricNodeTypes
+    ) {
+        if (isInFunction) {
+            if (startRow > endRowOfLastFunction || (startRow == endRowOfLastFunction && node.startPoint.column > endColumnOfLastFunction)) {
+                isInFunction = false
+                isInFunctionBody = false
+            }
+
+            if (!isInFunctionBody && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
+                isInFunctionBody = true
+            }
+        }
+
+        if (!isInFunction && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.numberOfFunctionsNodeTypes)) {
+            isInFunction = true
+            idOfCurrentFunction++
+            metricPerFunction.add(0)
+            endRowOfLastFunction = endRow
+            endColumnOfLastFunction = node.endPoint.column
+        }
+    }
+
+    fun addToMetricForFunction(value: Int) {
+        metricPerFunction[idOfCurrentFunction] += value
     }
 }
