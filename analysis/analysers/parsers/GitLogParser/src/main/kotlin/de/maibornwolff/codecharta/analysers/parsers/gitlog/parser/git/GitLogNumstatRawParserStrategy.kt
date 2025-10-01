@@ -70,6 +70,11 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
         return commitMessages.joinToString("\n").trim()
     }
 
+    override fun parseCoAuthors(commitLines: List<String>): List<String> {
+        val commitMessages = extractCommitMessages(commitLines)
+        return CoAuthorParser.parseCoAuthors(commitMessages)
+    }
+
     private fun extractCommitMessages(commitLines: List<String>): List<String> {
         val isCommitMessage: (commitLine: String) -> Boolean = { it.isNotEmpty() && it.isNotBlank() && it.startsWith("    ") }
         return commitLines.filter { isCommitMessage(it) }.map { it.substring(4) }

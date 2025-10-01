@@ -19,4 +19,6 @@ interface LogParserStrategy {
     fun parseIsMergeCommit(commitLines: List<String>): Boolean
 
     fun parseMessage(commitLines: List<String>): String
+
+    fun parseCoAuthors(commitLines: List<String>): List<String>
 }

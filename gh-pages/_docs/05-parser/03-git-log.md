@@ -20,7 +20,7 @@ This parser specializes in tracking file changes across different file-versions 
 | Metric                          | Description                                                       |
 |---------------------------------|-------------------------------------------------------------------|
 | `age_in_weeks`                  | The file's age measured in weeks since creation.                  |
-| `number_of_authors`             | The count of distinct authors who have contributed commits.       |
+| `number_of_authors`             | The count of distinct authors (including co-authors) who have contributed commits. |
 | `number_of_commits`             | The total commits made to the file.                               |
 | `number_of_renames`             | How many times the file has been renamed.                         |
 | `range_of_weeks_with_commits`   | The span of weeks during which commits were made.                 |

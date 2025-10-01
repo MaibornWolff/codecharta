@@ -50,4 +50,70 @@ class NumberOfAuthorsTest {
         // then
         assertThat(metric.value()).isEqualTo(2)
     }
+
+    @Test
+    fun should_count_coauthors() {
+        // given
+        val metric = NumberOfAuthors()
+
+        // when
+        metric.registerCommit(
+            Commit(
+                "Main author",
+                emptyList(),
+                OffsetDateTime.now(),
+                coAuthors = listOf("Coauthor 1", "Coauthor 2")
+            )
+        )
+
+        // then
+        assertThat(metric.value()).isEqualTo(3)
+    }
+
+    @Test
+    fun should_count_coauthors_only_once() {
+        // given
+        val metric = NumberOfAuthors()
+
+        // when
+        metric.registerCommit(
+            Commit(
+                "Main author",
+                emptyList(),
+                OffsetDateTime.now(),
+                coAuthors = listOf("Coauthor 1")
+            )
+        )
+        metric.registerCommit(
+            Commit(
+                "Main author",
+                emptyList(),
+                OffsetDateTime.now(),
+                coAuthors = listOf("Coauthor 1")
+            )
+        )
+
+        // then
+        assertThat(metric.value()).isEqualTo(2)
+    }
+
+    @Test
+    fun should_count_coauthor_as_main_author_only_once() {
+        // given
+        val metric = NumberOfAuthors()
+
+        // when
+        metric.registerCommit(
+            Commit(
+                "Main author",
+                emptyList(),
+                OffsetDateTime.now(),
+                coAuthors = listOf("Coauthor 1")
+            )
+        )
+        metric.registerCommit(Commit("Coauthor 1", emptyList(), OffsetDateTime.now()))
+
+        // then
+        assertThat(metric.value()).isEqualTo(2)
+    }
 }
