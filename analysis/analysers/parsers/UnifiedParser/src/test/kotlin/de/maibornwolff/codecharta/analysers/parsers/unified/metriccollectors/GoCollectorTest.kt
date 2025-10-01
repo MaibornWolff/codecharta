@@ -265,4 +265,31 @@ class GoCollectorTest {
         Assertions.assertThat(result.attributes["mean_parameters_per_function"]).isEqualTo(1.25)
         Assertions.assertThat(result.attributes["median_parameters_per_function"]).isEqualTo(1.5)
     }
+
+    @Test
+    fun `should correctly calculate rloc per function metric`() {
+        // given
+        val fileContent = """
+            func functionOne() {
+            // comment at start of function
+                fmt.Println("This is function one")
+                // inline comment
+                {}
+            }
+
+            func functionTwo(x int) int {
+                return x * 2
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_rloc_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["min_rloc_per_function"]).isEqualTo(1.0)
+        Assertions.assertThat(result.attributes["mean_rloc_per_function"]).isEqualTo(1.5)
+        Assertions.assertThat(result.attributes["median_rloc_per_function"]).isEqualTo(1.5)
+    }
 }

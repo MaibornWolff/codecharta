@@ -319,4 +319,31 @@ class CSharpCollectorTest {
         Assertions.assertThat(result.attributes["mean_parameters_per_function"]).isEqualTo(1.25)
         Assertions.assertThat(result.attributes["median_parameters_per_function"]).isEqualTo(1.5)
     }
+
+    @Test
+    fun `should correctly calculate rloc per function metric`() {
+        // given
+        val fileContent = """
+            public void MethodOne() {
+            // comment at start of method
+                Console.WriteLine("This is method one");
+                // inline comment
+                {}
+            }
+
+            public int MethodTwo(int x) {
+                return x * 2;
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_rloc_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["min_rloc_per_function"]).isEqualTo(1.0)
+        Assertions.assertThat(result.attributes["mean_rloc_per_function"]).isEqualTo(1.5)
+        Assertions.assertThat(result.attributes["median_rloc_per_function"]).isEqualTo(1.5)
+    }
 }
