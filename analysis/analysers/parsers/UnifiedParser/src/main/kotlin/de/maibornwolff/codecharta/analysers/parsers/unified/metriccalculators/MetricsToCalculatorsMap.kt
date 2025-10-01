@@ -17,11 +17,13 @@ class MetricsToCalculatorsMap(
 
     fun getPerFileMetricInfo(): Map<AvailableFileMetrics, (TSNode, String, Int, Int) -> Int> {
         return mapOf(
-            AvailableFileMetrics.COMPLEXITY to { node: TSNode, nodeType: String, _: Int, _: Int ->
+            AvailableFileMetrics.COMPLEXITY to { node: TSNode, nodeType: String, startRow: Int, endRow: Int ->
                 complexityCalc.calculateFunctionComplexityForNode(
                     CalculationContext(
                         node,
                         nodeType,
+                        startRow,
+                        endRow,
                         shouldIgnoreNode = calcExtensions.ignoreNodeForComplexity
                     )
                 )
@@ -77,7 +79,7 @@ class MetricsToCalculatorsMap(
                 nodeType,
                 startRow,
                 endRow,
-                { _: TSNode, _: String -> false } // TODO: maybe add if we need to after tests
+                calcExtensions.ignoreNodeForParameterOfFunctions
             )
         )
     }
@@ -85,6 +87,8 @@ class MetricsToCalculatorsMap(
     fun getMeasuresOfPerFunctionMetrics(): Map<String, Double> {
         val metricNameToValue = mutableMapOf<String, Double>()
         metricNameToValue.putAll(parametersPerFunctionCalc.getMeasureMetricsForMetricType())
+        metricNameToValue.putAll(realLinesOfCodeCalc.getMeasureMetricsForMetricType())
+        metricNameToValue.putAll(complexityCalc.getMeasureMetricsForMetricType())
 
         return metricNameToValue
     }

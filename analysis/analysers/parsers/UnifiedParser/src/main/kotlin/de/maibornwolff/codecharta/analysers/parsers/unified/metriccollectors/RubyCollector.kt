@@ -15,6 +15,9 @@ class RubyCollector : MetricCollector(
         },
         ignoreNodeForRealLinesOfCode = { _: TSNode, nodeType: String ->
             RubyNodeTypes.nodeTypesToIgnore.contains(nodeType)
+        },
+        ignoreNodeForParameterOfFunctions = { node: TSNode, nodeType: String ->
+            RubyNodeTypes.shouldIgnoreMethodNameAsParameter(node, nodeType)
         }
     )
 )
