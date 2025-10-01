@@ -394,6 +394,7 @@ class PhpCollectorTest {
     fun `should correctly calculate rloc per function metric`() {
         // given
         val fileContent = """
+            <?php
             function functionOne() {
             // comment at start of function
                 echo "This is function one";
