@@ -78,7 +78,6 @@ class TypescriptCollectorTest {
 
         // then
         Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName])
-
     }
 
     @Test
@@ -305,5 +304,32 @@ class TypescriptCollectorTest {
         Assertions.assertThat(result.attributes["min_parameters_per_function"]).isEqualTo(0.0)
         Assertions.assertThat(result.attributes["mean_parameters_per_function"]).isEqualTo(1.25)
         Assertions.assertThat(result.attributes["median_parameters_per_function"]).isEqualTo(1.5)
+    }
+
+    @Test
+    fun `should correctly calculate rloc per function metric`() {
+        // given
+        val fileContent = """
+            const fun_expr = function (expression: String) {
+            // comment at start of function
+                console.log("This is a function expression:" + expression);
+                // inline comment
+                {}
+            }
+
+            const tester = (content: String) => {
+                console.log("Logging" + content)
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_rloc_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["min_rloc_per_function"]).isEqualTo(1.0)
+        Assertions.assertThat(result.attributes["mean_rloc_per_function"]).isEqualTo(1.5)
+        Assertions.assertThat(result.attributes["median_rloc_per_function"]).isEqualTo(1.5)
     }
 }
