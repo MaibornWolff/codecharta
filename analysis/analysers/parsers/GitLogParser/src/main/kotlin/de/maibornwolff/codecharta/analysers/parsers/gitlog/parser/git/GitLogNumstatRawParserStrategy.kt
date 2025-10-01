@@ -72,7 +72,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
 
     override fun parseCoAuthors(commitLines: List<String>): List<String> {
         val commitMessages = extractCommitMessages(commitLines)
-        return CoauthorParser.parseCoauthors(commitMessages)
+        return CoAuthorParser.parseCoauthors(commitMessages)
     }
 
     private fun extractCommitMessages(commitLines: List<String>): List<String> {

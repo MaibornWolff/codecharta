@@ -62,7 +62,7 @@ class NumberOfAuthorsTest {
                 "Main author",
                 emptyList(),
                 OffsetDateTime.now(),
-                coauthors = listOf("Coauthor 1", "Coauthor 2")
+                coAuthors = listOf("Coauthor 1", "Coauthor 2")
             )
         )
 
@@ -81,7 +81,7 @@ class NumberOfAuthorsTest {
                 "Main author",
                 emptyList(),
                 OffsetDateTime.now(),
-                coauthors = listOf("Coauthor 1")
+                coAuthors = listOf("Coauthor 1")
             )
         )
         metric.registerCommit(
@@ -89,7 +89,7 @@ class NumberOfAuthorsTest {
                 "Main author",
                 emptyList(),
                 OffsetDateTime.now(),
-                coauthors = listOf("Coauthor 1")
+                coAuthors = listOf("Coauthor 1")
             )
         )
 
@@ -108,7 +108,7 @@ class NumberOfAuthorsTest {
                 "Main author",
                 emptyList(),
                 OffsetDateTime.now(),
-                coauthors = listOf("Coauthor 1")
+                coAuthors = listOf("Coauthor 1")
             )
         )
         metric.registerCommit(Commit("Coauthor 1", emptyList(), OffsetDateTime.now()))

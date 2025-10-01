@@ -16,7 +16,7 @@ class NumberOfAuthors : Metric {
 
     override fun registerCommit(commit: Commit) {
         authors.add(commit.author)
-        authors.addAll(commit.coauthors)
+        authors.addAll(commit.coAuthors)
     }
 
     override fun value(): Number {

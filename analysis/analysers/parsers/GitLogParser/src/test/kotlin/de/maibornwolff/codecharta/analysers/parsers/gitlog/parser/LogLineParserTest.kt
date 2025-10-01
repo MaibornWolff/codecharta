@@ -42,6 +42,6 @@ class LogLineParserTest {
         assertThat(commit.author).isEqualTo(author)
         assertThat(commit.fileNameList).isEqualTo(filenames)
         assertThat(commit.commitDate).isEqualTo(commitDate)
-        assertThat(commit.coauthors).isEqualTo(coAuthors)
+        assertThat(commit.coAuthors).isEqualTo(coAuthors)
     }
 }
