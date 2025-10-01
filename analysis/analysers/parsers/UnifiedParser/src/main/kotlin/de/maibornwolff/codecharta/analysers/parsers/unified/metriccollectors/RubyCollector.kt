@@ -9,7 +9,7 @@ class RubyCollector : MetricCollector(
     treeSitterLanguage = TreeSitterRuby(),
     nodeTypeProvider = RubyNodeTypes(),
     calculationExtensions = CalculationExtensions(
-        languageUsesBrackets = false,
+        hasFunctionBodyStartOrEndNode = Pair(false, true),
         ignoreNodeForComplexity = { node: TSNode, nodeType: String ->
             RubyNodeTypes.shouldIgnoreChildWithEqualParentType(node, nodeType) ||
                 RubyNodeTypes.shouldIgnoreElseNotInCaseStatement(node, nodeType)

@@ -24,7 +24,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
         val startRow = params.startRow
         val endRow = params.endRow
 
-        updateInFunctionStatusForRloc(node, nodeType, startRow, endRow, nodeTypeProvider, params.languageUsesBrackets)
+        updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider, params.hasFunctionBodyStartOrEndNode)
 
         if (params.shouldIgnoreNode(node, nodeType) ||
             isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)
@@ -43,24 +43,24 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
             rlocForNode += endRow - startRow
         }
 
-        if (isInFunction && isInFunctionBodyForRloc()) {
+        if (isInFunction && isInFunctionBodyAndAllowedNode()) {
             addToMetricForFunction(rlocForNode)
         }
 
         return rlocForNode
     }
 
-    private fun isInFunctionBodyForRloc(): Boolean {
+    private fun isInFunctionBodyAndAllowedNode(): Boolean {
         return isInFunctionBody && !isFirstOrLastNodeInFunction
     }
 
-    private fun updateInFunctionStatusForRloc(
+    private fun updateInFunctionStatus(
         node: TSNode,
         nodeType: String,
         startRow: Int,
         endRow: Int,
         nodeTypeProvider: MetricNodeTypes,
-        languageUsesBrackets: Boolean
+        hasFunctionBodyStartOrEndNode: Pair<Boolean, Boolean>,
     ) {
         updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider)
 
@@ -75,12 +75,13 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
                 functionBodyEndColumn = endCol
             }
 
-            // if language uses brackets for function body
-            if (languageUsesBrackets) {
-                val isFirstNode = (startRow == functionBodyStartRow && startCol == functionBodyStartColumn)
-                val isLastNode = (endRow == functionBodyEndRow && endCol == functionBodyEndColumn)
-                isFirstOrLastNodeInFunction = isFirstNode || isLastNode
-            }
+            val isFirstNode = (startRow == functionBodyStartRow && startCol == functionBodyStartColumn)
+            val isLastNode = (endRow == functionBodyEndRow && endCol == functionBodyEndColumn)
+
+            val shouldExcludeFirstNode = hasFunctionBodyStartOrEndNode.first && isFirstNode
+            val shouldExcludeLastNode = hasFunctionBodyStartOrEndNode.second && isLastNode
+
+            isFirstOrLastNodeInFunction = shouldExcludeFirstNode || shouldExcludeLastNode
         } else {
             resetBoundaries()
             isFirstOrLastNodeInFunction = false
