@@ -4,7 +4,7 @@ import { BlacklistItem, BlacklistType, CcState } from "../../codeCharta.model"
 import { createBlacklistItemSelector } from "../ribbonBar/searchPanel/blacklistPanel/createBlacklistItemSelector"
 import { blacklistExtensionsPattern } from "../../state/effects/blacklistExtension/blacklistExtension.effect"
 import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
-import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
+import { hoveredNodeMetricDistributionSelector } from "./selectors/hoveredNodeMetricDistribution.selector"
 import { removeBlacklistItem, removeBlacklistItems } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { map, Observable } from "rxjs"
 
@@ -16,7 +16,7 @@ export function addPrefixWildcard(extension: string) {
     providedIn: "root"
 })
 export class BlackListExtensionService {
-    readonly metricDistribution$ = this.store.select(metricDistributionSelector)
+    private readonly metricDistribution$ = this.store.select(hoveredNodeMetricDistributionSelector)
     private metricDistribution: CategorizedMetricDistribution
     private readonly flattenedItems = new Map<string, BlacklistItem>()
     readonly flattenedItems$ = this.store.select(createBlacklistItemSelector("flatten"))

@@ -10,6 +10,7 @@ import { BlacklistItem, BlacklistType, CcState, ColorMode, SortingOption } from 
 import { By } from "@angular/platform-browser"
 import { screen } from "@testing-library/angular"
 import { metricDistributionSelector } from "../selectors/metricDistribution.selector"
+import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
 import { Action } from "@ngrx/store"
 
 describe("FileExtensionBarSegment", () => {
@@ -17,6 +18,12 @@ describe("FileExtensionBarSegment", () => {
     let component: FileExtensionBarSegmentComponent
     let store: MockStore
     const initialState: Partial<CcState> = {
+        appStatus: {
+            currentFilesAreSampleFiles: false,
+            hoveredNodeId: null,
+            selectedBuildingId: null,
+            rightClickedNodeData: null
+        },
         fileSettings: {
             attributeTypes: null,
             attributeDescriptors: null,
@@ -250,6 +257,7 @@ describe("FileExtensionBarSegment", () => {
             const otherFileExtensionsWithWildcards = mockedDistribution.others.map(it => addPrefixWildcard(it.fileExtension))
 
             store.overrideSelector(metricDistributionSelector, mockedDistribution)
+            store.overrideSelector(hoveredNodeMetricDistributionSelector, mockedDistribution)
             store.refreshState()
 
             fixture.componentRef.setInput("item", {
