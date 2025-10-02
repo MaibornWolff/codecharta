@@ -59,13 +59,13 @@ export class BlackListExtensionService {
         return this.flattenedItems$.pipe(
             map(items => {
                 const extension = addPrefixWildcard(fileExtension)
-                const flattenedFileExtensions = items.map(item => item.path)
+                const flattenedFileExtensions = new Set(items.map(item => item.path))
                 if (fileExtension === OTHER_EXTENSION) {
                     return this.metricDistribution.others
                         .map(it => addPrefixWildcard(it.fileExtension))
-                        .some(it => flattenedFileExtensions.includes(it))
+                        .some(it => flattenedFileExtensions.has(it))
                 }
-                return flattenedFileExtensions.includes(extension)
+                return flattenedFileExtensions.has(extension)
             })
         )
     }
