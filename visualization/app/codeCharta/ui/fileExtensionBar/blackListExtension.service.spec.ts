@@ -4,7 +4,7 @@ import { addPrefixWildcard, BlackListExtensionService } from "./blackListExtensi
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CategorizedMetricDistribution, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
 import { BlacklistItem, BlacklistType, CcState, ColorMode, NodeType, SortingOption } from "../../codeCharta.model"
-import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
+import { hoveredNodeMetricDistributionSelector } from "./selectors/hoveredNodeMetricDistribution.selector"
 import { BlacklistExtensionAction } from "../../state/effects/blacklistExtension/blacklistExtension.effect"
 
 class BlackListItemBuilder {
@@ -69,6 +69,12 @@ describe("BlackListServiceService", () => {
     const mockBlacklist: BlacklistItem[] = [mockFlattenedTypescriptItem, ...mockFlattenedOtherItems]
 
     const initialState: Partial<CcState> = {
+        appStatus: {
+            currentFilesAreSampleFiles: false,
+            hoveredNodeId: null,
+            selectedBuildingId: null,
+            rightClickedNodeData: null
+        },
         fileSettings: {
             attributeTypes: null,
             attributeDescriptors: null,
@@ -107,7 +113,7 @@ describe("BlackListServiceService", () => {
         fixture = TestBed.inject(BlackListExtensionService)
         store = TestBed.inject(MockStore)
 
-        store.overrideSelector(metricDistributionSelector, mockDistribution)
+        store.overrideSelector(hoveredNodeMetricDistributionSelector, mockDistribution)
         store.refreshState()
     })
 

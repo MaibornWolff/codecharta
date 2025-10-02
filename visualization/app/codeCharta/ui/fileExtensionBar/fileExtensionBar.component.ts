@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core"
 import { CategorizedMetricDistribution } from "./selectors/fileExtensionCalculator"
 import { DistributionMetricComponent } from "./distributionMetric/distributionMetric.component"
 import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment/fileExtensionBarSegment.component"
-import { BlackListExtensionService } from "./blackListExtension.service"
+import { MetricDistributionService } from "./metricDistribution.service"
 
 @Component({
     selector: "cc-file-extension-bar",
@@ -15,10 +15,10 @@ export class FileExtensionBarComponent implements OnInit {
     showAbsoluteValues = false
     metricDistribution: CategorizedMetricDistribution
 
-    constructor(private readonly blackListExtensionService: BlackListExtensionService) {}
+    constructor(private readonly metricDistributionService: MetricDistributionService) {}
 
     ngOnInit(): void {
-        this.blackListExtensionService.metricDistribution$.subscribe(metricDistribution => {
+        this.metricDistributionService.hoveredNodeMetricDistribution$.subscribe(metricDistribution => {
             this.metricDistribution = metricDistribution
         })
     }

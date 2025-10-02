@@ -10,6 +10,7 @@ import { BlacklistItem, BlacklistType, CcState, ColorMode, SortingOption } from 
 import { By } from "@angular/platform-browser"
 import { screen } from "@testing-library/angular"
 import { metricDistributionSelector } from "../selectors/metricDistribution.selector"
+import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
 import { Action } from "@ngrx/store"
 
 describe("FileExtensionBarSegment", () => {
@@ -17,6 +18,12 @@ describe("FileExtensionBarSegment", () => {
     let component: FileExtensionBarSegmentComponent
     let store: MockStore
     const initialState: Partial<CcState> = {
+        appStatus: {
+            currentFilesAreSampleFiles: false,
+            hoveredNodeId: null,
+            selectedBuildingId: null,
+            rightClickedNodeData: null
+        },
         fileSettings: {
             attributeTypes: null,
             attributeDescriptors: null,
@@ -118,6 +125,57 @@ describe("FileExtensionBarSegment", () => {
             // THEN
             const titleEl = fixture.debugElement.query(By.css('[data-test-id="formattedTitle"]'))
             expect(titleEl.nativeElement.textContent).toEqual(` ${mockItem.fileExtension} ${mockItem.absoluteMetricValue} `)
+        })
+
+        it("GIVEN the item has null absoluteMetricValue THEN 'no data available' is displayed", () => {
+            // GIVEN
+            const itemWithNullValue: MetricDistribution = {
+                fileExtension: "ts",
+                relativeMetricValue: 10,
+                absoluteMetricValue: null,
+                color: "#ffffff"
+            }
+            fixture.componentRef.setInput("item", itemWithNullValue)
+            fixture.componentRef.setInput("showAbsoluteValues", true)
+            fixture.detectChanges()
+
+            // THEN
+            const titleEl = fixture.debugElement.query(By.css('[data-test-id="formattedTitle"]'))
+            expect(titleEl.nativeElement.textContent).toEqual(` No data available `)
+        })
+
+        it("GIVEN the item has null relativeMetricValue THEN 'no data available' is displayed", () => {
+            // GIVEN
+            const itemWithNullValue: MetricDistribution = {
+                fileExtension: "ts",
+                relativeMetricValue: null,
+                absoluteMetricValue: 10,
+                color: "#ffffff"
+            }
+            fixture.componentRef.setInput("item", itemWithNullValue)
+            fixture.componentRef.setInput("showAbsoluteValues", false)
+            fixture.detectChanges()
+
+            // THEN
+            const titleEl = fixture.debugElement.query(By.css('[data-test-id="formattedTitle"]'))
+            expect(titleEl.nativeElement.textContent).toEqual(` No data available `)
+        })
+
+        it("GIVEN the item has undefined absoluteMetricValue THEN 'no data available' is displayed", () => {
+            // GIVEN
+            const itemWithUndefinedValue: MetricDistribution = {
+                fileExtension: "ts",
+                relativeMetricValue: 10,
+                absoluteMetricValue: undefined,
+                color: "#ffffff"
+            }
+            fixture.componentRef.setInput("item", itemWithUndefinedValue)
+            fixture.componentRef.setInput("showAbsoluteValues", true)
+            fixture.detectChanges()
+
+            // THEN
+            const titleEl = fixture.debugElement.query(By.css('[data-test-id="formattedTitle"]'))
+            expect(titleEl.nativeElement.textContent).toEqual(` No data available `)
         })
 
         it("Background color is the same as the input items color.", () => {
@@ -250,6 +308,7 @@ describe("FileExtensionBarSegment", () => {
             const otherFileExtensionsWithWildcards = mockedDistribution.others.map(it => addPrefixWildcard(it.fileExtension))
 
             store.overrideSelector(metricDistributionSelector, mockedDistribution)
+            store.overrideSelector(hoveredNodeMetricDistributionSelector, mockedDistribution)
             store.refreshState()
 
             fixture.componentRef.setInput("item", {

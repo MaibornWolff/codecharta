@@ -66,9 +66,15 @@ export class FileExtensionBarSegmentComponent implements OnInit, OnDestroy {
     }
 
     private formatTitle(showAbsoluteValues: boolean, item: MetricDistribution, fileExtension: string) {
+        const isDataAvailable = (showAbsoluteValues && item.absoluteMetricValue) || (!showAbsoluteValues && item.relativeMetricValue)
+        if (!isDataAvailable) {
+            return `No data available`
+        }
+
         if (showAbsoluteValues) {
             return `${fileExtension} ${item.absoluteMetricValue.toLocaleString()}`
         }
+
         return `${fileExtension} ${item.relativeMetricValue.toFixed(2)}%`
     }
 
