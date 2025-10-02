@@ -12,7 +12,7 @@ export const hoveredNodeMetricDistributionSelector = createSelector(
     areaMetricSelector,
     metricDistributionSelector,
     (hoveredNode, selectedNode, areaMetric, globalDistribution) => {
-        const nodeToShow = selectedNode || hoveredNode
+        const nodeToShow = hoveredNode || selectedNode
 
         if (!nodeToShow || nodeToShow.type === NodeType.FILE) {
             return globalDistribution

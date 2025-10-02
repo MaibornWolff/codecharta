@@ -53,9 +53,8 @@ describe("hoveredNodeMetricDistributionSelector", () => {
         expect(result).toBe(globalDistribution)
     })
 
-    it("should prioritize selected node over hovered node (AC-4)", () => {
+    it("should show selected node distribution when selected but not hovering (AC-4)", () => {
         const selectedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS
-        const hoveredNode = fileNode
         const expectedDistribution = {
             visible: [{ fileExtension: "cs", absoluteMetricValue: 900, relativeMetricValue: 90, color: "#color3" }],
             others: [],
@@ -64,27 +63,36 @@ describe("hoveredNodeMetricDistributionSelector", () => {
 
         jest.spyOn(FileExtensionCalculator, "getMetricDistribution").mockReturnValue(expectedDistribution)
 
-        const result = hoveredNodeMetricDistributionSelector.projector(hoveredNode, selectedNode, areaMetric, globalDistribution)
+        const result = hoveredNodeMetricDistributionSelector.projector(null, selectedNode, areaMetric, globalDistribution)
 
         expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(selectedNode, areaMetric)
         expect(result).toBe(expectedDistribution)
     })
 
-    it("should persist selected folder distribution even when hovering over different nodes (AC-5)", () => {
+    it("should prioritize hovered node over selected node (AC-6)", () => {
         const selectedFolder = VALID_NODE_WITH_MULTIPLE_FOLDERS
         const hoveredFolder = VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED
-        const expectedDistribution = {
-            visible: [{ fileExtension: "cs", absoluteMetricValue: 900, relativeMetricValue: 90, color: "#color3" }],
+        const hoveredDistribution = {
+            visible: [{ fileExtension: "html", absoluteMetricValue: 600, relativeMetricValue: 60, color: "#color4" }],
             others: [],
             none: []
         }
 
-        jest.spyOn(FileExtensionCalculator, "getMetricDistribution").mockReturnValue(expectedDistribution)
+        jest.spyOn(FileExtensionCalculator, "getMetricDistribution").mockReturnValue(hoveredDistribution)
 
         const result = hoveredNodeMetricDistributionSelector.projector(hoveredFolder, selectedFolder, areaMetric, globalDistribution)
 
-        expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(selectedFolder, areaMetric)
-        expect(result).toBe(expectedDistribution)
+        expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(hoveredFolder, areaMetric)
+        expect(result).toBe(hoveredDistribution)
+    })
+
+    it("should return global distribution when hovering over file even with selected folder (AC-3 + AC-6)", () => {
+        const selectedFolder = VALID_NODE_WITH_MULTIPLE_FOLDERS
+        const hoveredFile = fileNode
+
+        const result = hoveredNodeMetricDistributionSelector.projector(hoveredFile, selectedFolder, areaMetric, globalDistribution)
+
+        expect(result).toBe(globalDistribution)
     })
 
     it("should use FileExtensionCalculator to compute distribution when node is hovered", () => {

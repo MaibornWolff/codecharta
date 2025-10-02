@@ -2,9 +2,9 @@
 
 id: PRD-4175
 name: Dynamic Distribution Bar on Hover
-version: 0.2.0
+version: 0.3.0
 status: Accepted
-lastReviewed: 2025-10-01
+lastReviewed: 2025-10-02
 linkedADRs: []
 repo: https://github.com/MaibornWolff/codecharta.git
 
@@ -71,6 +71,7 @@ Write clear, testable rules. Prefer **Given/When/Then**. Each criterion should b
 * **AC‑3:** *Given* I hover over an individual file with extension `.ts`, *when* the hover is active, *then* the distribution bar shows the global distribution (files do not trigger distribution updates).
 * **AC‑4:** *Given* I click on a folder, *when* the folder is selected, *then* the distribution bar persists showing that folder's distribution until I hover over or click on a different node.
 * **AC‑5:** *Given* I am hovering over different folders, *when* I move my mouse between folders, *then* the distribution bar updates smoothly without jumping back to global distribution between hovers.
+* **AC‑6:** *Given* I have both a selected node and a hovered node, *when* the distribution bar is calculated, *then* it should prioritize in this order: hovered node > selected node > global distribution.
 
 **Scenario table (optional):**
 
@@ -81,6 +82,7 @@ Write clear, testable rules. Prefer **Given/When/Then**. Each criterion should b
 | AC‑3 | Hover individual file           | File with .ts extension            | Bar shows global distribution (no change)  |
 | AC‑4 | Click on folder                 | User clicks folder                 | Bar persists folder's distribution         |
 | AC‑5 | Hover between folders           | Mouse moves between folders        | Bar updates smoothly, no global jumps      |
+| AC‑6 | Hovered and selected both exist | Both hovered and selected nodes    | Hovered node takes priority over selected  |
 
 ## 6) Non‑Functional Requirements (NFRs)
 
@@ -168,6 +170,7 @@ Choose 2–3 metrics with targets.
 
 ## 15) Change Log
 
+* v0.3.0 — Added AC-6: Explicit priority order requirement (hovered > selected > global distribution).
 * v0.2.0 — Updated requirements: Files should not trigger distribution updates; clicking folders should persist distribution; no jumping back to global between hovers.
 * v0.1.0 — Initial draft based on GitHub issue #4175.
 
