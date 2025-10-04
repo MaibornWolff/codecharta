@@ -2,7 +2,7 @@ import { TestBed, waitForAsync } from "@angular/core/testing"
 
 import { addPrefixWildcard, BlackListExtensionService, buildGlobPatterns, expandExtensions } from "./blackListExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
+import { CategorizedMetricDistribution, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
 import { BlacklistItem, BlacklistType, CcState, CodeMapNode, ColorMode, NodeType, SortingOption } from "../../codeCharta.model"
 import { hoveredNodeMetricDistributionSelector } from "./selectors/hoveredNodeMetricDistribution.selector"
 import { BlacklistExtensionAction } from "../../state/effects/blacklistExtension/blacklistExtension.effect"
@@ -310,16 +310,6 @@ describe("BlackListServiceService", () => {
 
     describe("Correctly identify flattened extensions based on current context", () => {
         it("GIVEN a scoped blacklist item for folderA WHEN switching to hover folderB THEN show button appears for non-flattened extension in folderB", done => {
-            const folderA: CodeMapNode = {
-                name: "src",
-                path: "/root/src",
-                type: NodeType.FOLDER,
-                attributes: {},
-                isExcluded: false,
-                isFlattened: false,
-                children: []
-            }
-
             const folderB: CodeMapNode = {
                 name: "components",
                 path: "/root/components",

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { BlacklistItem, BlacklistType, CcState, CodeMapNode, NodeType } from "../../codeCharta.model"
+import { BlacklistItem, CcState, CodeMapNode, NodeType } from "../../codeCharta.model"
 import { createBlacklistItemSelector } from "../ribbonBar/searchPanel/blacklistPanel/createBlacklistItemSelector"
 import { blacklistExtensionsPattern } from "../../state/effects/blacklistExtension/blacklistExtension.effect"
 import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
