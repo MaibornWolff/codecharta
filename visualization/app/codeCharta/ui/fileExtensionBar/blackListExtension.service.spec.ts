@@ -33,7 +33,7 @@ class BlackListItemBuilder {
     }
 }
 
-describe("BlackListServiceService", () => {
+describe("BlackListExtensionService", () => {
     let fixture: BlackListExtensionService
     let store: MockStore
 
@@ -129,7 +129,7 @@ describe("BlackListServiceService", () => {
     })
 
     describe.each<[BlacklistType]>([["flatten"], ["exclude"]])(`Flatten and exclude`, actionType => {
-        it(`WHEN ${actionType} an extension THEN the store is called with an action to ${actionType} the extension with a wildcard as prefix.`, () => {
+        it(`should dispatch ${actionType} action with wildcard prefix when ${actionType}ing an extension`, () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
             fixture[actionType]("ts")
 
@@ -141,12 +141,9 @@ describe("BlackListServiceService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(expectedAction)
         })
 
-        it(`WHEN ${actionType} other extensions THEN the store is called with an action to ${actionType} the other extensions with a wildcard as prefix.`, () => {
-            // WHEN
+        it(`should dispatch ${actionType} action with wildcard prefix for all other extensions when ${actionType}ing OTHER_EXTENSION`, () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
             fixture[actionType](OTHER_EXTENSION)
-
-            // THEN
             const expectedAction: BlacklistExtensionAction = {
                 action: { type: actionType },
                 extensions: mockDistribution.others.map(it => addPrefixWildcard(it.fileExtension)),
@@ -156,24 +153,18 @@ describe("BlackListServiceService", () => {
         })
     })
 
-    describe("Show extensions", () => {
-        it("GIVEN an extension is flattened WHEN showing it again THEN the store is called with a remove action", () => {
-            // WHEN
+    describe("show", () => {
+        it("should dispatch remove action when showing a flattened extension", () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
             fixture.show("ts")
-
-            // THEN
             expect(dispatchSpy).toHaveBeenCalledWith({
                 items: [mockFlattenedTypescriptItem],
                 type: "REMOVE_BLACKLIST_ITEMS"
             })
         })
-        it("GIVEN other extensions are hidden WHEN showing other extensions again THEN the store is called with a remove action for all the other items.", () => {
-            // WHEN
+        it("should dispatch remove action for all other items when showing OTHER_EXTENSION", () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
             fixture.show(OTHER_EXTENSION)
-
-            // THEN
             expect(dispatchSpy).toHaveBeenCalledWith({
                 items: mockFlattenedOtherItems,
                 type: "REMOVE_BLACKLIST_ITEMS"
@@ -181,7 +172,7 @@ describe("BlackListServiceService", () => {
         })
     })
 
-    describe("AC-7: Scoped blacklist operations", () => {
+    describe("Scoped blacklist operations", () => {
         const mockHoveredNode: CodeMapNode = {
             name: "src",
             path: "/root/src",
@@ -202,7 +193,7 @@ describe("BlackListServiceService", () => {
             children: []
         }
 
-        it("GIVEN a hovered folder WHEN flattening an extension THEN the operation is scoped to the hovered folder path", () => {
+        it("should scope operation to hovered folder path when flattening extension with hovered folder", () => {
             store.overrideSelector(hoveredNodeSelector, mockHoveredNode)
             store.overrideSelector(selectedNodeSelector, null)
             store.refreshState()
@@ -218,7 +209,7 @@ describe("BlackListServiceService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(expectedAction)
         })
 
-        it("GIVEN a selected folder and no hover WHEN excluding an extension THEN the operation is scoped to the selected folder path", () => {
+        it("should scope operation to selected folder path when excluding extension with selected folder and no hover", () => {
             store.overrideSelector(hoveredNodeSelector, null)
             store.overrideSelector(selectedNodeSelector, mockSelectedNode)
             store.refreshState()
@@ -234,7 +225,7 @@ describe("BlackListServiceService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(expectedAction)
         })
 
-        it("GIVEN both hovered and selected nodes WHEN flattening an extension THEN the operation prioritizes the hovered node", () => {
+        it("should prioritize hovered node over selected node when both exist during flatten", () => {
             store.overrideSelector(hoveredNodeSelector, mockHoveredNode)
             store.overrideSelector(selectedNodeSelector, mockSelectedNode)
             store.refreshState()
@@ -250,7 +241,7 @@ describe("BlackListServiceService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(expectedAction)
         })
 
-        it("GIVEN no hovered or selected node WHEN excluding an extension THEN the operation is global", () => {
+        it("should apply global operation when excluding extension with no hovered or selected node", () => {
             store.overrideSelector(hoveredNodeSelector, null)
             store.overrideSelector(selectedNodeSelector, null)
             store.refreshState()
@@ -266,7 +257,7 @@ describe("BlackListServiceService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(expectedAction)
         })
 
-        it("GIVEN a hovered folder WHEN flattening OTHER extensions THEN all other extensions are scoped to the folder", () => {
+        it("should scope all other extensions to hovered folder when flattening OTHER_EXTENSION", () => {
             store.overrideSelector(hoveredNodeSelector, mockHoveredNode)
             store.overrideSelector(selectedNodeSelector, null)
             store.refreshState()
@@ -282,7 +273,7 @@ describe("BlackListServiceService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(expectedAction)
         })
 
-        it("GIVEN a hovered file (not folder) WHEN excluding an extension THEN the operation is global", () => {
+        it("should apply global operation when excluding extension with hovered file instead of folder", () => {
             const mockHoveredFile: CodeMapNode = {
                 name: "file.ts",
                 path: "/root/src/file.ts",
@@ -308,8 +299,8 @@ describe("BlackListServiceService", () => {
         })
     })
 
-    describe("Correctly identify flattened extensions based on current context", () => {
-        it("GIVEN a scoped blacklist item for folderA WHEN switching to hover folderB THEN show button appears for non-flattened extension in folderB", done => {
+    describe("getIsFlattenedByFileExtension", () => {
+        it("should return false when hovering folder without scoped blacklist item for that folder", done => {
             const folderB: CodeMapNode = {
                 name: "components",
                 path: "/root/components",
@@ -340,7 +331,7 @@ describe("BlackListServiceService", () => {
         })
     })
 
-    describe("AC-7: Removing scoped blacklist items", () => {
+    describe("Removing scoped blacklist items", () => {
         const mockHoveredNode: CodeMapNode = {
             name: "src",
             path: "/root/src",
@@ -367,7 +358,7 @@ describe("BlackListServiceService", () => {
             store.refreshState()
         })
 
-        it("GIVEN a scoped blacklist item exists WHEN showing that extension while hovering the same folder THEN the scoped item is removed", () => {
+        it("should remove scoped item when showing extension while hovering the same folder", () => {
             store.overrideSelector(hoveredNodeSelector, mockHoveredNode)
             store.overrideSelector(selectedNodeSelector, null)
             store.refreshState()
@@ -381,7 +372,7 @@ describe("BlackListServiceService", () => {
             })
         })
 
-        it("GIVEN a scoped blacklist item exists WHEN showing that extension while selecting the same folder THEN the scoped item is removed", () => {
+        it("should remove scoped item when showing extension while selecting the same folder", () => {
             store.overrideSelector(hoveredNodeSelector, null)
             store.overrideSelector(selectedNodeSelector, mockHoveredNode)
             store.refreshState()
@@ -395,7 +386,7 @@ describe("BlackListServiceService", () => {
             })
         })
 
-        it("GIVEN both scoped and global blacklist items exist WHEN showing an extension with no context THEN the global item is removed", () => {
+        it("should remove global item when showing extension with no context and both scoped and global items exist", () => {
             const globalItem = new BlackListItemBuilder().withPath("*.ts").withType("flatten").build()
             store.setState({
                 ...initialState,
@@ -417,7 +408,7 @@ describe("BlackListServiceService", () => {
             })
         })
 
-        it("GIVEN scoped OTHER extensions are blacklisted WHEN showing OTHER while hovering the same folder THEN all scoped other items are removed", () => {
+        it("should remove all scoped other items when showing OTHER_EXTENSION while hovering the same folder", () => {
             const mockScopedOtherItems = [
                 new BlackListItemBuilder().withPath("/root/src/**/*.a").withType("flatten").build(),
                 new BlackListItemBuilder().withPath("/root/src/**/*.b").withType("flatten").build()
@@ -443,7 +434,7 @@ describe("BlackListServiceService", () => {
             })
         })
 
-        it("GIVEN both hovered and selected nodes with different scoped items WHEN showing an extension THEN the hovered scope takes priority", () => {
+        it("should prioritize hovered scope over selected scope when showing extension with both nodes present", () => {
             const mockSelectedNode: CodeMapNode = {
                 name: "components",
                 path: "/root/components",

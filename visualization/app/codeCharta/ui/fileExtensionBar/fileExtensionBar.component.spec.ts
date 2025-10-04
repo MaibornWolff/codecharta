@@ -14,7 +14,7 @@ import { areaMetricSelector } from "../../state/store/dynamicSettings/areaMetric
 import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { selectedBuildingIdSelector } from "../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector"
 
-describe("fileExtensionBarComponent", () => {
+describe("FileExtensionBarComponent", () => {
     let fixture: ComponentFixture<FileExtensionBarComponent>
     let component: FileExtensionBarComponent
 

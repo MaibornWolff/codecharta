@@ -47,13 +47,13 @@ describe("hoveredNodeMetricDistributionSelector", () => {
         expect(result).not.toBe(globalDistribution)
     })
 
-    it("should return global distribution for hovered file node (AC-3)", () => {
+    it("should return global distribution for hovered file node", () => {
         const result = hoveredNodeMetricDistributionSelector.projector(fileNode, null, areaMetric, globalDistribution)
 
         expect(result).toBe(globalDistribution)
     })
 
-    it("should show selected node distribution when selected but not hovering (AC-4)", () => {
+    it("should show selected node distribution when selected but not hovering", () => {
         const selectedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS
         const expectedDistribution = {
             visible: [{ fileExtension: "cs", absoluteMetricValue: 900, relativeMetricValue: 90, color: "#color3" }],
@@ -69,7 +69,7 @@ describe("hoveredNodeMetricDistributionSelector", () => {
         expect(result).toBe(expectedDistribution)
     })
 
-    it("should prioritize hovered node over selected node (AC-6)", () => {
+    it("should prioritize hovered node over selected node", () => {
         const selectedFolder = VALID_NODE_WITH_MULTIPLE_FOLDERS
         const hoveredFolder = VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED
         const hoveredDistribution = {
@@ -86,7 +86,7 @@ describe("hoveredNodeMetricDistributionSelector", () => {
         expect(result).toBe(hoveredDistribution)
     })
 
-    it("should return global distribution when hovering over file even with selected folder (AC-3 + AC-6)", () => {
+    it("should return global distribution when hovering over file even with selected folder", () => {
         const selectedFolder = VALID_NODE_WITH_MULTIPLE_FOLDERS
         const hoveredFile = fileNode
 
