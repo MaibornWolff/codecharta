@@ -2,7 +2,7 @@
 
 id: PRD-4175
 name: Dynamic Distribution Bar on Hover
-version: 0.3.0
+version: 0.5.0
 status: Accepted
 lastReviewed: 2025-10-02
 linkedADRs: []
@@ -72,6 +72,7 @@ Write clear, testable rules. Prefer **Given/When/Then**. Each criterion should b
 * **AC‑4:** *Given* I click on a folder, *when* the folder is selected, *then* the distribution bar persists showing that folder's distribution until I hover over or click on a different node.
 * **AC‑5:** *Given* I am hovering over different folders, *when* I move my mouse between folders, *then* the distribution bar updates smoothly without jumping back to global distribution between hovers.
 * **AC‑6:** *Given* I have both a selected node and a hovered node, *when* the distribution bar is calculated, *then* it should prioritize in this order: hovered node > selected node > global distribution.
+* **AC‑7:** *Given* the distribution bar is showing a hovered or selected folder's distribution, *when* I exclude or flatten a file extension via the context menu, *then* the operation should apply to the currently displayed folder (hovered or selected) rather than the global distribution.
 
 **Scenario table (optional):**
 
@@ -83,6 +84,7 @@ Write clear, testable rules. Prefer **Given/When/Then**. Each criterion should b
 | AC‑4 | Click on folder                 | User clicks folder                 | Bar persists folder's distribution         |
 | AC‑5 | Hover between folders           | Mouse moves between folders        | Bar updates smoothly, no global jumps      |
 | AC‑6 | Hovered and selected both exist | Both hovered and selected nodes    | Hovered node takes priority over selected  |
+| AC‑7 | Exclude/flatten from folder view | Context menu on extension segment | Operation applies to displayed folder      |
 
 ## 6) Non‑Functional Requirements (NFRs)
 
@@ -170,6 +172,8 @@ Choose 2–3 metrics with targets.
 
 ## 15) Change Log
 
+* v0.5.0 — Implemented AC-7: Exclude and flatten operations now apply to currently displayed folder (hovered or selected). Updated [blackListExtension.service.ts](app/codeCharta/ui/fileExtensionBar/blackListExtension.service.ts:88-115) to scope blacklist patterns to folder paths when a folder is hovered or selected.
+* v0.4.0 — Added AC-7: Exclude and flatten operations should apply to currently displayed folder (hovered or selected).
 * v0.3.0 — Added AC-6: Explicit priority order requirement (hovered > selected > global distribution).
 * v0.2.0 — Updated requirements: Files should not trigger distribution updates; clicking folders should persist distribution; no jumping back to global between hovers.
 * v0.1.0 — Initial draft based on GitHub issue #4175.

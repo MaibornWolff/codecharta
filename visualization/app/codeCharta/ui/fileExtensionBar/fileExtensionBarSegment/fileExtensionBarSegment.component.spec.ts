@@ -234,7 +234,7 @@ describe("FileExtensionBarSegment", () => {
             flattenButton.nativeElement.click()
 
             // THEN
-            expect(dispatchSpy).toHaveBeenCalledWith({ item: { path: "*.ts", type: "flatten" }, type: "REMOVE_BLACKLIST_ITEM" })
+            expect(dispatchSpy).toHaveBeenCalledWith({ items: [{ path: "*.ts", type: "flatten" }], type: "REMOVE_BLACKLIST_ITEMS" })
 
             updateStoreWithBlacklistedItems(store)
             openContextMenu()
