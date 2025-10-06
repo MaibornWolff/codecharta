@@ -107,8 +107,8 @@ It is also recommended to add tests for the new language by creating a test file
 
 ### Adding a new metric
 
-Adding a new metric is done by creating a new metric specific 'calculator', which inherits from the 'MetricCalculator' interface. Calculation of metrics happens individually for each iterated treesitter-node.
+Adding a new metric is done by creating a new metric specific 'calculator', which should inherit from either the 'MetricPerFileCalc' interface if the metric is calculated per file or from 'MetricPerFunctionCalc' if it is calculated per function. Calculation of metrics happens individually for each iterated treesitter-node.
 
-After the calculation logic is implemented, adjust the 'AvailableMetrics' enum in the 'MetricNodeTypes' file to add the new metric and the 'MetricsToCalculatorsMap' to connect the new metric with iths calculation logic.
+After the calculation logic is implemented, adjust the 'AvailableFileMetrics' or 'AvailableFunctionMetrics' enum in the 'MetricNodeTypes' file to add the new metric and the 'MetricsToCalculatorsMap' to connect the new metric with its calculation logic.
 
 Finally, the 'AttributeDescriptors' file needs to be adjusted to include information about the new metric and tests should be run to check if any resource files need to be updated to include the new metric.
