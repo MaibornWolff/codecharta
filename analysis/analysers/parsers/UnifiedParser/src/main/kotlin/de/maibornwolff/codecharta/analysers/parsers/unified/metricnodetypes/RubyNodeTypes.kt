@@ -75,6 +75,10 @@ class RubyNodeTypes : MetricNodeTypes {
             return nodesWhereTypeEqualsCodeLiteral.contains(nodeType) && nodeType == node.parent.type
         }
 
+        fun shouldIgnoreNodeTypeForRloc(nodeType: String): Boolean {
+            return nodeType == "then"
+        }
+
         fun shouldIgnoreElseNotInCaseStatement(node: TSNode, nodeType: String): Boolean {
             return nodeType == "else" && node.parent.type != "case"
         }
@@ -82,10 +86,6 @@ class RubyNodeTypes : MetricNodeTypes {
         fun shouldIgnoreMethodNameAsParameter(node: TSNode, nodeType: String): Boolean {
             return nodeType == "identifier" && node.parent.type == "method"
         }
-
-        val nodeTypesToIgnore = setOf(
-            "then"
-        )
 
         private val nodesWhereTypeEqualsCodeLiteral = setOf(
             "if",

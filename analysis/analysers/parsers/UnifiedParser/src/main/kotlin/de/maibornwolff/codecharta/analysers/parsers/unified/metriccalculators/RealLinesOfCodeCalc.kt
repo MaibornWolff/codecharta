@@ -8,6 +8,8 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
     override val metric = AvailableFunctionMetrics.RLOC
     private var lastCountedLine = -1
     private var isFirstOrLastNodeInFunction = false
+    private var isStartOfFunctionBody = false
+    private var isFirstAllowedNodeInFunctionBody = false
 
     private var functionBodyStartRow = -1
     private var functionBodyStartColumn = -1
@@ -24,7 +26,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
         val startRow = params.startRow
         val endRow = params.endRow
 
-        updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider, params.hasFunctionBodyStartOrEndNode)
+        updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider, params.functionBodyUsesBrackets)
 
         if (params.shouldIgnoreNode(node, nodeType) ||
             isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)
@@ -32,10 +34,13 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
             return 0
         }
         var rlocForNode = 0
+        var rlocForFunctionAdder = 0
 
         if (startRow > lastCountedLine) {
             lastCountedLine = startRow
             rlocForNode++
+        } else if (isStartOfFunctionBody) {
+            rlocForFunctionAdder = 1
         }
 
         if (endRow > lastCountedLine && (node.childCount == 0 || params.countNodeAsLeafNode(node))) {
@@ -44,10 +49,22 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
         }
 
         if (isInFunction && isInFunctionBodyAndAllowedNode()) {
-            addToMetricForFunction(rlocForNode)
+            addToRlocPerFunction(rlocForNode, rlocForFunctionAdder)
         }
 
         return rlocForNode
+    }
+
+    private fun addToRlocPerFunction(rlocForNode: Int, rlocForFunctionAdder: Int, ) {
+        var additionalRlocForFunction = 0
+        if (isFirstAllowedNodeInFunctionBody) {
+            additionalRlocForFunction = rlocForFunctionAdder
+            isFirstAllowedNodeInFunctionBody = false
+            isStartOfFunctionBody = false
+        }
+        if (!isStartOfFunctionBody) {
+            addToMetricForFunction(rlocForNode + additionalRlocForFunction)
+        }
     }
 
     private fun isInFunctionBodyAndAllowedNode(): Boolean {
@@ -60,32 +77,39 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
         startRow: Int,
         endRow: Int,
         nodeTypeProvider: MetricNodeTypes,
-        hasFunctionBodyStartOrEndNode: Pair<Boolean, Boolean>,
+        functionBodyUsesBrackets: Boolean,
     ) {
         updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider)
+
+        if (isStartOfFunctionBody) {
+            isFirstAllowedNodeInFunctionBody = true
+        }
 
         if (isInFunction && isInFunctionBody) {
             val startCol = node.startPoint.column
             val endCol = node.endPoint.column
 
             if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
-                functionBodyStartRow = startRow
-                functionBodyStartColumn = startCol
-                functionBodyEndRow = endRow
-                functionBodyEndColumn = endCol
+                setFunctionBodyBoundaries(startRow, startCol, endRow, endCol)
+            } else if (functionBodyUsesBrackets) {
+                val isFirstNode = (startRow == functionBodyStartRow && startCol == functionBodyStartColumn)
+                val isLastNode = (endRow == functionBodyEndRow && endCol == functionBodyEndColumn)
+
+                isFirstOrLastNodeInFunction = isFirstNode || isLastNode
             }
-
-            val isFirstNode = (startRow == functionBodyStartRow && startCol == functionBodyStartColumn)
-            val isLastNode = (endRow == functionBodyEndRow && endCol == functionBodyEndColumn)
-
-            val shouldExcludeFirstNode = hasFunctionBodyStartOrEndNode.first && isFirstNode
-            val shouldExcludeLastNode = hasFunctionBodyStartOrEndNode.second && isLastNode
-
-            isFirstOrLastNodeInFunction = shouldExcludeFirstNode || shouldExcludeLastNode
         } else {
             resetBoundaries()
             isFirstOrLastNodeInFunction = false
         }
+    }
+
+    private fun setFunctionBodyBoundaries(startRow: Int, startCol: Int, endRow: Int, endCol: Int) {
+        isStartOfFunctionBody = true
+        functionBodyStartRow = startRow
+        functionBodyStartColumn = startCol
+        functionBodyEndRow = endRow
+        functionBodyEndColumn = endCol
+        updateFunctionEndPos(endRow, endCol)
     }
 
     private fun resetBoundaries() {
