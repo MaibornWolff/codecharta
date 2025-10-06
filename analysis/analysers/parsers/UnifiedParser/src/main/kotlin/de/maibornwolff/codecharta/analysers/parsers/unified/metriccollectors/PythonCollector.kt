@@ -9,7 +9,7 @@ class PythonCollector : MetricCollector(
     treeSitterLanguage = TreeSitterPython(),
     nodeTypeProvider = PythonNodeTypes(),
     calculationExtensions = CalculationExtensions(
-        hasFunctionBodyStartOrEndNode = Pair(false, false),
+        hasFunctionBodyStartOrEndNode = false,
         ignoreNodeForRealLinesOfCode = { node: TSNode, nodeType: String ->
             PythonNodeTypes.nodeTypesToIgnore.contains(nodeType) ||
                 PythonNodeTypes.shouldIgnoreStringInBlockComment(node, nodeType) ||

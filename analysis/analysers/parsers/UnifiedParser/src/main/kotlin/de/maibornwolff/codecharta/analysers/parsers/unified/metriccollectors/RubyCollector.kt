@@ -9,13 +9,13 @@ class RubyCollector : MetricCollector(
     treeSitterLanguage = TreeSitterRuby(),
     nodeTypeProvider = RubyNodeTypes(),
     calculationExtensions = CalculationExtensions(
-        hasFunctionBodyStartOrEndNode = Pair(false, true),
+        hasFunctionBodyStartOrEndNode = false,
         ignoreNodeForComplexity = { node: TSNode, nodeType: String ->
             RubyNodeTypes.shouldIgnoreChildWithEqualParentType(node, nodeType) ||
                 RubyNodeTypes.shouldIgnoreElseNotInCaseStatement(node, nodeType)
         },
         ignoreNodeForRealLinesOfCode = { _: TSNode, nodeType: String ->
-            RubyNodeTypes.nodeTypesToIgnore.contains(nodeType)
+            RubyNodeTypes.shouldIgnoreNodeTypeForRloc(nodeType)
         },
         ignoreNodeForParameterOfFunctions = { node: TSNode, nodeType: String ->
             RubyNodeTypes.shouldIgnoreMethodNameAsParameter(node, nodeType)

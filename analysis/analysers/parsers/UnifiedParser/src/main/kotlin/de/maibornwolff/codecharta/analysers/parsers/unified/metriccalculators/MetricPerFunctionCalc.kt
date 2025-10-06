@@ -18,6 +18,37 @@ abstract class MetricPerFunctionCalc : MetricCalc {
 
     abstract fun processMetricForNode(params: CalculationContext)
 
+    protected fun updateInFunctionStatus(
+        node: TSNode,
+        nodeType: String,
+        startRow: Int,
+        endRow: Int,
+        nodeTypeProvider: MetricNodeTypes
+    ) {
+        if (isInFunction) {
+            if (startRow > endRowOfLastFunction || (startRow == endRowOfLastFunction && node.startPoint.column > endColumnOfLastFunction)) {
+                isInFunction = false
+                isInFunctionBody = false
+            }
+
+            if (!isInFunctionBody && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
+                isInFunctionBody = true
+            }
+        }
+
+        if (!isInFunction && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.numberOfFunctionsNodeTypes)) {
+            isInFunction = true
+            idOfCurrentFunction++
+            metricPerFunction.add(0)
+            endRowOfLastFunction = endRow
+            endColumnOfLastFunction = node.endPoint.column
+        }
+    }
+
+    fun addToMetricForFunction(value: Int) {
+        metricPerFunction[idOfCurrentFunction] += value
+    }
+
     fun getMeasureMetricsForMetricType(): Map<String, Double> {
         val metricName = metric.metricName
         val metricsMap = mutableMapOf<String, Double>()
@@ -31,6 +62,11 @@ abstract class MetricPerFunctionCalc : MetricCalc {
 
     fun getMetricPerFunction(): List<Int> {
         return metricPerFunction
+    }
+
+    fun updateFunctionEndPos(endRow: Int, endColumn: Int) {
+        endRowOfLastFunction = endRow
+        endColumnOfLastFunction = endColumn
     }
 
     private fun getMaxMetricForFile(): Int {
@@ -61,36 +97,5 @@ abstract class MetricPerFunctionCalc : MetricCalc {
         } else {
             (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0
         }
-    }
-
-    protected fun updateInFunctionStatus(
-        node: TSNode,
-        nodeType: String,
-        startRow: Int,
-        endRow: Int,
-        nodeTypeProvider: MetricNodeTypes
-    ) {
-        if (isInFunction) {
-            if (startRow > endRowOfLastFunction || (startRow == endRowOfLastFunction && node.startPoint.column > endColumnOfLastFunction)) {
-                isInFunction = false
-                isInFunctionBody = false
-            }
-
-            if (!isInFunctionBody && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
-                isInFunctionBody = true
-            }
-        }
-
-        if (!isInFunction && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.numberOfFunctionsNodeTypes)) {
-            isInFunction = true
-            idOfCurrentFunction++
-            metricPerFunction.add(0)
-            endRowOfLastFunction = endRow
-            endColumnOfLastFunction = node.endPoint.column
-        }
-    }
-
-    fun addToMetricForFunction(value: Int) {
-        metricPerFunction[idOfCurrentFunction] += value
     }
 }
