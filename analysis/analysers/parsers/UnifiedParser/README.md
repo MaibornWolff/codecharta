@@ -32,6 +32,13 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Lines of code (LOC)       | Lines of code including empty lines and comments                                                                                                                                                                           |
 | Real lines of code (RLOC) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
 
+Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file.
+
+| Metric per function     | Description                                          |
+|-------------------------|------------------------------------------------------|
+| Parameters per function | The number of parameters for each function           |
+| Complexity per function | The complexity inside the body of a function         |
+| RLOC per function       | The real lines of code inside the body of a function |
 
 ## Usage and Parameters
 
