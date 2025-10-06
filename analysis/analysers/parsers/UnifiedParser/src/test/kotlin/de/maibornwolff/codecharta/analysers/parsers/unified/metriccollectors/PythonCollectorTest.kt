@@ -248,6 +248,38 @@ class PythonCollectorTest {
     }
 
     @Test
+    fun `should correctly calculate all measures for complexity per function metric`() {
+        // given
+        val fileContent = """
+            def no_complexity():
+                print("hello")
+
+            def complex_fun(a, b):
+                match a * b:
+                    case x if x > 10:
+                        return a
+                    case x if x % 2 == 0:
+                        print("Is even")
+                        return b
+                    case _:
+                        return 0
+
+            def is_even(x):
+                return True if x % 2 == 0 else False
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(5.0)
+        Assertions.assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should correctly calculate rloc per function metric`() {
         // given
         val fileContent = """

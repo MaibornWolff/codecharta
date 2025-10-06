@@ -267,6 +267,51 @@ class GoCollectorTest {
     }
 
     @Test
+    fun `should correctly calculate all measures for complexity per function metric`() {
+        // given
+        val fileContent = """
+            func noComplexity() {
+                fmt.Println("hello")
+            }
+
+            func complexFun(a int, b int) int {
+                switch a {
+                case 1:
+                    if a*b > 10 {
+                        break
+                    }
+                case 2:
+                    if (a+b)%2 == 0 {
+                        fmt.Println("Sum is even")
+                        break
+                    }
+                default:
+                    return a
+                }
+                return b
+            }
+
+            func isEven(x int) bool {
+                if x%2 == 0 {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(5.0)
+        Assertions.assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should correctly calculate rloc per function metric`() {
         // given
         val fileContent = """

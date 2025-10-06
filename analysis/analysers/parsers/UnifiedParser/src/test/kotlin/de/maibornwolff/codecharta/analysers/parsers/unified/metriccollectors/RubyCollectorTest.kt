@@ -376,6 +376,46 @@ class RubyCollectorTest {
     }
 
     @Test
+    fun `should correctly calculate all measures for complexity per function metric`() {
+        // given
+        val fileContent = """
+            def no_complexity
+                puts "hello"
+            end
+
+            def complex_fun(a, b)
+                case a
+                when 1
+                    if a * b > 10
+                        return a
+                    end
+                when 2
+                    if (a + b) % 2 == 0
+                        puts "Sum is even"
+                        return b
+                    end
+                else
+                    return 0
+                end
+            end
+
+            def is_even(x)
+                x % 2 == 0 ? true : false
+            end
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(5.0)
+        Assertions.assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should correctly calculate rloc per function metric`() {
         // given
         val fileContent = """

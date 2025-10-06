@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFunctionMetrics
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.MetricNodeTypes
 import org.treesitter.TSNode
+import kotlin.math.round
 
 abstract class MetricPerFunctionCalc : MetricCalc {
     abstract val metric: AvailableFunctionMetrics
@@ -83,7 +84,8 @@ abstract class MetricPerFunctionCalc : MetricCalc {
         return if (nrofElements == 0) {
             0.0
         } else {
-            metrics.sum().toDouble() / nrofElements
+            val mean = metrics.sum().toDouble() / nrofElements
+            (round(mean * 100) / 100)
         }
     }
 
@@ -92,10 +94,11 @@ abstract class MetricPerFunctionCalc : MetricCalc {
         if (metrics.isEmpty()) return 0.0
         val sorted = metrics.sorted()
         val size = sorted.size
-        return if (size % 2 == 1) {
+        val median = if (size % 2 == 1) {
             sorted[size / 2].toDouble()
         } else {
             (sorted[size / 2 - 1] + sorted[size / 2]) / 2.0
         }
+        return (round(median * 100) / 100)
     }
 }

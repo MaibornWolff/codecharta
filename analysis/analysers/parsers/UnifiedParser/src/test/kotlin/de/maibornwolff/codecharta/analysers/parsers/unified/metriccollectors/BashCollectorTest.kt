@@ -278,6 +278,53 @@ class BashCollectorTest {
     }
 
     @Test
+    fun `should correctly calculate all measures for complexity per function metric`() {
+        // given
+        val fileContent = """
+            no_complexity() {
+                echo "hello"
+            }
+
+            complex_fun() {
+                case ${'$'}1 in
+                    1)
+                        if [ ${'$'}(((${'$'}1 * ${'$'}2)) -gt 10 ] ]; then
+                            return
+                        fi
+                        ;;
+                    2)
+                        if [ ${'$'}(((${'$'}1 + ${'$'}2) % 2)) -eq 0 ]; then
+                            echo "Sum is even"
+                            return
+                        fi
+                        ;;
+                    *)
+                        echo "default"
+                        ;;
+                esac
+            }
+
+            is_even() {
+                if [ ${'$'}((${'$'}1 % 2)) -eq 0 ]; then
+                    echo "true"
+                else
+                    echo "false"
+                fi
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(3.0)
+        Assertions.assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(1.33)
+        Assertions.assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should correctly calculate rloc per function metric`() {
         // given
         val fileContent = """
