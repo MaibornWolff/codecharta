@@ -293,6 +293,42 @@ class JavascriptCollectorTest {
     }
 
     @Test
+    fun `should correctly calculate all measures for complexity per function metric`() {
+        // given
+        val fileContent = """
+            function noComplexity() {
+                console.log("hello");
+            }
+
+            function complexFun(a, b) {
+                switch (true) {
+                    case (a * b > 10):
+                        break;
+                    case ((a + b) % 2 === 0):
+                        console.log("Sum is even");
+                        break;
+                    default:
+                        return;
+                }
+            }
+
+            function isEven(x) {
+                return (x % 2 === 0) ? true : false;
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(3.0)
+        Assertions.assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(1.33)
+        Assertions.assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should correctly calculate rloc per function metric`() {
         // given
         val fileContent = """

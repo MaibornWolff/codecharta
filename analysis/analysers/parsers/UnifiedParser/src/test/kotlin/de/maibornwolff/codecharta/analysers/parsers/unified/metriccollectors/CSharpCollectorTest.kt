@@ -321,6 +321,49 @@ class CSharpCollectorTest {
     }
 
     @Test
+    fun `should correctly calculate all measures for complexity per function metric`() {
+        // given
+        val fileContent = """
+            public void NoComplexity() {
+                Console.WriteLine("hello");
+            }
+
+            public int ComplexFun(int a, int b) {
+                switch (a) {
+                    case 1:
+                        if (a * b > 10) {
+                            break;
+                        }
+                        goto case 2;
+                    case 2:
+                        if ((a + b) % 2 == 0) {
+                            Console.WriteLine("Sum is even");
+                            break;
+                        }
+                        goto default;
+                    default:
+                        return a;
+                }
+                return b;
+            }
+
+            public bool IsEven(int x) {
+                return (x % 2 == 0) ? true : false;
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(5.0)
+        Assertions.assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should correctly calculate rloc per function metric`() {
         // given
         val fileContent = """

@@ -293,6 +293,51 @@ class KotlinCollectorTest {
     }
 
     @Test
+    fun `should correctly calculate all measures for complexity per function metric`() {
+        // given
+        val fileContent = """
+            fun noComplexity() {
+                println("hello")
+            }
+
+            fun complexFun(a: Int, b: Int): Int {
+                return when (a) {
+                    1 -> {
+                        if (a * b > 10) {
+                            a
+                        } else {
+                            b
+                        }
+                    }
+                    2 -> {
+                        if ((a + b) % 2 == 0) {
+                            println("Sum is even")
+                            b
+                        } else {
+                            0
+                        }
+                    }
+                    else -> a
+                }
+            }
+
+            fun isEven(x: Int): Boolean {
+                return if (x % 2 == 0) true else false
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(5.0)
+        Assertions.assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should correctly calculate rloc per function metric`() {
         // given
         val fileContent = """

@@ -13,6 +13,8 @@ class RubyNodeTypes : MetricNodeTypes {
             "until",
             "while",
             "do_block",
+            // conditional
+            "conditional",
             // case
             "when",
             "else",
