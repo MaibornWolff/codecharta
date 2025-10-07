@@ -9,25 +9,25 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.Tree
 class ComplexityCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFileCalc, MetricPerFunctionCalc() {
     override val metric = AvailableFunctionMetrics.COMPLEXITY
 
-    override fun processMetricForNode(params: CalculationContext) {
+    override fun processMetricForNode(nodeContext: CalculationContext) {
         // nothing needed as we update the complexity per function with the normal complexity
     }
 
-    override fun calculateMetricForNode(params: CalculationContext): Int {
-        return getComplexityForAllowedNodeTypes(params, nodeTypeProvider.logicComplexityNodeTypes)
+    override fun calculateMetricForNode(nodeContext: CalculationContext): Int {
+        return getComplexityForAllowedNodeTypes(nodeContext, nodeTypeProvider.logicComplexityNodeTypes)
     }
 
-    fun calculateFunctionComplexityForNode(params: CalculationContext): Int {
-        return getComplexityForAllowedNodeTypes(params, nodeTypeProvider.functionComplexityNodeTypes)
+    fun calculateFunctionComplexityForNode(nodeContext: CalculationContext): Int {
+        return getComplexityForAllowedNodeTypes(nodeContext, nodeTypeProvider.functionComplexityNodeTypes)
     }
 
-    private fun getComplexityForAllowedNodeTypes(params: CalculationContext, allowedNodeTypes: TreeNodeTypes): Int {
-        val node = params.node
-        val nodeType = params.nodeType
+    private fun getComplexityForAllowedNodeTypes(nodeContext: CalculationContext, allowedNodeTypes: TreeNodeTypes): Int {
+        val node = nodeContext.node
+        val nodeType = nodeContext.nodeType
 
-        updateInFunctionStatus(node, nodeType, params.startRow, params.endRow, nodeTypeProvider)
+        updateInFunctionStatus(nodeContext, nodeTypeProvider)
 
-        if (params.shouldIgnoreNode(node, nodeType)) {
+        if (nodeContext.shouldIgnoreNode(node, nodeType)) {
             return 0
         }
 

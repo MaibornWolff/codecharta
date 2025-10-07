@@ -72,21 +72,27 @@ class RubyNodeTypes : MetricNodeTypes {
     )
 
     companion object {
+        private const val FUNCTION_NAME_TYPE = "identifier"
+        private const val FUNCTION_DECLARATION_TYPE = "method"
+        private const val CASE_STATEMENT_TYPE = "case"
+        private const val ELSE_STATEMENT_TYPE = "else"
+        private const val THEN_DELIMITER = "then"
+
         // some node types equal their string literal in code, which is captured in a child node and can be ignored to prevent double counting
         fun shouldIgnoreChildWithEqualParentType(node: TSNode, nodeType: String): Boolean {
             return nodesWhereTypeEqualsCodeLiteral.contains(nodeType) && nodeType == node.parent.type
         }
 
         fun shouldIgnoreNodeTypeForRloc(nodeType: String): Boolean {
-            return nodeType == "then"
+            return nodeType == THEN_DELIMITER
         }
 
         fun shouldIgnoreElseNotInCaseStatement(node: TSNode, nodeType: String): Boolean {
-            return nodeType == "else" && node.parent.type != "case"
+            return nodeType == ELSE_STATEMENT_TYPE && node.parent.type != CASE_STATEMENT_TYPE
         }
 
         fun shouldIgnoreMethodNameAsParameter(node: TSNode, nodeType: String): Boolean {
-            return nodeType == "identifier" && node.parent.type == "method"
+            return nodeType == FUNCTION_NAME_TYPE && node.parent.type == FUNCTION_DECLARATION_TYPE
         }
 
         private val nodesWhereTypeEqualsCodeLiteral = setOf(

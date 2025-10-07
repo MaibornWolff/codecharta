@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFunctionMetrics
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.MetricNodeTypes
-import org.treesitter.TSNode
 
 class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFileCalc, MetricPerFunctionCalc() {
     override val metric = AvailableFunctionMetrics.RLOC
@@ -16,19 +15,19 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
     private var functionBodyEndRow = -1
     private var functionBodyEndColumn = -1
 
-    override fun processMetricForNode(params: CalculationContext) {
+    override fun processMetricForNode(nodeContext: CalculationContext) {
         // nothing needed as we update the rloc per function with the normal rloc
     }
 
-    override fun calculateMetricForNode(params: CalculationContext): Int {
-        val node = params.node
-        val nodeType = params.nodeType
-        val startRow = params.startRow
-        val endRow = params.endRow
+    override fun calculateMetricForNode(nodeContext: CalculationContext): Int {
+        val node = nodeContext.node
+        val nodeType = nodeContext.nodeType
+        val startRow = nodeContext.startRow
+        val endRow = nodeContext.endRow
 
-        updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider, params.functionBodyUsesBrackets)
+        updateInFunctionStatusForRloc(nodeContext, nodeTypeProvider)
 
-        if (params.shouldIgnoreNode(node, nodeType) ||
+        if (nodeContext.shouldIgnoreNode(node, nodeType) ||
             isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)
         ) {
             return 0
@@ -43,7 +42,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
             rlocForFunctionAdder = 1
         }
 
-        if (endRow > lastCountedLine && (node.childCount == 0 || params.countNodeAsLeafNode(node))) {
+        if (endRow > lastCountedLine && (node.childCount == 0 || nodeContext.countNodeAsLeafNode(node))) {
             lastCountedLine = endRow
             rlocForNode += endRow - startRow
         }
@@ -71,15 +70,14 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
         return isInFunctionBody && !isFirstOrLastNodeInFunction
     }
 
-    private fun updateInFunctionStatus(
-        node: TSNode,
-        nodeType: String,
-        startRow: Int,
-        endRow: Int,
-        nodeTypeProvider: MetricNodeTypes,
-        functionBodyUsesBrackets: Boolean
-    ) {
-        updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider)
+    private fun updateInFunctionStatusForRloc(nodeContext: CalculationContext, nodeTypeProvider: MetricNodeTypes) {
+        val node = nodeContext.node
+        val nodeType = nodeContext.nodeType
+        val startRow = nodeContext.startRow
+        val endRow = nodeContext.endRow
+        val functionBodyUsesBrackets = nodeContext.functionBodyUsesBrackets
+
+        updateInFunctionStatus(nodeContext, nodeTypeProvider)
 
         if (isStartOfFunctionBody) {
             isFirstAllowedNodeInFunctionBody = true

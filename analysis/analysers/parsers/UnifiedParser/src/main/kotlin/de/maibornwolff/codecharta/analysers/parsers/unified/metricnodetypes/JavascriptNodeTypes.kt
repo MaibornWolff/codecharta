@@ -78,8 +78,11 @@ class JavascriptNodeTypes : MetricNodeTypes {
     )
 
     companion object {
-        fun shouldIgnoreMethodNameAsParameter(node: TSNode, nodeType: String): Boolean {
-            return nodeType == "identifier" && node.parent.type == "function_declaration"
+        private const val FUNCTION_NAME_TYPE = "identifier"
+        private const val FUNCTION_DECLARATION_TYPE = "function_declaration"
+
+        fun shouldIgnoreFunctionNameAsParameter(node: TSNode, nodeType: String): Boolean {
+            return nodeType == FUNCTION_NAME_TYPE && node.parent.type == FUNCTION_DECLARATION_TYPE
         }
     }
 }
