@@ -76,6 +76,59 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             link = ghLink,
             direction = -1,
             analyzers = analyzerName
+        ),
+        "max_complexity_per_function" to AttributeDescriptor(
+            title = "Maximum complexity per function",
+            description = "The maximum complexity in the body of a function of this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "min_complexity_per_function" to AttributeDescriptor(
+            title = "Minimum complexity per function",
+            description = "The minimum number of complexity in the body of a function of this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "mean_complexity_per_function" to AttributeDescriptor(
+            title = "Mean complexity per function",
+            description = "The mean complexity found in the body of a function of this file."
+        ),
+        "median_complexity_per_function" to AttributeDescriptor(
+            title = "Median complexity per function",
+            description = "The median complexity found in the body of a function of this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "max_rloc_per_function" to AttributeDescriptor(
+            title = "Maximum real lines of code in a function",
+            description = "The maximum number of real lines of code in a function of this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "min_rloc_per_function" to AttributeDescriptor(
+            title = "Minimum real lines of code in a function",
+            description = "The minimum number of real lines of code in a function of this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "mean_rloc_per_function" to AttributeDescriptor(
+            title = "Mean real lines of code in a function",
+            description = "The mean number of real lines of code in a function of this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "median_rloc_per_function" to AttributeDescriptor(
+            title = "Median real lines of code in a function",
+            description = "The median number of real lines of code in a function of this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
         )
     )
 }

@@ -66,7 +66,7 @@ class MetricsToCalculatorsMap(
                         endRow,
                         calcExtensions.ignoreNodeForRealLinesOfCode,
                         calcExtensions.countNodeAsLeafNode,
-                        calcExtensions.hasFunctionBodyStartOrEndNode,
+                        calcExtensions.hasFunctionBodyStartOrEndNode
                     )
                 )
             }
@@ -88,8 +88,8 @@ class MetricsToCalculatorsMap(
     fun getMeasuresOfPerFunctionMetrics(): Map<String, Double> {
         val metricNameToValue = mutableMapOf<String, Double>()
         metricNameToValue.putAll(parametersPerFunctionCalc.getMeasureMetricsForMetricType())
-        metricNameToValue.putAll(realLinesOfCodeCalc.getMeasureMetricsForMetricType())
         metricNameToValue.putAll(complexityCalc.getMeasureMetricsForMetricType())
+        metricNameToValue.putAll(realLinesOfCodeCalc.getMeasureMetricsForMetricType())
 
         return metricNameToValue
     }

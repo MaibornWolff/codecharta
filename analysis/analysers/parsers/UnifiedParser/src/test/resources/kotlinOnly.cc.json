@@ -1,5 +1,5 @@
 {
-  "checksum": "98c507a2e8c3523be01d595d0ee1ef4b",
+  "checksum": "66811a387365ec243d7dc8782b97ec34",
   "data": {
     "projectName": "",
     "nodes": [
@@ -19,12 +19,24 @@
                 "name": "foo.kt",
                 "type": "File",
                 "attributes": {
-                  "complexity": 7,
-                  "logic_complexity": 1,
-                  "comment_lines": 9,
-                  "number_of_functions": 2,
-                  "rloc": 31,
-                  "loc": 48
+                  "complexity": 7.0,
+                  "logic_complexity": 1.0,
+                  "comment_lines": 9.0,
+                  "number_of_functions": 2.0,
+                  "rloc": 31.0,
+                  "loc": 48.0,
+                  "max_parameters_per_function": 3.0,
+                  "min_parameters_per_function": 1.0,
+                  "mean_parameters_per_function": 2.0,
+                  "median_parameters_per_function": 2.0,
+                  "max_complexity_per_function": 2.0,
+                  "min_complexity_per_function": 1.0,
+                  "mean_complexity_per_function": 1.5,
+                  "median_complexity_per_function": 1.5,
+                  "max_rloc_per_function": 6.0,
+                  "min_rloc_per_function": 3.0,
+                  "mean_rloc_per_function": 4.5,
+                  "median_rloc_per_function": 4.5
                 },
                 "link": "",
                 "children": []
@@ -33,12 +45,24 @@
                 "name": "hello.kt",
                 "type": "File",
                 "attributes": {
-                  "complexity": 1,
-                  "logic_complexity": 0,
-                  "comment_lines": 0,
-                  "number_of_functions": 1,
-                  "rloc": 6,
-                  "loc": 8
+                  "complexity": 1.0,
+                  "logic_complexity": 0.0,
+                  "comment_lines": 0.0,
+                  "number_of_functions": 1.0,
+                  "rloc": 6.0,
+                  "loc": 8.0,
+                  "max_parameters_per_function": 0.0,
+                  "min_parameters_per_function": 0.0,
+                  "mean_parameters_per_function": 0.0,
+                  "median_parameters_per_function": 0.0,
+                  "max_complexity_per_function": 0.0,
+                  "min_complexity_per_function": 0.0,
+                  "mean_complexity_per_function": 0.0,
+                  "median_complexity_per_function": 0.0,
+                  "max_rloc_per_function": 0.0,
+                  "min_rloc_per_function": 0.0,
+                  "mean_rloc_per_function": 0.0,
+                  "median_rloc_per_function": 0.0
                 },
                 "link": "",
                 "children": []
@@ -49,12 +73,24 @@
             "name": "foo.kt",
             "type": "File",
             "attributes": {
-              "complexity": 6,
-              "logic_complexity": 2,
-              "comment_lines": 6,
-              "number_of_functions": 3,
-              "rloc": 30,
-              "loc": 41
+              "complexity": 6.0,
+              "logic_complexity": 2.0,
+              "comment_lines": 6.0,
+              "number_of_functions": 3.0,
+              "rloc": 30.0,
+              "loc": 41.0,
+              "max_parameters_per_function": 1.0,
+              "min_parameters_per_function": 0.0,
+              "mean_parameters_per_function": 0.67,
+              "median_parameters_per_function": 1.0,
+              "max_complexity_per_function": 2.0,
+              "min_complexity_per_function": 0.0,
+              "mean_complexity_per_function": 0.67,
+              "median_complexity_per_function": 0.0,
+              "max_rloc_per_function": 8.0,
+              "min_rloc_per_function": 2.0,
+              "mean_rloc_per_function": 4.67,
+              "median_rloc_per_function": 4.0
             },
             "link": "",
             "children": []
@@ -63,12 +99,24 @@
             "name": "whenCase.kt",
             "type": "File",
             "attributes": {
-              "complexity": 5,
-              "logic_complexity": 4,
-              "comment_lines": 0,
-              "number_of_functions": 1,
-              "rloc": 11,
-              "loc": 13
+              "complexity": 5.0,
+              "logic_complexity": 4.0,
+              "comment_lines": 0.0,
+              "number_of_functions": 1.0,
+              "rloc": 11.0,
+              "loc": 13.0,
+              "max_parameters_per_function": 1.0,
+              "min_parameters_per_function": 1.0,
+              "mean_parameters_per_function": 1.0,
+              "median_parameters_per_function": 1.0,
+              "max_complexity_per_function": 4.0,
+              "min_complexity_per_function": 4.0,
+              "mean_complexity_per_function": 4.0,
+              "median_complexity_per_function": 4.0,
+              "max_rloc_per_function": 6.0,
+              "min_rloc_per_function": 6.0,
+              "mean_rloc_per_function": 6.0,
+              "median_rloc_per_function": 6.0
             },
             "link": "",
             "children": []
@@ -138,6 +186,136 @@
       "number_of_functions": {
         "title": "Number of functions",
         "description": "The number of functions or methods present in the file. Does not include anonymous or lambda functions.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "max_parameters_per_function": {
+        "title": "Maximum parameters per function",
+        "description": "The maximum number of parameters a function or method has for this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "min_parameters_per_function": {
+        "title": "Minimum parameters per function",
+        "description": "The minimum number of parameters a function or method has for this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "median_parameters_per_function": {
+        "title": "Median parameters per function",
+        "description": "The median number of parameters a function or method has for this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "mean_parameters_per_function": {
+        "title": "Mean parameters per function",
+        "description": "The mean number of parameters a function or method has for this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "max_complexity_per_function": {
+        "title": "Maximum complexity per function",
+        "description": "The maximum complexity in the body of a function of this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "min_complexity_per_function": {
+        "title": "Minimum complexity per function",
+        "description": "The minimum number of complexity in the body of a function of this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "mean_complexity_per_function": {
+        "title": "Mean complexity per function",
+        "description": "The mean complexity found in the body of a function of this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "",
+        "direction": -1,
+        "analyzers": []
+      },
+      "median_complexity_per_function": {
+        "title": "Median complexity per function",
+        "description": "The median complexity found in the body of a function of this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "max_rloc_per_function": {
+        "title": "Maximum real lines of code in a function",
+        "description": "The maximum number of real lines of code in a function of this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "min_rloc_per_function": {
+        "title": "Minimum real lines of code in a function",
+        "description": "The minimum number of real lines of code in a function of this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "mean_rloc_per_function": {
+        "title": "Mean real lines of code in a function",
+        "description": "The mean number of real lines of code in a function of this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "median_rloc_per_function": {
+        "title": "Median real lines of code in a function",
+        "description": "The median number of real lines of code in a function of this file.",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
