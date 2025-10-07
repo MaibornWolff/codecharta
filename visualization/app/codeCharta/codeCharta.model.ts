@@ -85,7 +85,8 @@ export enum NodeType {
 
 export enum SortingOption {
     NAME = "Name",
-    NUMBER_OF_FILES = "Number of Files"
+    NUMBER_OF_FILES = "Number of Files",
+    AREA_SIZE = "Area Size"
 }
 
 export interface ColorLabelOptions {

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add 'Area Size' sorting option to File Explorer, allowing users to sort files and folders by their area metric value. [#4155](https://github.com/MaibornWolff/codecharta/issues/4155)
+
 ### Fixed 🐞
 
 - Fix broken sorting options, File Node Explorer can now sort correctly. [#4208](https://github.com/MaibornWolff/codecharta/issues/4208)

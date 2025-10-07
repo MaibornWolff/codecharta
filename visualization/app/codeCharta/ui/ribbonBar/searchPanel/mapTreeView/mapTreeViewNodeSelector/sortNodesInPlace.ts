@@ -3,12 +3,37 @@ import { CodeMapNode, NodeType, SortingOption } from "../../../../../codeCharta.
 type CompareFunction = (a: CodeMapNode, b: CodeMapNode) => number
 
 const nameCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" })
-const sortByName: CompareFunction = (a, b) => nameCollator.compare(a.name, b.name)
-const sortByUnary: CompareFunction = (a, b) => a.attributes.unary - b.attributes.unary
+const createSortByName = (ascending: boolean): CompareFunction => {
+    return (a, b) => {
+        const diff = nameCollator.compare(a.name, b.name)
+        return ascending ? diff : diff * -1
+    }
+}
+const createSortByUnary = (ascending: boolean): CompareFunction => {
+    return (a, b) => {
+        const diff = a.attributes.unary - b.attributes.unary
+        return ascending ? diff : diff * -1
+    }
+}
 
-const getCompareFunction = (sortingOrder: SortingOption, sortingOrderAscending: boolean) => {
-    const compareFunction = sortingOrder === SortingOption.NUMBER_OF_FILES ? sortByUnary : sortByName
-    return sortingOrderAscending ? compareFunction : (a: CodeMapNode, b: CodeMapNode) => -1 * compareFunction(a, b)
+const createSortByAreaMetric = (areaMetric: string, ascending: boolean): CompareFunction => {
+    return (a, b) => {
+        const aValue = a.attributes[areaMetric] ?? 0
+        const bValue = b.attributes[areaMetric] ?? 0
+        const diff = ascending ? aValue - bValue : bValue - aValue
+        return diff || createSortByName(ascending)(a, b)
+    }
+}
+
+const getCompareFunction = (sortingOrder: SortingOption, sortingOrderAscending: boolean, areaMetric?: string) => {
+    switch (sortingOrder) {
+        case SortingOption.AREA_SIZE:
+            return createSortByAreaMetric(areaMetric, sortingOrderAscending)
+        case SortingOption.NUMBER_OF_FILES:
+            return createSortByUnary(sortingOrderAscending)
+        default:
+            return createSortByName(sortingOrderAscending)
+    }
 }
 
 const groupAndSortNodeByFilesAndFolders = (compareFunction: CompareFunction, node: CodeMapNode) => {
@@ -29,18 +54,23 @@ const groupAndSortNodeByFilesAndFolders = (compareFunction: CompareFunction, nod
     return [...folders, ...files]
 }
 
-export const sortNodesInPlace = (node: CodeMapNode, sortingOrder: SortingOption, sortingOrderAscending: boolean): CodeMapNode => {
+export const sortNodesInPlace = (
+    node: CodeMapNode,
+    sortingOrder: SortingOption,
+    sortingOrderAscending: boolean,
+    areaMetric?: string
+): CodeMapNode => {
     if (!node?.children || node.children.length === 0) {
         return node
     }
 
     for (const element of node.children) {
         if (element.type === NodeType.FOLDER) {
-            sortNodesInPlace(element, sortingOrder, sortingOrderAscending)
+            sortNodesInPlace(element, sortingOrder, sortingOrderAscending, areaMetric)
         }
     }
 
-    const compareFunction = getCompareFunction(sortingOrder, sortingOrderAscending)
+    const compareFunction = getCompareFunction(sortingOrder, sortingOrderAscending, areaMetric)
     node.children = groupAndSortNodeByFilesAndFolders(compareFunction, node)
 
     return node
