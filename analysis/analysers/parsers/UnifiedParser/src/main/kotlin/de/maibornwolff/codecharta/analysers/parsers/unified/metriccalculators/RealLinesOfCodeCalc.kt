@@ -55,7 +55,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
         return rlocForNode
     }
 
-    private fun addToRlocPerFunction(rlocForNode: Int, rlocForFunctionAdder: Int, ) {
+    private fun addToRlocPerFunction(rlocForNode: Int, rlocForFunctionAdder: Int) {
         var additionalRlocForFunction = 0
         if (isFirstAllowedNodeInFunctionBody) {
             additionalRlocForFunction = rlocForFunctionAdder
@@ -77,7 +77,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
         startRow: Int,
         endRow: Int,
         nodeTypeProvider: MetricNodeTypes,
-        functionBodyUsesBrackets: Boolean,
+        functionBodyUsesBrackets: Boolean
     ) {
         updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider)
 
