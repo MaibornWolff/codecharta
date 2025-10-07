@@ -20,11 +20,11 @@ export class SortingOptionComponent {
     sortingOptions = Object.values(SortingOption)
     selectedSortingOption$: Observable<SortingOption>
 
-    constructor(private store: Store<CcState>) {
+    constructor(private readonly store: Store<CcState>) {
         this.selectedSortingOption$ = store.select(sortingOrderSelector)
     }
 
     handleSelectedSortingOptionChanged(event) {
-        this.store.dispatch(setSortingOption(event.value))
+        this.store.dispatch(setSortingOption({ value: event.value }))
     }
 }

@@ -5,13 +5,16 @@ import userEvent from "@testing-library/user-event"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { FileExtensionBarComponent } from "./fileExtensionBar.component"
 import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
+import { hoveredNodeMetricDistributionSelector } from "./selectors/hoveredNodeMetricDistribution.selector"
 import { CategorizedMetricDistribution } from "./selectors/fileExtensionCalculator"
 import { BlacklistItem } from "../../codeCharta.model"
 import { blacklistSelector } from "../../state/store/fileSettings/blacklist/blacklist.selector"
 import { accumulatedDataSelector } from "../../state/selectors/accumulatedData/accumulatedData.selector"
 import { areaMetricSelector } from "../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { hoveredNodeIdSelector } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
+import { selectedBuildingIdSelector } from "../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector"
 
-describe("fileExtensionBarComponent", () => {
+describe("FileExtensionBarComponent", () => {
     let fixture: ComponentFixture<FileExtensionBarComponent>
     let component: FileExtensionBarComponent
 
@@ -27,8 +30,25 @@ describe("fileExtensionBarComponent", () => {
                     selectors: [
                         { selector: areaMetricSelector, value: {} },
                         { selector: accumulatedDataSelector, value: {} },
+                        { selector: hoveredNodeIdSelector, value: null },
+                        { selector: selectedBuildingIdSelector, value: null },
                         {
                             selector: metricDistributionSelector,
+                            value: {
+                                none: [],
+                                visible: [
+                                    {
+                                        fileExtension: fileExtensionToTest,
+                                        absoluteMetricValue: 1120,
+                                        relativeMetricValue: 100,
+                                        color: "hsl(111, 40%, 50%)"
+                                    }
+                                ],
+                                others: []
+                            } as CategorizedMetricDistribution
+                        },
+                        {
+                            selector: hoveredNodeMetricDistributionSelector,
                             value: {
                                 none: [],
                                 visible: [
