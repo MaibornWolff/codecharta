@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- Fix broken sorting options, File Node Explorer can now sort correctly. [#4208](https://github.com/MaibornWolff/codecharta/issues/4208)
+
 ## [1.136.1] - 2025-09-26
 
 ### Changed
