@@ -17,33 +17,43 @@ abstract class MetricPerFunctionCalc : MetricCalc {
 
     private val metricPerFunction = mutableListOf<Int>()
 
-    abstract fun processMetricForNode(params: CalculationContext)
+    abstract fun processMetricForNode(nodeContext: CalculationContext)
 
-    protected fun updateInFunctionStatus(
-        node: TSNode,
-        nodeType: String,
-        startRow: Int,
-        endRow: Int,
-        nodeTypeProvider: MetricNodeTypes
-    ) {
+    protected fun updateInFunctionStatus(nodeContext: CalculationContext, nodeTypeProvider: MetricNodeTypes) {
+        val node = nodeContext.node
+        val nodeType = node.type
+        val startRow = nodeContext.startRow
+        val endRow = nodeContext.endRow
+
         if (isInFunction) {
-            if (startRow > endRowOfLastFunction || (startRow == endRowOfLastFunction && node.startPoint.column > endColumnOfLastFunction)) {
-                isInFunction = false
-                isInFunctionBody = false
-            }
-
-            if (!isInFunctionBody && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
-                isInFunctionBody = true
-            }
+            checkLeavingFunction(startRow, node)
+            checkEnteringFunctionBody(node, nodeType, nodeTypeProvider)
         }
 
         if (!isInFunction && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.numberOfFunctionsNodeTypes)) {
-            isInFunction = true
-            idOfCurrentFunction++
-            metricPerFunction.add(0)
-            endRowOfLastFunction = endRow
-            endColumnOfLastFunction = node.endPoint.column
+            handleEnteringNextFunction(endRow, node)
         }
+    }
+
+    private fun checkLeavingFunction(startRow: Int, node: TSNode) {
+        if (startRow > endRowOfLastFunction || (startRow == endRowOfLastFunction && node.startPoint.column > endColumnOfLastFunction)) {
+            isInFunction = false
+            isInFunctionBody = false
+        }
+    }
+
+    private fun checkEnteringFunctionBody(node: TSNode, nodeType: String, nodeTypeProvider: MetricNodeTypes) {
+        if (!isInFunctionBody && isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
+            isInFunctionBody = true
+        }
+    }
+
+    private fun handleEnteringNextFunction(endRow: Int, node: TSNode) {
+        isInFunction = true
+        idOfCurrentFunction++
+        metricPerFunction.add(0)
+        endRowOfLastFunction = endRow
+        endColumnOfLastFunction = node.endPoint.column
     }
 
     fun addToMetricForFunction(value: Int) {

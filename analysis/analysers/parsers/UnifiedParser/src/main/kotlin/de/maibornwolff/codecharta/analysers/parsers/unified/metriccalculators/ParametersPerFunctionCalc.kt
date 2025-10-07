@@ -6,18 +6,16 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.Metr
 class ParametersPerFunctionCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFunctionCalc() {
     override val metric = AvailableFunctionMetrics.PARAMETERS
 
-    override fun processMetricForNode(params: CalculationContext) {
-        val node = params.node
-        val nodeType = params.nodeType
-        val startRow = params.startRow
-        val endRow = params.endRow
+    override fun processMetricForNode(nodeContext: CalculationContext) {
+        val node = nodeContext.node
+        val nodeType = nodeContext.nodeType
 
-        updateInFunctionStatus(node, nodeType, startRow, endRow, nodeTypeProvider)
+        updateInFunctionStatus(nodeContext, nodeTypeProvider)
 
         if (isInFunction &&
             !isInFunctionBody &&
             isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionParameterNodeTypes) &&
-            !params.shouldIgnoreNode(node, nodeType)
+            !nodeContext.shouldIgnoreNode(node, nodeType)
         ) {
             addToMetricForFunction(1)
         }

@@ -10,7 +10,7 @@ class JavascriptCollector : MetricCollector(
     nodeTypeProvider = JavascriptNodeTypes(),
     calculationExtensions = CalculationExtensions(
         ignoreNodeForParameterOfFunctions = { node: TSNode, nodeType: String ->
-            JavascriptNodeTypes.shouldIgnoreMethodNameAsParameter(node, nodeType)
+            JavascriptNodeTypes.shouldIgnoreFunctionNameAsParameter(node, nodeType)
         }
     )
 )
