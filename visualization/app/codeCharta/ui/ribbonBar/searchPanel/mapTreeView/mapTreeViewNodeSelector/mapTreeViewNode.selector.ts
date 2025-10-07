@@ -4,7 +4,7 @@ import { klona } from "klona"
 import { accumulatedDataSelector } from "../../../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { sortingOrderAscendingSelector } from "../../../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
 import { sortingOrderSelector } from "../../../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
-import { sortNode } from "./sortNode"
+import { sortNodesInPlace } from "./sortNodesInPlace"
 
 export const mapTreeViewNodeSelector = createSelector(
     accumulatedDataSelector,
@@ -12,6 +12,6 @@ export const mapTreeViewNodeSelector = createSelector(
     sortingOrderAscendingSelector,
     (accumulatedData, sortingOrder, sortingOrderAscending) => {
         // use cloned map as it is sorted inline
-        return sortNode(klona(accumulatedData.unifiedMapNode), sortingOrder, sortingOrderAscending)
+        return sortNodesInPlace(klona(accumulatedData.unifiedMapNode), sortingOrder, sortingOrderAscending)
     }
 )
