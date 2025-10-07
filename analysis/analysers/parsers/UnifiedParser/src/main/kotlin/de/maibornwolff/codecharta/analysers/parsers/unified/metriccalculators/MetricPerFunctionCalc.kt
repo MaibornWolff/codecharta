@@ -62,13 +62,14 @@ abstract class MetricPerFunctionCalc : MetricCalc {
 
     fun getMeasureMetricsForMetricType(): Map<String, Double> {
         val metricName = metric.metricName
-        val metricsMap = mutableMapOf<String, Double>()
+        val metrics = getMetricPerFunction()
 
-        metricsMap["max_${metricName}_per_function"] = getMaxMetricForFile().toDouble()
-        metricsMap["min_${metricName}_per_function"] = getMinMetricForFile().toDouble()
-        metricsMap["mean_${metricName}_per_function"] = getMeanMetricForFile()
-        metricsMap["median_${metricName}_per_function"] = getMedianMetricForFile()
-        return metricsMap
+        return mapOf(
+            "max_${metricName}_per_function" to (metrics.maxOrNull() ?: 0).toDouble(),
+            "min_${metricName}_per_function" to (metrics.minOrNull() ?: 0).toDouble(),
+            "mean_${metricName}_per_function" to calculateMean(metrics),
+            "median_${metricName}_per_function" to calculateMedian(metrics)
+        )
     }
 
     fun getMetricPerFunction(): List<Int> {
@@ -80,27 +81,13 @@ abstract class MetricPerFunctionCalc : MetricCalc {
         endColumnOfLastFunction = endColumn
     }
 
-    private fun getMaxMetricForFile(): Int {
-        return getMetricPerFunction().maxOrNull() ?: 0
+    private fun calculateMean(metrics: List<Int>): Double {
+        if (metrics.isEmpty()) return 0.0
+        val mean = metrics.sum().toDouble() / metrics.size
+        return (round(mean * 100) / 100)
     }
 
-    private fun getMinMetricForFile(): Int {
-        return getMetricPerFunction().minOrNull() ?: 0
-    }
-
-    private fun getMeanMetricForFile(): Double {
-        val metrics = getMetricPerFunction()
-        val nrofElements = metrics.lastIndex + 1
-        return if (nrofElements == 0) {
-            0.0
-        } else {
-            val mean = metrics.sum().toDouble() / nrofElements
-            (round(mean * 100) / 100)
-        }
-    }
-
-    private fun getMedianMetricForFile(): Double {
-        val metrics = getMetricPerFunction()
+    private fun calculateMedian(metrics: List<Int>): Double {
         if (metrics.isEmpty()) return 0.0
         val sorted = metrics.sorted()
         val size = sorted.size
