@@ -29,15 +29,14 @@ const groupAndSortNodeByFilesAndFolders = (compareFunction: CompareFunction, nod
     return [...folders, ...files]
 }
 
-/** sort given node inplace */
-export const sortNode = (node: CodeMapNode, sortingOrder: SortingOption, sortingOrderAscending: boolean) => {
-    if (!node) {
-        return
+export const sortNodesInPlace = (node: CodeMapNode, sortingOrder: SortingOption, sortingOrderAscending: boolean): CodeMapNode => {
+    if (!node?.children || node.children.length === 0) {
+        return node
     }
 
-    for (let index = 0; index < node.children.length; index++) {
-        if (node.children[index].type === NodeType.FOLDER) {
-            node.children[index] = sortNode(node.children[index], sortingOrder, sortingOrderAscending)
+    for (const element of node.children) {
+        if (element.type === NodeType.FOLDER) {
+            sortNodesInPlace(element, sortingOrder, sortingOrderAscending)
         }
     }
 

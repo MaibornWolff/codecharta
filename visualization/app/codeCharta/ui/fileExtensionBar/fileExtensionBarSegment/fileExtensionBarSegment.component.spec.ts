@@ -10,6 +10,7 @@ import { BlacklistItem, BlacklistType, CcState, ColorMode, SortingOption } from 
 import { By } from "@angular/platform-browser"
 import { screen } from "@testing-library/angular"
 import { metricDistributionSelector } from "../selectors/metricDistribution.selector"
+import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
 import { Action } from "@ngrx/store"
 
 describe("FileExtensionBarSegment", () => {
@@ -17,6 +18,12 @@ describe("FileExtensionBarSegment", () => {
     let component: FileExtensionBarSegmentComponent
     let store: MockStore
     const initialState: Partial<CcState> = {
+        appStatus: {
+            currentFilesAreSampleFiles: false,
+            hoveredNodeId: null,
+            selectedBuildingId: null,
+            rightClickedNodeData: null
+        },
         fileSettings: {
             attributeTypes: null,
             attributeDescriptors: null,
@@ -79,20 +86,17 @@ describe("FileExtensionBarSegment", () => {
         jest.restoreAllMocks()
     })
 
-    it("INITIAL test setup allows the component to be created.", () => {
+    it("should be created", () => {
         expect(component).toBeDefined()
     })
 
-    it("GIVEN a building is flattened THEN the extension is flattened", async () => {
-        // GIVEN
+    it("should flatten extension when flatten button is clicked", async () => {
         const dispatchSpy = jest.spyOn(store, "dispatch")
         openContextMenu()
 
-        // WHEN
         const flattenButton = fixture.debugElement.query(By.css('[data-test-id="flattenBuilding"]'))
         flattenButton.nativeElement.click()
 
-        // THEN
         expect(dispatchSpy).toHaveBeenCalledWith({
             action: { type: "flatten" },
             extensions: [addPrefixWildcard(mockItem.fileExtension)],
@@ -104,27 +108,69 @@ describe("FileExtensionBarSegment", () => {
     })
 
     describe("Visual Representation", () => {
-        it("GIVEN the relative values should be shown THEN the relative value of the item is displayed corrected", () => {
-            // THEN
+        it("should display relative value correctly", () => {
             const titleEl = fixture.debugElement.query(By.css('[data-test-id="formattedTitle"]'))
             expect(titleEl.nativeElement.textContent).toEqual(` ${mockItem.fileExtension} ${mockItem.relativeMetricValue.toFixed(2)}% `)
         })
 
-        it("GIVEN the absolute values should be shown THEN the absolute values of the item are displayed.", () => {
-            // GIVEN
+        it("should display absolute value when showAbsoluteValues is true", () => {
             fixture.componentRef.setInput("showAbsoluteValues", true)
             fixture.detectChanges()
 
-            // THEN
             const titleEl = fixture.debugElement.query(By.css('[data-test-id="formattedTitle"]'))
             expect(titleEl.nativeElement.textContent).toEqual(` ${mockItem.fileExtension} ${mockItem.absoluteMetricValue} `)
         })
 
-        it("Background color is the same as the input items color.", () => {
+        it("should display 'no data available' when absoluteMetricValue is null", () => {
+            const itemWithNullValue: MetricDistribution = {
+                fileExtension: "ts",
+                relativeMetricValue: 10,
+                absoluteMetricValue: null,
+                color: "#ffffff"
+            }
+            fixture.componentRef.setInput("item", itemWithNullValue)
+            fixture.componentRef.setInput("showAbsoluteValues", true)
+            fixture.detectChanges()
+
+            const titleEl = fixture.debugElement.query(By.css('[data-test-id="formattedTitle"]'))
+            expect(titleEl.nativeElement.textContent).toEqual(` No data available `)
+        })
+
+        it("should display 'no data available' when relativeMetricValue is null", () => {
+            const itemWithNullValue: MetricDistribution = {
+                fileExtension: "ts",
+                relativeMetricValue: null,
+                absoluteMetricValue: 10,
+                color: "#ffffff"
+            }
+            fixture.componentRef.setInput("item", itemWithNullValue)
+            fixture.componentRef.setInput("showAbsoluteValues", false)
+            fixture.detectChanges()
+
+            const titleEl = fixture.debugElement.query(By.css('[data-test-id="formattedTitle"]'))
+            expect(titleEl.nativeElement.textContent).toEqual(` No data available `)
+        })
+
+        it("should display 'no data available' when absoluteMetricValue is undefined", () => {
+            const itemWithUndefinedValue: MetricDistribution = {
+                fileExtension: "ts",
+                relativeMetricValue: 10,
+                absoluteMetricValue: undefined,
+                color: "#ffffff"
+            }
+            fixture.componentRef.setInput("item", itemWithUndefinedValue)
+            fixture.componentRef.setInput("showAbsoluteValues", true)
+            fixture.detectChanges()
+
+            const titleEl = fixture.debugElement.query(By.css('[data-test-id="formattedTitle"]'))
+            expect(titleEl.nativeElement.textContent).toEqual(` No data available `)
+        })
+
+        it("should have background color matching item color", () => {
             expect(fixture.componentInstance.backgroundColor).toEqual(mockItem.color)
         })
 
-        it("The component should always try to grow as much as the relative value of the item.", () => {
+        it("should set flexGrow to match relative metric value", () => {
             expect(fixture.componentInstance.flexGrow).toEqual(mockItem.relativeMetricValue)
         })
     })
@@ -141,42 +187,34 @@ describe("FileExtensionBarSegment", () => {
             type: "flatten"
         }
 
-        it("GIVEN the extension is currently shown WHEN the bar is rightclicked THEN the context menu is shown with flatten and exclude.", async () => {
-            // WHEN
+        it("should show context menu with flatten and exclude when extension is shown", async () => {
             openContextMenu()
 
-            // THEN
             expect(screen.queryByText("Exclude")).toBeTruthy()
             expect(screen.queryByText("Show")).toBeFalsy()
             expect(screen.queryByText("Flatten")).toBeTruthy()
         })
 
-        it("GIVEN the extension is currently flattened WHEN the bar is rightclicked THEN the context menu is shown with show and exclude.", async () => {
-            // GIVEN
+        it("should show context menu with show and exclude when extension is flattened", async () => {
             updateStoreWithBlacklistedItems(store, itemToFlatten)
             openContextMenu()
 
-            // WHEN
             const flattenButton = fixture.debugElement.query(By.css('[data-test-id="showBuilding"]'))
             flattenButton.nativeElement.click()
 
-            // THEN
             expect(screen.queryByText("Exclude")).toBeTruthy()
             expect(screen.queryByText("Show")).toBeTruthy()
             expect(screen.queryByText("Flatten")).toBeFalsy()
         })
 
-        it("WHEN clicking on show THEN the store updates and extension is shown again.", () => {
-            // GIVEN
+        it("should update store and show extension when clicking on show", () => {
             updateStoreWithBlacklistedItems(store, itemToFlatten)
 
-            // WHEN
             openContextMenu()
             const flattenButton = fixture.debugElement.query(By.css('[data-test-id="showBuilding"]'))
             flattenButton.nativeElement.click()
 
-            // THEN
-            expect(dispatchSpy).toHaveBeenCalledWith({ item: { path: "*.ts", type: "flatten" }, type: "REMOVE_BLACKLIST_ITEM" })
+            expect(dispatchSpy).toHaveBeenCalledWith({ items: [{ path: "*.ts", type: "flatten" }], type: "REMOVE_BLACKLIST_ITEMS" })
 
             updateStoreWithBlacklistedItems(store)
             openContextMenu()
@@ -185,8 +223,7 @@ describe("FileExtensionBarSegment", () => {
             expect(screen.queryByText("Exclude")).toBeTruthy()
         })
 
-        it("GIVEN the component with no file extension is right clicked, THEN no context menu is shown.", async () => {
-            // GIVEN
+        it("should not show context menu when file extension is empty", async () => {
             const mockedDistribution: MetricDistribution = {
                 fileExtension: NO_EXTENSION,
                 color: "#ffffff",
@@ -196,22 +233,17 @@ describe("FileExtensionBarSegment", () => {
             fixture.componentRef.setInput("item", mockedDistribution)
             fixture.detectChanges()
 
-            // WHEN
             openContextMenu()
 
-            // THEN
             expect(screen.queryByText("Flatten")).toBeFalsy()
             expect(screen.queryByText("Exclude")).toBeFalsy()
         })
 
-        it("GIVEN an extension is already flattened, THEN the show functionality is shown instead of flatten.", async () => {
-            // GIVEN
+        it("should show 'Show' instead of 'Flatten' when extension is already flattened", async () => {
             updateStoreWithBlacklistedItems(store, itemToFlatten)
 
-            // WHEN
             openContextMenu()
 
-            // THEN
             expect(screen.queryByText("Show")).toBeTruthy()
             expect(screen.queryByText("Flatten")).toBeFalsy()
         })
@@ -219,8 +251,7 @@ describe("FileExtensionBarSegment", () => {
         it.each<[string, BlacklistType]>([
             ["excludeBuilding", "exclude"],
             ["flattenBuilding", "flatten"]
-        ])("GIVEN %s is clicked on other THEN the store adds all the other blacklist items ", (dataTestId, action) => {
-            // GIVEN
+        ])("should add all other extensions to blacklist when clicking %s on 'other'", (dataTestId, action) => {
             const mockedDistribution: CategorizedMetricDistribution = {
                 visible: [
                     {
@@ -250,6 +281,7 @@ describe("FileExtensionBarSegment", () => {
             const otherFileExtensionsWithWildcards = mockedDistribution.others.map(it => addPrefixWildcard(it.fileExtension))
 
             store.overrideSelector(metricDistributionSelector, mockedDistribution)
+            store.overrideSelector(hoveredNodeMetricDistributionSelector, mockedDistribution)
             store.refreshState()
 
             fixture.componentRef.setInput("item", {
@@ -259,13 +291,11 @@ describe("FileExtensionBarSegment", () => {
                 absoluteMetricValue: 1
             } satisfies MetricDistribution)
 
-            // WHEN
             openContextMenu()
 
             const flattenButton = fixture.debugElement.query(By.css(`[data-test-id="${dataTestId}"]`))
             flattenButton.nativeElement.click()
 
-            // THEN
             expect(dispatchSpy).toHaveBeenCalledWith({
                 action: { type: action },
                 extensions: otherFileExtensionsWithWildcards,
@@ -280,26 +310,20 @@ describe("FileExtensionBarSegment", () => {
             highlightBuildingsService = TestBed.inject(HighlightBuildingsByFileExtensionService)
         })
 
-        it("WHEN a segment is hovered THEN the extension is highlighted", () => {
-            // GIVEN
+        it("should highlight extension when segment is hovered", () => {
             const barSegment = fixture.debugElement.query(By.css('[class="cc-bar-section-text"]'))
 
-            // WHEN
             barSegment.triggerEventHandler("mouseover", null)
 
-            // THEN
             expect(highlightBuildingsService.highlightExtension).toHaveBeenCalledWith(mockItem.fileExtension)
             expect(highlightBuildingsService.clearHighlightingOnFileExtensions).not.toHaveBeenCalled()
         })
 
-        it("WHEN segment is unhovered THEN it clears the highlighting on the buildings.", () => {
-            // GIVEN
+        it("should clear highlighting when segment is unhovered", () => {
             const barSegment = fixture.debugElement.query(By.css('[class="cc-bar-section-text"]'))
 
-            // WHEN
             barSegment.triggerEventHandler("mouseleave", null)
 
-            // THEN
             expect(highlightBuildingsService.clearHighlightingOnFileExtensions).toHaveBeenCalled()
             expect(highlightBuildingsService.highlightExtension).not.toHaveBeenCalled()
         })
