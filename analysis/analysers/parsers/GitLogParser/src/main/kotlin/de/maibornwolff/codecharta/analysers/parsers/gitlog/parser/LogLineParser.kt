@@ -40,6 +40,7 @@ class LogLineParser(
             var modifications: List<Modification> = listOf()
             var isMergeCommit = false
             var message = ""
+            var coauthors: List<String> = emptyList()
 
             runBlocking(Dispatchers.Default) {
                 launch {
@@ -48,6 +49,7 @@ class LogLineParser(
                     modifications = parserStrategy.parseModifications(commitLines)
                     isMergeCommit = parserStrategy.parseIsMergeCommit(commitLines)
                     message = parserStrategy.parseMessage(commitLines)
+                    coauthors = parserStrategy.parseCoAuthors(commitLines)
                 }
             }
 
@@ -56,7 +58,7 @@ class LogLineParser(
             }
 
             if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed, parsingUnit.name)
-            Commit(author, modifications, commitDate, isMergeCommit, message)
+            Commit(author, modifications, commitDate, isMergeCommit, message, coauthors)
         } catch (e: NoSuchElementException) {
             System.err.println("Skipped commit with invalid syntax ($commitLines)")
             Commit("", listOf(), OffsetDateTime.now(), false, "")
