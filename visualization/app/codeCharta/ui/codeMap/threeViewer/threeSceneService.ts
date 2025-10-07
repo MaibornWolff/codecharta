@@ -204,6 +204,9 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     selectBuilding(building: CodeMapBuilding) {
+        if (!building) {
+            return
+        }
         // TODO: This check shouldn't be necessary. When investing into model we should investigate why and remove the need.
         if (building.id !== this.selected?.id) {
             this.store.dispatch(setSelectedBuildingId({ value: building.node.id }))
