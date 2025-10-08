@@ -11,7 +11,6 @@ import { MatButton } from "@angular/material/button"
     selector: "cc-download-and-purge-configs",
     templateUrl: "./downloadAndPurgeConfigs.component.html",
     styleUrl: "./downloadAndPurgeConfigs.component.scss",
-    standalone: true,
     imports: [MatButton]
 })
 export class DownloadAndPurgeConfigsComponent implements OnInit {

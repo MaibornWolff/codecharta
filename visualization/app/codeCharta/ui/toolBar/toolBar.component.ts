@@ -18,7 +18,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-tool-bar",
     templateUrl: "./toolBar.component.html",
     styleUrls: ["./toolBar.component.scss"],
-    standalone: true,
     imports: [
         UploadFilesButtonComponent,
         ScreenshotButtonComponent,

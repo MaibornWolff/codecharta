@@ -9,7 +9,6 @@ import { distributionMetric } from "../../../state/store/dynamicSettings/distrib
     selector: "cc-distribution-metric",
     templateUrl: "./distributionMetric.component.html",
     styleUrls: ["./distributionMetric.component.scss"],
-    standalone: true,
     imports: [AsyncPipe]
 })
 export class DistributionMetricComponent {

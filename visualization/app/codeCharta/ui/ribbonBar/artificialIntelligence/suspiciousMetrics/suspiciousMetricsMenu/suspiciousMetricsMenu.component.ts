@@ -12,7 +12,6 @@ import { UntrackedMetricsListComponent } from "./untrackedMetricsList/untrackedM
     selector: "cc-suspicious-metrics-menu",
     templateUrl: "./suspiciousMetricsMenu.component.html",
     styleUrls: ["./suspiciousMetricsMenu.component.scss"],
-    standalone: true,
     imports: [ActionIconComponent, SuspiciousMetricsListComponent, UnsuspiciousMetricsListComponent, UntrackedMetricsListComponent]
 })
 export class SuspiciousMetricsMenuComponent {

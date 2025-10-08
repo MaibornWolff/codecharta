@@ -19,7 +19,6 @@ import { MatButton } from "@angular/material/button"
 @Component({
     selector: "cc-confirm-reset-map-dialog",
     templateUrl: "./confirmResetMapDialog.component.html",
-    standalone: true,
     imports: [MatToolbar, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ConfirmResetMapDialogComponent {

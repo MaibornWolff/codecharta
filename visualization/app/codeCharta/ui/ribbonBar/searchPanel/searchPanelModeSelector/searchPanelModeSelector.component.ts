@@ -11,7 +11,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-search-panel-mode-selector",
     templateUrl: "./searchPanelModeSelector.component.html",
     styleUrls: ["./searchPanelModeSelector.component.scss"],
-    standalone: true,
     imports: [MatButtonToggle, AsyncPipe]
 })
 export class SearchPanelModeSelectorComponent {

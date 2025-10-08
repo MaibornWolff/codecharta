@@ -9,7 +9,6 @@ import { filter, map } from "rxjs"
     selector: "cc-hovered-node-path-panel",
     templateUrl: "./hoveredNodePathPanel.component.html",
     styleUrls: ["./hoveredNodePathPanel.component.scss"],
-    standalone: true,
     imports: [AsyncPipe]
 })
 export class HoveredNodePathPanelComponent {

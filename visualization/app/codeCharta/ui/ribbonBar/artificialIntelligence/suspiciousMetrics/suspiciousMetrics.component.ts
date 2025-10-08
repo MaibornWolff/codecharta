@@ -9,7 +9,6 @@ import { RibbonBarMenuButtonComponent } from "../../ribbonBarMenuButton/ribbonBa
     selector: "cc-suspicious-metrics",
     templateUrl: "./suspiciousMetrics.component.html",
     styleUrl: "./suspiciousMetrics.component.scss",
-    standalone: true,
     imports: [RibbonBarMenuButtonComponent, MatMenuTrigger, MatMenu, SuspiciousMetricsMenuComponent]
 })
 export class SuspiciousMetricsComponent implements OnChanges, AfterViewInit {

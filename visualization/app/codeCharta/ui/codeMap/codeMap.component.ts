@@ -15,7 +15,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-code-map",
     templateUrl: "./codeMap.component.html",
     styleUrls: ["./codeMap.component.scss"],
-    standalone: true,
     imports: [ViewCubeComponent, AttributeSideBarComponent, AsyncPipe]
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {

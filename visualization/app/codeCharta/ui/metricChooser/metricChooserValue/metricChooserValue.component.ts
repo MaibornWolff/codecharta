@@ -12,7 +12,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-metric-chooser-value",
     templateUrl: "./metricChooserValue.component.html",
     styleUrl: "./metricChooserValue.component.scss",
-    standalone: true,
     imports: [RoundedBoxComponent, MetricChooserTypeComponent, AsyncPipe]
 })
 export class MetricChooserValueComponent {

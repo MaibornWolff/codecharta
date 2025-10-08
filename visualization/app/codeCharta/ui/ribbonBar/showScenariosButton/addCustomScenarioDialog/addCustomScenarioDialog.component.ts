@@ -18,7 +18,6 @@ import { MatButton } from "@angular/material/button"
     selector: "cc-add-custom-scenario-dialog",
     templateUrl: "./addCustomScenarioDialog.component.html",
     styleUrls: ["./addCustomScenarioDialog.component.scss"],
-    standalone: true,
     imports: [
         MatToolbar,
         MatDialogContent,

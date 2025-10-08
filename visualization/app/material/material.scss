@@ -1,7 +1,8 @@
 @use "@angular/material" as mat;
 @use "theme";
 
-@include mat.core-theme(theme.$cc-theme);
+@include mat.elevation-classes();
+@include mat.app-background();
 @include mat.button-theme(theme.$cc-theme);
 @include mat.button-toggle-theme(theme.$cc-theme);
 @include mat.progress-spinner-theme(theme.$cc-theme);

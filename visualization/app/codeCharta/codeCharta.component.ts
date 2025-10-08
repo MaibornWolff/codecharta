@@ -13,7 +13,6 @@ import { LogoComponent } from "./ui/logo/logo.component"
 @Component({
     selector: "cc-code-charta",
     templateUrl: "./codeCharta.component.html",
-    standalone: true,
     imports: [
         ToolBarComponent,
         FileExtensionBarComponent,

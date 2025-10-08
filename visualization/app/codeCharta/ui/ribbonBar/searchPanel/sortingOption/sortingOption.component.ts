@@ -13,7 +13,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-sorting-option",
     templateUrl: "./sortingOption.component.html",
     styleUrls: ["./sortingOption.component.scss"],
-    standalone: true,
     imports: [MatSelect, MatOption, AsyncPipe]
 })
 export class SortingOptionComponent {

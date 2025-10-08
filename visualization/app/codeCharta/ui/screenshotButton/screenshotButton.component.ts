@@ -17,7 +17,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-screenshot-button",
     templateUrl: "./screenshotButton.component.html",
-    standalone: true,
     imports: [ActionIconComponent, AsyncPipe]
 })
 export class ScreenshotButtonComponent {

@@ -9,7 +9,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-height-metric-chooser",
     templateUrl: "./heightMetricChooser.component.html",
-    standalone: true,
     imports: [MetricChooserComponent, AsyncPipe]
 })
 export class HeightMetricChooserComponent {

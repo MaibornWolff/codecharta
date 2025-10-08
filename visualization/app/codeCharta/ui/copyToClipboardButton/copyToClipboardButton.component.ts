@@ -5,7 +5,6 @@ import { ActionIconComponent } from "../actionIcon/actionIcon.component"
 @Component({
     selector: "cc-copy-to-clipboard-button",
     templateUrl: "./copyToClipboardButton.component.html",
-    standalone: true,
     imports: [ActionIconComponent]
 })
 export class CopyToClipboardButtonComponent {

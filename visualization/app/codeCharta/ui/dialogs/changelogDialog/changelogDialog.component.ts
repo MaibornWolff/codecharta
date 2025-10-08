@@ -10,7 +10,6 @@ import { KeyValuePipe } from "@angular/common"
 @Component({
     selector: "cc-change-log-dialog",
     templateUrl: "./changelogDialog.component.html",
-    standalone: true,
     imports: [MatToolbar, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose, KeyValuePipe]
 })
 export class ChangelogDialogComponent {

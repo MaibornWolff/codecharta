@@ -17,7 +17,6 @@ export type SearchPanelMode = "treeView" | "blacklist" | "minimized"
     selector: "cc-search-panel",
     templateUrl: "./searchPanel.component.html",
     styleUrls: ["./searchPanel.component.scss"],
-    standalone: true,
     imports: [
         RibbonBarPanelComponent,
         SearchBarComponent,

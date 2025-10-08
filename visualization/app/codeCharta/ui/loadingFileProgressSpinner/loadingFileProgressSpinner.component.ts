@@ -10,7 +10,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-loading-file-progress-spinner",
     templateUrl: "./loadingFileProgressSpinner.component.html",
     styleUrls: ["./loadingFileProgressSpinner.component.scss"],
-    standalone: true,
     imports: [MatProgressSpinner, AsyncPipe]
 })
 export class LoadingFileProgressSpinnerComponent {

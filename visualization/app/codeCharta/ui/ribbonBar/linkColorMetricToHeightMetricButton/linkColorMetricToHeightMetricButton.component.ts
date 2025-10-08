@@ -9,7 +9,6 @@ import { NgClass, AsyncPipe } from "@angular/common"
     selector: "cc-link-color-metric-to-height-metric-button",
     templateUrl: "./linkColorMetricToHeightMetricButton.component.html",
     styleUrls: ["./linkColorMetricToHeightMetricButton.component.scss"],
-    standalone: true,
     imports: [NgClass, AsyncPipe]
 })
 export class LinkColorMetricToHeightMetricButtonComponent {

@@ -17,7 +17,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-area-settings-panel",
     templateUrl: "./areaSettingsPanel.component.html",
     styleUrls: ["./areaSettingsPanel.component.scss"],
-    standalone: true,
     imports: [SliderComponent, MatCheckbox, ResetSettingsButtonComponent, AsyncPipe]
 })
 export class AreaSettingsPanelComponent {

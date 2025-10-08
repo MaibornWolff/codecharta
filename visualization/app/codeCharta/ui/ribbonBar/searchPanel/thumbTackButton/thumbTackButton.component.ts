@@ -11,7 +11,6 @@ import { NgClass, AsyncPipe } from "@angular/common"
     selector: "cc-thumb-tack-button",
     templateUrl: "./thumbTackButton.component.html",
     styleUrls: ["./thumbTackButton.component.scss"],
-    standalone: true,
     imports: [NgClass, AsyncPipe]
 })
 export class ThumbTackButtonComponent implements OnInit {

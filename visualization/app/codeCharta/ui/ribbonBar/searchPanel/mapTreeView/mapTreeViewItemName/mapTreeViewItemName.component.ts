@@ -14,7 +14,6 @@ import { IsNodeLeafPipe } from "../isNodeLeaf.pipe"
     selector: "cc-map-tree-view-item-name",
     templateUrl: "./mapTreeViewItemName.component.html",
     styleUrls: ["./mapTreeViewItemName.component.scss"],
-    standalone: true,
     imports: [NgPlural, NgPluralCase, AsyncPipe, AreaMetricValidPipe, IsNodeLeafPipe]
 })
 export class MapTreeViewItemNameComponent {

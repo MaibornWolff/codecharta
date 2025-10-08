@@ -17,7 +17,6 @@ import { AttributeDescriptorTooltipPipe } from "../../../util/pipes/attributeDes
     selector: "cc-attribute-side-bar-secondary-metrics",
     templateUrl: "./attributeSideBarSecondaryMetrics.component.html",
     styleUrls: ["../attributeSideBarMetrics.scss", "./attributeSideBarSecondaryMetrics.component.scss"],
-    standalone: true,
     imports: [AttributeTypeSelectorComponent, MetricDeltaSelectedComponent, AsyncPipe, DecimalPipe, AttributeDescriptorTooltipPipe]
 })
 export class AttributeSideBarSecondaryMetricsComponent {

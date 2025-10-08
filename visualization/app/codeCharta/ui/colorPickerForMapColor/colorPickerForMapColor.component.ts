@@ -14,7 +14,6 @@ import { MapColorLabelPipe } from "./mapColorLabel.pipe"
 @Component({
     selector: "cc-color-picker-for-map-color",
     templateUrl: "./colorPickerForMapColor.component.html",
-    standalone: true,
     imports: [LabelledColorPickerComponent, AsyncPipe, MapColorLabelPipe]
 })
 export class ColorPickerForMapColorComponent {

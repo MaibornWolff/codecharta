@@ -26,7 +26,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-ribbon-bar",
     templateUrl: "./ribbonBar.component.html",
     styleUrls: ["./ribbonBar.component.scss"],
-    standalone: true,
     imports: [
         SearchPanelComponent,
         RibbonBarPanelComponent,

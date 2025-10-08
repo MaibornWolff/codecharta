@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
-import { fireEvent, render, screen, getByText, waitForElementToBeRemoved } from "@testing-library/angular"
+import { render, screen, waitFor, within } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { SortingOption } from "../../../../codeCharta.model"
 import { SortingOptionComponent } from "./sortingOption.component"
 import { provideMockStore } from "@ngrx/store/testing"
@@ -13,26 +14,32 @@ describe("SortingOptionComponent", () => {
     })
 
     it("should be a select for the sorting option", async () => {
-        const { detectChanges } = await render(SortingOptionComponent)
-        detectChanges()
+        await render(SortingOptionComponent)
 
-        expect(await screen.findByTitle("Sort by")).toBeTruthy()
-
-        // it has initial sorting order
-        expect(screen.getByText("Name")).toBeTruthy()
+        const selectElement = await screen.findByTitle("Sort by")
+        expect(selectElement).toBeTruthy()
 
         // it offers all possible sorting Options, when clicking on it
-        const selectBoxTrigger = screen.getByRole("combobox").firstChild as HTMLElement
-        fireEvent.click(selectBoxTrigger)
-        const selectOptionsWrapper = screen.getByRole("listbox")
+        const trigger = selectElement.querySelector(".mat-mdc-select-trigger")
+        await userEvent.click(trigger)
+        const listbox = await screen.findByRole("listbox")
+
+        // Check that Name is initially selected
+        const nameOption = within(listbox).getByRole("option", { name: "Name" })
+        expect(nameOption).toBeTruthy()
+        expect(nameOption.getAttribute("aria-selected")).toBe("true")
+
         for (const option of Object.values(SortingOption)) {
-            expect(getByText(selectOptionsWrapper, option)).toBeTruthy()
+            expect(within(listbox).getByRole("option", { name: option })).toBeTruthy()
         }
 
         // it closes itself and sets new sorting option, when clicking an option
-        const sortByNumberOfFiles = getByText(selectOptionsWrapper, "Number of Files")
-        fireEvent.click(sortByNumberOfFiles)
-        await waitForElementToBeRemoved(() => screen.getByRole("listbox"))
-        expect(screen.getByText("Number of Files")).toBeTruthy()
+        await userEvent.click(within(listbox).getByRole("option", { name: "Number of Files" }))
+        await waitFor(() => expect(screen.queryByRole("listbox")).toBe(null))
+
+        // Check that the value is now displayed in the select
+        await waitFor(() => {
+            expect(within(selectElement).getByText("Number of Files")).toBeTruthy()
+        })
     })
 })

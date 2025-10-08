@@ -10,7 +10,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-node-path",
     templateUrl: "./nodePath.component.html",
     styleUrls: ["./nodePath.component.scss"],
-    standalone: true,
     imports: [AsyncPipe]
 })
 export class NodePathComponent {

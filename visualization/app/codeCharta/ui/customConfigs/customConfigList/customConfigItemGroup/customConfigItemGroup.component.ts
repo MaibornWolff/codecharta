@@ -19,7 +19,6 @@ import { FilterCustomConfigDataBySearchTermPipe } from "./customConfigDescriptio
     selector: "cc-custom-config-item-group",
     templateUrl: "./customConfigItemGroup.component.html",
     styleUrls: ["./customConfigItemGroup.component.scss"],
-    standalone: true,
     imports: [
         MatExpansionPanel,
         MatExpansionPanelHeader,

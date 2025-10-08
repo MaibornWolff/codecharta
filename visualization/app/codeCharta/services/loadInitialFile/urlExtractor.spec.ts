@@ -6,17 +6,29 @@ import { HttpClient } from "@angular/common/http"
 describe("urlExtractor", () => {
     let urlExtractor: UrlExtractor
     let mockedHttpClient: HttpClient
+    let originalLocation: Location
 
     beforeEach(() => {
-        // window.location is not mockable by default provided jsdom
-        delete window.location
-        window.location = {} as unknown as Location
+        originalLocation = window.location
+        Object.defineProperty(window, "location", {
+            value: {} as Location,
+            writable: true,
+            configurable: true
+        })
 
         mockedHttpClient = {
             get: () => of({ body: { checksum: "fake-md5", data: { apiVersion: 1.3, nodes: [] } }, status: 200 })
         } as unknown as HttpClient
 
         urlExtractor = new UrlExtractor(mockedHttpClient)
+    })
+
+    afterEach(() => {
+        Object.defineProperty(window, "location", {
+            value: originalLocation,
+            writable: true,
+            configurable: true
+        })
     })
 
     describe("getParameterByName", () => {

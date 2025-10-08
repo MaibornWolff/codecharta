@@ -51,7 +51,6 @@ interface ManualVisibilityItem {
     selector: "cc-export-3D-map-dialog",
     templateUrl: "./export3DMapDialog.component.html",
     styleUrls: ["./export3DMapDialog.component.scss"],
-    standalone: true,
     imports: [
         MatToolbar,
         CdkScrollable,

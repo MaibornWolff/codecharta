@@ -18,7 +18,6 @@ import { MatCard } from "@angular/material/card"
     selector: "cc-ribbon-bar-panel",
     templateUrl: "./ribbonBarPanel.component.html",
     styleUrl: "./ribbonBarPanel.component.scss",
-    standalone: true,
     imports: [MatCard]
 })
 export class RibbonBarPanelComponent implements OnInit, OnDestroy {

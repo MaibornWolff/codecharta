@@ -6,7 +6,6 @@ import { ReadableColorForBackgroundPipe } from "./readableColorForBackground.pip
     selector: "cc-labelled-color-picker",
     templateUrl: "./labelledColorPicker.component.html",
     styleUrls: ["./labelledColorPicker.component.scss"],
-    standalone: true,
     imports: [ColorPickerComponent, ReadableColorForBackgroundPipe]
 })
 export class LabelledColorPickerComponent {

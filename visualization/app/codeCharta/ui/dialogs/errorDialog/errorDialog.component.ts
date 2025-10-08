@@ -7,7 +7,6 @@ import { MatButton } from "@angular/material/button"
 @Component({
     selector: "cc-error-dialog",
     templateUrl: "./errorDialog.component.html",
-    standalone: true,
     imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, NgIf, MatButton, MatDialogClose]
 })
 export class ErrorDialogComponent {

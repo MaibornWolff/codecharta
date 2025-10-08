@@ -11,7 +11,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-sorting-button",
     templateUrl: "./sortingButton.component.html",
     styleUrls: ["./sortingButton.component.scss"],
-    standalone: true,
     imports: [AsyncPipe]
 })
 export class SortingButtonComponent implements OnInit {

@@ -22,7 +22,6 @@ import { ZoomSliderComponent } from "./zoomSlider/zoomSlider.component"
     selector: "cc-view-cube",
     templateUrl: "./viewCube.component.html",
     styleUrls: ["./viewCube.component.scss"],
-    standalone: true,
     imports: [CenterMapButtonComponent, ZoomSliderComponent]
 })
 export class ViewCubeComponent implements OnInit {

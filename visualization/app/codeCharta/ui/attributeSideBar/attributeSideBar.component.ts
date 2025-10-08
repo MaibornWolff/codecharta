@@ -15,7 +15,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-attribute-side-bar",
     templateUrl: "./attributeSideBar.component.html",
     styleUrls: ["./attributeSideBar.component.scss"],
-    standalone: true,
     imports: [
         AttributeSideBarHeaderSectionComponent,
         AttributeSideBarPrimaryMetricsComponent,

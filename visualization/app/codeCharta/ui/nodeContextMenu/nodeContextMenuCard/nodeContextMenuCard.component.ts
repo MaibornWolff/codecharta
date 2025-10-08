@@ -17,7 +17,6 @@ import { CopyPathButtonComponent } from "../copyButton/copyPathButton.component"
     selector: "cc-node-context-menu-card",
     templateUrl: "./nodeContextMenuCard.component.html",
     styleUrls: ["./nodeContextMenuCard.component.scss"],
-    standalone: true,
     imports: [
         MatCard,
         MarkFolderRowComponent,

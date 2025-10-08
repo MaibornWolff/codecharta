@@ -10,7 +10,6 @@ import { Subscription } from "rxjs"
 
 @Component({
     selector: "cc-file-extension-bar-segment",
-    standalone: true,
     imports: [CdkContextMenuTrigger, MatCard, CdkMenu, MatMenuItem, NgOptimizedImage],
     templateUrl: "./fileExtensionBarSegment.component.html",
     styleUrl: "./fileExtensionBarSegment.component.scss"

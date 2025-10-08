@@ -11,7 +11,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-file-panel",
     templateUrl: "./filePanel.component.html",
     styleUrls: ["./filePanel.component.scss"],
-    standalone: true,
     imports: [FilePanelStateButtonsComponent, FilePanelFileSelectorComponent, FilePanelDeltaSelectorComponent, AsyncPipe]
 })
 export class FilePanelComponent {

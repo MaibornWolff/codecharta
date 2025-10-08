@@ -10,7 +10,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-edge-metric-toggle",
     templateUrl: "./edgeMetricToggle.component.html",
-    standalone: true,
     imports: [MatCheckbox, AsyncPipe]
 })
 export class EdgeMetricToggleComponent implements OnInit {

@@ -11,7 +11,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-mark-folder-row",
     templateUrl: "./markFolderRow.component.html",
     styleUrls: ["./markFolderRow.component.scss"],
-    standalone: true,
     imports: [ColorPickerComponent, AsyncPipe]
 })
 export class MarkFolderRowComponent {

@@ -10,7 +10,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-metric-chooser-type",
     templateUrl: "./metricChooserType.component.html",
-    standalone: true,
     imports: [AsyncPipe]
 })
 export class MetricChooserTypeComponent implements OnInit {

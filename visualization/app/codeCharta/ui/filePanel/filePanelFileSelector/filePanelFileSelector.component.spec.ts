@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
+import { fireEvent, render, screen, waitFor } from "@testing-library/angular"
 import { addFile, removeFiles, setStandard } from "../../../state/store/files/files.actions"
 import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
 import { FilePanelComponent } from "../filePanel.component"
@@ -26,12 +26,16 @@ describe("filePanelFileSelectorComponent", () => {
 
         const selectFilesElement = screen.getByRole("combobox").querySelector(".mat-mdc-select-trigger")
         fireEvent.click(selectFilesElement)
+        await screen.findByRole("listbox")
         const deselectAllButton = screen.getByText("None")
         fireEvent.click(deselectAllButton)
         expect(fixture.componentInstance["selectedFilesInUI"].length).toBe(0)
 
-        fireEvent.click(document.querySelector(".cdk-overlay-backdrop"))
-        await waitForElementToBeRemoved(() => screen.getByRole("listbox"))
+        const backdrop = document.querySelector(".cdk-overlay-backdrop")
+        fireEvent.click(backdrop)
+        await waitFor(() => {
+            expect(screen.queryByRole("listbox")).toBeNull()
+        })
         expect(fixture.componentInstance["selectedFilesInUI"].length).toBe(1)
         expect(fixture.componentInstance["selectedFilesInUI"][0]).toEqual(TEST_FILE_DATA)
     })

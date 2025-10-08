@@ -22,7 +22,6 @@ import { IsNodeLeafPipe } from "../isNodeLeaf.pipe"
     selector: "cc-map-tree-view-level",
     templateUrl: "./mapTreeViewLevel.component.html",
     styleUrls: ["./mapTreeViewLevel.component.scss"],
-    standalone: true,
     imports: [
         MapTreeViewItemIconComponent,
         MapTreeViewItemNameComponent,

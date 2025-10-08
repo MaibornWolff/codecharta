@@ -12,7 +12,6 @@ export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"
     selector: "cc-metric-color-range-slider",
     templateUrl: "./metricColorRangeSlider.component.html",
     styleUrls: ["./metricColorRangeSlider.component.scss"],
-    standalone: true,
     imports: [MatFormField, MatInput, RangeSliderLabelsComponent]
 })
 export class MetricColorRangeSliderComponent implements OnChanges {

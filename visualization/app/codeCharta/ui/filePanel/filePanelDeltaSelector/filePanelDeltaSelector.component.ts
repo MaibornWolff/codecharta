@@ -18,7 +18,6 @@ import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
     selector: "cc-file-panel-delta-selector",
     templateUrl: "./filePanelDeltaSelector.component.html",
     styleUrls: ["./filePanelDeltaSelector.component.scss"],
-    standalone: true,
     imports: [MatSelect, MatOption, AsyncPipe, RemoveExtensionPipe]
 })
 export class FilePanelDeltaSelectorComponent {

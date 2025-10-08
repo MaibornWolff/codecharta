@@ -6,6 +6,7 @@ import { ColorPickerComponent } from "./colorPicker.component"
 describe("ColorPickerComponent", () => {
     @Component({
         selector: "test-color-picker",
+        imports: [ColorPickerComponent],
         template: `
             <cc-color-picker
                 [hexColor]="hexColor"
