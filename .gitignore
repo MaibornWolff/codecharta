@@ -5,6 +5,9 @@ auth.txt
 **/node-wrapper/public
 .scannerwork
 
+#claude
+/.claude
+
 #gh-pages
 gh-pages/vendor
 
