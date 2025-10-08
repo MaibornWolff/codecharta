@@ -52,5 +52,5 @@
     }
   ],
   "timezone": "Europe/Berlin",
-  "schedule": ["* 21 * * *"]
+  "schedule": ["* * * * *"]
 }
