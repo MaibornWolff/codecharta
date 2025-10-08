@@ -14,7 +14,7 @@ export class ColorPickerComponent {
     @Input() openXPosition: MenuPositionX = "after"
     @Input() triggerTemplate: TemplateRef<unknown>
 
-    @Output() onColorChange = new EventEmitter<string>()
+    @Output() colorChange = new EventEmitter<string>()
 
     @ViewChild("colorPickerMenuTrigger") colorPickerMenuTrigger: MatMenuTrigger
 
@@ -23,7 +23,7 @@ export class ColorPickerComponent {
     private isClickInside = false
 
     handleChangeComplete(hexColor: string) {
-        this.onColorChange.emit(hexColor)
+        this.colorChange.emit(hexColor)
     }
 
     @HostListener("mouseenter") onMouseEnter() {

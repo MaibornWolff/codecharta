@@ -3,7 +3,7 @@ import { accumulatedDataSelector } from "../../../state/selectors/accumulatedDat
 import { FileNameHelper } from "../../../util/fileNameHelper"
 import { getVisibleFileStates, isDeltaState } from "../../../model/files/files.helper"
 import { FileDownloader } from "../../../util/fileDownloader"
-import { Component, ElementRef, Input, ViewChild } from "@angular/core"
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from "@angular/core"
 import { State } from "@ngrx/store"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
@@ -74,7 +74,7 @@ interface ManualVisibilityItem {
         MatDialogActions
     ]
 })
-export class Export3DMapDialogComponent {
+export class Export3DMapDialogComponent implements AfterViewInit {
     @ViewChild("rendererContainer") rendererContainer: ElementRef
     @ViewChild("fileInput") fileInput: ElementRef
     @Input() logoColor = "#ffffff"

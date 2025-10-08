@@ -55,7 +55,7 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     }
 
     @Output()
-    onToggleSettings = new EventEmitter<boolean>()
+    toggleSettingsChange = new EventEmitter<boolean>()
 
     private mouseDownListener?: (event: MouseEvent) => void
 
@@ -74,7 +74,7 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
 
     toggleSettings() {
         this.isExpanded = !this.isExpanded
-        this.onToggleSettings.emit(this.isExpanded)
+        this.toggleSettingsChange.emit(this.isExpanded)
     }
 
     private collapseOnOutsideClick(event: MouseEvent) {

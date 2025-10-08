@@ -22,7 +22,7 @@ describe("LabelledColorPickerComponent", () => {
             },
             componentProperties: {
                 hexColor: "#000000",
-                onColorChange: { emit: handleColorChange } as unknown as EventEmitter<string>
+                colorChange: { emit: handleColorChange } as unknown as EventEmitter<string>
             }
         })
         const colorPickerTrigger = container.querySelector("cc-color-picker")
