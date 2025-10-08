@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - GitLogParser now counts co-authors in `number_of_authors` metric [#4203](https://github.com/MaibornWolff/codecharta/issues/4203)
+- Add new per function metrics to unifiedParser [#4116](https://github.com/MaibornWolff/codecharta/issues/4116)
+  - Parameters per function
+  - Complexity per function
+  - RLOC per function
 
 ## [1.137.0] - 2025-09-25
 
@@ -17,10 +21,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Add commit message parsing to recognize semantic commit messages https://codecharta.com/docs/parser/git-log
 - Add on top of commit message parsing ratios to see where often hotfixes appear https://codecharta.com/docs/parser/git-log
 - Add new 'logic_complexity' metric to unifiedParser [#4192](https://github.com/MaibornWolff/codecharta/pull/4192)
-- Add new per function metrics to unifiedParser [#4116](https://github.com/MaibornWolff/codecharta/issues/4116)
-  - Parameters per function
-  - Complexity per function
-  - RLOC per function
 
 ### Chore 👨‍💻 👩‍💻
 - Bump cc.json API version to 1.5 (for details see [cc.json schema changelog](https://github.com/MaibornWolff/codecharta/blob/main/CC_JSON_SCHEMA_CHANGELOG.md)) [#4187](https://github.com/MaibornWolff/codecharta/pull/4187)
