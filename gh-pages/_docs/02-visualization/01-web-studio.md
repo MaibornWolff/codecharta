@@ -15,7 +15,7 @@ gallery:
     title: "Visualization"
 ---
 
-Our Web Studio allows you to import metrics from the CCSH(CodeCharta shell) and visualize them.
+Our Web Studio allows you to import metrics from the CCSH (CodeCharta shell) and visualize them.
 
 > Please note that CodeCharta runs only on your client. No metrics that you analyze or visualize will ever leave your computer unless you distribute it yourself.
 
@@ -40,3 +40,5 @@ $ npm i
 # Start the dev server
 $ npm run dev
 ```
+
+You can also run it locally via docker. For more information, see [Docker Containers](https://codecharta.com/docs/overview/dockerized)
