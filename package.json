@@ -26,7 +26,7 @@
     "commitlint": "commitlint --config commitlint.config.js --edit"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.2.5",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "badge-maker": "^4.1.0",
