@@ -7,9 +7,44 @@ toc_sticky: true
 toc_label: "Jump to Section"
 ---
 
-CodeCharta also comes as a full Docker environment, where all supported tools come pre-installed. To start all
-containers, you can type `docker compose pull && docker compose up --detach` while you're in the same directory as our
-docker-compose.yml
+CodeCharta also comes as a full Docker environment, where all supported tools come pre-installed.
+
+Both the visualization and the analysis are published on Docker Hub:
+- [codecharta-visualization](https://hub.docker.com/r/codecharta/codecharta-visualization/)
+- [codecharta-analysis](https://hub.docker.com/r/codecharta/codecharta-analysis)
+
+### Visualization
+Can be started by running:
+```bash
+docker run -p 9000:80 codecharta/codecharta-visualization
+```
+After running this, the visualization is accessible under `localhost:9000`
+
+### Analysis
+As the analysis has multiple available tools, there are different ways on how it can be used:
+1. Run a simple analysis with one command:
+    ```bash
+    docker run -v .:/mnt/src codecharta/codecharta-analysis bash -c 'git config --global --add safe.directory /mnt/src; cd /mnt/src/; simplecc.sh create <YourProjectName>'
+    ```
+2. Start a bash shell inside the docker container to use the codecharta shell or any other of the tools installed in
+   the container via the command line:
+    ```bash
+    docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis bash
+    ```
+3. Start the interactive mode inside the docker container, which helps to guide you through the parsing/analyzing process:
+    ```bash
+    docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis ccsh
+    ```
+4. Directly execute a specific analyzer in the container (e.g. [Unified Parser]({{site.docs_parser}}/unified)):
+    ```bash
+     docker run --name codecharta-analysis -it -v $(pwd):$(pwd) -w $(pwd) codecharta/codecharta-analysis ccsh unifiedparser .
+    ```
+
+NOTE: Your current directory will be used for the analysis if not specified otherwise.
+
+# Docker images from local CodeCharta instance
+
+If you have the CodeCharta repo cloned locally, you can start all containers, by typing `docker compose pull && docker compose up--detach` while you're in the same directory as our docker-compose.yml
 
 ## The Container Landscape
 
@@ -23,12 +58,6 @@ docker-compose.yml
 
 All containers share a volume for the quick transfer of files. You can find it under /mnt/data in each container.
 Please note that you will need to copy finished cc.json files to **your** hard-drive to open them in Visualization.
-
-# Docker Hub Install
-
-Both the visualization and the analysis are published on Docker Hub:
-- [codecharta-visualization](https://hub.docker.com/r/codecharta/codecharta-visualization/)
-- [codecharta-analysis](https://hub.docker.com/r/codecharta/codecharta-analysis)
 
 ## Visualization
 

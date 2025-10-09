@@ -41,6 +41,7 @@ CodeCharta. It generates either a cc.json or a csv file.
 | Number of functions       | The number of functions and methods in a file                                                                                                                                                                              |
 | Lines of code (LOC)       | Lines of code including empty lines and comments                                                                                                                                                                           |
 | Real lines of code (RLOC) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
+
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file.
 
 | Metric per function     | Description                                          |

@@ -94,7 +94,7 @@ To run it you can call `ccsh`
 
 You can use Codecharta analysis in multiple ways. This section will deal with how to use the analysis as a standalone
 container. For information on how to use with docker compose, please check out
-our [docker compose documentation](https://maibornwolff.github.io/codecharta/docs/docker-containers/).
+our [docker compose documentation](https://maibornwolff.github.io/codecharta/docs/overview/dockerized).
 We assume that you already installed docker, if not, you have to do that before!
 
 To containerize the analysis, please follow the below listed steps.
