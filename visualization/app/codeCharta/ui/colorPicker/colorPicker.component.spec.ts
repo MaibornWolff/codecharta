@@ -9,7 +9,7 @@ describe("ColorPickerComponent", () => {
         template: `
             <cc-color-picker
                 [hexColor]="hexColor"
-                (onColorChange)="hexColor = $event"
+                (colorChange)="hexColor = $event"
                 [triggerTemplate]="colorPickerTriggerTemplate"
             ></cc-color-picker>
             <ng-template #colorPickerTriggerTemplate let-isOpen="isOpen" let-isHovered="isHovered">

@@ -20,9 +20,9 @@ export class LabelledColorPickerComponent {
         })
     )
     @Output()
-    onColorChange = new EventEmitter<string>()
+    colorChange = new EventEmitter<string>()
 
     handleColorChange(hexColor: string) {
-        this.onColorChange.emit(hexColor)
+        this.colorChange.emit(hexColor)
     }
 }

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import hotkeys from "hotkeys-js"
 import html2canvas from "html2canvas"
@@ -20,7 +20,7 @@ import { AsyncPipe } from "@angular/common"
     standalone: true,
     imports: [ActionIconComponent, AsyncPipe]
 })
-export class ScreenshotButtonComponent {
+export class ScreenshotButtonComponent implements OnInit {
     TITLE_FILE_BUTTON: string
     TITLE_CLIPBOARD_BUTTON: string
     isWriteToClipboardAllowed: boolean

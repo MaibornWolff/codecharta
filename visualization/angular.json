@@ -35,7 +35,7 @@
               "path": "conf/webpack.config.js"
             },
             "scripts": [],
-            "allowedCommonJsDependencies": ["ajv", "color-convert", "html2canvas", "ignore", "md5", "three-orbit-controls"]
+            "allowedCommonJsDependencies": ["ajv", "color-convert", "html2canvas", "ignore", "md5", "qrcode", "three-orbit-controls"]
           },
           "configurations": {
             "production": {
