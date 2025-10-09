@@ -112,7 +112,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: build-artifacts
           path: visualization/dist/packages
@@ -152,7 +152,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: webpack-build
           path: visualization/dist/webpack
@@ -197,7 +197,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: webpack-build
           path: visualization/dist/webpack
