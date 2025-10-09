@@ -9,7 +9,6 @@ import { MatDivider } from "@angular/material/divider"
     selector: "cc-scenarios",
     templateUrl: "./scenarios.component.html",
     styleUrls: ["./scenarios.component.scss"],
-    standalone: true,
     imports: [MatDivider]
 })
 export class ScenariosComponent {

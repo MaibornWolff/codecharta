@@ -8,7 +8,6 @@ import { MatButton } from "@angular/material/button"
     selector: "cc-flatten-buttons",
     templateUrl: "./flattenButtons.component.html",
     styleUrls: ["../nodeContextMenuButton.component.scss"],
-    standalone: true,
     imports: [MatButton]
 })
 export class FlattenButtonsComponent {

@@ -10,7 +10,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-file-panel-state-buttons",
     templateUrl: "./filePanelStateButtons.component.html",
     styleUrls: ["./filePanelStateButtons.component.scss"],
-    standalone: true,
     imports: [MatButton, AsyncPipe]
 })
 export class FilePanelStateButtonsComponent {

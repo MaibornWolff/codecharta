@@ -6,7 +6,6 @@ import { ColorChromeModule } from "ngx-color/chrome"
 @Component({
     selector: "cc-color-picker",
     templateUrl: "./colorPicker.component.html",
-    standalone: true,
     imports: [NgTemplateOutlet, MatMenuTrigger, MatMenu, ColorChromeModule]
 })
 export class ColorPickerComponent {

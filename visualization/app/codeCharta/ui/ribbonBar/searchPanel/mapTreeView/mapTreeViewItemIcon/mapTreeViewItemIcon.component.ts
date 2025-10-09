@@ -6,7 +6,6 @@ import { MapTreeViewItemIconColorPipe } from "./mapTreeViewItemIconColor.pipe"
 @Component({
     selector: "cc-map-tree-view-item-icon",
     templateUrl: "./mapTreeViewItemIcon.component.html",
-    standalone: true,
     imports: [MapTreeViewItemIconClassPipe, MapTreeViewItemIconColorPipe]
 })
 export class MapTreeViewItemIconComponent {

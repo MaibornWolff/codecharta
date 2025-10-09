@@ -9,7 +9,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-artificial-intelligence",
     templateUrl: "./artificialIntelligence.component.html",
     styleUrls: ["./artificialIntelligence.component.scss"],
-    standalone: true,
     imports: [SuspiciousMetricsComponent, AsyncPipe]
 })
 export class ArtificialIntelligenceComponent {

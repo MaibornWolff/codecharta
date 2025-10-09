@@ -17,7 +17,6 @@ import { NgClass, AsyncPipe } from "@angular/common"
     selector: "cc-custom-config-list",
     templateUrl: "./customConfigList.component.html",
     styleUrls: ["./customConfigList.component.scss"],
-    standalone: true,
     imports: [
         MatToolbar,
         UploadCustomConfigButtonComponent,

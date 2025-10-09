@@ -24,7 +24,6 @@ import { setShowIncomingEdges } from "../../../state/store/appSettings/showEdges
     selector: "cc-edge-settings-panel",
     templateUrl: "./edgeSettingsPanel.component.html",
     styleUrls: ["./edgeSettingsPanel.component.scss"],
-    standalone: true,
     imports: [
         SliderComponent,
         ColorPickerForMapColorComponent,

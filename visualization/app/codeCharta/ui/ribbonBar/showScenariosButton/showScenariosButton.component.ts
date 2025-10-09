@@ -9,7 +9,6 @@ import { ScenariosComponent } from "./scenarios/scenarios.component"
     selector: "cc-show-scenarios-button",
     templateUrl: "./showScenariosButton.component.html",
     styleUrls: ["./showScenariosButton.component.scss"],
-    standalone: true,
     imports: [RibbonBarMenuButtonComponent, MatMenuTrigger, MatMenu, ScenariosComponent]
 })
 export class ShowScenariosButtonComponent {

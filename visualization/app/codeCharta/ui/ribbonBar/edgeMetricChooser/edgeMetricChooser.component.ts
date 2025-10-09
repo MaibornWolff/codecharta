@@ -15,7 +15,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-edge-metric-chooser",
     templateUrl: "./edgeMetricChooser.component.html",
     styleUrls: ["./edgeMetricChooser.component.scss"],
-    standalone: true,
     imports: [MetricChooserComponent, RoundedBoxComponent, MetricChooserTypeComponent, AsyncPipe]
 })
 export class EdgeMetricChooserComponent {

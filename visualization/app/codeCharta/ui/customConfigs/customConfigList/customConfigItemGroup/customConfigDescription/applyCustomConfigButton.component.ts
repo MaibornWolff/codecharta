@@ -13,7 +13,6 @@ import { CustomConfigColorSchemaBySelectionMode } from "./customConfigColorSchem
     selector: "cc-apply-custom-config-button",
     templateUrl: "./applyCustomConfigButton.component.html",
     styleUrls: ["./applyCustomConfigButton.component.scss"],
-    standalone: true,
     imports: [MatDialogClose, CustomConfig2ApplicableColor, CustomConfigColorSchemaBySelectionMode]
 })
 export class ApplyCustomConfigButtonComponent {

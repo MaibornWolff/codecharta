@@ -20,7 +20,6 @@ type MetricChooserType = "node" | "edge"
     selector: "cc-metric-chooser",
     templateUrl: "./metricChooser.component.html",
     styleUrls: ["./metricChooser.component.scss"],
-    standalone: true,
     imports: [
         MatSelect,
         MatSelectTrigger,

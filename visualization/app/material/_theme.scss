@@ -1,13 +1,15 @@
 @use "@angular/material" as mat;
-@include mat.core();
+@forward "./variables";
+@use "./variables" as vars;
 
-@import "./variables";
+@include mat.elevation-classes();
+@include mat.app-background();
 
 :root {
     --mat-dialog-container-min-width: 500px;
     --mat-dialog-actions-alignment: flex-end;
 
-    --mat-toolbar-container-background-color: #{$cc-primary-color};
+    --mat-toolbar-container-background-color: #{vars.$cc-primary-color};
     --mat-toolbar-container-text-color: #fff;
     --mat-text-button-horizontal-padding: 8px;
 
@@ -18,7 +20,7 @@
 
     .cdk-overlay-pane {
         &.cc-incompatible-maps-dialog {
-            --mdc-dialog-supporting-text-color: $cc-font-color;
+            --mdc-dialog-supporting-text-color: vars.$cc-font-color;
         }
     }
 }

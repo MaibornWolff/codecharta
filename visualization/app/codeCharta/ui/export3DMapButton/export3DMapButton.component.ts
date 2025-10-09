@@ -12,7 +12,6 @@ import { ActionIconComponent } from "../actionIcon/actionIcon.component"
 @Component({
     selector: "cc-export-3d-map-button",
     templateUrl: "./export3DMapButton.component.html",
-    standalone: true,
     imports: [ActionIconComponent]
 })
 export class Export3DMapButtonComponent {

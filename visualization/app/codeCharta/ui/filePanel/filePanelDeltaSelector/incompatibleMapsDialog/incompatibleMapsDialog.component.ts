@@ -11,7 +11,6 @@ export const ALERT_ON_INCOMPATIBLE_MAPS = "alertOnIncompatibleMaps"
     selector: "cc-incompatible-maps-dialog",
     templateUrl: "./incompatibleMapsDialog.component.html",
     styleUrls: ["./incompatibleMapsDialog.component.scss"],
-    standalone: true,
     imports: [MatToolbar, CdkScrollable, MatDialogContent, MatCheckbox, MatDialogActions, MatButton, MatDialogClose]
 })
 export class IncompatibleMapsDialogComponent {

@@ -25,7 +25,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-global-configuration-dialog",
     templateUrl: "./globalConfigurationDialog.component.html",
     styleUrls: ["./globalConfigurationDialog.component.scss"],
-    standalone: true,
     imports: [
         MatToolbar,
         CdkScrollable,

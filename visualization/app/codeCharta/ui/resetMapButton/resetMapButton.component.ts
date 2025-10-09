@@ -6,7 +6,6 @@ import { ActionIconComponent } from "../actionIcon/actionIcon.component"
 @Component({
     selector: "cc-reset-map-button",
     templateUrl: "./resetMapButton.component.html",
-    standalone: true,
     imports: [ActionIconComponent]
 })
 export class ResetMapButtonComponent {

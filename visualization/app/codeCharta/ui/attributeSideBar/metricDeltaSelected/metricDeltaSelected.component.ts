@@ -11,7 +11,6 @@ import { AsyncPipe, DecimalPipe } from "@angular/common"
     selector: "cc-metric-delta-selected",
     templateUrl: "./metricDeltaSelected.component.html",
     styleUrls: ["./metricDeltaSelected.component.scss"],
-    standalone: true,
     imports: [AsyncPipe, DecimalPipe]
 })
 export class MetricDeltaSelectedComponent implements OnInit {

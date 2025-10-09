@@ -19,7 +19,6 @@ import { MatButton } from "@angular/material/button"
 @Component({
     selector: "cc-add-custom-config-dialog",
     templateUrl: "./addCustomConfigDialog.component.html",
-    standalone: true,
     imports: [
         MatToolbar,
         CdkScrollable,

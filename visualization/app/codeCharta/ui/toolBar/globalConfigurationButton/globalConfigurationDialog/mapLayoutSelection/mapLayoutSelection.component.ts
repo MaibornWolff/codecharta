@@ -15,7 +15,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-map-layout-selection",
     templateUrl: "./mapLayoutSelection.component.html",
-    standalone: true,
     imports: [MatFormField, MatLabel, MatSelect, MatOption, SliderComponent, AsyncPipe]
 })
 export class MapLayoutSelectionComponent {

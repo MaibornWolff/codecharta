@@ -16,7 +16,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-search-bar",
     templateUrl: "./searchBar.component.html",
     styleUrls: ["./searchBar.component.scss"],
-    standalone: true,
     imports: [MatMenuTrigger, MatMenu, MatMenuItem, MatDivider, AsyncPipe]
 })
 export class SearchBarComponent {

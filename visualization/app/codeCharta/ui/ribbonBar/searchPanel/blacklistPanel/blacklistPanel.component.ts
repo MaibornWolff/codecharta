@@ -12,7 +12,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-blacklist-panel",
     templateUrl: "./blacklistPanel.component.html",
     styleUrls: ["./blacklistPanel.component.scss"],
-    standalone: true,
     imports: [MatList, MatTooltip, MatListItem, MatButton, AsyncPipe]
 })
 export class BlacklistPanelComponent {

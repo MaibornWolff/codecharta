@@ -9,7 +9,12 @@ describe("clipboardWriter", () => {
             const blobFromText = new Blob([text], { type: "text/plain" })
             const clipboard = { write: jest.fn() } as any as Clipboard
 
-            global.ClipboardItem = jest.fn().mockReturnValue(blobFromText)
+            global.ClipboardItem = Object.assign(
+                jest.fn().mockImplementation(() => blobFromText),
+                {
+                    supports: jest.fn().mockReturnValue(true)
+                }
+            ) as typeof ClipboardItem
             jest.spyOn(navigator, "clipboard", "get").mockReturnValue(clipboard)
 
             await setToClipboard(blobFromText)

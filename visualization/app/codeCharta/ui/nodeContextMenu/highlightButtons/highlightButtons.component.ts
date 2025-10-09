@@ -8,7 +8,6 @@ import { MatButton } from "@angular/material/button"
     selector: "cc-highlight-buttons",
     templateUrl: "./highlightButtons.component.html",
     styleUrls: ["../nodeContextMenuButton.component.scss"],
-    standalone: true,
     imports: [MatButton]
 })
 export class HighlightButtonsComponent implements OnChanges {

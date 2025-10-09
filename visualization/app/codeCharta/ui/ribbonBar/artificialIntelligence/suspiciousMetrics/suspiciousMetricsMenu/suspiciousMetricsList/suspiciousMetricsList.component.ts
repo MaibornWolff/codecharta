@@ -20,7 +20,6 @@ import { TruncateTextPipe } from "../../../../../../util/pipes/truncateText.pipe
     selector: "cc-suspicious-metrics-list",
     templateUrl: "./suspiciousMetricsList.component.html",
     styleUrls: ["./suspiciousMetricsList.component.scss"],
-    standalone: true,
     imports: [NgClass, MatButtonToggleGroup, MatButtonToggle, TruncateTextPipe]
 })
 export class SuspiciousMetricsListComponent {

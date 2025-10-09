@@ -29,7 +29,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-color-settings-panel",
     templateUrl: "./colorSettingsPanel.component.html",
     styleUrls: ["./colorSettingsPanel.component.scss"],
-    standalone: true,
     imports: [
         MetricColorRangeSliderComponent,
         ResetSettingsButtonComponent,

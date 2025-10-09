@@ -11,7 +11,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-display-quality-selection",
     templateUrl: "./displayQualitySelection.component.html",
-    standalone: true,
     imports: [MatFormField, MatLabel, MatSelect, MatOption, AsyncPipe]
 })
 export class DisplayQualitySelectionComponent {

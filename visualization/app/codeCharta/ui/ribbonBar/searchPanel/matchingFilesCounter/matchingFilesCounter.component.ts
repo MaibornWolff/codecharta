@@ -12,7 +12,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-matching-files-counter",
     templateUrl: "./matchingFilesCounter.component.html",
     styleUrls: ["./matchingFilesCounter.component.scss"],
-    standalone: true,
     imports: [ThumbTackButtonComponent, SortingButtonComponent, SortingOptionComponent, AsyncPipe]
 })
 export class MatchingFilesCounterComponent {

@@ -8,7 +8,6 @@ import { MatButton } from "@angular/material/button"
     selector: "cc-exclude-button",
     templateUrl: "./excludeButton.component.html",
     styleUrls: ["../nodeContextMenuButton.component.scss"],
-    standalone: true,
     imports: [MatButton]
 })
 export class ExcludeButtonComponent {

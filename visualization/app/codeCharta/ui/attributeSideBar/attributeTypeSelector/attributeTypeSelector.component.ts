@@ -9,7 +9,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-attribute-type-selector",
     templateUrl: "./attributeTypeSelector.component.html",
-    standalone: true,
     imports: [MatButtonToggleGroup, MatButtonToggle, AsyncPipe]
 })
 export class AttributeTypeSelectorComponent {

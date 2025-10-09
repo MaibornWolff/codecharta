@@ -10,7 +10,6 @@ import { AttributeDescriptorTooltipPipe } from "../../../util/pipes/attributeDes
     selector: "cc-legend-block",
     templateUrl: "./legendBlock.component.html",
     styleUrls: ["./legendBlock.component.scss"],
-    standalone: true,
     imports: [AsyncPipe, AttributeDescriptorTooltipPipe]
 })
 export class LegendBlockComponent {

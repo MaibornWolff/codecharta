@@ -131,13 +131,15 @@ describe("metricChooserComponent", () => {
 
     it("should project hoveredInformation as last child", async () => {
         @Component({
-            template: `<cc-metric-chooser
-                [searchPlaceholder]="''"
-                [selectedMetricName]="'aMetric'"
-                [handleMetricChanged]="handleMetricChanged"
-            >
-                <div hoveredInformation>projected hovered information</div>
-            </cc-metric-chooser>`
+            imports: [MetricChooserComponent],
+            template: `
+                <cc-metric-chooser
+                    [searchPlaceholder]="''"
+                    [selectedMetricName]="'aMetric'"
+                    [handleMetricChanged]="handleMetricChanged"
+                >
+                    <div hoveredInformation>projected hovered information</div>
+                </cc-metric-chooser>`
         })
         class TestMetricChooser {
             handleMetricChanged = jest.fn()
@@ -156,6 +158,7 @@ describe("metricChooserComponent", () => {
 		`
 
         @Component({
+            imports: [MetricChooserComponent],
             template: metricChooserTemplate
         })
         class WrapperComponent {
@@ -164,7 +167,8 @@ describe("metricChooserComponent", () => {
 
         const { container, fixture } = await render(WrapperComponent)
 
-        const metricChooserComponent: MetricChooserComponent = fixture.debugElement.componentInstance.metricChooserComponentRef
+        fixture.detectChanges()
+        const metricChooserComponent: MetricChooserComponent = fixture.debugElement.children[0].componentInstance
 
         expect(metricChooserComponent).not.toBeNull()
         await waitFor(() => {

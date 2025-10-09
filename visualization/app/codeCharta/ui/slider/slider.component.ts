@@ -8,7 +8,6 @@ import { MatInput } from "@angular/material/input"
     selector: "cc-slider",
     templateUrl: "./slider.component.html",
     styleUrls: ["./slider.component.scss"],
-    standalone: true,
     imports: [MatLabel, MatSlider, MatSliderThumb, MatFormField, MatInput]
 })
 export class SliderComponent {

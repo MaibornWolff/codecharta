@@ -10,7 +10,6 @@ import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
     selector: "cc-attribute-side-bar-header-section",
     templateUrl: "./attributeSideBarHeaderSection.component.html",
     styleUrls: ["./attributeSideBarHeaderSection.component.scss"],
-    standalone: true,
     imports: [MatTooltip, NodePathComponent, RemoveExtensionPipe]
 })
 export class AttributeSideBarHeaderSectionComponent {

@@ -161,8 +161,7 @@ describe(LegendPanelComponent.name, () => {
         })
 
         it("should not close when clicking inside", async () => {
-            const { container, fixture } = await render(`<cc-legend-panel></cc-legend-panel>`, {})
-            const panel = container.querySelector("cc-legend-panel")
+            const { container, fixture } = await render(LegendPanelComponent)
             expect(isLegendPanelOpen(container)).toBe(false)
 
             const openLegendButton = screen.getByTitle("Show panel")
@@ -170,6 +169,7 @@ describe(LegendPanelComponent.name, () => {
             fixture.detectChanges()
             expect(isLegendPanelOpen(container)).toBe(true)
 
+            const panel = container.querySelector("#legend-panel")
             await userEvent.click(panel)
             fixture.detectChanges()
             expect(isLegendPanelOpen(container)).toBe(true)

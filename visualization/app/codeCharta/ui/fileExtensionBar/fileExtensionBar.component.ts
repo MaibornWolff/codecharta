@@ -8,7 +8,6 @@ import { MetricDistributionService } from "./metricDistribution.service"
     selector: "cc-file-extension-bar",
     templateUrl: "./fileExtensionBar.component.html",
     styleUrls: ["./fileExtensionBar.component.scss"],
-    standalone: true,
     imports: [DistributionMetricComponent, FileExtensionBarSegmentComponent]
 })
 export class FileExtensionBarComponent implements OnInit {

@@ -9,7 +9,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-area-metric-chooser",
     templateUrl: "./areaMetricChooser.component.html",
-    standalone: true,
     imports: [MetricChooserComponent, AsyncPipe]
 })
 export class AreaMetricChooserComponent {

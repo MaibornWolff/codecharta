@@ -6,7 +6,6 @@ import { NgClass } from "@angular/common"
 @Component({
     selector: "cc-untracked-metrics-list",
     templateUrl: "./untrackedMetricsList.component.html",
-    standalone: true,
     imports: [NgClass]
 })
 export class UntrackedMetricsListComponent {

@@ -13,7 +13,6 @@ import { AsyncPipe, DecimalPipe } from "@angular/common"
     selector: "cc-attribute-side-bar-primary-metric",
     templateUrl: "./attributeSideBarPrimaryMetric.component.html",
     styleUrls: ["./attributeSideBarPrimaryMetric.component.scss"],
-    standalone: true,
     imports: [AttributeTypeSelectorComponent, MetricDeltaSelectedComponent, AsyncPipe, DecimalPipe]
 })
 export class AttributeSideBarPrimaryMetricComponent {

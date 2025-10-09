@@ -21,7 +21,6 @@ type FileRemovedInUIState = {
     selector: "cc-file-panel-file-selector",
     templateUrl: "./filePanelFileSelector.component.html",
     styleUrls: ["./filePanelFileSelector.component.scss"],
-    standalone: true,
     imports: [MatSelect, MatOption, RemoveOrAddFileButtonComponent, RemoveExtensionPipe, NgStyle, MatTooltip]
 })
 export class FilePanelFileSelectorComponent implements OnDestroy {

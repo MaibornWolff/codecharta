@@ -8,7 +8,6 @@ import { MatButton } from "@angular/material/button"
 @Component({
     selector: "cc-suspicious-metric-dialog",
     templateUrl: "./suspiciousMetricDialog.component.html",
-    standalone: true,
     imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
 })
 export class SuspiciousMetricsDialogComponent {

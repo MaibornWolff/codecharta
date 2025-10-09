@@ -10,7 +10,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-color-metric-chooser",
     templateUrl: "./colorMetricChooser.component.html",
-    standalone: true,
     imports: [MetricChooserComponent, AsyncPipe]
 })
 export class ColorMetricChooserComponent {

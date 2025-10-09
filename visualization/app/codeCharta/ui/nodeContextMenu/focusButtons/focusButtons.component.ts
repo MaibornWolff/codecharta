@@ -14,7 +14,6 @@ import { IsNodeFocusedPipe } from "./isNodeFocused.pipe"
     selector: "cc-focus-buttons",
     templateUrl: "./focusButtons.component.html",
     styleUrls: ["../nodeContextMenuButton.component.scss"],
-    standalone: true,
     imports: [MatButton, AsyncPipe, IsNodeFocusedPipe]
 })
 export class FocusButtonsComponent {

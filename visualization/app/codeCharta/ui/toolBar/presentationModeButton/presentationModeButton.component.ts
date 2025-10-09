@@ -10,7 +10,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-presentation-mode-button",
     templateUrl: "./presentationModeButton.component.html",
     styleUrls: ["./presentationModeButton.component.scss"],
-    standalone: true,
     imports: [MatSlideToggle, AsyncPipe]
 })
 export class PresentationModeButtonComponent {

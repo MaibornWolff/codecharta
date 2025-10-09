@@ -30,7 +30,6 @@ export interface CustomConfigItemGroup {
     selector: "cc-custom-configs",
     templateUrl: "./customConfigs.component.html",
     styleUrls: ["./customConfigs.component.scss"],
-    standalone: true,
     imports: [RibbonBarMenuButtonComponent]
 })
 export class CustomConfigsComponent {

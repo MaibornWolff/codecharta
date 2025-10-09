@@ -17,7 +17,6 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-legend-panel",
     templateUrl: "./legendPanel.component.html",
     styleUrls: ["./legendPanel.component.scss"],
-    standalone: true,
     imports: [LegendBlockComponent, ColorPickerForMapColorComponent, LegendMarkedPackagesComponent, MatButton, AsyncPipe]
 })
 export class LegendPanelComponent implements OnInit, OnDestroy {

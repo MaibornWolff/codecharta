@@ -8,7 +8,6 @@ import { ActionIconComponent } from "../../actionIcon/actionIcon.component"
     selector: "cc-global-configuration-button",
     templateUrl: "./globalConfigurationButton.component.html",
     styleUrls: ["./globalConfigurationButton.component.scss"],
-    standalone: true,
     imports: [MatButton, ActionIconComponent]
 })
 export class GlobalConfigurationButtonComponent {

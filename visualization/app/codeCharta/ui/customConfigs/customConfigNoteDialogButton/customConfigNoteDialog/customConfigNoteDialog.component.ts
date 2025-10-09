@@ -11,7 +11,6 @@ import { MatButton } from "@angular/material/button"
     selector: "cc-custom-config-note-dialog",
     templateUrl: "./customConfigNoteDialog.component.html",
     styleUrls: ["./customConfigNoteDialog.component.scss"],
-    standalone: true,
     imports: [
         CdkScrollable,
         MatDialogContent,

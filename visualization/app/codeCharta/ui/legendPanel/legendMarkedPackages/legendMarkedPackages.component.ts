@@ -13,7 +13,6 @@ type MarkedPackagesMapKeyValue = KeyValue<keyof MarkedPackagesMap, MarkedPackage
     selector: "cc-legend-marked-packages",
     templateUrl: "./legendMarkedPackages.component.html",
     styleUrls: ["./legendMarkedPackages.component.scss"],
-    standalone: true,
     imports: [LabelledColorPickerComponent, AsyncPipe, KeyValuePipe]
 })
 export class LegendMarkedPackagesComponent {

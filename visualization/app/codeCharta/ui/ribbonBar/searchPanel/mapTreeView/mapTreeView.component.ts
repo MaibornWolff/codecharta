@@ -10,7 +10,6 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-map-tree-view",
     templateUrl: "./mapTreeView.component.html",
-    standalone: true,
     imports: [MapTreeViewLevelComponent, AsyncPipe]
 })
 export class MapTreeViewComponent {

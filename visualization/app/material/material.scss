@@ -1,7 +1,24 @@
 @use "@angular/material" as mat;
 @use "theme";
+@use "./matMenu";
+@use "./matDialog";
+@use "./matSelect";
+@use "./matSlider";
+@use "./matSlideTogglePresentationMode";
+@use "./matColorPicker";
+@use "./matAttributeTypeSelector";
+@use "./matCustomConfigList";
+@use "./matCustomConfigItemGroup";
+@use "./matExport3DMapDialog";
+@use "./matChangeLogDialog.scss";
+@use "./matConfirmResetMapDialog.scss";
+@use "./matConfirmationDialog";
+@use "./matIncompatibleMapsDialog";
+@use "./matBlacklistPanel";
+@use "./matSuspiciousMetricPanel";
 
-@include mat.core-theme(theme.$cc-theme);
+@include mat.elevation-classes();
+@include mat.app-background();
 @include mat.button-theme(theme.$cc-theme);
 @include mat.button-toggle-theme(theme.$cc-theme);
 @include mat.progress-spinner-theme(theme.$cc-theme);
@@ -18,20 +35,3 @@
 @include mat.divider-theme(theme.$cc-theme);
 @include mat.slider-theme(theme.$cc-theme);
 @include mat.slide-toggle-theme(theme.$cc-theme);
-
-@import "./matMenu";
-@import "./matDialog";
-@import "./matSelect";
-@import "./matSlider";
-@import "./matSlideTogglePresentationMode";
-@import "./matColorPicker";
-@import "./matAttributeTypeSelector";
-@import "./matCustomConfigList";
-@import "./matCustomConfigItemGroup";
-@import "./matExport3DMapDialog";
-@import "./matChangeLogDialog.scss";
-@import "./matConfirmResetMapDialog.scss";
-@import "./matConfirmationDialog";
-@import "./matIncompatibleMapsDialog";
-@import "./matBlacklistPanel";
-@import "./matSuspiciousMetricPanel";

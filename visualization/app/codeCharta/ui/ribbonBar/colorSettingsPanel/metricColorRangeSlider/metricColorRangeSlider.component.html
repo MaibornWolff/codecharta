@@ -4,7 +4,7 @@
             matInput
             type="number"
             [value]="currentLeftValue"
-            (input)="this.handleCurrentLeftInputChanged($event)"
+            (input)="handleCurrentLeftInputChanged($event)"
             [min]="minValue"
             [max]="upcomingRightValue"
         />
@@ -49,8 +49,8 @@
         <input
             matInput
             type="number"
-            [value]="this.currentRightValue"
-            (input)="this.handleCurrentRightInputChanged($event)"
+            [value]="currentRightValue"
+            (input)="handleCurrentRightInputChanged($event)"
             [min]="upcomingLeftValue"
             [max]="maxValue"
         />

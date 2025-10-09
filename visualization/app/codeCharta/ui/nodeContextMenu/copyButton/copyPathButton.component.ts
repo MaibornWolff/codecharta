@@ -8,7 +8,6 @@ import { LastPartOfNodePathPipe } from "../nodeContextMenuCard/lastPartOfNodePat
     selector: "cc-copy-button",
     templateUrl: "./copyPathButton.component.html",
     styleUrls: ["../nodeContextMenuButton.component.scss"],
-    standalone: true,
     imports: [MatButton, LastPartOfNodePathPipe]
 })
 export class CopyPathButtonComponent {

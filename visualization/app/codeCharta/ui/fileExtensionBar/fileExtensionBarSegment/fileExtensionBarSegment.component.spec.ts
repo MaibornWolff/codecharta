@@ -11,7 +11,6 @@ import { By } from "@angular/platform-browser"
 import { screen } from "@testing-library/angular"
 import { metricDistributionSelector } from "../selectors/metricDistribution.selector"
 import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
-import { Action } from "@ngrx/store"
 
 describe("FileExtensionBarSegment", () => {
     let fixture: ComponentFixture<FileExtensionBarSegmentComponent>
@@ -176,7 +175,7 @@ describe("FileExtensionBarSegment", () => {
     })
 
     describe("Context Menu", () => {
-        let dispatchSpy: jest.SpyInstance<void, [action: Action]>
+        let dispatchSpy: jest.SpyInstance
 
         beforeEach(() => {
             dispatchSpy = jest.spyOn(store, "dispatch")

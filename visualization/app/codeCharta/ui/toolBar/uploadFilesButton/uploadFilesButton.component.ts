@@ -5,7 +5,6 @@ import { ActionIconComponent } from "../../actionIcon/actionIcon.component"
 @Component({
     selector: "cc-upload-files-button",
     templateUrl: "./uploadFilesButton.component.html",
-    standalone: true,
     imports: [ActionIconComponent]
 })
 export class UploadFilesButtonComponent {
