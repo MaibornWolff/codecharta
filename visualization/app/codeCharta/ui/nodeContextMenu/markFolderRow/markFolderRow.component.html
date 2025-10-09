@@ -14,7 +14,7 @@
         }
         <cc-color-picker
             [hexColor]="'#ff0000'"
-            (onColorChange)="markFolder(codeMapNode.path, $event)"
+            (colorChange)="markFolder(codeMapNode.path, $event)"
             [triggerTemplate]="colorPickerTriggerTemplate"
         ></cc-color-picker>
     </div>

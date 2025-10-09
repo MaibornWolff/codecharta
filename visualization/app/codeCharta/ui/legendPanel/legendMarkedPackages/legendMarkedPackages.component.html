@@ -4,7 +4,7 @@
         <cc-labelled-color-picker
             [hexColor]="markedPackage.key"
             [labels]="markedPackage.value"
-            (onColorChange)="handleColorChange($event, markedPackage.value)"
+            (colorChange)="handleColorChange($event, markedPackage.value)"
         ></cc-labelled-color-picker>
     }
 }
