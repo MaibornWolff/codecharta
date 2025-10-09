@@ -52,5 +52,6 @@
     }
   ],
   "timezone": "Europe/Berlin",
-  "schedule": ["* * * * *"]
+  "schedule": ["* * * * *"],
+  "prConcurrentLimit": 20
 }

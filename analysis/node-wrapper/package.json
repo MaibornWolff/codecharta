@@ -10,7 +10,7 @@
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
   "name": "codecharta-analysis",
-  "version": "1.137.0",
+  "version": "1.138.0",
   "engines": {
     "node": ">=20"
   },
@@ -25,6 +25,6 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "makeshift": "^1.1.0",
-    "shelljs": "^0.8.1"
+    "shelljs": "^0.10.0"
   }
 }

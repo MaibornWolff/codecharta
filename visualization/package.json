@@ -94,10 +94,10 @@
     "qrcode": "^1.5.3",
     "rxjs": "^7.5.1",
     "safe-stable-stringify": "^2.4.3",
-    "shelljs": "^0.8.4",
+    "shelljs": "^0.10.0",
     "three": "^0.168.0",
     "three-orbit-controls": "^82.1.0",
-    "typescript-json-schema": "0.63.0",
+    "typescript-json-schema": "0.65.1",
     "zone.js": "^0.14.10"
   },
   "devDependencies": {
