@@ -1,5 +1,5 @@
-@import "./matSelectMetricChooser";
-@import "./matSelectFileSelect";
+@use "./matSelectMetricChooser";
+@use "./matSelectFileSelect";
 
 .cdk-overlay-pane {
     .mat-mdc-select-panel {

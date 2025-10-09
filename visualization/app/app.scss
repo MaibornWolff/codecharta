@@ -1,7 +1,7 @@
-@import "mixins.scss";
+@use "mixins" as *;
+@use "./material/material";
 @import "~font-awesome/css/font-awesome.css";
 
-@import "./material/material.scss";
 
 *,
 *:before,
