@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableMetrics
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFileMetrics
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -34,7 +34,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -51,7 +51,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -64,7 +64,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -81,7 +81,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -98,7 +98,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(3)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3.0)
     }
 
     @Test
@@ -115,7 +115,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -137,7 +137,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(3)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3.0)
     }
 
     @Test
@@ -161,7 +161,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -184,7 +184,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMMENT_LINES.metricName]).isEqualTo(7)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_LINES.metricName]).isEqualTo(7.0)
     }
 
     @Test
@@ -204,7 +204,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3.0)
     }
 
     @Test
@@ -224,7 +224,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.LINES_OF_CODE.metricName]).isEqualTo(6.0)
     }
 
     @Test
@@ -243,7 +243,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -262,6 +262,106 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should correctly calculate all measures for parameters per function metric`() {
+        // given
+        val fileContent = """
+            void printSomething() {
+                std::cout << "Something" << std::endl;
+            }
+
+            int anotherFun(int a, int b) {
+                return a + b;
+            }
+
+            int power(int x, int y) {
+                return std::pow(x, y);
+            }
+
+            int oneParameter(int x) {
+                return x * 2;
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_parameters_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["min_parameters_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_parameters_per_function"]).isEqualTo(1.25)
+        Assertions.assertThat(result.attributes["median_parameters_per_function"]).isEqualTo(1.5)
+    }
+
+    @Test
+    fun `should correctly calculate all measures for complexity per function metric`() {
+        // given
+        val fileContent = """
+            void noComplexity() {
+                std::cout << "hello" << std::endl;
+            }
+
+            int complexFun(int a, int b) {
+                switch (a) {
+                    case 1:
+                        if (a * b > 10) {
+                            break;
+                        }
+                    case 2:
+                        if ((a + b) % 2 == 0) {
+                            std::cout << "Sum is even" << std::endl;
+                            break;
+                        }
+                    default:
+                        return a;
+                }
+                return b;
+            }
+
+            bool isEven(int x) {
+                return (x % 2 == 0) ? true : false;
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(5.0)
+        Assertions.assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should correctly calculate rloc per function metric`() {
+        // given
+        val fileContent = """
+            void functionOne() {
+            // comment at start of function
+                std::cout << "This is function one" << std::endl;
+                // inline comment
+                {}
+            }
+
+            int functionTwo(int x) {
+                return x * 2;
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_rloc_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["min_rloc_per_function"]).isEqualTo(1.0)
+        Assertions.assertThat(result.attributes["mean_rloc_per_function"]).isEqualTo(1.5)
+        Assertions.assertThat(result.attributes["median_rloc_per_function"]).isEqualTo(1.5)
     }
 }

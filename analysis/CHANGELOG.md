@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.138.0] - 2025-10-08
+
 ### Added 🚀
 
 - GitLogParser now counts co-authors in `number_of_authors` metric [#4203](https://github.com/MaibornWolff/codecharta/issues/4203)
+- Add new per function metrics to unifiedParser [#4116](https://github.com/MaibornWolff/codecharta/issues/4116)
+  - Parameters per function
+  - Complexity per function
+  - RLOC per function
 
 ## [1.137.0] - 2025-09-25
 

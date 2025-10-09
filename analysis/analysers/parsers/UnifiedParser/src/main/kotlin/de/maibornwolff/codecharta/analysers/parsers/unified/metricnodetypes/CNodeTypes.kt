@@ -48,10 +48,25 @@ class CNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val functionBodyNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "compound_statement"
+        )
+    )
+
+    override val functionParameterNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "parameter_declaration"
+        )
+    )
+
     companion object {
+        private const val FUNCTION_DECLARATION_TYPE = "function_declarator"
+        private const val FUNCTION_DEFINITION_TYPE = "function_definition"
+
         // every function definition contains a function declarator, so the inner declarator can be ignored
         fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {
-            return nodeType == "function_declarator" && node.parent.type == "function_definition"
+            return nodeType == FUNCTION_DECLARATION_TYPE && node.parent.type == FUNCTION_DEFINITION_TYPE
         }
     }
 }

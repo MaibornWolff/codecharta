@@ -67,16 +67,37 @@ class PythonNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val functionBodyNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "block"
+        )
+    )
+
+    override val functionParameterNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "identifier"
+        )
+    )
+
     companion object {
+        private const val STRING_TYPE = "string"
+        private const val BLOCK_COMMENT_TYPE = "expression_statement"
+        private const val FUNCTION_NAME_TYPE = "identifier"
+        private const val FUNCTION_DEFINITION_TYPE = "function_definition"
+
         // as python doesn't use brackets a comment at the start of a function/class would result in wrong rloc
         fun shouldIgnoreNodeStartingWithComment(node: TSNode): Boolean {
             val childNode = node.getChild(0)
             if (childNode.isNull) return false
-            return childNode.type == "expression_statement" && childNode.childCount == 1
+            return childNode.type == BLOCK_COMMENT_TYPE && childNode.childCount == 1
         }
 
         fun shouldIgnoreStringInBlockComment(node: TSNode, nodeType: String): Boolean {
-            return nodeType == "string" && node.parent.childCount == 1
+            return nodeType == STRING_TYPE && node.parent.childCount == 1
+        }
+
+        fun shouldIgnoreFunctionNameAsParameter(node: TSNode, nodeType: String): Boolean {
+            return nodeType == FUNCTION_NAME_TYPE && node.parent.type == FUNCTION_DEFINITION_TYPE
         }
 
         val nodeTypesToIgnore = setOf(

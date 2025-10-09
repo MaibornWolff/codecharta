@@ -32,6 +32,13 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Lines of code (LOC)       | Lines of code including empty lines and comments                                                                                                                                                                           |
 | Real lines of code (RLOC) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
 
+Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file.
+
+| Metric per function     | Description                                          |
+|-------------------------|------------------------------------------------------|
+| Parameters per function | The number of parameters for each function           |
+| Complexity per function | The complexity inside the body of a function         |
+| RLOC per function       | The real lines of code inside the body of a function |
 
 ## Usage and Parameters
 
@@ -100,8 +107,8 @@ It is also recommended to add tests for the new language by creating a test file
 
 ### Adding a new metric
 
-Adding a new metric is done by creating a new metric specific 'calculator', which inherits from the 'MetricCalculator' interface. Calculation of metrics happens individually for each iterated treesitter-node.
+Adding a new metric is done by creating a new metric specific 'calculator', which should inherit from either the 'MetricPerFileCalc' interface if the metric is calculated per file or from 'MetricPerFunctionCalc' if it is calculated per function. Calculation of metrics happens individually for each iterated treesitter-node.
 
-After the calculation logic is implemented, adjust the 'AvailableMetrics' enum in the 'MetricNodeTypes' file to add the new metric and the 'MetricsToCalculatorsMap' to connect the new metric with iths calculation logic.
+After the calculation logic is implemented, adjust the 'AvailableFileMetrics' or 'AvailableFunctionMetrics' enum in the 'MetricNodeTypes' file to add the new metric and the 'MetricsToCalculatorsMap' to connect the new metric with its calculation logic.
 
 Finally, the 'AttributeDescriptors' file needs to be adjusted to include information about the new metric and tests should be run to check if any resource files need to be updated to include the new metric.

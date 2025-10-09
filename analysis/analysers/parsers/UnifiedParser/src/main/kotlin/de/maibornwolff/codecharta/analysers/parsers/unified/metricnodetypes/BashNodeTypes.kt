@@ -43,4 +43,16 @@ class BashNodeTypes : MetricNodeTypes {
             "function_definition"
         )
     )
+
+    override val functionBodyNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "compound_statement"
+        )
+    )
+
+    override val functionParameterNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            ""
+        )
+    )
 }

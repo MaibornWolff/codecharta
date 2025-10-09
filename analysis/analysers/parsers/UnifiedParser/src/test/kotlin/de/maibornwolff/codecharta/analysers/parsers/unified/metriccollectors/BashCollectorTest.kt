@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableMetrics
+import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFileMetrics
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -42,7 +42,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -59,7 +59,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -76,7 +76,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -94,7 +94,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -107,7 +107,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -120,7 +120,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
     }
 
     @Test
@@ -142,7 +142,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(3)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3.0)
     }
 
     @Test
@@ -159,7 +159,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMPLEXITY.metricName]).isEqualTo(1)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -181,7 +181,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.COMMENT_LINES.metricName]).isEqualTo(5)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_LINES.metricName]).isEqualTo(5.0)
     }
 
     @Test
@@ -201,7 +201,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3.0)
     }
 
     @Test
@@ -221,7 +221,7 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.LINES_OF_CODE.metricName]).isEqualTo(6)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.LINES_OF_CODE.metricName]).isEqualTo(6.0)
     }
 
     @Test
@@ -242,6 +242,112 @@ class BashCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2.0)
+    }
+
+    @Test
+    fun `should correctly calculate all measures for parameters per function metric`() {
+        // given
+        val fileContent = """
+            print_something () {
+              echo "Something"
+            }
+
+            function another_fun () {
+              echo "$((${'$'}1 + ${'$'}2))"
+            }
+
+            function power () {
+              echo "$((${'$'}1 ** ${'$'}2))"
+            }
+
+            one_parameter () {
+              echo "$((${'$'}1 * 2))"
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_parameters_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["min_parameters_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_parameters_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["median_parameters_per_function"]).isEqualTo(0.0)
+    }
+
+    @Test
+    fun `should correctly calculate all measures for complexity per function metric`() {
+        // given
+        val fileContent = """
+            no_complexity() {
+                echo "hello"
+            }
+
+            complex_fun() {
+                case ${'$'}1 in
+                    1)
+                        if [ ${'$'}(((${'$'}1 * ${'$'}2)) -gt 10 ] ]; then
+                            return
+                        fi
+                        ;;
+                    2)
+                        if [ ${'$'}(((${'$'}1 + ${'$'}2) % 2)) -eq 0 ]; then
+                            echo "Sum is even"
+                            return
+                        fi
+                        ;;
+                    *)
+                        echo "default"
+                        ;;
+                esac
+            }
+
+            is_even() {
+                if [ ${'$'}((${'$'}1 % 2)) -eq 0 ]; then
+                    echo "true"
+                else
+                    echo "false"
+                fi
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(3.0)
+        Assertions.assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
+        Assertions.assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(1.33)
+        Assertions.assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should correctly calculate rloc per function metric`() {
+        // given
+        val fileContent = """
+            function_one() {
+            # comment at start of function
+                echo "This is function one"
+                # inline comment
+                :
+            }
+
+            function_two() {
+                echo "This is function two"
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes["max_rloc_per_function"]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes["min_rloc_per_function"]).isEqualTo(1.0)
+        Assertions.assertThat(result.attributes["mean_rloc_per_function"]).isEqualTo(1.5)
+        Assertions.assertThat(result.attributes["median_rloc_per_function"]).isEqualTo(1.5)
     }
 }

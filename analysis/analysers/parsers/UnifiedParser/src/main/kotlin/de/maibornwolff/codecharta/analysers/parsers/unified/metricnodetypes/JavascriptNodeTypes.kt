@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes
 
+import org.treesitter.TSNode
+
 class JavascriptNodeTypes : MetricNodeTypes {
     override val logicComplexityNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
@@ -62,4 +64,25 @@ class JavascriptNodeTypes : MetricNodeTypes {
             )
         )
     )
+
+    override val functionBodyNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "statement_block"
+        )
+    )
+
+    override val functionParameterNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "identifier"
+        )
+    )
+
+    companion object {
+        private const val FUNCTION_NAME_TYPE = "identifier"
+        private const val FUNCTION_DECLARATION_TYPE = "function_declaration"
+
+        fun shouldIgnoreFunctionNameAsParameter(node: TSNode, nodeType: String): Boolean {
+            return nodeType == FUNCTION_NAME_TYPE && node.parent.type == FUNCTION_DECLARATION_TYPE
+        }
+    }
 }

@@ -13,6 +13,8 @@ class RubyNodeTypes : MetricNodeTypes {
             "until",
             "while",
             "do_block",
+            // conditional
+            "conditional",
             // case
             "when",
             "else",
@@ -57,22 +59,41 @@ class RubyNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val functionBodyNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "body_statement"
+        )
+    )
+
+    override val functionParameterNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "identifier"
+        )
+    )
+
     companion object {
+        private const val FUNCTION_NAME_TYPE = "identifier"
+        private const val FUNCTION_DECLARATION_TYPE = "method"
+        private const val CASE_STATEMENT_TYPE = "case"
+        private const val ELSE_STATEMENT_TYPE = "else"
+        private const val THEN_DELIMITER = "then"
+
         // some node types equal their string literal in code, which is captured in a child node and can be ignored to prevent double counting
         fun shouldIgnoreChildWithEqualParentType(node: TSNode, nodeType: String): Boolean {
-            if (nodeType == "if") {
-                println()
-            }
             return nodesWhereTypeEqualsCodeLiteral.contains(nodeType) && nodeType == node.parent.type
         }
 
-        fun shouldIgnoreElseNotInCaseStatement(node: TSNode, nodeType: String): Boolean {
-            return nodeType == "else" && node.parent.type != "case"
+        fun shouldIgnoreNodeTypeForRloc(nodeType: String): Boolean {
+            return nodeType == THEN_DELIMITER
         }
 
-        val nodeTypesToIgnore = setOf(
-            "then"
-        )
+        fun shouldIgnoreElseNotInCaseStatement(node: TSNode, nodeType: String): Boolean {
+            return nodeType == ELSE_STATEMENT_TYPE && node.parent.type != CASE_STATEMENT_TYPE
+        }
+
+        fun shouldIgnoreMethodNameAsParameter(node: TSNode, nodeType: String): Boolean {
+            return nodeType == FUNCTION_NAME_TYPE && node.parent.type == FUNCTION_DECLARATION_TYPE
+        }
 
         private val nodesWhereTypeEqualsCodeLiteral = setOf(
             "if",

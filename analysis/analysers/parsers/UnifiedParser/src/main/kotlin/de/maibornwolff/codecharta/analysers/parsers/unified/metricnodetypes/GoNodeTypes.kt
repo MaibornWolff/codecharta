@@ -46,4 +46,16 @@ class GoNodeTypes : MetricNodeTypes {
             "method_spec"
         )
     )
+
+    override val functionBodyNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "block"
+        )
+    )
+
+    override val functionParameterNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "parameter_declaration"
+        )
+    )
 }

@@ -58,15 +58,32 @@ class CppNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val functionBodyNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "compound_statement"
+        )
+    )
+
+    override val functionParameterNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "parameter_declaration"
+        )
+    )
+
     companion object {
+        private const val ABSTRACT_FUNCTION_DECLARATION_TYPE = "abstract_function_declarator"
+        private const val LAMBDA_EXPRESSION = "lambda_expression"
+        private const val FUNCTION_DECLARATION_TYPE = "function_declarator"
+        private const val FUNCTION_DEFINITION_TYPE = "function_definition"
+
         // every lambda expression contains an abstract function declarator, which can be ignored
         fun shouldIgnoreAbstractFunctionInLambda(node: TSNode, nodeType: String): Boolean {
-            return nodeType == "abstract_function_declarator" && node.parent.type == "lambda_expression"
+            return nodeType == ABSTRACT_FUNCTION_DECLARATION_TYPE && node.parent.type == LAMBDA_EXPRESSION
         }
 
         // every function definition contains a function declarator, which can be ignored
         fun shouldIgnoreFnDeclaratorInFnDefinition(node: TSNode, nodeType: String): Boolean {
-            return nodeType == "function_declarator" && node.parent.type == "function_definition"
+            return nodeType == FUNCTION_DECLARATION_TYPE && node.parent.type == FUNCTION_DEFINITION_TYPE
         }
     }
 }

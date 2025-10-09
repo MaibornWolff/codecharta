@@ -58,4 +58,16 @@ class JavaNodeTypes : MetricNodeTypes {
             )
         )
     )
+
+    override val functionBodyNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "block"
+        )
+    )
+
+    override val functionParameterNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "formal_parameter"
+        )
+    )
 }

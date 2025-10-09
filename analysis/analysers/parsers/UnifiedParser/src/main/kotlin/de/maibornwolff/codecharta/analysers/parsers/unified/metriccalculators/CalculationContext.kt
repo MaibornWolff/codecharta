@@ -8,5 +8,6 @@ data class CalculationContext(
     val startRow: Int = -1,
     val endRow: Int = -1,
     val shouldIgnoreNode: (TSNode, String) -> Boolean,
-    val countNodeAsLeafNode: (TSNode) -> Boolean = { false }
+    val countNodeAsLeafNode: (TSNode) -> Boolean = { false },
+    val functionBodyUsesBrackets: Boolean = true
 )
