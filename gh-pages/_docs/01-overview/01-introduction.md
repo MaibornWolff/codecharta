@@ -24,7 +24,7 @@ understanding of code onto a visual and understandable map.
 # Different parts of CodeCharta
 
 We split CodeCharta into two different parts. The CCSH (CodeCharta Shell) which is the base for extracting metrics and
-our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity) which is there to visualize these metrics as a city like map.
+our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity) which is there to visualize these metrics as a city like map.
 From here you can move around, look at metrics and even 3D print them.
 
 > Please note that CodeCharta runs only on your client. No metrics that you analyze or visualize will ever leave your computer unless you
@@ -35,7 +35,7 @@ From here you can move around, look at metrics and even 3D print them.
 ## Try our Web Studio
 
 You can use
-our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity)
+our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity)
 to move around and check out our example maps that are already in place.
 
 ## Docker
