@@ -123,4 +123,36 @@ class ProjectDeserializerTest {
         // then
         assertThat(project).isNull()
     }
+
+    @Test
+    fun `should deserialize checksum from json`() {
+        // given
+        val sampleChecksum = "abc123def456"
+        val jsonWithChecksum = """
+            {
+                "projectName": "TestProject",
+                "apiVersion": "1.3",
+                "nodes": [
+                    {
+                        "name": "root",
+                        "type": "Folder",
+                        "children": [
+                            {
+                                "name": "TestFile.java",
+                                "type": "File",
+                                "attributes": {"rloc": 100},
+                                "checksum": "$sampleChecksum"
+                            }
+                        ]
+                    }
+                ]
+            }
+        """.trimIndent()
+
+        // when
+        val project = ProjectDeserializer.deserializeProject(jsonWithChecksum)
+
+        // then
+        assertThat(project.rootNode.children.first().checksum).isEqualTo(sampleChecksum)
+    }
 }

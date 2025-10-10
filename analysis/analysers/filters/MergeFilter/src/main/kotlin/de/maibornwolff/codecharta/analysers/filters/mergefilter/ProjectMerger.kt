@@ -126,16 +126,16 @@ class ProjectMerger(
         newAttributeDescriptor: AttributeDescriptor
     ) {
         if (existingAttributeDescriptor.title != newAttributeDescriptor.title) {
-            Logger.warn { "Title of '$metric' metric differs between files! Using value of first file..." }
+            Logger.info { "Title of '$metric' metric differs between files! Using value of first file..." }
         }
         if (existingAttributeDescriptor.description != newAttributeDescriptor.description) {
-            Logger.warn { "Description of '$metric' metric differs between files! Using value of first file..." }
+            Logger.info { "Description of '$metric' metric differs between files! Using value of first file..." }
         }
         if (existingAttributeDescriptor.link != newAttributeDescriptor.link) {
-            Logger.warn { "Link of '$metric' metric differs between files! Using value of first file..." }
+            Logger.info { "Link of '$metric' metric differs between files! Using value of first file..." }
         }
         if (existingAttributeDescriptor.direction != newAttributeDescriptor.direction) {
-            Logger.warn { "Direction of '$metric' metric differs between files! Using value of first file..." }
+            Logger.info { "Direction of '$metric' metric differs between files! Using value of first file..." }
         }
     }
 
