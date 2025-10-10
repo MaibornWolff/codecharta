@@ -1,5 +1,5 @@
 {
-  "checksum": "ca6213ee87881967e3d17c115900618b",
+  "checksum": "7603bc8970dcad43c1a0931d30cff7d1",
   "data": {
     "projectName": "",
     "nodes": [
@@ -39,7 +39,8 @@
                   "median_rloc_per_function": 0.0
                 },
                 "link": "",
-                "children": []
+                "children": [],
+                "checksum": "45563eb7b21bf6cc"
               }
             ]
           },
@@ -73,7 +74,8 @@
                   "median_rloc_per_function": 4.5
                 },
                 "link": "",
-                "children": []
+                "children": [],
+                "checksum": "c40238c79d87defc"
               },
               {
                 "name": "hello.kt",
@@ -99,7 +101,8 @@
                   "median_rloc_per_function": 0.0
                 },
                 "link": "",
-                "children": []
+                "children": [],
+                "checksum": "bfc329a4e973c424"
               }
             ]
           },
@@ -127,7 +130,8 @@
               "median_rloc_per_function": 4.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "39e5446f9451898e"
           },
           {
             "name": "foo.py",
@@ -153,7 +157,8 @@
               "median_rloc_per_function": 0.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "45b3835ff9d57197"
           },
           {
             "name": "helloWorld.ts",
@@ -179,7 +184,8 @@
               "median_rloc_per_function": 1.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "e31a24ef7db12378"
           },
           {
             "name": "whenCase.kt",
@@ -205,7 +211,8 @@
               "median_rloc_per_function": 6.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "91308e658fb97d1c"
           }
         ]
       }
