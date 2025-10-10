@@ -15,9 +15,9 @@ gallery:
     title: "Web Studio"
 ---
 
-# [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity)
+# [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity)
 
-Before you start doing anything, you should have a look at our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity) you can try everything out yourself. You could also have a look at our [User Controls]({{site.docs_visualization}}/user-controls) to help you navigate.
+Before you start doing anything, you should have a look at our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity) you can try everything out yourself. You could also have a look at our [User Controls]({{site.docs_visualization}}/user-controls) to help you navigate.
 
 You can also run the Web Studio offline by running:
 
@@ -30,7 +30,7 @@ For more details about our docker images, see [Docker Containers]({{site.docs_ov
 
 # CCSH (CodeCharta Shell)
 
-After trying out the WebStudio, you may be wondering how to get your own project metrics into CodeCharta. You can either download and install our pre-build [CCSH (CodeCharta Shell)]({{site.docs_analysis}}/codecharta-shell) or use our provided docker container. Both can be used to generate the metrics that can later be imported into our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity).
+After trying out the WebStudio, you may be wondering how to get your own project metrics into CodeCharta. You can either download and install our pre-build [CCSH (CodeCharta Shell)]({{site.docs_analysis}}/codecharta-shell) or use our provided docker container. Both can be used to generate the metrics that can later be imported into our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity).
 
 ## Docker
 
@@ -71,7 +71,7 @@ $ ccsh unifiedparser -o=tutorial <path/to/your/project>
 # done :)!
 ```
 
-This generates a **tutorial.cc.json.gz**, which can be imported in our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity).
+This generates a **tutorial.cc.json.gz**, which can be imported in our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity).
 
 Just click on the top left on import and open your **tutorial.cc.json.gz**. You are now able to explore your code base to your hearts content.
 {% include gallery %}

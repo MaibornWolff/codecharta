@@ -21,7 +21,7 @@ You can start with **Codecharta Visualization** on multiple ways:
 - Build it yourself from the github [repository](#build-it-yourself) (Development)
 - Use [docker-compose](https://maibornwolff.github.io/codecharta/docs/docker-containers/) to run this with other needed tools like a Sonar instance or analyzing tools of codecharta-analysis.
 - Use our [Dockerfile](#run-in-docker-container) to run the visualization in a container
-- Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json)
+- Try out the [online version](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta_visualization.cc.json&file=codecharta_analysis.cc.json)
 
 > Be aware, that if you are on Apple Silicon, you may run into problems with the standalone and build versions
 
