@@ -13,11 +13,7 @@ open class ProjectBuilder(
     private var blacklist: MutableList<BlacklistItem> = mutableListOf()
 ) {
     init {
-        if (nodes.size != 1) {
-            throw IllegalStateException(
-                "No unique root node was found, instead ${nodes.size} candidates identified."
-            )
-        }
+        check(nodes.size == 1) { "No unique root node was found, instead ${nodes.size} candidates identified." }
     }
 
     val rootNode: MutableNode
@@ -81,12 +77,9 @@ open class ProjectBuilder(
             Project(
                 edges = edges.toList(),
                 blacklist = blacklist.toList(),
-                projectName = Companion.DUMMY_PROJECT_NAME,
+                projectName = DUMMY_PROJECT_NAME,
                 attributeTypes = attributeTypes.toMap(),
-                nodes =
-                    nodes.map {
-                        it.toNode()
-                    }.toList(),
+                nodes = nodes.map { it.toNode() }.toList(),
                 attributeDescriptors = attributeDescriptors.toMap()
             )
 

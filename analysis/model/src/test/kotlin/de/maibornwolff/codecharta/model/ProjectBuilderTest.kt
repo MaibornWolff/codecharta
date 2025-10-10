@@ -24,7 +24,7 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should insert a new node as child of root when there is no root node `() {
-// when
+        // when
         val projectBuilder = ProjectBuilder()
         val nodeForInsertion = MutableNode("someNode", NodeType.File)
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
@@ -37,7 +37,7 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should create a project with root when inserting a new node into a project with root-node`() {
-// when
+        // when
         val root = MutableNode("root", NodeType.Folder)
         val projectBuilder = ProjectBuilder(listOf(root))
 
@@ -53,7 +53,7 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should filter out empty folders`() {
-// when
+        // when
         val projectBuilder = ProjectBuilder()
         val nodeForInsertion = MutableNode("someNode", NodeType.Folder)
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
@@ -67,7 +67,7 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should add the correct attribute-types`() {
-// when
+        // when
         val projectBuilder =
             ProjectBuilder(
                 attributeTypes = mutableMapOf("nodes" to mutableMapOf("nodeMetric" to AttributeType.ABSOLUTE))
@@ -273,7 +273,7 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should print the correct content keys`() {
-// when
+        // when
         val projectBuilder = ProjectBuilder()
 
         // then
@@ -283,5 +283,44 @@ class ProjectBuilderTest {
             "attributeDescriptors={}",
             "blacklist=[]"
         )
+    }
+
+    @Test
+    fun `it should preserve checksums through the build process`() {
+        // given
+        val sampleChecksum = "abc123def456"
+        val rootNode = MutableNode("root", NodeType.Folder)
+        val fileWithChecksum =
+            MutableNode(
+                name = "TestFile.java",
+                type = NodeType.File,
+                attributes = mapOf("rloc" to 100, "complexity" to 15),
+                checksum = sampleChecksum
+            )
+        val fileWithoutChecksum =
+            MutableNode(
+                name = "EmptyFile.java",
+                type = NodeType.File,
+                attributes = mapOf("rloc" to 0),
+                checksum = null
+            )
+        val folderNode = MutableNode("src", NodeType.Folder)
+
+        rootNode.children.add(fileWithChecksum)
+        rootNode.children.add(fileWithoutChecksum)
+        rootNode.children.add(folderNode)
+
+        // when
+        val projectBuilder = ProjectBuilder(listOf(rootNode))
+        val project = projectBuilder.build()
+
+        // then
+        val builtFileWithChecksum = project.rootNode.children.find { it.name == "TestFile.java" }
+        val builtFileWithoutChecksum = project.rootNode.children.find { it.name == "EmptyFile.java" }
+        val builtFolder = project.rootNode.children.find { it.name == "src" }
+
+        assertThat(builtFileWithChecksum!!.checksum).isEqualTo(sampleChecksum)
+        assertThat(builtFileWithoutChecksum!!.checksum).isNull()
+        assertThat(builtFolder!!.checksum).isNull()
     }
 }
