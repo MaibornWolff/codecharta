@@ -24,10 +24,10 @@ mat-dialog-container {
     }
 
     mat-dialog-actions {
-        --mdc-filled-button-label-text-color: #{variables.$cc-primary-color};
-        --mdc-text-button-label-text-color: #{variables.$cc-primary-color};
-        --mdc-filled-button-container-color: var(--mdc-filled-text-field-container-color);
-        --mdc-filled-button-disabled-container-color: var(--mdc-filled-text-field-container-color);
+        --mat-button-filled-label-text-color: #{variables.$cc-primary-color};
+        --mat-button-text-label-text-color: #{variables.$cc-primary-color};
+        --mat-button-filled-container-color: var(--mat-form-field-filled-container-color);
+        --mat-button-filled-disabled-container-color: var(--mat-form-field-filled-container-color);
 
         &.mat-mdc-dialog-actions.cc-add-custom-config {
             &:has(cc-download-and-purge-configs) {

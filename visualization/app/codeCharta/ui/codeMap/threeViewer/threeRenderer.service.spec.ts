@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { Scene, Vector2, WebGLRenderer, WebGLInfo, WebGLRenderTarget, Texture, Camera } from "three"
 import { Store, StoreModule } from "@ngrx/store"
-import WEBGL from "three/examples/jsm/capabilities/WebGL"
+import WEBGL from "three/addons/capabilities/WebGL.js"
 import { SharpnessMode } from "../../../codeCharta.model"
 import { setSharpnessMode } from "../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"

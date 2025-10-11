@@ -1,7 +1,7 @@
 import path from "path"
 import { setDefaultOptions } from "expect-puppeteer"
 
-export const CC_URL = `file:${path.join(__dirname, "../dist/webpack/index.html")}`
+export const CC_URL = `file:${path.join(__dirname, "../dist/visualization/browser/index.html")}`
 // expect-puppeteer toClick timeout does not work it might be the reason of flaky tests,
 // changed default options globally
 // [toClick issue](https://github.com/smooth-code/jest-puppeteer/issues/202)

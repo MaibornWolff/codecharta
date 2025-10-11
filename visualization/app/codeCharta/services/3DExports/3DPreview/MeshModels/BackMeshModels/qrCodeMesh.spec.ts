@@ -3,7 +3,7 @@ import { BufferGeometry, Mesh, ShaderMaterial } from "three"
 import { ColorRange, NodeMetricData } from "../../../../../codeCharta.model"
 import { QrCodeMesh } from "./qrCodeMesh"
 
-jest.mock("three/examples/jsm/utils/BufferGeometryUtils", () => ({
+jest.mock("three/addons/utils/BufferGeometryUtils.js", () => ({
     mergeGeometries: jest.fn(() => new BufferGeometry())
 }))
 

@@ -2,11 +2,11 @@ import { CustomVisibilityMesh } from "../customVisibilityMesh"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { BufferGeometry } from "three"
-import { Font } from "three/examples/jsm/loaders/FontLoader"
+import { Font } from "three/addons/loaders/FontLoader.js"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { NodeMetricData } from "../../../../../codeCharta.model"
-import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js"
+import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 
 export interface MetricDescriptionBlockOptions {
     name: string
@@ -64,7 +64,7 @@ export class MetricDescriptionBlockMesh extends CustomVisibilityMesh {
         geometryOptions: GeometryOptions
     ): Promise<BufferGeometry> {
         const iconGeometry = await createSvgGeometryStrategy.create(geometryOptions, {
-            filePath: `codeCharta/assets/${this.metricDescriptionBlockOptions.iconFilename}`,
+            filePath: `/codeCharta/assets/${this.metricDescriptionBlockOptions.iconFilename}`,
             size: this.metricDescriptionBlockOptions.iconScale,
             side: "back"
         })

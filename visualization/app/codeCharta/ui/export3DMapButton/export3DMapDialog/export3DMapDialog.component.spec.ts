@@ -11,7 +11,7 @@ import { FileSelectionState, FileState } from "../../../model/files/files"
 import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../codeCharta.model"
 import { Export3DMapButtonComponent } from "../export3DMapButton.component"
 
-jest.mock("three/examples/jsm/loaders/SVGLoader", () => {
+jest.mock("three/addons/loaders/SVGLoader.js", () => {
     return {
         SVGLoader: jest.fn().mockImplementation(() => {
             return {

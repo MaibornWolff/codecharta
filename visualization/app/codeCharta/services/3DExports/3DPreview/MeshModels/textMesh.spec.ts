@@ -4,7 +4,7 @@ import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from ".
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { TextMesh } from "./textMesh"
 import { BufferGeometry, Mesh, ShaderMaterial } from "three"
-import { Font } from "three/examples/jsm/loaders/FontLoader"
+import { Font } from "three/addons/loaders/FontLoader.js"
 
 jest.mock("../CreateGeometryStrategies/createTextGeometryStrategy")
 

@@ -1,7 +1,7 @@
 import { Group, Mesh, PerspectiveCamera, Vector2, WebGLRenderer } from "three"
 import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { CursorType } from "../codeMap/codeMap.mouseEvent.service"
 
 jest.mock("three", () => ({
@@ -26,7 +26,7 @@ jest.mock("three", () => ({
     PerspectiveCamera: jest.fn().mockImplementation(() => ({}))
 }))
 
-jest.mock("three/examples/jsm/controls/OrbitControls", () => {
+jest.mock("three/addons/controls/OrbitControls", () => {
     return {
         OrbitControls: jest.fn()
     }

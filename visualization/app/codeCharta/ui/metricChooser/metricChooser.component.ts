@@ -6,7 +6,7 @@ import { attributeDescriptorsSelector } from "../../state/store/fileSettings/att
 import { Store } from "@ngrx/store"
 import { MatSelect, MatSelectTrigger } from "@angular/material/select"
 import { MatOption } from "@angular/material/core"
-import { NgIf, AsyncPipe } from "@angular/common"
+import { AsyncPipe } from "@angular/common"
 import { MatFormField, MatPrefix } from "@angular/material/form-field"
 import { MatInput } from "@angular/material/input"
 import { FormsModule } from "@angular/forms"
@@ -23,7 +23,6 @@ type MetricChooserType = "node" | "edge"
     imports: [
         MatSelect,
         MatSelectTrigger,
-        NgIf,
         MatFormField,
         MatPrefix,
         MatInput,

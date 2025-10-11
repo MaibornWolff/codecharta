@@ -1,5 +1,5 @@
 import { Clock, WebGLRenderer, WebGLRenderTarget } from "three"
-import { Pass, FullScreenQuad } from "three/examples/jsm/postprocessing/Pass"
+import { Pass, FullScreenQuad } from "three/addons/postprocessing/Pass.js"
 import { CustomComposer } from "./customComposer"
 
 describe("CustomComposer", () => {

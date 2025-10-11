@@ -1,9 +1,9 @@
 import { BufferGeometry } from "three"
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry"
-import { Font } from "three/examples/jsm/loaders/FontLoader"
+import { TextGeometry } from "three/addons/geometries/TextGeometry.js"
+import { Font } from "three/addons/loaders/FontLoader.js"
 import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
-import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js"
+import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 
 export interface CreateTextGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     font: Font
@@ -34,7 +34,7 @@ export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
                 : new TextGeometry(text, {
                       font,
                       size: textSize,
-                      height: geometryOptions.printHeight
+                      depth: geometryOptions.printHeight
                   })
 
         textGeometry.center()

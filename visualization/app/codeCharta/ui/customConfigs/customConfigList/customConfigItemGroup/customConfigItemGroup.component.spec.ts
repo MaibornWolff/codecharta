@@ -168,7 +168,7 @@ describe("customConfigItemGroupComponent", () => {
 
         await userEvent.click(header)
 
-        expect(toggleGroupExpansionSpy).toBeCalledTimes(1)
+        expect(toggleGroupExpansionSpy).toHaveBeenCalledTimes(1)
         waitFor(() => {
             expect(fixture.componentInstance.isGroupExpanded("Custom View(s) in Standard mode for fileB fileC")).toBeTruthy()
         })
