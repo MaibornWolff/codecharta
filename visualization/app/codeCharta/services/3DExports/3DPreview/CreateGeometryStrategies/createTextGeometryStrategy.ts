@@ -63,7 +63,7 @@ export class CreateTextGeometryStrategy implements CreateGeometryStrategy {
             const lineGeometry = new TextGeometry(line, {
                 font,
                 size,
-                height
+                depth: height
             })
             lineGeometry.center()
             lineGeometry.translate(0, -index * size * 1.5, 0)
