@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should only highlight small leaf when big leaf is selected 1`] = `
 [
