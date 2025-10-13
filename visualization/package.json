@@ -110,7 +110,7 @@
     "@cyclonedx/cyclonedx-npm": "^2.1.0",
     "@electron/get": "^3.1.0",
     "@electron/packager": "^18.3.3",
-    "@testing-library/angular": "^14.5.1",
+    "@testing-library/angular": "^18.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/color-convert": "2.0.4",
     "@types/d3-hierarchy": "^3.0.2",
