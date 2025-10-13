@@ -107,7 +107,7 @@
     "@angular/compiler": "^19.2.15",
     "@angular/compiler-cli": "^19.2.15",
     "@babel/plugin-transform-class-static-block": "^7.23.3",
-    "@cyclonedx/cyclonedx-npm": "^2.1.0",
+    "@cyclonedx/cyclonedx-npm": "^4.0.0",
     "@electron/get": "^3.1.0",
     "@electron/packager": "^18.3.3",
     "@testing-library/angular": "^14.5.1",
