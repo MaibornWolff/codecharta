@@ -18,16 +18,16 @@ $CCSH modify --set-root root/visualization -o codecharta_git_mod.cc.json codecha
 
 $CCSH sonarimport -nc -o codecharta_sonar_visualization.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_visualization
 
-$CCSH merge -o ../visualization/dist/webpack/codecharta.cc.json codecharta_sonar_visualization.cc.json codecharta_git_mod.cc.json -nc
+$CCSH merge -o ../visualization/dist/bundler/browser/codecharta.cc.json codecharta_sonar_visualization.cc.json codecharta_git_mod.cc.json -nc
 # Zipped map for pipeline build
-$CCSH merge -o ../visualization/dist/webpack/codecharta.cc.json codecharta_sonar_visualization.cc.json codecharta_git_mod.cc.json
+$CCSH merge -o ../visualization/dist/bundler/browser/codecharta.cc.json codecharta_sonar_visualization.cc.json codecharta_git_mod.cc.json
 
 # Map for analysis
 $CCSH sonarimport -nc -o codecharta_sonar_analysis.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_analysis
 $CCSH modify --set-root root/analysis -o codecharta_git_mod.cc.json codecharta_git.cc.json
-$CCSH merge -o ../visualization/dist/webpack/codecharta_analysis.cc.json codecharta_sonar_analysis.cc.json codecharta_git_mod.cc.json -nc
+$CCSH merge -o ../visualization/dist/bundler/browser/codecharta_analysis.cc.json codecharta_sonar_analysis.cc.json codecharta_git_mod.cc.json -nc
 # Zipped map for pipeline build
-$CCSH merge -o ../visualization/dist/webpack/codecharta_analysis.cc.json codecharta_sonar_analysis.cc.json codecharta_git_mod.cc.json
+$CCSH merge -o ../visualization/dist/bundler/browser/codecharta_analysis.cc.json codecharta_sonar_analysis.cc.json codecharta_git_mod.cc.json
 
 
 cd ..

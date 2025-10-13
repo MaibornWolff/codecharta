@@ -27,7 +27,7 @@ async function buildElectronApps(version, distributions, downloadPath) {
                     arch: anArchitecture,
                     version: version,
                     electronZipDir: downloadPath,
-                    dir: paths.webpackPath,
+                    dir: paths.bundledBrowser,
                     out: paths.applicationPath
                 })
             )

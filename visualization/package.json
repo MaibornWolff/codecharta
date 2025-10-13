@@ -16,7 +16,7 @@
   },
   "description": "MaibornWolff CodeCharta",
   "files": [
-    "dist/visualization",
+    "dist/bundler/browser",
     "conf",
     "Dockerfile",
     "LICENSE.md",
@@ -36,8 +36,8 @@
     "last 2 safari version"
   ],
   "scripts": {
-    "start": "electron dist/visualization/browser",
-    "build": "ng build && cp electron/* package.json dist/visualization/browser",
+    "start": "electron dist/bundler/browser",
+    "build": "ng build && cp electron/* package.json dist/bundler/browser",
     "dev": "ng serve",
     "test": "npm run test:ci -- --maxWorkers=25%",
     "test:ci": "jest --config conf/jestUnit.config.json .*\\.spec\\.ts",

@@ -3,7 +3,7 @@
     "applicationPath": "dist/applications",
     "packagePath": "dist/packages",
     "binaryPath": "build/binaries",
-    "webpackPath": "dist/visualization/browser",
+    "bundledBrowser": "dist/bundler/browser",
     "tempPath": "build/applicationTemp"
   },
   "distributions": {
