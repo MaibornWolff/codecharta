@@ -78,6 +78,6 @@ jobs:
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
-          folder: visualization/dist/webpack
+          folder: visualization/dist/bundler/browser
           target-folder: stg/visualization
           clean: true
