@@ -1,6 +1,6 @@
 <div align="center">
   <!-- Logo -->
-  <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true">
+  <a href="https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true">
     <img src="https://raw.githubusercontent.com/maibornwolff/codecharta/main/logo/codecharta_logo.svg" alt="CodeCharta logo" width="200"/>
   </a>
 
@@ -45,10 +45,10 @@
   <br>
 
   <!-- Web Studio -->
-  <a href="https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity">
+  <a href="https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity">
     <img alt="Website Up Badge" src="https://img.shields.io/website?url=https%3A%2F%2Fcodecharta.com%2Fvisualization%2Fapp%2Findex.html%3Ffile%3Dcodecharta.cc.json.gz%26file%3Dcodecharta_analysis.cc.json.gz%26area%3Drloc%26height%3Dsonar_complexity%26color%3Dsonar_complexity&up_message=running&style=plastic&label=Web%20Studio">
   </a>
-  <a href="https://codecharta.com/stg/visualization/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=functions&color=functions&currentFilesAreSampleFiles=true">
+  <a href="https://codecharta.com/stg/visualization/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=functions&color=functions&currentFilesAreSampleFiles=true">
     <img alt="Website Prerelease Badge" src="https://img.shields.io/website?url=https%3A%2F%2Fcodecharta.com%2Fstg%2Fvisualization%2Findex.html%3Ffile%3Dcodecharta.cc.json.gz%26file%3Dcodecharta_analysis.cc.json.gz%26area%3Drloc%26height%3Dfunctions%26color%3Dfunctions%26currentFilesAreSampleFiles%3Dtrue&up_message=running&style=plastic&label=Web%20Studio%20Prerelease%20Environment">
   </a>
 
@@ -82,9 +82,9 @@ and [Raw Text](https://maibornwolff.github.io/codecharta/docs/parser/raw-text).
 
 ![Analysis overview](assets/ccsh_overview.png)
 
-### [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity) (Visualisation)
+### [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity) (Visualisation)
 
-Our [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity)
+Our [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity)
 allows you to visualize your code base in 3D. It takes the results from our Shell and displays them in a city-like map.
 You can move around your code base, zoom in and out, and see the metrics of your code base in a 3D map.
 Files with metrics become buildings where the area, height and color represent different metrics, you can freely choose!
