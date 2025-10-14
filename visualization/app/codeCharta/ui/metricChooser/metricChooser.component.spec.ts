@@ -61,6 +61,7 @@ describe("metricChooserComponent", () => {
         await waitFor(() => expect(screen.queryAllByRole("option")[4].getAttribute("title")).toMatch("Cyclomatic Complexity"))
 
         await userEvent.click(screen.queryAllByRole("option")[1])
+        await waitFor(() => expect(screen.queryByRole("listbox")).toBeNull())
 
         await rerender({
             componentProperties: {
@@ -70,8 +71,8 @@ describe("metricChooserComponent", () => {
             }
         })
         detectChanges()
-        expect(screen.queryByText("aMetric")).toBe(null)
-        expect(screen.queryByText("bMetric")).not.toBe(null)
+        expect(screen.queryByText("aMetric", { exact: true })).toBe(null)
+        expect(screen.queryByText("bMetric", { exact: true })).not.toBe(null)
     })
 
     it("should focus search field initially, filter options by search term, and reset search term on close", async () => {

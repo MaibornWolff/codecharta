@@ -1,5 +1,5 @@
 import { BufferGeometry } from "three"
-import { Font } from "three/examples/jsm/loaders/FontLoader"
+import { Font } from "three/addons/loaders/FontLoader.js"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "./createTextGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import HelvetikerFont from "three/examples/fonts/helvetiker_regular.typeface.json"

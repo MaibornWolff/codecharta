@@ -1,6 +1,6 @@
 import { validateLocalStorageSize } from "./validateLocalStorageSize"
 import { DownloadAndPurgeConfigsComponent } from "./downloadAndPurgeConfigs.component"
-import { render, screen } from "@testing-library/angular"
+import { render, screen, waitFor } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import userEvent from "@testing-library/user-event"
 import { ConfirmationDialogComponent } from "../../../../dialogs/confirmationDialog/confirmationDialog.component"
@@ -70,7 +70,7 @@ describe("downloadAndPurgeConfigsComponent", () => {
             await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
             expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
             await userEvent.click(screen.queryByText("CANCEL"))
-            expect(screen.queryByText("CANCEL")).toBeNull()
+            await waitFor(() => expect(screen.queryByText("CANCEL")).toBeNull())
             expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(0)
         })
 
@@ -80,7 +80,7 @@ describe("downloadAndPurgeConfigsComponent", () => {
             await userEvent.click(screen.queryByText("DOWNLOAD & PURGE..."))
             expect(screen.queryByText("Confirm to purge old Configs")).not.toBeNull()
             await userEvent.click(screen.queryByText("OK"))
-            expect(screen.queryByText("OK")).toBeNull()
+            await waitFor(() => expect(screen.queryByText("OK")).toBeNull())
             expect(spyOnDeleteCustomConfigs).toHaveBeenCalledTimes(1)
         })
     })

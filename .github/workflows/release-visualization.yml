@@ -55,7 +55,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
@@ -93,12 +93,12 @@ jobs:
           path: |
             visualization/dist/packages
 
-      - name: Upload webpack
+      - name: Upload Bundled Angular Application
         uses: actions/upload-artifact@v4
         with:
-          name: webpack-build
+          name: angular-build
           path: |
-            visualization/dist/webpack
+            visualization/dist/bundler/browser
 
   # Create GitHub Release
   create_release:
@@ -148,14 +148,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Download build artifacts
         uses: actions/download-artifact@v5
         with:
-          name: webpack-build
-          path: visualization/dist/webpack
+          name: angular-build
+          path: visualization/dist/bundler/browser
 
       - name: Publish package
         working-directory: visualization
@@ -199,8 +199,8 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v5
         with:
-          name: webpack-build
-          path: visualization/dist/webpack
+          name: angular-build
+          path: visualization/dist/bundler/browser
 
       - name: Create Sample File for Web Demo
         run: sh ./.github/workflows/scripts/build_demo_files.sh
@@ -210,5 +210,5 @@ jobs:
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
-          folder: visualization/dist/webpack
+          folder: visualization/dist/bundler/browser
           target-folder: visualization/app

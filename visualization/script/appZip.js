@@ -25,7 +25,7 @@ async function zipApplications() {
     })
     zipPromises.push(
         zip({
-            source: paths.webpackPath,
+            source: paths.bundledBrowser,
             destination: path.join(paths.packagePath, "web.zip"),
             cwd: path.resolve(".")
         })

@@ -2,6 +2,7 @@ import markdownFile from "../../../../../CHANGELOG.md"
 import { Component, Inject } from "@angular/core"
 import { MAT_DIALOG_DATA, MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog"
 import { marked } from "marked"
+import { mangle } from "marked-mangle"
 import { MatToolbar } from "@angular/material/toolbar"
 import { CdkScrollable } from "@angular/cdk/scrolling"
 import { MatButton } from "@angular/material/button"
@@ -20,6 +21,7 @@ export class ChangelogDialogComponent {
     }
 
     private getChangelogChanges() {
+        marked.use(mangle())
         const parsedMarkdownFile = marked.parse(markdownFile, { headerIds: false })
         let changelogLines = parsedMarkdownFile.split("\n")
 
