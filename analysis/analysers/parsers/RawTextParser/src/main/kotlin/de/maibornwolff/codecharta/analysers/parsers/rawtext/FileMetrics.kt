@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 class FileMetrics {
     val metricsMap = mutableMapOf<String, Double>()
+    var checksum: String? = null
 
     fun addMetric(name: String, value: Number): FileMetrics {
         metricsMap[name] = value.toDouble()
