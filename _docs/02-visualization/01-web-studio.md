@@ -23,7 +23,7 @@ Our Web Studio allows you to import metrics from the CCSH (CodeCharta shell) and
 
 # Online
 
-You don't have to run our Web Studio yourself. Just use our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity) we are running on gh-pages.
+You don't have to run our Web Studio yourself. Just use our [Web Studio](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true&area=rloc&height=sonar_complexity&color=sonar_complexity) we are running on gh-pages.
 
 # Run it locally
 
