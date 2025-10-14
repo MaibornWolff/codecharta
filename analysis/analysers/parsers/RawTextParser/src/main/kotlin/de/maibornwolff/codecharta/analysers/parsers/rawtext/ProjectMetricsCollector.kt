@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.IndentationMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.LinesOfCodeMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.Metric
+import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
@@ -93,16 +94,19 @@ class ProjectMetricsCollector(
     }
 
     private fun parseFile(file: File): FileMetrics {
+        val fileContent = file.readText()
+        val checksum = ChecksumCalculator.calculateChecksum(fileContent)
+
         val metrics = createMetricsFromMetricNames()
-        file
-            .bufferedReader()
-            .useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
+        file.bufferedReader().useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
 
         if (metrics.isEmpty()) return FileMetrics()
-        return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
+        val resultMetrics = metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
             acc.metricsMap.putAll(current.metricsMap)
             acc
         }
+        resultMetrics.checksum = checksum
+        return resultMetrics
     }
 
     private fun getStandardizedPath(file: File): String {

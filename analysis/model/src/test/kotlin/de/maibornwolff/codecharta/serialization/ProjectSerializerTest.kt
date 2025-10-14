@@ -5,7 +5,6 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
-import io.github.oshai.kotlinlogging.KLogger
 import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk

@@ -1,4 +1,5 @@
 {
+  "checksum": "7c0d9d9e3cd987aa7b1e78b078b87583",
   "data": {
     "projectName": "",
     "nodes": [
@@ -26,7 +27,8 @@
               "indentation_level_10+": 0.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "fa749fc4025fc353"
           }
         ]
       }
@@ -169,6 +171,5 @@
       }
     },
     "blacklist": []
-  },
-  "checksum": "9bc26c769e60d5c80877279cbec5cc91"
+  }
 }
