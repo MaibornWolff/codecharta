@@ -1,7 +1,7 @@
 ---
 permalink: /docs/how-to/analyze-java-project-and-git-log
 tags:
-  - sourcecodeparser
+  - unifiedparser
   - gitlogparser
   - merge
 title: Analyzing a java project and its gitlog to generate a merged cc.json
@@ -10,6 +10,9 @@ toc: true
 toc_sticky: true
 toc_label: "Jump to Section"
 ---
+
+{: .notice--warning}
+**Note:** This guide has been updated to use UnifiedParser instead of the deprecated SourceCodeParser.
 
 # Prerequisites
 
@@ -28,8 +31,8 @@ Navigate to the folder that contains the ccsh
 git clone https://github.com/junit-team/junit4
 cd junit4
 
-# analyze junit4 with the sourcecodeparser and generate a cc.json
-./ccsh sourcecodeparser . -o junit4.source.cc.json -nc
+# analyze junit4 with the unifiedparser and generate a cc.json
+./ccsh unifiedparser . -o junit4.source.cc.json -nc
 
 # generate cc.json from the gitlog automatically
 ./ccsh gitlogparser repo-scan -o junit4.git.cc.json -nc

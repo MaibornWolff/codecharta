@@ -1,87 +1,85 @@
 # Source Code Parser
 
-**Category**: Parser (takes in source code and outputs cc.json)
+**DEPRECATED AND REMOVED**
 
-DEPRECATION WARNING: This parser has been replaced by the UnifiedParser and will soon be disabled!
+## Status
 
-## Replacement Options
+The SourceCodeParser has been **deprecated and removed** from CodeCharta due to high maintenance burden and the availability of better alternatives.
 
-Please use one of these alternatives:
-- **Unified Parser + Coverage Importer + Merge Filter** - For comprehensive analysis
-- **Sonar Importer** - For SonarQube-based analysis
+Running `ccsh sourcecodeparser` will now exit immediately with an error message and exit code 1.
+
+## Alternatives
+
+Please use one of these alternatives instead:
+
+### 1. **UnifiedParser** - Modern parser for multiple languages
+```bash
+ccsh unifiedparser <source-folder> -o output.cc.json
+```
+Supports modern parsing for multiple programming languages with better performance.
+
+### 2. **SonarImporter** - Import from SonarQube analysis
+```bash
+ccsh sonarimporter <sonar-url> <project-key> -o output.cc.json
+```
+Import comprehensive metrics from existing SonarQube analysis.
+
+### 3. **CoverageImporter** - Import code coverage data
+```bash
+ccsh coverageimporter <coverage-file> -o output.cc.json
+```
+Import code coverage metrics from various coverage formats.
+
+### 4. **RawTextParser** - Simple text-based metrics
+```bash
+ccsh rawtextparser <source-folder> -o output.cc.json
+```
+Basic line count and text metrics.
+
+### 5. **TokeiImporter** - Line count and language statistics
+```bash
+tokei . -o json | ccsh tokeiimporter /dev/stdin -o output.cc.json
+```
+Comprehensive line count analysis using the Tokei tool.
+
+## Complete Analysis Workflow
+
+For a comprehensive analysis combining multiple tools, use the `simplecc.sh` script:
+
+```bash
+analysis/script/simplecc.sh create <output-file>
+```
+
+This script provides a complete analysis using:
+- `tokei` - Line counts and language statistics
+- `complexity` - Whitespace complexity
+- `gitlogparser` - Git history analysis
+- `rawtextparser` - Text metrics
+- `unifiedparser` - Modern source code analysis
+
+## Migration Guide
+
+If you were using SourceCodeParser:
+
+**Before:**
+```bash
+ccsh sourcecodeparser ./src -o output.cc.json
+```
+
+**After (recommended):**
+```bash
+# Option 1: Use the complete analysis script
+analysis/script/simplecc.sh create output
+
+# Option 2: Use UnifiedParser for source code analysis
+ccsh unifiedparser ./src -o output.cc.json
+
+# Option 3: Combine multiple tools
+ccsh rawtextparser ./src -o raw.cc.json
+ccsh unifiedparser ./src -o unified.cc.json
+ccsh mergefilter raw.cc.json unified.cc.json -o output.cc.json
+```
+
+## Documentation
 
 For detailed documentation on these alternatives, see the [CodeCharta documentation](https://maibornwolff.github.io/codecharta/docs/).
-
-The Source-Code-Parser is parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv file.
-
-## Supported Languages
-
-- Java
-
-## Supported Metrics
-
-- rloc: Real lines of code
-- classes
-- functions
-- statements
-- comment_lines
-- complexity (cyclomatic complexity)
-- cognitive_complexity
-- commented_out_code_blocks
-- max_nesting_level
-- code_smell
-- security_hotspot
-- vulnerability
-- bug
-- sonar_issue_other
-
-## Usage and Parameters
-
-| Parameter                        | Description                                                                            |
-| -------------------------------- | -------------------------------------------------------------------------------------- |
-| `FOLDER or FILE`                 | project folder or code file                                                            |
-| `--default-excludes`             | exclude build, target, dist and out folders as well as files/folders starting with '.' |
-| `-e, --exclude=<exclude>`        | comma-separated list of regex patterns to exclude files/folders                        |
-| `-f, --format=<outputFormat>`    | the format to output (either json or csv)                                              |
-| `-h, --help`                     | displays this help and exits                                                           |
-| `-nc, --not-compressed`          | save uncompressed output File                                                          |
-| `-ni, --no-issues`               | do not search for sonar issues                                                         |
-| `-o, --output-file=<outputFile>` | output File (or empty for stdout)                                                      |
-| `--verbose`                      | display info messages from sonar plugins                                               |
-
-```
-Usage: ccsh sourcecodeparser [-h] [--default-excludes] [-nc] [-ni] [--verbose]
-                             [-f=<outputFormat>] [-o=<outputFile>]
-                             [-e=<exclude>]... FOLDER or FILE
-```
-
-## Examples
-
-The SourceCodeParser can analyze either a single file or a project folder; here are some sample commands:
-
-```
-ccsh sourcecodeparser src/test/resources -o foo.cc.json
-```
-
-```
-ccsh sourcecodeparser src/test/resources/foo.java -o foo.cc.json
-```
-
-```
-ccsh sourcecodeparser src/test/resources -o foo.cc.json --default-excludes -e=something -e=/.*\.foo -f=table
-```
-
-```
-ccsh sourcecodeparser src/test/resources -o foo.cc.json -f=table -i
-```
-
-If a project is piped into the SourceCodeParser, the results and the piped project are merged.
-The resulting project has the project name specified for the SourceCodeParser.
-
-## Sonar Plugins
-
-In order to generate the code metrics, the SourceCodeParser uses Sonar plugins. New languages can be added to the Source code parser by writing a class that extends SonarAnalyzer and incorporate the respective Sonar Plugin.
-
-## License
-
-This program uses the [SonarJava library](https://github.com/SonarSource/sonar-java/), which is licensed under the GNU Lesser General Public Library, version 3.
