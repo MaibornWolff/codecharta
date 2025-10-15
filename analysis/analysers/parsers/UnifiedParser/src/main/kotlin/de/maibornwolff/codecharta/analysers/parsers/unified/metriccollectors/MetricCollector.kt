@@ -25,6 +25,10 @@ abstract class MetricCollector(
 
     fun collectMetricsForFile(file: File): MutableNode {
         val fileContent = file.readText()
+        return collectMetricsForFile(file, fileContent)
+    }
+
+    fun collectMetricsForFile(file: File, fileContent: String): MutableNode {
         val checksum = ChecksumCalculator.calculateChecksum(fileContent)
         val rootNode = getRootNode(fileContent)
         rootNodeType = rootNode.type
