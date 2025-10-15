@@ -23,6 +23,8 @@ docs:
             url: "/docs/overview/analysis"
           - title: "Dockerized"
             url: "/docs/overview/dockerized"
+          - title: "Data Privacy"
+            url: "/docs/overview/data-privacy"
           - title: "Service Offerings"
             url: "/docs/overview/service-offerings"
     - title: "Visualization - Web Studio"
