@@ -7,6 +7,8 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparate
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.FileExtensionConverter
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
+import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -14,6 +16,7 @@ import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
@@ -78,6 +81,12 @@ class RawTextParser(
     private var fileExtensions: List<String> = listOf()
 
     @CommandLine.Option(
+        names = ["-bf", "--base-file"],
+        description = ["base cc.json file with checksums to skip unchanged files during analysis"]
+    )
+    private var baseFile: File? = null
+
+    @CommandLine.Option(
         names = ["--without-default-excludes"],
         description = [
             "DEPRECATION WARNING: this flag will soon be disabled and replaced by '--include-build-folders'" +
@@ -108,6 +117,7 @@ class RawTextParser(
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
+        val baseFileNodeMap = loadBaseFileNodes()
         val projectMetrics: ProjectMetrics =
             ProjectMetricsCollector(
                 inputFile!!,
@@ -116,7 +126,8 @@ class RawTextParser(
                 metricNames,
                 verbose,
                 maxIndentLvl,
-                tabWidth
+                tabWidth,
+                baseFileNodeMap
             ).parseProject()
         println()
 
@@ -190,5 +201,46 @@ class RawTextParser(
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
         return getAttributeDescriptors(10)
+    }
+
+    private fun loadBaseFileNodes(): Map<String, Node> {
+        if (baseFile == null) {
+            return emptyMap()
+        }
+
+        if (!baseFile!!.exists()) {
+            Logger.warn { "Base file '${baseFile!!.absolutePath}' does not exist, continuing with normal analysis... " }
+            return emptyMap()
+        }
+
+        return try {
+            val baseProject = ProjectDeserializer.deserializeProject(FileInputStream(baseFile!!))
+            val nodeMap = mutableMapOf<String, Node>()
+            extractFileNodesWithPaths(baseProject.rootNode, "", nodeMap)
+            Logger.info { "Loaded ${nodeMap.size} file nodes from base file for checksum comparison" }
+            nodeMap
+        } catch (e: Exception) {
+            Logger.warn { "Failed to load base file: ${e.message}" }
+            emptyMap()
+        }
+    }
+
+    private fun extractFileNodesWithPaths(node: Node, currentPath: String, nodeMap: MutableMap<String, Node>) {
+        // Skip the root node name to match the relative paths generated in ProjectMetricsCollector
+        val nodePath = if (currentPath.isEmpty() && node.name == "root") {
+            ""
+        } else if (currentPath.isEmpty()) {
+            node.name
+        } else {
+            "$currentPath/${node.name}"
+        }
+
+        if (node.type == NodeType.File && node.checksum != null) {
+            nodeMap[nodePath] = node
+        }
+
+        node.children.forEach { child ->
+            extractFileNodesWithPaths(child, nodePath, nodeMap)
+        }
     }
 }
