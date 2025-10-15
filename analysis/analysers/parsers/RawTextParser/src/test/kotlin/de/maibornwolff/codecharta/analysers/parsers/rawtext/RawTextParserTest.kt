@@ -293,4 +293,44 @@ class RawTextParserTest {
         // then
         Assertions.assertThat(lambdaSlot.any { e -> e().contains(invalidMetricName) }).isTrue()
     }
+
+    @Test
+    fun `should reuse metrics from base file when checksums match`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "src/test/resources/sampleproject"
+        val baseFilePath = "src/test/resources/cc_projects/project_5.cc.json"
+        val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
+        System.setErr(PrintStream(errContent))
+
+        // when
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--base-file=$baseFilePath"))
+
+        // then
+        Assertions.assertThat(errContent.toString()).contains("Loaded 5 file nodes from base file for checksum comparison")
+        Assertions.assertThat(errContent.toString()).contains("Checksum comparison: 5 files skipped, 0 files analyzed (100% reused)")
+        JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should show warning when base file does not exist`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "src/test/resources/sampleproject"
+        val baseFilePath = "src/test/resources/cc_projects/nonexistent.cc.json"
+        System.setErr(PrintStream(errContent))
+
+        // when
+        executeForOutput(pipedProject, arrayOf(inputFilePath, "--base-file=$baseFilePath"))
+
+        // then
+        Assertions.assertThat(errContent.toString()).contains("Base file")
+        Assertions.assertThat(errContent.toString()).contains("does not exist, continuing with normal analysis...")
+
+        // clean up
+        System.setErr(originalErr)
+    }
 }

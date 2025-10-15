@@ -72,13 +72,7 @@ class ProjectScanner(
         System.err.println()
 
         if (baseFileNodes.isNotEmpty()) {
-            val skipped = filesSkipped.get()
-            val analyzed = filesAnalyzed.get()
-            val total = skipped + analyzed
-            Logger.info {
-                "Checksum comparison: $skipped files skipped, $analyzed files analyzed " +
-                    "(${skipped * 100 / total.coerceAtLeast(1)}% reused)"
-            }
+            logBaseFileStatistics()
         }
 
         if (verbose) {
@@ -165,6 +159,16 @@ class ProjectScanner(
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
         progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
+    }
+
+    private fun logBaseFileStatistics() {
+        val skipped = filesSkipped.get()
+        val analyzed = filesAnalyzed.get()
+        val total = skipped + analyzed
+        Logger.info {
+            "Checksum comparison: $skipped files skipped, $analyzed files analyzed " +
+                "(${skipped * 100 / total.coerceAtLeast(1)}% reused)"
+        }
     }
 
     private fun addAllNodesToProjectBuilder() {
