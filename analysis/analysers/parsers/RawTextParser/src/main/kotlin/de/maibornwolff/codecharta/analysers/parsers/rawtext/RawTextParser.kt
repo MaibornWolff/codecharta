@@ -2,13 +2,11 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
-import de.maibornwolff.codecharta.analysers.analyserinterface.util.FileExtensionConverter
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -16,7 +14,6 @@ import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
@@ -30,16 +27,7 @@ class RawTextParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : AnalyserInterface, AttributeGenerator {
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
-    private var help = false
-
-    @CommandLine.Option(names = ["--verbose"], description = ["verbose mode"])
-    private var verbose = false
-
-    @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parseProject"])
-    private var inputFile: File? = null
-
+) : AnalyserInterface, AttributeGenerator, CommonAnalyserParameters() {
     @CommandLine.Option(
         names = ["-m", "--metrics"],
         description = [
@@ -52,39 +40,11 @@ class RawTextParser(
     )
     private var metricNames: List<String> = listOf()
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
-    private var outputFile: String? = null
-
-    @CommandLine.Option(names = ["-nc", "--not-compressed"], description = ["save uncompressed output File"])
-    private var compress = true
-
     @CommandLine.Option(names = ["--tab-width"], description = ["tab width used (estimated if not provided)"])
     private var tabWidth: Int = DEFAULT_TAB_WIDTH
 
     @CommandLine.Option(names = ["--max-indentation-level"], description = ["maximum Indentation Level (default 10)"])
     private var maxIndentLvl: Int = DEFAULT_INDENT_LVL
-
-    @CommandLine.Option(
-        names = ["-e", "--exclude"],
-        description = ["comma-separated list of regex patterns to exclude files/folders"],
-        converter = [(CommaSeparatedStringToListConverter::class)],
-        preprocessor = CommaSeparatedParameterPreprocessor::class
-    )
-    private var exclude: List<String> = listOf()
-
-    @CommandLine.Option(
-        names = ["-fe", "--file-extensions"],
-        description = ["comma-separated list of file-extensions to parse only those files (default: any)"],
-        converter = [(FileExtensionConverter::class)],
-        preprocessor = CommaSeparatedParameterPreprocessor::class
-    )
-    private var fileExtensions: List<String> = listOf()
-
-    @CommandLine.Option(
-        names = ["-bf", "--base-file"],
-        description = ["base cc.json file with checksums to skip unchanged files during analysis"]
-    )
-    private var baseFile: File? = null
 
     @CommandLine.Option(
         names = ["--without-default-excludes"],
@@ -111,18 +71,19 @@ class RawTextParser(
     override fun call(): Unit? {
         logExecutionStartedSyncSignal()
 
+        val inputFile = inputFiles.firstOrNull()
         require(InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
             "Input invalid file for RawTextParser, stopping execution..."
         }
 
-        if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
+        val excludePatterns = if (!withoutDefaultExcludes) patternsToExclude + DEFAULT_EXCLUDES else patternsToExclude
 
         val baseFileNodeMap = loadBaseFileNodes()
         val projectMetrics: ProjectMetrics =
             ProjectMetricsCollector(
                 inputFile!!,
-                exclude,
-                fileExtensions,
+                excludePatterns,
+                fileExtensionsToAnalyse,
                 metricNames,
                 verbose,
                 maxIndentLvl,
@@ -150,7 +111,7 @@ class RawTextParser(
 
     private fun logWarningsForNotFoundFileExtensions(projectMetrics: ProjectMetrics) {
         val notFoundFileExtensions = mutableListOf<String>()
-        for (fileExtension in fileExtensions) {
+        for (fileExtension in fileExtensionsToAnalyse) {
             var isFileExtensionIncluded = false
             for (relativeFileName in projectMetrics.metricsMap.keys) {
                 if (relativeFileName.contains(fileExtension)) {
@@ -201,46 +162,5 @@ class RawTextParser(
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
         return getAttributeDescriptors(10)
-    }
-
-    private fun loadBaseFileNodes(): Map<String, Node> {
-        if (baseFile == null) {
-            return emptyMap()
-        }
-
-        if (!baseFile!!.exists()) {
-            Logger.warn { "Base file '${baseFile!!.absolutePath}' does not exist, continuing with normal analysis... " }
-            return emptyMap()
-        }
-
-        return try {
-            val baseProject = ProjectDeserializer.deserializeProject(FileInputStream(baseFile!!))
-            val nodeMap = mutableMapOf<String, Node>()
-            extractFileNodesWithPaths(baseProject.rootNode, "", nodeMap)
-            Logger.info { "Loaded ${nodeMap.size} file nodes from base file for checksum comparison" }
-            nodeMap
-        } catch (e: Exception) {
-            Logger.warn { "Failed to load base file: ${e.message}" }
-            emptyMap()
-        }
-    }
-
-    private fun extractFileNodesWithPaths(node: Node, currentPath: String, nodeMap: MutableMap<String, Node>) {
-        // Skip the root node name to match the relative paths generated in ProjectMetricsCollector
-        val nodePath = if (currentPath.isEmpty() && node.name == "root") {
-            ""
-        } else if (currentPath.isEmpty()) {
-            node.name
-        } else {
-            "$currentPath/${node.name}"
-        }
-
-        if (node.type == NodeType.File && node.checksum != null) {
-            nodeMap[nodePath] = node
-        }
-
-        node.children.forEach { child ->
-            extractFileNodesWithPaths(child, nodePath, nodeMap)
-        }
     }
 }
