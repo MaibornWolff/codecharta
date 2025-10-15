@@ -56,4 +56,10 @@ abstract class CommonAnalyserParameters {
         preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     protected var fileExtensionsToAnalyse: List<String> = listOf()
+
+    @CommandLine.Option(
+        names = ["-bf", "--base-file"],
+        description = ["base cc.json file with checksums to skip unchanged files during analysis"]
+    )
+    protected var baseFile: File? = null
 }

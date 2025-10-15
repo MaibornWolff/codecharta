@@ -7,6 +7,8 @@ import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
+import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -17,6 +19,7 @@ import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 import java.io.PrintStream
 import kotlin.time.Duration
@@ -69,7 +72,8 @@ class UnifiedParser(
     private fun scanInputProject(inputFile: File): Project {
         val startTime = System.currentTimeMillis()
         val projectBuilder = ProjectBuilder()
-        val projectScanner = ProjectScanner(inputFile, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
+        val baseFileNodeMap = loadBaseFileNodes()
+        val projectScanner = ProjectScanner(inputFile, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, baseFileNodeMap)
         projectScanner.traverseInputProject(verbose)
 
         val notFoundButSpecifiedFormats = projectScanner.getNotFoundFileExtensions()
@@ -96,7 +100,7 @@ class UnifiedParser(
 
         val executionTimeMs = System.currentTimeMillis() - startTime
         val formattedTime = formatTime(executionTimeMs.milliseconds)
-        System.err.println("UnifiedParser completed in $formattedTime, building project...")
+        System.err.println("\nUnifiedParser completed in $formattedTime, building project...")
 
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
@@ -107,6 +111,47 @@ class UnifiedParser(
         while (input.available() == 0) Thread.sleep(100)
 
         return ProjectDeserializer.deserializeProject(input)
+    }
+
+    private fun loadBaseFileNodes(): Map<String, Node> {
+        if (baseFile == null) {
+            return emptyMap()
+        }
+
+        if (!baseFile!!.exists()) {
+            Logger.warn { "Base file '${baseFile!!.absolutePath}' does not exist, continuing with normal analysis... " }
+            return emptyMap()
+        }
+
+        return try {
+            val baseProject = ProjectDeserializer.deserializeProject(FileInputStream(baseFile!!))
+            val nodeMap = mutableMapOf<String, Node>()
+            extractFileNodesWithPaths(baseProject.rootNode, "", nodeMap)
+            Logger.info { "Loaded ${nodeMap.size} file nodes from base file for checksum comparison" }
+            nodeMap
+        } catch (e: Exception) {
+            Logger.warn { "Failed to load base file: ${e.message}" }
+            emptyMap()
+        }
+    }
+
+    private fun extractFileNodesWithPaths(node: Node, currentPath: String, nodeMap: MutableMap<String, Node>) {
+        // Skip the root node name to match the relative paths generated in ProjectScanner
+        val nodePath = if (currentPath.isEmpty() && node.name == "root") {
+            ""
+        } else if (currentPath.isEmpty()) {
+            node.name
+        } else {
+            "$currentPath/${node.name}"
+        }
+
+        if (node.type == NodeType.File && node.checksum != null) {
+            nodeMap[nodePath] = node
+        }
+
+        node.children.forEach { child ->
+            extractFileNodesWithPaths(child, nodePath, nodeMap)
+        }
     }
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
