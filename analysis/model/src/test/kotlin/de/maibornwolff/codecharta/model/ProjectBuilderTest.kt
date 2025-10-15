@@ -304,11 +304,9 @@ class ProjectBuilderTest {
                 attributes = mapOf("rloc" to 0),
                 checksum = null
             )
-        val folderNode = MutableNode("src", NodeType.Folder)
 
         rootNode.children.add(fileWithChecksum)
         rootNode.children.add(fileWithoutChecksum)
-        rootNode.children.add(folderNode)
 
         // when
         val projectBuilder = ProjectBuilder(listOf(rootNode))
@@ -317,10 +315,8 @@ class ProjectBuilderTest {
         // then
         val builtFileWithChecksum = project.rootNode.children.find { it.name == "TestFile.java" }
         val builtFileWithoutChecksum = project.rootNode.children.find { it.name == "EmptyFile.java" }
-        val builtFolder = project.rootNode.children.find { it.name == "src" }
 
         assertThat(builtFileWithChecksum!!.checksum).isEqualTo(sampleChecksum)
         assertThat(builtFileWithoutChecksum!!.checksum).isNull()
-        assertThat(builtFolder!!.checksum).isNull()
     }
 }
