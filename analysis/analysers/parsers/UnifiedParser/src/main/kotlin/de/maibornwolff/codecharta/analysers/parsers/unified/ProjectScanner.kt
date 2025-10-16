@@ -101,7 +101,7 @@ class ProjectScanner(
             name = baseNode.name,
             type = baseNode.type,
             attributes = baseNode.attributes,
-            checksum = baseNode.checksum,
+            checksum = baseNode.checksum
         )
         filesSkipped.incrementAndGet()
     }
