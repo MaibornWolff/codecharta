@@ -26,7 +26,11 @@ Remove SourceCodeParser functionality while keeping a stub that exits with helpf
    - Mark as deprecated in README.md
    - Note: gh-pages docs handled separately
 
-5. **Remove from simplecc.sh script**
+5. **Update CHANGELOG.md**
+   - Add entry about SourceCodeParser deprecation
+   - List alternatives for users to migrate to
+
+6. **Remove from simplecc.sh script**
    - Already doesn't use SourceCodeParser
 
 ## Alternatives to mention
