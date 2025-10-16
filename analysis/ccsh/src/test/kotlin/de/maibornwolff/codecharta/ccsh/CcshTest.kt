@@ -361,21 +361,18 @@ class CcshTest {
         val folderPath = "src/test/resources/sampleproject"
         val mergedOutputFilePath = "$folderPath/mergedResult.cc.json.gz"
         val mergedOutputFile = File(mergedOutputFilePath)
-        val sourcecodeOutputFilePath = "$folderPath/source.cc.json"
-        val sourcecodeOutputFile = File(sourcecodeOutputFilePath)
+        val unifiedOutputFilePath = "$folderPath/unified.cc.json"
+        val unifiedOutputFile = File(unifiedOutputFilePath)
         mergedOutputFile.deleteOnExit()
-        sourcecodeOutputFile.deleteOnExit()
+        unifiedOutputFile.deleteOnExit()
 
-        val selectedAnalysers = listOf("rawtextparser", "sourcecodeparser")
+        val selectedAnalysers = listOf("rawtextparser", "unifiedparser")
         val args =
             listOf(
                 listOf(File(folderPath).absolutePath, "--output-file="),
                 listOf(
                     File(folderPath).absolutePath,
-                    "--format=JSON",
-                    "--output-file=$sourcecodeOutputFilePath",
-                    "--no-issues",
-                    "--default-excludes",
+                    "--output-file=$unifiedOutputFilePath",
                     "--not-compressed"
                 )
             )
