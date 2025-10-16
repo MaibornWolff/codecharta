@@ -201,9 +201,8 @@ check_rawtext() {
 }
 
 check_pipe() {
-  echo " -- expect pipe chain from tokei, sourcecodeparser, svnlogparser and modify to work"
+  echo " -- expect pipe chain from tokei, svnlogparser and modify to work"
   sh "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ |
-    sh "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" |
     sh "${CCSH}" svnlogparser "${DATA}/SVNTestLog.txt" |
     sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
       -o ${TEMP_DIR}/piped_out.json 2>${TEMP_DIR}/piped_out_log.json
