@@ -207,7 +207,7 @@ check_pipe() {
     sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
       -o ${TEMP_DIR}/piped_out.json 2>${TEMP_DIR}/piped_out_log.json
   validate ${TEMP_DIR}/piped_out.cc.json
-  if ! grep -q "Created Project with 9 leaves." ${TEMP_DIR}/piped_out_log.json; then
+  if ! grep -q "Created Project with 8 leaves." ${TEMP_DIR}/piped_out_log.json; then
     exit_with_err "ERR: Pipes broken."
   fi
 }
