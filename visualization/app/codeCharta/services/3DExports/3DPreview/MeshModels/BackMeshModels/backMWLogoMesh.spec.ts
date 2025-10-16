@@ -30,7 +30,7 @@ describe("BackMWLogoMesh", () => {
         await mesh.init(geometryOptions)
 
         expect(createSvgGeometryStrategyMock.create).toHaveBeenCalledWith(geometryOptions, {
-            filePath: "codeCharta/assets/mw_logo_text.svg",
+            filePath: "/codeCharta/assets/mw_logo_text.svg",
             size: 0.31,
             side: "back"
         })

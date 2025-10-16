@@ -77,17 +77,17 @@ After cloning the repository and running the `npm` installation as described abo
 
 #### Build
 
-Build the project in `dist/webpack`. The produced files are required if you want to [package](#package) the application or [start](#start) the standalone version.
+Build the project in `dist/bundler/browser`. The produced files are required if you want to [package](#package) the application or [start](#start) the standalone version.
 
-> Additional files are copied inside the webpack, which are required to execute the electron standalone via npm (run) start.
+> Additional files are copied to the build output, which are required to execute the electron standalone via npm (run) start.
 > Note that the `build` command requires unix tools on path, so on Windows add them to it or use the bash shell
 
 ```bash
 # Make sure you are still inside the visualization project
 $ cd visualization
-# Build the webpack without serving it
+# Build the application without serving it
 $ npm run build
-# The webpack is inside the dist/webpack/ folder, which you can serve as a web application
+# The build output is inside the dist/bundler/browser folder, which you can serve as a web application
 ```
 
 #### Package
@@ -110,7 +110,7 @@ $ npm run package:local
 #### Dev
 
 ```bash
-# Build the webpack and serve it under localhost:3000
+# Build the application and serve it under localhost:3000
 $ npm run dev
 # This server listens to file changes
 ```

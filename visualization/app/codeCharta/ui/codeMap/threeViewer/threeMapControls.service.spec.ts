@@ -7,7 +7,7 @@ import { BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } f
 import { ThreeRendererService } from "./threeRenderer.service"
 import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
-import { MapControls } from "three/examples/jsm/controls/MapControls"
+import { MapControls } from "three/addons/controls/MapControls.js"
 import { take } from "rxjs"
 
 describe("ThreeMapControlsService", () => {

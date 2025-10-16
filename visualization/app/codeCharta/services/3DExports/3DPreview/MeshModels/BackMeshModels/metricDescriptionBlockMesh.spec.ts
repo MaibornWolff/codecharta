@@ -1,14 +1,14 @@
 import { BufferGeometry } from "three"
-import { Font } from "three/examples/jsm/loaders/FontLoader"
+import { Font } from "three/addons/loaders/FontLoader.js"
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { MetricDescriptionBlockMesh, MetricDescriptionBlockOptions } from "./metricDescriptionBlockMesh"
-import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils"
+import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 
 jest.mock("../../CreateGeometryStrategies/createSvgGeometryStrategy")
 jest.mock("../../CreateGeometryStrategies/createTextGeometryStrategy")
-jest.mock("three/examples/jsm/utils/BufferGeometryUtils")
+jest.mock("three/addons/utils/BufferGeometryUtils.js")
 
 describe("MetricDescriptionBlockMesh", () => {
     let font: Font
@@ -58,7 +58,7 @@ describe("MetricDescriptionBlockMesh", () => {
         await metricDescriptionBlockMesh.init(geometryOptions)
 
         expect(CreateSvgGeometryStrategy.prototype.create).toHaveBeenCalledWith(geometryOptions, {
-            filePath: `codeCharta/assets/${metricDescriptionBlockOptions.iconFilename}`,
+            filePath: `/codeCharta/assets/${metricDescriptionBlockOptions.iconFilename}`,
             size: metricDescriptionBlockOptions.iconScale,
             side: "back"
         })

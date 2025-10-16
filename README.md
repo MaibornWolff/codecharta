@@ -59,9 +59,13 @@
 ## What is CodeCharta
 
 Having trouble communicating the problems in your code base? Look no further, CodeCharta is able to visualise or even print your code base
-in 3D! While showing you lots of different metrics to help you decide what to tackle next. Without sharing your code! CodeCharta is an open
+in 3D! While showing you lots of different metrics to help you decide what to tackle next. CodeCharta is an open
 source project mainly developed by [MaibornWolff](https://www.maibornwolff.de/en). You can find everything you need in
 our [Documentation](https://maibornwolff.github.io/codecharta/).
+
+### Your Data Stays Local
+
+**All analysis and visualization happens entirely on your machine.** No data is ever uploaded, shared, or transmitted to any external service without your explicit intent. Your code stays private and secure. CodeCharta has no analytics, tracking, or telemetry built-in.
 
 ## Features
 
@@ -78,7 +82,6 @@ parsers for [Git Log](https://maibornwolff.github.io/codecharta/docs/parser/git-
 [SVN Log](https://maibornwolff.github.io/codecharta/docs/parser/svn-log),
 [Source Code](https://maibornwolff.github.io/codecharta/docs/parser/source-code),
 and [Raw Text](https://maibornwolff.github.io/codecharta/docs/parser/raw-text).
-> None of this will be uploaded or shared somewhere, everything happens on the client side. You can even run it locally if you want.
 
 ![Analysis overview](assets/ccsh_overview.png)
 
@@ -91,7 +94,6 @@ Files with metrics become buildings where the area, height and color represent d
 Makes it easy to see the hotspots in your code base and find areas for improvement.
 Ever wanted to touch that huge complex service? Download your map as a 3D model and print your code base!
 Take it in your hands and show it to your colleagues.
-> None of this will be uploaded or shared somewhere, everything happens on the client side. You can even run it locally if you want.
 
 ![Visualization overview](assets/visualization_overview.png)
 

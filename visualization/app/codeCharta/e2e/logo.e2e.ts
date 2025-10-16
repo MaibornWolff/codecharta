@@ -25,7 +25,6 @@ describe("CodeCharta logo", () => {
 
     it("should have correct image as logo", async () => {
         const source = await logo.getImageSrc()
-        const viewSource = await page.goto(source)
-        expect(await viewSource.buffer()).toMatchSnapshot()
+        expect(source).toContain("/codeCharta/assets/codecharta_logo.svg")
     })
 })

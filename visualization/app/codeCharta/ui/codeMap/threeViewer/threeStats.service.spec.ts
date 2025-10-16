@@ -3,7 +3,7 @@ import { ThreeRendererService } from "./threeRenderer.service"
 import { WebGLRenderer } from "three/src/renderers/WebGLRenderer"
 import { WebGLInfo } from "three/src/renderers/webgl/WebGLInfo"
 
-jest.mock("three/examples/jsm/libs/stats.module", () => {
+jest.mock("three/addons/libs/stats.module", () => {
     function MockedPanel(name: any, foregroundColor: any, backgroundColor: any) {
         return {
             update: jest.fn(),

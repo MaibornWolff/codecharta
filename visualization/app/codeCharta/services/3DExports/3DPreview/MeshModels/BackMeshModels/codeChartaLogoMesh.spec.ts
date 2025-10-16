@@ -25,7 +25,7 @@ describe("CodeChartaLogoMesh", () => {
         await mesh.init(geometryOptions)
 
         expect(createSvgGeometryStrategyMock.create).toHaveBeenCalledWith(geometryOptions, {
-            filePath: "codeCharta/assets/codecharta_logo.svg",
+            filePath: "/codeCharta/assets/codecharta_logo.svg",
             size: 0.17,
             side: "back"
         })

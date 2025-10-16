@@ -9,7 +9,7 @@ import { ThreeViewerService } from "./threeViewer.service"
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
 import { ThreeStatsService } from "./threeStats.service"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
-import { MapControls } from "three/examples/jsm/controls/MapControls"
+import { MapControls } from "three/addons/controls/MapControls.js"
 
 describe("ThreeViewerService", () => {
     let threeViewerService: ThreeViewerService

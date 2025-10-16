@@ -430,7 +430,7 @@ describe("CodeMapLabelService", () => {
             threeSceneService["highlightedLine"] = new Object3D()
             codeMapLabelService.clearTemporaryLabel(sampleLeaf)
 
-            expect(codeMapLabelService.dispose).toBeCalledWith(threeSceneService.labels.children)
+            expect(codeMapLabelService.dispose).toHaveBeenCalledWith(threeSceneService.labels.children)
             expect(threeSceneService.labels.children.length).toEqual(2)
             expect(codeMapLabelService["labels"][0].node).toEqual(otherSampleLeaf)
             expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)

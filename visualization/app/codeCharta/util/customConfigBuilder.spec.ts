@@ -46,7 +46,7 @@ describe("CustomConfigBuilder", () => {
             expect(customConfig.stateSettings.fileSettings).not.toBeUndefined()
 
             expect(customConfig.stateSettings.appSettings.experimentalFeaturesEnabled).toBe(true)
-            expect(customConfig.stateSettings.fileSettings).not.toContain({ attributeTypes: { nodes: {}, edges: {} } })
+            expect(customConfig.stateSettings.fileSettings).not.toMatchObject({ attributeTypes: { nodes: {}, edges: {} } })
 
             expect(customConfig.camera.camera.x).toBe(1)
             expect(customConfig.camera.camera.y).toBe(2)

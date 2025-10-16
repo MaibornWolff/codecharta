@@ -1,7 +1,7 @@
 import { WebGLInfo, WebGLRenderTarget, WebGLRenderer } from "three"
-import { MaskPass, ClearMaskPass } from "three/examples/jsm/postprocessing/MaskPass"
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer"
-import { Pass } from "three/examples/jsm/postprocessing/Pass"
+import { MaskPass, ClearMaskPass } from "three/addons/postprocessing/MaskPass.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { Pass } from "three/addons/postprocessing/Pass.js"
 
 export class CustomComposer extends EffectComposer {
     private info: WebGLInfo["render"][] = []

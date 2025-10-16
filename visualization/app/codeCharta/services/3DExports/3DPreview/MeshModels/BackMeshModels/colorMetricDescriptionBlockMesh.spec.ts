@@ -1,5 +1,5 @@
 import { BufferGeometry, Object3D } from "three"
-import { Font } from "three/examples/jsm/loaders/FontLoader"
+import { Font } from "three/addons/loaders/FontLoader.js"
 import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"

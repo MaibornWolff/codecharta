@@ -11,7 +11,7 @@ export class FrontMWLogoMesh extends FrontLogo implements GeneralSizeChangeMesh 
     async init(geometryOptions: GeometryOptions, createSvgGeometryStrategy = new CreateSvgGeometryStrategy()): Promise<FrontMWLogoMesh> {
         const size = (geometryOptions.frontTextSize * geometryOptions.width) / 250
         this.geometry = await createSvgGeometryStrategy.create(geometryOptions, {
-            filePath: "codeCharta/assets/mw_logo.svg",
+            filePath: "/codeCharta/assets/mw_logo.svg",
             size,
             side: "front"
         })

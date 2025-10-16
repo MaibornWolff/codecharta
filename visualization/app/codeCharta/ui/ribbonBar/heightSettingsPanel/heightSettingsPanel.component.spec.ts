@@ -29,8 +29,8 @@ describe("HeightSettingsPanelComponent", () => {
         detectChanges()
 
         const amountOfTopLabelsSlider = screen.getByTitle("Disabled because color labels are active")
-        const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
-        expect(matSlider.getAttribute("ng-reflect-disabled")).toBe("true")
+        const input = amountOfTopLabelsSlider.querySelector("input[matSliderThumb]") as HTMLInputElement
+        expect(input.disabled).toBe(true)
     })
 
     it("should display warning when color labels are active", async () => {
@@ -55,9 +55,9 @@ describe("HeightSettingsPanelComponent", () => {
         await render(HeightSettingsPanelComponent)
 
         const amountOfTopLabelsSlider = screen.getByTitle("Display the labels of the 1 highest buildings")
-        const matSlider = amountOfTopLabelsSlider.querySelector("mat-slider")
+        const input = amountOfTopLabelsSlider.querySelector("input[matSliderThumb]") as HTMLInputElement
 
-        expect(matSlider.getAttribute("ng-reflect-disabled")).toBe("false")
+        expect(input.disabled).toBe(false)
     })
 
     it("should not display invertHeight-checkbox when being in delta mode", async () => {

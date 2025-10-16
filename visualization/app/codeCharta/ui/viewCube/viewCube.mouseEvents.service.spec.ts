@@ -1,7 +1,7 @@
 import { Group, Mesh, PerspectiveCamera, Vector2, WebGLRenderer } from "three"
 import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { CursorType } from "../codeMap/codeMap.mouseEvent.service"
 
 jest.mock("three", () => ({
@@ -23,10 +23,28 @@ jest.mock("three", () => ({
             alpha: true
         }
     })),
-    PerspectiveCamera: jest.fn().mockImplementation(() => ({}))
+    PerspectiveCamera: jest.fn().mockImplementation(() => ({
+        isPerspectiveCamera: true,
+        position: { x: 0, y: 0, z: 0 },
+        quaternion: { x: 0, y: 0, z: 0, w: 1 },
+        fov: 75,
+        aspect: 1,
+        near: 0.1,
+        far: 1000,
+        zoom: 1,
+        matrixWorld: {
+            elements: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+        },
+        projectionMatrix: {
+            elements: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+        },
+        projectionMatrixInverse: {
+            elements: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+        }
+    }))
 }))
 
-jest.mock("three/examples/jsm/controls/OrbitControls", () => {
+jest.mock("three/addons/controls/OrbitControls", () => {
     return {
         OrbitControls: jest.fn()
     }

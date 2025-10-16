@@ -1,4 +1,4 @@
-import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader"
+import { SVGLoader } from "three/addons/loaders/SVGLoader.js"
 import { CreateSvgGeometryStrategy, CreateSvgGeometryStrategyOptions } from "./createSvgGeometryStrategy"
 import { GeometryOptions } from "../preview3DPrintMesh"
 

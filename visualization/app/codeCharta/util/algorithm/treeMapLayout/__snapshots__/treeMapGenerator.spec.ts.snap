@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`treeMapGenerator create Treemap nodes create map with fixed root children which include dynamic folders on the one hand and fixed ones at the other 1`] = `
 [

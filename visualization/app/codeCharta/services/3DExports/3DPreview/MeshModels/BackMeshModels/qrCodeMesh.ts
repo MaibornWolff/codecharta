@@ -3,7 +3,7 @@ import { GeometryOptions } from "../../preview3DPrintMesh"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BoxGeometry, BufferGeometry } from "three"
 import * as QRCode from "qrcode"
-import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js"
+import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 
 export class QrCodeMesh extends CustomVisibilityMesh {
     constructor(name: string) {
