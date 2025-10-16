@@ -103,32 +103,26 @@ class ProjectMetricsCollector(
     private fun collectMetricsForFile(file: File, standardizedPath: String): FileMetrics {
         val fileContent = file.readText()
         val currentChecksum = ChecksumCalculator.calculateChecksum(fileContent)
-
-        return if (canReuseMetricsFromBaseFile(standardizedPath, currentChecksum)) {
-            reuseMetricsFromBaseFile(standardizedPath, currentChecksum)
+        val baseNode = baseFileNodeMap[standardizedPath.removePrefix("/")]
+        return if (baseNode != null && baseNode.checksum == currentChecksum) {
+            reuseMetricsFromBaseFile(baseNode)
         } else {
-            calculateMetricsForFile(file, fileContent, currentChecksum)
+            calculateMetricsForFile(file, currentChecksum)
         }
     }
 
-    private fun canReuseMetricsFromBaseFile(standardizedPath: String, currentChecksum: String?): Boolean {
-        val baseNode = baseFileNodeMap[standardizedPath.removePrefix("/")]
-        return baseNode != null && baseNode.checksum == currentChecksum
-    }
-
-    private fun reuseMetricsFromBaseFile(standardizedPath: String, currentChecksum: String?): FileMetrics {
-        val baseNode = baseFileNodeMap[standardizedPath.removePrefix("/")]!!
+    private fun reuseMetricsFromBaseFile(baseNode: Node): FileMetrics {
         filesSkipped.incrementAndGet()
 
         val fileMetrics = FileMetrics()
         baseNode.attributes.forEach { (key, value) ->
             fileMetrics.addMetric(key, value.toString().toDoubleOrNull() ?: 0.0)
         }
-        fileMetrics.checksum = currentChecksum
+        fileMetrics.checksum = baseNode.checksum
         return fileMetrics
     }
 
-    private fun calculateMetricsForFile(file: File, fileContent: String, checksum: String?): FileMetrics {
+    private fun calculateMetricsForFile(file: File, checksum: String?): FileMetrics {
         filesAnalyzed.incrementAndGet()
 
         val metrics = createMetricsFromMetricNames()
