@@ -87,28 +87,21 @@ class ProjectScanner(
 
         val fileContent = file.readText()
         val currentChecksum = ChecksumCalculator.calculateChecksum(fileContent)
-
-        if (canReuseMetricsFromBaseFile(relativeFilePath, currentChecksum)) {
-            reuseMetricsFromBaseFile(file, relativeFilePath, currentChecksum, verbose)
+        val baseNode = baseFileNodes[relativeFilePath]
+        if (baseNode != null && baseNode.checksum == currentChecksum) {
+            reuseMetricsFromBaseFile(baseNode, relativeFilePath, verbose)
         } else {
             applyLanguageSpecificCollector(file, fileContent, relativeFilePath, verbose)
         }
     }
 
-    private fun canReuseMetricsFromBaseFile(relativeFilePath: String, currentChecksum: String?): Boolean {
-        val baseNode = baseFileNodes[relativeFilePath]
-        return baseNode != null && baseNode.checksum == currentChecksum
-    }
-
-    private fun reuseMetricsFromBaseFile(file: File, relativeFilePath: String, currentChecksum: String?, verbose: Boolean) {
-        val baseNode = baseFileNodes[relativeFilePath]!!
+    private fun reuseMetricsFromBaseFile(baseNode: Node, relativeFilePath: String, verbose: Boolean) {
         if (verbose) Logger.info { "Reusing metrics for unchanged file $relativeFilePath" }
-
         fileMetrics[relativeFilePath] = MutableNode(
-            name = file.name,
+            name = baseNode.name,
             type = baseNode.type,
             attributes = baseNode.attributes,
-            checksum = currentChecksum
+            checksum = baseNode.checksum,
         )
         filesSkipped.incrementAndGet()
     }
