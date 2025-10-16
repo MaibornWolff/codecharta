@@ -25,7 +25,7 @@ This parser analyzes code, regardless of the programming language, to generate t
 | Parameter                                 | Description                                                                                                                                                                                          |
 |-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `FILE or FOLDER`                          | file/project to parseProject                                                                                                                                                                         |
-| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                                                                                                                      |
+| `-bf, --base-file=<baseFile>`             | base cc.json file with checksums to skip unchanged files during analysis                                                                                                                             |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                                                                                                                      |
 | `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                                                                     |
 | `-h, --help`                              | displays this help and exits                                                                                                                                                                         |
@@ -39,6 +39,7 @@ This parser analyzes code, regardless of the programming language, to generate t
 
 ```
 Usage: ccsh rawtextparser [-h] [-nc] [--verbose] [--without-default-excludes]
+                          [-bf=<baseFile>]
                           [--max-indentation-level=<maxIndentLvl>]
                           [-o=<outputFile>] [--tab-width=<tabWidth>]
                           [-e=<exclude>]... [-fe=<fileExtensions>]...
