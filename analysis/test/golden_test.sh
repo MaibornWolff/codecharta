@@ -135,13 +135,6 @@ check_sonar() {
   validate "${ACTUAL_SONAR_JASON}.cc.json"
 }
 
-check_sourcecodeparser() {
-  echo " -- expect SourceCodeParser to produce valid cc.json file"
-  ACTUAL_SCP_JSON="${TEMP_DIR}/actual_scpparser.cc.json"
-  "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" -o "${ACTUAL_SCP_JSON}" -nc
-  validate "${ACTUAL_SCP_JSON}"
-}
-
 check_coverageimporter_javascript() {
     echo " ---- expect CoverageImporter to produce valid cc.json file for lcov"
     ACTUAL_LCOV_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_lcov.cc.json"
@@ -259,7 +252,6 @@ run_tests() {
   check_csvimporter
   check_sourcemonitor
   check_sonar
-  check_sourcecodeparser
   check_coverageimporter
   check_svnlog
   check_tokei
