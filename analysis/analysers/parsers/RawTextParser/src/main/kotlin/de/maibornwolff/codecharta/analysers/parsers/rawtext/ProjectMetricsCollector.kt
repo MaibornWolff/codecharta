@@ -3,12 +3,16 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.IndentationMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.LinesOfCodeMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.Metric
+import de.maibornwolff.codecharta.model.ChecksumCalculator
+import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
+import de.maibornwolff.codecharta.util.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.util.concurrent.atomic.AtomicLong
 
 class ProjectMetricsCollector(
     private var root: File,
@@ -17,10 +21,13 @@ class ProjectMetricsCollector(
     private val metricNames: List<String>,
     private val verbose: Boolean,
     private val maxIndentLvl: Int,
-    private val tabWidth: Int
+    private val tabWidth: Int,
+    private val baseFileNodeMap: Map<String, Node> = emptyMap()
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
+    private val filesSkipped = AtomicLong(0)
+    private val filesAnalyzed = AtomicLong(0)
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
     private var excludePatterns = createExcludePatterns()
@@ -44,7 +51,7 @@ class ProjectMetricsCollector(
                     ) {
                         filesParsed++
                         logProgress(it.name, filesParsed)
-                        projectMetrics.addFileMetrics(standardizedPath, parseFile(it))
+                        projectMetrics.addFileMetrics(standardizedPath, collectMetricsForFile(it, standardizedPath))
                         lastFileName = it.name
                     }
                 }
@@ -52,6 +59,7 @@ class ProjectMetricsCollector(
         }
 
         logProgress(lastFileName, totalFiles)
+        logStatistics()
 
         return projectMetrics
     }
@@ -92,17 +100,41 @@ class ProjectMetricsCollector(
         return exclude.isNotEmpty() && excludePatterns.containsMatchIn(path)
     }
 
-    private fun parseFile(file: File): FileMetrics {
+    private fun collectMetricsForFile(file: File, standardizedPath: String): FileMetrics {
+        val fileContent = file.readText()
+        val currentChecksum = ChecksumCalculator.calculateChecksum(fileContent)
+        val baseNode = baseFileNodeMap[standardizedPath.removePrefix("/")]
+        return if (baseNode != null && baseNode.checksum == currentChecksum) {
+            reuseMetricsFromBaseFile(baseNode)
+        } else {
+            calculateMetricsForFile(file, currentChecksum)
+        }
+    }
+
+    private fun reuseMetricsFromBaseFile(baseNode: Node): FileMetrics {
+        filesSkipped.incrementAndGet()
+
+        val fileMetrics = FileMetrics()
+        baseNode.attributes.forEach { (key, value) ->
+            fileMetrics.addMetric(key, value.toString().toDoubleOrNull() ?: 0.0)
+        }
+        fileMetrics.checksum = baseNode.checksum
+        return fileMetrics
+    }
+
+    private fun calculateMetricsForFile(file: File, checksum: String?): FileMetrics {
+        filesAnalyzed.incrementAndGet()
+
         val metrics = createMetricsFromMetricNames()
-        file
-            .bufferedReader()
-            .useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
+        file.bufferedReader().useLines { lines -> lines.forEach { line -> metrics.forEach { it.parseLine(line) } } }
 
         if (metrics.isEmpty()) return FileMetrics()
-        return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
+        val resultMetrics = metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
             acc.metricsMap.putAll(current.metricsMap)
             acc
         }
+        resultMetrics.checksum = checksum
+        return resultMetrics
     }
 
     private fun getStandardizedPath(file: File): String {
@@ -119,5 +151,17 @@ class ProjectMetricsCollector(
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
         progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
+    }
+
+    private fun logStatistics() {
+        if (baseFileNodeMap.isNotEmpty()) {
+            val skipped = filesSkipped.get()
+            val analyzed = filesAnalyzed.get()
+            val total = skipped + analyzed
+            Logger.info {
+                "Checksum comparison: $skipped files skipped, $analyzed files analyzed " +
+                    "(${skipped * 100 / total.coerceAtLeast(1)}% reused)"
+            }
+        }
     }
 }

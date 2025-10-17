@@ -45,6 +45,7 @@ Some metrics are calculated on a per-function basis rather than per-file. Each o
 | Parameter                                 | Description                                                                                                                                       |
 |-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
 | `FOLDER or FILE`                          | The project folder or code file to parse. To merge the result with an existing project piped into STDIN, pass a '-' as an additional argument     |
+| `-bf, --base-file=<baseFile>`             | base cc.json file with checksums to skip unchanged files during analysis                                                                          |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                                                                   |
 | `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                  |
 | `-h, --help`                              | displays this help and exits                                                                                                                      |
@@ -54,9 +55,9 @@ Some metrics are calculated on a per-function basis rather than per-file. Each o
 | `--verbose`                               | displays messages about parsed and ignored files                                                                                                  |
 
 ```
-Usage: ccsh unifiedparser [-h] [-ibf] [-nc] [--verbose] [-o=<outputFile>]
-                          [-e=<patternsToExclude>]...
-                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
+Usage: ccsh unifiedparser [-h] [-ibf] [-nc] [--verbose] [-bf=<baseFile>]
+                          [-o=<outputFile>] [-e=<patternsToExclude>]...
+                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER..
 ```
 
 ## Examples

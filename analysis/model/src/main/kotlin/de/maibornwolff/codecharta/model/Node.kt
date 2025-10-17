@@ -7,7 +7,8 @@ class Node(
     val type: NodeType? = NodeType.File,
     val attributes: Map<String, Any> = mapOf(),
     val link: String? = "",
-    override val children: Set<Node> = setOf()
+    override val children: Set<Node> = setOf(),
+    val checksum: String? = null
 ) : Tree<Node>() {
     override fun getPathOfChild(child: Tree<Node>): Path {
         if (!children.contains(child)) {
@@ -34,9 +35,8 @@ class Node(
             type,
             attributes,
             link,
-            children.map {
-                it.toMutableNode()
-            }.toSet()
+            children.map { it.toMutableNode() }.toSet(),
+            checksum = checksum
         )
     }
 }

@@ -1,5 +1,5 @@
 {
-  "checksum": "104eed0fc76af7803a97a7629f04bdd9",
+  "checksum": "748506e963e404d131d4e44f5a8fa407",
   "data": {
     "projectName": "",
     "nodes": [
@@ -33,7 +33,8 @@
               "median_rloc_per_function": 5.5
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "23c8c84736899d79"
           }
         ]
       }

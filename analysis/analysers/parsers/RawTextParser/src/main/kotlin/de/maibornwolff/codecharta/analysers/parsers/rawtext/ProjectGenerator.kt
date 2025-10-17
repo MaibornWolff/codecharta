@@ -23,7 +23,7 @@ class ProjectGenerator(private val projectBuilder: ProjectBuilder = ProjectBuild
     private fun addMetricsAsNodes(metricsMap: Map<String, FileMetrics>) {
         metricsMap.forEach { (key, fileMetrics) ->
             val (directory, fileName) = splitDirectoryAndFileName(key)
-            val node = MutableNode(fileName, attributes = fileMetrics.metricsMap)
+            val node = MutableNode(fileName, attributes = fileMetrics.metricsMap, checksum = fileMetrics.checksum)
             val path = PathFactory.fromFileSystemPath(directory)
             projectBuilder.insertByPath(path, node)
         }

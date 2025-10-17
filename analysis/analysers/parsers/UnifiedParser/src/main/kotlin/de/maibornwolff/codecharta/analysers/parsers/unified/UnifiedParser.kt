@@ -69,7 +69,8 @@ class UnifiedParser(
     private fun scanInputProject(inputFile: File): Project {
         val startTime = System.currentTimeMillis()
         val projectBuilder = ProjectBuilder()
-        val projectScanner = ProjectScanner(inputFile, projectBuilder, patternsToExclude, fileExtensionsToAnalyse)
+        val baseFileNodeMap = loadBaseFileNodes()
+        val projectScanner = ProjectScanner(inputFile, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, baseFileNodeMap)
         projectScanner.traverseInputProject(verbose)
 
         val notFoundButSpecifiedFormats = projectScanner.getNotFoundFileExtensions()
@@ -96,7 +97,7 @@ class UnifiedParser(
 
         val executionTimeMs = System.currentTimeMillis() - startTime
         val formattedTime = formatTime(executionTimeMs.milliseconds)
-        System.err.println("UnifiedParser completed in $formattedTime, building project...")
+        System.err.println("\nUnifiedParser completed in $formattedTime, building project...")
 
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 

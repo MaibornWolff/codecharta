@@ -80,7 +80,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { Dialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 compressCallback,
@@ -107,7 +107,7 @@ class DialogTest {
         assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(verbose)
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
-        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name).isEqualTo(File(inputFileName).name)
     }
 
     @ParameterizedTest
@@ -158,7 +158,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { Dialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 inputFileCallback,
                 outFileCallback,
                 verboseCallback,
@@ -183,7 +183,7 @@ class DialogTest {
         assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(verbose)
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
-        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name).isEqualTo(File(inputFileName).name)
     }
 
     @Test
@@ -239,7 +239,7 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
-            every { Dialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 compressCallback,
@@ -257,7 +257,7 @@ class DialogTest {
         val commandLine = CommandLine(RawTextParser())
         val parseResult = commandLine.parseArgs(*parserArguments.toTypedArray())
 
-        assertThat(parseResult.matchedPositional(0).getValue<File>().name).isEqualTo(File(inputFileName).name)
+        assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name).isEqualTo(File(inputFileName).name)
     }
 
     private fun provideInvalidTabWidth(): List<Arguments> {

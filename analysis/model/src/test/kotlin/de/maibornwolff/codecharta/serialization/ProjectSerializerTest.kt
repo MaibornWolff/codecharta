@@ -1,8 +1,10 @@
 package de.maibornwolff.codecharta.serialization
 
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
-import io.github.oshai.kotlinlogging.KLogger
 import io.mockk.called
 import io.mockk.every
 import io.mockk.mockk
@@ -30,7 +32,6 @@ class ProjectSerializerTest {
     private val tempDir = createTempDirectory()
     private val filename = tempDir.absolute().toString() + "test.cc.json"
     private val project = mockk<Project>()
-    private val loggerMock = mockk<KLogger>()
     private val lambdaSlot = mutableListOf<() -> String>()
 
     companion object {
@@ -138,5 +139,28 @@ class ProjectSerializerTest {
 
         // then
         Assertions.assertThat(lambdaSlot.last()().endsWith(absoluteOutputFilePath)).isTrue()
+    }
+
+    @Test
+    fun `should include checksum in serialized json`() {
+        // given
+        val sampleChecksum = "abc123def456"
+        val rootNode = MutableNode("root", NodeType.Folder)
+        val fileNode = MutableNode(
+            name = "TestFile.java",
+            type = NodeType.File,
+            attributes = mapOf("rloc" to 100),
+            checksum = sampleChecksum
+        )
+        rootNode.children.add(fileNode)
+        val testProject = ProjectBuilder(listOf(rootNode)).build()
+
+        // when
+        val stream = ByteArrayOutputStream()
+        ProjectSerializer.serializeProject(testProject, stream, false)
+        val serializedJson = stream.toString("UTF-8")
+
+        // then
+        Assertions.assertThat(serializedJson).contains("\"checksum\":\"$sampleChecksum\"")
     }
 }

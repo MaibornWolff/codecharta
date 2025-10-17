@@ -1,4 +1,5 @@
 {
+  "checksum": "da01a120bc63624ebe23d2c4ea4aec34",
   "data": {
     "projectName": "",
     "nodes": [
@@ -32,7 +33,8 @@
                   "indentation_level_10+": 0.0
                 },
                 "link": "",
-                "children": []
+                "children": [],
+                "checksum": "a7714a3a621e7270"
               },
               {
                 "name": "spaces_4.included",
@@ -52,7 +54,8 @@
                   "indentation_level_10+": 0.0
                 },
                 "link": "",
-                "children": []
+                "children": [],
+                "checksum": "9134b1ebb1e5ba80"
               },
               {
                 "name": "spaces_5.includedtoo",
@@ -72,7 +75,8 @@
                   "indentation_level_10+": 0.0
                 },
                 "link": "",
-                "children": []
+                "children": [],
+                "checksum": "73d843464a419a54"
               },
               {
                 "name": "spaces_x_not_included.excluded",
@@ -92,7 +96,8 @@
                   "indentation_level_10+": 0.0
                 },
                 "link": "",
-                "children": []
+                "children": [],
+                "checksum": "58927614af51eb27"
               }
             ]
           },
@@ -114,7 +119,8 @@
               "indentation_level_10+": 0.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "fa749fc4025fc353"
           }
         ]
       }
@@ -257,6 +263,5 @@
       }
     },
     "blacklist": []
-  },
-  "checksum": "d55e95bd9b4c45b226abcd83290e9700"
+  }
 }

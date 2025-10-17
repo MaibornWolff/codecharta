@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add new '--base-file' flag to unifiedparser and rawtextparser
+
 ### Removed
 
 - BREAKING CHANGE SourceCodeParser is removed.
