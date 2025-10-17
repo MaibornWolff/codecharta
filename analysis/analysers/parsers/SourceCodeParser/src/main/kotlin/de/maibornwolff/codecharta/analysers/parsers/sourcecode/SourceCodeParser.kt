@@ -107,7 +107,7 @@ class SourceCodeParser(
     }
 
     override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return ResourceSearchHelper.isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, listOf(FileExtension.JAVA))
+        return false
     }
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
