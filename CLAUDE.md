@@ -233,6 +233,9 @@ Each state slice has dedicated actions, reducers, and selectors. Effects (`state
 
 - Plans act as high-level guidance for implementation
 - Focus on mandatory steps only, avoid excessive detail
+- keep plans simple and concise
+- avoid over-elaboration, detailed sections, or comprehensive documentation style
+- plans should be brief, actionable outlines rather than detailed specifications
 - Use checkable steps (markdown checkboxes) to track progress
 - Update `state` field as work progresses: `todo` → `progress` → `complete`
 
