@@ -5,9 +5,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
-import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.codecharta.util.CodeChartaConstants
-import de.maibornwolff.codecharta.util.ResourceSearchHelper
 import picocli.CommandLine
 import java.io.PrintStream
 import kotlin.system.exitProcess
