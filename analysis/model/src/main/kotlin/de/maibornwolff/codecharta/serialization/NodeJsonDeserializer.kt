@@ -19,8 +19,9 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
         val attributes = deserializeAttributes(jsonNode)
         val link = deserializeLink(jsonNode)
         val children = deserializeChildren(jsonNode)
+        val checksum = deserializeChecksum(jsonNode)
 
-        return Node(name, nodeType, attributes, link, children.toSet())
+        return Node(name, nodeType, attributes, link, children.toSet(), checksum)
     }
 
     private fun deserializeLink(jsonNode: JsonObject): String? {
@@ -57,5 +58,9 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
         return children.asJsonArray.mapTo(ArrayList()) {
             deserialize(it, Node::class.java, null)
         }
+    }
+
+    private fun deserializeChecksum(jsonNode: JsonObject): String? {
+        return jsonNode.get("checksum")?.asString
     }
 }

@@ -1,5 +1,5 @@
 {
-  "checksum": "a39e9dd1902db5f632510b548e907349",
+  "checksum": "6a6a1622a79766fd14945bcfa7bf0edd",
   "data": {
     "projectName": "",
     "nodes": [
@@ -33,7 +33,8 @@
               "median_rloc_per_function": 1.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "e31a24ef7db12378"
           },
           {
             "name": "whenCase.kt",
@@ -59,7 +60,8 @@
               "median_rloc_per_function": 6.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "91308e658fb97d1c"
           }
         ]
       }

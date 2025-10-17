@@ -11,7 +11,8 @@ class MutableNode(
     var attributes: Map<String, Any> = mapOf(),
     val link: String? = "",
     childrenList: Set<MutableNode> = setOf(),
-    @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMerger()
+    @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMerger(),
+    val checksum: String? = null
 ) : Tree<MutableNode>() {
     override var children = childrenList.toMutableSet()
 
@@ -44,12 +45,11 @@ class MutableNode(
                 }
             }
         }
-        attributes =
-            attributes.mapKeys {
-                metricNameTranslator.translate(it.key)
-            }.filterKeys {
-                it.isNotBlank()
-            }
+        attributes = attributes.mapKeys {
+            metricNameTranslator.translate(it.key)
+        }.filterKeys {
+            it.isNotBlank()
+        }
 
         return this
     }
@@ -60,10 +60,8 @@ class MutableNode(
             type,
             attributes,
             link,
-            children =
-                children.map {
-                    it.toNode()
-                }.toSet()
+            children = children.map { it.toNode() }.toSet(),
+            checksum = checksum
         )
     }
 

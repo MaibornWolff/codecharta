@@ -92,3 +92,34 @@ export interface Fixed {
   }
 }
 ```
+
+## 1.6
+
+- An additional optional property `checksum` has been added to elements of `nodes` which are of type `File`. This checksum is calculated based on the files content and can be used by analyzers that update a `cc.json` to check if they need to recalculate the metrics of a node.
+```json
+{
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "link": "",
+      "children": [
+        {
+          "name": "Samplefile",
+          "type": "File",
+          "attributes": {
+            "complexity": 32.0,
+            "comment_lines": 46.0,
+            "rloc": 140.0,
+            "loc": 203.0
+          },
+          "link": "",
+          "children": [],
+          "checksum": "3ccac3cacd32f1c7"
+        }
+      ]
+    }
+  ]
+}
+```

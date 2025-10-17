@@ -1,5 +1,5 @@
 {
-  "checksum": "0cd1fad2d37f976279040567a010d627",
+  "checksum": "226b822b73458b554f47bdcf19337291",
   "data": {
     "projectName": "",
     "nodes": [
@@ -57,7 +57,8 @@
                   "median_rloc_per_function": 4.5
                 },
                 "link": "",
-                "children": []
+                "children": [],
+                "checksum": "c40238c79d87defc"
               },
               {
                 "name": "hello.kt",
@@ -83,7 +84,8 @@
                   "median_rloc_per_function": 0.0
                 },
                 "link": "",
-                "children": []
+                "children": [],
+                "checksum": "bfc329a4e973c424"
               }
             ]
           },
@@ -111,7 +113,8 @@
               "median_rloc_per_function": 4.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "39e5446f9451898e"
           },
           {
             "name": "foo.py",
@@ -137,7 +140,8 @@
               "median_rloc_per_function": 0.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "45b3835ff9d57197"
           },
           {
             "name": "helloWorld.ts",
@@ -163,7 +167,8 @@
               "median_rloc_per_function": 1.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "e31a24ef7db12378"
           },
           {
             "name": "whenCase.kt",
@@ -189,7 +194,8 @@
               "median_rloc_per_function": 6.0
             },
             "link": "",
-            "children": []
+            "children": [],
+            "checksum": "91308e658fb97d1c"
           }
         ]
       }

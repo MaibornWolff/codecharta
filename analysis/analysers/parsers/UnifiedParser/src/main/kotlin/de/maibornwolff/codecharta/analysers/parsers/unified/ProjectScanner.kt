@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
+import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
@@ -13,17 +15,21 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicLong
 
 class ProjectScanner(
     private val root: File,
     private val projectBuilder: ProjectBuilder,
     private val excludePatterns: List<String> = listOf(),
-    private val includeExtensions: List<String> = listOf()
+    private val includeExtensions: List<String> = listOf(),
+    private val baseFileNodes: Map<String, Node> = emptyMap()
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
     private var ignoredFiles = 0L
     private val ignoredFileTypes = mutableSetOf<String>()
+    private val filesSkipped = AtomicLong(0)
+    private val filesAnalyzed = AtomicLong(0)
 
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
@@ -56,7 +62,7 @@ class ProjectScanner(
             parsableFiles.forEach { file ->
                 launch {
                     filesParsed++
-                    applyLanguageSpecificCollector(file, verbose)
+                    collectMetricsForFile(file, verbose)
                     if (!verbose) logProgress(file.name, filesParsed)
                 }
             }
@@ -64,22 +70,50 @@ class ProjectScanner(
 
         progressTracker.updateProgress(totalFiles, totalFiles, parsingUnit.name)
         System.err.println()
+
+        if (baseFileNodes.isNotEmpty()) {
+            logBaseFileStatistics()
+        }
+
         if (verbose) {
             Logger.info { "Analysis of files complete, creating output file..." }
         }
         addAllNodesToProjectBuilder()
     }
 
-    private fun applyLanguageSpecificCollector(file: File, verbose: Boolean) {
+    private fun collectMetricsForFile(file: File, verbose: Boolean) {
         val relativeFilePath = getRelativeFileName(file.toString())
         require(file.isFile) { "Expected file but found folder at $relativeFilePath!" }
 
-        val collector = findCollectorForFileType(file.extension)?.collectorFactory
+        val fileContent = file.readText()
+        val currentChecksum = ChecksumCalculator.calculateChecksum(fileContent)
+        val baseNode = baseFileNodes[relativeFilePath]
+        if (baseNode != null && baseNode.checksum == currentChecksum) {
+            reuseMetricsFromBaseFile(baseNode, relativeFilePath, verbose)
+        } else {
+            applyLanguageSpecificCollector(file, fileContent, relativeFilePath, verbose)
+        }
+    }
 
+    private fun reuseMetricsFromBaseFile(baseNode: Node, relativeFilePath: String, verbose: Boolean) {
+        if (verbose) Logger.info { "Reusing metrics for unchanged file $relativeFilePath" }
+        fileMetrics[relativeFilePath] = MutableNode(
+            name = baseNode.name,
+            type = baseNode.type,
+            attributes = baseNode.attributes,
+            checksum = baseNode.checksum
+        )
+        filesSkipped.incrementAndGet()
+    }
+
+    private fun applyLanguageSpecificCollector(file: File, fileContent: String, relativeFilePath: String, verbose: Boolean) {
+        if (verbose) Logger.info { "Calculating metrics for file $relativeFilePath" }
+
+        val collector = findCollectorForFileType(file.extension)?.collectorFactory
         require(collector != null) { "Unexpectedly encountered an unsupported file at $relativeFilePath!" }
 
-        if (verbose) Logger.info { "Calculating metrics for file $relativeFilePath" }
-        fileMetrics[relativeFilePath] = collector().collectMetricsForFile(file)
+        fileMetrics[relativeFilePath] = collector().collectMetricsForFile(file, fileContent)
+        filesAnalyzed.incrementAndGet()
     }
 
     private fun getRelativeFileName(fileName: String): String {
@@ -118,6 +152,16 @@ class ProjectScanner(
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
         progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
+    }
+
+    private fun logBaseFileStatistics() {
+        val skipped = filesSkipped.get()
+        val analyzed = filesAnalyzed.get()
+        val total = skipped + analyzed
+        Logger.info {
+            "Checksum comparison: $skipped files skipped, $analyzed files analyzed " +
+                "(${skipped * 100 / total.coerceAtLeast(1)}% reused)"
+        }
     }
 
     private fun addAllNodesToProjectBuilder() {

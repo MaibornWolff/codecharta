@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators.Ca
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators.MetricsToCalculatorsMap
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFileMetrics
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.MetricNodeTypes
+import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import org.treesitter.TSLanguage
@@ -23,7 +24,13 @@ abstract class MetricCollector(
     private val metricPerFileInfo = metricCalculators.getPerFileMetricInfo()
 
     fun collectMetricsForFile(file: File): MutableNode {
-        val rootNode = getRootNode(file)
+        val fileContent = file.readText()
+        return collectMetricsForFile(file, fileContent)
+    }
+
+    fun collectMetricsForFile(file: File, fileContent: String): MutableNode {
+        val checksum = ChecksumCalculator.calculateChecksum(fileContent)
+        val rootNode = getRootNode(fileContent)
         rootNodeType = rootNode.type
 
         // we use an IntArray and not a map here as it improves performance
@@ -45,14 +52,15 @@ abstract class MetricCollector(
         return MutableNode(
             name = file.name,
             type = NodeType.File,
-            attributes = metricNameToValue
+            attributes = metricNameToValue,
+            checksum = checksum
         )
     }
 
-    private fun getRootNode(file: File): TSNode {
+    private fun getRootNode(fileContent: String): TSNode {
         val parser = TSParser()
         parser.language = treeSitterLanguage
-        val rootNode = parser.parseString(null, file.readText()).rootNode
+        val rootNode = parser.parseString(null, fileContent).rootNode
         return rootNode
     }
 
