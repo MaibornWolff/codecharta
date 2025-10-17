@@ -14,40 +14,52 @@ class SemanticCommitMetricsTest {
         @JvmStatic
         fun semanticCommitMetrics(): Stream<Arguments> {
             return Stream.of(
-                Arguments.of(DocsCommits(), "docs", "docs: update documentation"),
-                Arguments.of(StyleCommits(), "style", "style: format code"),
-                Arguments.of(RefactorCommits(), "refactor", "refactor: improve code structure"),
-                Arguments.of(TestCommits(), "test", "test: add unit tests")
+                Arguments.of(SemanticCommitMetric("docs", "Docs commits", SemanticCommitDetector::isDocsCommit), "docs", "docs: update documentation"),
+                Arguments.of(SemanticCommitMetric("style", "Style commits", SemanticCommitDetector::isStyleCommit), "style", "style: format code"),
+                Arguments.of(SemanticCommitMetric("refactor", "Refactor commits", SemanticCommitDetector::isRefactorCommit), "refactor", "refactor: improve code structure"),
+                Arguments.of(SemanticCommitMetric("test", "Test commits", SemanticCommitDetector::isTestCommit), "test", "test: add unit tests"),
+                Arguments.of(SemanticCommitMetric("feat", "Feat commits", SemanticCommitDetector::isFeatCommit), "feat", "feat: add new feature"),
+                Arguments.of(SemanticCommitMetric("fix", "Fix commits", SemanticCommitDetector::isFixCommit), "fix", "fix: correct bug"),
+                Arguments.of(SemanticCommitMetric("hotfix", "Hotfix commits", SemanticCommitDetector::isHotfixCommit), "hotfix", "hotfix: urgent fix")
             )
         }
 
         @JvmStatic
         fun semanticCommitMetricsWithMessages(): Stream<Arguments> {
             return Stream.of(
-                Arguments.of(DocsCommits(), "docs: update documentation"),
-                Arguments.of(StyleCommits(), "style: format code"),
-                Arguments.of(RefactorCommits(), "refactor: improve code structure"),
-                Arguments.of(TestCommits(), "test: add unit tests")
+                Arguments.of(SemanticCommitMetric("docs", "Docs commits", SemanticCommitDetector::isDocsCommit), "docs: update documentation"),
+                Arguments.of(SemanticCommitMetric("style", "Style commits", SemanticCommitDetector::isStyleCommit), "style: format code"),
+                Arguments.of(SemanticCommitMetric("refactor", "Refactor commits", SemanticCommitDetector::isRefactorCommit), "refactor: improve code structure"),
+                Arguments.of(SemanticCommitMetric("test", "Test commits", SemanticCommitDetector::isTestCommit), "test: add unit tests"),
+                Arguments.of(SemanticCommitMetric("feat", "Feat commits", SemanticCommitDetector::isFeatCommit), "feat: add new feature"),
+                Arguments.of(SemanticCommitMetric("fix", "Fix commits", SemanticCommitDetector::isFixCommit), "fix: correct bug"),
+                Arguments.of(SemanticCommitMetric("hotfix", "Hotfix commits", SemanticCommitDetector::isHotfixCommit), "hotfix: urgent fix")
             )
         }
 
         @JvmStatic
         fun semanticCommitMetricsWithParenthesesFormats(): Stream<Arguments> {
             return Stream.of(
-                Arguments.of(DocsCommits(), "docs(readme): update documentation"),
-                Arguments.of(StyleCommits(), "style(format): fix formatting"),
-                Arguments.of(RefactorCommits(), "refactor(core): improve structure"),
-                Arguments.of(TestCommits(), "test(unit): add tests")
+                Arguments.of(SemanticCommitMetric("docs", "Docs commits", SemanticCommitDetector::isDocsCommit), "docs(readme): update documentation"),
+                Arguments.of(SemanticCommitMetric("style", "Style commits", SemanticCommitDetector::isStyleCommit), "style(format): fix formatting"),
+                Arguments.of(SemanticCommitMetric("refactor", "Refactor commits", SemanticCommitDetector::isRefactorCommit), "refactor(core): improve structure"),
+                Arguments.of(SemanticCommitMetric("test", "Test commits", SemanticCommitDetector::isTestCommit), "test(unit): add tests"),
+                Arguments.of(SemanticCommitMetric("feat", "Feat commits", SemanticCommitDetector::isFeatCommit), "feat(api): add endpoint"),
+                Arguments.of(SemanticCommitMetric("fix", "Fix commits", SemanticCommitDetector::isFixCommit), "fix(auth): correct login"),
+                Arguments.of(SemanticCommitMetric("hotfix", "Hotfix commits", SemanticCommitDetector::isHotfixCommit), "hotfix(security): patch vulnerability")
             )
         }
 
         @JvmStatic
         fun semanticCommitMetricsWithSpaceFormats(): Stream<Arguments> {
             return Stream.of(
-                Arguments.of(DocsCommits(), "docs update readme"),
-                Arguments.of(StyleCommits(), "style fix code"),
-                Arguments.of(RefactorCommits(), "refactor improve code"),
-                Arguments.of(TestCommits(), "test add coverage")
+                Arguments.of(SemanticCommitMetric("docs", "Docs commits", SemanticCommitDetector::isDocsCommit), "docs update readme"),
+                Arguments.of(SemanticCommitMetric("style", "Style commits", SemanticCommitDetector::isStyleCommit), "style fix code"),
+                Arguments.of(SemanticCommitMetric("refactor", "Refactor commits", SemanticCommitDetector::isRefactorCommit), "refactor improve code"),
+                Arguments.of(SemanticCommitMetric("test", "Test commits", SemanticCommitDetector::isTestCommit), "test add coverage"),
+                Arguments.of(SemanticCommitMetric("feat", "Feat commits", SemanticCommitDetector::isFeatCommit), "feat add feature"),
+                Arguments.of(SemanticCommitMetric("fix", "Fix commits", SemanticCommitDetector::isFixCommit), "fix resolve issue"),
+                Arguments.of(SemanticCommitMetric("hotfix", "Hotfix commits", SemanticCommitDetector::isHotfixCommit), "hotfix urgent repair")
             )
         }
     }
@@ -161,10 +173,13 @@ class SemanticCommitMetricsTest {
     @Test
     fun should_have_correct_metric_names_and_descriptions() {
         val metrics = listOf(
-            DocsCommits() to "docs_commits",
-            StyleCommits() to "style_commits",
-            RefactorCommits() to "refactor_commits",
-            TestCommits() to "test_commits"
+            SemanticCommitMetric("docs", "Docs commits", SemanticCommitDetector::isDocsCommit) to "docs_commits",
+            SemanticCommitMetric("style", "Style commits", SemanticCommitDetector::isStyleCommit) to "style_commits",
+            SemanticCommitMetric("refactor", "Refactor commits", SemanticCommitDetector::isRefactorCommit) to "refactor_commits",
+            SemanticCommitMetric("test", "Test commits", SemanticCommitDetector::isTestCommit) to "test_commits",
+            SemanticCommitMetric("feat", "Feat commits", SemanticCommitDetector::isFeatCommit) to "feat_commits",
+            SemanticCommitMetric("fix", "Fix commits", SemanticCommitDetector::isFixCommit) to "fix_commits",
+            SemanticCommitMetric("hotfix", "Hotfix commits", SemanticCommitDetector::isHotfixCommit) to "hotfix_commits"
         )
 
         metrics.forEach { (metric, expectedName) ->
