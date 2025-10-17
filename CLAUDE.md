@@ -151,6 +151,12 @@ npm run schema:generate
    - `ValidationTool`: Validate cc.json schema compliance
    - `InspectionTool`: Display cc.json file information
 
+The UnifiedParser is the most actively developed component:
+- Uses TreeSitter for parsing multiple languages
+- Metric calculators extend `MetricPerFileCalc` or `MetricPerFunctionCalc`
+- Language support defined in `metricnodetypes/` with node type mappings to language constructs
+- Each metric calculator implements `calculateMetricForNode(params: CalculationContext)`
+
 **Data Model** (`analysis/model/`):
 - `Project`: Root container (API version 1.5)
   - `rootNode`: Single root Node
@@ -290,6 +296,9 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 - **Fix Warnings**: Never suppress, always resolve
 - **Consistent Style**: Match existing patterns
 - **Comments**: Use sparingly for complex business logic rationale. Prefer clear function names over comments.
+- **Metric Accuracy**: All metrics must be deterministic and reproducible across runs
+- **Immutability**: Prefer immutable data structures, especially in the model layer
+- **Backward Compatibility**: Changes to `.cc.json` format require careful versioning
 
 **TDD Workflow** (Red → Green → Refactor):
 1. Write one failing test
