@@ -11,43 +11,83 @@ import java.util.stream.Stream
 
 class SemanticCommitMetricsTest {
     companion object {
+        private fun createSemanticCommitMetric(type: SemanticCommitType): SemanticCommitMetric {
+            return SemanticCommitMetric(type)
+        }
+
         @JvmStatic
         fun semanticCommitMetrics(): Stream<Arguments> {
-            return Stream.of(
-                Arguments.of(DocsCommits(), "docs", "docs: update documentation"),
-                Arguments.of(StyleCommits(), "style", "style: format code"),
-                Arguments.of(RefactorCommits(), "refactor", "refactor: improve code structure"),
-                Arguments.of(TestCommits(), "test", "test: add unit tests")
-            )
+            val commitTypes = DefaultSemanticCommitStyle.getAllTypes().filter {
+                it.name in listOf("docs", "style", "refactor", "test")
+            }
+            return commitTypes.map {
+                Arguments.of(createSemanticCommitMetric(it), it.name, "${it.name}: sample message")
+            }.stream()
         }
 
         @JvmStatic
         fun semanticCommitMetricsWithMessages(): Stream<Arguments> {
             return Stream.of(
-                Arguments.of(DocsCommits(), "docs: update documentation"),
-                Arguments.of(StyleCommits(), "style: format code"),
-                Arguments.of(RefactorCommits(), "refactor: improve code structure"),
-                Arguments.of(TestCommits(), "test: add unit tests")
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("docs")!!),
+                    "docs: update documentation"
+                ),
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("style")!!),
+                    "style: format code"
+                ),
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("refactor")!!),
+                    "refactor: improve code structure"
+                ),
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("test")!!),
+                    "test: add unit tests"
+                )
             )
         }
 
         @JvmStatic
         fun semanticCommitMetricsWithParenthesesFormats(): Stream<Arguments> {
             return Stream.of(
-                Arguments.of(DocsCommits(), "docs(readme): update documentation"),
-                Arguments.of(StyleCommits(), "style(format): fix formatting"),
-                Arguments.of(RefactorCommits(), "refactor(core): improve structure"),
-                Arguments.of(TestCommits(), "test(unit): add tests")
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("docs")!!),
+                    "docs(readme): update documentation"
+                ),
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("style")!!),
+                    "style(format): fix formatting"
+                ),
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("refactor")!!),
+                    "refactor(core): improve structure"
+                ),
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("test")!!),
+                    "test(unit): add tests"
+                )
             )
         }
 
         @JvmStatic
         fun semanticCommitMetricsWithSpaceFormats(): Stream<Arguments> {
             return Stream.of(
-                Arguments.of(DocsCommits(), "docs update readme"),
-                Arguments.of(StyleCommits(), "style fix code"),
-                Arguments.of(RefactorCommits(), "refactor improve code"),
-                Arguments.of(TestCommits(), "test add coverage")
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("docs")!!),
+                    "docs update readme"
+                ),
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("style")!!),
+                    "style fix code"
+                ),
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("refactor")!!),
+                    "refactor improve code"
+                ),
+                Arguments.of(
+                    createSemanticCommitMetric(DefaultSemanticCommitStyle.getTypeByName("test")!!),
+                    "test add coverage"
+                )
             )
         }
     }
@@ -160,15 +200,13 @@ class SemanticCommitMetricsTest {
 
     @Test
     fun should_have_correct_metric_names_and_descriptions() {
-        val metrics = listOf(
-            DocsCommits() to "docs_commits",
-            StyleCommits() to "style_commits",
-            RefactorCommits() to "refactor_commits",
-            TestCommits() to "test_commits"
-        )
+        val commitTypes = DefaultSemanticCommitStyle.getAllTypes().filter {
+            it.name in listOf("docs", "style", "refactor", "test")
+        }
 
-        metrics.forEach { (metric, expectedName) ->
-            assertThat(metric.metricName()).isEqualTo(expectedName)
+        commitTypes.forEach { commitType ->
+            val metric = SemanticCommitMetric(commitType)
+            assertThat(metric.metricName()).isEqualTo(commitType.metricName)
             assertThat(metric.description()).isNotBlank()
         }
     }

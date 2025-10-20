@@ -1,56 +1,49 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics
 
 class MetricsFactory {
-    private val metricClasses: List<Class<out Metric>>
+    private val metricFactories: List<() -> Metric>
 
     constructor() {
-        this.metricClasses = createAllMetrics().map { it.javaClass }
+        this.metricFactories = createAllMetricFactories()
     }
 
     constructor(metricNames: List<String>) {
-        this.metricClasses =
-            createAllMetrics().filter { m -> metricNames.contains(m.metricName()) }.map { it.javaClass }
-    }
-
-    private fun createMetric(clazz: Class<out Metric>): Metric {
-        try {
-            return clazz.getDeclaredConstructor().newInstance()
-        } catch (e: InstantiationException) {
-            throw IllegalArgumentException("metric $clazz not found.")
-        } catch (e: IllegalAccessException) {
-            throw IllegalArgumentException("metric $clazz not found.")
+        val allFactories = createAllMetricFactories()
+        val sampleMetrics = allFactories.map { it() }
+        this.metricFactories = allFactories.filterIndexed { index, _ ->
+            metricNames.contains(sampleMetrics[index].metricName())
         }
     }
 
-    private fun createAllMetrics(): List<Metric> {
-        return listOf(
-            AbsoluteCodeChurn(),
-            AddedLines(),
-            DeletedLines(),
-            NumberOfAuthors(),
-            NumberOfOccurencesInCommits(),
-            RangeOfWeeksWithCommits(),
-            SuccessiveWeeksWithCommits(),
-            WeeksWithCommits(),
-            HighlyCoupledFiles(),
-            MedianCoupledFiles(),
-            AbsoluteCoupledChurn(),
-            AverageCodeChurnPerCommit(),
-            NumberOfRenames(),
-            AgeInWeeks(),
-            FeatCommits(),
-            FixCommits(),
-            DocsCommits(),
-            StyleCommits(),
-            RefactorCommits(),
-            TestCommits(),
-            HotfixCommits(),
-            SemanticCommitRatio(),
-            HotfixCommitRatio()
+    private fun createAllMetricFactories(): List<() -> Metric> {
+        val commitTypes = DefaultSemanticCommitStyle.getAllTypes()
+        val semanticCommitFactories = commitTypes.map { type -> { -> SemanticCommitMetric(type) } }
+
+        val hotfixType = DefaultSemanticCommitStyle.getTypeByName("hotfix")!!
+
+        val standardFactories = listOf<() -> Metric>(
+            { AbsoluteCodeChurn() },
+            { AddedLines() },
+            { DeletedLines() },
+            { NumberOfAuthors() },
+            { NumberOfOccurencesInCommits() },
+            { RangeOfWeeksWithCommits() },
+            { SuccessiveWeeksWithCommits() },
+            { WeeksWithCommits() },
+            { HighlyCoupledFiles() },
+            { MedianCoupledFiles() },
+            { AbsoluteCoupledChurn() },
+            { AverageCodeChurnPerCommit() },
+            { NumberOfRenames() },
+            { AgeInWeeks() },
+            { SemanticCommitRatio(commitTypes) },
+            { HotfixCommitRatio(hotfixType) }
         )
+
+        return standardFactories + semanticCommitFactories
     }
 
     fun createMetrics(): List<Metric> {
-        return metricClasses.map { createMetric(it) }
+        return metricFactories.map { it() }
     }
 }

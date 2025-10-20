@@ -7,10 +7,12 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class HotfixCommitRatioTest {
+    private val hotfixType = DefaultSemanticCommitStyle.getTypeByName("hotfix")!!
+
     @Test
     fun should_have_initial_value_zero() {
         // when
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // then
         assertThat(metric.value()).isEqualTo(0.0)
@@ -19,7 +21,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_return_relative_attribute_type() {
         // when
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // then
         assertThat(metric.attributeType()).isEqualTo(AttributeType.RELATIVE)
@@ -28,7 +30,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_calculate_ratio_for_all_hotfix_commits() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: critical security fix"))
@@ -41,7 +43,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_calculate_ratio_for_mixed_commits() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: fix security vulnerability"))
@@ -54,7 +56,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_calculate_ratio_for_no_hotfix_commits() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat: add feature"))
@@ -67,7 +69,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_be_case_insensitive() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "HOTFIX: urgent security patch"))
@@ -81,7 +83,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_handle_whitespace_in_messages() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "  hotfix: urgent patch with whitespace  "))
@@ -94,7 +96,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_match_hotfix_anywhere_in_message() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "apply emergency hotfix"))
@@ -109,7 +111,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_round_to_two_decimal_places() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: fix critical bug"))
@@ -123,7 +125,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_match_flexible_format_with_parentheses() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix(api): fix critical endpoint"))
@@ -137,7 +139,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_not_match_partial_words() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "fix: photoshop fix"))
@@ -150,7 +152,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_not_match_hyphenated_hotfix() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hot-fix: urgent production issue"))
@@ -163,7 +165,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_handle_empty_message() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, ""))
@@ -176,7 +178,7 @@ class HotfixCommitRatioTest {
     @Test
     fun should_handle_complex_ratio_calculation() {
         // given
-        val metric = HotfixCommitRatio()
+        val metric = HotfixCommitRatio(hotfixType)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: critical security patch"))

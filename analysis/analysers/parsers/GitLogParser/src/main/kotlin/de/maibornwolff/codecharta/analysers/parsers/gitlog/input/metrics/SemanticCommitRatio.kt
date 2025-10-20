@@ -4,12 +4,15 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
 import de.maibornwolff.codecharta.model.AttributeType
 import kotlin.math.round
 
-class SemanticCommitRatio : Metric {
+class SemanticCommitRatio(
+    private val semanticCommitTypes: List<SemanticCommitType>
+) : Metric {
     private var totalCommitsCount: Long = 0
     private var semanticCommitsCount: Long = 0
 
     override fun description(): String {
-        return "Semantic Commit Ratio: Ratio of semantic commits (feat, fix, docs, style, refactor, test) to total commits for this file."
+        return "Semantic Commit Ratio: Ratio of semantic commits " +
+            "(feat, fix, docs, style, refactor, test, hotfix) to total commits for this file."
     }
 
     override fun metricName(): String {
@@ -23,7 +26,7 @@ class SemanticCommitRatio : Metric {
     override fun registerCommit(commit: Commit) {
         totalCommitsCount++
 
-        if (SemanticCommitDetector.isSemanticCommit(commit.message)) {
+        if (semanticCommitTypes.any { it.matchPattern.matches(commit.message) }) {
             semanticCommitsCount++
         }
     }

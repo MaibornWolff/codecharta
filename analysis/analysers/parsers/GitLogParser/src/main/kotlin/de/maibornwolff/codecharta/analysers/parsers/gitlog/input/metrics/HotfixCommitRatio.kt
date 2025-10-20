@@ -4,7 +4,9 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
 import de.maibornwolff.codecharta.model.AttributeType
 import kotlin.math.round
 
-class HotfixCommitRatio : Metric {
+class HotfixCommitRatio(
+    private val hotfixType: SemanticCommitType
+) : Metric {
     private var totalCommitsCount: Long = 0
     private var hotfixCommitsCount: Long = 0
 
@@ -23,7 +25,7 @@ class HotfixCommitRatio : Metric {
     override fun registerCommit(commit: Commit) {
         totalCommitsCount++
 
-        if (SemanticCommitDetector.isHotfixCommit(commit.message)) {
+        if (hotfixType.matchPattern.matches(commit.message)) {
             hotfixCommitsCount++
         }
     }
