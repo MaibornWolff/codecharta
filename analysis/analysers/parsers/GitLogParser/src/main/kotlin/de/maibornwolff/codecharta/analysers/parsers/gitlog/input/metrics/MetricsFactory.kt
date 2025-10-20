@@ -19,8 +19,6 @@ class MetricsFactory {
         val commitTypes = DefaultSemanticCommitStyle.getAllTypes()
         val semanticCommitFactories = commitTypes.map { type -> { -> SemanticCommitMetric(type) } }
 
-        val hotfixType = DefaultSemanticCommitStyle.getTypeByName("hotfix")!!
-
         val standardFactories = listOf<() -> Metric>(
             { AbsoluteCodeChurn() },
             { AddedLines() },
@@ -37,7 +35,8 @@ class MetricsFactory {
             { NumberOfRenames() },
             { AgeInWeeks() },
             { SemanticCommitRatio(commitTypes) },
-            { HotfixCommitRatio(hotfixType) }
+            { HotfixCommits() },
+            { HotfixCommitRatio() }
         )
 
         return standardFactories + semanticCommitFactories

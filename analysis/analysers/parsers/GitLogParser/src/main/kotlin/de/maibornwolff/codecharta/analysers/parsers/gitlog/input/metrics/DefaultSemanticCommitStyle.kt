@@ -37,12 +37,6 @@ object DefaultSemanticCommitStyle {
             metricName = "test_commits",
             description = "Test Commits: Number of test commits (starting with 'test') for this file.",
             matchPattern = MatchPattern.StartsWith("test")
-        ),
-        SemanticCommitType(
-            name = "hotfix",
-            metricName = "hotfix_commits",
-            description = "Hotfix Commits: Number of hotfix commits (containing 'hotfix') for this file.",
-            matchPattern = MatchPattern.Contains("hotfix")
         )
     )
 

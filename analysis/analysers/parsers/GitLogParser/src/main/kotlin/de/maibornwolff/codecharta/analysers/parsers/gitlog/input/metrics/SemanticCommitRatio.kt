@@ -12,7 +12,7 @@ class SemanticCommitRatio(
 
     override fun description(): String {
         return "Semantic Commit Ratio: Ratio of semantic commits " +
-            "(feat, fix, docs, style, refactor, test, hotfix) to total commits for this file."
+            "(feat, fix, docs, style, refactor, test) to total commits for this file."
     }
 
     override fun metricName(): String {

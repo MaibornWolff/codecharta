@@ -14,28 +14,27 @@ class DefaultSemanticCommitStyleTest {
         val types = DefaultSemanticCommitStyle.getAllTypes()
 
         // Assert
-        assertThat(types).hasSize(7)
+        assertThat(types).hasSize(6)
         assertThat(types.map { it.name }).containsExactlyInAnyOrder(
             "feat",
             "fix",
             "docs",
             "style",
             "refactor",
-            "test",
-            "hotfix"
+            "test"
         )
     }
 
     @Test
     fun should_get_commit_type_by_name() {
         // Arrange & Act
-        val hotfixType = DefaultSemanticCommitStyle.getTypeByName("hotfix")
+        val featType = DefaultSemanticCommitStyle.getTypeByName("feat")
         val nonExistentType = DefaultSemanticCommitStyle.getTypeByName("nonexistent")
 
         // Assert
-        assertThat(hotfixType).isNotNull
-        assertThat(hotfixType?.name).isEqualTo("hotfix")
-        assertThat(hotfixType?.metricName).isEqualTo("hotfix_commits")
+        assertThat(featType).isNotNull
+        assertThat(featType?.name).isEqualTo("feat")
+        assertThat(featType?.metricName).isEqualTo("feat_commits")
         assertThat(nonExistentType).isNull()
     }
 
@@ -95,28 +94,4 @@ class DefaultSemanticCommitStyleTest {
         assertThat(matches).isEqualTo(expectedMatch)
     }
 
-    @ParameterizedTest
-    @CsvSource(
-        "hotfix: critical security fix, true",
-        "HOTFIX: urgent patch, true",
-        "apply emergency hotfix, true",
-        "production hotfix deployment, true",
-        "urgent hotfix for API, true",
-        "hotfix(api): fix endpoint, true",
-        "fix(security): hotfix vulnerability, true",
-        "feat: add feature, false",
-        "fix: photoshop fix, false",
-        "hot-fix: hyphenated, false",
-        "'', false"
-    )
-    fun should_detect_hotfix_commits_using_contains_pattern(message: String, expectedMatch: Boolean) {
-        // Arrange
-        val hotfixType = commitTypes.find { it.name == "hotfix" }!!
-
-        // Act
-        val matches = hotfixType.matchPattern.matches(message)
-
-        // Assert
-        assertThat(matches).isEqualTo(expectedMatch)
-    }
 }
