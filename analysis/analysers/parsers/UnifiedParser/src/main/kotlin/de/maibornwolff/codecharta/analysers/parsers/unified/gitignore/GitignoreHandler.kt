@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger
  * - Thread-safe for parallel file processing
  */
 class GitignoreHandler(private val root: File) {
-
     // Cache of directory path -> (GitignorePatternMatcher, List<GitignoreRule>)
     private val gitignoreCache = mutableMapOf<String, Pair<GitignorePatternMatcher, List<GitignoreRule>>>()
 
@@ -28,11 +27,7 @@ class GitignoreHandler(private val root: File) {
      * Should be called once during initialization.
      */
     fun initialize() {
-        root.walk()
-            .filter { it.isFile && it.name == ".gitignore" }
-            .forEach { gitignoreFile ->
-                parseAndCacheGitignoreFile(gitignoreFile)
-            }
+        root.walk().filter { it.isFile && it.name == ".gitignore" }.forEach { parseAndCacheGitignoreFile(it) }
     }
 
     /**

@@ -278,6 +278,11 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 - Based on official Kotlin Coding Conventions
 - Auto-formatted via `./gradlew ktlintFormat`
 - Rules defined in `.editorconfig`
+- **Function syntax**: Use block-body style with braces `{ }` consistently, not expression-body style with `=`
+- **Guard clauses**: Use early returns for error conditions and edge cases to reduce nesting
+- **Magic strings/numbers**: Extract repeated literals to constants in `companion object`
+- **Function organization**: Group related functions with section comments
+- **Parameter naming**: Use consistent, descriptive names across related functions
 
 **Visualization (TypeScript)**:
 - Formatted with BiomeJS

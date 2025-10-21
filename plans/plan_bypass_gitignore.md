@@ -119,9 +119,9 @@ Add gitignore question to interactive mode.
 
 ## Steps
 
-- [ ] Complete Task 1.1: Create GitignoreRule data class
-- [ ] Complete Task 1.2: Implement GitignorePatternMatcher class
-- [ ] Complete Task 1.3: Implement GitignoreHandler class
+- [x] Complete Task 1.1: Create GitignoreRule data class
+- [x] Complete Task 1.2: Implement GitignorePatternMatcher class
+- [x] Complete Task 1.3: Implement GitignoreHandler class
 - [ ] Complete Task 2.1: Update ProjectScanner constructor
 - [ ] Complete Task 2.2: Modify isParsableFile() method
 - [ ] Complete Task 2.3: Add getGitIgnoreStatistics() method
