@@ -93,5 +93,4 @@ class DefaultSemanticCommitStyleTest {
         // Assert
         assertThat(matches).isEqualTo(expectedMatch)
     }
-
 }

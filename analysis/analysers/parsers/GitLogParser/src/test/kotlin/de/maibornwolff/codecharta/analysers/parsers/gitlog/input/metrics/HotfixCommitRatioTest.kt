@@ -31,7 +31,9 @@ class HotfixCommitRatioTest {
         val metric = HotfixCommitRatio()
 
         // Act & Assert
-        assertThat(metric.description()).isEqualTo("Hotfix Commit Ratio: Ratio of hotfix commits (containing 'hotfix') to total commits for this file.")
+        assertThat(
+            metric.description()
+        ).isEqualTo("Hotfix Commit Ratio: Ratio of hotfix commits (containing 'hotfix') to total commits for this file.")
     }
 
     @Test
