@@ -35,11 +35,13 @@ class GitignorePatternMatcherTest {
     @Test
     fun `should skip blank lines`() {
         // Arrange
-        gitignoreFile.writeText("""
+        gitignoreFile.writeText(
+            """
 
             *.log
 
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
@@ -52,11 +54,13 @@ class GitignorePatternMatcherTest {
     @Test
     fun `should skip comment lines starting with hash`() {
         // Arrange
-        gitignoreFile.writeText("""
+        gitignoreFile.writeText(
+            """
             # This is a comment
             *.log
             # Another comment
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
@@ -116,10 +120,12 @@ class GitignorePatternMatcherTest {
     @Test
     fun `should handle negation pattern to re-include files`() {
         // Arrange
-        gitignoreFile.writeText("""
+        gitignoreFile.writeText(
+            """
             *.log
             !important.log
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
@@ -365,7 +371,7 @@ class GitignorePatternMatcherTest {
         fileNested.parentFile.mkdirs()
 
         // Assert
-        assertThat(rules[0].isRooted).isTrue()  // Has slash, treated as rooted
+        assertThat(rules[0].isRooted).isTrue() // Has slash, treated as rooted
         assertThat(matcher.shouldIgnore(fileAtRootLevel, rules)).isTrue()
         assertThat(matcher.shouldIgnore(fileNested, rules)).isFalse()
     }
@@ -394,11 +400,13 @@ class GitignorePatternMatcherTest {
     @Test
     fun `should apply last match wins semantics`() {
         // Arrange
-        gitignoreFile.writeText("""
+        gitignoreFile.writeText(
+            """
             *.log
             !important.log
             debug.log
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
@@ -433,11 +441,13 @@ class GitignorePatternMatcherTest {
     fun `should skip invalid patterns and continue parsing`() {
         // Arrange
         // Create a pattern that might cause issues (but PathMatcher should handle most patterns)
-        gitignoreFile.writeText("""
+        gitignoreFile.writeText(
+            """
             *.log
 
             *.txt
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
@@ -451,7 +461,8 @@ class GitignorePatternMatcherTest {
     @Test
     fun `should handle complex gitignore file with multiple pattern types`() {
         // Arrange
-        gitignoreFile.writeText("""
+        gitignoreFile.writeText(
+            """
             # Logs
             *.log
             !important.log
@@ -471,7 +482,8 @@ class GitignorePatternMatcherTest {
 
             # Double asterisk
             **/generated/**
-        """.trimIndent())
+            """.trimIndent()
+        )
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
@@ -489,7 +501,7 @@ class GitignorePatternMatcherTest {
         generatedFile.parentFile.mkdirs()
 
         // Assert
-        assertThat(rules.size).isGreaterThan(5)  // At least 6 non-comment, non-blank rules
+        assertThat(rules.size).isGreaterThan(5) // At least 6 non-comment, non-blank rules
         assertThat(matcher.shouldIgnore(logFile, rules)).isTrue()
         assertThat(matcher.shouldIgnore(importantLog, rules)).isFalse()
         assertThat(matcher.shouldIgnore(buildDir, rules)).isTrue()
