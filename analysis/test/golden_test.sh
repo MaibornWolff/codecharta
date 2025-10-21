@@ -135,13 +135,6 @@ check_sonar() {
   validate "${ACTUAL_SONAR_JASON}.cc.json"
 }
 
-check_sourcecodeparser() {
-  echo " -- expect SourceCodeParser to produce valid cc.json file"
-  ACTUAL_SCP_JSON="${TEMP_DIR}/actual_scpparser.cc.json"
-  "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" -o "${ACTUAL_SCP_JSON}" -nc
-  validate "${ACTUAL_SCP_JSON}"
-}
-
 check_coverageimporter_javascript() {
     echo " ---- expect CoverageImporter to produce valid cc.json file for lcov"
     ACTUAL_LCOV_COVERAGE_JSON="${TEMP_DIR}/actual_coverageimporter_lcov.cc.json"
@@ -208,14 +201,13 @@ check_rawtext() {
 }
 
 check_pipe() {
-  echo " -- expect pipe chain from tokei, sourcecodeparser, svnlogparser and modify to work"
+  echo " -- expect pipe chain from tokei, svnlogparser and modify to work"
   sh "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ |
-    sh "${CCSH}" sourcecodeparser "${DATA}/sourcecode.java" |
     sh "${CCSH}" svnlogparser "${DATA}/SVNTestLog.txt" |
     sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
       -o ${TEMP_DIR}/piped_out.json 2>${TEMP_DIR}/piped_out_log.json
   validate ${TEMP_DIR}/piped_out.cc.json
-  if ! grep -q "Created Project with 9 leaves." ${TEMP_DIR}/piped_out_log.json; then
+  if ! grep -q "Created Project with 8 leaves." ${TEMP_DIR}/piped_out_log.json; then
     exit_with_err "ERR: Pipes broken."
   fi
 }
@@ -259,7 +251,6 @@ run_tests() {
   check_csvimporter
   check_sourcemonitor
   check_sonar
-  check_sourcecodeparser
   check_coverageimporter
   check_svnlog
   check_tokei

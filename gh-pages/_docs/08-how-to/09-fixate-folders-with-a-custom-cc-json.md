@@ -1,7 +1,7 @@
 ---
 permalink: /docs/how-to/fixate-folders-with-a-custom-cc-json
 tags:
-  - sourcecodeparser
+  - unifiedparser
   - gitlogparser
   - merge
 title: Fixate folders using a custom cc.json

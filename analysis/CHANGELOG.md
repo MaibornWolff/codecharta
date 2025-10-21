@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Add new '--base-file' flag to unifiedparser and rawtextparser
 
+### Removed
+
+- BREAKING CHANGE SourceCodeParser is removed.
+
 ## [1.138.0] - 2025-10-08
 
 ### Added 🚀
