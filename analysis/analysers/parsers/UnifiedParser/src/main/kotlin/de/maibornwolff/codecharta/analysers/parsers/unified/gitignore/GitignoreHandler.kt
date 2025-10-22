@@ -22,11 +22,8 @@ class GitignoreHandler(private val root: File) {
     // Thread-safe counter for excluded files
     private val excludedFileCount = AtomicInteger(0)
 
-    /**
-     * Discovers and parses all .gitignore files in the project tree.
-     * Should be called once during initialization.
-     */
-    fun initialize() {
+    init {
+        // Discover and parse all .gitignore files in the project tree
         root.walk().filter { it.isFile && it.name == ".gitignore" }.forEach { parseAndCacheGitignoreFile(it) }
     }
 
@@ -164,5 +161,14 @@ class GitignoreHandler(private val root: File) {
      */
     fun getExcludedFileCount(): Int {
         return excludedFileCount.get()
+    }
+
+    /**
+     * Checks if a .gitignore file exists at the root level.
+     *
+     * @return True if a root-level .gitignore file was found
+     */
+    fun hasRootLevelGitignore(): Boolean {
+        return gitignoreCache.containsKey(root.absolutePath)
     }
 }
