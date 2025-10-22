@@ -136,11 +136,11 @@ Add gitignore question to interactive mode.
 - [x] Complete Task 3.1: Add CLI parameter to UnifiedParser
 - [x] Complete Task 3.2: Update scanInputProject() with statistics reporting
 - [x] Complete Task 4.1: Add gitignore question to Dialog
-- [ ] Complete Task 5.1: Write GitignorePatternMatcher unit tests
-- [ ] Complete Task 5.2: Write GitignoreHandler unit tests
-- [ ] Complete Task 5.3: Write ProjectScanner integration tests
-- [ ] Complete Task 5.4: Create test resources
-- [ ] Complete Task 5.5: Write end-to-end tests
+- [x] Complete Task 5.1: Write GitignorePatternMatcher unit tests
+- [x] Complete Task 5.2: Write GitignoreHandler unit tests
+- [x] Complete Task 5.3: Write ProjectScanner integration tests
+- [x] Complete Task 5.4: Create test resources
+- [x] Complete Task 5.5: Write end-to-end tests
 - [ ] Complete Task 6.1: Update README
 - [ ] Complete Task 6.2: Update CHANGELOG
 - [ ] Complete Task 6.3: Update architecture documentation

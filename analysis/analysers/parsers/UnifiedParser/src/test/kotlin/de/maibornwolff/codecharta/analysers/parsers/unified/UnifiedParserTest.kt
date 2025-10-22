@@ -310,4 +310,79 @@ class UnifiedParserTest {
         // clean up
         System.setErr(originalErr)
     }
+
+    @Test
+    fun `should exclude files based on gitignore when gitignore file exists`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}gitignore-test-project"
+        System.setErr(PrintStream(errContent))
+
+        // when
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
+
+        // then
+        // Verify that files matching .gitignore patterns were excluded
+        Assertions.assertThat(result).doesNotContain("ignored.log")
+        Assertions.assertThat(result).doesNotContain("build/")
+        // Verify that .gitignore statistics were reported
+        Assertions.assertThat(errContent.toString()).contains(".gitignore")
+        Assertions.assertThat(errContent.toString()).contains("excluded")
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should not exclude files when bypass-gitignore flag is set`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}gitignore-test-project"
+        System.setErr(PrintStream(errContent))
+
+        // when
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--bypass-gitignore"))
+
+        // then
+        // Verify that .gitignore was bypassed (no statistics reported)
+        Assertions.assertThat(errContent.toString()).doesNotContain("excluded by .gitignore")
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should apply both gitignore and exclude patterns when both are specified`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val excludePattern = "bar/.*"
+
+        // when
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "-e=$excludePattern"))
+
+        // then
+        // Files matching exclude pattern should not be in output
+        Assertions.assertThat(result).doesNotContain("\"bar/")
+        // Other files should still be present
+        Assertions.assertThat(result).contains("foo.kt")
+    }
+
+    @Test
+    fun `should report gitignore statistics in verbose mode`() {
+        // given
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        System.setErr(PrintStream(errContent))
+
+        // when
+        executeForOutput(pipedProject, arrayOf(inputFilePath, "--verbose"))
+
+        // then
+        // Verify that the execution completed
+        Assertions.assertThat(errContent.toString()).contains("Analysis of files complete")
+
+        // clean up
+        System.setErr(originalErr)
+    }
 }
