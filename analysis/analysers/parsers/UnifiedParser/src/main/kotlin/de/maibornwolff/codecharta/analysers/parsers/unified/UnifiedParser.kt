@@ -32,6 +32,12 @@ class UnifiedParser(
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
 ) : AnalyserInterface, AttributeGenerator, CommonAnalyserParameters() {
+    @CommandLine.Option(
+        names = ["--bypass-gitignore"],
+        description = ["bypass .gitignore files and use regex-based exclusion instead (default: false)"]
+    )
+    private var bypassGitignore = false
+
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
@@ -47,8 +53,6 @@ class UnifiedParser(
         require(InputHelper.isInputValidAndNotNull(arrayOf(inputFile), canInputContainFolders = true)) {
             "Input invalid file for UnifiedParser, stopping execution..."
         }
-
-        if (!includeBuildFolders) patternsToExclude += CodeChartaConstants.BUILD_FOLDERS
 
         var project = scanInputProject(inputFiles[inputFileIndex])
 
@@ -70,9 +74,25 @@ class UnifiedParser(
         val startTime = System.currentTimeMillis()
         val projectBuilder = ProjectBuilder()
         val baseFileNodeMap = loadBaseFileNodes()
-        val projectScanner = ProjectScanner(inputFile, projectBuilder, patternsToExclude, fileExtensionsToAnalyse, baseFileNodeMap)
+        val useGitignore = !bypassGitignore
+
+        val effectivePatternsToExclude = determineExclusionPatterns(inputFile, useGitignore)
+        val projectScanner = ProjectScanner(inputFile, projectBuilder, effectivePatternsToExclude, fileExtensionsToAnalyse,baseFileNodeMap, useGitignore)
+
         projectScanner.traverseInputProject(verbose)
 
+        reportScanResults(projectScanner)
+
+        val executionTimeMs = System.currentTimeMillis() - startTime
+        val formattedTime = formatTime(executionTimeMs.milliseconds)
+        System.err.println("UnifiedParser completed in $formattedTime, building project...")
+
+        projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
+
+        return projectBuilder.build()
+    }
+
+    private fun reportScanResults(projectScanner: ProjectScanner) {
         val notFoundButSpecifiedFormats = projectScanner.getNotFoundFileExtensions()
         if (notFoundButSpecifiedFormats.isNotEmpty()) {
             System.err.println(
@@ -90,18 +110,19 @@ class UnifiedParser(
             )
         }
 
+        val (gitignoreExcludedCount, gitignoreFiles) = projectScanner.getGitIgnoreStatistics()
+        if (!bypassGitignore && gitignoreExcludedCount > 0) {
+            Logger.info { "$gitignoreExcludedCount files were excluded by .gitignore rules" }
+            if (verbose && gitignoreFiles.isNotEmpty()) {
+                System.err.println("Found .gitignore files at:")
+                gitignoreFiles.forEach { System.err.println("  - $it") }
+            }
+        }
+
         if (!projectScanner.foundParsableFiles()) {
             println()
             Logger.warn { "No files with specified file extension(s) were found within the given folder - generating empty output file!" }
         }
-
-        val executionTimeMs = System.currentTimeMillis() - startTime
-        val formattedTime = formatTime(executionTimeMs.milliseconds)
-        System.err.println("\nUnifiedParser completed in $formattedTime, building project...")
-
-        projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
-
-        return projectBuilder.build()
     }
 
     private fun extractPipedProject(input: InputStream): Project? {
@@ -122,6 +143,21 @@ class UnifiedParser(
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
         return getAttributeDescriptors()
+    }
+
+    private fun determineExclusionPatterns(inputFile: File, useGitignore: Boolean): List<String> {
+        val excludePatterns = specifiedExcludePatterns.toMutableList()
+        val rootGitignoreExists = File(inputFile, ".gitignore").exists()
+
+        if (useGitignore && !rootGitignoreExists) {
+            Logger.warn { "No .gitignore found at root level, excluding common build folders as fallback..." }
+        }
+
+        if (!includeBuildFolders && !rootGitignoreExists) {
+            excludePatterns.addAll(CodeChartaConstants.BUILD_FOLDERS)
+        }
+
+        return excludePatterns
     }
 
     private fun formatFileExtensions(fileExtensions: Set<String>): String {

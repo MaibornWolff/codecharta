@@ -55,11 +55,19 @@ Modify ProjectScanner to use GitignoreHandler for file exclusion.
 Add command-line parameter for gitignore control.
 
 #### 3.1 Add CLI Parameter
-- `--respect-gitignore` (negatable, default: true)
-- Allows `--no-respect-gitignore` to disable
+- `--bypass-gitignore` (default: false)
+- When set, gitignore-based exclusion is disabled and falls back to regex-based exclusion
 
 #### 3.2 Update scanInputProject()
-- Pass `respectGitignore` flag to ProjectScanner
+- Pass `bypassGitignore` flag to ProjectScanner (inverted logic)
+- Check if gitignore files exist at root level
+- If no root-level .gitignore found, fall back to regex-based exclusion
+- When `-e` flag is set, apply both gitignore AND regex exclusions (additive)
+- BUILD_FOLDERS handling:
+  - If `--include-build-folders` is set: Don't exclude BUILD_FOLDERS
+  - If gitignore is used (root .gitignore exists AND `--bypass-gitignore` not set): Don't add BUILD_FOLDERS to patterns
+  - If `-e` flag is set: Always apply user-provided patterns (including if they contain build folders)
+  - Otherwise (fallback to regex): Add BUILD_FOLDERS to exclusion patterns
 - Report gitignore statistics to stderr after scan
 - Include .gitignore file paths in verbose mode
 
@@ -69,8 +77,8 @@ Add gitignore question to interactive mode.
 
 #### 4.1 Add Dialog Question
 - Location: `Dialog.kt`
-- Ask "Should .gitignore files be respected?" (default: yes)
-- Add `--no-respect-gitignore` to args if user selects "no"
+- Ask "Should .gitignore files be bypassed?" (default: no)
+- Add `--bypass-gitignore` to args if user selects "yes"
 
 ### 5. Write Comprehensive Tests
 
@@ -122,11 +130,11 @@ Add gitignore question to interactive mode.
 - [x] Complete Task 1.1: Create GitignoreRule data class
 - [x] Complete Task 1.2: Implement GitignorePatternMatcher class
 - [x] Complete Task 1.3: Implement GitignoreHandler class
-- [ ] Complete Task 2.1: Update ProjectScanner constructor
-- [ ] Complete Task 2.2: Modify isParsableFile() method
-- [ ] Complete Task 2.3: Add getGitIgnoreStatistics() method
-- [ ] Complete Task 3.1: Add CLI parameter to UnifiedParser
-- [ ] Complete Task 3.2: Update scanInputProject() with statistics reporting
+- [x] Complete Task 2.1: Update ProjectScanner constructor
+- [x] Complete Task 2.2: Modify isParsableFile() method
+- [x] Complete Task 2.3: Add getGitIgnoreStatistics() method
+- [x] Complete Task 3.1: Add CLI parameter to UnifiedParser
+- [x] Complete Task 3.2: Update scanInputProject() with statistics reporting
 - [ ] Complete Task 4.1: Add gitignore question to Dialog
 - [ ] Complete Task 5.1: Write GitignorePatternMatcher unit tests
 - [ ] Complete Task 5.2: Write GitignoreHandler unit tests
@@ -145,7 +153,9 @@ Add gitignore question to interactive mode.
 
 ### Design Decisions
 - **Zero Dependencies**: Using Java's built-in PathMatcher API instead of JGit to avoid ~5-10 MB dependency
-- **Default Enabled**: Gitignore processing is enabled by default for better UX
+- **Default Enabled**: Gitignore processing is enabled by default for better UX (use `--bypass-gitignore` to disable)
+- **Smart Fallback**: If no root-level .gitignore exists, automatically falls back to regex-based exclusion
+- **Additive Exclusion**: The `-e` flag patterns are applied ON TOP of gitignore exclusions (both are used together)
 - **Backward Compatible**: Existing `patternsToExclude` continues to work and combines with gitignore
 - **Performance**: Load .gitignore files once at initialization, use compiled PathMatcher patterns
 
