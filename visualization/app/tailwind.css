@@ -1,0 +1,39 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* CodeCharta custom theme colors */
+@theme {
+    --color-cc-50: #c3e5fe;
+    --color-cc-100: #9bd3fe;
+    --color-cc-200: #69bcfd;
+    --color-cc-300: #4badfb;
+    --color-cc-400: #28a0fa;
+    --color-cc-500: #1b9cfc;
+    --color-cc-600: #0996f7;
+    --color-cc-700: #038fe8;
+    --color-cc-800: #0187da;
+    --color-cc-900: #007ac3;
+    --color-cc-950: #0374c9;
+
+    /* DaisyUI theme colors for CodeCharta */
+    --color-primary: #1b9cfc;
+    --color-primary-content: #ffffff;
+    --color-secondary: #0374c9;
+    --color-secondary-content: #ffffff;
+    --color-accent: #fc801b;
+    --color-accent-content: #ffffff;
+    --color-neutral: #3d4451;
+    --color-neutral-content: #ffffff;
+    --color-base-100: #ffffff;
+    --color-base-200: #f9fafb;
+    --color-base-300: #d1d5db;
+    --color-base-content: #1f2937;
+    --color-info: #3abff8;
+    --color-info-content: #002b3d;
+    --color-success: #36d399;
+    --color-success-content: #003320;
+    --color-warning: #fbbd23;
+    --color-warning-content: #382800;
+    --color-error: #f87272;
+    --color-error-content: #470000;
+}
