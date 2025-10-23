@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified
 import io.mockk.every
 import io.mockk.spyk
 import io.mockk.unmockkAll
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -112,11 +112,11 @@ class UnifiedParserTest {
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
-        Assertions.assertThat(errContent.toString()).contains("6 nodes were processed, 5 were added and 1 were merged")
-        Assertions.assertThat(
+        assertThat(errContent.toString()).contains("6 nodes were processed, 5 were added and 1 were merged")
+        assertThat(
             errContent.toString()
         ).contains("Description of 'complexity' metric differs between files! Using value of first file...")
-        Assertions.assertThat(
+        assertThat(
             errContent.toString()
         ).contains("Link of 'complexity' metric differs between files! Using value of first file...")
 
@@ -135,9 +135,9 @@ class UnifiedParserTest {
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
-        Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(errContent.toString()).contains("Could not find resource `${File(inputFilePath)}`!")
-        Assertions.assertThat(errContent.toString()).contains("Input invalid file for UnifiedParser, stopping execution...")
+        assertThat(result).isEmpty()
+        assertThat(errContent.toString()).contains("Could not find resource `${File(inputFilePath)}`!")
+        assertThat(errContent.toString()).contains("Input invalid file for UnifiedParser, stopping execution...")
 
         // clean up
         System.setErr(originalErr)
@@ -163,9 +163,9 @@ class UnifiedParserTest {
 
         // then
         for (file in parsedFiles) {
-            Assertions.assertThat(errContent.toString()).contains("Calculating metrics for file $file")
+            assertThat(errContent.toString()).contains("Calculating metrics for file $file")
         }
-        Assertions.assertThat(errContent.toString()).contains("Analysis of files complete, creating output file...")
+        assertThat(errContent.toString()).contains("Analysis of files complete, creating output file...")
 
         // clean up
         System.setErr(originalErr)
@@ -183,7 +183,7 @@ class UnifiedParserTest {
         executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
-        Assertions.assertThat(errContent.toString()).contains(
+        assertThat(errContent.toString()).contains(
             "2 Files with the following extensions were ignored as they are currently not supported:",
             ".json",
             ".strange"
@@ -220,7 +220,7 @@ class UnifiedParserTest {
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.kt, $invalidFileExtension"))
 
         // then
-        Assertions.assertThat(errContent.toString())
+        assertThat(errContent.toString())
             .contains("From the specified file extensions to parse, [$invalidFileExtension] were not found in the given input!")
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
 
@@ -322,12 +322,9 @@ class UnifiedParserTest {
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
-        // Verify that files matching .gitignore patterns were excluded
-        Assertions.assertThat(result).doesNotContain("ignored.log")
-        Assertions.assertThat(result).doesNotContain("build/")
-        // Verify that .gitignore statistics were reported
-        Assertions.assertThat(errContent.toString()).contains(".gitignore")
-        Assertions.assertThat(errContent.toString()).contains("excluded")
+        assertThat(result).doesNotContain("ignored.log")
+        assertThat(result).doesNotContain("build/")
+        assertThat(errContent.toString()).contains("excluded by .gitignore")
 
         // clean up
         System.setErr(originalErr)
@@ -344,8 +341,9 @@ class UnifiedParserTest {
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--bypass-gitignore"))
 
         // then
-        // Verify that .gitignore was bypassed (no statistics reported)
-        Assertions.assertThat(errContent.toString()).doesNotContain("excluded by .gitignore")
+        assertThat(result).contains("Main.kt")
+        assertThat(result).contains("NotIgnored.kt")
+        assertThat(errContent.toString()).doesNotContain("excluded by .gitignore")
 
         // clean up
         System.setErr(originalErr)
@@ -353,19 +351,23 @@ class UnifiedParserTest {
 
     @Test
     fun `should apply both gitignore and exclude patterns when both are specified`() {
-        // given
+        // Arrange
         val pipedProject = ""
-        val inputFilePath = "${testResourceBaseFolder}sampleproject"
-        val excludePattern = "bar/.*"
+        val inputFilePath = "${testResourceBaseFolder}gitignore-test-project"
+        val excludePattern = "Main.kt"
+        System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "-e=$excludePattern"))
 
-        // then
-        // Files matching exclude pattern should not be in output
-        Assertions.assertThat(result).doesNotContain("\"bar/")
-        // Other files should still be present
-        Assertions.assertThat(result).contains("foo.kt")
+        // Assert
+        assertThat(result).doesNotContain("ignored.log")
+        assertThat(result).doesNotContain("build/")
+        assertThat(result).doesNotContain("Main.kt")
+        assertThat(result).contains("NotIgnored.kt")
+
+        // clean up
+        System.setErr(originalErr)
     }
 
     @Test
@@ -379,8 +381,7 @@ class UnifiedParserTest {
         executeForOutput(pipedProject, arrayOf(inputFilePath, "--verbose"))
 
         // then
-        // Verify that the execution completed
-        Assertions.assertThat(errContent.toString()).contains("Analysis of files complete")
+        assertThat(errContent.toString()).contains("Analysis of files complete")
 
         // clean up
         System.setErr(originalErr)

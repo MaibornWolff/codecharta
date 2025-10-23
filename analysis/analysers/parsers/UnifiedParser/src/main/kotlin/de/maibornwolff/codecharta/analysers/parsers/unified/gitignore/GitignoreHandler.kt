@@ -1,37 +1,19 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.gitignore
 
 import java.io.File
+import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicInteger
 
-/**
- * Manages hierarchical .gitignore file processing for the UnifiedParser.
- *
- * Implements Git's gitignore semantics:
- * - Patterns are relative to the .gitignore file's directory
- * - Subdirectory .gitignore files inherit and override parent patterns
- * - Supports wildcards, negation, and directory-specific patterns
- * - Thread-safe for parallel file processing
- */
 class GitignoreHandler(private val root: File) {
-    // Cache of directory path -> (GitignorePatternMatcher, List<GitignoreRule>)
+    // Cache of directory absolute path -> (GitignorePatternMatcher, List<GitignoreRule>)
     private val gitignoreCache = mutableMapOf<String, Pair<GitignorePatternMatcher, List<GitignoreRule>>>()
-
-    // Track discovered .gitignore files for statistics
     private val discoveredGitignoreFiles = mutableListOf<String>()
-
-    // Thread-safe counter for excluded files
-    private val excludedFileCount = AtomicInteger(0)
+    private val excludedFileCount = AtomicInteger(0) // AtomicInt for Thread-safe counting
 
     init {
-        // Discover and parse all .gitignore files in the project tree
         root.walk().filter { it.isFile && it.name == ".gitignore" }.forEach { parseAndCacheGitignoreFile(it) }
     }
 
-    /**
-     * Parses a single .gitignore file and caches its patterns.
-     *
-     * @param gitignoreFile The .gitignore file to parse
-     */
     private fun parseAndCacheGitignoreFile(gitignoreFile: File) {
         try {
             val directory = gitignoreFile.parentFile
@@ -41,12 +23,7 @@ class GitignoreHandler(private val root: File) {
             if (rules.isNotEmpty()) {
                 gitignoreCache[directory.absolutePath] = Pair(matcher, rules)
 
-                // Store relative path for statistics
-                val relativePath = try {
-                    root.toPath().relativize(gitignoreFile.toPath()).toString()
-                } catch (e: Exception) {
-                    gitignoreFile.absolutePath
-                }
+                val relativePath = getRelativePath(root, gitignoreFile).toString()
                 discoveredGitignoreFiles.add(relativePath)
             }
         } catch (e: Exception) {
@@ -54,25 +31,30 @@ class GitignoreHandler(private val root: File) {
         }
     }
 
-    /**
-     * Checks if a file should be excluded based on hierarchical gitignore rules.
-     *
-     * Applies rules from root to file's directory, with child rules overriding parent rules.
-     *
-     * @param file The file to check
-     * @return True if the file should be excluded, false otherwise
-     */
     fun shouldExclude(file: File): Boolean {
-        if (gitignoreCache.isEmpty()) {
+        if (gitignoreCache.isEmpty() || !isFileWithinRoot(file)) {
             return false
         }
 
-        // Ensure file is within root
-        if (!file.absolutePath.startsWith(root.absolutePath)) {
+        val applicableRules = collectAncestorGitignoreRules(file)
+        if (applicableRules.isEmpty()) {
             return false
         }
 
-        // Collect all applicable .gitignore files from root to file's directory
+        val isIgnored = applyGitignoreRulesHierarchically(file, applicableRules)
+
+        if (isIgnored) {
+            excludedFileCount.incrementAndGet()
+        }
+
+        return isIgnored
+    }
+
+    private fun isFileWithinRoot(file: File): Boolean {
+        return file.absolutePath.startsWith(root.absolutePath)
+    }
+
+    private fun collectAncestorGitignoreRules(file: File): List<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>> {
         val applicableRules = mutableListOf<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>>()
 
         var currentDir = file.parentFile
@@ -83,92 +65,47 @@ class GitignoreHandler(private val root: File) {
             currentDir = currentDir.parentFile
         }
 
-        if (applicableRules.isEmpty()) {
-            return false
-        }
+        return applicableRules
+    }
 
-        // Apply rules from root to file's directory (reverse order)
-        // This ensures child .gitignore files can override parent rules
-        applicableRules.reverse()
+    private fun applyGitignoreRulesHierarchically(
+        file: File,
+        applicableRules: List<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>>
+    ): Boolean {
+        // reverse order of rules so parent rules come first and can be overridden by child gitignore files
+        val rulesFromRootToFile = applicableRules.reversed()
 
         var isIgnored = false
-        for ((directory, matcher, rules) in applicableRules) {
-            // Check if file matches any rule in this directory's .gitignore
-            if (matcher.shouldIgnore(file, rules)) {
-                isIgnored = true
-            } else {
-                // If matcher explicitly says not to ignore (via negation), respect that
-                // Check if there was a matching negation pattern
-                val relPath = try {
-                    directory.toPath().relativize(file.toPath())
-                } catch (e: Exception) {
-                    continue
-                }
+        for ((directory, _, rules) in rulesFromRootToFile) {
+            val relPath = getRelativePath(directory, file)
 
-                for (rule in rules) {
-                    // Check if this file matches a negation pattern
-                    if (rule.isNegation && rule.pathMatcher.matches(relPath)) {
-                        if (!rule.isDirOnly || file.isDirectory) {
-                            isIgnored = false
-                        }
-                    } else if (!rule.isNegation && rule.pathMatcher.matches(relPath)) {
-                        if (!rule.isDirOnly || file.isDirectory) {
-                            isIgnored = true
-                        }
-                    }
+            for (rule in rules) {
+                if (ruleMatchesFile(rule, relPath, file)) {
+                    isIgnored = !rule.isNegation
                 }
             }
-        }
-
-        if (isIgnored) {
-            excludedFileCount.incrementAndGet()
         }
 
         return isIgnored
     }
 
-    /**
-     * Returns statistics about gitignore processing.
-     *
-     * @return Pair of (excluded file count, list of .gitignore file paths)
-     */
+    private fun getRelativePath(directory: File, file: File): Path {
+        return directory.toPath().relativize(file.toPath())
+    }
+
+    private fun ruleMatchesFile(rule: GitignoreRule, relPath: Path, file: File): Boolean {
+        val pathMatches = try {
+            rule.pathMatcher.matches(relPath) ||
+                rule.rootLevelMatcher?.matches(relPath) == true ||
+                rule.collapsedGlobstarMatcher?.matches(relPath) == true
+        } catch (_: Exception) {
+            false
+        }
+
+        return pathMatches && (!rule.isDirOnly || file.isDirectory)
+    }
+
     fun getStatistics(): Pair<Int, List<String>> {
         return Pair(excludedFileCount.get(), discoveredGitignoreFiles.toList())
-    }
-
-    /**
-     * Returns the number of .gitignore files discovered.
-     *
-     * @return Count of .gitignore files
-     */
-    fun getGitignoreFileCount(): Int {
-        return discoveredGitignoreFiles.size
-    }
-
-    /**
-     * Returns the list of discovered .gitignore file paths.
-     *
-     * @return List of relative paths to .gitignore files
-     */
-    fun getGitignoreFiles(): List<String> {
-        return discoveredGitignoreFiles.toList()
-    }
-
-    /**
-     * Returns the number of files excluded by gitignore rules.
-     *
-     * @return Count of excluded files
-     */
-    fun getExcludedFileCount(): Int {
-        return excludedFileCount.get()
-    }
-
-    /**
-     * Checks if a .gitignore file exists at the root level.
-     *
-     * @return True if a root-level .gitignore file was found
-     */
-    fun hasRootLevelGitignore(): Boolean {
-        return gitignoreCache.containsKey(root.absolutePath)
     }
 }

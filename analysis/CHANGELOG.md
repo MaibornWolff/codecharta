@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Add new '--base-file' flag to unifiedparser and rawtextparser
+- Add new '--base-file' flag to unifiedparser and rawtextparser [#4270](https://github.com/MaibornWolff/codecharta/pull/4270)
+- - UnifiedParser now automatically uses `.gitignore` files for file exclusion [#4254](https://github.com/MaibornWolff/codecharta/issues/4254)
 
 ### Removed
 
