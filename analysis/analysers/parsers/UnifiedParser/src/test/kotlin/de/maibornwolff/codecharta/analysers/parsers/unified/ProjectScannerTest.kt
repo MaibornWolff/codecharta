@@ -21,19 +21,22 @@ class ProjectScannerTest {
         projectBuilder = ProjectBuilder()
     }
 
+    private fun getParsedFilePaths(): List<String> {
+        val project = projectBuilder.build()
+        return project.rootNode.leaves.keys.map { it.edgesList.joinToString("/") }
+    }
+
     // ========== GITIGNORE EXCLUSION TESTS ==========
 
     @Test
     fun `should exclude files based on gitignore when enabled`() {
         // Arrange
         val gitignoreFile = File(rootDir, ".gitignore")
-        gitignoreFile.writeText("*.log")
+        gitignoreFile.writeText("*.java")
 
-        // Create test files
         val srcDir = File(rootDir, "src")
         srcDir.mkdirs()
         File(srcDir, "Main.kt").writeText("fun main() {}")
-        File(srcDir, "debug.log").writeText("log content")
         File(srcDir, "App.java").writeText("class App {}")
 
         // Act
@@ -48,21 +51,23 @@ class ProjectScannerTest {
 
         // Assert
         val (excludedCount, _) = scanner.getGitIgnoreStatistics()
-        assertThat(excludedCount).isEqualTo(1) // debug.log should be excluded
-        assertThat(scanner.foundParsableFiles()).isTrue()
+        assertThat(excludedCount).isEqualTo(1)
+
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactlyInAnyOrder("src/Main.kt")
+        assertThat(parsedFiles).doesNotContain("src/App.java")
     }
 
     @Test
     fun `should not exclude files when gitignore is disabled`() {
         // Arrange
         val gitignoreFile = File(rootDir, ".gitignore")
-        gitignoreFile.writeText("*.log")
+        gitignoreFile.writeText("*.java")
 
-        // Create test files
         val srcDir = File(rootDir, "src")
         srcDir.mkdirs()
         File(srcDir, "Main.kt").writeText("fun main() {}")
-        File(srcDir, "debug.log").writeText("log content")
+        File(srcDir, "Debug.java").writeText("class Debug {}")
 
         // Act
         val scanner = ProjectScanner(
@@ -76,24 +81,26 @@ class ProjectScannerTest {
 
         // Assert
         val (excludedCount, _) = scanner.getGitIgnoreStatistics()
-        assertThat(excludedCount).isEqualTo(0) // No exclusion since gitignore is disabled
+        assertThat(excludedCount).isEqualTo(0)
+
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactlyInAnyOrder("src/Main.kt", "src/Debug.java")
     }
 
     @Test
     fun `should exclude files matching nested gitignore patterns`() {
         // Arrange
         val rootGitignore = File(rootDir, ".gitignore")
-        rootGitignore.writeText("*.log")
+        rootGitignore.writeText("*.java")
 
         val srcDir = File(rootDir, "src")
         srcDir.mkdirs()
         val srcGitignore = File(srcDir, ".gitignore")
         srcGitignore.writeText("*.tmp")
 
-        // Create test files
         File(rootDir, "readme.md").writeText("# README")
         File(srcDir, "Main.kt").writeText("fun main() {}")
-        File(srcDir, "debug.log").writeText("log content")
+        File(srcDir, "Debug.java").writeText("class Debug {}")
         File(srcDir, "temp.tmp").writeText("temp")
 
         // Act
@@ -108,7 +115,12 @@ class ProjectScannerTest {
 
         // Assert
         val (excludedCount, _) = scanner.getGitIgnoreStatistics()
-        assertThat(excludedCount).isEqualTo(2) // debug.log and temp.tmp
+        assertThat(excludedCount).isEqualTo(2)
+
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactly("src/Main.kt")
+        assertThat(parsedFiles).doesNotContain("src/Debug.java")
+        assertThat(parsedFiles).doesNotContain("src/temp.tmp")
     }
 
     // ========== COMBINATION TESTS (gitignore + patterns) ==========
@@ -124,7 +136,6 @@ class ProjectScannerTest {
         val testDir = File(srcDir, "test")
         testDir.mkdirs()
 
-        // Create test files
         File(srcDir, "Main.kt").writeText("fun main() {}")
         File(srcDir, "debug.log").writeText("log")
         File(testDir, "Test.kt").writeText("test")
@@ -133,7 +144,7 @@ class ProjectScannerTest {
         val scanner = ProjectScanner(
             root = rootDir,
             projectBuilder = projectBuilder,
-            excludePatterns = listOf("test/.*"), // Exclude test directory
+            excludePatterns = listOf("test/.*"),
             includeExtensions = listOf(),
             useGitignore = true
         )
@@ -141,41 +152,12 @@ class ProjectScannerTest {
 
         // Assert
         val (gitignoreExcluded, _) = scanner.getGitIgnoreStatistics()
-        assertThat(gitignoreExcluded).isEqualTo(1) // debug.log excluded by gitignore
-        // Test.kt should be excluded by pattern, but we can't directly count pattern exclusions
-        // We can verify by checking if only Main.kt was parsed
-        assertThat(scanner.foundParsableFiles()).isTrue()
-    }
+        assertThat(gitignoreExcluded).isEqualTo(1)
 
-    @Test
-    fun `should apply gitignore exclusion before pattern exclusion`() {
-        // Arrange
-        val gitignoreFile = File(rootDir, ".gitignore")
-        gitignoreFile.writeText("*.log")
-
-        val srcDir = File(rootDir, "src")
-        srcDir.mkdirs()
-
-        // Create files
-        File(srcDir, "Main.kt").writeText("fun main() {}")
-        File(srcDir, "App.java").writeText("class App {}")
-        File(srcDir, "debug.log").writeText("log")
-
-        // Act
-        val scanner = ProjectScanner(
-            root = rootDir,
-            projectBuilder = projectBuilder,
-            excludePatterns = listOf("src/.*\\.kt"), // Exclude .kt files in src
-            includeExtensions = listOf(),
-            useGitignore = true
-        )
-        scanner.traverseInputProject(verbose = false)
-
-        // Assert
-        val (gitignoreExcluded, _) = scanner.getGitIgnoreStatistics()
-        assertThat(gitignoreExcluded).isEqualTo(1) // debug.log
-        // Main.kt excluded by pattern, App.java should be parsed
-        assertThat(scanner.foundParsableFiles()).isTrue()
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactly("src/Main.kt")
+        assertThat(parsedFiles).doesNotContain("src/debug.log")
+        assertThat(parsedFiles).doesNotContain("src/test/Test.kt")
     }
 
     // ========== GITIGNORE STATISTICS TESTS ==========
@@ -208,19 +190,23 @@ class ProjectScannerTest {
 
         // Assert
         val (excludedCount, gitignoreFiles) = scanner.getGitIgnoreStatistics()
-        assertThat(excludedCount).isEqualTo(2) // debug.log and temp.tmp
+        assertThat(excludedCount).isEqualTo(2)
         assertThat(gitignoreFiles).hasSize(2)
         assertThat(gitignoreFiles).containsExactlyInAnyOrder(
             ".gitignore",
-            "src${File.separator}.gitignore"
+            "src/.gitignore"
         )
+
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactly("src/Main.kt")
+        assertThat(parsedFiles).doesNotContain("src/debug.log", "src/temp.tmp")
     }
 
     @Test
     fun `should return empty statistics when gitignore is disabled`() {
         // Arrange
         val gitignoreFile = File(rootDir, ".gitignore")
-        gitignoreFile.writeText("*.log")
+        gitignoreFile.writeText("*.kt")
 
         val srcDir = File(rootDir, "src")
         srcDir.mkdirs()
@@ -267,6 +253,8 @@ class ProjectScannerTest {
         assertThat(excludedCount).isEqualTo(0)
         assertThat(gitignoreFiles).isEmpty()
         assertThat(scanner.foundParsableFiles()).isTrue()
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactlyInAnyOrder("src/Main.kt", "src/App.java")
     }
 
     @Test
@@ -301,16 +289,16 @@ class ProjectScannerTest {
         val gitignoreFile = File(rootDir, ".gitignore")
         gitignoreFile.writeText(
             """
-            *.log
-            !important.log
+            *.java
+            !Important.java
             """.trimIndent()
         )
 
         val srcDir = File(rootDir, "src")
         srcDir.mkdirs()
         File(srcDir, "Main.kt").writeText("fun main() {}")
-        File(srcDir, "debug.log").writeText("log")
-        File(srcDir, "important.log").writeText("important")
+        File(srcDir, "Debug.java").writeText("class Debug {}")
+        File(srcDir, "Important.java").writeText("class Important {}")
 
         // Act
         val scanner = ProjectScanner(
@@ -324,7 +312,11 @@ class ProjectScannerTest {
 
         // Assert
         val (excludedCount, _) = scanner.getGitIgnoreStatistics()
-        assertThat(excludedCount).isEqualTo(1) // Only debug.log, important.log is negated
+        assertThat(excludedCount).isEqualTo(1)
+
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactlyInAnyOrder("src/Main.kt", "src/Important.java")
+        assertThat(parsedFiles).doesNotContain("src/Debug.java")
     }
 
     // ========== INCLUDE EXTENSIONS TESTS ==========
@@ -347,15 +339,18 @@ class ProjectScannerTest {
             root = rootDir,
             projectBuilder = projectBuilder,
             excludePatterns = listOf(),
-            includeExtensions = listOf("kt", "java"), // Only include Kotlin and Java
+            includeExtensions = listOf("kt", "java"),
             useGitignore = true
         )
         scanner.traverseInputProject(verbose = false)
 
         // Assert
         val (excludedCount, _) = scanner.getGitIgnoreStatistics()
-        assertThat(excludedCount).isEqualTo(1) // debug.log excluded by gitignore
-        assertThat(scanner.foundParsableFiles()).isTrue()
-        // script.py should be excluded by extension filter
+        assertThat(excludedCount).isEqualTo(1)
+
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactlyInAnyOrder("src/Main.kt", "src/App.java")
+        assertThat(parsedFiles).doesNotContain("src/debug.log")
+        assertThat(parsedFiles).doesNotContain("src/script.py")
     }
 }

@@ -77,7 +77,14 @@ class UnifiedParser(
         val useGitignore = !bypassGitignore
 
         val effectivePatternsToExclude = determineExclusionPatterns(inputFile, useGitignore)
-        val projectScanner = ProjectScanner(inputFile, projectBuilder, effectivePatternsToExclude, fileExtensionsToAnalyse,baseFileNodeMap, useGitignore)
+        val projectScanner = ProjectScanner(
+            inputFile,
+            projectBuilder,
+            effectivePatternsToExclude,
+            fileExtensionsToAnalyse,
+            baseFileNodeMap,
+            useGitignore
+        )
 
         projectScanner.traverseInputProject(verbose)
 
