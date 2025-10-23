@@ -14,7 +14,9 @@ describe("codeChartaComponent", () => {
 
     it("should set is loading and call loadFilesOrSampleFiles on initialization", () => {
         const mockedStore = { dispatch: jest.fn() } as unknown as Store
-        const mockedLoadInitialFileService = { loadFilesOrSampleFiles: jest.fn().mockResolvedValue(undefined) } as unknown as LoadInitialFileService
+        const mockedLoadInitialFileService = {
+            loadFilesOrSampleFiles: jest.fn().mockResolvedValue(undefined)
+        } as unknown as LoadInitialFileService
 
         const codeChartaComponent = new CodeChartaComponent(mockedStore, mockedLoadInitialFileService)
         codeChartaComponent.ngOnInit()
@@ -26,7 +28,9 @@ describe("codeChartaComponent", () => {
     it("should set isInitialized on angulars init event after fileService is loaded", async () => {
         // Arrange
         const mockedStore = { dispatch: jest.fn() } as unknown as Store
-        const mockedLoadInitialFileService = { loadFilesOrSampleFiles: jest.fn().mockResolvedValue(undefined) } as unknown as LoadInitialFileService
+        const mockedLoadInitialFileService = {
+            loadFilesOrSampleFiles: jest.fn().mockResolvedValue(undefined)
+        } as unknown as LoadInitialFileService
 
         const codeChartaComponent = new CodeChartaComponent(mockedStore, mockedLoadInitialFileService)
 
