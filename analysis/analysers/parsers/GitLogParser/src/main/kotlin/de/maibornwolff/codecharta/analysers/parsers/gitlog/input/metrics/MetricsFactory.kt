@@ -1,48 +1,50 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics
 
-class MetricsFactory {
-    private val metricFactories: List<() -> Metric>
+data class MetricDefinition(
+    val metricName: String,
+    val factory: () -> Metric
+)
 
-    constructor() {
-        this.metricFactories = createAllMetricFactories()
-    }
+class MetricsFactory(requestedMetrics: List<String> = emptyList()) {
+    private val metricDefinitions = createAllDefinitions().selectMetrics(requestedMetrics)
 
-    constructor(metricNames: List<String>) {
-        val allFactories = createAllMetricFactories()
-        val sampleMetrics = allFactories.map { it() }
-        this.metricFactories = allFactories.filterIndexed { index, _ ->
-            metricNames.contains(sampleMetrics[index].metricName())
-        }
-    }
+    fun createMetrics(): List<Metric> = metricDefinitions.map { it.factory() }
 
-    private fun createAllMetricFactories(): List<() -> Metric> {
+    private fun createAllDefinitions(): List<MetricDefinition> {
         val commitTypes = DefaultSemanticCommitStyle.getAllTypes()
-        val semanticCommitFactories = commitTypes.map { type -> { -> SemanticCommitMetric(type) } }
-
-        val standardFactories = listOf<() -> Metric>(
-            { AbsoluteCodeChurn() },
-            { AddedLines() },
-            { DeletedLines() },
-            { NumberOfAuthors() },
-            { NumberOfOccurencesInCommits() },
-            { RangeOfWeeksWithCommits() },
-            { SuccessiveWeeksWithCommits() },
-            { WeeksWithCommits() },
-            { HighlyCoupledFiles() },
-            { MedianCoupledFiles() },
-            { AbsoluteCoupledChurn() },
-            { AverageCodeChurnPerCommit() },
-            { NumberOfRenames() },
-            { AgeInWeeks() },
-            { SemanticCommitRatio(commitTypes) },
-            { HotfixCommits() },
-            { HotfixCommitRatio() }
-        )
-
-        return standardFactories + semanticCommitFactories
+        val standard = createStandardDefinitions(commitTypes)
+        val dynamic = createCommitTypeDefinitions(commitTypes)
+        return standard + dynamic
     }
 
-    fun createMetrics(): List<Metric> {
-        return metricFactories.map { it() }
+    private fun createStandardDefinitions(commitTypes: List<SemanticCommitType>): List<MetricDefinition> = listOf(
+        MetricDefinition("abs_code_churn", { AbsoluteCodeChurn() }),
+        MetricDefinition("added_lines", { AddedLines() }),
+        MetricDefinition("deleted_lines", { DeletedLines() }),
+        MetricDefinition("number_of_authors", { NumberOfAuthors() }),
+        MetricDefinition("number_of_commits", { NumberOfOccurencesInCommits() }),
+        MetricDefinition("range_of_weeks_with_commits", { RangeOfWeeksWithCommits() }),
+        MetricDefinition("successive_weeks_with_commits", { SuccessiveWeeksWithCommits() }),
+        MetricDefinition("weeks_with_commits", { WeeksWithCommits() }),
+        MetricDefinition("highly_coupled_files", { HighlyCoupledFiles() }),
+        MetricDefinition("median_coupled_files", { MedianCoupledFiles() }),
+        MetricDefinition("abs_coupled_churn", { AbsoluteCoupledChurn() }),
+        MetricDefinition("avg_code_churn", { AverageCodeChurnPerCommit() }),
+        MetricDefinition("number_of_renames", { NumberOfRenames() }),
+        MetricDefinition("age_in_weeks", { AgeInWeeks() }),
+        MetricDefinition("semantic_commit_ratio", { SemanticCommitRatio(commitTypes) }),
+        MetricDefinition("hotfix_commits", { HotfixCommits() }),
+        MetricDefinition("hotfix_commit_ratio", { HotfixCommitRatio() })
+    )
+
+    private fun createCommitTypeDefinitions(commitTypes: List<SemanticCommitType>): List<MetricDefinition> = commitTypes.map { type ->
+        MetricDefinition(type.metricName, { SemanticCommitMetric(type) })
+    }
+
+    private fun List<MetricDefinition>.selectMetrics(names: List<String>): List<MetricDefinition> {
+        if (names.isEmpty()) {
+            return this
+        }
+        return filter { it.metricName in names }
     }
 }
