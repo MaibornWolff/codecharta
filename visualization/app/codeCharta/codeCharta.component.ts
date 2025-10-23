@@ -1,14 +1,14 @@
-import { Component, OnInit } from "@angular/core"
-import { Store } from "@ngrx/store"
-import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
-import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { ToolBarComponent } from "./ui/toolBar/toolBar.component"
-import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBar.component"
-import { RibbonBarComponent } from "./ui/ribbonBar/ribbonBar.component"
-import { CodeMapComponent } from "./ui/codeMap/codeMap.component"
-import { LegendPanelComponent } from "./ui/legendPanel/legendPanel.component"
-import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
-import { LogoComponent } from "./ui/logo/logo.component"
+import {Component, OnInit, signal} from "@angular/core"
+import {Store} from "@ngrx/store"
+import {LoadInitialFileService} from "./services/loadInitialFile/loadInitialFile.service"
+import {setIsLoadingFile} from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import {ToolBarComponent} from "./ui/toolBar/toolBar.component"
+import {FileExtensionBarComponent} from "./ui/fileExtensionBar/fileExtensionBar.component"
+import {RibbonBarComponent} from "./ui/ribbonBar/ribbonBar.component"
+import {CodeMapComponent} from "./ui/codeMap/codeMap.component"
+import {LegendPanelComponent} from "./ui/legendPanel/legendPanel.component"
+import {LoadingFileProgressSpinnerComponent} from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
+import {LogoComponent} from "./ui/logo/logo.component"
 
 @Component({
     selector: "cc-code-charta",
@@ -24,16 +24,17 @@ import { LogoComponent } from "./ui/logo/logo.component"
     ]
 })
 export class CodeChartaComponent implements OnInit {
-    isInitialized = false
+    isInitialized = signal(false)
 
     constructor(
         private readonly store: Store,
         private readonly loadInitialFileService: LoadInitialFileService
     ) {}
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         this.store.dispatch(setIsLoadingFile({ value: true }))
-        await this.loadInitialFileService.loadFilesOrSampleFiles()
-        this.isInitialized = true
+        this.loadInitialFileService.loadFilesOrSampleFiles().then(() => {
+            this.isInitialized.set(true)
+        })
     }
 }
