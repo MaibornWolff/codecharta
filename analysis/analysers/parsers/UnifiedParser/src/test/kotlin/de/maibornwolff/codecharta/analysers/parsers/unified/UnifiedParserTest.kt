@@ -284,8 +284,8 @@ class UnifiedParserTest {
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--base-file=$baseFilePath"))
 
         // then
-        Assertions.assertThat(errContent.toString()).contains("Loaded 6 file nodes from base file for checksum comparison")
-        Assertions.assertThat(errContent.toString()).contains("Checksum comparison: 6 files skipped, 0 files analyzed (100% reused)")
+        assertThat(errContent.toString()).contains("Loaded 6 file nodes from base file for checksum comparison")
+        assertThat(errContent.toString()).contains("Checksum comparison: 6 files skipped, 0 files analyzed (100% reused)")
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
 
         // clean up
@@ -304,8 +304,8 @@ class UnifiedParserTest {
         executeForOutput(pipedProject, arrayOf(inputFilePath, "--base-file=$baseFilePath"))
 
         // then
-        Assertions.assertThat(errContent.toString()).contains("Base file")
-        Assertions.assertThat(errContent.toString()).contains("does not exist, continuing with normal analysis...")
+        assertThat(errContent.toString()).contains("Base file")
+        assertThat(errContent.toString()).contains("does not exist, continuing with normal analysis...")
 
         // clean up
         System.setErr(originalErr)
