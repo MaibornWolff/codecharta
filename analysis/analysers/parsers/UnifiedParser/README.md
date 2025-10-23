@@ -56,11 +56,9 @@ Some metrics are calculated on a per-function basis rather than per-file. Each o
 | `--verbose`                               | displays messages about parsed and ignored files                                                                                                  |
 
 ```
-Usage: ccsh unifiedparser [-h] [-ibf] [-nc] [--verbose] [-bf=<baseFile>]
-                          [-o=<outputFile>] [-e=<patternsToExclude>]...
-                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER..
 Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [-ibf] [-nc] [--verbose]
-                          [-o=<outputFile>] [-e=<specifiedExcludePatterns>]...
+                          [-bf=<baseFile>] [-o=<outputFile>]
+                          [-e=<specifiedExcludePatterns>]...
                           [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
 ```
 
