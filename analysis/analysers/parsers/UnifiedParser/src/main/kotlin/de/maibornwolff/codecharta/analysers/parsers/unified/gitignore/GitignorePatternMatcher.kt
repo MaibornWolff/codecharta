@@ -1,19 +1,11 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.gitignore
 
+import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import java.nio.file.PathMatcher
 
-/**
- * Supports standard gitignore syntax:
- * - `*` matches anything except `/`
- * - `**` matches zero or more directories
- * - `?` matches single character except `/`
- * - `!` at start indicates negation pattern
- * - `/` at end indicates directory-only pattern
- * - `/` at start indicates rooted pattern (relative to gitignore location)
- */
 class GitignorePatternMatcher(private val baseDir: File) {
     companion object {
         private const val GLOBSTAR = "/**/"
@@ -28,9 +20,7 @@ class GitignorePatternMatcher(private val baseDir: File) {
         return try {
             gitignoreFile.readLines().mapNotNull { parseGitignoreLine(it) }
         } catch (e: Exception) {
-            System.err.println(
-                "Warning: Failed to parse ${gitignoreFile.path}: ${e.message}"
-            ) // TODO: does this continue with the normal parsing logic or should we leave the error in?
+            Logger.error { "Error: Failed to parse ${gitignoreFile.path}: ${e.message}" }
             emptyList()
         }
     }
@@ -40,14 +30,11 @@ class GitignorePatternMatcher(private val baseDir: File) {
 
         val relativePath = try {
             baseDir.toPath().relativize(file.toPath())
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return false
         }
 
-        return rules
-            .lastOrNull { matchesRule(relativePath, file.isDirectory, it) }
-            ?.let { !it.isNegation }
-            ?: false
+        return rules.lastOrNull { matchesRule(relativePath, file.isDirectory, it) }?.let { !it.isNegation } ?: false
     }
 
     private fun parseGitignoreLine(line: String): GitignoreRule? {
@@ -100,7 +87,7 @@ class GitignorePatternMatcher(private val baseDir: File) {
         try {
             return FileSystems.getDefault().getPathMatcher("glob:$globPattern")
         } catch (e: Exception) {
-            System.err.println("Warning: Invalid pattern '$originalLine': ${e.message}") // TODO: soll hier warning oder crash?
+            Logger.error { "Skipping invalid gitignore pattern '$originalLine': ${e.message}" }
             return null
         }
     }

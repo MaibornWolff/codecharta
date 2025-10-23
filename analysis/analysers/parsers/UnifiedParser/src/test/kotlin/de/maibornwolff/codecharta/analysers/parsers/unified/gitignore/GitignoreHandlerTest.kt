@@ -1,10 +1,13 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.gitignore
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.PrintStream
 import java.nio.file.Path
 
 class GitignoreHandlerTest {
@@ -12,10 +15,18 @@ class GitignoreHandlerTest {
     lateinit var tempDir: Path
 
     private lateinit var rootDir: File
+    private val errContent = ByteArrayOutputStream()
+    private val originalErr = System.err
 
     @BeforeEach
     fun setUp() {
         rootDir = tempDir.toFile()
+        errContent.reset()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        System.setErr(originalErr)
     }
 
     // ========== DISCOVERY TESTS ==========
@@ -28,11 +39,12 @@ class GitignoreHandlerTest {
 
         // Act
         val handler = GitignoreHandler(rootDir)
+        val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
-        assertThat(handler.hasRootLevelGitignore()).isTrue()
-        assertThat(handler.getGitignoreFileCount()).isEqualTo(1)
-        assertThat(handler.getGitignoreFiles()).containsExactly(".gitignore")
+        assertThat(gitignoreFiles).containsExactly(".gitignore")
+        assertThat(gitignoreFiles.size).isEqualTo(1)
+        assertThat(gitignoreFiles).contains(".gitignore")
     }
 
     @Test
@@ -53,10 +65,11 @@ class GitignoreHandlerTest {
 
         // Act
         val handler = GitignoreHandler(rootDir)
+        val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
-        assertThat(handler.getGitignoreFileCount()).isEqualTo(3)
-        assertThat(handler.getGitignoreFiles()).containsExactlyInAnyOrder(
+        assertThat(gitignoreFiles.size).isEqualTo(3)
+        assertThat(gitignoreFiles).containsExactlyInAnyOrder(
             ".gitignore",
             "src${File.separator}.gitignore",
             "src${File.separator}test${File.separator}.gitignore"
@@ -73,10 +86,11 @@ class GitignoreHandlerTest {
 
         // Act
         val handler = GitignoreHandler(rootDir)
+        val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
-        assertThat(handler.hasRootLevelGitignore()).isFalse()
-        assertThat(handler.getGitignoreFileCount()).isEqualTo(1)
+        assertThat(gitignoreFiles).doesNotContain(".gitignore")
+        assertThat(gitignoreFiles.size).isEqualTo(1)
     }
 
     @Test
@@ -87,9 +101,10 @@ class GitignoreHandlerTest {
 
         // Act
         val handler = GitignoreHandler(rootDir)
+        val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
-        assertThat(handler.getGitignoreFileCount()).isEqualTo(0)
+        assertThat(gitignoreFiles.size).isEqualTo(0)
     }
 
     @Test
@@ -106,9 +121,10 @@ class GitignoreHandlerTest {
 
         // Act
         val handler = GitignoreHandler(rootDir)
+        val (_, gitignoreFiles) = handler.getStatistics()
 
         // Assert
-        assertThat(handler.getGitignoreFileCount()).isEqualTo(0)
+        assertThat(gitignoreFiles.size).isEqualTo(0)
     }
 
     // ========== BASIC EXCLUSION TESTS ==========
@@ -288,9 +304,6 @@ class GitignoreHandlerTest {
         val buildDir = File(rootDir, "build")
         buildDir.mkdirs()
 
-        // Note: We can't create a file and dir with same name in the same location,
-        // so we only test the directory case here
-
         // Act & Assert
         assertThat(handler.shouldExclude(buildDir)).isTrue()
     }
@@ -353,9 +366,10 @@ class GitignoreHandlerTest {
         handler.shouldExclude(log1)
         handler.shouldExclude(log2)
         handler.shouldExclude(txt)
+        val (excludedCount, _) = handler.getStatistics()
 
         // Assert
-        assertThat(handler.getExcludedFileCount()).isEqualTo(2)
+        assertThat(excludedCount).isEqualTo(2)
     }
 
     @Test
@@ -411,38 +425,59 @@ class GitignoreHandlerTest {
     @Test
     fun `should handle empty gitignore cache`() {
         // Arrange
-        // No gitignore files created
         val handler = GitignoreHandler(rootDir)
 
         val file = File(rootDir, "test.txt")
 
         // Act
         val shouldExclude = handler.shouldExclude(file)
+        val (excludedCount, gitignoreFiles) = handler.getStatistics()
 
         // Assert
         assertThat(shouldExclude).isFalse()
-        assertThat(handler.getGitignoreFileCount()).isEqualTo(0)
-        assertThat(handler.getExcludedFileCount()).isEqualTo(0)
+        assertThat(gitignoreFiles.size).isEqualTo(0)
+        assertThat(excludedCount).isEqualTo(0)
     }
 
     @Test
-    fun `should handle malformed gitignore file gracefully`() {
+    fun `should skip malformed patterns in gitignore file`() {
         // Arrange
-        val gitignoreFile = File(rootDir, ".gitignore")
-        // Write patterns that should parse successfully
-        gitignoreFile.writeText(
+        val malformedGitignoreFile = File(rootDir, ".gitignore")
+        malformedGitignoreFile.writeText(
             """
             *.log
-
-            *.txt
+            [*.tmp
+            test[.txt
+            *.bak
             """.trimIndent()
         )
+
+        System.setErr(PrintStream(errContent))
 
         // Act
         val handler = GitignoreHandler(rootDir)
 
+        val logFile = File(rootDir, "debug.log")
+        val tmpFile = File(rootDir, "test.tmp")
+        val bakFile = File(rootDir, "backup.bak")
+
+        val shouldExcludeLog = handler.shouldExclude(logFile)
+        val shouldExcludeTmp = handler.shouldExclude(tmpFile)
+        val shouldExcludeBak = handler.shouldExclude(bakFile)
+        val (excludedCount, gitignoreFiles) = handler.getStatistics()
+
         // Assert
-        assertThat(handler.getGitignoreFileCount()).isGreaterThan(0)
+        assertThat(shouldExcludeLog).isTrue()
+        assertThat(shouldExcludeBak).isTrue()
+        assertThat(shouldExcludeTmp).isFalse()
+        assertThat(excludedCount).isEqualTo(2)
+        assertThat(gitignoreFiles).contains(".gitignore")
+
+        assertThat(errContent.toString()).contains("Skipping invalid gitignore pattern '[*.tmp': Missing '] near index 8")
+        assertThat(errContent.toString()).contains("Skipping invalid gitignore pattern 'test[.txt': Missing '] near index 11")
+
+        // Clean up
+        System.setErr(originalErr)
     }
 
     // ========== COMPREHENSIVE INTEGRATION TEST ==========
@@ -450,7 +485,6 @@ class GitignoreHandlerTest {
     @Test
     fun `should handle complex project structure with multiple gitignore files`() {
         // Arrange
-        // Root gitignore
         val rootGitignore = File(rootDir, ".gitignore")
         rootGitignore.writeText(
             """
@@ -460,7 +494,6 @@ class GitignoreHandlerTest {
             """.trimIndent()
         )
 
-        // Src gitignore
         val srcDir = File(rootDir, "src")
         srcDir.mkdirs()
         val srcGitignore = File(srcDir, ".gitignore")
@@ -471,7 +504,6 @@ class GitignoreHandlerTest {
             """.trimIndent()
         )
 
-        // Test gitignore
         val testDir = File(srcDir, "test")
         testDir.mkdirs()
         val testGitignore = File(testDir, ".gitignore")
@@ -479,7 +511,6 @@ class GitignoreHandlerTest {
 
         val handler = GitignoreHandler(rootDir)
 
-        // Create test files
         val rootLog = File(rootDir, "debug.log")
         val rootImportant = File(rootDir, "important.log")
         val rootConfig = File(rootDir, "config.json")
@@ -502,7 +533,8 @@ class GitignoreHandlerTest {
         assertThat(handler.shouldExclude(testTxt)).isFalse() // Not matched
 
         // Verify statistics
-        assertThat(handler.getGitignoreFileCount()).isEqualTo(3)
-        assertThat(handler.getExcludedFileCount()).isEqualTo(5) // rootLog, rootConfig, srcTmp, testLog, testBak
+        val (excludedCount, gitignoreFiles) = handler.getStatistics()
+        assertThat(gitignoreFiles.size).isEqualTo(3)
+        assertThat(excludedCount).isEqualTo(5)
     }
 }
