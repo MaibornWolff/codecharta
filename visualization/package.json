@@ -84,7 +84,7 @@
     "hotkeys-js": "^3.8.2",
     "html2canvas": "^1.4.1",
     "idb": "^8.0.0",
-    "ignore": "^5.1.8",
+    "ignore": "^7.0.0",
     "klona": "^2.0.4",
     "marked-mangle": "^1.1.11",
     "material-icons": "^1.10.4",
