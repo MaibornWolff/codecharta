@@ -78,7 +78,7 @@
     "d3-hierarchy": "^2.0.0",
     "dequal": "^2.0.3",
     "electron": "35.7.5",
-    "fake-indexeddb": "^4.0.2",
+    "fake-indexeddb": "^6.0.0",
     "fflate": "^0.8.2",
     "font-awesome": "^4.7.0",
     "hotkeys-js": "^3.8.2",
