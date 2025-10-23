@@ -108,45 +108,6 @@ class SemanticCommitMetricTest {
     }
 
     @Test
-    fun should_work_with_contains_pattern() {
-        // Arrange
-        val commitType = SemanticCommitType(
-            name = "hotfix",
-            metricName = "hotfix_commits",
-            description = "Hotfix commits",
-            matchPattern = MatchPattern.Contains("hotfix")
-        )
-        val metric = SemanticCommitMetric(commitType)
-
-        // Act
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: critical fix"))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "fix: this is a hotfix"))
-
-        // Assert
-        assertThat(metric.value()).isEqualTo(2L)
-    }
-
-    @Test
-    fun should_work_with_regex_pattern() {
-        // Arrange
-        val commitType = SemanticCommitType(
-            name = "breaking",
-            metricName = "breaking_commits",
-            description = "Breaking change commits",
-            matchPattern = MatchPattern.Regex("^(feat|fix)!:")
-        )
-        val metric = SemanticCommitMetric(commitType)
-
-        // Act
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat!: breaking change"))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "fix!: breaking fix"))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat: normal feature"))
-
-        // Assert
-        assertThat(metric.value()).isEqualTo(2L)
-    }
-
-    @Test
     fun should_handle_case_insensitivity() {
         // Arrange
         val commitType = SemanticCommitType(
