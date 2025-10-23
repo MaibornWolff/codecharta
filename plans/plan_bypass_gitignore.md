@@ -122,9 +122,6 @@ Add gitignore question to interactive mode.
 #### 6.2 Update CHANGELOG
 - Add entry for gitignore feature
 
-#### 6.3 Update Architecture Docs
-- Document new components in UNIFIED_PARSER_ARCHITECTURE.md
-
 ## Steps
 
 - [x] Complete Task 1.1: Create GitignoreRule data class
@@ -141,10 +138,8 @@ Add gitignore question to interactive mode.
 - [x] Complete Task 5.3: Write ProjectScanner integration tests
 - [x] Complete Task 5.4: Create test resources
 - [x] Complete Task 5.5: Write end-to-end tests
-- [ ] Complete Task 6.1: Update README
-- [ ] Complete Task 6.2: Update CHANGELOG
-- [ ] Complete Task 6.3: Update architecture documentation
-
+- [x] Complete Task 6.1: Update README
+- [x] Complete Task 6.2: Update CHANGELOG
 ## Review Feedback Addressed
 
 (To be filled in after review)
