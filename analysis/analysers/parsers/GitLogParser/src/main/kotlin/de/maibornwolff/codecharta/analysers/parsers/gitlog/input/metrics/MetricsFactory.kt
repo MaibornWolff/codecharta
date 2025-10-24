@@ -1,56 +1,50 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics
 
-class MetricsFactory {
-    private val metricClasses: List<Class<out Metric>>
+data class MetricDefinition(
+    val metricName: String,
+    val factory: () -> Metric
+)
 
-    constructor() {
-        this.metricClasses = createAllMetrics().map { it.javaClass }
+class MetricsFactory(requestedMetrics: List<String> = emptyList()) {
+    private val metricDefinitions = createAllDefinitions().selectMetrics(requestedMetrics)
+
+    fun createMetrics(): List<Metric> = metricDefinitions.map { it.factory() }
+
+    private fun createAllDefinitions(): List<MetricDefinition> {
+        val commitTypes = DefaultSemanticCommitStyle.getAllTypes()
+        val standard = createStandardDefinitions(commitTypes)
+        val dynamic = createCommitTypeDefinitions(commitTypes)
+        return standard + dynamic
     }
 
-    constructor(metricNames: List<String>) {
-        this.metricClasses =
-            createAllMetrics().filter { m -> metricNames.contains(m.metricName()) }.map { it.javaClass }
+    private fun createStandardDefinitions(commitTypes: List<SemanticCommitType>): List<MetricDefinition> = listOf(
+        MetricDefinition("abs_code_churn", { AbsoluteCodeChurn() }),
+        MetricDefinition("added_lines", { AddedLines() }),
+        MetricDefinition("deleted_lines", { DeletedLines() }),
+        MetricDefinition("number_of_authors", { NumberOfAuthors() }),
+        MetricDefinition("number_of_commits", { NumberOfOccurencesInCommits() }),
+        MetricDefinition("range_of_weeks_with_commits", { RangeOfWeeksWithCommits() }),
+        MetricDefinition("successive_weeks_with_commits", { SuccessiveWeeksWithCommits() }),
+        MetricDefinition("weeks_with_commits", { WeeksWithCommits() }),
+        MetricDefinition("highly_coupled_files", { HighlyCoupledFiles() }),
+        MetricDefinition("median_coupled_files", { MedianCoupledFiles() }),
+        MetricDefinition("abs_coupled_churn", { AbsoluteCoupledChurn() }),
+        MetricDefinition("avg_code_churn", { AverageCodeChurnPerCommit() }),
+        MetricDefinition("number_of_renames", { NumberOfRenames() }),
+        MetricDefinition("age_in_weeks", { AgeInWeeks() }),
+        MetricDefinition("semantic_commit_ratio", { SemanticCommitRatio(commitTypes) }),
+        MetricDefinition("hotfix_commits", { HotfixCommits() }),
+        MetricDefinition("hotfix_commit_ratio", { HotfixCommitRatio() })
+    )
+
+    private fun createCommitTypeDefinitions(commitTypes: List<SemanticCommitType>): List<MetricDefinition> = commitTypes.map { type ->
+        MetricDefinition(type.metricName, { SemanticCommitMetric(type) })
     }
 
-    private fun createMetric(clazz: Class<out Metric>): Metric {
-        try {
-            return clazz.getDeclaredConstructor().newInstance()
-        } catch (e: InstantiationException) {
-            throw IllegalArgumentException("metric $clazz not found.")
-        } catch (e: IllegalAccessException) {
-            throw IllegalArgumentException("metric $clazz not found.")
+    private fun List<MetricDefinition>.selectMetrics(names: List<String>): List<MetricDefinition> {
+        if (names.isEmpty()) {
+            return this
         }
-    }
-
-    private fun createAllMetrics(): List<Metric> {
-        return listOf(
-            AbsoluteCodeChurn(),
-            AddedLines(),
-            DeletedLines(),
-            NumberOfAuthors(),
-            NumberOfOccurencesInCommits(),
-            RangeOfWeeksWithCommits(),
-            SuccessiveWeeksWithCommits(),
-            WeeksWithCommits(),
-            HighlyCoupledFiles(),
-            MedianCoupledFiles(),
-            AbsoluteCoupledChurn(),
-            AverageCodeChurnPerCommit(),
-            NumberOfRenames(),
-            AgeInWeeks(),
-            FeatCommits(),
-            FixCommits(),
-            DocsCommits(),
-            StyleCommits(),
-            RefactorCommits(),
-            TestCommits(),
-            HotfixCommits(),
-            SemanticCommitRatio(),
-            HotfixCommitRatio()
-        )
-    }
-
-    fun createMetrics(): List<Metric> {
-        return metricClasses.map { createMetric(it) }
+        return filter { it.metricName in names }
     }
 }

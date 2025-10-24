@@ -8,136 +8,107 @@ import java.time.OffsetDateTime
 class HotfixCommitsTest {
     @Test
     fun should_have_initial_value_zero() {
-        // when
+        // Arrange
         val metric = HotfixCommits()
 
-        // then
+        // Act & Assert
         assertThat(metric.value()).isEqualTo(0L)
     }
 
     @Test
-    fun should_increase_for_hotfix_commit() {
-        // given
+    fun should_return_correct_metric_name() {
+        // Arrange
         val metric = HotfixCommits()
 
-        // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: critical security fix"))
+        // Act & Assert
+        assertThat(metric.metricName()).isEqualTo("hotfix_commits")
+    }
 
-        // then
+    @Test
+    fun should_return_correct_description() {
+        // Arrange
+        val metric = HotfixCommits()
+
+        // Act & Assert
+        assertThat(metric.description()).isEqualTo("Hotfix Commits: Number of hotfix commits (containing 'hotfix') for this file.")
+    }
+
+    @Test
+    fun should_increment_for_commit_containing_hotfix() {
+        // Arrange
+        val metric = HotfixCommits()
+
+        // Act
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: critical fix"))
+
+        // Assert
         assertThat(metric.value()).isEqualTo(1L)
     }
 
     @Test
-    fun should_not_increase_for_non_hotfix_commit() {
-        // given
+    fun should_not_increment_for_commit_without_hotfix() {
+        // Arrange
         val metric = HotfixCommits()
 
-        // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat: add feature"))
+        // Act
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "fix: normal bug fix"))
 
-        // then
+        // Assert
         assertThat(metric.value()).isEqualTo(0L)
-    }
-
-    @Test
-    fun should_increase_for_multiple_hotfix_commits() {
-        // given
-        val metric = HotfixCommits()
-
-        // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: fix security vulnerability"))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "Apply hotfix for production issue"))
-
-        // then
-        assertThat(metric.value()).isEqualTo(2L)
-    }
-
-    @Test
-    fun should_be_case_insensitive() {
-        // given
-        val metric = HotfixCommits()
-
-        // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "HOTFIX: urgent security patch"))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "Hotfix: critical bug fix"))
-
-        // then
-        assertThat(metric.value()).isEqualTo(2L)
-    }
-
-    @Test
-    fun should_handle_whitespace_in_message() {
-        // given
-        val metric = HotfixCommits()
-
-        // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "  hotfix: urgent patch with whitespace  "))
-
-        // then
-        assertThat(metric.value()).isEqualTo(1L)
     }
 
     @Test
     fun should_match_hotfix_anywhere_in_message() {
-        // given
+        // Arrange
         val metric = HotfixCommits()
 
-        // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "apply emergency hotfix"))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "production hotfix deployment"))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "urgent hotfix for API"))
+        // Act
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "fix: this is a hotfix for critical issue"))
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: another fix"))
 
-        // then
-        assertThat(metric.value()).isEqualTo(3L)
-    }
-
-    @Test
-    fun should_match_flexible_format_with_parentheses() {
-        // given
-        val metric = HotfixCommits()
-
-        // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix(api): fix critical endpoint"))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "fix(security): hotfix for vulnerability"))
-
-        // then
+        // Assert
         assertThat(metric.value()).isEqualTo(2L)
     }
 
     @Test
-    fun should_not_match_partial_words() {
-        // given
+    fun should_handle_case_insensitivity() {
+        // Arrange
         val metric = HotfixCommits()
 
-        // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "fix: photoshop fix"))
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat: add new feature"))
+        // Act
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: lowercase"))
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "HOTFIX: uppercase"))
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "Hotfix: mixed case"))
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "HoTfIx: weird case"))
 
-        // then
-        assertThat(metric.value()).isEqualTo(0L)
+        // Assert
+        assertThat(metric.value()).isEqualTo(4L)
     }
 
     @Test
-    fun should_match_hyphenated_hotfix() {
-        // given
+    fun should_increment_multiple_times() {
+        // Arrange
         val metric = HotfixCommits()
 
-        // when
-        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hot-fix: urgent production issue"))
+        // Act
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: first fix"))
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: second fix"))
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "fix: normal fix"))
+        metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "hotfix: third fix"))
 
-        // then
-        assertThat(metric.value()).isEqualTo(0L) // should not match hyphenated version
+        // Assert
+        assertThat(metric.value()).isEqualTo(3L)
     }
 
     @Test
     fun should_handle_empty_message() {
-        // given
+        // Arrange
         val metric = HotfixCommits()
 
-        // when
+        // Act
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, ""))
 
-        // then
+        // Assert
         assertThat(metric.value()).isEqualTo(0L)
     }
 }

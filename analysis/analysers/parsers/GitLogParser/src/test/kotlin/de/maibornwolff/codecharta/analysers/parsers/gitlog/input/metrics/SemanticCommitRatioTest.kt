@@ -7,10 +7,12 @@ import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 class SemanticCommitRatioTest {
+    private val semanticCommitTypes = DefaultSemanticCommitStyle.getAllTypes()
+
     @Test
     fun should_have_initial_value_zero() {
         // when
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // then
         assertThat(metric.value()).isEqualTo(0.0)
@@ -19,7 +21,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_return_relative_attribute_type() {
         // when
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // then
         assertThat(metric.attributeType()).isEqualTo(AttributeType.RELATIVE)
@@ -28,7 +30,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_calculate_ratio_for_all_semantic_commits() {
         // given
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat: add feature"))
@@ -41,7 +43,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_calculate_ratio_for_mixed_commits() {
         // given
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat: add feature"))
@@ -54,7 +56,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_calculate_ratio_for_no_semantic_commits() {
         // given
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "random commit"))
@@ -67,7 +69,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_count_all_semantic_commit_types() {
         // given
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat: add feature"))
@@ -85,7 +87,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_be_case_insensitive() {
         // given
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "FEAT: add feature"))
@@ -99,7 +101,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_handle_whitespace_in_messages() {
         // given
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "  feat: add feature  "))
@@ -113,7 +115,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_round_to_two_decimal_places() {
         // given
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat: add feature"))
@@ -127,7 +129,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_handle_flexible_format_with_parentheses() {
         // given
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat(api): add new endpoint"))
@@ -141,7 +143,7 @@ class SemanticCommitRatioTest {
     @Test
     fun should_handle_flexible_format_with_space() {
         // given
-        val metric = SemanticCommitRatio()
+        val metric = SemanticCommitRatio(semanticCommitTypes)
 
         // when
         metric.registerCommit(Commit("author", emptyList(), OffsetDateTime.now(), false, "feat add new feature"))
