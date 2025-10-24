@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.gitignore.GitignoreHandler
+import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.model.MutableNode
