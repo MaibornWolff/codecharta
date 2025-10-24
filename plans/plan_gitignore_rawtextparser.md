@@ -108,8 +108,8 @@ Document the new shared gitignore functionality.
 - [x] Complete Task 2: Move gitignore tests to shared location
 - [x] Complete Task 3: Add gitignore parameter to CommonAnalyserParameters
 - [x] Complete Task 4: Update UnifiedParser to use CommonAnalyserParameters
-- [ ] Complete Task 5: Integrate gitignore into ProjectMetricsCollector
-- [ ] Complete Task 6: Update RawTextParser CLI integration
+- [x] Complete Task 5: Integrate gitignore into ProjectMetricsCollector
+- [x] Complete Task 6: Update RawTextParser CLI integration
 - [ ] Complete Task 7: Add interactive dialog support for RawTextParser
 - [ ] Complete Task 8: Write tests for RawTextParser gitignore integration
 - [ ] Complete Task 9: Update documentation
