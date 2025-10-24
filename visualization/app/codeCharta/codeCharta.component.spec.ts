@@ -12,25 +12,36 @@ describe("codeChartaComponent", () => {
         })
     })
 
-    it("should set is loading and call loadFilesOrSampleFiles on initialization", async () => {
+    it("should set is loading and call loadFilesOrSampleFiles on initialization", () => {
         const mockedStore = { dispatch: jest.fn() } as unknown as Store
-        const mockedLoadInitialFileService = { loadFilesOrSampleFiles: jest.fn() } as unknown as LoadInitialFileService
+        const mockedLoadInitialFileService = {
+            loadFilesOrSampleFiles: jest.fn().mockResolvedValue(undefined)
+        } as unknown as LoadInitialFileService
 
         const codeChartaComponent = new CodeChartaComponent(mockedStore, mockedLoadInitialFileService)
-        await codeChartaComponent.ngOnInit()
+        codeChartaComponent.ngOnInit()
 
         expect(mockedStore.dispatch).toHaveBeenCalledWith(setIsLoadingFile({ value: true }))
         expect(mockedLoadInitialFileService.loadFilesOrSampleFiles).toHaveBeenCalled()
     })
 
     it("should set isInitialized on angulars init event after fileService is loaded", async () => {
+        // Arrange
         const mockedStore = { dispatch: jest.fn() } as unknown as Store
-        const mockedLoadInitialFileService = { loadFilesOrSampleFiles: jest.fn() } as unknown as LoadInitialFileService
+        const mockedLoadInitialFileService = {
+            loadFilesOrSampleFiles: jest.fn().mockResolvedValue(undefined)
+        } as unknown as LoadInitialFileService
 
         const codeChartaComponent = new CodeChartaComponent(mockedStore, mockedLoadInitialFileService)
-        expect(codeChartaComponent.isInitialized).toBe(false)
 
-        await codeChartaComponent.ngOnInit()
-        expect(codeChartaComponent.isInitialized).toBe(true)
+        // Act
+        expect(codeChartaComponent.isInitialized()).toBe(false)
+        codeChartaComponent.ngOnInit()
+
+        // Wait for promise to resolve
+        await Promise.resolve()
+
+        // Assert
+        expect(codeChartaComponent.isInitialized()).toBe(true)
     })
 })

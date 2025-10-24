@@ -18,5 +18,5 @@
   "moduleDirectories": ["node_modules", "<rootDir>/app"],
   "setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
   "setupFilesAfterEnv": ["<rootDir>/conf/setupJestUnit.ts", "jest-canvas-mock"],
-  "testEnvironment": "jsdom"
+  "testEnvironment": "<rootDir>/conf/jestEnvironment.js"
 }

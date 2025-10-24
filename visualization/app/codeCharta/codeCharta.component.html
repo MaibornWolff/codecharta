@@ -1,14 +1,16 @@
-<div [style.visibility]="isInitialized ? 'visible' : 'hidden'">
-    <cc-tool-bar></cc-tool-bar>
+@if (isInitialized()) {
+    <div>
+        <cc-tool-bar></cc-tool-bar>
 
-    <cc-ribbon-bar></cc-ribbon-bar>
-    <cc-file-extension-bar></cc-file-extension-bar>
+        <cc-ribbon-bar></cc-ribbon-bar>
+        <cc-file-extension-bar></cc-file-extension-bar>
 
-    <cc-code-map></cc-code-map>
+        <cc-code-map></cc-code-map>
 
-    <cc-legend-panel></cc-legend-panel>
+        <cc-legend-panel></cc-legend-panel>
 
-    <cc-loading-file-progress-spinner></cc-loading-file-progress-spinner>
+        <cc-loading-file-progress-spinner></cc-loading-file-progress-spinner>
 
-    <cc-logo></cc-logo>
-</div>
+        <cc-logo></cc-logo>
+    </div>
+}
