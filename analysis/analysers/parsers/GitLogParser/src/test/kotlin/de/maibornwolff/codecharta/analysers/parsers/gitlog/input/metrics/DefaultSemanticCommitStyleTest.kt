@@ -25,19 +25,6 @@ class DefaultSemanticCommitStyleTest {
         )
     }
 
-    @Test
-    fun should_get_commit_type_by_name() {
-        // Arrange & Act
-        val featType = DefaultSemanticCommitStyle.getTypeByName("feat")
-        val nonExistentType = DefaultSemanticCommitStyle.getTypeByName("nonexistent")
-
-        // Assert
-        assertThat(featType).isNotNull
-        assertThat(featType?.name).isEqualTo("feat")
-        assertThat(featType?.metricName).isEqualTo("feat_commits")
-        assertThat(nonExistentType).isNull()
-    }
-
     @ParameterizedTest
     @CsvSource(
         "feat, feat: add new feature, true",

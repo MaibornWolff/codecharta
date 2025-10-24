@@ -43,8 +43,4 @@ object DefaultSemanticCommitStyle {
     fun getAllTypes(): List<SemanticCommitType> {
         return defaultCommitTypes
     }
-
-    fun getTypeByName(name: String): SemanticCommitType? {
-        return defaultCommitTypes.find { it.name == name }
-    }
 }
