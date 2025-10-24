@@ -33,7 +33,8 @@ class DialogTest {
         val tabWidth = 5
         val maxIndentLvl = 10
         val exclude = "file1"
-        val withoutDefaultExcludes = false
+        val bypassGitignore = true
+        val includeBuildFolders = false
 
         mockkObject(Dialog.Companion)
 
@@ -68,15 +69,19 @@ class DialogTest {
                 terminal.type(maxIndentLvl.toString())
                 terminal.press(Keys.ENTER)
             }
+            val gitignoreCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val includeBuildFoldersCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
             val excludeCallback: suspend RunScope.() -> Unit = {
                 terminal.type(exclude)
                 terminal.press(Keys.ENTER)
             }
             val extensionCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.ENTER)
-            }
-            val defaultCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
@@ -88,9 +93,10 @@ class DialogTest {
                 metricCallback,
                 tabCallback,
                 indentationCallback,
+                gitignoreCallback,
+                includeBuildFoldersCallback,
                 excludeCallback,
-                extensionCallback,
-                defaultCallback
+                extensionCallback
             )
 
             parserArguments = collectAnalyserArgs(this)
@@ -104,9 +110,10 @@ class DialogTest {
         assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl)
         assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidth)
         assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
-        assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(verbose)
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
+        assertThat(parseResult.hasMatchedOption("include-build-folders")).isEqualTo(includeBuildFolders)
+        assertThat(parseResult.hasMatchedOption("bypass-gitignore")).isEqualTo(bypassGitignore)
         assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name).isEqualTo(File(inputFileName).name)
     }
 
@@ -117,7 +124,8 @@ class DialogTest {
         val metrics = "metric1"
         val maxIndentLvl = 10
         val exclude = "file1"
-        val withoutDefaultExcludes = false
+        val bypassGitignore = false
+        val includeBuildFolders = false
 
         mockkObject(Dialog.Companion)
 
@@ -146,15 +154,14 @@ class DialogTest {
                 terminal.type(maxIndentLvl.toString())
                 terminal.press(Keys.ENTER)
             }
+            val gitignoreCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
             val excludeCallback: suspend RunScope.() -> Unit = {
                 terminal.type(exclude)
                 terminal.press(Keys.ENTER)
             }
             val extensionCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.ENTER)
-            }
-            val defaultCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
 
@@ -165,9 +172,9 @@ class DialogTest {
                 metricCallback,
                 tabCallback,
                 indentationCallback,
+                gitignoreCallback,
                 excludeCallback,
-                extensionCallback,
-                defaultCallback
+                extensionCallback
             )
 
             parserArguments = collectAnalyserArgs(this)
@@ -180,9 +187,10 @@ class DialogTest {
         assertThat(parseResult.matchedOption("max-indentation-level").getValue<Int>()).isEqualTo(maxIndentLvl)
         assertThat(parseResult.matchedOption("tab-width").getValue<Int>()).isEqualTo(tabWidthValue)
         assertThat(parseResult.matchedOption("file-extensions").getValue<List<String>>()).isEqualTo(listOf<String>())
-        assertThat(parseResult.matchedOption("without-default-excludes").getValue<Boolean>()).isEqualTo(withoutDefaultExcludes)
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isEqualTo(verbose)
         assertThat(parseResult.matchedOption("exclude").getValue<List<String>>()).isEqualTo(listOf(exclude))
+        assertThat(parseResult.hasMatchedOption("include-build-folders")).isEqualTo(includeBuildFolders)
+        assertThat(parseResult.hasMatchedOption("bypass-gitignore")).isEqualTo(bypassGitignore)
         assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name).isEqualTo(File(inputFileName).name)
     }
 
@@ -228,14 +236,14 @@ class DialogTest {
                 terminal.type(maxIndentLvl.toString())
                 terminal.press(Keys.ENTER)
             }
+            val gitignoreCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
             val excludeCallback: suspend RunScope.() -> Unit = {
                 terminal.type(exclude)
                 terminal.press(Keys.ENTER)
             }
             val extensionCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.ENTER)
-            }
-            val defaultCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
@@ -247,9 +255,9 @@ class DialogTest {
                 metricCallback,
                 tabCallback,
                 indentationCallback,
+                gitignoreCallback,
                 excludeCallback,
-                extensionCallback,
-                defaultCallback
+                extensionCallback
             )
 
             parserArguments = collectAnalyserArgs(this)
