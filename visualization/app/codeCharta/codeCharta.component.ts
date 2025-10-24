@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { Component, OnInit, signal } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -24,16 +24,17 @@ import { LogoComponent } from "./ui/logo/logo.component"
     ]
 })
 export class CodeChartaComponent implements OnInit {
-    isInitialized = false
+    isInitialized = signal(false)
 
     constructor(
         private readonly store: Store,
         private readonly loadInitialFileService: LoadInitialFileService
     ) {}
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         this.store.dispatch(setIsLoadingFile({ value: true }))
-        await this.loadInitialFileService.loadFilesOrSampleFiles()
-        this.isInitialized = true
+        this.loadInitialFileService.loadFilesOrSampleFiles().then(() => {
+            this.isInitialized.set(true)
+        })
     }
 }
