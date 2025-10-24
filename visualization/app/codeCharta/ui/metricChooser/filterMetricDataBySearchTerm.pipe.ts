@@ -38,9 +38,6 @@ export class FilterMetricDataBySearchTermPipe implements PipeTransform {
         return metricName
     }
 
-    /**
-     * Checks if all search words appear anywhere in the metric name (order independent)
-     */
     private matchesSearch(normalizedMetricName: string, searchWords: string[]): boolean {
         if (searchWords.length === 0) {
             return true
