@@ -1,7 +1,7 @@
 ---
 name: GitIgnore Support for RawTextParser
 issue: #4273
-state: todo
+state: progress
 version: TBD
 ---
 
@@ -106,8 +106,8 @@ Document the new shared gitignore functionality.
 
 - [x] Complete Task 1: Move gitignore components to shared location
 - [x] Complete Task 2: Move gitignore tests to shared location
-- [ ] Complete Task 3: Add gitignore parameter to CommonAnalyserParameters
-- [ ] Complete Task 4: Update UnifiedParser to use CommonAnalyserParameters
+- [x] Complete Task 3: Add gitignore parameter to CommonAnalyserParameters
+- [x] Complete Task 4: Update UnifiedParser to use CommonAnalyserParameters
 - [ ] Complete Task 5: Integrate gitignore into ProjectMetricsCollector
 - [ ] Complete Task 6: Update RawTextParser CLI integration
 - [ ] Complete Task 7: Add interactive dialog support for RawTextParser

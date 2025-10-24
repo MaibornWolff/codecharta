@@ -32,12 +32,6 @@ class UnifiedParser(
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
 ) : AnalyserInterface, AttributeGenerator, CommonAnalyserParameters() {
-    @CommandLine.Option(
-        names = ["--bypass-gitignore"],
-        description = ["bypass .gitignore files and use regex-based exclusion instead (default: false)"]
-    )
-    private var bypassGitignore = false
-
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"

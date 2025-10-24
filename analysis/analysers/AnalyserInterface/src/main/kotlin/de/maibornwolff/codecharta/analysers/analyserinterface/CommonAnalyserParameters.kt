@@ -68,6 +68,12 @@ abstract class CommonAnalyserParameters {
     )
     protected var baseFile: File? = null
 
+    @CommandLine.Option(
+        names = ["--bypass-gitignore"],
+        description = ["bypass .gitignore files and use regex-based exclusion instead (default: false)"]
+    )
+    protected var bypassGitignore = false
+
     protected fun loadBaseFileNodes(): Map<String, Node> {
         if (baseFile == null) {
             return emptyMap()
