@@ -322,9 +322,9 @@ class UnifiedParserTest {
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // then
-        assertThat(result).doesNotContain("ignored.log")
+        assertThat(result).doesNotContain("ignored.exclude")
         assertThat(result).doesNotContain("build/")
-        assertThat(errContent.toString()).contains("excluded by .gitignore")
+        assertThat(errContent.toString()).contains("excluded by .gitignore rules")
 
         // clean up
         System.setErr(originalErr)
@@ -361,7 +361,7 @@ class UnifiedParserTest {
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "-e=$excludePattern"))
 
         // Assert
-        assertThat(result).doesNotContain("ignored.log")
+        assertThat(result).doesNotContain("ignored.exclude")
         assertThat(result).doesNotContain("build/")
         assertThat(result).doesNotContain("Main.kt")
         assertThat(result).contains("NotIgnored.kt")
