@@ -5,8 +5,11 @@ auth.txt
 **/node-wrapper/public
 .scannerwork
 
-#claude
+# claude
 /.claude
+
+# copilot
+**/copilot-instructions.md
 
 #gh-pages
 gh-pages/vendor

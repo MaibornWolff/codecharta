@@ -43,7 +43,7 @@ abstract class CommonAnalyserParameters {
         converter = [(CommaSeparatedStringToListConverter::class)],
         preprocessor = CommaSeparatedParameterPreprocessor::class
     )
-    protected var patternsToExclude: List<String> = listOf()
+    protected var specifiedExcludePatterns: List<String> = listOf()
 
     @CommandLine.Option(
         names = ["-ibf", "--include-build-folders"],
