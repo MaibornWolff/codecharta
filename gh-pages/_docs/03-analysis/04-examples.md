@@ -7,17 +7,17 @@ toc: true
 toc_label: "Jump to Section"
 ---
 
-# Generate Metrics from Java code
+# Generate Metrics from Code
 
-To analyze Java projects, the ccsh provides the [Source Code Parser]({{site.docs_parser}}/source-code), which uses the [sonar-java](https://github.com/SonarSource/sonar-java/) library for metric generation.
+To analyze projects, the ccsh provides the [Unified Parser]({{site.docs_parser}}/unified), which supports multiple programming languages.
 
-You are free to use your own java code base if you want. In this example we'll assume you picked the [Junit4 code base](https://github.com/junit-team/junit4) because it's fast to analyze.
+You are free to use your own code base if you want. In this example we'll assume you picked the [Junit4 code base](https://github.com/junit-team/junit4) because it's fast to analyze.
 
 ```bash
 # Download code base of your choice
 git clone https://github.com/junit-team/junit4
 # parse sources
-ccsh sourcecodeparser junit4 -o junit4.source.cc.json
+ccsh unifiedparser junit4 -o junit4.source.cc.json
 # done :)
 ```
 
@@ -129,7 +129,7 @@ Now you're almost done! Simply navigate to localhost:9001 in your browser to ope
 
 ```bash
 npm i -g codecharta-analysis
-ccsh sourcecodeparser junit4 \
+ccsh unifiedparser junit4 \
   | ccsh gitlogparser repo-scan --repo-path junit4 \
   > junit4.cc.json
 ```
