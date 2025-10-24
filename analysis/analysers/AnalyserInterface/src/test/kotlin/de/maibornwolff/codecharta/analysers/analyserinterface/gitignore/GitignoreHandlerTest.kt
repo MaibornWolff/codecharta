@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.unified.gitignore
+package de.maibornwolff.codecharta.analysers.analyserinterface.gitignore
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach

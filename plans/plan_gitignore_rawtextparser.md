@@ -104,8 +104,8 @@ Document the new shared gitignore functionality.
 
 ## Steps
 
-- [ ] Complete Task 1: Move gitignore components to shared location
-- [ ] Complete Task 2: Move gitignore tests to shared location
+- [x] Complete Task 1: Move gitignore components to shared location
+- [x] Complete Task 2: Move gitignore tests to shared location
 - [ ] Complete Task 3: Add gitignore parameter to CommonAnalyserParameters
 - [ ] Complete Task 4: Update UnifiedParser to use CommonAnalyserParameters
 - [ ] Complete Task 5: Integrate gitignore into ProjectMetricsCollector

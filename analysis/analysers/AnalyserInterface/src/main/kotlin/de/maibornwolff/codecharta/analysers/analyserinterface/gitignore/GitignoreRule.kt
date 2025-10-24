@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.unified.gitignore
+package de.maibornwolff.codecharta.analysers.analyserinterface.gitignore
 
 import java.nio.file.PathMatcher
 
