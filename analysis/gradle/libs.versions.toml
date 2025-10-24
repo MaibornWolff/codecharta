@@ -1,5 +1,5 @@
 [versions]
-kotlin-logging = "6.0.9"
+kotlin-logging = "7.0.13"
 boon = "0.34"
 commons-lang3 = "3.19.0"
 cyclonedx = "2.4.1"
