@@ -49,7 +49,7 @@ class RawTextParser(
     @CommandLine.Option(
         names = ["--without-default-excludes"],
         description = [
-            "DEPRECATION WARNING: this flag will soon be disabled and replaced by '--include-build-folders'" +
+            "DEPRECATION WARNING: this flag will soon be disabled and has been replaced by '--include-build-folders'" +
                 "include build, target, dist, resources and out folders as well as files/folders starting with '.' "
         ]
     )
@@ -76,30 +76,34 @@ class RawTextParser(
             "Input invalid file for RawTextParser, stopping execution..."
         }
 
-        val excludePatterns = if (!withoutDefaultExcludes) specifiedExcludePatterns + DEFAULT_EXCLUDES else specifiedExcludePatterns
+        val useGitignore = !bypassGitignore
+        val effectivePatternsToExclude = determineExclusionPatterns(inputFile!!, useGitignore)
 
         val baseFileNodeMap = loadBaseFileNodes()
-        val projectMetrics: ProjectMetrics =
+        val projectMetricsCollector =
             ProjectMetricsCollector(
-                inputFile!!,
-                excludePatterns,
+                inputFile,
+                effectivePatternsToExclude,
                 fileExtensionsToAnalyse,
                 metricNames,
                 verbose,
                 maxIndentLvl,
                 tabWidth,
-                baseFileNodeMap
-            ).parseProject()
+                baseFileNodeMap,
+                useGitignore
+            )
+        val projectMetrics: ProjectMetrics = projectMetricsCollector.parseProject()
         println()
+
+        reportNotFoundFileExtensions(projectMetrics)
+        reportInvalidMetrics(projectMetrics)
+        reportGitignoreStatistics(projectMetricsCollector)
 
         if (projectMetrics.isEmpty()) {
             println()
             Logger.error { "No files with specified file extension(s) were found within the given folder - not generating an output file!" }
             return null
         }
-
-        logWarningsForNotFoundFileExtensions(projectMetrics)
-        logWarningsForInvalidMetrics(projectMetrics)
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         val project = ProjectGenerator().generate(projectMetrics, maxIndentLvl, pipedProject)
@@ -109,7 +113,22 @@ class RawTextParser(
         return null
     }
 
-    private fun logWarningsForNotFoundFileExtensions(projectMetrics: ProjectMetrics) {
+    private fun determineExclusionPatterns(inputFile: File, useGitignore: Boolean): List<String> {
+        val excludePatterns = specifiedExcludePatterns.toMutableList()
+        val rootGitignoreExists = File(inputFile, ".gitignore").exists()
+
+        if (useGitignore && !rootGitignoreExists) {
+            Logger.warn { "No .gitignore found at root level, excluding common build folders as fallback..." }
+        }
+
+        if (!includeBuildFolders && !rootGitignoreExists) {
+            excludePatterns.addAll(DEFAULT_EXCLUDES)
+        }
+
+        return excludePatterns
+    }
+
+    private fun reportNotFoundFileExtensions(projectMetrics: ProjectMetrics) {
         val notFoundFileExtensions = mutableListOf<String>()
         for (fileExtension in fileExtensionsToAnalyse) {
             var isFileExtensionIncluded = false
@@ -128,10 +147,21 @@ class RawTextParser(
         }
     }
 
-    private fun logWarningsForInvalidMetrics(projectMetrics: ProjectMetrics) {
+    private fun reportInvalidMetrics(projectMetrics: ProjectMetrics) {
         for (metricName in metricNames) {
             if (!projectMetrics.hasMetric(metricName)) {
                 Logger.warn { "Metric $metricName is invalid and not included in the output" }
+            }
+        }
+    }
+
+    private fun reportGitignoreStatistics(projectMetricsCollector: ProjectMetricsCollector) {
+        val (gitignoreExcludedCount, gitignoreFiles) = projectMetricsCollector.getGitIgnoreStatistics()
+        if (!bypassGitignore && gitignoreExcludedCount > 0) {
+            Logger.info { "$gitignoreExcludedCount files were excluded by .gitignore rules" }
+            if (verbose && gitignoreFiles.isNotEmpty()) {
+                System.err.println("Found .gitignore files at:")
+                gitignoreFiles.forEach { System.err.println("  - $it") }
             }
         }
     }
