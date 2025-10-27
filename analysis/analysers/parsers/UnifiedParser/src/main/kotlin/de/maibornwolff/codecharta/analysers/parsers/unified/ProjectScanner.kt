@@ -24,7 +24,7 @@ class ProjectScanner(
     private val excludePatterns: List<String> = listOf(),
     private val includeExtensions: List<String> = listOf(),
     private val baseFileNodes: Map<String, Node> = emptyMap(),
-    useGitignore: Boolean = true
+    private val useGitignore: Boolean = true
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -38,7 +38,7 @@ class ProjectScanner(
     private val fileMetrics = ConcurrentHashMap<String, MutableNode>()
     private val excludePatternRegex = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
-    private val gitignoreHandler = if (useGitignore) GitignoreHandler(root) else null
+    private val gitignoreHandler = GitignoreHandler(root)
 
     fun foundParsableFiles(): Boolean {
         return fileMetrics.isNotEmpty()
@@ -49,7 +49,7 @@ class ProjectScanner(
     }
 
     fun getGitIgnoreStatistics(): Pair<Int, List<String>> {
-        return gitignoreHandler?.getStatistics() ?: Pair(0, emptyList())
+        return if (useGitignore) gitignoreHandler.getStatistics() else Pair(0, emptyList())
     }
 
     fun getNotFoundFileExtensions(): Set<String> {
@@ -134,7 +134,7 @@ class ProjectScanner(
     private fun isParsableFile(file: File): Boolean {
         if (!file.isFile) return false
 
-        if (gitignoreHandler?.shouldExclude(file) == true) return false
+        if (useGitignore && gitignoreHandler.shouldExclude(file)) return false
 
         if (isPathExcluded(file) || !isFileExtensionIncluded(file.extension)) return false
 

@@ -173,7 +173,6 @@ class ProjectScannerTest {
         val srcGitignore = File(srcDir, ".gitignore")
         srcGitignore.writeText("*.tmp")
 
-        // Create files
         File(srcDir, "Main.kt").writeText("fun main() {}")
         File(srcDir, "debug.log").writeText("log")
         File(srcDir, "temp.tmp").writeText("temp")

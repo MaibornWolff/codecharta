@@ -73,44 +73,44 @@ class UnifiedParserTest {
     @ParameterizedTest
     @MethodSource("provideSupportedLanguages")
     fun `Should produce correct output for a single source file of each supported language`(language: String, fileExtension: String) {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}languageSamples/${language}Sample$fileExtension"
         val expectedResultFile = File("${testResourceBaseFolder}languageSamples/${language}Sample.cc.json")
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
-        // then
+        // Assert
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
     fun `Should produce correct output when given a project folder`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val expectedResultFile = File("${testResourceBaseFolder}sampleProject.cc.json").absoluteFile
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
-        // then
+        // Assert
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
     fun `Should correctly merge and show warnings for mismatched attribute descriptors when piped into another project`() {
-        // given
+        // Arrange
         val pipedProject = File("${testResourceBaseFolder}projectToPipe.cc.json").readText()
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val expectedResultFile = File("${testResourceBaseFolder}mergeResult.cc.json").absoluteFile
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
-        // then
+        // Assert
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
         assertThat(errContent.toString()).contains("6 nodes were processed, 5 were added and 1 were merged")
         assertThat(
@@ -126,15 +126,15 @@ class UnifiedParserTest {
 
     @Test
     fun `should stop execution and throw error when input file could not be found`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}file.invalid"
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
-        // then
+        // Assert
         assertThat(result).isEmpty()
         assertThat(errContent.toString()).contains("Could not find resource `${File(inputFilePath)}`!")
         assertThat(errContent.toString()).contains("Input invalid file for UnifiedParser, stopping execution...")
@@ -145,7 +145,7 @@ class UnifiedParserTest {
 
     @Test
     fun `should display message for each file when verbose mode was set`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val parsedFiles = listOf(
@@ -158,10 +158,10 @@ class UnifiedParserTest {
         )
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         executeForOutput(pipedProject, arrayOf(inputFilePath, "--verbose"))
 
-        // then
+        // Assert
         for (file in parsedFiles) {
             assertThat(errContent.toString()).contains("Calculating metrics for file $file")
         }
@@ -173,16 +173,16 @@ class UnifiedParserTest {
 
     @Test
     fun `should display how many files and which file extensions were ignored after execution`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
 
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         executeForOutput(pipedProject, arrayOf(inputFilePath))
 
-        // then
+        // Assert
         assertThat(errContent.toString()).contains(
             "2 Files with the following extensions were ignored as they are currently not supported:",
             ".json",
@@ -195,31 +195,31 @@ class UnifiedParserTest {
 
     @Test
     fun `should only include file extensions that we specified when file-extensions flag is set`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val expectedResultFile = File("${testResourceBaseFolder}kotlinOnly.cc.json").absoluteFile
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.kt"))
 
-        // then
+        // Assert
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
     fun `should display warning when a file extension specified to be included was not found in project`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val expectedResultFile = File("${testResourceBaseFolder}kotlinOnly.cc.json").absoluteFile
         val invalidFileExtension = ".invalid"
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.kt, $invalidFileExtension"))
 
-        // then
+        // Assert
         assertThat(errContent.toString())
             .contains("From the specified file extensions to parse, [$invalidFileExtension] were not found in the given input!")
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -230,60 +230,60 @@ class UnifiedParserTest {
 
     @Test
     fun `should correctly exclude files and folders if exclude pattern was specified`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val expectedResultFile = File("${testResourceBaseFolder}excludePattern.cc.json").absoluteFile
         val excludePattern = "/bar/, foo.kt, .*.py"
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "-e=$excludePattern"))
 
-        // then
+        // Assert
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
     fun `should include normally excluded folders when without-default-excludes flag is set`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val expectedResultFile = File("${testResourceBaseFolder}includeAll.cc.json").absoluteFile
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--include-build-folders"))
 
-        // then
+        // Assert
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
     fun `should produce empty output file when no parsable files were found in project`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val expectedResultFile = File("${testResourceBaseFolder}empty.cc.json").absoluteFile
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--file-extensions=.invalid"))
 
-        // then
+        // Assert
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
     fun `should reuse metrics from base file when checksums match`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val baseFilePath = "${testResourceBaseFolder}sampleProject.cc.json"
         val expectedResultFile = File("${testResourceBaseFolder}sampleProject.cc.json").absoluteFile
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--base-file=$baseFilePath"))
 
-        // then
+        // Assert
         assertThat(errContent.toString()).contains("Loaded 6 file nodes from base file for checksum comparison")
         assertThat(errContent.toString()).contains("Checksum comparison: 6 files skipped, 0 files analyzed (100% reused)")
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -294,16 +294,16 @@ class UnifiedParserTest {
 
     @Test
     fun `should show warning when base file does not exist`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val baseFilePath = "${testResourceBaseFolder}nonexistent.cc.json"
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         executeForOutput(pipedProject, arrayOf(inputFilePath, "--base-file=$baseFilePath"))
 
-        // then
+        // Assert
         assertThat(errContent.toString()).contains("Base file")
         assertThat(errContent.toString()).contains("does not exist, continuing with normal analysis...")
 
@@ -313,15 +313,15 @@ class UnifiedParserTest {
 
     @Test
     fun `should exclude files based on gitignore when gitignore file exists`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}gitignore-test-project"
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
 
-        // then
+        // Assert
         assertThat(result).doesNotContain("ignored.exclude")
         assertThat(result).doesNotContain("build/")
         assertThat(errContent.toString()).contains("excluded by .gitignore rules")
@@ -332,15 +332,15 @@ class UnifiedParserTest {
 
     @Test
     fun `should not exclude files when bypass-gitignore flag is set`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}gitignore-test-project"
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--bypass-gitignore"))
 
-        // then
+        // Assert
         assertThat(result).contains("Main.kt")
         assertThat(result).contains("NotIgnored.kt")
         assertThat(errContent.toString()).doesNotContain("excluded by .gitignore")
@@ -372,15 +372,15 @@ class UnifiedParserTest {
 
     @Test
     fun `should report gitignore statistics in verbose mode`() {
-        // given
+        // Arrange
         val pipedProject = ""
         val inputFilePath = "${testResourceBaseFolder}sampleproject"
         System.setErr(PrintStream(errContent))
 
-        // when
+        // Act
         executeForOutput(pipedProject, arrayOf(inputFilePath, "--verbose"))
 
-        // then
+        // Assert
         assertThat(errContent.toString()).contains("Analysis of files complete")
 
         // clean up
