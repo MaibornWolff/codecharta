@@ -1,5 +1,11 @@
 {
   "extends": ["config:recommended", ":preserveSemverRanges"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "schedule": ["before 3am on Monday"]
+  },
+  "rangeStrategy": "update-lockfile",
   "vulnerabilityAlerts": {
     "labels": ["security", "dependencies"],
     "automerge": true
