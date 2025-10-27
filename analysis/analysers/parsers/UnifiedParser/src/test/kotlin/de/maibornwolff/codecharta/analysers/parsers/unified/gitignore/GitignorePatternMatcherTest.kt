@@ -5,6 +5,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import java.io.File
 import java.nio.file.Path
 
@@ -48,7 +50,7 @@ class GitignorePatternMatcherTest {
 
         // Assert
         assertThat(rules).hasSize(1)
-        assertThat(rules[0].pattern).contains("*.log")
+        assertThat(rules.first().pattern).contains("*.log")
     }
 
     @Test
@@ -67,7 +69,7 @@ class GitignorePatternMatcherTest {
 
         // Assert
         assertThat(rules).hasSize(1)
-        assertThat(rules[0].pattern).contains("*.log")
+        assertThat(rules.first().pattern).contains("*.log")
     }
 
     @Test
@@ -80,7 +82,7 @@ class GitignorePatternMatcherTest {
 
         // Assert
         assertThat(rules).hasSize(1)
-        assertThat(rules[0].pattern).isEqualTo("\\#notacomment.txt")
+        assertThat(rules.first().pattern).isEqualTo("\\#notacomment.txt")
     }
 
     // ========== TRAILING SPACES ==========
@@ -90,9 +92,10 @@ class GitignorePatternMatcherTest {
         // Arrange
         gitignoreFile.writeText("*.log   ")
 
+        val testFile = File(baseDir, "debug.log")
+
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val testFile = File(baseDir, "debug.log")
 
         // Assert
         assertThat(rules).hasSize(1)
@@ -104,10 +107,11 @@ class GitignorePatternMatcherTest {
         // Arrange
         gitignoreFile.writeText("trailing\\ ")
 
-        // Act
-        val rules = matcher.parseGitignoreFile(gitignoreFile)
         val testFileWithSpace = File(baseDir, "trailing ")
         val testFileWithoutSpace = File(baseDir, "trailing")
+
+        // Act
+        val rules = matcher.parseGitignoreFile(gitignoreFile)
 
         // Assert
         assertThat(rules).hasSize(1)
@@ -126,15 +130,15 @@ class GitignorePatternMatcherTest {
             !important.log
             """.trimIndent()
         )
-
-        // Act
-        val rules = matcher.parseGitignoreFile(gitignoreFile)
         val excludedFile = File(baseDir, "debug.log")
         val includedFile = File(baseDir, "important.log")
 
+        // Act
+        val rules = matcher.parseGitignoreFile(gitignoreFile)
+
         // Assert
         assertThat(rules).hasSize(2)
-        assertThat(rules[0].isNegation).isFalse()
+        assertThat(rules.first().isNegation).isFalse()
         assertThat(rules[1].isNegation).isTrue()
         assertThat(matcher.shouldIgnore(excludedFile, rules)).isTrue()
         assertThat(matcher.shouldIgnore(includedFile, rules)).isFalse()
@@ -145,14 +149,15 @@ class GitignorePatternMatcherTest {
         // Arrange
         gitignoreFile.writeText("\\!important.txt")
 
-        // Act
-        val rules = matcher.parseGitignoreFile(gitignoreFile)
         val testFile = File(baseDir, "!important.txt")
         testFile.createNewFile()
 
+        // Act
+        val rules = matcher.parseGitignoreFile(gitignoreFile)
+
         // Assert
         assertThat(rules).hasSize(1)
-        assertThat(rules[0].isNegation).isFalse()
+        assertThat(rules.first().isNegation).isFalse()
         assertThat(matcher.shouldIgnore(testFile, rules)).isTrue()
     }
 
@@ -163,12 +168,13 @@ class GitignorePatternMatcherTest {
         // Arrange
         gitignoreFile.writeText("*.log")
 
-        // Act
-        val rules = matcher.parseGitignoreFile(gitignoreFile)
         val matchingFile = File(baseDir, "debug.log")
         matchingFile.createNewFile()
         val nonMatchingFile = File(baseDir, "readme.txt")
         nonMatchingFile.createNewFile()
+
+        // Act
+        val rules = matcher.parseGitignoreFile(gitignoreFile)
 
         // Assert
         assertThat(matcher.shouldIgnore(matchingFile, rules)).isTrue()
@@ -180,10 +186,11 @@ class GitignorePatternMatcherTest {
         // Arrange
         gitignoreFile.writeText("*.log")
 
-        // Act
-        val rules = matcher.parseGitignoreFile(gitignoreFile)
         val nestedFile = File(baseDir, "src/main/debug.log")
         nestedFile.parentFile.mkdirs()
+
+        // Act
+        val rules = matcher.parseGitignoreFile(gitignoreFile)
 
         // Assert
         assertThat(matcher.shouldIgnore(nestedFile, rules)).isTrue()
@@ -194,113 +201,111 @@ class GitignorePatternMatcherTest {
         // Arrange
         gitignoreFile.writeText("file?.txt")
 
-        // Act
-        val rules = matcher.parseGitignoreFile(gitignoreFile)
         val matchingFile = File(baseDir, "file1.txt")
         val nonMatchingFile = File(baseDir, "file12.txt")
 
+        // Act
+        val rules = matcher.parseGitignoreFile(gitignoreFile)
+
         // Assert
         assertThat(matcher.shouldIgnore(matchingFile, rules)).isTrue()
         assertThat(matcher.shouldIgnore(nonMatchingFile, rules)).isFalse()
     }
 
-    @Test
-    fun `should match character range patterns`() {
+    @ParameterizedTest
+    @CsvSource(
+        "file.o, true",
+        "file.a, true",
+        "file.c, false"
+    )
+    fun `should match character range patterns`(fileName: String, shouldBeIgnored: Boolean) {
         // Arrange
         gitignoreFile.writeText("*.[oa]")
+        val testFile = File(baseDir, fileName)
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val matchingFile1 = File(baseDir, "file.o")
-        val matchingFile2 = File(baseDir, "file.a")
-        val nonMatchingFile = File(baseDir, "file.c")
 
         // Assert
-        assertThat(matcher.shouldIgnore(matchingFile1, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(matchingFile2, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(nonMatchingFile, rules)).isFalse()
+        assertThat(matcher.shouldIgnore(testFile, rules)).isEqualTo(shouldBeIgnored)
     }
 
-    @Test
-    fun `should match character range with dash`() {
+    @ParameterizedTest
+    @CsvSource(
+        "README.txt, true",
+        "readme.txt, false"
+    )
+    fun `should match character range with dash`(fileName: String, shouldBeIgnored: Boolean) {
         // Arrange
         gitignoreFile.writeText("[A-Z]*.txt")
+        val testFile = File(baseDir, fileName)
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val matchingFile = File(baseDir, "README.txt")
-        val nonMatchingFile = File(baseDir, "readme.txt")
 
         // Assert
-        assertThat(matcher.shouldIgnore(matchingFile, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(nonMatchingFile, rules)).isFalse()
+        assertThat(matcher.shouldIgnore(testFile, rules)).isEqualTo(shouldBeIgnored)
     }
 
     // ========== DOUBLE ASTERISK PATTERNS ==========
 
-    @Test
-    fun `should match double asterisk at beginning`() {
+    @ParameterizedTest
+    @CsvSource(
+        "foo, true",
+        "a/b/c/foo, true"
+    )
+    fun `should match double asterisk at beginning`(filePath: String, shouldBeIgnored: Boolean) {
         // Arrange
         gitignoreFile.writeText("**/foo")
+        val testFile = File(baseDir, filePath)
+        testFile.parentFile.mkdirs()
+        testFile.createNewFile()
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val fileAtRoot = File(baseDir, "foo")
-        fileAtRoot.createNewFile()
-        val fileNested = File(baseDir, "a/b/c/foo")
-        fileNested.parentFile.mkdirs()
-        fileNested.createNewFile()
 
         // Assert
-        assertThat(matcher.shouldIgnore(fileAtRoot, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(fileNested, rules)).isTrue()
+        assertThat(matcher.shouldIgnore(testFile, rules)).isEqualTo(shouldBeIgnored)
     }
 
-    @Test
-    fun `should match double asterisk at end`() {
+    @ParameterizedTest
+    @CsvSource(
+        "abc/file.txt, true",
+        "abc/nested/file.txt, true",
+        "xyz/file.txt, false"
+    )
+    fun `should match double asterisk at end`(filePath: String, shouldBeIgnored: Boolean) {
         // Arrange
         gitignoreFile.writeText("abc/**")
+        val testFile = File(baseDir, filePath)
+        testFile.parentFile.mkdirs()
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val fileInDir = File(baseDir, "abc/file.txt")
-        val fileNestedInDir = File(baseDir, "abc/nested/file.txt")
-        val fileOutsideDir = File(baseDir, "xyz/file.txt")
-        fileInDir.parentFile.mkdirs()
-        fileNestedInDir.parentFile.mkdirs()
-        fileOutsideDir.parentFile.mkdirs()
 
         // Assert
-        assertThat(matcher.shouldIgnore(fileInDir, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(fileNestedInDir, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(fileOutsideDir, rules)).isFalse()
+        assertThat(matcher.shouldIgnore(testFile, rules)).isEqualTo(shouldBeIgnored)
     }
 
-    @Test
-    fun `should match double asterisk in middle`() {
+    @ParameterizedTest
+    @CsvSource(
+        "a/b, true",
+        "a/x/b, true",
+        "a/x/y/b, true",
+        "a/c, false"
+    )
+    fun `should match double asterisk in middle`(filePath: String, shouldBeIgnored: Boolean) {
         // Arrange
         gitignoreFile.writeText("a/**/b")
+        val testFile = File(baseDir, filePath)
+        testFile.parentFile.mkdirs()
+        testFile.createNewFile()
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val directChild = File(baseDir, "a/b")
-        val oneLevel = File(baseDir, "a/x/b")
-        val twoLevels = File(baseDir, "a/x/y/b")
-        val notMatching = File(baseDir, "a/c")
-        directChild.parentFile.mkdirs()
-        directChild.createNewFile()
-        oneLevel.parentFile.mkdirs()
-        oneLevel.createNewFile()
-        twoLevels.parentFile.mkdirs()
-        twoLevels.createNewFile()
-        notMatching.parentFile.mkdirs()
-        notMatching.createNewFile()
 
         // Assert
-        assertThat(matcher.shouldIgnore(directChild, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(oneLevel, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(twoLevels, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(notMatching, rules)).isFalse()
+        assertThat(matcher.shouldIgnore(testFile, rules)).isEqualTo(shouldBeIgnored)
     }
 
     // ========== DIRECTORY-ONLY PATTERNS ==========
@@ -310,14 +315,15 @@ class GitignorePatternMatcherTest {
         // Arrange
         gitignoreFile.writeText("build/")
 
-        // Act
-        val rules = matcher.parseGitignoreFile(gitignoreFile)
         val directory = File(baseDir, "build")
         directory.mkdirs()
 
+        // Act
+        val rules = matcher.parseGitignoreFile(gitignoreFile)
+
         // Assert
         assertThat(rules).hasSize(1)
-        assertThat(rules[0].isDirOnly).isTrue()
+        assertThat(rules.first().isDirOnly).isTrue()
         // Directory should be ignored
         assertThat(matcher.shouldIgnore(directory, rules)).isTrue()
     }
@@ -327,78 +333,89 @@ class GitignorePatternMatcherTest {
         // Arrange
         gitignoreFile.writeText("build/")
 
-        // Act
-        val rules = matcher.parseGitignoreFile(gitignoreFile)
         val file = File(baseDir, "build")
         file.createNewFile()
 
+        // Act
+        val rules = matcher.parseGitignoreFile(gitignoreFile)
+
         // Assert
-        assertThat(rules[0].isDirOnly).isTrue()
+        assertThat(rules.first().isDirOnly).isTrue()
         assertThat(matcher.shouldIgnore(file, rules)).isFalse()
     }
 
     // ========== ROOTED PATTERNS (slash at beginning) ==========
 
-    @Test
-    fun `should match rooted pattern only at root level`() {
+    @ParameterizedTest
+    @CsvSource(
+        "config.json, true",
+        "src/config.json, false"
+    )
+    fun `should match rooted pattern only at root level`(filePath: String, shouldBeIgnored: Boolean) {
         // Arrange
         gitignoreFile.writeText("/config.json")
+        val testFile = File(baseDir, filePath)
+        testFile.parentFile.mkdirs()
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val fileAtRoot = File(baseDir, "config.json")
-        val fileInSubdir = File(baseDir, "src/config.json")
-        fileInSubdir.parentFile.mkdirs()
 
         // Assert
-        assertThat(rules[0].isRooted).isTrue()
-        assertThat(matcher.shouldIgnore(fileAtRoot, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(fileInSubdir, rules)).isFalse()
+        assertThat(rules.first().isRooted).isTrue()
+        assertThat(matcher.shouldIgnore(testFile, rules)).isEqualTo(shouldBeIgnored)
     }
 
     // ========== PATTERNS WITH SLASH IN MIDDLE ==========
 
-    @Test
-    fun `should match pattern with slash in middle only relative to gitignore location`() {
+    @ParameterizedTest
+    @CsvSource(
+        "foo/bar, true",
+        "nested/foo/bar, false"
+    )
+    fun `should match pattern with slash in middle only relative to gitignore location`(filePath: String, shouldBeIgnored: Boolean) {
         // Arrange
         gitignoreFile.writeText("foo/bar")
+        val testFile = File(baseDir, filePath)
+        testFile.parentFile.mkdirs()
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val fileAtRootLevel = File(baseDir, "foo/bar")
-        val fileNested = File(baseDir, "nested/foo/bar")
-        fileAtRootLevel.parentFile.mkdirs()
-        fileNested.parentFile.mkdirs()
 
         // Assert
-        assertThat(rules[0].isRooted).isTrue() // Has slash, treated as rooted
-        assertThat(matcher.shouldIgnore(fileAtRootLevel, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(fileNested, rules)).isFalse()
+        assertThat(rules.first().isRooted).isTrue() // Has slash, treated as rooted
+        assertThat(matcher.shouldIgnore(testFile, rules)).isEqualTo(shouldBeIgnored)
     }
 
     // ========== PATTERNS WITHOUT SLASH (match at any depth) ==========
 
-    @Test
-    fun `should match simple pattern at any depth`() {
+    @ParameterizedTest
+    @CsvSource(
+        "foo, true",
+        "a/b/c/foo, true"
+    )
+    fun `should match simple pattern at any depth`(filePath: String, shouldBeIgnored: Boolean) {
         // Arrange
         gitignoreFile.writeText("foo")
+        val testFile = File(baseDir, filePath)
+        testFile.parentFile.mkdirs()
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val fileAtRoot = File(baseDir, "foo")
-        val fileNested = File(baseDir, "a/b/c/foo")
-        fileNested.parentFile.mkdirs()
 
         // Assert
-        assertThat(rules[0].isRooted).isFalse()
-        assertThat(matcher.shouldIgnore(fileAtRoot, rules)).isTrue()
-        assertThat(matcher.shouldIgnore(fileNested, rules)).isTrue()
+        assertThat(rules.first().isRooted).isFalse()
+        assertThat(matcher.shouldIgnore(testFile, rules)).isEqualTo(shouldBeIgnored)
     }
 
     // ========== LAST MATCH WINS ==========
 
-    @Test
-    fun `should apply last match wins semantics`() {
+    @ParameterizedTest
+    @CsvSource(
+        "important.log, false",
+        "debug.log, true",
+        "other.log, true"
+    )
+    fun `should apply last match wins semantics`(fileName: String, shouldBeIgnored: Boolean) {
         // Arrange
         gitignoreFile.writeText(
             """
@@ -407,20 +424,13 @@ class GitignorePatternMatcherTest {
             debug.log
             """.trimIndent()
         )
+        val testFile = File(baseDir, fileName)
 
         // Act
         val rules = matcher.parseGitignoreFile(gitignoreFile)
-        val importantLog = File(baseDir, "important.log")
-        val debugLog = File(baseDir, "debug.log")
-        val otherLog = File(baseDir, "other.log")
 
         // Assert
-        // important.log: matched by *.log (ignore), then !important.log (include) -> NOT ignored
-        assertThat(matcher.shouldIgnore(importantLog, rules)).isFalse()
-        // debug.log: matched by *.log (ignore), !important.log (no match), debug.log (ignore) -> ignored
-        assertThat(matcher.shouldIgnore(debugLog, rules)).isTrue()
-        // other.log: matched by *.log (ignore), !important.log (no match), debug.log (no match) -> ignored
-        assertThat(matcher.shouldIgnore(otherLog, rules)).isTrue()
+        assertThat(matcher.shouldIgnore(testFile, rules)).isEqualTo(shouldBeIgnored)
     }
 
     // ========== ERROR HANDLING ==========
@@ -484,10 +494,6 @@ class GitignorePatternMatcherTest {
             **/generated/**
             """.trimIndent()
         )
-
-        // Act
-        val rules = matcher.parseGitignoreFile(gitignoreFile)
-
         val logFile = File(baseDir, "debug.log")
         val importantLog = File(baseDir, "important.log")
         val buildDir = File(baseDir, "build")
@@ -499,6 +505,9 @@ class GitignorePatternMatcherTest {
         val objectFile = File(baseDir, "file.o")
         val generatedFile = File(baseDir, "src/generated/file.java")
         generatedFile.parentFile.mkdirs()
+
+        // Act
+        val rules = matcher.parseGitignoreFile(gitignoreFile)
 
         // Assert
         assertThat(rules.size).isGreaterThan(5) // At least 6 non-comment, non-blank rules

@@ -5,10 +5,9 @@ import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicInteger
 
 class GitignoreHandler(private val root: File) {
-    // Cache of directory absolute path -> (GitignorePatternMatcher, List<GitignoreRule>)
     private val gitignoreCache = mutableMapOf<String, Pair<GitignorePatternMatcher, List<GitignoreRule>>>()
     private val discoveredGitignoreFiles = mutableListOf<String>()
-    private val excludedFileCount = AtomicInteger(0) // AtomicInt for Thread-safe counting
+    private val excludedFileCount = AtomicInteger(0)
 
     init {
         root.walk().filter { it.isFile && it.name == ".gitignore" }.forEach { parseAndCacheGitignoreFile(it) }
@@ -72,7 +71,6 @@ class GitignoreHandler(private val root: File) {
         file: File,
         applicableRules: List<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>>
     ): Boolean {
-        // reverse order of rules so parent rules come first and can be overridden by child gitignore files
         val rulesFromRootToFile = applicableRules.reversed()
 
         var isIgnored = false

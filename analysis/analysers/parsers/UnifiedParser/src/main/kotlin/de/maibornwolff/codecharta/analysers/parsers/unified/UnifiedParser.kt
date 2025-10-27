@@ -88,7 +88,10 @@ class UnifiedParser(
 
         projectScanner.traverseInputProject(verbose)
 
-        reportScanResults(projectScanner)
+        reportNotFoundFileExtensions(projectScanner)
+        reportIgnoredFileTypes(projectScanner)
+        reportGitIgnoreStatistics(projectScanner)
+        reportNoParsableFiles(projectScanner)
 
         val executionTimeMs = System.currentTimeMillis() - startTime
         val formattedTime = formatTime(executionTimeMs.milliseconds)
@@ -99,7 +102,7 @@ class UnifiedParser(
         return projectBuilder.build()
     }
 
-    private fun reportScanResults(projectScanner: ProjectScanner) {
+    private fun reportNotFoundFileExtensions(projectScanner: ProjectScanner) {
         val notFoundButSpecifiedFormats = projectScanner.getNotFoundFileExtensions()
         if (notFoundButSpecifiedFormats.isNotEmpty()) {
             System.err.println(
@@ -108,7 +111,9 @@ class UnifiedParser(
                     "were not found in the given input!"
             )
         }
+    }
 
+    private fun reportIgnoredFileTypes(projectScanner: ProjectScanner) {
         val (nrIgnoredFiles, ignoredFileTypes) = projectScanner.getIgnoredFiles()
         if (ignoredFileTypes.isNotEmpty()) {
             System.err.println(
@@ -116,7 +121,9 @@ class UnifiedParser(
                     "they are currently not supported:\n[${formatFileExtensions(ignoredFileTypes)}]"
             )
         }
+    }
 
+    private fun reportGitIgnoreStatistics(projectScanner: ProjectScanner) {
         val (gitignoreExcludedCount, gitignoreFiles) = projectScanner.getGitIgnoreStatistics()
         if (!bypassGitignore && gitignoreExcludedCount > 0) {
             Logger.info { "$gitignoreExcludedCount files were excluded by .gitignore rules" }
@@ -125,7 +132,9 @@ class UnifiedParser(
                 gitignoreFiles.forEach { System.err.println("  - $it") }
             }
         }
+    }
 
+    private fun reportNoParsableFiles(projectScanner: ProjectScanner) {
         if (!projectScanner.foundParsableFiles()) {
             println()
             Logger.warn { "No files with specified file extension(s) were found within the given folder - generating empty output file!" }
