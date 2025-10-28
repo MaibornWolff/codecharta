@@ -1,2 +1,2 @@
-#*.exclude
+*.exclude
 build/
