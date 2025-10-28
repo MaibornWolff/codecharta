@@ -82,6 +82,10 @@ ccsh unifiedparser src/test/resources -o foo.cc.json -nc --verbose
 ccsh unifiedparser src/test/resources -o foo.cc.json --include-build-folders -e=something -e=/.*\.foo
 ```
 
+```
+ccsh unifiedparser src/test/resources -o foo.cc.json --bypass-gitignore
+```
+
 If a project is piped into the UnifiedParser, the results and the piped project are merged.
 The resulting project has the project name specified for the UnifiedParser.
 ```
