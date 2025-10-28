@@ -24,6 +24,26 @@ class UnifiedParserTest {
     private val originalErr = System.err
     private val testResourceBaseFolder = "src/test/resources/"
 
+    companion object {
+        @JvmStatic
+        fun provideSupportedLanguages() = listOf(
+            Arguments.of("bash", ".sh"),
+            Arguments.of("cHeader", ".h"),
+            Arguments.of("cppHeader", ".hpp"),
+            Arguments.of("cpp", ".cpp"),
+            Arguments.of("c", ".c"),
+            Arguments.of("cSharp", ".cs"),
+            Arguments.of("go", ".go"),
+            Arguments.of("java", ".java"),
+            Arguments.of("javascript", ".js"),
+            Arguments.of("kotlin", ".kt"),
+            Arguments.of("php", ".php"),
+            Arguments.of("python", ".py"),
+            Arguments.of("ruby", ".rb"),
+            Arguments.of("typescript", ".ts")
+        )
+    }
+
     @AfterEach
     fun afterTest() {
         unmockkAll()
@@ -52,23 +72,6 @@ class UnifiedParserTest {
 
         return outputStream.toString()
     }
-
-    private fun provideSupportedLanguages() = listOf(
-        Arguments.of("bash", ".sh"),
-        Arguments.of("cHeader", ".h"),
-        Arguments.of("cppHeader", ".hpp"),
-        Arguments.of("cpp", ".cpp"),
-        Arguments.of("c", ".c"),
-        Arguments.of("cSharp", ".cs"),
-        Arguments.of("go", ".go"),
-        Arguments.of("java", ".java"),
-        Arguments.of("javascript", ".js"),
-        Arguments.of("kotlin", ".kt"),
-        Arguments.of("php", ".php"),
-        Arguments.of("python", ".py"),
-        Arguments.of("ruby", ".rb"),
-        Arguments.of("typescript", ".ts")
-    )
 
     @ParameterizedTest
     @MethodSource("provideSupportedLanguages")
@@ -362,7 +365,7 @@ class UnifiedParserTest {
 
         // Assert
         assertThat(result).doesNotContain("ignored.exclude")
-        assertThat(result).doesNotContain("build/")
+        assertThat(result).doesNotContain("build")
         assertThat(result).doesNotContain("Main.kt")
         assertThat(result).contains("NotIgnored.kt")
 

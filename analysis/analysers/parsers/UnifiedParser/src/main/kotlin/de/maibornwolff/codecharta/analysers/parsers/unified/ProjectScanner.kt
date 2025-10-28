@@ -64,7 +64,10 @@ class ProjectScanner(
 
     fun traverseInputProject(verbose: Boolean) {
         runBlocking(Dispatchers.Default) {
-            val parsableFiles = root.walk().filter { isParsableFile(it) }.toList()
+            val parsableFiles = root.walkTopDown()
+                .onEnter { dir -> !shouldSkipDirectory(dir) }
+                .filter { isParsableFile(it) }
+                .toList()
             totalFiles = parsableFiles.size.toLong()
 
             parsableFiles.forEach { file ->
@@ -129,6 +132,11 @@ class ProjectScanner(
             .relativize(Paths.get(fileName).toAbsolutePath())
             .toString()
             .replace('\\', '/')
+    }
+
+    private fun shouldSkipDirectory(dir: File): Boolean {
+        if (!dir.isDirectory) return false
+        return (useGitignore && gitignoreHandler.shouldExclude(dir))
     }
 
     private fun isParsableFile(file: File): Boolean {

@@ -308,6 +308,27 @@ class GitignoreHandlerTest {
         assertThat(handler.shouldExclude(buildDir)).isTrue()
     }
 
+    @Test
+    fun `should exclude files inside directory when pattern ends with slash`() {
+        // Arrange
+        val gitignoreFile = File(rootDir, ".gitignore")
+        gitignoreFile.writeText("build/")
+
+        val handler = GitignoreHandler(rootDir)
+
+        val buildDir = File(rootDir, "build")
+        buildDir.mkdirs()
+        val fileInBuild = File(buildDir, "output.txt")
+        val nestedDir = File(buildDir, "nested")
+        nestedDir.mkdirs()
+        val fileInNested = File(nestedDir, "deep.log")
+
+        // Act & Assert
+        assertThat(handler.shouldExclude(buildDir)).isTrue()
+        assertThat(handler.shouldExclude(fileInBuild)).isTrue()
+        assertThat(handler.shouldExclude(fileInNested)).isTrue()
+    }
+
     // ========== ROOTED PATTERNS ==========
 
     @Test
