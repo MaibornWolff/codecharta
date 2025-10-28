@@ -24,8 +24,6 @@ assertj = "3.27.6"
 junit5 = "5.14.0"
 junit-platform = "1.14.0"
 ktlint = "12.3.0"
-mockito-core = "3.12.4"
-mockito-kotlin = "2.2.0"
 mockk = "1.14.6"
 wiremock = "3.13.1"
 tree-sitter = "0.25.3"
@@ -73,8 +71,6 @@ wiremock = { group = "org.wiremock", name = "wiremock", version.ref = "wiremock"
 json = { group = "org.json", name = "json", version.ref = "json" }
 sonar-java-plugin = { group = "org.sonarsource.java", name = "sonar-java-plugin", version.ref = "sonar-java" }
 jaxb-api = { group = "javax.xml.bind", name = "jaxb-api", version.ref = "jaxb-api" }
-mockito-kotlin = { group = "com.nhaarman.mockitokotlin2", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
-mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito-core" }
 commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.14.0" }
 junit-platform-runner = { group = "org.junit.platform", name = "junit-platform-runner", version.ref = "junit-platform" }
 json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.json.schema", version.ref = "json-schema" }
