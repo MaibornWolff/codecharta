@@ -29,16 +29,21 @@ class RawTextParserTest {
     private val errContent = ByteArrayOutputStream()
     private val originalErr = System.err
 
+    companion object {
+        private const val testResourceBaseFolder = "src/test/resources/"
+
+        @JvmStatic
+        fun provideValidInputFiles(): List<Arguments> {
+            return listOf(
+                Arguments.of("${testResourceBaseFolder}sampleproject"),
+                Arguments.of("${testResourceBaseFolder}sampleproject/tabs.included")
+            )
+        }
+    }
+
     @AfterEach
     fun afterTest() {
         unmockkAll()
-    }
-
-    private fun provideValidInputFiles(): List<Arguments> {
-        return listOf(
-            Arguments.of("src/test/resources/sampleproject"),
-            Arguments.of("src/test/resources/sampleproject/tabs.included")
-        )
     }
 
     private fun executeForOutput(input: String, args: Array<String>): String {
@@ -55,8 +60,8 @@ class RawTextParserTest {
     fun `Should produce correct output when given single file`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject/tabs.included"
-        val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json")
+        val inputFilePath = "${testResourceBaseFolder}sampleproject/tabs.included"
+        val expectedResultFile = File("${testResourceBaseFolder}cc_projects/project_3.cc.json")
 
         // when
         val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
@@ -69,8 +74,8 @@ class RawTextParserTest {
     fun `Should produce correct output when given a folder and specific parameters`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject/"
-        val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
+        val inputFilePath = "${testResourceBaseFolder}sampleproject/"
+        val expectedResultFile = File("${testResourceBaseFolder}cc_projects/project_4.cc.json").absoluteFile
 
         // when
         val result =
@@ -86,9 +91,9 @@ class RawTextParserTest {
     @Test
     fun `Should correctly merge when piped into another project`() {
         // given
-        val pipedProject = "src/test/resources/cc_projects/project_4.cc.json"
-        val partialResult = "src/test/resources/cc_projects/project_3.cc.json"
-        val fileToParse = "src/test/resources/sampleproject/tabs.included"
+        val pipedProject = "${testResourceBaseFolder}cc_projects/project_4.cc.json"
+        val partialResult = "${testResourceBaseFolder}cc_projects/project_3.cc.json"
+        val fileToParse = "${testResourceBaseFolder}sampleproject/tabs.included"
         val input = File(pipedProject).bufferedReader().readLines().joinToString(separator = "\n") { it }
         val partialProject1 = ProjectDeserializer.deserializeProject(File(partialResult).inputStream())
         val partialProject2 = ProjectDeserializer.deserializeProject(File(pipedProject).inputStream())
@@ -117,7 +122,7 @@ class RawTextParserTest {
     @Test
     fun `Should be identified as applicable when given path is a file`() {
         // when
-        val isUsable = RawTextParser().isApplicable("src/test/resources/sampleproject/tabs.included")
+        val isUsable = RawTextParser().isApplicable("${testResourceBaseFolder}sampleproject/tabs.included")
         // then
         Assertions.assertThat(isUsable).isTrue()
     }
@@ -125,8 +130,8 @@ class RawTextParserTest {
     @Test
     fun `Should NOT be identified as applicable when given directory does not contain any source code file `() {
         // given
-        val emptyFolderPath = "src/test/resources/empty"
-        val nonExistentPath = "src/test/resources/this/does/not/exist"
+        val emptyFolderPath = "${testResourceBaseFolder}empty"
+        val nonExistentPath = "${testResourceBaseFolder}this/does/not/exist"
         // Empty String is invalid because File("") generates an empty abstract pathname which does not physically exist
         val emptyString = ""
         val emptyFolder = File(emptyFolderPath)
@@ -172,7 +177,7 @@ class RawTextParserTest {
         every { Logger.error(capture(lambdaSlot)) } returns Unit
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid"))
+        val result = executeForOutput("", arrayOf("${testResourceBaseFolder}sampleproject/", "--file-extensions=invalid"))
 
         // then
         Assertions.assertThat(result).isEmpty()
@@ -195,7 +200,7 @@ class RawTextParserTest {
 
         // when
         val result =
-            executeForOutput("", arrayOf("src/test/resources/sampleproject", "--file-extensions=invalid, included"))
+            executeForOutput("", arrayOf("${testResourceBaseFolder}sampleproject", "--file-extensions=invalid, included"))
 
         // then
         Assertions.assertThat(result).isNotEmpty()
@@ -225,7 +230,7 @@ class RawTextParserTest {
         val result =
             executeForOutput(
                 "",
-                arrayOf("src/test/resources/sampleproject/", "--file-extensions=invalid1, invalid2, also_invalid")
+                arrayOf("${testResourceBaseFolder}sampleproject/", "--file-extensions=invalid1, invalid2, also_invalid")
             )
 
         // then
@@ -243,10 +248,10 @@ class RawTextParserTest {
     @Test
     fun `Should include all metrics when metrics-flag is empty string (default in interactive mode)`() {
         // given
-        val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
+        val expectedResultFile = File("${testResourceBaseFolder}cc_projects/project_3.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.included", "--metrics="))
+        val result = executeForOutput("", arrayOf("${testResourceBaseFolder}sampleproject/tabs.included", "--metrics="))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -255,10 +260,10 @@ class RawTextParserTest {
     @Test
     fun `Should include all files when exclude-regex-flag is empty string (default in interactive mode)`() {
         // given
-        val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
+        val expectedResultFile = File("${testResourceBaseFolder}cc_projects/project_5.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--exclude="))
+        val result = executeForOutput("", arrayOf("${testResourceBaseFolder}sampleproject/", "--exclude="))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -267,10 +272,10 @@ class RawTextParserTest {
     @Test
     fun `Should include all files when file-extensions-flag is empty string (default in interactive mode)`() {
         // given
-        val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
+        val expectedResultFile = File("${testResourceBaseFolder}cc_projects/project_5.cc.json").absoluteFile
 
         // when
-        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--file-extensions="))
+        val result = executeForOutput("", arrayOf("${testResourceBaseFolder}sampleproject/", "--file-extensions="))
 
         // then
         JSONAssert.assertEquals(result, expectedResultFile.readText(), JSONCompareMode.NON_EXTENSIBLE)
@@ -279,7 +284,7 @@ class RawTextParserTest {
     @Test
     fun `Should produce warning logs when given invalid metrics`() {
         // given
-        val inputFilePath = "src/test/resources/sampleproject"
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
         val validMetricName = "IndentationLevel"
         val invalidMetricName = "invalidMetric"
 
@@ -298,9 +303,9 @@ class RawTextParserTest {
     fun `should reuse metrics from base file when checksums match`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject"
-        val baseFilePath = "src/test/resources/cc_projects/project_5.cc.json"
-        val expectedResultFile = File("src/test/resources/cc_projects/project_5.cc.json").absoluteFile
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val baseFilePath = "${testResourceBaseFolder}cc_projects/project_5.cc.json"
+        val expectedResultFile = File("${testResourceBaseFolder}cc_projects/project_5.cc.json").absoluteFile
         System.setErr(PrintStream(errContent))
 
         // when
@@ -319,8 +324,8 @@ class RawTextParserTest {
     fun `should show warning when base file does not exist`() {
         // given
         val pipedProject = ""
-        val inputFilePath = "src/test/resources/sampleproject"
-        val baseFilePath = "src/test/resources/cc_projects/nonexistent.cc.json"
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        val baseFilePath = "${testResourceBaseFolder}cc_projects/nonexistent.cc.json"
         System.setErr(PrintStream(errContent))
 
         // when
@@ -329,6 +334,107 @@ class RawTextParserTest {
         // then
         Assertions.assertThat(errContent.toString()).contains("Base file")
         Assertions.assertThat(errContent.toString()).contains("does not exist, continuing with normal analysis...")
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should exclude files based on gitignore by default`() {
+        // Arrange
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}gitignore-test-project"
+        System.setErr(PrintStream(errContent))
+
+        // Act
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath))
+
+        // Assert
+        Assertions.assertThat(result).contains("Main.kt")
+        Assertions.assertThat(result).contains("NotIgnored.kt")
+        Assertions.assertThat(result).doesNotContain("ignored.exclude")
+        Assertions.assertThat(result).doesNotContain("output.txt")
+        Assertions.assertThat(errContent.toString()).contains("files were excluded by .gitignore rules")
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should include gitignore-excluded files when bypass-gitignore flag is set`() {
+        // Arrange
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}gitignore-test-project"
+        System.setErr(PrintStream(errContent))
+
+        // Act
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "--bypass-gitignore"))
+
+        // Assert
+        Assertions.assertThat(result).contains("Main.kt")
+        Assertions.assertThat(result).contains("NotIgnored.kt")
+        Assertions.assertThat(result).contains("ignored.exclude")
+        Assertions.assertThat(result).contains("output.txt")
+        Assertions.assertThat(errContent.toString()).doesNotContain("files were excluded by .gitignore rules")
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should apply both gitignore and regex exclusions`() {
+        // Arrange
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}gitignore-test-project"
+        val excludePattern = "Main.kt"
+        System.setErr(PrintStream(errContent))
+
+        // Act
+        val result = executeForOutput(pipedProject, arrayOf(inputFilePath, "-e=$excludePattern"))
+
+        // Assert
+        Assertions.assertThat(result).doesNotContain("ignored.exclude")
+        Assertions.assertThat(result).doesNotContain("build")
+        Assertions.assertThat(result).doesNotContain("Main.kt")
+        Assertions.assertThat(result).contains("NotIgnored.kt")
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should warn when no gitignore file exists at root level`() {
+        // Arrange
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}sampleproject"
+        System.setErr(PrintStream(errContent))
+
+        // Act
+        executeForOutput(pipedProject, arrayOf(inputFilePath))
+
+        // Assert
+        Assertions.assertThat(
+            errContent.toString()
+        ).contains("No .gitignore found at root level, excluding common build folders as fallback...")
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should report gitignore statistics in verbose mode`() {
+        // Arrange
+        val pipedProject = ""
+        val inputFilePath = "${testResourceBaseFolder}gitignore-test-project"
+        System.setErr(PrintStream(errContent))
+
+        // Act
+        executeForOutput(pipedProject, arrayOf(inputFilePath, "--verbose"))
+
+        // Assert
+        Assertions.assertThat(errContent.toString()).contains("files were excluded by .gitignore rules")
+        Assertions.assertThat(errContent.toString()).contains("Found .gitignore files at:")
+        Assertions.assertThat(errContent.toString()).contains("- .gitignore")
 
         // clean up
         System.setErr(originalErr)

@@ -41,7 +41,9 @@ class ProjectMetricsCollector(
         val projectMetrics = ProjectMetrics()
 
         runBlocking(Dispatchers.Default) {
-            val files = root.walk().filter { it.isFile }
+            val files = root.walkTopDown()
+                .onEnter { dir -> !isExcludedByGitignore(dir) }
+                .filter { it.isFile && !isExcludedByGitignore(it) }
 
             totalFiles = files.count().toLong()
 
@@ -50,7 +52,6 @@ class ProjectMetricsCollector(
                     val standardizedPath = getStandardizedPath(it)
 
                     if (
-                        !isExcludedByGitignore(it) &&
                         !isPathExcluded(standardizedPath) &&
                         isParsableFileExtension(standardizedPath)
                     ) {

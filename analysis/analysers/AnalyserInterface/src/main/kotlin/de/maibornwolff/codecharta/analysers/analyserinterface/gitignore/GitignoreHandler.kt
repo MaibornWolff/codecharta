@@ -84,7 +84,20 @@ class GitignoreHandler(private val root: File) {
             }
         }
 
+        if (!isIgnored && !file.isDirectory && file.parentFile != null) {
+            isIgnored = isParentDirectoryExcluded(file.parentFile)
+        }
+
         return isIgnored
+    }
+
+    private fun isParentDirectoryExcluded(parentDir: File): Boolean {
+        if (!isFileWithinRoot(parentDir)) return false
+
+        val applicableRules = collectAncestorGitignoreRules(parentDir)
+        if (applicableRules.isEmpty()) return false
+
+        return applyGitignoreRulesHierarchically(parentDir, applicableRules)
     }
 
     private fun getRelativePath(directory: File, file: File): Path {
