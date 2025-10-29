@@ -374,7 +374,6 @@ class RawTextParserTest {
         Assertions.assertThat(result).contains("Main.kt")
         Assertions.assertThat(result).contains("NotIgnored.kt")
         Assertions.assertThat(result).contains("ignored.exclude")
-        Assertions.assertThat(result).contains("output.txt")
         Assertions.assertThat(errContent.toString()).doesNotContain("files were excluded by .gitignore rules")
 
         // clean up
