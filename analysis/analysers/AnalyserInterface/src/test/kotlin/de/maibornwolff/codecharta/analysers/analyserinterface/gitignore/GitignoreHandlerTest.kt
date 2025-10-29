@@ -319,14 +319,10 @@ class GitignoreHandlerTest {
         val buildDir = File(rootDir, "build")
         buildDir.mkdirs()
         val fileInBuild = File(buildDir, "output.txt")
-        val nestedDir = File(buildDir, "nested")
-        nestedDir.mkdirs()
-        val fileInNested = File(nestedDir, "deep.log")
 
         // Act & Assert
         assertThat(handler.shouldExclude(buildDir)).isTrue()
         assertThat(handler.shouldExclude(fileInBuild)).isTrue()
-        assertThat(handler.shouldExclude(fileInNested)).isTrue()
     }
 
     // ========== ROOTED PATTERNS ==========
