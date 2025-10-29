@@ -76,7 +76,7 @@ class RawTextParser(
             "Input invalid file for RawTextParser, stopping execution..."
         }
 
-        val excludePatterns = if (!withoutDefaultExcludes) patternsToExclude + DEFAULT_EXCLUDES else patternsToExclude
+        val excludePatterns = if (!withoutDefaultExcludes) specifiedExcludePatterns + DEFAULT_EXCLUDES else specifiedExcludePatterns
 
         val baseFileNodeMap = loadBaseFileNodes()
         val projectMetrics: ProjectMetrics =

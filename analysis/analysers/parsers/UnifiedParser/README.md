@@ -46,7 +46,8 @@ Some metrics are calculated on a per-function basis rather than per-file. Each o
 |-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
 | `FOLDER or FILE`                          | The project folder or code file to parse. To merge the result with an existing project piped into STDIN, pass a '-' as an additional argument     |
 | `-bf, --base-file=<baseFile>`             | base cc.json file with checksums to skip unchanged files during analysis                                                                          |
-| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                                                                   |
+| `--bypass-gitignore`                      | disable automatic .gitignore-based file exclusion (uses regex-based exclusion of common build folders)                                            |
+| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders (applied in addition to .gitignore patterns)                                      |
 | `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                  |
 | `-h, --help`                              | displays this help and exits                                                                                                                      |
 | `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.') |
@@ -55,9 +56,10 @@ Some metrics are calculated on a per-function basis rather than per-file. Each o
 | `--verbose`                               | displays messages about parsed and ignored files                                                                                                  |
 
 ```
-Usage: ccsh unifiedparser [-h] [-ibf] [-nc] [--verbose] [-bf=<baseFile>]
-                          [-o=<outputFile>] [-e=<patternsToExclude>]...
-                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER..
+Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [-ibf] [-nc] [--verbose]
+                          [-bf=<baseFile>] [-o=<outputFile>]
+                          [-e=<specifiedExcludePatterns>]...
+                          [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
 ```
 
 ## Examples

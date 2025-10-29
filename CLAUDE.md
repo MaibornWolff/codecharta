@@ -233,6 +233,9 @@ Each state slice has dedicated actions, reducers, and selectors. Effects (`state
 
 - Plans act as high-level guidance for implementation
 - Focus on mandatory steps only, avoid excessive detail
+- keep plans simple and concise
+- avoid over-elaboration, detailed sections, or comprehensive documentation style
+- plans should be brief, actionable outlines rather than detailed specifications
 - Use checkable steps (markdown checkboxes) to track progress
 - Update `state` field as work progresses: `todo` → `progress` → `complete`
 
@@ -275,6 +278,11 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 - Based on official Kotlin Coding Conventions
 - Auto-formatted via `./gradlew ktlintFormat`
 - Rules defined in `.editorconfig`
+- **Function syntax**: Use block-body style with braces `{ }` consistently, not expression-body style with `=`
+- **Guard clauses**: Use early returns for error conditions and edge cases to reduce nesting
+- **Magic strings/numbers**: Extract repeated literals to constants in `companion object`
+- **Function organization**: Group related functions with section comments
+- **Parameter naming**: Use consistent, descriptive names across related functions
 
 **Visualization (TypeScript)**:
 - Formatted with BiomeJS
