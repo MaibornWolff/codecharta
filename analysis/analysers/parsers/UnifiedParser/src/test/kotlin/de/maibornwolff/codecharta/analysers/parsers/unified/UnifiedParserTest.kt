@@ -326,7 +326,9 @@ class UnifiedParserTest {
 
         // Assert
         assertThat(result).doesNotContain("ignored.exclude")
-        assertThat(result).doesNotContain("build/")
+        assertThat(result).doesNotContain("excluded-dir/")
+        assertThat(result).doesNotContain("output.kt")
+        assertThat(result).doesNotContain("deep.kt")
         assertThat(errContent.toString()).contains("excluded by .gitignore rules")
 
         // clean up
@@ -365,7 +367,7 @@ class UnifiedParserTest {
 
         // Assert
         assertThat(result).doesNotContain("ignored.exclude")
-        assertThat(result).doesNotContain("build")
+        assertThat(result).doesNotContain("excluded-dir")
         assertThat(result).doesNotContain("Main.kt")
         assertThat(result).contains("NotIgnored.kt")
 

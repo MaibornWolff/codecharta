@@ -236,7 +236,8 @@ class ProjectMetricsCollectorTest {
         Assertions.assertThat(projectMetrics.metricsMap).containsKey("/Main.kt")
         Assertions.assertThat(projectMetrics.metricsMap).containsKey("/NotIgnored.kt")
         Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/ignored.exclude")
-        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/build/output.txt")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/excluded-dir/output.txt")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/excluded-dir/nested/deep.txt")
     }
 
     @Test
@@ -288,7 +289,8 @@ class ProjectMetricsCollectorTest {
         Assertions.assertThat(projectMetrics.metricsMap).containsKey("/Main.kt")
         Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/NotIgnored.kt")
         Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/ignored.exclude")
-        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/build/output.txt")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/excluded-dir/output.txt")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/excluded-dir/nested/deep.txt")
     }
 
     @Test
