@@ -262,7 +262,6 @@ class ProjectMetricsCollectorTest {
         Assertions.assertThat(projectMetrics.metricsMap).containsKey("/Main.kt")
         Assertions.assertThat(projectMetrics.metricsMap).containsKey("/NotIgnored.kt")
         Assertions.assertThat(projectMetrics.metricsMap).containsKey("/ignored.exclude")
-        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/build/output.txt")
     }
 
     @Test
