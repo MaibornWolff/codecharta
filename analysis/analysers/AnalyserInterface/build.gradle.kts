@@ -5,6 +5,10 @@ dependencies {
     implementation(libs.picocli)
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 repositories {
     mavenCentral()
 }
