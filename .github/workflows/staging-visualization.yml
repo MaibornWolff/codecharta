@@ -33,7 +33,7 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=4096"
         working-directory: ./visualization
         run: |
-          npm ci
+          npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
           npm run build
 
       # Get short SHA for tagging
