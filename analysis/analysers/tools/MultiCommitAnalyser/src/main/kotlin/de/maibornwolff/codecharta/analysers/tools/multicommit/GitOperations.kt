@@ -28,7 +28,7 @@ class GitOperations(private val workingDirectory: File) {
     fun validateCommitExists(commit: String): String {
         val result = executeGitCommand(listOf("rev-parse", "--short=7", commit))
         if (result.exitCode != 0) {
-            throw GitException("Commit '$commit' does not exist in the repository")
+            throw GitException("Commit '$commit' does not exist in the repository${formatErrorDetail(result.error)}")
         }
         return result.output.trim()
     }
@@ -40,10 +40,11 @@ class GitOperations(private val workingDirectory: File) {
         }
 
         val headResult = executeGitCommand(listOf("rev-parse", "HEAD"))
-        if (headResult.exitCode != 0) {
-            throw GitException("Failed to get current HEAD state") // TODO: first return in if, then throw in if
+        if (headResult.exitCode == 0) {
+            return headResult.output.trim()
         }
-        return headResult.output.trim()
+
+        throw GitException("Failed to get current HEAD state${formatErrorDetail(headResult.error)}")
     }
 
     fun stashChanges() {
@@ -52,7 +53,7 @@ class GitOperations(private val workingDirectory: File) {
 
         val result = executeGitCommand(listOf("stash", "push", "-u", "-m", stashMessage))
         if (result.exitCode != 0) {
-            throw GitException("Failed to stash changes")
+            throw GitException("Failed to stash changes${formatErrorDetail(result.error)}")
         }
 
         if (!result.output.contains("No local changes to save")) {
@@ -65,10 +66,9 @@ class GitOperations(private val workingDirectory: File) {
         if (stashCreated) {
             val result = executeGitCommand(listOf("stash", "pop"))
             if (result.exitCode != 0) {
-                // TODO: do we want this to be warn or error?
-                Logger.warn { "Failed to restore stash. You may need to manually run 'git stash pop'" }
+                Logger.error { "Failed to restore stash${formatErrorDetail(result.error)}. \nYou may need to manually run 'git stash pop'" }
             } else {
-                Logger.info { "Restored stashed changes" } // TODO: should this be always or only on verbose?
+                Logger.info { "Restored stashed changes" }
                 stashCreated = false
             }
         }
@@ -77,7 +77,7 @@ class GitOperations(private val workingDirectory: File) {
     fun checkoutCommit(commit: String) {
         val result = executeGitCommand(listOf("checkout", commit))
         if (result.exitCode != 0) {
-            throw GitException("Failed to checkout commit '$commit': ${result.error}")
+            throw GitException("Failed to checkout commit '$commit'${formatErrorDetail(result.error)}")
         }
     }
 
@@ -85,7 +85,7 @@ class GitOperations(private val workingDirectory: File) {
         originalGitState?.let { state ->
             val result = executeGitCommand(listOf("checkout", state))
             if (result.exitCode != 0) {
-                throw GitException("Failed to restore original Git state '$state': ${result.error}")
+                throw GitException("Failed to restore original Git state '$state'${formatErrorDetail(result.error)}")
             }
             Logger.info { "Restored original Git state" }
         }
@@ -102,12 +102,7 @@ class GitOperations(private val workingDirectory: File) {
 
     private fun executeGitCommand(args: List<String>): GitCommandResult {
         val command = listOf("git") + args
-        val process = ProcessBuilder(command)
-            .directory(workingDirectory)
-            .redirectErrorStream(false) // TODO: why do we specifically set this?
-
-        val runningProcess = process.start()
-
+        val runningProcess = ProcessBuilder(command).directory(workingDirectory).start()
         val output = runningProcess.inputStream.bufferedReader().readText()
         val error = runningProcess.errorStream.bufferedReader().readText()
 
@@ -126,11 +121,13 @@ class GitOperations(private val workingDirectory: File) {
         )
     }
 
+    private fun formatErrorDetail(error: String): String {
+        return if (error.isNotBlank()) ": ${error.trim()}" else ""
+    }
+
     private data class GitCommandResult(
         val exitCode: Int,
         val output: String,
         val error: String
     )
-
-    class GitException(message: String, cause: Throwable? = null) : Exception(message, cause)
 }

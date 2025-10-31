@@ -156,7 +156,7 @@ Create a **new Tool** called `MultiCommitAnalyser` that orchestrates existing pa
 ## Steps
 
 - [x] Complete Task 1: Create Module Structure
-- [ ] Complete Task 2: Implement GitOperations Utility
+- [x] Complete Task 2: Implement GitOperations Utility
 - [ ] Complete Task 3: Implement ParserExecutor
 - [ ] Complete Task 4: Implement MultiCommitAnalyser Tool
 - [ ] Complete Task 5: Implement Dialog for Interactive Mode

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.tools.multicommit
 
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -9,8 +10,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Path
-
-// TODO: should we mention these tests fail when no git is installed?
 
 class GitOperationsTest {
     @TempDir
@@ -25,16 +24,18 @@ class GitOperationsTest {
         gitOps = GitOperations(workingDir)
     }
 
+    // NOTE: all tests fail if git is not installed
+
     @Test
     fun `should detect Git installation`() {
         // Arrange & Act & Assert
-        gitOps.checkGitInstalled()
+        assertDoesNotThrow { gitOps.checkGitInstalled() }
     }
 
     @Test
     fun `should throw exception when not a Git repository`() {
         // Arrange & Act & Assert
-        val exception = assertThrows(GitOperations.GitException::class.java) {
+        val exception = assertThrows(GitException::class.java) {
             gitOps.checkIsGitRepository()
         }
         assertTrue(exception.message!!.contains("not a Git repository"))
@@ -46,7 +47,7 @@ class GitOperationsTest {
         initializeGitRepo()
 
         // Act & Assert
-        gitOps.checkIsGitRepository()
+        assertDoesNotThrow { gitOps.checkIsGitRepository() }
     }
 
     @Test
@@ -70,7 +71,7 @@ class GitOperationsTest {
         initializeGitRepo()
 
         // Act & Assert
-        val exception = assertThrows(GitOperations.GitException::class.java) {
+        val exception = assertThrows(GitException::class.java) {
             gitOps.validateCommitExists("nonexistent123")
         }
         assertTrue(exception.message!!.contains("does not exist"))
@@ -126,10 +127,8 @@ class GitOperationsTest {
         initializeGitRepo()
         createCommit("test.txt", "initial commit")
 
-        // Act
-        gitOps.stashChanges()
-
-        // Assert
+        // Act & Assert
+        assertDoesNotThrow { gitOps.stashChanges() }
         assertTrue(gitOps.isWorkingDirectoryClean())
     }
 
@@ -172,7 +171,7 @@ class GitOperationsTest {
         createCommit("test.txt", "initial commit")
 
         // Act & Assert
-        val exception = assertThrows(GitOperations.GitException::class.java) {
+        val exception = assertThrows(GitException::class.java) {
             gitOps.checkoutCommit("nonexistent123")
         }
         assertTrue(exception.message!!.contains("Failed to checkout"))
