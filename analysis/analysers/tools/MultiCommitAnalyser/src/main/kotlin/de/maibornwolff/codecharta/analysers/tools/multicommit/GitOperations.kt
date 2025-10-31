@@ -41,7 +41,7 @@ class GitOperations(private val workingDirectory: File) {
 
         val headResult = executeGitCommand(listOf("rev-parse", "HEAD"))
         if (headResult.exitCode != 0) {
-            throw GitException("Failed to get current HEAD state") //TODO: first return in if, then throw in if
+            throw GitException("Failed to get current HEAD state") // TODO: first return in if, then throw in if
         }
         return headResult.output.trim()
     }
@@ -65,9 +65,10 @@ class GitOperations(private val workingDirectory: File) {
         if (stashCreated) {
             val result = executeGitCommand(listOf("stash", "pop"))
             if (result.exitCode != 0) {
-                Logger.warn { "Failed to restore stash. You may need to manually run 'git stash pop'" } //TODO: do we want this to be warn or error?
+                // TODO: do we want this to be warn or error?
+                Logger.warn { "Failed to restore stash. You may need to manually run 'git stash pop'" }
             } else {
-                Logger.info { "Restored stashed changes" } //TODO: should this be always or only on verbose?
+                Logger.info { "Restored stashed changes" } // TODO: should this be always or only on verbose?
                 stashCreated = false
             }
         }
@@ -103,7 +104,7 @@ class GitOperations(private val workingDirectory: File) {
         val command = listOf("git") + args
         val process = ProcessBuilder(command)
             .directory(workingDirectory)
-            .redirectErrorStream(false) //TODO: why do we specifically set this?
+            .redirectErrorStream(false) // TODO: why do we specifically set this?
 
         val runningProcess = process.start()
 
@@ -113,7 +114,9 @@ class GitOperations(private val workingDirectory: File) {
         val completed = runningProcess.waitFor(3, TimeUnit.MINUTES)
         if (!completed) {
             runningProcess.destroyForcibly()
-            throw GitException("Git command timed out after 3 minutes: ${command.joinToString(" ")}") //TODO: should we allow user to set this timeout?
+            throw GitException(
+                "Git command timed out after 3 minutes: ${command.joinToString(" ")}"
+            ) // TODO: should we allow user to set this timeout?
         }
 
         return GitCommandResult(

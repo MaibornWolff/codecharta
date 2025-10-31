@@ -10,6 +10,8 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Path
 
+// TODO: should we mention these tests fail when no git is installed?
+
 class GitOperationsTest {
     @TempDir
     lateinit var tempDir: Path
