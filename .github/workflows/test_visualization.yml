@@ -53,7 +53,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
           name: coverage
           path: ./visualization/dist/
@@ -108,7 +108,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: coverage
           path: ./visualization/dist/
