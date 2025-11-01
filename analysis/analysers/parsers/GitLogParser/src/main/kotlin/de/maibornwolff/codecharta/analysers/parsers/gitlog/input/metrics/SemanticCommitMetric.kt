@@ -2,24 +2,24 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics
 
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
 
-class FeatCommits : Metric {
-    private var featCommitsCount: Long = 0
+class SemanticCommitMetric(private val commitType: SemanticCommitType) : Metric {
+    private var commitCount: Long = 0
 
     override fun description(): String {
-        return "Feat Commits: Number of feature commits (starting with 'feat') for this file."
+        return commitType.description
     }
 
     override fun metricName(): String {
-        return "feat_commits"
+        return commitType.metricName
     }
 
     override fun registerCommit(commit: Commit) {
-        if (SemanticCommitDetector.isFeatCommit(commit.message)) {
-            featCommitsCount++
+        if (commitType.matchPattern.matches(commit.message)) {
+            commitCount++
         }
     }
 
     override fun value(): Number {
-        return featCommitsCount
+        return commitCount
     }
 }

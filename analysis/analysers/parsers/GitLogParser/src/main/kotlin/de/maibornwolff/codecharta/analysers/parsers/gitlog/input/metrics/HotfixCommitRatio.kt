@@ -9,7 +9,7 @@ class HotfixCommitRatio : Metric {
     private var hotfixCommitsCount: Long = 0
 
     override fun description(): String {
-        return "Hotfix Commit Ratio: Ratio of hotfix commits to total commits for this file."
+        return "Hotfix Commit Ratio: Ratio of hotfix commits (containing 'hotfix') to total commits for this file."
     }
 
     override fun metricName(): String {
@@ -23,7 +23,7 @@ class HotfixCommitRatio : Metric {
     override fun registerCommit(commit: Commit) {
         totalCommitsCount++
 
-        if (SemanticCommitDetector.isHotfixCommit(commit.message)) {
+        if (commit.message.contains("hotfix", ignoreCase = true)) {
             hotfixCommitsCount++
         }
     }
