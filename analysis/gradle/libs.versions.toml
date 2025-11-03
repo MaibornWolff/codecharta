@@ -4,6 +4,7 @@ boon = "0.34"
 commons-lang3 = "3.19.0"
 cyclonedx = "2.4.1"
 gson = "2.13.2"
+jackson = "2.18.2"
 jacoco = "0.8.11"
 jersey = "2.47"
 json-schema = "1.14.4"
@@ -59,6 +60,9 @@ juniversalchardet = { group = "com.googlecode.juniversalchardet", name = "junive
 rxjava2 = { group = "io.reactivex.rxjava2", name = "rxjava", version = "2.2.21" }
 jersey-client = { group = "org.glassfish.jersey.core", name = "jersey-client", version.ref = "jersey" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
+jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
+jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jersey-hk2 = { group = "org.glassfish.jersey.inject", name = "jersey-hk2", version.ref = "jersey" }
 javax-activation = { group = "com.sun.activation", name = "javax.activation", version = "1.2.0" }
 wiremock = { group = "org.wiremock", name = "wiremock", version.ref = "wiremock" }
