@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Add MetricThresholdChecker tool for validating code metrics against configurable thresholds in CI/CD pipelines
+  - Validates file-level metrics from UnifiedParser (rloc, complexity, max_complexity_per_function, etc.)
+  - Supports YAML and JSON configuration files
+  - Reports violations sorted by severity with color-coded console output
+  - Exit codes: 0 (pass), 1 (violations), 2 (errors)
 - Add new '--base-file' flag to unifiedparser and rawtextparser [#4270](https://github.com/MaibornWolff/codecharta/pull/4270)
 - UnifiedParser now automatically uses `.gitignore` files for file exclusion [#4254](https://github.com/MaibornWolff/codecharta/issues/4254)
 - RawTextParser now automatically uses `.gitignore` files for file exclusion [#4273](https://github.com/MaibornWolff/codecharta/issues/4273)
