@@ -43,7 +43,7 @@ abstract class CommonAnalyserParameters {
         converter = [(CommaSeparatedStringToListConverter::class)],
         preprocessor = CommaSeparatedParameterPreprocessor::class
     )
-    protected var patternsToExclude: List<String> = listOf()
+    protected var specifiedExcludePatterns: List<String> = listOf()
 
     @CommandLine.Option(
         names = ["-ibf", "--include-build-folders"],
@@ -67,6 +67,12 @@ abstract class CommonAnalyserParameters {
         description = ["base cc.json file with checksums to skip unchanged files during analysis"]
     )
     protected var baseFile: File? = null
+
+    @CommandLine.Option(
+        names = ["--bypass-gitignore"],
+        description = ["bypass .gitignore files and use regex-based exclusion instead (default: false)"]
+    )
+    protected var bypassGitignore = false
 
     protected fun loadBaseFileNodes(): Map<String, Node> {
         if (baseFile == null) {

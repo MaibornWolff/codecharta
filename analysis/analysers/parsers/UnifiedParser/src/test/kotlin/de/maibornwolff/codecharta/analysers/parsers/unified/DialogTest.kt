@@ -45,35 +45,36 @@ class DialogTest {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
+            val useGitignoreCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
             val excludeOrIncludeCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.DOWN)
                 terminal.press(Keys.ENTER)
             }
             val excludeCallback: suspend RunScope.() -> Unit = {
                 terminal.type(exclude)
                 terminal.press(Keys.ENTER)
             }
-            val includeCallback: suspend RunScope.() -> Unit = {
-                terminal.type(include)
+            val limitFileExtensionsCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            val defaultExcludesCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.RIGHT)
+            val includeCallback: suspend RunScope.() -> Unit = {
+                terminal.type(include)
                 terminal.press(Keys.ENTER)
             }
             val verboseCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
-            every { Dialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 compressCallback,
+                useGitignoreCallback,
                 excludeOrIncludeCallback,
                 excludeCallback,
+                limitFileExtensionsCallback,
                 includeCallback,
-                defaultExcludesCallback,
                 verboseCallback
             )
 
@@ -113,25 +114,33 @@ class DialogTest {
                 terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
-            val excludeOrIncludeCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.DOWN)
+            val useGitignoreCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
             val includeBuildCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+            val excludeOrIncludeCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
+                terminal.press(Keys.ENTER)
+            }
+            val limitFileExtensionsCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.RIGHT)
                 terminal.press(Keys.ENTER)
             }
             val verboseCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
-            every { Dialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 compressCallback,
-                excludeOrIncludeCallback,
+                useGitignoreCallback,
                 includeBuildCallback,
+                excludeOrIncludeCallback,
+                limitFileExtensionsCallback,
                 verboseCallback
             )
 
@@ -171,35 +180,36 @@ class DialogTest {
             val compressCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
+            val useGitignoreCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
             val excludeOrIncludeCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.DOWN)
-                terminal.press(Keys.DOWN)
                 terminal.press(Keys.ENTER)
             }
             val excludeCallback: suspend RunScope.() -> Unit = {
                 terminal.type(exclude)
                 terminal.press(Keys.ENTER)
             }
-            val includeCallback: suspend RunScope.() -> Unit = {
-                terminal.type(include)
+            val limitFileExtensionsCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
-            val defaultExcludesCallback: suspend RunScope.() -> Unit = {
-                terminal.press(Keys.RIGHT)
+            val includeCallback: suspend RunScope.() -> Unit = {
+                terminal.type(include)
                 terminal.press(Keys.ENTER)
             }
             val verboseCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
 
-            every { Dialog.Companion.testCallback() } returnsMany listOf(
+            every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
                 outFileCallback,
                 compressCallback,
+                useGitignoreCallback,
                 excludeOrIncludeCallback,
                 excludeCallback,
+                limitFileExtensionsCallback,
                 includeCallback,
-                defaultExcludesCallback,
                 verboseCallback
             )
 

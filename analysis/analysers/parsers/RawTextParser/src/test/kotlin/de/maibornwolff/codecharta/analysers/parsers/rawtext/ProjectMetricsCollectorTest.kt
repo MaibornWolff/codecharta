@@ -13,6 +13,7 @@ class ProjectMetricsCollectorTest {
     private val defaultVerbose = false
     private val defaultMaxIndentLvl = RawTextParser.DEFAULT_INDENT_LVL
     private val defaultTabWidth = RawTextParser.DEFAULT_TAB_WIDTH
+    private val testResourceBaseFolder = "src/test/resources/"
 
     @AfterEach
     fun afterTest() {
@@ -24,7 +25,7 @@ class ProjectMetricsCollectorTest {
         // when
         val projectMetrics =
             ProjectMetricsCollector(
-                File("src/test/resources/sampleproject/tabs.included").absoluteFile,
+                File("${testResourceBaseFolder}sampleproject/tabs.included").absoluteFile,
                 defaultExclude,
                 defaultFileExtensions,
                 defaultMetricNames,
@@ -44,7 +45,7 @@ class ProjectMetricsCollectorTest {
         // when
         val projectMetrics =
             ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
+                File("${testResourceBaseFolder}sampleproject").absoluteFile,
                 defaultExclude,
                 defaultFileExtensions,
                 defaultMetricNames,
@@ -65,7 +66,7 @@ class ProjectMetricsCollectorTest {
         // when
         val projectMetrics =
             ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
+                File("${testResourceBaseFolder}sampleproject").absoluteFile,
                 defaultExclude,
                 defaultFileExtensions,
                 defaultMetricNames,
@@ -83,7 +84,7 @@ class ProjectMetricsCollectorTest {
         // when
         val projectMetrics =
             ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
+                File("${testResourceBaseFolder}sampleproject").absoluteFile,
                 exclude = listOf(".*\\.excluded$", "foobar"),
                 defaultFileExtensions,
                 defaultMetricNames,
@@ -104,7 +105,7 @@ class ProjectMetricsCollectorTest {
         // when
         val projectMetrics =
             ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
+                File("${testResourceBaseFolder}sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("includedtoo"),
                 defaultMetricNames,
@@ -125,7 +126,7 @@ class ProjectMetricsCollectorTest {
         // when
         val projectMetrics =
             ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
+                File("${testResourceBaseFolder}sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("included", "includedtoo"),
                 defaultMetricNames,
@@ -147,7 +148,7 @@ class ProjectMetricsCollectorTest {
         // when
         val projectMetrics =
             ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
+                File("${testResourceBaseFolder}sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("none"),
                 defaultMetricNames,
@@ -165,7 +166,7 @@ class ProjectMetricsCollectorTest {
         // when
         val resultWithoutDot =
             ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
+                File("${testResourceBaseFolder}sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf("included", "includedtoo"),
                 defaultMetricNames,
@@ -175,7 +176,7 @@ class ProjectMetricsCollectorTest {
             ).parseProject()
         val resultWithDot =
             ProjectMetricsCollector(
-                File("src/test/resources/sampleproject").absoluteFile,
+                File("${testResourceBaseFolder}sampleproject").absoluteFile,
                 defaultExclude,
                 fileExtensions = listOf(".included", ".includedtoo"),
                 defaultMetricNames,
@@ -191,7 +192,7 @@ class ProjectMetricsCollectorTest {
     @Test
     fun `Should produce output with empty attributes when given invalid metrics only`() {
         // given
-        val inputPath = "src/test/resources/sampleproject"
+        val inputPath = "${testResourceBaseFolder}sampleproject"
         val inputFile = File(inputPath)
         val invalidMetricName = "invalidMetric"
         val metricNames = listOf(invalidMetricName)
@@ -210,5 +211,160 @@ class ProjectMetricsCollectorTest {
 
         // then
         Assertions.assertThat(projectMetrics.metricsMap.values.stream().allMatch { it.isEmpty() }).isTrue()
+    }
+
+    @Test
+    fun `Should exclude files based on gitignore when useGitignore is true`() {
+        // Arrange
+        val testProjectPath = "${testResourceBaseFolder}gitignore-test-project"
+        val testProjectDir = File(testProjectPath).absoluteFile
+
+        // Act
+        val projectMetrics =
+            ProjectMetricsCollector(
+                testProjectDir,
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth,
+                useGitignore = true
+            ).parseProject()
+
+        // Assert
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/Main.kt")
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/NotIgnored.kt")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/ignored.exclude")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/excluded-dir/output.txt")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/excluded-dir/nested/deep.txt")
+    }
+
+    @Test
+    fun `Should include all files when useGitignore is false`() {
+        // Arrange
+        val testProjectPath = "${testResourceBaseFolder}gitignore-test-project"
+        val testProjectDir = File(testProjectPath).absoluteFile
+
+        // Act
+        val projectMetrics =
+            ProjectMetricsCollector(
+                testProjectDir,
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth,
+                useGitignore = false
+            ).parseProject()
+
+        // Assert
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/Main.kt")
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/NotIgnored.kt")
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/ignored.exclude")
+    }
+
+    @Test
+    fun `Should apply both gitignore and regex exclusions when both are specified`() {
+        // Arrange
+        val testProjectPath = "${testResourceBaseFolder}gitignore-test-project"
+        val testProjectDir = File(testProjectPath).absoluteFile
+        val regexExclude = listOf(".*NotIgnored.*")
+
+        // Act
+        val projectMetrics =
+            ProjectMetricsCollector(
+                testProjectDir,
+                regexExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth,
+                useGitignore = true
+            ).parseProject()
+
+        // Assert
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/Main.kt")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/NotIgnored.kt")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/ignored.exclude")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/excluded-dir/output.txt")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/excluded-dir/nested/deep.txt")
+    }
+
+    @Test
+    fun `Should track gitignore statistics correctly`() {
+        // Arrange
+        val testProjectPath = "${testResourceBaseFolder}gitignore-test-project"
+        val testProjectDir = File(testProjectPath).absoluteFile
+
+        // Act
+        val collector =
+            ProjectMetricsCollector(
+                testProjectDir,
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth,
+                useGitignore = true
+            )
+        collector.parseProject()
+        val (excludedCount, gitignoreFiles) = collector.getGitIgnoreStatistics()
+
+        // Assert
+        Assertions.assertThat(excludedCount).isGreaterThan(0)
+        Assertions.assertThat(gitignoreFiles).isNotEmpty()
+    }
+
+    @Test
+    fun `Should return empty statistics when gitignore is disabled`() {
+        // Arrange
+        val testProjectPath = "${testResourceBaseFolder}gitignore-test-project"
+        val testProjectDir = File(testProjectPath).absoluteFile
+
+        // Act
+        val collector =
+            ProjectMetricsCollector(
+                testProjectDir,
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth,
+                useGitignore = false
+            )
+        collector.parseProject()
+        val (excludedCount, gitignoreFiles) = collector.getGitIgnoreStatistics()
+
+        // Assert
+        Assertions.assertThat(excludedCount).isEqualTo(0)
+        Assertions.assertThat(gitignoreFiles).isEmpty()
+    }
+
+    @Test
+    fun `Should handle project without gitignore file gracefully`() {
+        // Arrange
+        val testProjectPath = "${testResourceBaseFolder}sampleproject"
+        val testProjectDir = File(testProjectPath)
+
+        // Act
+        val projectMetrics =
+            ProjectMetricsCollector(
+                testProjectDir,
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth,
+                useGitignore = true
+            ).parseProject()
+
+        // Assert
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(5)
     }
 }

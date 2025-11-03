@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.IndentationMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.LinesOfCodeMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.Metric
@@ -22,7 +23,8 @@ class ProjectMetricsCollector(
     private val verbose: Boolean,
     private val maxIndentLvl: Int,
     private val tabWidth: Int,
-    private val baseFileNodeMap: Map<String, Node> = emptyMap()
+    private val baseFileNodeMap: Map<String, Node> = emptyMap(),
+    useGitignore: Boolean = true
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -32,12 +34,16 @@ class ProjectMetricsCollector(
     private val progressTracker = ProgressTracker()
     private var excludePatterns = createExcludePatterns()
 
+    private val gitignoreHandler = if (useGitignore) GitignoreHandler(root) else null
+
     fun parseProject(): ProjectMetrics {
         var lastFileName = ""
         val projectMetrics = ProjectMetrics()
 
         runBlocking(Dispatchers.Default) {
-            val files = root.walk().filter { it.isFile }
+            val files = root.walkTopDown()
+                .onEnter { dir -> !isExcludedByGitignore(dir) }
+                .filter { it.isFile && !isExcludedByGitignore(it) }
 
             totalFiles = files.count().toLong()
 
@@ -98,6 +104,14 @@ class ProjectMetricsCollector(
 
     private fun isPathExcluded(path: String): Boolean {
         return exclude.isNotEmpty() && excludePatterns.containsMatchIn(path)
+    }
+
+    private fun isExcludedByGitignore(file: File): Boolean {
+        return gitignoreHandler?.shouldExclude(file) == true
+    }
+
+    fun getGitIgnoreStatistics(): Pair<Int, List<String>> {
+        return gitignoreHandler?.getStatistics() ?: Pair(0, emptyList())
     }
 
     private fun collectMetricsForFile(file: File, standardizedPath: String): FileMetrics {

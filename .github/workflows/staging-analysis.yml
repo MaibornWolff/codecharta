@@ -64,7 +64,7 @@ jobs:
       - name: Publish to npm
         working-directory: ./analysis/node-wrapper
         run: |
-          npm ci
+          npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
           npm run prepare
           npm publish --tag staging
         env:

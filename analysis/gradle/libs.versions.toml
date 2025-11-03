@@ -4,9 +4,7 @@ boon = "0.34"
 commons-lang3 = "3.19.0"
 cyclonedx = "2.4.1"
 gson = "2.13.2"
-jackson = "2.20.0"
 jacoco = "0.8.11"
-jaxb-api = "2.3.1"
 jersey = "2.47"
 json-schema = "1.14.4"
 json = "20250517"
@@ -16,16 +14,13 @@ kotlinx-coroutines = "1.10.2"
 kotter = "1.2.1"
 picocli = "4.7.7"
 slf4j = "2.0.17"
-sonar-java = "6.8.0.23379"
 sonarqube = "7.0.1.6134"
 univocity-parsers = "2.9.1"
 appmattus-crypto = "1.0.2"
 assertj = "3.27.6"
-junit5 = "5.14.0"
-junit-platform = "1.14.0"
+junit5 = "5.14.1"
+junit-platform = "1.14.1"
 ktlint = "12.3.0"
-mockito-core = "3.12.4"
-mockito-kotlin = "2.2.0"
 mockk = "1.14.6"
 wiremock = "3.13.1"
 tree-sitter = "0.25.3"
@@ -64,17 +59,10 @@ juniversalchardet = { group = "com.googlecode.juniversalchardet", name = "junive
 rxjava2 = { group = "io.reactivex.rxjava2", name = "rxjava", version = "2.2.21" }
 jersey-client = { group = "org.glassfish.jersey.core", name = "jersey-client", version.ref = "jersey" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-jackson-base = { group = "com.fasterxml.jackson", name = "jackson-base", version.ref = "jackson" }
-jackson-dataformat-xml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-xml", version.ref = "jackson" }
-jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jersey-hk2 = { group = "org.glassfish.jersey.inject", name = "jersey-hk2", version.ref = "jersey" }
 javax-activation = { group = "com.sun.activation", name = "javax.activation", version = "1.2.0" }
 wiremock = { group = "org.wiremock", name = "wiremock", version.ref = "wiremock" }
 json = { group = "org.json", name = "json", version.ref = "json" }
-sonar-java-plugin = { group = "org.sonarsource.java", name = "sonar-java-plugin", version.ref = "sonar-java" }
-jaxb-api = { group = "javax.xml.bind", name = "jaxb-api", version.ref = "jaxb-api" }
-mockito-kotlin = { group = "com.nhaarman.mockitokotlin2", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
-mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito-core" }
 commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.14.0" }
 junit-platform-runner = { group = "org.junit.platform", name = "junit-platform-runner", version.ref = "junit-platform" }
 json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.json.schema", version.ref = "json-schema" }

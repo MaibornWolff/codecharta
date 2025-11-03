@@ -19,9 +19,11 @@ This parser analyzes code, regardless of the programming language, to generate t
 |-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `FILE or FOLDER`                          | file/project to parseProject                                                                                                                                                                         |
 | `-bf, --base-file=<baseFile>`             | base cc.json file with checksums to skip unchanged files during analysis                                                                                                                             |
-| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders                                                                                                                                      |
+| `--bypass-gitignore`                      | disable automatic .gitignore-based file exclusion (uses regex-based exclusion of common build folders)                                                                                               |
+| `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders (applied in addition to .gitignore patterns)                                                                                         |
 | `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                                                                     |
 | `-h, --help`                              | displays this help and exits                                                                                                                                                                         |
+| `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.')                                                    |
 | `-m, --metrics=metrics`                   | comma-separated list of metrics to be computed (all available metrics are computed if not specified)                                                                                                 |
 | `--max-indentation-level=<maxIndentLvl>`  | maximum Indentation Level (default 10)                                                                                                                                                               |
 | `-nc, --not-compressed`                   | save uncompressed output File                                                                                                                                                                        |
@@ -31,12 +33,13 @@ This parser analyzes code, regardless of the programming language, to generate t
 | `--without-default-excludes`              | ("DEPRECATION WARNING: this flag will soon be disabled and replaced by '--include-build-folders'") include build, target, dist, resources and out folders as well as files/folders starting with '.' |
 
 ```
-Usage: ccsh rawtextparser [-h] [-nc] [--verbose] [--without-default-excludes]
-                          [-bf=<baseFile>]
+Usage: ccsh rawtextparser [-h] [--bypass-gitignore] [-ibf] [-nc] [--verbose]
+                          [--without-default-excludes] [-bf=<baseFile>]
                           [--max-indentation-level=<maxIndentLvl>]
                           [-o=<outputFile>] [--tab-width=<tabWidth>]
-                          [-e=<exclude>]... [-fe=<fileExtensions>]...
-                          [-m=metrics]... FILE or FOLDER
+                          [-e=<specifiedExcludePatterns>]...
+                          [-fe=<fileExtensionsToAnalyse>]... [-m=metrics]...
+                          FILE or FOLDER...
 ```
 
 ## Examples
@@ -53,6 +56,10 @@ ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=Inden
 
 ```
 ccsh rawtextparser foo -o out.cc.json --exclude=*.html --exclude=bar
+```
+
+```
+ccsh rawtextparser foo -o out.cc.json --bypass-gitignore
 ```
 
 If a project is piped into the RawTextParser, the results and the piped project are merged.

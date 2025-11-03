@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.promptConfirm
 import de.maibornwolff.codecharta.dialogProvider.promptDefaultDirectoryAssistedInput
 import de.maibornwolff.codecharta.dialogProvider.promptInput
-import de.maibornwolff.codecharta.dialogProvider.promptList
 
 class Dialog {
     companion object : AnalyserDialogInterface {
@@ -18,14 +17,17 @@ class Dialog {
 
             val isCompressed = outputFileName.isEmpty() || compressedQuestion(session)
 
-            val askExcludeInclude = includeOrExcludeQuestion(session)
+            val useGitignore = useGitignoreQuestion(session)
 
-            val exclude = if (askExcludeInclude == "Only exclude" || askExcludeInclude == "Both") excludeQuestion(session) else ""
+            val includeBuildFolders = if (!useGitignore) includeBuildFolderQuestion(session) else false
 
-            val fileExtensions =
-                if (askExcludeInclude == "Only include" || askExcludeInclude == "Both") includeFileExtensionsQuestion(session) else ""
+            val addCustomExclusions = addCustomExclusionsQuestion(session)
 
-            val includeBuildFolders = includeBuildFolderQuestion(session)
+            val exclude = if (addCustomExclusions) excludeQuestion(session) else ""
+
+            val limitFileExtensions = limitFileExtensionsQuestion(session)
+
+            val fileExtensions = if (limitFileExtensions) includeFileExtensionsQuestion(session) else ""
 
             val verbose = verboseQuestion(session)
 
@@ -36,7 +38,8 @@ class Dialog {
                 "--verbose=${!verbose}",
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
-                if (includeBuildFolders) "--include-build-folders" else null
+                if (includeBuildFolders) "--include-build-folders" else null,
+                if (!useGitignore) "--bypass-gitignore" else null
             )
         }
 
@@ -63,24 +66,40 @@ class Dialog {
             )
         }
 
-        private fun includeOrExcludeQuestion(session: Session): String {
-            return session.promptList(
-                message = "Do you want to exclude files/folders based on regex patterns or limit the analysis to specific file extensions?",
-                choices = listOf(
-                    "Only exclude",
-                    "Only include",
-                    "Both",
-                    "None"
-                ),
+        private fun useGitignoreQuestion(session: Session): Boolean {
+            return session.promptConfirm(
+                message = "Exclude files specified in .gitignore files?",
+                onInputReady = testCallback()
+            )
+        }
+
+        private fun includeBuildFolderQuestion(session: Session): Boolean {
+            return session.promptConfirm(
+                message = "Include build folders (build, target, dist, out) and common resource folders " +
+                    "(e.g. resources, node_modules, files starting with '.')?",
+                onInputReady = testCallback()
+            )
+        }
+
+        private fun addCustomExclusionsQuestion(session: Session): Boolean {
+            return session.promptConfirm(
+                message = "Add custom regex patterns to exclude files/folders?",
                 onInputReady = testCallback()
             )
         }
 
         private fun excludeQuestion(session: Session): String {
             return session.promptInput(
-                message = "Which regex patterns do you want to use to exclude files/folders from the analysis",
-                hint = "regex1, regex2.. (leave empty if you don't want to exclude anything)",
+                message = "Which regex patterns do you want to use to exclude files/folders from the analysis?",
+                hint = "regex1, regex2... (comma-separated)",
                 allowEmptyInput = true,
+                onInputReady = testCallback()
+            )
+        }
+
+        private fun limitFileExtensionsQuestion(session: Session): Boolean {
+            return session.promptConfirm(
+                message = "Limit analysis to specific file extensions?",
                 onInputReady = testCallback()
             )
         }
@@ -90,14 +109,6 @@ class Dialog {
                 message = "Which file extensions do you want to include in the analysis?",
                 hint = "fileType1, fileType2... (leave empty to include all file-extensions)",
                 allowEmptyInput = true,
-                onInputReady = testCallback()
-            )
-        }
-
-        private fun includeBuildFolderQuestion(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Do you want to include build folders (build, target, dist, out) and common resource folders " +
-                    "e.g. resources, node_modules or files/folders starting with '.'?",
                 onInputReady = testCallback()
             )
         }

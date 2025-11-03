@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.model.MutableNode
@@ -22,7 +23,8 @@ class ProjectScanner(
     private val projectBuilder: ProjectBuilder,
     private val excludePatterns: List<String> = listOf(),
     private val includeExtensions: List<String> = listOf(),
-    private val baseFileNodes: Map<String, Node> = emptyMap()
+    private val baseFileNodes: Map<String, Node> = emptyMap(),
+    private val useGitignore: Boolean = true
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -36,12 +38,18 @@ class ProjectScanner(
     private val fileMetrics = ConcurrentHashMap<String, MutableNode>()
     private val excludePatternRegex = excludePatterns.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
+    private val gitignoreHandler = GitignoreHandler(root)
+
     fun foundParsableFiles(): Boolean {
         return fileMetrics.isNotEmpty()
     }
 
     fun getIgnoredFiles(): Pair<Long, Set<String>> {
         return Pair(ignoredFiles, ignoredFileTypes)
+    }
+
+    fun getGitIgnoreStatistics(): Pair<Int, List<String>> {
+        return if (useGitignore) gitignoreHandler.getStatistics() else Pair(0, emptyList())
     }
 
     fun getNotFoundFileExtensions(): Set<String> {
@@ -56,7 +64,10 @@ class ProjectScanner(
 
     fun traverseInputProject(verbose: Boolean) {
         runBlocking(Dispatchers.Default) {
-            val parsableFiles = root.walk().filter { isParsableFile(it) }.toList()
+            val parsableFiles = root.walkTopDown()
+                .onEnter { dir -> !shouldSkipDirectory(dir) }
+                .filter { isParsableFile(it) }
+                .toList()
             totalFiles = parsableFiles.size.toLong()
 
             parsableFiles.forEach { file ->
@@ -123,8 +134,17 @@ class ProjectScanner(
             .replace('\\', '/')
     }
 
+    private fun shouldSkipDirectory(dir: File): Boolean {
+        if (!dir.isDirectory) return false
+        return (useGitignore && gitignoreHandler.shouldExclude(dir))
+    }
+
     private fun isParsableFile(file: File): Boolean {
-        if (!file.isFile || isPathExcluded(file) || !isFileExtensionIncluded(file.extension)) return false
+        if (!file.isFile) return false
+
+        if (useGitignore && gitignoreHandler.shouldExclude(file)) return false
+
+        if (isPathExcluded(file) || !isFileExtensionIncluded(file.extension)) return false
 
         return if (findCollectorForFileType(file.extension) != null) {
             true
