@@ -15,21 +15,14 @@ class SwiftNodeTypes : MetricNodeTypes {
             // catch
             "catch_block",
             // defer
-            "defer_statement"
-        ),
-        nestedNodeTypes = setOf(
-            // logical binary operators
-            NestedNodeType(
-                baseNodeType = "infix_expression",
-                childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||")
-            ),
-            // nil-coalescing operators
-            NestedNodeType(
-                baseNodeType = "infix_expression",
-                childNodeFieldName = "operator",
-                childNodeTypes = setOf("??")
-            )
+            "defer_statement",
+            // nil-coalescing
+            "nil_coalescing_expression",
+            // logical operators
+            "conjunction_expression",
+            "disjunction_expression",
+            // ternary
+            "ternary_expression"
         )
     )
 
@@ -38,10 +31,10 @@ class SwiftNodeTypes : MetricNodeTypes {
             "function_declaration",
             "init_declaration",
             "deinit_declaration",
-            "closure_expression",
-            "getter_effects",
-            "setter_effects",
-            "willSet_didSet_block"
+            "lambda_literal",
+            "subscript_declaration",
+            "computed_getter",
+            "computed_setter"
         )
     )
 
@@ -57,7 +50,8 @@ class SwiftNodeTypes : MetricNodeTypes {
             "function_declaration",
             "init_declaration",
             "deinit_declaration",
-            "closure_expression"
+            "computed_getter",
+            "computed_setter"
         )
     )
 
