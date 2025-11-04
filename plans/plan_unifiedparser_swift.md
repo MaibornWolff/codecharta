@@ -1,7 +1,7 @@
 ---
 name: Add Swift Language Support to UnifiedParser
 issue: #4335
-state: todo
+state: complete
 version: 1.0
 ---
 
@@ -114,15 +114,15 @@ Review and update the guide in the README to reflect the actual implementation s
 
 ## Steps
 
-- [ ] Complete Task 1: Add tree-sitter-swift dependency to libs.versions.toml and build.gradle.kts
-- [ ] Complete Task 2: Create SwiftNodeTypes class with all required node type definitions
-- [ ] Complete Task 3: Create SwiftCollector class
-- [ ] Complete Task 4: Add Swift to FileExtension enum
-- [ ] Complete Task 5: Register SwiftCollector in AvailableCollectors enum
-- [ ] Complete Task 6: Create test sample file and comprehensive SwiftCollectorTest
-- [ ] Complete Task 7: Update README.md documentation
-- [ ] Complete Task 8: Run and verify all tests pass
-- [ ] Complete Task 9: Update "Adding a New Language" guide in README.md
+- [x] Complete Task 1: Add tree-sitter-swift dependency to libs.versions.toml and build.gradle.kts
+- [x] Complete Task 2: Create SwiftNodeTypes class with all required node type definitions
+- [x] Complete Task 3: Create SwiftCollector class
+- [x] Complete Task 4: Add Swift to FileExtension enum
+- [x] Complete Task 5: Register SwiftCollector in AvailableCollectors enum
+- [x] Complete Task 6: Create test sample file and comprehensive SwiftCollectorTest
+- [x] Complete Task 7: Update README.md documentation
+- [x] Complete Task 8: Run and verify all tests pass
+- [x] Complete Task 9: Update "Adding a New Language" guide in README.md
 
 ## Review Feedback Addressed
 
