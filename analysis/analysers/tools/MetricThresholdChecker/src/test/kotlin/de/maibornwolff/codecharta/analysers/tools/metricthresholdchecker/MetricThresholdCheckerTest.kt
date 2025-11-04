@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.PrintStream
 
 class MetricThresholdCheckerTest {
@@ -57,7 +56,8 @@ class MetricThresholdCheckerTest {
         val errorStream = ByteArrayOutputStream()
         val args = arrayOf(
             "$resourcePath/sample-code",
-            "--config", "$resourcePath/test-config-pass.json"
+            "--config",
+            "$resourcePath/test-config-pass.json"
         )
 
         // Act
@@ -83,8 +83,10 @@ class MetricThresholdCheckerTest {
         val errorStream = ByteArrayOutputStream()
         val args = arrayOf(
             "$resourcePath/sample-code",
-            "--config", "$resourcePath/test-config-pass.json",
-            "--exclude", ".*Complex.*"
+            "--config",
+            "$resourcePath/test-config-pass.json",
+            "--exclude",
+            ".*Complex.*"
         )
 
         // Act
@@ -104,10 +106,13 @@ class MetricThresholdCheckerTest {
         // Arrange
         val outputStream = ByteArrayOutputStream()
         val errorStream = ByteArrayOutputStream()
+        // Only parse .java files
         val args = arrayOf(
             "$resourcePath/sample-code",
-            "--config", "$resourcePath/test-config-pass.json",
-            "--file-extensions", "java"  // Only parse .java files
+            "--config",
+            "$resourcePath/test-config-pass.json",
+            "--file-extensions",
+            "java"
         )
 
         // Act
@@ -129,7 +134,8 @@ class MetricThresholdCheckerTest {
         val errorStream = ByteArrayOutputStream()
         val args = arrayOf(
             "$resourcePath/sample-code",
-            "--config", "$resourcePath/test-config-pass.json",
+            "--config",
+            "$resourcePath/test-config-pass.json",
             "--verbose"
         )
 
@@ -152,7 +158,8 @@ class MetricThresholdCheckerTest {
         val errorStream = ByteArrayOutputStream()
         val args = arrayOf(
             "$resourcePath/sample-code",
-            "--config", "$resourcePath/test-config-pass.json",
+            "--config",
+            "$resourcePath/test-config-pass.json",
             "--bypass-gitignore"
         )
 
@@ -212,10 +219,13 @@ class MetricThresholdCheckerTest {
         val outputStream = ByteArrayOutputStream()
         val errorStream = ByteArrayOutputStream()
         // Use file extensions filter to exclude all .kt files, making it effectively empty
+        // No .cpp files in sample-code
         val args = arrayOf(
             "$resourcePath/sample-code",
-            "--config", "$resourcePath/test-config-pass.json",
-            "--file-extensions", "cpp"  // No .cpp files in sample-code
+            "--config",
+            "$resourcePath/test-config-pass.json",
+            "--file-extensions",
+            "cpp"
         )
 
         // Act
@@ -237,7 +247,8 @@ class MetricThresholdCheckerTest {
         val errorStream = ByteArrayOutputStream()
         val args = arrayOf(
             "$resourcePath/sample-code/SimpleFile.kt",
-            "--config", "$resourcePath/test-config-pass.json"
+            "--config",
+            "$resourcePath/test-config-pass.json"
         )
 
         // Act
@@ -259,8 +270,10 @@ class MetricThresholdCheckerTest {
         val errorStream = ByteArrayOutputStream()
         val args = arrayOf(
             "$resourcePath/sample-code",
-            "--config", "$resourcePath/test-config-pass.json",
-            "--exclude", ".*Simple.*,.*Complex.*"
+            "--config",
+            "$resourcePath/test-config-pass.json",
+            "--exclude",
+            ".*Simple.*,.*Complex.*"
         )
 
         // Act
@@ -282,8 +295,10 @@ class MetricThresholdCheckerTest {
         val errorStream = ByteArrayOutputStream()
         val args = arrayOf(
             "$resourcePath/sample-code",
-            "--config", "$resourcePath/test-config-pass.json",
-            "--file-extensions", "kt,java,scala"
+            "--config",
+            "$resourcePath/test-config-pass.json",
+            "--file-extensions",
+            "kt,java,scala"
         )
 
         // Act
