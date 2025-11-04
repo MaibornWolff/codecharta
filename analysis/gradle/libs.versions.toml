@@ -35,6 +35,7 @@ tree-sitter-python = "0.23.4"
 tree-sitter-go = "0.23.3"
 tree-sitter-php = "0.23.11"
 tree-sitter-ruby = "0.23.1"
+tree-sitter-swift = "0.5.0"
 tree-sitter-bash = "0.23.3"
 
 [libraries]
@@ -78,6 +79,7 @@ treesitter-python = { group = "io.github.bonede", name = "tree-sitter-python", v
 treesitter-go = { group = "io.github.bonede", name = "tree-sitter-go", version.ref = "tree-sitter-go"}
 treesitter-php = { group = "io.github.bonede", name = "tree-sitter-php", version.ref = "tree-sitter-php"}
 treesitter-ruby = { group = "io.github.bonede", name = "tree-sitter-ruby", version.ref = "tree-sitter-ruby"}
+treesitter-swift = { group = "io.github.bonede", name = "tree-sitter-swift", version.ref = "tree-sitter-swift"}
 treesitter-bash = { group = "io.github.bonede", name = "tree-sitter-bash", version.ref = "tree-sitter-bash"}
 appmattus-crypto = { group = "com.appmattus.crypto", name = "cryptohash", version.ref = "appmattus-crypto"}
 
