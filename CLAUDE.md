@@ -283,6 +283,7 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 - **Magic strings/numbers**: Extract repeated literals to constants in `companion object`
 - **Function organization**: Group related functions with section comments
 - **Parameter naming**: Use consistent, descriptive names across related functions
+- **Exceptions**: Always create exception classes in their own separate files
 
 **Visualization (TypeScript)**:
 - Formatted with BiomeJS

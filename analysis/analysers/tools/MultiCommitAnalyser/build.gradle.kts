@@ -9,6 +9,7 @@ dependencies {
 
     testImplementation(libs.kotlin.test)
     testImplementation(libs.junit.jupiter.api)
+    testImplementation(project(":ccsh"))
 
     testRuntimeOnly(libs.kotlin.reflect)
 }
