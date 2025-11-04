@@ -29,6 +29,7 @@ CodeCharta. It generates either a cc.json or a csv file.
 | Go         | .go                                    |
 | PHP        | .php                                   |
 | Ruby       | .rb                                    |
+| Swift      | .swift                                 |
 | Bash       | .sh                                    |
 
 ## Supported Metrics
