@@ -1,0 +1,6 @@
+file_metrics:
+  rloc:
+    max: 500
+  mcc:
+    min: 10
+    max: 100
