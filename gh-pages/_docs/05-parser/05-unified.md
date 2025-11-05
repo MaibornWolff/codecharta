@@ -208,6 +208,14 @@ contribute to complexity:
 - **Functions**: `function_definition`
 - **Logical operators**: `&&`, `||` in binary expressions
 
+#### Swift (.swift)
+
+- **Control flow**: `if_statement`, `guard_statement`, `for_statement`, `while_statement`, `repeat_while_statement`, `switch_entry`,
+  `catch_block`, `defer_statement`, `nil_coalescing_expression`, `ternary_expression`, `willset_clause`, `didset_clause`
+- **Functions**: `function_declaration`, `init_declaration`, `deinit_declaration`, `lambda_literal`, `subscript_declaration`,
+  `computed_getter`, `computed_setter`
+- **Logical operators**: `conjunction_expression`, `disjunction_expression`
+
 ### Comment Lines
 
 Comment lines are counted based on language-specific comment syntax:
@@ -221,6 +229,7 @@ Comment lines are counted based on language-specific comment syntax:
 - **Go**: `comment`
 - **PHP**: `comment`
 - **Ruby**: `comment`
+- **Swift**: `comment`, `multiline_comment`
 - **Bash**: `comment`
 
 ### Number of Functions
@@ -285,6 +294,10 @@ Function counting identifies different types of function definitions per languag
 #### Bash (.sh)
 
 - **Functions**: `function_definition`
+
+#### Swift (.swift)
+
+- **Functions**: `function_declaration`, `init_declaration`, `deinit_declaration`, `computed_getter`, `computed_setter`
 
 ### Lines of Code (LOC)
 
