@@ -1,5 +1,5 @@
 {
-  "checksum": "13c12e696c950d313d445b8007248871",
+  "checksum": "944f829860f830ab384719ef2e52fd86",
   "data": {
     "projectName": "",
     "nodes": [
@@ -30,7 +30,9 @@
               "max_rloc_per_function": 10.0,
               "min_rloc_per_function": 1.0,
               "mean_rloc_per_function": 4.67,
-              "median_rloc_per_function": 3.0
+              "median_rloc_per_function": 3.0,
+              "long_method": 0.0,
+              "long_parameter_list": 0.0
             },
             "link": "",
             "children": [],
@@ -231,6 +233,28 @@
       "median_rloc_per_function": {
         "title": "Median real lines of code in a function",
         "description": "The median number of real lines of code in a function of this file.",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "long_method": {
+        "title": "Long Method",
+        "description": "Number of functions with more than 10 real lines of code (rloc)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "long_parameter_list": {
+        "title": "Long Parameter List",
+        "description": "Number of functions with more than 4 parameters",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
