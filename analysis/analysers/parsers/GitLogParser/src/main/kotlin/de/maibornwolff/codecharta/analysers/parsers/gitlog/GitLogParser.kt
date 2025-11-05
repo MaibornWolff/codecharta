@@ -92,6 +92,7 @@ class GitLogParser(
                     "docs_commits",
                     "style_commits",
                     "refactor_commits",
+                    "hotfix_commits",
                     "test_commits",
                     "semantic_commit_ratio",
                     "hotfix_commit_ratio"

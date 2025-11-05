@@ -3,10 +3,10 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
 
 class HotfixCommits : Metric {
-    private var hotfixCommitsCount: Long = 0
+    private var count: Long = 0
 
     override fun description(): String {
-        return "Hotfix Commits: Number of hotfix commits (containing 'hotfix' keyword) for this file."
+        return "Hotfix Commits: Number of hotfix commits (containing 'hotfix') for this file."
     }
 
     override fun metricName(): String {
@@ -14,12 +14,12 @@ class HotfixCommits : Metric {
     }
 
     override fun registerCommit(commit: Commit) {
-        if (SemanticCommitDetector.isHotfixCommit(commit.message)) {
-            hotfixCommitsCount++
+        if (commit.message.contains("hotfix", ignoreCase = true)) {
+            count++
         }
     }
 
     override fun value(): Number {
-        return hotfixCommitsCount
+        return count
     }
 }
