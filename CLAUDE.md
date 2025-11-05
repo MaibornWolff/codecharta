@@ -238,6 +238,7 @@ Each state slice has dedicated actions, reducers, and selectors. Effects (`state
 - plans should be brief, actionable outlines rather than detailed specifications
 - Use checkable steps (markdown checkboxes) to track progress
 - Update `state` field as work progresses: `todo` → `progress` → `complete`
+- Always use the AskUserQuestion tool to clarify ambiguous requirements before finalizing the plan
 
 ### Branching Strategy
 
