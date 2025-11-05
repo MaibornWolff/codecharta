@@ -22,7 +22,10 @@ class SwiftNodeTypes : MetricNodeTypes {
             "conjunction_expression",
             "disjunction_expression",
             // ternary
-            "ternary_expression"
+            "ternary_expression",
+            // property observers
+            "willset_clause",
+            "didset_clause"
         )
     )
 
