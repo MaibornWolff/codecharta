@@ -302,6 +302,8 @@ class SwiftCollectorTest {
              * spanning multiple lines
              */
             // Another comment
+
+            /// doc comment
         """.trimIndent()
         val input = createTestFile(fileContent)
 
@@ -309,7 +311,7 @@ class SwiftCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // Assert
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_LINES.metricName]).isEqualTo(6.0)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_LINES.metricName]).isEqualTo(7.0)
     }
 
     @Test
