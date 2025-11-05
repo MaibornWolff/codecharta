@@ -1,5 +1,5 @@
 {
-  "checksum": "8532fc3a1ad0f026e1247637a843e678",
+  "checksum": "e0c36864bd49131d4d1db27ac7d894f4",
   "data": {
     "projectName": "",
     "nodes": [
@@ -13,8 +13,8 @@
             "name": "swiftSample.swift",
             "type": "File",
             "attributes": {
-              "complexity": 31.0,
-              "logic_complexity": 14.0,
+              "complexity": 33.0,
+              "logic_complexity": 16.0,
               "comment_lines": 22.0,
               "number_of_functions": 13.0,
               "rloc": 104.0,
