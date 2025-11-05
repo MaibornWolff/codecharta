@@ -185,6 +185,28 @@ class SwiftCollectorTest {
     }
 
     @Test
+    fun `should count willSet and didSet property observers for complexity`() {
+        // Arrange
+        val fileContent = """
+            var value: Int = 0 {
+                willSet {
+                    print("About to set value")
+                }
+                didSet {
+                    print("Value was set")
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
+    }
+
+    @Test
     fun `should not count optional chaining for complexity`() {
         // Arrange
         val fileContent = """let result = object?.property?.method()"""
