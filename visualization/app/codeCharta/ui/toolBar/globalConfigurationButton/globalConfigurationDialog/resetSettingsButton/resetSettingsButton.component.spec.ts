@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { State, Store } from "@ngrx/store"
+import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
