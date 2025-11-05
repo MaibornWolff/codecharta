@@ -87,14 +87,14 @@ jobs:
 
       # Upload build artifacts for other jobs
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build-artifacts
           path: |
             visualization/dist/packages
 
       - name: Upload Bundled Angular Application
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: angular-build
           path: |
@@ -112,7 +112,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: build-artifacts
           path: visualization/dist/packages
@@ -152,7 +152,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: angular-build
           path: visualization/dist/bundler/browser
@@ -197,7 +197,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: angular-build
           path: visualization/dist/bundler/browser
