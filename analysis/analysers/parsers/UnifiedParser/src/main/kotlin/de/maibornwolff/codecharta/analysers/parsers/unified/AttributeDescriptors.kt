@@ -129,6 +129,20 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             link = ghLink,
             direction = -1,
             analyzers = analyzerName
+        ),
+        "long_method" to AttributeDescriptor(
+            title = "Long Method",
+            description = "Number of functions with more than 10 real lines of code (rloc)",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "long_parameter_list" to AttributeDescriptor(
+            title = "Long Parameter List",
+            description = "Number of functions with more than 4 parameters",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
         )
     )
 }
