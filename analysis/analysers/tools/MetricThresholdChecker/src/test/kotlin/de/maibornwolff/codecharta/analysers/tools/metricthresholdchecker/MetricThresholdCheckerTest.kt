@@ -57,7 +57,7 @@ class MetricThresholdCheckerTest {
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
-            "$resourcePath/test-config-pass.json"
+            "$resourcePath/config/test-config-pass.json"
         )
 
         // Act
@@ -84,7 +84,7 @@ class MetricThresholdCheckerTest {
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
-            "$resourcePath/test-config-pass.json",
+            "$resourcePath/config/test-config-pass.json",
             "--exclude",
             ".*Complex.*"
         )
@@ -110,7 +110,7 @@ class MetricThresholdCheckerTest {
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
-            "$resourcePath/test-config-pass.json",
+            "$resourcePath/config/test-config-pass.json",
             "--file-extensions",
             "java"
         )
@@ -135,7 +135,7 @@ class MetricThresholdCheckerTest {
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
-            "$resourcePath/test-config-pass.json",
+            "$resourcePath/config/test-config-pass.json",
             "--verbose"
         )
 
@@ -159,7 +159,7 @@ class MetricThresholdCheckerTest {
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
-            "$resourcePath/test-config-pass.json",
+            "$resourcePath/config/test-config-pass.json",
             "--bypass-gitignore"
         )
 
@@ -223,7 +223,7 @@ class MetricThresholdCheckerTest {
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
-            "$resourcePath/test-config-pass.json",
+            "$resourcePath/config/test-config-pass.json",
             "--file-extensions",
             "cpp"
         )
@@ -248,7 +248,7 @@ class MetricThresholdCheckerTest {
         val args = arrayOf(
             "$resourcePath/sample-code/SimpleFile.kt",
             "--config",
-            "$resourcePath/test-config-pass.json"
+            "$resourcePath/config/test-config-pass.json"
         )
 
         // Act
@@ -271,7 +271,7 @@ class MetricThresholdCheckerTest {
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
-            "$resourcePath/test-config-pass.json",
+            "$resourcePath/config/test-config-pass.json",
             "--exclude",
             ".*Simple.*,.*Complex.*"
         )
@@ -296,7 +296,7 @@ class MetricThresholdCheckerTest {
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
-            "$resourcePath/test-config-pass.json",
+            "$resourcePath/config/test-config-pass.json",
             "--file-extensions",
             "kt,java,scala"
         )

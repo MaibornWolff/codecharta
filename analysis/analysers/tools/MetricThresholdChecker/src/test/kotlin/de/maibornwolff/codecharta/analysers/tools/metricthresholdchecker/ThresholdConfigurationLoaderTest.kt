@@ -11,7 +11,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should load valid JSON configuration`() {
         // Arrange
-        val configFile = File("$resourcePath/valid-config.json")
+        val configFile = File("$resourcePath/config/valid-config.json")
 
         // Act
         val config = ThresholdConfigurationLoader.load(configFile)
@@ -27,7 +27,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should load valid YAML configuration with yml extension`() {
         // Arrange
-        val configFile = File("$resourcePath/valid-config.yml")
+        val configFile = File("$resourcePath/config/valid-config.yml")
 
         // Act
         val config = ThresholdConfigurationLoader.load(configFile)
@@ -41,7 +41,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should load valid YAML configuration with yaml extension`() {
         // Arrange
-        val configFile = File("$resourcePath/valid-config.yaml")
+        val configFile = File("$resourcePath/config/valid-config.yaml")
 
         // Act
         val config = ThresholdConfigurationLoader.load(configFile)
@@ -55,7 +55,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should load configuration with only min thresholds`() {
         // Arrange
-        val configFile = File("$resourcePath/only-min.json")
+        val configFile = File("$resourcePath/config/only-min.json")
 
         // Act
         val config = ThresholdConfigurationLoader.load(configFile)
@@ -69,7 +69,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should load configuration with empty metrics map`() {
         // Arrange
-        val configFile = File("$resourcePath/empty-metrics.json")
+        val configFile = File("$resourcePath/config/empty-metrics.json")
 
         // Act
         val config = ThresholdConfigurationLoader.load(configFile)
@@ -81,7 +81,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should load configuration with decimal thresholds`() {
         // Arrange
-        val configFile = File("$resourcePath/decimal-thresholds.json")
+        val configFile = File("$resourcePath/config/decimal-thresholds.json")
 
         // Act
         val config = ThresholdConfigurationLoader.load(configFile)
@@ -118,7 +118,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should throw exception for invalid JSON syntax`() {
         // Arrange
-        val configFile = File("$resourcePath/invalid-json.json")
+        val configFile = File("$resourcePath/config-invalid/invalid-json.json")
 
         // Act & Assert
         assertThatThrownBy {
@@ -129,7 +129,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should throw exception for invalid YAML syntax`() {
         // Arrange
-        val configFile = File("$resourcePath/invalid-yaml.yml")
+        val configFile = File("$resourcePath/config-invalid/invalid-yaml.yml")
 
         // Act & Assert
         assertThatThrownBy {
@@ -140,7 +140,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should throw exception when threshold has neither min nor max`() {
         // Arrange
-        val configFile = File("$resourcePath/neither-min-nor-max.json")
+        val configFile = File("$resourcePath/config-invalid/neither-min-nor-max.json")
 
         // Act & Assert
         assertThatThrownBy {
@@ -152,7 +152,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should throw exception for non-numeric threshold values`() {
         // Arrange
-        val configFile = File("$resourcePath/non-numeric-values.json")
+        val configFile = File("$resourcePath/config-invalid/non-numeric-values.json")
 
         // Act & Assert
         assertThatThrownBy {
@@ -163,7 +163,7 @@ class ThresholdConfigurationLoaderTest {
     @Test
     fun `should handle missing file_metrics key with empty map`() {
         // Arrange
-        val configFile = File("$resourcePath/missing-file-metrics.json")
+        val configFile = File("$resourcePath/config-invalid/missing-file-metrics.json")
 
         // Act
         val config = ThresholdConfigurationLoader.load(configFile)
