@@ -34,6 +34,7 @@ This parser specializes in tracking file changes across different file-versions 
 | `style_commits`                 | Number of commits starting with 'style' for this file.            |
 | `refactor_commits`              | Number of commits starting with 'refactor' for this file.         |
 | `test_commits`                  | Number of commits starting with 'test' for this file.             |
+| `hotfix_commits`                  | Number of commits containing the word 'hotfix' for this file.             |
 | `hotfix_commit_ratio`           | Ratio of semantic commits (which start with feat, fix, docs, style, refactor or test) to total commits for this file.             |
 | `semantic_commit_ratio`         | Ratio of hotfix commits (containing 'hotfix' keyword) to total commits for this file             |
 
