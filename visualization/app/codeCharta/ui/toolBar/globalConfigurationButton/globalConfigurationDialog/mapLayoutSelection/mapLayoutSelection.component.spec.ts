@@ -1,11 +1,7 @@
-import { HarnessLoader } from "@angular/cdk/testing"
-import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { MatInputHarness } from "@angular/material/input/testing"
-import { MatSelectHarness } from "@angular/material/select/testing"
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { LayoutAlgorithm } from "../../../../../codeCharta.model"
 import { setLayoutAlgorithm } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { layoutAlgorithmSelector } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
@@ -14,16 +10,15 @@ import { maxTreeMapFilesSelector } from "../../../../../state/store/appSettings/
 import { getLastAction } from "../../../../../util/testUtils/store.utils"
 import { MapLayoutSelectionComponent } from "./mapLayoutSelection.component"
 
-let loader: HarnessLoader
 let fixture: ComponentFixture<MapLayoutSelectionComponent>
 
 describe("MapLayoutSelectionComponent", () => {
     let store: MockStore
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [MapLayoutSelectionComponent],
             providers: [
-                provideAnimationsAsync(),
                 provideMockStore({
                     selectors: [
                         { selector: layoutAlgorithmSelector, value: LayoutAlgorithm.SquarifiedTreeMap },
@@ -33,37 +28,71 @@ describe("MapLayoutSelectionComponent", () => {
             ]
         }).compileComponents()
         fixture = TestBed.createComponent(MapLayoutSelectionComponent)
-        loader = TestbedHarnessEnvironment.loader(fixture)
         store = TestBed.inject(MockStore)
+        fixture.detectChanges()
     })
 
     it("should change map layout selection", async () => {
-        const select = await loader.getHarness(MatSelectHarness)
-        expect(await select.getValueText()).toBe("Squarified TreeMap")
+        // Arrange
+        const selectElement = screen.getByRole("combobox", { name: /map layout/i }) as HTMLSelectElement
+        expect(selectElement.value).toBe("Squarified TreeMap")
 
-        await select.open()
-        await select.clickOptions({ text: "StreetMap" })
+        // Act
+        await userEvent.selectOptions(selectElement, "StreetMap")
 
+        // Assert
         expect(await getLastAction(store)).toEqual(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
     })
 
-    it("should not display max tree map files slider when layout selection is NOT 'TreeMapStreet'", async () => {
-        await loader.getHarness(MatSelectHarness)
+    it("should not display max tree map files slider when layout selection is NOT 'TreeMapStreet'", () => {
+        // Arrange & Act
+        fixture.detectChanges()
+
+        // Assert
         expect(screen.queryByText("Maximum TreeMap Files")).toBe(null)
     })
 
     it("should display max tree map files slider when layout selection is 'TreeMapStreet'", async () => {
+        // Arrange
         store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
         store.refreshState()
         fixture.detectChanges()
-        const select = await loader.getHarness(MatSelectHarness)
-        expect(await select.getValueText()).toBe("TreeMapStreet")
+
+        const selectElement = screen.getByRole("combobox", { name: /map layout/i }) as HTMLSelectElement
+        expect(selectElement.value).toBe("TreeMapStreet")
         expect(screen.queryByText("Maximum TreeMap Files")).not.toBe(null)
 
-        const input = await loader.getHarness(MatInputHarness)
-        expect(await input.getValue()).toBe("100")
+        // Act
+        const input = screen.getByRole("spinbutton") as HTMLInputElement
+        await userEvent.clear(input)
+        await userEvent.type(input, "42")
 
-        await input.setValue("42")
+        // Wait for debounce (400ms)
+        await new Promise(resolve => setTimeout(resolve, 450))
+
+        // Assert
         expect(await getLastAction(store)).toEqual(setMaxTreeMapFiles({ value: 42 }))
+    })
+
+    it("should update max tree map files when range slider is moved", async () => {
+        // Arrange
+        store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
+        store.overrideSelector(maxTreeMapFilesSelector, 100)
+        store.refreshState()
+        fixture.detectChanges()
+
+        // Act
+        const rangeInput = screen.getByRole("slider") as HTMLInputElement
+        expect(rangeInput.value).toBe("100")
+
+        // Change the range slider value by directly setting it and triggering input event
+        rangeInput.value = "250"
+        rangeInput.dispatchEvent(new Event("input", { bubbles: true }))
+
+        // Wait for debounce (400ms)
+        await new Promise(resolve => setTimeout(resolve, 450))
+
+        // Assert
+        expect(await getLastAction(store)).toEqual(setMaxTreeMapFiles({ value: 250 }))
     })
 })
