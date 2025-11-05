@@ -1,7 +1,7 @@
 ---
 name: Code Smell Detection in UnifiedParser
 issue: #4315
-state: todo
+state: progress
 version: 1.0
 ---
 
@@ -44,31 +44,33 @@ Add descriptors in `AttributeDescriptors.kt`:
 
 ### 4. Write Unit Tests
 
-Create unit tests for the code smell detection logic:
+Create unit tests for the code smell detection logic in `CodeSmellsTest.kt`:
 - Test file with no code smells (all functions clean)
 - Test file with only long methods
 - Test file with only long parameter lists
 - Test file with both code smells present
 - Test edge cases (exactly 10 rloc, exactly 4 parameters - should NOT trigger)
+- Test multiple functions with code smells
+- Test that comments are ignored when counting rloc
 
-**Context**: Follow TDD workflow and Arrange-Act-Assert pattern with comments.
+**Context**: Follow TDD workflow and Arrange-Act-Assert pattern with comments. Test file should be located at `unified/CodeSmellsTest.kt` (same level as UnifiedParserTest) since code smells are a language-agnostic feature.
 
-### 5. Write Integration Tests
+### 5. Update Golden Test Files
 
-Add golden tests to verify end-to-end functionality:
-- Create sample source code files with various code smells
-- Run UnifiedParser and verify output cc.json contains correct code smell counts
-- Ensure metrics appear as file-level attributes
+Update all existing golden `.cc.json` files in `src/test/resources/languageSamples/` to include the new code smell metrics:
+- Add `"long_method"` attribute with appropriate count for each language sample
+- Add `"long_parameter_list"` attribute with appropriate count for each language sample
+- Add attribute descriptors for both metrics in the `attributeDescriptors` section
 
-**Context**: Integration tests ensure the full pipeline works correctly from parsing to JSON output.
+**Context**: The existing `UnifiedParserTest` parameterized tests compare parser output against these golden files for all supported languages. Updating them ensures end-to-end integration testing without requiring new test code. This follows the existing pattern where all metrics are validated through golden file comparison.
 
 ## Steps
 
-- [ ] Complete Task 1: Add LONG_METHOD and LONG_PARAMETER_LIST to AvailableFileMetrics enum
-- [ ] Complete Task 2: Implement code smell detection in MetricCollector.collectMetricsForFile()
-- [ ] Complete Task 3: Register attribute descriptors for both code smell metrics
-- [ ] Complete Task 4: Write and pass unit tests for code smell detection
-- [ ] Complete Task 5: Write and pass integration tests with golden files
+- [x] Complete Task 1: Add LONG_METHOD and LONG_PARAMETER_LIST to AvailableFileMetrics enum
+- [x] Complete Task 2: Implement code smell detection in MetricCollector.collectMetricsForFile()
+- [x] Complete Task 3: Register attribute descriptors for both code smell metrics
+- [x] Complete Task 4: Write and pass unit tests for code smell detection (CodeSmellsTest.kt)
+- [ ] Complete Task 5: Update golden test files with new code smell metrics
 - [ ] Verify all existing tests still pass
 - [ ] Run ktlintFormat and ensure code style compliance
 

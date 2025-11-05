@@ -18,6 +18,11 @@ abstract class MetricCollector(
     protected val nodeTypeProvider: MetricNodeTypes,
     calculationExtensions: CalculationExtensions = CalculationExtensions()
 ) {
+    companion object {
+        private const val LONG_METHOD_THRESHOLD = 10
+        private const val LONG_PARAMETER_LIST_THRESHOLD = 4
+    }
+
     private var rootNodeType: String = ""
 
     private val metricCalculators = MetricsToCalculatorsMap(nodeTypeProvider, calculationExtensions)
@@ -48,6 +53,8 @@ abstract class MetricCollector(
         metricNameToValue[AvailableFileMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row.toDouble()
 
         metricNameToValue.putAll(metricCalculators.getMeasuresOfPerFunctionMetrics())
+
+        countCodeSmells(metricNameToValue)
 
         return MutableNode(
             name = file.name,
@@ -95,5 +102,20 @@ abstract class MetricCollector(
         }
 
         return metricNameToValue
+    }
+
+    private fun countCodeSmells(metricNameToValue: MutableMap<String, Double>) {
+        metricNameToValue[AvailableFileMetrics.LONG_METHOD.metricName] = countLongMethods(metricCalculators).toDouble()
+        metricNameToValue[AvailableFileMetrics.LONG_PARAMETER_LIST.metricName] = countLongParameterLists(metricCalculators).toDouble()
+    }
+
+    private fun countLongMethods(calculators: MetricsToCalculatorsMap): Int {
+        val rlocPerFunction = calculators.realLinesOfCodeCalc.getMetricPerFunction()
+        return rlocPerFunction.count { rloc -> rloc > LONG_METHOD_THRESHOLD }
+    }
+
+    private fun countLongParameterLists(calculators: MetricsToCalculatorsMap): Int {
+        val parametersPerFunction = calculators.parametersPerFunctionCalc.getMetricPerFunction()
+        return parametersPerFunction.count { parameters -> parameters > LONG_PARAMETER_LIST_THRESHOLD }
     }
 }
