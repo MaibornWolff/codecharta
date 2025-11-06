@@ -42,7 +42,7 @@ export class MapLayoutSelectionComponent {
         }
     }
 
-    private debouncedSetMaxTreeMapFiles = debounce((value: number) => {
+    private readonly debouncedSetMaxTreeMapFiles = debounce((value: number) => {
         this.store.dispatch(setMaxTreeMapFiles({ value }))
     }, 400)
 }
