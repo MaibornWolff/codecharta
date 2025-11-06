@@ -33,7 +33,7 @@ class PathFormatterTest {
     }
 
     @Test
-    fun `should truncate long path with ellipsis in middle`() {
+    fun `should truncate long path with ellipsis at start`() {
         // Arrange
         val formatter = PathFormatter()
         val path = "very/long/path/with/many/directories/File.kt"
@@ -43,14 +43,11 @@ class PathFormatterTest {
         val result = formatter.truncate(path, maxWidth)
 
         // Assert
-        assertThat(result).hasSize(20)
-        assertThat(result).contains("...")
-        assertThat(result).startsWith("very/")
-        assertThat(result).endsWith("File.kt")
+        assertThat(result).isEqualTo("...rectories/File.kt")
     }
 
     @Test
-    fun `should preserve beginning and end of path`() {
+    fun `should preserve end of path with ellipsis at start`() {
         // Arrange
         val formatter = PathFormatter()
         val path = "src/main/kotlin/package/Foo.kt"
@@ -60,9 +57,7 @@ class PathFormatterTest {
         val result = formatter.truncate(path, maxWidth)
 
         // Assert
-        assertThat(result).startsWith("src/mai")
-        assertThat(result).contains("...")
-        assertThat(result).endsWith("Foo.kt")
+        assertThat(result).isEqualTo("...in/package/Foo.kt")
     }
 
     @Test

@@ -25,6 +25,7 @@ class ViolationTableRenderer(
         private const val EXCESS_NEGATIVE = "-"
 
         private const val MIN_PATH_WIDTH = 20
+        private const val MAX_PATH_WIDTH = 50
         private const val VALUE_WIDTH = 15
         private const val THRESHOLD_WIDTH = 20
         private const val EXCESS_WIDTH = 15
@@ -37,7 +38,10 @@ class ViolationTableRenderer(
 
         val pathColumnWidth = maxOf(
             MIN_PATH_WIDTH,
-            violations.maxOfOrNull { it.path.length } ?: MIN_PATH_WIDTH
+            minOf(
+                violations.maxOfOrNull { it.path.length } ?: MIN_PATH_WIDTH,
+                MAX_PATH_WIDTH
+            )
         )
 
         val lines = mutableListOf<String>()
@@ -53,14 +57,11 @@ class ViolationTableRenderer(
     }
 
     private fun renderHeader(pathColumnWidth: Int): String {
-        val format = "$TABLE_INDENT%-${pathColumnWidth}s  %-${VALUE_WIDTH}s  %-${THRESHOLD_WIDTH}s  %-${EXCESS_WIDTH}s"
-        return String.format(
-            format,
-            COLUMN_HEADER_PATH,
-            COLUMN_HEADER_VALUE,
-            COLUMN_HEADER_THRESHOLD,
-            COLUMN_HEADER_EXCESS
-        )
+        val pathHeader = COLUMN_HEADER_PATH.padStart(pathColumnWidth)
+        return TABLE_INDENT + pathHeader + "  " +
+            COLUMN_HEADER_VALUE.padEnd(VALUE_WIDTH) + "  " +
+            COLUMN_HEADER_THRESHOLD.padEnd(THRESHOLD_WIDTH) + "  " +
+            COLUMN_HEADER_EXCESS.padEnd(EXCESS_WIDTH)
     }
 
     private fun renderSeparator(pathColumnWidth: Int): String {
@@ -74,17 +75,14 @@ class ViolationTableRenderer(
         val formattedThreshold = formatThreshold(violation)
         val formattedExcess = formatExcess(violation)
 
-        val format = "$TABLE_INDENT%-${pathColumnWidth}s  %-${VALUE_WIDTH}s  %-${THRESHOLD_WIDTH}s  %-${EXCESS_WIDTH}s"
-        val row = String.format(
-            format,
-            truncatedPath,
-            formattedValue,
-            formattedThreshold,
-            formattedExcess
-        )
+        val pathPadding = " ".repeat(pathColumnWidth - truncatedPath.length)
+        val coloredPath = AnsiColorFormatter.red(truncatedPath)
+        val spacer = "  "
 
-        return AnsiColorFormatter.red(TABLE_INDENT + truncatedPath) +
-            row.substring(TABLE_INDENT.length + pathColumnWidth)
+        return TABLE_INDENT + pathPadding + coloredPath + spacer +
+            formattedValue.padEnd(VALUE_WIDTH) + spacer +
+            formattedThreshold.padEnd(THRESHOLD_WIDTH) + spacer +
+            formattedExcess.padEnd(EXCESS_WIDTH)
     }
 
     private fun formatThreshold(violation: ThresholdViolation): String {

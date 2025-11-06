@@ -10,9 +10,8 @@ class PathFormatter {
             return path
         }
 
-        val prefixLength = (maxWidth - ELLIPSIS.length) / 2
-        val suffixLength = maxWidth - ELLIPSIS.length - prefixLength
+        val suffixLength = maxWidth - ELLIPSIS.length
 
-        return path.substring(0, prefixLength) + ELLIPSIS + path.substring(path.length - suffixLength)
+        return ELLIPSIS + path.substring(path.length - suffixLength)
     }
 }
