@@ -1,21 +1,44 @@
-<mat-form-field appearance="outline" subscriptSizing="dynamic">
-    <mat-label>Map Layout</mat-label>
-    <mat-select [value]="layoutAlgorithm$ | async" (selectionChange)="handleSelectedLayoutAlgorithmChanged($event)">
+<div class="w-full">
+    <label class="label" for="mapLayoutSelect">
+        <span class="label-text">Map Layout</span>
+    </label>
+    <select
+        id="mapLayoutSelect"
+        class="select select-bordered w-full"
+        [value]="layoutAlgorithm()"
+        (change)="handleSelectedLayoutAlgorithmChanged($event)"
+    >
         @for (layoutAlgorithm of layoutAlgorithms; track layoutAlgorithm) {
-            <mat-option [value]="layoutAlgorithm">
+            <option [value]="layoutAlgorithm">
                 {{ layoutAlgorithm }}
-            </mat-option>
+            </option>
         }
-    </mat-select>
-</mat-form-field>
+    </select>
+</div>
 
-@if ((layoutAlgorithm$ | async) === "TreeMapStreet") {
-    <cc-slider
-        class="cc-tree-maps-max-tree-map-files"
-        [label]="'Maximum TreeMap Files'"
-        [min]="1"
-        [max]="1000"
-        [value]="maxTreeMapFiles$ | async"
-        [onChange]="handleChangeMaxTreeMapFiles"
-    ></cc-slider>
+@if (showTreeMapSlider()) {
+    <div class="w-full mt-4">
+        <label class="label" for="maxTreeMapFiles">
+            <span class="label-text">Maximum TreeMap Files</span>
+        </label>
+        <div class="flex gap-4 items-center">
+            <input
+                type="range"
+                id="maxTreeMapFiles"
+                min="1"
+                max="1000"
+                [value]="maxTreeMapFiles()"
+                (input)="handleMaxTreeMapFilesRangeInput($event)"
+                class="range range-primary flex-1"
+            />
+            <input
+                type="number"
+                [value]="maxTreeMapFiles()"
+                (input)="handleMaxTreeMapFilesNumberInput($event)"
+                min="1"
+                max="1000"
+                class="input input-bordered w-24"
+            />
+        </div>
+    </div>
 }

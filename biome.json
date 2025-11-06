@@ -5,6 +5,7 @@
     "ignoreUnknown": false,
     "ignore": [
       "**/.idea",
+      "**/.angular",
       "**/node_modules",
       "**/install.js",
       "**/build",

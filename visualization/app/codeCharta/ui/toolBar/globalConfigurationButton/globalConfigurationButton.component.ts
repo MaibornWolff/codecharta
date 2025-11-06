@@ -1,21 +1,17 @@
-import { Component } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
+import { Component, viewChild } from "@angular/core"
 import { GlobalConfigurationDialogComponent } from "./globalConfigurationDialog/globalConfigurationDialog.component"
-import { MatButton } from "@angular/material/button"
 import { ActionIconComponent } from "../../actionIcon/actionIcon.component"
 
 @Component({
     selector: "cc-global-configuration-button",
     templateUrl: "./globalConfigurationButton.component.html",
-    styleUrls: ["./globalConfigurationButton.component.scss"],
-    imports: [MatButton, ActionIconComponent]
+    styleUrl: "./globalConfigurationButton.component.scss",
+    imports: [GlobalConfigurationDialogComponent, ActionIconComponent]
 })
 export class GlobalConfigurationButtonComponent {
-    constructor(private dialog: MatDialog) {}
+    dialog = viewChild.required<GlobalConfigurationDialogComponent>("configDialog")
 
     showGlobalConfiguration() {
-        this.dialog.open(GlobalConfigurationDialogComponent, {
-            panelClass: "cc-global-configuration-dialog"
-        })
+        this.dialog().open()
     }
 }
