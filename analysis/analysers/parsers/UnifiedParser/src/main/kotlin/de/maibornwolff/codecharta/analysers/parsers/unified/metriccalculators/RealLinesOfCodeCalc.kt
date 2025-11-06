@@ -9,6 +9,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
     private var isFirstOrLastNodeInFunction = false
     private var isStartOfFunctionBody = false
     private var isFirstAllowedNodeInFunctionBody = false
+    private var functionBodyBoundariesSet = false
 
     private var functionBodyStartRow = -1
     private var functionBodyStartColumn = -1
@@ -87,7 +88,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
             val startCol = node.startPoint.column
             val endCol = node.endPoint.column
 
-            if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
+            if (isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes) && !functionBodyBoundariesSet) {
                 setFunctionBodyBoundaries(startRow, startCol, endRow, endCol)
             } else if (functionBodyUsesBrackets) {
                 val isFirstNode = (startRow == functionBodyStartRow && startCol == functionBodyStartColumn)
@@ -102,6 +103,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
     }
 
     private fun setFunctionBodyBoundaries(startRow: Int, startCol: Int, endRow: Int, endCol: Int) {
+        functionBodyBoundariesSet = true
         isStartOfFunctionBody = true
         functionBodyStartRow = startRow
         functionBodyStartColumn = startCol
@@ -111,6 +113,7 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFile
     }
 
     private fun resetBoundaries() {
+        functionBodyBoundariesSet = false
         functionBodyStartRow = -1
         functionBodyStartColumn = -1
         functionBodyEndRow = -1
