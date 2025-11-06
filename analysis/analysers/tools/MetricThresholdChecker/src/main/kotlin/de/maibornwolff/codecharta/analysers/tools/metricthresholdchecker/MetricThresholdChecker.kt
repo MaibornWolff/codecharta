@@ -2,17 +2,15 @@ package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.parsers.unified.ProjectScanner
+import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
 import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.config.ThresholdConfigurationLoader
 import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ThresholdConfiguration
 import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ThresholdViolation
 import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.output.ViolationFormatter
 import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.validation.ThresholdValidator
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
-import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.io.PrintStream
@@ -86,7 +84,19 @@ class MetricThresholdChecker(
         }
 
         val thresholdConfig = loadThresholdConfiguration(configFile!!)
-        val project = analyzeProject(inputPath!!)
+
+        if (verbose) {
+            error.println("Analyzing project at: ${inputPath!!.absolutePath}")
+        }
+
+        val project = UnifiedParser.parse(
+            inputFile = inputPath!!,
+            excludePatterns = excludePatterns,
+            fileExtensions = fileExtensions,
+            bypassGitignore = bypassGitignore,
+            verbose = verbose
+        )
+
         val violations = validateThresholds(project, thresholdConfig)
 
         printResults(violations, thresholdConfig, project.attributeDescriptors)
@@ -96,32 +106,6 @@ class MetricThresholdChecker(
         }
 
         return null
-    }
-
-    private fun analyzeProject(inputPath: File): Project {
-        if (verbose) {
-            error.println("Analyzing project at: ${inputPath.absolutePath}")
-        }
-
-        val projectBuilder = ProjectBuilder()
-        val useGitignore = !bypassGitignore
-
-        val projectScanner = ProjectScanner(
-            inputPath,
-            projectBuilder,
-            excludePatterns,
-            fileExtensions,
-            emptyMap(),
-            useGitignore
-        )
-
-        projectScanner.traverseInputProject(verbose)
-
-        if (!projectScanner.foundParsableFiles()) {
-            Logger.warn { "No parsable files found in the given input path" }
-        }
-
-        return projectBuilder.build()
     }
 
     private fun loadThresholdConfiguration(configFile: File): ThresholdConfiguration {
