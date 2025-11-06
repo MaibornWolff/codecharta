@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker
+package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.config
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy

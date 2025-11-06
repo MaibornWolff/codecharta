@@ -1,9 +1,11 @@
-package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker
+package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.MetricThreshold
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ThresholdConfiguration
 import java.io.File
 
 object ThresholdConfigurationLoader {

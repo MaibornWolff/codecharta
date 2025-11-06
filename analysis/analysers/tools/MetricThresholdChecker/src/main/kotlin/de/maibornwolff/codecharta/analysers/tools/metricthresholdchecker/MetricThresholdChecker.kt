@@ -3,6 +3,11 @@ package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.parsers.unified.ProjectScanner
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.config.ThresholdConfigurationLoader
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ThresholdConfiguration
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ThresholdViolation
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.output.ViolationFormatter
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.validation.ThresholdValidator
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -84,7 +89,7 @@ class MetricThresholdChecker(
         val project = analyzeProject(inputPath!!)
         val violations = validateThresholds(project, thresholdConfig)
 
-        printResults(violations, thresholdConfig)
+        printResults(violations, thresholdConfig, project.attributeDescriptors)
 
         if (violations.isNotEmpty()) {
             exitProcess(1)
@@ -128,9 +133,13 @@ class MetricThresholdChecker(
         return validator.validate(project)
     }
 
-    private fun printResults(violations: List<ThresholdViolation>, config: ThresholdConfiguration) {
+    private fun printResults(
+        violations: List<ThresholdViolation>,
+        config: ThresholdConfiguration,
+        attributeDescriptors: Map<String, de.maibornwolff.codecharta.model.AttributeDescriptor>
+    ) {
         val formatter = ViolationFormatter(output, error)
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, attributeDescriptors)
     }
 
     override fun getDialog(): AnalyserDialogInterface = Dialog

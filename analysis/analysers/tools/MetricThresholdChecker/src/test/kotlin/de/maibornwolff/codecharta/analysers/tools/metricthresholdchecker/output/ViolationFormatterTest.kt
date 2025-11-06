@@ -1,5 +1,10 @@
-package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker
+package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.output
 
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.MetricThreshold
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ThresholdConfiguration
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ThresholdViolation
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ViolationType
+import de.maibornwolff.codecharta.model.AttributeDescriptor
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -16,7 +21,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(emptyList(), config)
+        formatter.printResults(emptyList(), config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -43,7 +48,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -69,7 +74,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -87,7 +92,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(emptyList(), config)
+        formatter.printResults(emptyList(), config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -108,7 +113,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(emptyList(), config)
+        formatter.printResults(emptyList(), config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -141,7 +146,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -168,7 +173,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -194,7 +199,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -220,7 +225,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -246,7 +251,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -272,7 +277,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -298,7 +303,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -324,7 +329,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -351,7 +356,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -392,7 +397,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -424,7 +429,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -470,7 +475,7 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
@@ -500,11 +505,196 @@ class ViolationFormatterTest {
         )
 
         // Act
-        formatter.printResults(violations, config)
+        formatter.printResults(violations, config, emptyMap())
 
         // Assert
         val output = errorStream.toString()
         // Path should appear in output (may be truncated or not depending on column width)
         assertThat(output).containsAnyOf("File.kt", "very/long", "...")
+    }
+
+    @Test
+    fun `should print explanation after metric name for known metrics`() {
+        // Arrange
+        val errorStream = ByteArrayOutputStream()
+        val formatter = ViolationFormatter(PrintStream(ByteArrayOutputStream()), PrintStream(errorStream))
+        val config = ThresholdConfiguration(
+            fileMetrics = mapOf("rloc" to MetricThreshold(max = 100))
+        )
+        val violations = listOf(
+            ThresholdViolation(
+                path = "File1.kt",
+                metricName = "rloc",
+                actualValue = 200,
+                threshold = MetricThreshold(max = 100),
+                violationType = ViolationType.ABOVE_MAX
+            )
+        )
+        val attributeDescriptors = mapOf(
+            "rloc" to AttributeDescriptor(
+                description = "Number of lines that contain at least one character which is " +
+                    "neither a whitespace nor a tabulation nor part of a comment"
+            )
+        )
+
+        // Act
+        formatter.printResults(violations, config, attributeDescriptors)
+
+        // Assert
+        val output = errorStream.toString()
+        assertThat(output).contains("Metric: rloc")
+        assertThat(output).contains("Number of lines that contain at least one character")
+    }
+
+    @Test
+    fun `should include complexity metric explanation inline`() {
+        // Arrange
+        val errorStream = ByteArrayOutputStream()
+        val formatter = ViolationFormatter(PrintStream(ByteArrayOutputStream()), PrintStream(errorStream))
+        val config = ThresholdConfiguration(
+            fileMetrics = mapOf("complexity" to MetricThreshold(max = 10))
+        )
+        val violations = listOf(
+            ThresholdViolation(
+                path = "File1.kt",
+                metricName = "complexity",
+                actualValue = 20,
+                threshold = MetricThreshold(max = 10),
+                violationType = ViolationType.ABOVE_MAX
+            )
+        )
+        val attributeDescriptors = mapOf(
+            "complexity" to AttributeDescriptor(
+                description = "Complexity of the file representing how much cognitive load is " +
+                    "needed to overview the whole file"
+            )
+        )
+
+        // Act
+        formatter.printResults(violations, config, attributeDescriptors)
+
+        // Assert
+        val output = errorStream.toString()
+        assertThat(output).contains("Metric: complexity")
+        assertThat(output).contains("Complexity of the file")
+        assertThat(output).contains("cognitive load")
+    }
+
+    @Test
+    fun `should not print explanation for unknown metrics`() {
+        // Arrange
+        val errorStream = ByteArrayOutputStream()
+        val formatter = ViolationFormatter(PrintStream(ByteArrayOutputStream()), PrintStream(errorStream))
+        val config = ThresholdConfiguration(
+            fileMetrics = mapOf("unknown_metric" to MetricThreshold(max = 100))
+        )
+        val violations = listOf(
+            ThresholdViolation(
+                path = "File1.kt",
+                metricName = "unknown_metric",
+                actualValue = 200,
+                threshold = MetricThreshold(max = 100),
+                violationType = ViolationType.ABOVE_MAX
+            )
+        )
+
+        // Act
+        formatter.printResults(violations, config, emptyMap())
+
+        // Assert
+        val output = errorStream.toString()
+        assertThat(output).contains("Metric: unknown_metric")
+        assertThat(output).doesNotContain("measures")
+    }
+
+    @Test
+    fun `should print explanations inline for multiple different metrics`() {
+        // Arrange
+        val errorStream = ByteArrayOutputStream()
+        val formatter = ViolationFormatter(PrintStream(ByteArrayOutputStream()), PrintStream(errorStream))
+        val config = ThresholdConfiguration(
+            fileMetrics = mapOf(
+                "rloc" to MetricThreshold(max = 100),
+                "complexity" to MetricThreshold(max = 10)
+            )
+        )
+        val violations = listOf(
+            ThresholdViolation(
+                path = "File1.kt",
+                metricName = "rloc",
+                actualValue = 200,
+                threshold = MetricThreshold(max = 100),
+                violationType = ViolationType.ABOVE_MAX
+            ),
+            ThresholdViolation(
+                path = "File2.kt",
+                metricName = "complexity",
+                actualValue = 20,
+                threshold = MetricThreshold(max = 10),
+                violationType = ViolationType.ABOVE_MAX
+            )
+        )
+        val attributeDescriptors = mapOf(
+            "rloc" to AttributeDescriptor(
+                description = "Number of lines that contain at least one character which is " +
+                    "neither a whitespace nor a tabulation nor part of a comment"
+            ),
+            "complexity" to AttributeDescriptor(
+                description = "Complexity of the file representing how much cognitive load is " +
+                    "needed to overview the whole file"
+            )
+        )
+
+        // Act
+        formatter.printResults(violations, config, attributeDescriptors)
+
+        // Assert
+        val output = errorStream.toString()
+        assertThat(output).contains("Number of lines that contain")
+        assertThat(output).contains("Complexity of the file")
+    }
+
+    @Test
+    fun `should show explanation only once per metric even with multiple violations`() {
+        // Arrange
+        val errorStream = ByteArrayOutputStream()
+        val formatter = ViolationFormatter(PrintStream(ByteArrayOutputStream()), PrintStream(errorStream))
+        val config = ThresholdConfiguration(
+            fileMetrics = mapOf("rloc" to MetricThreshold(max = 100))
+        )
+        val violations = listOf(
+            ThresholdViolation(
+                path = "File1.kt",
+                metricName = "rloc",
+                actualValue = 200,
+                threshold = MetricThreshold(max = 100),
+                violationType = ViolationType.ABOVE_MAX
+            ),
+            ThresholdViolation(
+                path = "File2.kt",
+                metricName = "rloc",
+                actualValue = 150,
+                threshold = MetricThreshold(max = 100),
+                violationType = ViolationType.ABOVE_MAX
+            )
+        )
+        val attributeDescriptors = mapOf(
+            "rloc" to AttributeDescriptor(
+                description = "Number of lines that contain at least one character which is " +
+                    "neither a whitespace nor a tabulation nor part of a comment"
+            )
+        )
+
+        // Act
+        formatter.printResults(violations, config, attributeDescriptors)
+
+        // Assert
+        val output = errorStream.toString()
+        val metricCount = output.split("Metric: rloc").size - 1
+        val explanationCount = output.split("Number of lines that contain").size - 1
+
+        // Should only have one metric header and one explanation
+        assertThat(metricCount).isEqualTo(1)
+        assertThat(explanationCount).isEqualTo(1)
     }
 }

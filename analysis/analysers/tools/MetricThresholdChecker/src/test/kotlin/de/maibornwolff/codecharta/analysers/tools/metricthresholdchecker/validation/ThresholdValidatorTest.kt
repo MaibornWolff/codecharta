@@ -1,5 +1,8 @@
-package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker
+package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.validation
 
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.MetricThreshold
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ThresholdConfiguration
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model.ViolationType
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project

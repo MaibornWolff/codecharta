@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker
+package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.model
 
 data class ThresholdConfiguration(
     val fileMetrics: Map<String, MetricThreshold> = emptyMap()
