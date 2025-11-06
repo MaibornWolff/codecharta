@@ -1,9 +1,7 @@
-import { HarnessLoader } from "@angular/cdk/testing"
-import { TestbedHarnessEnvironment } from "@angular/cdk/testing/testbed"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { MatSelectHarness } from "@angular/material/select/testing"
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
 import { provideMockStore, MockStore } from "@ngrx/store/testing"
+import { screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { DisplayQualitySelectionComponent } from "./displayQualitySelection.component"
 import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
 import { SharpnessMode } from "../../../../../codeCharta.model"
@@ -12,14 +10,12 @@ import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpne
 
 describe("DisplayQualitySelectionComponent", () => {
     let fixture: ComponentFixture<DisplayQualitySelectionComponent>
-    let loader: HarnessLoader
     let store: MockStore
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [DisplayQualitySelectionComponent],
             providers: [
-                provideAnimationsAsync(),
                 provideMockStore({
                     selectors: [{ selector: sharpnessModeSelector, value: SharpnessMode.Standard }]
                 })
@@ -27,16 +23,19 @@ describe("DisplayQualitySelectionComponent", () => {
         })
 
         fixture = TestBed.createComponent(DisplayQualitySelectionComponent)
-        loader = TestbedHarnessEnvironment.loader(fixture)
         store = TestBed.inject(MockStore)
+        fixture.detectChanges()
     })
 
     it("should change display quality selection", async () => {
-        const select = await loader.getHarness(MatSelectHarness)
+        // Arrange
+        const selectElement = screen.getByRole("combobox", { name: /display quality/i }) as HTMLSelectElement
+        expect(selectElement.value).toBe("High")
 
-        await select.open()
-        await select.clickOptions({ text: "Low" })
+        // Act
+        await userEvent.selectOptions(selectElement, "Low")
 
+        // Assert
         expect(await getLastAction(store)).toEqual(setSharpnessMode({ value: SharpnessMode.PixelRatioNoAA }))
     })
 })

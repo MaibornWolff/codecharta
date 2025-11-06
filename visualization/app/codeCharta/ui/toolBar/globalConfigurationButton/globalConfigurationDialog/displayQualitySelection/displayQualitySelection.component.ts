@@ -1,25 +1,23 @@
 import { Component } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
 import { SharpnessMode, CcState } from "../../../../../codeCharta.model"
 import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
-import { MatFormField, MatLabel } from "@angular/material/form-field"
-import { MatSelect } from "@angular/material/select"
-import { MatOption } from "@angular/material/core"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-display-quality-selection",
     templateUrl: "./displayQualitySelection.component.html",
-    imports: [MatFormField, MatLabel, MatSelect, MatOption, AsyncPipe]
+    imports: []
 })
 export class DisplayQualitySelectionComponent {
     sharpnessModes = Object.values(SharpnessMode)
-    sharpnessMode$ = this.store.select(sharpnessModeSelector)
+    sharpnessMode = toSignal(this.store.select(sharpnessModeSelector), { requireSync: true })
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
-    handleSelectedSharpnessModeChanged(event: { value: SharpnessMode }) {
-        this.store.dispatch(setSharpnessMode({ value: event.value }))
+    handleSelectedSharpnessModeChanged(event: Event) {
+        const value = (event.target as HTMLSelectElement).value as SharpnessMode
+        this.store.dispatch(setSharpnessMode({ value }))
     }
 }
