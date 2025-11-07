@@ -1,10 +1,6 @@
 import { Injectable } from "@angular/core"
 import { AutomaticCameraResetStore } from "../stores/automaticCameraReset.store"
 
-/**
- * Service for automatic camera reset settings.
- * Controls whether the camera automatically resets when a new file is loaded.
- */
 @Injectable({
     providedIn: "root"
 })

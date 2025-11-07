@@ -1,10 +1,6 @@
 import { Injectable } from "@angular/core"
 import { ExperimentalFeaturesStore } from "../stores/experimentalFeatures.store"
 
-/**
- * Service for experimental features settings.
- * Controls access to experimental and preview features.
- */
 @Injectable({
     providedIn: "root"
 })

@@ -4,10 +4,6 @@ import { CcState } from "../../../codeCharta.model"
 import { isWhiteBackgroundSelector } from "../selectors/globalSettings.selectors"
 import { setIsWhiteBackground } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
 
-/**
- * Store for background theme settings.
- * This is the ONLY place that injects Store for background theme.
- */
 @Injectable({
     providedIn: "root"
 })

@@ -4,10 +4,6 @@ import { CcState } from "../../../codeCharta.model"
 import { experimentalFeaturesEnabledSelector } from "../selectors/globalSettings.selectors"
 import { setExperimentalFeaturesEnabled } from "../../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 
-/**
- * Store for experimental features settings.
- * This is the ONLY place that injects Store for experimental features.
- */
 @Injectable({
     providedIn: "root"
 })

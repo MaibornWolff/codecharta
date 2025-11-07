@@ -1,10 +1,6 @@
 import { Injectable } from "@angular/core"
 import { FlatBuildingVisibilityStore } from "../stores/flatBuildingVisibility.store"
 
-/**
- * Service for flat building visibility settings.
- * Controls whether buildings with zero height are shown or hidden.
- */
 @Injectable({
     providedIn: "root"
 })

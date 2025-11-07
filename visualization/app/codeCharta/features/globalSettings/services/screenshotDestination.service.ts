@@ -1,10 +1,6 @@
 import { Injectable } from "@angular/core"
 import { ScreenshotDestinationStore } from "../stores/screenshotDestination.store"
 
-/**
- * Service for screenshot destination settings.
- * Controls whether screenshots go to clipboard or are saved as files.
- */
 @Injectable({
     providedIn: "root"
 })

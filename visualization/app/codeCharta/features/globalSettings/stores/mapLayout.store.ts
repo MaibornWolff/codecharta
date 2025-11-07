@@ -5,10 +5,6 @@ import { layoutAlgorithmSelector, maxTreeMapFilesSelector } from "../selectors/g
 import { setLayoutAlgorithm } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMaxTreeMapFiles } from "../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 
-/**
- * Store for map layout settings.
- * This is the ONLY place that injects Store for map layout.
- */
 @Injectable({
     providedIn: "root"
 })

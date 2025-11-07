@@ -1,12 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
 
-/**
- * Selectors for global settings.
- * These selectors are primarily used within the globalSettings feature
- * but can be imported by other features via the facade.
- */
-
 export const screenshotToClipboardEnabledSelector = createSelector(
     appSettingsSelector,
     appSettings => appSettings.screenshotToClipboardEnabled

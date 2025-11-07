@@ -4,10 +4,6 @@ import { CcState } from "../../../codeCharta.model"
 import { setState } from "../../../state/store/state.actions"
 import { getPartialDefaultState } from "../../../ui/resetSettingsButton/getPartialDefaultState"
 
-/**
- * Store for reset settings operations.
- * This is the ONLY place that injects Store and State for reset operations.
- */
 @Injectable({
     providedIn: "root"
 })

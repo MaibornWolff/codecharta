@@ -32,7 +32,6 @@ export class MapLayoutSelectionComponent {
         const input = event.target as HTMLInputElement
         const value = Number(input.value)
 
-        // Validate the number is within bounds
         if (value >= 1 && value <= 1000) {
             this.debouncedSetMaxTreeMapFiles(value)
         }

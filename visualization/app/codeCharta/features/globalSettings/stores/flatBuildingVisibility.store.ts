@@ -4,10 +4,6 @@ import { CcState } from "../../../codeCharta.model"
 import { hideFlatBuildingsSelector } from "../selectors/globalSettings.selectors"
 import { setHideFlatBuildings } from "../../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 
-/**
- * Store for flat building visibility settings.
- * This is the ONLY place that injects Store for flat building visibility.
- */
 @Injectable({
     providedIn: "root"
 })

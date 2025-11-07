@@ -2,10 +2,6 @@ import { Injectable } from "@angular/core"
 import { SharpnessMode } from "../../../codeCharta.model"
 import { DisplayQualityStore } from "../stores/displayQuality.store"
 
-/**
- * Service for display quality settings (render quality/sharpness).
- * Controls how sharp and clear the visualization appears.
- */
 @Injectable({
     providedIn: "root"
 })
