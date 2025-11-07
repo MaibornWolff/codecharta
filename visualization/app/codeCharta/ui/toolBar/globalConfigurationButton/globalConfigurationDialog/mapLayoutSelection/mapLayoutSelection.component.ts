@@ -3,9 +3,9 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
 import { LayoutAlgorithm, CcState } from "../../../../../codeCharta.model"
 import { setLayoutAlgorithm } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
-import { layoutAlgorithmSelector } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
+import { layoutAlgorithmSelector } from "../../../../../features/globalSettings/facade"
 import { setMaxTreeMapFiles } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
-import { maxTreeMapFilesSelector } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.selector"
+import { maxTreeMapFilesSelector } from "../../../../../features/globalSettings/facade"
 import { debounce } from "../../../../../util/debounce"
 
 @Component({

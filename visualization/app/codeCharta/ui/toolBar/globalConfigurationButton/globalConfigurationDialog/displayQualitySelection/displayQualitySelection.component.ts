@@ -3,7 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
 import { SharpnessMode, CcState } from "../../../../../codeCharta.model"
 import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
-import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
+import { sharpnessModeSelector } from "../../../../../features/globalSettings/facade"
 
 @Component({
     selector: "cc-display-quality-selection",
