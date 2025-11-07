@@ -1,7 +1,7 @@
 import { ElementRef } from "@angular/core"
 import { Subject } from "rxjs"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
-import { sharpnessModeSelector } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
+import { sharpnessModeSelector } from "../../features/globalSettings/facade"
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"

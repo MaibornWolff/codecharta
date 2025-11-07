@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { combineLatest, filter, first, skip, switchMap, take, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
-import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
+import { resetCameraIfNewFileIsLoadedSelector } from "../../../features/globalSettings/facade"
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 import { selectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
 
