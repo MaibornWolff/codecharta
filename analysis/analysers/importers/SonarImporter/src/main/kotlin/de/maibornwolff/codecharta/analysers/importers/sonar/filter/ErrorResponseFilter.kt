@@ -3,15 +3,15 @@ package de.maibornwolff.codecharta.analysers.importers.sonar.filter
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.ErrorResponse
 import de.maibornwolff.codecharta.util.Logger
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.client.ClientRequestContext
+import jakarta.ws.rs.client.ClientResponseContext
+import jakarta.ws.rs.client.ClientResponseFilter
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.ext.Provider
 import java.io.IOException
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.client.ClientRequestContext
-import javax.ws.rs.client.ClientResponseContext
-import javax.ws.rs.client.ClientResponseFilter
-import javax.ws.rs.core.Response
-import javax.ws.rs.ext.Provider
 
 @Provider
 class ErrorResponseFilter : ClientResponseFilter {
@@ -37,7 +37,7 @@ class ErrorResponseFilter : ClientResponseFilter {
                 Logger.error { message }
 
                 throw WebApplicationException(message)
-            } catch (e: RuntimeException) {
+            } catch (_: RuntimeException) {
                 Logger.error { "Error response could not be parsed." }
             }
         }
