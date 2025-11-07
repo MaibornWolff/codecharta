@@ -1,0 +1,17 @@
+@use "variables";
+
+button {
+    margin: 0;
+
+    cc-action-icon {
+        margin-left: 12px;
+    }
+
+    &:hover cc-action-icon {
+        background-color: variables.$cc-emphasized-color;
+    }
+}
+
+span {
+    font-size: 10pt;
+}

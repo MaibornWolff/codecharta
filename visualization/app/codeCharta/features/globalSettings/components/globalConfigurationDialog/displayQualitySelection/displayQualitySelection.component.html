@@ -1,0 +1,17 @@
+<div class="w-full">
+    <label class="label" for="displayQualitySelect">
+        <span class="label-text">Display Quality</span>
+    </label>
+    <select
+        id="displayQualitySelect"
+        class="select select-bordered w-full"
+        [value]="sharpnessMode()"
+        (change)="handleSelectedSharpnessModeChanged($event)"
+    >
+        @for (sharpnessMode of sharpnessModes; track sharpnessMode) {
+            <option [value]="sharpnessMode">
+                {{ sharpnessMode }}
+            </option>
+        }
+    </select>
+</div>
