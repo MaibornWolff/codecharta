@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   - long function
   - long parameter list
 
+### Fixed 🐞
+
+- Fix "rloc_per_function" metrics of unifiedparser sometimes showing too low values [#4343](https://github.com/MaibornWolff/codecharta/issues/4343)
+
 ### Removed
 
 - BREAKING CHANGE SourceCodeParser is removed.
