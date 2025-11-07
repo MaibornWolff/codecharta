@@ -1,6 +1,6 @@
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
-import { layoutAlgorithmSelector } from "../../../features/globalSettings/facade"
+import { layoutAlgorithmSelector } from "../../../features/globalSettings/selectors/globalSettings.selectors"
 import { invertAreaSelector } from "../../store/appSettings/invertArea/invertArea.selector"
 import { marginSelector } from "../../store/dynamicSettings/margin/margin.selector"
 import { DefaultProjectorFn, MemoizedSelector } from "@ngrx/store"

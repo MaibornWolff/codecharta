@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
-import { BehaviorSubject, Subject } from "rxjs"
+import { BehaviorSubject, Subject, of } from "rxjs"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
-import { layoutAlgorithmSelector } from "../../../features/globalSettings/facade"
-import { resetCameraIfNewFileIsLoadedSelector } from "../../../features/globalSettings/facade"
+import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
+import { resetCameraIfNewFileIsLoadedSelector } from "../../../features/globalSettings/selectors/globalSettings.selectors"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapEffect } from "./autoFitCodeMap.effect"
@@ -40,7 +40,8 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
                     ]
                 }),
                 provideMockActions(() => actions$),
-                { provide: ThreeMapControlsService, useValue: { autoFitTo: mockedAutoFitTo } }
+                { provide: ThreeMapControlsService, useValue: { autoFitTo: mockedAutoFitTo } },
+                { provide: GlobalSettingsFacade, useValue: { resetCameraIfNewFileIsLoaded$: () => of(true) } }
             ]
         })
         store = TestBed.inject(MockStore)

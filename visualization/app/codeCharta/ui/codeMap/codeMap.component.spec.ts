@@ -1,7 +1,7 @@
 import { ElementRef } from "@angular/core"
 import { Subject } from "rxjs"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
-import { sharpnessModeSelector } from "../../features/globalSettings/facade"
+import { GlobalSettingsFacade } from "../../features/globalSettings/facade"
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
@@ -14,15 +14,11 @@ describe("CodeMapComponent", () => {
     let mockedElementReference: ElementRef
     let mockedSharpnessModeSelector$: Subject<string>
     const mockedStore = {
-        select: (selector: unknown) => {
-            switch (selector) {
-                case sharpnessModeSelector:
-                    return mockedSharpnessModeSelector$
-                default:
-                    return jest.fn()
-            }
-        }
+        select: jest.fn()
     } as unknown as Store<CcState>
+    const mockedGlobalSettingsFacade = {
+        sharpnessMode$: () => mockedSharpnessModeSelector$
+    } as unknown as GlobalSettingsFacade
 
     beforeEach(() => {
         mockedThreeViewService = { init: jest.fn(), restart: jest.fn() } as unknown as ThreeViewerService
@@ -37,7 +33,8 @@ describe("CodeMapComponent", () => {
             mockedStore,
             mockedThreeViewService,
             mockedCodeMapMouseEventService,
-            mockedElementReference
+            mockedElementReference,
+            mockedGlobalSettingsFacade
         )
         codeMapComponent.ngAfterViewInit()
         expect(mockedThreeViewService.init).toHaveBeenCalled()
@@ -50,7 +47,8 @@ describe("CodeMapComponent", () => {
             mockedStore,
             mockedThreeViewService,
             mockedCodeMapMouseEventService,
-            mockedElementReference
+            mockedElementReference,
+            mockedGlobalSettingsFacade
         )
         mockedSharpnessModeSelector$.next("High")
         expect(mockedThreeViewService.restart).not.toHaveBeenCalled()

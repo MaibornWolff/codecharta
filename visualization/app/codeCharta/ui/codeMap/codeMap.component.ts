@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, ElementRef, OnDestroy } from "@angular/core"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
-import { sharpnessModeSelector } from "../../features/globalSettings/facade"
+import { GlobalSettingsFacade } from "../../features/globalSettings/facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { skip, tap } from "rxjs"
 import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
@@ -19,8 +19,8 @@ import { AsyncPipe } from "@angular/common"
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
     isLoadingFile$ = this.store.select(isLoadingFileSelector)
-    restartOnSharpnessModeChangesSubscription = this.store
-        .select(sharpnessModeSelector)
+    restartOnSharpnessModeChangesSubscription = this.globalSettingsFacade
+        .sharpnessMode$()
         .pipe(
             skip(1),
             tap(() => {
@@ -35,7 +35,8 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
         private readonly store: Store<CcState>,
         private readonly threeViewerService: ThreeViewerService,
         private readonly codeMapMouseEventService: CodeMapMouseEventService,
-        private readonly elementReference: ElementRef
+        private readonly elementReference: ElementRef,
+        private readonly globalSettingsFacade: GlobalSettingsFacade
     ) {}
 
     ngAfterViewInit(): void {

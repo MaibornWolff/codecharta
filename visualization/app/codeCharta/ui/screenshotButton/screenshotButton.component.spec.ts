@@ -3,12 +3,13 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, waitFor } from "@testing-library/angular"
 import { checkWriteToClipboardAllowed, setToClipboard } from "../../../../app/codeCharta/util/clipboard/clipboardWriter"
-import { screenshotToClipboardEnabledSelector } from "../../features/globalSettings/facade"
+import { GlobalSettingsFacade } from "../../features/globalSettings/facade"
 import { defaultState } from "../../state/store/state.manager"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { ScreenshotButtonComponent } from "./screenshotButton.component"
+import { of } from "rxjs"
 
 jest.mock("../../../../app/codeCharta/util/clipboard/clipboardWriter", () => {
     return {
@@ -29,7 +30,8 @@ describe("screenshotButtonComponent", () => {
         TestBed.configureTestingModule({
             imports: [ScreenshotButtonComponent],
             providers: [
-                provideMockStore({ selectors: [{ selector: screenshotToClipboardEnabledSelector, value: true }] }),
+                provideMockStore(),
+                { provide: GlobalSettingsFacade, useValue: { screenshotToClipboardEnabled$: () => of(true) } },
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeCameraService, useValue: {} },
                 { provide: ThreeSceneService, useValue: {} },
