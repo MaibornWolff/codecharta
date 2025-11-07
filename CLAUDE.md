@@ -38,6 +38,9 @@ cd analysis
 # Build the project (creates distribution in build/)
 ./gradlew build
 
+# Assemble without running tests (faster for frequent builds)
+./gradlew assemble
+
 # Install distribution locally for testing
 ./gradlew installDist
 

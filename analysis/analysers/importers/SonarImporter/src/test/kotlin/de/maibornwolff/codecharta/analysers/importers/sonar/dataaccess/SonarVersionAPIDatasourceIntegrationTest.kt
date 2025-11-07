@@ -6,12 +6,12 @@ import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporterException
+import jakarta.ws.rs.core.MediaType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.net.MalformedURLException
 import java.net.URL
-import javax.ws.rs.core.MediaType
 
 private const val PORT = 8089
 

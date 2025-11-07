@@ -3,11 +3,11 @@ package de.maibornwolff.codecharta.analysers.importers.sonar.dataaccess
 import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporterException
 import de.maibornwolff.codecharta.analysers.importers.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.Version
+import jakarta.ws.rs.client.Client
+import jakarta.ws.rs.client.ClientBuilder
+import jakarta.ws.rs.core.MediaType
 import java.net.URI
 import java.net.URL
-import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientBuilder
-import javax.ws.rs.core.MediaType
 
 class SonarVersionAPIDatasource(private val user: String, private val baseUrl: URL) {
     private val client: Client = ClientBuilder.newClient()
