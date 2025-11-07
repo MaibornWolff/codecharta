@@ -1,5 +1,5 @@
 {
-  "checksum": "2db97512010dae766ed74a62e5626a68",
+  "checksum": "e6e398d1c6d4a53d47266a07d5ec3d06",
   "data": {
     "projectName": "",
     "nodes": [
@@ -27,11 +27,11 @@
               "min_complexity_per_function": 0.0,
               "mean_complexity_per_function": 1.0,
               "median_complexity_per_function": 1.0,
-              "max_rloc_per_function": 4.0,
+              "max_rloc_per_function": 11.0,
               "min_rloc_per_function": 1.0,
-              "mean_rloc_per_function": 2.17,
-              "median_rloc_per_function": 2.0,
-              "long_method": 0.0,
+              "mean_rloc_per_function": 4.83,
+              "median_rloc_per_function": 4.5,
+              "long_method": 1.0,
               "long_parameter_list": 1.0
             },
             "link": "",
