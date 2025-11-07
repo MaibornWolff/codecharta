@@ -19,36 +19,53 @@ class ViolationGroupRenderer(
     }
 
     fun render(violations: List<ThresholdViolation>, attributeDescriptors: Map<String, AttributeDescriptor>): String {
-        if (violations.isEmpty()) {
-            return ""
-        }
+        if (violations.isEmpty()) return ""
 
         val lines = mutableListOf<String>()
-        lines.add(AnsiColorFormatter.bold(VIOLATIONS_HEADER))
-        lines.add("")
+        addViolationsHeader(lines)
 
         val groupedByMetric = violations.groupBy { it.metricName }
-
-        for ((metricName, metricViolations) in groupedByMetric) {
-            lines.add(renderMetricHeader(metricName, metricViolations.size))
-
-            val descriptor = attributeDescriptors[metricName]
-            if (descriptor != null && descriptor.description.isNotBlank()) {
-                val wrappedLines = textWrapper.wrap(descriptor.description, CONSOLE_WIDTH, "")
-                lines.addAll(wrappedLines)
-            }
-
-            lines.add("")
-
-            val sortedViolations = metricViolations.sortedByDescending { violation ->
-                excessCalculator.calculate(violation)
-            }
-
-            lines.add(tableRenderer.render(sortedViolations))
-            lines.add("")
+        groupedByMetric.forEach { (metricName, metricViolations) ->
+            renderMetricGroup(lines, metricName, metricViolations, attributeDescriptors)
         }
 
         return lines.joinToString("\n")
+    }
+
+    private fun addViolationsHeader(lines: MutableList<String>) {
+        lines.add(AnsiColorFormatter.bold(VIOLATIONS_HEADER))
+        lines.add("")
+    }
+
+    private fun renderMetricGroup(
+        lines: MutableList<String>,
+        metricName: String,
+        metricViolations: List<ThresholdViolation>,
+        attributeDescriptors: Map<String, AttributeDescriptor>
+    ) {
+        lines.add(renderMetricHeader(metricName, metricViolations.size))
+        addMetricDescription(lines, metricName, attributeDescriptors)
+        lines.add("")
+
+        val sortedViolations = sortViolationsByExcess(metricViolations)
+        lines.add(tableRenderer.render(sortedViolations))
+        lines.add("")
+    }
+
+    private fun addMetricDescription(
+        lines: MutableList<String>,
+        metricName: String,
+        attributeDescriptors: Map<String, AttributeDescriptor>
+    ) {
+        val descriptor = attributeDescriptors[metricName]
+        if (descriptor != null && descriptor.description.isNotBlank()) {
+            val wrappedLines = textWrapper.wrap(descriptor.description, CONSOLE_WIDTH, "")
+            lines.addAll(wrappedLines)
+        }
+    }
+
+    private fun sortViolationsByExcess(violations: List<ThresholdViolation>): List<ThresholdViolation> {
+        return violations.sortedByDescending { excessCalculator.calculate(it) }
     }
 
     private fun renderMetricHeader(metricName: String, violationCount: Int): String {

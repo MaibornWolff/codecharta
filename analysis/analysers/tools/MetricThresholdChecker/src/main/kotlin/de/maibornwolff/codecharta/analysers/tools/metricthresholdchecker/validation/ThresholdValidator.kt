@@ -23,18 +23,12 @@ class ThresholdValidator(private val config: ThresholdConfiguration) {
         when (node.type) {
             NodeType.File -> validateFileMetrics(nodePath, node, violations)
             NodeType.Folder -> {
-                // Recursively validate children
                 node.children.forEach { child ->
                     validateNode(child, nodePath, violations)
                 }
             }
-            NodeType.Package,
-            NodeType.Class,
-            NodeType.Interface,
-            NodeType.Method,
-            NodeType.Unknown,
-            null -> {
-                // Skip these node types for now
+            else -> {
+                // Skip Package, Class, Interface, Method, Unknown, and null node types
             }
         }
     }
@@ -42,20 +36,20 @@ class ThresholdValidator(private val config: ThresholdConfiguration) {
     private fun validateFileMetrics(path: String, node: Node, violations: MutableList<ThresholdViolation>) {
         for ((metricName, threshold) in config.fileMetrics) {
             val attributeValue = node.attributes[metricName]
-            if (attributeValue is Number && threshold.isViolated(attributeValue)) {
-                val violationType = threshold.getViolationType(attributeValue)
-                if (violationType != null) {
-                    violations.add(
-                        ThresholdViolation(
-                            path = path,
-                            metricName = metricName,
-                            actualValue = attributeValue,
-                            threshold = threshold,
-                            violationType = violationType
-                        )
-                    )
-                }
-            }
+            if (attributeValue !is Number) continue
+            if (!threshold.isViolated(attributeValue)) continue
+
+            val violationType = threshold.getViolationType(attributeValue) ?: continue
+
+            violations.add(
+                ThresholdViolation(
+                    path = path,
+                    metricName = metricName,
+                    actualValue = attributeValue,
+                    threshold = threshold,
+                    violationType = violationType
+                )
+            )
         }
     }
 }

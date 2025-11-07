@@ -6,33 +6,25 @@ class TextWrapper {
     }
 
     fun wrap(text: String, maxWidth: Int, indent: String): List<String> {
-        if (text.isEmpty()) {
-            return emptyList()
-        }
-
         val words = text.split(" ").filter { it.isNotEmpty() }
-        if (words.isEmpty()) {
-            return emptyList()
-        }
+        if (words.isEmpty()) return emptyList()
 
         val lines = mutableListOf<String>()
-        var currentLine = StringBuilder(indent)
+        val currentLine = StringBuilder(indent)
+        val maxLineLength = maxWidth + indent.length
 
-        for (word in words) {
-            val wouldExceedMaxWidth =
-                currentLine.length + word.length + WORD_SEPARATOR_LENGTH > maxWidth + indent.length
+        words.forEach { word ->
+            val needsSpace = currentLine.length > indent.length
+            val nextLength = currentLine.length + (if (needsSpace) WORD_SEPARATOR_LENGTH else 0) + word.length
 
-            if (wouldExceedMaxWidth && currentLine.length > indent.length) {
+            if (nextLength > maxLineLength && needsSpace) {
                 lines.add(currentLine.toString())
-                currentLine = StringBuilder(indent)
+                currentLine.clear()
+                currentLine.append(indent).append(word)
+            } else {
+                if (needsSpace) currentLine.append(" ")
                 currentLine.append(word)
-                continue
             }
-
-            if (currentLine.length > indent.length) {
-                currentLine.append(" ")
-            }
-            currentLine.append(word)
         }
 
         if (currentLine.length > indent.length) {
