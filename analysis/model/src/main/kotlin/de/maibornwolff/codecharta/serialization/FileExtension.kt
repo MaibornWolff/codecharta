@@ -25,5 +25,6 @@ enum class FileExtension(
     KOTLIN(".kt"),
     PYTHON(".py"),
     RUBY(".rb"),
+    SWIFT(".swift"),
     BASH(".sh")
 }

@@ -40,6 +40,7 @@ class UnifiedParserTest {
             Arguments.of("php", ".php"),
             Arguments.of("python", ".py"),
             Arguments.of("ruby", ".rb"),
+            Arguments.of("swift", ".swift"),
             Arguments.of("typescript", ".ts")
         )
     }

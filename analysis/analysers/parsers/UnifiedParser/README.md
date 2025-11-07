@@ -19,6 +19,7 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Go         | .go                                    |
 | PHP        | .php                                   |
 | Ruby       | .rb                                    |
+| Swift      | .swift                                 |
 | Bash       | .sh                                    |
 
 ## Supported Metrics
@@ -104,15 +105,47 @@ This Parser is built with extensibility in mind and can be extended in two ways:
 
 ### Adding a new language
 
-Adding a new language to the parser is done by creating a new language specific 'collector', which inherits from the abstract class 'MetricCollector'. Such a collector requires two parameters. First a reference to the treesitter implementation for the language. For many language, this can be found [here](https://github.com/bonede/tree-sitter-ng) and can be added as a dependency via the 'libs.versions.toml'. Second, the collector requires language specific queries in form of a query provider.
+Adding a new language to the parser is done by creating a new language-specific 'collector', which inherits from the abstract class 'MetricCollector'. Such a collector requires two parameters: First, a reference to the tree-sitter implementation for the language. Second, the collector requires language-specific node types in form of a node type provider.
 
-As the treesitter grammars differ by language, these queries need to be adjusted for each language. Creating a new query provider is done by inheriting from the 'MetricQueries' interface and creating one query for each member. This interface has one member for each of the metrics currently supported by this parser. It is also possible to provide queries for only some of the metrics. Fot this, the 'getAvailableMetrics' function can be overwritten to only include the metric this language supports
+As the tree-sitter grammars differ by language, these node types need to be adjusted for each language. The node type provider inherits from the 'MetricNodeTypes' interface and defines which tree-sitter node types correspond to each metric (e.g., which nodes represent functions, loops, comments). Research the language's `node-types.json` from the tree-sitter grammar to identify correct node type names.
 
-By default, it is not necessary to implement further logic in the language specific collectors. If however the calculation for one metric differs from the base implementation (most often some specific treesitter-nodes would be wrongfully counted), it is possible to adjust the base implementation using code injection.
+By default, it is not necessary to implement further logic in the language-specific collectors. However, if the calculation for one metric differs from the base implementation (most often when specific tree-sitter nodes would be wrongfully counted), it is possible to adjust the base implementation using code injection.
 
-Finally, to make the newly created collector accessible, add it to the 'AvailableCollectors' enum.
+#### 1. Add tree-sitter dependency
+- Add version and library entries in `analysis/gradle/libs.versions.toml`
+- Add dependency to `analysis/analysers/parsers/UnifiedParser/build.gradle.kts`
+- Tree-sitter implementations: [tree-sitter-ng](https://github.com/bonede/tree-sitter-ng)
 
-It is also recommended to add tests for the new language by creating a test file for the collector, which tests both generic functionality but also special cases of the language.
+#### 2. Add FileExtension enum entry
+Add entry in `analysis/model/src/main/kotlin/de/maibornwolff/codecharta/serialization/FileExtension.kt` (sorted alphabetically)
+
+#### 3. Create NodeTypes class
+Create `YourLanguageNodeTypes.kt` in `metricnodetypes/` implementing `MetricNodeTypes`. Define tree-sitter node types for each metric. Research the language's `node-types.json` to identify correct node type names.
+
+#### 4. Create Collector class
+Create `YourLanguageCollector.kt` in `metriccollectors/`:
+```kotlin
+class YourLanguageCollector : MetricCollector(
+    treeSitterLanguage = TreeSitterYourLanguage(),
+    nodeTypeProvider = YourLanguageNodeTypes()
+)
+```
+
+#### 5. Register in AvailableCollectors
+Add entry to `AvailableCollectors.kt` (alphabetically)
+
+#### 6. Add tests
+Create `YourLanguageCollectorTest.kt` with comprehensive tests following Arrange-Act-Assert pattern. Test language-specific constructs and all metrics.
+
+It is recommended to test both generic functionality as well as special cases of the language.
+
+#### 7. Update documentation
+Add language to "Supported Languages" table in this README
+
+#### 8. Run tests
+```bash
+./gradlew :analysers:parsers:UnifiedParser:test
+```
 
 ### Adding a new metric
 
