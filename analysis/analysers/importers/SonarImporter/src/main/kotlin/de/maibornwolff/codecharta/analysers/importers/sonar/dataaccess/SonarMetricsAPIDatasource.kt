@@ -6,19 +6,19 @@ import de.maibornwolff.codecharta.analysers.importers.sonar.model.Metrics
 import de.maibornwolff.codecharta.util.Logger
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
+import jakarta.ws.rs.client.Client
+import jakarta.ws.rs.client.ClientBuilder
+import jakarta.ws.rs.core.MediaType
 import org.glassfish.jersey.client.ClientProperties
 import java.net.URL
-import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientBuilder
-import javax.ws.rs.core.MediaType
 
 /**
  * Requests Data from Sonar Instance through REST-API
  */
 class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: URL?) {
     private val client: Client =
-        ClientBuilder.newClient().property(ClientProperties.CONNECT_TIMEOUT, Companion.TIMEOUT_MS)
-            .property(ClientProperties.READ_TIMEOUT, Companion.TIMEOUT_MS)
+        ClientBuilder.newClient().property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
+            .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS)
 
     val availableMetricKeys: List<String>
         get() {
@@ -53,7 +53,7 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
     }
 
     fun getAvailableMetrics(page: Int): Metrics {
-        val url = String.format(Companion.METRICS_URL_PATTERN, baseUrl, page)
+        val url = String.format(METRICS_URL_PATTERN, baseUrl, page)
         val request = client.target(url).request(MediaType.APPLICATION_JSON + "; charset=utf-8")
         if (user.isNotEmpty()) {
             request.header("Authorization", "Basic " + AuthenticationHandler.createAuthTxtBase64Encoded(user))

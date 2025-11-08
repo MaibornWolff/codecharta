@@ -6,7 +6,7 @@ cyclonedx = "2.4.1"
 gson = "2.13.2"
 jackson = "2.18.2"
 jacoco = "0.8.11"
-jersey = "2.47"
+jersey = "4.0.0"
 json-schema = "1.14.4"
 json = "20250517"
 juniversalchardet = "1.0.3"
@@ -66,6 +66,7 @@ jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "
 jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jersey-hk2 = { group = "org.glassfish.jersey.inject", name = "jersey-hk2", version.ref = "jersey" }
 javax-activation = { group = "com.sun.activation", name = "javax.activation", version = "1.2.0" }
+jakarta-ws-rs-api = { group = "jakarta.ws.rs", name = "jakarta.ws.rs-api", version = "jersey" }
 wiremock = { group = "org.wiremock", name = "wiremock", version.ref = "wiremock" }
 json = { group = "org.json", name = "json", version.ref = "json" }
 commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.14.0" }
