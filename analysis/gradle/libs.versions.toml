@@ -2,7 +2,7 @@
 kotlin-logging = "7.0.13"
 boon = "0.34"
 commons-lang3 = "3.19.0"
-cyclonedx = "2.4.1"
+cyclonedx = "3.0.1"
 gson = "2.13.2"
 jacoco = "0.8.11"
 jersey = "4.0.0"
