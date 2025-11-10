@@ -17,7 +17,7 @@ describe("AttributeSideBarComponent", () => {
     it("should have file link when given node has a link", async () => {
         const { container } = await render(AttributeSideBarHeaderSectionComponent, {
             providers: [{ provide: IsAttributeSideBarVisibleService, useValue: { isOpen: true } }],
-            componentProperties: {
+            componentInputs: {
                 node: { name: "myNode", children: [{}], path: "./myNode.ts", link: "myNode.com" } as CodeMapNode,
                 fileName: "myNode.ts"
             }
