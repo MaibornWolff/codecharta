@@ -12,6 +12,7 @@ import org.treesitter.TSNode
 import org.treesitter.TSParser
 import org.treesitter.TSTreeCursor
 import java.io.File
+import kotlin.math.round
 
 abstract class MetricCollector(
     private val treeSitterLanguage: TSLanguage,
@@ -130,6 +131,7 @@ abstract class MetricCollector(
     private fun calculateCommentRatio(metricNameToValue: Map<String, Double>): Double {
         val commentLines = metricNameToValue[AvailableFileMetrics.COMMENT_LINES.metricName] ?: 0.0
         val rloc = metricNameToValue[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName] ?: 0.0
-        return if (rloc > 0) commentLines / rloc else 0.0
+        val ratio = if (rloc > 0) commentLines / rloc else return 0.0
+        return round(ratio * 100) / 100
     }
 }

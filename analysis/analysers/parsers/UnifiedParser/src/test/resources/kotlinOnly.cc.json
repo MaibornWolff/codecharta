@@ -1,5 +1,5 @@
 {
-  "checksum": "e93d46493670290d694b3611626ac64f",
+  "checksum": "ed35ba84ac854d6a4cbc4c542d6158e0",
   "data": {
     "projectName": "",
     "nodes": [
@@ -38,7 +38,9 @@
                   "mean_rloc_per_function": 4.5,
                   "median_rloc_per_function": 4.5,
                   "long_method": 0.0,
-                  "long_parameter_list": 0.0
+                  "long_parameter_list": 0.0,
+                  "excessive_comments": 0.0,
+                  "comment_ratio": 0.29
                 },
                 "link": "",
                 "children": [],
@@ -67,7 +69,9 @@
                   "mean_rloc_per_function": 0.0,
                   "median_rloc_per_function": 0.0,
                   "long_method": 0.0,
-                  "long_parameter_list": 0.0
+                  "long_parameter_list": 0.0,
+                  "excessive_comments": 0.0,
+                  "comment_ratio": 0.0
                 },
                 "link": "",
                 "children": [],
@@ -98,7 +102,9 @@
               "mean_rloc_per_function": 4.67,
               "median_rloc_per_function": 4.0,
               "long_method": 0.0,
-              "long_parameter_list": 0.0
+              "long_parameter_list": 0.0,
+              "excessive_comments": 0.0,
+              "comment_ratio": 0.2
             },
             "link": "",
             "children": [],
@@ -127,7 +133,9 @@
               "mean_rloc_per_function": 6.0,
               "median_rloc_per_function": 6.0,
               "long_method": 0.0,
-              "long_parameter_list": 0.0
+              "long_parameter_list": 0.0,
+              "excessive_comments": 0.0,
+              "comment_ratio": 0.0
             },
             "link": "",
             "children": [],
@@ -338,7 +346,7 @@
       },
       "long_method": {
         "title": "Long Method",
-        "description": "Number of functions with more than 10 real lines of code (rloc)",
+        "description": "Code smell showing the number of functions with more than 10 real lines of code (rloc)",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
@@ -349,11 +357,33 @@
       },
       "long_parameter_list": {
         "title": "Long Parameter List",
-        "description": "Number of functions with more than 4 parameters",
+        "description": "Code smell showing the number of functions with more than 4 parameters",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
         "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "excessive_comments": {
+        "title": "Excessive Comments",
+        "description": "Code smell showing whether a file has more than 10 comment lines",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "comment_ratio": {
+        "title": "Comment Ratio",
+        "description": "The ratio of comment lines to real lines of code (rloc)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": 0,
         "analyzers": [
           "unifiedParser"
         ]

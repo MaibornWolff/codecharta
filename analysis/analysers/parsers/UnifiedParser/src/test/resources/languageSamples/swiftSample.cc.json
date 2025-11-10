@@ -1,5 +1,5 @@
 {
-  "checksum": "d2ffdc20d690d0316e815039995b1f44",
+  "checksum": "deb15f90bddd28cda1e7aaa4cd788903",
   "data": {
     "projectName": "",
     "nodes": [
@@ -32,7 +32,9 @@
               "mean_rloc_per_function": 3.85,
               "median_rloc_per_function": 3.0,
               "long_method": 0.0,
-              "long_parameter_list": 0.0
+              "long_parameter_list": 0.0,
+              "excessive_comments": 1.0,
+              "comment_ratio": 0.21
             },
             "link": "",
             "children": [],
@@ -243,7 +245,7 @@
       },
       "long_method": {
         "title": "Long Method",
-        "description": "Number of functions with more than 10 real lines of code (rloc)",
+        "description": "Code smell showing the number of functions with more than 10 real lines of code (rloc)",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
@@ -254,11 +256,33 @@
       },
       "long_parameter_list": {
         "title": "Long Parameter List",
-        "description": "Number of functions with more than 4 parameters",
+        "description": "Code smell showing the number of functions with more than 4 parameters",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
         "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "excessive_comments": {
+        "title": "Excessive Comments",
+        "description": "Code smell showing whether a file has more than 10 comment lines",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "comment_ratio": {
+        "title": "Comment Ratio",
+        "description": "The ratio of comment lines to real lines of code (rloc)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": 0,
         "analyzers": [
           "unifiedParser"
         ]
