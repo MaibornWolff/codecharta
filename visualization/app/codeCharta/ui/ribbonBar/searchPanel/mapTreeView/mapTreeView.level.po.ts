@@ -16,10 +16,14 @@ export class MapTreeViewLevelPageObject {
             parentPath => {
                 const elements = document.querySelectorAll(`[id^="${parentPath}/"]`)
                 // Ensure elements exist and are visible (offsetParent is non-null for visible elements)
-                if (elements.length === 0) return false
+                if (elements.length === 0) {
+                    return false
+                }
                 for (const el of Array.from(elements)) {
                     const htmlEl = el as HTMLElement
-                    if (!htmlEl.offsetParent) return false
+                    if (!htmlEl.offsetParent) {
+                        return false
+                    }
                 }
                 return true
             },
