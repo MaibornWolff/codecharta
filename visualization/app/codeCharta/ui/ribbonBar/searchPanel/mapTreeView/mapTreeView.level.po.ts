@@ -10,6 +10,16 @@ export class MapTreeViewLevelPageObject {
     async openFolder(path: string) {
         await clickButtonOnPageElement(`[id='${path}']`)
         await page.waitForSelector(`[id='${path}'] span.fa.fa-folder-open`)
+
+        // Wait for children to be rendered in DOM after opening folder
+        await page.waitForFunction(
+            parentPath => {
+                const elements = document.querySelectorAll(`[id^="${parentPath}/"]`)
+                return elements.length > 0
+            },
+            { timeout: 10000 },
+            path
+        )
     }
 
     async hoverNode(path: string) {
