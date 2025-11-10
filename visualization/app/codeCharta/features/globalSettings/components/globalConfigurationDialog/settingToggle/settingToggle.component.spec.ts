@@ -1,11 +1,8 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { screen, render } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { SettingToggleComponent } from "./settingToggle.component"
 
 describe("SettingToggleComponent", () => {
-    let fixture: ComponentFixture<SettingToggleComponent>
-
     async function renderComponent(checked: boolean, label: string) {
         return render(SettingToggleComponent, {
             componentInputs: { checked, label }

@@ -1,14 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { screen, render } from "@testing-library/angular"
+import { screen } from "@testing-library/angular"
 import { ExternalLinksComponent } from "./externalLinks.component"
 
 describe("ExternalLinksComponent", () => {
     let fixture: ComponentFixture<ExternalLinksComponent>
     let component: ExternalLinksComponent
-
-    async function renderComponent() {
-        return render(ExternalLinksComponent)
-    }
 
     beforeEach(() => {
         TestBed.configureTestingModule({

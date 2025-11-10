@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { BehaviorSubject, Subject, of } from "rxjs"
+import { BehaviorSubject, Subject } from "rxjs"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
