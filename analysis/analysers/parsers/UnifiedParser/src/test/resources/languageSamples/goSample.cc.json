@@ -1,5 +1,5 @@
 {
-  "checksum": "944f829860f830ab384719ef2e52fd86",
+  "checksum": "2ab9b1dbfe13ff304c208dc8379d9043",
   "data": {
     "projectName": "",
     "nodes": [
@@ -29,8 +29,8 @@
               "median_complexity_per_function": 1.0,
               "max_rloc_per_function": 10.0,
               "min_rloc_per_function": 1.0,
-              "mean_rloc_per_function": 4.67,
-              "median_rloc_per_function": 3.0,
+              "mean_rloc_per_function": 5.33,
+              "median_rloc_per_function": 5.0,
               "long_method": 0.0,
               "long_parameter_list": 0.0
             },

@@ -10,6 +10,7 @@ import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
+import jakarta.ws.rs.core.MediaType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -20,7 +21,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
-import javax.ws.rs.core.MediaType
 
 private const val PORT = 8089
 

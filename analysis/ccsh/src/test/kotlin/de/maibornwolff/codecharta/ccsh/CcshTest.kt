@@ -14,6 +14,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.Timeout
@@ -270,6 +271,10 @@ class CcshTest {
         verify { AnalyserService.executeSelectedAnalyser(any(), any()) }
     }
 
+    @Disabled(
+        "Disabled as mockk has a bug that throws a stackoverflow when mocking System::class in Java 17, " +
+            "see https://github.com/mockk/mockk/issues/1190"
+    )
     @Test
     fun `should execute the selected interactive analyser when only called with name and no args`() {
         // given

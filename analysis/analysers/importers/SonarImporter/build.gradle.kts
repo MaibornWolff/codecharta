@@ -11,8 +11,7 @@ dependencies {
     implementation(libs.kotter)
     implementation(libs.kotter.test)
 
-    implementation(libs.jersey.hk2)
-    implementation(libs.javax.activation)
+    implementation(libs.jakarta.ws.rs.api)
 
     testImplementation(libs.junit.jupiter.api)
 
