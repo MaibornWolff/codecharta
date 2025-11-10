@@ -1,5 +1,5 @@
 {
-  "checksum": "8101bb0708a1b5d4e1b2332be25114e0",
+  "checksum": "89eb8dd8f6f8441688b3f5d14725e68e",
   "data": {
     "projectName": "",
     "nodes": [
@@ -32,7 +32,9 @@
               "mean_rloc_per_function": 1.0,
               "median_rloc_per_function": 1.0,
               "long_method": 0.0,
-              "long_parameter_list": 0.0
+              "long_parameter_list": 0.0,
+              "excessive_comments": 0.0,
+              "comment_ratio": 0.4
             },
             "link": "",
             "children": [],
@@ -61,7 +63,9 @@
               "mean_rloc_per_function": 6.0,
               "median_rloc_per_function": 6.0,
               "long_method": 0.0,
-              "long_parameter_list": 0.0
+              "long_parameter_list": 0.0,
+              "excessive_comments": 0.0,
+              "comment_ratio": 0.0
             },
             "link": "",
             "children": [],
@@ -272,7 +276,7 @@
       },
       "long_method": {
         "title": "Long Method",
-        "description": "Number of functions with more than 10 real lines of code (rloc)",
+        "description": "Code smell showing the number of functions with more than 10 real lines of code (rloc)",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
@@ -283,11 +287,33 @@
       },
       "long_parameter_list": {
         "title": "Long Parameter List",
-        "description": "Number of functions with more than 4 parameters",
+        "description": "Code smell showing the number of functions with more than 4 parameters",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
         "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "excessive_comments": {
+        "title": "Excessive Comments",
+        "description": "Code smell showing whether a file has more than 10 comment lines",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "comment_ratio": {
+        "title": "Comment Ratio",
+        "description": "The ratio of comment lines to real lines of code (rloc)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": 0,
         "analyzers": [
           "unifiedParser"
         ]
