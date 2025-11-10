@@ -252,4 +252,142 @@ class CodeSmellsTest {
         // Assert
         Assertions.assertThat(result.attributes[AvailableFileMetrics.LONG_METHOD.metricName]).isEqualTo(0.0)
     }
+
+    @Test
+    fun `should detect excessive comments when file has more than 10 comment lines`() {
+        // Arrange
+        val fileContent = """
+            public class Example {
+                // Comment 1
+                // Comment 2
+                // Comment 3
+                // Comment 4
+                // Comment 5
+                // Comment 6
+                // Comment 7
+                // Comment 8
+                // Comment 9
+                // Comment 10
+                // Comment 11
+                public void method() {
+                    int a = 1;
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.EXCESSIVE_COMMENTS.metricName]).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should not detect excessive comments when file has exactly 10 comment lines`() {
+        // Arrange
+        val fileContent = """
+            public class Example {
+                // Comment 1
+                // Comment 2
+                // Comment 3
+                // Comment 4
+                // Comment 5
+                // Comment 6
+                // Comment 7
+                // Comment 8
+                // Comment 9
+                // Comment 10
+                public void method() {
+                    int a = 1;
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.EXCESSIVE_COMMENTS.metricName]).isEqualTo(0.0)
+    }
+
+    @Test
+    fun `should not detect excessive comments when file has fewer than 10 comment lines`() {
+        // Arrange
+        val fileContent = """
+            public class Example {
+                // Comment 1
+                // Comment 2
+                public void method() {
+                    int a = 1;
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.EXCESSIVE_COMMENTS.metricName]).isEqualTo(0.0)
+    }
+
+    @Test
+    fun `should calculate comment ratio correctly`() {
+        // Arrange
+        val fileContent = """
+            public class Example {
+                // Comment 1
+                // Comment 2
+                public void method() {
+                    int a = 1;
+                    int b = 2;
+                    int c = 3;
+                    int d = 4;
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_RATIO.metricName]).isEqualTo(0.25)
+    }
+
+    @Test
+    fun `should calculate comment ratio as 0 when rloc is 0`() {
+        // Arrange
+        val fileContent = """
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_RATIO.metricName]).isEqualTo(0.0)
+    }
+
+    @Test
+    fun `should calculate comment ratio as 0 when there are no comments`() {
+        // Arrange
+        val fileContent = """
+            public class Example {
+                public void method() {
+                    int a = 1;
+                    int b = 2;
+                }
+            }
+        """.trimIndent()
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMMENT_RATIO.metricName]).isEqualTo(0.0)
+    }
 }
