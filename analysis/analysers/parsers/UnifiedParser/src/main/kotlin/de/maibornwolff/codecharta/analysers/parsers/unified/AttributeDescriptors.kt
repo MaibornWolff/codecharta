@@ -132,16 +132,30 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         ),
         "long_method" to AttributeDescriptor(
             title = "Long Method",
-            description = "Number of functions with more than 10 real lines of code (rloc)",
+            description = "Code smell showing the number of functions with more than 10 real lines of code (rloc)",
             link = ghLink,
             direction = -1,
             analyzers = analyzerName
         ),
         "long_parameter_list" to AttributeDescriptor(
             title = "Long Parameter List",
-            description = "Number of functions with more than 4 parameters",
+            description = "Code smell showing the number of functions with more than 4 parameters",
             link = ghLink,
             direction = -1,
+            analyzers = analyzerName
+        ),
+        "excessive_comments" to AttributeDescriptor(
+            title = "Excessive Comments",
+            description = "Code smell showing whether a file has more than 10 comment lines",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "comment_ratio" to AttributeDescriptor(
+            title = "Comment Ratio",
+            description = "The ratio of comment lines to real lines of code (rloc)",
+            link = ghLink,
+            direction = 0,
             analyzers = analyzerName
         )
     )
