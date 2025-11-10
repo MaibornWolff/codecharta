@@ -20,8 +20,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Bump Angular Version from 18 to 20 this might lead to smaller issues in the design. We will fix those as soon as we notice them.
 
 ### Fixed 🐞
-- replace material design of color picker, gradiant selector in color metric options and legend block with DaisyUI.
 
+- replace material design of color picker, gradiant selector in color metric options and legend block with DaisyUI.
+- Node tooltip' attribute side bar migrated to daisyUI
 ## [1.137.0] - 2025-10-09
 
 ### Added 🚀
