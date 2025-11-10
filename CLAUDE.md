@@ -284,6 +284,10 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 - Rules defined in `.editorconfig`
 - **Function syntax**: Use block-body style with braces `{ }` consistently, not expression-body style with `=`
 - **Guard clauses**: Use early returns for error conditions and edge cases to reduce nesting
+- **If expressions**: Prefer concise single-line style when possible:
+  - ✅ `val x = if (condition) valueA else valueB`
+  - ❌ `val x = if (condition) { valueA } else { valueB }`
+  - Use multi-line only when branches contain multiple statements or complex logic
 - **Magic strings/numbers**: Extract repeated literals to constants in `companion object`
 - **Function organization**: Group related functions with section comments
 - **Parameter naming**: Use consistent, descriptive names across related functions

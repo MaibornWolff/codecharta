@@ -20,6 +20,8 @@ enum class AvailableFileMetrics(val metricName: String) {
     REAL_LINES_OF_CODE("rloc"),
     LONG_METHOD("long_method"),
     LONG_PARAMETER_LIST("long_parameter_list"),
+    EXCESSIVE_COMMENTS("excessive_comments"),
+    COMMENT_RATIO("comment_ratio"),
     LINES_OF_CODE("loc")
 }
 
