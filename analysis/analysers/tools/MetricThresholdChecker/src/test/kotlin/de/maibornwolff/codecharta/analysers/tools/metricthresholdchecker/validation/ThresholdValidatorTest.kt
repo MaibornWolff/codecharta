@@ -45,10 +45,10 @@ class ThresholdValidatorTest {
 
         // Assert
         assertThat(violations).hasSize(1)
-        assertThat(violations[0].path).isEqualTo("root/File.kt")
-        assertThat(violations[0].metricName).isEqualTo("coverage")
-        assertThat(violations[0].actualValue).isEqualTo(50)
-        assertThat(violations[0].violationType).isEqualTo(ViolationType.BELOW_MIN)
+        assertThat(violations.first().path).isEqualTo("root/File.kt")
+        assertThat(violations.first().metricName).isEqualTo("coverage")
+        assertThat(violations.first().actualValue).isEqualTo(50)
+        assertThat(violations.first().violationType).isEqualTo(ViolationType.BELOW_MIN)
     }
 
     @Test
@@ -67,10 +67,10 @@ class ThresholdValidatorTest {
 
         // Assert
         assertThat(violations).hasSize(1)
-        assertThat(violations[0].path).isEqualTo("root/File.kt")
-        assertThat(violations[0].metricName).isEqualTo("complexity")
-        assertThat(violations[0].actualValue).isEqualTo(100)
-        assertThat(violations[0].violationType).isEqualTo(ViolationType.ABOVE_MAX)
+        assertThat(violations.first().path).isEqualTo("root/File.kt")
+        assertThat(violations.first().metricName).isEqualTo("complexity")
+        assertThat(violations.first().actualValue).isEqualTo(100)
+        assertThat(violations.first().violationType).isEqualTo(ViolationType.ABOVE_MAX)
     }
 
     @Test
@@ -136,7 +136,7 @@ class ThresholdValidatorTest {
 
         // Assert
         assertThat(violations).hasSize(1)
-        assertThat(violations[0].path).isEqualTo("root/src/main/File.kt")
+        assertThat(violations.first().path).isEqualTo("root/src/main/File.kt")
     }
 
     @Test
@@ -285,7 +285,7 @@ class ThresholdValidatorTest {
 
         // Assert
         assertThat(violations).hasSize(1)
-        assertThat(violations[0].actualValue).isEqualTo(75.5)
+        assertThat(violations.first().actualValue).isEqualTo(75.5)
     }
 
     @Test
@@ -303,7 +303,7 @@ class ThresholdValidatorTest {
         val violations = validator.validate(project)
 
         // Assert
-        assertThat(violations[0].path).isEqualTo("root/File.kt")
+        assertThat(violations.first().path).isEqualTo("root/File.kt")
     }
 
     @Test
