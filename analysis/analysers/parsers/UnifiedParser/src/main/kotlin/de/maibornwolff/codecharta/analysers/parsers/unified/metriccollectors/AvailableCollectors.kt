@@ -9,6 +9,7 @@ enum class AvailableCollectors(
     TYPESCRIPT(FileExtension.TYPESCRIPT, ::TypescriptCollector),
     JAVASCRIPT(FileExtension.JAVASCRIPT, ::JavascriptCollector),
     KOTLIN(FileExtension.KOTLIN, ::KotlinCollector),
+    OBJECTIVE_C(FileExtension.OBJECTIVE_C, ::ObjectiveCCollector),
     JAVA(FileExtension.JAVA, ::JavaCollector),
     CSHARP(FileExtension.CSHARP, ::CSharpCollector),
     CPP(FileExtension.CPP, ::CppCollector),
