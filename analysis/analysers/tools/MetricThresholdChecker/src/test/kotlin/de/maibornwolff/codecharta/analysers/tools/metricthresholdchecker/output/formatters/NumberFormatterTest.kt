@@ -31,7 +31,7 @@ class NumberFormatterTest {
     }
 
     @Test
-    fun `should format decimal with two decimal places`() {
+    fun `should format decimal with two decimal places using round-half-up`() {
         // Arrange
         val formatter = NumberFormatter()
         val value = 75.567
@@ -40,7 +40,7 @@ class NumberFormatterTest {
         val result = formatter.format(value)
 
         // Assert
-        assertThat(result).matches("75[.,]5[67]")
+        assertThat(result).matches("75[.,]57")
     }
 
     @Test
