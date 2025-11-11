@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Add MetricThresholdChecker tool for validating code metrics against configurable thresholds in CI/CD pipelines
+- Add MetricThresholdChecker tool for validating code metrics against configurable thresholds in CI/CD pipelines [#4334](https://github.com/MaibornWolff/codecharta/pull/4334)
   - Validates file-level metrics from UnifiedParser (rloc, complexity, max_complexity_per_function, etc.)
   - Supports YAML and JSON configuration files
   - Reports violations sorted by severity with color-coded console output
