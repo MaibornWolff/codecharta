@@ -74,4 +74,8 @@ class PhpNodeTypes : MetricNodeTypes {
             "simple_parameter"
         )
     )
+
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
 }

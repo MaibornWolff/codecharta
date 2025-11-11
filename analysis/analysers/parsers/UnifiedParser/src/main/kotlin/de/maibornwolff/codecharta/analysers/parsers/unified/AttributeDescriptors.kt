@@ -157,6 +157,14 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             link = ghLink,
             direction = 0,
             analyzers = analyzerName
+        ),
+        "message_chains" to AttributeDescriptor(
+            title = "Message Chains",
+            description = "Code smell showing occurrences of method call chains with 4 or more consecutive calls " +
+                "suggesting tight coupling",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
         )
     )
 }
