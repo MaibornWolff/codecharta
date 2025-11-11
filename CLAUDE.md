@@ -59,12 +59,21 @@ cd analysis
 # Run a single test class
 ./gradlew test --tests "ClassName"
 
+# Run tests in a specific package
+./gradlew test --tests "package.name.*"
+
 # Run Sonar analysis
 ./gradlew sonar
 
 # Use installed ccsh (after installDist)
 ./build/install/codecharta-analysis/bin/ccsh
 ```
+
+**IMPORTANT**: All `./gradlew` commands must be run from the `analysis/` directory. If you are in a subdirectory, you must either:
+1. Change to the analysis directory first: `cd /path/to/analysis && ./gradlew test`
+2. OR use the full relative path: `cd /path/to/analysis && ./gradlew :subproject:test`
+
+Do NOT run `./gradlew` from subdirectories as it will fail with "no such file or directory".
 
 **Note**: On Windows, add Git's `sh.exe` (typically `C:\path-to-git\Git\bin`) to PATH for integration tests. On macOS, install `timeout` via `brew install coreutils`.
 
