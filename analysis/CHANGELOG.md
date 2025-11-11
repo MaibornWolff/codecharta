@@ -14,9 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - RawTextParser now automatically uses `.gitignore` files for file exclusion [#4273](https://github.com/MaibornWolff/codecharta/issues/4273)
 - Add swift support to unifiedparser [#4335](https://github.com/MaibornWolff/codecharta/issues/4335)
 - GitLogParser is now able to find commits that contain the word hotfixes
-- Add two code smell metrics to unifiedparser [#4315](https://github.com/MaibornWolff/codecharta/issues/4315)
+- Add four code smell metrics to unifiedparser [#4315](https://github.com/MaibornWolff/codecharta/issues/4315) and [#4353](https://github.com/MaibornWolff/codecharta/issues/4353)
   - long function
   - long parameter list
+  - message chains
+  - excessive comments
+- Add comment ratio metric to unifiedparser [#4353](https://github.com/MaibornWolff/codecharta/issues/4353)
 
 ### Fixed 🐞
 
