@@ -1,18 +1,23 @@
 :host {
-    a:link,
-    a:visited {
+    display: block;
+    margin-bottom: 8px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    a {
         text-decoration: none;
-        color: #000;
-    }
+        color: inherit;
 
-    a:hover {
-        color: blue;
-        text-decoration: solid;
-        text-decoration-line: underline;
-    }
+        &:hover {
+            text-decoration: underline;
+            color: blue;
+        }
 
-    a:active {
-        color: red;
+        &:active {
+            color: red;
+        }
     }
 
     i.fa.fa-external-link {
