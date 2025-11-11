@@ -54,9 +54,9 @@ abstract class MetricCollector(
         // lines of code is added here manually to improve performance as no tree walk is necessary
         metricNameToValue[AvailableFileMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row.toDouble()
 
-        metricNameToValue.putAll(metricCalculators.getMeasuresOfPerFunctionMetrics())
-
         countCodeSmells(metricNameToValue)
+
+        metricNameToValue.putAll(metricCalculators.getMeasuresOfPerFunctionMetrics())
 
         return MutableNode(
             name = file.name,

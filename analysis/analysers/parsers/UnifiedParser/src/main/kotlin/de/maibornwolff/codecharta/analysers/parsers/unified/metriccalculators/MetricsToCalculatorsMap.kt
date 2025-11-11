@@ -58,6 +58,15 @@ class MetricsToCalculatorsMap(
                     )
                 )
             },
+            AvailableFileMetrics.MESSAGE_CHAINS to { node: TSNode, nodeType: String, _: Int, _: Int ->
+                messageChainsCalc.calculateMetricForNode(
+                    CalculationContext(
+                        node,
+                        nodeType,
+                        shouldIgnoreNode = { _: TSNode, _: String -> false }
+                    )
+                )
+            },
             AvailableFileMetrics.REAL_LINES_OF_CODE to { node: TSNode, nodeType: String, startRow: Int, endRow: Int ->
                 realLinesOfCodeCalc.calculateMetricForNode(
                     CalculationContext(
@@ -68,15 +77,6 @@ class MetricsToCalculatorsMap(
                         calcExtensions.ignoreNodeForRealLinesOfCode,
                         calcExtensions.countNodeAsLeafNode,
                         calcExtensions.hasFunctionBodyStartOrEndNode
-                    )
-                )
-            },
-            AvailableFileMetrics.MESSAGE_CHAINS to { node: TSNode, nodeType: String, _: Int, _: Int ->
-                messageChainsCalc.calculateMetricForNode(
-                    CalculationContext(
-                        node,
-                        nodeType,
-                        shouldIgnoreNode = { _: TSNode, _: String -> false }
                     )
                 )
             }
