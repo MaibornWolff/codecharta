@@ -1,3 +1,4 @@
+import org.cyclonedx.model.Component
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.sonarqube.gradle.SonarExtension
 
@@ -167,13 +168,21 @@ tasks.named("sonar") {
     dependsOn("build", "jacocoTestReport")
 }
 
+allprojects {
+    tasks.cyclonedxDirectBom {
+        includeConfigs = listOf("runtimeClasspath")
+        skipConfigs = listOf("compileClasspath", "testCompileClasspath")
+        projectType = Component.Type.APPLICATION
+        includeLicenseText = true
+        // Generate only JSON format
+        xmlOutput.unsetConvention()
+    }
+}
+
 tasks.cyclonedxBom {
-    setIncludeConfigs(listOf("runtimeClasspath"))
-    setSkipConfigs(listOf("compileClasspath", "testCompileClasspath"))
-    setProjectType("application")
-    setSchemaVersion("1.6")
-    setDestination(project.file("build/reports"))
-    setOutputName("sbom_analysis.cdx")
-    setOutputFormat("json")
-    setIncludeLicenseText(true)
+    projectType = Component.Type.APPLICATION
+    // Generate only JSON format
+    xmlOutput.unsetConvention()
+    // Configure JSON output (default: build/reports/cyclonedx-aggregate/bom.json)
+    jsonOutput.set(file("build/reports/sbom_analysis.cdx.json"))
 }
