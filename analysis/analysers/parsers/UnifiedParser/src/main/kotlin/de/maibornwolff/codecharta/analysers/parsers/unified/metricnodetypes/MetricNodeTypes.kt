@@ -7,6 +7,7 @@ interface MetricNodeTypes {
     val numberOfFunctionsNodeTypes: TreeNodeTypes
     val functionBodyNodeTypes: TreeNodeTypes
     val functionParameterNodeTypes: TreeNodeTypes
+    val messageChainsNodeTypes: TreeNodeTypes
     // node types for lines_of_code (LOC) is not needed as it is independent of the language
     // node types for real_lines_of_code (RLOC) is also not needed as it counts everything that's not a comment
 }
@@ -18,6 +19,7 @@ enum class AvailableFileMetrics(val metricName: String) {
     COMMENT_LINES("comment_lines"),
     NUMBER_OF_FUNCTIONS("number_of_functions"),
     REAL_LINES_OF_CODE("rloc"),
+    MESSAGE_CHAINS("message_chains"),
     LONG_METHOD("long_method"),
     LONG_PARAMETER_LIST("long_parameter_list"),
     EXCESSIVE_COMMENTS("excessive_comments"),

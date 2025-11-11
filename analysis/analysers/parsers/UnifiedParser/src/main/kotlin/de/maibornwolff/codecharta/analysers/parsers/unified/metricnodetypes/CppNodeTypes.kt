@@ -86,4 +86,8 @@ class CppNodeTypes : MetricNodeTypes {
             return nodeType == FUNCTION_DECLARATION_TYPE && node.parent.type == FUNCTION_DEFINITION_TYPE
         }
     }
+
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
 }

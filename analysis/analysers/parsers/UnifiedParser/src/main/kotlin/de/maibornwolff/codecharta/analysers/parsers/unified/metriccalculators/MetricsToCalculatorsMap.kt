@@ -12,6 +12,7 @@ class MetricsToCalculatorsMap(
     val commentCalc = CommentLinesCalc(nodeTypeProvider)
     val numberOfFunctionsCalc = NumberOfFunctionsCalc(nodeTypeProvider)
     val realLinesOfCodeCalc = RealLinesOfCodeCalc(nodeTypeProvider)
+    val messageChainsCalc = MessageChainsCalc(nodeTypeProvider)
 
     val parametersPerFunctionCalc = ParametersPerFunctionCalc(nodeTypeProvider)
 
@@ -67,6 +68,15 @@ class MetricsToCalculatorsMap(
                         calcExtensions.ignoreNodeForRealLinesOfCode,
                         calcExtensions.countNodeAsLeafNode,
                         calcExtensions.hasFunctionBodyStartOrEndNode
+                    )
+                )
+            },
+            AvailableFileMetrics.MESSAGE_CHAINS to { node: TSNode, nodeType: String, _: Int, _: Int ->
+                messageChainsCalc.calculateMetricForNode(
+                    CalculationContext(
+                        node,
+                        nodeType,
+                        shouldIgnoreNode = { _: TSNode, _: String -> false }
                     )
                 )
             }

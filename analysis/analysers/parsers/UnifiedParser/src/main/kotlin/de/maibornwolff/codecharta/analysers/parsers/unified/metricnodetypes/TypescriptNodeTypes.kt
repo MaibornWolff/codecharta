@@ -75,4 +75,11 @@ class TypescriptNodeTypes : MetricNodeTypes {
             "required_parameter"
         )
     )
+
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "member_expression",
+            "call_expression"
+        )
+    )
 }

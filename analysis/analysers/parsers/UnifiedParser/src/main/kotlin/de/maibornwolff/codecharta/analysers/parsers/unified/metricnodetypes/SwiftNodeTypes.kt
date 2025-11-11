@@ -70,4 +70,8 @@ class SwiftNodeTypes : MetricNodeTypes {
             "parameter"
         )
     )
+
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
 }

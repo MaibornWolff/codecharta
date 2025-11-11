@@ -46,6 +46,7 @@ CodeCharta. It generates either a cc.json or a csv file.
 | Long Parameter List       | Code smell showing the number of functions with more than 4 parameters                                                                                                                                                     |
 | Excessive Comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
 | Comment Ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
+| Message Chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file.
 
