@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.unified
+package de.maibornwolff.codecharta.analysers.parsers.unified.codesmells
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFileMetrics
