@@ -2,12 +2,18 @@
 name: <name>
 issue: <#issueid>
 state: <todo | progress | complete>
-version: <version number>
+component: <analysis | visualization | both>
+version: <semantic version when completed, e.g., 1.138.0>
 ---
 
 ## Goal
 
 <Describe the goal of this task in 1-3 sentences>
+
+**Important:** When marking this plan as `state: complete`, update the `version` field with the current version of the affected component(s):
+- For analysis changes: Use version from `analysis/gradle.properties` (currentVersion)
+- For visualization changes: Use version from `visualization/package.json`
+- For both: Use the higher version number or list both (e.g., "analysis: 1.138.0, visualization: 1.137.0")
 
 ## Tasks
 

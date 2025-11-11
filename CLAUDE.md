@@ -243,6 +243,14 @@ Each state slice has dedicated actions, reducers, and selectors. Effects (`state
 - Update `state` field as work progresses: `todo` → `progress` → `complete`
 - Always use the AskUserQuestion tool to clarify ambiguous requirements before finalizing the plan
 
+**Plan Frontmatter Requirements**:
+- `component`: Specify `analysis`, `visualization`, or `both` to indicate which part of the codebase is affected
+- `version`: When marking a plan as `state: complete`, update the version field with the current semantic version:
+  - For `analysis`: Use version from `analysis/gradle.properties` (currentVersion field)
+  - For `visualization`: Use version from `visualization/package.json`
+  - For `both`: Use the higher version number or list both
+- Plans that are 2+ minor versions old and marked as complete will be automatically cleaned up using `npm run plans:cleanup`
+
 ### Branching Strategy
 
 - Main branch: `main`

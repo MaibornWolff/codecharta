@@ -212,3 +212,37 @@ jobs:
           branch: gh-pages
           folder: visualization/dist/bundler/browser
           target-folder: visualization/app
+
+  # Cleanup old plans
+  cleanup_plans:
+    needs: build
+    name: Cleanup Old Plans
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Run plans cleanup for visualization
+        run: |
+          npm run plans:cleanup:visualization
+
+      - name: Commit deleted plans
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          if [[ -n $(git status -s plans/) ]]; then
+            git add plans/
+            git commit -m "chore(docs): cleanup old visualization plans after release ${{ needs.build.outputs.version }}"
+            git push
+          else
+            echo "No plans to cleanup"
+          fi

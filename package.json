@@ -23,7 +23,11 @@
     "format": "biome format --fix --no-errors-on-unmatched",
     "format:check": "biome check",
     "prepare": "husky install",
-    "commitlint": "commitlint --config commitlint.config.js --edit"
+    "commitlint": "commitlint --config commitlint.config.js --edit",
+    "plans:cleanup": "node scripts/cleanup-old-plans.js",
+    "plans:cleanup:dry-run": "node scripts/cleanup-old-plans.js --dry-run",
+    "plans:cleanup:analysis": "node scripts/cleanup-old-plans.js --component=analysis",
+    "plans:cleanup:visualization": "node scripts/cleanup-old-plans.js --component=visualization"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
