@@ -84,6 +84,12 @@ class JavascriptNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call_expression"
+        )
+    )
+
     companion object {
         private const val FUNCTION_NAME_TYPE = "identifier"
         private const val FUNCTION_DECLARATION_TYPE = "function_declaration"

@@ -77,6 +77,15 @@ class CSharpNodeTypes : MetricNodeTypes {
     )
 
     override val messageChainsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "invocation_expression",
+            "member_access_expression"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "invocation_expression"
+        )
     )
 }

@@ -59,4 +59,8 @@ class BashNodeTypes : MetricNodeTypes {
     override val messageChainsNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf()
     )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf()
+    )
 }

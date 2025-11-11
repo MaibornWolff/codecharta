@@ -16,18 +16,23 @@ class MessageChainsCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFileCa
 
         if (params.shouldIgnoreNode(node, nodeType)) return 0
 
-        if (!isChainNodeType(nodeType)) {
+        val isChainNode = isNodeTypeAllowed(node, nodeType, nodeTypeProvider.messageChainsNodeTypes)
+
+        if (!isChainNode) {
             currentChainCallCount = 0
             chainAlreadyCounted = false
             return 0
         }
 
-        if (!isChainNodeType(node.parent.type)) {
+        val parent = node.parent
+        val parentIsChainNode = isNodeTypeAllowed(parent, parent.type, nodeTypeProvider.messageChainsNodeTypes)
+
+        if (!parentIsChainNode) {
             currentChainCallCount = 0
             chainAlreadyCounted = false
         }
 
-        if (nodeType == "call_expression") { //TODO: make this language independent
+        if (isCallNode(nodeType)) {
             currentChainCallCount++
 
             if (currentChainCallCount >= MESSAGE_CHAINS_THRESHOLD && !chainAlreadyCounted) {
@@ -39,7 +44,7 @@ class MessageChainsCalc(val nodeTypeProvider: MetricNodeTypes) : MetricPerFileCa
         return 0
     }
 
-    private fun isChainNodeType(nodeType: String): Boolean {
-        return nodeType == "call_expression" || nodeType == "member_expression"
+    private fun isCallNode(nodeType: String): Boolean {
+        return nodeTypeProvider.messageChainsCallNodeTypes.simpleNodeTypes.contains(nodeType)
     }
 }

@@ -94,6 +94,15 @@ class KotlinNodeTypes : MetricNodeTypes {
     )
 
     override val messageChainsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "call_expression",
+            "navigation_expression"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call_expression"
+        )
     )
 }
