@@ -108,6 +108,15 @@ class PythonNodeTypes : MetricNodeTypes {
     }
 
     override val messageChainsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "call",
+            "attribute"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call"
+        )
     )
 }

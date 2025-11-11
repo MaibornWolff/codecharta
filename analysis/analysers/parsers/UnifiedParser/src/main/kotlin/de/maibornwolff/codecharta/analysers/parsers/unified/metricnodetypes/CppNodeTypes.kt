@@ -88,6 +88,15 @@ class CppNodeTypes : MetricNodeTypes {
     }
 
     override val messageChainsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf()
+        simpleNodeTypes = setOf(
+            "call_expression",
+            "field_expression"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call_expression"
+        )
     )
 }

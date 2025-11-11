@@ -82,4 +82,10 @@ class TypescriptNodeTypes : MetricNodeTypes {
             "call_expression"
         )
     )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call_expression"
+        )
+    )
 }
