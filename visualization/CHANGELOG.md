@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Node tooltip' attribute side bar  migrated to daisyUI
+- replace material design of color picker, gradiant selector in color metric options and legend block with DaisyUI.
+
 ## [1.137.0] - 2025-10-09
 
 ### Added 🚀
