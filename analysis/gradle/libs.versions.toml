@@ -65,7 +65,6 @@ jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-datab
 jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
 jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jersey-hk2 = { group = "org.glassfish.jersey.inject", name = "jersey-hk2", version.ref = "jersey" }
-javax-activation = { group = "com.sun.activation", name = "javax.activation", version = "1.2.0" }
 jakarta-ws-rs-api = { group = "jakarta.ws.rs", name = "jakarta.ws.rs-api", version = "jersey" }
 wiremock = { group = "org.wiremock", name = "wiremock", version.ref = "wiremock" }
 json = { group = "org.json", name = "json", version.ref = "json" }
