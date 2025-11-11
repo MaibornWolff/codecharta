@@ -1,5 +1,5 @@
 {
-  "checksum": "e24554604831c0ad3d41495bc16ab21d",
+  "checksum": "f983aebcae5f795440bf7a8ec6cadba1",
   "data": {
     "projectName": "",
     "nodes": [
@@ -251,6 +251,17 @@
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
         "direction": 0,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "message_chains": {
+        "title": "Message Chains",
+        "description": "Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
         "analyzers": [
           "unifiedParser"
         ]

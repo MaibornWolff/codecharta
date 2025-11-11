@@ -1,5 +1,5 @@
 {
-  "checksum": "daaf5c4718a8b341f0020f0985be497e",
+  "checksum": "0289156540786ae61f5a308eb70496b1",
   "data": {
     "projectName": "",
     "nodes": [
@@ -17,8 +17,13 @@
               "logic_complexity": 19.0,
               "comment_lines": 22.0,
               "number_of_functions": 8.0,
+              "message_chains": 0.0,
               "rloc": 97.0,
               "loc": 139.0,
+              "long_method": 3.0,
+              "long_parameter_list": 1.0,
+              "excessive_comments": 1.0,
+              "comment_ratio": 0.23,
               "max_parameters_per_function": 5.0,
               "min_parameters_per_function": 0.0,
               "mean_parameters_per_function": 2.12,
@@ -30,11 +35,7 @@
               "max_rloc_per_function": 22.0,
               "min_rloc_per_function": 1.0,
               "mean_rloc_per_function": 7.62,
-              "median_rloc_per_function": 5.5,
-              "long_method": 3.0,
-              "long_parameter_list": 1.0,
-              "excessive_comments": 1.0,
-              "comment_ratio": 0.23
+              "median_rloc_per_function": 5.5
             },
             "link": "",
             "children": [],
@@ -283,6 +284,17 @@
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
         "direction": 0,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "message_chains": {
+        "title": "Message Chains",
+        "description": "Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
         "analyzers": [
           "unifiedParser"
         ]
