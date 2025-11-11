@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
+// Note: Cannot test violation scenarios that call exitProcess(1) without
+// mocking System.exit, which would require additional infrastructure.
+// The violation detection logic is thoroughly tested in ThresholdValidatorTest.
 class MetricThresholdCheckerTest {
     private val resourcePath = "src/test/resources"
 
@@ -24,29 +27,26 @@ class MetricThresholdCheckerTest {
     }
 
     @Test
-    fun `should handle non-existent config file`() {
-        // Arrange
-        val outputStream = ByteArrayOutputStream()
-        val errorStream = ByteArrayOutputStream()
-        val checker = MetricThresholdChecker(PrintStream(outputStream), PrintStream(errorStream))
-        // Note: Cannot use mainWithOutputStream as Picocli will exit
-        // Testing the logic is covered in unit tests
+    fun `should have correct name constant`() {
+        // Act
+        val name = MetricThresholdChecker.NAME
 
         // Assert
-        assertThat(MetricThresholdChecker.NAME).isNotBlank()
+        assertThat(name).isEqualTo("metricthresholdchecker")
     }
 
     @Test
-    fun `should handle non-existent input directory`() {
+    fun `should return correct name from instance`() {
         // Arrange
         val outputStream = ByteArrayOutputStream()
         val errorStream = ByteArrayOutputStream()
-        // Note: Cannot test with mainWithOutputStream as Picocli handles errors
-        // Testing the validation logic directly
         val checker = MetricThresholdChecker(PrintStream(outputStream), PrintStream(errorStream))
 
+        // Act
+        val name = checker.name
+
         // Assert
-        assertThat(checker.name).isEqualTo(MetricThresholdChecker.NAME)
+        assertThat(name).isEqualTo(MetricThresholdChecker.NAME)
     }
 
     @Test
@@ -72,10 +72,6 @@ class MetricThresholdCheckerTest {
         assertThat(errorOutput).contains("✓ All checks passed!")
     }
 
-    // Note: Cannot test violation scenarios that call exitProcess(1) without
-    // mocking System.exit, which would require additional infrastructure.
-    // The violation detection logic is thoroughly tested in ThresholdValidatorTest.
-
     @Test
     fun `should respect exclude patterns`() {
         // Arrange
@@ -96,7 +92,7 @@ class MetricThresholdCheckerTest {
             args
         )
 
-        // Assert - should pass even with exclusions
+        // Assert
         val errorOutput = errorStream.toString()
         assertThat(errorOutput).contains("All checks passed")
     }
@@ -106,7 +102,6 @@ class MetricThresholdCheckerTest {
         // Arrange
         val outputStream = ByteArrayOutputStream()
         val errorStream = ByteArrayOutputStream()
-        // Only parse .java files
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
@@ -122,7 +117,7 @@ class MetricThresholdCheckerTest {
             args
         )
 
-        // Assert - should complete without analyzing .kt files
+        // Assert
         val errorOutput = errorStream.toString()
         assertThat(errorOutput).contains("All checks passed")
     }
@@ -170,7 +165,7 @@ class MetricThresholdCheckerTest {
             args
         )
 
-        // Assert - should complete successfully
+        // Assert
         val errorOutput = errorStream.toString()
         assertThat(errorOutput).contains("All checks passed")
     }
@@ -185,12 +180,6 @@ class MetricThresholdCheckerTest {
 
         // Assert
         assertThat(isApplicable).isFalse()
-    }
-
-    @Test
-    fun `should have correct name constant`() {
-        // Assert
-        assertThat(MetricThresholdChecker.NAME).isEqualTo("metricthresholdchecker")
     }
 
     @Test
@@ -218,8 +207,6 @@ class MetricThresholdCheckerTest {
         // Arrange
         val outputStream = ByteArrayOutputStream()
         val errorStream = ByteArrayOutputStream()
-        // Use file extensions filter to exclude all .kt files, making it effectively empty
-        // No .cpp files in sample-code
         val args = arrayOf(
             "$resourcePath/sample-code",
             "--config",
@@ -235,7 +222,7 @@ class MetricThresholdCheckerTest {
             args
         )
 
-        // Assert - should complete successfully even with no parsable files
+        // Assert
         val errorOutput = errorStream.toString()
         assertThat(errorOutput).contains("checks passed")
     }
