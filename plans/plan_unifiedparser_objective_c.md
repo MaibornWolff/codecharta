@@ -1,7 +1,7 @@
 ---
 name: Add Objective-C Language Support to UnifiedParser
 issue: #4361
-state: todo
+state: progress
 version: 1.0
 ---
 
@@ -117,11 +117,11 @@ Verify the guide in the README is accurate and up-to-date based on the Objective
 
 ## Steps
 
-- [ ] Complete Task 1: Add tree-sitter-objc dependency to libs.versions.toml and build.gradle.kts
-- [ ] Complete Task 2: Create ObjectiveCNodeTypes class with all required node type definitions
-- [ ] Complete Task 3: Create ObjectiveCCollector class
-- [ ] Complete Task 4: Add Objective-C to FileExtension enum
-- [ ] Complete Task 5: Register ObjectiveCCollector in AvailableCollectors enum
+- [x] Complete Task 1: Add tree-sitter-objc dependency to libs.versions.toml and build.gradle.kts
+- [x] Complete Task 2: Create ObjectiveCNodeTypes class with all required node type definitions
+- [x] Complete Task 3: Create ObjectiveCCollector class
+- [x] Complete Task 4: Add Objective-C to FileExtension enum
+- [x] Complete Task 5: Register ObjectiveCCollector in AvailableCollectors enum
 - [ ] Complete Task 6: Create test sample file and comprehensive ObjectiveCCollectorTest
 - [ ] Complete Task 7: Update README.md documentation
 - [ ] Complete Task 8: Run and verify all tests pass

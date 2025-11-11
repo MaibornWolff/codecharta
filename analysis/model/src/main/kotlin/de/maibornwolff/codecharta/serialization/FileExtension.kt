@@ -21,6 +21,7 @@ enum class FileExtension(
     JAVA(".java"),
     JAVASCRIPT(".js", setOf(".cjs", ".mjs")),
     KOTLIN(".kt"),
+    OBJECTIVE_C(".m"),
     PYTHON(".py"),
     RUBY(".rb"),
     SWIFT(".swift"),
