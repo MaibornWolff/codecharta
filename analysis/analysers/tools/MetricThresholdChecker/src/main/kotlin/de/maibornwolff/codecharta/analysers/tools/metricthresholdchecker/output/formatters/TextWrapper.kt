@@ -2,35 +2,57 @@ package de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.output
 
 class TextWrapper {
     companion object {
-        private const val WORD_SEPARATOR_LENGTH = 1
+        private const val SPACE_LENGTH = 1
     }
 
     fun wrap(text: String, maxWidth: Int, indent: String): List<String> {
-        val words = text.split(" ").filter { it.isNotEmpty() }
+        val words = extractWords(text)
         if (words.isEmpty()) return emptyList()
 
         val lines = mutableListOf<String>()
         val currentLine = StringBuilder(indent)
-        val maxLineLength = maxWidth + indent.length
 
-        words.forEach { word ->
-            val needsSpace = currentLine.length > indent.length
-            val nextLength = currentLine.length + (if (needsSpace) WORD_SEPARATOR_LENGTH else 0) + word.length
-
-            if (nextLength > maxLineLength && needsSpace) {
+        for (word in words) {
+            if (shouldStartNewLine(currentLine, word, maxWidth, indent)) {
                 lines.add(currentLine.toString())
-                currentLine.clear()
-                currentLine.append(indent).append(word)
+                startNewLine(currentLine, indent, word)
             } else {
-                if (needsSpace) currentLine.append(" ")
-                currentLine.append(word)
+                appendWordToCurrentLine(currentLine, word, indent)
             }
         }
 
-        if (currentLine.length > indent.length) {
+        if (hasContent(currentLine, indent)) {
             lines.add(currentLine.toString())
         }
 
         return lines
+    }
+
+    private fun extractWords(text: String): List<String> {
+        return text.split(" ").filter { it.isNotEmpty() }
+    }
+
+    private fun shouldStartNewLine(currentLine: StringBuilder, word: String, maxWidth: Int, indent: String): Boolean {
+        val hasContentAlready = hasContent(currentLine, indent)
+        if (!hasContentAlready) return false
+
+        val lengthWithSpace = currentLine.length + SPACE_LENGTH + word.length
+        return lengthWithSpace > maxWidth
+    }
+
+    private fun hasContent(line: StringBuilder, indent: String): Boolean {
+        return line.length > indent.length
+    }
+
+    private fun startNewLine(currentLine: StringBuilder, indent: String, firstWord: String) {
+        currentLine.clear()
+        currentLine.append(indent).append(firstWord)
+    }
+
+    private fun appendWordToCurrentLine(currentLine: StringBuilder, word: String, indent: String) {
+        if (hasContent(currentLine, indent)) {
+            currentLine.append(" ")
+        }
+        currentLine.append(word)
     }
 }
