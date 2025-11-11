@@ -1,4 +1,3 @@
-import { EventEmitter } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { expect } from "@jest/globals"
 import { fireEvent, render, screen, waitForElementToBeRemoved } from "@testing-library/angular"
@@ -15,16 +14,14 @@ describe("LabelledColorPickerComponent", () => {
     })
 
     it("should display label and handle brush visibility", async () => {
-        const { container } = await render(LabelledColorPickerComponent, {
+        const { container, fixture } = await render(LabelledColorPickerComponent, {
             excludeComponentDeclaration: true,
             componentInputs: {
-                labels: ["pretty color"]
-            },
-            componentProperties: {
-                hexColor: "#000000",
-                colorChange: { emit: handleColorChange } as unknown as EventEmitter<string>
+                labels: ["pretty color"],
+                hexColor: "#000000"
             }
         })
+        fixture.componentInstance.colorChange.subscribe(handleColorChange)
         const colorPickerTrigger = container.querySelector("cc-color-picker")
 
         expect(container.textContent).toMatch("pretty color")
