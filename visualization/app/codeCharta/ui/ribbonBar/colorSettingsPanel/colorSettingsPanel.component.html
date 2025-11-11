@@ -30,17 +30,17 @@
             [values]="(sliderValues$ | async).values"
             [isAttributeDirectionInverted]="isAttributeDescriptionInversed$ | async"
         ></cc-metric-color-range-diagram>
-        <div class="gradient-mode-selector">
-            <label class="label">
+        <label class="form-control gradient-mode-selector">
+            <div class="label">
                 <span class="label-text">Gradient Mode</span>
-            </label>
+            </div>
             <select class="select select-bordered w-full" [value]="colorMode$ | async" (change)="handleColorModeChange($any($event.target).value)">
                 <option value="absolute">Absolute</option>
                 <option value="focusedGradient">Focused Gradient</option>
                 <option value="weightedGradient">Weighted Gradient</option>
                 <option value="trueGradient">True Gradient</option>
             </select>
-        </div>
+        </label>
     </div>
 }
 @if (!(isDeltaState$ | async)) {
