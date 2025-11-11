@@ -6,6 +6,12 @@ export class SearchPanelPageObject {
     async toggle() {
         const wasOpen = await this.isOpen()
         await clickButtonOnPageElement("cc-search-panel .section .section-title")
+
+        // Wait for panel to finish opening/closing by checking if content is visible
+        if (!wasOpen) {
+            await page.waitForSelector("cc-map-tree-view:not([hidden])", { visible: true, timeout: 5000 })
+        }
+
         return !wasOpen
     }
 
