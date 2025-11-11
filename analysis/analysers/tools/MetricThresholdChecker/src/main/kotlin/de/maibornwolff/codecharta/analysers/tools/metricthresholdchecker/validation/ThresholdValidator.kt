@@ -8,47 +8,43 @@ import de.maibornwolff.codecharta.model.Project
 
 class ThresholdValidator(private val config: ThresholdConfiguration) {
     fun validate(project: Project): List<ThresholdViolation> {
-        val violations = mutableListOf<ThresholdViolation>()
-        validateNode(project.rootNode, "", violations)
-        return violations
+        return validateNode(project.rootNode, "")
     }
 
-    private fun validateNode(node: Node, currentPath: String, violations: MutableList<ThresholdViolation>) {
+    private fun validateNode(node: Node, currentPath: String): List<ThresholdViolation> {
         val nodePath = if (currentPath.isEmpty()) {
             node.name
         } else {
             "$currentPath/${node.name}"
         }
 
-        when (node.type) {
-            NodeType.File -> validateFileMetrics(nodePath, node, violations)
+        return when (node.type) {
+            NodeType.File -> validateFileMetrics(nodePath, node)
             NodeType.Folder -> {
-                node.children.forEach { child ->
-                    validateNode(child, nodePath, violations)
+                node.children.flatMap { child ->
+                    validateNode(child, nodePath)
                 }
             }
             else -> {
-                // Skip Package, Class, Interface, Method, Unknown, and null node types
+                emptyList()
             }
         }
     }
 
-    private fun validateFileMetrics(path: String, node: Node, violations: MutableList<ThresholdViolation>) {
-        for ((metricName, threshold) in config.fileMetrics) {
+    private fun validateFileMetrics(path: String, node: Node): List<ThresholdViolation> {
+        return config.fileMetrics.mapNotNull { (metricName, threshold) ->
             val attributeValue = node.attributes[metricName]
-            if (attributeValue !is Number) continue
-            if (!threshold.isViolated(attributeValue)) continue
+            if (attributeValue !is Number) return@mapNotNull null
+            if (!threshold.isViolated(attributeValue)) return@mapNotNull null
 
-            val violationType = threshold.getViolationType(attributeValue) ?: continue
+            val violationType = threshold.getViolationType(attributeValue) ?: return@mapNotNull null
 
-            violations.add(
-                ThresholdViolation(
-                    path = path,
-                    metricName = metricName,
-                    actualValue = attributeValue,
-                    threshold = threshold,
-                    violationType = violationType
-                )
+            ThresholdViolation(
+                path = path,
+                metricName = metricName,
+                actualValue = attributeValue,
+                threshold = threshold,
+                violationType = violationType
             )
         }
     }
