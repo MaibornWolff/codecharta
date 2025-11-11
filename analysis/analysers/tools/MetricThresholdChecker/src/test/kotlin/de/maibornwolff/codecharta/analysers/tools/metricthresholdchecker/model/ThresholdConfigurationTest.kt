@@ -45,6 +45,15 @@ class ThresholdConfigurationTest {
     }
 
     @Test
+    fun `should throw exception when max is less than min`() {
+        // Arrange & Act & Assert
+        assertThatThrownBy {
+            MetricThreshold(min = 100, max = 50)
+        }.isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("'max' must be greater than or equal to 'min'")
+    }
+
+    @Test
     fun `should return true when value is below min threshold`() {
         // Arrange
         val threshold = MetricThreshold(min = 50)

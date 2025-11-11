@@ -12,6 +12,11 @@ data class MetricThreshold(
         require(min != null || max != null) {
             "At least one of 'min' or 'max' must be specified for a threshold"
         }
+        if (min != null && max != null) {
+            require(max.toDouble() >= min.toDouble()) {
+                "'max' must be greater than or equal to 'min' (min=$min, max=$max)"
+            }
+        }
     }
 
     fun isViolated(value: Number): Boolean {
