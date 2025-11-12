@@ -12,8 +12,7 @@ class ObjectiveCNodeTypes : MetricNodeTypes {
             // case
             "case_statement",
             // catch
-            "catch_clause",
-            "finally_clause",
+            "@catch",
             // ternary
             "conditional_expression"
         ),
@@ -31,11 +30,8 @@ class ObjectiveCNodeTypes : MetricNodeTypes {
         simpleNodeTypes = setOf(
             // C functions
             "function_definition",
-            "function_declarator",
-            // Objective-C methods
-            "method_definition",
             // Blocks (Objective-C closures)
-            "block_literal"
+            "block_expression"
         )
     )
 
@@ -64,7 +60,10 @@ class ObjectiveCNodeTypes : MetricNodeTypes {
 
     override val functionParameterNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
-            "parameter_declaration"
+            // C function parameters
+            "parameter_declaration",
+            // Objective-C method parameters
+            "method_parameter"
         )
     )
 }
