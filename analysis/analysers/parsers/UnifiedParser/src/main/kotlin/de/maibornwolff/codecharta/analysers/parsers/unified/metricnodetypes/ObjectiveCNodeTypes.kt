@@ -64,4 +64,23 @@ class ObjectiveCNodeTypes : MetricNodeTypes {
             "keyword_declarator"
         )
     )
+
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            // C-style function calls and field access
+            "call_expression",
+            "field_expression",
+            // Objective-C message sends
+            "message_expression"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            // C-style function calls
+            "call_expression",
+            // Objective-C message sends
+            "message_expression"
+        )
+    )
 }

@@ -458,4 +458,30 @@ class ObjectiveCCollectorTest {
         // Assert
         Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3.0)
     }
+
+    @Test
+    fun `should detect message chains with 4 or more method calls`() {
+        // Arrange
+        val fileContent = """obj.a().field.b().c().d();"""
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.MESSAGE_CHAINS.metricName]).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should not detect message chains with fewer than 4 calls`() {
+        // Arrange
+        val fileContent = """obj.a().field.b();"""
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.MESSAGE_CHAINS.metricName]).isEqualTo(0.0)
+    }
 }
