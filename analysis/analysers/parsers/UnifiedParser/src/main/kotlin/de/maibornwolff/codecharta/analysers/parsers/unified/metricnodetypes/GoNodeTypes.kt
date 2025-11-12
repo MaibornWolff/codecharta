@@ -58,4 +58,17 @@ class GoNodeTypes : MetricNodeTypes {
             "parameter_declaration"
         )
     )
+
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call_expression",
+            "selector_expression"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call_expression"
+        )
+    )
 }

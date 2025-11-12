@@ -470,4 +470,17 @@ class SwiftCollectorTest {
         Assertions.assertThat(result.attributes["mean_rloc_per_function"]).isEqualTo(2.0)
         Assertions.assertThat(result.attributes["median_rloc_per_function"]).isEqualTo(2.0)
     }
+
+    @Test
+    fun `should detect message chains with 4 or more method calls`() {
+        // Arrange
+        val fileContent = """obj.a().field.b().c().d()"""
+        val input = createTestFile(fileContent)
+
+        // Act
+        val result = collector.collectMetricsForFile(input)
+
+        // Assert
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.MESSAGE_CHAINS.metricName]).isEqualTo(1.0)
+    }
 }
