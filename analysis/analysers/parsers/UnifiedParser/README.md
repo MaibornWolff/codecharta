@@ -6,21 +6,22 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 ## Supported Languages
 
-| Language   | Supported file extensions              |
-|------------|----------------------------------------|
-| Javascript | .js, .cjs, .mjs                        |
-| Typescript | .ts, .cts, .mts                        |
-| Java       | .java                                  |
-| Kotlin     | .kt                                    |
-| C#         | .cs                                    |
-| C++        | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
-| C          | .c, .h                                 |
-| Python     | .py                                    |
-| Go         | .go                                    |
-| PHP        | .php                                   |
-| Ruby       | .rb                                    |
-| Swift      | .swift                                 |
-| Bash       | .sh                                    |
+| Language     | Supported file extensions              |
+|--------------|----------------------------------------|
+| Javascript   | .js, .cjs, .mjs                        |
+| Typescript   | .ts, .cts, .mts                        |
+| Java         | .java                                  |
+| Kotlin       | .kt                                    |
+| C#           | .cs                                    |
+| C++          | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
+| C            | .c, .h                                 |
+| Objective-C  | .m                                     |
+| Python       | .py                                    |
+| Go           | .go                                    |
+| PHP          | .php                                   |
+| Ruby         | .rb                                    |
+| Swift        | .swift                                 |
+| Bash         | .sh                                    |
 
 ## Supported Metrics
 
@@ -101,6 +102,7 @@ cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.jso
 ## Known issues
 
 - In ruby the 'lambda' keyword is not counted correctly for complexity and number of functions
+- In C/C++/ObjectiveC the using `void` as a parameter counts as 1 for parameters per function
 
 ## Extending the UnifiedParser
 
