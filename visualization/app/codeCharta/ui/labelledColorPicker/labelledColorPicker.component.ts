@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, input, Input, Output } from "@angular/core"
+import { Component, computed, input, output } from "@angular/core"
 import { ColorPickerComponent } from "../colorPicker/colorPicker.component"
 import { ReadableColorForBackgroundPipe } from "./readableColorForBackground.pipe"
 
@@ -9,7 +9,7 @@ import { ReadableColorForBackgroundPipe } from "./readableColorForBackground.pip
     imports: [ColorPickerComponent, ReadableColorForBackgroundPipe]
 })
 export class LabelledColorPickerComponent {
-    @Input() hexColor: string
+    hexColor = input.required<string>()
     labels = input.required<string[]>()
     labelsToTrackByName = computed(() =>
         this.labels().map(it => {
@@ -18,8 +18,7 @@ export class LabelledColorPickerComponent {
             }
         })
     )
-    @Output()
-    colorChange = new EventEmitter<string>()
+    colorChange = output<string>()
 
     handleColorChange(hexColor: string) {
         this.colorChange.emit(hexColor)

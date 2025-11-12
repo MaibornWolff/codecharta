@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core"
+import { Component, input } from "@angular/core"
 import { CcState } from "../../../codeCharta.model"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { Store } from "@ngrx/store"
@@ -13,8 +13,8 @@ import { AttributeDescriptorTooltipPipe } from "../../../util/pipes/attributeDes
     imports: [AsyncPipe, AttributeDescriptorTooltipPipe]
 })
 export class LegendBlockComponent {
-    @Input() metricName: string
-    @Input() metricSpecification: string
+    metricName = input.required<string>()
+    metricSpecification = input.required<string>()
     attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
     fallbackTitles: Map<string, string> = metricTitles
 
