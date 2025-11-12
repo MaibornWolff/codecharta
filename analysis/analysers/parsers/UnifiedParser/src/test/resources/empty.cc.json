@@ -1,5 +1,5 @@
 {
-  "checksum": "ee8ad7ee3e5318c05bbf3f2f5acc0f93",
+  "checksum": "f983aebcae5f795440bf7a8ec6cadba1",
   "data": {
     "projectName": "",
     "nodes": [
@@ -213,7 +213,7 @@
       },
       "long_method": {
         "title": "Long Method",
-        "description": "Number of functions with more than 10 real lines of code (rloc)",
+        "description": "Code smell showing the number of functions with more than 10 real lines of code (rloc)",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
@@ -224,7 +224,40 @@
       },
       "long_parameter_list": {
         "title": "Long Parameter List",
-        "description": "Number of functions with more than 4 parameters",
+        "description": "Code smell showing the number of functions with more than 4 parameters",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "excessive_comments": {
+        "title": "Excessive Comments",
+        "description": "Code smell showing whether a file has more than 10 comment lines",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "comment_ratio": {
+        "title": "Comment Ratio",
+        "description": "The ratio of comment lines to real lines of code (rloc)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": 0,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "message_chains": {
+        "title": "Message Chains",
+        "description": "Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",

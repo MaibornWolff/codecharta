@@ -12,6 +12,7 @@ import org.treesitter.TSNode
 import org.treesitter.TSParser
 import org.treesitter.TSTreeCursor
 import java.io.File
+import kotlin.math.round
 
 abstract class MetricCollector(
     private val treeSitterLanguage: TSLanguage,
@@ -21,6 +22,7 @@ abstract class MetricCollector(
     companion object {
         private const val LONG_METHOD_THRESHOLD = 10
         private const val LONG_PARAMETER_LIST_THRESHOLD = 4
+        private const val EXCESSIVE_COMMENTS_THRESHOLD = 10
     }
 
     private var rootNodeType: String = ""
@@ -52,9 +54,9 @@ abstract class MetricCollector(
         // lines of code is added here manually to improve performance as no tree walk is necessary
         metricNameToValue[AvailableFileMetrics.LINES_OF_CODE.metricName] = rootNode.endPoint.row.toDouble()
 
-        metricNameToValue.putAll(metricCalculators.getMeasuresOfPerFunctionMetrics())
-
         countCodeSmells(metricNameToValue)
+
+        metricNameToValue.putAll(metricCalculators.getMeasuresOfPerFunctionMetrics())
 
         return MutableNode(
             name = file.name,
@@ -107,6 +109,8 @@ abstract class MetricCollector(
     private fun countCodeSmells(metricNameToValue: MutableMap<String, Double>) {
         metricNameToValue[AvailableFileMetrics.LONG_METHOD.metricName] = countLongMethods(metricCalculators).toDouble()
         metricNameToValue[AvailableFileMetrics.LONG_PARAMETER_LIST.metricName] = countLongParameterLists(metricCalculators).toDouble()
+        metricNameToValue[AvailableFileMetrics.EXCESSIVE_COMMENTS.metricName] = calculateExcessiveComments(metricNameToValue)
+        metricNameToValue[AvailableFileMetrics.COMMENT_RATIO.metricName] = calculateCommentRatio(metricNameToValue)
     }
 
     private fun countLongMethods(calculators: MetricsToCalculatorsMap): Int {
@@ -117,5 +121,17 @@ abstract class MetricCollector(
     private fun countLongParameterLists(calculators: MetricsToCalculatorsMap): Int {
         val parametersPerFunction = calculators.parametersPerFunctionCalc.getMetricPerFunction()
         return parametersPerFunction.count { parameters -> parameters > LONG_PARAMETER_LIST_THRESHOLD }
+    }
+
+    private fun calculateExcessiveComments(metricNameToValue: Map<String, Double>): Double {
+        val commentLines = metricNameToValue[AvailableFileMetrics.COMMENT_LINES.metricName] ?: 0.0
+        return if (commentLines > EXCESSIVE_COMMENTS_THRESHOLD) 1.0 else 0.0
+    }
+
+    private fun calculateCommentRatio(metricNameToValue: Map<String, Double>): Double {
+        val commentLines = metricNameToValue[AvailableFileMetrics.COMMENT_LINES.metricName] ?: 0.0
+        val rloc = metricNameToValue[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName] ?: 0.0
+        val ratio = if (rloc > 0) commentLines / rloc else return 0.0
+        return round(ratio * 100) / 100
     }
 }
