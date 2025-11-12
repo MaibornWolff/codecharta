@@ -36,7 +36,7 @@ tree-sitter-go = "0.23.3"
 tree-sitter-php = "0.23.11"
 tree-sitter-ruby = "0.23.1"
 tree-sitter-swift = "0.5.0"
-tree-sitter-objc = "main"
+tree-sitter-objc = "main-a"
 tree-sitter-bash = "0.23.3"
 
 [libraries]
