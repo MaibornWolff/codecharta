@@ -11,7 +11,7 @@ import { FilePanelComponent } from "../filePanel/filePanel.component"
 import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel/hoveredNodePathPanel.component"
 import { LoadingMapProgressSpinnerComponent } from "./loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 import { PresentationModeButtonComponent } from "./presentationModeButton/presentationModeButton.component"
-import { GlobalConfigurationButtonComponent } from "../../features/globalSettings/components/globalConfigurationButton.component"
+import { GlobalConfigurationButtonComponent } from "../../features/globalSettings/components/globalConfigurationButton/globalConfigurationButton.component"
 import { AsyncPipe } from "@angular/common"
 
 @Component({

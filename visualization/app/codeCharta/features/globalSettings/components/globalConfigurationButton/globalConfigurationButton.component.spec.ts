@@ -4,8 +4,8 @@ import userEvent from "@testing-library/user-event"
 import { provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
 import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton.component"
-import { GlobalConfigurationDialogComponent } from "./globalConfigurationDialog/globalConfigurationDialog.component"
-import { defaultAppSettings } from "../../../state/store/appSettings/appSettings.reducer"
+import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
+import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
 
 describe("GlobalConfigurationButtonComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationButtonComponent>
