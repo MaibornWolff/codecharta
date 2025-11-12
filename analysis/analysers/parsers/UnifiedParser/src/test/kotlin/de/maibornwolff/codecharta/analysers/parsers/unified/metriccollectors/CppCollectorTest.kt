@@ -144,15 +144,13 @@ class CppCollectorTest {
     fun `should count seh-except clause for complexity`() {
         // given
         val fileContent = """
-            int main() {
-                __try
-                {
-                    TestExceptions();
-                }
-                __except(EXCEPTION_EXECUTE_HANDLER)
-                {
-                    printf("Executing SEH __except block\n");
-                }
+            __try
+            {
+                TestExceptions();
+            }
+            __except(EXCEPTION_EXECUTE_HANDLER)
+            {
+                printf("Executing SEH __except block\n");
             }
         """.trimIndent()
         val input = createTestFile(fileContent)
@@ -161,7 +159,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
