@@ -47,8 +47,6 @@ class ObjectiveCNodeTypes : MetricNodeTypes {
             "function_definition",
             // Objective-C methods
             "method_definition",
-            // Blocks (Objective-C closures)
-            "block_literal"
         )
     )
 
@@ -63,7 +61,7 @@ class ObjectiveCNodeTypes : MetricNodeTypes {
             // C function parameters
             "parameter_declaration",
             // Objective-C method parameters
-            "method_parameter"
+            "keyword_declarator"
         )
     )
 }
