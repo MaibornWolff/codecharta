@@ -54,8 +54,6 @@ export class GlobalSettingsFacade {
     }
 }
 
-export { GlobalConfigurationButtonComponent } from "./components/globalConfigurationButton.component"
-
 // Export selectors for backward compatibility with existing tests
 export {
     screenshotToClipboardEnabledSelector,
