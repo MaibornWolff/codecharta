@@ -4,28 +4,31 @@ import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { LayoutAlgorithm } from "../../../../../codeCharta.model"
 import { setLayoutAlgorithm } from "../../../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
-import { layoutAlgorithmSelector } from "../../../../../features/globalSettings/facade"
 import { setMaxTreeMapFiles } from "../../../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
-import { maxTreeMapFilesSelector } from "../../../../../features/globalSettings/facade"
 import { getLastAction } from "../../../../../util/testUtils/store.utils"
 import { MapLayoutSelectionComponent } from "./mapLayoutSelection.component"
+import { GlobalSettingsFacade } from "../../../../../features/globalSettings/facade"
+import { BehaviorSubject } from "rxjs"
 
 let fixture: ComponentFixture<MapLayoutSelectionComponent>
+let layoutAlgorithmSubject: BehaviorSubject<LayoutAlgorithm>
+let maxTreeMapFilesSubject: BehaviorSubject<number>
 
 describe("MapLayoutSelectionComponent", () => {
     let store: MockStore
 
     beforeEach(() => {
+        layoutAlgorithmSubject = new BehaviorSubject<LayoutAlgorithm>(LayoutAlgorithm.SquarifiedTreeMap)
+        maxTreeMapFilesSubject = new BehaviorSubject<number>(100)
+
+        const mockFacade = {
+            layoutAlgorithm$: () => layoutAlgorithmSubject.asObservable(),
+            maxTreeMapFiles$: () => maxTreeMapFilesSubject.asObservable()
+        }
+
         TestBed.configureTestingModule({
             imports: [MapLayoutSelectionComponent],
-            providers: [
-                provideMockStore({
-                    selectors: [
-                        { selector: layoutAlgorithmSelector, value: LayoutAlgorithm.SquarifiedTreeMap },
-                        { selector: maxTreeMapFilesSelector, value: 100 }
-                    ]
-                })
-            ]
+            providers: [provideMockStore(), { provide: GlobalSettingsFacade, useValue: mockFacade }]
         }).compileComponents()
         fixture = TestBed.createComponent(MapLayoutSelectionComponent)
         store = TestBed.inject(MockStore)
@@ -54,8 +57,7 @@ describe("MapLayoutSelectionComponent", () => {
 
     it("should display max tree map files slider when layout selection is 'TreeMapStreet'", async () => {
         // Arrange
-        store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
-        store.refreshState()
+        layoutAlgorithmSubject.next(LayoutAlgorithm.TreeMapStreet)
         fixture.detectChanges()
 
         const selectElement = screen.getByRole("combobox", { name: /map layout/i }) as HTMLSelectElement
@@ -76,9 +78,8 @@ describe("MapLayoutSelectionComponent", () => {
 
     it("should update max tree map files when range slider is moved", async () => {
         // Arrange
-        store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
-        store.overrideSelector(maxTreeMapFilesSelector, 100)
-        store.refreshState()
+        layoutAlgorithmSubject.next(LayoutAlgorithm.TreeMapStreet)
+        maxTreeMapFilesSubject.next(100)
         fixture.detectChanges()
 
         // Act

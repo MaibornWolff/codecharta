@@ -53,15 +53,3 @@ export class GlobalSettingsFacade {
         return this.displayQualityService.sharpnessMode$()
     }
 }
-
-// Export selectors for backward compatibility with existing tests
-export {
-    screenshotToClipboardEnabledSelector,
-    experimentalFeaturesEnabledSelector,
-    isWhiteBackgroundSelector,
-    hideFlatBuildingsSelector,
-    resetCameraIfNewFileIsLoadedSelector,
-    layoutAlgorithmSelector,
-    maxTreeMapFilesSelector,
-    sharpnessModeSelector
-} from "./selectors/globalSettings.selectors"

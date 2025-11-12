@@ -3,23 +3,24 @@ import { provideMockStore, MockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { DisplayQualitySelectionComponent } from "./displayQualitySelection.component"
-import { sharpnessModeSelector } from "../../../../../features/globalSettings/facade"
+import { GlobalSettingsFacade } from "../../../../../features/globalSettings/facade"
 import { SharpnessMode } from "../../../../../codeCharta.model"
 import { getLastAction } from "../../../../../util/testUtils/store.utils"
 import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
+import { of } from "rxjs"
 
 describe("DisplayQualitySelectionComponent", () => {
     let fixture: ComponentFixture<DisplayQualitySelectionComponent>
     let store: MockStore
 
     beforeEach(() => {
+        const mockFacade = {
+            sharpnessMode$: () => of(SharpnessMode.Standard)
+        }
+
         TestBed.configureTestingModule({
             imports: [DisplayQualitySelectionComponent],
-            providers: [
-                provideMockStore({
-                    selectors: [{ selector: sharpnessModeSelector, value: SharpnessMode.Standard }]
-                })
-            ]
+            providers: [provideMockStore(), { provide: GlobalSettingsFacade, useValue: mockFacade }]
         })
 
         fixture = TestBed.createComponent(DisplayQualitySelectionComponent)
