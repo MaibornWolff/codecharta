@@ -46,7 +46,7 @@ class ObjectiveCNodeTypes : MetricNodeTypes {
             // C functions
             "function_definition",
             // Objective-C methods
-            "method_definition",
+            "method_definition"
         )
     )
 
