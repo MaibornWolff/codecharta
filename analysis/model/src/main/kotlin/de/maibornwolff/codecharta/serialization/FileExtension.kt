@@ -5,6 +5,8 @@ enum class FileExtension(
     val otherValidExtensions: Set<String> = setOf()
 ) {
     JSON(".json"),
+    YAML(".yaml"),
+    YML(".yml"),
     CSV(".csv"),
     CODECHARTA(".cc"),
     GZIP(".gz"),
