@@ -6,13 +6,13 @@ import { SharpnessMode } from "../../../codeCharta.model"
 
 describe("DisplayQualityService", () => {
     let service: DisplayQualityService
-    let mockStore: jest.Mocked<DisplayQualityStore>
+    let mockStore: jest.Mocked<Partial<DisplayQualityStore>>
 
     beforeEach(() => {
         mockStore = {
             sharpnessMode$: of(SharpnessMode.Standard),
             setSharpnessMode: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             providers: [DisplayQualityService, { provide: DisplayQualityStore, useValue: mockStore }]
