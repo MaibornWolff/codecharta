@@ -5,13 +5,13 @@ import { BackgroundThemeStore } from "../stores/backgroundTheme.store"
 
 describe("BackgroundThemeService", () => {
     let service: BackgroundThemeService
-    let mockStore: jest.Mocked<BackgroundThemeStore>
+    let mockStore: jest.Mocked<Partial<BackgroundThemeStore>>
 
     beforeEach(() => {
         mockStore = {
             isWhiteBackground$: of(false),
             setWhiteBackground: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             providers: [BackgroundThemeService, { provide: BackgroundThemeStore, useValue: mockStore }]
