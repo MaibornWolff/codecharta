@@ -5,13 +5,13 @@ import { AutomaticCameraResetStore } from "../stores/automaticCameraReset.store"
 
 describe("AutomaticCameraResetService", () => {
     let service: AutomaticCameraResetService
-    let mockStore: jest.Mocked<AutomaticCameraResetStore>
+    let mockStore: jest.Mocked<Partial<AutomaticCameraResetStore>>
 
     beforeEach(() => {
         mockStore = {
             resetCameraIfNewFileIsLoaded$: of(true),
             setResetCameraIfNewFileIsLoaded: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             providers: [AutomaticCameraResetService, { provide: AutomaticCameraResetStore, useValue: mockStore }]
