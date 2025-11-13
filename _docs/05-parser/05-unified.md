@@ -16,21 +16,22 @@ CodeCharta. It generates either a cc.json or a csv file.
 
 ## Supported Languages
 
-| Language   | Supported file extensions              |
-|------------|----------------------------------------|
-| Javascript | .js, .cjs, .mjs                        |
-| Typescript | .ts, .cts, .mts                        |
-| Java       | .java                                  |
-| Kotlin     | .kt                                    |
-| C#         | .cs                                    |
-| C++        | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
-| C          | .c, .h                                 |
-| Python     | .py                                    |
-| Go         | .go                                    |
-| PHP        | .php                                   |
-| Ruby       | .rb                                    |
-| Swift      | .swift                                 |
-| Bash       | .sh                                    |
+| Language     | Supported file extensions              |
+|--------------|----------------------------------------|
+| Javascript   | .js, .cjs, .mjs                        |
+| Typescript   | .ts, .cts, .mts                        |
+| Java         | .java                                  |
+| Kotlin       | .kt                                    |
+| C#           | .cs                                    |
+| C++          | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
+| C            | .c, .h                                 |
+| Objective-C  | .m                                     |
+| Python       | .py                                    |
+| Go           | .go                                    |
+| PHP          | .php                                   |
+| Ruby         | .rb                                    |
+| Swift        | .swift                                 |
+| Bash         | .sh                                    |
 
 ## Supported Metrics
 
@@ -113,6 +114,7 @@ cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.jso
 ## Known issues
 
 - In ruby the 'lambda' keyword is not counted correctly for complexity and number of functions
+- In C/C++/ObjectiveC the using `void` as a parameter counts as 1 for parameters per function
 
 
 ## Detailed Metric Calculation
@@ -177,6 +179,13 @@ contribute to complexity:
 - **Functions**: `function_definition`, `abstract_function_declarator`, `function_declarator`
 - **Logical operators**: `&&`, `||` in binary expressions
 
+#### Objective-C (.m)
+
+- **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `conditional_expression`, `case_statement`,
+  `@catch`
+- **Functions**: `function_definition`, `block_expression`
+- **Logical operators**: `&&`, `||` in binary expressions
+
 #### Python (.py)
 
 - **Control flow**: `if_statement`, `elif_clause`, `if_clause`, `for_statement`, `while_statement`, `for_in_clause`,
@@ -228,6 +237,7 @@ Comment lines are counted based on language-specific comment syntax:
 - **Kotlin**: `line_comment`, `multiline_comment`
 - **C#**: `comment`
 - **C/C++**: `comment`
+- **Objective-C**: `comment`
 - **Python**: `comment` and unassigned string literals (used as block comments)
 - **Go**: `comment`
 - **PHP**: `comment`
@@ -274,6 +284,10 @@ Function counting identifies different types of function definitions per languag
 
 - **Functions**: `function_definition`
 
+#### Objective-C (.m)
+
+- **Functions**: `function_definition` (C functions), `method_definition` (Objective-C methods)
+
 #### Python (.py)
 
 - **Functions**: `function_definition`
@@ -316,6 +330,24 @@ RLOC counts only lines that contain actual code, excluding:
 - Lines that are part of multi-line comments
 
 This metric is calculated by counting all lines that are not identified as comment nodes by the Tree-sitter parser for each language.
+
+### Parameters per Function
+
+Parameters per function counts the number of parameters declared for each function. The metric identifies parameter nodes specific to each language:
+
+- **JavaScript/TypeScript**: `formal_parameter`, `required_parameter`
+- **Java**: `formal_parameter`
+- **Kotlin**: `parameter`
+- **C#**: `parameter`
+- **C++**: `parameter_declaration`
+- **C**: `parameter_declaration`
+- **Objective-C**: `parameter_declaration` (C functions), `keyword_declarator` (Objective-C method parameters)
+- **Python**: `identifier` parameters in `parameters` node
+- **Go**: `parameter_declaration`
+- **PHP**: `simple_parameter`, `variadic_parameter`, `property_promotion_parameter`
+- **Ruby**: `identifier` parameters
+- **Swift**: `parameter`
+- **Bash**: Parameters are counted from function definitions
 
 ### Message Chains
 
