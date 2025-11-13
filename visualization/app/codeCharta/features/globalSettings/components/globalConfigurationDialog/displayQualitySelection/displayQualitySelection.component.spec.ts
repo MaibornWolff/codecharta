@@ -9,13 +9,13 @@ import { SharpnessMode } from "../../../../../codeCharta.model"
 describe("DisplayQualitySelectionComponent", () => {
     let fixture: ComponentFixture<DisplayQualitySelectionComponent>
     let component: DisplayQualitySelectionComponent
-    let mockDisplayQualityService: jest.Mocked<DisplayQualityService>
+    let mockDisplayQualityService: jest.Mocked<Partial<DisplayQualityService>>
 
     beforeEach(() => {
         mockDisplayQualityService = {
             sharpnessMode$: jest.fn().mockReturnValue(of(SharpnessMode.Standard)),
             setSharpnessMode: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             imports: [DisplayQualitySelectionComponent],
