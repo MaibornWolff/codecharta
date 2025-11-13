@@ -5,13 +5,13 @@ import { FlatBuildingVisibilityStore } from "../stores/flatBuildingVisibility.st
 
 describe("FlatBuildingVisibilityService", () => {
     let service: FlatBuildingVisibilityService
-    let mockStore: jest.Mocked<FlatBuildingVisibilityStore>
+    let mockStore: jest.Mocked<Partial<FlatBuildingVisibilityStore>>
 
     beforeEach(() => {
         mockStore = {
             hideFlatBuildings$: of(false),
             setHideFlatBuildings: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             providers: [FlatBuildingVisibilityService, { provide: FlatBuildingVisibilityStore, useValue: mockStore }]
