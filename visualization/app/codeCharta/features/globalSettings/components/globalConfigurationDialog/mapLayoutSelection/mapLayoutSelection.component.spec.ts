@@ -9,7 +9,7 @@ import { LayoutAlgorithm } from "../../../../../codeCharta.model"
 describe("MapLayoutSelectionComponent", () => {
     let fixture: ComponentFixture<MapLayoutSelectionComponent>
     let component: MapLayoutSelectionComponent
-    let mockMapLayoutService: jest.Mocked<MapLayoutService>
+    let mockMapLayoutService: jest.Mocked<Partial<MapLayoutService>>
 
     beforeEach(() => {
         mockMapLayoutService = {
@@ -17,7 +17,7 @@ describe("MapLayoutSelectionComponent", () => {
             maxTreeMapFiles$: jest.fn().mockReturnValue(of(100)),
             setLayoutAlgorithm: jest.fn(),
             setMaxTreeMapFiles: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             imports: [MapLayoutSelectionComponent],
