@@ -5,13 +5,13 @@ import { ExperimentalFeaturesStore } from "../stores/experimentalFeatures.store"
 
 describe("ExperimentalFeaturesService", () => {
     let service: ExperimentalFeaturesService
-    let mockStore: jest.Mocked<ExperimentalFeaturesStore>
+    let mockStore: jest.Mocked<Partial<ExperimentalFeaturesStore>>
 
     beforeEach(() => {
         mockStore = {
             experimentalFeaturesEnabled$: of(false),
             setExperimentalFeaturesEnabled: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             providers: [ExperimentalFeaturesService, { provide: ExperimentalFeaturesStore, useValue: mockStore }]
