@@ -13,42 +13,42 @@ import { defaultAppSettings } from "../../../../state/store/appSettings/appSetti
 describe("GlobalConfigurationDialogComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationDialogComponent>
     let component: GlobalConfigurationDialogComponent
-    let mockScreenshotDestinationService: jest.Mocked<ScreenshotDestinationService>
-    let mockExperimentalFeaturesService: jest.Mocked<ExperimentalFeaturesService>
-    let mockBackgroundThemeService: jest.Mocked<BackgroundThemeService>
-    let mockFlatBuildingVisibilityService: jest.Mocked<FlatBuildingVisibilityService>
-    let mockAutomaticCameraResetService: jest.Mocked<AutomaticCameraResetService>
-    let mockState: jest.Mocked<State<any>>
+    let mockScreenshotDestinationService: jest.Mocked<Partial<ScreenshotDestinationService>>
+    let mockExperimentalFeaturesService: jest.Mocked<Partial<ExperimentalFeaturesService>>
+    let mockBackgroundThemeService: jest.Mocked<Partial<BackgroundThemeService>>
+    let mockFlatBuildingVisibilityService: jest.Mocked<Partial<FlatBuildingVisibilityService>>
+    let mockAutomaticCameraResetService: jest.Mocked<Partial<AutomaticCameraResetService>>
+    let mockState: jest.Mocked<Partial<State<any>>>
 
     beforeEach(() => {
         mockScreenshotDestinationService = {
             screenshotToClipboardEnabled$: jest.fn().mockReturnValue(of(false)),
             setScreenshotToClipboard: jest.fn()
-        } as any
+        }
 
         mockExperimentalFeaturesService = {
             experimentalFeaturesEnabled$: jest.fn().mockReturnValue(of(false)),
             setExperimentalFeaturesEnabled: jest.fn()
-        } as any
+        }
 
         mockBackgroundThemeService = {
             isWhiteBackground$: jest.fn().mockReturnValue(of(false)),
             setWhiteBackground: jest.fn()
-        } as any
+        }
 
         mockFlatBuildingVisibilityService = {
             hideFlatBuildings$: jest.fn().mockReturnValue(of(false)),
             setHideFlatBuildings: jest.fn()
-        } as any
+        }
 
         mockAutomaticCameraResetService = {
             resetCameraIfNewFileIsLoaded$: jest.fn().mockReturnValue(of(true)),
             setResetCameraIfNewFileIsLoaded: jest.fn()
-        } as any
+        }
 
         mockState = {
             getValue: jest.fn().mockReturnValue({ appSettings: defaultAppSettings })
-        } as any
+        }
 
         TestBed.configureTestingModule({
             imports: [GlobalConfigurationDialogComponent],
