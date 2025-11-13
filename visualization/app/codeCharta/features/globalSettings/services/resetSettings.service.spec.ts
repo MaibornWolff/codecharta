@@ -4,12 +4,12 @@ import { ResetSettingsStore } from "../stores/resetSettings.store"
 
 describe("ResetSettingsService", () => {
     let service: ResetSettingsService
-    let mockStore: jest.Mocked<ResetSettingsStore>
+    let mockStore: jest.Mocked<Partial<ResetSettingsStore>>
 
     beforeEach(() => {
         mockStore = {
             resetSettings: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             providers: [ResetSettingsService, { provide: ResetSettingsStore, useValue: mockStore }]
