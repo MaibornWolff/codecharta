@@ -5,13 +5,13 @@ import { ScreenshotDestinationStore } from "../stores/screenshotDestination.stor
 
 describe("ScreenshotDestinationService", () => {
     let service: ScreenshotDestinationService
-    let mockStore: jest.Mocked<ScreenshotDestinationStore>
+    let mockStore: jest.Mocked<Partial<ScreenshotDestinationStore>>
 
     beforeEach(() => {
         mockStore = {
             screenshotToClipboardEnabled$: of(false),
             setScreenshotToClipboard: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             providers: [ScreenshotDestinationService, { provide: ScreenshotDestinationStore, useValue: mockStore }]
