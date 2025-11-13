@@ -7,12 +7,12 @@ import { ResetSettingsService } from "../../../services/resetSettings.service"
 describe("ResetSettingsButtonComponent", () => {
     let fixture: ComponentFixture<ResetSettingsButtonComponent>
     let component: ResetSettingsButtonComponent
-    let mockResetSettingsService: jest.Mocked<ResetSettingsService>
+    let mockResetSettingsService: jest.Mocked<Partial<ResetSettingsService>>
 
     beforeEach(() => {
         mockResetSettingsService = {
             resetSettings: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             imports: [ResetSettingsButtonComponent],
