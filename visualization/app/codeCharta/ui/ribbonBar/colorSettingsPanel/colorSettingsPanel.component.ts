@@ -19,9 +19,6 @@ import { metricColorRangeColorsSelector } from "./selectors/metricColorRangeColo
 import { metricColorRangeValuesSelector } from "./selectors/metricColorRangeValues.selector"
 import { ResetSettingsButtonComponent } from "../../resetSettingsButton/resetSettingsButton.component"
 import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram/metricColorRangeDiagram.component"
-import { MatFormField, MatLabel } from "@angular/material/form-field"
-import { MatSelect } from "@angular/material/select"
-import { MatOption } from "@angular/material/core"
 import { ColorPickerForMapColorComponent } from "../../colorPickerForMapColor/colorPickerForMapColor.component"
 import { AsyncPipe } from "@angular/common"
 
@@ -33,10 +30,6 @@ import { AsyncPipe } from "@angular/common"
         MetricColorRangeSliderComponent,
         ResetSettingsButtonComponent,
         MetricColorRangeDiagramComponent,
-        MatFormField,
-        MatLabel,
-        MatSelect,
-        MatOption,
         ColorPickerForMapColorComponent,
         MatCheckbox,
         AsyncPipe

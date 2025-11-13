@@ -70,4 +70,17 @@ class JavaNodeTypes : MetricNodeTypes {
             "formal_parameter"
         )
     )
+
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "method_invocation",
+            "field_access"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "method_invocation"
+        )
+    )
 }
