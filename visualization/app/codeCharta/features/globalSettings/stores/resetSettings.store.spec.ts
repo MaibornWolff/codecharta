@@ -32,12 +32,12 @@ jest.mock("../../../ui/resetSettingsButton/getPartialDefaultState", () => ({
 describe("ResetSettingsStore", () => {
     let store: ResetSettingsStore
     let mockStore: MockStore
-    let mockState: State<any>
+    let mockState: jest.Mocked<Partial<State<any>>>
 
     beforeEach(() => {
         mockState = {
             getValue: jest.fn().mockReturnValue(defaultState)
-        } as any
+        }
 
         TestBed.configureTestingModule({
             providers: [ResetSettingsStore, provideMockStore(), { provide: State, useValue: mockState }]
