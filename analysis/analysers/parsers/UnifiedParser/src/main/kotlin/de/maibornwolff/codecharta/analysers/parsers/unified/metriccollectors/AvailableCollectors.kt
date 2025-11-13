@@ -18,6 +18,7 @@ enum class AvailableCollectors(
     GO(FileExtension.GO, ::GoCollector),
     PHP(FileExtension.PHP, ::PhpCollector),
     RUBY(FileExtension.RUBY, ::RubyCollector),
+    SCALA(FileExtension.SCALA, ::ScalaCollector),
     SWIFT(FileExtension.SWIFT, ::SwiftCollector),
     BASH(FileExtension.BASH, ::BashCollector)
 }

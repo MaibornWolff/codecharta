@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.treesitter.go)
     implementation(libs.treesitter.php)
     implementation(libs.treesitter.ruby)
+    implementation(libs.treesitter.scala)
     implementation(libs.treesitter.swift)
     implementation(libs.treesitter.objc)
     implementation(libs.treesitter.bash)
