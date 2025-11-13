@@ -10,17 +10,17 @@ import { defaultAppSettings } from "../../../../state/store/appSettings/appSetti
 describe("GlobalConfigurationButtonComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationButtonComponent>
     let component: GlobalConfigurationButtonComponent
-    let mockDialog: jest.Mocked<GlobalConfigurationDialogComponent>
-    let mockState: jest.Mocked<State<any>>
+    let mockDialog: jest.Mocked<Partial<GlobalConfigurationDialogComponent>>
+    let mockState: jest.Mocked<Partial<State<any>>>
 
     beforeEach(() => {
         mockDialog = {
             open: jest.fn()
-        } as any
+        }
 
         mockState = {
             getValue: jest.fn().mockReturnValue({ appSettings: defaultAppSettings })
-        } as any
+        }
 
         TestBed.configureTestingModule({
             imports: [GlobalConfigurationButtonComponent],
