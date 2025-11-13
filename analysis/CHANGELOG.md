@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.139.0] - 2025-11-13
+
 ### Added 🚀
 
 - Add new '--base-file' flag to unifiedparser and rawtextparser [#4270](https://github.com/MaibornWolff/codecharta/pull/4270)
