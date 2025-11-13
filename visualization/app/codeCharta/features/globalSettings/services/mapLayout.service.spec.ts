@@ -6,7 +6,7 @@ import { LayoutAlgorithm } from "../../../codeCharta.model"
 
 describe("MapLayoutService", () => {
     let service: MapLayoutService
-    let mockStore: jest.Mocked<MapLayoutStore>
+    let mockStore: jest.Mocked<Partial<MapLayoutStore>>
 
     beforeEach(() => {
         mockStore = {
@@ -14,7 +14,7 @@ describe("MapLayoutService", () => {
             maxTreeMapFiles$: of(100),
             setLayoutAlgorithm: jest.fn(),
             setMaxTreeMapFiles: jest.fn()
-        } as any
+        }
 
         TestBed.configureTestingModule({
             providers: [MapLayoutService, { provide: MapLayoutStore, useValue: mockStore }]
