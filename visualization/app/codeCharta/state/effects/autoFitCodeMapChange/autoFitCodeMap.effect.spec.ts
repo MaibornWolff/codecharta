@@ -2,8 +2,11 @@ import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject, Subject } from "rxjs"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
-import { layoutAlgorithmSelector } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.selector"
-import { resetCameraIfNewFileIsLoadedSelector } from "../../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
+import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
+import {
+    layoutAlgorithmSelector,
+    resetCameraIfNewFileIsLoadedSelector
+} from "../../../features/globalSettings/selectors/globalSettings.selectors"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapEffect } from "./autoFitCodeMap.effect"
@@ -20,11 +23,13 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
     let mockedAutoFitTo: jest.Mock
     let actions$: BehaviorSubject<Action>
     let store: MockStore
+    let resetCameraIfNewFileIsLoaded$: BehaviorSubject<boolean>
 
     beforeEach(() => {
         actions$ = new BehaviorSubject({ type: "" })
         mockedRenderCodeMap$ = new Subject()
         mockedAutoFitTo = jest.fn()
+        resetCameraIfNewFileIsLoaded$ = new BehaviorSubject(true)
         const mockedSelectorsTriggeringAutoFit = selectorsTriggeringAutoFit.map(selector => {
             return { selector, value: [] }
         })
@@ -40,15 +45,22 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
                     ]
                 }),
                 provideMockActions(() => actions$),
-                { provide: ThreeMapControlsService, useValue: { autoFitTo: mockedAutoFitTo } }
+                { provide: ThreeMapControlsService, useValue: { autoFitTo: mockedAutoFitTo } },
+                {
+                    provide: GlobalSettingsFacade,
+                    useValue: { resetCameraIfNewFileIsLoaded$: () => resetCameraIfNewFileIsLoaded$ }
+                }
             ]
         })
         store = TestBed.inject(MockStore)
+        // Clear mock after TestBed setup to ensure clean state for each test
+        mockedAutoFitTo.mockClear()
     })
 
     afterEach(() => {
         mockedRenderCodeMap$.complete()
         actions$.complete()
+        resetCameraIfNewFileIsLoaded$.complete()
     })
 
     it("should skip first change", () => {
@@ -67,8 +79,7 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
     })
 
     it("should do nothing when 'reset camera if new file is loaded' is deactivated", () => {
-        store.overrideSelector(resetCameraIfNewFileIsLoadedSelector, false)
-        store.refreshState()
+        resetCameraIfNewFileIsLoaded$.next(false)
         store.overrideSelector(visibleFileStatesSelector, [])
         store.refreshState()
         mockedRenderCodeMap$.next(undefined)

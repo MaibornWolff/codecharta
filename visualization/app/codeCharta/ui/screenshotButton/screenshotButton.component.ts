@@ -5,7 +5,7 @@ import html2canvas from "html2canvas"
 import { Color, WebGLRenderer } from "three"
 import { checkWriteToClipboardAllowed, setToClipboard } from "../../../../app/codeCharta/util/clipboard/clipboardWriter"
 import { CcState } from "../../codeCharta.model"
-import { screenshotToClipboardEnabledSelector } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.selector"
+import { GlobalSettingsFacade } from "../../features/globalSettings/facade"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { ThreeRendererService } from "../codeMap/threeViewer/threeRenderer.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
@@ -25,14 +25,15 @@ export class ScreenshotButtonComponent implements OnInit {
     isWriteToClipboardAllowed: boolean
     SCREENSHOT_HOTKEY_TO_FILE = "Ctrl+Alt+S"
     SCREENSHOT_HOTKEY_TO_CLIPBOARD = "Ctrl+Alt+F"
-    isScreenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)
+    isScreenshotToClipboardEnabled$ = this.globalSettingsFacade.screenshotToClipboardEnabled$()
 
     constructor(
         private threeCameraService: ThreeCameraService,
         private threeSceneService: ThreeSceneService,
         private threeRendererService: ThreeRendererService,
         private store: Store<CcState>,
-        private state: State<CcState>
+        private state: State<CcState>,
+        private globalSettingsFacade: GlobalSettingsFacade
     ) {}
 
     ngOnInit() {

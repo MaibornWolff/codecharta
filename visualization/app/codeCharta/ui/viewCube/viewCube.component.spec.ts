@@ -1,6 +1,6 @@
 import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
-import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera.js"
+import { PerspectiveCamera } from "three"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCamera.service"
 import { Color, Mesh, Vector3, WebGLRenderer } from "three"
 import { MapControls } from "three/addons/controls/MapControls.js"

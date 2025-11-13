@@ -1,0 +1,7 @@
+<div class="flex gap-4">
+    @for (link of links; track link.href) {
+        <a class="link link-primary" [href]="link.href" target="_blank" rel="noopener noreferrer">
+            <i class="fa fa-external-link mr-2"></i>{{ link.label }}
+        </a>
+    }
+</div>

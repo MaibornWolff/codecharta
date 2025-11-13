@@ -11,7 +11,7 @@ import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.compone
 import { klona } from "klona"
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { FileDownloader } from "./fileDownloader"
-import { Vector3 } from "three/src/math/Vector3"
+import { Vector3 } from "three"
 import { Store } from "@ngrx/store"
 import { ThreeCameraService } from "../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../ui/codeMap/threeViewer/threeMapControls.service"

@@ -3,7 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
 import { SharpnessMode, CcState } from "../../../../../codeCharta.model"
 import { setSharpnessMode } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
-import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sharpnessMode/sharpnessMode.selector"
+import { GlobalSettingsFacade } from "../../../../../features/globalSettings/facade"
 
 @Component({
     selector: "cc-display-quality-selection",
@@ -12,9 +12,12 @@ import { sharpnessModeSelector } from "../../../../../state/store/appSettings/sh
 })
 export class DisplayQualitySelectionComponent {
     sharpnessModes = Object.values(SharpnessMode)
-    sharpnessMode = toSignal(this.store.select(sharpnessModeSelector), { requireSync: true })
+    sharpnessMode = toSignal(this.globalSettingsFacade.sharpnessMode$(), { requireSync: true })
 
-    constructor(private readonly store: Store<CcState>) {}
+    constructor(
+        private readonly store: Store<CcState>,
+        private readonly globalSettingsFacade: GlobalSettingsFacade
+    ) {}
 
     handleSelectedSharpnessModeChanged(event: Event) {
         const value = (event.target as HTMLSelectElement).value as SharpnessMode

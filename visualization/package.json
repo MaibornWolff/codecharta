@@ -51,6 +51,8 @@
     "package": "node script/appMain.js",
     "package:local": "npm run package -- --local",
     "schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json",
+    "lint:architecture": "depcruise app --config .dependency-cruiser.js",
+    "lint:architecture:graph": "depcruise app --include-only '^app/codeCharta/features' --config .dependency-cruiser.js --output-type html > dependency-graph.html",
     "sbom": "cyclonedx-npm --omit dev --gather-license-texts --spec-version 1.6 --output-format json --output-file build/reports/sbom_visualization.cdx.json"
   },
   "bin": {
@@ -124,6 +126,7 @@
     "autoprefixer": "^10.4.21",
     "bestzip": "^2.2.0",
     "daisyui": "^5.3.7",
+    "dependency-cruiser": "^17.2.0",
     "fast-xml-parser": "^5.0.0",
     "html-loader": "^5.0.0",
     "jest": "^30.2.0",

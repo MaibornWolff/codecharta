@@ -1,7 +1,6 @@
 import { CustomPanel, ThreeStatsService } from "./threeStats.service"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { WebGLRenderer } from "three/src/renderers/WebGLRenderer"
-import { WebGLInfo } from "three/src/renderers/webgl/WebGLInfo"
+import { WebGLRenderer, WebGLInfo } from "three"
 
 jest.mock("three/addons/libs/stats.module", () => {
     function MockedPanel(name: any, foregroundColor: any, backgroundColor: any) {
