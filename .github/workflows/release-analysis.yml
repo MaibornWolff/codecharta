@@ -119,6 +119,8 @@ jobs:
   publish_npm:
     needs: build
     name: Publish to npm
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
