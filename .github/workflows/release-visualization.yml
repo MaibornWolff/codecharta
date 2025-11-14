@@ -141,6 +141,8 @@ jobs:
     needs: build
     name: Publish to npm
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
