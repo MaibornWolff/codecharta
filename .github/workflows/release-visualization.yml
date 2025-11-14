@@ -164,8 +164,6 @@ jobs:
         run: |
           npm version ${{ needs.build.outputs.version }} --no-git-tag-version --allow-same-version
           npm publish --tag latest
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   # Publish to Docker Hub
   publish_docker:
