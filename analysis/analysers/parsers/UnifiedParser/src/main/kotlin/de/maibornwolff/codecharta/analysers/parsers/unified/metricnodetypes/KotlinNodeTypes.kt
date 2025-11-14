@@ -49,34 +49,20 @@ class KotlinNodeTypes : MetricNodeTypes {
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(
-                baseNodeType = "property_declaration",
-                childNodeCount = 4,
-                childNodePosition = 3,
-                childNodeTypes = setOf("lambda_literal", "anonymous_function", "anonymous_initializer")
+                baseNodeType = "lambda_literal",
+                parentNodeType = "property_declaration"
             ),
             NestedNodeType(
-                baseNodeType = "function_declaration",
-                childNodeCount = 4,
-                childNodePosition = 3,
-                childNodeTypes = setOf("function_body")
+                baseNodeType = "anonymous_function",
+                parentNodeType = "property_declaration"
             ),
             NestedNodeType(
-                baseNodeType = "function_declaration",
-                childNodeCount = 5,
-                childNodePosition = 4,
-                childNodeTypes = setOf("function_body")
+                baseNodeType = "anonymous_initializer",
+                parentNodeType = "property_declaration"
             ),
             NestedNodeType(
-                baseNodeType = "function_declaration",
-                childNodeCount = 6,
-                childNodePosition = 5,
-                childNodeTypes = setOf("function_body")
-            ),
-            NestedNodeType(
-                baseNodeType = "function_declaration",
-                childNodeCount = 7,
-                childNodePosition = 6,
-                childNodeTypes = setOf("function_body")
+                baseNodeType = "function_body",
+                parentNodeType = "function_declaration"
             )
         )
     )

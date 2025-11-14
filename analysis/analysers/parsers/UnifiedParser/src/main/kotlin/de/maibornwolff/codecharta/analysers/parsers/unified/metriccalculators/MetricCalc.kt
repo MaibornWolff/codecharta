@@ -18,13 +18,8 @@ interface MetricCalc {
         for (nestedType in nestedTypes) {
             if (nestedType.baseNodeType != nodeType) continue
 
-            if (nestedType.childNodePosition != null && nestedType.childNodeCount == node.childCount) {
-                val childNode = node.getChild(nestedType.childNodePosition)
-                if (!childNode.isNull && nestedType.childNodeTypes.contains(childNode.type)) return true
-            } else if (nestedType.childNodeFieldName != null) {
-                val childNode = node.getChildByFieldName(nestedType.childNodeFieldName)
-                if (!childNode.isNull && nestedType.childNodeTypes.contains(childNode.type)) return true
-            }
+            val parentNode = node.parent
+            if (!parentNode.isNull && nestedType.parentNodeType == parentNode.type) return true
         }
         return false
     }

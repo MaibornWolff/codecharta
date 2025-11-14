@@ -22,11 +22,18 @@ class CSharpNodeTypes : MetricNodeTypes {
             "catch_clause"
         ),
         nestedNodeTypes = setOf(
-            // logical binary
+            // logical binary operators
             NestedNodeType(
-                baseNodeType = "binary_expression",
-                childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||", "??")
+                baseNodeType = "&&",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "||",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "??",
+                parentNodeType = "binary_expression"
             )
         )
     )
@@ -56,10 +63,8 @@ class CSharpNodeTypes : MetricNodeTypes {
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(
-                baseNodeType = "variable_declarator",
-                childNodeCount = 3,
-                childNodePosition = 2,
-                childNodeTypes = setOf("lambda_expression")
+                baseNodeType = "lambda_expression",
+                parentNodeType = "variable_declarator"
             )
         )
     )

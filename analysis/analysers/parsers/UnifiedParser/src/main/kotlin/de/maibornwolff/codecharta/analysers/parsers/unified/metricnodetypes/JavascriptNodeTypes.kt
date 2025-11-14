@@ -21,11 +21,18 @@ class JavascriptNodeTypes : MetricNodeTypes {
             "catch_clause"
         ),
         nestedNodeTypes = setOf(
-            // logical binary
+            // logical binary operators
             NestedNodeType(
-                baseNodeType = "binary_expression",
-                childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||", "??")
+                baseNodeType = "&&",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "||",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "??",
+                parentNodeType = "binary_expression"
             )
         )
     )
@@ -58,9 +65,8 @@ class JavascriptNodeTypes : MetricNodeTypes {
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(
-                baseNodeType = "variable_declarator",
-                childNodeFieldName = "value",
-                childNodeTypes = setOf("arrow_function")
+                baseNodeType = "arrow_function",
+                parentNodeType = "variable_declarator"
             )
         )
     )

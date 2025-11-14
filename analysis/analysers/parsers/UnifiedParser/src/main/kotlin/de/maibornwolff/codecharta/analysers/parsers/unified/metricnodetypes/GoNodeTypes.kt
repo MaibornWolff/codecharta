@@ -14,11 +14,14 @@ class GoNodeTypes : MetricNodeTypes {
             "default_case"
         ),
         nestedNodeTypes = setOf(
-            // logical binary
+            // logical binary operators
             NestedNodeType(
-                baseNodeType = "binary_expression",
-                childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||")
+                baseNodeType = "&&",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "||",
+                parentNodeType = "binary_expression"
             )
         )
     )

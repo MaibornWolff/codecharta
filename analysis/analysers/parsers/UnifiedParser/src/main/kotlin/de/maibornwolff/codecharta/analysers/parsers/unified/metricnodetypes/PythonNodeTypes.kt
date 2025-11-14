@@ -27,9 +27,7 @@ class PythonNodeTypes : MetricNodeTypes {
             // lambda needs to be complex to not be counted double as type of first child is also lambda
             NestedNodeType(
                 baseNodeType = "lambda",
-                childNodeCount = 4,
-                childNodePosition = 0,
-                childNodeTypes = setOf("lambda")
+                parentNodeType = "lambda"
             )
         )
     )
@@ -46,12 +44,10 @@ class PythonNodeTypes : MetricNodeTypes {
             "comment"
         ),
         nestedNodeTypes = setOf(
-            // in python unassigned strings are used as block comments, meaning an expression that only has string as a child
+            // in python unassigned strings are used as block comments, meaning a string with expression_statement as parent
             NestedNodeType(
-                baseNodeType = "expression_statement",
-                childNodeCount = 1,
-                childNodePosition = 0,
-                childNodeTypes = setOf("string")
+                baseNodeType = "string",
+                parentNodeType = "expression_statement"
             )
         )
     )
@@ -60,9 +56,8 @@ class PythonNodeTypes : MetricNodeTypes {
         simpleNodeTypes = setOf("function_definition"),
         nestedNodeTypes = setOf(
             NestedNodeType(
-                baseNodeType = "assignment",
-                childNodeFieldName = "right",
-                childNodeTypes = setOf("lambda")
+                baseNodeType = "lambda",
+                parentNodeType = "assignment"
             )
         )
     )

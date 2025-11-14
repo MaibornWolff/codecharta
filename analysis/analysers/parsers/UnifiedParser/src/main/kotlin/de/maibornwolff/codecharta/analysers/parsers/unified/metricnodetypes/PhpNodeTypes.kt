@@ -22,11 +22,30 @@ class PhpNodeTypes : MetricNodeTypes {
             "catch_clause"
         ),
         nestedNodeTypes = setOf(
-            // logical binary
+            // logical binary operators
             NestedNodeType(
-                baseNodeType = "binary_expression",
-                childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||", "??", "and", "or", "xor")
+                baseNodeType = "&&",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "||",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "??",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "and",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "or",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "xor",
+                parentNodeType = "binary_expression"
             )
         )
     )
@@ -56,9 +75,16 @@ class PhpNodeTypes : MetricNodeTypes {
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(
-                baseNodeType = "assignment_expression",
-                childNodeFieldName = "right",
-                childNodeTypes = setOf("anonymous_function", "arrow_function", "lambda_expression")
+                baseNodeType = "anonymous_function",
+                parentNodeType = "assignment_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "arrow_function",
+                parentNodeType = "assignment_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "lambda_expression",
+                parentNodeType = "assignment_expression"
             )
         )
     )

@@ -21,11 +21,26 @@ class CppNodeTypes : MetricNodeTypes {
             "seh_except_clause"
         ),
         nestedNodeTypes = setOf(
-            // logical binary
+            // logical binary operators
             NestedNodeType(
-                baseNodeType = "binary_expression",
-                childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||", "and", "or", "xor")
+                baseNodeType = "&&",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "||",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "and",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "or",
+                parentNodeType = "binary_expression"
+            ),
+            NestedNodeType(
+                baseNodeType = "xor",
+                parentNodeType = "binary_expression"
             )
         )
     )
@@ -51,9 +66,8 @@ class CppNodeTypes : MetricNodeTypes {
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(
-                baseNodeType = "init_declarator",
-                childNodeFieldName = "value",
-                childNodeTypes = setOf("lambda_expression")
+                baseNodeType = "lambda_expression",
+                parentNodeType = "init_declarator"
             )
         )
     )

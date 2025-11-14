@@ -22,11 +22,22 @@ class RubyNodeTypes : MetricNodeTypes {
             "rescue"
         ),
         nestedNodeTypes = setOf(
-            // logical binary
+            // logical binary operators
             NestedNodeType(
-                baseNodeType = "binary",
-                childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||", "and", "or")
+                baseNodeType = "&&",
+                parentNodeType = "binary"
+            ),
+            NestedNodeType(
+                baseNodeType = "||",
+                parentNodeType = "binary"
+            ),
+            NestedNodeType(
+                baseNodeType = "and",
+                parentNodeType = "binary"
+            ),
+            NestedNodeType(
+                baseNodeType = "or",
+                parentNodeType = "binary"
             )
         )
     )
@@ -52,9 +63,8 @@ class RubyNodeTypes : MetricNodeTypes {
         ),
         nestedNodeTypes = setOf(
             NestedNodeType(
-                baseNodeType = "assignment",
-                childNodeFieldName = "right",
-                childNodeTypes = setOf("lambda")
+                baseNodeType = "lambda",
+                parentNodeType = "assignment"
             )
         )
     )
