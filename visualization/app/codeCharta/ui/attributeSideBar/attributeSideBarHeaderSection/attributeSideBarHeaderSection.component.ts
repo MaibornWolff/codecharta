@@ -1,8 +1,7 @@
-import { Component, Input } from "@angular/core"
+import { Component, input } from "@angular/core"
 
 import { CodeMapNode } from "../../../codeCharta.model"
 import { IsAttributeSideBarVisibleService } from "../../../services/isAttributeSideBarVisible.service"
-import { MatTooltip } from "@angular/material/tooltip"
 import { NodePathComponent } from "./nodePath/nodePath.component"
 import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
 
@@ -10,11 +9,11 @@ import { RemoveExtensionPipe } from "../../../util/pipes/removeExtension.pipe"
     selector: "cc-attribute-side-bar-header-section",
     templateUrl: "./attributeSideBarHeaderSection.component.html",
     styleUrls: ["./attributeSideBarHeaderSection.component.scss"],
-    imports: [MatTooltip, NodePathComponent, RemoveExtensionPipe]
+    imports: [NodePathComponent, RemoveExtensionPipe]
 })
 export class AttributeSideBarHeaderSectionComponent {
-    @Input() node: Pick<CodeMapNode, "children" | "name" | "link" | "path">
-    @Input() fileName: string
+    node = input<Pick<CodeMapNode, "children" | "name" | "link" | "path">>()
+    fileName = input<string>()
 
     constructor(private readonly isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService) {}
 
