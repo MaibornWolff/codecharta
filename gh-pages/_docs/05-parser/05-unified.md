@@ -115,6 +115,7 @@ cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.jso
 
 - In ruby the 'lambda' keyword is not counted correctly for complexity and number of functions
 - In C/C++/ObjectiveC the using `void` as a parameter counts as 1 for parameters per function
+- In Scala logical operators e.g. `&&` or `||` are not counted for complexity
 
 
 ## Detailed Metric Calculation

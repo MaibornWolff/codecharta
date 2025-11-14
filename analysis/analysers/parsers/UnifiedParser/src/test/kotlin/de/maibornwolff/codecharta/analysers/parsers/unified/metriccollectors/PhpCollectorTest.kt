@@ -27,11 +27,11 @@ class PhpCollectorTest {
     @Test
     fun `should count else if clause for complexity`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
-            if (${'$'}x == 1) {
+            if ($x == 1) {
                 echo "one";
-            } elseif (${'$'}x == 2) {
+            } elseif ($x == 2) {
                 echo "two";
             } else {
                 echo "other";
@@ -49,10 +49,10 @@ class PhpCollectorTest {
     @Test
     fun `should count foreach statement for complexity`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
-            foreach (${'$'}items as ${'$'}item) {
-                echo ${'$'}item;
+            foreach ($items as $item) {
+                echo $item;
             }
         """.trimIndent()
         val input = createTestFile(fileContent)
@@ -67,7 +67,7 @@ class PhpCollectorTest {
     @Test
     fun `should count conditional expression for complexity`() {
         // given
-        val fileContent = """<?php ${'$'}x = (${'$'}y > 0) ? 1 : -1; ?>"""
+        val fileContent = $$"""<?php $x = ($y > 0) ? 1 : -1; ?>"""
         val input = createTestFile(fileContent)
 
         // when
@@ -80,7 +80,7 @@ class PhpCollectorTest {
     @Test
     fun `should count 'and' and 'or' patterns for complexity`() {
         // given
-        val fileContent = """<?php if (${'$'}x > 0 and ${'$'}y > 0 or ${'$'}z > 0) { echo "test"; } ?>"""
+        val fileContent = $$"""<?php if ($x > 0 and $y > 0 or $z > 0) { echo "test"; } ?>"""
         val input = createTestFile(fileContent)
 
         // when
@@ -93,7 +93,7 @@ class PhpCollectorTest {
     @Test
     fun `should count binary expressions with && operator for complexity`() {
         // given
-        val fileContent = """<?php if (${'$'}x > 0 && ${'$'}y < 10) { echo "test"; } ?>"""
+        val fileContent = $$"""<?php if ($x > 0 && $y < 10) { echo "test"; } ?>"""
         val input = createTestFile(fileContent)
 
         // when
@@ -106,7 +106,7 @@ class PhpCollectorTest {
     @Test
     fun `should count null coalescing operator for complexity`() {
         // given
-        val fileContent = """<?php ${'$'}result = ${'$'}name ?? "default"; ?>"""
+        val fileContent = $$"""<?php $result = $name ?? "default"; ?>"""
         val input = createTestFile(fileContent)
 
         // when
@@ -119,9 +119,9 @@ class PhpCollectorTest {
     @Test
     fun `should count case statement for complexity`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
-            switch (${'$'}value) {
+            switch ($value) {
                 case 1:
                     echo "one";
                     break;
@@ -145,9 +145,9 @@ class PhpCollectorTest {
     @Test
     fun `should count conditional match for complexity`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
-            ${'$'}result = match(${'$'}value) {
+            $result = match($value) {
                 1 => "one",
                 2 => "two",
                 default => "other"
@@ -165,7 +165,7 @@ class PhpCollectorTest {
     @Test
     fun `should count arrow function for complexity`() {
         // given
-        val fileContent = """<?php ${'$'}func = fn(${'$'}a, ${'$'}b) => ${'$'}a + ${'$'}b; ?>"""
+        val fileContent = $$"""<?php $func = fn($a, $b) => $a + $b; ?>"""
         val input = createTestFile(fileContent)
 
         // when
@@ -178,10 +178,10 @@ class PhpCollectorTest {
     @Test
     fun `should count anonymous function creation for complexity`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
-            ${'$'}func = function(${'$'}x) {
-                return ${'$'}x * 2;
+            $func = function($x) {
+                return $x * 2;
             };
         """.trimIndent()
         val input = createTestFile(fileContent)
@@ -240,9 +240,9 @@ class PhpCollectorTest {
     @Test
     fun `should not include comments or empty lines for rloc`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
-            if (${'$'}x == 2) {
+            if ($x == 2) {
                 // comment
 
 
@@ -261,9 +261,9 @@ class PhpCollectorTest {
     @Test
     fun `should count empty lines and comments for loc`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
-            if (${'$'}x == 2) {
+            if ($x == 2) {
                 // comment
 
 
@@ -320,14 +320,14 @@ class PhpCollectorTest {
     @Test
     fun `should count anonymous function definitions for number of functions only when assigned to a variable`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
-            ${'$'}greet = function(${'$'}name) {
-                printf("Hello %s\r\n", ${'$'}name);
+            $greet = function($name) {
+                printf("Hello %s\r\n", $name);
             };
 
-            array_map(function(${'$'}name) {
-                printf("Hello %s\r\n", ${'$'}name);
+            array_map(function($name) {
+                printf("Hello %s\r\n", $name);
             }, ["Alice", "Bob"]);
         """.trimIndent()
         val input = createTestFile(fileContent)
@@ -342,11 +342,11 @@ class PhpCollectorTest {
     @Test
     fun `should count arrow function definitions for number of functions only when assigned to a variable`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
-            ${'$'}double = fn(${'$'}x) => ${'$'}x * 2;
+            $double = fn($x) => $x * 2;
 
-            ${'$'}result = array_map(fn(${'$'}x) => ${'$'}x * 2, [1, 2, 3]);
+            $result = array_map(fn($x) => $x * 2, [1, 2, 3]);
         """.trimIndent()
         val input = createTestFile(fileContent)
 
@@ -360,22 +360,22 @@ class PhpCollectorTest {
     @Test
     fun `should correctly calculate all measures for parameters per function metric`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
             function printSomething() {
                 echo "Something";
             }
 
-            function anotherFun(${'$'}a, ${'$'}b) {
-                return ${'$'}a + ${'$'}b;
+            function anotherFun($a, $b) {
+                return $a + $b;
             }
 
-            function power(${'$'}x, ${'$'}y) {
-                return pow(${'$'}x, ${'$'}y);
+            function power($x, $y) {
+                return pow($x, $y);
             }
 
-            function oneParameter(${'$'}x) {
-                return ${'$'}x * 2;
+            function oneParameter($x) {
+                return $x * 2;
             }
         """.trimIndent()
         val input = createTestFile(fileContent)
@@ -393,31 +393,31 @@ class PhpCollectorTest {
     @Test
     fun `should correctly calculate all measures for complexity per function metric`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
             function noComplexity() {
                 echo "hello";
             }
 
-            function complexFun(${'$'}a, ${'$'}b) {
-                switch (${'$'}a) {
+            function complexFun($a, $b) {
+                switch ($a) {
                     case 1:
-                        if (${'$'}a * ${'$'}b > 10) {
+                        if ($a * $b > 10) {
                             break;
                         }
                     case 2:
-                        if ((${'$'}a + ${'$'}b) % 2 == 0) {
+                        if (($a + $b) % 2 == 0) {
                             echo "Sum is even";
                             break;
                         }
                     default:
-                        return ${'$'}a;
+                        return $a;
                 }
-                return ${'$'}b;
+                return $b;
             }
 
-            function isEven(${'$'}x) {
-                return (${'$'}x % 2 == 0) ? true : false;
+            function isEven($x) {
+                return ($x % 2 == 0) ? true : false;
             }
             ?>
         """.trimIndent()
@@ -436,7 +436,7 @@ class PhpCollectorTest {
     @Test
     fun `should correctly calculate rloc per function metric`() {
         // given
-        val fileContent = """
+        val fileContent = $$"""
             <?php
             function functionOne() {
             // comment at start of function
@@ -445,8 +445,8 @@ class PhpCollectorTest {
                 {}
             }
 
-            function functionTwo(${'$'}x) {
-                return ${'$'}x * 2;
+            function functionTwo($x) {
+                return $x * 2;
             }
         """.trimIndent()
         val input = createTestFile(fileContent)
@@ -464,7 +464,7 @@ class PhpCollectorTest {
     @Test
     fun `should detect message chains with 4 or more method calls`() {
         // given
-        val fileContent = """<?php ${'$'}obj->a()->field->b()->c()->d();"""
+        val fileContent = $$"""<?php $obj->a()->field->b()->c()->d();"""
         val input = createTestFile(fileContent)
 
         // when

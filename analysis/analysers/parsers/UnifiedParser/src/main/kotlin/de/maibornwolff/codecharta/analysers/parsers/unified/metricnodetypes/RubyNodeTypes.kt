@@ -71,6 +71,18 @@ class RubyNodeTypes : MetricNodeTypes {
         )
     )
 
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call"
+        )
+    )
+
     companion object {
         private const val FUNCTION_NAME_TYPE = "identifier"
         private const val FUNCTION_DECLARATION_TYPE = "method"
@@ -106,16 +118,4 @@ class RubyNodeTypes : MetricNodeTypes {
             "rescue"
         )
     }
-
-    override val messageChainsNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf(
-            "call"
-        )
-    )
-
-    override val messageChainsCallNodeTypes = TreeNodeTypes(
-        simpleNodeTypes = setOf(
-            "call"
-        )
-    )
 }
