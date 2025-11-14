@@ -11,17 +11,12 @@ class ScalaNodeTypes : MetricNodeTypes {
             "for_expression",
             // match/case (pattern matching)
             "case_clause",
+            "guard",
             // catch
             "catch_clause"
-        ),
-        nestedNodeTypes = setOf(
-            // logical operators (&&, ||, &, |)
-            NestedNodeType(
-                baseNodeType = "infix_expression",
-                childNodeFieldName = "operator",
-                childNodeTypes = setOf("&&", "||", "&", "|")
-            )
         )
+        // logical operators like && or || are not supported as scala always uses
+        // "operator_identifier" as a type whether they are logical operators or not (like == or +)
     )
 
     override val functionComplexityNodeTypes = TreeNodeTypes(
@@ -35,7 +30,10 @@ class ScalaNodeTypes : MetricNodeTypes {
     override val commentLineNodeTypes = TreeNodeTypes(
         simpleNodeTypes = setOf(
             "comment",
-            "block_comment"
+            "//",
+            "block_comment",
+            "/*",
+            "*/"
         )
     )
 
@@ -43,7 +41,18 @@ class ScalaNodeTypes : MetricNodeTypes {
         simpleNodeTypes = setOf(
             "function_definition",
             "function_declaration",
-            "lambda_expression"
+        ),
+        nestedNodeTypes = setOf(
+            NestedNodeType(
+                baseNodeType = "val_definition",
+                childNodeFieldName = "value",
+                childNodeTypes = setOf("lambda_expression")
+            ),
+            NestedNodeType( // for partial functions
+                baseNodeType = "val_definition",
+                childNodeFieldName = "value",
+                childNodeTypes = setOf("case_block")
+            )
         )
     )
 
