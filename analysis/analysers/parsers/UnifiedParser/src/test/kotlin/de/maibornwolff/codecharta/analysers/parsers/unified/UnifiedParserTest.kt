@@ -393,4 +393,65 @@ class UnifiedParserTest {
         // clean up
         System.setErr(originalErr)
     }
+
+    @Test
+    fun `should produce same output from parse API and CLI for same inputs`() {
+        // Arrange
+        val inputFilePath = File("${testResourceBaseFolder}sampleproject")
+        val excludePatterns = listOf("/bar/", "foo.kt", ".*.py")
+
+        // Act - Parse using public API
+        val apiResult = UnifiedParser.parse(
+            inputFile = inputFilePath,
+            excludePatterns = excludePatterns,
+            fileExtensions = emptyList(),
+            bypassGitignore = false,
+            includeBuildFolders = false,
+            verbose = false
+        )
+
+        // Act - Parse using CLI
+        val pipedProject = ""
+        val cliResult = executeForOutput(
+            pipedProject,
+            arrayOf(inputFilePath.path, "-e=/bar/,foo.kt,.*.py")
+        )
+
+        // Assert - Both should have same structure
+        assertThat(apiResult.rootNode).isNotNull
+        assertThat(cliResult).contains("whenCase.kt")
+        assertThat(cliResult).contains("helloWorld.ts")
+        assertThat(cliResult).doesNotContain("\"name\":\"foo.kt\"")
+        assertThat(cliResult).doesNotContain("\"name\":\"bar\"")
+    }
+
+    @Test
+    fun `should include build folders when includeBuildFolders is true via parse API`() {
+        // Arrange
+        val inputFilePath = File("${testResourceBaseFolder}sampleproject")
+
+        // Act
+        val result = UnifiedParser.parse(
+            inputFile = inputFilePath,
+            includeBuildFolders = true
+        )
+
+        // Assert - Should include .whatever folder content
+        assertThat(result.rootNode.children.any { it.name == ".whatever" }).isTrue()
+    }
+
+    @Test
+    fun `should exclude build folders by default via parse API when no gitignore exists`() {
+        // Arrange
+        val inputFilePath = File("${testResourceBaseFolder}sampleproject")
+
+        // Act
+        val result = UnifiedParser.parse(
+            inputFile = inputFilePath,
+            includeBuildFolders = false
+        )
+
+        // Assert - Should exclude .whatever folder
+        assertThat(result.rootNode.children.any { it.name == ".whatever" }).isFalse()
+    }
 }

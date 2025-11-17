@@ -61,6 +61,15 @@ class MetricThresholdChecker(
     )
     private var bypassGitignore = false
 
+    @CommandLine.Option(
+        names = ["-ibf", "--include-build-folders"],
+        description = [
+            "include build folders (out, build, dist and target) and " +
+                "common resource folders (e.g. resources, node_modules or files/folders starting with '.')"
+        ]
+    )
+    private var includeBuildFolders = false
+
     override val name = NAME
     override val description = DESCRIPTION
 
@@ -94,6 +103,7 @@ class MetricThresholdChecker(
             excludePatterns = excludePatterns,
             fileExtensions = fileExtensions,
             bypassGitignore = bypassGitignore,
+            includeBuildFolders = includeBuildFolders,
             verbose = verbose
         )
 

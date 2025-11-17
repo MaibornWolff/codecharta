@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
+import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -45,6 +46,8 @@ class UnifiedParser(
          * @param excludePatterns Regex patterns to exclude files/folders
          * @param fileExtensions File extensions to analyze (empty = all supported languages)
          * @param bypassGitignore Whether to bypass .gitignore files
+         * @param includeBuildFolders Whether to include build folders when no .gitignore exists (default: false)
+         * @param baseFileNodeMap Optional map of base file nodes for checksum comparison (default: empty)
          * @param verbose Enable verbose output
          * @return Project with all metrics and attribute descriptors
          */
@@ -53,17 +56,51 @@ class UnifiedParser(
             excludePatterns: List<String> = emptyList(),
             fileExtensions: List<String> = emptyList(),
             bypassGitignore: Boolean = false,
+            includeBuildFolders: Boolean = false,
+            baseFileNodeMap: Map<String, Node> = emptyMap(),
             verbose: Boolean = false
         ): Project {
-            val projectBuilder = ProjectBuilder()
             val useGitignore = !bypassGitignore
+            val scanResult = performScan(
+                inputFile = inputFile,
+                excludePatterns = excludePatterns,
+                fileExtensions = fileExtensions,
+                baseFileNodeMap = baseFileNodeMap,
+                useGitignore = useGitignore,
+                includeBuildFolders = includeBuildFolders,
+                verbose = verbose
+            )
+            return scanResult.project
+        }
+
+        private data class ScanResult(
+            val project: Project,
+            val scanner: ProjectScanner
+        )
+
+        private fun performScan(
+            inputFile: File,
+            excludePatterns: List<String>,
+            fileExtensions: List<String>,
+            baseFileNodeMap: Map<String, Node>,
+            useGitignore: Boolean,
+            includeBuildFolders: Boolean,
+            verbose: Boolean
+        ): ScanResult {
+            val projectBuilder = ProjectBuilder()
+            val effectivePatternsToExclude = determineExclusionPatterns(
+                inputFile = inputFile,
+                excludePatterns = excludePatterns,
+                useGitignore = useGitignore,
+                includeBuildFolders = includeBuildFolders
+            )
 
             val projectScanner = ProjectScanner(
                 inputFile,
                 projectBuilder,
-                excludePatterns,
+                effectivePatternsToExclude,
                 fileExtensions,
-                emptyMap(),
+                baseFileNodeMap,
                 useGitignore
             )
 
@@ -75,7 +112,30 @@ class UnifiedParser(
 
             projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
-            return projectBuilder.build()
+            return ScanResult(
+                project = projectBuilder.build(),
+                scanner = projectScanner
+            )
+        }
+
+        private fun determineExclusionPatterns(
+            inputFile: File,
+            excludePatterns: List<String>,
+            useGitignore: Boolean,
+            includeBuildFolders: Boolean
+        ): List<String> {
+            val patterns = excludePatterns.toMutableList()
+            val rootGitignoreExists = File(inputFile, ".gitignore").exists()
+
+            if (useGitignore && !rootGitignoreExists) {
+                Logger.warn { "No .gitignore found at root level, excluding common build folders as fallback..." }
+            }
+
+            if (!includeBuildFolders && !rootGitignoreExists) {
+                patterns.addAll(CodeChartaConstants.BUILD_FOLDERS)
+            }
+
+            return patterns
         }
     }
 
@@ -108,34 +168,29 @@ class UnifiedParser(
 
     private fun scanInputProject(inputFile: File): Project {
         val startTime = System.currentTimeMillis()
-        val projectBuilder = ProjectBuilder()
         val baseFileNodeMap = loadBaseFileNodes()
         val useGitignore = !bypassGitignore
 
-        val effectivePatternsToExclude = determineExclusionPatterns(inputFile, useGitignore)
-        val projectScanner = ProjectScanner(
-            inputFile,
-            projectBuilder,
-            effectivePatternsToExclude,
-            fileExtensionsToAnalyse,
-            baseFileNodeMap,
-            useGitignore
+        val scanResult = performScan(
+            inputFile = inputFile,
+            excludePatterns = specifiedExcludePatterns,
+            fileExtensions = fileExtensionsToAnalyse,
+            baseFileNodeMap = baseFileNodeMap,
+            useGitignore = useGitignore,
+            includeBuildFolders = includeBuildFolders,
+            verbose = verbose
         )
 
-        projectScanner.traverseInputProject(verbose)
-
-        reportNotFoundFileExtensions(projectScanner)
-        reportIgnoredFileTypes(projectScanner)
-        reportGitIgnoreStatistics(projectScanner)
-        reportNoParsableFiles(projectScanner)
+        reportNotFoundFileExtensions(scanResult.scanner)
+        reportIgnoredFileTypes(scanResult.scanner)
+        reportGitIgnoreStatistics(scanResult.scanner)
+        reportNoParsableFiles(scanResult.scanner)
 
         val executionTimeMs = System.currentTimeMillis() - startTime
         val formattedTime = formatTime(executionTimeMs.milliseconds)
         System.err.println("UnifiedParser completed in $formattedTime, building project...")
 
-        projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
-
-        return projectBuilder.build()
+        return scanResult.project
     }
 
     private fun reportNotFoundFileExtensions(projectScanner: ProjectScanner) {
@@ -195,21 +250,6 @@ class UnifiedParser(
 
     override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
         return getAttributeDescriptors()
-    }
-
-    private fun determineExclusionPatterns(inputFile: File, useGitignore: Boolean): List<String> {
-        val excludePatterns = specifiedExcludePatterns.toMutableList()
-        val rootGitignoreExists = File(inputFile, ".gitignore").exists()
-
-        if (useGitignore && !rootGitignoreExists) {
-            Logger.warn { "No .gitignore found at root level, excluding common build folders as fallback..." }
-        }
-
-        if (!includeBuildFolders && !rootGitignoreExists) {
-            excludePatterns.addAll(CodeChartaConstants.BUILD_FOLDERS)
-        }
-
-        return excludePatterns
     }
 
     private fun formatFileExtensions(fileExtensions: Set<String>): String {
