@@ -354,4 +354,17 @@ class JavascriptCollectorTest {
         Assertions.assertThat(result.attributes["mean_rloc_per_function"]).isEqualTo(1.5)
         Assertions.assertThat(result.attributes["median_rloc_per_function"]).isEqualTo(1.5)
     }
+
+    @Test
+    fun `should detect message chains with 4 or more method calls`() {
+        // given
+        val fileContent = """obj.a().field.b().c().d();"""
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.MESSAGE_CHAINS.metricName]).isEqualTo(1.0)
+    }
 }

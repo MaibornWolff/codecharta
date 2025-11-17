@@ -54,19 +54,4 @@ jobs:
           tags: |
             codecharta/codecharta-analysis:staging
             codecharta/codecharta-analysis:staging-${{ env.SHORT_SHA }}
-
-      # Publish node-wrapper to npm with staging tag
-      - name: Update package version
-        working-directory: ./analysis/node-wrapper
-        run: |
-          npm version "0.0.0-staging-${SHORT_SHA}" --no-git-tag-version
-
-      - name: Publish to npm
-        working-directory: ./analysis/node-wrapper
-        run: |
-          npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
-          npm run prepare
-          npm publish --tag staging
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     

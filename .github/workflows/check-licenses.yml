@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - chore/check-licenses
+      - renovate/major-cyclonedx
 
 permissions: read-all
 

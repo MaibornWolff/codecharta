@@ -74,4 +74,19 @@ class PhpNodeTypes : MetricNodeTypes {
             "simple_parameter"
         )
     )
+
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "member_call_expression",
+            "scoped_call_expression",
+            "member_access_expression"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "member_call_expression",
+            "scoped_call_expression"
+        )
+    )
 }

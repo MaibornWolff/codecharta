@@ -16,42 +16,46 @@ CodeCharta. It generates either a cc.json or a csv file.
 
 ## Supported Languages
 
-| Language   | Supported file extensions              |
-|------------|----------------------------------------|
-| Javascript | .js, .cjs, .mjs                        |
-| Typescript | .ts, .cts, .mts                        |
-| Java       | .java                                  |
-| Kotlin     | .kt                                    |
-| C#         | .cs                                    |
-| C++        | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
-| C          | .c, .h                                 |
-| Python     | .py                                    |
-| Go         | .go                                    |
-| PHP        | .php                                   |
-| Ruby       | .rb                                    |
-| Swift      | .swift                                 |
-| Bash       | .sh                                    |
+| Language     | Supported file extensions              |
+|--------------|----------------------------------------|
+| Javascript   | .js, .cjs, .mjs                        |
+| Typescript   | .ts, .cts, .mts                        |
+| Java         | .java                                  |
+| Kotlin       | .kt                                    |
+| C#           | .cs                                    |
+| C++          | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
+| C            | .c, .h                                 |
+| Objective-C  | .m                                     |
+| Python       | .py                                    |
+| Go           | .go                                    |
+| PHP          | .php                                   |
+| Ruby         | .rb                                    |
+| Swift        | .swift                                 |
+| Bash         | .sh                                    |
 
 ## Supported Metrics
 
 | Metric                    | Description                                                                                                                                                                                                                |
 |---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Complexity                | Complexity of the file based on the number of paths through the code. Also includes complexity introduced by definition of functions, classes, etc. (Represents the 'cognitive load' necessary to overlook the whole file) |
-| Logic Complexity          | Complexity of the file based on number of paths through the code, similar to cyclomatic complexity (only counts complexity in code, not complexity introduced by definition of functions, classes, etc.)                   |
-| Comment lines             | The number of comment lines found in a file                                                                                                                                                                                |
-| Number of functions       | The number of functions and methods in a file                                                                                                                                                                              |
-| Lines of code (LOC)       | Lines of code including empty lines and comments                                                                                                                                                                           |
-| Real lines of code (RLOC) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
-| Long Method               | Number of functions with more than 10 real lines of code (rloc)                                                                                                                                                            |
-| Long Parameter List       | Number of functions with more than 4 parameters                                                                                                                                                                            |
+| complexity                | Complexity of the file based on the number of paths through the code. Also includes complexity introduced by definition of functions, classes, etc. (Represents the 'cognitive load' necessary to overlook the whole file) |
+| logic_complexity          | Complexity of the file based on number of paths through the code, similar to cyclomatic complexity (only counts complexity in code, not complexity introduced by definition of functions, classes, etc.)                   |
+| comment_lines             | The number of comment lines found in a file                                                                                                                                                                                |
+| number_of_functions       | The number of functions and methods in a file                                                                                                                                                                              |
+| loc (Lines of Code)       | Lines of code including empty lines and comments                                                                                                                                                                           |
+| rloc (Real lines of code) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
+| long_method               | Code smell showing the number of functions with more than 10 real lines of code (rloc)                                                                                                                                     |
+| long_parameter_list       | Code smell showing the number of functions with more than 4 parameters                                                                                                                                                     |
+| excessive_comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
+| comment_ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
+| message_chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
 
-Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file.
+Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file. The names of these metrics are prefixed by "max_", "min_", ...
 
 | Metric per function     | Description                                          |
 |-------------------------|------------------------------------------------------|
-| Parameters per function | The number of parameters for each function           |
-| Complexity per function | The complexity inside the body of a function         |
-| RLOC per function       | The real lines of code inside the body of a function |
+| parameters_per_function | The number of parameters for each function           |
+| complexity_per_function | The complexity inside the body of a function         |
+| rloc_per_function       | The real lines of code inside the body of a function |
 
 
 ## Usage and Parameters
@@ -110,6 +114,7 @@ cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.jso
 ## Known issues
 
 - In ruby the 'lambda' keyword is not counted correctly for complexity and number of functions
+- In C/C++/ObjectiveC the using `void` as a parameter counts as 1 for parameters per function
 
 
 ## Detailed Metric Calculation
@@ -174,6 +179,13 @@ contribute to complexity:
 - **Functions**: `function_definition`, `abstract_function_declarator`, `function_declarator`
 - **Logical operators**: `&&`, `||` in binary expressions
 
+#### Objective-C (.m)
+
+- **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `conditional_expression`, `case_statement`,
+  `@catch`
+- **Functions**: `function_definition`, `block_expression`
+- **Logical operators**: `&&`, `||` in binary expressions
+
 #### Python (.py)
 
 - **Control flow**: `if_statement`, `elif_clause`, `if_clause`, `for_statement`, `while_statement`, `for_in_clause`,
@@ -225,6 +237,7 @@ Comment lines are counted based on language-specific comment syntax:
 - **Kotlin**: `line_comment`, `multiline_comment`
 - **C#**: `comment`
 - **C/C++**: `comment`
+- **Objective-C**: `comment`
 - **Python**: `comment` and unassigned string literals (used as block comments)
 - **Go**: `comment`
 - **PHP**: `comment`
@@ -271,6 +284,10 @@ Function counting identifies different types of function definitions per languag
 
 - **Functions**: `function_definition`
 
+#### Objective-C (.m)
+
+- **Functions**: `function_definition` (C functions), `method_definition` (Objective-C methods)
+
 #### Python (.py)
 
 - **Functions**: `function_definition`
@@ -313,3 +330,110 @@ RLOC counts only lines that contain actual code, excluding:
 - Lines that are part of multi-line comments
 
 This metric is calculated by counting all lines that are not identified as comment nodes by the Tree-sitter parser for each language.
+
+### Parameters per Function
+
+Parameters per function counts the number of parameters declared for each function. The metric identifies parameter nodes specific to each language:
+
+- **JavaScript/TypeScript**: `formal_parameter`, `required_parameter`
+- **Java**: `formal_parameter`
+- **Kotlin**: `parameter`
+- **C#**: `parameter`
+- **C++**: `parameter_declaration`
+- **C**: `parameter_declaration`
+- **Objective-C**: `parameter_declaration` (C functions), `keyword_declarator` (Objective-C method parameters)
+- **Python**: `identifier` parameters in `parameters` node
+- **Go**: `parameter_declaration`
+- **PHP**: `simple_parameter`, `variadic_parameter`, `property_promotion_parameter`
+- **Ruby**: `identifier` parameters
+- **Swift**: `parameter`
+- **Bash**: Parameters are counted from function definitions
+
+### Message Chains
+
+Message Chains is a code smell that detects method call chains with 4 or more consecutive calls (e.g., `obj.a().b().c().d()`), which
+can indicate tight coupling and violations of the Law of Demeter. The metric counts only method/function calls, not property accesses.
+
+#### JavaScript (.js, .cjs, .mjs)
+
+- **Chain nodes**: `call_expression`, `member_expression`
+- **Call nodes**: `call_expression`
+
+#### TypeScript (.ts, .cts, .mts)
+
+- **Chain nodes**: `call_expression`, `member_expression`
+- **Call nodes**: `call_expression`
+
+#### Java (.java)
+
+- **Chain nodes**: `method_invocation`, `field_access`
+- **Call nodes**: `method_invocation`
+
+#### Kotlin (.kt)
+
+- **Chain nodes**: `call_expression`, `navigation_expression`
+- **Call nodes**: `call_expression`
+
+#### C# (.cs)
+
+- **Chain nodes**: `invocation_expression`, `member_access_expression`
+- **Call nodes**: `invocation_expression`
+
+#### C++ (.cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx)
+
+- **Chain nodes**: `call_expression`, `field_expression`
+- **Call nodes**: `call_expression`
+
+#### C (.c, .h)
+
+- **Chain nodes**: `call_expression`, `field_expression`
+- **Call nodes**: `call_expression`
+
+#### Python (.py)
+
+- **Chain nodes**: `call`, `attribute`
+- **Call nodes**: `call`
+
+#### Go (.go)
+
+- **Chain nodes**: `call_expression`, `selector_expression`
+- **Call nodes**: `call_expression`
+
+#### PHP (.php)
+
+- **Chain nodes**: `member_call_expression`, `scoped_call_expression`, `member_access_expression`
+- **Call nodes**: `member_call_expression`, `scoped_call_expression`
+
+#### Ruby (.rb)
+
+- **Chain nodes**: `call`
+- **Call nodes**: `call`
+
+#### Bash (.sh)
+
+Message chains are not applicable to Bash as it does not support method chaining.
+
+#### Swift (.swift)
+
+- **Chain nodes**: `call_expression`, `navigation_expression`
+- **Call nodes**: `call_expression`
+
+### Code Smells
+
+The following code smell metrics are derived from the base metrics and are calculated after the tree traversal:
+
+#### Long Method
+
+Counts the number of functions in a file that have more than 10 real lines of code (RLOC). This is a language-independent metric that uses the per-function RLOC values.
+
+#### Long Parameter List
+
+Counts the number of functions in a file that have more than 4 parameters. This is a language-independent metric that uses the per-function parameter counts.
+
+#### Excessive Comments
+
+Binary metric (0 or 1) that indicates whether a file has more than 10 comment lines. This threshold helps identify files that may be over-commented.
+
+#### Comment Ratio
+
+Calculates the ratio of comment lines to real lines of code (comment_lines / rloc). The result is rounded to two decimal places. If RLOC is 0, the ratio is 0.0.

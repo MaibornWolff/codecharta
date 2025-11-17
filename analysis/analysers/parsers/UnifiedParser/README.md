@@ -6,21 +6,22 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 ## Supported Languages
 
-| Language   | Supported file extensions              |
-|------------|----------------------------------------|
-| Javascript | .js, .cjs, .mjs                        |
-| Typescript | .ts, .cts, .mts                        |
-| Java       | .java                                  |
-| Kotlin     | .kt                                    |
-| C#         | .cs                                    |
-| C++        | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
-| C          | .c, .h                                 |
-| Python     | .py                                    |
-| Go         | .go                                    |
-| PHP        | .php                                   |
-| Ruby       | .rb                                    |
-| Swift      | .swift                                 |
-| Bash       | .sh                                    |
+| Language     | Supported file extensions              |
+|--------------|----------------------------------------|
+| Javascript   | .js, .cjs, .mjs                        |
+| Typescript   | .ts, .cts, .mts                        |
+| Java         | .java                                  |
+| Kotlin       | .kt                                    |
+| C#           | .cs                                    |
+| C++          | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
+| C            | .c, .h                                 |
+| Objective-C  | .m                                     |
+| Python       | .py                                    |
+| Go           | .go                                    |
+| PHP          | .php                                   |
+| Ruby         | .rb                                    |
+| Swift        | .swift                                 |
+| Bash         | .sh                                    |
 
 ## Supported Metrics
 
@@ -32,8 +33,11 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Number of functions       | The number of functions and methods in a file                                                                                                                                                                              |
 | Lines of code (LOC)       | Lines of code including empty lines and comments                                                                                                                                                                           |
 | Real lines of code (RLOC) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
-| Long Method               | Number of functions with more than 10 real lines of code (rloc)                                                                                                                                                            |
-| Long Parameter List       | Number of functions with more than 4 parameters                                                                                                                                                                            |
+| Long Method               | Code smell showing the number of functions with more than 10 real lines of code (rloc)                                                                                                                                     |
+| Long Parameter List       | Code smell showing the number of functions with more than 4 parameters                                                                                                                                                     |
+| Excessive Comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
+| Comment Ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
+| Message Chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file.
 
@@ -98,6 +102,7 @@ cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.jso
 ## Known issues
 
 - In ruby the 'lambda' keyword is not counted correctly for complexity and number of functions
+- In C/C++/ObjectiveC the using `void` as a parameter counts as 1 for parameters per function
 
 ## Extending the UnifiedParser
 

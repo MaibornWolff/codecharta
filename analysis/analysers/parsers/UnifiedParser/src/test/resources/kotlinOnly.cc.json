@@ -1,5 +1,5 @@
 {
-  "checksum": "e93d46493670290d694b3611626ac64f",
+  "checksum": "4d74279a874cf465d39ea7b372f5255f",
   "data": {
     "projectName": "",
     "nodes": [
@@ -23,8 +23,13 @@
                   "logic_complexity": 1.0,
                   "comment_lines": 9.0,
                   "number_of_functions": 2.0,
+                  "message_chains": 0.0,
                   "rloc": 31.0,
                   "loc": 48.0,
+                  "long_method": 0.0,
+                  "long_parameter_list": 0.0,
+                  "excessive_comments": 0.0,
+                  "comment_ratio": 0.29,
                   "max_parameters_per_function": 3.0,
                   "min_parameters_per_function": 1.0,
                   "mean_parameters_per_function": 2.0,
@@ -36,9 +41,7 @@
                   "max_rloc_per_function": 6.0,
                   "min_rloc_per_function": 3.0,
                   "mean_rloc_per_function": 4.5,
-                  "median_rloc_per_function": 4.5,
-                  "long_method": 0.0,
-                  "long_parameter_list": 0.0
+                  "median_rloc_per_function": 4.5
                 },
                 "link": "",
                 "children": [],
@@ -52,8 +55,13 @@
                   "logic_complexity": 0.0,
                   "comment_lines": 0.0,
                   "number_of_functions": 1.0,
+                  "message_chains": 0.0,
                   "rloc": 6.0,
                   "loc": 8.0,
+                  "long_method": 0.0,
+                  "long_parameter_list": 0.0,
+                  "excessive_comments": 0.0,
+                  "comment_ratio": 0.0,
                   "max_parameters_per_function": 0.0,
                   "min_parameters_per_function": 0.0,
                   "mean_parameters_per_function": 0.0,
@@ -65,9 +73,7 @@
                   "max_rloc_per_function": 0.0,
                   "min_rloc_per_function": 0.0,
                   "mean_rloc_per_function": 0.0,
-                  "median_rloc_per_function": 0.0,
-                  "long_method": 0.0,
-                  "long_parameter_list": 0.0
+                  "median_rloc_per_function": 0.0
                 },
                 "link": "",
                 "children": [],
@@ -83,8 +89,13 @@
               "logic_complexity": 2.0,
               "comment_lines": 6.0,
               "number_of_functions": 3.0,
+              "message_chains": 0.0,
               "rloc": 30.0,
               "loc": 41.0,
+              "long_method": 0.0,
+              "long_parameter_list": 0.0,
+              "excessive_comments": 0.0,
+              "comment_ratio": 0.2,
               "max_parameters_per_function": 1.0,
               "min_parameters_per_function": 0.0,
               "mean_parameters_per_function": 0.67,
@@ -96,9 +107,7 @@
               "max_rloc_per_function": 8.0,
               "min_rloc_per_function": 2.0,
               "mean_rloc_per_function": 4.67,
-              "median_rloc_per_function": 4.0,
-              "long_method": 0.0,
-              "long_parameter_list": 0.0
+              "median_rloc_per_function": 4.0
             },
             "link": "",
             "children": [],
@@ -112,8 +121,13 @@
               "logic_complexity": 4.0,
               "comment_lines": 0.0,
               "number_of_functions": 1.0,
+              "message_chains": 0.0,
               "rloc": 11.0,
               "loc": 13.0,
+              "long_method": 0.0,
+              "long_parameter_list": 0.0,
+              "excessive_comments": 0.0,
+              "comment_ratio": 0.0,
               "max_parameters_per_function": 1.0,
               "min_parameters_per_function": 1.0,
               "mean_parameters_per_function": 1.0,
@@ -125,9 +139,7 @@
               "max_rloc_per_function": 6.0,
               "min_rloc_per_function": 6.0,
               "mean_rloc_per_function": 6.0,
-              "median_rloc_per_function": 6.0,
-              "long_method": 0.0,
-              "long_parameter_list": 0.0
+              "median_rloc_per_function": 6.0
             },
             "link": "",
             "children": [],
@@ -338,7 +350,7 @@
       },
       "long_method": {
         "title": "Long Method",
-        "description": "Number of functions with more than 10 real lines of code (rloc)",
+        "description": "Code smell showing the number of functions with more than 10 real lines of code (rloc)",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
@@ -349,7 +361,40 @@
       },
       "long_parameter_list": {
         "title": "Long Parameter List",
-        "description": "Number of functions with more than 4 parameters",
+        "description": "Code smell showing the number of functions with more than 4 parameters",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "excessive_comments": {
+        "title": "Excessive Comments",
+        "description": "Code smell showing whether a file has more than 10 comment lines",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "comment_ratio": {
+        "title": "Comment Ratio",
+        "description": "The ratio of comment lines to real lines of code (rloc)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": 0,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "message_chains": {
+        "title": "Message Chains",
+        "description": "Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",

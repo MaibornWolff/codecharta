@@ -144,15 +144,13 @@ class CppCollectorTest {
     fun `should count seh-except clause for complexity`() {
         // given
         val fileContent = """
-            int main() {
-                __try
-                {
-                    TestExceptions();
-                }
-                __except(EXCEPTION_EXECUTE_HANDLER)
-                {
-                    printf("Executing SEH __except block\n");
-                }
+            __try
+            {
+                TestExceptions();
+            }
+            __except(EXCEPTION_EXECUTE_HANDLER)
+            {
+                printf("Executing SEH __except block\n");
             }
         """.trimIndent()
         val input = createTestFile(fileContent)
@@ -161,7 +159,7 @@ class CppCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(1.0)
     }
 
     @Test
@@ -363,5 +361,18 @@ class CppCollectorTest {
         Assertions.assertThat(result.attributes["min_rloc_per_function"]).isEqualTo(1.0)
         Assertions.assertThat(result.attributes["mean_rloc_per_function"]).isEqualTo(1.5)
         Assertions.assertThat(result.attributes["median_rloc_per_function"]).isEqualTo(1.5)
+    }
+
+    @Test
+    fun `should detect message chains with 4 or more method calls`() {
+        // given
+        val fileContent = """obj.a().field.b().c().d();"""
+        val input = createTestFile(fileContent)
+
+        // when
+        val result = collector.collectMetricsForFile(input)
+
+        // then
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.MESSAGE_CHAINS.metricName]).isEqualTo(1.0)
     }
 }

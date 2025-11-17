@@ -21,6 +21,7 @@ dependencies {
     implementation(libs.treesitter.php)
     implementation(libs.treesitter.ruby)
     implementation(libs.treesitter.swift)
+    implementation(libs.treesitter.objc)
     implementation(libs.treesitter.bash)
 
     testImplementation(libs.jsonassert)
