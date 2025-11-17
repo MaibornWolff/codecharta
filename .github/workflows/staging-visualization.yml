@@ -56,19 +56,6 @@ jobs:
             codecharta/codecharta-visualization:staging
             codecharta/codecharta-visualization:staging-${{ env.SHORT_SHA }}
 
-      # Publish to npm with staging tag
-      - name: Update package version
-        working-directory: ./visualization
-        run: |
-          npm version "0.0.0-staging-${SHORT_SHA}" --no-git-tag-version
-
-      - name: Publish to npm
-        working-directory: ./visualization
-        run: |
-          npm publish --tag staging
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Create Sample File for Web Demo
         run: sh ./.github/workflows/scripts/build_demo_files.sh
 

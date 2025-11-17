@@ -1,8 +1,8 @@
 [versions]
 kotlin-logging = "7.0.13"
 boon = "0.34"
-commons-lang3 = "3.19.0"
-cyclonedx = "2.4.1"
+commons-lang3 = "3.20.0"
+cyclonedx = "3.0.2"
 gson = "2.13.2"
 jacoco = "0.8.11"
 jersey = "4.0.0"
@@ -22,7 +22,7 @@ junit5 = "5.14.1"
 junit-platform = "1.14.1"
 ktlint = "12.3.0"
 mockk = "1.14.6"
-wiremock = "3.13.1"
+wiremock = "3.13.2"
 tree-sitter = "0.25.3"
 tree-sitter-typescript = "0.23.2"
 tree-sitter-javascript = "0.23.1"
@@ -36,6 +36,7 @@ tree-sitter-go = "0.23.3"
 tree-sitter-php = "0.23.11"
 tree-sitter-ruby = "0.23.1"
 tree-sitter-swift = "0.5.0"
+tree-sitter-objc = "main-a"
 tree-sitter-bash = "0.23.3"
 
 [libraries]
@@ -79,6 +80,7 @@ treesitter-go = { group = "io.github.bonede", name = "tree-sitter-go", version.r
 treesitter-php = { group = "io.github.bonede", name = "tree-sitter-php", version.ref = "tree-sitter-php"}
 treesitter-ruby = { group = "io.github.bonede", name = "tree-sitter-ruby", version.ref = "tree-sitter-ruby"}
 treesitter-swift = { group = "io.github.bonede", name = "tree-sitter-swift", version.ref = "tree-sitter-swift"}
+treesitter-objc = { group = "io.github.bonede", name = "tree-sitter-objc", version.ref = "tree-sitter-objc"}
 treesitter-bash = { group = "io.github.bonede", name = "tree-sitter-bash", version.ref = "tree-sitter-bash"}
 appmattus-crypto = { group = "com.appmattus.crypto", name = "cryptohash", version.ref = "appmattus-crypto"}
 

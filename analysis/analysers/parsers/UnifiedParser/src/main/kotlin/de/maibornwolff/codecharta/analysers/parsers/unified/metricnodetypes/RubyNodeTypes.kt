@@ -106,4 +106,16 @@ class RubyNodeTypes : MetricNodeTypes {
             "rescue"
         )
     }
+
+    override val messageChainsNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call"
+        )
+    )
+
+    override val messageChainsCallNodeTypes = TreeNodeTypes(
+        simpleNodeTypes = setOf(
+            "call"
+        )
+    )
 }

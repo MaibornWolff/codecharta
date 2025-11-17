@@ -119,6 +119,8 @@ jobs:
   publish_npm:
     needs: build
     name: Publish to npm
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -142,8 +144,6 @@ jobs:
           npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
           npm version ${{ needs.build.outputs.version }} --no-git-tag-version --allow-same-version
           npm publish --tag latest --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   # Publish to Docker Hub
   publish_docker:

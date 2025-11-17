@@ -1,5 +1,5 @@
 {
-  "checksum": "e6e398d1c6d4a53d47266a07d5ec3d06",
+  "checksum": "931fcdc61768f9d2efef163757ab70ea",
   "data": {
     "projectName": "",
     "nodes": [
@@ -17,8 +17,13 @@
               "logic_complexity": 6.0,
               "comment_lines": 61.0,
               "number_of_functions": 6.0,
+              "message_chains": 0.0,
               "rloc": 38.0,
               "loc": 110.0,
+              "long_method": 1.0,
+              "long_parameter_list": 1.0,
+              "excessive_comments": 1.0,
+              "comment_ratio": 1.61,
               "max_parameters_per_function": 6.0,
               "min_parameters_per_function": 1.0,
               "mean_parameters_per_function": 3.0,
@@ -30,9 +35,7 @@
               "max_rloc_per_function": 11.0,
               "min_rloc_per_function": 1.0,
               "mean_rloc_per_function": 4.83,
-              "median_rloc_per_function": 4.5,
-              "long_method": 1.0,
-              "long_parameter_list": 1.0
+              "median_rloc_per_function": 4.5
             },
             "link": "",
             "children": [],
@@ -243,7 +246,7 @@
       },
       "long_method": {
         "title": "Long Method",
-        "description": "Number of functions with more than 10 real lines of code (rloc)",
+        "description": "Code smell showing the number of functions with more than 10 real lines of code (rloc)",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",
@@ -254,7 +257,40 @@
       },
       "long_parameter_list": {
         "title": "Long Parameter List",
-        "description": "Number of functions with more than 4 parameters",
+        "description": "Code smell showing the number of functions with more than 4 parameters",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "excessive_comments": {
+        "title": "Excessive Comments",
+        "description": "Code smell showing whether a file has more than 10 comment lines",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": -1,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "comment_ratio": {
+        "title": "Comment Ratio",
+        "description": "The ratio of comment lines to real lines of code (rloc)",
+        "hintLowValue": "",
+        "hintHighValue": "",
+        "link": "https://codecharta.com/docs/parser/unified",
+        "direction": 0,
+        "analyzers": [
+          "unifiedParser"
+        ]
+      },
+      "message_chains": {
+        "title": "Message Chains",
+        "description": "Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling",
         "hintLowValue": "",
         "hintHighValue": "",
         "link": "https://codecharta.com/docs/parser/unified",

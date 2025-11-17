@@ -59,12 +59,21 @@ cd analysis
 # Run a single test class
 ./gradlew test --tests "ClassName"
 
+# Run tests in a specific package
+./gradlew test --tests "package.name.*"
+
 # Run Sonar analysis
 ./gradlew sonar
 
 # Use installed ccsh (after installDist)
 ./build/install/codecharta-analysis/bin/ccsh
 ```
+
+**IMPORTANT**: All `./gradlew` commands must be run from the `analysis/` directory. If you are in a subdirectory, you must either:
+1. Change to the analysis directory first: `cd /path/to/analysis && ./gradlew test`
+2. OR use the full relative path: `cd /path/to/analysis && ./gradlew :subproject:test`
+
+Do NOT run `./gradlew` from subdirectories as it will fail with "no such file or directory".
 
 **Note**: On Windows, add Git's `sh.exe` (typically `C:\path-to-git\Git\bin`) to PATH for integration tests. On macOS, install `timeout` via `brew install coreutils`.
 
@@ -284,6 +293,10 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 - Rules defined in `.editorconfig`
 - **Function syntax**: Use block-body style with braces `{ }` consistently, not expression-body style with `=`
 - **Guard clauses**: Use early returns for error conditions and edge cases to reduce nesting
+- **If expressions**: Prefer concise single-line style when possible:
+  - ✅ `val x = if (condition) valueA else valueB`
+  - ❌ `val x = if (condition) { valueA } else { valueB }`
+  - Use multi-line only when branches contain multiple statements or complex logic
 - **Magic strings/numbers**: Extract repeated literals to constants in `companion object`
 - **Function organization**: Group related functions with section comments
 - **Parameter naming**: Use consistent, descriptive names across related functions
