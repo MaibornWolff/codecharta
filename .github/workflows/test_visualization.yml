@@ -45,6 +45,12 @@ jobs:
         npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
       working-directory: ${{env.working-directory}}
 
+    - name: Check architecture
+      run: |
+        echo "Checking architecture rules (including circular dependencies)..."
+        npm run lint:architecture || (echo "❌ Architecture violations detected! Check the output above for details." && exit 1)
+      working-directory: ${{env.working-directory}}
+
     - name: Run unit tests
       env:
         NODE_OPTIONS: "--max_old_space_size=4096"

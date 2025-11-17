@@ -1,0 +1,61 @@
+<dialog #dialog class="modal">
+    <div class="modal-box max-w-2xl">
+        <h2 class="text-2xl font-bold mb-6">Global Configuration</h2>
+
+        <div class="flex flex-col gap-6">
+            <cc-map-layout-selection />
+
+            <cc-display-quality-selection />
+
+            <cc-setting-toggle
+                [checked]="hideFlatBuildings()"
+                [label]="'Hide Flattened Buildings'"
+                (checkedChange)="handleHideFlatBuildingsChanged($event)"
+            />
+
+            <cc-setting-toggle
+                [checked]="resetCameraIfNewFileIsLoaded()"
+                [label]="'Reset camera when map layout changes'"
+                (checkedChange)="handleResetCameraIfNewFileIsLoadedChanged($event)"
+            />
+
+            <cc-setting-toggle
+                [checked]="isWhiteBackground()"
+                [label]="'White Background'"
+                (checkedChange)="handleIsWhiteBackgroundChanged($event)"
+            />
+
+            <cc-setting-toggle
+                [checked]="experimentalFeaturesEnabled()"
+                [label]="'Enable Experimental Features'"
+                (checkedChange)="handleExperimentalFeaturesEnabledChanged($event)"
+            />
+
+            <cc-setting-toggle
+                [checked]="screenshotToClipboardEnabled()"
+                [label]="'Screenshot to clipboard'"
+                (checkedChange)="handleScreenshotToClipboardEnabledChanged($event)"
+            />
+
+            <cc-reset-settings-button
+                [settingsKeys]="[
+                    'appSettings.hideFlatBuildings',
+                    'appSettings.isWhiteBackground',
+                    'appSettings.resetCameraIfNewFileIsLoaded',
+                    'appSettings.layoutAlgorithm',
+                    'appSettings.maxTreeMapFiles'
+                ]"
+                tooltip="Reset global settings to their defaults"
+                label="Reset global settings"
+            />
+        </div>
+
+        <div class="modal-action justify-between items-center">
+            <cc-external-links />
+            <button class="btn" (click)="close()">Close</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>

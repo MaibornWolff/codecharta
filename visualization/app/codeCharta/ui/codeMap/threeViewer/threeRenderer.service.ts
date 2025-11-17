@@ -4,7 +4,7 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
 import WEBGL from "three/addons/capabilities/WebGL.js"
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
 import { CustomComposer } from "../rendering/postprocessor/customComposer"
-import { isWhiteBackgroundSelector } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.selector"
+import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
 import { SharpnessMode, CcState } from "../../../codeCharta.model"
 import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderStrings"
 import { Store, State } from "@ngrx/store"
@@ -38,14 +38,15 @@ export class ThreeRendererService {
 
     constructor(
         private store: Store<CcState>,
-        private state: State<CcState>
+        private state: State<CcState>,
+        private globalSettingsFacade: GlobalSettingsFacade
     ) {}
 
     init(containerWidth: number, containerHeight: number, scene: Scene, camera: Camera) {
         this.scene = scene
         this.camera = camera
         this.initGL(containerWidth, containerHeight)
-        this.store.select(isWhiteBackgroundSelector).subscribe(this.setBackgroundColorToState)
+        this.globalSettingsFacade.isWhiteBackground$().subscribe(this.setBackgroundColorToState)
     }
 
     private setBackgroundColorToState = (isWhiteBackground: boolean) => {
