@@ -2,6 +2,7 @@ import { clickButtonOnPageElement } from "../../../../../puppeteer.helper"
 
 export class MapTreeViewLevelPageObject {
     async openContextMenu(path: string) {
+        await page.waitForSelector(`[id='${path}']`, { visible: true })
         await clickButtonOnPageElement(`[id='${path}']`, { button: "right" })
         await page.waitForSelector("#codemap-context-menu", { visible: true })
         await page.waitForSelector(".tree-element-label.marked")
