@@ -17,6 +17,7 @@ import de.maibornwolff.codecharta.analysers.parsers.sourcecode.SourceCodeParser
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
 import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
+import de.maibornwolff.codecharta.analysers.tools.metricthresholdchecker.MetricThresholdChecker
 import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.ccsh.analyser.AnalyserService
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion
@@ -39,6 +40,7 @@ import kotlin.system.exitProcess
     subcommands = [
         ValidationTool::class,
         InspectionTool::class,
+        MetricThresholdChecker::class,
         MergeFilter::class,
         EdgeFilter::class,
         StructureModifier::class,
