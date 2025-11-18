@@ -161,12 +161,12 @@ describe("customConfigItemGroupComponent", () => {
 
         expect(fixture.componentInstance.isGroupExpanded("Custom View(s) in Standard mode for fileB fileC")).toBeFalsy()
 
-        const header = queryByRole(container as HTMLElement, "button")
-        expect(header).not.toBeNull()
+        const checkbox = container.querySelector('input[type="checkbox"]') as HTMLInputElement
+        expect(checkbox).not.toBeNull()
 
         const toggleGroupExpansionSpy = jest.spyOn(fixture.componentInstance, "toggleGroupExpansion")
 
-        await userEvent.click(header)
+        await userEvent.click(checkbox)
 
         expect(toggleGroupExpansionSpy).toHaveBeenCalledTimes(1)
         waitFor(() => {

@@ -4,6 +4,10 @@
     &.cc-custom-config-list {
         width: 850px !important;
 
+        .mat-mdc-dialog-container {
+            --mdc-dialog-container-color: #1b9cfc;
+        }
+
         .mat-mdc-dialog-content {
             padding: 16px;
             max-height: 90vh;

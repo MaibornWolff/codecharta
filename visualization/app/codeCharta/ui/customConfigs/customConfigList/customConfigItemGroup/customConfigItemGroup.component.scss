@@ -1,8 +1,23 @@
-@use "variables";
+.collapse {
+    border-radius: 0;
+}
+
+.text-button {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    text-align: inherit;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
 
 .custom-config-item-group-title {
-    color: variables.$cc-font-color;
-    display: inline-block;
+    color: rgba(0, 0, 0, 0.87);
 }
 
 .metrics-box {
@@ -33,18 +48,15 @@ p {
     }
 }
 
-button {
+.remove-button {
+    font-size: 16px;
+    padding: 8px 10px;
+    margin: 0;
     background-color: transparent;
 
-    &.remove-button {
-        font-size: 16px;
-        padding: 8px 10px;
-        margin: 0;
-
-        &:hover {
-            background-color: variables.$cc-hovered-button-background-color;
-            color: variables.$cc-primary-color;
-            border-radius: 50%;
-        }
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: #1b9cfc;
+        border-radius: 50%;
     }
 }
