@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog"
 import { expect } from "@jest/globals"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { queryByRole, queryByText, render, screen, waitFor } from "@testing-library/angular"
+import { queryByText, render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { CustomConfigMapSelectionMode } from "../../../../model/customConfig/customConfig.api.model"
 import { defaultState } from "../../../../state/store/state.manager"
@@ -84,7 +84,7 @@ describe("customConfigItemGroupComponent", () => {
         })
 
         CustomConfigHelper.applyCustomConfig = jest.fn()
-        const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("span") as HTMLElement
+        const applyCustomConfigButton = screen.getByText("SampleMap View #1").closest("button") as HTMLElement
 
         await userEvent.click(applyCustomConfigButton)
 
