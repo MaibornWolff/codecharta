@@ -16,25 +16,19 @@ async function bundleElectronApp(options) {
 }
 
 async function buildElectronApps(version, distributions, downloadPath) {
-    const bundlePromises = []
-
     for (const aPlatform in distributions) {
         const allArchitectures = distributions[aPlatform]
         for (const anArchitecture of allArchitectures) {
-            bundlePromises.push(
-                bundleElectronApp({
-                    platform: aPlatform,
-                    arch: anArchitecture,
-                    version: version,
-                    electronZipDir: downloadPath,
-                    dir: paths.bundledBrowser,
-                    out: paths.applicationPath
-                })
-            )
+            await bundleElectronApp({
+                platform: aPlatform,
+                arch: anArchitecture,
+                version: version,
+                electronZipDir: downloadPath,
+                dir: paths.bundledBrowser,
+                out: paths.applicationPath
+            })
         }
     }
-
-    return Promise.all(bundlePromises)
 }
 
 async function build(version, distributions, downloadPath) {
