@@ -1,4 +1,7 @@
-@use "variables";
+.custom-config-toolbar {
+    background-color: #1b9cfc !important;
+    color: #ffffff !important;
+}
 
 .row {
     display: flex;
@@ -11,7 +14,7 @@
     margin: 10px 0 20px 0;
     font-size: 1.4em;
     line-height: 1.4em;
-    color: variables.$cc-font-color;
+    color: rgba(0, 0, 0, 0.87);
 }
 
 .no-custom-configs-box {

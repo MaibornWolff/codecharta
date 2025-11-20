@@ -1,12 +1,10 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core"
+import { Component, Input, OnChanges, SimpleChanges } from "@angular/core"
 import { CustomConfigHelper } from "../../../../util/customConfigHelper"
 import { CustomConfigItemGroup } from "../../customConfigs.component"
 import { ThreeCameraService } from "../../../codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../codeMap/threeViewer/threeMapControls.service"
 import { Store } from "@ngrx/store"
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from "@angular/material/expansion"
 import { ThreeRendererService } from "../../../codeMap/threeViewer/threeRenderer.service"
-import { MatList, MatListItem } from "@angular/material/list"
 import { MatDialogClose } from "@angular/material/dialog"
 import { CustomConfigNoteDialogButtonComponent } from "../../customConfigNoteDialogButton/customConfigNoteDialogButton.component"
 import { ApplyCustomConfigButtonComponent } from "./customConfigDescription/applyCustomConfigButton.component"
@@ -20,11 +18,6 @@ import { FilterCustomConfigDataBySearchTermPipe } from "./customConfigDescriptio
     templateUrl: "./customConfigItemGroup.component.html",
     styleUrls: ["./customConfigItemGroup.component.scss"],
     imports: [
-        MatExpansionPanel,
-        MatExpansionPanelHeader,
-        MatExpansionPanelTitle,
-        MatList,
-        MatListItem,
         MatDialogClose,
         CustomConfigNoteDialogButtonComponent,
         ApplyCustomConfigButtonComponent,
@@ -37,16 +30,15 @@ import { FilterCustomConfigDataBySearchTermPipe } from "./customConfigDescriptio
 })
 export class CustomConfigItemGroupComponent implements OnChanges {
     @Input() customConfigItemGroups: Map<string, CustomConfigItemGroup>
-    @ViewChild("matExpansionPanel") matExpansionPanel: MatExpansionPanel
     @Input() searchTerm = ""
     expandedStates: { [key: string]: boolean } = {}
     manuallyToggled: Set<string> = new Set()
 
     constructor(
-        private store: Store,
-        private threeCameraService: ThreeCameraService,
-        private threeOrbitControlsService: ThreeMapControlsService,
-        private threeRendererService: ThreeRendererService
+        private readonly store: Store,
+        private readonly threeCameraService: ThreeCameraService,
+        private readonly threeOrbitControlsService: ThreeMapControlsService,
+        private readonly threeRendererService: ThreeRendererService
     ) {}
 
     ngOnChanges(changes: SimpleChanges): void {

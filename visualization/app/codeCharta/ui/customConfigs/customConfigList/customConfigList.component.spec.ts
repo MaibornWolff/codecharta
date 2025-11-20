@@ -72,14 +72,13 @@ describe("customConfigListComponent", () => {
         mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
         const { container } = await render(CustomConfigListComponent)
 
-        expect(container.querySelector("mat-expansion-panel-header").textContent).toBe(
-            " Custom View(s) in  Standard  mode for fileB fileC "
-        )
-        expect(container.querySelectorAll("mat-expansion-panel-header").length).toBe(1)
+        expect(container.querySelector(".collapse-title").textContent.trim()).toContain("Custom View(s) in")
+        expect(container.querySelector(".collapse-title").textContent.trim()).toContain("Standard")
+        expect(container.querySelectorAll(".collapse").length).toBe(1)
 
         await userEvent.click(screen.queryByText("Show non-applicable Custom Views"))
 
-        await waitFor(() => expect(container.querySelectorAll("mat-expansion-panel-header").length).toBe(2))
+        await waitFor(() => expect(container.querySelectorAll(".collapse").length).toBe(2))
     })
 
     it("should not show 'non-applicable Custom Views' button when no custom configs are available", async () => {
@@ -102,11 +101,11 @@ describe("customConfigListComponent", () => {
         mockedCustomConfigHelperService.customConfigItemGroups$ = of(customConfigItemGroup)
         const { container } = await render(CustomConfigListComponent)
 
-        const customConfigItemGroupElement = container.querySelector("mat-expansion-panel-header")
+        const customConfigItemGroupCheckbox = container.querySelector('input[type="checkbox"]')
 
-        await userEvent.click(customConfigItemGroupElement)
+        await userEvent.click(customConfigItemGroupCheckbox)
 
-        expect(container.querySelectorAll("mat-list-item").length).toBe(2)
+        expect(container.querySelectorAll(".border-b.border-black.py-2").length).toBe(2)
         expect(screen.getByText("SampleMap View #1")).not.toBeNull()
         expect(screen.getByText("a note")).not.toBeNull()
         expect(screen.getByText("SampleMap View #2")).not.toBeNull()
@@ -147,12 +146,12 @@ describe("customConfigListComponent", () => {
             }
         })
 
-        await userEvent.click(container.querySelector("mat-expansion-panel-header"))
-        expect(container.querySelectorAll("mat-list-item").length).toBe(2)
+        await userEvent.click(container.querySelector('input[type="checkbox"]'))
+        expect(container.querySelectorAll(".border-b.border-black.py-2").length).toBe(2)
 
         await rerender({ componentProperties: { searchTerm: "delta" } })
 
-        await userEvent.click(container.querySelector("mat-expansion-panel-header"))
-        expect(container.querySelectorAll("mat-list-item").length).toBe(0)
+        await userEvent.click(container.querySelector('input[type="checkbox"]'))
+        expect(container.querySelectorAll(".border-b.border-black.py-2").length).toBe(0)
     })
 })

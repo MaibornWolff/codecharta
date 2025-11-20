@@ -1,33 +1,37 @@
-<mat-toolbar color="primary"
->Custom Views
-    <div class="row">
-        <div class="action-buttons">
-            <cc-upload-custom-config-button></cc-upload-custom-config-button>
-            <cc-download-custom-configs-button></cc-download-custom-configs-button>
-            <cc-add-custom-config-button class="custom-configs-button-in-custom-views"></cc-add-custom-config-button>
-        </div>
-    </div
-    >
-</mat-toolbar>
+<div class="custom-config-toolbar px-4 py-3 flex items-center justify-between">
+    <h2 class="text-xl font-semibold">Custom Views</h2>
+    <div class="flex gap-2">
+        <cc-upload-custom-config-button></cc-upload-custom-config-button>
+        <cc-download-custom-configs-button></cc-download-custom-configs-button>
+        <cc-add-custom-config-button class="custom-configs-button-in-custom-views"></cc-add-custom-config-button>
+    </div>
+</div>
 
 @if (customConfigService.customConfigItemGroups$ | async; as dropDownCustomConfigItemGroups) {
-    <mat-dialog-content class="content">
-        <p class="custom-config-documentation-hint">
+    <div class="content p-4">
+        <p class="custom-config-documentation-hint text-sm mb-4">
             Custom Views allow you to save and upload your individual configurations for certain maps. Find out more about Custom Views in
             the
-            <a href="https://codecharta.com/docs/visualization/custom-views" target="_blank" rel="noopener noreferrer">documentation</a
+            <a href="https://codecharta.com/docs/visualization/custom-views" target="_blank" rel="noopener noreferrer" class="link link-primary">documentation</a
             >.
         </p>
         @if (dropDownCustomConfigItemGroups.applicableItems.size === 0 && dropDownCustomConfigItemGroups.nonApplicableItems.size === 0) {
-            <div class="no-custom-configs-box">It is time to add your first Custom View!</div>
+            <div class="no-custom-configs-box text-center py-8 text-gray-600">It is time to add your first Custom View!</div>
         }
         @if (dropDownCustomConfigItemGroups.applicableItems.size !== 0 || dropDownCustomConfigItemGroups.nonApplicableItems.size !== 0) {
-            <mat-accordion class="custom-config-container" [multi]="true">
-                <mat-form-field class="cc-custom-configs-search-field">
-                    <i matPrefix class="fa fa-search custom-config-search-icon"></i>
-                    <mat-label>{{ searchPlaceholder }}</mat-label>
-                    <input matInput type="text" (input)="setSearchTermDebounced($event)" [value]="searchTerm" />
-                </mat-form-field>
+            <div class="custom-config-container">
+                <div class="cc-custom-configs-search-field mb-4">
+                    <label class="input input-bordered flex items-center gap-2">
+                        <i class="fa fa-search text-gray-500" aria-hidden="true"></i>
+                        <input
+                            type="text"
+                            class="grow"
+                            placeholder="{{ searchPlaceholder }}"
+                            aria-label="Search custom configurations"
+                            (input)="setSearchTermDebounced($event)"
+                            [value]="searchTerm" />
+                    </label>
+                </div>
                 <cc-custom-config-item-group
                     [customConfigItemGroups]="dropDownCustomConfigItemGroups.applicableItems"
                     [searchTerm]="searchTerm"
@@ -39,12 +43,12 @@
                     ></cc-custom-config-item-group>
                 }
                 @if (dropDownCustomConfigItemGroups.nonApplicableItems.size > 0) {
-                    <button class="toggle-non-applicable-configs-button" (click)="toggleNonApplicableCustomConfigsList()">
+                    <button class="toggle-non-applicable-configs-button btn btn-ghost w-full mt-4" (click)="toggleNonApplicableCustomConfigsList()">
                         {{ isNonApplicableListCollapsed ? "Show non-applicable Custom Views" : "Hide non-applicable Custom Views" }}
                         <i [ngClass]="isNonApplicableListCollapsed ? 'fa fa-angle-down' : 'fa fa-angle-up'"></i>
                     </button>
                 }
-            </mat-accordion>
+            </div>
         }
-    </mat-dialog-content>
+    </div>
 }
