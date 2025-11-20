@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [1.138.0] - 2025-11-20
-
 ### Added 🚀
 
 - Improve metric search with delimiter-agnostic and word-order independent matching [#4313](https://github.com/MaibornWolff/codecharta/issues/4313)
@@ -25,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fix color metric dropdown inconsistently anchoring left when edge metrics are present
 - replace material design of color picker, gradiant selector in color metric options and legend block with DaisyUI.
 - Node tooltip' attribute side bar migrated to daisyUI
+
 ## [1.137.0] - 2025-10-09
 
 ### Added 🚀
