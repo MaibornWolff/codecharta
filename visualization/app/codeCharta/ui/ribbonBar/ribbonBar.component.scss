@@ -20,7 +20,8 @@ cc-ribbon-bar-panel {
         right: auto;
     }
 
-    &:last-child cc-ribbon-bar-panel-settings {
+    &:last-child cc-ribbon-bar-panel-settings,
+    &#color-metric-card cc-ribbon-bar-panel-settings {
         left: auto;
         right: 0;
     }
