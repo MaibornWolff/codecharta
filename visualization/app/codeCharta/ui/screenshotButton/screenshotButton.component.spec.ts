@@ -19,15 +19,19 @@ jest.mock("../../../../app/codeCharta/util/clipboard/clipboardWriter", () => {
     }
 })
 
-jest.mock("html2canvas", () => {
+const mockHtml2Canvas = jest.fn()
+
+jest.mock("html2canvas-pro", () => {
     return {
         __esModule: true,
-        default: jest.fn().mockImplementation(() => document.createElement("canvas"))
+        default: (...args: unknown[]) => mockHtml2Canvas(...args)
     }
 })
 
 describe("screenshotButtonComponent", () => {
     beforeEach(() => {
+        mockHtml2Canvas.mockImplementation(() => document.createElement("canvas"))
+
         TestBed.configureTestingModule({
             imports: [ScreenshotButtonComponent],
             providers: [
@@ -130,6 +134,23 @@ describe("screenshotButtonComponent", () => {
             expect(makeScreenshotToClipboardSpy).toHaveBeenCalledTimes(1)
             expect(isScreenshotButtonDisabled(container)).toBe(true)
         })
+    })
+
+    it("should use null backgroundColor to create transparent screenshots for better clarity", async () => {
+        // Arrange
+        const { fixture } = await render(ScreenshotButtonComponent)
+        jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createMockImageData().imageData)
+
+        // Act
+        await fixture.componentInstance.makeScreenshotToFile()
+
+        // Assert
+        expect(mockHtml2Canvas).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.objectContaining({
+                backgroundColor: null
+            })
+        )
     })
 })
 

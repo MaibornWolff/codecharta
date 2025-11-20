@@ -41,7 +41,7 @@
             ],
             "styles": ["app/tailwind.css", "app/app.scss", "material-icons/iconfont/material-icons.css"],
             "scripts": [],
-            "allowedCommonJsDependencies": ["ajv", "color-convert", "html2canvas", "ignore", "md5", "qrcode", "three-orbit-controls"]
+            "allowedCommonJsDependencies": ["ajv", "color-convert", "html2canvas-pro", "ignore", "md5", "qrcode", "three-orbit-controls"]
           },
           "configurations": {
             "production": {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import hotkeys from "hotkeys-js"
-import html2canvas from "html2canvas"
+import html2canvas from "html2canvas-pro"
 import { Color, WebGLRenderer } from "three"
 import { checkWriteToClipboardAllowed, setToClipboard } from "../../../../app/codeCharta/util/clipboard/clipboardWriter"
 import { CcState } from "../../codeCharta.model"
@@ -121,7 +121,7 @@ export class ScreenshotButtonComponent implements OnInit {
 
         const canvas = await html2canvas(document.querySelector("body"), {
             removeContainer: true,
-            backgroundColor: "#00",
+            backgroundColor: null,
             scrollY: -offsetMenuBar,
             height: bodyHeight - offsetMenuBar,
             ignoreElements(element) {
