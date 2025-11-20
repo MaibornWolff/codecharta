@@ -28,7 +28,6 @@ describe("CreateSvgGeometryStrategy", () => {
 
         const loader = new SVGLoader()
         const svg = loader.parse(svgData)
-        // biome-ignore lint/correctness/noUnusedVariables: <explanation>
         jest.spyOn(SVGLoader.prototype, "load").mockImplementation((url, onLoad) => {
             onLoad(svg)
         })
@@ -57,7 +56,6 @@ describe("CreateSvgGeometryStrategy", () => {
 
         const loader = new SVGLoader()
         const svg = loader.parse(svgData)
-        // biome-ignore lint/correctness/noUnusedVariables: <explanation>
         jest.spyOn(SVGLoader.prototype, "load").mockImplementation((url, onLoad) => {
             onLoad(svg)
         })

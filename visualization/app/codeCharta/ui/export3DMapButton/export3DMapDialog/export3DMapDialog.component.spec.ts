@@ -15,7 +15,6 @@ jest.mock("three/addons/loaders/SVGLoader.js", () => {
     return {
         SVGLoader: jest.fn().mockImplementation(() => {
             return {
-                // biome-ignore lint/correctness/noUnusedVariables: <explanation>
                 load: (url: string, onLoad, onProgress?, onError?) => {
                     // Mock a scenario where the SVG loads successfully
                     const mockSVGData = {

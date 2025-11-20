@@ -1,7 +1,7 @@
 import { FileToValue } from "./getFilenamesWithHighestMetrics"
 
 function getLineFromItem(item: FileToValue): string {
-    // biome-ignore lint/style/useTemplate: <explanation>
+    // biome-ignore lint/style/useTemplate: biome2update
     return `\t• ${item.filePath} (${item.value})` + `\n`
 }
 

@@ -1,49 +1,50 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "**/.idea",
-      "**/.angular",
-      "**/node_modules",
-      "**/install.js",
-      "**/build",
-      "**/plop-templates",
-      "**/dist",
-      "**/assets",
-      "**/public",
-      "**/__snapshots__",
-      "**/*.properties",
-      "**/Dockerfile",
-      "**/*.glsl",
-      "**/*.sh",
-      "**/*.hbs",
-      "**/*.kt",
-      "**/*.txt",
-      "**/*.gradle",
-      "**/*.jar",
-      "**/*.jpg",
-      "**/*.png",
-      "**/*.bat",
-      "**/*.xml",
-      "**/*.svg",
-      "**/*.py",
-      "**/gradlew",
-      "**/test",
-      "**/Gemfile",
-      "**/Gemfile.lock",
-      "**/Pipfile",
-      "**/Pipfile.lock",
-      "**/_site",
-      "**/out",
-      "**/resources/**",
-      "**/assets/**",
-      "**/binScripts/**",
-      "gh-pages/vendor",
-      "gh-pages/visualization",
-      "**/*.gradle.kts",
-      "**/*.toml"
+    "includes": [
+      "**",
+      "!**/.idea",
+      "!**/.angular",
+      "!**/node_modules",
+      "!**/install.js",
+      "!**/build",
+      "!**/plop-templates",
+      "!**/dist",
+      "!**/assets",
+      "!**/public",
+      "!**/__snapshots__",
+      "!**/*.properties",
+      "!**/Dockerfile",
+      "!**/*.glsl",
+      "!**/*.sh",
+      "!**/*.hbs",
+      "!**/*.kt",
+      "!**/*.txt",
+      "!**/*.gradle",
+      "!**/*.jar",
+      "!**/*.jpg",
+      "!**/*.png",
+      "!**/*.bat",
+      "!**/*.xml",
+      "!**/*.svg",
+      "!**/*.py",
+      "!**/gradlew",
+      "!**/test",
+      "!**/Gemfile",
+      "!**/Gemfile.lock",
+      "!**/Pipfile",
+      "!**/Pipfile.lock",
+      "!**/_site",
+      "!**/out",
+      "!**/resources/**",
+      "!**/assets/**",
+      "!**/binScripts/**",
+      "!**/gh-pages/vendor",
+      "!**/gh-pages/visualization",
+      "!**/*.gradle.kts",
+      "!**/*.toml"
     ]
   },
   "formatter": {
@@ -57,7 +58,7 @@
     "attributePosition": "auto",
     "bracketSpacing": true
   },
-  "organizeImports": { "enabled": false },
+  "assist": { "actions": { "source": { "organizeImports": "off" } } },
   "linter": {
     "enabled": true,
     "rules": {
@@ -66,17 +67,16 @@
         "noBannedTypes": "error",
         "noExtraBooleanCast": "error",
         "noForEach": "error",
-        "noMultipleSpacesInRegularExpressionLiterals": "error",
         "noStaticOnlyClass": "off",
         "noUselessCatch": "error",
         "noUselessSwitchCase": "error",
         "noUselessThisAlias": "error",
         "noUselessTypeConstraint": "error",
-        "noWith": "error",
         "useDateNow": "error",
         "useFlatMap": "error",
         "useOptionalChain": "error",
-        "useRegexLiterals": "error"
+        "useRegexLiterals": "error",
+        "noAdjacentSpacesInRegex": "error"
       },
       "correctness": {
         "noConstAssign": "error",
@@ -88,7 +88,6 @@
         "noInvalidBuiltinInstantiation": "error",
         "noInvalidConstructorSuper": "error",
         "noInvalidUseBeforeDeclaration": "off",
-        "noNewSymbol": "error",
         "noNonoctalDecimalEscape": "error",
         "noPrecisionLoss": "error",
         "noSelfAssign": "error",
@@ -102,10 +101,10 @@
         "noUnusedImports": "error",
         "noUnusedLabels": "error",
         "noUnusedVariables": "warn",
-        "useArrayLiterals": "off",
         "useIsNan": "error",
         "useValidForDirection": "error",
-        "useYield": "error"
+        "useYield": "error",
+        "useValidTypeof": "error"
       },
       "style": {
         "noInferrableTypes": "error",
@@ -147,7 +146,8 @@
         "useNodejsImportProtocol": "off",
         "useNumberNamespace": "error",
         "useTemplate": "error",
-        "useThrowNewError": "error"
+        "useThrowNewError": "error",
+        "useArrayLiterals": "off"
       },
       "suspicious": {
         "noAssignInExpressions": "off",
@@ -173,7 +173,7 @@
         "noImportAssign": "error",
         "noMisleadingCharacterClass": "error",
         "noMisleadingInstantiator": "error",
-        "noPrototypeBuiltins": "error",
+        "noPrototypeBuiltins": "off",
         "noRedeclare": "error",
         "noShadowRestrictedNames": "error",
         "noSparseArray": "error",
@@ -184,10 +184,10 @@
         "useIsArray": "error",
         "useNamespaceKeyword": "error",
         "useNumberToFixedDigitsArgument": "error",
-        "useValidTypeof": "error"
+        "noWith": "error"
       }
     },
-    "ignore": ["**/node_modules", "**/dist", "**/*.js"]
+    "includes": ["**", "!**/node_modules", "!**/dist", "!**/*.js"]
   },
   "javascript": {
     "formatter": {
@@ -206,20 +206,21 @@
   },
   "overrides": [
     {
-      "include": ["*.ts", "*.tsx", "*.mts", "*.cts"],
+      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "linter": {
         "rules": {
           "correctness": {
             "noConstAssign": "off",
             "noGlobalObjectCalls": "off",
             "noInvalidConstructorSuper": "off",
-            "noNewSymbol": "off",
             "noSetterReturn": "off",
             "noUndeclaredVariables": "off",
             "noUnreachable": "off",
-            "noUnreachableSuper": "off"
+            "noUnreachableSuper": "off",
+            "noInvalidBuiltinInstantiation": "off",
+            "useValidTypeof": "off"
           },
-          "style": { "noArguments": "error", "noVar": "error", "useConst": "error" },
+          "style": { "useConst": "error" },
           "suspicious": {
             "noDuplicateClassMembers": "off",
             "noDuplicateObjectKeys": "off",
@@ -229,13 +230,14 @@
             "noRedeclare": "off",
             "noUnsafeNegation": "off",
             "useGetterReturn": "off",
-            "useValidTypeof": "off"
-          }
+            "noVar": "error"
+          },
+          "complexity": { "noArguments": "error" }
         }
       }
     },
     {
-      "include": ["visualization/package.json"],
+      "includes": ["**/visualization/package.json"],
       "json": {
         "formatter": {
           "lineWidth": 80
