@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.139.0] - 2025-11-20
+
 ### Added 🚀
 
 - Improve metric search with delimiter-agnostic and word-order independent matching [#4313](https://github.com/MaibornWolff/codecharta/issues/4313)
