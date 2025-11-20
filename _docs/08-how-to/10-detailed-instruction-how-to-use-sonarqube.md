@@ -41,5 +41,5 @@ toc_label: "Jump to Section"
     ![analyzed_project sonarqube]({{site.baseurl}}/assets/images/docs/how-to/analyzed_project_sonarqube.png)
 13. Install CodeCharta analysis
     > npm i -g codecharta-analysis
-14. Execute `ccsh sonarimport` in your terminal to generate a `cc.json` file to load it into [CodeCharta's Visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz)
+14. Execute `ccsh sonarimport` in your terminal to generate a `cc.json` file to load it into [CodeCharta's Visualization](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=avgCommits&currentFilesAreSampleFiles=true)
     > ccsh sonarimport "http://localhost:9000/" "CodeCharta" "--user-token=user token" "--output-file=output" "--merge-modules=false"

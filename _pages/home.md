@@ -6,7 +6,7 @@ header:
     - label: "<i class='fas fa-fw fa-link'></i> Quick Start"
       url: "/docs/overview/getting-started"
     - label: "<i class='fas fa-fw fa-link'></i> Web Studio"
-      url: "https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json.gz&file=codecharta_analysis.cc.json.gz"
+      url: "https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=avgCommits&currentFilesAreSampleFiles=true"
   overlay_image: /assets/images/cc_home.png
   overlay_filter: 0.3
 excerpt: >
