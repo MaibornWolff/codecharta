@@ -5212,8 +5212,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added \u{1F680} | Changed | Removed  | Fixed \u{1F41E} | Chore \u{1F468}\u200D\u{1F4BB} \u{1F469}\u200D\u{1F4BB})
 
-## [1.139.0] - 2025-11-20
-
 ### Added \u{1F680}
 
 - Improve metric search with delimiter-agnostic and word-order independent matching [#4313](https://github.com/MaibornWolff/codecharta/issues/4313)
