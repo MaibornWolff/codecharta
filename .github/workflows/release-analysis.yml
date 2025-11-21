@@ -164,3 +164,37 @@ jobs:
           docker tag codecharta/codecharta-analysis:staging codecharta/codecharta-analysis:${{ needs.build.outputs.version }}
           docker push codecharta/codecharta-analysis:latest
           docker push codecharta/codecharta-analysis:${{ needs.build.outputs.version }}
+
+  # Cleanup old plans
+  cleanup_plans:
+    needs: build
+    name: Cleanup Old Plans
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Run plans cleanup for analysis
+        run: |
+          npm run plans:cleanup:analysis
+
+      - name: Commit deleted plans
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          if [[ -n $(git status -s plans/) ]]; then
+            git add plans/
+            git commit -m "chore(docs): cleanup old analysis plans after release ${{ needs.build.outputs.version }}"
+            git push
+          else
+            echo "No plans to cleanup"
+          fi
