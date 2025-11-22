@@ -1,6 +1,6 @@
-import { Component } from "@angular/core"
+import { Component, computed } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
-import { map } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
@@ -14,18 +14,15 @@ import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanel/ribbonBarPanel
 import { AreaSettingsPanelComponent } from "./areaSettingsPanel/areaSettingsPanel.component"
 import { HeightMetricChooserComponent } from "./heightMetricChooser/heightMetricChooser.component"
 import { HeightSettingsPanelComponent } from "./heightSettingsPanel/heightSettingsPanel.component"
-import { MatCard } from "@angular/material/card"
 import { LinkColorMetricToHeightMetricButtonComponent } from "./linkColorMetricToHeightMetricButton/linkColorMetricToHeightMetricButton.component"
 import { ColorMetricChooserComponent } from "./colorMetricChooser/colorMetricChooser.component"
 import { ColorSettingsPanelComponent } from "./colorSettingsPanel/colorSettingsPanel.component"
 import { EdgeMetricChooserComponent } from "./edgeMetricChooser/edgeMetricChooser.component"
 import { EdgeSettingsPanelComponent } from "./edgeSettingsPanel/edgeSettingsPanel.component"
-import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-ribbon-bar",
     templateUrl: "./ribbonBar.component.html",
-    styleUrls: ["./ribbonBar.component.scss"],
     imports: [
         SearchPanelComponent,
         RibbonBarPanelComponent,
@@ -37,18 +34,17 @@ import { AsyncPipe } from "@angular/common"
         AreaSettingsPanelComponent,
         HeightMetricChooserComponent,
         HeightSettingsPanelComponent,
-        MatCard,
         LinkColorMetricToHeightMetricButtonComponent,
         ColorMetricChooserComponent,
         ColorSettingsPanelComponent,
         EdgeMetricChooserComponent,
-        EdgeSettingsPanelComponent,
-        AsyncPipe
+        EdgeSettingsPanelComponent
     ]
 })
 export class RibbonBarComponent {
-    isDeltaState$ = this.store.select(isDeltaStateSelector)
-    hasEdgeMetric$ = this.store.select(metricDataSelector).pipe(map(metricData => metricData.edgeMetricData.length > 0))
+    isDeltaState = toSignal(this.store.select(isDeltaStateSelector))
+    metricData = toSignal(this.store.select(metricDataSelector))
+    hasEdgeMetric = computed(() => (this.metricData()?.edgeMetricData.length ?? 0) > 0)
 
     constructor(private readonly store: Store<CcState>) {}
 }

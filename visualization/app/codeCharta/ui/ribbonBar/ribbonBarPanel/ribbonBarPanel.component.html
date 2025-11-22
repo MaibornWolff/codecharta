@@ -1,25 +1,28 @@
-<mat-card appearance="outlined">
-    <div class="section">
+<div class="relative p-0 h-[46px] rounded-none border-t border-base-300 flex-1" [class.overflow-hidden]="!isExpanded">
+    <div>
         @if (isHeaderExpandable) {
-            <div #toggleHeader class="section-header" (click)="toggleSettings()">
+            <button #toggleHeader class="section-header mx-[5px] h-[31px] text-[#444444] overflow-hidden p-[5px] border-0 bg-transparent w-full text-left" type="button" (click)="toggleSettings()" (keydown.space)="toggleSettings($event)">
                 <ng-content select=".toggleHeader"></ng-content>
-            </div>
+            </button>
         } @else {
-            <div class="section-header">
+            <div class="section-header mx-[5px] h-[31px] text-[#444444] overflow-hidden p-[5px]">
                 <ng-content></ng-content>
             </div>
         }
 
         @if (title || hasSettings) {
-            <div #toggle class="section-title mx-[5px]" (click)="toggleSettings()">
-                {{ title }}
-
-                @if (hasSettings) {
+            @if (hasSettings) {
+                <button #toggle type="button" [class]="'section-title text-[8pt] text-gray-500 text-center transition-colors duration-400 border-b border-transparent whitespace-nowrap mx-[5px] border-0 bg-transparent w-full hover:bg-[#e0e0e0] cursor-pointer ' + (separator ? 'border-t border-[rgba(0,0,0,0.12)]' : '')" (click)="toggleSettings()" (keydown.space)="toggleSettings($event)">
+                    {{ title }}
                     <i [class]="'fa fa-angle-' + (isExpanded ? 'up' : 'down')"></i>
-                }
-            </div>
+                </button>
+            } @else {
+                <div class="section-title text-[8pt] text-gray-500 text-center transition-colors duration-400 border-b border-transparent whitespace-nowrap mx-[5px]">
+                    {{ title }}
+                </div>
+            }
         }
     </div>
 
     <ng-content select="cc-ribbon-bar-panel-settings"></ng-content>
-</mat-card>
+</div>
