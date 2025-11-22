@@ -1,17 +1,19 @@
-<cc-upload-files-button></cc-upload-files-button>
-<cc-screenshot-button></cc-screenshot-button>
-<cc-copy-to-clipboard-button></cc-copy-to-clipboard-button>
-<cc-export-3d-map-button></cc-export-3d-map-button>
-<cc-reset-map-button></cc-reset-map-button>
+<div class="flex gap-2 pl-2 items-center bg-base-200 h-[35px] border-b border-base-300">
+    <cc-upload-files-button></cc-upload-files-button>
+    <cc-screenshot-button></cc-screenshot-button>
+    <cc-copy-to-clipboard-button></cc-copy-to-clipboard-button>
+    <cc-export-3d-map-button></cc-export-3d-map-button>
+    <cc-reset-map-button></cc-reset-map-button>
 
-@if ((hoveredNodeId$ | async) === null) {
-    <cc-file-panel></cc-file-panel>
-} @else {
-    <cc-hovered-node-path-panel></cc-hovered-node-path-panel>
-}
+    @if (hoveredNodeId() === null) {
+        <cc-file-panel></cc-file-panel>
+    } @else {
+        <cc-hovered-node-path-panel></cc-hovered-node-path-panel>
+    }
 
-<div class="right-aligned">
-    <cc-loading-map-progress-spinner></cc-loading-map-progress-spinner>
-    <cc-presentation-mode-button></cc-presentation-mode-button>
-    <cc-global-configuration-button></cc-global-configuration-button>
+    <div class="absolute right-1 inline-flex items-center w-[400px] justify-between">
+        <cc-loading-map-progress-spinner></cc-loading-map-progress-spinner>
+        <cc-presentation-mode-button></cc-presentation-mode-button>
+        <cc-global-configuration-button></cc-global-configuration-button>
+    </div>
 </div>
