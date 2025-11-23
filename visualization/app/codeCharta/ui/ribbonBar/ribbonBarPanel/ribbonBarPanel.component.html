@@ -1,28 +1,30 @@
-<div class="relative z-10 p-0 h-[46px] rounded-none border-t border-[#cdcdcd] flex-[1_1_0]" [class.overflow-hidden]="!isExpanded">
-    <div class="section">
+<div class="relative z-10 p-0 h-[63px] rounded-none border-t border-r border-[#cdcdcd] flex-[1_1_150px] min-w-[150px] bg-white" [class.overflow-hidden]="!isExpanded">
+    <div class="section h-full flex flex-col justify-between relative z-0">
         @if (isHeaderExpandable) {
-            <button #toggleHeader type="button" class="section-header mx-0 my-0 h-[31px] text-[#444444] overflow-hidden p-[5px] cursor-pointer border-0 bg-transparent w-full text-left" (click)="toggleSettings()" (keydown.space)="toggleSettings($event)">
+            <button #toggleHeader type="button" class="section-header my-0 mx-[5px] text-[#444444] overflow-hidden px-[5px] py-0.5 cursor-pointer border-0 bg-transparent text-left flex-shrink-0 min-w-0 relative z-10" (click)="toggleSettings()" (keydown.space)="toggleSettings($event)">
                 <ng-content select=".toggleHeader"></ng-content>
             </button>
         } @else {
-            <div class="section-header mx-0 my-0 h-[31px] text-[#444444] overflow-hidden p-[5px]">
+            <div class="section-header my-0 mx-[5px] text-[#444444] overflow-hidden px-[5px] py-0.5 flex-shrink-0 min-w-0 relative z-10">
                 <ng-content></ng-content>
             </div>
         }
 
         @if (title || hasSettings) {
             @if (hasSettings) {
-                <button #toggle type="button" [class]="'section-title mx-[5px] text-[8pt] text-gray-500 text-center transition-[background-color] duration-400 border-b border-transparent whitespace-nowrap hover:bg-[#e0e0e0] cursor-pointer border-0 bg-transparent w-full ' + (separator ? 'border-t border-[rgba(0,0,0,0.12)]' : '')" (click)="toggleSettings()" (keydown.space)="toggleSettings($event)">
+                <button #toggle type="button" [class]="'section-title mx-[5px] px-1 py-0.5 text-[8pt] leading-[14px] text-gray-600 text-center transition-[background-color] duration-400 border-b border-transparent whitespace-nowrap hover:bg-[#e0e0e0] cursor-pointer border-0 bg-transparent overflow-hidden text-ellipsis flex-shrink-0 relative z-10 ' + (separator ? 'border-t border-[rgba(0,0,0,0.12)]' : '')" (click)="toggleSettings()" (keydown.space)="toggleSettings($event)">
                     {{ title }}
                     <i [class]="'fa fa-angle-' + (isExpanded ? 'up' : 'down')"></i>
                 </button>
             } @else {
-                <div class="section-title mx-[5px] text-[8pt] text-gray-500 text-center transition-[background-color] duration-400 border-b border-transparent whitespace-nowrap">
+                <div class="section-title mx-[5px] px-1 py-0.5 text-[8pt] leading-[14px] text-gray-600 text-center transition-[background-color] duration-400 border-b border-transparent whitespace-nowrap overflow-hidden text-ellipsis flex-shrink-0 relative z-10">
                     {{ title }}
                 </div>
             }
         }
     </div>
 
-    <ng-content select="cc-ribbon-bar-panel-settings"></ng-content>
+    <div [class.hidden]="!isExpanded">
+        <ng-content select="cc-ribbon-bar-panel-settings"></ng-content>
+    </div>
 </div>
