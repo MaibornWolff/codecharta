@@ -3,48 +3,46 @@
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "**",
-      "!**/.idea",
-      "!**/.angular",
-      "!**/node_modules",
-      "!**/install.js",
-      "!**/build",
-      "!**/plop-templates",
-      "!**/dist",
-      "!**/assets",
-      "!**/public",
-      "!**/__snapshots__",
-      "!**/*.properties",
-      "!**/Dockerfile",
-      "!**/*.glsl",
-      "!**/*.sh",
-      "!**/*.hbs",
-      "!**/*.kt",
-      "!**/*.txt",
-      "!**/*.gradle",
-      "!**/*.jar",
-      "!**/*.jpg",
-      "!**/*.png",
-      "!**/*.bat",
-      "!**/*.xml",
-      "!**/*.svg",
-      "!**/*.py",
-      "!**/gradlew",
-      "!**/test",
-      "!**/Gemfile",
-      "!**/Gemfile.lock",
-      "!**/Pipfile",
-      "!**/Pipfile.lock",
-      "!**/_site",
-      "!**/out",
-      "!**/resources/**",
-      "!**/assets/**",
-      "!**/binScripts/**",
-      "!**/gh-pages/vendor",
-      "!**/gh-pages/visualization",
-      "!**/*.gradle.kts",
-      "!**/*.toml"
+    "ignore": [
+      ".idea",
+      ".angular",
+      "node_modules",
+      "install.js",
+      "build",
+      "plop-templates",
+      "dist",
+      "assets",
+      "public",
+      "__snapshots__",
+      "**/*.properties",
+      "Dockerfile",
+      "**/*.glsl",
+      "**/*.sh",
+      "**/*.hbs",
+      "**/*.kt",
+      "**/*.txt",
+      "**/*.gradle",
+      "**/*.jar",
+      "**/*.jpg",
+      "**/*.png",
+      "**/*.bat",
+      "**/*.xml",
+      "**/*.svg",
+      "**/*.py",
+      "gradlew",
+      "test",
+      "Gemfile",
+      "Gemfile.lock",
+      "Pipfile",
+      "Pipfile.lock",
+      "_site",
+      "out",
+      "resources",
+      "binScripts",
+      "gh-pages/vendor",
+      "gh-pages/visualization",
+      "**/*.gradle.kts",
+      "**/*.toml"
     ]
   },
   "formatter": {
@@ -58,7 +56,7 @@
     "attributePosition": "auto",
     "bracketSpacing": true
   },
-  "assist": { "actions": { "source": { "organizeImports": "off" } } },
+  "organizeImports": { "enabled": false },
   "linter": {
     "enabled": true,
     "rules": {
@@ -76,7 +74,7 @@
         "useFlatMap": "error",
         "useOptionalChain": "error",
         "useRegexLiterals": "error",
-        "noAdjacentSpacesInRegex": "error"
+        "noMultipleSpacesInRegularExpressionLiterals": "error"
       },
       "correctness": {
         "noConstAssign": "error",
@@ -104,7 +102,7 @@
         "useIsNan": "error",
         "useValidForDirection": "error",
         "useYield": "error",
-        "useValidTypeof": "error"
+        "useArrayLiterals": "error"
       },
       "style": {
         "noInferrableTypes": "error",
@@ -147,7 +145,8 @@
         "useNumberNamespace": "error",
         "useTemplate": "error",
         "useThrowNewError": "error",
-        "useArrayLiterals": "off"
+        "noArguments": "error",
+        "noVar": "error"
       },
       "suspicious": {
         "noAssignInExpressions": "off",
@@ -184,10 +183,9 @@
         "useIsArray": "error",
         "useNamespaceKeyword": "error",
         "useNumberToFixedDigitsArgument": "error",
-        "noWith": "error"
+        "useValidTypeof": "error"
       }
-    },
-    "includes": ["**", "!**/node_modules", "!**/dist", "!**/*.js"]
+    }
   },
   "javascript": {
     "formatter": {
@@ -206,7 +204,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+      "include": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "linter": {
         "rules": {
           "correctness": {
@@ -218,9 +216,13 @@
             "noUnreachable": "off",
             "noUnreachableSuper": "off",
             "noInvalidBuiltinInstantiation": "off",
-            "useValidTypeof": "off"
+            "useArrayLiterals": "off"
           },
-          "style": { "useConst": "error" },
+          "style": {
+            "useConst": "error",
+            "noArguments": "off",
+            "noVar": "off"
+          },
           "suspicious": {
             "noDuplicateClassMembers": "off",
             "noDuplicateObjectKeys": "off",
@@ -230,14 +232,13 @@
             "noRedeclare": "off",
             "noUnsafeNegation": "off",
             "useGetterReturn": "off",
-            "noVar": "error"
-          },
-          "complexity": { "noArguments": "error" }
+            "useValidTypeof": "off"
+          }
         }
       }
     },
     {
-      "includes": ["**/visualization/package.json"],
+      "include": ["**/visualization/package.json"],
       "json": {
         "formatter": {
           "lineWidth": 80
