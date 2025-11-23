@@ -13,6 +13,7 @@
 
 i.fa {
     padding-right: 8px;
+    color: variables.$cc-primary-color;
 }
 
 cc-metric-chooser-value {
@@ -23,4 +24,15 @@ cc-metric-chooser-value {
 
 .mat-mdc-select-placeholder {
     color: black !important;
+}
+
+::ng-deep {
+    .mat-mdc-select-value {
+        color: #333 !important;
+        font-weight: 500;
+    }
+
+    .mat-mdc-select-arrow {
+        color: variables.$cc-primary-color !important;
+    }
 }

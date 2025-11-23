@@ -2,6 +2,9 @@
     display: flex;
     height: 17px;
     width: 100%;
+    position: relative;
+    z-index: 5;
+    background-color: white;
 
     .cc-bar {
         display: flex;
