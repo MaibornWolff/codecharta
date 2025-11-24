@@ -59,5 +59,5 @@
   ],
   "timezone": "Europe/Berlin",
   "schedule": ["* * * * *"],
-  "prConcurrentLimit": 20
+  "prConcurrentLimit": 5
 }
