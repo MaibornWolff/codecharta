@@ -19,6 +19,8 @@ import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.compon
 })
 export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     @Input() title?: string
+    @Input() headerPaddingX = "px-[5px]"
+    @Input() panelMinWidth = "min-w-[150px]"
     @Input() collapseOnPanelClick = true
 
     @HostBinding("class.separator")

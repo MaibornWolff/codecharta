@@ -1,15 +1,15 @@
 <div class="z-10 w-full flex flex-nowrap gap-0">
     <cc-search-panel></cc-search-panel>
 
-    <cc-ribbon-bar-panel id="scenario-card" class="flex-[0_1_0]" title="Metric Scenarios">
+    <cc-ribbon-bar-panel id="scenario-card" class="flex-[0_1_0]" title="Metric Scenarios" headerPaddingX="px-[3px]" panelMinWidth="min-w-[90px]">
         <cc-show-scenarios-button></cc-show-scenarios-button>
     </cc-ribbon-bar-panel>
 
-    <cc-ribbon-bar-panel id="custom-configs-card" class="flex-[0_1_0]" title="Custom Views">
+    <cc-ribbon-bar-panel id="custom-configs-card" class="flex-[0_1_0]" title="Custom Views" headerPaddingX="px-[3px]" panelMinWidth="min-w-[100px]">
         <cc-custom-configs></cc-custom-configs>
     </cc-ribbon-bar-panel>
 
-    <cc-ribbon-bar-panel id="ai-card" class="flex-[0_1_0]" title="Suspicious Metrics">
+    <cc-ribbon-bar-panel id="ai-card" class="flex-[0_1_0]" title="Suspicious Metrics" headerPaddingX="px-[3px]" panelMinWidth="min-w-[90px]">
         <cc-artificial-intelligence></cc-artificial-intelligence>
     </cc-ribbon-bar-panel>
 
@@ -30,7 +30,7 @@
     </cc-ribbon-bar-panel>
 
     @if (!isDeltaState()) {
-        <div class="flex justify-center flex-grow-0 p-0 h-[63px] rounded-none border-t border-base-300">
+        <div class="flex justify-center flex-grow-0 p-0 h-[50px] rounded-none border-t border-base-300">
             <cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
         </div>
 

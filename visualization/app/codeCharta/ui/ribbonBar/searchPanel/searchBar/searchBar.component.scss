@@ -3,6 +3,8 @@
 :host {
     display: inline-block;
     text-wrap: nowrap;
+    margin-top: 0;
+    margin-bottom: 0;
 
     .cc-search-icon {
         margin-right: 8px;
@@ -18,8 +20,8 @@
             border-width: 0 0 1px;
             border-color: lightgrey;
             outline: 0;
-            font-size: 11pt;
-            height: 24px;
+            font-size: 10pt;
+            height: 18px;
 
             &:focus {
                 border-color: variables.$cc-emphasized-color;
@@ -31,15 +33,15 @@
             vertical-align: middle;
             display: inline-block;
             position: relative;
-            height: 30px;
+            height: 20px;
         }
 
         .cc-clear-icon {
             position: absolute;
             right: 0;
             margin: 0;
-            height: 24px;
-            width: 24px;
+            height: 18px;
+            width: 18px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -50,14 +52,14 @@
     button {
         background-color: transparent;
         box-shadow: none;
-        margin-top: 2px;
-        font-size: 14px;
+        margin-top: 0;
+        font-size: 12px;
 
         &.cc-small-action-button {
-            margin: 0 5px 0 5px;
+            margin: 0 3px 0 3px;
             display: inline-block;
-            height: 24px;
-            width: 24px;
+            height: 18px;
+            width: 18px;
             vertical-align: top;
         }
 
