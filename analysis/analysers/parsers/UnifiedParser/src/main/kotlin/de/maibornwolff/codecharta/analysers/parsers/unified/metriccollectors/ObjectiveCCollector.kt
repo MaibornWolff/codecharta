@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.ObjectiveCNodeTypes
-import org.treesitter.TreeSitterObjc
+import io.github.treesitter.metrics.api.Language
 
-class ObjectiveCCollector : MetricCollector(
-    treeSitterLanguage = TreeSitterObjc(),
-    nodeTypeProvider = ObjectiveCNodeTypes()
-)
+class ObjectiveCCollector : MetricCollector() {
+    override val language = Language.OBJECTIVE_C
+}

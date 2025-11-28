@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.JavaNodeTypes
-import org.treesitter.TreeSitterJava
+import io.github.treesitter.metrics.api.Language
 
-class JavaCollector : MetricCollector(
-    treeSitterLanguage = TreeSitterJava(),
-    nodeTypeProvider = JavaNodeTypes()
-)
+class JavaCollector : MetricCollector() {
+    override val language = Language.JAVA
+}

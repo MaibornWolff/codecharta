@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.PhpNodeTypes
-import org.treesitter.TreeSitterPhp
+import io.github.treesitter.metrics.api.Language
 
-class PhpCollector : MetricCollector(
-    treeSitterLanguage = TreeSitterPhp(),
-    nodeTypeProvider = PhpNodeTypes()
-)
+class PhpCollector : MetricCollector() {
+    override val language = Language.PHP
+}

@@ -1,16 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators.CalculationExtensions
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.JavascriptNodeTypes
-import org.treesitter.TSNode
-import org.treesitter.TreeSitterJavascript
+import io.github.treesitter.metrics.api.Language
 
-class JavascriptCollector : MetricCollector(
-    treeSitterLanguage = TreeSitterJavascript(),
-    nodeTypeProvider = JavascriptNodeTypes(),
-    calculationExtensions = CalculationExtensions(
-        ignoreNodeForParameterOfFunctions = { node: TSNode, nodeType: String ->
-            JavascriptNodeTypes.shouldIgnoreFunctionNameAsParameter(node, nodeType)
-        }
-    )
-)
+class JavascriptCollector : MetricCollector() {
+    override val language = Language.JAVASCRIPT
+}

@@ -2,6 +2,12 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
+includeBuild("../../TreeSitterLibrary") {
+    dependencySubstitution {
+        substitute(module("io.github.treesitter:treesitter-metrics")).using(project(":"))
+    }
+}
+
 include("ccsh")
 include("dialogProvider")
 include("model")

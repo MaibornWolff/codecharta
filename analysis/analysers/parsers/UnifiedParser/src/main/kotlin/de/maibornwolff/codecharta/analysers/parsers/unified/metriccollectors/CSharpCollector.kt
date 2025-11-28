@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.CSharpNodeTypes
-import org.treesitter.TreeSitterCSharp
+import io.github.treesitter.metrics.api.Language
 
-class CSharpCollector : MetricCollector(
-    treeSitterLanguage = TreeSitterCSharp(),
-    nodeTypeProvider = CSharpNodeTypes()
-)
+class CSharpCollector : MetricCollector() {
+    override val language = Language.CSHARP
+}

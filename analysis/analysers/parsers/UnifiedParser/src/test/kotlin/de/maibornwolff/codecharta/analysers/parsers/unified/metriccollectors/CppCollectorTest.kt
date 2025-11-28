@@ -2,20 +2,11 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
 import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFileMetrics
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.treesitter.TSParser
-import org.treesitter.TreeSitterCpp
 import java.io.File
 
 class CppCollectorTest {
-    private var parser = TSParser()
     private val collector = CppCollector()
-
-    @BeforeEach
-    fun setUp() {
-        parser.setLanguage(TreeSitterCpp())
-    }
 
     private fun createTestFile(content: String): File {
         val tempFile = File.createTempFile("testFile", ".txt")

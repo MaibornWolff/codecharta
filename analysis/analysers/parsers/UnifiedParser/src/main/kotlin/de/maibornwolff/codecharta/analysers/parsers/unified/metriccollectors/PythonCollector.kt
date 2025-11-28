@@ -1,25 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators.CalculationExtensions
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.PythonNodeTypes
-import org.treesitter.TSNode
-import org.treesitter.TreeSitterPython
+import io.github.treesitter.metrics.api.Language
 
-class PythonCollector : MetricCollector(
-    treeSitterLanguage = TreeSitterPython(),
-    nodeTypeProvider = PythonNodeTypes(),
-    calculationExtensions = CalculationExtensions(
-        hasFunctionBodyStartOrEndNode = false,
-        ignoreNodeForRealLinesOfCode = { node: TSNode, nodeType: String ->
-            PythonNodeTypes.nodeTypesToIgnore.contains(nodeType) ||
-                PythonNodeTypes.shouldIgnoreStringInBlockComment(node, nodeType) ||
-                PythonNodeTypes.shouldIgnoreNodeStartingWithComment(node)
-        },
-        ignoreNodeForParameterOfFunctions = { node: TSNode, nodeType: String ->
-            PythonNodeTypes.shouldIgnoreFunctionNameAsParameter(node, nodeType)
-        },
-        countNodeAsLeafNode = { node: TSNode ->
-            node.type == "string" && node.parent.childCount != 1
-        }
-    )
-)
+class PythonCollector : MetricCollector() {
+    override val language = Language.PYTHON
+}

@@ -1,17 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccalculators.CalculationExtensions
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.CppNodeTypes
-import org.treesitter.TSNode
-import org.treesitter.TreeSitterCpp
+import io.github.treesitter.metrics.api.Language
 
-class CppCollector : MetricCollector(
-    treeSitterLanguage = TreeSitterCpp(),
-    nodeTypeProvider = CppNodeTypes(),
-    calculationExtensions = CalculationExtensions(
-        ignoreNodeForComplexity = { node: TSNode, nodeType: String ->
-            CppNodeTypes.shouldIgnoreAbstractFunctionInLambda(node, nodeType) ||
-                CppNodeTypes.shouldIgnoreFnDeclaratorInFnDefinition(node, nodeType)
-        }
-    )
-)
+class CppCollector : MetricCollector() {
+    override val language = Language.CPP
+}

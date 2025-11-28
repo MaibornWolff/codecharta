@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.TypescriptNodeTypes
-import org.treesitter.TreeSitterTypescript
+import io.github.treesitter.metrics.api.Language
 
-class TypescriptCollector : MetricCollector(
-    treeSitterLanguage = TreeSitterTypescript(),
-    nodeTypeProvider = TypescriptNodeTypes()
-)
+class TypescriptCollector : MetricCollector() {
+    override val language = Language.TYPESCRIPT
+}
