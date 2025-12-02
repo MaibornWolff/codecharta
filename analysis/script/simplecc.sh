@@ -348,7 +348,7 @@ run_complexity_analysis() {
     fi
 
     echo "whitespace_complexity,file" > ws_complexity.csv
-    if complexity --format csv | sed 's/\,\.\/\,/\,/' >> ws_complexity.csv; then
+    if complexity --format csv | sed 's/,\.\//,/' >> ws_complexity.csv; then
         if ccsh csvimport --path-column-name=file -o "ws_complexity.${FILE_EXTENSION}" ws_complexity.csv; then
             GENERATED_FILES+=("ws_complexity.${FILE_EXTENSION}")
             echo "   Generated ws_complexity.${FILE_EXTENSION}"
@@ -371,7 +371,7 @@ run_tokei_analysis() {
     fi
 
     if tokei . -o json > tokei.json; then
-        if ccsh tokeiimporter tokei.json -r . -o "tokei.${FILE_EXTENSION}"; then
+        if ccsh tokeiimporter tokei.json -r ./ -o "tokei.${FILE_EXTENSION}"; then
             GENERATED_FILES+=("tokei.${FILE_EXTENSION}")
             echo "   Generated tokei.${FILE_EXTENSION}"
         else
