@@ -64,7 +64,7 @@ export class MetricDescriptionBlockMesh extends CustomVisibilityMesh {
         geometryOptions: GeometryOptions
     ): Promise<BufferGeometry> {
         const iconGeometry = await createSvgGeometryStrategy.create(geometryOptions, {
-            filePath: `/codeCharta/assets/${this.metricDescriptionBlockOptions.iconFilename}`,
+            filePath: `./codeCharta/assets/${this.metricDescriptionBlockOptions.iconFilename}`,
             size: this.metricDescriptionBlockOptions.iconScale,
             side: "back"
         })

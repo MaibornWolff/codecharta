@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- Fix 3D print SVG assets (logos) not loading on GitHub Pages due to absolute path resolution
+
 ## [1.140.1] - 2025-11-20
 
 

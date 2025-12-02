@@ -58,7 +58,7 @@ describe("MetricDescriptionBlockMesh", () => {
         await metricDescriptionBlockMesh.init(geometryOptions)
 
         expect(CreateSvgGeometryStrategy.prototype.create).toHaveBeenCalledWith(geometryOptions, {
-            filePath: `/codeCharta/assets/${metricDescriptionBlockOptions.iconFilename}`,
+            filePath: `./codeCharta/assets/${metricDescriptionBlockOptions.iconFilename}`,
             size: metricDescriptionBlockOptions.iconScale,
             side: "back"
         })

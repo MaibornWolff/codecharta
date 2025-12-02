@@ -13,7 +13,7 @@ export class BackMWLogoMesh extends CustomVisibilityMesh {
         const createSvgStrategy = new CreateSvgGeometryStrategy()
         const size = 0.31
         this.geometry = await createSvgStrategy.create(geometryOptions, {
-            filePath: "/codeCharta/assets/mw_logo_text.svg",
+            filePath: "./codeCharta/assets/mw_logo_text.svg",
             size,
             side: "back"
         })

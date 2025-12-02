@@ -14,7 +14,7 @@ export class CodeChartaLogoMesh extends CustomVisibilityMesh {
     async init(geometryOptions: GeometryOptions): Promise<CodeChartaLogoMesh> {
         const size = 0.17
         this.geometry = await this.createSvgStrategy.create(geometryOptions, {
-            filePath: "/codeCharta/assets/codecharta_logo.svg",
+            filePath: "./codeCharta/assets/codecharta_logo.svg",
             size,
             side: "back"
         })
