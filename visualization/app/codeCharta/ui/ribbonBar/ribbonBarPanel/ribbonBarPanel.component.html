@@ -1,25 +1,37 @@
-<mat-card appearance="outlined">
-    <div class="section">
+<div [class]="'relative z-10 p-0 h-[50px] rounded-none border-t border-r border-[#cdcdcd] flex-[1_1_150px] bg-white ' + panelMinWidth"
+     [class.overflow-hidden]="!isExpanded">
+    <div class="section h-full flex flex-col justify-between relative z-0">
         @if (isHeaderExpandable) {
-            <div #toggleHeader class="section-header" (click)="toggleSettings()">
+            <button #toggleHeader type="button"
+                    [class]="'section-header mt-[3px] mb-0 mx-[3px] text-[#444444] overflow-hidden py-0 cursor-pointer border-0 bg-transparent text-left flex-shrink-0 min-w-0 relative z-10 ' + headerPaddingX"
+                    (click)="toggleSettings()" (keydown.space)="toggleSettings($event)">
                 <ng-content select=".toggleHeader"></ng-content>
-            </div>
+            </button>
         } @else {
-            <div class="section-header">
+            <div
+                [class]="'section-header mt-[3px] mb-0 mx-[3px] text-[#444444] overflow-hidden py-0 flex-shrink-0 min-w-0 relative z-10 ' + headerPaddingX">
                 <ng-content></ng-content>
             </div>
         }
 
         @if (title || hasSettings) {
-            <div #toggle class="section-title mx-[5px]" (click)="toggleSettings()">
-                {{ title }}
-
-                @if (hasSettings) {
+            @if (hasSettings) {
+                <button #toggle type="button"
+                        [class]="'section-title mx-[5px] px-1 py-0 mb-0 mt-0 text-[8pt] leading-[16px] h-[16px] text-gray-600 text-center transition-[background-color] duration-400 border-b border-transparent whitespace-nowrap hover:bg-[#e0e0e0] cursor-pointer border-0 bg-transparent overflow-hidden text-ellipsis flex-shrink-0 relative z-10 ' + (separator ? 'border-t border-[rgba(0,0,0,0.12)]' : '')"
+                        (click)="toggleSettings()" (keydown.space)="toggleSettings($event)">
+                    {{ title }}
                     <i [class]="'fa fa-angle-' + (isExpanded ? 'up' : 'down')"></i>
-                }
-            </div>
+                </button>
+            } @else {
+                <div
+                    class="section-title mx-[5px] px-1 py-0 mb-0 mt-0 text-[8pt] leading-[16px] h-[16px] text-gray-600 text-center transition-[background-color] duration-400 border-b border-transparent whitespace-nowrap overflow-hidden text-ellipsis flex-shrink-0 relative z-10">
+                    {{ title }}
+                </div>
+            }
         }
     </div>
 
-    <ng-content select="cc-ribbon-bar-panel-settings"></ng-content>
-</mat-card>
+    <div [class.hidden]="!isExpanded">
+        <ng-content select="cc-ribbon-bar-panel-settings"></ng-content>
+    </div>
+</div>

@@ -1,65 +1,67 @@
-<cc-search-panel></cc-search-panel>
+<div class="z-10 w-full flex flex-nowrap gap-0">
+    <cc-search-panel></cc-search-panel>
 
-<cc-ribbon-bar-panel id="scenario-card" title="Metric Scenarios">
-    <cc-show-scenarios-button></cc-show-scenarios-button>
-</cc-ribbon-bar-panel>
+    <cc-ribbon-bar-panel id="scenario-card" class="flex-[0_1_0]" title="Metric Scenarios" headerPaddingX="px-[3px]" panelMinWidth="min-w-[90px]">
+        <cc-show-scenarios-button></cc-show-scenarios-button>
+    </cc-ribbon-bar-panel>
 
-<cc-ribbon-bar-panel id="custom-configs-card" title="Custom Views">
-    <cc-custom-configs></cc-custom-configs>
-</cc-ribbon-bar-panel>
+    <cc-ribbon-bar-panel id="custom-configs-card" class="flex-[0_1_0]" title="Custom Views" headerPaddingX="px-[3px]" panelMinWidth="min-w-[100px]">
+        <cc-custom-configs></cc-custom-configs>
+    </cc-ribbon-bar-panel>
 
-<cc-ribbon-bar-panel id="ai-card" title="Suspicious Metrics">
-    <cc-artificial-intelligence></cc-artificial-intelligence>
-</cc-ribbon-bar-panel>
+    <cc-ribbon-bar-panel id="ai-card" class="flex-[0_1_0]" title="Suspicious Metrics" headerPaddingX="px-[3px]" panelMinWidth="min-w-[90px]">
+        <cc-artificial-intelligence></cc-artificial-intelligence>
+    </cc-ribbon-bar-panel>
 
-<cc-ribbon-bar-panel id="area-metric-card" class="ribbon-bar-panel-wide" title="Area Metric Options" [separator]="true">
-    <cc-area-metric-chooser></cc-area-metric-chooser>
-
-    <cc-ribbon-bar-panel-settings>
-        <cc-area-settings-panel class="cc-metric-settings-panel"></cc-area-settings-panel>
-    </cc-ribbon-bar-panel-settings>
-</cc-ribbon-bar-panel>
-
-<cc-ribbon-bar-panel id="height-metric-card" class="ribbon-bar-panel-wide" title="Height Metric Options" [separator]="true">
-    <cc-height-metric-chooser></cc-height-metric-chooser>
-
-    <cc-ribbon-bar-panel-settings>
-        <cc-height-settings-panel class="cc-metric-settings-panel"></cc-height-settings-panel>
-    </cc-ribbon-bar-panel-settings>
-</cc-ribbon-bar-panel>
-
-@if (!(isDeltaState$ | async)) {
-    <mat-card appearance="outlined" class="color-height-metric-link">
-        <cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
-    </mat-card>
-
-    <cc-ribbon-bar-panel id="color-metric-card" class="ribbon-bar-panel-wide" title="Color Metric Options" [separator]="true">
-        <cc-color-metric-chooser></cc-color-metric-chooser>
+    <cc-ribbon-bar-panel id="area-metric-card" class="flex-1" title="Area Metric Options" [separator]="true">
+        <cc-area-metric-chooser></cc-area-metric-chooser>
 
         <cc-ribbon-bar-panel-settings>
-            <cc-color-settings-panel class="cc-metric-settings-panel"></cc-color-settings-panel>
+            <cc-area-settings-panel class="cc-metric-settings-panel"></cc-area-settings-panel>
         </cc-ribbon-bar-panel-settings>
     </cc-ribbon-bar-panel>
-}
 
-@if (hasEdgeMetric$ | async) {
-    <cc-ribbon-bar-panel id="edge-metric-card" class="ribbon-bar-panel-wide" title="Edge Metric Options" [separator]="true">
-        <cc-edge-metric-chooser></cc-edge-metric-chooser>
+    <cc-ribbon-bar-panel id="height-metric-card" class="flex-1" title="Height Metric Options" [separator]="true">
+        <cc-height-metric-chooser></cc-height-metric-chooser>
 
         <cc-ribbon-bar-panel-settings>
-            <cc-edge-settings-panel class="cc-metric-settings-panel"></cc-edge-settings-panel>
+            <cc-height-settings-panel class="cc-metric-settings-panel"></cc-height-settings-panel>
         </cc-ribbon-bar-panel-settings>
     </cc-ribbon-bar-panel>
-}
 
-@if (isDeltaState$ | async) {
-    <cc-ribbon-bar-panel id="color-settings-card" class="ribbon-bar-panel-wide" [separator]="true" [isHeaderExpandable]="true">
-        <div class="color-settings-header toggleHeader">
-            <i class="fa fa-paint-brush color-icon"></i>
-            <span>Color Settings</span>
+    @if (!isDeltaState()) {
+        <div class="flex justify-center flex-grow-0 p-0 h-[50px] rounded-none border-t border-base-300">
+            <cc-link-color-metric-to-height-metric-button></cc-link-color-metric-to-height-metric-button>
         </div>
-        <cc-ribbon-bar-panel-settings>
-            <cc-color-settings-panel class="cc-metric-settings-panel"></cc-color-settings-panel>
-        </cc-ribbon-bar-panel-settings>
-    </cc-ribbon-bar-panel>
-}
+
+        <cc-ribbon-bar-panel id="color-metric-card" class="flex-1" title="Color Metric Options" [separator]="true">
+            <cc-color-metric-chooser></cc-color-metric-chooser>
+
+            <cc-ribbon-bar-panel-settings>
+                <cc-color-settings-panel class="cc-metric-settings-panel"></cc-color-settings-panel>
+            </cc-ribbon-bar-panel-settings>
+        </cc-ribbon-bar-panel>
+    }
+
+    @if (hasEdgeMetric()) {
+        <cc-ribbon-bar-panel id="edge-metric-card" class="flex-1" title="Edge Metric Options" [separator]="true">
+            <cc-edge-metric-chooser></cc-edge-metric-chooser>
+
+            <cc-ribbon-bar-panel-settings>
+                <cc-edge-settings-panel class="cc-metric-settings-panel"></cc-edge-settings-panel>
+            </cc-ribbon-bar-panel-settings>
+        </cc-ribbon-bar-panel>
+    }
+
+    @if (isDeltaState()) {
+        <cc-ribbon-bar-panel id="color-settings-card" class="flex-1" [separator]="true" [isHeaderExpandable]="true">
+            <div class="flex gap-2 leading-6 items-baseline toggleHeader">
+                <i class="fa fa-paint-brush color-icon"></i>
+                <span>Color Settings</span>
+            </div>
+            <cc-ribbon-bar-panel-settings>
+                <cc-color-settings-panel class="cc-metric-settings-panel"></cc-color-settings-panel>
+            </cc-ribbon-bar-panel-settings>
+        </cc-ribbon-bar-panel>
+    }
+</div>

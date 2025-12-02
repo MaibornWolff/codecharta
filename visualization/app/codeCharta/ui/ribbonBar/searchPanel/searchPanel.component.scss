@@ -1,4 +1,21 @@
 cc-search-panel {
+    // Override ribbon bar panel height for search panel
+    ::ng-deep > div {
+        height: 65px !important;
+    }
+
+    // Remove top margin for search panel to fit all content
+    ::ng-deep .section-header {
+        margin-top: 0 !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    ::ng-deep .section button.section-title {
+        margin-top: 0 !important;
+    }
+
     .search-panel-card {
         border-left: none;
         width: 100%;

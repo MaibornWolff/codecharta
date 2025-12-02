@@ -12,16 +12,15 @@ import {
     ViewContainerRef
 } from "@angular/core"
 import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanelSettings.component"
-import { MatCard } from "@angular/material/card"
 
 @Component({
     selector: "cc-ribbon-bar-panel",
-    templateUrl: "./ribbonBarPanel.component.html",
-    styleUrl: "./ribbonBarPanel.component.scss",
-    imports: [MatCard]
+    templateUrl: "./ribbonBarPanel.component.html"
 })
 export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     @Input() title?: string
+    @Input() headerPaddingX = "px-[5px]"
+    @Input() panelMinWidth = "min-w-[150px]"
     @Input() collapseOnPanelClick = true
 
     @HostBinding("class.separator")
@@ -31,16 +30,28 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
     @ContentChild(RibbonBarPanelSettingsComponent, {
         read: ElementRef<HTMLElement>
     })
-    private settingsRef?: ElementRef<HTMLElement>
+    private readonly settingsRef?: ElementRef<HTMLElement>
 
     @ViewChild("toggle")
-    private toggleSettingsRef!: ElementRef<HTMLElement>
+    private readonly toggleSettingsRef!: ElementRef<HTMLElement>
 
     @ViewChild("toggleHeader")
-    private toggleHeaderRef!: ElementRef<HTMLElement>
+    private readonly toggleHeaderRef!: ElementRef<HTMLElement>
+
+    private _isExpanded = false
+
+    get isExpanded() {
+        return this._isExpanded
+    }
+
+    set isExpanded(value: boolean) {
+        this._isExpanded = value
+    }
 
     @HostBinding("class.expanded")
-    isExpanded = false
+    get expanded() {
+        return this._isExpanded
+    }
 
     @Input()
     isHeaderExpandable = false
@@ -71,7 +82,10 @@ export class RibbonBarPanelComponent implements OnInit, OnDestroy {
         }
     }
 
-    toggleSettings() {
+    toggleSettings(event?: Event) {
+        if (event instanceof KeyboardEvent && event.key === " ") {
+            event.preventDefault()
+        }
         this.isExpanded = !this.isExpanded
         this.toggleSettingsChange.emit(this.isExpanded)
     }

@@ -1,13 +1,19 @@
 :host {
+    margin-top: -3px;
+
     mat-button-toggle {
-        height: 100%;
+        height: 28px;
         align-items: center;
+
+        button {
+            padding: 0 !important;
+        }
     }
 
     .has-blacklist-items-indicator {
         position: absolute;
         margin-left: 18px;
-        margin-top: -32px;
+        margin-top: -28px;
         border-radius: 50%;
         background-color: red;
         width: 5px;
