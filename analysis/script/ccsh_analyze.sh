@@ -329,7 +329,7 @@ run_unified_parser() {
     echo "UnifiedParser"
     echo "============="
 
-    if ccsh unifiedparser . -o "unified.${FILE_EXTENSION}" 2>/dev/null; then
+    if ccsh unifiedparser . -o "unified.${FILE_EXTENSION}"; then
         GENERATED_FILES+=("unified.${FILE_EXTENSION}")
         echo "   Generated unified.${FILE_EXTENSION}"
     else
@@ -348,8 +348,8 @@ run_complexity_analysis() {
     fi
 
     echo "whitespace_complexity,file" > ws_complexity.csv
-    if complexity --format csv 2>/dev/null | sed 's/\,\.\/\,/\,/' >> ws_complexity.csv; then
-        if ccsh csvimport --path-column-name=file -o "ws_complexity.${FILE_EXTENSION}" ws_complexity.csv 2>/dev/null; then
+    if complexity --format csv | sed 's/\,\.\/\,/\,/' >> ws_complexity.csv; then
+        if ccsh csvimport --path-column-name=file -o "ws_complexity.${FILE_EXTENSION}" ws_complexity.csv; then
             GENERATED_FILES+=("ws_complexity.${FILE_EXTENSION}")
             echo "   Generated ws_complexity.${FILE_EXTENSION}"
         else
@@ -370,8 +370,8 @@ run_tokei_analysis() {
         return
     fi
 
-    if tokei . -o json > tokei.json 2>/dev/null; then
-        if ccsh tokeiimporter tokei.json -r . -o "tokei.${FILE_EXTENSION}" 2>/dev/null; then
+    if tokei . -o json > tokei.json; then
+        if ccsh tokeiimporter tokei.json -r . -o "tokei.${FILE_EXTENSION}"; then
             GENERATED_FILES+=("tokei.${FILE_EXTENSION}")
             echo "   Generated tokei.${FILE_EXTENSION}"
         else
@@ -398,7 +398,7 @@ run_git_analysis() {
     fi
 
     echo "Analyzing Git repository (this might take a while for large repos)..."
-    if ccsh gitlogparser repo-scan --repo-path . -o "git.${FILE_EXTENSION}" 2>/dev/null; then
+    if ccsh gitlogparser repo-scan --repo-path . -o "git.${FILE_EXTENSION}"; then
         GENERATED_FILES+=("git.${FILE_EXTENSION}")
         echo "   Generated git.${FILE_EXTENSION}"
     else
@@ -411,7 +411,7 @@ run_rawtext_analysis() {
     echo "RawText Analysis"
     echo "================"
 
-    if ccsh rawtextparser . -o "rawtext.${FILE_EXTENSION}" "--exclude=node_modules" 2>/dev/null; then
+    if ccsh rawtextparser . -o "rawtext.${FILE_EXTENSION}" "--exclude=node_modules"; then
         GENERATED_FILES+=("rawtext.${FILE_EXTENSION}")
         echo "   Generated rawtext.${FILE_EXTENSION}"
     else
@@ -434,7 +434,7 @@ run_sonar_import() {
         return
     fi
 
-    if ccsh sonarimport "$SONAR_URL" "$PROJECT_KEY" --user-token="$SONAR_TOKEN" --output-file="sonar.${FILE_EXTENSION}" --merge-modules=false 2>/dev/null; then
+    if ccsh sonarimport "$SONAR_URL" "$PROJECT_KEY" --user-token="$SONAR_TOKEN" --output-file="sonar.${FILE_EXTENSION}" --merge-modules=false; then
         GENERATED_FILES+=("sonar.${FILE_EXTENSION}")
         echo "   Generated sonar.${FILE_EXTENSION}"
     else
@@ -460,7 +460,7 @@ run_merge() {
     fi
     merge_args+=("${GENERATED_FILES[@]}")
 
-    if ccsh merge "${merge_args[@]}" 2>/dev/null; then
+    if ccsh merge "${merge_args[@]}"; then
         echo "   Successfully created $TARGET_FILE"
     else
         echo "   Error: Merge failed"
