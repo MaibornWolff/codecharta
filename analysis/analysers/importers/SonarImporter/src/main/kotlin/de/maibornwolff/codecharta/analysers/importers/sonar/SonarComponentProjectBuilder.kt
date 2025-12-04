@@ -99,7 +99,8 @@ class SonarComponentProjectBuilder(
      */
     private fun createNodeName(component: Component): String {
         return if (!usePath && component.key != null) {
-            component.key.substring(component.key.lastIndexOf('/') + 1)
+            val normalizedKey = component.key.replace(':', '/')
+            normalizedKey.substring(normalizedKey.lastIndexOf('/') + 1)
         } else if (usePath && component.path != null) {
             component.path.substring(component.path.lastIndexOf('/') + 1)
         } else {

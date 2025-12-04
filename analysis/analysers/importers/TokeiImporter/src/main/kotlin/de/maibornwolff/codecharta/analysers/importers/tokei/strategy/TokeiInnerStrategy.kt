@@ -51,7 +51,7 @@ class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStra
 
     private fun addAsNode(stat: Stats, projectBuilder: ProjectBuilder) {
         val sanitizedName = stat.name.removePrefix(rootName).replace(pathSeparator, "/")
-        val directory = sanitizedName.substringBeforeLast("/")
+        val directory = sanitizedName.substringBeforeLast("/", "")
         val fileName = sanitizedName.substringAfterLast("/")
 
         val node =

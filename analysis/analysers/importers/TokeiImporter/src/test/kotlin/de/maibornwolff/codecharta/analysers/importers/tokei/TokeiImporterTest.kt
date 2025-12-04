@@ -149,6 +149,21 @@ class TokeiImporterTest {
     }
 
     @Test
+    fun `root-level files should be files not folders`() {
+        val input =
+            File("src/test/resources/tokei_12_unix.json").bufferedReader().readLines()
+                .joinToString(separator = "") { it }
+
+        val cliResult = executeForOutput(input)
+
+        val project = ProjectDeserializer.deserializeProject(cliResult)
+        val rootLevelFile = project.rootNode.children.toMutableList()[0]
+        assertThat(rootLevelFile.name).isEqualTo("make_release.sh")
+        assertThat(rootLevelFile.children).isEmpty()
+        assertThat(rootLevelFile.attributes).isNotEmpty()
+    }
+
+    @Test
     fun `tokei pre 12 projectStructure is correct`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_pre12_unix_root.json", "-r=foo"))
 

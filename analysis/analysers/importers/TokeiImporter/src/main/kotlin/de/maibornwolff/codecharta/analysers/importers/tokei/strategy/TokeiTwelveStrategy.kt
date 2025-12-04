@@ -50,7 +50,7 @@ class TokeiTwelveStrategy(rootName: String, pathSeparator: String) : ImporterStr
 
     private fun addAsNode(report: Report, projectBuilder: ProjectBuilder) {
         val sanitizedName = report.name.removePrefix(rootName).replace(pathSeparator, "/")
-        val directory = sanitizedName.substringBeforeLast("/")
+        val directory = sanitizedName.substringBeforeLast("/", "")
         val fileName = sanitizedName.substringAfterLast("/")
 
         val node =

@@ -18,6 +18,8 @@ declare -a SKIPPED_STEPS=()
 declare -a GENERATED_FILES=()
 declare -a AVAILABLE_TOOLS=()
 declare -a MISSING_TOOLS=()
+TEMP_DIR=""
+WORKING_DIR=""
 
 # --- Options ---
 LEAF_MERGE=false
@@ -181,9 +183,14 @@ main() {
     check_tool "git"
     check_tool "sonar-scanner"
 
-    PROJECT_KEY=$PROJECT_DIR
-    PROJECT_NAME=$PROJECT_DIR
-    TARGET_FILE="${PROJECT_DIR}.${FILE_EXTENSION}"
+    # Save the current working directory for output
+    WORKING_DIR=$(pwd)
+
+    # Resolve to absolute path and extract just the folder name for project key/name
+    RESOLVED_PATH=$(cd "$PROJECT_DIR" && pwd)
+    PROJECT_KEY=$(basename "$RESOLVED_PATH")
+    PROJECT_NAME=$(basename "$RESOLVED_PATH")
+    TARGET_FILE="${WORKING_DIR}/${PROJECT_KEY}.${FILE_EXTENSION}"
 
     echo ""
     echo "CodeCharta Analysis"
@@ -200,6 +207,10 @@ main() {
     fi
     echo "========================================"
     echo ""
+
+    # Create temp directory for intermediate files
+    TEMP_DIR=$(mktemp -d)
+    echo "  Temp directory: $TEMP_DIR"
 
     # Navigate into project directory
     cd "$PROJECT_DIR" || exit 1
@@ -329,8 +340,8 @@ run_unified_parser() {
     echo "UnifiedParser"
     echo "============="
 
-    if ccsh unifiedparser . -o "unified.${FILE_EXTENSION}"; then
-        GENERATED_FILES+=("unified.${FILE_EXTENSION}")
+    if ccsh unifiedparser . -o "$TEMP_DIR/unified.${FILE_EXTENSION}"; then
+        GENERATED_FILES+=("$TEMP_DIR/unified.${FILE_EXTENSION}")
         echo "   Generated unified.${FILE_EXTENSION}"
     else
         skip_step "UnifiedParser" "ccsh unifiedparser failed"
@@ -347,10 +358,10 @@ run_complexity_analysis() {
         return
     fi
 
-    echo "whitespace_complexity,file" > ws_complexity.csv
-    if complexity --format csv | sed 's/,\.\//,/' >> ws_complexity.csv; then
-        if ccsh csvimport --path-column-name=file -o "ws_complexity.${FILE_EXTENSION}" ws_complexity.csv; then
-            GENERATED_FILES+=("ws_complexity.${FILE_EXTENSION}")
+    echo "whitespace_complexity,file" > "$TEMP_DIR/ws_complexity.csv"
+    if complexity --format csv | sed 's/,\.\//,/' >> "$TEMP_DIR/ws_complexity.csv"; then
+        if ccsh csvimport --path-column-name=file -o "$TEMP_DIR/ws_complexity.${FILE_EXTENSION}" "$TEMP_DIR/ws_complexity.csv"; then
+            GENERATED_FILES+=("$TEMP_DIR/ws_complexity.${FILE_EXTENSION}")
             echo "   Generated ws_complexity.${FILE_EXTENSION}"
         else
             skip_step "Whitespace Complexity" "ccsh csvimport failed"
@@ -370,9 +381,9 @@ run_tokei_analysis() {
         return
     fi
 
-    if tokei . -o json > tokei.json; then
-        if ccsh tokeiimporter tokei.json -r ./ -o "tokei.${FILE_EXTENSION}"; then
-            GENERATED_FILES+=("tokei.${FILE_EXTENSION}")
+    if tokei . -o json > "$TEMP_DIR/tokei.json"; then
+        if ccsh tokeiimporter "$TEMP_DIR/tokei.json" -r ./ -o "$TEMP_DIR/tokei.${FILE_EXTENSION}"; then
+            GENERATED_FILES+=("$TEMP_DIR/tokei.${FILE_EXTENSION}")
             echo "   Generated tokei.${FILE_EXTENSION}"
         else
             skip_step "Tokei" "ccsh tokeiimporter failed"
@@ -398,8 +409,8 @@ run_git_analysis() {
     fi
 
     echo "Analyzing Git repository (this might take a while for large repos)..."
-    if ccsh gitlogparser repo-scan --repo-path . -o "git.${FILE_EXTENSION}"; then
-        GENERATED_FILES+=("git.${FILE_EXTENSION}")
+    if ccsh gitlogparser repo-scan --repo-path . -o "$TEMP_DIR/git.${FILE_EXTENSION}"; then
+        GENERATED_FILES+=("$TEMP_DIR/git.${FILE_EXTENSION}")
         echo "   Generated git.${FILE_EXTENSION}"
     else
         skip_step "Git Analysis" "ccsh gitlogparser failed"
@@ -411,8 +422,8 @@ run_rawtext_analysis() {
     echo "RawText Analysis"
     echo "================"
 
-    if ccsh rawtextparser . -o "rawtext.${FILE_EXTENSION}" "--exclude=node_modules"; then
-        GENERATED_FILES+=("rawtext.${FILE_EXTENSION}")
+    if ccsh rawtextparser . -o "$TEMP_DIR/rawtext.${FILE_EXTENSION}" "--exclude=node_modules"; then
+        GENERATED_FILES+=("$TEMP_DIR/rawtext.${FILE_EXTENSION}")
         echo "   Generated rawtext.${FILE_EXTENSION}"
     else
         skip_step "RawText Analysis" "ccsh rawtextparser failed"
@@ -434,8 +445,8 @@ run_sonar_import() {
         return
     fi
 
-    if ccsh sonarimport "$SONAR_URL" "$PROJECT_KEY" --user-token="$SONAR_TOKEN" --output-file="sonar.${FILE_EXTENSION}" --merge-modules=false; then
-        GENERATED_FILES+=("sonar.${FILE_EXTENSION}")
+    if ccsh sonarimport "$SONAR_URL" "$PROJECT_KEY" --user-token="$SONAR_TOKEN" --output-file="$TEMP_DIR/sonar.${FILE_EXTENSION}" --merge-modules=false; then
+        GENERATED_FILES+=("$TEMP_DIR/sonar.${FILE_EXTENSION}")
         echo "   Generated sonar.${FILE_EXTENSION}"
     else
         skip_step "SonarQube Import" "ccsh sonarimport failed"
@@ -452,7 +463,7 @@ run_merge() {
         return
     fi
 
-    echo "   Merging ${#GENERATED_FILES[@]} files: ${GENERATED_FILES[*]}"
+    echo "   Merging ${#GENERATED_FILES[@]} files..."
 
     local merge_args=("-o" "$TARGET_FILE")
     if $LEAF_MERGE; then
@@ -472,14 +483,10 @@ run_cleanup() {
     echo "Cleanup"
     echo "======="
 
-    for file in "${GENERATED_FILES[@]}"; do
-        if [ -f "$file" ]; then
-            rm "$file"
-        fi
-    done
-
-    # Clean up intermediate files
-    rm -f tokei.json ws_complexity.csv 2>/dev/null
+    # Clean up temp directory (contains all intermediate files)
+    if [ -n "$TEMP_DIR" ] && [ -d "$TEMP_DIR" ]; then
+        rm -rf "$TEMP_DIR"
+    fi
 
     echo "   Removed temporary files"
 }

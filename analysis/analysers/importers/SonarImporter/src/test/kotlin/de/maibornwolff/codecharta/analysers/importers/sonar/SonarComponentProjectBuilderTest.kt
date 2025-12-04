@@ -149,4 +149,37 @@ class SonarComponentProjectBuilderTest {
 
         assertEquals(project.attributeDescriptors, getAttributeDescriptors())
     }
+
+    @Test
+    fun `should strip module prefix from key when creating node name`() {
+        // given
+        val component = Component("id", "myproject:cli.js", "name", "path", Qualifier.FIL)
+        val projectBuilder = SonarComponentProjectBuilder()
+
+        // when
+        val project = projectBuilder.addComponentAsNode(component).build()
+
+        // then
+        assertEquals(project.rootNode.children.size, 1)
+        val actualNode = project.rootNode.children.toMutableList()[0]
+        assertEquals("cli.js", actualNode.name)
+        assertEquals(NodeType.File, actualNode.type)
+    }
+
+    @Test
+    fun `should handle key with module prefix and subdirectory`() {
+        // given
+        val component = Component("id", "myproject:src/main/App.java", "name", "path", Qualifier.FIL)
+        val projectBuilder = SonarComponentProjectBuilder()
+
+        // when
+        val project = projectBuilder.addComponentAsNode(component).build()
+
+        // then
+        val srcNode = project.rootNode.children.first { it.name == "src" }
+        val mainNode = srcNode.children.first { it.name == "main" }
+        val fileNode = mainNode.children.first()
+        assertEquals("App.java", fileNode.name)
+        assertEquals(NodeType.File, fileNode.type)
+    }
 }
