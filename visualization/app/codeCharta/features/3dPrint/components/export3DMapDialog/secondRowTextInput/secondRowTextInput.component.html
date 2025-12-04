@@ -1,0 +1,24 @@
+<div class="card bg-base-200">
+    <div class="card-body p-4">
+        <h3 class="card-title text-sm">Second row center text</h3>
+        <label class="label cursor-pointer justify-start gap-4">
+            <input
+                type="checkbox"
+                class="toggle toggle-primary toggle-sm"
+                [checked]="isVisible()"
+                (change)="handleToggleChange($event)"
+                data-testid="secondRowToggle"
+            />
+            <span class="label-text">Show second row text</span>
+        </label>
+        @if (isVisible()) {
+            <input
+                type="text"
+                class="input input-bordered input-sm w-full"
+                [value]="currentText()"
+                (input)="handleTextInput($event)"
+                data-testid="secondRowText"
+            />
+        }
+    </div>
+</div>

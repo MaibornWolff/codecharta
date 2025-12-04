@@ -1,0 +1,25 @@
+<div class="card bg-base-200">
+    <div class="card-body p-4">
+        <h3 class="card-title text-sm">QR-Code</h3>
+        <label class="label cursor-pointer justify-start gap-4">
+            <input
+                type="checkbox"
+                class="toggle toggle-primary toggle-sm"
+                [checked]="isVisible()"
+                (change)="handleToggleChange($event)"
+                data-testid="qrCodeToggle"
+            />
+            <span class="label-text">Show QR-Code</span>
+        </label>
+        @if (isVisible()) {
+            <input
+                type="text"
+                class="input input-bordered input-sm w-full"
+                placeholder="URL for QR code"
+                [value]="currentText()"
+                (input)="handleTextInput($event)"
+                data-testid="qrCodeText"
+            />
+        }
+    </div>
+</div>

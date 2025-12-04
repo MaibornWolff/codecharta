@@ -3,10 +3,9 @@ import { State, Store } from "@ngrx/store"
 import { Export3DMapButtonComponent } from "./export3DMapButton.component"
 import { render, screen } from "@testing-library/angular"
 import { MatDialog } from "@angular/material/dialog"
-import { Export3DMapDialogComponent } from "./export3DMapDialog/export3DMapDialog.component"
-import { ErrorDialogComponent } from "../dialogs/errorDialog/errorDialog.component"
-import { setColorMode } from "../../state/store/dynamicSettings/colorMode/colorMode.actions"
-import { ColorMode } from "../../codeCharta.model"
+import { ErrorDialogComponent } from "../../../../ui/dialogs/errorDialog/errorDialog.component"
+import { setColorMode } from "../../../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { ColorMode } from "../../../../codeCharta.model"
 import { of } from "rxjs"
 
 describe("Export3DMapButtonComponent", () => {
@@ -26,11 +25,11 @@ describe("Export3DMapButtonComponent", () => {
         expect(exportButton).not.toBe(null)
     })
 
-    it("should open the export dialog when button is clicked with color mode absolute", async function () {
+    it("should set showDialog to true when button is clicked with color mode absolute", async function () {
         const state = { getValue: () => ({ dynamicSettings: { colorMode: "absolute" } }) }
         const dialog = { open: jest.fn() }
 
-        await render(Export3DMapButtonComponent, {
+        const { fixture } = await render(Export3DMapButtonComponent, {
             excludeComponentDeclaration: true,
             providers: [
                 { provide: State, useValue: state },
@@ -38,11 +37,13 @@ describe("Export3DMapButtonComponent", () => {
             ]
         })
 
+        expect(fixture.componentInstance.showDialog()).toBe(false)
+
         const printButton = screen.getByRole("button")
         printButton.click()
 
-        expect(dialog.open).toHaveBeenCalledTimes(1)
-        expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
+        expect(fixture.componentInstance.showDialog()).toBe(true)
+        expect(dialog.open).not.toHaveBeenCalled()
     })
 
     it("should open the error dialog when color mode is not absolute", async function () {
@@ -68,9 +69,9 @@ describe("Export3DMapButtonComponent", () => {
         expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: errorDialogData })
     })
 
-    it("should switch to absolute color mode and open the export dialog when user changes color mode directly", async function () {
+    it("should switch to absolute color mode and set showDialog to true when user changes color mode directly", async function () {
         const state = { getValue: () => ({ dynamicSettings: { colorMode: "relative" } }) }
-        const store = { dispatch: jest.fn(), select: jest.fn(() => of(ColorMode.absolute)) } // Mock Store
+        const store = { dispatch: jest.fn(), select: jest.fn(() => of(ColorMode.absolute)) }
         const dialog = { open: jest.fn() }
 
         const { fixture } = await render(Export3DMapButtonComponent, {
@@ -86,10 +87,10 @@ describe("Export3DMapButtonComponent", () => {
         dialog.open(ErrorDialogComponent, { data: errorDialogData })
 
         jest.useFakeTimers()
-        await errorDialogData.resolveErrorData.onResolveErrorClick()
+        errorDialogData.resolveErrorData.onResolveErrorClick()
         jest.runAllTimers()
 
         expect(store.dispatch).toHaveBeenCalledWith(setColorMode({ value: ColorMode.absolute }))
-        expect(dialog.open).toHaveBeenCalledWith(Export3DMapDialogComponent, { panelClass: "cc-export-3D-map-dialog" })
+        expect(fixture.componentInstance.showDialog()).toBe(true)
     })
 })

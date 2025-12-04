@@ -1,0 +1,18 @@
+<div class="flex gap-2">
+    <button
+        class="btn btn-primary"
+        [disabled]="!isPrintMeshLoaded()"
+        (click)="handleDownload3MF()"
+        title="Download 3MF Button"
+    >
+        <i class="fa fa-download"></i> Download 3MF
+    </button>
+    <button
+        class="btn btn-outline"
+        [disabled]="!isPrintMeshLoaded()"
+        (click)="handleDownloadSTL()"
+        title="Download STL Button"
+    >
+        <i class="fa fa-download"></i> Download minimal STL
+    </button>
+</div>

@@ -2,14 +2,14 @@ import { State } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, WebGLRenderer } from "three"
-import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../../util/dataMocks"
-import { CodeMapMesh } from "../../codeMap/rendering/codeMapMesh"
-import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
+import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../../../util/dataMocks"
+import { CodeMapMesh } from "../../../../ui/codeMap/rendering/codeMapMesh"
+import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
-import { QrCodeMesh } from "../../../services/3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
-import { FileSelectionState, FileState } from "../../../model/files/files"
-import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../codeCharta.model"
-import { Export3DMapButtonComponent } from "../export3DMapButton.component"
+import { QrCodeMesh } from "../../../../services/3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
+import { FileSelectionState, FileState } from "../../../../model/files/files"
+import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../../codeCharta.model"
+import { Export3DMapButtonComponent } from "../export3DMapButton/export3DMapButton.component"
 
 jest.mock("three/addons/loaders/SVGLoader.js", () => {
     return {
@@ -131,6 +131,10 @@ describe("Export3DMapDialogComponent", () => {
             scene: lightScene
         }
 
+        // Mock native dialog methods not supported by jsdom
+        HTMLDialogElement.prototype.showModal = jest.fn()
+        HTMLDialogElement.prototype.close = jest.fn()
+
         jest.spyOn(Export3DMapDialogComponent.prototype, "getGL").mockReturnValue(mockedWebGLRenderer())
         jest.spyOn(QrCodeMesh.prototype, "create").mockImplementation(async () => {
             return new Promise(resolve => {
@@ -159,14 +163,11 @@ describe("Export3DMapDialogComponent", () => {
         expect(scale).toContain("max. 35.5")
         expect(scale).toContain("max. 33.5")
 
-        const selectElement = screen.getByTestId("selectPrinter")
-        await userEvent.click(selectElement)
-        detectChanges()
-
-        const options = screen.getAllByTestId("selectedPrinter")
+        const selectElement = screen.getByTestId("selectPrinter") as HTMLSelectElement
+        const options = selectElement.querySelectorAll("option")
         expect(options).toHaveLength(3)
 
-        await userEvent.click(options[0])
+        await userEvent.selectOptions(selectElement, options[0])
         detectChanges()
 
         scale = screen.getByTestId("printSizeOverview").innerHTML
