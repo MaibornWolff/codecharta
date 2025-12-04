@@ -1,0 +1,74 @@
+<dialog #dialog class="modal">
+    <div class="modal-box max-w-6xl w-11/12">
+        <h2 class="text-2xl font-bold mb-6">3D Print CodeCharta Map</h2>
+
+        <div class="flex gap-6">
+            <!-- Left: Settings -->
+            <div class="flex flex-col gap-4 w-1/3 min-w-72">
+                <cc-printer-preset-selection
+                    [selectedPrinter]="selectedPrinter()"
+                    (printerChanged)="handlePrinterChange($event)"
+                />
+
+                <cc-scale-slider
+                    [currentSize]="currentSize()"
+                    [wantedWidth]="wantedWidth()"
+                    [maxWidth]="maxWidth()"
+                    [selectedPrinter]="selectedPrinter()"
+                    (widthChanged)="handleScaleChange($event)"
+                />
+
+                <cc-front-text-input
+                    [frontText]="frontText()"
+                    (textChanged)="handleFrontTextChange($event)"
+                />
+
+                <cc-second-row-text-input
+                    [isVisible]="secondRowVisible()"
+                    [currentText]="secondRowText()"
+                    (visibilityChanged)="handleSecondRowVisibilityChange($event)"
+                    (textChanged)="handleSecondRowTextChange($event)"
+                />
+
+                <cc-qr-code-settings
+                    [isVisible]="qrCodeVisible()"
+                    [currentText]="qrCodeText()"
+                    (visibilityChanged)="handleQrCodeVisibilityChange($event)"
+                    (textChanged)="handleQrCodeTextChange($event)"
+                />
+
+                <cc-logo-upload
+                    [isFileSelected]="isFileSelected()"
+                    [logoColor]="logoColor()"
+                    (fileSelected)="handleFileSelected($event)"
+                    (logoRemoved)="handleRemoveLogo()"
+                    (logoRotated)="handleRotateLogo()"
+                    (logoFlipped)="handleFlipLogo()"
+                    (colorChanged)="handleLogoColorChange($event)"
+                />
+            </div>
+
+            <!-- Right: Preview -->
+            <div class="flex-1">
+                <div class="card bg-base-200 h-full">
+                    <div class="card-body p-4">
+                        <h3 class="card-title text-sm">Preview</h3>
+                        <div #rendererContainer class="w-full min-h-96"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-action">
+            <cc-export-actions
+                [isPrintMeshLoaded]="isPrintMeshLoaded()"
+                (download3MF)="handleDownload3MF()"
+                (downloadSTL)="handleDownloadSTL()"
+            />
+            <button class="btn" (click)="close()">Close</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>

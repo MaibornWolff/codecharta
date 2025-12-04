@@ -1,1 +1,4 @@
 <cc-action-icon (click)="export3DMap()" [icon]="'fa fa-print'" title="Download 3MF code file"></cc-action-icon>
+@if (showDialog()) {
+    <cc-export-3D-map-dialog (closed)="handleDialogClosed()" />
+}

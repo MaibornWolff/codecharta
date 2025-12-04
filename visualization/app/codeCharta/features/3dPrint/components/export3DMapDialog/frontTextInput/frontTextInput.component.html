@@ -1,0 +1,13 @@
+<label class="form-control w-full">
+    <div class="label">
+        <span class="label-text font-medium">Bottom center label text</span>
+    </div>
+    <input
+        type="text"
+        class="input input-bordered w-full"
+        placeholder="CodeCharta"
+        [value]="frontText()"
+        (input)="handleInput($event)"
+        data-testid="frontText"
+    />
+</label>

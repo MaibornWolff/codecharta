@@ -1,0 +1,19 @@
+<div class="card bg-base-200">
+    <div class="card-body p-4">
+        <h3 class="card-title text-sm">Scale</h3>
+        <input
+            type="range"
+            class="range range-primary range-sm"
+            [min]="100"
+            [max]="maxWidth()"
+            [value]="wantedWidth()"
+            (change)="handleSliderChange($event)"
+            data-testid="onScaleChange"
+        />
+        <div class="text-sm mt-2" data-testid="printSizeOverview">
+            <div>Width: {{ (currentSize().x / 10).toFixed(1) }}cm (max. {{ (selectedPrinter().x / 10).toFixed(1) }})</div>
+            <div>Depth: {{ (currentSize().y / 10).toFixed(1) }}cm (max. {{ (selectedPrinter().y / 10).toFixed(1) }})</div>
+            <div>Height: {{ (currentSize().z / 10).toFixed(1) }}cm (max. {{ (selectedPrinter().z / 10).toFixed(1) }})</div>
+        </div>
+    </div>
+</div>

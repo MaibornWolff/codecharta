@@ -1,0 +1,16 @@
+<label class="form-control w-full">
+    <div class="label">
+        <span class="label-text font-medium">Printer preset</span>
+    </div>
+    <select
+        class="select select-bordered w-full"
+        data-testid="selectPrinter"
+        (change)="handlePrinterChange($event)"
+    >
+        @for (printer of printers; track printer.name) {
+            <option [selected]="printer.name === selectedPrinter().name" data-testid="selectedPrinter">
+                {{ printer.name }} ({{ printer.x / 10 }}×{{ printer.y / 10 }}×{{ printer.z / 10 }}cm, {{ printer.numberOfColors }} colors)
+            </option>
+        }
+    </select>
+</label>
