@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- Fix TokeiImporter treating root-level files as folders containing a file with the same name
+- Fix SonarImporter not stripping module prefix from root-level file names (e.g., "project:file.js" now correctly becomes "file.js")
+
 ## [1.139.0] - 2025-11-13
 
 ### Added 🚀
