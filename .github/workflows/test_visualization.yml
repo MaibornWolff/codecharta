@@ -94,10 +94,6 @@ jobs:
         npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
       working-directory: ${{env.working-directory}}
 
-    - name: Install Playwright browsers
-      run: npx playwright install --with-deps chromium
-      working-directory: ${{env.working-directory}}
-
     - name: Build and run e2e tests
       run: |
         npm run build
