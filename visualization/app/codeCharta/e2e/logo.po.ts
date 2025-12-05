@@ -1,17 +1,18 @@
+import { Page } from "@playwright/test"
+
 export class LogoPageObject {
+    constructor(private page: Page) {}
+
     async getVersion() {
-        await page.waitForSelector(".logo > #logo-version")
-        const versionString = await page.$eval(".logo > #logo-version", element => element["innerText"])
+        const versionString = await this.page.locator(".logo > #logo-version").innerText()
         return versionString.split(" ")[1]
     }
 
     async getLink() {
-        await page.waitForSelector(".logo > a")
-        return page.$eval(".logo > a", element => element["href"])
+        return this.page.locator(".logo > a").getAttribute("href")
     }
 
     async getImageSrc() {
-        await page.waitForSelector(".logo > a > img")
-        return page.$eval(".logo > a > img", element => element["src"])
+        return this.page.locator(".logo > a > img").getAttribute("src")
     }
 }

@@ -1,38 +1,37 @@
-import { clearIndexedDB, goto } from "../../../puppeteer.helper"
+import { test, expect } from "@playwright/test"
+import { clearIndexedDB, goto } from "../../../playwright.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
 import { MapTreeViewLevelPageObject } from "../ribbonBar/searchPanel/mapTreeView/mapTreeView.level.po"
 import { CodeMapPageObject } from "../codeMap/codeMap.po"
 import { SearchPanelPageObject } from "../ribbonBar/searchPanel/searchPanel.po"
 
-describe("NodeContextMenu", () => {
-    let contextMenu: NodeContextMenuPageObject
-    let searchPanel: SearchPanelPageObject
-    let mapTreeViewLevel: MapTreeViewLevelPageObject
-    let codeMap: CodeMapPageObject
-
-    beforeEach(async () => {
-        await jestPuppeteer.resetPage()
-        contextMenu = new NodeContextMenuPageObject()
-        searchPanel = new SearchPanelPageObject()
-        mapTreeViewLevel = new MapTreeViewLevelPageObject()
-        codeMap = new CodeMapPageObject()
-
-        await goto()
+test.describe("NodeContextMenu", () => {
+    test.beforeEach(async ({ page }) => {
+        await goto(page)
     })
 
-    afterEach(async () => {
-        await clearIndexedDB()
+    test.afterEach(async ({ page }) => {
+        await clearIndexedDB(page)
     })
 
-    it("right clicking a folder should open a context menu with color options", async () => {
+    test("right clicking a folder should open a context menu with color options", async ({ page }) => {
+        const contextMenu = new NodeContextMenuPageObject(page)
+        const searchPanel = new SearchPanelPageObject(page)
+        const mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
+
         await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
 
-        const result = await contextMenu.hasColorButtons()
-        expect(await result.isIntersectingViewport()).toBe(true)
+        await contextMenu.hasColorButtons()
+        await expect(page.locator(".colorButton").first()).toBeVisible()
     })
 
-    it("clicking the map should close open node context menu", async () => {
+    test("clicking the map should close open node context menu", async ({ page }) => {
+        const contextMenu = new NodeContextMenuPageObject(page)
+        const searchPanel = new SearchPanelPageObject(page)
+        const mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
+        const codeMap = new CodeMapPageObject(page)
+
         await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
 
@@ -42,7 +41,12 @@ describe("NodeContextMenu", () => {
         await contextMenu.isClosed()
     })
 
-    it("right clicking the map should close open node context menu already on mousedown", async () => {
+    test("right clicking the map should close open node context menu already on mousedown", async ({ page }) => {
+        const contextMenu = new NodeContextMenuPageObject(page)
+        const searchPanel = new SearchPanelPageObject(page)
+        const mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
+        const codeMap = new CodeMapPageObject(page)
+
         await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
 
@@ -50,9 +54,14 @@ describe("NodeContextMenu", () => {
 
         await codeMap.rightClickMouseDownOnMap()
         await contextMenu.isClosed()
-    }, 60_000)
+    })
 
-    it("zoom in and out or using mouse wheel on the map should close open node context menu", async () => {
+    test("zoom in and out or using mouse wheel on the map should close open node context menu", async ({ page }) => {
+        const contextMenu = new NodeContextMenuPageObject(page)
+        const searchPanel = new SearchPanelPageObject(page)
+        const mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
+        const codeMap = new CodeMapPageObject(page)
+
         await searchPanel.toggle()
         await mapTreeViewLevel.openContextMenu("/root")
 

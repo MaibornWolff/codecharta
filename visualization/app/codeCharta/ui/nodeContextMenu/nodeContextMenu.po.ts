@@ -1,26 +1,27 @@
-import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+import { Page } from "@playwright/test"
+import { clickButtonOnPageElement } from "../../../playwright.helper"
 
 export class NodeContextMenuPageObject {
+    constructor(private page: Page) {}
+
     async hasColorButtons() {
-        return page.waitForSelector(".colorButton", {
-            visible: true
-        })
+        return this.page.locator(".colorButton").first().waitFor({ state: "visible" })
     }
 
     async exclude() {
-        await clickButtonOnPageElement("#exclude-button")
-        await page.waitForSelector("#loading-gif-map", { visible: false })
+        await clickButtonOnPageElement(this.page, "#exclude-button")
+        await this.page.locator("#loading-gif-map").waitFor({ state: "hidden" })
     }
 
     async isOpened() {
-        await page.waitForSelector("#codemap-context-menu", { visible: true })
+        await this.page.locator("#codemap-context-menu").waitFor({ state: "visible" })
     }
 
     async isClosed() {
-        await page.waitForSelector("#codemap-context-menu", { hidden: true })
+        await this.page.locator("#codemap-context-menu").waitFor({ state: "hidden" })
     }
 
     async clickOnExclude() {
-        await clickButtonOnPageElement(`[id='exclude-button']`, { button: "left" })
+        await clickButtonOnPageElement(this.page, "[id='exclude-button']", { button: "left" })
     }
 }

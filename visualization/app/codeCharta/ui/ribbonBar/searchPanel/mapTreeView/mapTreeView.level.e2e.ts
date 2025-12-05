@@ -1,27 +1,24 @@
-import { clearIndexedDB, goto } from "../../../../../puppeteer.helper"
+import { test, expect } from "@playwright/test"
+import { clearIndexedDB, goto } from "../../../../../playwright.helper"
 import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
 import { NodeContextMenuPageObject } from "../../../nodeContextMenu/nodeContextMenu.po"
 import { SearchPanelPageObject } from "../searchPanel.po"
 
-describe("MapTreeViewLevel", () => {
-    let mapTreeViewLevel: MapTreeViewLevelPageObject
-    let searchPanel: SearchPanelPageObject
-    let nodeContextMenu: NodeContextMenuPageObject
-
-    beforeEach(async () => {
-        mapTreeViewLevel = new MapTreeViewLevelPageObject()
-        searchPanel = new SearchPanelPageObject()
-        nodeContextMenu = new NodeContextMenuPageObject()
-
-        await goto()
+test.describe("MapTreeViewLevel", () => {
+    test.beforeEach(async ({ page }) => {
+        await goto(page)
     })
 
-    afterEach(async () => {
-        await clearIndexedDB()
+    test.afterEach(async ({ page }) => {
+        await clearIndexedDB(page)
     })
 
-    describe("Blacklist", () => {
-        it("excluding a building should exclude it from the tree-view as well", async () => {
+    test.describe("Blacklist", () => {
+        test("excluding a building should exclude it from the tree-view as well", async ({ page }) => {
+            const mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
+            const searchPanel = new SearchPanelPageObject(page)
+            const nodeContextMenu = new NodeContextMenuPageObject(page)
+
             const filePath = "/root/sample1.cc.json/ParentLeaf/smallLeaf.html"
 
             await searchPanel.toggle()
@@ -34,8 +31,11 @@ describe("MapTreeViewLevel", () => {
         })
     })
 
-    describe("NodeContextMenu", () => {
-        it("should keep node marked when hovering over another node while context menu is open", async () => {
+    test.describe("NodeContextMenu", () => {
+        test("should keep node marked when hovering over another node while context menu is open", async ({ page }) => {
+            const mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
+            const searchPanel = new SearchPanelPageObject(page)
+
             // Arrange
             const markedNodePath = "/root/sample1.cc.json/bigLeaf.ts"
             const hoverNodePath = "/root/sample1.cc.json/sample1OnlyLeaf.scss"

@@ -18,3 +18,8 @@ coverage
 /app/codeCharta/resources/fileStorage/usageData/*-meta
 /app/codeCharta/resources/fileStorage/usageData/*-events
 dependency-graph.html
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
