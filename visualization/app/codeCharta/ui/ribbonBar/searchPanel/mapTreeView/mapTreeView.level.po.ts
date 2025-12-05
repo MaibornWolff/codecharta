@@ -68,6 +68,22 @@ export class MapTreeViewLevelPageObject {
         return page.waitForSelector(`[id='${path}'].marked`, { timeout: this.DEFAULT_TIMEOUT })
     }
 
+    async hasMarkedClass(path: string): Promise<boolean> {
+        const selector = `[id='${path}']`
+        const element = await page.$(selector)
+        if (!element) {
+            return false
+        }
+        const classNames = await page.$eval(selector, el => el.className)
+        return classNames.includes("marked")
+    }
+
+    async hoverNodeWithoutScrolling(path: string) {
+        const selector = `[id='${path}']`
+        await page.waitForSelector(selector, { visible: true, timeout: this.DEFAULT_TIMEOUT })
+        await page.hover(selector)
+    }
+
     async getNumberOfFiles(path: string) {
         return page.$eval(`[id='${path}'] .unary-number`, element => Number(element["innerText"].split(" ")[0]))
     }
