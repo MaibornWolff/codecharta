@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [1.141.0] - 2025-12-05
 
+### Changed
+
+- Migrate 3D print dialog to feature slice architecture with DaisyUI [#4412](https://github.com/MaibornWolff/codecharta/pull/4412)
+
 ### Fixed 🐞
 
 - Fix 3D print SVG assets (logos) not loading on GitHub Pages due to absolute path resolution
