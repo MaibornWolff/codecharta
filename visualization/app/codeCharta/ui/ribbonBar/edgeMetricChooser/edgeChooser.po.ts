@@ -1,6 +1,5 @@
 import { Page } from "@playwright/test"
 import { EdgeMetricCount } from "../../../codeCharta.model"
-import { clickButtonOnPageElement } from "../../../../playwright.helper"
 
 export class EdgeChooserPageObject {
     constructor(private page: Page) {}
