@@ -1,19 +1,24 @@
-import { clearIndexedDB, goto } from "./puppeteer.helper"
+import { test, expect } from "@playwright/test"
+import { clearIndexedDB, goto } from "./playwright.helper"
 
-describe("app", () => {
-    beforeEach(async () => {
-        await goto()
+test.describe("app", () => {
+    test.beforeEach(async ({ page }) => {
+        await goto(page)
     })
 
-    afterEach(async () => {
-        await clearIndexedDB()
+    test.afterEach(async ({ page }) => {
+        await clearIndexedDB(page)
     })
 
-    it("should not have errors in console", async () => {
+    test("should not have errors in console", async ({ page }) => {
+        const errors: string[] = []
         page.on("console", message => {
-            expect(message.type).not.toBe("error")
+            if (message.type() === "error") {
+                errors.push(message.text())
+            }
         })
-        await goto()
-        await page.waitForSelector("#loading-gif-file", { visible: false })
+        await goto(page)
+        await page.locator("#loading-gif-file").waitFor({ state: "hidden" })
+        expect(errors).toHaveLength(0)
     })
 })

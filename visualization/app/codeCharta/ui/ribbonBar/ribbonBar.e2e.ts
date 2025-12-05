@@ -1,24 +1,23 @@
-import { CC_URL, clearIndexedDB, goto } from "../../../puppeteer.helper"
+import { test, expect } from "@playwright/test"
+import { CC_URL, clearIndexedDB, goto } from "../../../playwright.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "./searchPanel/searchPanel.po"
 
-describe("RibbonBar", () => {
+test.describe("RibbonBar", () => {
     const sampleMap = `sample3.cc.json`
-    let searchPanel: SearchPanelPageObject
-    let ribbonBar: RibbonBarPageObject
 
-    beforeEach(async () => {
-        searchPanel = new SearchPanelPageObject()
-        ribbonBar = new RibbonBarPageObject()
-
-        await goto()
+    test.beforeEach(async ({ page }) => {
+        await goto(page)
     })
 
-    afterEach(async () => {
-        await clearIndexedDB()
+    test.afterEach(async ({ page }) => {
+        await clearIndexedDB(page)
     })
 
-    it("should open a section, open the search bar and close the section again automatically", async () => {
+    test("should open a section, open the search bar and close the section again automatically", async ({ page }) => {
+        const searchPanel = new SearchPanelPageObject(page)
+        const ribbonBar = new RibbonBarPageObject(page)
+
         const areaPanel = "area-metric"
         const edgePanel = "edge-metric"
 
@@ -38,13 +37,14 @@ describe("RibbonBar", () => {
         expect(await ribbonBar.isPanelOpen("#area-metric-card")).toBeFalsy()
     })
 
-    it("should open suspicious metrics and high risk profile menu ", async () => {
+    test("should open suspicious metrics and high risk profile menu", async ({ page }) => {
         await page.goto(`${CC_URL}?file=codeCharta/assets/${sampleMap}`)
         await page.click("cc-suspicious-metrics")
-        const suspiciousMetricsMenu = await page.waitForSelector(".mat-mdc-menu-panel.cc-ai-drop-down.cc-suspicious-metric-panel")
-        expect(suspiciousMetricsMenu).toBeTruthy()
-        const titleElement = await suspiciousMetricsMenu.waitForSelector(".sub-title")
-        const titleContent = await titleElement.evaluate(element => element.textContent)
-        expect(titleContent.trim()).toBe("Suspicious Metrics in .ts code")
+        const suspiciousMetricsMenu = page.locator(".mat-mdc-menu-panel.cc-ai-drop-down.cc-suspicious-metric-panel")
+        await suspiciousMetricsMenu.waitFor({ state: "visible" })
+        expect(await suspiciousMetricsMenu.isVisible()).toBeTruthy()
+        const titleElement = suspiciousMetricsMenu.locator(".sub-title").first()
+        const titleContent = await titleElement.textContent()
+        expect(titleContent?.trim()).toBe("Suspicious Metrics in .ts code")
     })
 })

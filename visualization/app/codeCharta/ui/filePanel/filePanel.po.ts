@@ -1,17 +1,23 @@
-import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+import { Page } from "@playwright/test"
+import { clickButtonOnPageElement } from "../../../playwright.helper"
 
 export class FilePanelPageObject {
+    constructor(private page: Page) {}
+
     async getSelectedName() {
-        await page.waitForSelector("cc-file-panel cc-file-panel-file-selector .mat-mdc-select-value-text span")
-        return page.$eval("cc-file-panel cc-file-panel-file-selector .mat-mdc-select-value-text span", element => element["innerText"])
+        return this.page.locator("cc-file-panel cc-file-panel-file-selector .mat-mdc-select-value-text span").innerText()
     }
 
     async getAllNames() {
-        await clickButtonOnPageElement("cc-file-panel cc-file-panel-file-selector mat-select")
-        await page.waitForSelector(".mat-mdc-select-panel")
-        const content = await page.$$eval(".mat-mdc-select-panel .mdc-list-item__primary-text", element =>
-            element.map(item => item["innerText"].trim())
-        )
-        return content
+        await clickButtonOnPageElement(this.page, "cc-file-panel cc-file-panel-file-selector mat-select")
+        await this.page.locator(".mat-mdc-select-panel").waitFor({ state: "visible" })
+        const items = this.page.locator(".mat-mdc-select-panel .mdc-list-item__primary-text")
+        const count = await items.count()
+        const names: string[] = []
+        for (let i = 0; i < count; i++) {
+            const text = await items.nth(i).innerText()
+            names.push(text.trim())
+        }
+        return names
     }
 }

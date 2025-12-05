@@ -1,23 +1,25 @@
-import { clickButtonOnPageElement } from "../../../../puppeteer.helper"
+import { Page } from "@playwright/test"
+import { clickButtonOnPageElement } from "../../../../playwright.helper"
 
 export class SearchPanelPageObject {
     private EXPANDED = "expanded"
 
+    constructor(private page: Page) {}
+
     async toggle() {
         const wasOpen = await this.isOpen()
-        await clickButtonOnPageElement("cc-search-panel .section .section-title")
+        await clickButtonOnPageElement(this.page, "cc-search-panel .section .section-title")
 
-        // Wait for panel to finish opening/closing by checking if content is visible
         if (!wasOpen) {
-            await page.waitForSelector("cc-map-tree-view:not([hidden])", { visible: true, timeout: 5000 })
+            await this.page.locator("cc-map-tree-view:not([hidden])").waitFor({ state: "visible", timeout: 5000 })
         }
 
         return !wasOpen
     }
 
     async isOpen() {
-        await page.waitForSelector("cc-search-panel cc-ribbon-bar-panel")
-        const classNames = await page.$eval("cc-search-panel cc-ribbon-bar-panel", element => element["className"])
-        return classNames.includes(this.EXPANDED)
+        await this.page.locator("cc-search-panel cc-ribbon-bar-panel").waitFor({ state: "attached" })
+        const classNames = await this.page.locator("cc-search-panel cc-ribbon-bar-panel").getAttribute("class")
+        return classNames?.includes(this.EXPANDED) ?? false
     }
 }

@@ -94,13 +94,23 @@ jobs:
         npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
       working-directory: ${{env.working-directory}}
 
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps chromium
+      working-directory: ${{env.working-directory}}
+
     - name: Build and run e2e tests
-      env:
-        PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome"
       run: |
         npm run build
         npm run e2e:ci
       working-directory: ${{env.working-directory}}
+
+    - name: Upload Playwright traces on failure
+      uses: actions/upload-artifact@v5
+      if: failure()
+      with:
+        name: playwright-traces
+        path: ./visualization/test-results/
+        retention-days: 7
 
  publish_sonar_visualization:
     needs: [build_visualization_test, build_visualization_e2e]

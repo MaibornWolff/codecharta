@@ -1,23 +1,31 @@
-import { clickButtonOnPageElement } from "../../../puppeteer.helper"
+import { Page } from "@playwright/test"
+import { clickButtonOnPageElement } from "../../../playwright.helper"
 
 export class LegendPanelObject {
+    constructor(private page: Page) {}
+
     async open() {
-        await clickButtonOnPageElement("cc-legend-panel .panel-button")
-        await page.waitForSelector("cc-legend-panel .block-wrapper", { visible: true })
+        await clickButtonOnPageElement(this.page, "cc-legend-panel .panel-button")
+        await this.page.locator("cc-legend-panel .block-wrapper").waitFor({ state: "visible" })
     }
 
     async getMultipleFilenames() {
-        return page.$$eval("cc-legend-panel cc-legend-marked-packages cc-labelled-color-picker", elements =>
-            elements.map(x => x.textContent.trim())
-        )
+        const items = this.page.locator("cc-legend-panel cc-legend-marked-packages cc-labelled-color-picker")
+        const count = await items.count()
+        const filenames: string[] = []
+        for (let i = 0; i < count; i++) {
+            const text = await items.nth(i).innerText()
+            filenames.push(text.trim())
+        }
+        return filenames
     }
+
     async getFilename() {
-        return page.$eval("cc-legend-panel cc-legend-marked-packages cc-labelled-color-picker", element => {
-            return element.textContent.trim()
-        })
+        const text = await this.page.locator("cc-legend-panel cc-legend-marked-packages cc-labelled-color-picker").innerText()
+        return text.trim()
     }
 
     async getEmptyLegendIfNoFilenamesExist() {
-        return page.$eval("cc-legend-panel cc-legend-marked-packages", element => element["innerText"])
+        return this.page.locator("cc-legend-panel cc-legend-marked-packages").innerText()
     }
 }

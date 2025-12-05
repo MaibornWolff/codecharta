@@ -1,30 +1,24 @@
-import { clearIndexedDB, goto } from "../../../../puppeteer.helper"
+import { test, expect } from "@playwright/test"
+import { clearIndexedDB, goto } from "../../../../playwright.helper"
 import { EdgeChooserPageObject } from "./edgeChooser.po"
 import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { UploadFileButtonPageObject } from "../../toolBar/uploadFilesButton/uploadFilesButton.po"
 
-describe("MapTreeViewLevel", () => {
-    let edgeChooser: EdgeChooserPageObject
-    let uploadFilesButton: UploadFileButtonPageObject
-    let mapTreeViewLevel: MapTreeViewLevelPageObject
-    let searchPanel: SearchPanelPageObject
-
-    beforeEach(async () => {
-        edgeChooser = new EdgeChooserPageObject()
-        uploadFilesButton = new UploadFileButtonPageObject()
-        mapTreeViewLevel = new MapTreeViewLevelPageObject()
-        searchPanel = new SearchPanelPageObject()
-
-        await goto()
+test.describe("MapTreeViewLevel", () => {
+    test.beforeEach(async ({ page }) => {
+        await goto(page)
     })
 
-    afterEach(async () => {
-        await clearIndexedDB()
+    test.afterEach(async ({ page }) => {
+        await clearIndexedDB(page)
     })
 
-    describe("EdgeChooser", () => {
-        it("should update metrics correctly after switching to a map with different metrics", async () => {
+    test.describe("EdgeChooser", () => {
+        test("should update metrics correctly after switching to a map with different metrics", async ({ page }) => {
+            const edgeChooser = new EdgeChooserPageObject(page)
+            const uploadFilesButton = new UploadFileButtonPageObject(page)
+
             await uploadFilesButton.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
             await edgeChooser.open()
             const metrics = await edgeChooser.getMetrics()
@@ -32,7 +26,11 @@ describe("MapTreeViewLevel", () => {
             expect(metrics).toHaveLength(2)
         })
 
-        it("should not display the amount of incoming and outgoing edges of buildings for the none metric", async () => {
+        test("should not display the amount of incoming and outgoing edges of buildings for the none metric", async ({ page }) => {
+            const edgeChooser = new EdgeChooserPageObject(page)
+            const mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
+            const searchPanel = new SearchPanelPageObject(page)
+
             await searchPanel.toggle()
             await mapTreeViewLevel.openFolder("/root/sample2.cc.json")
             await mapTreeViewLevel.openFolder("/root/sample2.cc.json/ParentLeaf")
