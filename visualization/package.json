@@ -103,7 +103,7 @@
     "three": "^0.168.0",
     "three-orbit-controls": "^82.1.0",
     "typescript-json-schema": "0.66.0",
-    "zone.js": "^0.15.1"
+    "zone.js": "^0.16.0"
   },
   "devDependencies": {
     "@angular/build": "^20.3.13",
