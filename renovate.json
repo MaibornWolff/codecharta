@@ -1,5 +1,6 @@
 {
   "extends": ["config:recommended", ":preserveSemverRanges"],
+  "minimumReleaseAge": "3 days",
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
