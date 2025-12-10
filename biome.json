@@ -189,6 +189,12 @@
     },
     "includes": ["**", "!**/node_modules", "!**/dist", "!**/*.js"]
   },
+  "css": {
+    "parser": {
+      "cssModules": true,
+      "tailwindDirectives": true
+    }
+  },
   "javascript": {
     "formatter": {
       "jsxQuoteStyle": "double",
