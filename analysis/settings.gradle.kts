@@ -2,6 +2,9 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
+// Include TreesitterLibrary as composite build
+includeBuild("../../TreesitterLibrary")
+
 include("ccsh")
 include("dialogProvider")
 include("model")
