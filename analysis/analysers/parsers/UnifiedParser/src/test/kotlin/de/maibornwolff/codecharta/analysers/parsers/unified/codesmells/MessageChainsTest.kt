@@ -1,13 +1,14 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.codesmells
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TypescriptCollector
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFileMetrics
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TreeSitterLibraryCollector
+import de.maibornwolff.treesitter.excavationsite.api.AvailableFileMetrics
+import de.maibornwolff.treesitter.excavationsite.api.Language
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class MessageChainsTest {
-    private val collector = TypescriptCollector()
+    private val collector = TreeSitterLibraryCollector(Language.TYPESCRIPT)
 
     private fun createTestFile(content: String): File {
         val tempFile = File.createTempFile("testFile", ".ts")
