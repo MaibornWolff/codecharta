@@ -319,21 +319,24 @@ describe("MetricColorRangeDiagramComponent", () => {
             { isAttributeDirectionInverted: true, mouseXPosition: 450, expectedYPosition: 23 },
             { isAttributeDirectionInverted: true, mouseXPosition: 1000, expectedYPosition: 23 }
         ]
-        test.each(expectedYLinePositionsForMouseXPositions)(
-            `should be at expectedYPosition=$expectedYPosition for isAttributeDirectionInverted=$isAttributeDirectionInverted attribute direction and mouseXPosition=$mouseXPosition`,
-            ({ isAttributeDirectionInverted, mouseXPosition, expectedYPosition }) => {
-                //WHEN
-                simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition)
+        test.each(
+            expectedYLinePositionsForMouseXPositions
+        )(`should be at expectedYPosition=$expectedYPosition for isAttributeDirectionInverted=$isAttributeDirectionInverted attribute direction and mouseXPosition=$mouseXPosition`, ({
+            isAttributeDirectionInverted,
+            mouseXPosition,
+            expectedYPosition
+        }) => {
+            //WHEN
+            simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition)
 
-                //THEN
-                const horizontalLine = svg.getElementsByClassName("horizontal-line")[0] as HTMLElement
-                const xPosition = horizontalLine.getAttribute("x2")
-                const yPosition = horizontalLine.getAttribute("y1")
+            //THEN
+            const horizontalLine = svg.getElementsByClassName("horizontal-line")[0] as HTMLElement
+            const xPosition = horizontalLine.getAttribute("x2")
+            const yPosition = horizontalLine.getAttribute("y1")
 
-                expect(xPosition).toBe(mouseXPosition.toString())
-                expect(yPosition).toBe(expectedYPosition.toString())
-            }
-        )
+            expect(xPosition).toBe(mouseXPosition.toString())
+            expect(yPosition).toBe(expectedYPosition.toString())
+        })
 
         const expectedYTooltipPositionsForMouseXPositions = [
             { isAttributeDirectionInverted: false, mouseXPosition: 0, expectedXPosition: 10, expectedYPosition: 147 },
@@ -347,21 +350,25 @@ describe("MetricColorRangeDiagramComponent", () => {
             { isAttributeDirectionInverted: true, mouseXPosition: 450, expectedXPosition: 370, expectedYPosition: 43 },
             { isAttributeDirectionInverted: true, mouseXPosition: 1000, expectedXPosition: 920, expectedYPosition: 43 }
         ]
-        test.each(expectedYTooltipPositionsForMouseXPositions)(
-            `should show tooltip at expectedXPosition=$expectedXPosition and expectedYPosition=$expectedYPosition for isAttributeDirectionInverted=$isAttributeDirectionInverted attribute direction and mouseXPosition=$mouseXPosition`,
-            async ({ isAttributeDirectionInverted, mouseXPosition, expectedXPosition, expectedYPosition }) => {
-                //WHEN
-                simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition)
+        test.each(
+            expectedYTooltipPositionsForMouseXPositions
+        )(`should show tooltip at expectedXPosition=$expectedXPosition and expectedYPosition=$expectedYPosition for isAttributeDirectionInverted=$isAttributeDirectionInverted attribute direction and mouseXPosition=$mouseXPosition`, async ({
+            isAttributeDirectionInverted,
+            mouseXPosition,
+            expectedXPosition,
+            expectedYPosition
+        }) => {
+            //WHEN
+            simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition)
 
-                // Then
-                const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
-                const tooltipXPosition = Number.parseInt(tooltip.getAttribute("x"))
-                const tooltipYPosition = Number.parseInt(tooltip.getAttribute("y"))
+            // Then
+            const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
+            const tooltipXPosition = Number.parseInt(tooltip.getAttribute("x"))
+            const tooltipYPosition = Number.parseInt(tooltip.getAttribute("y"))
 
-                expect(tooltipXPosition).toBe(expectedXPosition)
-                expect(tooltipYPosition).toBe(expectedYPosition)
-            }
-        )
+            expect(tooltipXPosition).toBe(expectedXPosition)
+            expect(tooltipYPosition).toBe(expectedYPosition)
+        })
 
         const expectedQuantileAndYValueForMouseXPositions = [
             { isAttributeDirectionInverted: false, mouseXPosition: 0, expectedQuantile: 0, expectedYValue: 1 },
@@ -375,18 +382,22 @@ describe("MetricColorRangeDiagramComponent", () => {
             { isAttributeDirectionInverted: true, mouseXPosition: 450, expectedQuantile: 93, expectedYValue: 1 },
             { isAttributeDirectionInverted: true, mouseXPosition: 1000, expectedQuantile: 100, expectedYValue: 1 }
         ]
-        test.each(expectedQuantileAndYValueForMouseXPositions)(
-            `should show quantile=$expectedQuantile and yValue=$expectedYValue for isAttributeDirectionInverted=$attributeDirectionInverted attribute direction and mouseXPosition=$mouseXPosition`,
-            ({ isAttributeDirectionInverted, mouseXPosition, expectedQuantile, expectedYValue }) => {
-                //WHEN
-                simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition)
+        test.each(
+            expectedQuantileAndYValueForMouseXPositions
+        )(`should show quantile=$expectedQuantile and yValue=$expectedYValue for isAttributeDirectionInverted=$attributeDirectionInverted attribute direction and mouseXPosition=$mouseXPosition`, ({
+            isAttributeDirectionInverted,
+            mouseXPosition,
+            expectedQuantile,
+            expectedYValue
+        }) => {
+            //WHEN
+            simulateMouseEvent(isAttributeDirectionInverted, mouseXPosition)
 
-                //THEN
-                const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
+            //THEN
+            const tooltip = svg.getElementsByClassName("cross-tooltip")[0] as HTMLElement
 
-                expect(tooltip.innerHTML).toContain(`Quantile: ${expectedQuantile}<`)
-                expect(tooltip.innerHTML).toContain(`Value: ${expectedYValue}<`)
-            }
-        )
+            expect(tooltip.innerHTML).toContain(`Quantile: ${expectedQuantile}<`)
+            expect(tooltip.innerHTML).toContain(`Value: ${expectedYValue}<`)
+        })
     })
 })
