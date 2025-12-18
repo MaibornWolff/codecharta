@@ -63,6 +63,7 @@ object TreeSitterAdapter {
             FileExtension.CPP -> Language.CPP
             FileExtension.C -> Language.C
             FileExtension.OBJECTIVE_C -> Language.OBJECTIVE_C
+            FileExtension.VUE -> Language.VUE
             else -> null
         }
     }

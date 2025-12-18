@@ -20,5 +20,6 @@ enum class AvailableCollectors(
     PHP(FileExtension.PHP, { TreeSitterLibraryCollector(Language.PHP) }),
     RUBY(FileExtension.RUBY, { TreeSitterLibraryCollector(Language.RUBY) }),
     SWIFT(FileExtension.SWIFT, { TreeSitterLibraryCollector(Language.SWIFT) }),
-    BASH(FileExtension.BASH, { TreeSitterLibraryCollector(Language.BASH) })
+    BASH(FileExtension.BASH, { TreeSitterLibraryCollector(Language.BASH) }),
+    VUE(FileExtension.VUE, { TreeSitterLibraryCollector(Language.VUE) })
 }
