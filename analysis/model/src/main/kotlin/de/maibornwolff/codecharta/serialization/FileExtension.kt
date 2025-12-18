@@ -25,5 +25,6 @@ enum class FileExtension(
     PYTHON(".py"),
     RUBY(".rb"),
     SWIFT(".swift"),
-    BASH(".sh")
+    BASH(".sh"),
+    VUE(".vue")
 }
