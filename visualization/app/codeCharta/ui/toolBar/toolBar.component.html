@@ -6,6 +6,7 @@
 
 @if ((hoveredNodeId$ | async) === null) {
     <cc-file-panel></cc-file-panel>
+    <cc-editor-settings-button></cc-editor-settings-button>
 } @else {
     <cc-hovered-node-path-panel></cc-hovered-node-path-panel>
 }

@@ -12,6 +12,7 @@ import { HighlightButtonsComponent } from "../highlightButtons/highlightButtons.
 import { ExcludeButtonComponent } from "../excludeButton/excludeButton.component"
 import { AsyncPipe } from "@angular/common"
 import { CopyPathButtonComponent } from "../copyButton/copyPathButton.component"
+import { OpenInEditorButtonComponent } from "../openInEditorButton/openInEditorButton.component"
 
 @Component({
     selector: "cc-node-context-menu-card",
@@ -26,6 +27,7 @@ import { CopyPathButtonComponent } from "../copyButton/copyPathButton.component"
         HighlightButtonsComponent,
         ExcludeButtonComponent,
         CopyPathButtonComponent,
+        OpenInEditorButtonComponent,
         AsyncPipe
     ]
 })

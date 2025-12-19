@@ -29,6 +29,11 @@ export enum SharpnessMode {
     PixelRatioAA = "Best"
 }
 
+export enum PreferredEditor {
+    VSCode = "vscode",
+    IntelliJ = "intellij"
+}
+
 export interface CCFile {
     map: CodeMapNode
     settings: {
@@ -165,6 +170,8 @@ export interface AppSettings {
     colorLabels: ColorLabelOptions
     isColorMetricLinkedToHeightMetric: boolean
     enableFloorLabels: boolean
+    preferredEditor: PreferredEditor
+    localFolderPath: string
 }
 
 export interface MapColors {

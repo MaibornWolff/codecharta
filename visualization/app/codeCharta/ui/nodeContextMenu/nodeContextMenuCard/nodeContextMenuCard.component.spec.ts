@@ -6,6 +6,9 @@ import { VALID_FILE_NODE_WITH_ID, VALID_NODE_WITH_PATH } from "../../../util/dat
 import { NodeContextMenuCardComponent } from "./nodeContextMenuCard.component"
 import { provideMockStore } from "@ngrx/store/testing"
 import { rightClickedCodeMapNodeSelector } from "../../../state/selectors/rightClickedCodeMapNode.selector"
+import { preferredEditorSelector } from "../../../features/editorSettings/selectors/editorSettings.selectors"
+import { localFolderPathSelector } from "../../../features/editorSettings/selectors/editorSettings.selectors"
+import { PreferredEditor } from "../../../codeCharta.model"
 
 describe("NodeContextMenuCardComponent", () => {
     beforeEach(() => {
@@ -28,7 +31,13 @@ describe("NodeContextMenuCardComponent", () => {
     it("should display all information", async () => {
         const { container } = await render(NodeContextMenuCardComponent, {
             excludeComponentDeclaration: true,
-            providers: provideMockStore({ selectors: [{ selector: rightClickedCodeMapNodeSelector, value: VALID_NODE_WITH_PATH }] })
+            providers: provideMockStore({
+                selectors: [
+                    { selector: rightClickedCodeMapNodeSelector, value: VALID_NODE_WITH_PATH },
+                    { selector: preferredEditorSelector, value: PreferredEditor.VSCode },
+                    { selector: localFolderPathSelector, value: "" }
+                ]
+            })
         })
 
         expect(screen.getByText("/root")).not.toBe(null)
@@ -36,13 +45,20 @@ describe("NodeContextMenuCardComponent", () => {
         expect(screen.getByText("FLATTEN")).not.toBe(null)
         expect(screen.getByText("KEEP HIGHLIGHT")).not.toBe(null)
         expect(screen.getByText("EXCLUDE")).not.toBe(null)
+        expect(screen.getByText("OPEN IN EDITOR")).not.toBe(null)
         expect(container.querySelector("cc-mark-folder-row")).not.toBe(null)
     })
 
     it("should not display mark folder option if node is a leaf", async () => {
         const { container } = await render(NodeContextMenuCardComponent, {
             excludeComponentDeclaration: true,
-            providers: provideMockStore({ selectors: [{ selector: rightClickedCodeMapNodeSelector, value: VALID_FILE_NODE_WITH_ID }] })
+            providers: provideMockStore({
+                selectors: [
+                    { selector: rightClickedCodeMapNodeSelector, value: VALID_FILE_NODE_WITH_ID },
+                    { selector: preferredEditorSelector, value: PreferredEditor.VSCode },
+                    { selector: localFolderPathSelector, value: "" }
+                ]
+            })
         })
         expect(container.querySelector("cc-mark-folder-row")).toBe(null)
     })

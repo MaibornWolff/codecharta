@@ -1,0 +1,46 @@
+<dialog #dialog class="modal">
+    <div class="modal-box max-w-md">
+        <h2 class="text-2xl font-bold mb-6">Editor Settings</h2>
+
+        <div class="flex flex-col gap-6">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-medium">Preferred Editor</span>
+                </label>
+                <select
+                    class="select select-bordered w-full"
+                    [ngModel]="preferredEditor()"
+                    (ngModelChange)="handlePreferredEditorChanged($event)"
+                >
+                    <option [value]="PreferredEditor.VSCode">VS Code</option>
+                    <option [value]="PreferredEditor.IntelliJ">IntelliJ IDEA</option>
+                </select>
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-medium">Local Folder Path</span>
+                </label>
+                <input
+                    type="text"
+                    class="input input-bordered w-full"
+                    placeholder="/Users/your-name/project"
+                    [ngModel]="localFolderPath()"
+                    (ngModelChange)="handleLocalFolderPathChanged($event)"
+                />
+                <label class="label">
+                    <span class="label-text-alt text-base-content/60">
+                        The local path that replaces /root/ in file paths
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="modal-action">
+            <button class="btn" (click)="close()">Close</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>

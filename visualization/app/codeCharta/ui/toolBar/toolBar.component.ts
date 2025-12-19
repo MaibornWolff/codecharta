@@ -12,6 +12,7 @@ import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel/hoveredNod
 import { LoadingMapProgressSpinnerComponent } from "./loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 import { PresentationModeButtonComponent } from "./presentationModeButton/presentationModeButton.component"
 import { GlobalConfigurationButtonComponent } from "../../features/globalSettings/components/globalConfigurationButton/globalConfigurationButton.component"
+import { EditorSettingsButtonComponent } from "../../features/editorSettings/components/editorSettingsButton/editorSettingsButton.component"
 import { AsyncPipe } from "@angular/common"
 
 @Component({
@@ -29,6 +30,7 @@ import { AsyncPipe } from "@angular/common"
         LoadingMapProgressSpinnerComponent,
         PresentationModeButtonComponent,
         GlobalConfigurationButtonComponent,
+        EditorSettingsButtonComponent,
         AsyncPipe
     ]
 })

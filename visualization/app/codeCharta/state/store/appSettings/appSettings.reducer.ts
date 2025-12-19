@@ -40,6 +40,8 @@ import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels
 import { combineReducers } from "@ngrx/store"
 import { defaultShowIncomingEdges, showIncomingEdges } from "./showEdges/incoming/showIncomingEdges.reducer"
 import { defaultShowOutgoingEdges, showOutgoingEdges } from "./showEdges/outgoing/showOutgoingEdges.reducer"
+import { defaultPreferredEditor, preferredEditor } from "./preferredEditor/preferredEditor.reducer"
+import { defaultLocalFolderPath, localFolderPath } from "./localFolderPath/localFolderPath.reducer"
 
 export const appSettings = combineReducers({
     colorLabels,
@@ -70,7 +72,9 @@ export const appSettings = combineReducers({
     maxTreeMapFiles,
     sharpnessMode,
     isColorMetricLinkedToHeightMetric,
-    enableFloorLabels
+    enableFloorLabels,
+    preferredEditor,
+    localFolderPath
 })
 
 export const defaultAppSettings = {
@@ -102,5 +106,7 @@ export const defaultAppSettings = {
     maxTreeMapFiles: defaultMaxTreeMapFiles,
     sharpnessMode: defaultSharpnessMode,
     isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
-    enableFloorLabels: defaultEnableFloorLabels
+    enableFloorLabels: defaultEnableFloorLabels,
+    preferredEditor: defaultPreferredEditor,
+    localFolderPath: defaultLocalFolderPath
 }

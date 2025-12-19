@@ -92,7 +92,9 @@ function initializeAppSettings(target: CustomConfig) {
             positive: "",
             positiveDelta: "",
             selected: ""
-        }
+        },
+        preferredEditor: undefined,
+        localFolderPath: ""
     }
 }
 
