@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Fix tree view layout shift by displaying both percentage and file count together instead of toggling on hover
+- Fix bird's eye view orientation when clicking top of ViewCube being rotated incorrectly
 
 ## [1.141.0] - 2025-12-05
 
