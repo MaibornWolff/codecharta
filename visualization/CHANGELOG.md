@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.141.1] - 2025-12-19
+
 ### Fixed 🐞
 
 - Fix tree view layout shift by displaying both percentage and file count together instead of toggling on hover
