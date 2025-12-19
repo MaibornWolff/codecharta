@@ -106,8 +106,8 @@
     "zone.js": "^0.15.1"
   },
   "devDependencies": {
-    "@angular/build": "^20.3.13",
-    "@angular/cli": "^20.3.13",
+    "@angular/build": "^21.0.0",
+    "@angular/cli": "^21.0.0",
     "@angular/compiler": "^20.3.15",
     "@angular/compiler-cli": "^20.3.15",
     "@babel/plugin-transform-class-static-block": "^7.23.3",
