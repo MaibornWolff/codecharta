@@ -179,16 +179,14 @@ describe("MapTreeViewLevelComponent", () => {
         await waitFor(() => expect(isMarked).toBeTruthy())
     })
 
-    it("should display root unary percentage for folders and toggle to total unary on hover", async () => {
+    it("should display both unary percentage and file count for folders", async () => {
         const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
         const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
-        await waitFor(() => expect(firstLevelFolder.textContent).toContain("%"))
-
-        await userEvent.hover(firstLevelFolder)
-
-        const parentLeaf = await findByText(container as HTMLElement, /ParentLeaf/)
-        await waitFor(() => expect(parentLeaf.textContent).not.toContain("%"))
+        await waitFor(() => {
+            expect(firstLevelFolder.textContent).toContain("%")
+            expect(firstLevelFolder.textContent).toContain("File")
+        })
     })
 
     it("should make searched items 'tree-search-result'", async () => {
