@@ -7,7 +7,7 @@
     {{ node.name }}
 </span>
 
-@if (!(node | isNodeLeaf)) {
+@if (!(node | isNodeLeaf) && unaryValue != null) {
     <span class="unary-number">
         <span [ngPlural]="unaryValue">
             ({{ ((100 * unaryValue) / (rootUnary$ | async)).toFixed(0) }}% / {{ unaryValue }}
