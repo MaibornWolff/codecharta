@@ -1,21 +1,13 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFileMetrics
+import de.maibornwolff.treesitter.excavationsite.api.AvailableFileMetrics
+import de.maibornwolff.treesitter.excavationsite.api.Language
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.treesitter.TSParser
-import org.treesitter.TreeSitterCSharp
 import java.io.File
 
 class CSharpCollectorTest {
-    private var parser = TSParser()
-    private val collector = CSharpCollector()
-
-    @BeforeEach
-    fun setUp() {
-        parser.setLanguage(TreeSitterCSharp())
-    }
+    private val collector = TreeSitterLibraryCollector(Language.CSHARP)
 
     private fun createTestFile(content: String): File {
         val tempFile = File.createTempFile("testFile", ".txt")

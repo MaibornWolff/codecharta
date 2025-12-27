@@ -1,13 +1,14 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.codesmells
 
-import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.JavaCollector
-import de.maibornwolff.codecharta.analysers.parsers.unified.metricnodetypes.AvailableFileMetrics
+import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.TreeSitterLibraryCollector
+import de.maibornwolff.treesitter.excavationsite.api.AvailableFileMetrics
+import de.maibornwolff.treesitter.excavationsite.api.Language
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class LongMethodTest {
-    private val collector = JavaCollector()
+    private val collector = TreeSitterLibraryCollector(Language.JAVA)
 
     private fun createTestFile(content: String): File {
         val tempFile = File.createTempFile("testFile", ".java")

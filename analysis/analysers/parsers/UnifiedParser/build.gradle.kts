@@ -8,29 +8,12 @@ dependencies {
     implementation(libs.kotter)
     implementation(libs.kotter.test)
 
-    implementation(libs.treesitter)
-    implementation(libs.treesitter.typescript)
-    implementation(libs.treesitter.javascript)
-    implementation(libs.treesitter.kotlin)
-    implementation(libs.treesitter.java)
-    implementation(libs.treesitter.csharp)
-    implementation(libs.treesitter.cpp)
-    implementation(libs.treesitter.c)
-    implementation(libs.treesitter.python)
-    implementation(libs.treesitter.go)
-    implementation(libs.treesitter.php)
-    implementation(libs.treesitter.ruby)
-    implementation(libs.treesitter.swift)
-    implementation(libs.treesitter.objc)
-    implementation(libs.treesitter.bash)
+    // TreesitterLibrary provides all TreeSitter dependencies and metric calculation
+    implementation("com.github.MaibornWolff:TreeSitterExcavationSite:v0.2.0")
 
     testImplementation(libs.jsonassert)
 }
 
 tasks.test {
     useJUnitPlatform()
-}
-
-repositories {
-    mavenCentral()
 }
