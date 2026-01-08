@@ -83,11 +83,7 @@ object TreeSitterAdapter {
         return getLanguageForExtension(fileExtension) != null
     }
 
-    private fun convertToMutableNode(
-        fileName: String,
-        result: MetricsResult,
-        checksum: String?
-    ): MutableNode {
+    private fun convertToMutableNode(fileName: String, result: MetricsResult, checksum: String?): MutableNode {
         val attributes = mutableMapOf<String, Double>()
 
         // Copy all file-level metrics
