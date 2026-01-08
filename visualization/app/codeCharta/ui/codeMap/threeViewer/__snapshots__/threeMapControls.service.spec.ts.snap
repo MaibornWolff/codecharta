@@ -2,8 +2,8 @@
 
 exports[`ThreeMapControlsService rotateCameraInVectorDirection  1`] = `
 Vector3 {
-  "x": 0,
+  "x": 0.0008076685518436784,
   "y": -8.076685518445746,
-  "z": 0.0008076685518441267,
+  "z": -1.7933844540139297e-15,
 }
 `;

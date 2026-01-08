@@ -106,7 +106,10 @@ export class ThreeMapControlsService {
 
         alignmentCube.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
 
-        alignmentCube.translateX(x)
+        // Add tiny offset to avoid gimbal lock when looking straight down/up
+        const adjustedX = x === 0 && z === 0 && y !== 0 ? -0.0001 : x
+
+        alignmentCube.translateX(adjustedX)
         alignmentCube.translateY(y)
         alignmentCube.translateZ(z)
 

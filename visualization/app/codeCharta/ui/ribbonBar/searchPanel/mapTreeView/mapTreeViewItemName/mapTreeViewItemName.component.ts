@@ -18,9 +18,7 @@ import { IsNodeLeafPipe } from "../isNodeLeaf.pipe"
 })
 export class MapTreeViewItemNameComponent {
     @Input() node: CodeMapNode
-    @Input() isHovered: boolean
     @Input() unaryValue: number
-    @Input() unaryPercentage: number
 
     searchedNodePaths$: Observable<Set<string>>
     rootUnary$: Observable<number>
