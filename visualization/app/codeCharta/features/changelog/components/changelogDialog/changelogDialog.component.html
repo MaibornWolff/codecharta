@@ -1,0 +1,76 @@
+<dialog #dialog class="modal backdrop-blur-sm">
+    <div class="modal-box max-w-2xl p-0 overflow-hidden bg-gradient-to-b from-base-100 to-base-200 shadow-2xl">
+        <!-- Header with gradient accent -->
+        <div class="relative px-8 pt-8 pb-6 bg-gradient-to-br from-primary/5 via-transparent to-accent/5">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full"></div>
+
+            <div class="relative">
+                <span class="inline-block px-3 py-1 mb-3 text-xs font-semibold tracking-wider uppercase rounded-full bg-primary/10 text-primary">
+                    Release Notes
+                </span>
+                <h2 class="text-3xl font-bold tracking-tight text-base-content">
+                    What's new in CodeCharta?
+                </h2>
+                <div class="flex items-center gap-3 mt-3">
+                    <span class="inline-flex items-center px-3 py-1.5 text-sm font-mono font-medium rounded-lg bg-base-200 text-base-content/70 border border-base-300">
+                        {{ previousVersion() }}
+                    </span>
+                    <svg class="w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                    <span class="inline-flex items-center px-3 py-1.5 text-sm font-mono font-semibold rounded-lg bg-primary/10 text-primary border border-primary/20">
+                        {{ currentVersion }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scrollable content area -->
+        <div class="px-8 py-6 max-h-[60vh] overflow-y-auto">
+            <div class="flex flex-col gap-4">
+                @for (category of changes(); track category.title) {
+                    <div class="rounded-xl overflow-hidden bg-base-100 border border-base-300/50 shadow-sm">
+                        <div class="flex items-center gap-3 px-4 py-3 border-b border-base-200" [ngClass]="getCategoryHeaderClass(category.title)">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg text-base" [ngClass]="getCategoryIconClass(category.title)">
+                                {{ getCategoryEmoji(category.title) }}
+                            </span>
+                            <h3 class="text-base font-semibold text-base-content">
+                                {{ getCategoryLabel(category.title) }}
+                            </h3>
+                            <span class="ml-auto px-2 py-0.5 text-xs font-semibold rounded-full" [ngClass]="getCategoryCountClass(category.title)">
+                                {{ getChangeCount(category.changes) }}
+                            </span>
+                        </div>
+                        <div
+                            class="px-6 py-4 text-sm text-base-content/80 leading-snug [&_a]:text-primary [&_a]:hover:underline"
+                            [innerHTML]="category.changes"
+                        ></div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-8 py-5 border-t border-base-300/50 bg-base-200/50">
+            <div class="flex items-center justify-between">
+                <a
+                    href="https://codecharta.com/news/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 text-sm font-medium transition-colors text-primary hover:text-primary/80"
+                >
+                    <span>View full changelog</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </a>
+                <button class="btn btn-primary btn-sm px-6" (click)="close()">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop bg-base-content/60">
+        <button (click)="close()">close</button>
+    </form>
+</dialog>
