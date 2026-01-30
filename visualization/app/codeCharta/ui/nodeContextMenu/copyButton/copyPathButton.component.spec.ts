@@ -9,6 +9,12 @@ describe("CopyPathButtonComponent", () => {
     let component: CopyPathButtonComponent
 
     beforeEach(waitForAsync(() => {
+        Object.assign(navigator, {
+            clipboard: {
+                writeText: jest.fn()
+            }
+        })
+
         TestBed.configureTestingModule({
             imports: [CopyPathButtonComponent]
         }).compileComponents()
@@ -47,7 +53,6 @@ describe("CopyPathButtonComponent", () => {
     })
 
     it("should write the correct path to the clipboard when copyToClipboard is called", async () => {
-        makeClipBoardAvailableForJestAndSpying()
         jest.spyOn(navigator.clipboard, "writeText")
 
         await component.copyToClipboard(filePath)
@@ -67,13 +72,5 @@ describe("CopyPathButtonComponent", () => {
 
     function getDebugCopyButton(): DebugElement {
         return fixture.debugElement.query(By.css("button#copy-button"))
-    }
-
-    function makeClipBoardAvailableForJestAndSpying() {
-        Object.assign(navigator, {
-            clipboard: {
-                writeText: jest.fn()
-            }
-        })
     }
 })
