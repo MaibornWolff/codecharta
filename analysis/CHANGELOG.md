@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add ABL (OpenEdge Advanced Business Language) support to UnifiedParser
+- Add Vue support to UnifiedParser
+
+### Changed
+
+- Migrate UnifiedParser to use TreesitterLibrary for improved parsing
+
 ## [1.140.0] - 2025-12-05
 
 ### Fixed 🐞
