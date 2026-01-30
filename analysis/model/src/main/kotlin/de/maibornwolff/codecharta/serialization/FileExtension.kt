@@ -12,7 +12,7 @@ enum class FileExtension(
     CCGZ(CCJSON.primaryExtension + GZIP.primaryExtension),
     INFO(".info"),
     XML(".xml"),
-    ABL(".p", setOf(".cls", ".w")),
+    ABL(".p", setOf(".cls", ".w", ".i")),
     GO(".go"),
     PHP(".php"),
     TYPESCRIPT(".ts", setOf("cts", ".mts")),
