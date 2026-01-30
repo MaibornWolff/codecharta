@@ -1,5 +1,5 @@
 {
-  "checksum": "6d050ef75dc7c69f300a44aac67adcc3",
+  "checksum": "2e5e2a560ce1c47553158fef87f4360d",
   "data": {
     "projectName": "",
     "nodes": [
@@ -7,149 +7,27 @@
         "name": "root",
         "type": "Folder",
         "attributes": {},
+        "link": "",
         "children": [
           {
-            "name": "piped",
-            "type": "Folder",
-            "attributes": {},
-            "link": "",
-            "children": [
-              {
-                "name": "sampleFile.ts",
-                "type": "File",
-                "attributes": {
-                  "complexity": 42.0,
-                  "comment_lines": 69.0,
-                  "metric_from_other_source": 55.0
-                },
-                "link": "",
-                "children": []
-              }
-            ]
-          },
-          {
-            "name": "bar",
-            "type": "Folder",
-            "attributes": {},
-            "link": "",
-            "children": [
-              {
-                "name": "foo.kt",
-                "type": "File",
-                "attributes": {
-                  "complexity": 7.0,
-                  "logic_complexity": 1.0,
-                  "comment_lines": 9.0,
-                  "number_of_functions": 2.0,
-                  "message_chains": 0.0,
-                  "rloc": 31.0,
-                  "loc": 48.0,
-                  "long_method": 0.0,
-                  "long_parameter_list": 0.0,
-                  "excessive_comments": 0.0,
-                  "comment_ratio": 0.29,
-                  "max_parameters_per_function": 3.0,
-                  "min_parameters_per_function": 1.0,
-                  "mean_parameters_per_function": 2.0,
-                  "median_parameters_per_function": 2.0,
-                  "max_complexity_per_function": 2.0,
-                  "min_complexity_per_function": 1.0,
-                  "mean_complexity_per_function": 1.5,
-                  "median_complexity_per_function": 1.5,
-                  "max_rloc_per_function": 6.0,
-                  "min_rloc_per_function": 3.0,
-                  "mean_rloc_per_function": 4.5,
-                  "median_rloc_per_function": 4.5
-                },
-                "link": "",
-                "children": [],
-                "checksum": "c40238c79d87defc"
-              },
-              {
-                "name": "hello.kt",
-                "type": "File",
-                "attributes": {
-                  "complexity": 1.0,
-                  "logic_complexity": 0.0,
-                  "comment_lines": 0.0,
-                  "number_of_functions": 1.0,
-                  "message_chains": 0.0,
-                  "rloc": 6.0,
-                  "loc": 8.0,
-                  "long_method": 0.0,
-                  "long_parameter_list": 0.0,
-                  "excessive_comments": 0.0,
-                  "comment_ratio": 0.0,
-                  "max_parameters_per_function": 0.0,
-                  "min_parameters_per_function": 0.0,
-                  "mean_parameters_per_function": 0.0,
-                  "median_parameters_per_function": 0.0,
-                  "max_complexity_per_function": 0.0,
-                  "min_complexity_per_function": 0.0,
-                  "mean_complexity_per_function": 0.0,
-                  "median_complexity_per_function": 0.0,
-                  "max_rloc_per_function": 0.0,
-                  "min_rloc_per_function": 0.0,
-                  "mean_rloc_per_function": 0.0,
-                  "median_rloc_per_function": 0.0
-                },
-                "link": "",
-                "children": [],
-                "checksum": "bfc329a4e973c424"
-              }
-            ]
-          },
-          {
-            "name": "foo.kt",
+            "name": "ablSample.p",
             "type": "File",
             "attributes": {
-              "complexity": 6.0,
-              "logic_complexity": 2.0,
-              "comment_lines": 6.0,
+              "complexity": 8.0,
+              "logic_complexity": 5.0,
+              "comment_lines": 5.0,
               "number_of_functions": 3.0,
               "message_chains": 0.0,
-              "rloc": 30.0,
-              "loc": 41.0,
+              "rloc": 35.0,
+              "loc": 47.0,
               "long_method": 0.0,
               "long_parameter_list": 0.0,
               "excessive_comments": 0.0,
-              "comment_ratio": 0.2,
-              "max_parameters_per_function": 1.0,
-              "min_parameters_per_function": 0.0,
-              "mean_parameters_per_function": 0.67,
+              "comment_ratio": 0.14,
+              "max_parameters_per_function": 3.0,
+              "min_parameters_per_function": 1.0,
+              "mean_parameters_per_function": 1.67,
               "median_parameters_per_function": 1.0,
-              "max_complexity_per_function": 2.0,
-              "min_complexity_per_function": 0.0,
-              "mean_complexity_per_function": 0.67,
-              "median_complexity_per_function": 0.0,
-              "max_rloc_per_function": 8.0,
-              "min_rloc_per_function": 2.0,
-              "mean_rloc_per_function": 4.67,
-              "median_rloc_per_function": 4.0
-            },
-            "link": "",
-            "children": [],
-            "checksum": "39e5446f9451898e"
-          },
-          {
-            "name": "foo.py",
-            "type": "File",
-            "attributes": {
-              "complexity": 2.0,
-              "logic_complexity": 2.0,
-              "comment_lines": 4.0,
-              "number_of_functions": 0.0,
-              "message_chains": 0.0,
-              "rloc": 9.0,
-              "loc": 15.0,
-              "long_method": 0.0,
-              "long_parameter_list": 0.0,
-              "excessive_comments": 0.0,
-              "comment_ratio": 0.44,
-              "max_parameters_per_function": 0.0,
-              "min_parameters_per_function": 0.0,
-              "mean_parameters_per_function": 0.0,
-              "median_parameters_per_function": 0.0,
               "max_complexity_per_function": 0.0,
               "min_complexity_per_function": 0.0,
               "mean_complexity_per_function": 0.0,
@@ -161,71 +39,7 @@
             },
             "link": "",
             "children": [],
-            "checksum": "45b3835ff9d57197"
-          },
-          {
-            "name": "helloWorld.ts",
-            "type": "File",
-            "attributes": {
-              "complexity": 1.0,
-              "logic_complexity": 0.0,
-              "comment_lines": 2.0,
-              "number_of_functions": 1.0,
-              "message_chains": 0.0,
-              "rloc": 5.0,
-              "loc": 9.0,
-              "long_method": 0.0,
-              "long_parameter_list": 0.0,
-              "excessive_comments": 0.0,
-              "comment_ratio": 0.4,
-              "max_parameters_per_function": 1.0,
-              "min_parameters_per_function": 1.0,
-              "mean_parameters_per_function": 1.0,
-              "median_parameters_per_function": 1.0,
-              "max_complexity_per_function": 0.0,
-              "min_complexity_per_function": 0.0,
-              "mean_complexity_per_function": 0.0,
-              "median_complexity_per_function": 0.0,
-              "max_rloc_per_function": 1.0,
-              "min_rloc_per_function": 1.0,
-              "mean_rloc_per_function": 1.0,
-              "median_rloc_per_function": 1.0
-            },
-            "link": "",
-            "children": [],
-            "checksum": "e31a24ef7db12378"
-          },
-          {
-            "name": "whenCase.kt",
-            "type": "File",
-            "attributes": {
-              "complexity": 5.0,
-              "logic_complexity": 4.0,
-              "comment_lines": 0.0,
-              "number_of_functions": 1.0,
-              "message_chains": 0.0,
-              "rloc": 11.0,
-              "loc": 13.0,
-              "long_method": 0.0,
-              "long_parameter_list": 0.0,
-              "excessive_comments": 0.0,
-              "comment_ratio": 0.0,
-              "max_parameters_per_function": 1.0,
-              "min_parameters_per_function": 1.0,
-              "mean_parameters_per_function": 1.0,
-              "median_parameters_per_function": 1.0,
-              "max_complexity_per_function": 4.0,
-              "min_complexity_per_function": 4.0,
-              "mean_complexity_per_function": 4.0,
-              "median_complexity_per_function": 4.0,
-              "max_rloc_per_function": 6.0,
-              "min_rloc_per_function": 6.0,
-              "mean_rloc_per_function": 6.0,
-              "median_rloc_per_function": 6.0
-            },
-            "link": "",
-            "children": [],
-            "checksum": "91308e658fb97d1c"
+            "checksum": "cb90b27f28e16cba"
           }
         ]
       }
@@ -236,25 +50,13 @@
     "attributeDescriptors": {
       "complexity": {
         "title": "Complexity",
-        "description": "Complexity of the file based on the number of paths through the code (McCabe Complexity)",
+        "description": "Complexity of the file representing how much cognitive load is needed to overview the whole file",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
+        "link": "https://codecharta.com/docs/parser/unified",
         "direction": -1,
         "analyzers": [
-          "Unknown",
           "unifiedParser"
-        ]
-      },
-      "metric_from_other_source": {
-        "title": "other metric",
-        "description": "metric to test merging with the unifiedParser",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": -1,
-        "analyzers": [
-          "Unknown"
         ]
       },
       "logic_complexity": {
@@ -385,9 +187,7 @@
         "hintHighValue": "",
         "link": "",
         "direction": -1,
-        "analyzers": [
-          "Unknown"
-        ]
+        "analyzers": []
       },
       "median_complexity_per_function": {
         "title": "Median complexity per function",

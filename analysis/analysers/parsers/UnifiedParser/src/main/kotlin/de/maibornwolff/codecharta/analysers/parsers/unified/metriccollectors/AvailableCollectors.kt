@@ -7,6 +7,7 @@ enum class AvailableCollectors(
     val fileExtension: FileExtension,
     val collectorFactory: () -> TreeSitterLibraryCollector
 ) {
+    ABL(FileExtension.ABL, { TreeSitterLibraryCollector(Language.ABL) }),
     TYPESCRIPT(FileExtension.TYPESCRIPT, { TreeSitterLibraryCollector(Language.TYPESCRIPT) }),
     JAVASCRIPT(FileExtension.JAVASCRIPT, { TreeSitterLibraryCollector(Language.JAVASCRIPT) }),
     KOTLIN(FileExtension.KOTLIN, { TreeSitterLibraryCollector(Language.KOTLIN) }),

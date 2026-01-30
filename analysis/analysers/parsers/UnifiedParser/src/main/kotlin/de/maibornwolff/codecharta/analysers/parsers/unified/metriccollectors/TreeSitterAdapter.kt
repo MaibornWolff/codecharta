@@ -49,6 +49,7 @@ object TreeSitterAdapter {
      */
     fun getLanguageForExtension(fileExtension: FileExtension): Language? {
         return when (fileExtension) {
+            FileExtension.ABL -> Language.ABL
             FileExtension.JAVA -> Language.JAVA
             FileExtension.KOTLIN -> Language.KOTLIN
             FileExtension.TYPESCRIPT -> Language.TYPESCRIPT

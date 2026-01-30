@@ -32,6 +32,7 @@ CodeCharta. It generates either a cc.json or a csv file.
 | Ruby         | .rb                                    |
 | Swift        | .swift                                 |
 | Bash         | .sh                                    |
+| ABL          | .p, .cls, .w                           |
 
 ## Supported Metrics
 
@@ -228,6 +229,12 @@ contribute to complexity:
   `computed_getter`, `computed_setter`
 - **Logical operators**: `conjunction_expression`, `disjunction_expression`
 
+#### ABL (.p, .cls, .w)
+
+- **Control flow**: `if_statement`, `do_statement`, `for_statement`, `repeat_statement`, `case_branch`, `catch_statement`
+- **Functions**: `procedure_statement`, `function_statement`, `constructor_definition`, `method_definition`, `on_statement`
+- **Logical operators**: `AND`, `OR` in logical expressions
+
 ### Comment Lines
 
 Comment lines are counted based on language-specific comment syntax:
@@ -244,6 +251,7 @@ Comment lines are counted based on language-specific comment syntax:
 - **Ruby**: `comment`
 - **Swift**: `comment`, `multiline_comment`
 - **Bash**: `comment`
+- **ABL**: `comment`
 
 ### Number of Functions
 
@@ -316,6 +324,12 @@ Function counting identifies different types of function definitions per languag
 
 - **Functions**: `function_declaration`, `init_declaration`, `deinit_declaration`, `computed_getter`, `computed_setter`
 
+#### ABL (.p, .cls, .w)
+
+- **Procedures**: `procedure_statement`
+- **Functions**: `function_statement`
+- **Methods**: `method_definition`, `constructor_definition`
+
 ### Lines of Code (LOC)
 
 LOC is calculated as the total number of lines in the file, including empty lines and comments. This metric is language-independent and
@@ -348,6 +362,7 @@ Parameters per function counts the number of parameters declared for each functi
 - **Ruby**: `identifier` parameters
 - **Swift**: `parameter`
 - **Bash**: Parameters are counted from function definitions
+- **ABL**: `function_parameter`, `procedure_parameter_definition`
 
 ### Message Chains
 
@@ -417,6 +432,11 @@ Message chains are not applicable to Bash as it does not support method chaining
 
 - **Chain nodes**: `call_expression`, `navigation_expression`
 - **Call nodes**: `call_expression`
+
+#### ABL (.p, .cls, .w)
+
+- **Chain nodes**: `object_access`, `method_invocation`
+- **Call nodes**: `method_invocation`
 
 ### Code Smells
 

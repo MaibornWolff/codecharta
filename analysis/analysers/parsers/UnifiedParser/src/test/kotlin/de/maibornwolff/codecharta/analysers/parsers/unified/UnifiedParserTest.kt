@@ -27,6 +27,7 @@ class UnifiedParserTest {
     companion object {
         @JvmStatic
         fun provideSupportedLanguages() = listOf(
+            Arguments.of("abl", ".p"),
             Arguments.of("bash", ".sh"),
             Arguments.of("cHeader", ".h"),
             Arguments.of("cppHeader", ".hpp"),
