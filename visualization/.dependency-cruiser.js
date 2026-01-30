@@ -32,6 +32,17 @@ module.exports = {
             }
         },
         {
+            name: "feature-changelog-no-external-access-to-services",
+            severity: "error",
+            comment: "Changelog services can only be accessed within the changelog feature",
+            from: {
+                pathNot: "^app/codeCharta/features/changelog/"
+            },
+            to: {
+                path: "^app/codeCharta/features/changelog/services/"
+            }
+        },
+        {
             name: "feature-types-cannot-import-from-feature-internals",
             severity: "error",
             comment: "Features: types/ folder can only contain type definitions and cannot import from services, stores, or effects",

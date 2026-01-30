@@ -9,6 +9,7 @@ import { CodeMapComponent } from "./ui/codeMap/codeMap.component"
 import { LegendPanelComponent } from "./ui/legendPanel/legendPanel.component"
 import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { LogoComponent } from "./ui/logo/logo.component"
+import { ChangelogDialogComponent } from "./features/changelog/components/changelogDialog/changelogDialog.component"
 
 @Component({
     selector: "cc-code-charta",
@@ -20,7 +21,8 @@ import { LogoComponent } from "./ui/logo/logo.component"
         CodeMapComponent,
         LegendPanelComponent,
         LoadingFileProgressSpinnerComponent,
-        LogoComponent
+        LogoComponent,
+        ChangelogDialogComponent
     ]
 })
 export class CodeChartaComponent implements OnInit {
