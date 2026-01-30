@@ -61,6 +61,7 @@ class TreeSitterAdapterTest {
     fun `should map all supported FileExtensions to Languages`() {
         // Arrange
         val expectedMappings = mapOf(
+            FileExtension.ABL to Language.ABL,
             FileExtension.JAVA to Language.JAVA,
             FileExtension.KOTLIN to Language.KOTLIN,
             FileExtension.TYPESCRIPT to Language.TYPESCRIPT,
@@ -140,6 +141,7 @@ class TreeSitterAdapterTest {
     fun `should return true for supported FileExtensions`() {
         // Arrange
         val supportedExtensions = listOf(
+            FileExtension.ABL,
             FileExtension.JAVA,
             FileExtension.KOTLIN,
             FileExtension.TYPESCRIPT,
