@@ -3,11 +3,13 @@ import { Font } from "three/addons/loaders/FontLoader.js"
 import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { TextMesh } from "../textMesh"
 import { ColorMetricDescriptionBlockMesh, ColorMetricDescriptionBlockOptions } from "./colorMetricDescriptionBlockMesh"
 
 jest.mock("../../CreateGeometryStrategies/createTextGeometryStrategy")
+jest.mock("../../CreateGeometryStrategies/createSvgGeometryStrategy")
 jest.mock("../textMesh")
 
 describe("ColorMetricDescriptionBlockMesh", () => {
@@ -60,6 +62,11 @@ describe("ColorMetricDescriptionBlockMesh", () => {
 
         createTextGeometryStrategy = new CreateTextGeometryStrategy() as jest.Mocked<CreateTextGeometryStrategy>
         createTextGeometryStrategy.create.mockResolvedValue(new BufferGeometry())
+        CreateTextGeometryStrategy.prototype.create = createTextGeometryStrategy.create
+
+        const createSvgGeometryStrategy = new CreateSvgGeometryStrategy() as jest.Mocked<CreateSvgGeometryStrategy>
+        createSvgGeometryStrategy.create.mockResolvedValue(new BufferGeometry())
+        CreateSvgGeometryStrategy.prototype.create = createSvgGeometryStrategy.create
 
         const mockTextMesh = new Object3D() as jest.Mocked<TextMesh>
         mockTextMesh.init = jest.fn().mockResolvedValue(mockTextMesh)
