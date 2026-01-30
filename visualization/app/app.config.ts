@@ -5,7 +5,7 @@ import { provideEffects } from "@ngrx/effects"
 import { appReducers, setStateMiddleware } from "app/codeCharta/state/store/state.manager"
 import { UnfocusNodesEffect } from "app/codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "app/codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
-import { VersionService } from "app/codeCharta/services/version/version.service"
+import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
 import { AutoFitCodeMapEffect } from "app/codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
 import { LinkColorMetricToHeightMetricEffect } from "app/codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
@@ -58,8 +58,8 @@ export const appConfig: ApplicationConfig = {
 
         {
             provide: APP_INITIALIZER,
-            useFactory: (versionService: VersionService) => () => versionService.synchronizeLocalCodeChartaVersion(),
-            deps: [VersionService],
+            useFactory: (changelogFacade: ChangelogFacade) => () => changelogFacade.synchronizeVersion(),
+            deps: [ChangelogFacade],
             multi: true
         }
     ]
