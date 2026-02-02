@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Add ABL (OpenEdge Advanced Business Language) support to UnifiedParser
+- Add ABL (OpenEdge Advanced Business Language) support to UnifiedParser (.p, .cls, .w, .i files)
 - Add Vue support to UnifiedParser
 
 ### Changed

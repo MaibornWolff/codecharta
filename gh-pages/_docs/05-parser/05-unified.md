@@ -32,7 +32,7 @@ CodeCharta. It generates either a cc.json or a csv file.
 | Ruby         | .rb                                    |
 | Swift        | .swift                                 |
 | Bash         | .sh                                    |
-| ABL          | .p, .cls, .w                           |
+| ABL          | .p, .cls, .w, .i                       |
 
 ## Supported Metrics
 
@@ -229,7 +229,7 @@ contribute to complexity:
   `computed_getter`, `computed_setter`
 - **Logical operators**: `conjunction_expression`, `disjunction_expression`
 
-#### ABL (.p, .cls, .w)
+#### ABL (.p, .cls, .w, .i)
 
 - **Control flow**: `if_statement`, `do_statement`, `for_statement`, `repeat_statement`, `case_branch`, `catch_statement`
 - **Functions**: `procedure_statement`, `function_statement`, `constructor_definition`, `method_definition`, `on_statement`
@@ -324,7 +324,7 @@ Function counting identifies different types of function definitions per languag
 
 - **Functions**: `function_declaration`, `init_declaration`, `deinit_declaration`, `computed_getter`, `computed_setter`
 
-#### ABL (.p, .cls, .w)
+#### ABL (.p, .cls, .w, .i)
 
 - **Procedures**: `procedure_statement`
 - **Functions**: `function_statement`
@@ -433,7 +433,7 @@ Message chains are not applicable to Bash as it does not support method chaining
 - **Chain nodes**: `call_expression`, `navigation_expression`
 - **Call nodes**: `call_expression`
 
-#### ABL (.p, .cls, .w)
+#### ABL (.p, .cls, .w, .i)
 
 - **Chain nodes**: `object_access`, `method_invocation`
 - **Call nodes**: `method_invocation`

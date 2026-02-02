@@ -8,7 +8,7 @@ The Unified Parser is parser to generate code metrics from a source code file or
 
 | Language     | Supported file extensions              |
 |--------------|----------------------------------------|
-| ABL          | .p, .cls, .w                           |
+| ABL          | .p, .cls, .w, .i                       |
 | Javascript   | .js, .cjs, .mjs                        |
 | Typescript   | .ts, .cts, .mts                        |
 | Java         | .java                                  |
