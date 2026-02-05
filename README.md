@@ -134,13 +134,6 @@ and [news](https://maibornwolff.github.io/codecharta/news/).
 
 Your company needs professional support to analyse your code base? We offer a service to help you with that.
 
-### Code Quality Insights
-
-Get a report about your hotspots and areas for improvement. This is currently free of charge.
-
-**Click** the link to learn
-more: [Code Quality Insights](https://www.maibornwolff.de/en/code-quality-insights?utm_source=github_repo&utm_medium_website&utm_campaign=code_charta_at_github&utm_id=code_charta_at_github)
-
 ### Software Health Check
 
 A full Software Health Check for your codebase and everything around it. **Click** the link to learn
