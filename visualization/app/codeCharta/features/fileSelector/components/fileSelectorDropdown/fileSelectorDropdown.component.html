@@ -1,0 +1,66 @@
+<details #dropdownDetails class="dropdown" (toggle)="handleDropdownToggle($event)">
+    <summary class="btn btn-sm btn-ghost gap-1 w-52 justify-between font-normal">
+        <span class="truncate">{{ displayText() }}</span>
+        <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+        </svg>
+    </summary>
+    <div class="dropdown-content z-50 bg-base-100 shadow-lg rounded-box border border-base-300 p-2 min-w-64">
+        <div class="flex justify-between mb-2 border-b border-base-300 pb-2">
+            <button class="btn btn-xs btn-ghost flex-1" (click)="handleSelectAllFiles()">All</button>
+            <button class="btn btn-xs btn-ghost flex-1" (click)="handleSelectZeroFiles()">None</button>
+            <button class="btn btn-xs btn-ghost flex-1" (click)="handleInvertSelectedFiles()">Invert</button>
+        </div>
+
+        <ul class="max-h-48 overflow-y-auto">
+            @for (file of filesInUI(); track file.file.fileMeta.fileName) {
+                <li class="flex items-center justify-between py-1 px-1 hover:bg-base-200 rounded">
+                    <label
+                        class="flex items-center gap-2 cursor-pointer flex-1"
+                        [class.line-through]="file.isRemoved"
+                        [class.opacity-50]="file.isRemoved"
+                    >
+                        <input
+                            type="checkbox"
+                            class="checkbox checkbox-sm checkbox-primary"
+                            [checked]="isFileSelected(file.file.fileMeta.fileName)"
+                            [disabled]="file.isRemoved"
+                            (change)="handleFileToggle(file.file.fileMeta.fileName, $any($event.target).checked)"
+                        />
+                        <span class="whitespace-nowrap text-sm">{{ file.file.fileMeta.fileName | removeExtension }}</span>
+                    </label>
+                    <button
+                        class="btn btn-xs btn-ghost btn-circle"
+                        (click)="handleAddOrRemoveFile(file.file.fileMeta.fileName, $event)"
+                        [attr.title]="file.isRemoved ? 'Restore file' : 'Remove file'"
+                    >
+                        @if (file.isRemoved) {
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                            </svg>
+                        } @else {
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        }
+                    </button>
+                </li>
+            }
+        </ul>
+
+        <div class="flex justify-end mt-2 pt-2 border-t border-base-300">
+            <div
+                class="tooltip tooltip-left"
+                [attr.data-tip]="applyButtonDisabled() ? applyButtonTooltip() : null"
+            >
+                <button
+                    class="btn btn-sm btn-primary"
+                    [disabled]="applyButtonDisabled()"
+                    (click)="handleApplyFileChanges()"
+                >
+                    Apply
+                </button>
+            </div>
+        </div>
+    </div>
+</details>

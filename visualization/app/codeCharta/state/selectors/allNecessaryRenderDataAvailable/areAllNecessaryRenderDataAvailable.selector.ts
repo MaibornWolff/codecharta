@@ -4,7 +4,7 @@ import { areaMetricSelector } from "../../store/dynamicSettings/areaMetric/areaM
 import { colorMetricSelector } from "../../store/dynamicSettings/colorMetric/colorMetric.selector"
 import { dynamicSettingsSelector } from "../../store/dynamicSettings/dynamicSettings.selector"
 import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
-import { filesSelector } from "../../store/files/files.selector"
+import { filesSelector } from "../../../features/fileSelector/stores/files.selectors"
 import { metricDataSelector } from "../accumulatedData/metricData/metricData.selector"
 import { areDynamicSettingsAvailable } from "./utils/areDynamicSettingsAvailable"
 import { areMetricsAvailable } from "./utils/areMetricsAvailable"

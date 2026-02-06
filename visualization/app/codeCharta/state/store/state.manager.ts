@@ -1,7 +1,7 @@
 import { appSettings, defaultAppSettings } from "./appSettings/appSettings.reducer"
 import { defaultFileSettings, fileSettings } from "./fileSettings/fileSettings.reducer"
 import { defaultDynamicSettings, dynamicSettings } from "./dynamicSettings/dynamicSettings.reducer"
-import { defaultFiles, files } from "./files/files.reducer"
+import { defaultFiles, files } from "../../features/fileSelector/stores/files.reducer"
 import { appStatus, defaultAppStatus } from "./appStatus/appStatus.reducer"
 import { ActionReducer } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"

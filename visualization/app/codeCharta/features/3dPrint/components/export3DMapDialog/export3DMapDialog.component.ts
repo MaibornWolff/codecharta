@@ -1,4 +1,4 @@
-import { filesSelector } from "../../../../state/store/files/files.selector"
+import { filesSelector } from "../../../fileSelector/facade"
 import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { FileNameHelper } from "../../../../util/fileNameHelper"
 import { getVisibleFileStates, isDeltaState } from "../../../../model/files/files.helper"

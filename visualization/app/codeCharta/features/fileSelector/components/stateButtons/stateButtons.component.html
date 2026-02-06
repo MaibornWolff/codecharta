@@ -1,0 +1,11 @@
+<div class="join">
+    <button
+        class="btn btn-xs join-item"
+        [class.btn-primary]="isStandardMode()"
+        (click)="toggle()"
+    >Standard</button><button
+        class="btn btn-xs join-item"
+        [class.btn-primary]="isDeltaMode()"
+        (click)="toggle()"
+    >Delta</button>
+</div>

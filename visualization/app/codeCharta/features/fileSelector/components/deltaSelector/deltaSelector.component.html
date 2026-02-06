@@ -1,0 +1,79 @@
+<div class="flex items-center gap-3">
+    <select
+        class="select select-sm select-bordered w-48 text-sm"
+        [value]="referenceFile()?.fileMeta.fileName ?? ''"
+        (change)="handleDeltaReferenceFileChange($event)"
+    >
+        @for (file of files(); track file.file.fileMeta.fileName) {
+            <option [value]="file.file.fileMeta.fileName">
+                {{ file.file.fileMeta.fileName | removeExtension }}
+            </option>
+        }
+    </select>
+
+    <button
+        class="btn btn-sm btn-primary min-h-0 h-6 px-2"
+        [disabled]="!comparisonFile()"
+        (click)="switchReferenceAndComparison()"
+        title="Switch reference and comparison file"
+    >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+    </button>
+
+    <select
+        class="select select-sm select-bordered w-48 text-sm"
+        [value]="comparisonFile()?.fileMeta.fileName ?? ''"
+        (change)="handleDeltaComparisonFileChange($event)"
+    >
+        <option value="" disabled>Select comparison file</option>
+        @for (file of possibleComparisonFiles(); track file.file.fileMeta.fileName) {
+            <option [value]="file.file.fileMeta.fileName">
+                {{ file.file.fileMeta.fileName | removeExtension }}
+            </option>
+        }
+    </select>
+
+    <div
+        class="w-2.5 h-5 rounded-sm"
+        [style.background]="pictogramBackground()"
+    ></div>
+</div>
+
+@if (dialogOpen()) {
+    <dialog class="modal modal-open">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg text-primary">Incompatible Maps</h3>
+            <div class="py-4 space-y-3">
+                <p>The selected maps use different complexity metrics and are therefore incompatible:</p>
+                <p class="text-center font-medium">{{ dialogData()?.referenceFileName }} → {{ dialogData()?.comparisonFileName }}</p>
+                <p>
+                    The file <span class="font-bold">{{ dialogData()?.fileWithMccMetric }}</span> is using the
+                    <span class="font-bold">mcc metric</span> and the other one <span class="font-bold">complexity</span>. Please migrate.
+                </p>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        class="checkbox checkbox-sm"
+                        [checked]="doNotShowAgain()"
+                        (change)="toggleDoNotShowAgain($event)"
+                    />
+                    <span>Don't show again</span>
+                </label>
+            </div>
+            <div class="modal-action">
+                <a
+                    href="https://codecharta.com/docs/filter/structure-modifier"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-ghost btn-sm"
+                >
+                    Know more
+                </a>
+                <button class="btn btn-primary btn-sm" (click)="closeDialog()">Close</button>
+            </div>
+        </div>
+        <div class="modal-backdrop bg-black/50" (click)="closeDialog()"></div>
+    </dialog>
+}
