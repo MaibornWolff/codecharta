@@ -43,6 +43,17 @@ module.exports = {
             }
         },
         {
+            name: "feature-fileSelector-no-external-access-to-services",
+            severity: "error",
+            comment: "FileSelector services can only be accessed within the fileSelector feature",
+            from: {
+                pathNot: "^app/codeCharta/features/fileSelector/"
+            },
+            to: {
+                path: "^app/codeCharta/features/fileSelector/services/"
+            }
+        },
+        {
             name: "feature-types-cannot-import-from-feature-internals",
             severity: "error",
             comment: "Features: types/ folder can only contain type definitions and cannot import from services, stores, or effects",
@@ -54,14 +65,13 @@ module.exports = {
             }
         },
         {
-            name: "feature-no-circular-dependencies-between-features",
+            name: "feature-no-circular-dependencies",
             severity: "error",
-            comment: "Prevent circular dependencies between features",
+            comment: "Prevent circular dependencies within features folder",
             from: {
-                path: "^app/codeCharta/features/([^/]+)/"
+                path: "^app/codeCharta/features/"
             },
             to: {
-                path: "^app/codeCharta/features/([^/]+)/",
                 circular: true
             }
         },
@@ -76,6 +86,75 @@ module.exports = {
             to: {
                 path: "@ngrx/store",
                 pathNot: "@ngrx/store-devtools"
+            }
+        },
+        {
+            name: "feature-no-angular-material",
+            severity: "error",
+            comment: "Features must use DaisyUI instead of Angular Material. No @angular/material imports allowed.",
+            from: {
+                path: "^app/codeCharta/features/"
+            },
+            to: {
+                path: "@angular/material"
+            }
+        },
+        {
+            name: "feature-no-angular-cdk",
+            severity: "error",
+            comment: "Features must not use Angular CDK (comes with Material). Use native solutions or DaisyUI.",
+            from: {
+                path: "^app/codeCharta/features/"
+            },
+            to: {
+                path: "@angular/cdk"
+            }
+        },
+        {
+            name: "feature-components-use-services-not-store",
+            severity: "error",
+            comment: "Feature components should use services, not import directly from stores/",
+            from: {
+                path: "^app/codeCharta/features/[^/]+/components/"
+            },
+            to: {
+                path: "^app/codeCharta/features/[^/]+/stores/"
+            }
+        },
+        {
+            name: "feature-no-external-access-to-stores",
+            severity: "error",
+            comment: "Feature stores can only be accessed within the same feature (use facade or services for external access)",
+            from: {
+                path: "^app/codeCharta/features/([^/]+)/",
+                pathNot: "^app/codeCharta/features/([^/]+)/(stores|services|facade\\.ts)"
+            },
+            to: {
+                path: "^app/codeCharta/features/\\1/stores/"
+            }
+        },
+        {
+            name: "feature-fileSelector-cross-feature-access",
+            severity: "error",
+            comment: "Other features can only access fileSelector via facade.ts or components/",
+            from: {
+                path: "^app/codeCharta/features/(?!fileSelector/)"
+            },
+            to: {
+                path: "^app/codeCharta/features/fileSelector/(services|stores)/"
+            }
+        },
+        {
+            name: "feature-no-external-access-to-components",
+            severity: "error",
+            comment: "Feature components are internal. Export via facade.ts for external use.",
+            from: {
+                path: "^app/codeCharta/",
+                pathNot: "^app/codeCharta/features/([^/]+)/"
+            },
+            to: {
+                path: "^app/codeCharta/features/([^/]+)/components/",
+                pathNot: "^app/codeCharta/features/\\1/"
             }
         }
     ],

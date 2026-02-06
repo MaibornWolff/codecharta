@@ -12,7 +12,7 @@ import { appReducers, setStateMiddleware } from "../../../state/store/state.mana
 import { MatDialog } from "@angular/material/dialog"
 import { CcState } from "../../../codeCharta.model"
 import { RenderCodeMapEffect } from "../../../state/effects/renderCodeMapEffect/renderCodeMap.effect"
-import { setFiles, setStandardByNames } from "../../../state/store/files/files.actions"
+import { setFiles, setStandardByNames } from "../../../features/fileSelector/stores/files.actions"
 import { UnfocusNodesEffect } from "../../../state/effects/unfocusNodes/unfocusNodes.effect"
 
 jest.mock("../../../util/uploadFiles/createCCFileInput")

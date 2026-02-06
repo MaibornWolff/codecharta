@@ -18,7 +18,7 @@ import { defaultDynamicSettings } from "../../state/store/dynamicSettings/dynami
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { defaultFileSettings } from "../../state/store/fileSettings/fileSettings.reducer"
-import { setDelta, setFiles } from "../../state/store/files/files.actions"
+import { setDelta, setFiles } from "../../features/fileSelector/stores/files.actions"
 import { appReducers, defaultState, setStateMiddleware } from "../../state/store/state.manager"
 import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { readCcState } from "../../util/indexedDB/indexedDBWriter"

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { addFile, setDelta } from "../../../state/store/files/files.actions"
+import { addFile, setDelta } from "../../../features/fileSelector/stores/files.actions"
 import { TEST_FILE_DATA } from "../../../util/dataMocks"
 import { HeightSettingsPanelComponent } from "./heightSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"

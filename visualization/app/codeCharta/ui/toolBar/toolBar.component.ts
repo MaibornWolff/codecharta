@@ -7,7 +7,7 @@ import { ScreenshotButtonComponent } from "../screenshotButton/screenshotButton.
 import { CopyToClipboardButtonComponent } from "../copyToClipboardButton/copyToClipboardButton.component"
 import { Export3DMapButtonComponent } from "../../features/3dPrint/components/export3DMapButton/export3DMapButton.component"
 import { ResetMapButtonComponent } from "../resetMapButton/resetMapButton.component"
-import { FilePanelComponent } from "../filePanel/filePanel.component"
+import { FilePanelComponent } from "../../features/fileSelector/components/filePanel/filePanel.component"
 import { HoveredNodePathPanelComponent } from "./hoveredNodePathPanel/hoveredNodePathPanel.component"
 import { LoadingMapProgressSpinnerComponent } from "./loadingMapProgressSpinner/loadingMapProgressSpinner.component"
 import { PresentationModeButtonComponent } from "./presentationModeButton/presentationModeButton.component"

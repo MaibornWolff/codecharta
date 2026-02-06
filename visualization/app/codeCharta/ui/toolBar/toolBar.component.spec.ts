@@ -9,7 +9,7 @@ import { ToolBarComponent } from "./toolBar.component"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 import { StoreModule } from "@ngrx/store"
 import { CopyToClipboardService } from "../../../codeCharta/ui/copyToClipboardButton/copyToClipboard.service"
-import { FileSelectionModeService } from "../../../codeCharta/ui/filePanel/fileSelectionMode.service"
+import { FileSelectionModeService } from "../../features/fileSelector/services/fileSelectionMode.service"
 
 jest.mock("../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector", () => ({
     hoveredNodeIdSelector: jest.fn()

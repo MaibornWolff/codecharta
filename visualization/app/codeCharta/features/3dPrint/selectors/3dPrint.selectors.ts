@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
 import { fileSettingsSelector } from "../../../state/store/fileSettings/fileSettings.selector"
-import { filesSelector } from "../../../state/store/files/files.selector"
+import { filesSelector } from "../../fileSelector/facade"
 
 export const areaMetricSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.areaMetric)
 

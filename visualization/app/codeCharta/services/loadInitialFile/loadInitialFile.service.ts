@@ -14,7 +14,7 @@ import { MetricQueryParemter } from "../../state/effects/updateQueryParameters/u
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { setDelta, setFiles } from "../../state/store/files/files.actions"
+import { setDelta, setFiles } from "../../features/fileSelector/stores/files.actions"
 import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
 import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../loadFile/fileParser"

@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test"
 import { CC_URL, clearIndexedDB, goto } from "../../playwright.helper"
-import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
+import { FilePanelPageObject } from "../features/fileSelector/e2e/filePanel.po"
 import sample1 from "../assets/sample1.cc.json"
 import sample3 from "../assets/sample3.cc.json"
 import sample2 from "../assets/sample2.cc.json"

@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test"
 import { clearIndexedDB, goto } from "../../../../playwright.helper"
 import { UploadFileButtonPageObject } from "./uploadFilesButton.po"
-import { FilePanelPageObject } from "../../filePanel/filePanel.po"
+import { FilePanelPageObject } from "../../../features/fileSelector/e2e/filePanel.po"
 import { ERROR_MESSAGES } from "../../../util/fileValidator"
 import { DialogErrorPageObject } from "../../dialogs/errorDialog/errorDialog.component.po"
 
