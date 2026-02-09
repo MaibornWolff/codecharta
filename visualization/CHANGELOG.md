@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- Migrate changelog dialog to feature slice architecture
+
+### Fixed 🐞
+
+- Fix center map button positioning and icon alignment
+- Fix flatten icon alignment in distribution bar context menu
+
+### Chore 👨‍💻 👩‍💻
+
+- Bump Angular to v21, ngrx to v21, and various dependencies
+
 ## [1.141.1] - 2025-12-19
 
 ### Fixed 🐞
