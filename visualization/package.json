@@ -132,7 +132,7 @@
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^30.2.0",
     "jest-preset-angular": "16.0.0",
-    "marked": "^5.1.2",
+    "marked": "^17.0.0",
     "postcss": "^8.5.6",
     "ts-jest": "^29.4.6",
     "typescript": "5.9.3",
