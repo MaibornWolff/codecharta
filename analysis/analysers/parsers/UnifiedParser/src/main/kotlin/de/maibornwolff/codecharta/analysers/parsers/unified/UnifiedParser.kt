@@ -35,6 +35,48 @@ class UnifiedParser(
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
+
+        /**
+         * Parse source code files and generate metrics.
+         *
+         * This is the public API for using UnifiedParser as a library.
+         *
+         * @param inputFile File or directory to analyze
+         * @param excludePatterns Regex patterns to exclude files/folders
+         * @param fileExtensions File extensions to analyze (empty = all supported languages)
+         * @param bypassGitignore Whether to bypass .gitignore files
+         * @param verbose Enable verbose output
+         * @return Project with all metrics and attribute descriptors
+         */
+        fun parse(
+            inputFile: File,
+            excludePatterns: List<String> = emptyList(),
+            fileExtensions: List<String> = emptyList(),
+            bypassGitignore: Boolean = false,
+            verbose: Boolean = false
+        ): Project {
+            val projectBuilder = ProjectBuilder()
+            val useGitignore = !bypassGitignore
+
+            val projectScanner = ProjectScanner(
+                inputFile,
+                projectBuilder,
+                excludePatterns,
+                fileExtensions,
+                emptyMap(),
+                useGitignore
+            )
+
+            projectScanner.traverseInputProject(verbose)
+
+            if (!projectScanner.foundParsableFiles()) {
+                Logger.warn { "No parsable files found in the given input path" }
+            }
+
+            projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
+
+            return projectBuilder.build()
+        }
     }
 
     override val name = NAME

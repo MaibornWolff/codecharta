@@ -1,0 +1,4 @@
+file_metrics:
+  rloc:
+    max: 500
+  invalid: [unclosed bracket
