@@ -14,7 +14,7 @@ const CHANGELOG_CATEGORIES = ["Added 🚀", "Fixed 🐞", "Changed", "Removed �
 export class ChangelogParserService {
     parseChangesBetweenVersions(previousVersion: string, currentVersion: string): ChangelogCategory[] {
         marked.use(mangle())
-        const parsedMarkdownFile = marked.parse(markdownFile, { headerIds: false }) as string
+        const parsedMarkdownFile = marked.parse(markdownFile) as string
         const changelogLines = parsedMarkdownFile.split("\n")
 
         const currentVersionLine = this.findVersionLine(changelogLines, currentVersion)

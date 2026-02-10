@@ -495,7 +495,7 @@ describe("loadFileService", () => {
             const expectedError: CCFileValidationResult[] = [
                 {
                     fileName,
-                    errors: ["Required error:  should have required property 'projectName'"],
+                    errors: ["Required error:  must have required property 'projectName'"],
                     warnings: []
                 }
             ]

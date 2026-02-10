@@ -1,5 +1,5 @@
 import { CodeMapNode, FixedPosition } from "../codeCharta.model"
-import Ajv from "ajv"
+import Ajv, { ErrorObject } from "ajv"
 import packageJson from "../../../package.json"
 import { ExportCCFile } from "../codeCharta.api.model"
 import jsonSchema from "./generatedSchema.json"
@@ -75,12 +75,12 @@ export function checkErrors(file: ExportCCFile) {
 function checkJsonSchema(file: ExportCCFile) {
     const errors: string[] = []
     if (errors.length === 0) {
-        const ajv = new Ajv({ allErrors: true })
+        const ajv = new Ajv({ allErrors: true, strict: false })
         const validate = ajv.compile(jsonSchema)
         const valid = validate(file)
 
         if (!valid) {
-            errors.push(...validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error)))
+            errors.push(...validate.errors.map((error: ErrorObject) => getValidationMessage(error)))
         } else if (file.nodes.length === 0) {
             errors.push(ERROR_MESSAGES.nodesEmpty)
         } else {
@@ -130,9 +130,9 @@ export function getAsApiVersion(version: string): ApiVersion {
     }
 }
 
-function getValidationMessage(error: Ajv.ErrorObject) {
+function getValidationMessage(error: ErrorObject) {
     const errorType = error.keyword.charAt(0).toUpperCase() + error.keyword.slice(1)
-    const errorParameter = error.dataPath.slice(1)
+    const errorParameter = error.instancePath.slice(1)
     return `${errorType} error: ${errorParameter} ${error.message}`
 }
 
