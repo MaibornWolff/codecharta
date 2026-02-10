@@ -135,8 +135,8 @@ describe("FileValidator", () => {
         }
         const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
         const expectedErrors = [
-            "Required error: nodes[0] should have required property 'name'",
-            "Required error: nodes[0] should have required property 'type'"
+            "Required error: nodes/0 must have required property 'name'",
+            "Required error: nodes/0 must have required property 'type'"
         ]
 
         expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
