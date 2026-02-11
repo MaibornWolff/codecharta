@@ -77,6 +77,9 @@ export class ThreeViewerService {
     }
 
     animateStats() {
+        if (!this.threeStatsService.isDevelopmentMode) {
+            return
+        }
         this.animationFrameId = requestAnimationFrame(() => this.animateStats())
         this.threeStatsService.updateStats()
     }
@@ -110,6 +113,5 @@ export class ThreeViewerService {
         this.dispose()
         this.threeStatsService.destroy()
         this.getRenderCanvas().remove()
-        this.dispose()
     }
 }

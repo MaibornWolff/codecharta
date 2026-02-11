@@ -76,7 +76,8 @@ export class CustomComposer extends EffectComposer {
     }
 
     dispose() {
-        // TODO add more dispose
+        this.readBuffer?.dispose()
+        this.writeBuffer?.dispose()
         // biome-ignore lint/style/useForOf: biome2update
         for (let index = 0; index < this.passes.length; index++) {
             this.passes[index]["fsQuad"]?.material.dispose()

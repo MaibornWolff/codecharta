@@ -81,6 +81,15 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     private initFloorLabels(nodes: Node[]) {
+        for (const child of this.floorLabelPlanes.children) {
+            if (child["geometry"]) {
+                child["geometry"].dispose()
+            }
+            if (child["material"]) {
+                child["material"].map?.dispose()
+                child["material"].dispose()
+            }
+        }
         this.floorLabelPlanes.clear()
 
         const { layoutAlgorithm, enableFloorLabels } = this.state.getValue().appSettings

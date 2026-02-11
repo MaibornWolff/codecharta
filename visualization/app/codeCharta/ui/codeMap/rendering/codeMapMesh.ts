@@ -22,6 +22,8 @@ export class CodeMapMesh {
     private geomGen: GeometryGenerator
     private mapGeomDesc: CodeMapGeometricDescription
     private nodes: Node[]
+    private dirtyRangeMin = Number.POSITIVE_INFINITY
+    private dirtyRangeMax = Number.NEGATIVE_INFINITY
 
     constructor(nodes: Node[], state: CcState, isDeltaState: boolean) {
         this.initMaterial()
@@ -167,8 +169,7 @@ export class CodeMapMesh {
         }
     }
 
-    private setVertexColor(id: number, newColorVector: Vector3, newDeltaColorVector) {
-        //!Note  this function is called a lot of times see highlightBuilding , maybe bulk update the color and delta colors
+    private setVertexColor(id: number, newColorVector: Vector3, newDeltaColorVector: Vector3) {
         const numberOfColorFieldsPerBuilding = CodeMapMesh.NUM_OF_VERTICES
         const positionOfFirstColorEntry = id * numberOfColorFieldsPerBuilding
 
@@ -180,24 +181,32 @@ export class CodeMapMesh {
             deltaAttribute.setXYZ(index, newDeltaColorVector.x, newDeltaColorVector.y, newDeltaColorVector.z)
         }
 
-        //!Note this can be used to update only the needed range => faster rendering
-        //!     maybe return the offset and count, build the union of the result, and
-        //!     use next lines inside updateVertices ?
-
-        /*colorAttribute.updateRange.offset = positionOfFirstColorEntry
-		colorAttribute.updateRange.count = numberOfColorFieldsPerBuilding
-
-		deltaAttribute.updateRange.offset = positionOfFirstColorEntry
-		deltaAttribute.updateRange.count = numberOfColorFieldsPerBuilding*/
+        this.dirtyRangeMin = Math.min(this.dirtyRangeMin, positionOfFirstColorEntry)
+        this.dirtyRangeMax = Math.max(this.dirtyRangeMax, positionOfFirstColorEntry + numberOfColorFieldsPerBuilding)
     }
 
     private updateVertices() {
-        this.threeMesh.geometry.getAttribute("color").needsUpdate = true
-        this.threeMesh.geometry.getAttribute("deltaColor").needsUpdate = true
+        const colorAttribute = this.threeMesh.geometry.getAttribute("color") as BufferAttribute
+        const deltaAttribute = this.threeMesh.geometry.getAttribute("deltaColor") as BufferAttribute
+
+        if (this.dirtyRangeMin < this.dirtyRangeMax) {
+            const startElement = this.dirtyRangeMin * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
+            const countElements = (this.dirtyRangeMax - this.dirtyRangeMin) * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
+
+            colorAttribute.clearUpdateRanges()
+            colorAttribute.addUpdateRange(startElement, countElements)
+            deltaAttribute.clearUpdateRanges()
+            deltaAttribute.addUpdateRange(startElement, countElements)
+        }
+
+        colorAttribute.needsUpdate = true
+        deltaAttribute.needsUpdate = true
+
+        this.dirtyRangeMin = Number.POSITIVE_INFINITY
+        this.dirtyRangeMax = Number.NEGATIVE_INFINITY
     }
 
     dispose() {
-        // TODO more needs to be disposed (textures, render targets, passes , ...)
         this.disposeMesh()
         this.disposeMaterial()
     }

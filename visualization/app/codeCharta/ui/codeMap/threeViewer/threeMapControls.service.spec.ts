@@ -90,9 +90,6 @@ describe("ThreeMapControlsService", () => {
 
         threeMapControlsService.rotateCameraInVectorDirection(vector.x, vector.y, vector.z)
 
-        expect(threeSceneService.scene.add).toHaveBeenCalled()
-        expect(threeSceneService.scene.remove).toHaveBeenCalled()
-
         expect(threeCameraService.camera.position).toMatchSnapshot()
     })
 

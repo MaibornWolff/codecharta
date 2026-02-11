@@ -1,6 +1,6 @@
 import { ThreeCameraService } from "./threeCamera.service"
 import { Injectable } from "@angular/core"
-import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry, MOUSE } from "three"
+import { Box3, PerspectiveCamera, Vector3, Sphere, MOUSE } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 import { MapControls } from "three/addons/controls/MapControls.js"
 import { ThreeRendererService } from "./threeRenderer.service"
@@ -100,21 +100,12 @@ export class ThreeMapControlsService {
     private lookAtDirectionFromTarget(x: number, y: number, z: number) {
         this.threeCameraService.camera.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
 
-        const alignmentCube = new Mesh(new BoxGeometry(20, 20, 20), new MeshNormalMaterial())
-
-        this.threeSceneService.scene.add(alignmentCube)
-
-        alignmentCube.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
-
         // Add tiny offset to avoid gimbal lock when looking straight down/up
         const adjustedX = x === 0 && z === 0 && y !== 0 ? -0.0001 : x
 
-        alignmentCube.translateX(adjustedX)
-        alignmentCube.translateY(y)
-        alignmentCube.translateZ(z)
+        const lookAtPoint = new Vector3(this.controls.target.x + adjustedX, this.controls.target.y + y, this.controls.target.z + z)
 
-        this.threeCameraService.camera.lookAt(alignmentCube.getWorldPosition(alignmentCube.position))
-        this.threeSceneService.scene.remove(alignmentCube)
+        this.threeCameraService.camera.lookAt(lookAtPoint)
     }
 
     private getZoom() {
