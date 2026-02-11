@@ -203,7 +203,7 @@ export class CodeMapLabelService {
 
     onCameraChanged() {
         for (const label of this.labels) {
-            this.setLabelSize(label.sprite, label, label.sprite.material.map.image.width)
+            this.setLabelSize(label.sprite, label, (label.sprite.material.map.image as HTMLCanvasElement).width)
         }
     }
 
@@ -281,7 +281,11 @@ export class CodeMapLabelService {
         context.fill()
     }
 
-    private setLabelSize(sprite: Sprite, label: InternalLabel, labelWidth: number = sprite.material.map.image.width) {
+    private setLabelSize(
+        sprite: Sprite,
+        label: InternalLabel,
+        labelWidth: number = (sprite.material.map.image as HTMLCanvasElement).width
+    ) {
         const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
         if (this.threeCameraService.camera) {
             const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)

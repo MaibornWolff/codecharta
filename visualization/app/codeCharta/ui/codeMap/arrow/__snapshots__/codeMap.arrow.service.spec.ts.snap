@@ -3,18 +3,17 @@
 exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should only highlight small leaf when big leaf is selected 1`] = `
 [
   CodeMapBuilding {
-    "_boundingBox": Box3 {
-      "isBox3": true,
-      "max": Vector3 {
-        "x": 6,
-        "y": 8,
-        "z": 10,
-      },
-      "min": Vector3 {
-        "x": 5,
-        "y": 6,
-        "z": 7,
-      },
+    "_boundingBox": {
+      "max": [
+        6,
+        8,
+        10,
+      ],
+      "min": [
+        5,
+        6,
+        7,
+      ],
     },
     "_color": "#820E0E",
     "_defaultColor": "#820E0E",
@@ -68,18 +67,17 @@ exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a build
     },
   },
   CodeMapBuilding {
-    "_boundingBox": Box3 {
-      "isBox3": true,
-      "max": Vector3 {
-        "x": 6,
-        "y": 8,
-        "z": 10,
-      },
-      "min": Vector3 {
-        "x": 5,
-        "y": 6,
-        "z": 7,
-      },
+    "_boundingBox": {
+      "max": [
+        6,
+        8,
+        10,
+      ],
+      "min": [
+        5,
+        6,
+        7,
+      ],
     },
     "_color": "#820E0E",
     "_defaultColor": "#820E0E",
@@ -137,18 +135,17 @@ exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a build
 
 exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should only highlight small leaf when big leaf is selected 2`] = `
 CodeMapBuilding {
-  "_boundingBox": Box3 {
-    "isBox3": true,
-    "max": Vector3 {
-      "x": -Infinity,
-      "y": -Infinity,
-      "z": -Infinity,
-    },
-    "min": Vector3 {
-      "x": Infinity,
-      "y": Infinity,
-      "z": Infinity,
-    },
+  "_boundingBox": {
+    "max": [
+      -Infinity,
+      -Infinity,
+      -Infinity,
+    ],
+    "min": [
+      Infinity,
+      Infinity,
+      Infinity,
+    ],
   },
   "_color": "#EB8319",
   "_defaultColor": "#ddcc00",
@@ -205,18 +202,17 @@ CodeMapBuilding {
 
 exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should restore to previous color if another building is selected in delta mode 1`] = `
 CodeMapBuilding {
-  "_boundingBox": Box3 {
-    "isBox3": true,
-    "max": Vector3 {
-      "x": -Infinity,
-      "y": -Infinity,
-      "z": -Infinity,
-    },
-    "min": Vector3 {
-      "x": Infinity,
-      "y": Infinity,
-      "z": Infinity,
-    },
+  "_boundingBox": {
+    "max": [
+      -Infinity,
+      -Infinity,
+      -Infinity,
+    ],
+    "min": [
+      Infinity,
+      Infinity,
+      Infinity,
+    ],
   },
   "_color": "#EB8319",
   "_defaultColor": "#ddcc00",
@@ -273,18 +269,17 @@ CodeMapBuilding {
 
 exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should restore to previous color if another building is selected in delta mode 2`] = `
 CodeMapBuilding {
-  "_boundingBox": Box3 {
-    "isBox3": true,
-    "max": Vector3 {
-      "x": 6,
-      "y": 8,
-      "z": 10,
-    },
-    "min": Vector3 {
-      "x": 5,
-      "y": 6,
-      "z": 7,
-    },
+  "_boundingBox": {
+    "max": [
+      6,
+      8,
+      10,
+    ],
+    "min": [
+      5,
+      6,
+      7,
+    ],
   },
   "_color": "#6987A5",
   "_defaultColor": "#AABBCC",
