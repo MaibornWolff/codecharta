@@ -29,8 +29,8 @@ export default defineConfig({
             name: "chromium",
             use: {
                 ...devices["Desktop Chrome"],
-                // Use system Chrome in CI instead of downloading Playwright's bundled Chromium
-                channel: process.env.CI ? "chrome" : undefined
+                // Use system Chrome instead of Playwright's bundled Chromium (bundled Chromium lacks WebGL support in headless mode on macOS)
+                channel: "chrome"
             }
         }
     ]
