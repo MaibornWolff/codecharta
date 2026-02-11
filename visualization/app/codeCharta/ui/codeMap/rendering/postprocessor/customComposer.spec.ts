@@ -20,10 +20,14 @@ describe("CustomComposer", () => {
         } as unknown as WebGLRenderer
 
         renderTarget = {
+            width: 1,
+            height: 1,
+            dispose: jest.fn(),
             clone: jest.fn().mockReturnValue({
                 texture: {
                     name: null
-                }
+                },
+                dispose: jest.fn()
             })
         } as unknown as WebGLRenderTarget
 
@@ -166,6 +170,22 @@ describe("CustomComposer", () => {
 
             expect(fullScreenQuad["fsQuad"].material.dispose).toHaveBeenCalled()
             expect(fullScreenQuad["fsQuad"]._mesh.geometry.dispose).toHaveBeenCalled()
+        })
+
+        it("should dispose readBuffer and writeBuffer", () => {
+            // Arrange
+            const readBufferDispose = jest.fn()
+            const writeBufferDispose = jest.fn()
+            customComposer.readBuffer = { dispose: readBufferDispose } as any
+            customComposer.writeBuffer = { dispose: writeBufferDispose } as any
+            customComposer.passes = []
+
+            // Act
+            customComposer.dispose()
+
+            // Assert
+            expect(readBufferDispose).toHaveBeenCalled()
+            expect(writeBufferDispose).toHaveBeenCalled()
         })
     })
 })

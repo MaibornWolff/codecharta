@@ -3,18 +3,22 @@ import { Vector3, Ray, Box3 } from "three"
 import { Scaling } from "../../../codeCharta.model"
 
 export class CodeMapGeometricDescription {
-    private _buildings: CodeMapBuilding[] // todo tk: depending on how many buildings, refactor this to { [node.path]: node } might give `this.getBuildingByPath` a performance boost
+    private _buildings: CodeMapBuilding[] = []
+    private buildingsByPath: Map<string, CodeMapBuilding> = new Map()
     private mapSize: number
     private scales: Vector3
+    private scaledBoxes: Box3[] = []
+    private boxTranslation = new Vector3()
+    private readonly _intersectTarget = new Vector3()
 
     constructor(mapSize: number) {
-        this._buildings = new Array<CodeMapBuilding>()
         this.mapSize = mapSize
         this.scales = new Vector3(1, 1, 1)
     }
 
     add(building: CodeMapBuilding) {
         this._buildings.push(building)
+        this.buildingsByPath.set(building.node.path, building)
     }
 
     get buildings() {
@@ -23,36 +27,45 @@ export class CodeMapGeometricDescription {
 
     setScales(scales: Scaling) {
         this.scales = new Vector3(scales.x, scales.y, scales.z)
+        this.rebuildScaledBoxes()
     }
 
     getBuildingByPath(path: string) {
-        return this.buildings.find(x => x.node.path === path)
+        return this.buildingsByPath.get(path)
+    }
+
+    private rebuildScaledBoxes() {
+        this.boxTranslation.set(-this.scales.x * this.mapSize, 0, -this.scales.z * this.mapSize)
+
+        this.scaledBoxes = new Array(this._buildings.length)
+        for (let index = 0; index < this._buildings.length; index++) {
+            const box = this._buildings[index].boundingBox.clone()
+            box.min.multiply(this.scales)
+            box.max.multiply(this.scales)
+            box.translate(this.boxTranslation)
+            this.scaledBoxes[index] = box
+        }
     }
 
     intersect(ray: Ray) {
         let intersectedBuilding: CodeMapBuilding
         let leastIntersectedDistance = Number.POSITIVE_INFINITY
 
-        const boxTranslation = this.scales
-            .clone()
-            .multiplyScalar(this.mapSize)
-            .multiply(new Vector3(-1, 0, -1))
-
-        for (const building of this._buildings) {
-            const box: Box3 = building.boundingBox.clone()
-            box.min.multiply(this.scales)
-            box.max.multiply(this.scales)
-            box.translate(boxTranslation)
+        for (let index = 0; index < this._buildings.length; index++) {
+            const box = this.scaledBoxes[index]
+            if (!box) {
+                continue
+            }
 
             if (this.rayIntersectsAxisAlignedBoundingBox(ray, box)) {
-                const intersectionPoint: Vector3 = ray.intersectBox(box, new Vector3())
+                const intersectionPoint = ray.intersectBox(box, this._intersectTarget)
 
                 if (intersectionPoint) {
                     const intersectionDistance = intersectionPoint.distanceTo(ray.origin)
 
                     if (intersectionDistance < leastIntersectedDistance) {
                         leastIntersectedDistance = intersectionDistance
-                        intersectedBuilding = building
+                        intersectedBuilding = this._buildings[index]
                     }
                 }
             }

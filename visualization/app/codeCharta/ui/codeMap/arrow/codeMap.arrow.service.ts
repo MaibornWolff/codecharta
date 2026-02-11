@@ -85,8 +85,17 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     clearArrows() {
+        for (const arrow of this.arrows) {
+            arrow.traverse(child => {
+                if (child["geometry"]) {
+                    child["geometry"].dispose()
+                }
+                if (child["material"]) {
+                    child["material"].dispose()
+                }
+            })
+        }
         this.arrows = []
-        // Remove all children
         this.threeSceneService.edgeArrows.children.length = 0
     }
 

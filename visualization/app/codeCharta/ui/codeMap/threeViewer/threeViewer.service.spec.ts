@@ -73,7 +73,8 @@ describe("ThreeViewerService", () => {
         threeStatsService = {
             init: jest.fn(),
             updateStats: jest.fn(),
-            destroy: jest.fn()
+            destroy: jest.fn(),
+            isDevelopmentMode: true
         } as unknown as ThreeStatsService
 
         element = { append: jest.fn() } as any
