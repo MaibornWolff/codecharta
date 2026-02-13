@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.filters.structuremodifier.StructureM
 import de.maibornwolff.codecharta.analysers.importers.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.analysers.importers.coverage.CoverageImporter
 import de.maibornwolff.codecharta.analysers.importers.csv.CSVImporter
+import de.maibornwolff.codecharta.analysers.importers.dependacharta.DependaChartaImporter
 import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysers.importers.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter
@@ -53,6 +54,7 @@ import kotlin.system.exitProcess
         CoverageImporter::class,
         CodeMaatImporter::class,
         TokeiImporter::class,
+        DependaChartaImporter::class,
         RawTextParser::class,
         UnifiedParser::class
     ],
@@ -271,6 +273,7 @@ class Ccsh : Callable<Unit?> {
             AttributeGeneratorRegistry.registerGenerator(SVNLogParser())
             AttributeGeneratorRegistry.registerGenerator(TokeiImporter())
             AttributeGeneratorRegistry.registerGenerator(SourceMonitorImporter())
+            AttributeGeneratorRegistry.registerGenerator(DependaChartaImporter())
         }
     }
 

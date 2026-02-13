@@ -13,7 +13,8 @@ include(
     "analysers:importers:CSVImporter",
     "analysers:importers:SonarImporter",
     "analysers:importers:SourceMonitorImporter",
-    "analysers:importers:TokeiImporter"
+    "analysers:importers:TokeiImporter",
+    "analysers:importers:DependaChartaImporter"
 )
 include(
     "analysers:parsers:RawTextParser",

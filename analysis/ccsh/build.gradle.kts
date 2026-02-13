@@ -30,7 +30,8 @@ dependencies {
             ":analysers:AnalyserInterface",
             ":analysers:parsers:UnifiedParser",
             ":dialogProvider",
-            ":analysers:importers:SourceMonitorImporter"
+            ":analysers:importers:SourceMonitorImporter",
+            ":analysers:importers:DependaChartaImporter"
         )
 
     projects.forEach {

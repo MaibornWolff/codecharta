@@ -64,6 +64,7 @@ class AnalyserServiceTest {
                 Arguments.of("sourcecodeparser"),
                 Arguments.of("svnlogparser"),
                 Arguments.of("tokeiimporter"),
+                Arguments.of("dependachartaimport"),
                 Arguments.of("rawtextparser"),
                 Arguments.of("check"),
                 Arguments.of("inspect")
@@ -152,6 +153,7 @@ class AnalyserServiceTest {
                 "rawtextparser",
                 "sourcemonitorimport",
                 "tokeiimporter",
+                "dependachartaimport",
                 "sourcecodeparser",
                 "modify",
                 "csvexport",
