@@ -1,0 +1,57 @@
+{
+  "projectTreeRoots": [],
+  "leaves": {
+    "a.ClassA": {
+      "id": "a.ClassA",
+      "name": "ClassA",
+      "physicalPath": "src/FileA.ts",
+      "nodeType": "CLASS",
+      "language": "TypeScript",
+      "dependencies": {
+        "b.ClassB": {
+          "isCyclic": false,
+          "weight": 1,
+          "type": "usage",
+          "isPointingUpwards": false
+        },
+        "b.ClassC": {
+          "isCyclic": false,
+          "weight": 1,
+          "type": "usage",
+          "isPointingUpwards": false
+        }
+      }
+    },
+    "a.FuncD": {
+      "id": "a.FuncD",
+      "name": "FuncD",
+      "physicalPath": "src/FileA.ts",
+      "nodeType": "FUNCTION",
+      "language": "TypeScript",
+      "dependencies": {
+        "b.ClassB": {
+          "isCyclic": false,
+          "weight": 1,
+          "type": "usage",
+          "isPointingUpwards": false
+        }
+      }
+    },
+    "b.ClassB": {
+      "id": "b.ClassB",
+      "name": "ClassB",
+      "physicalPath": "src/FileB.ts",
+      "nodeType": "CLASS",
+      "language": "TypeScript",
+      "dependencies": {}
+    },
+    "b.ClassC": {
+      "id": "b.ClassC",
+      "name": "ClassC",
+      "physicalPath": "src/FileB.ts",
+      "nodeType": "CLASS",
+      "language": "TypeScript",
+      "dependencies": {}
+    }
+  }
+}

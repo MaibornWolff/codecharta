@@ -1,0 +1,28 @@
+{
+  "projectTreeRoots": [],
+  "leaves": {
+    "a.Foo": {
+      "id": "a.Foo",
+      "name": "Foo",
+      "physicalPath": "src/File.ts",
+      "nodeType": "CLASS",
+      "language": "TypeScript",
+      "dependencies": {
+        "a.Bar": {
+          "isCyclic": false,
+          "weight": 1,
+          "type": "usage",
+          "isPointingUpwards": false
+        }
+      }
+    },
+    "a.Bar": {
+      "id": "a.Bar",
+      "name": "Bar",
+      "physicalPath": "src/File.ts",
+      "nodeType": "CLASS",
+      "language": "TypeScript",
+      "dependencies": {}
+    }
+  }
+}

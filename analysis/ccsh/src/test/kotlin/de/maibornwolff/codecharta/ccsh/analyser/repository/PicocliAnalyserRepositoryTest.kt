@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.filters.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.analysers.importers.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.analysers.importers.csv.CSVImporter
+import de.maibornwolff.codecharta.analysers.importers.dependacharta.DependaChartaImporter
 import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysers.importers.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter
@@ -67,7 +68,8 @@ class PicocliAnalyserRepositoryTest {
             SonarImporter(), SourceMonitorImporter(),
             SVNLogParser(), GitLogParser(),
             SourceCodeParser(), CodeMaatImporter(),
-            TokeiImporter(), RawTextParser(),
+            TokeiImporter(), DependaChartaImporter(),
+            RawTextParser(),
             ValidationTool(), InspectionTool()
         )
     }
@@ -98,6 +100,7 @@ class PicocliAnalyserRepositoryTest {
                 listOf(SourceCodeParser.NAME, " - " + SourceCodeParser.DESCRIPTION),
                 listOf(CodeMaatImporter.NAME, " - " + CodeMaatImporter.DESCRIPTION),
                 listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
+                listOf(DependaChartaImporter.NAME, " - " + DependaChartaImporter.DESCRIPTION),
                 listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
                 listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
                 listOf(InspectionTool.NAME, " - " + InspectionTool.DESCRIPTION)

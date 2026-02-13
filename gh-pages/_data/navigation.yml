@@ -69,6 +69,8 @@ docs:
             url: "/docs/importer/sourcemonitor"
           - title: "Code Maat"
             url: "/docs/importer/code-maat"
+          - title: "DependaCharta"
+            url: "/docs/importer/dependacharta"
     - title: "CCSH - Parser"
       children:
           - title: "Source Code"
