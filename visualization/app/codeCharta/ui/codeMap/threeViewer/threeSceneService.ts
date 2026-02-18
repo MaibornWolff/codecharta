@@ -1,4 +1,4 @@
-import { AmbientLight, Box3, BufferGeometry, DirectionalLight, Group, Line, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
+import { AmbientLight, Box3, DirectionalLight, Group, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CcState, CodeMapNode, LayoutAlgorithm, Node } from "../../../codeCharta.model"
@@ -37,7 +37,9 @@ export class ThreeSceneService implements OnDestroy {
     private floorLabelDrawer
 
     private selected: CodeMapBuilding = null
-    private highlighted: CodeMapBuilding[] = []
+    private highlightedBuildingIds: Set<number> = new Set()
+    private highlightedNodeIds: Set<number> = new Set()
+    private primaryHighlightedBuilding: CodeMapBuilding = null
     private constantHighlight: Map<number, CodeMapBuilding> = new Map()
 
     private folderLabelColorHighlighted = ColorConverter.convertHexToNumber("#FFFFFF")
@@ -130,7 +132,13 @@ export class ThreeSceneService implements OnDestroy {
 
     applyHighlights() {
         const state = this.state.getValue() as CcState
-        this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
+        this.getMapMesh().highlightBuilding(
+            this.highlightedBuildingIds,
+            this.primaryHighlightedBuilding,
+            this.selected,
+            state,
+            this.constantHighlight
+        )
         if (this.mapGeometry.children[0]) {
             this.highlightMaterial(this.mapGeometry.children[0]["material"])
         }
@@ -167,7 +175,6 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     private highlightMaterial(materials: Material[]) {
-        const highlightedNodeIds = new Set(this.highlighted.map(({ node }) => node.id))
         const constantHighlightedNodes = new Set<number>()
 
         for (const { node } of this.constantHighlight.values()) {
@@ -178,7 +185,7 @@ export class ThreeSceneService implements OnDestroy {
             const materialNodeId = material.userData.id
             if (this.selected && materialNodeId === this.selected.node.id) {
                 material["color"].setHex(this.numberSelectionColor)
-            } else if (highlightedNodeIds.has(materialNodeId) || constantHighlightedNodes.has(materialNodeId)) {
+            } else if (this.highlightedNodeIds.has(materialNodeId) || constantHighlightedNodes.has(materialNodeId)) {
                 material["color"].setHex(this.folderLabelColorHighlighted)
             } else {
                 material["color"]?.setHex(this.folderLabelColorNotHighlighted)
@@ -187,24 +194,36 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     highlightSingleBuilding(building: CodeMapBuilding) {
-        this.highlighted = []
+        this.highlightedBuildingIds.clear()
+        this.highlightedNodeIds.clear()
+        this.primaryHighlightedBuilding = null
         this.addBuildingsToHighlightingList(building)
         this.applyHighlights()
     }
 
     addBuildingsToHighlightingList(...buildings: CodeMapBuilding[]) {
-        this.highlighted.push(...buildings)
+        for (const building of buildings) {
+            if (this.primaryHighlightedBuilding === null) {
+                this.primaryHighlightedBuilding = building
+            }
+            this.highlightedBuildingIds.add(building.id)
+            this.highlightedNodeIds.add(building.node.id)
+        }
     }
 
     clearHoverHighlight() {
-        this.highlighted = []
+        this.highlightedBuildingIds.clear()
+        this.highlightedNodeIds.clear()
+        this.primaryHighlightedBuilding = null
         this.applyHighlights()
     }
 
     clearHighlight() {
         if (this.getMapMesh()) {
             this.getMapMesh().clearUnselectedBuildings(this.selected)
-            this.highlighted = []
+            this.highlightedBuildingIds.clear()
+            this.highlightedNodeIds.clear()
+            this.primaryHighlightedBuilding = null
             this.constantHighlight.clear()
             if (this.mapGeometry.children[0]) {
                 this.resetMaterial(this.mapGeometry.children[0]["material"])
@@ -288,16 +307,9 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     toggleLineAnimation(hoveredLabel: Object3D) {
-        const endPoint = new Vector3(hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
-
-        const pointsBufferGeometry = this.highlightedLine.geometry as BufferGeometry
-        const pointsArray = [...pointsBufferGeometry.attributes.position.array]
-
-        const geometry = new BufferGeometry().setFromPoints([new Vector3(pointsArray[0], pointsArray[1], pointsArray[2]), endPoint])
-
-        const newLineForHighlightedLabel = new Line(geometry, this.highlightedLine.material)
-
-        this.labels.children.splice(this.highlightedLineIndex, 1, newLineForHighlightedLabel)
+        const positionAttribute = this.highlightedLine.geometry.getAttribute("position")
+        positionAttribute.setXYZ(1, hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
+        positionAttribute.needsUpdate = true
     }
 
     getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
@@ -397,7 +409,7 @@ export class ThreeSceneService implements OnDestroy {
             this.eventEmitter.emit("onBuildingDeselected")
         }
 
-        if (this.highlighted.length > 0) {
+        if (this.highlightedBuildingIds.size > 0) {
             this.applyHighlights()
         }
         this.selected = null
@@ -445,7 +457,7 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     getHighlightedBuilding() {
-        return this.highlighted[0]
+        return this.primaryHighlightedBuilding
     }
 
     dispose() {

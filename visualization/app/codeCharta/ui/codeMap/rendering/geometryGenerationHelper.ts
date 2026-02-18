@@ -75,6 +75,11 @@ const uvArray = [
 const numberSides = 6
 const verticesPerSide = 4
 const threeDimensions = 3
+const indicesPerVisibleFace = 6
+const visibleFaces = 5 // skip bottom face — never visible in the treemap
+const indicesPerNode = visibleFaces * indicesPerVisibleFace
+
+export { indicesPerNode }
 
 export function addBoxToVertexData(
     data: IntermediateVertexData,
@@ -247,7 +252,7 @@ function setVerticesAndFaces(
 
     let index = subGeomIndex * numberSides * verticesPerSide
     let vector3Index = index * threeDimensions
-    let surfaceStartIndex = subGeomIndex * numberSides * numberSides
+    let surfaceStartIndex = subGeomIndex * indicesPerNode
 
     const colors = ColorConverter.getVector3Array(color)
 
@@ -271,6 +276,11 @@ function setVerticesAndFaces(
             data.deltas[index] = deltaRelativeToHeight
         }
 
+        // Skip bottom face — never visible in the treemap.
+        if (side === sides.bottom) {
+            continue
+        }
+
         const dimension = Math.floor(side / 2)
         const positiveFacing = normal[dimension] === 1
 
@@ -286,6 +296,6 @@ function setVerticesAndFaces(
             )
         }
 
-        surfaceStartIndex += numberSides
+        surfaceStartIndex += indicesPerVisibleFace
     }
 }

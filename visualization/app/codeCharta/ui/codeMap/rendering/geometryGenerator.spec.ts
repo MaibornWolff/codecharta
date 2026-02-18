@@ -2,6 +2,8 @@ import { Node } from "../../../codeCharta.model"
 import { clone } from "../../../util/clone"
 import { STATE, TEST_NODE_ROOT } from "../../../util/dataMocks"
 import { BuildResult, GeometryGenerator } from "./geometryGenerator"
+import { indicesPerNode } from "./geometryGenerationHelper"
+import { BufferAttribute } from "three"
 
 describe("geometryGenerator", () => {
     let geomGen: GeometryGenerator
@@ -47,6 +49,40 @@ describe("geometryGenerator", () => {
 
             expect(testNodes[0].flat).toBeTruthy()
             expect(buildResult.desc.buildings[0].boundingBox.max.y).toBe(8)
+        })
+    })
+
+    describe("index buffer", () => {
+        it("should generate exactly indicesPerNode (30) indices per node, skipping bottom faces", () => {
+            // Arrange
+            const buildResult = geomGen.build(testNodes, null, state, false)
+
+            // Act
+            const indexAttribute = buildResult.mesh.geometry.index as BufferAttribute
+
+            // Assert
+            expect(indicesPerNode).toBe(30) // 5 visible faces × 6 indices
+            expect(indexAttribute.count).toBe(testNodes.length * indicesPerNode)
+        })
+
+        it("should not reference bottom face vertices (8-11) in index buffer", () => {
+            // Arrange — bottom face vertices are at offset 8-11 within each 24-vertex box
+            const buildResult = geomGen.build(testNodes, null, state, false)
+            const indexAttribute = buildResult.mesh.geometry.index as BufferAttribute
+            const verticesPerBox = 24
+
+            // Act & Assert — check each node's indices
+            for (let node = 0; node < testNodes.length; node++) {
+                const boxBase = node * verticesPerBox
+                const bottomVertexStart = boxBase + 8
+                const bottomVertexEnd = boxBase + 11
+
+                for (let index = node * indicesPerNode; index < (node + 1) * indicesPerNode; index++) {
+                    const vertexIndex = indexAttribute.getX(index)
+                    const isBottomVertex = vertexIndex >= bottomVertexStart && vertexIndex <= bottomVertexEnd
+                    expect(isBottomVertex).toBe(false)
+                }
+            }
         })
     })
 })

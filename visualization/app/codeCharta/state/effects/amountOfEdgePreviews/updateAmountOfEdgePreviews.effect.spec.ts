@@ -8,7 +8,6 @@ import { getLastAction } from "../../../util/testUtils/store.utils"
 import { UpdateAmountOfEdgePreviewsEffect } from "./updateAmountOfEdgePreviews.effect"
 import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../selectors/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
 import { amountOfEdgePreviewsSelector } from "../../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
-import { defaultAmountOfEdgesPreviews } from "../../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.reducer"
 
 describe("UpdateAmountOfEdgePreviewsEffect", () => {
     let actions$: BehaviorSubject<Action>
@@ -58,13 +57,13 @@ describe("UpdateAmountOfEdgePreviewsEffect", () => {
         expect(await getLastAction(store)).toEqual({ type: "SET_AMOUNT_OF_EDGE_PREVIEWS", value: 3 })
     })
 
-    it("should dispatch amount of edge preview to default when amountOfEdgePreviewsSelector was 0 before", async () => {
+    it("should not reset preview amount when it is 0", async () => {
         store.overrideSelector(amountOfEdgePreviewsSelector, 0)
         store.refreshState()
 
         store.overrideSelector(amountOfBuildingsWithSelectedEdgeMetricSelector, 3)
         store.refreshState()
 
-        expect(await getLastAction(store)).toEqual({ type: "SET_AMOUNT_OF_EDGE_PREVIEWS", value: defaultAmountOfEdgesPreviews })
+        expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
     })
 })

@@ -109,3 +109,108 @@ describe("CodeMapBuilding", () => {
         })
     })
 })
+
+describe("CodeMapBuilding cached color vectors", () => {
+    // These tests use real ColorConverter (no mocking) to verify cached vectors
+    // match what the on-demand lightness computation would produce.
+    let originalColorToVector3: typeof ColorConverter.colorToVector3
+
+    beforeEach(() => {
+        // Restore real colorToVector3 and clear the static cache so mock
+        // values from the other describe block don't leak in.
+        if (originalColorToVector3 === undefined) {
+            // Save the real implementation on first call (before any mock replaces it)
+            // Since the sibling describe mocks it in beforeEach, we grab it from prototype
+            originalColorToVector3 = ColorConverter.colorToVector3
+        }
+        ;(ColorConverter as any).colorToVector3Map = new Map()
+        ColorConverter.colorToVector3 = (color: string) => {
+            const convertedColor = Number(`0x${color.slice(1)}`)
+            return new Vector3(((convertedColor >> 16) & 0xff) / 255, ((convertedColor >> 8) & 0xff) / 255, (convertedColor & 0xff) / 255)
+        }
+    })
+
+    it("should return highlighted color vector matching decreaseLightness(-10)", () => {
+        // Arrange
+        const color = "#6699CC"
+        const building = new CodeMapBuilding(0, null, TEST_NODE_ROOT, color)
+
+        // Act
+        const highlightedVector = building.getHighlightedColorVector()
+
+        // Assert — compute expected value the same way decreaseLightness does
+        const referenceBuilding = new CodeMapBuilding(1, null, TEST_NODE_ROOT, color)
+        referenceBuilding.decreaseLightness(-10)
+        const expectedVector = referenceBuilding.getColorVector()
+        expect(highlightedVector.x).toBeCloseTo(expectedVector.x, 5)
+        expect(highlightedVector.y).toBeCloseTo(expectedVector.y, 5)
+        expect(highlightedVector.z).toBeCloseTo(expectedVector.z, 5)
+    })
+
+    it("should return dimmed color vector matching decreaseLightness(20)", () => {
+        // Arrange
+        const color = "#6699CC"
+        const building = new CodeMapBuilding(0, null, TEST_NODE_ROOT, color)
+
+        // Act
+        const dimmedVector = building.getDimmedColorVector()
+
+        // Assert
+        const referenceBuilding = new CodeMapBuilding(1, null, TEST_NODE_ROOT, color)
+        referenceBuilding.decreaseLightness(20)
+        const expectedVector = referenceBuilding.getColorVector()
+        expect(dimmedVector.x).toBeCloseTo(expectedVector.x, 5)
+        expect(dimmedVector.y).toBeCloseTo(expectedVector.y, 5)
+        expect(dimmedVector.z).toBeCloseTo(expectedVector.z, 5)
+    })
+
+    it("should return highlighted delta color vector for default delta color #000000", () => {
+        // Arrange
+        const building = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#DDCC00")
+
+        // Act
+        const highlightedDeltaVector = building.getHighlightedDeltaColorVector()
+
+        // Assert — default delta is #000000, lightness decrease of -10 clamped at 10
+        expect(highlightedDeltaVector).toBeDefined()
+        expect(highlightedDeltaVector).toBeInstanceOf(Vector3)
+    })
+
+    it("should update cached delta vectors when setInitialDeltaColor is called", () => {
+        // Arrange
+        const building = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#DDCC00")
+        const newDeltaColor = "#FF5500"
+
+        // Act
+        building.setInitialDeltaColor(newDeltaColor)
+
+        // Assert — create a fresh building with same color as delta to compare
+        const referenceBuilding = new CodeMapBuilding(1, null, TEST_NODE_ROOT, newDeltaColor)
+        const expectedHighlighted = referenceBuilding.getHighlightedColorVector()
+        const expectedDimmed = referenceBuilding.getDimmedColorVector()
+
+        const actualHighlighted = building.getHighlightedDeltaColorVector()
+        const actualDimmed = building.getDimmedDeltaColorVector()
+
+        expect(actualHighlighted.x).toBeCloseTo(expectedHighlighted.x, 5)
+        expect(actualHighlighted.y).toBeCloseTo(expectedHighlighted.y, 5)
+        expect(actualHighlighted.z).toBeCloseTo(expectedHighlighted.z, 5)
+        expect(actualDimmed.x).toBeCloseTo(expectedDimmed.x, 5)
+        expect(actualDimmed.y).toBeCloseTo(expectedDimmed.y, 5)
+        expect(actualDimmed.z).toBeCloseTo(expectedDimmed.z, 5)
+    })
+
+    it("should have different highlighted and dimmed color vectors", () => {
+        // Arrange
+        const building = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#6699CC")
+
+        // Act
+        const highlighted = building.getHighlightedColorVector()
+        const dimmed = building.getDimmedColorVector()
+
+        // Assert — highlighted is brighter (decreased by -10), dimmed is darker (decreased by 20)
+        const highlightedSum = highlighted.x + highlighted.y + highlighted.z
+        const dimmedSum = dimmed.x + dimmed.y + dimmed.z
+        expect(highlightedSum).toBeGreaterThan(dimmedSum)
+    })
+})

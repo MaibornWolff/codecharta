@@ -35,6 +35,7 @@ export class ThreeRendererService {
     renderer: WebGLRenderer
     scene: Scene
     camera: Camera
+    private renderScheduled = false
 
     constructor(
         private store: Store<CcState>,
@@ -129,11 +130,18 @@ export class ThreeRendererService {
     }
 
     render() {
-        const { scene, camera, composer, renderer } = this
-        if (ThreeRendererService.enableFXAA) {
-            composer?.render()
-        } else {
-            renderer?.render(scene, camera)
+        if (this.renderScheduled) {
+            return
         }
+        this.renderScheduled = true
+        requestAnimationFrame(() => {
+            this.renderScheduled = false
+            const { scene, camera, composer, renderer } = this
+            if (ThreeRendererService.enableFXAA) {
+                composer?.render()
+            } else {
+                renderer?.render(scene, camera)
+            }
+        })
     }
 }

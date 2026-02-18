@@ -280,18 +280,24 @@ describe("threeRendererService", () => {
             expect(render).not.toHaveBeenCalled()
         })
 
-        it("should call composer when FXAA is enabled", () => {
+        it("should call composer when FXAA is enabled", done => {
             setFXAA(true)
 
             threeRendererService.render()
-            expect(threeRendererService.composer.render).toHaveBeenCalled()
+            requestAnimationFrame(() => {
+                expect(threeRendererService.composer.render).toHaveBeenCalled()
+                done()
+            })
         })
 
-        it("should call normal renderer when FXAA is disabled", () => {
+        it("should call normal renderer when FXAA is disabled", done => {
             setFXAA(false)
 
             threeRendererService.render()
-            expect(threeRendererService.renderer.render).toHaveBeenCalledWith(threeRendererService.scene, threeRendererService.camera)
+            requestAnimationFrame(() => {
+                expect(threeRendererService.renderer.render).toHaveBeenCalledWith(threeRendererService.scene, threeRendererService.camera)
+                done()
+            })
         })
     })
 })
