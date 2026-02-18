@@ -2,6 +2,7 @@ import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../preview3DPrintMesh"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BufferAttribute, BufferGeometry, Float32BufferAttribute, InterleavedBufferAttribute, Mesh } from "three"
+import { indicesPerNode } from "../../../../ui/codeMap/rendering/geometryGenerationHelper"
 
 export class MapMesh extends CustomVisibilityMesh {
     private originalColors: BufferAttribute | InterleavedBufferAttribute
@@ -14,6 +15,7 @@ export class MapMesh extends CustomVisibilityMesh {
         this.material = (geometryOptions.originalMapMesh.clone() as Mesh).material
         this.originalColors = geometryOptions.originalMapMesh.geometry.attributes.color
         const newMapGeometry = geometryOptions.originalMapMesh.geometry.clone()
+        this.addBottomFaces(newMapGeometry)
         newMapGeometry.computeBoundingBox()
         newMapGeometry.rotateX(Math.PI / 2)
         this.updateMapGeometry(geometryOptions, newMapGeometry)
@@ -69,6 +71,35 @@ export class MapMesh extends CustomVisibilityMesh {
             newColors.push(...newColor)
         }
         previewMap.setAttribute("color", new Float32BufferAttribute(newColors, 3))
+    }
+
+    private addBottomFaces(geometry: BufferGeometry) {
+        const oldIndex = geometry.index
+        if (!oldIndex) {
+            return
+        }
+
+        const verticesPerBox = 24 // 6 sides × 4 vertices
+        const bottomFaceIndicesCount = 6 // 2 triangles for the bottom face
+        const bottomFaceVertexOffset = 8 // bottom face starts at vertex 8 within each box
+
+        const numBoxes = oldIndex.count / indicesPerNode
+        const newIndexArray = new Uint32Array(oldIndex.count + numBoxes * bottomFaceIndicesCount)
+        newIndexArray.set(new Uint32Array(oldIndex.array.buffer, oldIndex.array.byteOffset, oldIndex.count))
+
+        let writeOffset = oldIndex.count
+        for (let box = 0; box < numBoxes; box++) {
+            const base = box * verticesPerBox + bottomFaceVertexOffset
+            // Negative-facing Y winding order (matching the original geometry generator)
+            newIndexArray[writeOffset++] = base
+            newIndexArray[writeOffset++] = base + 2
+            newIndexArray[writeOffset++] = base + 1
+            newIndexArray[writeOffset++] = base
+            newIndexArray[writeOffset++] = base + 3
+            newIndexArray[writeOffset++] = base + 2
+        }
+
+        geometry.setIndex(new BufferAttribute(newIndexArray, 1))
     }
 
     async changeSize(geometryOptions: GeometryOptions, oldWidth: number): Promise<void> {

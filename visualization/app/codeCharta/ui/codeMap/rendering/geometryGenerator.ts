@@ -1,6 +1,6 @@
 import { Node, CcState } from "../../../codeCharta.model"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
-import { addBoxToVertexData, IntermediateVertexData, BoxMeasures } from "./geometryGenerationHelper"
+import { addBoxToVertexData, IntermediateVertexData, BoxMeasures, indicesPerNode } from "./geometryGenerationHelper"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { Mesh, BufferGeometry, Material, BufferAttribute } from "three"
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
@@ -36,7 +36,7 @@ export class GeometryGenerator {
             normals: new Float32Array(size * threeDimension),
             colors: new Float32Array(size * threeDimension),
 
-            indices: new Uint32Array(vertices * numberSides * numberSides),
+            indices: new Uint32Array(vertices * indicesPerNode),
             ids: new Float32Array(size),
 
             deltas: new Float32Array(size),

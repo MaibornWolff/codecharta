@@ -12,6 +12,11 @@ export class CodeMapBuilding {
     private _node: Node
     parent: CodeMapBuilding
 
+    private _highlightedColorVector: Vector3
+    private _dimmedColorVector: Vector3
+    private _highlightedDeltaColorVector: Vector3
+    private _dimmedDeltaColorVector: Vector3
+
     constructor(id: number, box: Box3, node: Node, color: string) {
         this._id = id
         this._boundingBox = box
@@ -20,6 +25,21 @@ export class CodeMapBuilding {
         this._deltaColor = "#000000"
         this._defaultDeltaColor = "#000000"
         this._node = node
+        if (color) {
+            this._computeCachedColorVectors()
+        }
+    }
+
+    private _computeCachedColorVectors() {
+        this._highlightedColorVector = this._computeColorVector(this._defaultColor, -10)
+        this._dimmedColorVector = this._computeColorVector(this._defaultColor, 20)
+        this._highlightedDeltaColorVector = this._computeColorVector(this._defaultDeltaColor, -10)
+        this._dimmedDeltaColorVector = this._computeColorVector(this._defaultDeltaColor, 20)
+    }
+
+    private _computeColorVector(color: string, lightnessChange: number): Vector3 {
+        const hex = this._decreaseLightnessForColor(color, lightnessChange)
+        return ColorConverter.getVector3(hex)
     }
 
     getCenterPoint(mapSize: number) {
@@ -63,6 +83,22 @@ export class CodeMapBuilding {
 
     getDefaultDeltaColorVector() {
         return ColorConverter.getVector3(this._defaultDeltaColor)
+    }
+
+    getHighlightedColorVector() {
+        return this._highlightedColorVector
+    }
+
+    getDimmedColorVector() {
+        return this._dimmedColorVector
+    }
+
+    getHighlightedDeltaColorVector() {
+        return this._highlightedDeltaColorVector
+    }
+
+    getDimmedDeltaColorVector() {
+        return this._dimmedDeltaColorVector
     }
 
     resetColor() {
@@ -109,6 +145,8 @@ export class CodeMapBuilding {
     setInitialDeltaColor(color: string) {
         this._defaultDeltaColor = color
         this._deltaColor = color
+        this._highlightedDeltaColorVector = this._computeColorVector(color, -10)
+        this._dimmedDeltaColorVector = this._computeColorVector(color, 20)
     }
 
     setDeltaColor(color: string) {

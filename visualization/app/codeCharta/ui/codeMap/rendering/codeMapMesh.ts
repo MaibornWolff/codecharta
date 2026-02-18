@@ -4,7 +4,7 @@ import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, Scaling, CcState } from "../../../codeCharta.model"
 import { BufferAttribute, Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
-import { TreeMapHelper, treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
+import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 
 export interface MousePos {
     x: number
@@ -78,20 +78,23 @@ export class CodeMapMesh {
     }
 
     highlightBuilding(
-        highlightedBuildings: CodeMapBuilding[],
+        highlightedBuildingIds: Set<number>,
+        primaryBuilding: CodeMapBuilding,
         selected: CodeMapBuilding,
         state: CcState,
         constantHighlight: Map<number, CodeMapBuilding>
     ) {
-        const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
+        const usePresentationMode = state.appSettings.isPresentationMode
         for (const building of this.mapGeomDesc.buildings) {
             if (!this.isBuildingSelected(selected, building)) {
-                if (highlightBuildingMap.get(building.id) || constantHighlight.get(building.id)) {
-                    building.decreaseLightness(CodeMapMesh.LIGHTNESS_INCREASE)
+                if (highlightedBuildingIds.has(building.id) || constantHighlight.has(building.id)) {
+                    this.setVertexColor(building.id, building.getHighlightedColorVector(), building.getHighlightedDeltaColorVector())
+                } else if (usePresentationMode && primaryBuilding) {
+                    this.adjustSurroundingBuildingColors(primaryBuilding, building, state)
+                    this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
                 } else {
-                    this.adjustSurroundingBuildingColors(highlightedBuildings, building, state)
+                    this.setVertexColor(building.id, building.getDimmedColorVector(), building.getDimmedDeltaColorVector())
                 }
-                this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
             }
         }
         this.updateVertices()
@@ -110,13 +113,9 @@ export class CodeMapMesh {
         this.updateVertices()
     }
 
-    private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: CcState) {
-        if (state.appSettings.isPresentationMode) {
-            const distance = highlighted[0].getCenterPoint(treeMapSize).distanceTo(building.getCenterPoint(treeMapSize))
-            this.decreaseLightnessByDistance(building, distance)
-        } else {
-            building.decreaseLightness(CodeMapMesh.LIGHTNESS_DECREASE)
-        }
+    private adjustSurroundingBuildingColors(primaryBuilding: CodeMapBuilding, building: CodeMapBuilding, state: CcState) {
+        const distance = primaryBuilding.getCenterPoint(treeMapSize).distanceTo(building.getCenterPoint(treeMapSize))
+        this.decreaseLightnessByDistance(building, distance)
     }
 
     private initDeltaColorsOnMesh(state: CcState) {

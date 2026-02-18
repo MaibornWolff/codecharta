@@ -58,7 +58,8 @@ describe("ThreeSceneService", () => {
             threeSceneService.applyHighlights()
 
             expect(threeSceneService["mapMesh"].highlightBuilding).toHaveBeenCalledWith(
-                threeSceneService["highlighted"],
+                threeSceneService["highlightedBuildingIds"],
+                threeSceneService["primaryHighlightedBuilding"],
                 null,
                 state.getValue(),
                 threeSceneService["constantHighlight"]
@@ -69,11 +70,14 @@ describe("ThreeSceneService", () => {
 
     describe("addBuildingsToHighlightingList", () => {
         it("should add the given building to the HighlightingList ", () => {
-            threeSceneService["highlighted"] = []
+            threeSceneService["highlightedBuildingIds"] = new Set()
+            threeSceneService["highlightedNodeIds"] = new Set()
+            threeSceneService["primaryHighlightedBuilding"] = null
 
             threeSceneService.addBuildingsToHighlightingList(CODE_MAP_BUILDING)
 
-            expect(threeSceneService["highlighted"]).toEqual([CODE_MAP_BUILDING])
+            expect(threeSceneService["highlightedBuildingIds"].has(CODE_MAP_BUILDING.id)).toBe(true)
+            expect(threeSceneService["primaryHighlightedBuilding"]).toBe(CODE_MAP_BUILDING)
         })
     })
 
@@ -186,7 +190,9 @@ describe("ThreeSceneService", () => {
         it("should add a building to the highlighting list and call the highlight function", () => {
             threeSceneService.addBuildingsToHighlightingList = jest.fn()
             threeSceneService.applyHighlights = jest.fn()
-            threeSceneService["highlighted"] = []
+            threeSceneService["highlightedBuildingIds"] = new Set()
+            threeSceneService["highlightedNodeIds"] = new Set()
+            threeSceneService["primaryHighlightedBuilding"] = null
 
             threeSceneService.highlightSingleBuilding(CODE_MAP_BUILDING)
 
@@ -233,7 +239,8 @@ describe("ThreeSceneService", () => {
         it("should clear the highlighting list", () => {
             threeSceneService.clearHighlight()
 
-            expect(threeSceneService["highlighted"]).toHaveLength(0)
+            expect(threeSceneService["highlightedBuildingIds"].size).toBe(0)
+            expect(threeSceneService["primaryHighlightedBuilding"]).toBeNull()
         })
     })
 
@@ -370,7 +377,7 @@ describe("ThreeSceneService", () => {
         it("should set endpoint to given hoveredLabel coordinates if not in reset mode", () => {
             threeSceneService.toggleLineAnimation(hoveredLabel)
 
-            const pointsBufferGeometry = threeSceneService.labels.children[1]["geometry"] as BufferGeometry
+            const pointsBufferGeometry = threeSceneService["highlightedLine"]["geometry"] as BufferGeometry
             const pointsArray = [...pointsBufferGeometry.attributes.position.array]
             expect(new Vector3(pointsArray[0], pointsArray[1], pointsArray[2])).toEqual(new Vector3(3, 3, 3))
             expect(new Vector3(pointsArray[3], pointsArray[4], pointsArray[5])).toEqual(new Vector3(2, 2, 2))
@@ -379,7 +386,7 @@ describe("ThreeSceneService", () => {
         it("should set endpoint to highlightedLabel if in reset mode", () => {
             threeSceneService.resetLabel()
 
-            const pointsBufferGeometry = threeSceneService.labels.children[1]["geometry"] as BufferGeometry
+            const pointsBufferGeometry = highlightedLine["geometry"] as BufferGeometry
             const pointsArray = [...pointsBufferGeometry.attributes.position.array]
 
             expect(new Vector3(pointsArray[0], pointsArray[1], pointsArray[2])).toEqual(new Vector3(3, 3, 3))
@@ -485,13 +492,15 @@ describe("ThreeSceneService", () => {
 
         it("WHEN highlighting buildings without extensions then only files without extensions are highlighted", () => {
             threeSceneService.highlightBuildingsWithoutExtensions()
-            const fileNames = threeSceneService["highlighted"].map(it => it.node.name)
+            const buildings = threeSceneService["mapMesh"].getMeshDescription().buildings
+            const fileNames = buildings.filter(b => threeSceneService["highlightedBuildingIds"].has(b.id)).map(b => b.node.name)
             expect(fileNames).toEqual([TEST_LEAF_NODE_WITHOUT_EXTENSION.name])
         })
 
         it("WHEN highlighting buildings with extensions then only files without extensions are highlighted", () => {
             threeSceneService.highlightBuildingsByExtension(new Set<string>(["ts"]))
-            const fileNames = threeSceneService["highlighted"].map(it => it.node.name)
+            const buildings = threeSceneService["mapMesh"].getMeshDescription().buildings
+            const fileNames = buildings.filter(b => threeSceneService["highlightedBuildingIds"].has(b.id)).map(b => b.node.name)
             expect(fileNames).toEqual([TEST_NODE_LEAF.name, TEST_NODE_LEAF_0_LENGTH.name])
         })
     })

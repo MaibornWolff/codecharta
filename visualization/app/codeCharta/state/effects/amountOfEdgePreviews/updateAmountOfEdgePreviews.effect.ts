@@ -6,7 +6,6 @@ import { amountOfEdgePreviewsSelector } from "../../store/appSettings/amountOfEd
 import { filter, map, skip, withLatestFrom } from "rxjs"
 import { setAmountOfEdgePreviews } from "../../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { createEffect } from "@ngrx/effects"
-import { defaultAmountOfEdgesPreviews } from "../../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.reducer"
 
 @Injectable()
 export class UpdateAmountOfEdgePreviewsEffect {
@@ -18,12 +17,9 @@ export class UpdateAmountOfEdgePreviewsEffect {
             skip(1),
             filter(
                 ([amountOfBuildingsWithSelectedEdgeMetric, amountOfEdgePreviews]) =>
-                    amountOfEdgePreviews > amountOfBuildingsWithSelectedEdgeMetric || amountOfEdgePreviews === 0
+                    amountOfEdgePreviews > amountOfBuildingsWithSelectedEdgeMetric
             ),
-            map(([amountOfBuildingsWithSelectedEdgeMetric, amountOfEdgePreviews]) => {
-                if (amountOfEdgePreviews === 0) {
-                    return setAmountOfEdgePreviews({ value: defaultAmountOfEdgesPreviews })
-                }
+            map(([amountOfBuildingsWithSelectedEdgeMetric]) => {
                 return setAmountOfEdgePreviews({ value: amountOfBuildingsWithSelectedEdgeMetric })
             })
         )
