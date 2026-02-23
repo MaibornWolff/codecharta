@@ -100,8 +100,7 @@
     "safe-stable-stringify": "^2.5.0",
     "shelljs": "^0.10.0",
     "tailwindcss": "^4.1.15",
-    "three": "^0.168.0",
-    "three-orbit-controls": "^82.1.0",
+    "three": "^0.182.0",
     "typescript-json-schema": "0.66.0",
     "zone.js": "^0.15.1"
   },
@@ -119,7 +118,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.9",
-    "@types/three": "^0.168.0",
+    "@types/three": "^0.182.0",
     "autoprefixer": "^10.4.23",
     "bestzip": "^2.2.1",
     "daisyui": "^5.5.14",
