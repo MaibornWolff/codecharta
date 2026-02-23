@@ -70,8 +70,8 @@ describe("ThreeSceneService", () => {
 
     describe("addBuildingsToHighlightingList", () => {
         it("should add the given building to the HighlightingList ", () => {
-            threeSceneService["highlightedBuildingIds"] = new Set()
-            threeSceneService["highlightedNodeIds"] = new Set()
+            threeSceneService["highlightedBuildingIds"].clear()
+            threeSceneService["highlightedNodeIds"].clear()
             threeSceneService["primaryHighlightedBuilding"] = null
 
             threeSceneService.addBuildingsToHighlightingList(CODE_MAP_BUILDING)
@@ -156,8 +156,8 @@ describe("ThreeSceneService", () => {
         it("should add a building to the highlighting list and call the highlight function", () => {
             threeSceneService.addBuildingsToHighlightingList = jest.fn()
             threeSceneService.applyHighlights = jest.fn()
-            threeSceneService["highlightedBuildingIds"] = new Set()
-            threeSceneService["highlightedNodeIds"] = new Set()
+            threeSceneService["highlightedBuildingIds"].clear()
+            threeSceneService["highlightedNodeIds"].clear()
             threeSceneService["primaryHighlightedBuilding"] = null
 
             threeSceneService.highlightSingleBuilding(CODE_MAP_BUILDING)

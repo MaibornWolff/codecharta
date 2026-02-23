@@ -63,7 +63,7 @@ export class ColorSettingsPanelComponent {
         )
     }
 
-    private updateColorRangeDebounced = (() => {
+    private readonly updateColorRangeDebounced = (() => {
         let pendingLeftValue: null | number = null
         let pendingRightValue: null | number = null
 

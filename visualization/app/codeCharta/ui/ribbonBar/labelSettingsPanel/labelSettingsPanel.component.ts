@@ -45,7 +45,7 @@ export class LabelSettingsPanelComponent {
     mapColors$ = this.store.select(mapColorsSelector)
     isDeltaState$ = this.store.select(isDeltaStateSelector)
 
-    constructor(private store: Store<CcState>) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     readonly applyDebouncedTopLabels = debounce((amountOfTopLabels: number) => {
         this.store.dispatch(setAmountOfTopLabels({ value: amountOfTopLabels }))
