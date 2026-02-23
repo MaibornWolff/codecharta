@@ -60,7 +60,7 @@ describe("HighlightBuildingsByFileExtensionService", () => {
                     provide: ThreeSceneService,
                     useValue: {
                         highlightBuildingsByExtension: jest.fn(),
-                        applyClearHightlights: jest.fn(),
+                        applyClearHighlights: jest.fn(),
                         highlightBuildingsWithoutExtensions: jest.fn()
                     }
                 },
@@ -106,6 +106,6 @@ describe("HighlightBuildingsByFileExtensionService", () => {
 
     it("Clear highlighting will call the 3sceneService to clear all the highlighting", () => {
         fixture.clearHighlightingOnFileExtensions()
-        expect(threeSceneServiceWithMockedMethods.applyClearHightlights).toHaveBeenCalledTimes(1)
+        expect(threeSceneServiceWithMockedMethods.applyClearHighlights).toHaveBeenCalledTimes(1)
     })
 })

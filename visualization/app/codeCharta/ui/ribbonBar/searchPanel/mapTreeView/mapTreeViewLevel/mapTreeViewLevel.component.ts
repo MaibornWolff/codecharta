@@ -57,17 +57,12 @@ export class MapTreeViewLevelComponent implements OnInit {
     }
 
     onMouseEnter() {
-        const building = this.idToBuildingService.get(this.node.id)
-        const labels = this.threeSceneService.labels?.children
-        this.codeMapMouseEventService.setLabelHoveredLeaf(building, labels)
         this.codeMapMouseEventService.hoverNode(this.node.id)
         this.store.dispatch(setHoveredNodeId({ value: this.node.id }))
     }
 
     onMouseLeave() {
-        this.threeSceneService.resetLabel()
         this.codeMapMouseEventService.unhoverNode()
-        this.codeMapMouseEventService.clearLabelHoveredBuilding()
         this.store.dispatch(setHoveredNodeId({ value: null }))
     }
 

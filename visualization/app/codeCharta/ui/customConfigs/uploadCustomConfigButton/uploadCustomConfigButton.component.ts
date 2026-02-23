@@ -14,6 +14,7 @@ export class UploadCustomConfigButtonComponent {
         const fileInput = createCCFileInput()
         fileInput.addEventListener("change", () => {
             void this.uploadOnEvent(fileInput)
+            fileInput.remove()
         })
         fileInput.click()
     }

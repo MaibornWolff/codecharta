@@ -4,7 +4,7 @@ import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGe
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { CcState, CodeMapNode, LayoutAlgorithm, Node } from "../../codeCharta.model"
+import { CcState, CodeMapNode, colorLabelTypes, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
@@ -162,11 +162,12 @@ export class CodeMapRenderService implements OnDestroy {
         if (showMetricLabelNodeName || showMetricLabelNameValue) {
             const highestNodeInSet = sortedNodes[0].height
 
-            for (const colorType of ["positive", "neutral", "negative"]) {
-                if (colorLabelOptions[colorType]) {
-                    this.setBuildingLabel(this.nodesByColor[colorType], highestNodeInSet)
-                }
-            }
+            const selectedColorNodes = colorLabelTypes
+                .filter(colorType => colorLabelOptions[colorType])
+                .flatMap(colorType => this.nodesByColor[colorType])
+                .sort((a, b) => b.height - a.height)
+                .slice(0, amountOfTopLabels)
+            this.setBuildingLabel(selectedColorNodes, highestNodeInSet)
 
             if (!(colorLabelOptions.negative || colorLabelOptions.neutral || colorLabelOptions.positive)) {
                 const nodes = sortedNodes.filter(node => node.isLeaf).slice(0, amountOfTopLabels)

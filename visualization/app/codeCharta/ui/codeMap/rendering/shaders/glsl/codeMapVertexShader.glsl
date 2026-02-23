@@ -1,11 +1,13 @@
 #define saturate(a) clamp( a, 0.0, 1.0)
 #define RECIPROCAL_PI 0.31830988618
 #define PI 3.14159265359
+#define Z_FIGHTING_SCALE 1000.0
 
 attribute vec3 color;
 attribute vec3 deltaColor;
-attribute highp float delta;
+attribute mediump float delta; // normalized 0–1 value; mediump is sufficient
 attribute lowp float isHeight;
+attribute lowp float isLeaf;
 
 varying vec3 vWorldNormal;
 varying highp float vDelta;
@@ -53,48 +55,59 @@ vec3 getBaseOutgoingLight(const vec3 lightFront) {
     return (reflectedLight.directDiffuse + reflectedLight.indirectDiffuse);
 }
 
-// better to calc the colors in vertex as no color interpolation is used, performance improvements will be noticeable 
-// once frustum or occlusion culling is properly used
+// Colors are computed per-vertex because no color interpolation is used across faces.
 
-void main() 
+void main()
 {
+    float effectiveIsHeight = isHeight * isLeaf;
+
+#ifdef USE_INSTANCING
+    // Transform template vertex by instance matrix (scale + translate)
+    vec4 instancePos = instanceMatrix * vec4(position, 1.0);
+
+    // Z-fighting offset applied in model space (Y is up).
+    // The formula is intentionally identical to the non-instanced path below:
+    //   effectiveIsHeight * max(0.0, cameraPosition.y / Z_FIGHTING_SCALE)
+    // Written as += here because instancePos is already a vec4 copy.
+    instancePos.y += effectiveIsHeight * max(0.0, cameraPosition.y / Z_FIGHTING_SCALE);
+
+    vec4 modelViewPosition = modelViewMatrix * instancePos;
+    gl_Position = projectionMatrix * modelViewPosition;
+
+    // Normals: axis-aligned scale preserves direction after normalize
+    vec3 transformedNormal = normalize((instanceMatrix * vec4(normal, 0.0)).xyz);
+    vec3 worldNormal = vWorldNormal = normalize((modelMatrix * vec4(transformedNormal, 0.0)).xyz);
+    vec3 nrm = normalize(normalMatrix * transformedNormal);
+#else
+    // Z-fighting offset: semantically identical to the instanced path above.
+    // Written as an explicit copy-and-add because there is no instance matrix to apply first.
     vec3 adjustedHeightPos = position;
-    
-    // height position will be adjusted based on camera position in order to prevent 
-    // z-fighting in different zoom levels when position is positive.
-    // preferred multiplication over if branching of the isHeight variable 
-    // the same line could be written this way : 
-    //
-    // adjustedHeightPos = position
-    // if (isHeight>0.5 && cameraPosition.y>0) {
-    //    adjustedHeightPos.y = position.y + cameraPosition.y/1000.
-    // } 
-    // 
-    
-    adjustedHeightPos.y = position.y + (isHeight*max(0.,cameraPosition.y/1000.));
+    adjustedHeightPos.y = position.y + (effectiveIsHeight * max(0.0, cameraPosition.y / Z_FIGHTING_SCALE));
 
 	vec4 modelViewPosition = modelViewMatrix * vec4(adjustedHeightPos, 1.0);
 	gl_Position = projectionMatrix * modelViewPosition;
 
     vec3 worldNormal = vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
-    vec3 normal= normalize(normalMatrix * normal);
+    vec3 nrm = normalize(normalMatrix * normal);
+#endif
+
     vec3 lightFront = vec3(0.0);
 
     vUV = uv;
     vDelta = abs(delta);
 
-    for (int i=0; i < 2; ++i)
+    for (int i=0; i < NUM_DIR_LIGHTS; ++i)
     {
         IncidentLight directLight;
 
         getDirectionalDirectLightIrradiance(directionalLights[i],directLight);
-        float dotNL = dot(normal, directLight.direction);
-        vec3 directLightColor_Diffuse = PI * directLight.color; 
+        float dotNL = dot(nrm, directLight.direction);
+        vec3 directLightColor_Diffuse = PI * directLight.color;
         lightFront += saturate(dotNL) * directLightColor_Diffuse;
     }
 
     vec3 baseOutgoingLight = getBaseOutgoingLight(lightFront);
-    
+
     vOutgoingDiffuseColor = vec4(BRDF_Diffuse_Lambert(color.rgb)*baseOutgoingLight,1.0);
     vOutgoingDiffuseDeltaColor = vec4(BRDF_Diffuse_Lambert(deltaColor)*baseOutgoingLight,1.0);
 }

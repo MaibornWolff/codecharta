@@ -21,6 +21,7 @@ export class UploadFilesService {
         const ccFileInput = createCCFileInput()
         ccFileInput.addEventListener("change", () => {
             void this.uploadFilesOnEvent(ccFileInput)
+            ccFileInput.remove()
         })
 
         ccFileInput.click()

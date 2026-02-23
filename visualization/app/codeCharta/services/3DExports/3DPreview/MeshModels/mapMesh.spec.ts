@@ -183,7 +183,6 @@ describe("MapMesh", () => {
     it("should use correct bottom face winding order matching the original geometry generator", async () => {
         // Arrange — single box with real vertex positions so we can verify winding
         const verticesPerBox = 24
-        const numBoxes = 1
         // Create a unit box at origin: min=(0,0,0) max=(1,1,1)
         // Vertex layout per box: left(4), right(4), bottom(4), top(4), back(4), front(4)
         const positions = new Float32Array(verticesPerBox * 3)

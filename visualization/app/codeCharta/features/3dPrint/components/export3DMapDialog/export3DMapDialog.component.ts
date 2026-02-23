@@ -64,6 +64,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
     maxWidth = signal(0)
     wantedWidth = signal(0)
     private previewMesh: Preview3DPrintMesh
+    private readonly exportMesh: Mesh
 
     private readonly areaMetric: string
     private readonly heightMetric: string
@@ -77,14 +78,16 @@ export class Export3DMapDialogComponent implements AfterViewInit {
     private readonly mapSideOffset = 10
     private readonly baseplateHeight = 1
     private readonly logoSize = 10
+    private readonly primaryShaderMaterialIndex = 0
 
     constructor(
         private readonly state: State<CcState>,
         private readonly threeSceneService: ThreeSceneService
     ) {
+        this.exportMesh = this.threeSceneService.getMapMesh().toExportMesh()
         const initialMaxWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
             new Vector3(this.selectedPrinter().x, this.selectedPrinter().y, this.selectedPrinter().z),
-            this.threeSceneService.getMapMesh().getThreeMesh(),
+            this.exportMesh,
             this.frontTextSize,
             this.baseplateHeight,
             this.mapSideOffset
@@ -255,7 +258,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
     private makeMapMaxSize() {
         const newMaxWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
             new Vector3(this.selectedPrinter().x, this.selectedPrinter().y, this.selectedPrinter().z),
-            this.threeSceneService.getMapMesh().getThreeMesh(),
+            this.exportMesh,
             this.frontTextSize,
             this.baseplateHeight,
             this.mapSideOffset
@@ -284,7 +287,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
         const colorMetricTitle = attributeDescriptors[this.colorMetric]?.title || fallbackTitles.get(this.colorMetric)
 
         return {
-            originalMapMesh: this.threeSceneService.getMapMesh().getThreeMesh(),
+            originalMapMesh: this.exportMesh,
             width: this.wantedWidth(),
             areaMetricTitle,
             areaMetricData: this.nodeMetricData.find(metric => metric.name === this.areaMetric),
@@ -297,7 +300,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
             secondRowText: this.secondRowText(),
             secondRowVisible: this.secondRowVisible(),
             qrCodeText: this.qrCodeText(),
-            defaultMaterial: this.threeSceneService.getMapMesh().getThreeMesh().material[0].clone() as ShaderMaterial,
+            defaultMaterial: this.exportMesh.material[this.primaryShaderMaterialIndex].clone() as ShaderMaterial,
             numberOfColors: this.currentNumberOfColors,
             layerHeight: this.layerHeight,
             frontTextSize: this.frontTextSize,

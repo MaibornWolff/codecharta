@@ -49,12 +49,12 @@ describe("threeRendererService", () => {
     let store: Store
 
     const setFXAA = (value: boolean) => {
-        ThreeRendererService.enableFXAA = value
+        threeRendererService.enableFXAA = value
         store.dispatch(setSharpnessMode({ value: value ? SharpnessMode.PixelRatioFXAA : SharpnessMode.Standard }))
     }
 
     const setPixelRatio = (value: boolean) => {
-        ThreeRendererService.setPixelRatio = value
+        threeRendererService.setPixelRatio = value
         store.dispatch(setSharpnessMode({ value: value ? SharpnessMode.PixelRatioFXAA : SharpnessMode.Standard }))
     }
 
@@ -171,9 +171,9 @@ describe("threeRendererService", () => {
 
             threeRendererService["setGLOptions"]()
 
-            expect(ThreeRendererService.RENDER_OPTIONS.antialias).toBe(true)
-            expect(ThreeRendererService.enableFXAA).toBe(false)
-            expect(ThreeRendererService.setPixelRatio).toBe(false)
+            expect(threeRendererService.renderOptions.antialias).toBe(true)
+            expect(threeRendererService.enableFXAA).toBe(false)
+            expect(threeRendererService.setPixelRatio).toBe(false)
         })
 
         it("should call and set the pixel ratio with no AA options", () => {
@@ -181,9 +181,9 @@ describe("threeRendererService", () => {
 
             threeRendererService["setGLOptions"]()
 
-            expect(ThreeRendererService.RENDER_OPTIONS.antialias).toBe(false)
-            expect(ThreeRendererService.enableFXAA).toBe(false)
-            expect(ThreeRendererService.setPixelRatio).toBe(true)
+            expect(threeRendererService.renderOptions.antialias).toBe(false)
+            expect(threeRendererService.enableFXAA).toBe(false)
+            expect(threeRendererService.setPixelRatio).toBe(true)
         })
 
         it("should call and set the pixel ratio with FXAA options", () => {
@@ -191,9 +191,9 @@ describe("threeRendererService", () => {
 
             threeRendererService["setGLOptions"]()
 
-            expect(ThreeRendererService.RENDER_OPTIONS.antialias).toBe(false)
-            expect(ThreeRendererService.enableFXAA).toBe(true)
-            expect(ThreeRendererService.setPixelRatio).toBe(true)
+            expect(threeRendererService.renderOptions.antialias).toBe(false)
+            expect(threeRendererService.enableFXAA).toBe(true)
+            expect(threeRendererService.setPixelRatio).toBe(true)
         })
 
         it("should call and set the pixel ratio with AA options", () => {
@@ -201,9 +201,9 @@ describe("threeRendererService", () => {
 
             threeRendererService["setGLOptions"]()
 
-            expect(ThreeRendererService.RENDER_OPTIONS.antialias).toBe(true)
-            expect(ThreeRendererService.enableFXAA).toBe(false)
-            expect(ThreeRendererService.setPixelRatio).toBe(true)
+            expect(threeRendererService.renderOptions.antialias).toBe(true)
+            expect(threeRendererService.enableFXAA).toBe(false)
+            expect(threeRendererService.setPixelRatio).toBe(true)
         })
     })
 

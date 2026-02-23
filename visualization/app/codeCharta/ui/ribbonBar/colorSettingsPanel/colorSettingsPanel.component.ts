@@ -1,12 +1,10 @@
 import { Component } from "@angular/core"
-import { MatCheckboxChange, MatCheckbox } from "@angular/material/checkbox"
+import { MatCheckbox } from "@angular/material/checkbox"
 import { State, Store } from "@ngrx/store"
 import { map } from "rxjs"
-import { CcState, ColorLabelOptions, ColorMode, ColorRange } from "../../../codeCharta.model"
+import { CcState, ColorMode, ColorRange } from "../../../codeCharta.model"
 import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
-import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { colorLabelsSelector } from "../../../state/store/appSettings/colorLabels/colorLabels.selector"
 import { invertColorRange, invertDeltaColors } from "../../../state/store/appSettings/mapColors/mapColors.actions"
 import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 import { setColorMode } from "../../../state/store/dynamicSettings/colorMode/colorMode.actions"
@@ -36,19 +34,16 @@ import { AsyncPipe } from "@angular/common"
     ]
 })
 export class ColorSettingsPanelComponent {
+    static readonly DEBOUNCE_TIME = 400
+
     colorMode$ = this.store.select(colorModeSelector)
-    colorLabels$ = this.store.select(colorLabelsSelector)
     colorMetric$ = this.store.select(colorMetricSelector)
     isDeltaState$ = this.store.select(isDeltaStateSelector)
     sliderValues$ = this.store.select(metricColorRangeValuesSelector)
     sliderColors$ = this.store.select(metricColorRangeColorsSelector)
-    isAttributeDescriptionInversed$ = this.checkIsAttributeDirectionReversed()
+    isAttributeDirectionInversed$ = this.checkIsAttributeDirectionReversed()
     isColorRangeInverted = false
     areDeltaColorsInverted = false
-
-    private newLeftValue: null | number = null
-    private newRightValue: null | number = null
-    isAttributeDirectionInversed: boolean
 
     constructor(
         private store: Store<CcState>,
@@ -56,9 +51,7 @@ export class ColorSettingsPanelComponent {
     ) {}
 
     handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
-        this.newLeftValue = newLeftValue ?? this.newLeftValue
-        this.newRightValue = newRightValue ?? this.newRightValue
-        this.updateColorRangeDebounced()
+        this.updateColorRangeDebounced(newLeftValue, newRightValue)
     }
 
     private checkIsAttributeDirectionReversed() {
@@ -70,26 +63,33 @@ export class ColorSettingsPanelComponent {
         )
     }
 
-    private updateColorRangeDebounced = debounce(() => {
-        const newColorRange: Partial<ColorRange> = {}
-        if (this.newLeftValue !== null) {
-            newColorRange.from = this.newLeftValue
-        }
-        if (this.newRightValue !== null) {
-            newColorRange.to = this.newRightValue
-        }
-        this.store.dispatch(setColorRange({ value: newColorRange }))
+    private updateColorRangeDebounced = (() => {
+        let pendingLeftValue: null | number = null
+        let pendingRightValue: null | number = null
 
-        this.newLeftValue = null
-        this.newRightValue = null
-    }, 400)
+        const flush = debounce(() => {
+            const newColorRange: Partial<ColorRange> = {}
+            if (pendingLeftValue !== null) {
+                newColorRange.from = pendingLeftValue
+            }
+            if (pendingRightValue !== null) {
+                newColorRange.to = pendingRightValue
+            }
+            this.store.dispatch(setColorRange({ value: newColorRange }))
+
+            pendingLeftValue = null
+            pendingRightValue = null
+        }, ColorSettingsPanelComponent.DEBOUNCE_TIME)
+
+        return (newLeftValue: number | undefined, newRightValue: number | undefined) => {
+            pendingLeftValue = newLeftValue ?? pendingLeftValue
+            pendingRightValue = newRightValue ?? pendingRightValue
+            flush()
+        }
+    })()
 
     handleColorModeChange(gradient: ColorMode) {
         this.store.dispatch(setColorMode({ value: gradient }))
-    }
-
-    toggleColorLabel(change: MatCheckboxChange, colorLabelToToggle: keyof ColorLabelOptions) {
-        this.store.dispatch(setColorLabels({ value: { [colorLabelToToggle]: change.checked } }))
     }
 
     handleIsColorRangeInvertedChange(isColorRangeInverted: boolean) {

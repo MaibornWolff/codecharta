@@ -29,8 +29,6 @@ describe("MapTreeViewLevelComponent", () => {
         node: rootNode
     }
 
-    const labels = []
-
     const rootNodeId = componentProperties.node.id
     const parentLeafId = componentProperties.node.children.find(childNode => childNode.name === "ParentLeaf").id
     const bigLeafId = componentProperties.node.children.find(childNode => childNode.name === "bigLeaf").id
@@ -49,9 +47,7 @@ describe("MapTreeViewLevelComponent", () => {
                     provide: ThreeSceneService,
                     useValue: {
                         selectBuilding: jest.fn(),
-                        clearConstantHighlight: jest.fn(),
-                        resetLabel: jest.fn(),
-                        labels: { children: labels }
+                        clearConstantHighlight: jest.fn()
                     }
                 },
                 {
@@ -81,10 +77,8 @@ describe("MapTreeViewLevelComponent", () => {
                     provide: CodeMapMouseEventService,
                     useValue: {
                         drawLabelSelectedBuilding: jest.fn(),
-                        setLabelHoveredLeaf: jest.fn(),
                         hoverNode: jest.fn(),
-                        unhoverNode: jest.fn(),
-                        clearLabelHoveredBuilding: jest.fn()
+                        unhoverNode: jest.fn()
                     }
                 }
             ]
@@ -248,7 +242,6 @@ describe("MapTreeViewLevelComponent", () => {
     it("should hover and unhover the corresponding building on hover and unhover of folder or file", async () => {
         const { container } = await render(MapTreeViewLevelComponent, { componentProperties, excludeComponentDeclaration: true })
         const codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
-        const threeSceneService = TestBed.inject(ThreeSceneService)
         const store = TestBed.inject(Store)
         const dispatchSpy = jest.spyOn(store, "dispatch")
 
@@ -256,7 +249,6 @@ describe("MapTreeViewLevelComponent", () => {
 
         await userEvent.hover(firstLevelFolder)
         await waitFor(() => {
-            expect(codeMapMouseEventService.setLabelHoveredLeaf).toHaveBeenCalledWith(parentLeafBuilding, labels)
             expect(codeMapMouseEventService.hoverNode).toHaveBeenCalledWith(parentLeafId)
             expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: parentLeafId }))
         })
@@ -264,9 +256,7 @@ describe("MapTreeViewLevelComponent", () => {
         await userEvent.unhover(firstLevelFolder)
 
         await waitFor(() => {
-            expect(threeSceneService.resetLabel).toHaveBeenCalledTimes(1)
             expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledTimes(1)
-            expect(codeMapMouseEventService.clearLabelHoveredBuilding).toHaveBeenCalledTimes(1)
             expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: null }))
         })
     })

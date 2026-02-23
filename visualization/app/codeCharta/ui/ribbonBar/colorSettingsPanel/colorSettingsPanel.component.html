@@ -1,15 +1,20 @@
-@if (!(isDeltaState$ | async) && (colorMetric$ | async) !== "unary") {
+@let isDeltaState = isDeltaState$ | async;
+@let colorMetric = colorMetric$ | async;
+@let sliderValues = sliderValues$ | async;
+@let sliderColors = sliderColors$ | async;
+
+@if (!isDeltaState && colorMetric !== "unary") {
     <div>
         <cc-metric-color-range-slider
-            [minValue]="(sliderValues$ | async).min"
-            [maxValue]="(sliderValues$ | async).max"
-            [currentLeftValue]="(sliderValues$ | async).from"
-            [currentRightValue]="(sliderValues$ | async).to"
-            [leftColor]="(sliderColors$ | async).leftColor"
-            [middleColor]="(sliderColors$ | async).middleColor"
-            [rightColor]="(sliderColors$ | async).rightColor"
+            [minValue]="sliderValues.min"
+            [maxValue]="sliderValues.max"
+            [currentLeftValue]="sliderValues.from"
+            [currentRightValue]="sliderValues.to"
+            [leftColor]="sliderColors.leftColor"
+            [middleColor]="sliderColors.middleColor"
+            [rightColor]="sliderColors.rightColor"
             [handleValueChange]="handleValueChange"
-            [isAttributeDirectionInversed]="isAttributeDescriptionInversed$ | async"
+            [isAttributeDirectionInversed]="isAttributeDirectionInversed$ | async"
         >
         </cc-metric-color-range-slider>
         <cc-reset-settings-button
@@ -19,16 +24,16 @@
             label="Reset thresholds"
         ></cc-reset-settings-button>
         <cc-metric-color-range-diagram
-            [minValue]="(sliderValues$ | async).min"
-            [maxValue]="(sliderValues$ | async).max"
-            [currentLeftValue]="(sliderValues$ | async).from"
-            [currentRightValue]="(sliderValues$ | async).to"
-            [leftColor]="(sliderColors$ | async).leftColor"
-            [middleColor]="(sliderColors$ | async).middleColor"
-            [rightColor]="(sliderColors$ | async).rightColor"
-            [colorMetric]="colorMetric$ | async"
-            [values]="(sliderValues$ | async).values"
-            [isAttributeDirectionInverted]="isAttributeDescriptionInversed$ | async"
+            [minValue]="sliderValues.min"
+            [maxValue]="sliderValues.max"
+            [currentLeftValue]="sliderValues.from"
+            [currentRightValue]="sliderValues.to"
+            [leftColor]="sliderColors.leftColor"
+            [middleColor]="sliderColors.middleColor"
+            [rightColor]="sliderColors.rightColor"
+            [colorMetric]="colorMetric"
+            [values]="sliderValues.values"
+            [isAttributeDirectionInverted]="isAttributeDirectionInversed$ | async"
         ></cc-metric-color-range-diagram>
         <label class="form-control my-[5px]">
             <div class="label">
@@ -43,18 +48,15 @@
         </label>
     </div>
 }
-@if (!(isDeltaState$ | async)) {
+@if (!isDeltaState) {
     <div class="color-row">
         <cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
-        <mat-checkbox [checked]="(colorLabels$ | async).positive" (change)="toggleColorLabel($event, 'positive')">Show labels</mat-checkbox>
     </div>
     <div class="color-row">
         <cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
-        <mat-checkbox [checked]="(colorLabels$ | async).neutral" (change)="toggleColorLabel($event, 'neutral')">Show labels</mat-checkbox>
     </div>
     <div class="color-row">
         <cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
-        <mat-checkbox [checked]="(colorLabels$ | async).negative" (change)="toggleColorLabel($event, 'negative')">Show labels</mat-checkbox>
     </div>
 } @else {
     <cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
@@ -65,7 +67,7 @@
 <div class="color-row">
     <cc-reset-settings-button
         [settingsKeys]="
-            (isDeltaState$ | async)
+            isDeltaState
                 ? ['appSettings.mapColors.positiveDelta', 'appSettings.mapColors.negativeDelta', 'appSettings.mapColors.selected']
                 : [
                       'appSettings.mapColors.positive',
@@ -80,7 +82,7 @@
     >
     </cc-reset-settings-button>
 
-    @if (!(isDeltaState$ | async)) {
+    @if (!isDeltaState) {
         <mat-checkbox [checked]="isColorRangeInverted" (change)="handleIsColorRangeInvertedChange($event.checked)"
             >Invert Colors</mat-checkbox
         >

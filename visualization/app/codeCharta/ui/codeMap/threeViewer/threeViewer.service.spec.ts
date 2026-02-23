@@ -54,6 +54,10 @@ describe("ThreeViewerService", () => {
                 getContext: jest.fn(),
                 setPixelRatio: jest.fn()
             } as unknown as WebGLRenderer,
+            labelRenderer: {
+                domElement: document.createElement("div"),
+                setSize: jest.fn()
+            },
             composer: {
                 dispose: jest.fn()
             } as unknown as CustomComposer,

@@ -1,0 +1,33 @@
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 10px;
+$spacing-xl: 20px;
+$label-secondary-color: rgba(0, 0, 0, 0.6);
+$label-section-font-size: 12px;
+
+:host {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    padding: $spacing-sm $spacing-xl;
+}
+
+.color-labels-section {
+    display: flex;
+    flex-direction: column;
+    margin-top: $spacing-xs;
+
+    .section-label {
+        font-size: $label-section-font-size;
+        color: $label-secondary-color;
+        margin-bottom: 2px;
+    }
+}
+
+.color-label-swatch {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    vertical-align: middle;
+}

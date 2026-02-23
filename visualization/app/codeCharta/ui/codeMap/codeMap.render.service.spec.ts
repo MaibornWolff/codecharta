@@ -26,6 +26,7 @@ import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showM
 import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
+import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
@@ -109,8 +110,6 @@ describe("codeMapRenderService", () => {
                 scale: new Vector3(1, 2, 3)
             }),
             dispose: jest.fn(),
-            resetLineHighlight: jest.fn(),
-            resetLabel: jest.fn(),
             forceRerender: jest.fn(),
             setMapMesh: jest.fn()
         })()
@@ -347,6 +346,56 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
+        })
+
+        it("should not exceed amountOfTopLabels when multiple color types are selected", () => {
+            // Arrange: 2 color types selected, 2 nodes total, but limit is 1
+            store.dispatch(setAmountOfTopLabels({ value: 1 }))
+            store.dispatch(setColorLabels({ value: { positive: true, negative: false, neutral: true } }))
+
+            // Act
+            codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
+            codeMapRenderService["setLabels"](COLOR_TEST_NODES)
+
+            // Assert: only 1 label despite 2 matching nodes across both color types
+            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
+        })
+
+        it("should show no color labels when amountOfTopLabels is 0", () => {
+            // Arrange
+            store.dispatch(setAmountOfTopLabels({ value: 0 }))
+            store.dispatch(setColorLabels({ value: { positive: true, negative: true, neutral: true } }))
+
+            // Act
+            codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
+            codeMapRenderService["setLabels"](COLOR_TEST_NODES)
+
+            // Assert
+            expect(codeMapLabelService.addLeafLabel).not.toHaveBeenCalled()
+        })
+
+        it("should show all color nodes when fewer exist than amountOfTopLabels", () => {
+            // Arrange: amountOfTopLabels=31 (from STATE), only 1 positive node exists
+            store.dispatch(setColorLabels({ value: { positive: true, negative: false, neutral: false } }))
+
+            // Act
+            codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
+            codeMapRenderService["setLabels"](COLOR_TEST_NODES)
+
+            // Assert: shows the 1 available node, not 31
+            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
+        })
+
+        it("should show no labels when no color type is selected even if nodes exist", () => {
+            // Arrange
+            store.dispatch(setColorLabels({ value: { positive: false, negative: false, neutral: false } }))
+
+            // Act
+            codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
+            codeMapRenderService["setLabels"](COLOR_TEST_NODES)
+
+            // Assert: falls through to normal top-N path (amountOfTopLabels=31), not color path
+            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(3)
         })
     })
 

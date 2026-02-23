@@ -95,6 +95,8 @@ export interface ColorLabelOptions {
     neutral: boolean
 }
 
+export const colorLabelTypes: readonly (keyof ColorLabelOptions)[] = ["positive", "neutral", "negative"] as const
+
 export interface FileMeta {
     fileName: string
     fileChecksum: string

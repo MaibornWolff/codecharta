@@ -1,0 +1,10 @@
+<cc-ribbon-bar-menu-button
+    icon="fa-tag"
+    [title]="'Open Label Settings'"
+    [matMenuTriggerFor]="menu"
+></cc-ribbon-bar-menu-button>
+<mat-menu #menu="matMenu" class="cc-label-settings-menu">
+    <div (click)="$event.stopPropagation()">
+        <cc-label-settings-panel></cc-label-settings-panel>
+    </div>
+</mat-menu>

@@ -46,5 +46,7 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.restartOnSharpnessModeChangesSubscription.unsubscribe()
+        this.threeViewerService.stopAnimate()
+        this.threeViewerService.destroy()
     }
 }

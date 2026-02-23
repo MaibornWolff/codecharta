@@ -15,7 +15,7 @@
 @use "./matIncompatibleMapsDialog";
 @use "./matBlacklistPanel";
 @use "./matSuspiciousMetricPanel";
-
+@use "./matLabelSettingsMenu";
 @include mat.elevation-classes();
 @include mat.app-background();
 @include mat.core-theme(theme.$cc-theme);

@@ -51,6 +51,6 @@ export class HighlightBuildingsByFileExtensionService {
     }
 
     clearHighlightingOnFileExtensions() {
-        this.threeSceneService.applyClearHightlights()
+        this.threeSceneService.applyClearHighlights()
     }
 }

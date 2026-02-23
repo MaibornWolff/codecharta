@@ -9,8 +9,7 @@ import { BlacklistItem, CcState, CodeMapNode, Node } from "../../codeCharta.mode
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { klona } from "klona"
 import { CodeMapLabelService } from "./codeMap.label.service"
-import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { BufferGeometry, Material, Object3D, Raycaster, Vector3 } from "three"
+import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.service"
@@ -18,7 +17,7 @@ import { setRightClickedNodeData } from "../../state/store/appStatus/rightClicke
 import { State, Store } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { defaultState } from "../../state/store/state.manager"
-import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS, TEST_NODES } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
@@ -33,6 +32,7 @@ describe("codeMapMouseEventService", () => {
     let store: Store<CcState>
     let state: State<CcState>
     let codeMapLabelService: CodeMapLabelService
+    let tooltipService: CodeMapTooltipService
     let viewCubeMouseEventsService: ViewCubeMouseEventsService
     let threeViewerService: ThreeViewerService
     let idToBuildingService: IdToBuildingService
@@ -91,6 +91,15 @@ describe("codeMapMouseEventService", () => {
         idToBuildingService = TestBed.inject(IdToBuildingService)
         codeMapLabelService = TestBed.inject(CodeMapLabelService)
         codeMapLabelService["threeSceneService"] = threeSceneService
+        tooltipService = {
+            show: jest.fn(),
+            hide: jest.fn(),
+            updatePosition: jest.fn(),
+            isVisible: jest.fn().mockReturnValue(false),
+            getCurrentNodeId: jest.fn().mockReturnValue(null),
+            getRect: jest.fn().mockReturnValue(null),
+            dispose: jest.fn()
+        } as unknown as CodeMapTooltipService
 
         codeMapBuilding = klona(CODE_MAP_BUILDING)
         document.body.style.cursor = CursorType.Default
@@ -104,6 +113,7 @@ describe("codeMapMouseEventService", () => {
             store,
             state,
             codeMapLabelService,
+            tooltipService,
             viewCubeMouseEventsService,
             threeViewerService,
             idToBuildingService
@@ -163,8 +173,7 @@ describe("codeMapMouseEventService", () => {
             getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
             getConstantHighlight: jest.fn().mockReturnValue(new Map()),
             addBuildingsToHighlightingList: jest.fn(),
-            applyHighlights: jest.fn(),
-            resetLabel: jest.fn()
+            applyHighlights: jest.fn()
         })()
     }
 
@@ -275,89 +284,6 @@ describe("codeMapMouseEventService", () => {
         })
     })
 
-    describe("updateHoveringIntegrationTest", () => {
-        it("should not animate any labels and reset animated label and temporary label if the map is turned", () => {
-            const label = new Object3D()
-            setAnimatedLabel(label)
-            const animatedLabelPosition = label.position.clone()
-
-            // Grabbing and turning the map (should reset the animated label)
-            codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.LeftClick } as MouseEvent)
-            expect(codeMapMouseEventService["isGrabbing"]).toBe(true)
-            expect(codeMapMouseEventService["isMoving"]).toBe(false)
-            codeMapMouseEventService.onDocumentMouseMove({ clientX: 2, clientY: 3 } as MouseEvent)
-
-            codeMapMouseEventService["labelHoveredBuilding"] = label.clone()
-            codeMapMouseEventService.updateHovering()
-
-            expect(threeSceneService["highlightedLabel"]).toBeNull()
-            expect(codeMapMouseEventService["labelHoveredBuilding"]).toBeNull()
-            expect(label["material"].opacity).toEqual(0.7)
-            expect(label.position).not.toEqual(animatedLabelPosition)
-        })
-
-        it("should not animate any labels and reset animated label and temporary label if the map is moved", () => {
-            const label = new Object3D()
-            setAnimatedLabel(label)
-            const animatedLabelPosition = label.position.clone()
-
-            // Grabbing and moving the map (should reset the animated label)
-            codeMapMouseEventService.onDocumentMouseDown({ button: ClickType.RightClick } as MouseEvent)
-            expect(codeMapMouseEventService["isGrabbing"]).toBe(false)
-            expect(codeMapMouseEventService["isMoving"]).toBe(true)
-            codeMapMouseEventService.onDocumentMouseMove({ clientX: 3, clientY: 4 } as MouseEvent)
-
-            codeMapMouseEventService["labelHoveredBuilding"] = label.clone()
-            codeMapMouseEventService.updateHovering()
-
-            expect(threeSceneService["highlightedLabel"]).toBeNull()
-            expect(codeMapMouseEventService["labelHoveredBuilding"]).toBeNull()
-            expect(label["material"].opacity).toEqual(0.7)
-            expect(label.position).not.toEqual(animatedLabelPosition)
-        })
-
-        function setAnimatedLabel(label: Object3D) {
-            // At first, animate a label
-            threeSceneService = new ThreeSceneService(
-                TestBed.inject(Store),
-                TestBed.inject(State),
-                idToBuildingService,
-                threeRendererService
-            )
-            threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, state.getValue(), false)
-            threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
-            threeSceneService["constantHighlight"] = constantHighlight
-
-            const resultPosition = new Vector3(0.5, 0.5, 0)
-
-            const labels = []
-            const placeholderLine = new Object3D()
-            const labelNode = new Object3D()
-            label["material"] = new Material()
-            const rayCaster = new Raycaster(new Vector3(10, 10, 0), new Vector3(1, 1, 1))
-
-            labelNode.translateX(-4)
-            labelNode.translateY(5)
-
-            const points = [new Vector3(2, 2, 2), new Vector3(1, 1, 1)]
-
-            const lineGeometry = new BufferGeometry().setFromPoints(points)
-            placeholderLine["geometry"] = lineGeometry
-
-            labels.push(label, placeholderLine, labelNode, placeholderLine)
-
-            threeSceneService.animateLabel(label, rayCaster, labels)
-
-            // Ensure that label is animated correctly
-            expect(label["material"].opacity).toEqual(1)
-            expect(label.position).toEqual(resultPosition)
-            expect(threeSceneService["highlightedLabel"]).toEqual(label)
-
-            // Rebuild service with modified threeSceneService
-            rebuildService()
-        }
-    })
-
     describe("updateHovering", () => {
         beforeEach(() => {
             mockedIdToNodeSelector.mockImplementation(() => {
@@ -372,9 +298,6 @@ describe("codeMapMouseEventService", () => {
 
             idToBuildingService.setIdToBuilding([CODE_MAP_BUILDING])
 
-            threeSceneService.resetLabel = jest.fn()
-            threeSceneService.getLabelForHoveredNode = jest.fn()
-            threeSceneService.animateLabel = jest.fn()
             threeSceneService.getHighlightedBuilding = jest.fn()
         })
 
@@ -395,51 +318,25 @@ describe("codeMapMouseEventService", () => {
             expect(threeSceneService.clearHighlight).toHaveBeenCalled()
         })
 
-        it("should not call resetLabel if no change has happened ", () => {
-            codeMapMouseEventService["modifiedLabel"] = null
-            codeMapMouseEventService["highlightedInTreeView"] = null
-
-            codeMapMouseEventService.updateHovering()
-
-            expect(threeSceneService.getLabelForHoveredNode).not.toHaveBeenCalled()
-        })
-
-        it("should call resetLabel when a new building is hovered", () => {
-            codeMapMouseEventService["modifiedLabel"] = null
+        it("should show tooltip when a new building is hovered", () => {
             threeSceneService.getMapMesh = jest.fn().mockReturnValue({
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
             })
             codeMapMouseEventService.updateHovering()
 
-            expect(threeSceneService.resetLabel).toHaveBeenCalled()
+            expect(tooltipService.show).toHaveBeenCalledWith(CODE_MAP_BUILDING.node, expect.any(Number), expect.any(Number))
         })
 
-        it("should call clearTemporaryLabel and remove temporary label when a new building is hovered", () => {
-            codeMapMouseEventService["labelHoveredBuilding"] = CODE_MAP_BUILDING.node
-
-            threeSceneService.getMapMesh = jest.fn().mockReturnValue({
-                checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
-            })
-            codeMapLabelService.clearTemporaryLabel = jest.fn()
-            codeMapMouseEventService.updateHovering()
-
-            expect(codeMapLabelService.clearTemporaryLabel).toHaveBeenCalled()
-            expect(codeMapLabelService["labelHoveredBuilding"]).not.toEqual(CODE_MAP_BUILDING.node)
-        })
-
-        it("should hover a node when an intersection was found and the cursor is set to pointing and call getLabelForHoveredNode", () => {
+        it("should hover a node when an intersection was found and the cursor is set to pointing", () => {
             codeMapMouseEventService["modifiedLabel"] = null
             threeSceneService.getMapMesh = jest.fn().mockReturnValue({
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
             })
-            threeSceneService.animateLabel = jest.fn()
 
             codeMapMouseEventService.updateHovering()
 
             expect(threeSceneService.addBuildingsToHighlightingList).toHaveBeenCalled()
             expect(threeSceneService.applyHighlights).toHaveBeenCalled()
-            expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-            expect(threeSceneService.animateLabel).toHaveBeenCalled()
             expect(document.body.style.cursor).toEqual(CursorType.Pointer)
         })
 
@@ -473,6 +370,47 @@ describe("codeMapMouseEventService", () => {
             expect(document.body.style.cursor).toEqual(CursorType.Moving)
         })
 
+        it("should use differential path when transitioning between two buildings", () => {
+            codeMapMouseEventService["modifiedLabel"] = null
+            const buildingA = klona(CODE_MAP_BUILDING)
+            buildingA["_id"] = 100
+            buildingA.node.id = 100
+            const buildingB = klona(CODE_MAP_BUILDING)
+            buildingB["_id"] = 200
+            buildingB.node.id = 200
+
+            mockedIdToNodeSelector.mockImplementation(() => {
+                const idToNode = new Map<number, CodeMapNode>()
+                idToNode.set(buildingA.node.id, buildingA.node as unknown as CodeMapNode)
+                idToNode.set(buildingB.node.id, buildingB.node as unknown as CodeMapNode)
+                return idToNode
+            })
+            idToBuildingService.setIdToBuilding([buildingA, buildingB])
+
+            // First hover on buildingA
+            threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+            threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+                checkMouseRayMeshIntersection: jest.fn().mockReturnValue(buildingA)
+            })
+            codeMapMouseEventService.updateHovering()
+
+            // Now hover on buildingB (transition) - reset mocks to track only the second call
+            threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(buildingA)
+            threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+                checkMouseRayMeshIntersection: jest.fn().mockReturnValue(buildingB)
+            })
+            threeSceneService.prepareHighlightTransition = jest.fn()
+            ;(threeSceneService.clearHighlight as jest.Mock).mockClear()
+            ;(threeSceneService.clearHoverHighlight as jest.Mock).mockClear()
+            codeMapMouseEventService["oldMouse"] = { x: 0, y: 0 }
+            codeMapMouseEventService["mouse"] = { x: 5, y: 5 } as any
+
+            codeMapMouseEventService.updateHovering()
+
+            expect(threeSceneService.prepareHighlightTransition).toHaveBeenCalled()
+            expect(threeSceneService.clearHighlight).not.toHaveBeenCalled()
+        })
+
         it("should not highlight a node again when the intersection building is the same", () => {
             codeMapMouseEventService["modifiedLabel"] = null
             threeSceneService.getMapMesh = jest.fn().mockReturnValue({
@@ -495,6 +433,15 @@ describe("codeMapMouseEventService", () => {
             codeMapMouseEventService.onDocumentMouseUp(event)
 
             expect(viewCubeMouseEventsService.resetIsDragging).toHaveBeenCalled()
+        })
+
+        it("should clear label layout suppression on mouse up", () => {
+            codeMapLabelService.setSuppressLayout = jest.fn()
+            event = { button: ClickType.LeftClick }
+
+            codeMapMouseEventService.onDocumentMouseUp(event)
+
+            expect(codeMapLabelService.setSuppressLayout).toHaveBeenCalledWith(false)
         })
 
         describe("on left click", () => {
@@ -521,8 +468,6 @@ describe("codeMapMouseEventService", () => {
 
             it("should call selectBuilding when no building is selected", () => {
                 threeSceneService.getSelectedBuilding = jest.fn()
-                threeSceneService.getLabelForHoveredNode = jest.fn()
-                threeSceneService.animateLabel = jest.fn()
 
                 codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
 
@@ -533,8 +478,6 @@ describe("codeMapMouseEventService", () => {
 
             it("should call selectBuilding when a new building is selected", () => {
                 threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, null, null))
-                threeSceneService.getLabelForHoveredNode = jest.fn()
-                threeSceneService.animateLabel = jest.fn()
 
                 codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
 
@@ -554,9 +497,6 @@ describe("codeMapMouseEventService", () => {
             })
 
             it("should not call clearSelection, when the mouse has moved less or exact 3 pixels but a building is currently being clicked upon", () => {
-                threeSceneService.getLabelForHoveredNode = jest.fn()
-                threeSceneService.animateLabel = jest.fn()
-
                 codeMapMouseEventService.onDocumentMouseMove(event)
                 codeMapMouseEventService.onDocumentMouseDown(event)
                 codeMapMouseEventService.onDocumentMouseMove({ clientX: 10, clientY: 17 } as MouseEvent)
@@ -664,6 +604,15 @@ describe("codeMapMouseEventService", () => {
 
             expect(codeMapMouseEventService["mouseOnLastClick"]).toEqual({ x: event.clientX, y: event.clientY })
         })
+
+        it("should suppress label layout on mouse down", () => {
+            codeMapLabelService.setSuppressLayout = jest.fn()
+            const event = { button: ClickType.LeftClick } as MouseEvent
+
+            codeMapMouseEventService.onDocumentMouseDown(event)
+
+            expect(codeMapLabelService.setSuppressLayout).toHaveBeenCalledWith(true)
+        })
     })
 
     describe("onDocumentDoubleClick", () => {
@@ -705,14 +654,6 @@ describe("codeMapMouseEventService", () => {
 
             expect(window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
         })
-
-        it("should call open with link if selected.node.link is defined", () => {
-            codeMapMouseEventService["selectedInCodeMap"] = codeMapBuilding
-
-            codeMapMouseEventService.onDocumentDoubleClick()
-
-            expect(window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
-        })
     })
 
     describe("onDocumentMouseEnter", () => {
@@ -738,6 +679,49 @@ describe("codeMapMouseEventService", () => {
 
             expect(threeViewerService.enableRotation).toHaveBeenCalledWith(false)
             expect(viewCubeMouseEventsService.enableRotation).toHaveBeenCalledWith(false)
+        })
+
+        it("should clear label layout suppression on mouse leave", () => {
+            codeMapLabelService.setSuppressLayout = jest.fn()
+            threeViewerService["enableRotation"] = jest.fn()
+            viewCubeMouseEventsService["enableRotation"] = jest.fn()
+            const event = { relatedTarget: {} } as MouseEvent
+
+            codeMapMouseEventService.onDocumentMouseLeave(event)
+
+            expect(codeMapLabelService.setSuppressLayout).toHaveBeenCalledWith(false)
+        })
+
+        it("should hide tooltip on mouse leave", () => {
+            threeViewerService["enableRotation"] = jest.fn()
+            viewCubeMouseEventsService["enableRotation"] = jest.fn()
+            const event = { relatedTarget: {} } as MouseEvent
+
+            codeMapMouseEventService.onDocumentMouseLeave(event)
+
+            expect(tooltipService.hide).toHaveBeenCalled()
+        })
+
+        it("should restore suppressed label on mouse leave", () => {
+            codeMapLabelService.restoreSuppressedLabel = jest.fn()
+            threeViewerService["enableRotation"] = jest.fn()
+            viewCubeMouseEventsService["enableRotation"] = jest.fn()
+            const event = { relatedTarget: {} } as MouseEvent
+
+            codeMapMouseEventService.onDocumentMouseLeave(event)
+
+            expect(codeMapLabelService.restoreSuppressedLabel).toHaveBeenCalled()
+        })
+
+        it("should unhover building on mouse leave", () => {
+            codeMapMouseEventService["unhoverBuilding"] = jest.fn()
+            threeViewerService["enableRotation"] = jest.fn()
+            viewCubeMouseEventsService["enableRotation"] = jest.fn()
+            const event = { relatedTarget: {} } as MouseEvent
+
+            codeMapMouseEventService.onDocumentMouseLeave(event)
+
+            expect(codeMapMouseEventService["unhoverBuilding"]).toHaveBeenCalled()
         })
     })
 
@@ -821,48 +805,45 @@ describe("codeMapMouseEventService", () => {
         })
     })
 
-    describe("drawLabelHoveredBuilding", () => {
-        it("should call addLeafLabel on codeMapLabelService with given node and the corresponding height that is different from 0", () => {
-            threeSceneService.getLabelForHoveredNode = jest.fn()
-            codeMapLabelService.addLeafLabel = jest.fn()
+    describe("showTooltipForBuilding", () => {
+        it("should show tooltip for the building", () => {
+            codeMapLabelService.hasLabelForNode = jest.fn().mockReturnValue(false)
 
-            codeMapMouseEventService["drawLabelHoveredBuilding"](codeMapBuilding)
-            const nodeHeight = codeMapBuilding.node.height + Math.abs(codeMapBuilding.node.heightDelta ?? 0)
+            codeMapMouseEventService["showTooltipForBuilding"](codeMapBuilding)
 
-            expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
-            expect(nodeHeight).toBeGreaterThan(0)
+            expect(tooltipService.show).toHaveBeenCalledWith(codeMapBuilding.node, expect.any(Number), expect.any(Number))
         })
 
-        it("should call addLeafLabel on codeMapLabelService with temporary label name even when both label options are set to false", () => {
-            threeSceneService.getLabelForHoveredNode = jest.fn()
-            codeMapLabelService.addLeafLabel = jest.fn()
+        it("should suppress persistent label when tooltip activates on same node", () => {
+            codeMapLabelService.hasLabelForNode = jest.fn().mockReturnValue(true)
+            codeMapLabelService.suppressLabelForNode = jest.fn()
 
-            codeMapMouseEventService["drawLabelHoveredBuilding"](codeMapBuilding)
+            codeMapMouseEventService["showTooltipForBuilding"](codeMapBuilding)
 
-            expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
+            expect(codeMapLabelService.suppressLabelForNode).toHaveBeenCalledWith(codeMapBuilding.node)
+            expect(tooltipService.show).toHaveBeenCalled()
         })
     })
 
     describe("labelForSelectedBuilding", () => {
         it("should create a label when selecting a building", () => {
-            threeSceneService.getLabelForHoveredNode = jest.fn()
-            threeSceneService.animateLabel = jest.fn()
             codeMapLabelService.addLeafLabel = jest.fn()
+            codeMapLabelService.hasLabelForNode = jest.fn().mockReturnValue(false)
+            codeMapLabelService.restoreSuppressedLabel = jest.fn()
 
-            codeMapMouseEventService["drawLabelSelectedBuilding"](codeMapBuilding)
+            codeMapMouseEventService.drawLabelSelectedBuilding(codeMapBuilding)
 
-            expect(threeSceneService.getLabelForHoveredNode).toHaveBeenCalled()
+            expect(tooltipService.hide).toHaveBeenCalled()
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
             expect(codeMapMouseEventService["labelSelectedBuilding"]).toEqual(codeMapBuilding.node)
         })
 
         it("should remove the label when a previously selected building is unselected", () => {
-            threeSceneService.getLabelForHoveredNode = jest.fn()
-            threeSceneService.animateLabel = jest.fn()
             codeMapLabelService.clearTemporaryLabel = jest.fn()
-            codeMapMouseEventService["drawLabelSelectedBuilding"](codeMapBuilding)
+            codeMapLabelService.hasLabelForNode = jest.fn().mockReturnValue(false)
+            codeMapLabelService.addLeafLabel = jest.fn()
+            codeMapLabelService.restoreSuppressedLabel = jest.fn()
+            codeMapMouseEventService.drawLabelSelectedBuilding(codeMapBuilding)
 
             codeMapMouseEventService["clearLabelSelectedBuilding"]()
 
@@ -874,12 +855,12 @@ describe("codeMapMouseEventService", () => {
             const oldSelection = codeMapBuilding
             const newSelection = CODE_MAP_BUILDING_TS_NODE
 
-            threeSceneService.getLabelForHoveredNode = jest.fn()
-            threeSceneService.animateLabel = jest.fn()
             codeMapLabelService.clearTemporaryLabel = jest.fn()
             codeMapLabelService.addLeafLabel = jest.fn()
+            codeMapLabelService.hasLabelForNode = jest.fn().mockReturnValue(false)
+            codeMapLabelService.restoreSuppressedLabel = jest.fn()
 
-            codeMapMouseEventService["drawLabelSelectedBuilding"](codeMapBuilding)
+            codeMapMouseEventService.drawLabelSelectedBuilding(codeMapBuilding)
 
             codeMapMouseEventService["intersectedBuilding"] = newSelection
             codeMapMouseEventService["onLeftClick"]()
@@ -890,24 +871,6 @@ describe("codeMapMouseEventService", () => {
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(oldSelection.node, 0, true)
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledWith(newSelection.node, 0, true)
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
-        })
-
-        it("should keep the label when clicking on the already selected building", () => {
-            threeSceneService.getLabelForHoveredNode = jest.fn()
-            threeSceneService.animateLabel = jest.fn()
-            codeMapMouseEventService["clearTemporaryLabel"] = jest.fn()
-            codeMapMouseEventService["drawLabelSelectedBuilding"] = jest.fn()
-
-            codeMapMouseEventService["drawLabelSelectedBuilding"](codeMapBuilding)
-            const referenceLabel = codeMapMouseEventService["labelSelectedBuilding"]
-
-            codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
-            codeMapMouseEventService["onLeftClick"]()
-
-            expect(codeMapMouseEventService["drawLabelSelectedBuilding"]).toHaveBeenCalledWith(codeMapBuilding)
-            expect(codeMapMouseEventService["drawLabelSelectedBuilding"]).toHaveBeenCalledTimes(2)
-            expect(codeMapMouseEventService["clearTemporaryLabel"]).not.toHaveBeenCalled()
-            expect(codeMapMouseEventService["labelSelectedBuilding"]).toEqual(referenceLabel)
         })
     })
 })
