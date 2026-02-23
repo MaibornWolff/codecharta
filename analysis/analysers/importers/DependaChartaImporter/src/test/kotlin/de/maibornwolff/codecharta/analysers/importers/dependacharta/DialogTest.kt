@@ -44,8 +44,7 @@ class DialogTest {
             val parseResult = cmdLine.parseArgs(*parserArguments.toTypedArray())
 
             // Assert
-            assertThat(parseResult.matchedOption("output-file").getValue<String>())
-                .isEqualTo("")
+            assertThat(parseResult.matchedOption("output-file")).isNull()
             assertThat(parseResult.matchedOption("not-compressed")).isNull()
             assertThat(parseResult.matchedPositional(0).getValue<File>().name)
                 .isEqualTo(File(inputFileName).name)

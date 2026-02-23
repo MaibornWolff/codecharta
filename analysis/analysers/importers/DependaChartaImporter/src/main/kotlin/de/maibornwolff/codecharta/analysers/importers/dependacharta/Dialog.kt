@@ -33,7 +33,7 @@ class Dialog {
                     )
 
             return listOf(inputFileName) + listOfNotNull(
-                "--output-file=$outputFileName",
+                outputFileName.takeIf { it.isNotBlank() }?.let { "--output-file=$it" },
                 if (isCompressed) null else "--not-compressed"
             )
         }
