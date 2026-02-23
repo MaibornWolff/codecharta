@@ -36,8 +36,8 @@ export class ThreeSceneService implements OnDestroy {
     private floorLabelDrawer: FloorLabelDrawer
 
     private selected: CodeMapBuilding = null
-    private highlightedBuildingIds: Set<number> = new Set()
-    private highlightedNodeIds: Set<number> = new Set()
+    private readonly highlightedBuildingIds: Set<number> = new Set()
+    private readonly highlightedNodeIds: Set<number> = new Set()
     private primaryHighlightedBuilding: CodeMapBuilding = null
     private constantHighlight: Map<number, CodeMapBuilding> = new Map()
 

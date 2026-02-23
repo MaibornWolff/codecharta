@@ -64,7 +64,7 @@ export class CodeMapMesh {
         { distance: 50, lightness: 10 }
     ]
 
-    private threeMesh: InstancedMesh
+    private readonly threeMesh: InstancedMesh
     private material: ShaderMaterial
     private geomGen: GeometryGenerator
     private mapGeomDesc: CodeMapGeometricDescription

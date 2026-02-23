@@ -37,8 +37,8 @@ export class CodeMapLabelService {
     constructor(
         private readonly state: State<CcState>,
         private threeSceneService: ThreeSceneService,
-        private threeRendererService: ThreeRendererService,
-        private tooltipService: CodeMapTooltipService
+        private readonly threeRendererService: ThreeRendererService,
+        private readonly tooltipService: CodeMapTooltipService
     ) {
         this.threeRendererService.afterRender$.subscribe(() => this.updateLabelLayout())
     }

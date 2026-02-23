@@ -34,12 +34,12 @@ interface AABB {
  * compared to a linear scan for scenes with fewer than ~1000 buildings.
  */
 export class CodeMapGeometricDescription {
-    private _buildings: CodeMapBuilding[] = []
-    private buildingsByPath: Map<string, CodeMapBuilding> = new Map()
+    private readonly _buildings: CodeMapBuilding[] = []
+    private readonly buildingsByPath: Map<string, CodeMapBuilding> = new Map()
     private mapSize: number
     private scales: Vector3
     private scaledBoxes: Box3[] = []
-    private boxTranslation = new Vector3()
+    private readonly boxTranslation = new Vector3()
     private readonly _intersectTarget = new Vector3()
 
     // BVH data
