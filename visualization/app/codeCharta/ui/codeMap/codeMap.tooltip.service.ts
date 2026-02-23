@@ -109,7 +109,7 @@ export class CodeMapTooltipService {
         for (const metric of metrics) {
             const metricDiv = document.createElement("div")
             metricDiv.style.cssText = "font-size: 10px; color: #666;"
-            metricDiv.textContent = `${metric.label}: ${metric.value != null ? metric.value : "\u2014"}`
+            metricDiv.textContent = `${metric.label}: ${metric.value ?? "\u2014"}`
             this.tooltipElement.append(metricDiv)
         }
     }

@@ -66,7 +66,7 @@ export class CodeMapLabelService {
         cssObject.center.set(0.5, 1)
 
         const actualHeight = node.height + Math.abs(node.heightDelta ?? 0)
-        const labelHeight = actualHeight > highestNodeInSet ? actualHeight : highestNodeInSet
+        const labelHeight = Math.max(actualHeight, highestNodeInSet)
 
         const x = (node.x0 - treeMapSize + node.width / 2) * multiplier.x
         const z = (node.y0 - treeMapSize + node.length / 2) * multiplier.z
@@ -175,53 +175,63 @@ export class CodeMapLabelService {
 
         for (let i = 0; i < infos.length; i++) {
             const current = infos[i]
-
-            // Check collision with tooltip (immovable obstacle)
-            if (tooltipRect) {
-                const currentTop = current.rect.top + current.offset
-                const currentBottom = current.rect.bottom + current.offset
-                const horizontalOverlap = current.rect.right > tooltipRect.left && current.rect.left < tooltipRect.right
-                const verticalOverlap = currentBottom > tooltipRect.top && currentTop < tooltipRect.bottom
-
-                if (horizontalOverlap && verticalOverlap) {
-                    const overlap = tooltipRect.bottom + CodeMapLabelService.LABEL_GAP_PX - currentTop
-                    if (overlap > 0) {
-                        current.offset += overlap
-                    }
-                }
-            }
-
-            // Check collision with previous labels
-            for (let j = i - 1; j >= 0; j--) {
-                const above = infos[j]
-
-                if (current.rect.right <= above.rect.left || current.rect.left >= above.rect.right) {
-                    continue
-                }
-
-                const aboveBottom = above.rect.bottom + above.offset
-                const currentTop = current.rect.top + current.offset
-                const overlap = aboveBottom + CodeMapLabelService.LABEL_GAP_PX - currentTop
-
-                if (overlap > 0) {
-                    current.offset += overlap
-                }
-            }
+            this.resolveTooltipCollision(current, tooltipRect)
+            this.resolveLabelCollisions(current, infos, i)
         }
 
-        // Apply offsets with max displacement (batch writes)
+        this.applyCollisionOffsets(infos)
+    }
+
+    private resolveTooltipCollision(current: LabelLayoutInfo, tooltipRect: DOMRect | null) {
+        if (!tooltipRect) {
+            return
+        }
+
+        const currentTop = current.rect.top + current.offset
+        const currentBottom = current.rect.bottom + current.offset
+        const horizontalOverlap = current.rect.right > tooltipRect.left && current.rect.left < tooltipRect.right
+        const verticalOverlap = currentBottom > tooltipRect.top && currentTop < tooltipRect.bottom
+
+        if (horizontalOverlap && verticalOverlap) {
+            const overlap = tooltipRect.bottom + CodeMapLabelService.LABEL_GAP_PX - currentTop
+            if (overlap > 0) {
+                current.offset += overlap
+            }
+        }
+    }
+
+    private resolveLabelCollisions(current: LabelLayoutInfo, infos: LabelLayoutInfo[], index: number) {
+        for (let j = index - 1; j >= 0; j--) {
+            const above = infos[j]
+
+            if (current.rect.right <= above.rect.left || current.rect.left >= above.rect.right) {
+                continue
+            }
+
+            const aboveBottom = above.rect.bottom + above.offset
+            const currentTop = current.rect.top + current.offset
+            const overlap = aboveBottom + CodeMapLabelService.LABEL_GAP_PX - currentTop
+
+            if (overlap > 0) {
+                current.offset += overlap
+            }
+        }
+    }
+
+    private applyCollisionOffsets(infos: LabelLayoutInfo[]) {
         for (const info of infos) {
             const content = info.content
             content.style.transition = "transform 0.2s ease-out, opacity 0.2s ease-out"
+            const isSuppressed = info.label === this.suppressedLabel
 
             if (info.offset > CodeMapLabelService.MAX_DISPLACEMENT_PX) {
                 content.style.opacity = "0"
                 content.style.transform = `translateY(${CodeMapLabelService.BASE_OFFSET_PX}px)`
-            } else if (info.offset !== 0) {
-                content.style.opacity = info.label === this.suppressedLabel ? "0" : "1"
-                content.style.transform = `translateY(${CodeMapLabelService.BASE_OFFSET_PX + info.offset}px)`
+            } else if (info.offset === 0) {
+                content.style.opacity = isSuppressed ? "0" : "1"
             } else {
-                content.style.opacity = info.label === this.suppressedLabel ? "0" : "1"
+                content.style.opacity = isSuppressed ? "0" : "1"
+                content.style.transform = `translateY(${CodeMapLabelService.BASE_OFFSET_PX + info.offset}px)`
             }
         }
     }
