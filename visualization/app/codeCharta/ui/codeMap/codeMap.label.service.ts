@@ -86,6 +86,7 @@ export class CodeMapLabelService {
         }
         this.threeSceneService.labels.clear()
         this.labels = []
+        this.suppressedLabel = null
         this.clearConnectors()
     }
 
@@ -93,6 +94,9 @@ export class CodeMapLabelService {
         const index = this.labels.findIndex(({ node }) => node === hoveredNode)
         if (index > -1) {
             const label = this.labels[index]
+            if (label === this.suppressedLabel) {
+                this.suppressedLabel = null
+            }
             this.threeSceneService.labels.remove(label.cssObject)
             this.labels.splice(index, 1)
         }
@@ -175,6 +179,9 @@ export class CodeMapLabelService {
 
         for (let i = 0; i < infos.length; i++) {
             const current = infos[i]
+            if (current.label === this.suppressedLabel) {
+                continue
+            }
             this.resolveTooltipCollision(current, tooltipRect)
             this.resolveLabelCollisions(current, infos, i)
         }
@@ -204,7 +211,7 @@ export class CodeMapLabelService {
         for (let j = index - 1; j >= 0; j--) {
             const above = infos[j]
 
-            if (current.rect.right <= above.rect.left || current.rect.left >= above.rect.right) {
+            if (above.label === this.suppressedLabel || current.rect.right <= above.rect.left || current.rect.left >= above.rect.right) {
                 continue
             }
 

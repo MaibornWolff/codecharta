@@ -113,21 +113,19 @@ describe("CodeMapBuilding", () => {
 describe("CodeMapBuilding cached color vectors", () => {
     // These tests use real ColorConverter (no mocking) to verify cached vectors
     // match what the on-demand lightness computation would produce.
-    let originalColorToVector3: typeof ColorConverter.colorToVector3
+    const originalColorToVector3 = ColorConverter.colorToVector3
 
     beforeEach(() => {
-        // Restore real colorToVector3 and clear the static cache so mock
-        // values from the other describe block don't leak in.
-        if (originalColorToVector3 === undefined) {
-            // Save the real implementation on first call (before any mock replaces it)
-            // Since the sibling describe mocks it in beforeEach, we grab it from prototype
-            originalColorToVector3 = ColorConverter.colorToVector3
-        }
         ;(ColorConverter as any).colorToVector3Map = new Map()
         ColorConverter.colorToVector3 = (color: string) => {
             const convertedColor = Number(`0x${color.slice(1)}`)
             return new Vector3(((convertedColor >> 16) & 0xff) / 255, ((convertedColor >> 8) & 0xff) / 255, (convertedColor & 0xff) / 255)
         }
+    })
+
+    afterEach(() => {
+        ColorConverter.colorToVector3 = originalColorToVector3
+        ;(ColorConverter as any).colorToVector3Map = new Map()
     })
 
     it("should return highlighted color vector matching decreaseLightness(-10)", () => {
