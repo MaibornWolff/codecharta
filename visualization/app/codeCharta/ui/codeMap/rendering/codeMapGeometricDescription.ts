@@ -134,13 +134,22 @@ export class CodeMapGeometricDescription {
         this.storeAABB(offset, aabb)
 
         if (nodeCount <= BVH_LEAF_THRESHOLD) {
-            this.bvhNodes[offset + NODE_OFFSETS.left] = -1
-            this.bvhNodes[offset + NODE_OFFSETS.right] = -1
-            this.bvhNodes[offset + NODE_OFFSETS.first] = start
-            this.bvhNodes[offset + NODE_OFFSETS.count] = nodeCount
-            return nodeIndex
+            this.storeLeafNode(offset, start, nodeCount)
+        } else {
+            this.storeInternalNode(offset, start, end, aabb, centroids)
         }
 
+        return nodeIndex
+    }
+
+    private storeLeafNode(offset: number, start: number, nodeCount: number) {
+        this.bvhNodes[offset + NODE_OFFSETS.left] = -1
+        this.bvhNodes[offset + NODE_OFFSETS.right] = -1
+        this.bvhNodes[offset + NODE_OFFSETS.first] = start
+        this.bvhNodes[offset + NODE_OFFSETS.count] = nodeCount
+    }
+
+    private storeInternalNode(offset: number, start: number, end: number, aabb: AABB, centroids: Float32Array) {
         const splitIndex = this.partitionOnLongestAxis(start, end, aabb, centroids)
         const leftChild = this.buildBVHNode(start, splitIndex, centroids)
         const rightChild = this.buildBVHNode(splitIndex, end, centroids)
@@ -149,8 +158,6 @@ export class CodeMapGeometricDescription {
         this.bvhNodes[offset + NODE_OFFSETS.right] = rightChild
         this.bvhNodes[offset + NODE_OFFSETS.first] = -1
         this.bvhNodes[offset + NODE_OFFSETS.count] = 0
-
-        return nodeIndex
     }
 
     private computeAABB(start: number, end: number): AABB {
@@ -189,7 +196,8 @@ export class CodeMapGeometricDescription {
         const extY = aabb.maxY - aabb.minY
         const extZ = aabb.maxZ - aabb.minZ
         const axis = getLongestAxis(extX, extY, extZ)
-        const mid = axis === 0 ? aabb.minX + extX * 0.5 : axis === 1 ? aabb.minY + extY * 0.5 : aabb.minZ + extZ * 0.5
+        const midpoints = [aabb.minX + extX * 0.5, aabb.minY + extY * 0.5, aabb.minZ + extZ * 0.5]
+        const mid = midpoints[axis]
 
         let left = start
         let right = end - 1
@@ -236,17 +244,10 @@ export class CodeMapGeometricDescription {
             const firstIndex = this.bvhNodes[offset + NODE_OFFSETS.first]
 
             if (firstIndex >= 0) {
-                const leafCount = this.bvhNodes[offset + NODE_OFFSETS.count]
-                for (let i = firstIndex; i < firstIndex + leafCount; i++) {
-                    const buildingIndex = this.bvhIndices[i]
-                    const intersectionPoint = ray.intersectBox(this.scaledBoxes[buildingIndex], this._intersectTarget)
-                    if (intersectionPoint) {
-                        const distance = intersectionPoint.distanceTo(ray.origin)
-                        if (distance < leastIntersectedDistance) {
-                            leastIntersectedDistance = distance
-                            intersectedBuilding = this._buildings[buildingIndex]
-                        }
-                    }
+                const result = this.intersectLeaf(ray, firstIndex, this.bvhNodes[offset + NODE_OFFSETS.count], leastIntersectedDistance)
+                if (result.distance < leastIntersectedDistance) {
+                    leastIntersectedDistance = result.distance
+                    intersectedBuilding = result.building
                 }
             } else {
                 stack[stackPointer++] = this.bvhNodes[offset + NODE_OFFSETS.left]
@@ -255,6 +256,31 @@ export class CodeMapGeometricDescription {
         }
 
         return intersectedBuilding
+    }
+
+    private intersectLeaf(
+        ray: Ray,
+        firstIndex: number,
+        leafCount: number,
+        bestDistance: number
+    ): { building: CodeMapBuilding | undefined; distance: number } {
+        let building: CodeMapBuilding | undefined
+        let distance = bestDistance
+
+        for (let i = firstIndex; i < firstIndex + leafCount; i++) {
+            const buildingIndex = this.bvhIndices[i]
+            const intersectionPoint = ray.intersectBox(this.scaledBoxes[buildingIndex], this._intersectTarget)
+            if (!intersectionPoint) {
+                continue
+            }
+            const d = intersectionPoint.distanceTo(ray.origin)
+            if (d < distance) {
+                distance = d
+                building = this._buildings[buildingIndex]
+            }
+        }
+
+        return { building, distance }
     }
 
     private rayIntersectsNode(

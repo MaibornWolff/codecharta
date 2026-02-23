@@ -209,9 +209,7 @@ export class ThreeSceneService implements OnDestroy {
 
     addBuildingsToHighlightingList(...buildings: CodeMapBuilding[]) {
         for (const building of buildings) {
-            if (this.primaryHighlightedBuilding === null) {
-                this.primaryHighlightedBuilding = building
-            }
+            this.primaryHighlightedBuilding ??= building
             this.highlightedBuildingIds.add(building.id)
             this.highlightedNodeIds.add(building.node.id)
         }
