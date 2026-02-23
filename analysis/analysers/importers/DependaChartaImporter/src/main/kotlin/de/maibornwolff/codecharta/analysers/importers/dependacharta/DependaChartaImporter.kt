@@ -51,8 +51,8 @@ class DependaChartaImporter(
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        if (!InputHelper.isInputValid(arrayOf(inputFile!!), canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for DependaChartaImporter, stopping execution...")
+        require(InputHelper.isInputValid(arrayOf(inputFile!!), canInputContainFolders = false)) {
+            "Input invalid file for DependaChartaImporter, stopping execution..."
         }
 
         val dcProject = Gson().fromJson(inputFile!!.reader(), DcProject::class.java)
