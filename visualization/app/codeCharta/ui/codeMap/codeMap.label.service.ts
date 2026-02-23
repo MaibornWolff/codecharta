@@ -1,316 +1,395 @@
-import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, BufferGeometry, LinearFilter, Texture, SpriteMaterial, Color } from "three"
-import { LayoutAlgorithm, Node, CcState } from "../../codeCharta.model"
-import { ThreeMapControlsService } from "./threeViewer/threeMapControls.service"
-import { ThreeCameraService } from "./threeViewer/threeCamera.service"
+import { Vector3 } from "three"
+import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js"
+import { Node, CcState } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ColorConverter } from "../../util/color/colorConverter"
+import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { Injectable } from "@angular/core"
 import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
+import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { State } from "@ngrx/store"
-import { defaultMapColors } from "../../state/store/appSettings/mapColors/mapColors.reducer"
 
 interface InternalLabel {
-    sprite: Sprite
-    line: Line | null
-    heightValue: number
-    lineCount: number
+    cssObject: CSS2DObject
     node: Node
+    buildingTop: Vector3
+}
+
+interface LabelLayoutInfo {
+    label: InternalLabel
+    content: HTMLDivElement
+    rect: DOMRect
+    offset: number
 }
 
 @Injectable({ providedIn: "root" })
 export class CodeMapLabelService {
-    private labels: InternalLabel[]
-    private readonly mapLabelColors = defaultMapColors.labelColorAndAlpha
-    private readonly LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
-    private readonly LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
-    private readonly LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
-    private readonly LABEL_CORNER_RADIUS = 40 //empirically gathered
-    private readonly LABEL_SCALE_FACTOR = 0.7 //empirically gathered
-    private readonly LABEL_HEIGHT_COEFFICIENT = 15 / 4 //empirically gathered, needed to prevent label collision with building with higher margin, TODO scale with margin factor once its available
-    private LABEL_HEIGHT_POSITION = 60
+    private static readonly LABEL_GAP_PX = 4
+    private static readonly BASE_OFFSET_PX = -20
+    private static readonly MIN_CONNECTOR_LENGTH = 6
+    private static readonly MAX_DISPLACEMENT_PX = 100
 
-    private readonly previousScaling: Vector3 = new Vector3(1, 1, 1)
-    private lineCount = 1
-    private nodeHeight = 0
+    private labels: InternalLabel[] = []
+    private connectorSvg: SVGSVGElement | null = null
+    private readonly projectionVec = new Vector3()
+    private suppressedLabel: InternalLabel | null = null
+    private _suppressLayout = false
 
     constructor(
         private readonly state: State<CcState>,
-        private readonly threeCameraService: ThreeCameraService,
         private threeSceneService: ThreeSceneService,
-        private readonly threeMapControlsService: ThreeMapControlsService
+        private threeRendererService: ThreeRendererService,
+        private tooltipService: CodeMapTooltipService
     ) {
-        this.labels = new Array<InternalLabel>()
-        this.threeMapControlsService.subscribe("onCameraChanged", () => this.onCameraChanged())
+        this.threeRendererService.afterRender$.subscribe(() => this.updateLabelLayout())
     }
 
-    // Labels need to be scaled according to map or it will clip + looks bad
     addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
         const { appSettings, dynamicSettings } = this.state.getValue()
-
-        const { scaling, layoutAlgorithm, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
-        const { margin, heightMetric } = dynamicSettings
+        const { scaling, showMetricLabelNodeName, showMetricLabelNameValue } = appSettings
+        const { heightMetric } = dynamicSettings
         const multiplier = new Vector3(scaling.x, scaling.y, scaling.z)
 
-        let labelText = ""
-
+        let nameText = ""
         if (showMetricLabelNodeName || (enforceLabel && !showMetricLabelNameValue)) {
-            labelText = `${node.name}`
+            nameText = node.name
         } else if (!showMetricLabelNameValue) {
             return
         }
 
+        let metricText = ""
         if (showMetricLabelNameValue) {
-            if (labelText !== "") {
-                labelText += "\n"
-            }
-            labelText += `${node.attributes[heightMetric]} ${heightMetric}`
+            metricText = `${node.attributes[heightMetric]} ${heightMetric}`
         }
 
-        const label = this.makeText(labelText, 30, node)
+        const labelElement = this.createLabelElement(nameText, metricText)
+        const cssObject = new CSS2DObject(labelElement)
+        cssObject.center.set(0.5, 1)
 
-        let newHighestNode = node.height + Math.abs(node.heightDelta ?? 0)
-        newHighestNode = newHighestNode * multiplier.y > highestNodeInSet * multiplier.y ? newHighestNode : highestNodeInSet
+        const actualHeight = node.height + Math.abs(node.heightDelta ?? 0)
+        const labelHeight = actualHeight > highestNodeInSet ? actualHeight : highestNodeInSet
 
-        this.nodeHeight = this.nodeHeight > newHighestNode ? this.nodeHeight : newHighestNode
-        // todo: tk rename to addLeafLabel
+        const x = (node.x0 - treeMapSize + node.width / 2) * multiplier.x
+        const z = (node.y0 - treeMapSize + node.length / 2) * multiplier.z
 
-        const x = node.x0 - treeMapSize
-        const y = node.z0
-        const z = node.y0 - treeMapSize
+        cssObject.position.set(x, (node.z0 + labelHeight) * multiplier.y, z)
+        cssObject.userData = { node }
 
-        const labelX = (x + node.width / 2) * multiplier.x
-        const labelY = (y + this.nodeHeight) * multiplier.y
-        const labelYOrigin = (y + node.height) * multiplier.y
-        const labelZ = (z + node.length / 2) * multiplier.z
+        const buildingTop = new Vector3(x, (node.z0 + actualHeight) * multiplier.y, z)
 
-        const labelHeightScaled = this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR
-        let labelOffset = labelHeightScaled + label.heightValue / 2
-
-        switch (layoutAlgorithm) {
-            // !remark : algorithm scaling is not same as the squarified layout,
-            // !layout offset needs to be scaled down,the divided by value is just empirical,
-            // TODO !needs further investigation
-            case LayoutAlgorithm.StreetMap:
-            case LayoutAlgorithm.TreeMapStreet:
-                labelOffset /= 10
-                this.LABEL_HEIGHT_POSITION = 0
-                label.line = this.makeLine(labelX, labelY + labelOffset, labelYOrigin, labelZ)
-                break
-            default:
-                label.line = this.makeLine(labelX, labelY + labelHeightScaled / 2, labelYOrigin, labelZ)
-        }
-
-        label.sprite.position.set(labelX, labelY + labelOffset, labelZ) //label_height
-
-        label.sprite.material.color = new Color(this.mapLabelColors.rgb)
-        label.sprite.material.opacity = this.mapLabelColors.alpha
-        label.sprite.userData = { node }
-
-        this.threeSceneService.labels.add(label.sprite)
-        this.threeSceneService.labels.add(label.line)
-
-        this.labels.push(label) // todo tk: why is the duplication of this.labels and threeSceneService.labels needed? To sync label.sprite with label.line I guess - is there maybe a nicer solution for that?
+        this.threeSceneService.labels.add(cssObject)
+        this.labels.push({ cssObject, node, buildingTop })
     }
 
     clearLabels() {
-        this.threeSceneService.resetLabel()
-        this.threeSceneService.resetLineHighlight()
-        this.dispose(this.labels)
-
-        this.labels = []
-        this.nodeHeight = 0
-        this.LABEL_HEIGHT_POSITION = 60
-
-        // Reset the children
-        this.dispose(this.threeSceneService.labels.children)
-        this.threeSceneService.labels.children = []
-    }
-
-    private disposeSprite(element: Sprite) {
-        element.material.dispose()
-        element.material.map.dispose()
-        element.geometry.dispose()
-    }
-
-    private disposeLine(element: Line) {
-        const lineBasicMaterial = element.material as unknown as LineBasicMaterial
-        lineBasicMaterial.dispose()
-        element.geometry.dispose()
-    }
-
-    dispose(labels) {
-        for (const element of labels) {
-            if (element instanceof Sprite) {
-                this.disposeSprite(element)
-            }
-            if (element instanceof Line) {
-                this.disposeLine(element)
-            }
-
-            if (element.sprite !== undefined) {
-                this.disposeSprite(element.sprite)
-            }
-
-            if (element.line !== undefined) {
-                this.disposeLine(element.line)
-            }
+        for (const label of this.labels) {
+            this.threeSceneService.labels.remove(label.cssObject)
         }
+        this.threeSceneService.labels.clear()
+        this.labels = []
+        this.clearConnectors()
     }
 
     clearTemporaryLabel(hoveredNode: Node) {
         const index = this.labels.findIndex(({ node }) => node === hoveredNode)
         if (index > -1) {
+            const label = this.labels[index]
+            this.threeSceneService.labels.remove(label.cssObject)
             this.labels.splice(index, 1)
-            this.dispose(this.threeSceneService.labels.children)
-            this.threeSceneService.labels.children.length -= 2
-            this.threeSceneService.resetLineHighlight()
+        }
+    }
+
+    hasLabelForNode(node: Node): boolean {
+        return this.labels.some(label => label.node === node)
+    }
+
+    suppressLabelForNode(node: Node) {
+        const label = this.labels.find(l => l.node === node)
+        if (label) {
+            this.suppressedLabel = label
+            const content = label.cssObject.element.firstElementChild as HTMLDivElement
+            if (content) {
+                content.style.transition = "opacity 0.2s ease-out"
+                content.style.opacity = "0"
+            }
+        }
+    }
+
+    restoreSuppressedLabel() {
+        if (this.suppressedLabel) {
+            const content = this.suppressedLabel.cssObject.element.firstElementChild as HTMLDivElement
+            if (content) {
+                content.style.opacity = "1"
+            }
+            this.suppressedLabel = null
         }
     }
 
     scale() {
-        const { scaling } = this.state.getValue().appSettings
-        const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
-        const { margin } = this.state.getValue().dynamicSettings
+        // CSS2DRenderer handles projection automatically.
+        // Labels are cleared and recreated on scale changes,
+        // so no manual position adjustment is needed.
+    }
 
-        const labelHeightDifference = new Vector3(0, this.LABEL_HEIGHT_COEFFICIENT * margin * this.LABEL_SCALE_FACTOR, 0)
+    setSuppressLayout(suppress: boolean) {
+        this._suppressLayout = suppress
+    }
 
+    updateLabelLayout() {
+        if (this._suppressLayout || this.labels.length === 0) {
+            this.clearConnectors()
+            return
+        }
+
+        const infos = this.collectLabelInfos()
+        const tooltipRect = this.tooltipService.getRect()
+        this.resolveCollisions(infos, tooltipRect)
+        this.drawConnectors(infos)
+    }
+
+    private collectLabelInfos(): LabelLayoutInfo[] {
+        const infos: LabelLayoutInfo[] = []
+
+        // Phase 1: Reset collision offsets (batch writes — all style mutations before any rect reads)
         for (const label of this.labels) {
-            const multiplier = scalingVector.clone()
-
-            label.sprite.position.sub(labelHeightDifference).divide(this.previousScaling).multiply(multiplier).add(labelHeightDifference)
-            if (multiplier.y > 1) {
-                multiplier.y = 1
+            const content = label.cssObject.element.firstElementChild as HTMLDivElement
+            if (!content) {
+                continue
             }
-            // Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
-            const lineGeometry = label.line.geometry as BufferGeometry
-            const lineGeometryPosition = lineGeometry.attributes.position
-
-            // Position save, then clear and redraw?
-
-            lineGeometryPosition.setX(0, lineGeometryPosition.getX(0) * multiplier.x)
-            lineGeometryPosition.setY(0, lineGeometryPosition.getY(0) * multiplier.y)
-            lineGeometryPosition.setZ(0, lineGeometryPosition.getZ(0) * multiplier.z)
-
-            lineGeometryPosition.setX(1, label.sprite.position.x)
-            lineGeometryPosition.setY(1, label.sprite.position.y)
-            lineGeometryPosition.setZ(1, label.sprite.position.z)
-
-            lineGeometryPosition.needsUpdate = true
+            content.style.transform = `translateY(${CodeMapLabelService.BASE_OFFSET_PX}px)`
+            infos.push({ label, content, rect: null, offset: 0 })
         }
 
-        this.previousScaling.copy(scalingVector)
+        // Phase 2: Read all bounding rects after writes are complete.
+        // Grouping all getBoundingClientRect calls here (rather than interleaving them with style
+        // mutations) limits the number of forced layout recalculations to one per update cycle.
+        for (const info of infos) {
+            info.rect = info.content.getBoundingClientRect()
+        }
+
+        return infos
     }
 
-    onCameraChanged() {
-        for (const label of this.labels) {
-            this.setLabelSize(label.sprite, label, (label.sprite.material.map.image as HTMLCanvasElement).width)
-        }
-    }
+    private resolveCollisions(infos: LabelLayoutInfo[], tooltipRect: DOMRect | null) {
+        // Sort by screen Y and compute collision offsets (greedy sweep)
+        infos.sort((a, b) => a.rect.top - b.rect.top)
 
-    private makeText(message: string, fontsize: number, node: Node): InternalLabel {
-        const canvas = document.createElement("canvas")
-        const context = canvas.getContext("2d")
+        for (let i = 0; i < infos.length; i++) {
+            const current = infos[i]
 
-        context.font = `${fontsize}px Roboto`
+            // Check collision with tooltip (immovable obstacle)
+            if (tooltipRect) {
+                const currentTop = current.rect.top + current.offset
+                const currentBottom = current.rect.bottom + current.offset
+                const horizontalOverlap = current.rect.right > tooltipRect.left && current.rect.left < tooltipRect.right
+                const verticalOverlap = currentBottom > tooltipRect.top && currentTop < tooltipRect.bottom
 
-        const margin = 25
-        const multiLineContext = message.split("\n")
-
-        // setting canvas width/height before ctx draw, else canvas is empty
-        const firstMultiLineContextWidth = context.measureText(multiLineContext[0]).width
-        const secondMultiLineContextWidth = context.measureText(multiLineContext[1]).width
-        canvas.width =
-            firstMultiLineContextWidth > secondMultiLineContextWidth
-                ? firstMultiLineContextWidth + margin
-                : secondMultiLineContextWidth + margin
-        canvas.height = margin + fontsize * multiLineContext.length
-
-        // bg
-        context.font = `${fontsize}px Roboto`
-        context.fillStyle = "rgba(255,255,255,1)"
-        context.lineJoin = "round"
-        context.lineCap = "round"
-        context.lineWidth = 5
-
-        CodeMapLabelService.drawRectangleWithRoundedCorners(context, 0, 0, canvas.width, canvas.height, this.LABEL_CORNER_RADIUS)
-
-        // after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
-        context.fillStyle = "rgba(0,0,0,1)"
-        context.textAlign = "center"
-        context.textBaseline = "middle"
-
-        //fillText() cannot create multi-line texts, we call it multiple times with different offsets to create a multi-line label
-        for (const [index, element] of multiLineContext.entries()) {
-            context.fillText(element, canvas.width / 2, (canvas.height * (index + 1)) / (multiLineContext.length + 1))
-        }
-
-        const texture = new Texture(canvas)
-        texture.minFilter = LinearFilter // NearestFilter;
-        texture.needsUpdate = true
-
-        const spriteMaterial = new SpriteMaterial({ map: texture })
-        const sprite = new Sprite(spriteMaterial)
-        this.lineCount = multiLineContext.length
-        this.setLabelSize(sprite, null, canvas.width)
-
-        return {
-            sprite,
-            heightValue: canvas.height,
-            line: null,
-            lineCount: multiLineContext.length,
-            node
-        }
-    }
-
-    private static drawRectangleWithRoundedCorners(context, x, y, width, height, radius) {
-        if (width < 2 * radius) {
-            radius = width / 2
-        }
-        if (height < 2 * radius) {
-            radius = height / 2
-        }
-        context.beginPath()
-
-        context.moveTo(x + radius, y)
-        context.arcTo(x + width, y, x + width, y + height, radius)
-        context.arcTo(x + width, y + height, x, y + height, radius)
-        context.arcTo(x, y + height, x, y, radius)
-        context.arcTo(x, y, x + width, y, radius)
-
-        context.closePath()
-        context.fill()
-    }
-
-    private setLabelSize(
-        sprite: Sprite,
-        label: InternalLabel,
-        labelWidth: number = (sprite.material.map.image as HTMLCanvasElement).width
-    ) {
-        const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
-        if (this.threeCameraService.camera) {
-            const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
-            if (label !== null) {
-                this.lineCount = label.lineCount
+                if (horizontalOverlap && verticalOverlap) {
+                    const overlap = tooltipRect.bottom + CodeMapLabelService.LABEL_GAP_PX - currentTop
+                    if (overlap > 0) {
+                        current.offset += overlap
+                    }
+                }
             }
-            if (this.lineCount > 1) {
-                sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / 25, 1)
+
+            // Check collision with previous labels
+            for (let j = i - 1; j >= 0; j--) {
+                const above = infos[j]
+
+                if (current.rect.right <= above.rect.left || current.rect.left >= above.rect.right) {
+                    continue
+                }
+
+                const aboveBottom = above.rect.bottom + above.offset
+                const currentTop = current.rect.top + current.offset
+                const overlap = aboveBottom + CodeMapLabelService.LABEL_GAP_PX - currentTop
+
+                if (overlap > 0) {
+                    current.offset += overlap
+                }
+            }
+        }
+
+        // Apply offsets with max displacement (batch writes)
+        for (const info of infos) {
+            const content = info.content
+            content.style.transition = "transform 0.2s ease-out, opacity 0.2s ease-out"
+
+            if (info.offset > CodeMapLabelService.MAX_DISPLACEMENT_PX) {
+                content.style.opacity = "0"
+                content.style.transform = `translateY(${CodeMapLabelService.BASE_OFFSET_PX}px)`
+            } else if (info.offset !== 0) {
+                content.style.opacity = info.label === this.suppressedLabel ? "0" : "1"
+                content.style.transform = `translateY(${CodeMapLabelService.BASE_OFFSET_PX + info.offset}px)`
             } else {
-                sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
+                content.style.opacity = info.label === this.suppressedLabel ? "0" : "1"
             }
         }
     }
 
-    private makeLine(x: number, y: number, yOrigin: number, z: number) {
-        const material = new LineBasicMaterial({
-            color: this.LABEL_COLOR_RGB,
-            linewidth: 2
+    private drawConnectors(infos: LabelLayoutInfo[]) {
+        const svg = this.getOrCreateConnectorSvg()
+        if (!svg) {
+            return
+        }
+        svg.innerHTML = ""
+
+        const camera = this.threeRendererService.camera
+        if (!camera) {
+            return
+        }
+
+        const container = this.threeRendererService.labelRenderer?.domElement
+        if (!container) {
+            return
+        }
+
+        const containerRect = container.getBoundingClientRect()
+        const halfWidth = container.clientWidth / 2
+        const halfHeight = container.clientHeight / 2
+
+        for (const info of infos) {
+            // Project actual building top to screen space
+            this.projectionVec.copy(info.label.buildingTop)
+            this.projectionVec.project(camera)
+
+            if (
+                this.projectionVec.z < -1 ||
+                this.projectionVec.z > 1 ||
+                this.projectionVec.x < -1 ||
+                this.projectionVec.x > 1 ||
+                this.projectionVec.y < -1 ||
+                this.projectionVec.y > 1
+            ) {
+                continue
+            }
+
+            const anchorX = this.projectionVec.x * halfWidth + halfWidth
+            const anchorY = -this.projectionVec.y * halfHeight + halfHeight
+
+            // Skip hidden labels (excessive displacement or suppressed by tooltip)
+            if (info.offset > CodeMapLabelService.MAX_DISPLACEMENT_PX || info.label === this.suppressedLabel) {
+                continue
+            }
+
+            // Label bottom-center (rect was read before offset, so add offset for displaced labels)
+            const labelX = info.rect.left - containerRect.left + info.rect.width / 2
+            const labelY = info.rect.bottom - containerRect.top + info.offset
+
+            // Skip if label endpoint is outside the canvas (collision offset pushed it off-screen)
+            if (labelY < 0 || labelY > container.clientHeight || labelX < 0 || labelX > container.clientWidth) {
+                continue
+            }
+
+            // Skip if label is below or at its anchor (displacement reversed the natural direction)
+            if (labelY >= anchorY) {
+                continue
+            }
+
+            // Skip if the connector would be too short to be meaningful
+            const distance = Math.hypot(anchorX - labelX, anchorY - labelY)
+            if (distance < CodeMapLabelService.MIN_CONNECTOR_LENGTH) {
+                continue
+            }
+
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line")
+            line.setAttribute("x1", String(anchorX))
+            line.setAttribute("y1", String(anchorY))
+            line.setAttribute("x2", String(labelX))
+            line.setAttribute("y2", String(labelY))
+            line.setAttribute("stroke", "rgba(180, 180, 180, 0.9)")
+            line.setAttribute("stroke-width", "2")
+            svg.appendChild(line)
+        }
+    }
+
+    private getOrCreateConnectorSvg(): SVGSVGElement | null {
+        if (this.connectorSvg) {
+            return this.connectorSvg
+        }
+
+        const container = this.threeRendererService.labelRenderer?.domElement
+        if (!container) {
+            return null
+        }
+
+        this.connectorSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+        this.connectorSvg.style.cssText =
+            "position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible;"
+        container.appendChild(this.connectorSvg)
+        return this.connectorSvg
+    }
+
+    destroy() {
+        this.clearLabels()
+        if (this.connectorSvg) {
+            this.connectorSvg.remove()
+            this.connectorSvg = null
+        }
+    }
+
+    private clearConnectors() {
+        if (this.connectorSvg) {
+            this.connectorSvg.innerHTML = ""
+        }
+    }
+
+    private createLabelElement(nameText: string, metricText: string): HTMLDivElement {
+        const wrapper = document.createElement("div")
+        const content = document.createElement("div")
+        content.style.cssText = this.buildLabelStyles()
+        this.applyLabelOpacity(content)
+
+        if (nameText) {
+            const nameSpan = document.createElement("span")
+            nameSpan.style.cssText = "display: block; font-weight: 500;"
+            nameSpan.textContent = nameText
+            content.appendChild(nameSpan)
+        }
+
+        if (metricText) {
+            const metricSpan = document.createElement("span")
+            metricSpan.style.cssText = "display: block; font-size: 10px; color: #666; margin-top: 1px;"
+            metricSpan.textContent = metricText
+            content.appendChild(metricSpan)
+        }
+
+        this.appendLabelToDom(wrapper, content)
+        return wrapper
+    }
+
+    private buildLabelStyles(): string {
+        return `
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-family: Roboto, 'Helvetica Neue', sans-serif;
+            font-size: 12px;
+            line-height: 1.3;
+            color: #1a1a1a;
+            white-space: nowrap;
+            pointer-events: none;
+            user-select: none;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            transform: translateY(${CodeMapLabelService.BASE_OFFSET_PX}px);
+            opacity: 0;
+            transition: opacity 0.2s ease-out;
+        `
+    }
+
+    private appendLabelToDom(wrapper: HTMLDivElement, content: HTMLDivElement): void {
+        wrapper.appendChild(content)
+    }
+
+    private applyLabelOpacity(element: HTMLDivElement): void {
+        // rAF defers the opacity change to the next paint frame so that the browser has already
+        // committed the element's initial opacity: 0 style to the DOM. Without this deferral the
+        // browser can batch the insertion and the style mutation into a single compositing step,
+        // skipping the CSS transition entirely and making the label appear instantly instead of
+        // fading in.
+        requestAnimationFrame(() => {
+            element.style.opacity = "1"
         })
-
-        const bufferGeometry = new BufferGeometry().setFromPoints([
-            new Vector3(x, yOrigin, z),
-            new Vector3(x, y + this.LABEL_HEIGHT_POSITION, z)
-        ])
-
-        return new Line(bufferGeometry, material)
     }
 }

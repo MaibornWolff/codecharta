@@ -68,7 +68,7 @@ describe("FileExtensionBarComponent", () => {
                 {
                     provide: ThreeSceneService,
                     useValue: {
-                        applyClearHightlights: jest.fn(),
+                        applyClearHighlights: jest.fn(),
                         highlightBuildingsByExtension: jest.fn()
                     }
                 }
@@ -110,7 +110,7 @@ describe("FileExtensionBarComponent", () => {
         it("should unhighlight buildings when no longer hovered", async () => {
             await userEvent.hover(fileExtensionToHighlight)
             await userEvent.unhover(fileExtensionToHighlight)
-            expect(threeSceneService.applyClearHightlights).toHaveBeenCalled()
+            expect(threeSceneService.applyClearHighlights).toHaveBeenCalled()
         })
 
         it("should highlight buildings on hover", async () => {

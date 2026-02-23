@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Label Settings Panel**: A new dedicated menu in the ribbon bar groups all label-related settings in one place — top labels count, show node names, show metric values, and color label toggles (with color swatches)
+- **Building hover tooltip**: Hovering over a building now shows a tooltip that follows your cursor, displaying the building name and its current area, height, and color metric values
+- **Restyled building labels**: Top labels now use a modern frosted-glass style (rounded corners, soft shadow, subtle blur background). Labels fade in smoothly, automatically shift to avoid overlapping each other, draw a connector line to their building when displaced, and hide themselves gracefully if pushed too far off screen
+
+### Changed
+
+- **Faster map rendering**: The 3D map now renders significantly faster, especially on large codebases, due to a major overhaul of how building geometry is generated and updated on the GPU
+- **Smoother hover interactions**: Hovering over buildings is now more responsive — only the affected buildings are updated instead of reprocessing the entire map on every mouse move
+- **Color label settings moved**: Color label checkboxes are now in the Label Settings Panel instead of the Color Settings Panel
+- **Label settings moved**: Top labels slider and show name/value checkboxes are now in the Label Settings Panel instead of the Height Settings Panel
+- **Top labels limit raised**: The maximum number of automatically shown top labels increased from 10 to 50
+- **Color-labeled buildings share the top-label limit**: When color labels are active, the top-label limit now applies across all color types combined (positive, neutral, negative), sorted by building height
+- **Top label count is preserved when switching files**: If you manually set a lower label count, switching to a different file no longer resets it to a higher auto-calculated value
+
+### Fixed 🐞
+
+- Fix memory usage growing steadily over time when reloading or switching maps
+- Fix setting edge preview count to 0 being ignored
+
+### Chore 👨‍💻 👩‍💻
+
+- Upgrade three.js from 0.168 to 0.182
+
 ## [1.141.1] - 2025-12-19
 
 ### Fixed 🐞

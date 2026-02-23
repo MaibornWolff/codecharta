@@ -22,7 +22,6 @@ import { UpdateQueryParametersEffect } from "app/codeCharta/state/effects/update
 import { UpdateVisibleTopLabelsEffect } from "app/codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
 import { ResetColorRangeEffect } from "app/codeCharta/state/effects/resetColorRange/resetColorRange.effect"
 import { BlacklistSearchPatternEffect } from "app/codeCharta/state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
-import { UpdateShowLabelsEffect } from "./codeCharta/state/effects/updateShowLabels/updateShowLabels.effect"
 import { UpdateAmountOfEdgePreviewsEffect } from "./codeCharta/state/effects/amountOfEdgePreviews/updateAmountOfEdgePreviews.effect"
 import { BlacklistExtensionEffect } from "./codeCharta/state/effects/blacklistExtension/blacklistExtension.effect"
 
@@ -46,7 +45,6 @@ export const appConfig: ApplicationConfig = {
             RenderCodeMapEffect,
             AutoFitCodeMapEffect,
             UpdateVisibleTopLabelsEffect,
-            UpdateShowLabelsEffect,
             LinkColorMetricToHeightMetricEffect,
             ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
             UpdateFileSettingsEffect,

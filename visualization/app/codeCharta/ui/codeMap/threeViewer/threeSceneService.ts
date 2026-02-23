@@ -1,4 +1,4 @@
-import { AmbientLight, Box3, DirectionalLight, Group, Material, Object3D, Raycaster, Scene, Vector3 } from "three"
+import { AmbientLight, DirectionalLight, Group, Material, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CcState, CodeMapNode, LayoutAlgorithm, Node } from "../../../codeCharta.model"
@@ -11,7 +11,6 @@ import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { Injectable, OnDestroy } from "@angular/core"
-import { defaultMapColors } from "../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 import { EventEmitter } from "../../../util/EventEmitter"
 import { State, Store } from "@ngrx/store"
@@ -34,7 +33,7 @@ export class ThreeSceneService implements OnDestroy {
     private mapMesh: CodeMapMesh
     private eventEmitter = new EventEmitter<BuildingSelectedEvents>()
 
-    private floorLabelDrawer
+    private floorLabelDrawer: FloorLabelDrawer
 
     private selected: CodeMapBuilding = null
     private highlightedBuildingIds: Set<number> = new Set()
@@ -42,15 +41,13 @@ export class ThreeSceneService implements OnDestroy {
     private primaryHighlightedBuilding: CodeMapBuilding = null
     private constantHighlight: Map<number, CodeMapBuilding> = new Map()
 
-    private folderLabelColorHighlighted = ColorConverter.convertHexToNumber("#FFFFFF")
-    private folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
+    // Hardcoded color values — no runtime theming system (CSS custom properties) exists in this project.
+    // These do not adapt to dark mode or theme changes.
+    private readonly folderLabelColorHighlighted = ColorConverter.convertHexToNumber("#FFFFFF")
+    private readonly folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
     private folderLabelColorSelected: string
     private numberSelectionColor: number
-    private rayPoint = new Vector3(0, 0, 0)
-    private normedTransformVector = new Vector3(0, 0, 0)
-    private highlightedLabel = null
-    private highlightedLineIndex = -1
-    private highlightedLine = null
+
     private subscription = this.store.select(mapColorsSelector).subscribe(mapColors => {
         this.folderLabelColorSelected = mapColors.selected
         this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
@@ -84,12 +81,16 @@ export class ThreeSceneService implements OnDestroy {
 
     private initFloorLabels(nodes: Node[]) {
         for (const child of this.floorLabelPlanes.children) {
-            if (child["geometry"]) {
-                child["geometry"].dispose()
+            const childWithGeometry = child as unknown as { geometry?: { dispose: () => void } }
+            if (childWithGeometry.geometry) {
+                childWithGeometry.geometry.dispose()
             }
-            if (child["material"]) {
-                child["material"].map?.dispose()
-                child["material"].dispose()
+            const childWithMaterial = child as unknown as {
+                material?: { map?: { dispose: () => void }; dispose: () => void }
+            }
+            if (childWithMaterial.material) {
+                childWithMaterial.material.map?.dispose()
+                childWithMaterial.material.dispose()
             }
         }
         this.floorLabelPlanes.clear()
@@ -114,7 +115,7 @@ export class ThreeSceneService implements OnDestroy {
             scalingVector,
             experimentalFeaturesEnabled
         )
-        const floorLabels = this.floorLabelDrawer.draw(this.state.getValue())
+        const floorLabels = this.floorLabelDrawer.draw()
 
         if (floorLabels.length > 0) {
             this.floorLabelPlanes.add(...floorLabels)
@@ -130,6 +131,15 @@ export class ThreeSceneService implements OnDestroy {
         return this.constantHighlight
     }
 
+    private getMapMaterials(): Material[] | null {
+        const child = this.mapGeometry.children[0]
+        if (!child) {
+            return null
+        }
+        const mat = (child as unknown as { material: unknown }).material
+        return Array.isArray(mat) ? (mat as Material[]) : null
+    }
+
     applyHighlights() {
         const state = this.state.getValue() as CcState
         this.getMapMesh().highlightBuilding(
@@ -139,13 +149,15 @@ export class ThreeSceneService implements OnDestroy {
             state,
             this.constantHighlight
         )
-        if (this.mapGeometry.children[0]) {
-            this.highlightMaterial(this.mapGeometry.children[0]["material"])
+        const materials = this.getMapMaterials()
+        if (materials) {
+            const constantHighlightedNodes = new Set<number>([...this.constantHighlight.values()].map(({ node }) => node.id))
+            this.highlightMaterial(materials, constantHighlightedNodes)
         }
         this.threeRendererService.render()
     }
 
-    applyClearHightlights() {
+    applyClearHighlights() {
         this.clearHighlight()
         this.threeRendererService.render()
     }
@@ -174,13 +186,7 @@ export class ThreeSceneService implements OnDestroy {
         this.mapMesh.setScale(scale)
     }
 
-    private highlightMaterial(materials: Material[]) {
-        const constantHighlightedNodes = new Set<number>()
-
-        for (const { node } of this.constantHighlight.values()) {
-            constantHighlightedNodes.add(node.id)
-        }
-
+    private highlightMaterial(materials: Material[], constantHighlightedNodes: Set<number>) {
         for (const material of materials) {
             const materialNodeId = material.userData.id
             if (this.selected && materialNodeId === this.selected.node.id) {
@@ -218,6 +224,12 @@ export class ThreeSceneService implements OnDestroy {
         this.applyHighlights()
     }
 
+    prepareHighlightTransition() {
+        this.highlightedBuildingIds.clear()
+        this.highlightedNodeIds.clear()
+        this.primaryHighlightedBuilding = null
+    }
+
     clearHighlight() {
         if (this.getMapMesh()) {
             this.getMapMesh().clearUnselectedBuildings(this.selected)
@@ -225,8 +237,9 @@ export class ThreeSceneService implements OnDestroy {
             this.highlightedNodeIds.clear()
             this.primaryHighlightedBuilding = null
             this.constantHighlight.clear()
-            if (this.mapGeometry.children[0]) {
-                this.resetMaterial(this.mapGeometry.children[0]["material"])
+            const materials = this.getMapMaterials()
+            if (materials) {
+                this.resetMaterial(materials)
             }
         }
     }
@@ -245,133 +258,10 @@ export class ThreeSceneService implements OnDestroy {
         this.applyHighlights()
 
         this.eventEmitter.emit("onBuildingSelected", { building: this.selected })
-        if (this.mapGeometry.children[0]) {
-            this.selectMaterial(this.mapGeometry.children[0]["material"])
+        const materials = this.getMapMaterials()
+        if (materials) {
+            this.selectMaterial(materials)
         }
-    }
-
-    animateLabel(hoveredLabel: Object3D, raycaster: Raycaster, labels: Object3D[]) {
-        if (hoveredLabel !== null && raycaster !== null) {
-            this.resetLabel()
-
-            if (hoveredLabel["material"]) {
-                hoveredLabel["material"].opacity = 1
-            }
-
-            this.highlightedLineIndex = this.getHoveredLabelLineIndex(labels, hoveredLabel)
-            this.highlightedLine = labels[this.highlightedLineIndex]
-
-            this.rayPoint = new Vector3()
-            this.rayPoint.subVectors(raycaster.ray.origin, hoveredLabel.position)
-
-            const norm = Math.sqrt(this.rayPoint.x ** 2 + this.rayPoint.y ** 2 + this.rayPoint.z ** 2)
-            this.normedTransformVector = new Vector3(this.rayPoint.x / norm, this.rayPoint.y / norm, this.rayPoint.z / norm)
-
-            const cameraPoint = raycaster.ray.origin
-            const maxDistance = this.calculateMaxDistance(hoveredLabel, labels, cameraPoint)
-
-            this.normedTransformVector.multiplyScalar(maxDistance)
-
-            hoveredLabel.position.add(this.normedTransformVector)
-
-            this.toggleLineAnimation(hoveredLabel)
-
-            this.highlightedLabel = hoveredLabel
-        }
-    }
-
-    resetLineHighlight() {
-        this.highlightedLineIndex = -1
-        this.highlightedLine = null
-    }
-
-    resetLabel() {
-        if (this.highlightedLabel !== null) {
-            this.highlightedLabel.position.sub(this.normedTransformVector)
-            this.highlightedLabel.material.opacity = defaultMapColors.labelColorAndAlpha.alpha
-
-            if (this.highlightedLine) {
-                this.toggleLineAnimation(this.highlightedLabel)
-            }
-
-            this.highlightedLabel = null
-        }
-    }
-
-    getHoveredLabelLineIndex(labels: Object3D[], label: Object3D) {
-        const index = labels.findIndex(({ uuid }) => uuid === label.uuid)
-
-        if (index >= 0) {
-            return index + 1
-        }
-    }
-
-    toggleLineAnimation(hoveredLabel: Object3D) {
-        const positionAttribute = this.highlightedLine.geometry.getAttribute("position")
-        positionAttribute.setXYZ(1, hoveredLabel.position.x, hoveredLabel.position.y, hoveredLabel.position.z)
-        positionAttribute.needsUpdate = true
-    }
-
-    getLabelForHoveredNode(hoveredBuilding: CodeMapBuilding, labels: Object3D[]) {
-        // 2-step: the labels array consists of alternating label and the corresponding label antennae
-        for (let counter = 0; counter < labels?.length; counter += 2) {
-            if (labels[counter].userData.node === hoveredBuilding.node) {
-                return labels[counter]
-            }
-        }
-        return null
-    }
-
-    private isOverlapping(a: Box3, b: Box3, dimension: string) {
-        return Number(a.max[dimension] >= b.min[dimension] && b.max[dimension] >= a.min[dimension])
-    }
-
-    private getIntersectionDistanceFunction(bboxHoveredLabel: Box3, bboxObstructingLabel: Box3) {
-        return (distance: number) => {
-            const normedVector = this.normedTransformVector.clone()
-            normedVector.multiplyScalar(distance)
-            bboxHoveredLabel.translate(normedVector)
-            const count =
-                this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "x") +
-                this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "y")
-            if (count === 2 || (count === 1 && this.isOverlapping(bboxObstructingLabel, bboxHoveredLabel, "z"))) {
-                return distance
-            }
-            return 0
-        }
-    }
-
-    private calculateMaxDistance(hoveredLabel: Object3D, labels: Object3D[], cameraPoint: Vector3) {
-        const bboxHoveredLabel = new Box3().setFromObject(hoveredLabel)
-        const centerPoint = new Vector3()
-        bboxHoveredLabel.getCenter(centerPoint)
-        const distanceLabelCenterToCamera = cameraPoint.distanceTo(centerPoint)
-        let maxDistance = distanceLabelCenterToCamera / 20
-
-        for (let counter = 0; counter < labels.length; counter += 2) {
-            // Creates a nice small highlighting for hovered, unobstructed
-            // labels, empirically gathered value.
-            if (labels[counter] !== hoveredLabel) {
-                const bboxHoveredLabelWorkingCopy = bboxHoveredLabel.clone()
-                const bboxObstructingLabel = new Box3().setFromObject(labels[counter])
-                const centerPoint2 = new Vector3()
-
-                bboxObstructingLabel.getCenter(centerPoint2)
-
-                const calculateIntersectionDistance = this.getIntersectionDistanceFunction(
-                    bboxHoveredLabelWorkingCopy,
-                    bboxObstructingLabel
-                )
-
-                maxDistance = Math.max(
-                    calculateIntersectionDistance(distanceLabelCenterToCamera - cameraPoint.distanceTo(centerPoint2)),
-                    calculateIntersectionDistance(distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.max)),
-                    calculateIntersectionDistance(distanceLabelCenterToCamera - cameraPoint.distanceTo(bboxObstructingLabel.min)),
-                    maxDistance
-                )
-            }
-        }
-        return maxDistance
     }
 
     addNodeAndChildrenToConstantHighlight(codeMapNode: Pick<CodeMapNode, "id">) {
@@ -413,8 +303,9 @@ export class ThreeSceneService implements OnDestroy {
             this.applyHighlights()
         }
         this.selected = null
-        if (this.mapGeometry.children[0]) {
-            this.resetMaterial(this.mapGeometry.children[0]["material"])
+        const materials = this.getMapMaterials()
+        if (materials) {
+            this.resetMaterial(materials)
         }
     }
 

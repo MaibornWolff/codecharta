@@ -1,49 +1,31 @@
 import { TestBed } from "@angular/core/testing"
 import { CodeMapLabelService } from "./codeMap.label.service"
+import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { CcState, Node } from "../../codeCharta.model"
-import {
-    BoxGeometry,
-    BufferGeometry,
-    Group,
-    Line,
-    LineBasicMaterial,
-    Mesh,
-    Object3D,
-    PerspectiveCamera,
-    Sprite,
-    SpriteMaterial,
-    Vector3
-} from "three"
-import { ThreeCameraService } from "./threeViewer/threeCamera.service"
+import { Group, BoxGeometry, Mesh } from "three"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
+import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { ThreeMapControlsService } from "./threeViewer/threeMapControls.service"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 
 describe("CodeMapLabelService", () => {
     let state: State<CcState>
     let store: Store<CcState>
-    let threeCameraService: ThreeCameraService
     let threeSceneService: ThreeSceneService
+    let threeRendererService: ThreeRendererService
+    let tooltipService: Partial<CodeMapTooltipService>
     let codeMapLabelService: CodeMapLabelService
-    let threeMapControlsService: ThreeMapControlsService
-    let createElementOrigin
     let sampleLeaf: Node
     let otherSampleLeaf: Node
-    let canvasContextMock
-    let sampleLeafDelta: Node
 
     beforeEach(() => {
         restartSystem()
         rebuild()
-        withMockedThreeCameraService()
         withMockedThreeSceneService()
-        setCanvasRenderSettings()
     })
 
     function restartSystem() {
@@ -51,29 +33,28 @@ describe("CodeMapLabelService", () => {
             imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
         store = TestBed.inject(Store)
-
         state = TestBed.inject(State)
-        threeCameraService = TestBed.inject(ThreeCameraService)
         threeSceneService = TestBed.inject(ThreeSceneService)
-        threeMapControlsService = TestBed.inject(ThreeMapControlsService)
+        threeRendererService = TestBed.inject(ThreeRendererService)
+        tooltipService = {
+            getRect: jest.fn().mockReturnValue(null),
+            isVisible: jest.fn().mockReturnValue(false)
+        }
     }
 
     function rebuild() {
-        codeMapLabelService = new CodeMapLabelService(state, threeCameraService, threeSceneService, threeMapControlsService)
-    }
-
-    function withMockedThreeCameraService() {
-        threeCameraService.camera = new PerspectiveCamera()
-        threeCameraService.camera.position.distanceTo = jest.fn()
+        codeMapLabelService = new CodeMapLabelService(
+            state,
+            threeSceneService,
+            threeRendererService,
+            tooltipService as CodeMapTooltipService
+        )
     }
 
     function withMockedThreeSceneService() {
         threeSceneService.mapGeometry = new Group().add(new Mesh(new BoxGeometry(10, 10, 10)))
-        threeSceneService.labels.add = jest.fn()
-        threeSceneService.labels.children = []
-    }
+        threeSceneService.labels = new Group()
 
-    function setCanvasRenderSettings() {
         sampleLeaf = {
             name: "sample",
             width: 1,
@@ -103,52 +84,22 @@ describe("CodeMapLabelService", () => {
             attributes: { a: 20, b: 15, mcc: 99 },
             children: []
         } as undefined as Node
-
-        sampleLeafDelta = {
-            name: "otherSampleLeaf",
-            width: 4,
-            height: 7,
-            length: 2,
-            depth: 1,
-            x0: 5,
-            z0: 6,
-            y0: 7,
-            isLeaf: true,
-            deltas: { a: 1, b: 2 },
-            attributes: { a: 20, b: 15, mcc: 99 },
-            heightDelta: 8,
-            children: []
-        } as undefined as Node
-
-        canvasContextMock = {
-            font: "",
-            measureText: jest.fn(),
-            fillText: jest.fn(),
-            beginPath: jest.fn(),
-            moveTo: jest.fn(),
-            arcTo: jest.fn(),
-            closePath: jest.fn(),
-            fill: jest.fn()
-        }
-
-        createElementOrigin = document.createElement
-
-        document.createElement = jest.fn().mockReturnValue({
-            getContext: () => {
-                return canvasContextMock
-            }
-        })
-
-        canvasContextMock.measureText.mockReturnValue({ width: 10 })
     }
-
-    afterEach(() => {
-        document.createElement = createElementOrigin
-    })
 
     describe("constructor", () => {
         it("should not have any labels", () => {
             expect(codeMapLabelService["labels"].length).toBe(0)
+        })
+
+        it("should subscribe to afterRender$ and call updateLabelLayout when emitted", () => {
+            // Arrange
+            const updateLabelLayout = jest.spyOn(codeMapLabelService, "updateLabelLayout")
+
+            // Act
+            threeRendererService["_afterRender$"].next()
+
+            // Assert
+            expect(updateLabelLayout).toHaveBeenCalledTimes(1)
         })
     })
 
@@ -156,418 +107,402 @@ describe("CodeMapLabelService", () => {
         beforeEach(() => {
             store.dispatch(setAmountOfTopLabels({ value: 1 }))
             store.dispatch(setHeightMetric({ value: "mcc" }))
-            codeMapLabelService["nodeHeight"] = 0
         })
 
-        it("should add label if node has a height attribute mentioned in renderSettings", () => {
+        it("should add a CSS2DObject label to the scene", () => {
             store.dispatch(setShowMetricLabelNameValue({ value: true }))
             store.dispatch(setShowMetricLabelNodeName({ value: true }))
 
             codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
             expect(codeMapLabelService["labels"].length).toBe(1)
+            expect(threeSceneService.labels.children.length).toBe(1)
         })
 
-        it("should add label even if node has a height of value 0", () => {
-            sampleLeaf.attributes = { mcc: 0 }
-
-            store.dispatch(setShowMetricLabelNameValue({ value: true }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+        it("should not add label if both show options are false and enforceLabel is false", () => {
+            store.dispatch(setShowMetricLabelNameValue({ value: false }))
+            store.dispatch(setShowMetricLabelNodeName({ value: false }))
 
             codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+
+            expect(codeMapLabelService["labels"].length).toBe(0)
+        })
+
+        it("should add label with enforceLabel even when show options are false", () => {
+            store.dispatch(setShowMetricLabelNameValue({ value: false }))
+            store.dispatch(setShowMetricLabelNodeName({ value: false }))
+
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0, true)
 
             expect(codeMapLabelService["labels"].length).toBe(1)
         })
 
-        it("should calculate correct height without delta with node name only", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
+        it("should store node reference in userData", () => {
             store.dispatch(setShowMetricLabelNodeName({ value: true }))
 
             codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(166.75)
+            const cssObject = codeMapLabelService["labels"][0].cssObject
+            expect(cssObject.userData.node).toBe(sampleLeaf)
         })
 
-        it("should calculate correct height without delta with metric values only", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
+        it("should create wrapper with content child", () => {
             store.dispatch(setShowMetricLabelNodeName({ value: true }))
 
             codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(166.75)
-        })
-
-        it("should use node height value if nodeHeight is greater than the nodes height ", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-            codeMapLabelService["nodeHeight"] = 100
-
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(264.75)
-        })
-
-        it("should use the nodes actual height if its greater then nodeHeight", () => {
-            codeMapLabelService["nodeHeight"] = 10
-
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(174.75)
-        })
-
-        it("should calculate correct height without delta for two line label: node name and metric value", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: true }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(181.75)
-        })
-
-        it("should use the nodes actual height if its greater then nodeHeight and update nodeHeight correctly", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeafDelta, 0)
-
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(179.75)
-            expect(codeMapLabelService["nodeHeight"]).toEqual(15)
-        })
-
-        it("should use highestNodeInSet if its greater then nodes actual height and nodeHeight and should update nodeHeight correctly", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeafDelta, 20)
-
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(184.75)
-            expect(codeMapLabelService["nodeHeight"]).toEqual(20)
-        })
-
-        it("should use the updated and stored value for nodeHeight when adding a new, smaller node", () => {
-            codeMapLabelService["nodeHeight"] = 10
-
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeafDelta, 0)
-
-            const positionSampleDeltaLeaf: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionSampleDeltaLeaf.y).toBe(179.75)
-
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-            const positionSampleLeafWithAppliedDeltaNodeHeight: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionSampleLeafWithAppliedDeltaNodeHeight.y).toBe(179.75)
-        })
-
-        it("should set the text correctly, creating a two line label", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: true }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-
-            const lineCount = codeMapLabelService["labels"][0].lineCount
-            expect(lineCount).toBe(2)
-        })
-
-        it("should set the text correctly, creating a one line label", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-
-            const lineCount = codeMapLabelService["labels"][0].lineCount
-            expect(lineCount).toBe(1)
-        })
-
-        it("scaling existing labels multiple times should scale their position correctly", () => {
-            const SX = 1
-            const SY = 2
-            const SZ = 3
-
-            store.dispatch(setShowMetricLabelNameValue({ value: true }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-
-            const originalSpritePositionsA = codeMapLabelService["labels"][0].sprite.position.clone()
-
-            const lineGeometry = codeMapLabelService["labels"][0].line.geometry as BufferGeometry
-
-            const originalLineGeometryStartVertices = lineGeometry.attributes.position.clone()
-
-            const scaledLabelA = codeMapLabelService["labels"][0]
-            const scaledLabelB = codeMapLabelService["labels"][1]
-
-            store.dispatch(setScaling({ value: new Vector3(SX, SY, SZ) }))
-
-            const expectedScaledSpritePositions = new Vector3(originalSpritePositionsA.x * SX, 232.25, originalSpritePositionsA.z * SZ)
-
-            const expectedScaledLineGeometryStart = new Vector3(
-                originalLineGeometryStartVertices.getX(0) * SX,
-                originalLineGeometryStartVertices.getY(0),
-                originalLineGeometryStartVertices.getZ(0) * SZ
-            )
-
-            codeMapLabelService.scale()
-
-            assertLabelPositions(scaledLabelA, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
-            assertLabelPositions(scaledLabelB, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
-
-            codeMapLabelService.scale()
-
-            // Ensure that scaling factors are not additive
-            assertLabelPositions(scaledLabelA, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
-            assertLabelPositions(scaledLabelB, expectedScaledSpritePositions, expectedScaledLineGeometryStart)
-        })
-
-        it("scaling labels from a factor bigger to factor smaller then 1.0 should scale positions correctly", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-
-            store.dispatch(setScaling({ value: new Vector3(1, 2, 1) }))
-            codeMapLabelService.scale()
-
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(202.25)
-
-            store.dispatch(setScaling({ value: new Vector3(1, 0.5, 1) }))
-            codeMapLabelService.scale()
-
-            expect(positionWithoutDelta.y).toBe(149)
-        })
-
-        it("scaling labels from a factor smaller to factor bigger then 1.0 should scale positions correctly", () => {
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-
-            store.dispatch(setScaling({ value: new Vector3(1, 0.5, 1) }))
-            codeMapLabelService.scale()
-
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(149)
-
-            store.dispatch(setScaling({ value: new Vector3(1, 2, 1) }))
-            codeMapLabelService.scale()
-
-            expect(positionWithoutDelta.y).toBe(202.25)
-        })
-
-        it("should apply scaling factor to a newly created label", () => {
-            store.dispatch(setScaling({ value: new Vector3(1, 2, 1) }))
-
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-
-            const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-            expect(positionWithoutDelta.y).toBe(174.75)
-        })
-
-        function assertLabelPositions(scaledLabel, expectedSpritePositions: Vector3, expectedScaledLineGeometryStart: Vector3) {
-            expect(scaledLabel.sprite.position.x).toBe(expectedSpritePositions.x)
-            expect(scaledLabel.sprite.position.y).toBeCloseTo(expectedSpritePositions.y, 3)
-            expect(scaledLabel.sprite.position.z).toBe(expectedSpritePositions.z)
-
-            const lineGeometry = scaledLabel.line.geometry as BufferGeometry
-            const scaledLabelPos = lineGeometry.attributes.position
-
-            expect(scaledLabelPos.getX(0)).toBe(expectedScaledLineGeometryStart.x)
-            expect(scaledLabelPos.getY(0)).toBe(expectedScaledLineGeometryStart.y)
-
-            expect(scaledLabelPos.getX(1)).toBe(expectedSpritePositions.x)
-            expect(scaledLabelPos.getY(1)).toBeCloseTo(expectedSpritePositions.y, 3)
-            expect(scaledLabelPos.getZ(1)).toBe(expectedSpritePositions.z)
-        }
-    })
-
-    describe("clearTemporaryLabel", () => {
-        const generateSceneLabelChild = (numberOfChildren: number): Object3D[] => {
-            const generated = []
-            for (let index = 0; index < numberOfChildren; index++) {
-                generated[index] = { line: undefined, sprite: undefined } as unknown as Object3D
-            }
-            return generated
-        }
-        it("should clear label for the correct node only", () => {
-            store.dispatch(setAmountOfTopLabels({ value: 2 }))
-            store.dispatch(setHeightMetric({ value: "mcc" }))
-            codeMapLabelService.dispose = jest.fn()
-
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-            codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
-
-            threeSceneService.labels.children = generateSceneLabelChild(4)
-
-            threeSceneService["highlightedLineIndex"] = 5
-            threeSceneService["highlightedLine"] = new Object3D()
-            codeMapLabelService.clearTemporaryLabel(sampleLeaf)
-
-            expect(codeMapLabelService.dispose).toHaveBeenCalledWith(threeSceneService.labels.children)
-            expect(threeSceneService.labels.children.length).toEqual(2)
-            expect(codeMapLabelService["labels"][0].node).toEqual(otherSampleLeaf)
-            expect(threeSceneService["highlightedLineIndex"]).toEqual(-1)
-            expect(threeSceneService["highlightedLine"]).toEqual(null)
-        })
-
-        it("should not clear if no label exists for a given node", () => {
-            store.dispatch(setAmountOfTopLabels({ value: 2 }))
-            store.dispatch(setHeightMetric({ value: "mcc" }))
-
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-
-            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
-            threeSceneService.labels.children.length = 2
-
-            codeMapLabelService.clearTemporaryLabel(otherSampleLeaf)
-
-            expect(threeSceneService.labels.children.length).toEqual(2)
-            expect(codeMapLabelService["labels"][0].node).toEqual(sampleLeaf)
+            const element = codeMapLabelService["labels"][0].cssObject.element
+            expect(element.firstElementChild).toBeTruthy()
+            expect(element.firstElementChild.textContent).toContain("sample")
         })
     })
 
     describe("clearLabels", () => {
-        it("should clear parent in scene and internal labels", () => {
+        it("should clear all labels from scene and internal list", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
+
+            expect(codeMapLabelService["labels"].length).toBe(2)
+
             codeMapLabelService.clearLabels()
 
-            expect(codeMapLabelService["threeSceneService"].labels.children.length).toBe(0)
+            expect(codeMapLabelService["labels"].length).toBe(0)
+            expect(threeSceneService.labels.children.length).toBe(0)
+        })
+
+        it("should clear connector SVG lines", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+
+            // Manually set up a fake SVG to verify it gets cleared
+            codeMapLabelService["connectorSvg"] = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line")
+            codeMapLabelService["connectorSvg"].appendChild(line)
+
+            codeMapLabelService.clearLabels()
+
+            expect(codeMapLabelService["connectorSvg"].innerHTML).toBe("")
+        })
+    })
+
+    describe("clearTemporaryLabel", () => {
+        it("should clear label for the correct node only", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
+
+            expect(codeMapLabelService["labels"].length).toBe(2)
+
+            codeMapLabelService.clearTemporaryLabel(sampleLeaf)
+
+            expect(codeMapLabelService["labels"].length).toBe(1)
+            expect(codeMapLabelService["labels"][0].node).toEqual(otherSampleLeaf)
+        })
+
+        it("should not clear if no label exists for a given node", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+
+            codeMapLabelService.clearTemporaryLabel(otherSampleLeaf)
+
+            expect(codeMapLabelService["labels"].length).toBe(1)
+            expect(codeMapLabelService["labels"][0].node).toEqual(sampleLeaf)
+        })
+    })
+
+    describe("hasLabelForNode", () => {
+        it("should return true if label exists for node", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+
+            expect(codeMapLabelService.hasLabelForNode(sampleLeaf)).toBe(true)
+        })
+
+        it("should return false if no label exists for node", () => {
+            expect(codeMapLabelService.hasLabelForNode(sampleLeaf)).toBe(false)
+        })
+    })
+
+    describe("updateLabelLayout", () => {
+        it("should be a no-op for zero labels", () => {
+            // Should not throw
+            codeMapLabelService.updateLabelLayout()
+
             expect(codeMapLabelService["labels"].length).toBe(0)
         })
+
+        it("should process a single label without collision avoidance", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+
+            // Should not throw
+            codeMapLabelService.updateLabelLayout()
+
+            expect(codeMapLabelService["labels"].length).toBe(1)
+        })
+
+        it("should apply transform and transition styles to label content when processing labels", () => {
+            // Arrange
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
+            const content0 = codeMapLabelService["labels"][0].cssObject.element.firstElementChild as HTMLDivElement
+            const content1 = codeMapLabelService["labels"][1].cssObject.element.firstElementChild as HTMLDivElement
+
+            // Act
+            codeMapLabelService.updateLabelLayout()
+
+            // Assert — resolveCollisions writes transform and transition on every label content element
+            expect(content0.style.transition).toContain("transform")
+            expect(content1.style.transition).toContain("transform")
+            expect(content0.style.transform).toContain("translateY")
+            expect(content1.style.transform).toContain("translateY")
+        })
     })
 
-    const MockedSprite = () => {
-        const sprite = new Sprite()
-        sprite.material = {
-            map: { dispose: jest.fn() },
-            dispose: jest.fn()
-        } as unknown as SpriteMaterial
-        sprite.geometry = { dispose: jest.fn() } as unknown as BufferGeometry
-        return sprite
-    }
-
-    const MockedLine = () => {
-        const line = new Line()
-        line.material = {
-            dispose: jest.fn()
-        } as unknown as LineBasicMaterial
-        line.geometry = { dispose: jest.fn() } as unknown as BufferGeometry
-        return line
-    }
-
-    const MockedInternalLabel = () => {
-        return {
-            sprite: MockedSprite(),
-            line: MockedLine()
+    describe("label layout algorithm", () => {
+        function makeRect(top: number, bottom: number, left: number, right: number): DOMRect {
+            return {
+                top,
+                bottom,
+                left,
+                right,
+                width: right - left,
+                height: bottom - top,
+                x: left,
+                y: top,
+                toJSON: () => {}
+            } as DOMRect
         }
-    }
 
-    describe("disposeSprite", () => {
-        let sprite
+        function stubRectsForLabels(rects: DOMRect[]) {
+            // Stub getBoundingClientRect on each label's content element in order
+            for (let i = 0; i < rects.length; i++) {
+                const content = codeMapLabelService["labels"][i].cssObject.element.firstElementChild as HTMLDivElement
+                jest.spyOn(content, "getBoundingClientRect").mockReturnValue(rects[i])
+            }
+        }
 
         beforeEach(() => {
-            sprite = MockedSprite()
-        })
-        it("should dispose material", () => {
-            codeMapLabelService["disposeSprite"](sprite)
-
-            expect(sprite.material.dispose).toHaveBeenCalled()
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
         })
 
-        it("should dispose material map texture", () => {
-            codeMapLabelService["disposeSprite"](sprite)
+        it("should set transform style on each label content element during layout", () => {
+            // Arrange
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            const content = codeMapLabelService["labels"][0].cssObject.element.firstElementChild as HTMLDivElement
+            jest.spyOn(content, "getBoundingClientRect").mockReturnValue(makeRect(100, 120, 50, 150))
 
-            expect(sprite.material.map.dispose).toHaveBeenCalled()
+            // Act
+            codeMapLabelService.updateLabelLayout()
+
+            // Assert — the transform must encode the BASE_OFFSET_PX (-20px) with no extra displacement
+            expect(content.style.transform).toBe("translateY(-20px)")
         })
 
-        it("should dispose sprite geometry", () => {
-            codeMapLabelService["disposeSprite"](sprite)
+        it("should displace a second label downward to avoid overlap with the first", () => {
+            // Arrange — two labels with identical horizontal extent, fully overlapping vertically
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
 
-            expect(sprite.geometry.dispose).toHaveBeenCalled()
+            // Both labels occupy the exact same screen rectangle so they fully overlap
+            const sharedRect = makeRect(100, 120, 50, 150)
+            stubRectsForLabels([sharedRect, sharedRect])
+
+            // Act
+            codeMapLabelService.updateLabelLayout()
+
+            // Assert — after the greedy sweep the second label must have a positive offset so its
+            // transform is shifted further down than the first label's baseline
+            const content0 = codeMapLabelService["labels"][0].cssObject.element.firstElementChild as HTMLDivElement
+            const content1 = codeMapLabelService["labels"][1].cssObject.element.firstElementChild as HTMLDivElement
+            // content0 has no collision offset; content1 must be displaced to avoid overlap
+            expect(content0.style.transform).toBe("translateY(-20px)")
+            // The displacement must be at least the label height (20px) plus the gap (4px)
+            const match = content1.style.transform.match(/translateY\((-?\d+(?:\.\d+)?)px\)/)
+            expect(match).not.toBeNull()
+            const translateY = Number.parseFloat(match[1])
+            expect(translateY).toBeGreaterThan(-20)
+        })
+
+        it("should not displace labels that do not overlap horizontally", () => {
+            // Arrange — two labels with non-overlapping horizontal extents
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
+
+            const leftRect = makeRect(100, 120, 0, 100)
+            const rightRect = makeRect(100, 120, 200, 300)
+            stubRectsForLabels([leftRect, rightRect])
+
+            // Act
+            codeMapLabelService.updateLabelLayout()
+
+            // Assert — neither label collides, so both keep the base offset transform
+            const content0 = codeMapLabelService["labels"][0].cssObject.element.firstElementChild as HTMLDivElement
+            const content1 = codeMapLabelService["labels"][1].cssObject.element.firstElementChild as HTMLDivElement
+            expect(content0.style.transform).toBe("translateY(-20px)")
+            expect(content1.style.transform).toBe("translateY(-20px)")
+        })
+
+        it("should call getBoundingClientRect on every label content element during layout", () => {
+            // Arrange
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
+            const spies = codeMapLabelService["labels"].map(l => {
+                const content = l.cssObject.element.firstElementChild as HTMLDivElement
+                return jest.spyOn(content, "getBoundingClientRect").mockReturnValue(makeRect(100, 120, 50, 150))
+            })
+
+            // Act
+            codeMapLabelService.updateLabelLayout()
+
+            // Assert — every label's content element must have its rect measured exactly once
+            for (const spy of spies) {
+                expect(spy).toHaveBeenCalledTimes(1)
+            }
+        })
+
+        it("should clear connector SVG lines at the start of each drawConnectors call", () => {
+            // Arrange
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            const content = codeMapLabelService["labels"][0].cssObject.element.firstElementChild as HTMLDivElement
+            jest.spyOn(content, "getBoundingClientRect").mockReturnValue(makeRect(100, 120, 50, 150))
+
+            // Prime the SVG element so the next call starts from a known state
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+            const staleLines = document.createElementNS("http://www.w3.org/2000/svg", "line")
+            svg.appendChild(staleLines)
+            codeMapLabelService["connectorSvg"] = svg
+
+            // Act
+            codeMapLabelService.updateLabelLayout()
+
+            // Assert — the SVG must have been wiped before new connectors are written
+            // (drawConnectors does svg.innerHTML = "" immediately after acquiring the SVG element)
+            expect(codeMapLabelService["connectorSvg"]).toBe(svg)
+            // The stale line element should no longer be a child of the SVG
+            expect(svg.contains(staleLines)).toBe(false)
         })
     })
 
-    describe("disposeLine", () => {
-        let line
-        beforeEach(() => {
-            line = MockedLine()
+    describe("setSuppressLayout", () => {
+        it("should suppress layout when set to true", () => {
+            codeMapLabelService.setSuppressLayout(true)
+
+            expect(codeMapLabelService["_suppressLayout"]).toBe(true)
         })
 
-        it("should dispose material", () => {
-            codeMapLabelService["disposeLine"](line)
+        it("should re-enable layout when set to false", () => {
+            codeMapLabelService.setSuppressLayout(true)
+            codeMapLabelService.setSuppressLayout(false)
 
-            expect(line.material.dispose).toHaveBeenCalled()
+            expect(codeMapLabelService["_suppressLayout"]).toBe(false)
         })
 
-        it("should dispose geometry", () => {
-            codeMapLabelService["disposeLine"](line)
+        it("should skip collision detection when layout is suppressed", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
 
-            expect(line.geometry.dispose).toHaveBeenCalled()
+            codeMapLabelService.setSuppressLayout(true)
+            codeMapLabelService.updateLabelLayout()
+
+            // Connectors should be cleared but no collision resolution should run
+            expect(codeMapLabelService["labels"].length).toBe(2)
         })
     })
 
-    describe("dispose", () => {
-        beforeEach(() => {
-            codeMapLabelService["disposeSprite"] = jest.fn()
-            codeMapLabelService["disposeLine"] = jest.fn()
+    describe("scale", () => {
+        it("should be a no-op (labels are cleared and recreated)", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+
+            // Should not throw
+            codeMapLabelService.scale()
+
+            expect(codeMapLabelService["labels"].length).toBe(1)
         })
-        it("should call disposeSprite two times", () => {
-            const spriteElement = MockedSprite()
+    })
 
-            codeMapLabelService.dispose([spriteElement, spriteElement])
+    describe("suppressLabelForNode", () => {
+        it("should set opacity to 0 for the matching label", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
 
-            expect(codeMapLabelService["disposeSprite"]).toHaveBeenCalledTimes(2)
-        })
+            codeMapLabelService.suppressLabelForNode(sampleLeaf)
 
-        it("should call disposeLine two times", () => {
-            const lineElement = MockedLine()
-
-            codeMapLabelService.dispose([lineElement, lineElement])
-
-            expect(codeMapLabelService["disposeLine"]).toHaveBeenCalledTimes(2)
-        })
-
-        it("should call disposeSprite two times when InternalLabel[] is set", () => {
-            const internalLabel = MockedInternalLabel()
-
-            codeMapLabelService.dispose([internalLabel, internalLabel])
-
-            expect(codeMapLabelService["disposeSprite"]).toHaveBeenCalledTimes(2)
+            const content = codeMapLabelService["labels"][0].cssObject.element.firstElementChild as HTMLDivElement
+            expect(content.style.opacity).toBe("0")
+            expect(codeMapLabelService["suppressedLabel"]).toBe(codeMapLabelService["labels"][0])
         })
 
-        it("should call disposeLine two times when InternalLabel[] is set", () => {
-            const internalLabel = MockedInternalLabel()
+        it("should not suppress if node has no label", () => {
+            codeMapLabelService.suppressLabelForNode(sampleLeaf)
 
-            codeMapLabelService.dispose([internalLabel, internalLabel])
+            expect(codeMapLabelService["suppressedLabel"]).toBeNull()
+        })
+    })
 
-            expect(codeMapLabelService["disposeLine"]).toHaveBeenCalledTimes(2)
+    describe("restoreSuppressedLabel", () => {
+        it("should restore opacity to 1 for the suppressed label", () => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+
+            codeMapLabelService.suppressLabelForNode(sampleLeaf)
+            codeMapLabelService.restoreSuppressedLabel()
+
+            const content = codeMapLabelService["labels"][0].cssObject.element.firstElementChild as HTMLDivElement
+            expect(content.style.opacity).toBe("1")
+            expect(codeMapLabelService["suppressedLabel"]).toBeNull()
+        })
+
+        it("should be a no-op if nothing is suppressed", () => {
+            expect(() => codeMapLabelService.restoreSuppressedLabel()).not.toThrow()
+        })
+    })
+
+    describe("destroy", () => {
+        it("should remove the connector SVG element from the DOM", () => {
+            // Arrange — attach the SVG to a real parent so we can assert removal
+            const parent = document.createElement("div")
+            document.body.appendChild(parent)
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+            parent.appendChild(svg)
+            codeMapLabelService["connectorSvg"] = svg
+
+            // Act
+            codeMapLabelService.destroy()
+
+            // Assert — the SVG must have been detached from its parent
+            expect(parent.contains(svg)).toBe(false)
+            expect(codeMapLabelService["connectorSvg"]).toBeNull()
+
+            // Cleanup
+            document.body.removeChild(parent)
+        })
+
+        it("should clear all labels and set connectorSvg to null even without a parent container", () => {
+            // Arrange
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+            codeMapLabelService["connectorSvg"] = svg
+
+            // Act
+            codeMapLabelService.destroy()
+
+            // Assert
+            expect(codeMapLabelService["labels"].length).toBe(0)
+            expect(codeMapLabelService["connectorSvg"]).toBeNull()
+        })
+
+        it("should be a no-op when no connector SVG has been created", () => {
+            // Arrange — connectorSvg is null from construction
+            expect(codeMapLabelService["connectorSvg"]).toBeNull()
+
+            // Act / Assert — must not throw
+            expect(() => codeMapLabelService.destroy()).not.toThrow()
         })
     })
 })

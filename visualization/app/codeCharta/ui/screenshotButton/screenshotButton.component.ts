@@ -101,6 +101,8 @@ export class ScreenshotButtonComponent implements OnInit {
         renderer.setClearColor(new Color(0, 0, 0), 0)
         renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
 
+        const savedLabelStyles = this.prepareLabelsForScreenshot()
+
         const tagsNamesToIgnore = new Set([
             "cc-logo",
             "cc-tool-bar",
@@ -133,7 +135,40 @@ export class ScreenshotButtonComponent implements OnInit {
             }
         })
 
+        this.restoreLabelsAfterScreenshot(savedLabelStyles)
+
         return this.getCroppedCanvas(canvas)
+    }
+
+    /**
+     * html2canvas cannot render backdrop-filter, box-shadow, or transitions.
+     * Temporarily swap to opaque backgrounds so labels look correct in screenshots.
+     */
+    private prepareLabelsForScreenshot(): Map<HTMLElement, string> {
+        const saved = new Map<HTMLElement, string>()
+        const container = document.querySelector("#codeMapLabels")
+        if (!container) {
+            return saved
+        }
+
+        for (const element of container.querySelectorAll("div")) {
+            const el = element as HTMLElement
+            if (!el.style.backdropFilter) {
+                continue
+            }
+            saved.set(el, el.style.cssText)
+            el.style.backdropFilter = "none"
+            el.style.setProperty("-webkit-backdrop-filter", "none")
+            el.style.background = "white"
+            el.style.transition = "none"
+        }
+        return saved
+    }
+
+    private restoreLabelsAfterScreenshot(saved: Map<HTMLElement, string>) {
+        for (const [el, cssText] of saved) {
+            el.style.cssText = cssText
+        }
     }
 
     private getCroppedCanvas(canvas: HTMLCanvasElement) {

@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Camera, RGBAFormat, Scene, Vector2, WebGLInfo, WebGLRenderer, WebGLRenderTarget } from "three"
+import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js"
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
 import WEBGL from "three/addons/capabilities/WebGL.js"
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
@@ -8,6 +9,7 @@ import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
 import { SharpnessMode, CcState } from "../../../codeCharta.model"
 import { fxaaShaderStrings } from "../rendering/shaders/loaders/fxaaShaderStrings"
 import { Store, State } from "@ngrx/store"
+import { Observable, Subject } from "rxjs"
 
 @Injectable({ providedIn: "root" })
 export class ThreeRendererService {
@@ -16,25 +18,28 @@ export class ThreeRendererService {
         normal: 0xf4_f4_eb
     }
 
-    static CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal
-
     static CLEAR_ALPHA = 1
 
-    static RENDER_OPTIONS: WebGLContextAttributes = {
+    clearColor = ThreeRendererService.BACKGROUND_COLOR.normal
+
+    renderOptions: WebGLContextAttributes = {
         antialias: true,
         preserveDrawingBuffer: true,
         alpha: true
     }
 
-    static enableFXAA = false
-    static setPixelRatio = false
-
-    static instance: ThreeRendererService
+    enableFXAA = false
+    setPixelRatio = false
 
     composer: CustomComposer
     renderer: WebGLRenderer
+    labelRenderer: CSS2DRenderer
     scene: Scene
     camera: Camera
+
+    private readonly _afterRender$ = new Subject<void>()
+    readonly afterRender$: Observable<void> = this._afterRender$.asObservable()
+
     private renderScheduled = false
 
     constructor(
@@ -47,23 +52,21 @@ export class ThreeRendererService {
         this.scene = scene
         this.camera = camera
         this.initGL(containerWidth, containerHeight)
-        this.globalSettingsFacade.isWhiteBackground$().subscribe(this.setBackgroundColorToState)
+        this.globalSettingsFacade.isWhiteBackground$().subscribe(isWhiteBackground => this.setBackgroundColorToState(isWhiteBackground))
     }
 
-    private setBackgroundColorToState = (isWhiteBackground: boolean) => {
-        ThreeRendererService.CLEAR_COLOR = isWhiteBackground
-            ? ThreeRendererService.BACKGROUND_COLOR.white
-            : ThreeRendererService.BACKGROUND_COLOR.normal
-        this.renderer?.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
+    private setBackgroundColorToState(isWhiteBackground: boolean) {
+        this.clearColor = isWhiteBackground ? ThreeRendererService.BACKGROUND_COLOR.white : ThreeRendererService.BACKGROUND_COLOR.normal
+        this.renderer?.setClearColor(this.clearColor, ThreeRendererService.CLEAR_ALPHA)
     }
 
-    private initGL = (containerWidth: number, containerHeight: number) => {
+    private initGL(containerWidth: number, containerHeight: number) {
         this.setGLOptions()
-        this.renderer = new WebGLRenderer(ThreeRendererService.RENDER_OPTIONS)
-        if (ThreeRendererService.setPixelRatio) {
+        this.renderer = new WebGLRenderer(this.renderOptions)
+        if (this.setPixelRatio) {
             this.renderer.setPixelRatio(window.devicePixelRatio)
         }
-        if (ThreeRendererService.enableFXAA) {
+        if (this.enableFXAA) {
             if (WEBGL.isWebGL2Available) {
                 const size = this.renderer.getDrawingBufferSize(new Vector2())
                 const renderTarget = new WebGLRenderTarget(size.width, size.height, {
@@ -77,37 +80,45 @@ export class ThreeRendererService {
         this.renderer.setSize(containerWidth, containerHeight)
         this.renderer.domElement.id = "codeMapScene"
 
-        if (ThreeRendererService.enableFXAA) {
+        this.labelRenderer = new CSS2DRenderer()
+        this.labelRenderer.setSize(containerWidth, containerHeight)
+        this.labelRenderer.domElement.id = "codeMapLabels"
+        this.labelRenderer.domElement.style.position = "absolute"
+        this.labelRenderer.domElement.style.top = "0"
+        this.labelRenderer.domElement.style.left = "0"
+        this.labelRenderer.domElement.style.pointerEvents = "none"
+
+        if (this.enableFXAA) {
             this.initComposer()
         }
     }
 
-    private setGLOptions = () => {
+    private setGLOptions() {
         switch (this.state.getValue().appSettings.sharpnessMode) {
             case SharpnessMode.Standard:
-                ThreeRendererService.RENDER_OPTIONS.antialias = true
-                ThreeRendererService.enableFXAA = false
-                ThreeRendererService.setPixelRatio = false
+                this.renderOptions.antialias = true
+                this.enableFXAA = false
+                this.setPixelRatio = false
                 break
             case SharpnessMode.PixelRatioNoAA:
-                ThreeRendererService.RENDER_OPTIONS.antialias = false
-                ThreeRendererService.enableFXAA = false
-                ThreeRendererService.setPixelRatio = true
+                this.renderOptions.antialias = false
+                this.enableFXAA = false
+                this.setPixelRatio = true
                 break
             case SharpnessMode.PixelRatioFXAA:
-                ThreeRendererService.RENDER_OPTIONS.antialias = false
-                ThreeRendererService.enableFXAA = true
-                ThreeRendererService.setPixelRatio = true
+                this.renderOptions.antialias = false
+                this.enableFXAA = true
+                this.setPixelRatio = true
                 break
             case SharpnessMode.PixelRatioAA:
-                ThreeRendererService.RENDER_OPTIONS.antialias = true
-                ThreeRendererService.enableFXAA = false
-                ThreeRendererService.setPixelRatio = true
+                this.renderOptions.antialias = true
+                this.enableFXAA = false
+                this.setPixelRatio = true
                 break
         }
     }
 
-    private initComposer = () => {
+    private initComposer() {
         const pixelRatio = this.renderer.getPixelRatio()
 
         this.composer.setSize(window.innerWidth * pixelRatio, window.innerHeight * pixelRatio)
@@ -121,27 +132,32 @@ export class ThreeRendererService {
         this.composer.addPass(effectFXAA)
     }
 
-    getInfo = (): WebGLInfo["render"] => {
-        return ThreeRendererService.enableFXAA ? this.composer.getInfo() : this.renderer.info.render
+    getInfo(): WebGLInfo["render"] {
+        return this.enableFXAA ? this.composer.getInfo() : this.renderer.info.render
     }
 
-    getMemoryInfo = (): WebGLInfo["memory"] => {
-        return ThreeRendererService.enableFXAA ? this.composer.getMemoryInfo() : this.renderer.info.memory
+    getMemoryInfo(): WebGLInfo["memory"] {
+        return this.enableFXAA ? this.composer.getMemoryInfo() : this.renderer.info.memory
     }
 
     render() {
+        // Intentional debouncing: if a render is already queued for the next animation frame,
+        // subsequent calls within the same frame are dropped. This is by design — callers do
+        // not need to coordinate; the single scheduled frame captures the latest state.
         if (this.renderScheduled) {
             return
         }
         this.renderScheduled = true
         requestAnimationFrame(() => {
             this.renderScheduled = false
-            const { scene, camera, composer, renderer } = this
-            if (ThreeRendererService.enableFXAA) {
+            const { scene, camera, composer, renderer, labelRenderer } = this
+            if (this.enableFXAA) {
                 composer?.render()
             } else {
                 renderer?.render(scene, camera)
             }
+            labelRenderer?.render(scene, camera)
+            this._afterRender$.next()
         })
     }
 }

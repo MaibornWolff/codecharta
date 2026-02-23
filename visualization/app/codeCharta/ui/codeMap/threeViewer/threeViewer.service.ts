@@ -29,6 +29,7 @@ export class ThreeViewerService {
         this.threeMapControlsService.init(this.threeRendererService.renderer.domElement)
 
         target.append(this.threeRendererService.renderer.domElement)
+        target.append(this.threeRendererService.labelRenderer.domElement)
 
         window.addEventListener("resize", this.onWindowResize)
         window.addEventListener("focusin", this.onFocusIn)
@@ -43,13 +44,12 @@ export class ThreeViewerService {
         this.destroy()
         this.init(target)
         this.autoFitTo()
-        this.animate()
-        this.animateStats()
     }
 
     onWindowResize = () => {
         this.threeSceneService.scene.updateMatrixWorld(false)
         this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight)
+        this.threeRendererService.labelRenderer.setSize(window.innerWidth, window.innerHeight)
         this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight
         this.threeCameraService.camera.updateProjectionMatrix()
         this.animate()
@@ -59,14 +59,14 @@ export class ThreeViewerService {
         this.threeMapControlsService.controls.enableRotate = value
     }
 
-    onFocusIn = event => {
-        if (event.target.nodeName === "INPUT") {
+    onFocusIn = (event: FocusEvent) => {
+        if ((event.target as HTMLElement).nodeName === "INPUT") {
             this.threeMapControlsService.controls.stopListenToKeyEvents()
         }
     }
 
-    onFocusOut = event => {
-        if (event.target.nodeName === "INPUT") {
+    onFocusOut = (event: FocusEvent) => {
+        if ((event.target as HTMLElement).nodeName === "INPUT") {
             this.threeMapControlsService.controls.listenToKeyEvents(window)
         }
     }
@@ -88,7 +88,7 @@ export class ThreeViewerService {
         return this.threeRendererService.renderer.domElement
     }
 
-    getRenderLoseExtention() {
+    getRenderLoseContext() {
         const gl = this.threeRendererService.renderer.getContext()
         return gl.getExtension("WEBGL_lose_context")
     }
@@ -113,5 +113,6 @@ export class ThreeViewerService {
         this.dispose()
         this.threeStatsService.destroy()
         this.getRenderCanvas().remove()
+        this.threeRendererService.labelRenderer?.domElement.remove()
     }
 }

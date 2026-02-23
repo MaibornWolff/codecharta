@@ -2,13 +2,14 @@ import { Injectable, OnDestroy } from "@angular/core"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { BlacklistItem, CcState } from "../../codeCharta.model"
+import { BlacklistItem, CcState, Node } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
 import { hierarchy } from "d3-hierarchy"
-import { Intersection, Object3D, Raycaster, Vector2 } from "three"
+import { Raycaster, Vector2 } from "three"
 import { CodeMapLabelService } from "./codeMap.label.service"
+import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { setHoveredNodeId } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
 import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
@@ -50,8 +51,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     private isGrabbing = false
     private isMoving = false
     private readonly raycaster = new Raycaster()
-    private labelHoveredBuilding = null
-    private labelSelectedBuilding = null
+    private labelSelectedBuilding: Node | null = null
     private readonly subscriptions = [
         this.store
             .select(visibleFileStatesSelector)
@@ -82,6 +82,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         private readonly store: Store<CcState>,
         private readonly state: State<CcState>,
         private readonly codeMapLabelService: CodeMapLabelService,
+        private readonly tooltipService: CodeMapTooltipService,
         private readonly viewCubeMouseEvents: ViewCubeMouseEventsService,
         private readonly threeViewerService: ThreeViewerService,
         private readonly idToBuilding: IdToBuildingService
@@ -98,17 +99,22 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     start() {
-        this.threeRendererService.renderer.domElement.addEventListener("mousemove", debounce(this.onDocumentMouseMove, 1))
-        this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
-        this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
-        this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
-        this.threeRendererService.renderer.domElement.addEventListener("mouseleave", event => this.onDocumentMouseLeave(event))
-        this.threeRendererService.renderer.domElement.addEventListener("mouseenter", () => this.onDocumentMouseEnter())
-        this.threeRendererService.renderer.domElement.addEventListener(
+        this.registerEventListeners()
+        this.viewCubeMouseEvents.subscribe("viewCubeEventPropagation", this.onViewCubeEventPropagation)
+    }
+
+    private registerEventListeners() {
+        const domElement = this.threeRendererService.renderer.domElement
+        domElement.addEventListener("mousemove", this.onDocumentMouseMove)
+        domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
+        domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
+        domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
+        domElement.addEventListener("mouseleave", event => this.onDocumentMouseLeave(event))
+        domElement.addEventListener("mouseenter", () => this.onDocumentMouseEnter())
+        domElement.addEventListener(
             "wheel",
             debounce(() => this.threeRendererService.render())
         )
-        this.viewCubeMouseEvents.subscribe("viewCubeEventPropagation", this.onViewCubeEventPropagation)
     }
 
     hoverNode(id: number) {
@@ -151,12 +157,12 @@ export class CodeMapMouseEventService implements OnDestroy {
     onFilesSelectionChanged() {
         this.threeSceneService.clearSelection()
         this.threeSceneService.clearConstantHighlight()
-        this.clearLabelHoveredBuilding()
+        this.tooltipService.hide()
     }
 
     onBlacklistChanged(blacklist: BlacklistItem[]) {
         const selectedBuilding = this.threeSceneService.getSelectedBuilding()
-        this.clearLabelHoveredBuilding()
+        this.tooltipService.hide()
         if (selectedBuilding) {
             const isSelectedBuildingBlacklisted = isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
 
@@ -169,11 +175,9 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     updateHovering() {
         if (this.hasMouseMoved(this.oldMouse)) {
-            const labels = this.threeSceneService.labels?.children
-
             if (this.isGrabbingOrMoving()) {
-                this.threeSceneService.resetLabel()
-                this.clearLabelHoveredBuilding()
+                this.tooltipService.hide()
+                this.codeMapLabelService.restoreSuppressedLabel()
                 this.threeRendererService.render()
                 return
             }
@@ -186,7 +190,6 @@ export class CodeMapMouseEventService implements OnDestroy {
             if (mapMesh) {
                 this.threeCameraService.camera.updateMatrixWorld(false)
 
-                let nodeNameHoveredLabel = ""
                 const mouseCoordinates = this.transformHTMLToSceneCoordinates()
                 const camera = this.threeCameraService.camera
 
@@ -194,56 +197,36 @@ export class CodeMapMouseEventService implements OnDestroy {
                     this.raycaster.setFromCamera(mouseCoordinates as Vector2, camera)
                 }
 
-                const hoveredLabel = this.calculateHoveredLabel(labels)
-
-                if (hoveredLabel) {
-                    this.threeSceneService.animateLabel(hoveredLabel.object, this.raycaster, labels)
-                    nodeNameHoveredLabel = hoveredLabel.object.userData.node.path
-                }
-
-                this.intersectedBuilding =
-                    nodeNameHoveredLabel !== ""
-                        ? mapMesh.getBuildingByPath(nodeNameHoveredLabel)
-                        : mapMesh.checkMouseRayMeshIntersection(mouseCoordinates, camera)
+                this.intersectedBuilding = mapMesh.checkMouseRayMeshIntersection(mouseCoordinates, camera)
 
                 const from = this.threeSceneService.getHighlightedBuilding()
                 const to = this.intersectedBuilding
 
                 if (from?.id !== to?.id) {
-                    this.clearLabelHoveredBuilding()
-
-                    this.threeSceneService.resetLabel()
-                    this.unhoverBuilding()
-                    if (to && !this.isGrabbingOrMoving()) {
-                        this.setLabelHoveredLeaf(to, labels)
+                    this.tooltipService.hide()
+                    this.codeMapLabelService.restoreSuppressedLabel()
+                    if (from && to && !this.isGrabbingOrMoving()) {
+                        // Differential path: transition directly from one highlight to another
+                        this.threeSceneService.prepareHighlightTransition()
+                        this.showTooltipForBuilding(to)
                         this.hoverBuilding(to)
+                    } else {
+                        this.unhoverBuilding()
+                        if (to && !this.isGrabbingOrMoving()) {
+                            this.showTooltipForBuilding(to)
+                            this.hoverBuilding(to)
+                        }
                     }
+                } else if (to && this.tooltipService.isVisible()) {
+                    this.tooltipService.updatePosition(this.mouse.x, this.mouse.y)
                 }
             }
         }
     }
 
-    setLabelHoveredLeaf(codeMapBuilding: CodeMapBuilding, labels: Object3D[]) {
-        if (codeMapBuilding?.node?.isLeaf) {
-            const labelForBuilding =
-                this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels) ?? this.drawLabelHoveredBuilding(codeMapBuilding)
-            this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
-        }
-    }
-
-    drawLabelHoveredBuilding(codeMapBuilding: CodeMapBuilding) {
-        const enforceLabel = true
-        this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, enforceLabel)
-
-        const labels = this.threeSceneService.labels?.children
-        const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
-        this.labelHoveredBuilding = codeMapBuilding.node
-
-        return labelForBuilding
-    }
-
     drawLabelSelectedBuilding(codeMapBuilding: CodeMapBuilding) {
-        this.clearLabelHoveredBuilding()
+        this.tooltipService.hide()
+        this.codeMapLabelService.restoreSuppressedLabel()
         if (this.labelSelectedBuilding !== null) {
             this.codeMapLabelService.clearTemporaryLabel(this.labelSelectedBuilding)
         }
@@ -251,21 +234,17 @@ export class CodeMapMouseEventService implements OnDestroy {
             return
         }
 
-        this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, true)
-
-        const labels = this.threeSceneService.labels?.children
-        const labelForBuilding = this.threeSceneService.getLabelForHoveredNode(codeMapBuilding, labels)
-        this.threeSceneService.animateLabel(labelForBuilding, this.raycaster, labels)
-
+        if (!this.codeMapLabelService.hasLabelForNode(codeMapBuilding.node)) {
+            this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, true)
+        }
         this.labelSelectedBuilding = codeMapBuilding.node
-        return labelForBuilding
     }
 
-    clearLabelHoveredBuilding() {
-        if (this.labelHoveredBuilding !== null) {
-            this.codeMapLabelService.clearTemporaryLabel(this.labelHoveredBuilding)
-            this.labelHoveredBuilding = null
+    private showTooltipForBuilding(building: CodeMapBuilding) {
+        if (this.codeMapLabelService.hasLabelForNode(building.node)) {
+            this.codeMapLabelService.suppressLabelForNode(building.node)
         }
+        this.tooltipService.show(building.node, this.mouse.x, this.mouse.y)
     }
 
     private clearLabelSelectedBuilding() {
@@ -275,18 +254,22 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
     }
 
-    private EnableOrbitalsRotation(isRotation: boolean) {
+    private enableOrbitalsRotation(isRotation: boolean) {
         this.threeViewerService.enableRotation(isRotation)
         this.viewCubeMouseEvents.enableRotation(isRotation)
     }
 
     onDocumentMouseEnter() {
-        this.EnableOrbitalsRotation(true)
+        this.enableOrbitalsRotation(true)
     }
 
     onDocumentMouseLeave(event: MouseEvent) {
+        this.codeMapLabelService.setSuppressLayout(false)
+        this.tooltipService.hide()
+        this.codeMapLabelService.restoreSuppressedLabel()
+        this.unhoverBuilding()
         if (!(event.relatedTarget instanceof HTMLCanvasElement)) {
-            this.EnableOrbitalsRotation(false)
+            this.enableOrbitalsRotation(false)
         }
     }
 
@@ -324,11 +307,15 @@ export class CodeMapMouseEventService implements OnDestroy {
             this.isGrabbing = true
             CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
         }
+        this.codeMapLabelService.setSuppressLayout(true)
+        this.tooltipService.hide()
+        this.codeMapLabelService.restoreSuppressedLabel()
         this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
         ;(document.activeElement as HTMLElement).blur()
     }
 
     onDocumentMouseUp(event: MouseEvent) {
+        this.codeMapLabelService.setSuppressLayout(false)
         this.viewCubeMouseEvents.resetIsDragging()
         if (event.button === ClickType.LeftClick) {
             this.onLeftClick()
@@ -342,29 +329,11 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
     }
 
-    private calculateHoveredLabel(labels: Object3D[]) {
-        let labelClosestToViewPoint: Intersection | null = null
-
-        for (let counter = 0; counter < labels?.length; counter += 2) {
-            const intersect = this.raycaster.intersectObject(this.threeSceneService.labels.children[counter])
-            if (intersect.length > 0) {
-                if (labelClosestToViewPoint === null) {
-                    labelClosestToViewPoint = intersect[0]
-                } else {
-                    labelClosestToViewPoint =
-                        labelClosestToViewPoint.distance < intersect[0].distance ? labelClosestToViewPoint : intersect[0]
-                }
-            }
-        }
-
-        return labelClosestToViewPoint
-    }
-
     private onRightClick() {
         this.isMoving = false
         // Check if mouse moved to prevent the node context menu to show up
         // after moving the map, when the cursor ends on a building.
-        if (this.intersectedBuilding && !this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
+        if (this.intersectedBuilding && !this.hasMouseMovedBeyondThreshold(this.mouseOnLastClick)) {
             this.store.dispatch(
                 setRightClickedNodeData({
                     value: {
@@ -380,7 +349,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     private onLeftClick() {
         this.isGrabbing = false
-        if (!this.hasMouseMovedMoreThanThreePixels(this.mouseOnLastClick)) {
+        if (!this.hasMouseMovedBeyondThreshold(this.mouseOnLastClick)) {
             if (this.intersectedBuilding) {
                 this.threeSceneService.selectBuilding(this.intersectedBuilding)
                 this.drawLabelSelectedBuilding(this.intersectedBuilding)
@@ -393,7 +362,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         this.threeRendererService.render()
     }
 
-    private hasMouseMovedMoreThanThreePixels({ x, y }: Coordinates) {
+    private hasMouseMovedBeyondThreshold({ x, y }: Coordinates) {
         return (
             Math.abs(this.mouse.x - x) > this.THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING ||
             Math.abs(this.mouse.y - y) > this.THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING

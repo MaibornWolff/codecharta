@@ -389,6 +389,8 @@ test('should calculate total when cart has multiple items', () => {
 
 ### Visualization Tests
 
+**IMPORTANT**: Always run visualization tests using `npm run test` (not `npx jest` directly). Tests require `dangerouslyDisableSandbox: true` in the Bash tool to run correctly.
+
 ```bash
 # Unit tests (Jest)
 npm test

@@ -14,6 +14,7 @@ import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanel/ribbonBarPanel
 import { AreaSettingsPanelComponent } from "./areaSettingsPanel/areaSettingsPanel.component"
 import { HeightMetricChooserComponent } from "./heightMetricChooser/heightMetricChooser.component"
 import { HeightSettingsPanelComponent } from "./heightSettingsPanel/heightSettingsPanel.component"
+import { LabelSettingsComponent } from "./labelSettingsPanel/labelSettings.component"
 import { MatCard } from "@angular/material/card"
 import { LinkColorMetricToHeightMetricButtonComponent } from "./linkColorMetricToHeightMetricButton/linkColorMetricToHeightMetricButton.component"
 import { ColorMetricChooserComponent } from "./colorMetricChooser/colorMetricChooser.component"
@@ -37,6 +38,7 @@ import { AsyncPipe } from "@angular/common"
         AreaSettingsPanelComponent,
         HeightMetricChooserComponent,
         HeightSettingsPanelComponent,
+        LabelSettingsComponent,
         MatCard,
         LinkColorMetricToHeightMetricButtonComponent,
         ColorMetricChooserComponent,
