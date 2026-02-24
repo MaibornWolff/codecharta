@@ -1,0 +1,18 @@
+<div class="flex justify-center gap-1">
+	<cc-ribbon-bar-menu-button icon="fa-list" [title]="'Open saved scenarios'" (click)="openScenarioList()">
+	</cc-ribbon-bar-menu-button>
+
+	<cc-ribbon-bar-menu-button icon="fa-plus" [title]="'Save current state as scenario'" (click)="openSaveDialog()">
+	</cc-ribbon-bar-menu-button>
+</div>
+
+<cc-scenario-list-dialog #listDialog (applyRequested)="handleApplyRequested($event)" />
+<cc-save-scenario-dialog #saveDialog />
+
+@if (applyTarget()) {
+	<cc-apply-scenario-dialog
+		[scenario]="applyTarget()!.scenario"
+		[metricData]="applyTarget()!.metricData"
+		(closed)="handleApplyClosed()"
+	/>
+}

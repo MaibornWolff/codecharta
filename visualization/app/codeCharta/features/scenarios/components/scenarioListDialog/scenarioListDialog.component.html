@@ -1,0 +1,55 @@
+<dialog #dialog class="modal">
+	<div class="modal-box max-w-xl">
+		<div class="flex items-center justify-between mb-4">
+			<h2 class="text-xl font-bold">Scenarios</h2>
+			<button class="btn btn-sm btn-ghost" (click)="close()">
+				<i class="fa fa-close"></i>
+			</button>
+		</div>
+
+		<input
+			class="input input-bordered w-full mb-4"
+			placeholder="Search scenarios..."
+			[ngModel]="searchTerm()"
+			(ngModelChange)="searchTerm.set($event)"
+		/>
+
+		@if (filteredScenarios().length === 0) {
+			<p class="text-center py-8 text-base-content/50">No scenarios found.</p>
+		}
+
+		<div class="max-h-[60vh] overflow-y-auto">
+			@for (scenario of filteredScenarios(); track scenario.id) {
+				<div class="flex items-center px-2 py-2 border-b border-base-300 hover:bg-base-200 cursor-pointer" (click)="applyScenario(scenario)">
+					<div class="flex-1 min-w-0">
+						<div class="font-medium text-sm">
+							{{ scenario.name }}
+							@if (hasWarning(scenario)) {
+								<span class="text-warning ml-1" title="Some metrics in this scenario are not available">
+									<i class="fa fa-exclamation-triangle text-xs"></i>
+								</span>
+							}
+						</div>
+						@if (scenario.description) {
+							<div class="text-xs text-base-content/50 truncate">{{ scenario.description }}</div>
+						}
+						<div class="flex items-center gap-3 mt-1">
+							<span class="text-[11px] text-base-content/40">{{ formatDate(scenario.createdAt) }}</span>
+							<span class="flex gap-1.5 text-[11px] text-base-content/40">
+								@for (key of sectionKeys; track key) {
+									<i class="fa {{ sectionIcons[key] }}" [title]="sectionLabels[key]"></i>
+								}
+							</span>
+						</div>
+					</div>
+					<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="deleteScenario(scenario); $event.stopPropagation()">
+						<i class="fa fa-trash"></i>
+					</button>
+				</div>
+			}
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button (click)="close()">close</button>
+	</form>
+</dialog>

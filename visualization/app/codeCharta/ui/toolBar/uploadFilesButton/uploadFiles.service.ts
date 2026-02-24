@@ -3,7 +3,6 @@ import { Store } from "@ngrx/store"
 import { LoadFileService } from "../../../services/loadFile/loadFile.service"
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { CustomConfigHelper, CUSTOM_CONFIG_FILE_EXTENSION } from "../../../util/customConfigHelper"
 import { getCCFileAndDecorateFileChecksum } from "../../../util/fileHelper"
 import { createCCFileInput } from "../../../util/uploadFiles/createCCFileInput"
 import { readFiles } from "../../../util/uploadFiles/readFiles"
@@ -34,11 +33,7 @@ export class UploadFilesService {
             this.store.dispatch(setIsLoadingMap({ value: true }))
 
             const plainFileContents = await Promise.all(readFiles(ccFileInput.files))
-            const { customConfigs, ccFiles } = this.splitCustomConfigsAndCCFiles(ccFileInput.files, plainFileContents)
-
-            for (const customConfig of customConfigs) {
-                CustomConfigHelper.importCustomConfigs(customConfig)
-            }
+            const ccFiles = this.buildCCFiles(ccFileInput.files, plainFileContents)
 
             if (ccFiles.length > 0) {
                 this.loadFileService.loadFiles(ccFiles)
@@ -51,23 +46,11 @@ export class UploadFilesService {
         }
     }
 
-    private splitCustomConfigsAndCCFiles(fileList: FileList, contents: string[]) {
-        const customConfigs = []
-        const ccFiles = []
-
-        for (const [index, content] of contents.entries()) {
-            const fileName = fileList[index].name
-            if (fileName.includes(CUSTOM_CONFIG_FILE_EXTENSION)) {
-                customConfigs.push(content)
-            } else {
-                ccFiles.push({
-                    fileName,
-                    fileSize: fileList[index].size,
-                    content: getCCFileAndDecorateFileChecksum(content)
-                })
-            }
-        }
-
-        return { customConfigs, ccFiles }
+    private buildCCFiles(fileList: FileList, contents: string[]) {
+        return contents.map((content, index) => ({
+            fileName: fileList[index].name,
+            fileSize: fileList[index].size,
+            content: getCCFileAndDecorateFileChecksum(content)
+        }))
     }
 }
