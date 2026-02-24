@@ -1,0 +1,43 @@
+<dialog #dialog class="modal">
+	<div class="modal-box max-w-md">
+		<h2 class="text-xl font-bold mb-4">Save Scenario</h2>
+
+		<div class="form-control mb-4">
+			<label class="label">
+				<span class="label-text">Scenario Name</span>
+			</label>
+			<input
+				class="input input-bordered w-full"
+				placeholder="Enter scenario name"
+				[ngModel]="name()"
+				(ngModelChange)="name.set($event)"
+			/>
+			@if (!nameValid() && name().length > 0) {
+				<label class="label">
+					<span class="label-text-alt text-error">A name is required.</span>
+				</label>
+			}
+		</div>
+
+		<div class="form-control mb-4">
+			<label class="label">
+				<span class="label-text">Description (optional)</span>
+			</label>
+			<textarea
+				class="textarea textarea-bordered w-full"
+				rows="3"
+				placeholder="Describe what this scenario captures"
+				[ngModel]="description()"
+				(ngModelChange)="description.set($event)"
+			></textarea>
+		</div>
+
+		<div class="modal-action">
+			<button class="btn" (click)="close()">Cancel</button>
+			<button class="btn btn-primary" [disabled]="!nameValid()" (click)="save()">Save</button>
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button (click)="close()">close</button>
+	</form>
+</dialog>

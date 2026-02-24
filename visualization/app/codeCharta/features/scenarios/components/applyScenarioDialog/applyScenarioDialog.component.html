@@ -1,0 +1,45 @@
+<dialog #dialog class="modal">
+	<div class="modal-box max-w-md">
+		<h2 class="text-xl font-bold mb-4">Apply: {{ scenario().name }}</h2>
+
+		<p class="text-sm text-base-content/60 mb-3">Select which sections to apply:</p>
+
+		@for (key of sectionKeys; track key) {
+			<label class="flex items-center gap-2 py-1 cursor-pointer">
+				<input
+					type="checkbox"
+					class="checkbox checkbox-sm"
+					[checked]="selectedSections()[key]"
+					(change)="toggleSection(key, $any($event.target).checked)"
+				/>
+				<i class="fa {{ sectionIcons[key] }} w-4 text-center"></i>
+				<span>{{ sectionLabels[key] }}</span>
+			</label>
+		}
+
+		@if (hasMissing() && selectedSections().metrics) {
+			<div class="alert alert-warning mt-4 text-sm">
+				<i class="fa fa-exclamation-triangle"></i>
+				<div>
+					<strong>Some metrics are not available in the current map and will not be applied:</strong>
+					<ul class="list-disc pl-5 mt-1">
+						@for (metric of missingMetrics().nodeMetrics; track metric) {
+							<li>{{ metric }} (node metric)</li>
+						}
+						@for (metric of missingMetrics().edgeMetrics; track metric) {
+							<li>{{ metric }} (edge metric)</li>
+						}
+					</ul>
+				</div>
+			</div>
+		}
+
+		<div class="modal-action">
+			<button class="btn" (click)="close()">Cancel</button>
+			<button class="btn btn-primary" [disabled]="!hasAnySelected()" (click)="apply()">Apply</button>
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
+</dialog>
