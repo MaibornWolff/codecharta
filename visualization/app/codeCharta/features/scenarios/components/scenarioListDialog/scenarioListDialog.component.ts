@@ -27,9 +27,7 @@ export class ScenarioListDialogComponent {
     readonly filteredScenarios = computed(() => {
         const term = this.searchTerm().toLowerCase()
         const all = this.scenarios()
-        return term
-            ? all.filter(s => s.name.toLowerCase().includes(term) || (s.description && s.description.toLowerCase().includes(term)))
-            : [...all]
+        return term ? all.filter(s => s.name.toLowerCase().includes(term) || s.description?.toLowerCase().includes(term)) : [...all]
     })
 
     constructor(

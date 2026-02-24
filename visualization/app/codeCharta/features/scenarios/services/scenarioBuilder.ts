@@ -1,5 +1,5 @@
 import { CcState } from "../../../codeCharta.model"
-import { CameraSection, PlainPosition, Scenario, ScenarioSections } from "../model/scenario.model"
+import { PlainPosition, Scenario, ScenarioSections } from "../model/scenario.model"
 
 export function buildScenarioSections(state: CcState, cameraPosition: PlainPosition, cameraTarget: PlainPosition): ScenarioSections {
     return {
