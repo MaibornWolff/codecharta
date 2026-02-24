@@ -15,8 +15,6 @@ import {
     Node,
     NodeMetricData,
     NodeType,
-    RecursivePartial,
-    Settings,
     SharpnessMode,
     SortingOption,
     CcState
