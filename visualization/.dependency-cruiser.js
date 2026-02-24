@@ -66,6 +66,15 @@ module.exports = {
             }
         },
         {
+            name: "features-no-scss-files",
+            severity: "error",
+            comment: "SCSS files are not allowed in features/ directory, use daisyui instead",
+            from: {},
+            to: {
+                path: "^app/codeCharta/features/.*\\.scss$"
+            }
+        },
+        {
             name: "feature-only-stores-can-import-ngrx-store",
             severity: "error",
             comment: "Only stores/ folder can import from @ngrx/store. Components use services, services use stores.",

@@ -5,7 +5,6 @@ import { ActionIconComponent } from "../../../../ui/actionIcon/actionIcon.compon
 @Component({
     selector: "cc-global-configuration-button",
     templateUrl: "./globalConfigurationButton.component.html",
-    styleUrl: "./globalConfigurationButton.component.scss",
     imports: [GlobalConfigurationDialogComponent, ActionIconComponent]
 })
 export class GlobalConfigurationButtonComponent {
