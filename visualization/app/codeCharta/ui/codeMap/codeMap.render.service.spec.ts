@@ -3,7 +3,7 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { Node, CodeMapNode, ColorLabelOptions, CcState } from "../../codeCharta.model"
+import { Node, CodeMapNode, CcState, LabelMode } from "../../codeCharta.model"
 import {
     COLOR_TEST_NODES,
     DEFAULT_STATE,
@@ -27,6 +27,7 @@ import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
@@ -321,35 +322,34 @@ describe("codeMapRenderService", () => {
         })
 
         it("should generate labels for color if option is toggled on", () => {
-            const colorLabelsNegative: ColorLabelOptions = {
-                positive: false,
-                negative: true,
-                neutral: false
-            }
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
+            store.dispatch(setColorLabels({ value: { positive: false, negative: true, neutral: false } }))
 
-            store.dispatch(setColorLabels({ value: colorLabelsNegative }))
+            // Act
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
+            // Assert
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
         })
 
         it("should generate labels for multiple colors if corresponding options are toggled on", () => {
-            const colorLabelsPosNeut: ColorLabelOptions = {
-                positive: true,
-                negative: false,
-                neutral: true
-            }
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
+            store.dispatch(setColorLabels({ value: { positive: true, negative: false, neutral: true } }))
 
-            store.dispatch(setColorLabels({ value: colorLabelsPosNeut }))
+            // Act
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
+            // Assert
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
         })
 
         it("should not exceed amountOfTopLabels when multiple color types are selected", () => {
-            // Arrange: 2 color types selected, 2 nodes total, but limit is 1
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
             store.dispatch(setAmountOfTopLabels({ value: 1 }))
             store.dispatch(setColorLabels({ value: { positive: true, negative: false, neutral: true } }))
 
@@ -357,12 +357,13 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
-            // Assert: only 1 label despite 2 matching nodes across both color types
+            // Assert
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
         })
 
         it("should show no color labels when amountOfTopLabels is 0", () => {
             // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
             store.dispatch(setAmountOfTopLabels({ value: 0 }))
             store.dispatch(setColorLabels({ value: { positive: true, negative: true, neutral: true } }))
 
@@ -375,26 +376,41 @@ describe("codeMapRenderService", () => {
         })
 
         it("should show all color nodes when fewer exist than amountOfTopLabels", () => {
-            // Arrange: amountOfTopLabels=31 (from STATE), only 1 positive node exists
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
             store.dispatch(setColorLabels({ value: { positive: true, negative: false, neutral: false } }))
 
             // Act
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
-            // Assert: shows the 1 available node, not 31
+            // Assert
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
         })
 
-        it("should show no labels when no color type is selected even if nodes exist", () => {
+        it("should show no color labels when no color type is selected in Color mode", () => {
             // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
             store.dispatch(setColorLabels({ value: { positive: false, negative: false, neutral: false } }))
 
             // Act
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
-            // Assert: falls through to normal top-N path (amountOfTopLabels=31), not color path
+            // Assert
+            expect(codeMapLabelService.addLeafLabel).not.toHaveBeenCalled()
+        })
+
+        it("should show height-based labels in Height mode regardless of color label settings", () => {
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Height }))
+            store.dispatch(setColorLabels({ value: { positive: true, negative: true, neutral: true } }))
+
+            // Act
+            codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
+            codeMapRenderService["setLabels"](COLOR_TEST_NODES)
+
+            // Assert
             expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(3)
         })
     })

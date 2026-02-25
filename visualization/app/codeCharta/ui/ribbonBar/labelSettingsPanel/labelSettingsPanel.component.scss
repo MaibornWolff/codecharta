@@ -12,6 +12,10 @@ $label-section-font-size: 12px;
     padding: $spacing-sm $spacing-xl;
 }
 
+.label-mode-toggle {
+    align-self: flex-start;
+}
+
 .color-labels-section {
     display: flex;
     flex-direction: column;
@@ -30,4 +34,10 @@ $label-section-font-size: 12px;
     height: 16px;
     border-radius: 2px;
     vertical-align: middle;
+}
+
+.color-label-count {
+    font-size: $label-section-font-size;
+    color: $label-secondary-color;
+    margin-left: $spacing-xs;
 }

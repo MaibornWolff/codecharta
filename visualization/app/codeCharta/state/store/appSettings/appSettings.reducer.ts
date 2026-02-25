@@ -37,6 +37,7 @@ import {
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
 import { defaultIsSearchPanelPinned, isSearchPanelPinned } from "./isSearchPanelPinned/isSearchPanelPinned.reducer"
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
+import { defaultLabelMode, labelMode } from "./labelMode/labelMode.reducer"
 import { combineReducers } from "@ngrx/store"
 import { defaultShowIncomingEdges, showIncomingEdges } from "./showEdges/incoming/showIncomingEdges.reducer"
 import { defaultShowOutgoingEdges, showOutgoingEdges } from "./showEdges/outgoing/showOutgoingEdges.reducer"
@@ -70,7 +71,8 @@ export const appSettings = combineReducers({
     maxTreeMapFiles,
     sharpnessMode,
     isColorMetricLinkedToHeightMetric,
-    enableFloorLabels
+    enableFloorLabels,
+    labelMode
 })
 
 export const defaultAppSettings = {
@@ -102,5 +104,6 @@ export const defaultAppSettings = {
     maxTreeMapFiles: defaultMaxTreeMapFiles,
     sharpnessMode: defaultSharpnessMode,
     isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
-    enableFloorLabels: defaultEnableFloorLabels
+    enableFloorLabels: defaultEnableFloorLabels,
+    labelMode: defaultLabelMode
 }

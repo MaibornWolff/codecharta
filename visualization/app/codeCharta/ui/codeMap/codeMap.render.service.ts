@@ -4,15 +4,22 @@ import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGe
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { CcState, CodeMapNode, colorLabelTypes, LayoutAlgorithm, Node } from "../../codeCharta.model"
+import { CcState, CodeMapNode, ColorLabelOptions, colorLabelTypes, LabelMode, LayoutAlgorithm, Node } from "../../codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
-import { Subscription, tap } from "rxjs"
+import { BehaviorSubject, Subscription, tap } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store } from "@ngrx/store"
+import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
+
+export interface ColorCategoryCounts {
+    positive: number
+    neutral: number
+    negative: number
+}
 
 const MIN_BUILDING_LENGTH = 2
 
@@ -25,6 +32,8 @@ export class CodeMapRenderService implements OnDestroy {
     }
     private unflattenedNodes
     private subscription: Subscription
+    private readonly _colorCategoryCounts$ = new BehaviorSubject<ColorCategoryCounts>({ positive: 0, neutral: 0, negative: 0 })
+    readonly colorCategoryCounts$ = this._colorCategoryCounts$.asObservable()
 
     constructor(
         private readonly store: Store<CcState>,
@@ -137,6 +146,27 @@ export class CodeMapRenderService implements OnDestroy {
                 }
             }
         }
+
+        this._colorCategoryCounts$.next({
+            positive: this.nodesByColor.positive.length,
+            neutral: this.nodesByColor.neutral.length,
+            negative: this.nodesByColor.negative.length
+        })
+
+        this.uncheckEmptyColorLabels()
+    }
+
+    private uncheckEmptyColorLabels() {
+        const colorLabels = this.state.getValue().appSettings.colorLabels
+        const unchecks: Partial<ColorLabelOptions> = {}
+        for (const category of colorLabelTypes) {
+            if (colorLabels[category] && this.nodesByColor[category].length === 0) {
+                unchecks[category] = false
+            }
+        }
+        if (Object.keys(unchecks).length > 0) {
+            this.store.dispatch(setColorLabels({ value: unchecks }))
+        }
     }
 
     private setBuildingLabel(nodes: Node[], highestNodeInSet: number) {
@@ -156,20 +186,22 @@ export class CodeMapRenderService implements OnDestroy {
             showMetricLabelNodeName,
             showMetricLabelNameValue,
             colorLabels: colorLabelOptions,
-            amountOfTopLabels
+            amountOfTopLabels,
+            labelMode
         } = this.state.getValue().appSettings
 
         if (showMetricLabelNodeName || showMetricLabelNameValue) {
             const highestNodeInSet = sortedNodes[0].height
 
-            const selectedColorNodes = colorLabelTypes
-                .filter(colorType => colorLabelOptions[colorType])
-                .flatMap(colorType => this.nodesByColor[colorType])
-                .sort((a, b) => b.height - a.height)
-                .slice(0, amountOfTopLabels)
-            this.setBuildingLabel(selectedColorNodes, highestNodeInSet)
-
-            if (!(colorLabelOptions.negative || colorLabelOptions.neutral || colorLabelOptions.positive)) {
+            if (labelMode === LabelMode.Color) {
+                const { colorMetric } = this.state.getValue().dynamicSettings
+                const selectedColorNodes = colorLabelTypes
+                    .filter(colorType => colorLabelOptions[colorType])
+                    .flatMap(colorType => this.nodesByColor[colorType])
+                    .sort((a, b) => (b.attributes[colorMetric] ?? 0) - (a.attributes[colorMetric] ?? 0))
+                    .slice(0, amountOfTopLabels)
+                this.setBuildingLabel(selectedColorNodes, highestNodeInSet)
+            } else {
                 const nodes = sortedNodes.filter(node => node.isLeaf).slice(0, amountOfTopLabels)
                 this.setBuildingLabel(nodes, highestNodeInSet)
             }

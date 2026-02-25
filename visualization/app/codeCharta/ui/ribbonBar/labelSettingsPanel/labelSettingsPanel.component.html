@@ -1,6 +1,7 @@
 @let amountOfTopLabels = amountOfTopLabels$ | async;
 @let colorLabels = colorLabels$ | async;
 @let mapColors = mapColors$ | async;
+@let labelMode = labelMode$ | async;
 
 <cc-slider
     [title]="'Display the labels of the ' + amountOfTopLabels + ' highest buildings'"
@@ -11,6 +12,19 @@
     [onChange]="applyDebouncedTopLabels"
 ></cc-slider>
 
+<div class="join label-mode-toggle">
+    <button
+        class="join-item btn btn-sm"
+        [class.btn-primary]="labelMode === LabelMode.Height"
+        (click)="setLabelMode(LabelMode.Height)"
+    >Height</button>
+    <button
+        class="join-item btn btn-sm"
+        [class.btn-primary]="labelMode === LabelMode.Color"
+        (click)="setLabelMode(LabelMode.Color)"
+    >Color</button>
+</div>
+
 <mat-checkbox [checked]="showMetricLabelNodeName$ | async" (change)="setShowMetricLabelNodeName($event)"
 >Show node names
 </mat-checkbox>
@@ -19,24 +33,31 @@
 >Show metric values
 </mat-checkbox>
 
-@if (!(isDeltaState$ | async)) {
+@if (labelMode === LabelMode.Color && !(isDeltaState$ | async)) {
+    @let counts = colorCategoryCounts$ | async;
     <div class="color-labels-section">
-        <span class="section-label">Color labels</span>
+        <span class="section-label">By Color Metric</span>
         <mat-checkbox
             [checked]="colorLabels.positive"
+            [disabled]="counts?.positive === 0"
             (change)="setColorLabel($event, 'positive')"
             aria-label="positive color label"
-        ><span class="color-label-swatch" [style.background-color]="mapColors.positive"></span></mat-checkbox>
+        ><span class="color-label-swatch" [style.background-color]="mapColors.positive"></span>
+            <span class="color-label-count">({{ counts?.positive ?? 0 }})</span></mat-checkbox>
         <mat-checkbox
             [checked]="colorLabels.neutral"
+            [disabled]="counts?.neutral === 0"
             (change)="setColorLabel($event, 'neutral')"
             aria-label="neutral color label"
-        ><span class="color-label-swatch" [style.background-color]="mapColors.neutral"></span></mat-checkbox>
+        ><span class="color-label-swatch" [style.background-color]="mapColors.neutral"></span>
+            <span class="color-label-count">({{ counts?.neutral ?? 0 }})</span></mat-checkbox>
         <mat-checkbox
             [checked]="colorLabels.negative"
+            [disabled]="counts?.negative === 0"
             (change)="setColorLabel($event, 'negative')"
             aria-label="negative color label"
-        ><span class="color-label-swatch" [style.background-color]="mapColors.negative"></span></mat-checkbox>
+        ><span class="color-label-swatch" [style.background-color]="mapColors.negative"></span>
+            <span class="color-label-count">({{ counts?.negative ?? 0 }})</span></mat-checkbox>
     </div>
 }
 

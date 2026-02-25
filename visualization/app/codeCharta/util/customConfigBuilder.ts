@@ -79,6 +79,7 @@ function initializeAppSettings(target: CustomConfig) {
         sharpnessMode: undefined,
         isColorMetricLinkedToHeightMetric: false,
         enableFloorLabels: true,
+        labelMode: undefined,
         mapColors: {
             labelColorAndAlpha: { alpha: 0, rgb: "" },
             base: "",

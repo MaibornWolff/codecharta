@@ -5,6 +5,7 @@ import { setEdgeHeight } from "./edgeHeight/edgeHeight.actions"
 import { setScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
 import { setExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { setEnableFloorLabels } from "./enableFloorLabels/enableFloorLabels.actions"
+import { setLabelMode } from "./labelMode/labelMode.actions"
 import { setHideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.actions"
 import { setInvertArea } from "./invertArea/invertArea.actions"
 import { setInvertHeight } from "./invertHeight/invertHeight.actions"
@@ -58,5 +59,6 @@ export const appSettingsActions = [
     setSharpnessMode,
     setIsColorMetricLinkedToHeightMetricAction,
     toggleIsColorMetricLinkedToHeightMetric,
-    setEnableFloorLabels
+    setEnableFloorLabels,
+    setLabelMode
 ]

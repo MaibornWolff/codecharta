@@ -30,6 +30,7 @@ import { setMargin } from "../../store/dynamicSettings/margin/margin.actions"
 import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
 import { setMarkedPackages, markPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
 import { setEnableFloorLabels } from "../../store/appSettings/enableFloorLabels/enableFloorLabels.actions"
+import { setLabelMode } from "../../store/appSettings/labelMode/labelMode.actions"
 import { setState } from "../../store/state.actions"
 import { setShowIncomingEdges } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.actions"
 import { setShowOutgoingEdges } from "../../store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
@@ -71,5 +72,6 @@ export const actionsRequiringRerender = [
     markPackages,
     unmarkPackage,
     setEnableFloorLabels,
+    setLabelMode,
     setState
 ]
