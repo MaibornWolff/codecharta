@@ -73,8 +73,8 @@ describe("updateVisibleTopLabelsEffect", () => {
         store.overrideSelector(visibleFileStatesSelector, visibleFileStates as ReturnType<typeof visibleFileStatesSelector>)
         store.refreshState()
 
-        // stored value is 5, auto-calc for 2 nodes is 1 (default), so min(5, 1) = 1
-        expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 1 }))
+        // stored value is 5, auto-calc for 2 nodes is 10 (default), so min(5, 10) = 5
+        expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 5 }))
     })
 
     it("should use auto-calculated amount when stored value is higher and map has many nodes", async () => {
@@ -85,8 +85,8 @@ describe("updateVisibleTopLabelsEffect", () => {
         store.overrideSelector(codeMapNodesSelector, manyNodes as ReturnType<typeof codeMapNodesSelector>)
         store.refreshState()
 
-        // stored value is 5, auto-calc for 200 nodes is 2, so min(5, 2) = 2
-        expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 2 }))
+        // stored value is 5, auto-calc for 200 nodes is 10 (default floor), so min(5, 10) = 5
+        expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: 5 }))
     })
 })
 

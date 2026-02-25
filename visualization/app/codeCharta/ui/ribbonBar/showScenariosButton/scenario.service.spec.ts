@@ -109,7 +109,7 @@ describe("scenarioService", () => {
         it("should set properties to default if not defined in scenario", () => {
             const dispatchSpy = jest.spyOn(mockedStore, "dispatch")
             scenarioService.applyScenario("Scenario1")
-            expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfTopLabels({ value: 1 }))
+            expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfTopLabels({ value: 10 }))
             expect(dispatchSpy).toHaveBeenCalledWith(setMapColors({ value: defaultMapColors }))
             expect(dispatchSpy).toHaveBeenCalledWith(setScaling({ value: defaultScaling }))
             expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfEdgePreviews({ value: defaultAmountOfEdgesPreviews }))

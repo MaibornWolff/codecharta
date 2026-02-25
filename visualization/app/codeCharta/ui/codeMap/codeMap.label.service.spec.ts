@@ -57,6 +57,7 @@ describe("CodeMapLabelService", () => {
 
         sampleLeaf = {
             name: "sample",
+            path: "/root/sample",
             width: 1,
             height: 2,
             length: 3,
@@ -72,6 +73,7 @@ describe("CodeMapLabelService", () => {
 
         otherSampleLeaf = {
             name: "otherSampleLeaf",
+            path: "/root/otherSampleLeaf",
             width: 4,
             height: 3,
             length: 2,
@@ -242,7 +244,7 @@ describe("CodeMapLabelService", () => {
             expect(codeMapLabelService["labels"].length).toBe(1)
         })
 
-        it("should apply transform and transition styles to label content when processing labels", () => {
+        it("should apply transform styles to label content when processing labels", () => {
             // Arrange
             store.dispatch(setShowMetricLabelNodeName({ value: true }))
             codeMapLabelService.addLeafLabel(sampleLeaf, 0)
@@ -253,9 +255,7 @@ describe("CodeMapLabelService", () => {
             // Act
             codeMapLabelService.updateLabelLayout()
 
-            // Assert — resolveCollisions writes transform and transition on every label content element
-            expect(content0.style.transition).toContain("transform")
-            expect(content1.style.transition).toContain("transform")
+            // Assert — resolveCollisions writes transform on every label content element
             expect(content0.style.transform).toContain("translateY")
             expect(content1.style.transform).toContain("translateY")
         })
@@ -313,17 +313,18 @@ describe("CodeMapLabelService", () => {
             // Act
             codeMapLabelService.updateLabelLayout()
 
-            // Assert — after the greedy sweep the second label must have a positive offset so its
-            // transform is shifted further down than the first label's baseline
+            // Assert — one label stays at baseline, the other must be displaced downward.
+            // Which label "wins" depends on the path tiebreaker, so check both.
             const content0 = codeMapLabelService["labels"][0].cssObject.element.firstElementChild as HTMLDivElement
             const content1 = codeMapLabelService["labels"][1].cssObject.element.firstElementChild as HTMLDivElement
-            // content0 has no collision offset; content1 must be displaced to avoid overlap
-            expect(content0.style.transform).toBe("translateY(-20px)")
-            // The displacement must be at least the label height (20px) plus the gap (4px)
-            const match = content1.style.transform.match(/translateY\((-?\d+(?:\.\d+)?)px\)/)
-            expect(match).not.toBeNull()
-            const translateY = Number.parseFloat(match[1])
-            expect(translateY).toBeGreaterThan(-20)
+            const transforms = [content0.style.transform, content1.style.transform]
+            const offsets = transforms.map(t => {
+                const match = t.match(/translateY\((-?\d+(?:\.\d+)?)px\)/)
+                return match ? Number.parseFloat(match[1]) : null
+            })
+            // One label should remain at baseline (-20px), the other should be displaced further down
+            expect(offsets).toContainEqual(-20)
+            expect(offsets.some(o => o > -20)).toBe(true)
         })
 
         it("should not displace labels that do not overlap horizontally", () => {
@@ -361,6 +362,55 @@ describe("CodeMapLabelService", () => {
             for (const spy of spies) {
                 expect(spy).toHaveBeenCalledTimes(1)
             }
+        })
+
+        it("should resolve labels at the same screen Y in consistent order using path tiebreaker", () => {
+            // Arrange — two labels at the exact same screen Y position, run twice from fresh state
+            codeMapLabelService.addLeafLabel(sampleLeaf, 0)
+            codeMapLabelService.addLeafLabel(otherSampleLeaf, 0)
+
+            const sharedRect = makeRect(100, 120, 50, 150)
+            stubRectsForLabels([sharedRect, sharedRect])
+
+            // Act — first run
+            codeMapLabelService.updateLabelLayout()
+            const labels = codeMapLabelService["labels"]
+            const offset0First = labels[0].appliedOffset
+            const offset1First = labels[1].appliedOffset
+
+            // Reset applied offsets to simulate fresh state, re-run
+            labels[0].appliedOffset = 0
+            labels[1].appliedOffset = 0
+            stubRectsForLabels([sharedRect, sharedRect])
+            codeMapLabelService.updateLabelLayout()
+
+            // Assert — same label gets the same offset in both runs (deterministic ordering)
+            expect(labels[0].appliedOffset).toBe(offset0First)
+            expect(labels[1].appliedOffset).toBe(offset1First)
+        })
+
+        it("should use path as tiebreaker when rect.top values are equal", () => {
+            // Arrange — labels with paths that sort in a known order: "/root/a" < "/root/b"
+            const leafA = { ...sampleLeaf, name: "a", path: "/root/a" } as undefined as Node
+            const leafB = { ...otherSampleLeaf, name: "b", path: "/root/b" } as undefined as Node
+            codeMapLabelService.addLeafLabel(leafA, 0)
+            codeMapLabelService.addLeafLabel(leafB, 0)
+
+            // Both at the same Y position
+            const sharedRect = makeRect(100, 120, 50, 150)
+            stubRectsForLabels([sharedRect, sharedRect])
+
+            // Act
+            codeMapLabelService.updateLabelLayout()
+
+            // Assert — leafA (path "/root/a") should win priority (no offset),
+            // leafB should be displaced downward
+            const contentA = codeMapLabelService["labels"][0].cssObject.element.firstElementChild as HTMLDivElement
+            const contentB = codeMapLabelService["labels"][1].cssObject.element.firstElementChild as HTMLDivElement
+            expect(contentA.style.transform).toBe("translateY(-20px)")
+            const match = contentB.style.transform.match(/translateY\((-?\d+(?:\.\d+)?)px\)/)
+            expect(match).not.toBeNull()
+            expect(Number.parseFloat(match[1])).toBeGreaterThan(-20)
         })
 
         it("should clear connector SVG lines at the start of each drawConnectors call", () => {

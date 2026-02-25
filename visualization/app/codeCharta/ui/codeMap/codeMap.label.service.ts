@@ -12,6 +12,7 @@ interface InternalLabel {
     cssObject: CSS2DObject
     node: Node
     buildingTop: Vector3
+    appliedOffset: number
 }
 
 interface LabelLayoutInfo {
@@ -27,6 +28,7 @@ export class CodeMapLabelService {
     private static readonly BASE_OFFSET_PX = -20
     private static readonly MIN_CONNECTOR_LENGTH = 6
     private static readonly MAX_DISPLACEMENT_PX = 100
+    private static readonly SORT_EPSILON_PX = 2
 
     private labels: InternalLabel[] = []
     private connectorSvg: SVGSVGElement | null = null
@@ -77,7 +79,7 @@ export class CodeMapLabelService {
         const buildingTop = new Vector3(x, (node.z0 + actualHeight) * multiplier.y, z)
 
         this.threeSceneService.labels.add(cssObject)
-        this.labels.push({ cssObject, node, buildingTop })
+        this.labels.push({ cssObject, node, buildingTop, appliedOffset: 0 })
     }
 
     clearLabels() {
@@ -153,29 +155,42 @@ export class CodeMapLabelService {
     private collectLabelInfos(): LabelLayoutInfo[] {
         const infos: LabelLayoutInfo[] = []
 
-        // Phase 1: Reset collision offsets (batch writes — all style mutations before any rect reads)
+        // Read current bounding rects and derive base rects by undoing the previously
+        // applied collision offset. This avoids resetting the transform each frame,
+        // which would fight CSS transitions and produce unstable getBoundingClientRect values.
         for (const label of this.labels) {
             const content = label.cssObject.element.firstElementChild as HTMLDivElement
             if (!content) {
                 continue
             }
-            content.style.transform = `translateY(${CodeMapLabelService.BASE_OFFSET_PX}px)`
-            infos.push({ label, content, rect: null, offset: 0 })
-        }
-
-        // Phase 2: Read all bounding rects after writes are complete.
-        // Grouping all getBoundingClientRect calls here (rather than interleaving them with style
-        // mutations) limits the number of forced layout recalculations to one per update cycle.
-        for (const info of infos) {
-            info.rect = info.content.getBoundingClientRect()
+            const domRect = content.getBoundingClientRect()
+            const baseRect = {
+                top: domRect.top - label.appliedOffset,
+                bottom: domRect.bottom - label.appliedOffset,
+                left: domRect.left,
+                right: domRect.right,
+                width: domRect.width,
+                height: domRect.height,
+                x: domRect.x,
+                y: domRect.y - label.appliedOffset
+            } as DOMRect
+            infos.push({ label, content, rect: baseRect, offset: 0 })
         }
 
         return infos
     }
 
     private resolveCollisions(infos: LabelLayoutInfo[], tooltipRect: DOMRect | null) {
-        // Sort by screen Y and compute collision offsets (greedy sweep)
-        infos.sort((a, b) => a.rect.top - b.rect.top)
+        // Sort by screen Y with epsilon tolerance and stable tiebreaker to prevent oscillation.
+        // Sub-pixel rendering differences between frames can flip sort order for near-equal Y
+        // positions, causing visible jitter. Treat labels within SORT_EPSILON_PX as same-Y.
+        infos.sort((a, b) => {
+            const dy = a.rect.top - b.rect.top
+            if (Math.abs(dy) > CodeMapLabelService.SORT_EPSILON_PX) {
+                return dy
+            }
+            return a.label.node.path.localeCompare(b.label.node.path)
+        })
 
         for (let i = 0; i < infos.length; i++) {
             const current = infos[i]
@@ -228,17 +243,16 @@ export class CodeMapLabelService {
     private applyCollisionOffsets(infos: LabelLayoutInfo[]) {
         for (const info of infos) {
             const content = info.content
-            content.style.transition = "transform 0.2s ease-out, opacity 0.2s ease-out"
             const isSuppressed = info.label === this.suppressedLabel
 
             if (info.offset > CodeMapLabelService.MAX_DISPLACEMENT_PX) {
                 content.style.opacity = "0"
                 content.style.transform = `translateY(${CodeMapLabelService.BASE_OFFSET_PX}px)`
-            } else if (info.offset === 0) {
-                content.style.opacity = isSuppressed ? "0" : "1"
+                info.label.appliedOffset = 0
             } else {
                 content.style.opacity = isSuppressed ? "0" : "1"
                 content.style.transform = `translateY(${CodeMapLabelService.BASE_OFFSET_PX + info.offset}px)`
+                info.label.appliedOffset = info.offset
             }
         }
     }
@@ -288,7 +302,7 @@ export class CodeMapLabelService {
                 continue
             }
 
-            // Label bottom-center (rect was read before offset, so add offset for displaced labels)
+            // Label bottom-center (rect is the base rect, add offset for displaced labels)
             const labelX = info.rect.left - containerRect.left + info.rect.width / 2
             const labelY = info.rect.bottom - containerRect.top + info.offset
 

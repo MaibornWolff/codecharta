@@ -6,9 +6,9 @@ jest.mock("../../state/selectors/accumulatedData/codeMapNodes.selector", () => (
 }))
 
 describe("getPartialDefaultState", () => {
-    it("should reset 'amountOfTopLabels' to a dynamically calculated number, not to the static 'defaultAmountOfLabels' of 1", () => {
+    it("should reset 'amountOfTopLabels' to a dynamically calculated number, not to the static default", () => {
         const keySettings = ["appSettings.amountOfTopLabels"]
-        const expectedSettings = { appSettings: { amountOfTopLabels: 5 } }
+        const expectedSettings = { appSettings: { amountOfTopLabels: 10 } }
 
         const actualSettings = getPartialDefaultState(keySettings, DEFAULT_STATE)
 
