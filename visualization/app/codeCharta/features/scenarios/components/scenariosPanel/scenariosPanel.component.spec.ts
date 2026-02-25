@@ -13,7 +13,15 @@ describe("ScenariosPanelComponent", () => {
             imports: [ScenariosPanelComponent],
             providers: [
                 provideMockStore({ initialState: defaultState }),
-                { provide: ScenariosService, useValue: { scenarios$: of([]), removeScenario: jest.fn(), saveScenario: jest.fn() } }
+                {
+                    provide: ScenariosService,
+                    useValue: {
+                        scenarios$: of([]),
+                        removeScenario: jest.fn(),
+                        saveScenario: jest.fn(),
+                        loadScenarios: jest.fn().mockResolvedValue(undefined)
+                    }
+                }
             ]
         })
 

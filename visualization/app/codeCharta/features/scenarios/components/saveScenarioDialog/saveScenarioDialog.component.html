@@ -3,27 +3,27 @@
 		<h2 class="text-xl font-bold mb-4">Save Scenario</h2>
 
 		<div class="form-control mb-4">
-			<label class="label">
+			<label class="label" for="scenario-name">
 				<span class="label-text">Scenario Name</span>
 			</label>
 			<input
+				id="scenario-name"
 				class="input input-bordered w-full"
 				placeholder="Enter scenario name"
 				[ngModel]="name()"
 				(ngModelChange)="name.set($event)"
 			/>
 			@if (!nameValid() && name().length > 0) {
-				<label class="label">
-					<span class="label-text-alt text-error">A name is required.</span>
-				</label>
+				<span class="label-text-alt text-error">A name is required.</span>
 			}
 		</div>
 
 		<div class="form-control mb-4">
-			<label class="label">
+			<label class="label" for="scenario-description">
 				<span class="label-text">Description (optional)</span>
 			</label>
 			<textarea
+				id="scenario-description"
 				class="textarea textarea-bordered w-full"
 				rows="3"
 				placeholder="Describe what this scenario captures"
