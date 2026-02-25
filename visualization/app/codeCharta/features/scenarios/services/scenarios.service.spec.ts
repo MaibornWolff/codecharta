@@ -8,6 +8,7 @@ import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRende
 import { ScenariosService } from "./scenarios.service"
 import { Scenario, ScenarioSectionKey } from "../model/scenario.model"
 import * as scenarioIndexedDB from "./scenarioIndexedDB"
+import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
 import { Vector3 } from "three"
 
 jest.mock("./scenarioIndexedDB")
@@ -66,7 +67,7 @@ describe("ScenariosService", () => {
             expect(scenario.name).toBe("Test Scenario")
             expect(scenario.description).toBe("A test description")
             expect(scenario.id).toBeDefined()
-            expect(service.scenarios$.getValue()).toHaveLength(1)
+            expect(service.scenarios$.getValue()).toHaveLength(1 + BUILT_IN_SCENARIOS.length)
         })
 
         it("should save a scenario with mapFileNames when provided", async () => {
@@ -95,7 +96,7 @@ describe("ScenariosService", () => {
             await service.removeScenario(scenario.id)
 
             // Assert
-            expect(service.scenarios$.getValue()).toHaveLength(0)
+            expect(service.scenarios$.getValue()).toHaveLength(BUILT_IN_SCENARIOS.length)
         })
     })
 
@@ -111,7 +112,7 @@ describe("ScenariosService", () => {
             expect(copy.id).not.toBe(original.id)
             expect(copy.name).toBe("Original (copy)")
             expect(copy.createdAt).toBeGreaterThanOrEqual(original.createdAt)
-            expect(service.scenarios$.getValue()).toHaveLength(2)
+            expect(service.scenarios$.getValue()).toHaveLength(2 + BUILT_IN_SCENARIOS.length)
         })
 
         it("should remove map binding from the copy", async () => {
@@ -137,6 +138,65 @@ describe("ScenariosService", () => {
             expect(copy.sections).toEqual(original.sections)
             expect(copy.sections).not.toBe(original.sections)
             expect(copy.sections.metrics).not.toBe(original.sections.metrics)
+        })
+    })
+
+    describe("loadScenarios", () => {
+        it("should include built-in scenarios after user scenarios", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const scenarios = service.scenarios$.getValue()
+            expect(scenarios).toHaveLength(BUILT_IN_SCENARIOS.length)
+            expect(scenarios.every(s => s.isBuiltIn)).toBe(true)
+        })
+
+        it("should place user scenarios before built-in scenarios", async () => {
+            // Arrange
+            await service.saveScenario("User Scenario")
+
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const scenarios = service.scenarios$.getValue()
+            expect(scenarios).toHaveLength(1 + BUILT_IN_SCENARIOS.length)
+            expect(scenarios[0].name).toBe("User Scenario")
+            expect(scenarios[0].isBuiltIn).toBeUndefined()
+            expect(scenarios[scenarios.length - 1].isBuiltIn).toBe(true)
+        })
+    })
+
+    describe("duplicateScenario built-in", () => {
+        it("should strip isBuiltIn from duplicated built-in scenario", async () => {
+            // Arrange
+            const builtIn = BUILT_IN_SCENARIOS[0]
+
+            // Act
+            const copy = await service.duplicateScenario(builtIn)
+
+            // Assert
+            expect(copy.isBuiltIn).toBeUndefined()
+            expect(copy.name).toBe(`${builtIn.name} (copy)`)
+            expect(copy.id).not.toBe(builtIn.id)
+        })
+
+        it("should deep copy partial sections from built-in scenario", async () => {
+            // Arrange
+            const builtIn = BUILT_IN_SCENARIOS[0]
+
+            // Act
+            const copy = await service.duplicateScenario(builtIn)
+
+            // Assert
+            expect(copy.sections.metrics).toEqual(builtIn.sections.metrics)
+            expect(copy.sections.metrics).not.toBe(builtIn.sections.metrics)
+            expect(copy.sections.colors?.colorRange).toEqual(builtIn.sections.colors?.colorRange)
+            expect(copy.sections.colors?.colorRange).not.toBe(builtIn.sections.colors?.colorRange)
+            expect(copy.sections.camera).toBeUndefined()
+            expect(copy.sections.filters).toBeUndefined()
+            expect(copy.sections.labelsAndFolders).toBeUndefined()
         })
     })
 

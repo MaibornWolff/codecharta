@@ -5,8 +5,9 @@ import { defaultState } from "../../../../state/store/state.manager"
 import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
 import { ScenariosService } from "../../services/scenarios.service"
 import { Scenario } from "../../model/scenario.model"
-import { ColorMode } from "../../../../codeCharta.model"
+import { ColorMode, MetricData } from "../../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
+import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[]): Scenario => ({
     id,
@@ -37,6 +38,17 @@ const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[
             colorLabels: { positive: false, negative: false, neutral: false },
             markedPackages: []
         }
+    }
+})
+
+const createBuiltInScenario = (name: string, id: string): Scenario => ({
+    id,
+    name,
+    createdAt: 0,
+    isBuiltIn: true,
+    sections: {
+        metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" },
+        colors: { colorRange: { from: 250, to: 500 } }
     }
 })
 
@@ -219,6 +231,44 @@ describe("ScenarioListDialogComponent", () => {
 
             // Assert
             expect(scenariosService.duplicateScenario).toHaveBeenCalledWith(scenario)
+        })
+    })
+
+    describe("built-in scenarios", () => {
+        it("should not have warning for built-in with available metrics", () => {
+            // Arrange
+            const builtIn = createBuiltInScenario("RLOC", "built-in-rloc")
+            const metricData: MetricData = {
+                nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0, values: [] }],
+                edgeMetricData: []
+            }
+            store.overrideSelector(metricDataSelector, metricData)
+            store.refreshState()
+
+            // Assert
+            expect(component.hasWarning(builtIn)).toBe(false)
+        })
+
+        it("should return only available section keys for built-in", () => {
+            // Arrange
+            const builtIn = createBuiltInScenario("RLOC", "built-in-rloc")
+
+            // Act
+            const keys = component.getSectionKeys(builtIn)
+
+            // Assert
+            expect(keys).toEqual(["metrics", "colors"])
+        })
+
+        it("should return all section keys for full scenario", () => {
+            // Arrange
+            const full = createTestScenario("Full", "id-1")
+
+            // Act
+            const keys = component.getSectionKeys(full)
+
+            // Assert
+            expect(keys).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
         })
     })
 })

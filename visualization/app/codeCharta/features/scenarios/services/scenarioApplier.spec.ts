@@ -163,20 +163,69 @@ describe("scenarioApplier", () => {
             expect(patches[0].dynamicSettings?.heightMetric).toBe("mcc")
             expect(patches[0].dynamicSettings?.edgeMetric).toBe("pairingRate")
         })
+
+        it("should handle partial metrics section (built-in scenario)", () => {
+            // Arrange
+            const partialSections: ScenarioSections = {
+                metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" },
+                colors: { colorRange: { from: 250, to: 500 } }
+            }
+            const keys = new Set<ScenarioSectionKey>(["metrics", "colors"])
+
+            // Act
+            const patches = buildOrderedStatePatches(partialSections, keys)
+
+            // Assert
+            expect(patches).toHaveLength(2)
+            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
+            expect(patches[0].dynamicSettings?.edgeMetric).toBeUndefined()
+            expect(patches[0].dynamicSettings?.distributionMetric).toBeUndefined()
+            expect(patches[0].appSettings?.isColorMetricLinkedToHeightMetric).toBeUndefined()
+            expect(patches[1].dynamicSettings?.colorRange).toEqual({ from: 250, to: 500 })
+            expect(patches[1].dynamicSettings?.colorMode).toBeUndefined()
+            expect(patches[1].appSettings).toBeUndefined()
+        })
+
+        it("should skip undefined sections even if selected", () => {
+            // Arrange
+            const partialSections: ScenarioSections = {
+                metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" }
+            }
+            const keys = new Set<ScenarioSectionKey>(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
+
+            // Act
+            const patches = buildOrderedStatePatches(partialSections, keys)
+
+            // Assert — only metrics patch, no colors/filters/labels
+            expect(patches).toHaveLength(1)
+            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
+        })
     })
 
     describe("getCameraVectors", () => {
         it("should reconstruct Vector3 objects from plain positions", () => {
             // Act
-            const { position, target } = getCameraVectors(testSections)
+            const result = getCameraVectors(testSections)
 
             // Assert
-            expect(position.x).toBe(100)
-            expect(position.y).toBe(200)
-            expect(position.z).toBe(300)
-            expect(target.x).toBe(10)
-            expect(target.y).toBe(0)
-            expect(target.z).toBe(20)
+            expect(result).toBeDefined()
+            expect(result?.position.x).toBe(100)
+            expect(result?.position.y).toBe(200)
+            expect(result?.position.z).toBe(300)
+            expect(result?.target.x).toBe(10)
+            expect(result?.target.y).toBe(0)
+            expect(result?.target.z).toBe(20)
+        })
+
+        it("should return undefined when camera section is missing", () => {
+            // Arrange
+            const noCamera: ScenarioSections = { metrics: testSections.metrics }
+
+            // Act
+            const result = getCameraVectors(noCamera)
+
+            // Assert
+            expect(result).toBeUndefined()
         })
     })
 })

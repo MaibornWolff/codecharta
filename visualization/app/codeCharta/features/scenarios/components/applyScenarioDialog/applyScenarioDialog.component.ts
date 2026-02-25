@@ -1,7 +1,13 @@
 import { Component, AfterViewInit, computed, ElementRef, input, output, signal, viewChild } from "@angular/core"
 import { FormsModule } from "@angular/forms"
 import { MetricData } from "../../../../codeCharta.model"
-import { Scenario, SCENARIO_SECTION_ICONS, SCENARIO_SECTION_LABELS, ScenarioSectionKey } from "../../model/scenario.model"
+import {
+    getAvailableSectionKeys,
+    Scenario,
+    SCENARIO_SECTION_ICONS,
+    SCENARIO_SECTION_LABELS,
+    ScenarioSectionKey
+} from "../../model/scenario.model"
 import { ScenariosService } from "../../services/scenarios.service"
 import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
 
@@ -17,9 +23,10 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
 
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
 
-    readonly sectionKeys: ScenarioSectionKey[] = ["metrics", "colors", "camera", "filters", "labelsAndFolders"]
     readonly sectionLabels = SCENARIO_SECTION_LABELS
     readonly sectionIcons = SCENARIO_SECTION_ICONS
+
+    readonly availableSectionKeys = computed(() => getAvailableSectionKeys(this.scenario()))
 
     readonly selectedSections = signal<Record<ScenarioSectionKey, boolean>>({
         metrics: true,
@@ -29,9 +36,12 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
         labelsAndFolders: true
     })
 
-    readonly missingMetrics = computed(() => getMissingMetrics(this.scenario().sections.metrics, this.metricData()))
+    readonly missingMetrics = computed(() => {
+        const metrics = this.scenario().sections.metrics
+        return metrics ? getMissingMetrics(metrics, this.metricData()) : { nodeMetrics: [], edgeMetrics: [] }
+    })
     readonly hasMissing = computed(() => hasMissingMetrics(this.missingMetrics()))
-    readonly hasAnySelected = computed(() => this.sectionKeys.some(key => this.selectedSections()[key]))
+    readonly hasAnySelected = computed(() => this.availableSectionKeys().some(key => this.selectedSections()[key]))
 
     constructor(private readonly scenariosService: ScenariosService) {}
 
@@ -46,7 +56,7 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
     }
 
     apply() {
-        const selectedKeys = new Set<ScenarioSectionKey>(this.sectionKeys.filter(key => this.selectedSections()[key]))
+        const selectedKeys = new Set<ScenarioSectionKey>(this.availableSectionKeys().filter(key => this.selectedSections()[key]))
         this.scenariosService.applyScenario(this.scenario(), selectedKeys, this.metricData())
         this.dialogElement().nativeElement.close()
     }

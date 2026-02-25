@@ -10,15 +10,15 @@ export interface MetricsSection {
     areaMetric: string
     heightMetric: string
     colorMetric: string
-    edgeMetric: string
-    distributionMetric: string
-    isColorMetricLinkedToHeightMetric: boolean
+    edgeMetric?: string
+    distributionMetric?: string
+    isColorMetricLinkedToHeightMetric?: boolean
 }
 
 export interface ColorsSection {
     colorRange: ColorRange
-    colorMode: ColorMode
-    mapColors: MapColors
+    colorMode?: ColorMode
+    mapColors?: Partial<MapColors>
 }
 
 export interface CameraSection {
@@ -43,11 +43,11 @@ export interface LabelsAndFoldersSection {
 export type ScenarioSectionKey = "metrics" | "colors" | "camera" | "filters" | "labelsAndFolders"
 
 export interface ScenarioSections {
-    metrics: MetricsSection
-    colors: ColorsSection
-    camera: CameraSection
-    filters: FiltersSection
-    labelsAndFolders: LabelsAndFoldersSection
+    metrics?: MetricsSection
+    colors?: ColorsSection
+    camera?: CameraSection
+    filters?: FiltersSection
+    labelsAndFolders?: LabelsAndFoldersSection
 }
 
 export interface Scenario {
@@ -56,7 +56,13 @@ export interface Scenario {
     description?: string
     mapFileNames?: string[]
     createdAt: number
+    isBuiltIn?: boolean
     sections: ScenarioSections
+}
+
+export function getAvailableSectionKeys(scenario: Scenario): ScenarioSectionKey[] {
+    const allKeys: ScenarioSectionKey[] = ["metrics", "colors", "camera", "filters", "labelsAndFolders"]
+    return allKeys.filter(key => scenario.sections[key] !== undefined)
 }
 
 export const SCENARIO_SECTION_LABELS: Record<ScenarioSectionKey, string> = {
