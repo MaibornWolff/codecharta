@@ -140,10 +140,10 @@ Deliver incrementally; each phase is independently shippable:
 
 ## Steps
 
-- [ ] Phase 1: Data model, persistence, basic panel
-- [ ] Phase 2: Selective apply dialog + missing metric handling
+- [x] Phase 1: Data model, persistence, basic panel
+- [x] Phase 2: Selective apply dialog + missing metric handling
 - [ ] Phase 3: Export/Import + Custom Config migration
-- [ ] Phase 4: Map-specific binding + duplicate action
+- [x] Phase 4: Map-specific binding + duplicate action
 - [ ] Phase 5: Define and ship built-in Scenarios
 
 ---

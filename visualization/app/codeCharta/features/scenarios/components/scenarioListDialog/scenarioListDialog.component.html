@@ -20,7 +20,11 @@
 
 		<div class="max-h-[60vh] overflow-y-auto">
 			@for (scenario of filteredScenarios(); track scenario.id) {
-				<div class="flex items-center px-2 py-2 border-b border-base-300 hover:bg-base-200 cursor-pointer" (click)="applyScenario(scenario)">
+				<div
+					class="flex items-center px-2 py-2 border-b border-base-300 hover:bg-base-200 cursor-pointer"
+					[class.opacity-40]="isMapMismatch(scenario)"
+					(click)="applyScenario(scenario)"
+				>
 					<div class="flex-1 min-w-0">
 						<div class="font-medium text-sm">
 							{{ scenario.name }}
@@ -35,6 +39,12 @@
 						}
 						<div class="flex items-center gap-3 mt-1">
 							<span class="text-[11px] text-base-content/40">{{ formatDate(scenario.createdAt) }}</span>
+							@if (isMapBound(scenario)) {
+								<span class="badge badge-xs badge-outline gap-1" [title]="'Bound to ' + scenario.mapFileNames!.join(', ')">
+									<i class="fa fa-map-pin text-[9px]"></i>
+									{{ scenario.mapFileNames!.join(', ') }}
+								</span>
+							}
 							<span class="flex gap-1.5 text-[11px] text-base-content/40">
 								@for (key of sectionKeys; track key) {
 									<i class="fa {{ sectionIcons[key] }}" [title]="sectionLabels[key]"></i>
@@ -42,7 +52,10 @@
 							</span>
 						</div>
 					</div>
-					<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="deleteScenario(scenario); $event.stopPropagation()">
+					<button class="btn btn-ghost btn-sm" title="Duplicate scenario" (click)="duplicateScenario(scenario); $event.stopPropagation()">
+						<i class="fa fa-copy"></i>
+					</button>
+					<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="requestDelete(scenario); $event.stopPropagation()">
 						<i class="fa fa-trash"></i>
 					</button>
 				</div>
@@ -51,5 +64,21 @@
 	</div>
 	<form method="dialog" class="modal-backdrop">
 		<button (click)="close()">close</button>
+	</form>
+</dialog>
+
+<dialog #deleteConfirmDialog class="modal">
+	<div class="modal-box max-w-sm">
+		<h3 class="text-lg font-bold mb-2">Delete Scenario</h3>
+		@if (deleteTarget()) {
+			<p>Are you sure you want to delete "{{ deleteTarget()!.name }}"?</p>
+		}
+		<div class="modal-action">
+			<button class="btn" (click)="cancelDelete()">Cancel</button>
+			<button class="btn btn-error" (click)="confirmDelete()">Delete</button>
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button (click)="cancelDelete()">close</button>
 	</form>
 </dialog>

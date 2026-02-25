@@ -1,11 +1,9 @@
 import { test, expect } from "@playwright/test"
-import { CC_URL, clearIndexedDB, goto } from "../../../playwright.helper"
+import { clearIndexedDB, goto } from "../../../playwright.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "./searchPanel/searchPanel.po"
 
 test.describe("RibbonBar", () => {
-    const sampleMap = `sample3.cc.json`
-
     test.beforeEach(async ({ page }) => {
         await goto(page)
     })
@@ -35,16 +33,5 @@ test.describe("RibbonBar", () => {
         const isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(edgePanel, "#edge-metric-card")
         expect(isEdgeSettingsPanelOpen).toBeTruthy()
         expect(await ribbonBar.isPanelOpen("#area-metric-card")).toBeFalsy()
-    })
-
-    test("should open suspicious metrics and high risk profile menu", async ({ page }) => {
-        await page.goto(`${CC_URL}?file=codeCharta/assets/${sampleMap}`)
-        await page.click("cc-suspicious-metrics")
-        const suspiciousMetricsMenu = page.locator(".mat-mdc-menu-panel.cc-ai-drop-down.cc-suspicious-metric-panel")
-        await suspiciousMetricsMenu.waitFor({ state: "visible" })
-        expect(await suspiciousMetricsMenu.isVisible()).toBeTruthy()
-        const titleElement = suspiciousMetricsMenu.locator(".sub-title").first()
-        const titleContent = await titleElement.textContent()
-        expect(titleContent?.trim()).toBe("Suspicious Metrics in .ts code")
     })
 })

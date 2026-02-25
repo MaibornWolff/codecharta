@@ -54,6 +54,7 @@ export interface Scenario {
     id: string
     name: string
     description?: string
+    mapFileNames?: string[]
     createdAt: number
     sections: ScenarioSections
 }

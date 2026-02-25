@@ -1,15 +1,17 @@
 import { TestBed } from "@angular/core/testing"
-import { provideMockStore } from "@ngrx/store/testing"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BehaviorSubject } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
 import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
 import { ScenariosService } from "../../services/scenarios.service"
 import { Scenario } from "../../model/scenario.model"
 import { ColorMode } from "../../../../codeCharta.model"
+import { FileSelectionState, FileState } from "../../../../model/files/files"
 
-const createTestScenario = (name: string, id = "test-id"): Scenario => ({
+const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[]): Scenario => ({
     id,
     name,
+    mapFileNames,
     createdAt: Date.now(),
     sections: {
         metrics: {
@@ -38,27 +40,39 @@ const createTestScenario = (name: string, id = "test-id"): Scenario => ({
     }
 })
 
+const createFileState = (fileName: string): FileState => ({
+    file: {
+        fileMeta: { fileName, fileChecksum: "abc", apiVersion: "1.3", projectName: "test", exportedFileSize: 100 },
+        map: { name: "root", type: "Folder", children: [], attributes: {} },
+        settings: { fileSettings: {} as any }
+    },
+    selectedAs: FileSelectionState.Partial
+})
+
 describe("ScenarioListDialogComponent", () => {
     let component: ScenarioListDialogComponent
     let scenariosSubject: BehaviorSubject<Scenario[]>
+    let scenariosService: { scenarios$: BehaviorSubject<Scenario[]>; removeScenario: jest.Mock; duplicateScenario: jest.Mock }
+    let store: MockStore
 
     beforeEach(() => {
         scenariosSubject = new BehaviorSubject<Scenario[]>([])
+        scenariosService = { scenarios$: scenariosSubject, removeScenario: jest.fn(), duplicateScenario: jest.fn().mockResolvedValue({}) }
 
         TestBed.configureTestingModule({
             imports: [ScenarioListDialogComponent],
-            providers: [
-                provideMockStore({ initialState: defaultState }),
-                { provide: ScenariosService, useValue: { scenarios$: scenariosSubject, removeScenario: jest.fn() } }
-            ]
+            providers: [provideMockStore({ initialState: defaultState }), { provide: ScenariosService, useValue: scenariosService }]
         })
 
+        store = TestBed.inject(MockStore)
         const fixture = TestBed.createComponent(ScenarioListDialogComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
 
         component.dialogElement().nativeElement.showModal = jest.fn()
         component.dialogElement().nativeElement.close = jest.fn()
+        component.deleteConfirmDialog().nativeElement.showModal = jest.fn()
+        component.deleteConfirmDialog().nativeElement.close = jest.fn()
     })
 
     it("should show scenarios from service", () => {
@@ -104,5 +118,97 @@ describe("ScenarioListDialogComponent", () => {
         // Assert
         expect(formatted).toBeDefined()
         expect(typeof formatted).toBe("string")
+    })
+
+    describe("map binding", () => {
+        it("should detect map-bound scenarios", () => {
+            // Arrange
+            const bound = createTestScenario("Bound", "id-1", ["project.cc.json"])
+            const global = createTestScenario("Global", "id-2")
+
+            // Assert
+            expect(component.isMapBound(bound)).toBe(true)
+            expect(component.isMapBound(global)).toBe(false)
+        })
+
+        it("should detect map mismatch when bound file is not loaded", () => {
+            // Arrange
+            const bound = createTestScenario("Bound", "id-1", ["project.cc.json"])
+            store.setState({ ...defaultState, files: [createFileState("other.cc.json")] })
+
+            // Assert
+            expect(component.isMapMismatch(bound)).toBe(true)
+        })
+
+        it("should not detect mismatch when bound file is loaded", () => {
+            // Arrange
+            const bound = createTestScenario("Bound", "id-1", ["project.cc.json"])
+            store.setState({ ...defaultState, files: [createFileState("project.cc.json")] })
+
+            // Assert
+            expect(component.isMapMismatch(bound)).toBe(false)
+        })
+
+        it("should not detect mismatch for global scenarios", () => {
+            // Arrange
+            const global = createTestScenario("Global", "id-1")
+
+            // Assert
+            expect(component.isMapMismatch(global)).toBe(false)
+        })
+    })
+
+    describe("delete", () => {
+        it("should open confirm dialog and set deleteTarget on requestDelete", () => {
+            // Arrange
+            const scenario = createTestScenario("To Delete", "id-1")
+
+            // Act
+            component.requestDelete(scenario)
+
+            // Assert
+            expect(component.deleteTarget()).toBe(scenario)
+            expect(component.deleteConfirmDialog().nativeElement.showModal).toHaveBeenCalled()
+        })
+
+        it("should call removeScenario and clear target on confirmDelete", async () => {
+            // Arrange
+            const scenario = createTestScenario("To Delete", "id-1")
+            component.requestDelete(scenario)
+
+            // Act
+            await component.confirmDelete()
+
+            // Assert
+            expect(scenariosService.removeScenario).toHaveBeenCalledWith("id-1")
+            expect(component.deleteTarget()).toBeNull()
+        })
+
+        it("should clear target and close dialog on cancelDelete", () => {
+            // Arrange
+            const scenario = createTestScenario("To Delete", "id-1")
+            component.requestDelete(scenario)
+
+            // Act
+            component.cancelDelete()
+
+            // Assert
+            expect(scenariosService.removeScenario).not.toHaveBeenCalled()
+            expect(component.deleteTarget()).toBeNull()
+            expect(component.deleteConfirmDialog().nativeElement.close).toHaveBeenCalled()
+        })
+    })
+
+    describe("duplicate", () => {
+        it("should call duplicateScenario on service", async () => {
+            // Arrange
+            const scenario = createTestScenario("Test", "id-1")
+
+            // Act
+            await component.duplicateScenario(scenario)
+
+            // Assert
+            expect(scenariosService.duplicateScenario).toHaveBeenCalledWith(scenario)
+        })
     })
 })
