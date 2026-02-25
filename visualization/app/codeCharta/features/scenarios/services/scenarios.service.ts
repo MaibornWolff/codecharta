@@ -31,7 +31,7 @@ export class ScenariosService {
         this.scenarios$.next(scenarios)
     }
 
-    async saveScenario(name: string, description?: string): Promise<Scenario> {
+    async saveScenario(name: string, description?: string, mapFileNames?: string[]): Promise<Scenario> {
         const cameraPosition = this.threeCameraService.camera?.position
         const cameraTarget = this.threeMapControlsService.controls?.target
 
@@ -40,12 +40,51 @@ export class ScenariosService {
             this.state.getValue(),
             cameraPosition ? { x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z } : { x: 0, y: 300, z: 1000 },
             cameraTarget ? { x: cameraTarget.x, y: cameraTarget.y, z: cameraTarget.z } : { x: 0, y: 0, z: 0 },
-            description
+            description,
+            mapFileNames
         )
 
         await addScenario(scenario)
         await this.loadScenarios()
         return scenario
+    }
+
+    async duplicateScenario(scenario: Scenario): Promise<Scenario> {
+        const copy: Scenario = {
+            ...scenario,
+            id: crypto.randomUUID(),
+            name: `${scenario.name} (copy)`,
+            createdAt: Date.now(),
+            mapFileNames: undefined,
+            sections: {
+                ...scenario.sections,
+                metrics: { ...scenario.sections.metrics },
+                colors: {
+                    ...scenario.sections.colors,
+                    colorRange: { ...scenario.sections.colors.colorRange },
+                    mapColors: { ...scenario.sections.colors.mapColors }
+                },
+                camera: {
+                    ...scenario.sections.camera,
+                    position: { ...scenario.sections.camera.position },
+                    target: { ...scenario.sections.camera.target }
+                },
+                filters: {
+                    ...scenario.sections.filters,
+                    blacklist: [...scenario.sections.filters.blacklist],
+                    focusedNodePath: [...scenario.sections.filters.focusedNodePath]
+                },
+                labelsAndFolders: {
+                    ...scenario.sections.labelsAndFolders,
+                    colorLabels: { ...scenario.sections.labelsAndFolders.colorLabels },
+                    markedPackages: [...scenario.sections.labelsAndFolders.markedPackages]
+                }
+            }
+        }
+
+        await addScenario(copy)
+        await this.loadScenarios()
+        return copy
     }
 
     async removeScenario(id: string): Promise<void> {

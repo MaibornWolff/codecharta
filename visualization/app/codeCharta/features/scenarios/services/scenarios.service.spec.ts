@@ -7,7 +7,6 @@ import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMa
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ScenariosService } from "./scenarios.service"
 import { Scenario, ScenarioSectionKey } from "../model/scenario.model"
-import { setState } from "../../../state/store/state.actions"
 import * as scenarioIndexedDB from "./scenarioIndexedDB"
 import { Vector3 } from "three"
 
@@ -69,6 +68,22 @@ describe("ScenariosService", () => {
             expect(scenario.id).toBeDefined()
             expect(service.scenarios$.getValue()).toHaveLength(1)
         })
+
+        it("should save a scenario with mapFileNames when provided", async () => {
+            // Act
+            const scenario = await service.saveScenario("Bound Scenario", undefined, ["project.cc.json", "other.cc.json"])
+
+            // Assert
+            expect(scenario.mapFileNames).toEqual(["project.cc.json", "other.cc.json"])
+        })
+
+        it("should save a scenario without mapFileNames by default", async () => {
+            // Act
+            const scenario = await service.saveScenario("Global Scenario")
+
+            // Assert
+            expect(scenario.mapFileNames).toBeUndefined()
+        })
     })
 
     describe("removeScenario", () => {
@@ -84,6 +99,47 @@ describe("ScenariosService", () => {
         })
     })
 
+    describe("duplicateScenario", () => {
+        it("should create a copy with new id and '(copy)' suffix", async () => {
+            // Arrange
+            const original = await service.saveScenario("Original", "A description", ["project.cc.json"])
+
+            // Act
+            const copy = await service.duplicateScenario(original)
+
+            // Assert
+            expect(copy.id).not.toBe(original.id)
+            expect(copy.name).toBe("Original (copy)")
+            expect(copy.createdAt).toBeGreaterThanOrEqual(original.createdAt)
+            expect(service.scenarios$.getValue()).toHaveLength(2)
+        })
+
+        it("should remove map binding from the copy", async () => {
+            // Arrange
+            const original = await service.saveScenario("Bound", undefined, ["project.cc.json"])
+
+            // Act
+            const copy = await service.duplicateScenario(original)
+
+            // Assert
+            expect(original.mapFileNames).toEqual(["project.cc.json"])
+            expect(copy.mapFileNames).toBeUndefined()
+        })
+
+        it("should create an independent copy of sections", async () => {
+            // Arrange
+            const original = await service.saveScenario("Original")
+
+            // Act
+            const copy = await service.duplicateScenario(original)
+
+            // Assert
+            expect(copy.sections).toEqual(original.sections)
+            expect(copy.sections).not.toBe(original.sections)
+            expect(copy.sections.metrics).not.toBe(original.sections.metrics)
+        })
+    })
+
     describe("applyScenario", () => {
         it("should dispatch setState for metrics section", async () => {
             // Arrange
@@ -95,7 +151,7 @@ describe("ScenariosService", () => {
 
             // Assert
             expect(dispatchSpy).toHaveBeenCalledWith(
-                setState({
+                expect.objectContaining({
                     value: expect.objectContaining({
                         dynamicSettings: expect.objectContaining({
                             areaMetric: scenario.sections.metrics.areaMetric

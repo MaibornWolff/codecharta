@@ -1,5 +1,11 @@
 import { Component, computed, ElementRef, signal, viewChild } from "@angular/core"
 import { FormsModule } from "@angular/forms"
+import { Store } from "@ngrx/store"
+import { toSignal } from "@angular/core/rxjs-interop"
+import { map } from "rxjs"
+import { CcState } from "../../../../codeCharta.model"
+import { filesSelector } from "../../../../state/store/files/files.selector"
+import { getVisibleFiles } from "../../../../model/files/files.helper"
 import { ScenariosService } from "../../services/scenarios.service"
 
 @Component({
@@ -12,13 +18,25 @@ export class SaveScenarioDialogComponent {
 
     readonly name = signal("")
     readonly description = signal("")
+    readonly bindToMap = signal(false)
     readonly nameValid = computed(() => this.name().trim().length > 0)
 
-    constructor(private readonly scenariosService: ScenariosService) {}
+    readonly visibleFileNames = toSignal(
+        this.store.select(filesSelector).pipe(map(fileStates => getVisibleFiles(fileStates).map(f => f.fileMeta.fileName))),
+        { initialValue: [] as string[] }
+    )
+
+    readonly hasFiles = computed(() => this.visibleFileNames().length > 0)
+
+    constructor(
+        private readonly scenariosService: ScenariosService,
+        private readonly store: Store<CcState>
+    ) {}
 
     open() {
         this.name.set("")
         this.description.set("")
+        this.bindToMap.set(false)
         this.dialogElement().nativeElement.showModal()
     }
 
@@ -28,7 +46,8 @@ export class SaveScenarioDialogComponent {
 
     async save() {
         if (this.nameValid()) {
-            await this.scenariosService.saveScenario(this.name(), this.description() || undefined)
+            const mapFileNames = this.bindToMap() && this.hasFiles() ? this.visibleFileNames() : undefined
+            await this.scenariosService.saveScenario(this.name(), this.description() || undefined, mapFileNames)
             this.close()
         }
     }

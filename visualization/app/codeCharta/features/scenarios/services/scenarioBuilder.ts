@@ -40,12 +40,14 @@ export function buildScenario(
     state: CcState,
     cameraPosition: PlainPosition,
     cameraTarget: PlainPosition,
-    description?: string
+    description?: string,
+    mapFileNames?: string[]
 ): Scenario {
     return {
         id: crypto.randomUUID(),
         name,
         description,
+        mapFileNames,
         createdAt: Date.now(),
         sections: buildScenarioSections(state, cameraPosition, cameraTarget)
     }

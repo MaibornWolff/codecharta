@@ -32,6 +32,24 @@
 			></textarea>
 		</div>
 
+		<div class="form-control mb-4">
+			<label class="label cursor-pointer justify-start gap-3" [class.opacity-40]="!hasFiles()">
+				<input
+					type="checkbox"
+					class="checkbox checkbox-sm"
+					[ngModel]="bindToMap()"
+					(ngModelChange)="bindToMap.set($event)"
+					[disabled]="!hasFiles()"
+				/>
+				<span class="label-text">
+					Bind to current maps
+					@if (visibleFileNames().length > 0) {
+						<span class="text-xs text-base-content/50">({{ visibleFileNames().join(', ') }})</span>
+					}
+				</span>
+			</label>
+		</div>
+
 		<div class="modal-action">
 			<button class="btn" (click)="close()">Cancel</button>
 			<button class="btn btn-primary" [disabled]="!nameValid()" (click)="save()">Save</button>

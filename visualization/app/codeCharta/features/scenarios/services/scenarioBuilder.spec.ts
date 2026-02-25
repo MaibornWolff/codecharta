@@ -78,5 +78,24 @@ describe("scenarioBuilder", () => {
             // Assert
             expect(scenario1.id).not.toBe(scenario2.id)
         })
+
+        it("should include mapFileNames when provided", () => {
+            // Act
+            const scenario = buildScenario("Bound Scenario", defaultState, cameraPosition, cameraTarget, undefined, [
+                "project.cc.json",
+                "other.cc.json"
+            ])
+
+            // Assert
+            expect(scenario.mapFileNames).toEqual(["project.cc.json", "other.cc.json"])
+        })
+
+        it("should leave mapFileNames undefined when not provided", () => {
+            // Act
+            const scenario = buildScenario("Global Scenario", defaultState, cameraPosition, cameraTarget)
+
+            // Assert
+            expect(scenario.mapFileNames).toBeUndefined()
+        })
     })
 })
