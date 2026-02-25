@@ -61,6 +61,7 @@ import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/e
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { setIsColorMetricLinkedToHeightMetricAction } from "../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 import { setEnableFloorLabels } from "../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
+import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
@@ -403,6 +404,9 @@ export class LoadInitialFileService {
                 break
             case "enableFloorLabels":
                 this.store.dispatch(setEnableFloorLabels({ value }))
+                break
+            case "labelMode":
+                this.store.dispatch(setLabelMode({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)
