@@ -7,7 +7,13 @@ import { CcState, MetricData } from "../../../../codeCharta.model"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { filesSelector } from "../../../../state/store/files/files.selector"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
-import { Scenario, SCENARIO_SECTION_ICONS, SCENARIO_SECTION_LABELS, ScenarioSectionKey } from "../../model/scenario.model"
+import {
+    getAvailableSectionKeys,
+    Scenario,
+    SCENARIO_SECTION_ICONS,
+    SCENARIO_SECTION_LABELS,
+    ScenarioSectionKey
+} from "../../model/scenario.model"
 import { ScenariosService } from "../../services/scenarios.service"
 import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
 
@@ -55,7 +61,14 @@ export class ScenarioListDialogComponent {
         this.dialogElement().nativeElement.close()
     }
 
+    getSectionKeys(scenario: Scenario): ScenarioSectionKey[] {
+        return getAvailableSectionKeys(scenario)
+    }
+
     hasWarning(scenario: Scenario): boolean {
+        if (!scenario.sections.metrics) {
+            return false
+        }
         const missing = getMissingMetrics(scenario.sections.metrics, this.metricData())
         return hasMissingMetrics(missing)
     }

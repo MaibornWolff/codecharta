@@ -38,7 +38,11 @@
 							<div class="text-xs text-base-content/50 truncate">{{ scenario.description }}</div>
 						}
 						<div class="flex items-center gap-3 mt-1">
-							<span class="text-[11px] text-base-content/40">{{ formatDate(scenario.createdAt) }}</span>
+							@if (scenario.isBuiltIn) {
+								<span class="badge badge-xs badge-info">Built-in</span>
+							} @else {
+								<span class="text-[11px] text-base-content/40">{{ formatDate(scenario.createdAt) }}</span>
+							}
 							@if (isMapBound(scenario)) {
 								<span class="badge badge-xs badge-outline gap-1" [title]="'Bound to ' + scenario.mapFileNames!.join(', ')">
 									<i class="fa fa-map-pin text-[9px]"></i>
@@ -46,7 +50,7 @@
 								</span>
 							}
 							<span class="flex gap-1.5 text-[11px] text-base-content/40">
-								@for (key of sectionKeys; track key) {
+								@for (key of getSectionKeys(scenario); track key) {
 									<i class="fa {{ sectionIcons[key] }}" [title]="sectionLabels[key]"></i>
 								}
 							</span>
@@ -55,9 +59,11 @@
 					<button class="btn btn-ghost btn-sm" title="Duplicate scenario" (click)="duplicateScenario(scenario); $event.stopPropagation()">
 						<i class="fa fa-copy"></i>
 					</button>
-					<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="requestDelete(scenario); $event.stopPropagation()">
-						<i class="fa fa-trash"></i>
-					</button>
+					@if (!scenario.isBuiltIn) {
+						<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="requestDelete(scenario); $event.stopPropagation()">
+							<i class="fa fa-trash"></i>
+						</button>
+					}
 				</div>
 			}
 		</div>

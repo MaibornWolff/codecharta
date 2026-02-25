@@ -83,4 +83,45 @@ describe("getMissingMetrics", () => {
         // Assert
         expect(result.nodeMetrics).toEqual(["rloc"])
     })
+
+    it("should handle partial metrics section with no optional fields", () => {
+        // Arrange
+        const section: MetricsSection = {
+            areaMetric: "rloc",
+            heightMetric: "complexity",
+            colorMetric: "complexity"
+        }
+        const metricData: MetricData = {
+            nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0, values: [] }],
+            edgeMetricData: []
+        }
+
+        // Act
+        const result = getMissingMetrics(section, metricData)
+
+        // Assert
+        expect(result.nodeMetrics).toEqual(["complexity"])
+        expect(result.edgeMetrics).toEqual([])
+    })
+
+    it("should not flag undefined optional metrics as missing", () => {
+        // Arrange
+        const section: MetricsSection = {
+            areaMetric: "rloc",
+            heightMetric: "rloc",
+            colorMetric: "rloc"
+        }
+        const metricData: MetricData = {
+            nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0, values: [] }],
+            edgeMetricData: []
+        }
+
+        // Act
+        const result = getMissingMetrics(section, metricData)
+
+        // Assert
+        expect(result.nodeMetrics).toEqual([])
+        expect(result.edgeMetrics).toEqual([])
+        expect(hasMissingMetrics(result)).toBe(false)
+    })
 })

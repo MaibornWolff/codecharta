@@ -66,11 +66,12 @@ describe("ApplyScenarioDialogComponent", () => {
         component = fixture.componentInstance
     })
 
-    it("should have all sections selected by default", () => {
+    it("should have all available sections selected by default", () => {
         // Assert
         expect(component.hasAnySelected()).toBe(true)
         expect(component.selectedSections().metrics).toBe(true)
         expect(component.selectedSections().camera).toBe(true)
+        expect(component.availableSectionKeys()).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
     })
 
     it("should detect no missing metrics when all are available", () => {
@@ -89,7 +90,7 @@ describe("ApplyScenarioDialogComponent", () => {
         expect(fixture.componentInstance.hasMissing()).toBe(true)
     })
 
-    it("should call applyScenario with selected sections", () => {
+    it("should call applyScenario with only selected sections", () => {
         // Arrange
         component.toggleSection("camera", false)
         component.toggleSection("filters", false)
@@ -107,11 +108,55 @@ describe("ApplyScenarioDialogComponent", () => {
 
     it("should report hasAnySelected as false when all deselected", () => {
         // Arrange
-        for (const key of component.sectionKeys) {
+        for (const key of component.availableSectionKeys()) {
             component.toggleSection(key, false)
         }
 
         // Assert
         expect(component.hasAnySelected()).toBe(false)
+    })
+
+    describe("partial (built-in) scenario", () => {
+        let partialComponent: ApplyScenarioDialogComponent
+
+        beforeEach(() => {
+            const partialScenario: Scenario = {
+                id: "built-in-rloc",
+                name: "RLOC",
+                createdAt: 0,
+                isBuiltIn: true,
+                sections: {
+                    metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" },
+                    colors: { colorRange: { from: 250, to: 500 } }
+                }
+            }
+            const fixture = TestBed.createComponent(ApplyScenarioDialogComponent)
+            fixture.componentRef.setInput("scenario", partialScenario)
+            fixture.componentRef.setInput("metricData", metricDataWithMetrics)
+            fixture.detectChanges()
+            partialComponent = fixture.componentInstance
+        })
+
+        it("should only expose available section keys", () => {
+            // Assert
+            expect(partialComponent.availableSectionKeys()).toEqual(["metrics", "colors"])
+        })
+
+        it("should not report missing metrics for undefined optional fields", () => {
+            // Assert
+            expect(partialComponent.hasMissing()).toBe(false)
+        })
+
+        it("should apply only available sections", () => {
+            // Act
+            partialComponent.apply()
+
+            // Assert
+            expect(scenariosService.applyScenario).toHaveBeenCalledWith(
+                partialComponent.scenario(),
+                new Set(["metrics", "colors"]),
+                metricDataWithMetrics
+            )
+        })
     })
 })

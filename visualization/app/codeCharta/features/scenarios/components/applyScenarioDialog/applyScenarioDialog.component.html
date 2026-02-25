@@ -4,7 +4,7 @@
 
 		<p class="text-sm text-base-content/60 mb-3">Select which sections to apply:</p>
 
-		@for (key of sectionKeys; track key) {
+		@for (key of availableSectionKeys(); track key) {
 			<label class="flex items-center gap-2 py-1 cursor-pointer">
 				<input
 					type="checkbox"

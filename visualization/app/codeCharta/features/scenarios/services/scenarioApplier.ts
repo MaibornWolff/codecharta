@@ -10,26 +10,33 @@ export function getAvailableMetricNames(metricData: MetricData): { nodeMetrics: 
 }
 
 function buildMetricsPatch(sections: ScenarioSections, metricData?: MetricData): RecursivePartial<CcState> {
+    if (!sections.metrics) {
+        return {}
+    }
+
     const available = metricData ? getAvailableMetricNames(metricData) : undefined
     const metrics: Record<string, string | undefined> = {}
 
     const nodeMetricKeys = ["areaMetric", "heightMetric", "colorMetric", "distributionMetric"] as const
     for (const key of nodeMetricKeys) {
         const value = sections.metrics[key]
-        if (!available || available.nodeMetrics.has(value)) {
+        if (value !== undefined && (!available || available.nodeMetrics.has(value))) {
             metrics[key] = value
         }
     }
 
-    if (!available || !sections.metrics.edgeMetric || available.edgeMetrics.has(sections.metrics.edgeMetric)) {
-        metrics.edgeMetric = sections.metrics.edgeMetric
+    const edgeMetric = sections.metrics.edgeMetric
+    if (edgeMetric !== undefined && (!available || !edgeMetric || available.edgeMetrics.has(edgeMetric))) {
+        metrics.edgeMetric = edgeMetric
     }
 
     const patch: RecursivePartial<CcState> = {}
     if (Object.keys(metrics).length > 0) {
         patch.dynamicSettings = { ...metrics }
     }
-    patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
+    if (sections.metrics.isColorMetricLinkedToHeightMetric !== undefined) {
+        patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
+    }
     return patch
 }
 
@@ -47,34 +54,34 @@ export function buildOrderedStatePatches(
     const patches: RecursivePartial<CcState>[] = []
 
     // Phase 1: Metrics
-    if (selectedKeys.has("metrics")) {
+    if (selectedKeys.has("metrics") && sections.metrics) {
         patches.push(buildMetricsPatch(sections, metricData))
     }
 
     // Phase 2: Colors / thresholds (after metric effects have settled)
-    if (selectedKeys.has("colors")) {
-        patches.push({
-            dynamicSettings: {
-                colorRange: sections.colors.colorRange,
-                colorMode: sections.colors.colorMode
-            },
-            appSettings: {
-                mapColors: sections.colors.mapColors
-            }
-        })
+    if (selectedKeys.has("colors") && sections.colors) {
+        const dynamicSettings: RecursivePartial<CcState["dynamicSettings"]> = { colorRange: sections.colors.colorRange }
+        if (sections.colors.colorMode !== undefined) {
+            dynamicSettings.colorMode = sections.colors.colorMode
+        }
+        const colorPatch: RecursivePartial<CcState> = { dynamicSettings }
+        if (sections.colors.mapColors !== undefined) {
+            colorPatch.appSettings = { mapColors: sections.colors.mapColors }
+        }
+        patches.push(colorPatch)
     }
 
     // Phase 3: Filters + Labels
     const phase3: RecursivePartial<CcState> = {}
     let hasPhase3 = false
 
-    if (selectedKeys.has("filters")) {
+    if (selectedKeys.has("filters") && sections.filters) {
         phase3.fileSettings = { blacklist: sections.filters.blacklist }
         phase3.dynamicSettings = { focusedNodePath: sections.filters.focusedNodePath }
         hasPhase3 = true
     }
 
-    if (selectedKeys.has("labelsAndFolders")) {
+    if (selectedKeys.has("labelsAndFolders") && sections.labelsAndFolders) {
         phase3.appSettings = {
             amountOfTopLabels: sections.labelsAndFolders.amountOfTopLabels,
             showMetricLabelNameValue: sections.labelsAndFolders.showMetricLabelNameValue,
@@ -93,7 +100,10 @@ export function buildOrderedStatePatches(
     return patches
 }
 
-export function getCameraVectors(sections: ScenarioSections): { position: Vector3; target: Vector3 } {
+export function getCameraVectors(sections: ScenarioSections): { position: Vector3; target: Vector3 } | undefined {
+    if (!sections.camera) {
+        return undefined
+    }
     const { position, target } = sections.camera
     return {
         position: new Vector3(position.x, position.y, position.z),
