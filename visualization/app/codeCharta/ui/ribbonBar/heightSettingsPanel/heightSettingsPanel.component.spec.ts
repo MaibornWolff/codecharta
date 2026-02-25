@@ -3,10 +3,12 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { addFile, setDelta } from "../../../state/store/files/files.actions"
 import { setInvertHeight } from "../../../state/store/appSettings/invertHeight/invertHeight.actions"
+import { setHeightScaleMode } from "../../../state/store/appSettings/heightScaleMode/heightScaleMode.actions"
 import { TEST_FILE_DATA } from "../../../util/dataMocks"
 import { HeightSettingsPanelComponent } from "./heightSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { HeightScaleMode } from "../../../codeCharta.model"
 
 describe("HeightSettingsPanelComponent", () => {
     beforeEach(() => {
@@ -33,6 +35,27 @@ describe("HeightSettingsPanelComponent", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setInvertHeight({ value: true }))
+    })
+
+    it("should display height scale mode dropdown with label", async () => {
+        // Arrange / Act
+        await render(HeightSettingsPanelComponent)
+
+        // Assert
+        expect(screen.getByText("Height Scale Mode")).not.toBe(null)
+        expect(screen.getByRole("combobox")).not.toBe(null)
+    })
+
+    it("should dispatch setHeightScaleMode action when mode is changed", async () => {
+        // Arrange
+        await render(HeightSettingsPanelComponent)
+        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
+
+        // Act
+        await userEvent.selectOptions(screen.getByRole("combobox"), HeightScaleMode.Logarithmic)
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(setHeightScaleMode({ value: HeightScaleMode.Logarithmic }))
     })
 
     it("should not display invertHeight-checkbox when being in delta mode", async () => {

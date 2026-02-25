@@ -30,6 +30,8 @@ import { defaultMaxTreeMapFiles, maxTreeMapFiles } from "./maxTreeMapFiles/maxTr
 import { defaultSharpnessMode, sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
 import { defaultScreenshotToClipboardEnabled, screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 import { defaultInvertArea, invertArea } from "./invertArea/invertArea.reducer"
+import { defaultHeightScaleMode, heightScaleMode } from "./heightScaleMode/heightScaleMode.reducer"
+import { defaultHeightScalePowerExponent, heightScalePowerExponent } from "./heightScalePowerExponent/heightScalePowerExponent.reducer"
 import { defaultIsEdgeMetricVisible, isEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.reducer"
 import {
     defaultIsColorMetricLinkedToHeightMetric,
@@ -58,6 +60,8 @@ export const appSettings = combineReducers({
     isWhiteBackground,
     invertHeight,
     invertArea,
+    heightScaleMode,
+    heightScalePowerExponent,
     hideFlatBuildings,
     scaling,
     edgeHeight,
@@ -90,6 +94,8 @@ export const defaultAppSettings = {
     isWhiteBackground: defaultIsWhiteBackground,
     invertHeight: defaultInvertHeight,
     invertArea: defaultInvertArea,
+    heightScaleMode: defaultHeightScaleMode,
+    heightScalePowerExponent: defaultHeightScalePowerExponent,
     hideFlatBuildings: defaultHideFlatBuildings,
     scaling: defaultScaling,
     edgeHeight: defaultEdgeHeight,

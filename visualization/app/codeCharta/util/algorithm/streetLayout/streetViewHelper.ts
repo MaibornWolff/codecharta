@@ -36,10 +36,17 @@ function mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
     return mergedNode
 }
 
-function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, state: CcState, isDeltaState: boolean): Node {
+function buildNodeFrom(
+    layoutNode: CodeMapNode,
+    heightScale: number,
+    maxHeight: number,
+    state: CcState,
+    isDeltaState: boolean,
+    sortedHeightValues: number[] = []
+): Node {
     const isNodeLeaf = !(layoutNode.children && layoutNode.children.length > 0)
     const flattened: boolean = isNodeFlat(layoutNode, state)
-    const heightValue: number = TreeMapHelper.getHeightValue(state, layoutNode, maxHeight, flattened)
+    const heightValue: number = TreeMapHelper.getHeightValue(state, layoutNode, maxHeight, flattened, sortedHeightValues)
     const height = Math.abs(
         isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
     )

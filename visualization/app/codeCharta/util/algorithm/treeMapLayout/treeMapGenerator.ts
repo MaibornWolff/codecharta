@@ -1,6 +1,6 @@
 import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-hierarchy"
-import { TreeMapHelper, treeMapSize } from "./treeMapHelper"
-import { CodeMapNode, DynamicSettings, Node, NodeMetricData, CcState } from "../../../codeCharta.model"
+import { TreeMapHelper, treeMapSize, collectSortedLeafHeightValues } from "./treeMapHelper"
+import { CodeMapNode, DynamicSettings, HeightScaleMode, Node, NodeMetricData, CcState } from "../../../codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
@@ -17,6 +17,11 @@ export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData:
     const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric)?.maxValue * mapSizeResolutionScaling
     const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric)?.maxValue * mapSizeResolutionScaling
     const heightScale = (treeMapSize * 2) / maxHeight
+
+    const sortedHeightValues =
+        state.appSettings.heightScaleMode === HeightScaleMode.Percentile
+            ? collectSortedLeafHeightValues(map, state.dynamicSettings.heightMetric, mapSizeResolutionScaling)
+            : []
 
     if (hasFixedFolders(map)) {
         const hierarchyNode = hierarchy(map)
@@ -48,7 +53,8 @@ export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData:
                 maxHeight,
                 maxWidth,
                 isDeltaState,
-                mapSizeResolutionScaling
+                mapSizeResolutionScaling,
+                sortedHeightValues
             )
         ]
     }
@@ -56,7 +62,7 @@ export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData:
     const squarifiedTreeMap = getSquarifiedTreeMap(map, state, mapSizeResolutionScaling, maxWidth)
     const nodes: Node[] = []
     for (const squarifiedNode of squarifiedTreeMap.treeMap) {
-        nodes.push(TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState))
+        nodes.push(TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState, sortedHeightValues))
     }
     return nodes
 }
@@ -72,7 +78,8 @@ function buildSquarifiedTreeMapsForFixedFolders(
     maxHeight: number,
     maxWidth: number,
     isDeltaState: boolean,
-    mapSizeResolutionScaling: number
+    mapSizeResolutionScaling: number,
+    sortedHeightValues: number[]
 ) {
     const nodes = []
 
@@ -101,7 +108,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
             squarifiedNode.y0 += offsetY0
             squarifiedNode.y1 += offsetY0
 
-            const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState)
+            const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState, sortedHeightValues)
             nodes.push(node)
 
             if (hasFixedFolders(fixedFolder.data)) {
@@ -126,7 +133,8 @@ function buildSquarifiedTreeMapsForFixedFolders(
                         maxHeight,
                         maxWidth,
                         isDeltaState,
-                        mapSizeResolutionScaling
+                        mapSizeResolutionScaling,
+                        sortedHeightValues
                     )
                 )
 

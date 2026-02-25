@@ -1,4 +1,4 @@
-import { CcState, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, HeightScaleMode, LayoutAlgorithm, Node, NodeMetricData } from "../../../codeCharta.model"
 import BoundingBox from "./boundingBox"
 import VerticalStreet from "./verticalStreet"
 import HorizontalStreet from "./horizontalStreet"
@@ -9,13 +9,18 @@ import { StreetOrientation } from "./street"
 import { getMapResolutionScaleFactor, isLeaf, isPathBlacklisted } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
-import { treeMapSize } from "../treeMapLayout/treeMapHelper"
+import { collectSortedLeafHeightValues, treeMapSize } from "../treeMapLayout/treeMapHelper"
 
 const MARGIN_SCALING_FACTOR = 0.02
 export class StreetLayoutGenerator {
     static createStreetLayoutNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
         const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
         const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
+
+        const sortedHeightValues =
+            state.appSettings.heightScaleMode === HeightScaleMode.Percentile
+                ? collectSortedLeafHeightValues(map, state.dynamicSettings.heightMetric, mapSizeResolutionScaling)
+                : []
 
         const metricName = state.dynamicSettings.areaMetric
         const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
@@ -32,7 +37,8 @@ export class StreetLayoutGenerator {
                 this.calculateHeightScale(map, treeMapSize, maxHeight),
                 maxHeight,
                 state,
-                isDeltaState
+                isDeltaState,
+                sortedHeightValues
             )
         })
     }

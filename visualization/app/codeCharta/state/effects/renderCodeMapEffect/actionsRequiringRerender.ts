@@ -5,6 +5,8 @@ import { setEdgeHeight } from "../../store/appSettings/edgeHeight/edgeHeight.act
 import { setHideFlatBuildings } from "../../store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 import { setInvertArea } from "../../store/appSettings/invertArea/invertArea.actions"
 import { setInvertHeight } from "../../store/appSettings/invertHeight/invertHeight.actions"
+import { setHeightScaleMode } from "../../store/appSettings/heightScaleMode/heightScaleMode.actions"
+import { setHeightScalePowerExponent } from "../../store/appSettings/heightScalePowerExponent/heightScalePowerExponent.actions"
 import { setIsWhiteBackground } from "../../store/appSettings/isWhiteBackground/isWhiteBackground.actions"
 import { setLayoutAlgorithm } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMapColors, invertColorRange, invertDeltaColors } from "../../store/appSettings/mapColors/mapColors.actions"
@@ -44,6 +46,8 @@ export const actionsRequiringRerender = [
     setIsWhiteBackground,
     setInvertArea,
     setInvertHeight,
+    setHeightScaleMode,
+    setHeightScalePowerExponent,
     setHideFlatBuildings,
     setScaling,
     setEdgeHeight,

@@ -4,7 +4,7 @@
     label="Height"
     [step]="1"
     [min]="1"
-    [max]="5"
+    [max]="20"
     [value]="(scaling$ | async).y"
     [onChange]="applyDebouncedScalingY"
 ></cc-slider>
@@ -13,8 +13,32 @@
     <mat-checkbox (change)="toggleInvertHeight($event)" [checked]="invertHeight$ | async"> Invert Height</mat-checkbox>
 }
 
+<label class="form-control my-[5px]">
+    <div class="label">
+        <span class="label-text">Height Scale Mode</span>
+    </div>
+    <select class="select select-bordered w-full" [value]="heightScaleMode$ | async" (change)="handleHeightScaleModeChanged($any($event.target).value)">
+        @for (mode of heightScaleModes; track mode) {
+            <option [value]="mode">{{ mode }}</option>
+        }
+    </select>
+</label>
+
+@if ((heightScaleMode$ | async) === HeightScaleMode.Power) {
+    <cc-slider
+        class="cc-height-settings-panel-row"
+        title="Power Exponent"
+        label="Power Exponent"
+        [step]="1"
+        [min]="1"
+        [max]="10"
+        [value]="(heightScalePowerExponent$ | async) * 10"
+        [onChange]="applyDebouncedPowerExponent"
+    ></cc-slider>
+}
+
 <cc-reset-settings-button
-    [settingsKeys]="['appSettings.scaling.y', 'appSettings.invertHeight']"
+    [settingsKeys]="['appSettings.scaling.y', 'appSettings.invertHeight', 'appSettings.heightScaleMode', 'appSettings.heightScalePowerExponent']"
     tooltip="Reset height metric settings to their defaults"
     label="Reset height metric settings"
 ></cc-reset-settings-button>

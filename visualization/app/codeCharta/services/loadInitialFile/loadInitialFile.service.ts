@@ -45,6 +45,8 @@ import { setScaling } from "../../state/store/appSettings/scaling/scaling.action
 import { setHideFlatBuildings } from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 import { setInvertHeight } from "../../state/store/appSettings/invertHeight/invertHeight.actions"
 import { setInvertArea } from "../../state/store/appSettings/invertArea/invertArea.actions"
+import { setHeightScaleMode } from "../../state/store/appSettings/heightScaleMode/heightScaleMode.actions"
+import { setHeightScalePowerExponent } from "../../state/store/appSettings/heightScalePowerExponent/heightScalePowerExponent.actions"
 import { setIsWhiteBackground } from "../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
 import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
 import { setPresentationMode } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
@@ -339,6 +341,12 @@ export class LoadInitialFileService {
                 break
             case "invertArea":
                 this.store.dispatch(setInvertArea({ value }))
+                break
+            case "heightScaleMode":
+                this.store.dispatch(setHeightScaleMode({ value }))
+                break
+            case "heightScalePowerExponent":
+                this.store.dispatch(setHeightScalePowerExponent({ value }))
                 break
             case "isWhiteBackground":
                 this.store.dispatch(setIsWhiteBackground({ value }))

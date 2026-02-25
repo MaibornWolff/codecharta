@@ -89,6 +89,15 @@ export enum SortingOption {
     AREA_SIZE = "Area Size"
 }
 
+export enum HeightScaleMode {
+    Linear = "Linear",
+    Logarithmic = "Logarithmic",
+    SquareRoot = "Square Root",
+    Power = "Power",
+    HybridLinearLog = "Hybrid Linear-Log",
+    Percentile = "Percentile"
+}
+
 export interface ColorLabelOptions {
     positive: boolean
     negative: boolean
@@ -145,6 +154,8 @@ export interface AppSettings {
     hideFlatBuildings: boolean
     invertHeight: boolean
     invertArea: boolean
+    heightScaleMode: HeightScaleMode
+    heightScalePowerExponent: number
     isWhiteBackground: boolean
     mapColors: MapColors
     isPresentationMode: boolean

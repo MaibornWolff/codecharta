@@ -1,5 +1,5 @@
-import { TreeMapHelper } from "./treeMapHelper"
-import { CcState, CodeMapNode, ColorMode, EdgeVisibility, NodeType } from "../../../codeCharta.model"
+import { TreeMapHelper, applyHeightScaling } from "./treeMapHelper"
+import { CcState, CodeMapNode, ColorMode, EdgeVisibility, HeightScaleMode, NodeType } from "../../../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { clone } from "../../clone"
@@ -68,6 +68,34 @@ describe("TreeMapHelper", () => {
         it("invertHeight", () => {
             state.appSettings.invertHeight = true
             expect(buildNode()).toMatchSnapshot()
+        })
+
+        it("should apply logarithmic scaling when heightScaleMode is Logarithmic", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.Linear
+            const linearNode = buildNode()
+
+            // Act
+            state.appSettings.heightScaleMode = HeightScaleMode.Logarithmic
+            const logNode = buildNode()
+
+            // Assert — log normalizes to [0, maxHeight], amplifying small values relative to max
+            expect(logNode.height).not.toBe(linearNode.height)
+            expect(logNode.height).toBeGreaterThan(0)
+        })
+
+        it("should apply square root scaling when heightScaleMode is SquareRoot", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.Linear
+            const linearNode = buildNode()
+
+            // Act
+            state.appSettings.heightScaleMode = HeightScaleMode.SquareRoot
+            const sqrtNode = buildNode()
+
+            // Assert — sqrt normalizes to [0, maxHeight], amplifying small values relative to max
+            expect(sqrtNode.height).not.toBe(linearNode.height)
+            expect(sqrtNode.height).toBeGreaterThan(0)
         })
 
         it("should invert height when heightmetric indicates a positive direction", () => {
@@ -497,6 +525,117 @@ describe("TreeMapHelper", () => {
             const result = TreeMapHelper.buildingArrayToMap([CODE_MAP_BUILDING])
 
             expect(result.get(CODE_MAP_BUILDING.id)).toEqual(CODE_MAP_BUILDING)
+        })
+    })
+
+    describe("applyHeightScaling", () => {
+        let state: CcState
+
+        beforeEach(() => {
+            state = clone(STATE)
+        })
+
+        it("should return value unchanged for Linear mode", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.Linear
+
+            // Act
+            const result = applyHeightScaling(100, 1000, state)
+
+            // Assert
+            expect(result).toBe(100)
+        })
+
+        it("should apply logarithmic normalization for Logarithmic mode", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.Logarithmic
+
+            // Act
+            const result = applyHeightScaling(100, 1000, state)
+
+            // Assert
+            expect(result).toBeCloseTo((1000 * Math.log2(101)) / Math.log2(1001))
+            expect(result).toBeGreaterThan(100)
+            expect(result).toBeLessThan(1000)
+        })
+
+        it("should return maxHeight when value equals maxHeight for Logarithmic mode", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.Logarithmic
+
+            // Act
+            const result = applyHeightScaling(1000, 1000, state)
+
+            // Assert
+            expect(result).toBeCloseTo(1000)
+        })
+
+        it("should apply square root normalization for SquareRoot mode", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.SquareRoot
+
+            // Act
+            const result = applyHeightScaling(100, 1000, state)
+
+            // Assert
+            expect(result).toBeCloseTo(1000 * Math.sqrt(0.1))
+        })
+
+        it("should apply power scaling with configured exponent", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.Power
+            state.appSettings.heightScalePowerExponent = 0.3
+
+            // Act
+            const result = applyHeightScaling(100, 1000, state)
+
+            // Assert
+            expect(result).toBeCloseTo(1000 * Math.pow(0.1, 0.3))
+        })
+
+        it("should apply hybrid scaling below median linearly and log above", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.HybridLinearLog
+
+            // Act
+            const belowMedian = applyHeightScaling(200, 1000, state)
+            const aboveMedian = applyHeightScaling(800, 1000, state)
+
+            // Assert
+            expect(belowMedian).toBe(200)
+            expect(aboveMedian).toBeGreaterThan(500)
+            expect(aboveMedian).toBeLessThan(1000)
+        })
+
+        it("should apply percentile scaling based on rank", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.Percentile
+            const sortedValues = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+
+            // Act
+            const result = applyHeightScaling(50, 1000, state, sortedValues)
+
+            // Assert — value 50 is at index 4 (4 values < 50), rank = 4/10 = 0.4
+            expect(result).toBeCloseTo(400)
+        })
+
+        it("should return value unchanged when maxHeight is 0", () => {
+            // Arrange
+            state.appSettings.heightScaleMode = HeightScaleMode.Logarithmic
+
+            // Act
+            const result = applyHeightScaling(100, 0, state)
+
+            // Assert
+            expect(result).toBe(100)
+        })
+
+        it("should return 0 for value 0 in all modes", () => {
+            // Arrange / Act / Assert
+            for (const mode of [HeightScaleMode.Linear, HeightScaleMode.Logarithmic, HeightScaleMode.SquareRoot]) {
+                state.appSettings.heightScaleMode = mode
+                expect(applyHeightScaling(0, 1000, state)).toBe(0)
+            }
         })
     })
 })

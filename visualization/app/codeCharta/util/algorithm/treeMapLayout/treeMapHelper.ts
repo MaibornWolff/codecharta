@@ -1,5 +1,5 @@
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
-import { CcState, CodeMapNode, ColorMode, Node } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, ColorMode, HeightScaleMode, Node } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
@@ -85,13 +85,14 @@ function buildNodeFrom(
     heightScale: number,
     maxHeight: number,
     state: CcState,
-    isDeltaState: boolean
+    isDeltaState: boolean,
+    sortedHeightValues: number[] = []
 ): Node {
     const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
     const { x0, x1, y0, y1, data } = squaredNode
     const isNodeLeaf = isLeaf(squaredNode)
     const flattened = isNodeFlat(data, state)
-    const heightValue = getHeightValue(state, data, maxHeight, flattened)
+    const heightValue = getHeightValue(state, data, maxHeight, flattened, sortedHeightValues)
     const depth = data.path.split("/").length - 2
     const height = isNodeLeaf ? resolveHeightValue(heightValue, heightScale, data, state) * mapSizeResolutionScaling : FOLDER_HEIGHT
     const width = x1 - x0
@@ -127,7 +128,13 @@ function buildNodeFrom(
     }
 }
 
-export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeight: number, flattened: boolean) {
+export function getHeightValue(
+    state: CcState,
+    squaredNode: CodeMapNode,
+    maxHeight: number,
+    flattened: boolean,
+    sortedHeightValues: number[] = []
+) {
     const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 
     if (flattened) {
@@ -143,14 +150,81 @@ export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeig
 
     if (isAttributeDirectionInversed) {
         if (state.appSettings.invertHeight) {
-            return heightValue
+            return applyHeightScaling(heightValue, maxHeight, state, sortedHeightValues)
         }
-        return maxHeight - heightValue
+        return applyHeightScaling(maxHeight - heightValue, maxHeight, state, sortedHeightValues)
     }
     if (state.appSettings.invertHeight) {
-        return maxHeight - heightValue
+        return applyHeightScaling(maxHeight - heightValue, maxHeight, state, sortedHeightValues)
     }
-    return heightValue
+    return applyHeightScaling(heightValue, maxHeight, state, sortedHeightValues)
+}
+
+export function applyHeightScaling(value: number, maxHeight: number, state: CcState, sortedHeightValues: number[] = []): number {
+    if (maxHeight <= 0) {
+        return value
+    }
+
+    switch (state.appSettings.heightScaleMode) {
+        case HeightScaleMode.Logarithmic:
+            return (maxHeight * Math.log2(1 + value)) / Math.log2(1 + maxHeight)
+        case HeightScaleMode.SquareRoot:
+            return maxHeight * Math.sqrt(value / maxHeight)
+        case HeightScaleMode.Power: {
+            const exponent = state.appSettings.heightScalePowerExponent
+            return maxHeight * Math.pow(value / maxHeight, exponent)
+        }
+        case HeightScaleMode.HybridLinearLog: {
+            const median = maxHeight / 2
+            if (value <= median) {
+                return value
+            }
+            const excess = value - median
+            const maxExcess = maxHeight - median
+            return median + ((maxHeight - median) * Math.log2(1 + excess)) / Math.log2(1 + maxExcess)
+        }
+        case HeightScaleMode.Percentile: {
+            if (sortedHeightValues.length === 0) {
+                return value
+            }
+            const rank = computePercentileRank(value, sortedHeightValues)
+            return maxHeight * rank
+        }
+        default:
+            return value
+    }
+}
+
+function computePercentileRank(value: number, sortedValues: number[]): number {
+    let low = 0
+    let high = sortedValues.length
+    while (low < high) {
+        const mid = (low + high) >>> 1
+        if (sortedValues[mid] < value) {
+            low = mid + 1
+        } else {
+            high = mid
+        }
+    }
+    return sortedValues.length > 0 ? low / sortedValues.length : 0
+}
+
+export function collectSortedLeafHeightValues(map: CodeMapNode, heightMetric: string, mapSizeResolutionScaling: number): number[] {
+    const values: number[] = []
+    collectLeafValues(map, heightMetric, mapSizeResolutionScaling, values)
+    values.sort((a, b) => a - b)
+    return values
+}
+
+function collectLeafValues(node: CodeMapNode, heightMetric: string, scaling: number, values: number[]) {
+    if (!node.children || node.children.length === 0) {
+        const value = (node.attributes[heightMetric] || 0) * scaling
+        values.push(value)
+    } else {
+        for (const child of node.children) {
+            collectLeafValues(child, heightMetric, scaling, values)
+        }
+    }
 }
 
 export function resolveHeightValue(heightValue: number, heightScale: number, data: CodeMapNode, state: CcState): number {
@@ -273,5 +347,6 @@ export const TreeMapHelper = {
     getHeightValue,
     FOLDER_HEIGHT,
     MIN_BUILDING_HEIGHT,
-    HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+    HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND,
+    collectSortedLeafHeightValues
 }
