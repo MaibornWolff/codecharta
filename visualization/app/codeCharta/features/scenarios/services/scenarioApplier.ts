@@ -9,6 +9,30 @@ export function getAvailableMetricNames(metricData: MetricData): { nodeMetrics: 
     }
 }
 
+function buildMetricsPatch(sections: ScenarioSections, metricData?: MetricData): RecursivePartial<CcState> {
+    const available = metricData ? getAvailableMetricNames(metricData) : undefined
+    const metrics: Record<string, string | undefined> = {}
+
+    const nodeMetricKeys = ["areaMetric", "heightMetric", "colorMetric", "distributionMetric"] as const
+    for (const key of nodeMetricKeys) {
+        const value = sections.metrics[key]
+        if (!available || available.nodeMetrics.has(value)) {
+            metrics[key] = value
+        }
+    }
+
+    if (!available || !sections.metrics.edgeMetric || available.edgeMetrics.has(sections.metrics.edgeMetric)) {
+        metrics.edgeMetric = sections.metrics.edgeMetric
+    }
+
+    const patch: RecursivePartial<CcState> = {}
+    if (Object.keys(metrics).length > 0) {
+        patch.dynamicSettings = { ...metrics }
+    }
+    patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
+    return patch
+}
+
 /**
  * Builds ordered state patches to dispatch sequentially.
  * Order: metrics → colors/thresholds → filters + labels → (camera handled separately)
@@ -24,31 +48,7 @@ export function buildOrderedStatePatches(
 
     // Phase 1: Metrics
     if (selectedKeys.has("metrics")) {
-        const patch: RecursivePartial<CcState> = {}
-        const available = metricData ? getAvailableMetricNames(metricData) : undefined
-        const metrics: Record<string, string | undefined> = {}
-
-        if (!available || available.nodeMetrics.has(sections.metrics.areaMetric)) {
-            metrics.areaMetric = sections.metrics.areaMetric
-        }
-        if (!available || available.nodeMetrics.has(sections.metrics.heightMetric)) {
-            metrics.heightMetric = sections.metrics.heightMetric
-        }
-        if (!available || available.nodeMetrics.has(sections.metrics.colorMetric)) {
-            metrics.colorMetric = sections.metrics.colorMetric
-        }
-        if (!available || available.nodeMetrics.has(sections.metrics.distributionMetric)) {
-            metrics.distributionMetric = sections.metrics.distributionMetric
-        }
-        if (!available || !sections.metrics.edgeMetric || available.edgeMetrics.has(sections.metrics.edgeMetric)) {
-            metrics.edgeMetric = sections.metrics.edgeMetric
-        }
-
-        if (Object.keys(metrics).length > 0) {
-            patch.dynamicSettings = { ...metrics }
-        }
-        patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
-        patches.push(patch)
+        patches.push(buildMetricsPatch(sections, metricData))
     }
 
     // Phase 2: Colors / thresholds (after metric effects have settled)

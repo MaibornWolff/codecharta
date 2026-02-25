@@ -46,7 +46,8 @@ export class ScenarioListDialogComponent {
         private readonly store: Store<CcState>
     ) {}
 
-    open() {
+    async open() {
+        await this.scenariosService.loadScenarios()
         this.dialogElement().nativeElement.showModal()
     }
 

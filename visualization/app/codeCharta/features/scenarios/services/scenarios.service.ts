@@ -21,9 +21,7 @@ export class ScenariosService {
         private readonly threeCameraService: ThreeCameraService,
         private readonly threeMapControlsService: ThreeMapControlsService,
         private readonly threeRendererService: ThreeRendererService
-    ) {
-        this.loadScenarios()
-    }
+    ) {}
 
     async loadScenarios(): Promise<void> {
         const scenarios = await readAllScenarios()

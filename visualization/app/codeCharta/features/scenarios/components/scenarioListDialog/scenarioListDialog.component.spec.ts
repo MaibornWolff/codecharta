@@ -52,12 +52,22 @@ const createFileState = (fileName: string): FileState => ({
 describe("ScenarioListDialogComponent", () => {
     let component: ScenarioListDialogComponent
     let scenariosSubject: BehaviorSubject<Scenario[]>
-    let scenariosService: { scenarios$: BehaviorSubject<Scenario[]>; removeScenario: jest.Mock; duplicateScenario: jest.Mock }
+    let scenariosService: {
+        scenarios$: BehaviorSubject<Scenario[]>
+        removeScenario: jest.Mock
+        duplicateScenario: jest.Mock
+        loadScenarios: jest.Mock
+    }
     let store: MockStore
 
     beforeEach(() => {
         scenariosSubject = new BehaviorSubject<Scenario[]>([])
-        scenariosService = { scenarios$: scenariosSubject, removeScenario: jest.fn(), duplicateScenario: jest.fn().mockResolvedValue({}) }
+        scenariosService = {
+            scenarios$: scenariosSubject,
+            removeScenario: jest.fn(),
+            duplicateScenario: jest.fn().mockResolvedValue({}),
+            loadScenarios: jest.fn().mockResolvedValue(undefined)
+        }
 
         TestBed.configureTestingModule({
             imports: [ScenarioListDialogComponent],
