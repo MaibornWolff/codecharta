@@ -2229,7 +2229,8 @@ export const STATE: CcState = {
         screenshotToClipboardEnabled: false,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
         sharpnessMode: SharpnessMode.Standard,
-        maxTreeMapFiles: 200
+        maxTreeMapFiles: 200,
+        labelMode: LabelMode.Height
     },
     files: [],
     appStatus: {

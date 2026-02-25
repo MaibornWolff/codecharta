@@ -198,7 +198,8 @@ export class CodeMapRenderService implements OnDestroy {
                 const selectedColorNodes = colorLabelTypes
                     .filter(colorType => colorLabelOptions[colorType])
                     .flatMap(colorType => this.nodesByColor[colorType])
-                    .sort((a, b) => (b.attributes[colorMetric] ?? 0) - (a.attributes[colorMetric] ?? 0))
+                    .filter(node => Number.isFinite(node.attributes[colorMetric]))
+                    .sort((a, b) => b.attributes[colorMetric] - a.attributes[colorMetric])
                     .slice(0, amountOfTopLabels)
                 this.setBuildingLabel(selectedColorNodes, highestNodeInSet)
             } else {

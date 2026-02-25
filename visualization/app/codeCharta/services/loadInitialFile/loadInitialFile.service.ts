@@ -237,12 +237,16 @@ export class LoadInitialFileService {
         return missingDynamicSettings
     }
 
+    private static readonly optionalAppSettingsKeys = new Set(["labelMode"])
+
     private applyAppSettings(savedAppSettings: AppSettings) {
         const currentAppSettings = (this.state.getValue() as CcState).appSettings
         const missingAppSettings = []
         for (const [key, value] of Object.entries(currentAppSettings)) {
             if (!(key in savedAppSettings)) {
-                missingAppSettings.push(key)
+                if (!LoadInitialFileService.optionalAppSettingsKeys.has(key)) {
+                    missingAppSettings.push(key)
+                }
             } else {
                 const currentValue = stringify(value)
                 const loadedValue = stringify(savedAppSettings[key])

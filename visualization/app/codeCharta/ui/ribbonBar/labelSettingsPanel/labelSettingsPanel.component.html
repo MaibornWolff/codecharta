@@ -12,15 +12,19 @@
     [onChange]="applyDebouncedTopLabels"
 ></cc-slider>
 
-<div class="join label-mode-toggle">
+<div class="join label-mode-toggle" role="radiogroup" aria-label="Label mode">
     <button
         class="join-item btn btn-sm"
         [class.btn-primary]="labelMode === LabelMode.Height"
+        [attr.aria-checked]="labelMode === LabelMode.Height"
+        role="radio"
         (click)="setLabelMode(LabelMode.Height)"
     >Height</button>
     <button
         class="join-item btn btn-sm"
         [class.btn-primary]="labelMode === LabelMode.Color"
+        [attr.aria-checked]="labelMode === LabelMode.Color"
+        role="radio"
         (click)="setLabelMode(LabelMode.Color)"
     >Color</button>
 </div>

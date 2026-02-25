@@ -1,6 +1,6 @@
 ---
 name: Fix label collision jitter and missing color indicator
-issue: #tbd
+issue: none
 state: complete
 version: 1
 ---
