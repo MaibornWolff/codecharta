@@ -46,11 +46,11 @@ describe("builtInScenarios", () => {
         }
     })
 
-    it("should all have colorRange and mapColors in colors section", () => {
+    it("should all have colorRange, colorMode, and mapColors in colors section", () => {
         // Assert
         for (const scenario of BUILT_IN_SCENARIOS) {
             expect(scenario.sections.colors?.colorRange).toBeDefined()
-            expect(scenario.sections.colors?.colorMode).toBeUndefined()
+            expect(scenario.sections.colors?.colorMode).toBe("weightedGradient")
             expect(scenario.sections.colors?.mapColors).toEqual({
                 positive: "#69AE40",
                 neutral: "#ddcc00",

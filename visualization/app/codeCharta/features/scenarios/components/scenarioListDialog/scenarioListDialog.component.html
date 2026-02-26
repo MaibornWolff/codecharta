@@ -2,10 +2,17 @@
 	<div class="modal-box max-w-xl">
 		<div class="flex items-center justify-between mb-4">
 			<h2 class="text-xl font-bold">Scenarios</h2>
-			<button class="btn btn-sm btn-ghost" (click)="close()">
-				<i class="fa fa-close"></i>
-			</button>
+			<div class="flex items-center gap-1">
+				<button class="btn btn-sm btn-ghost" title="Import scenarios" (click)="openImportDialog()">
+					<i class="fa fa-upload"></i>
+				</button>
+				<button class="btn btn-sm btn-ghost" (click)="close()">
+					<i class="fa fa-close"></i>
+				</button>
+			</div>
 		</div>
+
+		<input #fileInput type="file" class="hidden" [accept]="acceptExtensions" multiple (change)="handleImportFiles($event)" />
 
 		<input
 			class="input input-bordered w-full mb-4"
@@ -31,10 +38,9 @@
 						@for (view of group.scenarios; track view.scenario.id) {
 							<div
 								class="flex items-center px-4 py-2 border-t border-base-300 hover:bg-base-200 cursor-pointer"
-								[class.opacity-40]="view.mapMismatch"
 								(click)="applyScenario(view.scenario)"
 							>
-								<div class="flex-1 min-w-0">
+								<div class="flex-1 min-w-0" [class.opacity-40]="view.mapMismatch">
 									<div class="font-medium text-sm">
 										{{ view.scenario.name }}
 										@if (view.warning) {
@@ -66,6 +72,9 @@
 									</div>
 								</div>
 								@if (!view.scenario.isBuiltIn) {
+									<button class="btn btn-ghost btn-sm" title="Export scenario" (click)="exportScenario(view.scenario); $event.stopPropagation()">
+										<i class="fa fa-download"></i>
+									</button>
 									<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="requestDelete(view.scenario); $event.stopPropagation()">
 										<i class="fa fa-trash"></i>
 									</button>

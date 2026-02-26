@@ -70,6 +70,8 @@ describe("ScenarioListDialogComponent", () => {
         scenarios$: BehaviorSubject<Scenario[]>
         removeScenario: jest.Mock
         loadScenarios: jest.Mock
+        exportScenario: jest.Mock
+        importScenarioFiles: jest.Mock
     }
     let store: MockStore
 
@@ -78,7 +80,9 @@ describe("ScenarioListDialogComponent", () => {
         scenariosService = {
             scenarios$: scenariosSubject,
             removeScenario: jest.fn(),
-            loadScenarios: jest.fn().mockResolvedValue(undefined)
+            loadScenarios: jest.fn().mockResolvedValue(undefined),
+            exportScenario: jest.fn(),
+            importScenarioFiles: jest.fn().mockResolvedValue(1)
         }
 
         TestBed.configureTestingModule({
@@ -131,6 +135,17 @@ describe("ScenarioListDialogComponent", () => {
 
         // Assert
         expect(spy).toHaveBeenCalledWith(expect.objectContaining({ scenario }))
+    })
+
+    it("should call service exportScenario when exportScenario is called", () => {
+        // Arrange
+        const scenario = createTestScenario("Export Test")
+
+        // Act
+        component.exportScenario(scenario)
+
+        // Assert
+        expect(scenariosService.exportScenario).toHaveBeenCalledWith(scenario)
     })
 
     describe("delete", () => {
@@ -370,6 +385,41 @@ describe("ScenarioListDialogComponent", () => {
             expect(groups[1].label).toBe("Global")
             expect(groups[2].label).toBe("Built-in")
             expect(groups[3].label).toBe("Other Maps")
+        })
+    })
+
+    describe("import", () => {
+        it("should trigger file input click on openImportDialog", () => {
+            // Arrange
+            const clickSpy = jest.spyOn(component.fileInput().nativeElement, "click")
+
+            // Act
+            component.openImportDialog()
+
+            // Assert
+            expect(clickSpy).toHaveBeenCalled()
+        })
+
+        it("should call importScenarioFiles on file selection", async () => {
+            // Arrange
+            const mockEvent = { target: { files: { length: 1 } as FileList, value: "file.ccscenario" } } as unknown as Event
+
+            // Act
+            await component.handleImportFiles(mockEvent)
+
+            // Assert
+            expect(scenariosService.importScenarioFiles).toHaveBeenCalled()
+        })
+
+        it("should not import when no files selected", async () => {
+            // Arrange
+            const mockEvent = { target: { files: { length: 0 } as FileList } } as unknown as Event
+
+            // Act
+            await component.handleImportFiles(mockEvent)
+
+            // Assert
+            expect(scenariosService.importScenarioFiles).not.toHaveBeenCalled()
         })
     })
 

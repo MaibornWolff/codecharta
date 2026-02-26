@@ -1,3 +1,4 @@
+import { ColorMode } from "../../../codeCharta.model"
 import { Scenario } from "../model/scenario.model"
 
 const defaultMapColors = {
@@ -15,7 +16,7 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
         isBuiltIn: true,
         sections: {
             metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc", isColorMetricLinkedToHeightMetric: true },
-            colors: { colorRange: { from: 250, to: 500 }, mapColors: defaultMapColors }
+            colors: { colorRange: { from: 250, to: 500 }, colorMode: ColorMode.weightedGradient, mapColors: defaultMapColors }
         }
     },
     {
@@ -26,7 +27,7 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
         isBuiltIn: true,
         sections: {
             metrics: { areaMetric: "rloc", heightMetric: "complexity", colorMetric: "complexity", isColorMetricLinkedToHeightMetric: true },
-            colors: { colorRange: { from: 50, to: 100 }, mapColors: defaultMapColors }
+            colors: { colorRange: { from: 50, to: 100 }, colorMode: ColorMode.weightedGradient, mapColors: defaultMapColors }
         }
     },
     {
@@ -42,7 +43,7 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
                 colorMetric: "comment_lines",
                 isColorMetricLinkedToHeightMetric: true
             },
-            colors: { colorRange: { from: 50, to: 100 }, mapColors: defaultMapColors }
+            colors: { colorRange: { from: 50, to: 100 }, colorMode: ColorMode.weightedGradient, mapColors: defaultMapColors }
         }
     },
     {
@@ -53,7 +54,7 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
         isBuiltIn: true,
         sections: {
             metrics: { areaMetric: "rloc", heightMetric: "code_smell", colorMetric: "code_smell", isColorMetricLinkedToHeightMetric: true },
-            colors: { colorRange: { from: 10, to: 50 }, mapColors: defaultMapColors }
+            colors: { colorRange: { from: 10, to: 50 }, colorMode: ColorMode.weightedGradient, mapColors: defaultMapColors }
         }
     },
     {
@@ -69,7 +70,7 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
                 colorMetric: "logic_complexity",
                 isColorMetricLinkedToHeightMetric: true
             },
-            colors: { colorRange: { from: 40, to: 80 }, mapColors: defaultMapColors }
+            colors: { colorRange: { from: 40, to: 80 }, colorMode: ColorMode.weightedGradient, mapColors: defaultMapColors }
         }
     },
     {
@@ -85,7 +86,7 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
                 colorMetric: "max_complexity_per_function",
                 isColorMetricLinkedToHeightMetric: true
             },
-            colors: { colorRange: { from: 10, to: 20 }, mapColors: defaultMapColors }
+            colors: { colorRange: { from: 10, to: 20 }, colorMode: ColorMode.weightedGradient, mapColors: defaultMapColors }
         }
     }
 ]

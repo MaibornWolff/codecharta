@@ -8,6 +8,7 @@ import { metricDataSelector } from "../../../../state/selectors/accumulatedData/
 import { filesSelector } from "../../../../state/store/files/files.selector"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
 import {
+    CCSCENARIO_EXTENSION,
     getAvailableSectionKeys,
     Scenario,
     SCENARIO_SECTION_ICONS,
@@ -38,8 +39,10 @@ export class ScenarioListDialogComponent {
 
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
     readonly deleteConfirmDialog = viewChild.required<ElementRef<HTMLDialogElement>>("deleteConfirmDialog")
+    readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput")
     readonly applyRequested = output<{ scenario: Scenario; metricData: MetricData }>()
     readonly deleteTarget = signal<Scenario | null>(null)
+    readonly acceptExtensions = CCSCENARIO_EXTENSION + ",.json"
 
     readonly scenarios = toSignal(this.scenariosService.scenarios$, { initialValue: [] as Scenario[] })
     readonly metricData = toSignal(this.store.select(metricDataSelector), { requireSync: true })
@@ -87,6 +90,23 @@ export class ScenarioListDialogComponent {
     applyScenario(scenario: Scenario) {
         this.close()
         this.applyRequested.emit({ scenario, metricData: this.metricData() })
+    }
+
+    exportScenario(scenario: Scenario) {
+        this.scenariosService.exportScenario(scenario)
+    }
+
+    openImportDialog() {
+        this.fileInput().nativeElement.click()
+    }
+
+    async handleImportFiles(event: Event) {
+        const input = event.target as HTMLInputElement
+        if (!input.files?.length) {
+            return
+        }
+        await this.scenariosService.importScenarioFiles(input.files)
+        input.value = ""
     }
 
     requestDelete(scenario: Scenario) {
