@@ -19,51 +19,60 @@
 		}
 
 		<div class="max-h-[60vh] overflow-y-auto">
-			@for (scenario of filteredScenarios(); track scenario.id) {
-				<div
-					class="flex items-center px-2 py-2 border-b border-base-300 hover:bg-base-200 cursor-pointer"
-					[class.opacity-40]="isMapMismatch(scenario)"
-					(click)="applyScenario(scenario)"
-				>
-					<div class="flex-1 min-w-0">
-						<div class="font-medium text-sm">
-							{{ scenario.name }}
-							@if (hasWarning(scenario)) {
-								<span class="text-warning ml-1" title="Some metrics in this scenario are not available">
-									<i class="fa fa-exclamation-triangle text-xs"></i>
-								</span>
-							}
-						</div>
-						@if (scenario.description) {
-							<div class="text-xs text-base-content/50 truncate">{{ scenario.description }}</div>
-						}
-						<div class="flex items-center gap-3 mt-1">
-							@if (scenario.isBuiltIn) {
-								<span class="badge badge-xs badge-info">Built-in</span>
-							} @else {
-								<span class="text-[11px] text-base-content/40">{{ formatDate(scenario.createdAt) }}</span>
-							}
-							@if (isMapBound(scenario)) {
-								<span class="badge badge-xs badge-outline gap-1" [title]="'Bound to ' + scenario.mapFileNames!.join(', ')">
-									<i class="fa fa-map-pin text-[9px]"></i>
-									{{ scenario.mapFileNames!.join(', ') }}
-								</span>
-							}
-							<span class="flex gap-1.5 text-[11px] text-base-content/40">
-								@for (key of getSectionKeys(scenario); track key) {
-									<i class="fa {{ sectionIcons[key] }}" [title]="sectionLabels[key]"></i>
-								}
-							</span>
-						</div>
+			@for (group of groupedScenarios(); track group.label; let first = $first) {
+				<div class="collapse collapse-arrow border border-base-300" [class.mt-1]="!first">
+					<input type="radio" name="scenario-accordion" [checked]="first" />
+					<div class="collapse-title font-semibold text-sm bg-primary text-primary-content">
+						<i class="fa {{ group.icon }} mr-2"></i>
+						{{ group.label }}
+						<span class="badge badge-sm ml-2">{{ group.scenarios.length }}</span>
 					</div>
-					<button class="btn btn-ghost btn-sm" title="Duplicate scenario" (click)="duplicateScenario(scenario); $event.stopPropagation()">
-						<i class="fa fa-copy"></i>
-					</button>
-					@if (!scenario.isBuiltIn) {
-						<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="requestDelete(scenario); $event.stopPropagation()">
-							<i class="fa fa-trash"></i>
-						</button>
-					}
+					<div class="collapse-content px-0">
+						@for (view of group.scenarios; track view.scenario.id) {
+							<div
+								class="flex items-center px-4 py-2 border-t border-base-300 hover:bg-base-200 cursor-pointer"
+								[class.opacity-40]="view.mapMismatch"
+								(click)="applyScenario(view.scenario)"
+							>
+								<div class="flex-1 min-w-0">
+									<div class="font-medium text-sm">
+										{{ view.scenario.name }}
+										@if (view.warning) {
+											<span class="text-warning ml-1" title="Some metrics in this scenario are not available">
+												<i class="fa fa-exclamation-triangle text-xs"></i>
+											</span>
+										}
+									</div>
+									@if (view.scenario.description) {
+										<div class="text-xs text-base-content/50 truncate">{{ view.scenario.description }}</div>
+									}
+									<div class="flex items-center gap-3 mt-1">
+										@if (view.scenario.isBuiltIn) {
+											<span class="badge badge-xs badge-info">Built-in</span>
+										} @else {
+											<span class="text-[11px] text-base-content/40">{{ view.formattedDate }}</span>
+										}
+										@if (view.mapBound) {
+											<span class="badge badge-xs badge-outline gap-1" [title]="'Bound to ' + view.scenario.mapFileNames!.join(', ')">
+												<i class="fa fa-map-pin text-[9px]"></i>
+												{{ view.scenario.mapFileNames!.join(', ') }}
+											</span>
+										}
+										<span class="flex gap-1.5 text-[11px] text-base-content/40">
+											@for (key of view.sectionKeys; track key) {
+												<i class="fa {{ sectionIcons[key] }}" [title]="sectionLabels[key]"></i>
+											}
+										</span>
+									</div>
+								</div>
+								@if (!view.scenario.isBuiltIn) {
+									<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="requestDelete(view.scenario); $event.stopPropagation()">
+										<i class="fa fa-trash"></i>
+									</button>
+								}
+							</div>
+						}
+					</div>
 				</div>
 			}
 		</div>

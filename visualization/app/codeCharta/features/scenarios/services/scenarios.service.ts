@@ -6,7 +6,7 @@ import { setState } from "../../../state/store/state.actions"
 import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
-import { Scenario, ScenarioSections, ScenarioSectionKey } from "../model/scenario.model"
+import { Scenario, ScenarioSectionKey } from "../model/scenario.model"
 import { buildScenario } from "./scenarioBuilder"
 import { buildOrderedStatePatches, getCameraVectors } from "./scenarioApplier"
 import { addScenario, deleteScenario as deleteScenarioFromDB, readAllScenarios } from "./scenarioIndexedDB"
@@ -46,22 +46,6 @@ export class ScenariosService {
         await addScenario(scenario)
         await this.loadScenarios()
         return scenario
-    }
-
-    async duplicateScenario(scenario: Scenario): Promise<Scenario> {
-        const copy: Scenario = {
-            ...scenario,
-            id: crypto.randomUUID(),
-            name: `${scenario.name} (copy)`,
-            createdAt: Date.now(),
-            isBuiltIn: undefined,
-            mapFileNames: undefined,
-            sections: deepCopySections(scenario.sections)
-        }
-
-        await addScenario(copy)
-        await this.loadScenarios()
-        return copy
     }
 
     async removeScenario(id: string): Promise<void> {
@@ -107,40 +91,4 @@ export class ScenariosService {
 
         this.threeRendererService.render()
     }
-}
-
-function deepCopySections(sections: ScenarioSections): ScenarioSections {
-    const copy: ScenarioSections = {}
-
-    if (sections.metrics) {
-        copy.metrics = { ...sections.metrics }
-    }
-    if (sections.colors) {
-        copy.colors = {
-            ...sections.colors,
-            colorRange: { ...sections.colors.colorRange },
-            ...(sections.colors.mapColors ? { mapColors: { ...sections.colors.mapColors } } : {})
-        }
-    }
-    if (sections.camera) {
-        copy.camera = {
-            position: { ...sections.camera.position },
-            target: { ...sections.camera.target }
-        }
-    }
-    if (sections.filters) {
-        copy.filters = {
-            blacklist: [...sections.filters.blacklist],
-            focusedNodePath: [...sections.filters.focusedNodePath]
-        }
-    }
-    if (sections.labelsAndFolders) {
-        copy.labelsAndFolders = {
-            ...sections.labelsAndFolders,
-            colorLabels: { ...sections.labelsAndFolders.colorLabels },
-            markedPackages: [...sections.labelsAndFolders.markedPackages]
-        }
-    }
-
-    return copy
 }
