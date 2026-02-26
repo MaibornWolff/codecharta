@@ -59,7 +59,7 @@ describe("builtInScenarios", () => {
         }
     })
 
-    it("should all have only areaMetric, heightMetric, and colorMetric in metrics section", () => {
+    it("should all have only areaMetric, heightMetric, colorMetric, and linking in metrics section", () => {
         // Assert
         for (const scenario of BUILT_IN_SCENARIOS) {
             expect(scenario.sections.metrics?.areaMetric).toBeDefined()
@@ -67,7 +67,7 @@ describe("builtInScenarios", () => {
             expect(scenario.sections.metrics?.colorMetric).toBeDefined()
             expect(scenario.sections.metrics?.edgeMetric).toBeUndefined()
             expect(scenario.sections.metrics?.distributionMetric).toBeUndefined()
-            expect(scenario.sections.metrics?.isColorMetricLinkedToHeightMetric).toBeUndefined()
+            expect(scenario.sections.metrics?.isColorMetricLinkedToHeightMetric).toBe(true)
         }
     })
 })

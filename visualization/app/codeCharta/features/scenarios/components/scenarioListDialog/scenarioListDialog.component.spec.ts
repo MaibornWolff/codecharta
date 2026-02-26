@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BehaviorSubject } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
-import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
+import { getScenarioPriority, groupScenarios, ScenarioListDialogComponent, toScenarioView } from "./scenarioListDialog.component"
 import { ScenariosService } from "../../services/scenarios.service"
 import { Scenario } from "../../model/scenario.model"
 import { ColorMode, MetricData } from "../../../../codeCharta.model"
@@ -56,10 +56,12 @@ const createFileState = (fileName: string): FileState => ({
     file: {
         fileMeta: { fileName, fileChecksum: "abc", apiVersion: "1.3", projectName: "test", exportedFileSize: 100 },
         map: { name: "root", type: "Folder", children: [], attributes: {} },
-        settings: { fileSettings: {} as any }
+        settings: { fileSettings: { edges: [], blacklist: [], attributeTypes: {}, attributeDescriptors: {}, markedPackages: [] } as any }
     },
     selectedAs: FileSelectionState.Partial
 })
+
+const emptyMetricData: MetricData = { nodeMetricData: [], edgeMetricData: [] }
 
 describe("ScenarioListDialogComponent", () => {
     let component: ScenarioListDialogComponent
@@ -67,7 +69,6 @@ describe("ScenarioListDialogComponent", () => {
     let scenariosService: {
         scenarios$: BehaviorSubject<Scenario[]>
         removeScenario: jest.Mock
-        duplicateScenario: jest.Mock
         loadScenarios: jest.Mock
     }
     let store: MockStore
@@ -77,7 +78,6 @@ describe("ScenarioListDialogComponent", () => {
         scenariosService = {
             scenarios$: scenariosSubject,
             removeScenario: jest.fn(),
-            duplicateScenario: jest.fn().mockResolvedValue({}),
             loadScenarios: jest.fn().mockResolvedValue(undefined)
         }
 
@@ -133,53 +133,6 @@ describe("ScenarioListDialogComponent", () => {
         expect(spy).toHaveBeenCalledWith(expect.objectContaining({ scenario }))
     })
 
-    it("should format date correctly", () => {
-        // Act
-        const formatted = component.formatDate(new Date("2024-01-15").getTime())
-
-        // Assert
-        expect(formatted).toBeDefined()
-        expect(typeof formatted).toBe("string")
-    })
-
-    describe("map binding", () => {
-        it("should detect map-bound scenarios", () => {
-            // Arrange
-            const bound = createTestScenario("Bound", "id-1", ["project.cc.json"])
-            const global = createTestScenario("Global", "id-2")
-
-            // Assert
-            expect(component.isMapBound(bound)).toBe(true)
-            expect(component.isMapBound(global)).toBe(false)
-        })
-
-        it("should detect map mismatch when bound file is not loaded", () => {
-            // Arrange
-            const bound = createTestScenario("Bound", "id-1", ["project.cc.json"])
-            store.setState({ ...defaultState, files: [createFileState("other.cc.json")] })
-
-            // Assert
-            expect(component.isMapMismatch(bound)).toBe(true)
-        })
-
-        it("should not detect mismatch when bound file is loaded", () => {
-            // Arrange
-            const bound = createTestScenario("Bound", "id-1", ["project.cc.json"])
-            store.setState({ ...defaultState, files: [createFileState("project.cc.json")] })
-
-            // Assert
-            expect(component.isMapMismatch(bound)).toBe(false)
-        })
-
-        it("should not detect mismatch for global scenarios", () => {
-            // Arrange
-            const global = createTestScenario("Global", "id-1")
-
-            // Assert
-            expect(component.isMapMismatch(global)).toBe(false)
-        })
-    })
-
     describe("delete", () => {
         it("should open confirm dialog and set deleteTarget on requestDelete", () => {
             // Arrange
@@ -221,54 +174,279 @@ describe("ScenarioListDialogComponent", () => {
         })
     })
 
-    describe("duplicate", () => {
-        it("should call duplicateScenario on service", async () => {
+    describe("ordering", () => {
+        it("should order scenarios by relevance: current map > global > built-in > other maps", () => {
             // Arrange
-            const scenario = createTestScenario("Test", "id-1")
+            const boundToCurrentMap = createTestScenario("Current Map", "id-current", ["project.cc.json"])
+            const global = createTestScenario("Global", "id-global")
+            const builtIn = createBuiltInScenario("Built-In", "id-builtin")
+            const boundToOtherMap = createTestScenario("Other Map", "id-other", ["other-project.cc.json"])
+
+            scenariosSubject.next([boundToOtherMap, builtIn, global, boundToCurrentMap])
+            store.setState({ ...defaultState, files: [createFileState("project.cc.json")] })
 
             // Act
-            await component.duplicateScenario(scenario)
+            const ordered = component.filteredScenarios()
 
             // Assert
-            expect(scenariosService.duplicateScenario).toHaveBeenCalledWith(scenario)
+            expect(ordered.map(s => s.name)).toEqual(["Current Map", "Global", "Built-In", "Other Map"])
+        })
+
+        it("should preserve relative order within the same priority group", () => {
+            // Arrange
+            const globalA = createTestScenario("Alpha", "id-a")
+            const globalB = createTestScenario("Beta", "id-b")
+            const builtInX = createBuiltInScenario("X Built-In", "id-x")
+            const builtInY = createBuiltInScenario("Y Built-In", "id-y")
+
+            scenariosSubject.next([globalA, globalB, builtInX, builtInY])
+
+            // Act
+            const ordered = component.filteredScenarios()
+
+            // Assert
+            expect(ordered.map(s => s.name)).toEqual(["Alpha", "Beta", "X Built-In", "Y Built-In"])
+        })
+
+        it("should still filter by search term after ordering", () => {
+            // Arrange
+            const boundToCurrentMap = createTestScenario("Complexity Map", "id-1", ["project.cc.json"])
+            const global = createTestScenario("Complexity Global", "id-2")
+            const builtIn = createBuiltInScenario("Other", "id-3")
+
+            scenariosSubject.next([builtIn, global, boundToCurrentMap])
+            store.setState({ ...defaultState, files: [createFileState("project.cc.json")] })
+
+            // Act
+            component.searchTerm.set("complexity")
+
+            // Assert
+            const ordered = component.filteredScenarios()
+            expect(ordered.map(s => s.name)).toEqual(["Complexity Map", "Complexity Global"])
         })
     })
 
-    describe("built-in scenarios", () => {
-        it("should not have warning for built-in with available metrics", () => {
+    describe("getScenarioPriority", () => {
+        it("should return 0 for scenarios bound to a visible map", () => {
+            // Arrange
+            const scenario = createTestScenario("Test", "id-1", ["my.cc.json"])
+            const visible = new Set(["my.cc.json"])
+
+            // Assert
+            expect(getScenarioPriority(scenario, visible)).toBe(0)
+        })
+
+        it("should return 1 for global user scenarios", () => {
+            // Arrange
+            const scenario = createTestScenario("Test", "id-1")
+
+            // Assert
+            expect(getScenarioPriority(scenario, new Set())).toBe(1)
+        })
+
+        it("should return 2 for built-in scenarios", () => {
+            // Arrange
+            const scenario = createBuiltInScenario("Test", "id-1")
+
+            // Assert
+            expect(getScenarioPriority(scenario, new Set())).toBe(2)
+        })
+
+        it("should return 3 for scenarios bound to a non-visible map", () => {
+            // Arrange
+            const scenario = createTestScenario("Test", "id-1", ["other.cc.json"])
+            const visible = new Set(["my.cc.json"])
+
+            // Assert
+            expect(getScenarioPriority(scenario, visible)).toBe(3)
+        })
+    })
+
+    describe("groupedScenarios", () => {
+        it("should group scenarios into accordion sections by priority", () => {
+            // Arrange
+            const boundToCurrentMap = createTestScenario("Current Map", "id-current", ["project.cc.json"])
+            const global = createTestScenario("Global", "id-global")
+            const builtIn = createBuiltInScenario("Built-In", "id-builtin")
+            const boundToOtherMap = createTestScenario("Other Map", "id-other", ["other.cc.json"])
+
+            scenariosSubject.next([boundToOtherMap, builtIn, global, boundToCurrentMap])
+            store.setState({ ...defaultState, files: [createFileState("project.cc.json")] })
+
+            // Act
+            const groups = component.groupedScenarios()
+
+            // Assert
+            expect(groups.map(g => g.label)).toEqual(["Current Map", "Global", "Built-in", "Other Maps"])
+            expect(groups[0].scenarios.map(s => s.scenario.name)).toEqual(["Current Map"])
+            expect(groups[1].scenarios.map(s => s.scenario.name)).toEqual(["Global"])
+            expect(groups[2].scenarios.map(s => s.scenario.name)).toEqual(["Built-In"])
+            expect(groups[3].scenarios.map(s => s.scenario.name)).toEqual(["Other Map"])
+        })
+
+        it("should omit empty groups", () => {
+            // Arrange
+            const global = createTestScenario("Global", "id-global")
+            scenariosSubject.next([global])
+
+            // Act
+            const groups = component.groupedScenarios()
+
+            // Assert
+            expect(groups).toHaveLength(1)
+            expect(groups[0].label).toBe("Global")
+        })
+
+        it("should precompute mapBound on scenario views", () => {
+            // Arrange
+            const bound = createTestScenario("Bound", "id-1", ["project.cc.json"])
+            const global = createTestScenario("Global", "id-2")
+            scenariosSubject.next([bound, global])
+            store.setState({ ...defaultState, files: [createFileState("project.cc.json")] })
+
+            // Act
+            const groups = component.groupedScenarios()
+            const boundView = groups.flatMap(g => g.scenarios).find(v => v.scenario.name === "Bound")
+            const globalView = groups.flatMap(g => g.scenarios).find(v => v.scenario.name === "Global")
+
+            // Assert
+            expect(boundView!.mapBound).toBe(true)
+            expect(globalView!.mapBound).toBe(false)
+        })
+
+        it("should precompute mapMismatch on scenario views", () => {
+            // Arrange
+            const bound = createTestScenario("Bound", "id-1", ["project.cc.json"])
+            scenariosSubject.next([bound])
+            store.setState({ ...defaultState, files: [createFileState("other.cc.json")] })
+
+            // Act
+            const groups = component.groupedScenarios()
+            const view = groups[0].scenarios[0]
+
+            // Assert
+            expect(view.mapMismatch).toBe(true)
+        })
+
+        it("should precompute sectionKeys on scenario views", () => {
+            // Arrange
+            const full = createTestScenario("Full", "id-1")
+            const builtIn = createBuiltInScenario("Built-In", "id-2")
+            scenariosSubject.next([full, builtIn])
+
+            // Act
+            const groups = component.groupedScenarios()
+            const fullView = groups.flatMap(g => g.scenarios).find(v => v.scenario.name === "Full")
+            const builtInView = groups.flatMap(g => g.scenarios).find(v => v.scenario.name === "Built-In")
+
+            // Assert
+            expect(fullView!.sectionKeys).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
+            expect(builtInView!.sectionKeys).toEqual(["metrics", "colors"])
+        })
+    })
+
+    describe("groupScenarios", () => {
+        it("should return empty array for no scenarios", () => {
+            // Assert
+            expect(groupScenarios([], new Set())).toEqual([])
+        })
+
+        it("should group multiple scenarios into correct buckets", () => {
+            // Arrange
+            const visible = new Set(["project.cc.json"])
+            const scenarios = [
+                createTestScenario("A", "id-a", ["project.cc.json"]),
+                createTestScenario("B", "id-b"),
+                createBuiltInScenario("C", "id-c"),
+                createTestScenario("D", "id-d", ["other.cc.json"])
+            ]
+
+            // Act
+            const groups = groupScenarios(scenarios, visible)
+
+            // Assert
+            expect(groups).toHaveLength(4)
+            expect(groups[0].label).toBe("Current Map")
+            expect(groups[1].label).toBe("Global")
+            expect(groups[2].label).toBe("Built-in")
+            expect(groups[3].label).toBe("Other Maps")
+        })
+    })
+
+    describe("toScenarioView", () => {
+        it("should set warning to false when no metrics section", () => {
+            // Arrange
+            const scenario: Scenario = { id: "id-1", name: "NoMetrics", createdAt: 0, sections: {} }
+
+            // Act
+            const view = toScenarioView(scenario, new Set(), emptyMetricData)
+
+            // Assert
+            expect(view.warning).toBe(false)
+        })
+
+        it("should set warning to false when all metrics available", () => {
             // Arrange
             const builtIn = createBuiltInScenario("RLOC", "built-in-rloc")
             const metricData: MetricData = {
                 nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0, values: [] }],
                 edgeMetricData: []
             }
-            store.overrideSelector(metricDataSelector, metricData)
-            store.refreshState()
-
-            // Assert
-            expect(component.hasWarning(builtIn)).toBe(false)
-        })
-
-        it("should return only available section keys for built-in", () => {
-            // Arrange
-            const builtIn = createBuiltInScenario("RLOC", "built-in-rloc")
 
             // Act
-            const keys = component.getSectionKeys(builtIn)
+            const view = toScenarioView(builtIn, new Set(), metricData)
 
             // Assert
-            expect(keys).toEqual(["metrics", "colors"])
+            expect(view.warning).toBe(false)
         })
 
-        it("should return all section keys for full scenario", () => {
+        it("should set mapBound correctly", () => {
+            // Arrange
+            const bound = createTestScenario("Bound", "id-1", ["file.cc.json"])
+            const global = createTestScenario("Global", "id-2")
+
+            // Act & Assert
+            expect(toScenarioView(bound, new Set(), emptyMetricData).mapBound).toBe(true)
+            expect(toScenarioView(global, new Set(), emptyMetricData).mapBound).toBe(false)
+        })
+
+        it("should set mapMismatch correctly", () => {
+            // Arrange
+            const bound = createTestScenario("Bound", "id-1", ["project.cc.json"])
+            const visible = new Set(["other.cc.json"])
+            const matching = new Set(["project.cc.json"])
+
+            // Act & Assert
+            expect(toScenarioView(bound, visible, emptyMetricData).mapMismatch).toBe(true)
+            expect(toScenarioView(bound, matching, emptyMetricData).mapMismatch).toBe(false)
+        })
+
+        it("should format date as locale string", () => {
+            // Arrange
+            const scenario = createTestScenario("Test", "id-1")
+
+            // Act
+            const view = toScenarioView(scenario, new Set(), emptyMetricData)
+
+            // Assert
+            expect(view.formattedDate).toBeDefined()
+            expect(typeof view.formattedDate).toBe("string")
+        })
+
+        it("should compute sectionKeys from available sections", () => {
             // Arrange
             const full = createTestScenario("Full", "id-1")
+            const builtIn = createBuiltInScenario("Built-In", "id-2")
 
-            // Act
-            const keys = component.getSectionKeys(full)
-
-            // Assert
-            expect(keys).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
+            // Act & Assert
+            expect(toScenarioView(full, new Set(), emptyMetricData).sectionKeys).toEqual([
+                "metrics",
+                "colors",
+                "camera",
+                "filters",
+                "labelsAndFolders"
+            ])
+            expect(toScenarioView(builtIn, new Set(), emptyMetricData).sectionKeys).toEqual(["metrics", "colors"])
         })
     })
 })

@@ -1,4 +1,9 @@
 import "fake-indexeddb/auto"
+
+if (typeof globalThis.structuredClone === "undefined") {
+    globalThis.structuredClone = <T>(value: T): T => JSON.parse(JSON.stringify(value))
+}
+
 import { Scenario } from "../model/scenario.model"
 import { addScenario, deleteScenario, readAllScenarios, updateScenario } from "./scenarioIndexedDB"
 

@@ -75,6 +75,11 @@ A Scenario is a **named, full snapshot** of the application state. It always sav
 
 - Add a **Scenarios panel** to the ribbon bar (same pattern as Color Settings, Height Settings panels).
 - Panel shows a **flat list** of all Scenarios (built-ins + user) with a **search/filter input**.
+- **Auto-ordering** — the list is automatically sorted by relevance to the current context:
+  1. Scenarios bound to the **current map**
+  2. **Global** Scenarios (not bound to any map)
+  3. **Built-in** Scenarios
+  4. Scenarios bound to **other maps**
 - Visually distinguish built-in from user Scenarios (e.g. badge or section separator).
 - Each Scenario card shows **section indicators** — small icons that reveal which sections are included in that scenario at a glance, without opening it:
 

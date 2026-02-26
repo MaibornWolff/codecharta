@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, output, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, output, signal, viewChild } from "@angular/core"
 import { FormsModule } from "@angular/forms"
 import { Store } from "@ngrx/store"
 import { toSignal } from "@angular/core/rxjs-interop"
@@ -17,13 +17,22 @@ import {
 import { ScenariosService } from "../../services/scenarios.service"
 import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
 
+export interface ScenarioView {
+    scenario: Scenario
+    warning: boolean
+    mapMismatch: boolean
+    mapBound: boolean
+    sectionKeys: ScenarioSectionKey[]
+    formattedDate: string
+}
+
 @Component({
     selector: "cc-scenario-list-dialog",
     templateUrl: "./scenarioListDialog.component.html",
-    imports: [FormsModule]
+    imports: [FormsModule],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScenarioListDialogComponent {
-    readonly sectionKeys: ScenarioSectionKey[] = ["metrics", "colors", "camera", "filters", "labelsAndFolders"]
     readonly sectionLabels = SCENARIO_SECTION_LABELS
     readonly sectionIcons = SCENARIO_SECTION_ICONS
 
@@ -44,7 +53,21 @@ export class ScenarioListDialogComponent {
     readonly filteredScenarios = computed(() => {
         const term = this.searchTerm().toLowerCase()
         const all = this.scenarios()
-        return term ? all.filter(s => s.name.toLowerCase().includes(term) || s.description?.toLowerCase().includes(term)) : [...all]
+        const visible = this.visibleFileNames()
+        const filtered = term
+            ? all.filter(s => s.name.toLowerCase().includes(term) || s.description?.toLowerCase().includes(term))
+            : [...all]
+        return filtered.sort((a, b) => getScenarioPriority(a, visible) - getScenarioPriority(b, visible))
+    })
+
+    readonly groupedScenarios = computed(() => {
+        const visible = this.visibleFileNames()
+        const metricData = this.metricData()
+        const groups = groupScenarios(this.filteredScenarios(), visible)
+        return groups.map(group => ({
+            ...group,
+            scenarios: group.scenarios.map(scenario => toScenarioView(scenario, visible, metricData))
+        }))
     })
 
     constructor(
@@ -61,37 +84,9 @@ export class ScenarioListDialogComponent {
         this.dialogElement().nativeElement.close()
     }
 
-    getSectionKeys(scenario: Scenario): ScenarioSectionKey[] {
-        return getAvailableSectionKeys(scenario)
-    }
-
-    hasWarning(scenario: Scenario): boolean {
-        if (!scenario.sections.metrics) {
-            return false
-        }
-        const missing = getMissingMetrics(scenario.sections.metrics, this.metricData())
-        return hasMissingMetrics(missing)
-    }
-
-    isMapBound(scenario: Scenario): boolean {
-        return (scenario.mapFileNames?.length ?? 0) > 0
-    }
-
-    isMapMismatch(scenario: Scenario): boolean {
-        if ((scenario.mapFileNames?.length ?? 0) === 0) {
-            return false
-        }
-        const visible = this.visibleFileNames()
-        return !scenario.mapFileNames.some(name => visible.has(name))
-    }
-
     applyScenario(scenario: Scenario) {
         this.close()
         this.applyRequested.emit({ scenario, metricData: this.metricData() })
-    }
-
-    async duplicateScenario(scenario: Scenario) {
-        await this.scenariosService.duplicateScenario(scenario)
     }
 
     requestDelete(scenario: Scenario) {
@@ -112,8 +107,69 @@ export class ScenarioListDialogComponent {
             await this.scenariosService.removeScenario(scenario.id)
         }
     }
+}
 
-    formatDate(timestamp: number): string {
-        return new Date(timestamp).toLocaleDateString()
+export interface ScenarioGroup {
+    label: string
+    icon: string
+    scenarios: ScenarioView[]
+}
+
+const GROUP_DEFINITIONS: { priority: number; label: string; icon: string }[] = [
+    { priority: 0, label: "Current Map", icon: "fa-map-pin" },
+    { priority: 1, label: "Global", icon: "fa-globe" },
+    { priority: 2, label: "Built-in", icon: "fa-cube" },
+    { priority: 3, label: "Other Maps", icon: "fa-map-o" }
+]
+
+interface RawScenarioGroup {
+    label: string
+    icon: string
+    scenarios: Scenario[]
+}
+
+export function groupScenarios(scenarios: Scenario[], visibleFileNames: Set<string>): RawScenarioGroup[] {
+    const buckets = new Map<number, Scenario[]>()
+    for (const scenario of scenarios) {
+        const priority = getScenarioPriority(scenario, visibleFileNames)
+        const bucket = buckets.get(priority)
+        if (bucket) {
+            bucket.push(scenario)
+        } else {
+            buckets.set(priority, [scenario])
+        }
     }
+    return GROUP_DEFINITIONS.filter(def => buckets.has(def.priority)).map(def => ({
+        label: def.label,
+        icon: def.icon,
+        scenarios: buckets.get(def.priority)!
+    }))
+}
+
+export function toScenarioView(scenario: Scenario, visibleFileNames: Set<string>, metricData: MetricData): ScenarioView {
+    const mapBound = (scenario.mapFileNames?.length ?? 0) > 0
+    const mapMismatch = mapBound && !scenario.mapFileNames.some(name => visibleFileNames.has(name))
+    const warning = scenario.sections.metrics ? hasMissingMetrics(getMissingMetrics(scenario.sections.metrics, metricData)) : false
+    return {
+        scenario,
+        warning,
+        mapMismatch,
+        mapBound,
+        sectionKeys: getAvailableSectionKeys(scenario),
+        formattedDate: new Date(scenario.createdAt).toLocaleDateString()
+    }
+}
+
+export function getScenarioPriority(scenario: Scenario, visibleFileNames: Set<string>): number {
+    const isBound = (scenario.mapFileNames?.length ?? 0) > 0
+    if (isBound && scenario.mapFileNames!.some(name => visibleFileNames.has(name))) {
+        return 0
+    }
+    if (!isBound && !scenario.isBuiltIn) {
+        return 1
+    }
+    if (scenario.isBuiltIn) {
+        return 2
+    }
+    return 3
 }

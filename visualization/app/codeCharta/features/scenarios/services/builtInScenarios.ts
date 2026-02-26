@@ -14,7 +14,7 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
         createdAt: 0,
         isBuiltIn: true,
         sections: {
-            metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" },
+            metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc", isColorMetricLinkedToHeightMetric: true },
             colors: { colorRange: { from: 250, to: 500 }, mapColors: defaultMapColors }
         }
     },
@@ -25,7 +25,7 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
         createdAt: 0,
         isBuiltIn: true,
         sections: {
-            metrics: { areaMetric: "rloc", heightMetric: "complexity", colorMetric: "complexity" },
+            metrics: { areaMetric: "rloc", heightMetric: "complexity", colorMetric: "complexity", isColorMetricLinkedToHeightMetric: true },
             colors: { colorRange: { from: 50, to: 100 }, mapColors: defaultMapColors }
         }
     },
@@ -36,7 +36,12 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
         createdAt: 0,
         isBuiltIn: true,
         sections: {
-            metrics: { areaMetric: "rloc", heightMetric: "comment_lines", colorMetric: "comment_lines" },
+            metrics: {
+                areaMetric: "rloc",
+                heightMetric: "comment_lines",
+                colorMetric: "comment_lines",
+                isColorMetricLinkedToHeightMetric: true
+            },
             colors: { colorRange: { from: 50, to: 100 }, mapColors: defaultMapColors }
         }
     },
@@ -47,7 +52,7 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
         createdAt: 0,
         isBuiltIn: true,
         sections: {
-            metrics: { areaMetric: "rloc", heightMetric: "code_smell", colorMetric: "code_smell" },
+            metrics: { areaMetric: "rloc", heightMetric: "code_smell", colorMetric: "code_smell", isColorMetricLinkedToHeightMetric: true },
             colors: { colorRange: { from: 10, to: 50 }, mapColors: defaultMapColors }
         }
     },
@@ -58,7 +63,12 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
         createdAt: 0,
         isBuiltIn: true,
         sections: {
-            metrics: { areaMetric: "rloc", heightMetric: "logic_complexity", colorMetric: "logic_complexity" },
+            metrics: {
+                areaMetric: "rloc",
+                heightMetric: "logic_complexity",
+                colorMetric: "logic_complexity",
+                isColorMetricLinkedToHeightMetric: true
+            },
             colors: { colorRange: { from: 40, to: 80 }, mapColors: defaultMapColors }
         }
     },
@@ -69,7 +79,12 @@ export const BUILT_IN_SCENARIOS: Scenario[] = [
         createdAt: 0,
         isBuiltIn: true,
         sections: {
-            metrics: { areaMetric: "rloc", heightMetric: "max_complexity_per_function", colorMetric: "max_complexity_per_function" },
+            metrics: {
+                areaMetric: "rloc",
+                heightMetric: "max_complexity_per_function",
+                colorMetric: "max_complexity_per_function",
+                isColorMetricLinkedToHeightMetric: true
+            },
             colors: { colorRange: { from: 10, to: 20 }, mapColors: defaultMapColors }
         }
     }
