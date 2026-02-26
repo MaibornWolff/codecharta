@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.analyserinterface.localchanges
 
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -23,15 +25,16 @@ class LocalChangesDetectorTest {
     }
 
     @Test
-    fun `should detect upstream branch returns null for non-git dir`() {
+    fun `should throw error when no upstream branch is set`() {
         // Arrange
-        val helper = LocalChangesDetector(tempDir.toFile())
+        val repoDir = tempDir.toFile()
+        initGitRepo(repoDir)
+        val helper = LocalChangesDetector(repoDir)
 
-        // Act
-        val result = helper.detectUpstreamBranch()
-
-        // Assert
-        assertThat(result).isNull()
+        // Act & Assert
+        assertThatThrownBy { helper.detectUpstreamBranch() }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("--local-changes requires an upstream tracking branch")
     }
 
     @Test
@@ -91,46 +94,49 @@ class LocalChangesDetectorTest {
     @Test
     fun `should return union of all change types`() {
         // Arrange
-        val repoDir = tempDir.toFile()
-        initGitRepo(repoDir)
+        val queries = mockk<GitDiffQueries>()
+        every { queries.isInsideWorkTree() } returns "true"
+        every { queries.upstreamBranchName() } returns "origin/main"
+        every { queries.changedFilesSince("origin/main") } returns setOf("committed.kt")
+        every { queries.deletedFilesSince("origin/main") } returns emptySet()
+        every { queries.stagedChangedFiles() } returns setOf("staged.kt")
+        every { queries.unstagedChangedFiles() } returns emptySet()
+        every { queries.stagedDeletedFiles() } returns emptySet()
+        every { queries.unstagedDeletedFiles() } returns emptySet()
+        every { queries.untrackedFiles() } returns setOf("untracked.kt")
 
-        val committed = File(repoDir, "committed.kt")
-        committed.writeText("fun committed() {}")
-        executeGit(repoDir, "add", "committed.kt")
-        executeGit(repoDir, "commit", "-m", "initial")
-
-        committed.writeText("fun modified() {}")
-        File(repoDir, "untracked.kt").writeText("fun untracked() {}")
-
-        val helper = LocalChangesDetector(repoDir)
+        val detector = LocalChangesDetector(tempDir.toFile(), queries)
 
         // Act
-        val result = helper.getLocallyChangedFiles()
+        val result = detector.getLocallyChangedFiles()
 
         // Assert
-        assertThat(result.changedFiles).contains("committed.kt", "untracked.kt")
+        assertThat(result.changedFiles).containsExactlyInAnyOrder("committed.kt", "staged.kt", "untracked.kt")
+        assertThat(result.deletedFiles).isEmpty()
     }
 
     @Test
     fun `should report deleted files separately from changed files`() {
         // Arrange
-        val repoDir = tempDir.toFile()
-        initGitRepo(repoDir)
+        val queries = mockk<GitDiffQueries>()
+        every { queries.isInsideWorkTree() } returns "true"
+        every { queries.upstreamBranchName() } returns "origin/main"
+        every { queries.changedFilesSince("origin/main") } returns setOf("changed.kt")
+        every { queries.deletedFilesSince("origin/main") } returns setOf("deleted.kt")
+        every { queries.stagedChangedFiles() } returns emptySet()
+        every { queries.unstagedChangedFiles() } returns emptySet()
+        every { queries.stagedDeletedFiles() } returns emptySet()
+        every { queries.unstagedDeletedFiles() } returns emptySet()
+        every { queries.untrackedFiles() } returns emptySet()
 
-        val testFile = File(repoDir, "todelete.kt")
-        testFile.writeText("fun delete() {}")
-        executeGit(repoDir, "add", "todelete.kt")
-        executeGit(repoDir, "commit", "-m", "add file")
-        testFile.delete()
-
-        val helper = LocalChangesDetector(repoDir)
+        val detector = LocalChangesDetector(tempDir.toFile(), queries)
 
         // Act
-        val result = helper.getLocallyChangedFiles()
+        val result = detector.getLocallyChangedFiles()
 
         // Assert
-        assertThat(result.changedFiles).doesNotContain("todelete.kt")
-        assertThat(result.deletedFiles).contains("todelete.kt")
+        assertThat(result.changedFiles).containsExactly("changed.kt")
+        assertThat(result.deletedFiles).containsExactly("deleted.kt")
     }
 
     @Test
