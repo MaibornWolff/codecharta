@@ -3,10 +3,16 @@ package de.maibornwolff.codecharta.analysers.parsers.unified
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
+import de.maibornwolff.codecharta.analysers.analyserinterface.basefile.BaseFileResolver
+import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesDetector
+import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesResult
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -30,7 +36,8 @@ import kotlin.time.Duration.Companion.milliseconds
 class UnifiedParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
+    private val error: PrintStream = System.err,
+    private val baseFileHelper: BaseFileResolver = BaseFileResolver()
 ) : AnalyserInterface, AttributeGenerator, CommonAnalyserParameters() {
     companion object {
         const val NAME = "unifiedparser"
@@ -67,8 +74,9 @@ class UnifiedParser(
     private fun scanInputProject(inputFile: File): Project {
         val startTime = System.currentTimeMillis()
         val projectBuilder = ProjectBuilder()
-        val baseFileNodeMap = loadBaseFileNodes()
+        val baseFileNodeMap = baseFileHelper.loadBaseFileNodes(baseFile)
         val useGitignore = !bypassGitignore
+        val localChangesResult = if (localChanges) LocalChangesDetector(inputFile).getLocallyChangedFiles() else LocalChangesResult.EMPTY
 
         val effectivePatternsToExclude = determineExclusionPatterns(inputFile, useGitignore)
         val projectScanner = ProjectScanner(
@@ -77,10 +85,12 @@ class UnifiedParser(
             effectivePatternsToExclude,
             fileExtensionsToAnalyse,
             baseFileNodeMap,
-            useGitignore
+            useGitignore,
+            localChangesResult.changedFiles
         )
 
         projectScanner.traverseInputProject(verbose)
+        addDeletedFileNodes(projectBuilder, localChangesResult.deletedFiles)
 
         reportNotFoundFileExtensions(projectScanner)
         reportIgnoredFileTypes(projectScanner)
@@ -94,6 +104,18 @@ class UnifiedParser(
         projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
 
         return projectBuilder.build()
+    }
+
+    private fun addDeletedFileNodes(projectBuilder: ProjectBuilder, deletedFiles: Set<String>) {
+        for (filePath in deletedFiles) {
+            val fileName = filePath.substringAfterLast("/")
+            val node = MutableNode(name = fileName, type = NodeType.File, attributes = mapOf())
+            val path = PathFactory.fromFileSystemPath(filePath).parent
+            projectBuilder.insertByPath(path, node)
+        }
+        if (deletedFiles.isNotEmpty()) {
+            Logger.info { "${deletedFiles.size} deleted files included with empty metrics" }
+        }
     }
 
     private fun reportNotFoundFileExtensions(projectScanner: ProjectScanner) {

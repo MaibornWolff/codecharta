@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - Add DependaChartaImporter to import code-level dependency data from `.dc.json` files as edge metrics
+- Add local changes detection to UnifiedParser and RawTextParser to selectively re-analyze only files changed since the upstream branch
 
 ## [1.140.0] - 2025-12-05
 

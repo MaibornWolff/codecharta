@@ -24,7 +24,8 @@ class ProjectScanner(
     private val excludePatterns: List<String> = listOf(),
     private val includeExtensions: List<String> = listOf(),
     private val baseFileNodes: Map<String, Node> = emptyMap(),
-    private val useGitignore: Boolean = true
+    private val useGitignore: Boolean = true,
+    private val localChangesFiles: Set<String> = emptySet()
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -144,7 +145,11 @@ class ProjectScanner(
 
         if (useGitignore && gitignoreHandler.shouldExclude(file)) return false
 
-        if (isPathExcluded(file) || !isFileExtensionIncluded(file.extension)) return false
+        val relativePath = getRelativeFileName(file.toString())
+
+        if (localChangesFiles.isNotEmpty() && !localChangesFiles.contains(relativePath)) return false
+
+        if (isPathExcluded(relativePath) || !isFileExtensionIncluded(file.extension)) return false
 
         return if (findCollectorForFileType(file.extension) != null) {
             true
@@ -155,8 +160,8 @@ class ProjectScanner(
         }
     }
 
-    private fun isPathExcluded(file: File): Boolean {
-        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn("/" + getRelativeFileName(file.toString()))
+    private fun isPathExcluded(relativePath: String): Boolean {
+        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn("/$relativePath")
     }
 
     private fun isFileExtensionIncluded(fileExtension: String): Boolean {
