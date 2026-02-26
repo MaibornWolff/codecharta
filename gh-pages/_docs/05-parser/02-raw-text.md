@@ -31,6 +31,7 @@ This parser analyzes code, regardless of the programming language, to generate t
 | `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                                                                     |
 | `-h, --help`                              | displays this help and exits                                                                                                                                                                         |
 | `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.')                                                    |
+| `--local-changes`                         | only analyze files that differ from the remote tracking branch (uncommitted, staged, unstaged, untracked). See [Local Changes](/docs/analysis/local-changes)                                        |
 | `-m, --metrics=metrics`                   | comma-separated list of metrics to be computed (all available metrics are computed if not specified)                                                                                                 |
 | `--max-indentation-level=<maxIndentLvl>`  | maximum Indentation Level (default 10)                                                                                                                                                               |
 | `-nc, --not-compressed`                   | save uncompressed output File                                                                                                                                                                        |
@@ -40,8 +41,9 @@ This parser analyzes code, regardless of the programming language, to generate t
 | `--without-default-excludes`              | ("DEPRECATION WARNING: this flag will soon be disabled and replaced by '--include-build-folders'") include build, target, dist, resources and out folders as well as files/folders starting with '.' |
 
 ```
-Usage: ccsh rawtextparser [-h] [--bypass-gitignore] [-ibf] [-nc] [--verbose]
-                          [--without-default-excludes] [-bf=<baseFile>]
+Usage: ccsh rawtextparser [-h] [--bypass-gitignore] [-ibf] [--local-changes]
+                          [-nc] [--verbose] [--without-default-excludes]
+                          [-bf=<baseFile>]
                           [--max-indentation-level=<maxIndentLvl>]
                           [-o=<outputFile>] [--tab-width=<tabWidth>]
                           [-e=<specifiedExcludePatterns>]...

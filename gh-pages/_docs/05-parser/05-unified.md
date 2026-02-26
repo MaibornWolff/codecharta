@@ -69,13 +69,14 @@ Some metrics are calculated on a per-function basis rather than per-file. Each o
 | `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                  |
 | `-h, --help`                              | displays this help and exits                                                                                                                      |
 | `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.') |
+| `--local-changes`                         | only analyze files that differ from the remote tracking branch (uncommitted, staged, unstaged, untracked). See [Local Changes](/docs/analysis/local-changes) |
 | `-nc, --not-compressed`                   | save uncompressed output File                                                                                                                     |
 | `-o, --output-file=<outputFile>`          | output File (or empty for stdout)                                                                                                                 |
 | `--verbose`                               | displays messages about parsed and ignored files                                                                                                  |
 
 ```
-Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [-ibf] [-nc] [--verbose]
-                          [-bf=<baseFile>] [-o=<outputFile>]
+Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [-ibf] [--local-changes]
+                          [-nc] [--verbose] [-bf=<baseFile>] [-o=<outputFile>]
                           [-e=<specifiedExcludePatterns>]...
                           [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
 ```
