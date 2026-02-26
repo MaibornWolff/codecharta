@@ -6,7 +6,8 @@ import { setState } from "../../../state/store/state.actions"
 import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
-import { Scenario, ScenarioSectionKey } from "../model/scenario.model"
+import { CCSCENARIO_EXTENSION, fromScenarioFile, Scenario, ScenarioFile, ScenarioSectionKey, toScenarioFile } from "../model/scenario.model"
+import { FileDownloader } from "../../../util/fileDownloader"
 import { buildScenario } from "./scenarioBuilder"
 import { buildOrderedStatePatches, getCameraVectors } from "./scenarioApplier"
 import { addScenario, deleteScenario as deleteScenarioFromDB, readAllScenarios } from "./scenarioIndexedDB"
@@ -90,5 +91,38 @@ export class ScenariosService {
         }
 
         this.threeRendererService.render()
+    }
+
+    exportScenario(scenario: Scenario): void {
+        const file = toScenarioFile(scenario)
+        const sanitizedName = scenario.name.replaceAll(/[^\w-]/g, "_")
+        FileDownloader.downloadData(JSON.stringify(file, null, 2), sanitizedName + CCSCENARIO_EXTENSION)
+    }
+
+    async importScenarioFiles(files: FileList): Promise<number> {
+        const existing = this.scenarios$.getValue()
+        let count = 0
+        for (const file of files) {
+            const text = await file.text()
+            const parsed = JSON.parse(text) as ScenarioFile
+            if (parsed.schemaVersion !== 1 || !parsed.name || !parsed.sections) {
+                continue
+            }
+            if (this.isDuplicate(parsed, existing)) {
+                continue
+            }
+            const scenario = fromScenarioFile(parsed)
+            existing.push(scenario)
+            await addScenario(scenario)
+            count++
+        }
+        if (count > 0) {
+            await this.loadScenarios()
+        }
+        return count
+    }
+
+    private isDuplicate(file: ScenarioFile, existing: Scenario[]): boolean {
+        return existing.some(s => s.name === file.name && JSON.stringify(s.sections) === JSON.stringify(file.sections))
     }
 }

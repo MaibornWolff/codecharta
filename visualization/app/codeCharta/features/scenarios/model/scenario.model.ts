@@ -80,3 +80,39 @@ export const SCENARIO_SECTION_ICONS: Record<ScenarioSectionKey, string> = {
     filters: "fa-filter",
     labelsAndFolders: "fa-tags"
 }
+
+export const CCSCENARIO_EXTENSION = ".ccscenario"
+
+export interface ScenarioFile {
+    schemaVersion: 1
+    name: string
+    description?: string
+    mapFileNames?: string[]
+    sections: ScenarioSections
+}
+
+export function toScenarioFile(scenario: Scenario): ScenarioFile {
+    const file: ScenarioFile = {
+        schemaVersion: 1,
+        name: scenario.name,
+        sections: scenario.sections
+    }
+    if (scenario.description) {
+        file.description = scenario.description
+    }
+    if (scenario.mapFileNames?.length) {
+        file.mapFileNames = scenario.mapFileNames
+    }
+    return file
+}
+
+export function fromScenarioFile(file: ScenarioFile): Scenario {
+    return {
+        id: crypto.randomUUID(),
+        name: file.name,
+        description: file.description,
+        mapFileNames: file.mapFileNames,
+        createdAt: Date.now(),
+        sections: file.sections
+    }
+}

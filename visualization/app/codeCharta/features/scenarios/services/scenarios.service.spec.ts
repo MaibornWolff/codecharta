@@ -6,7 +6,8 @@ import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ScenariosService } from "./scenarios.service"
-import { Scenario, ScenarioSectionKey } from "../model/scenario.model"
+import { Scenario, ScenarioFile, ScenarioSectionKey } from "../model/scenario.model"
+import { FileDownloader } from "../../../util/fileDownloader"
 import * as scenarioIndexedDB from "./scenarioIndexedDB"
 import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
 import { Vector3 } from "three"
@@ -182,6 +183,163 @@ describe("ScenariosService", () => {
 
             // Assert
             expect(threeRendererService.render).toHaveBeenCalled()
+        })
+    })
+
+    describe("exportScenario", () => {
+        it("should call FileDownloader.downloadData with scenario file JSON", async () => {
+            // Arrange
+            const scenario = await service.saveScenario("Export Test")
+            const downloadSpy = jest.spyOn(FileDownloader, "downloadData").mockImplementation(() => {})
+
+            // Act
+            service.exportScenario(scenario)
+
+            // Assert
+            expect(downloadSpy).toHaveBeenCalledWith(expect.any(String), "Export_Test.ccscenario")
+            const parsed = JSON.parse(downloadSpy.mock.calls[0][0]) as ScenarioFile
+            expect(parsed.schemaVersion).toBe(1)
+            expect(parsed.name).toBe("Export Test")
+            expect(parsed.sections).toBeDefined()
+            downloadSpy.mockRestore()
+        })
+
+        it("should sanitize the filename", async () => {
+            // Arrange
+            const scenario = await service.saveScenario("My Scenario (v2)")
+            const downloadSpy = jest.spyOn(FileDownloader, "downloadData").mockImplementation(() => {})
+
+            // Act
+            service.exportScenario(scenario)
+
+            // Assert
+            expect(downloadSpy).toHaveBeenCalledWith(expect.any(String), "My_Scenario__v2_.ccscenario")
+            downloadSpy.mockRestore()
+        })
+    })
+
+    describe("importScenarioFiles", () => {
+        function createMockFile(content: string): { text: () => Promise<string> } {
+            return { text: () => Promise.resolve(content) }
+        }
+
+        function createMockFileList(files: { text: () => Promise<string> }[]): FileList {
+            return {
+                length: files.length,
+                item: (index: number) => files[index],
+                [Symbol.iterator]: function* () {
+                    yield* files
+                }
+            } as unknown as FileList
+        }
+
+        it("should import valid scenario files and reload", async () => {
+            // Arrange
+            const scenarioFile: ScenarioFile = {
+                schemaVersion: 1,
+                name: "Imported",
+                sections: { metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" } }
+            }
+            const fileList = createMockFileList([createMockFile(JSON.stringify(scenarioFile))])
+
+            // Act
+            const count = await service.importScenarioFiles(fileList)
+
+            // Assert
+            expect(count).toBe(1)
+            expect(scenarioIndexedDB.addScenario).toHaveBeenCalled()
+            expect(scenarioIndexedDB.readAllScenarios).toHaveBeenCalled()
+        })
+
+        it("should skip files with invalid schemaVersion", async () => {
+            // Arrange
+            const fileList = createMockFileList([createMockFile(JSON.stringify({ schemaVersion: 99, name: "Bad", sections: {} }))])
+
+            // Act
+            const count = await service.importScenarioFiles(fileList)
+
+            // Assert
+            expect(count).toBe(0)
+        })
+
+        it("should skip files missing required fields", async () => {
+            // Arrange
+            const fileList = createMockFileList([
+                createMockFile(JSON.stringify({ schemaVersion: 1, sections: {} })),
+                createMockFile(JSON.stringify({ schemaVersion: 1, name: "Test" }))
+            ])
+
+            // Act
+            const count = await service.importScenarioFiles(fileList)
+
+            // Assert
+            expect(count).toBe(0)
+        })
+
+        it("should import multiple files and return total count", async () => {
+            // Arrange
+            const fileList = createMockFileList([
+                createMockFile(JSON.stringify({ schemaVersion: 1, name: "A", sections: {} })),
+                createMockFile(JSON.stringify({ schemaVersion: 1, name: "B", sections: {} }))
+            ])
+
+            // Act
+            const count = await service.importScenarioFiles(fileList)
+
+            // Assert
+            expect(count).toBe(2)
+        })
+
+        it("should skip duplicates that match an existing scenario by name and sections", async () => {
+            // Arrange
+            const sections = { metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" } }
+            await service.saveScenario("Existing")
+            const existingScenario = service.scenarios$.getValue()[0]
+            const fileList = createMockFileList([
+                createMockFile(JSON.stringify({ schemaVersion: 1, name: existingScenario.name, sections: existingScenario.sections }))
+            ])
+
+            // Act
+            const count = await service.importScenarioFiles(fileList)
+
+            // Assert
+            expect(count).toBe(0)
+        })
+
+        it("should import scenario with same name but different sections", async () => {
+            // Arrange
+            await service.saveScenario("Shared Name")
+            const fileList = createMockFileList([
+                createMockFile(
+                    JSON.stringify({
+                        schemaVersion: 1,
+                        name: "Shared Name",
+                        sections: { metrics: { areaMetric: "different", heightMetric: "different", colorMetric: "different" } }
+                    })
+                )
+            ])
+
+            // Act
+            const count = await service.importScenarioFiles(fileList)
+
+            // Assert
+            expect(count).toBe(1)
+        })
+
+        it("should deduplicate within the same import batch", async () => {
+            // Arrange
+            const content = JSON.stringify({
+                schemaVersion: 1,
+                name: "Same",
+                sections: { metrics: { areaMetric: "a", heightMetric: "b", colorMetric: "c" } }
+            })
+            const fileList = createMockFileList([createMockFile(content), createMockFile(content)])
+
+            // Act
+            const count = await service.importScenarioFiles(fileList)
+
+            // Assert
+            expect(count).toBe(1)
         })
     })
 })
