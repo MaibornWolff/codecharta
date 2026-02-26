@@ -8,6 +8,10 @@ class LocalChangesDetector(private val repoRoot: File) {
     companion object {
         private const val GIT_TIMEOUT_MINUTES = 3L
         private const val DEFAULT_FALLBACK_BRANCH = "origin/main"
+        private const val REV_PARSE = "rev-parse"
+        private const val NAME_ONLY = "--name-only"
+        private const val DIFF_FILTER_CHANGED = "--diff-filter=ACMR"
+        private const val DIFF_FILTER_DELETED = "--diff-filter=D"
     }
 
     fun getLocallyChangedFiles(): LocalChangesResult {
@@ -88,39 +92,39 @@ class LocalChangesDetector(private val repoRoot: File) {
     // --- Git command wrappers ---
 
     private fun gitIsInsideWorkTree(): String {
-        return runGitCommand("rev-parse", "--is-inside-work-tree")
+        return runGitCommand(REV_PARSE, "--is-inside-work-tree")
     }
 
     private fun gitUpstreamBranchName(): String {
-        return runGitCommand("rev-parse", "--abbrev-ref", "@{upstream}")
+        return runGitCommand(REV_PARSE, "--abbrev-ref", "@{upstream}")
     }
 
     private fun gitVerifyRef(ref: String): String {
-        return runGitCommand("rev-parse", "--verify", ref)
+        return runGitCommand(REV_PARSE, "--verify", ref)
     }
 
     private fun gitDiffChangedFilesSince(ref: String): String {
-        return runGitCommand("diff", "--name-only", "--diff-filter=ACMR", "$ref..HEAD")
+        return runGitCommand("diff", NAME_ONLY, DIFF_FILTER_CHANGED, "$ref..HEAD")
     }
 
     private fun gitDiffStagedChangedFiles(): String {
-        return runGitCommand("diff", "--name-only", "--diff-filter=ACMR", "--cached")
+        return runGitCommand("diff", NAME_ONLY, DIFF_FILTER_CHANGED, "--cached")
     }
 
     private fun gitDiffUnstagedChangedFiles(): String {
-        return runGitCommand("diff", "--name-only", "--diff-filter=ACMR")
+        return runGitCommand("diff", NAME_ONLY, DIFF_FILTER_CHANGED)
     }
 
     private fun gitDiffDeletedFilesSince(ref: String): String {
-        return runGitCommand("diff", "--name-only", "--diff-filter=D", "$ref..HEAD")
+        return runGitCommand("diff", NAME_ONLY, DIFF_FILTER_DELETED, "$ref..HEAD")
     }
 
     private fun gitDiffStagedDeletedFiles(): String {
-        return runGitCommand("diff", "--name-only", "--diff-filter=D", "--cached")
+        return runGitCommand("diff", NAME_ONLY, DIFF_FILTER_DELETED, "--cached")
     }
 
     private fun gitDiffUnstagedDeletedFiles(): String {
-        return runGitCommand("diff", "--name-only", "--diff-filter=D")
+        return runGitCommand("diff", NAME_ONLY, DIFF_FILTER_DELETED)
     }
 
     private fun gitListUntrackedFiles(): String {
