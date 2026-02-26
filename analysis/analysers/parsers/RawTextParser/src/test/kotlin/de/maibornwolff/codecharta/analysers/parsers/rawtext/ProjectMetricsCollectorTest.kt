@@ -345,6 +345,81 @@ class ProjectMetricsCollectorTest {
         Assertions.assertThat(gitignoreFiles).isEmpty()
     }
 
+    // ========== LOCAL CHANGES FILTER TESTS ==========
+
+    @Test
+    fun `should only parse files in localChangesFiles set`() {
+        // Arrange
+        val testProjectDir = File("${testResourceBaseFolder}sampleproject").absoluteFile
+
+        // Act
+        val projectMetrics =
+            ProjectMetricsCollector(
+                testProjectDir,
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth,
+                useGitignore = false,
+                localChangesFiles = setOf("tabs.included")
+            ).parseProject()
+
+        // Assert
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(1)
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/tabs.included")
+    }
+
+    @Test
+    fun `should parse all files when localChangesFiles is empty`() {
+        // Arrange
+        val testProjectDir = File("${testResourceBaseFolder}sampleproject").absoluteFile
+
+        // Act
+        val projectMetrics =
+            ProjectMetricsCollector(
+                testProjectDir,
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth,
+                useGitignore = false,
+                localChangesFiles = emptySet()
+            ).parseProject()
+
+        // Assert
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(5)
+    }
+
+    @Test
+    fun `should filter local changes files in subdirectories`() {
+        // Arrange
+        val testProjectDir = File("${testResourceBaseFolder}sampleproject").absoluteFile
+
+        // Act
+        val projectMetrics =
+            ProjectMetricsCollector(
+                testProjectDir,
+                defaultExclude,
+                defaultFileExtensions,
+                defaultMetricNames,
+                defaultVerbose,
+                defaultMaxIndentLvl,
+                defaultTabWidth,
+                useGitignore = false,
+                localChangesFiles = setOf("spaces/spaces_3.included", "spaces/spaces_5.includedtoo")
+            ).parseProject()
+
+        // Assert
+        Assertions.assertThat(projectMetrics.metricsMap.size).isEqualTo(2)
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/spaces/spaces_3.included")
+        Assertions.assertThat(projectMetrics.metricsMap).containsKey("/spaces/spaces_5.includedtoo")
+        Assertions.assertThat(projectMetrics.metricsMap).doesNotContainKey("/tabs.included")
+    }
+
     @Test
     fun `Should handle project without gitignore file gracefully`() {
         // Arrange

@@ -24,7 +24,8 @@ class ProjectMetricsCollector(
     private val maxIndentLvl: Int,
     private val tabWidth: Int,
     private val baseFileNodeMap: Map<String, Node> = emptyMap(),
-    useGitignore: Boolean = true
+    useGitignore: Boolean = true,
+    private val localChangesFiles: Set<String> = emptySet()
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -53,7 +54,8 @@ class ProjectMetricsCollector(
 
                     if (
                         !isPathExcluded(standardizedPath) &&
-                        isParsableFileExtension(standardizedPath)
+                        isParsableFileExtension(standardizedPath) &&
+                        isIncludedByLocalChanges(standardizedPath)
                     ) {
                         filesParsed++
                         logProgress(it.name, filesParsed)
@@ -104,6 +106,11 @@ class ProjectMetricsCollector(
 
     private fun isPathExcluded(path: String): Boolean {
         return exclude.isNotEmpty() && excludePatterns.containsMatchIn(path)
+    }
+
+    private fun isIncludedByLocalChanges(standardizedPath: String): Boolean {
+        if (localChangesFiles.isEmpty()) return true
+        return localChangesFiles.contains(standardizedPath.removePrefix("/"))
     }
 
     private fun isExcludedByGitignore(file: File): Boolean {
