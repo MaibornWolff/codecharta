@@ -87,10 +87,15 @@ class GitCommandRunnerTest {
     }
 
     private fun executeGit(dir: File, vararg args: String) {
-        val process = ProcessBuilder(listOf("git") + args.toList())
+        val command = listOf("git") + args.toList()
+        val process = ProcessBuilder(command)
             .directory(dir)
             .redirectErrorStream(true)
             .start()
+        val output = process.inputStream.bufferedReader().readText()
         process.waitFor()
+        if (process.exitValue() != 0) {
+            throw RuntimeException("Test git command failed (exit ${process.exitValue()}): ${command.joinToString(" ")}\n$output")
+        }
     }
 }
