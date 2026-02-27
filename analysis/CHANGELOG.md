@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.141.0] - 2026-02-27
+
 ### Added 🚀
 
 - Add DependaChartaImporter to import code-level dependency data from `.dc.json` files as edge metrics
