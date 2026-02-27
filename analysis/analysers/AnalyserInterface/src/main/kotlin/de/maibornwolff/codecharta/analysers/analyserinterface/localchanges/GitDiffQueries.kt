@@ -25,7 +25,7 @@ class GitDiffQueries(private val git: GitCommandRunner) {
     }
 
     fun changedFilesSince(ref: String): Set<String> {
-        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_CHANGED, "$ref..HEAD")
+        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_CHANGED, "$ref...HEAD")
     }
 
     fun stagedChangedFiles(): Set<String> {
@@ -37,7 +37,7 @@ class GitDiffQueries(private val git: GitCommandRunner) {
     }
 
     fun deletedFilesSince(ref: String): Set<String> {
-        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_DELETED, "$ref..HEAD")
+        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_DELETED, "$ref...HEAD")
     }
 
     fun stagedDeletedFiles(): Set<String> {

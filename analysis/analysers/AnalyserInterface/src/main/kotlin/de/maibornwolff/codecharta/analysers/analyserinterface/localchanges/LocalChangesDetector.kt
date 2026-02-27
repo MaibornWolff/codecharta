@@ -7,6 +7,11 @@ class LocalChangesDetector(
     repoRoot: File,
     private val queries: GitDiffQueries = GitDiffQueries(GitCommandRunner(repoRoot))
 ) {
+    companion object {
+        private const val NOT_A_GIT_WORKTREE_MSG =
+            "--local-changes requires a git repository, but '%s' is not inside a git work tree"
+    }
+
     private val repoPath = repoRoot.absolutePath
 
     fun getLocallyChangedFiles(): LocalChangesResult {
@@ -33,11 +38,11 @@ class LocalChangesDetector(
         try {
             val gitCheck = queries.isInsideWorkTree()
             require(gitCheck.trim() == "true") {
-                "--local-changes requires a git repository, but '$repoPath' is not inside a git work tree"
+                NOT_A_GIT_WORKTREE_MSG.format(repoPath)
             }
         } catch (_: RuntimeException) {
             throw IllegalArgumentException(
-                "--local-changes requires a git repository, but '$repoPath' is not inside a git work tree"
+                NOT_A_GIT_WORKTREE_MSG.format(repoPath)
             )
         }
     }
