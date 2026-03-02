@@ -7,16 +7,12 @@ import { CcState, MetricData } from "../../../../codeCharta.model"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { filesSelector } from "../../../../state/store/files/files.selector"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
-import {
-    CCSCENARIO_EXTENSION,
-    getAvailableSectionKeys,
-    Scenario,
-    SCENARIO_SECTION_ICONS,
-    SCENARIO_SECTION_LABELS,
-    ScenarioSectionKey
-} from "../../model/scenario.model"
-import { ScenarioImportResult, ScenariosService } from "../../services/scenarios.service"
+import { CCSCENARIO_EXTENSION, getAvailableSectionKeys, Scenario, ScenarioSectionKey } from "../../model/scenario.model"
+import { ScenariosService } from "../../services/scenarios.service"
 import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
+import { DeleteConfirmDialogComponent } from "./deleteConfirmDialog/deleteConfirmDialog.component"
+import { ImportFeedbackDialogComponent } from "./importFeedbackDialog/importFeedbackDialog.component"
+import { ScenarioItemComponent } from "./scenarioItem/scenarioItem.component"
 
 export interface ScenarioView {
     scenario: Scenario
@@ -30,24 +26,16 @@ export interface ScenarioView {
 @Component({
     selector: "cc-scenario-list-dialog",
     templateUrl: "./scenarioListDialog.component.html",
-    imports: [FormsModule],
+    imports: [FormsModule, DeleteConfirmDialogComponent, ImportFeedbackDialogComponent, ScenarioItemComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScenarioListDialogComponent {
-    readonly sectionLabels = SCENARIO_SECTION_LABELS
-    readonly sectionIcons = SCENARIO_SECTION_ICONS
-
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
-    readonly deleteConfirmDialog = viewChild.required<ElementRef<HTMLDialogElement>>("deleteConfirmDialog")
-    readonly importErrorDialog = viewChild.required<ElementRef<HTMLDialogElement>>("importErrorDialog")
+    readonly deleteConfirmDialogRef = viewChild.required(DeleteConfirmDialogComponent)
+    readonly importFeedbackDialogRef = viewChild.required(ImportFeedbackDialogComponent)
     readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput")
     readonly applyRequested = output<{ scenario: Scenario; metricData: MetricData }>()
     readonly deleteTarget = signal<Scenario | null>(null)
-    readonly importFeedback = signal<{ duplicates: string[]; invalid: string[]; parseErrors: string[] }>({
-        duplicates: [],
-        invalid: [],
-        parseErrors: []
-    })
     readonly acceptExtensions = `${CCSCENARIO_EXTENSION},.json`
 
     readonly scenarios = toSignal(this.scenariosService.scenarios$, { initialValue: [] as Scenario[] })
@@ -113,36 +101,21 @@ export class ScenarioListDialogComponent {
         }
         const result = await this.scenariosService.importScenarioFiles(input.files)
         input.value = ""
-        this.showImportErrors(result)
-    }
-
-    closeImportErrors() {
-        this.importErrorDialog().nativeElement.close()
-        this.importFeedback.set({ duplicates: [], invalid: [], parseErrors: [] })
-    }
-
-    private showImportErrors(result: ScenarioImportResult): void {
-        const { duplicates, invalid, parseErrors } = result
-        if (duplicates.length > 0 || invalid.length > 0 || parseErrors.length > 0) {
-            this.importFeedback.set({ duplicates, invalid, parseErrors })
-            this.importErrorDialog().nativeElement.showModal()
-        }
+        this.importFeedbackDialogRef().open(result)
     }
 
     requestDelete(scenario: Scenario) {
         this.deleteTarget.set(scenario)
-        this.deleteConfirmDialog().nativeElement.showModal()
+        this.deleteConfirmDialogRef().open()
     }
 
     cancelDelete() {
-        this.deleteConfirmDialog().nativeElement.close()
         this.deleteTarget.set(null)
     }
 
     async confirmDelete() {
         const scenario = this.deleteTarget()
         if (scenario) {
-            this.deleteConfirmDialog().nativeElement.close()
             this.deleteTarget.set(null)
             await this.scenariosService.removeScenario(scenario.id)
         }

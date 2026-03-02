@@ -75,6 +75,9 @@ describe("ScenarioListDialogComponent", () => {
     let store: MockStore
 
     beforeEach(() => {
+        HTMLDialogElement.prototype.showModal = jest.fn()
+        HTMLDialogElement.prototype.close = jest.fn()
+
         scenariosSubject = new BehaviorSubject<Scenario[]>([])
         scenariosService = {
             scenarios$: scenariosSubject,
@@ -93,13 +96,6 @@ describe("ScenarioListDialogComponent", () => {
         const fixture = TestBed.createComponent(ScenarioListDialogComponent)
         component = fixture.componentInstance
         fixture.detectChanges()
-
-        component.dialogElement().nativeElement.showModal = jest.fn()
-        component.dialogElement().nativeElement.close = jest.fn()
-        component.deleteConfirmDialog().nativeElement.showModal = jest.fn()
-        component.deleteConfirmDialog().nativeElement.close = jest.fn()
-        component.importErrorDialog().nativeElement.showModal = jest.fn()
-        component.importErrorDialog().nativeElement.close = jest.fn()
     })
 
     it("should show scenarios from service", () => {
@@ -150,7 +146,7 @@ describe("ScenarioListDialogComponent", () => {
     })
 
     describe("delete", () => {
-        it("should open confirm dialog and set deleteTarget on requestDelete", () => {
+        it("should set deleteTarget on requestDelete", () => {
             // Arrange
             const scenario = createTestScenario("To Delete", "id-1")
 
@@ -159,7 +155,6 @@ describe("ScenarioListDialogComponent", () => {
 
             // Assert
             expect(component.deleteTarget()).toBe(scenario)
-            expect(component.deleteConfirmDialog().nativeElement.showModal).toHaveBeenCalled()
         })
 
         it("should call removeScenario and clear target on confirmDelete", async () => {
@@ -175,7 +170,7 @@ describe("ScenarioListDialogComponent", () => {
             expect(component.deleteTarget()).toBeNull()
         })
 
-        it("should clear target and close dialog on cancelDelete", () => {
+        it("should clear target on cancelDelete", () => {
             // Arrange
             const scenario = createTestScenario("To Delete", "id-1")
             component.requestDelete(scenario)
@@ -186,7 +181,6 @@ describe("ScenarioListDialogComponent", () => {
             // Assert
             expect(scenariosService.removeScenario).not.toHaveBeenCalled()
             expect(component.deleteTarget()).toBeNull()
-            expect(component.deleteConfirmDialog().nativeElement.close).toHaveBeenCalled()
         })
     })
 
@@ -248,24 +242,33 @@ describe("ScenarioListDialogComponent", () => {
             const scenario = createTestScenario("Test", "id-1", ["my.cc.json"])
             const visible = new Set(["my.cc.json"])
 
+            // Act
+            const result = getScenarioPriority(scenario, visible)
+
             // Assert
-            expect(getScenarioPriority(scenario, visible)).toBe(0)
+            expect(result).toBe(0)
         })
 
         it("should return 1 for global user scenarios", () => {
             // Arrange
             const scenario = createTestScenario("Test", "id-1")
 
+            // Act
+            const result = getScenarioPriority(scenario, new Set())
+
             // Assert
-            expect(getScenarioPriority(scenario, new Set())).toBe(1)
+            expect(result).toBe(1)
         })
 
         it("should return 2 for built-in scenarios", () => {
             // Arrange
             const scenario = createBuiltInScenario("Test", "id-1")
 
+            // Act
+            const result = getScenarioPriority(scenario, new Set())
+
             // Assert
-            expect(getScenarioPriority(scenario, new Set())).toBe(2)
+            expect(result).toBe(2)
         })
 
         it("should return 3 for scenarios bound to a non-visible map", () => {
@@ -273,8 +276,11 @@ describe("ScenarioListDialogComponent", () => {
             const scenario = createTestScenario("Test", "id-1", ["other.cc.json"])
             const visible = new Set(["my.cc.json"])
 
+            // Act
+            const result = getScenarioPriority(scenario, visible)
+
             // Assert
-            expect(getScenarioPriority(scenario, visible)).toBe(3)
+            expect(result).toBe(3)
         })
     })
 
@@ -363,8 +369,11 @@ describe("ScenarioListDialogComponent", () => {
 
     describe("groupScenarios", () => {
         it("should return empty array for no scenarios", () => {
+            // Act
+            const result = groupScenarios([], new Set())
+
             // Assert
-            expect(groupScenarios([], new Set())).toEqual([])
+            expect(result).toEqual([])
         })
 
         it("should group multiple scenarios into correct buckets", () => {
@@ -423,91 +432,31 @@ describe("ScenarioListDialogComponent", () => {
             expect(scenariosService.importScenarioFiles).not.toHaveBeenCalled()
         })
 
-        it("should show parse errors in feedback dialog", async () => {
+        it("should delegate import feedback to sub-component", async () => {
             // Arrange
-            scenariosService.importScenarioFiles.mockResolvedValue({
-                imported: 0,
-                duplicates: [],
-                invalid: [],
-                parseErrors: ["broken.json"]
-            })
+            const importResult = { imported: 0, duplicates: [], invalid: [], parseErrors: ["broken.json"] }
+            scenariosService.importScenarioFiles.mockResolvedValue(importResult)
+            const openSpy = jest.spyOn(component.importFeedbackDialogRef(), "open")
             const mockEvent = { target: { files: { length: 1 } as FileList, value: "broken.json" } } as unknown as Event
 
             // Act
             await component.handleImportFiles(mockEvent)
 
             // Assert
-            expect(component.importFeedback().parseErrors).toEqual(["broken.json"])
-            expect(component.importFeedback().invalid).toEqual([])
-            expect(component.importFeedback().duplicates).toEqual([])
-            expect(component.importErrorDialog().nativeElement.showModal).toHaveBeenCalled()
+            expect(openSpy).toHaveBeenCalledWith(importResult)
         })
 
-        it("should show invalid files in feedback dialog", async () => {
-            // Arrange
-            scenariosService.importScenarioFiles.mockResolvedValue({
-                imported: 0,
-                duplicates: [],
-                invalid: ["bad.ccscenario"],
-                parseErrors: []
-            })
-            const mockEvent = { target: { files: { length: 1 } as FileList, value: "bad.ccscenario" } } as unknown as Event
-
-            // Act
-            await component.handleImportFiles(mockEvent)
-
-            // Assert
-            expect(component.importFeedback().invalid).toEqual(["bad.ccscenario"])
-            expect(component.importFeedback().parseErrors).toEqual([])
-            expect(component.importFeedback().duplicates).toEqual([])
-            expect(component.importErrorDialog().nativeElement.showModal).toHaveBeenCalled()
-        })
-
-        it("should show duplicates as warnings in feedback dialog", async () => {
-            // Arrange
-            scenariosService.importScenarioFiles.mockResolvedValue({
-                imported: 0,
-                duplicates: ["My Scenario"],
-                invalid: [],
-                parseErrors: []
-            })
-            const mockEvent = { target: { files: { length: 1 } as FileList, value: "file.ccscenario" } } as unknown as Event
-
-            // Act
-            await component.handleImportFiles(mockEvent)
-
-            // Assert
-            expect(component.importFeedback().duplicates).toEqual(["My Scenario"])
-            expect(component.importFeedback().invalid).toEqual([])
-            expect(component.importFeedback().parseErrors).toEqual([])
-            expect(component.importErrorDialog().nativeElement.showModal).toHaveBeenCalled()
-        })
-
-        it("should not show dialog when import succeeds without issues", async () => {
+        it("should not call importFeedbackDialog.open when import succeeds without issues", async () => {
             // Arrange
             scenariosService.importScenarioFiles.mockResolvedValue({ imported: 1, duplicates: [], invalid: [], parseErrors: [] })
+            const openSpy = jest.spyOn(component.importFeedbackDialogRef(), "open")
             const mockEvent = { target: { files: { length: 1 } as FileList, value: "file.ccscenario" } } as unknown as Event
 
             // Act
             await component.handleImportFiles(mockEvent)
 
             // Assert
-            expect(component.importFeedback()).toEqual({ duplicates: [], invalid: [], parseErrors: [] })
-            expect(component.importErrorDialog().nativeElement.showModal).not.toHaveBeenCalled()
-        })
-
-        it("should clear feedback and close dialog on closeImportErrors", async () => {
-            // Arrange
-            scenariosService.importScenarioFiles.mockResolvedValue({ imported: 0, duplicates: ["Dup"], invalid: [], parseErrors: [] })
-            const mockEvent = { target: { files: { length: 1 } as FileList, value: "file.ccscenario" } } as unknown as Event
-            await component.handleImportFiles(mockEvent)
-
-            // Act
-            component.closeImportErrors()
-
-            // Assert
-            expect(component.importFeedback()).toEqual({ duplicates: [], invalid: [], parseErrors: [] })
-            expect(component.importErrorDialog().nativeElement.close).toHaveBeenCalled()
+            expect(openSpy).toHaveBeenCalled()
         })
     })
 
@@ -543,9 +492,13 @@ describe("ScenarioListDialogComponent", () => {
             const bound = createTestScenario("Bound", "id-1", ["file.cc.json"])
             const global = createTestScenario("Global", "id-2")
 
-            // Act & Assert
-            expect(toScenarioView(bound, new Set(), emptyMetricData).mapBound).toBe(true)
-            expect(toScenarioView(global, new Set(), emptyMetricData).mapBound).toBe(false)
+            // Act
+            const boundView = toScenarioView(bound, new Set(), emptyMetricData)
+            const globalView = toScenarioView(global, new Set(), emptyMetricData)
+
+            // Assert
+            expect(boundView.mapBound).toBe(true)
+            expect(globalView.mapBound).toBe(false)
         })
 
         it("should set mapMismatch correctly", () => {
@@ -554,9 +507,13 @@ describe("ScenarioListDialogComponent", () => {
             const visible = new Set(["other.cc.json"])
             const matching = new Set(["project.cc.json"])
 
-            // Act & Assert
-            expect(toScenarioView(bound, visible, emptyMetricData).mapMismatch).toBe(true)
-            expect(toScenarioView(bound, matching, emptyMetricData).mapMismatch).toBe(false)
+            // Act
+            const mismatchView = toScenarioView(bound, visible, emptyMetricData)
+            const matchView = toScenarioView(bound, matching, emptyMetricData)
+
+            // Assert
+            expect(mismatchView.mapMismatch).toBe(true)
+            expect(matchView.mapMismatch).toBe(false)
         })
 
         it("should format date as locale string", () => {
@@ -576,15 +533,13 @@ describe("ScenarioListDialogComponent", () => {
             const full = createTestScenario("Full", "id-1")
             const builtIn = createBuiltInScenario("Built-In", "id-2")
 
-            // Act & Assert
-            expect(toScenarioView(full, new Set(), emptyMetricData).sectionKeys).toEqual([
-                "metrics",
-                "colors",
-                "camera",
-                "filters",
-                "labelsAndFolders"
-            ])
-            expect(toScenarioView(builtIn, new Set(), emptyMetricData).sectionKeys).toEqual(["metrics", "colors"])
+            // Act
+            const fullView = toScenarioView(full, new Set(), emptyMetricData)
+            const builtInView = toScenarioView(builtIn, new Set(), emptyMetricData)
+
+            // Assert
+            expect(fullView.sectionKeys).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
+            expect(builtInView.sectionKeys).toEqual(["metrics", "colors"])
         })
     })
 })
