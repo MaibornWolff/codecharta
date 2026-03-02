@@ -7,7 +7,16 @@ import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { CCSCENARIO_EXTENSION, fromScenarioFile, Scenario, ScenarioFile, ScenarioSectionKey, toScenarioFile } from "../model/scenario.model"
+
+export interface ScenarioImportResult {
+    imported: number
+    duplicates: string[]
+    invalid: string[]
+    parseErrors: string[]
+}
 import { FileDownloader } from "../../../util/fileDownloader"
+import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { buildScenario } from "./scenarioBuilder"
 import { buildOrderedStatePatches, getCameraVectors } from "./scenarioApplier"
 import { addScenario, deleteScenario as deleteScenarioFromDB, readAllScenarios } from "./scenarioIndexedDB"
@@ -16,6 +25,7 @@ import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
 @Injectable({ providedIn: "root" })
 export class ScenariosService {
     scenarios$ = new BehaviorSubject<Scenario[]>([])
+    isApplying = false
 
     constructor(
         private readonly store: Store<CcState>,
@@ -55,42 +65,51 @@ export class ScenariosService {
     }
 
     async applyScenario(scenario: Scenario, selectedKeys: Set<ScenarioSectionKey>, metricData?: MetricData): Promise<void> {
-        const cameraVectors = selectedKeys.has("camera") ? getCameraVectors(scenario.sections) : undefined
-        const applyCamera = cameraVectors !== undefined
-        const patches = buildOrderedStatePatches(scenario.sections, selectedKeys, metricData)
+        this.isApplying = true
+        this.store.dispatch(setIsLoadingFile({ value: true }))
 
-        // When applying camera, temporarily disable autoFit so it doesn't
-        // overwrite our camera position after the render cycle completes.
-        const previousResetCamera = applyCamera ? this.state.getValue().appSettings.resetCameraIfNewFileIsLoaded : undefined
-        if (applyCamera && previousResetCamera && patches.length > 0) {
-            patches[0].appSettings = { ...patches[0].appSettings, resetCameraIfNewFileIsLoaded: false }
-        }
+        try {
+            const cameraVectors = selectedKeys.has("camera") ? getCameraVectors(scenario.sections) : undefined
+            const applyCamera = cameraVectors !== undefined
+            const patches = buildOrderedStatePatches(scenario.sections, selectedKeys, metricData)
 
-        // Dispatch patches sequentially with microtask gaps so effects
-        // triggered by earlier patches (e.g. resetColorRange after metric change)
-        // settle before subsequent patches override their values.
-        for (const patch of patches) {
-            this.store.dispatch(setState({ value: patch }))
-            await new Promise<void>(resolve => setTimeout(resolve))
-        }
-
-        if (applyCamera) {
-            const { position, target } = cameraVectors
-            this.threeCameraService.camera.position.set(position.x, position.y, position.z)
-            this.threeMapControlsService.setControlTarget(target)
-            this.threeCameraService.camera.lookAt(target)
-            this.threeCameraService.camera.updateProjectionMatrix()
-            this.threeMapControlsService.updateControls()
-
-            // Restore resetCameraIfNewFileIsLoaded after autoFit window has passed.
-            if (previousResetCamera) {
-                setTimeout(() => {
-                    this.store.dispatch(setState({ value: { appSettings: { resetCameraIfNewFileIsLoaded: true } } }))
-                })
+            // When applying camera, temporarily disable autoFit so it doesn't
+            // overwrite our camera position after the render cycle completes.
+            const previousResetCamera = applyCamera ? this.state.getValue().appSettings.resetCameraIfNewFileIsLoaded : undefined
+            if (applyCamera && previousResetCamera && patches.length > 0) {
+                patches[0].appSettings = { ...patches[0].appSettings, resetCameraIfNewFileIsLoaded: false }
             }
-        }
 
-        this.threeRendererService.render()
+            // Dispatch patches sequentially with microtask gaps so effects
+            // triggered by earlier patches (e.g. resetColorRange after metric change)
+            // settle before subsequent patches override their values.
+            for (const patch of patches) {
+                this.store.dispatch(setState({ value: patch }))
+                await new Promise<void>(resolve => setTimeout(resolve))
+            }
+
+            if (applyCamera) {
+                const { position, target } = cameraVectors
+                this.threeCameraService.camera.position.set(position.x, position.y, position.z)
+                this.threeMapControlsService.setControlTarget(target)
+                this.threeCameraService.camera.lookAt(target)
+                this.threeCameraService.camera.updateProjectionMatrix()
+                this.threeMapControlsService.updateControls()
+
+                // Restore resetCameraIfNewFileIsLoaded after autoFit window has passed.
+                if (previousResetCamera) {
+                    setTimeout(() => {
+                        this.store.dispatch(setState({ value: { appSettings: { resetCameraIfNewFileIsLoaded: true } } }))
+                    })
+                }
+            }
+
+            this.threeRendererService.render()
+        } finally {
+            this.isApplying = false
+            this.store.dispatch(setIsLoadingFile({ value: false }))
+            this.store.dispatch(setIsLoadingMap({ value: false }))
+        }
     }
 
     exportScenario(scenario: Scenario): void {
@@ -99,27 +118,35 @@ export class ScenariosService {
         FileDownloader.downloadData(JSON.stringify(file, null, 2), sanitizedName + CCSCENARIO_EXTENSION)
     }
 
-    async importScenarioFiles(files: FileList): Promise<number> {
+    async importScenarioFiles(files: FileList): Promise<ScenarioImportResult> {
         const existing = this.scenarios$.getValue()
-        let count = 0
+        const result: ScenarioImportResult = { imported: 0, duplicates: [], invalid: [], parseErrors: [] }
         for (const file of files) {
-            const text = await file.text()
-            const parsed = JSON.parse(text) as ScenarioFile
+            let parsed: ScenarioFile
+            try {
+                const text = await file.text()
+                parsed = JSON.parse(text) as ScenarioFile
+            } catch {
+                result.parseErrors.push(file.name)
+                continue
+            }
             if (parsed.schemaVersion !== 1 || !parsed.name || !parsed.sections) {
+                result.invalid.push(file.name)
                 continue
             }
             if (this.isDuplicate(parsed, existing)) {
+                result.duplicates.push(parsed.name)
                 continue
             }
             const scenario = fromScenarioFile(parsed)
             existing.push(scenario)
             await addScenario(scenario)
-            count++
+            result.imported++
         }
-        if (count > 0) {
+        if (result.imported > 0) {
             await this.loadScenarios()
         }
-        return count
+        return result
     }
 
     private isDuplicate(file: ScenarioFile, existing: Scenario[]): boolean {

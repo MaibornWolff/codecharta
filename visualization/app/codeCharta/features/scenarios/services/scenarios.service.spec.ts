@@ -7,6 +7,9 @@ import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMa
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ScenariosService } from "./scenarios.service"
 import { Scenario, ScenarioFile, ScenarioSectionKey } from "../model/scenario.model"
+import { ScenarioImportResult } from "./scenarios.service"
+import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { FileDownloader } from "../../../util/fileDownloader"
 import * as scenarioIndexedDB from "./scenarioIndexedDB"
 import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
@@ -129,6 +132,24 @@ describe("ScenariosService", () => {
     })
 
     describe("applyScenario", () => {
+        it("should show loading spinner during application and hide it after", async () => {
+            // Arrange
+            const scenario = await service.saveScenario("Test")
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            expect(service.isApplying).toBe(false)
+            const promise = service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
+            expect(service.isApplying).toBe(true)
+            await promise
+
+            // Assert
+            expect(service.isApplying).toBe(false)
+            expect(dispatchSpy.mock.calls[0][0]).toEqual(setIsLoadingFile({ value: true }))
+            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
+            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+        })
+
         it("should dispatch setState for metrics section", async () => {
             // Arrange
             const scenario = await service.saveScenario("Test")
@@ -184,6 +205,23 @@ describe("ScenariosService", () => {
             // Assert
             expect(threeRendererService.render).toHaveBeenCalled()
         })
+
+        it("should clear isApplying and loading state even when an error occurs during application", async () => {
+            // Arrange
+            const scenario = await service.saveScenario("Test")
+            threeRendererService.render.mockImplementation(() => {
+                throw new Error("render failed")
+            })
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            await expect(service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))).rejects.toThrow("render failed")
+
+            // Assert
+            expect(service.isApplying).toBe(false)
+            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
+            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+        })
     })
 
     describe("exportScenario", () => {
@@ -219,11 +257,11 @@ describe("ScenariosService", () => {
     })
 
     describe("importScenarioFiles", () => {
-        function createMockFile(content: string): { text: () => Promise<string> } {
-            return { text: () => Promise.resolve(content) }
+        function createMockFile(content: string, name = "file.ccscenario"): { name: string; text: () => Promise<string> } {
+            return { name, text: () => Promise.resolve(content) }
         }
 
-        function createMockFileList(files: { text: () => Promise<string> }[]): FileList {
+        function createMockFileList(files: { name: string; text: () => Promise<string> }[]): FileList {
             return {
                 length: files.length,
                 item: (index: number) => files[index],
@@ -243,37 +281,44 @@ describe("ScenariosService", () => {
             const fileList = createMockFileList([createMockFile(JSON.stringify(scenarioFile))])
 
             // Act
-            const count = await service.importScenarioFiles(fileList)
+            const result = await service.importScenarioFiles(fileList)
 
             // Assert
-            expect(count).toBe(1)
+            expect(result.imported).toBe(1)
+            expect(result.duplicates).toEqual([])
+            expect(result.invalid).toEqual([])
+            expect(result.parseErrors).toEqual([])
             expect(scenarioIndexedDB.addScenario).toHaveBeenCalled()
             expect(scenarioIndexedDB.readAllScenarios).toHaveBeenCalled()
         })
 
-        it("should skip files with invalid schemaVersion", async () => {
-            // Arrange
-            const fileList = createMockFileList([createMockFile(JSON.stringify({ schemaVersion: 99, name: "Bad", sections: {} }))])
-
-            // Act
-            const count = await service.importScenarioFiles(fileList)
-
-            // Assert
-            expect(count).toBe(0)
-        })
-
-        it("should skip files missing required fields", async () => {
+        it("should skip files with invalid schemaVersion and report them as invalid", async () => {
             // Arrange
             const fileList = createMockFileList([
-                createMockFile(JSON.stringify({ schemaVersion: 1, sections: {} })),
-                createMockFile(JSON.stringify({ schemaVersion: 1, name: "Test" }))
+                createMockFile(JSON.stringify({ schemaVersion: 99, name: "Bad", sections: {} }), "bad.ccscenario")
             ])
 
             // Act
-            const count = await service.importScenarioFiles(fileList)
+            const result = await service.importScenarioFiles(fileList)
 
             // Assert
-            expect(count).toBe(0)
+            expect(result.imported).toBe(0)
+            expect(result.invalid).toEqual(["bad.ccscenario"])
+        })
+
+        it("should skip files missing required fields and report them as invalid", async () => {
+            // Arrange
+            const fileList = createMockFileList([
+                createMockFile(JSON.stringify({ schemaVersion: 1, sections: {} }), "no-name.ccscenario"),
+                createMockFile(JSON.stringify({ schemaVersion: 1, name: "Test" }), "no-sections.ccscenario")
+            ])
+
+            // Act
+            const result = await service.importScenarioFiles(fileList)
+
+            // Assert
+            expect(result.imported).toBe(0)
+            expect(result.invalid).toEqual(["no-name.ccscenario", "no-sections.ccscenario"])
         })
 
         it("should import multiple files and return total count", async () => {
@@ -284,15 +329,14 @@ describe("ScenariosService", () => {
             ])
 
             // Act
-            const count = await service.importScenarioFiles(fileList)
+            const result = await service.importScenarioFiles(fileList)
 
             // Assert
-            expect(count).toBe(2)
+            expect(result.imported).toBe(2)
         })
 
-        it("should skip duplicates that match an existing scenario by name and sections", async () => {
+        it("should skip duplicates and report them by name", async () => {
             // Arrange
-            const sections = { metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" } }
             await service.saveScenario("Existing")
             const existingScenario = service.scenarios$.getValue()[0]
             const fileList = createMockFileList([
@@ -300,10 +344,11 @@ describe("ScenariosService", () => {
             ])
 
             // Act
-            const count = await service.importScenarioFiles(fileList)
+            const result = await service.importScenarioFiles(fileList)
 
             // Assert
-            expect(count).toBe(0)
+            expect(result.imported).toBe(0)
+            expect(result.duplicates).toEqual(["Existing"])
         })
 
         it("should import scenario with same name but different sections", async () => {
@@ -320,10 +365,10 @@ describe("ScenariosService", () => {
             ])
 
             // Act
-            const count = await service.importScenarioFiles(fileList)
+            const result = await service.importScenarioFiles(fileList)
 
             // Assert
-            expect(count).toBe(1)
+            expect(result.imported).toBe(1)
         })
 
         it("should deduplicate within the same import batch", async () => {
@@ -336,10 +381,23 @@ describe("ScenariosService", () => {
             const fileList = createMockFileList([createMockFile(content), createMockFile(content)])
 
             // Act
-            const count = await service.importScenarioFiles(fileList)
+            const result = await service.importScenarioFiles(fileList)
 
             // Assert
-            expect(count).toBe(1)
+            expect(result.imported).toBe(1)
+            expect(result.duplicates).toEqual(["Same"])
+        })
+
+        it("should report parse errors for malformed JSON", async () => {
+            // Arrange
+            const fileList = createMockFileList([createMockFile("not valid json", "broken.json")])
+
+            // Act
+            const result = await service.importScenarioFiles(fileList)
+
+            // Assert
+            expect(result.imported).toBe(0)
+            expect(result.parseErrors).toEqual(["broken.json"])
         })
     })
 })

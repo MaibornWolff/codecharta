@@ -15,7 +15,7 @@ import {
     SCENARIO_SECTION_LABELS,
     ScenarioSectionKey
 } from "../../model/scenario.model"
-import { ScenariosService } from "../../services/scenarios.service"
+import { ScenarioImportResult, ScenariosService } from "../../services/scenarios.service"
 import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
 
 export interface ScenarioView {
@@ -39,9 +39,15 @@ export class ScenarioListDialogComponent {
 
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
     readonly deleteConfirmDialog = viewChild.required<ElementRef<HTMLDialogElement>>("deleteConfirmDialog")
+    readonly importErrorDialog = viewChild.required<ElementRef<HTMLDialogElement>>("importErrorDialog")
     readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput")
     readonly applyRequested = output<{ scenario: Scenario; metricData: MetricData }>()
     readonly deleteTarget = signal<Scenario | null>(null)
+    readonly importFeedback = signal<{ duplicates: string[]; invalid: string[]; parseErrors: string[] }>({
+        duplicates: [],
+        invalid: [],
+        parseErrors: []
+    })
     readonly acceptExtensions = CCSCENARIO_EXTENSION + ",.json"
 
     readonly scenarios = toSignal(this.scenariosService.scenarios$, { initialValue: [] as Scenario[] })
@@ -105,8 +111,22 @@ export class ScenarioListDialogComponent {
         if (!input.files?.length) {
             return
         }
-        await this.scenariosService.importScenarioFiles(input.files)
+        const result = await this.scenariosService.importScenarioFiles(input.files)
         input.value = ""
+        this.showImportErrors(result)
+    }
+
+    closeImportErrors() {
+        this.importErrorDialog().nativeElement.close()
+        this.importFeedback.set({ duplicates: [], invalid: [], parseErrors: [] })
+    }
+
+    private showImportErrors(result: ScenarioImportResult): void {
+        const { duplicates, invalid, parseErrors } = result
+        if (duplicates.length > 0 || invalid.length > 0 || parseErrors.length > 0) {
+            this.importFeedback.set({ duplicates, invalid, parseErrors })
+            this.importErrorDialog().nativeElement.showModal()
+        }
     }
 
     requestDelete(scenario: Scenario) {

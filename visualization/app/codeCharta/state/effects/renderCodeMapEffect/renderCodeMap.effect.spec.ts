@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { Subject } from "rxjs"
+import { ScenariosService } from "../../../features/scenarios/services/scenarios.service"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { UploadFilesService } from "../../../ui/toolBar/uploadFilesButton/uploadFiles.service"
@@ -28,6 +29,7 @@ describe("renderCodeMapEffect", () => {
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([RenderCodeMapEffect])],
             providers: [
+                { provide: ScenariosService, useValue: { isApplying: false } },
                 { provide: UploadFilesService, useValue: { isUploading: false } },
                 { provide: ThreeRendererService, useValue: threeRendererService },
                 { provide: CodeMapRenderService, useValue: codeMapRenderService },
@@ -61,6 +63,20 @@ describe("renderCodeMapEffect", () => {
         await wait(maxFPS)
         expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
         expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+    })
+
+    it("should not remove loading indicators after render when a scenario is being applied", async () => {
+        // Arrange
+        const scenariosService = TestBed.inject(ScenariosService)
+        scenariosService.isApplying = true
+
+        // Act
+        actions$.next(setInvertArea({ value: true }))
+        await wait(maxFPS)
+
+        // Assert
+        expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
+        expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
     })
 
     it("should not remove loading indicators after render when a file is still being uploaded", async () => {
