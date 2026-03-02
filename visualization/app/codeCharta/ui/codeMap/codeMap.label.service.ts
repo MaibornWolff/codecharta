@@ -71,10 +71,10 @@ export class CodeMapLabelService {
         const x = (node.x0 - treeMapSize + node.width / 2) * multiplier.x
         const z = (node.y0 - treeMapSize + node.length / 2) * multiplier.z
 
-        cssObject.position.set(x, (node.z0 + labelHeight) * multiplier.y, z)
+        cssObject.position.set(x, node.z0 + labelHeight * multiplier.y, z)
         cssObject.userData = { node }
 
-        const buildingTop = new Vector3(x, (node.z0 + actualHeight) * multiplier.y, z)
+        const buildingTop = new Vector3(x, node.z0 + actualHeight * multiplier.y, z)
 
         this.threeSceneService.labels.add(cssObject)
         this.labels.push({ cssObject, node, buildingTop })

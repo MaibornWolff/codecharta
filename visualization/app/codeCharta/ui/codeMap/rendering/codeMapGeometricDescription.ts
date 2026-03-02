@@ -76,8 +76,19 @@ export class CodeMapGeometricDescription {
 
         this.scaledBoxes = this._buildings.map(building => {
             const box = building.boundingBox.clone()
-            box.min.multiply(this.scales)
-            box.max.multiply(this.scales)
+            // X and Z scale normally for all nodes
+            box.min.x *= this.scales.x
+            box.max.x *= this.scales.x
+            box.min.z *= this.scales.z
+            box.max.z *= this.scales.z
+
+            if (building.node.isLeaf) {
+                // Leaves: scale only the height portion, base Y stays unscaled
+                const height = box.max.y - box.min.y
+                box.max.y = box.min.y + height * this.scales.y
+            }
+            // Folders: no Y scaling (they stay flat)
+
             box.translate(this.boxTranslation)
             return box
         })

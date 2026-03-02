@@ -163,7 +163,8 @@ describe("FloorLabelDrawer", () => {
     })
 
     describe("translatePlaneCanvases", () => {
-        it("should translate floor label of root on multiple scaleHeight", () => {
+        it("should be a no-op since folders no longer scale with height", () => {
+            // Arrange
             initMapCanvas()
 
             const rootNode = createFakeNode("root", 500, 500, false, 0)
@@ -175,22 +176,14 @@ describe("FloorLabelDrawer", () => {
 
             const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
             const floorLabelPlanes = floorLabelDrawer.draw()
+            const positionBefore = floorLabelPlanes[0].geometry.attributes.position.array[2]
 
-            const geometryPositions = floorLabelPlanes[0].geometry.attributes.position.array
+            // Act
+            floorLabelDrawer.translatePlaneCanvases(new Vector3(1, 2, 1))
 
-            assertFloorLabelTranslation(floorLabelDrawer, geometryPositions[2], 1, 1.5)
-            assertFloorLabelTranslation(floorLabelDrawer, geometryPositions[2], 1.5, 1.6)
-            assertFloorLabelTranslation(floorLabelDrawer, geometryPositions[2], 1.6, 1.4)
+            // Assert
+            const positionAfter = floorLabelDrawer["floorLabelPlanes"][0].geometry.attributes.position.array[2]
+            expect(positionAfter).toBeCloseTo(positionBefore, 5)
         })
-
-        function assertFloorLabelTranslation(floorLabelDrawer, startPosition, lastScaling, translateY) {
-            floorLabelDrawer.translatePlaneCanvases(new Vector3(1, translateY, 1))
-
-            const expectedDifference = lastScaling - translateY
-            const additivePositionDelta = 2 * expectedDifference
-
-            const translatedPostion = floorLabelDrawer["floorLabelPlanes"][0].geometry.attributes.position.array[2]
-            expect(translatedPostion).toBeCloseTo(startPosition + additivePositionDelta, 5)
-        }
     })
 })

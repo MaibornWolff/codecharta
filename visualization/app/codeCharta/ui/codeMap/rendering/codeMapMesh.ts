@@ -69,6 +69,7 @@ export class CodeMapMesh {
     private geomGen: GeometryGenerator
     private mapGeomDesc: CodeMapGeometricDescription
     private nodes: Node[]
+    private heightScale = 1.0
     private dirtyRange: DirtyRange | null = null
     private _prevHighlightedIds: Set<number> | null = null
     private _prevIsPresentationMode: boolean | null = null
@@ -338,8 +339,16 @@ export class CodeMapMesh {
         this.material?.dispose()
     }
 
+    setHeightScale(y: number) {
+        this.heightScale = y
+        if (this.material?.uniforms?.uBuildingHeightScale) {
+            this.material.uniforms.uBuildingHeightScale.value = y
+        }
+    }
+
     private initMaterial() {
         const uniforms = UniformsUtils.merge([UniformsLib["lights"]])
+        uniforms.uBuildingHeightScale = { value: 1.0 }
 
         const shaderCode = new CodeMapShaderStrings()
 
@@ -422,9 +431,17 @@ export class CodeMapMesh {
         const deltaVal = attrs.deltaAttr.getX(i)
         const isLeaf = attrs.isLeafAttr.getX(i)
 
+        const baseY = matrix.elements[13] // translation Y component
+
         for (let v = 0; v < verticesPerBox; v++) {
             vertex.set(templatePositions[v * 3], templatePositions[v * 3 + 1], templatePositions[v * 3 + 2])
             vertex.applyMatrix4(matrix)
+
+            // Apply height scaling for leaves to match shader behavior
+            if (isLeaf > 0.5 && this.heightScale !== 1.0) {
+                vertex.y = baseY + (vertex.y - baseY) * this.heightScale
+            }
+
             buffers.positions[posOffset + v * 3] = vertex.x
             buffers.positions[posOffset + v * 3 + 1] = vertex.y
             buffers.positions[posOffset + v * 3 + 2] = vertex.z

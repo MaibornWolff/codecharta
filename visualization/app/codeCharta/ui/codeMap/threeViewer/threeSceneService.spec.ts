@@ -205,37 +205,32 @@ describe("ThreeSceneService", () => {
     })
 
     describe("scaleHeight", () => {
-        it("should update mapGeometry scaling to new vector", () => {
-            const translateCanvasesMock = jest.fn()
-            threeSceneService["floorLabelDrawer"] = {
-                translatePlaneCanvases: translateCanvasesMock
-            }
-
+        it("should update mapGeometry scaling with Y=1 (height handled by shader)", () => {
+            // Arrange
             const scaling = new Vector3(1, 2, 3)
             store.dispatch(setScaling({ value: scaling }))
 
+            // Act
             threeSceneService.scaleHeight()
 
+            // Assert
             const mapGeometry = threeSceneService.mapGeometry
-
-            expect(mapGeometry.scale).toEqual(scaling)
-            expect(translateCanvasesMock).toHaveBeenCalledTimes(1)
+            expect(mapGeometry.scale).toEqual(new Vector3(1, 1, 3))
         })
 
-        it("should call mapMesh.scale and apply the correct scaling to the mesh", () => {
-            const translateCanvasesMock = jest.fn()
-            threeSceneService["floorLabelDrawer"] = {
-                translatePlaneCanvases: translateCanvasesMock
-            }
-
+        it("should call mapMesh.setHeightScale and setScale with correct values", () => {
+            // Arrange
             const scaling = new Vector3(1, 2, 3)
             store.dispatch(setScaling({ value: scaling }))
             threeSceneService["mapMesh"].setScale = jest.fn()
+            threeSceneService["mapMesh"].setHeightScale = jest.fn()
 
+            // Act
             threeSceneService.scaleHeight()
 
+            // Assert
+            expect(threeSceneService["mapMesh"].setHeightScale).toHaveBeenCalledWith(2)
             expect(threeSceneService["mapMesh"].setScale).toHaveBeenCalledWith(scaling)
-            expect(translateCanvasesMock).toHaveBeenCalledTimes(1)
         })
     })
 

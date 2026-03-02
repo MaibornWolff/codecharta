@@ -10,7 +10,6 @@ export class FloorLabelDrawer {
     private readonly mapSize: number
     private readonly scaling: Vector3
     readonly folderGeometryHeight: number = 2.01
-    private lastScaling: Vector3 = new Vector3(1, 1, 1)
     private floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
 
     private floorLabelsPerLevel = new Map()
@@ -52,14 +51,8 @@ export class FloorLabelDrawer {
         return this.floorLabelPlanes
     }
 
-    translatePlaneCanvases(scale: Vector3) {
-        const defaultFolderHeight = 2
-        for (const plane of this.floorLabelPlanes) {
-            const level = this.floorLabelPlaneLevel.get(plane) + 1
-            const difference = level * this.lastScaling.y - level * scale.y
-            plane.geometry.translate(0, 0, defaultFolderHeight * difference)
-        }
-        this.lastScaling = scale
+    translatePlaneCanvases(_scale: Vector3) {
+        // No-op: folders no longer scale with height, so floor labels stay fixed.
     }
 
     private static createLabelPlaneCanvas(scaledMapWidth: number, scaledMapHeight: number) {
@@ -129,11 +122,7 @@ export class FloorLabelDrawer {
         // Position plane over the map
         const liftToPreventZFighting = 2
 
-        plane.translate(
-            scaledMapWidth / 2,
-            scaledMapHeight / 2,
-            -this.folderGeometryHeight * this.scaling.y * (floorLevel + 1) - liftToPreventZFighting
-        )
+        plane.translate(scaledMapWidth / 2, scaledMapHeight / 2, -this.folderGeometryHeight * (floorLevel + 1) - liftToPreventZFighting)
 
         // Move and scale plane mesh exactly like the squarified map
         planeMesh.scale.set(this.scaling.x / mapResolutionScaling, this.scaling.z / mapResolutionScaling, 1)

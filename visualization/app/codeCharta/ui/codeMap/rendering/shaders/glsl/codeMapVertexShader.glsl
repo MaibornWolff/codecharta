@@ -16,6 +16,7 @@ varying vec4 vOutgoingDiffuseColor;
 varying vec4 vOutgoingDiffuseDeltaColor;
 
 uniform vec3 ambientLightColor;
+uniform float uBuildingHeightScale;
 
 struct DirectionalLight {
     vec3 direction;
@@ -64,6 +65,13 @@ void main()
 #ifdef USE_INSTANCING
     // Transform template vertex by instance matrix (scale + translate)
     vec4 instancePos = instanceMatrix * vec4(position, 1.0);
+
+    // For leaf buildings, apply additional height scaling via uniform.
+    // instanceMatrix[1][1] is the Y scale (building height in scene units).
+    // position.y is the template vertex Y (0–1 range for the unit box).
+    // Adding scaleY * posY * (factor - 1) scales only the height portion,
+    // leaving the base Y position (translation) unaffected.
+    instancePos.y += isLeaf * instanceMatrix[1][1] * position.y * (uBuildingHeightScale - 1.0);
 
     // Z-fighting offset applied in model space (Y is up).
     // The formula is intentionally identical to the non-instanced path below:

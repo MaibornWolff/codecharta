@@ -180,9 +180,9 @@ export class ThreeSceneService implements OnDestroy {
     scaleHeight() {
         const scale = this.state.getValue().appSettings.scaling
 
-        this.floorLabelDrawer?.translatePlaneCanvases(scale)
-        this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
+        this.mapGeometry.scale.set(scale.x, 1.0, scale.z)
         this.mapGeometry.position.set(-treeMapSize * scale.x, 0, -treeMapSize * scale.z)
+        this.mapMesh.setHeightScale(scale.y)
         this.mapMesh.setScale(scale)
     }
 
