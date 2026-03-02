@@ -82,7 +82,7 @@ describe("ScenarioListDialogComponent", () => {
             removeScenario: jest.fn(),
             loadScenarios: jest.fn().mockResolvedValue(undefined),
             exportScenario: jest.fn(),
-            importScenarioFiles: jest.fn().mockResolvedValue(1)
+            importScenarioFiles: jest.fn().mockResolvedValue({ imported: 1, duplicates: [], invalid: [], parseErrors: [] })
         }
 
         TestBed.configureTestingModule({
@@ -99,6 +99,8 @@ describe("ScenarioListDialogComponent", () => {
         component.dialogElement().nativeElement.close = jest.fn()
         component.deleteConfirmDialog().nativeElement.showModal = jest.fn()
         component.deleteConfirmDialog().nativeElement.close = jest.fn()
+        component.importErrorDialog().nativeElement.showModal = jest.fn()
+        component.importErrorDialog().nativeElement.close = jest.fn()
     })
 
     it("should show scenarios from service", () => {
@@ -420,6 +422,93 @@ describe("ScenarioListDialogComponent", () => {
 
             // Assert
             expect(scenariosService.importScenarioFiles).not.toHaveBeenCalled()
+        })
+
+        it("should show parse errors in feedback dialog", async () => {
+            // Arrange
+            scenariosService.importScenarioFiles.mockResolvedValue({
+                imported: 0,
+                duplicates: [],
+                invalid: [],
+                parseErrors: ["broken.json"]
+            })
+            const mockEvent = { target: { files: { length: 1 } as FileList, value: "broken.json" } } as unknown as Event
+
+            // Act
+            await component.handleImportFiles(mockEvent)
+
+            // Assert
+            expect(component.importFeedback().parseErrors).toEqual(["broken.json"])
+            expect(component.importFeedback().invalid).toEqual([])
+            expect(component.importFeedback().duplicates).toEqual([])
+            expect(component.importErrorDialog().nativeElement.showModal).toHaveBeenCalled()
+        })
+
+        it("should show invalid files in feedback dialog", async () => {
+            // Arrange
+            scenariosService.importScenarioFiles.mockResolvedValue({
+                imported: 0,
+                duplicates: [],
+                invalid: ["bad.ccscenario"],
+                parseErrors: []
+            })
+            const mockEvent = { target: { files: { length: 1 } as FileList, value: "bad.ccscenario" } } as unknown as Event
+
+            // Act
+            await component.handleImportFiles(mockEvent)
+
+            // Assert
+            expect(component.importFeedback().invalid).toEqual(["bad.ccscenario"])
+            expect(component.importFeedback().parseErrors).toEqual([])
+            expect(component.importFeedback().duplicates).toEqual([])
+            expect(component.importErrorDialog().nativeElement.showModal).toHaveBeenCalled()
+        })
+
+        it("should show duplicates as warnings in feedback dialog", async () => {
+            // Arrange
+            scenariosService.importScenarioFiles.mockResolvedValue({
+                imported: 0,
+                duplicates: ["My Scenario"],
+                invalid: [],
+                parseErrors: []
+            })
+            const mockEvent = { target: { files: { length: 1 } as FileList, value: "file.ccscenario" } } as unknown as Event
+
+            // Act
+            await component.handleImportFiles(mockEvent)
+
+            // Assert
+            expect(component.importFeedback().duplicates).toEqual(["My Scenario"])
+            expect(component.importFeedback().invalid).toEqual([])
+            expect(component.importFeedback().parseErrors).toEqual([])
+            expect(component.importErrorDialog().nativeElement.showModal).toHaveBeenCalled()
+        })
+
+        it("should not show dialog when import succeeds without issues", async () => {
+            // Arrange
+            scenariosService.importScenarioFiles.mockResolvedValue({ imported: 1, duplicates: [], invalid: [], parseErrors: [] })
+            const mockEvent = { target: { files: { length: 1 } as FileList, value: "file.ccscenario" } } as unknown as Event
+
+            // Act
+            await component.handleImportFiles(mockEvent)
+
+            // Assert
+            expect(component.importFeedback()).toEqual({ duplicates: [], invalid: [], parseErrors: [] })
+            expect(component.importErrorDialog().nativeElement.showModal).not.toHaveBeenCalled()
+        })
+
+        it("should clear feedback and close dialog on closeImportErrors", async () => {
+            // Arrange
+            scenariosService.importScenarioFiles.mockResolvedValue({ imported: 0, duplicates: ["Dup"], invalid: [], parseErrors: [] })
+            const mockEvent = { target: { files: { length: 1 } as FileList, value: "file.ccscenario" } } as unknown as Event
+            await component.handleImportFiles(mockEvent)
+
+            // Act
+            component.closeImportErrors()
+
+            // Assert
+            expect(component.importFeedback()).toEqual({ duplicates: [], invalid: [], parseErrors: [] })
+            expect(component.importErrorDialog().nativeElement.close).toHaveBeenCalled()
         })
     })
 
