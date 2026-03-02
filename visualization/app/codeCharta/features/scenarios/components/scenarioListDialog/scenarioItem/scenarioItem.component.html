@@ -1,0 +1,44 @@
+<div
+	class="flex items-center px-4 py-2 border-t border-base-300 hover:bg-base-200 cursor-pointer"
+	(click)="applyRequested.emit()"
+>
+	<div class="flex-1 min-w-0" [class.opacity-40]="view().mapMismatch">
+		<div class="font-medium text-sm">
+			{{ view().scenario.name }}
+			@if (view().warning) {
+				<span class="text-warning ml-1" title="Some metrics in this scenario are not available">
+					<i class="fa fa-exclamation-triangle text-xs"></i>
+				</span>
+			}
+		</div>
+		@if (view().scenario.description) {
+			<div class="text-xs text-base-content/50 truncate">{{ view().scenario.description }}</div>
+		}
+		<div class="flex items-center gap-3 mt-1">
+			@if (view().scenario.isBuiltIn) {
+				<span class="badge badge-xs badge-info">Built-in</span>
+			} @else {
+				<span class="text-[11px] text-base-content/40">{{ view().formattedDate }}</span>
+			}
+			@if (view().mapBound) {
+				<span class="badge badge-xs badge-outline gap-1" [title]="'Bound to ' + view().scenario.mapFileNames!.join(', ')">
+					<i class="fa fa-map-pin text-[9px]"></i>
+					{{ view().scenario.mapFileNames!.join(', ') }}
+				</span>
+			}
+			<span class="flex gap-1.5 text-[11px] text-base-content/40">
+				@for (key of view().sectionKeys; track key) {
+					<i class="fa {{ sectionIcons[key] }}" [title]="sectionLabels[key]"></i>
+				}
+			</span>
+		</div>
+	</div>
+	@if (!view().scenario.isBuiltIn) {
+		<button class="btn btn-ghost btn-sm" title="Export scenario" (click)="exportRequested.emit(); $event.stopPropagation()">
+			<i class="fa fa-download"></i>
+		</button>
+		<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="deleteRequested.emit(); $event.stopPropagation()">
+			<i class="fa fa-trash"></i>
+		</button>
+	}
+</div>
