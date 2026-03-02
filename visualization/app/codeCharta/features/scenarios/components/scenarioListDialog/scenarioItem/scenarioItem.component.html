@@ -1,6 +1,9 @@
 <div
 	class="flex items-center px-4 py-2 border-t border-base-300 hover:bg-base-200 cursor-pointer"
+	tabindex="0"
+	role="button"
 	(click)="applyRequested.emit()"
+	(keydown.enter)="applyRequested.emit()"
 >
 	<div class="flex-1 min-w-0" [class.opacity-40]="view().mapMismatch">
 		<div class="font-medium text-sm">
