@@ -122,7 +122,7 @@ describe("scenarioIndexedDB", () => {
             // Assert
             const found = result.find(s => s.id === scenario.id)
             expect(found).toBeDefined()
-            expect(found!.name).toBe("Updated Scenario")
+            expect(found?.name).toBe("Updated Scenario")
         })
     })
 })
