@@ -3,9 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
 
 class MergeCommitParser : CommitParser {
-    override fun canParse(commit: Commit): Boolean {
-        return !commit.isEmpty && commit.isMergeCommit()
-    }
+    override fun canParse(commit: Commit): Boolean = !commit.isEmpty && commit.isMergeCommit()
 
     override fun parse(commit: Commit, versionControlledFilesList: VersionControlledFilesList) {
         commit.modifications.forEach {

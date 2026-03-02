@@ -1,27 +1,26 @@
 [versions]
-kotlin-logging = "7.0.13"
+kotlin-logging = "8.0.01"
 boon = "0.34"
 commons-lang3 = "3.20.0"
-cyclonedx = "3.0.2"
+cyclonedx = "3.2.0"
 gson = "2.13.2"
 jacoco = "0.8.11"
-jersey = "4.0.0"
+jersey = "4.0.2"
 json-schema = "1.14.4"
-json = "20250517"
+json = "20251224"
 juniversalchardet = "1.0.3"
-kotlin = "2.2.21"
+kotlin = "2.3.10"
 kotlinx-coroutines = "1.10.2"
 kotter = "1.2.1"
 picocli = "4.7.7"
 slf4j = "2.0.17"
-sonarqube = "7.1.0.6387"
+sonarqube = "7.2.2.6593"
 univocity-parsers = "2.9.1"
 appmattus-crypto = "1.0.2"
-assertj = "3.27.6"
-junit5 = "5.14.1"
-junit-platform = "1.14.1"
-ktlint = "12.3.0"
-mockk = "1.14.6"
+assertj = "3.27.7"
+junit5 = "6.0.3"
+ktlint = "14.0.1"
+mockk = "1.14.9"
 wiremock = "3.13.2"
 tree-sitter = "0.25.3"
 tree-sitter-typescript = "0.23.2"
@@ -45,6 +44,7 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit5" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit5" }
 junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junit5" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junit5" }
 boon = { group = "io.fastjson", name = "boon", version.ref = "boon" }
 slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 picocli = { group = "info.picocli", name = "picocli", version.ref = "picocli" }
@@ -61,11 +61,10 @@ juniversalchardet = { group = "com.googlecode.juniversalchardet", name = "junive
 rxjava2 = { group = "io.reactivex.rxjava2", name = "rxjava", version = "2.2.21" }
 jersey-client = { group = "org.glassfish.jersey.core", name = "jersey-client", version.ref = "jersey" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-jakarta-ws-rs-api = { group = "jakarta.ws.rs", name = "jakarta.ws.rs-api", version = "jersey" }
+jakarta-ws-rs-api = { group = "jakarta.ws.rs", name = "jakarta.ws.rs-api", version = "4.0.0" }
 wiremock = { group = "org.wiremock", name = "wiremock", version.ref = "wiremock" }
 json = { group = "org.json", name = "json", version.ref = "json" }
-commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.14.0" }
-junit-platform-runner = { group = "org.junit.platform", name = "junit-platform-runner", version.ref = "junit-platform" }
+commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.15.0" }
 json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.json.schema", version.ref = "json-schema" }
 treesitter = { group = "io.github.bonede", name = "tree-sitter", version.ref = "tree-sitter"}
 treesitter-typescript = { group = "io.github.bonede", name = "tree-sitter-typescript", version.ref = "tree-sitter-typescript"}

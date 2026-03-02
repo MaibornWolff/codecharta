@@ -21,9 +21,9 @@ import java.io.PrintStream
     description = [DependaChartaImporter.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class DependaChartaImporter(
-    private val output: PrintStream = System.out
-) : AnalyserInterface, AttributeGenerator {
+class DependaChartaImporter(private val output: PrintStream = System.out) :
+    AnalyserInterface,
+    AttributeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -78,11 +78,7 @@ class DependaChartaImporter(
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return resourceToBeParsed.endsWith(".dc.json")
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = resourceToBeParsed.endsWith(".dc.json")
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors()
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors()
 }

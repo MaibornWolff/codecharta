@@ -30,10 +30,11 @@ class LogScanCommandTest {
         } returns false
 
         System.setErr(PrintStream(errContent))
-        CommandLine(LogScanCommand()).execute(
-            "--git-log=thisDoesNotExist.cc.json",
-            "--repo-files=thisDoesNotExist"
-        ).toString()
+        CommandLine(LogScanCommand())
+            .execute(
+                "--git-log=thisDoesNotExist.cc.json",
+                "--repo-files=thisDoesNotExist"
+            ).toString()
         System.setErr(originalErr)
 
         Assertions.assertThat(errContent.toString()).contains("Input invalid file for GitLogScan, stopping execution")

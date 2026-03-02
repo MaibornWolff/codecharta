@@ -8,9 +8,7 @@ class AnalysisObjectTwelve(
     val children: Children,
     private val inaccurate: Boolean
 ) {
-    fun hasChildren(): Boolean {
-        return !reports.isNullOrEmpty()
-    }
+    fun hasChildren(): Boolean = !reports.isNullOrEmpty()
 }
 
 class Report(val stats: StatsTwelve, val name: String)

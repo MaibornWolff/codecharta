@@ -19,9 +19,7 @@ private const val PORT = 8089
 @WireMockTest(httpPort = PORT)
 class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(IOException::class)
-    private fun createMetricResponseAsJsonString(): String {
-        return this.javaClass.classLoader.getResource("metrics.json")!!.readText()
-    }
+    private fun createMetricResponseAsJsonString(): String = this.javaClass.classLoader.getResource("metrics.json")!!.readText()
 
     @Test
     fun getNoOfPages() {
@@ -43,7 +41,9 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     fun getAvailableMetrics() { // given
         stubFor(
             get(urlEqualTo(metricListUrlPath(1))).willReturn(
-                aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
                     .withBody(createMetricResponseAsJsonString())
             )
         )
@@ -61,13 +61,17 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     fun getAvailableMetricsList() { // given
         stubFor(
             get(urlEqualTo(metricListUrlPath(1))).willReturn(
-                aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
                     .withBody(createMetricResponseAsJsonString())
             )
         )
         stubFor(
             get(urlEqualTo(metricListUrlPath(2))).willReturn(
-                aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
                     .withBody(createMetricResponseAsJsonString())
             )
         )
@@ -85,7 +89,9 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     fun `getAvailableMetrics if authenticated`() { // given
         stubFor(
             get(urlEqualTo(metricListUrlPath(1))).withBasicAuth(USERNAME, "").willReturn(
-                aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
                     .withBody(createMetricResponseAsJsonString())
             )
         )
@@ -137,7 +143,9 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     fun `getNumberOfPages from server`() { // given
         stubFor(
             get(urlEqualTo(metricListUrlPath(1))).withBasicAuth(USERNAME, "").willReturn(
-                aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
                     .withBody(createMetricResponseAsJsonString())
             )
         )
@@ -162,9 +170,7 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
         private const val USERNAME = "somename"
 
-        private fun metricListUrlPath(page: Int): String {
-            return "/api/metrics/search?f=hidden,decimalScale&p=$page&ps=$PAGE_SIZE"
-        }
+        private fun metricListUrlPath(page: Int): String = "/api/metrics/search?f=hidden,decimalScale&p=$page&ps=$PAGE_SIZE"
 
         private fun createBaseUrl(): URL {
             try {

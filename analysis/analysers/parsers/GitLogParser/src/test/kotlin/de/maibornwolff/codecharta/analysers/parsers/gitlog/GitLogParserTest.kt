@@ -14,14 +14,12 @@ import java.io.File
 class GitLogParserTest {
     companion object {
         @JvmStatic
-        fun provideInvalidInputFiles(): List<Arguments> {
-            return listOf(
-                Arguments.of("src/test/resources/my/empty/repo"),
-                Arguments.of("src/test/resources/this/does/not/exist"),
-                Arguments.of(""),
-                Arguments.of("src/test/resources/my")
-            )
-        }
+        fun provideInvalidInputFiles(): List<Arguments> = listOf(
+            Arguments.of("src/test/resources/my/empty/repo"),
+            Arguments.of("src/test/resources/this/does/not/exist"),
+            Arguments.of(""),
+            Arguments.of("src/test/resources/my")
+        )
     }
 
     @Test

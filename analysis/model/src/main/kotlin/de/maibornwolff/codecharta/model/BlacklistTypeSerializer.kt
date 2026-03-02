@@ -8,7 +8,6 @@ import java.lang.reflect.Type
 import java.util.Locale
 
 class BlacklistTypeSerializer : JsonSerializer<BlacklistType> {
-    override fun serialize(src: BlacklistType?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
-        return JsonPrimitive(src?.value?.lowercase(Locale.getDefault()))
-    }
+    override fun serialize(src: BlacklistType?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement =
+        JsonPrimitive(src?.value?.lowercase(Locale.getDefault()))
 }

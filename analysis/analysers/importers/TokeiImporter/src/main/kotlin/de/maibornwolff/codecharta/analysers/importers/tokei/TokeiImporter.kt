@@ -36,10 +36,14 @@ class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : AnalyserInterface, AttributeGenerator {
+) : AnalyserInterface,
+    AttributeGenerator {
     private val attributeTypes =
-        AttributeTypes(type = "nodes").add("rloc", AttributeType.ABSOLUTE).add("loc", AttributeType.ABSOLUTE)
-            .add("empty_lines", AttributeType.ABSOLUTE).add("comment_lines", AttributeType.ABSOLUTE)
+        AttributeTypes(type = "nodes")
+            .add("rloc", AttributeType.ABSOLUTE)
+            .add("loc", AttributeType.ABSOLUTE)
+            .add("empty_lines", AttributeType.ABSOLUTE)
+            .add("comment_lines", AttributeType.ABSOLUTE)
 
     private lateinit var projectBuilder: ProjectBuilder
 
@@ -147,11 +151,7 @@ class TokeiImporter(
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors()
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors()
 }

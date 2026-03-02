@@ -12,9 +12,8 @@ import java.util.stream.Collector
 import java.util.stream.Stream
 
 class SVNLogParserStrategy : LogParserStrategy {
-    override fun parseDate(commitLines: List<String>): OffsetDateTime {
-        return commitLines.filter { this.isMetadataLine(it) }.map { this.parseCommitDate(it) }.first()
-    }
+    override fun parseDate(commitLines: List<String>): OffsetDateTime =
+        commitLines.filter { this.isMetadataLine(it) }.map { this.parseCommitDate(it) }.first()
 
     private fun parseCommitDate(metadataLine: String): OffsetDateTime {
         val splittedLine =
@@ -24,13 +23,14 @@ class SVNLogParserStrategy : LogParserStrategy {
         return OffsetDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER)
     }
 
-    override fun parseAuthor(commitLines: List<String>): String {
-        return commitLines.filter { this.isMetadataLine(it) }.map { this.parseAuthor(it) }.first()
-    }
+    override fun parseAuthor(commitLines: List<String>): String = commitLines
+        .filter {
+            this.isMetadataLine(it)
+        }.map { this.parseAuthor(it) }
+        .first()
 
-    private fun isMetadataLine(commitLine: String): Boolean {
-        return commitLine.startsWith('r') && commitLine.count { it == METADATA_SEPARATOR } >= 3
-    }
+    private fun isMetadataLine(commitLine: String): Boolean =
+        commitLine.startsWith('r') && commitLine.count { it == METADATA_SEPARATOR } >= 3
 
     private fun parseAuthor(authorLine: String): String {
         val splittedLine =
@@ -38,9 +38,10 @@ class SVNLogParserStrategy : LogParserStrategy {
         return splittedLine[AUTHOR_INDEX_IN_METADATA].trim { it <= ' ' }
     }
 
-    override fun parseModifications(commitLines: List<String>): List<Modification> {
-        return commitLines.filter { this.isFileLine(it) }.map { this.parseModification(it) }
-    }
+    override fun parseModifications(commitLines: List<String>): List<Modification> = commitLines
+        .filter {
+            this.isFileLine(it)
+        }.map { this.parseModification(it) }
 
     private fun isFileLine(commitLine: String): Boolean {
         val commitLineWithoutWhitespacePrefix = stripWhitespacePrefix(commitLine)
@@ -65,9 +66,8 @@ class SVNLogParserStrategy : LogParserStrategy {
         }
     }
 
-    private fun parseStandardModification(filePath: String, status: Status): Modification {
-        return ignoreIfRepresentsFolder(Modification(filePath, status.toModificationType()))
-    }
+    private fun parseStandardModification(filePath: String, status: Status): Modification =
+        ignoreIfRepresentsFolder(Modification(filePath, status.toModificationType()))
 
     private fun parseRenameModification(filePathLine: String): Modification {
         val fileNames = filePathLine.split(RENAME_FILE_LINE_IDENTIFIER)
@@ -78,13 +78,9 @@ class SVNLogParserStrategy : LogParserStrategy {
         return ignoreIfRepresentsFolder(Modification(newFileName, oldFileName, Modification.Type.RENAME))
     }
 
-    override fun creationCommand(): String {
-        return "svn log --verbose"
-    }
+    override fun creationCommand(): String = "svn log --verbose"
 
-    override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> {
-        return LogLineCollector.create(SVN_COMMIT_SEPARATOR_TEST)
-    }
+    override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> = LogLineCollector.create(SVN_COMMIT_SEPARATOR_TEST)
 
     companion object {
         private const val RENAME_FILE_LINE_IDENTIFIER = " (from "
@@ -94,40 +90,38 @@ class SVNLogParserStrategy : LogParserStrategy {
                     StringUtils.containsOnly(
                         logLine,
                         '-'
-                    ) && logLine.length > 70
+                    ) &&
+                    logLine.length > 70
             }
         private val DEFAULT_REPOSITORY_FOLDER_PREFIXES = arrayOf("/branches/", "/tags/", "/trunk/", "/")
         private val DATE_TIME_FORMATTER =
-            DateTimeFormatterBuilder().parseCaseInsensitive().append(DateTimeFormatter.ISO_LOCAL_DATE)
-                .appendLiteral(' ').append(DateTimeFormatter.ISO_LOCAL_TIME).appendLiteral(' ')
-                .appendOffset("+HHMM", "").toFormatter()
+            DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .append(DateTimeFormatter.ISO_LOCAL_DATE)
+                .appendLiteral(' ')
+                .append(DateTimeFormatter.ISO_LOCAL_TIME)
+                .appendLiteral(' ')
+                .appendOffset("+HHMM", "")
+                .toFormatter()
         private const val AUTHOR_INDEX_IN_METADATA = 1
         private const val DATE_INDEX_IN_METADATA = 2
         private const val METADATA_SEPARATOR = '|'
 
-        private fun stripWhitespacePrefix(string: String): String {
-            return StringUtils.stripStart(string, null)
-        }
+        private fun stripWhitespacePrefix(string: String): String = StringUtils.stripStart(string, null)
 
-        private fun isStatusLetter(character: Char): Boolean {
-            return Status.ALL_STATUS_LETTERS.contains(character)
-        }
+        private fun isStatusLetter(character: Char): Boolean = Status.ALL_STATUS_LETTERS.contains(character)
 
-        private fun isSlash(char: Char): Boolean {
-            return char == '/'
-        }
+        private fun isSlash(char: Char): Boolean = char == '/'
 
-        private fun removeDefaultRepositoryFolderPrefix(path: String): String {
-            return DEFAULT_REPOSITORY_FOLDER_PREFIXES.firstOrNull { path.startsWith(it) }
-                ?.let { path.substring(it.length) } ?: path
-        }
+        private fun removeDefaultRepositoryFolderPrefix(path: String): String = DEFAULT_REPOSITORY_FOLDER_PREFIXES
+            .firstOrNull {
+                path.startsWith(it)
+            }?.let { path.substring(it.length) } ?: path
 
-        private fun ignoreIfRepresentsFolder(modification: Modification): Modification {
-            return if (!modification.filename.contains(".")) {
-                Modification.EMPTY
-            } else {
-                modification
-            }
+        private fun ignoreIfRepresentsFolder(modification: Modification): Modification = if (!modification.filename.contains(".")) {
+            Modification.EMPTY
+        } else {
+            modification
         }
     }
 }

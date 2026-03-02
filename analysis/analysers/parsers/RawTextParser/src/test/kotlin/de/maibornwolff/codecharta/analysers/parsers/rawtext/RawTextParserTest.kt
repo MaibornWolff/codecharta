@@ -33,12 +33,10 @@ class RawTextParserTest {
         private const val TEST_RESOURCE_BASE_FOLDER = "src/test/resources/"
 
         @JvmStatic
-        fun provideValidInputFiles(): List<Arguments> {
-            return listOf(
-                Arguments.of("${TEST_RESOURCE_BASE_FOLDER}sampleproject"),
-                Arguments.of("${TEST_RESOURCE_BASE_FOLDER}sampleproject/tabs.included")
-            )
-        }
+        fun provideValidInputFiles(): List<Arguments> = listOf(
+            Arguments.of("${TEST_RESOURCE_BASE_FOLDER}sampleproject"),
+            Arguments.of("${TEST_RESOURCE_BASE_FOLDER}sampleproject/tabs.included")
+        )
     }
 
     @AfterEach
@@ -162,7 +160,8 @@ class RawTextParserTest {
         CommandLine(RawTextParser()).execute("thisDoesNotExist.cc.json").toString()
 
         // then
-        Assertions.assertThat(errContent.toString())
+        Assertions
+            .assertThat(errContent.toString())
             .contains("Input invalid file for RawTextParser, stopping execution")
 
         // clean up
@@ -181,14 +180,14 @@ class RawTextParserTest {
 
         // then
         Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(
-            lambdaSlot.any {
-                    e ->
-                e().contains(
-                    "No files with specified file extension(s) were found within the given folder - not generating an output file!"
-                )
-            }
-        ).isTrue()
+        Assertions
+            .assertThat(
+                lambdaSlot.any { e ->
+                    e().contains(
+                        "No files with specified file extension(s) were found within the given folder - not generating an output file!"
+                    )
+                }
+            ).isTrue()
     }
 
     @Test
@@ -204,18 +203,18 @@ class RawTextParserTest {
 
         // then
         Assertions.assertThat(result).isNotEmpty()
-        Assertions.assertThat(
-            lambdaSlot.any {
-                    e ->
-                e().contains("The specified file extension 'invalid' was not found within the given folder!")
-            }
-        ).isTrue()
-        Assertions.assertThat(
-            lambdaSlot.any {
-                    e ->
-                e().contains("The specified file extension 'included' was not found within the given folder!")
-            }
-        ).isFalse()
+        Assertions
+            .assertThat(
+                lambdaSlot.any { e ->
+                    e().contains("The specified file extension 'invalid' was not found within the given folder!")
+                }
+            ).isTrue()
+        Assertions
+            .assertThat(
+                lambdaSlot.any { e ->
+                    e().contains("The specified file extension 'included' was not found within the given folder!")
+                }
+            ).isFalse()
     }
 
     @Test
@@ -235,14 +234,14 @@ class RawTextParserTest {
 
         // then
         Assertions.assertThat(result).isEmpty()
-        Assertions.assertThat(
-            lambdaSlot.any {
-                    e ->
-                e().contains(
-                    "No files with specified file extension(s) were found within the given folder - not generating an output file!"
-                )
-            }
-        ).isTrue()
+        Assertions
+            .assertThat(
+                lambdaSlot.any { e ->
+                    e().contains(
+                        "No files with specified file extension(s) were found within the given folder - not generating an output file!"
+                    )
+                }
+            ).isTrue()
     }
 
     @Test
@@ -414,9 +413,10 @@ class RawTextParserTest {
         executeForOutput(pipedProject, arrayOf(inputFilePath))
 
         // Assert
-        Assertions.assertThat(
-            errContent.toString()
-        ).contains("No .gitignore found at root level, excluding common build folders as fallback...")
+        Assertions
+            .assertThat(
+                errContent.toString()
+            ).contains("No .gitignore found at root level, excluding common build folders as fallback...")
 
         // clean up
         System.setErr(originalErr)

@@ -159,7 +159,6 @@ class VersionControlledFileTest {
         verify(exactly = 3) { modificationMetric.registerModification(any()) }
     }
 
-    private fun createCommit(author: String, modification: Modification): Commit {
-        return Commit(author, listOf(modification), OffsetDateTime.now())
-    }
+    private fun createCommit(author: String, modification: Modification): Commit =
+        Commit(author, listOf(modification), OffsetDateTime.now())
 }

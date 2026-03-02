@@ -39,50 +39,45 @@ class SonarImporterTest {
             "/api/metrics/search?f=hidden,decimalScale&p=1&ps=${SonarMetricsAPIDatasource.PAGE_SIZE}"
 
         @JvmStatic
-        fun provideValidURLs(): List<Arguments> {
-            return listOf(
-                Arguments.of("https://thisisatesturl.com"),
-                Arguments.of("http://thisisatesturl.com")
-            )
-        }
+        fun provideValidURLs(): List<Arguments> = listOf(
+            Arguments.of("https://thisisatesturl.com"),
+            Arguments.of("http://thisisatesturl.com")
+        )
 
         @JvmStatic
-        fun provideValidInputFiles(): List<Arguments> {
-            return listOf(
-                Arguments.of("src/test/resources/my/sonar/repo"),
-                Arguments.of("src/test/resources/my/sonar"),
-                Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties")
-            )
-        }
+        fun provideValidInputFiles(): List<Arguments> = listOf(
+            Arguments.of("src/test/resources/my/sonar/repo"),
+            Arguments.of("src/test/resources/my/sonar"),
+            Arguments.of("src/test/resources/my/sonar/repo/sonar-project.properties")
+        )
 
         @JvmStatic
-        fun provideInvalidInputFiles(): List<Arguments> {
-            return listOf(
-                Arguments.of("src/test/resources/my/other/repo"),
-                Arguments.of("src/test/resources"),
-                Arguments.of("src/test/resources/my/other/sonar-project.properties"),
-                Arguments.of("src/test/resources/this/does/not/exist"),
-                Arguments.of("")
-            )
-        }
+        fun provideInvalidInputFiles(): List<Arguments> = listOf(
+            Arguments.of("src/test/resources/my/other/repo"),
+            Arguments.of("src/test/resources"),
+            Arguments.of("src/test/resources/my/other/sonar-project.properties"),
+            Arguments.of("src/test/resources/this/does/not/exist"),
+            Arguments.of("")
+        )
 
         @JvmStatic
-        fun provideInvalidURLs(): List<Arguments> {
-            return listOf(
-                Arguments.of("thisisatesturl.https://"),
-                Arguments.of("thisisatesturl.http://"),
-                Arguments.of("http:/noturl.com"),
-                Arguments.of("www.google.com")
-            )
-        }
+        fun provideInvalidURLs(): List<Arguments> = listOf(
+            Arguments.of("thisisatesturl.https://"),
+            Arguments.of("thisisatesturl.http://"),
+            Arguments.of("http:/noturl.com"),
+            Arguments.of("www.google.com")
+        )
     }
 
     @BeforeEach
     fun mockVersionRequest() {
         WireMock.stubFor(
             WireMock.get(urlEqualTo("/api/server/version")).willReturn(
-                WireMock.aResponse().withHeader("Content-Type", MediaType.TEXT_PLAIN + "; charset=utf-8")
-                    .withStatus(200).withBody("7.8.0.0")
+                WireMock
+                    .aResponse()
+                    .withHeader("Content-Type", MediaType.TEXT_PLAIN + "; charset=utf-8")
+                    .withStatus(200)
+                    .withBody("7.8.0.0")
             )
         )
     }
@@ -92,7 +87,10 @@ class SonarImporterTest {
     fun `should call correct url with trailing backslash in URL parameter`() {
         WireMock.stubFor(
             WireMock.get(urlEqualTo(METRIC_LIST_URL_PATH)).willReturn(
-                WireMock.aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+                WireMock
+                    .aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
                     .withBody("{\"metrics\": [],\"total\": 0, \"p\": 0, \"ps\": 0}")
             )
         )
@@ -107,7 +105,10 @@ class SonarImporterTest {
     fun `should call correct url without trailing backslash in URL parameter`() {
         WireMock.stubFor(
             WireMock.get(urlEqualTo(METRIC_LIST_URL_PATH)).willReturn(
-                WireMock.aResponse().withStatus(200).withHeader("Content-Type", "application/json")
+                WireMock
+                    .aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
                     .withBody("{\"metrics\": [],\"total\": 0, \"p\": 0, \"ps\": 0}")
             )
         )

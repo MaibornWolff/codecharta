@@ -12,13 +12,11 @@ import java.nio.file.Paths
 
 class InteractiveDialog {
     companion object {
-        internal fun askAnalyserToExecute(session: Session, analyserOptions: List<String>): String {
-            return session.promptList(
-                message = "Which analyser do you want to execute?",
-                choices = analyserOptions,
-                onInputReady = testCallback()
-            )
-        }
+        internal fun askAnalyserToExecute(session: Session, analyserOptions: List<String>): String = session.promptList(
+            message = "Which analyser do you want to execute?",
+            choices = analyserOptions,
+            onInputReady = testCallback()
+        )
 
         internal fun askForPath(session: Session): String {
             println("You can provide a directory path / file path / sonar url.")
@@ -30,28 +28,22 @@ class InteractiveDialog {
             )
         }
 
-        internal fun askApplicableAnalyser(session: Session, applicableAnalysers: List<String>): List<String> {
-            return session.promptCheckbox(
-                message = "Choose from this list of applicable analysers. You can select individual analysers by pressing spacebar.",
-                choices = applicableAnalysers,
-                allowEmptyInput = true,
-                onInputReady = testCallback()
-            )
-        }
+        internal fun askApplicableAnalyser(session: Session, applicableAnalysers: List<String>): List<String> = session.promptCheckbox(
+            message = "Choose from this list of applicable analysers. You can select individual analysers by pressing spacebar.",
+            choices = applicableAnalysers,
+            allowEmptyInput = true,
+            onInputReady = testCallback()
+        )
 
-        internal fun askRunAnalysers(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Do you want to run all configured analysers now?",
-                onInputReady = testCallback()
-            )
-        }
+        internal fun askRunAnalysers(session: Session): Boolean = session.promptConfirm(
+            message = "Do you want to run all configured analysers now?",
+            onInputReady = testCallback()
+        )
 
-        internal fun askForMerge(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Do you want to merge all generated files into one result now?",
-                onInputReady = testCallback()
-            )
-        }
+        internal fun askForMerge(session: Session): Boolean = session.promptConfirm(
+            message = "Do you want to merge all generated files into one result now?",
+            onInputReady = testCallback()
+        )
 
         internal fun askJsonPath(session: Session): String {
             println(

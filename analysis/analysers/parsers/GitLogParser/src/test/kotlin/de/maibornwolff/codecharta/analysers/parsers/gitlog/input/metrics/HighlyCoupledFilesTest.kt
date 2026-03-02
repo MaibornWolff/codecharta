@@ -91,7 +91,10 @@ class HighlyCoupledFilesTest {
         val commit = Commit("author", modificationList, OffsetDateTime.now())
         metric.registerCommit(commit)
 
-        modificationList.stream().filter { mod -> FILENAME == mod.currentFilename }.findFirst()
+        modificationList
+            .stream()
+            .filter { mod -> FILENAME == mod.currentFilename }
+            .findFirst()
             .ifPresent { metric.registerModification(it) }
     }
 }

@@ -1,4 +1,4 @@
-FROM sapmachine:25.0.1-jre-ubuntu
+FROM sapmachine:25.0.2-jre-ubuntu
 
 ARG USER_ADD
 ARG USER_ID=1000

@@ -28,12 +28,10 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         versionControlledFile.removeMetricsToFreeMemory()
     }
 
-    private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {
-        return when {
-            containsAuthors -> versionControlledFile.metricsMap.plus(Pair("authors", versionControlledFile.authors))
+    private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> = when {
+        containsAuthors -> versionControlledFile.metricsMap.plus(Pair("authors", versionControlledFile.authors))
 
-            else -> versionControlledFile.metricsMap
-        }
+        else -> versionControlledFile.metricsMap
     }
 
     private fun addRootToEdgePaths(edge: Edge): Edge {
@@ -45,7 +43,8 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     fun convert(versionControlledFiles: List<VersionControlledFile>, metricsFactory: MetricsFactory): Project {
         val projectBuilder = ProjectBuilder()
 
-        versionControlledFiles.filter { vc -> !vc.markedDeleted() }
+        versionControlledFiles
+            .filter { vc -> !vc.markedDeleted() }
             .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()

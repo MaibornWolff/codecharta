@@ -3,10 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 import de.maibornwolff.codecharta.serialization.FileExtension
 import de.maibornwolff.treesitter.excavationsite.api.Language
 
-enum class AvailableCollectors(
-    val fileExtension: FileExtension,
-    val collectorFactory: () -> TreeSitterLibraryCollector
-) {
+enum class AvailableCollectors(val fileExtension: FileExtension, val collectorFactory: () -> TreeSitterLibraryCollector) {
     TYPESCRIPT(FileExtension.TYPESCRIPT, { TreeSitterLibraryCollector(Language.TYPESCRIPT) }),
     JAVASCRIPT(FileExtension.JAVASCRIPT, { TreeSitterLibraryCollector(Language.JAVASCRIPT) }),
     KOTLIN(FileExtension.KOTLIN, { TreeSitterLibraryCollector(Language.KOTLIN) }),

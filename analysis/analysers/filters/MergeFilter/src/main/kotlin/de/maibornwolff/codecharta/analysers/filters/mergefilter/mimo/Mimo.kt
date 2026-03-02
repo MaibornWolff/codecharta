@@ -85,14 +85,12 @@ class Mimo {
             return cost[rhsLength]
         }
 
-        fun assembleOutputFilePath(filePath: String?, fileName: String): String {
-            return if (filePath.isNullOrEmpty()) {
-                fileName
-            } else if (File(filePath).isDirectory) {
-                "${File(filePath).path}/$fileName"
-            } else {
-                throw IllegalArgumentException("Please specify a folder for MIMO output or nothing")
-            }
+        fun assembleOutputFilePath(filePath: String?, fileName: String): String = if (filePath.isNullOrEmpty()) {
+            fileName
+        } else if (File(filePath).isDirectory) {
+            "${File(filePath).path}/$fileName"
+        } else {
+            throw IllegalArgumentException("Please specify a folder for MIMO output or nothing")
         }
     }
 }

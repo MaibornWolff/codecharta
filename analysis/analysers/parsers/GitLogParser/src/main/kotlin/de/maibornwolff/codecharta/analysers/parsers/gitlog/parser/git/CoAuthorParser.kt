@@ -4,12 +4,10 @@ internal object CoAuthorParser {
     private val coAuthorPattern = Regex("""Co-Authored-By:\s*(.+?)(?:\s*<.*>)?$""", RegexOption.IGNORE_CASE)
     private const val COAUTHOR_ROW_INDICATOR = "Co-authored-by:"
 
-    fun parseCoAuthors(commitMessages: List<String>): List<String> {
-        return commitMessages
-            .filter { it.startsWith(COAUTHOR_ROW_INDICATOR, ignoreCase = true) }
-            .mapNotNull { line ->
-                val coAuthor = coAuthorPattern.find(line)
-                coAuthor?.groupValues?.get(1)?.trim()
-            }
-    }
+    fun parseCoAuthors(commitMessages: List<String>): List<String> = commitMessages
+        .filter { it.startsWith(COAUTHOR_ROW_INDICATOR, ignoreCase = true) }
+        .mapNotNull { line ->
+            val coAuthor = coAuthorPattern.find(line)
+            coAuthor?.groupValues?.get(1)?.trim()
+        }
 }

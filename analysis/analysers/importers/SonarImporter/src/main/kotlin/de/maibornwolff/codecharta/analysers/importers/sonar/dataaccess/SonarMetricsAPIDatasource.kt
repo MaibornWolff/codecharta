@@ -17,17 +17,26 @@ import java.net.URL
  */
 class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: URL?) {
     private val client: Client =
-        ClientBuilder.newClient().property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
+        ClientBuilder
+            .newClient()
+            .property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
             .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS)
 
     val availableMetricKeys: List<String>
         get() {
             val noPages = numberOfPages
 
-            return Flowable.range(1, noPages).flatMap { p ->
-                Flowable.just(p).subscribeOn(Schedulers.io()).map { this.getAvailableMetrics(it) }
-            }.filter { it.metrics != null }.flatMap { Flowable.fromIterable(it.metrics!!) }.filter { it.isFloatType }
-                .map { it.key }.distinct().toSortedList().blockingGet()
+            return Flowable
+                .range(1, noPages)
+                .flatMap { p ->
+                    Flowable.just(p).subscribeOn(Schedulers.io()).map { this.getAvailableMetrics(it) }
+                }.filter { it.metrics != null }
+                .flatMap { Flowable.fromIterable(it.metrics!!) }
+                .filter { it.isFloatType }
+                .map { it.key }
+                .distinct()
+                .toSortedList()
+                .blockingGet()
         }
 
     val numberOfPages: Int

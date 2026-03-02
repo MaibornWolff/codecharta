@@ -4,7 +4,7 @@ import java.util.Collections
 import java.util.concurrent.TimeUnit
 import kotlin.math.log10
 
-class ProgressTracker() {
+class ProgressTracker {
     private var startTime = System.currentTimeMillis()
     private var lastLineLength = 0
 
@@ -25,21 +25,26 @@ class ProgressTracker() {
         val string = StringBuilder(150)
         if (total > 0) {
             val percent = (parsed * 100 / total).toInt()
-            string.append('\r').append(
-                java.lang.String.join(
-                    "",
-                    Collections.nCopies(
-                        if (percent == 0) {
-                            2
-                        } else {
-                            2 - log10(percent.toDouble()).toInt()
-                        },
-                        " "
+            string
+                .append('\r')
+                .append(
+                    java.lang.String.join(
+                        "",
+                        Collections.nCopies(
+                            if (percent == 0) {
+                                2
+                            } else {
+                                2 - log10(percent.toDouble()).toInt()
+                            },
+                            " "
+                        )
                     )
-                )
-            ).append(String.format(" %d%% [", percent))
-                .append(java.lang.String.join("", Collections.nCopies(percent, "="))).append('>')
-                .append(java.lang.String.join("", Collections.nCopies(100 - percent, " "))).append(']').append(
+                ).append(String.format(" %d%% [", percent))
+                .append(java.lang.String.join("", Collections.nCopies(percent, "=")))
+                .append('>')
+                .append(java.lang.String.join("", Collections.nCopies(100 - percent, " ")))
+                .append(']')
+                .append(
                     java.lang.String.join(
                         "",
                         Collections.nCopies(
@@ -51,8 +56,7 @@ class ProgressTracker() {
                             " "
                         )
                     )
-                )
-                .append(String.format(" %d/%d %s, ETA: %s", parsed, total, unit, etaHms))
+                ).append(String.format(" %d/%d %s, ETA: %s", parsed, total, unit, etaHms))
 
             if (filename != "") {
                 string.append(" parsed file: $filename")

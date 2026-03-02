@@ -18,9 +18,9 @@ import java.io.PrintStream
     description = [CSVImporter.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class CSVImporter(
-    private val output: PrintStream = System.out
-) : AnalyserInterface, AttributeGenerator {
+class CSVImporter(private val output: PrintStream = System.out) :
+    AnalyserInterface,
+    AttributeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -72,11 +72,7 @@ class CSVImporter(
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors()
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors()
 }

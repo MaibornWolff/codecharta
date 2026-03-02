@@ -30,33 +30,21 @@ class Modification(
         UNKNOWN
     }
 
-    fun isTypeDelete(): Boolean {
-        return type == Type.DELETE
-    }
+    fun isTypeDelete(): Boolean = type == Type.DELETE
 
-    fun isTypeAdd(): Boolean {
-        return type == Type.ADD
-    }
+    fun isTypeAdd(): Boolean = type == Type.ADD
 
-    fun isTypeModify(): Boolean {
-        return type == Type.MODIFY
-    }
+    fun isTypeModify(): Boolean = type == Type.MODIFY
 
-    fun isTypeRename(): Boolean {
-        return type == Type.RENAME
-    }
+    fun isTypeRename(): Boolean = type == Type.RENAME
 
-    fun getTrackName(): String {
-        return if (oldFilename.isNotEmpty()) oldFilename else currentFilename
-    }
+    fun getTrackName(): String = if (oldFilename.isNotEmpty()) oldFilename else currentFilename
 
     fun markInitialAdd() {
         initialAdd = true
     }
 
-    fun isInitialAdd(): Boolean {
-        return initialAdd
-    }
+    fun isInitialAdd(): Boolean = initialAdd
 
     companion object {
         val EMPTY = Modification("")

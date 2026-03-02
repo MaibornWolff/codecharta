@@ -50,7 +50,8 @@ class ParsingIntegrationTest {
         val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(vcFList.getList(), projectNameList)
 
         val namesInVCF =
-            versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject()
+            versionControlledFilesInGitProject
+                .getListOfVCFilesMatchingGitProject()
                 .map { versionControlledFile -> versionControlledFile.filename }
 
         projectNameList.filter { element ->

@@ -14,23 +14,19 @@ import java.util.stream.Collector
 import java.util.stream.Stream
 
 class GitLogNumstatRawParserStrategy : LogParserStrategy {
-    override fun creationCommand(): String {
-        return "git log --numstat --raw --topo-order --reverse -m"
-    }
+    override fun creationCommand(): String = "git log --numstat --raw --topo-order --reverse -m"
 
-    override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> {
-        return LogLineCollector.create(
-            GIT_COMMIT_SEPARATOR_TEST
-        )
-    }
+    override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> = LogLineCollector.create(
+        GIT_COMMIT_SEPARATOR_TEST
+    )
 
     override fun parseAuthor(commitLines: List<String>): String {
         val authorLine = commitLines.first { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
         return AuthorParser.parseAuthor(authorLine)
     }
 
-    override fun parseModifications(commitLines: List<String>): List<Modification> {
-        return commitLines.mapNotNull {
+    override fun parseModifications(commitLines: List<String>): List<Modification> = commitLines
+        .mapNotNull {
             if (isFileLine(
                     it
                 )
@@ -42,28 +38,27 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
                 null
             }
         }.groupingBy { it.currentFilename }
-            .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
-                when (aggregatedModification) {
-                    null -> mergeModifications(
-                        currentModification
-                    )
+        .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
+            when (aggregatedModification) {
+                null -> mergeModifications(
+                    currentModification
+                )
 
-                    else -> mergeModifications(
-                        aggregatedModification,
-                        currentModification
-                    )
-                }
-            }.values.toList()
-    }
+                else -> mergeModifications(
+                    aggregatedModification,
+                    currentModification
+                )
+            }
+        }.values
+        .toList()
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         val dateLine = commitLines.first { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
         return CommitDateParser.parseCommitDate(dateLine)
     }
 
-    override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
-        return commitLines.any { commitLine -> commitLine.startsWith(MERGE_COMMIT_INDICATOR) }
-    }
+    override fun parseIsMergeCommit(commitLines: List<String>): Boolean =
+        commitLines.any { commitLine -> commitLine.startsWith(MERGE_COMMIT_INDICATOR) }
 
     override fun parseMessage(commitLines: List<String>): String {
         val commitMessages = extractCommitMessages(commitLines)
@@ -83,16 +78,13 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
     companion object {
         private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
 
-        private fun isFileLine(commitLine: String): Boolean {
-            return GitLogRawParsingHelper.isFileLine(commitLine) || GitLogNumstatParsingHelper.isFileLine(commitLine)
-        }
+        private fun isFileLine(commitLine: String): Boolean =
+            GitLogRawParsingHelper.isFileLine(commitLine) || GitLogNumstatParsingHelper.isFileLine(commitLine)
 
-        internal fun parseModification(fileLine: String): Modification {
-            return if (fileLine.startsWith(":")) {
-                GitLogRawParsingHelper.parseModification(fileLine)
-            } else {
-                GitLogNumstatParsingHelper.parseModification(fileLine)
-            }
+        internal fun parseModification(fileLine: String): Modification = if (fileLine.startsWith(":")) {
+            GitLogRawParsingHelper.parseModification(fileLine)
+        } else {
+            GitLogNumstatParsingHelper.parseModification(fileLine)
         }
 
         private fun mergeModifications(vararg a: Modification): Modification {

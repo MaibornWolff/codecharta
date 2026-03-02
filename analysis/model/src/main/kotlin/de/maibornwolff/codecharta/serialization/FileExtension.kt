@@ -1,9 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
-enum class FileExtension(
-    val primaryExtension: String,
-    val otherValidExtensions: Set<String> = setOf()
-) {
+enum class FileExtension(val primaryExtension: String, val otherValidExtensions: Set<String> = setOf()) {
     JSON(".json"),
     CSV(".csv"),
     CODECHARTA(".cc"),

@@ -5,27 +5,26 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 object OutputFileHandler {
-    fun stream(outputFilePath: String?, fallbackOutputStream: OutputStream, compressed: Boolean): OutputStream {
-        return if (outputFilePath.isNullOrBlank()) {
+    fun stream(outputFilePath: String?, fallbackOutputStream: OutputStream, compressed: Boolean): OutputStream =
+        if (outputFilePath.isNullOrBlank()) {
             fallbackOutputStream
         } else {
             FileOutputStream(File(checkAndFixFileExtension(outputFilePath, compressed, FileExtension.JSON)))
         }
-    }
 
-    fun checkAndFixFileExtension(outputName: String, compressed: Boolean, fileExtension: FileExtension): String {
-        return when (fileExtension) {
-            FileExtension.JSON ->
-                outputName.removeSuffix(FileExtension.GZIP.primaryExtension).removeSuffix(FileExtension.JSON.primaryExtension)
-                    .removeSuffix(
-                        FileExtension.CODECHARTA.primaryExtension
-                    ) + FileExtension.CODECHARTA.primaryExtension +
-                    FileExtension.JSON.primaryExtension +
-                    if (compressed) FileExtension.GZIP.primaryExtension else String()
+    fun checkAndFixFileExtension(outputName: String, compressed: Boolean, fileExtension: FileExtension): String = when (fileExtension) {
+        FileExtension.JSON ->
+            outputName
+                .removeSuffix(FileExtension.GZIP.primaryExtension)
+                .removeSuffix(FileExtension.JSON.primaryExtension)
+                .removeSuffix(
+                    FileExtension.CODECHARTA.primaryExtension
+                ) + FileExtension.CODECHARTA.primaryExtension +
+                FileExtension.JSON.primaryExtension +
+                if (compressed) FileExtension.GZIP.primaryExtension else String()
 
-            FileExtension.CSV -> outputName.removeSuffix(FileExtension.CSV.primaryExtension) + FileExtension.CSV.primaryExtension
+        FileExtension.CSV -> outputName.removeSuffix(FileExtension.CSV.primaryExtension) + FileExtension.CSV.primaryExtension
 
-            else -> throw IllegalArgumentException()
-        }
+        else -> throw IllegalArgumentException()
     }
 }
