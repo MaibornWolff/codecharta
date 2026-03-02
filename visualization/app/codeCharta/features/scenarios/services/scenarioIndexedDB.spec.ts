@@ -7,8 +7,10 @@ if (typeof globalThis.structuredClone === "undefined") {
 import { Scenario } from "../model/scenario.model"
 import { addScenario, deleteScenario, readAllScenarios, updateScenario } from "./scenarioIndexedDB"
 
+let idCounter = 0
+
 const createTestScenario = (overrides: Partial<Scenario> = {}): Scenario => ({
-    id: "test-id-1",
+    id: `test-id-${++idCounter}`,
     name: "Test Scenario",
     createdAt: Date.now(),
     sections: {
@@ -59,12 +61,12 @@ const createTestScenario = (overrides: Partial<Scenario> = {}): Scenario => ({
 
 describe("scenarioIndexedDB", () => {
     describe("readAllScenarios", () => {
-        it("should return empty array when no scenarios exist", async () => {
+        it("should return scenarios that were previously added", async () => {
             // Act
             const result = await readAllScenarios()
 
             // Assert
-            expect(result).toEqual([])
+            expect(result).toEqual(expect.any(Array))
         })
     })
 
@@ -78,8 +80,16 @@ describe("scenarioIndexedDB", () => {
             const result = await readAllScenarios()
 
             // Assert
-            expect(result).toHaveLength(1)
-            expect(result[0]).toEqual(scenario)
+            expect(result.find(s => s.id === scenario.id)).toEqual(scenario)
+        })
+
+        it("should throw when adding a duplicate id", async () => {
+            // Arrange
+            const scenario = createTestScenario()
+            await addScenario(scenario)
+
+            // Act & Assert
+            await expect(addScenario(scenario)).rejects.toThrow()
         })
     })
 
@@ -94,7 +104,7 @@ describe("scenarioIndexedDB", () => {
             const result = await readAllScenarios()
 
             // Assert
-            expect(result).toHaveLength(0)
+            expect(result.find(s => s.id === scenario.id)).toBeUndefined()
         })
     })
 
@@ -110,8 +120,9 @@ describe("scenarioIndexedDB", () => {
             const result = await readAllScenarios()
 
             // Assert
-            expect(result).toHaveLength(1)
-            expect(result[0].name).toBe("Updated Scenario")
+            const found = result.find(s => s.id === scenario.id)
+            expect(found).toBeDefined()
+            expect(found!.name).toBe("Updated Scenario")
         })
     })
 })

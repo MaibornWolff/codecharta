@@ -36,9 +36,14 @@ export class ScenariosService {
     ) {}
 
     async loadScenarios(): Promise<void> {
-        const userScenarios = await readAllScenarios()
-        userScenarios.sort((a, b) => b.createdAt - a.createdAt)
-        this.scenarios$.next([...userScenarios, ...BUILT_IN_SCENARIOS])
+        try {
+            const userScenarios = await readAllScenarios()
+            userScenarios.sort((a, b) => b.createdAt - a.createdAt)
+            this.scenarios$.next([...userScenarios, ...BUILT_IN_SCENARIOS])
+        } catch (error) {
+            console.error("Failed to load scenarios from IndexedDB:", error)
+            this.scenarios$.next([...BUILT_IN_SCENARIOS])
+        }
     }
 
     async saveScenario(name: string, description?: string, mapFileNames?: string[]): Promise<Scenario> {
@@ -54,14 +59,22 @@ export class ScenariosService {
             mapFileNames
         )
 
-        await addScenario(scenario)
-        await this.loadScenarios()
+        try {
+            await addScenario(scenario)
+            await this.loadScenarios()
+        } catch (error) {
+            console.error("Failed to save scenario:", error)
+        }
         return scenario
     }
 
     async removeScenario(id: string): Promise<void> {
-        await deleteScenarioFromDB(id)
-        await this.loadScenarios()
+        try {
+            await deleteScenarioFromDB(id)
+            await this.loadScenarios()
+        } catch (error) {
+            console.error("Failed to remove scenario:", error)
+        }
     }
 
     async applyScenario(scenario: Scenario, selectedKeys: Set<ScenarioSectionKey>, metricData?: MetricData): Promise<void> {
@@ -69,26 +82,30 @@ export class ScenariosService {
         this.store.dispatch(setIsLoadingFile({ value: true }))
 
         try {
+            // --- Build patches ---
             const cameraVectors = selectedKeys.has("camera") ? getCameraVectors(scenario.sections) : undefined
             const applyCamera = cameraVectors !== undefined
             const patches = buildOrderedStatePatches(scenario.sections, selectedKeys, metricData)
 
             // When applying camera, temporarily disable autoFit so it doesn't
             // overwrite our camera position after the render cycle completes.
-            const previousResetCamera = applyCamera ? this.state.getValue().appSettings.resetCameraIfNewFileIsLoaded : undefined
-            if (applyCamera && previousResetCamera && patches.length > 0) {
+            const previousResetCamera =
+                applyCamera && patches.length > 0 ? this.state.getValue().appSettings.resetCameraIfNewFileIsLoaded : undefined
+            if (previousResetCamera && patches.length > 0) {
                 patches[0].appSettings = { ...patches[0].appSettings, resetCameraIfNewFileIsLoaded: false }
             }
 
-            // Dispatch patches sequentially with microtask gaps so effects
-            // triggered by earlier patches (e.g. resetColorRange after metric change)
+            // --- Dispatch sequentially ---
+            // Dispatch patches with macrotask delays so effects triggered by
+            // earlier patches (e.g. resetColorRange after metric change)
             // settle before subsequent patches override their values.
             for (const patch of patches) {
                 this.store.dispatch(setState({ value: patch }))
                 await new Promise<void>(resolve => setTimeout(resolve))
             }
 
-            if (applyCamera) {
+            // --- Apply camera ---
+            if (applyCamera && this.threeCameraService.camera) {
                 const { position, target } = cameraVectors
                 this.threeCameraService.camera.position.set(position.x, position.y, position.z)
                 this.threeMapControlsService.setControlTarget(target)

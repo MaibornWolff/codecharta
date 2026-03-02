@@ -30,12 +30,17 @@ function buildMetricsPatch(sections: ScenarioSections, metricData?: MetricData):
         metrics.edgeMetric = edgeMetric
     }
 
-    const patch: RecursivePartial<CcState> = {}
-    if (Object.keys(metrics).length > 0) {
-        patch.dynamicSettings = { ...metrics }
+    const hasMetricOverrides = Object.keys(metrics).length > 0
+    if (!hasMetricOverrides && sections.metrics.isColorMetricLinkedToHeightMetric === undefined) {
+        return {}
     }
-    if (sections.metrics.isColorMetricLinkedToHeightMetric !== undefined) {
-        patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
+
+    const patch: RecursivePartial<CcState> = {}
+    if (hasMetricOverrides) {
+        patch.dynamicSettings = { ...metrics }
+        if (sections.metrics.isColorMetricLinkedToHeightMetric !== undefined) {
+            patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
+        }
     }
     return patch
 }
