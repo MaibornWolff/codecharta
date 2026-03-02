@@ -1,63 +1,63 @@
 import { BlacklistItem, ColorMode, ColorRange, MapColors, MarkedPackage, ColorLabelOptions } from "../../../codeCharta.model"
 
 export interface PlainPosition {
-    x: number
-    y: number
-    z: number
+    readonly x: number
+    readonly y: number
+    readonly z: number
 }
 
 export interface MetricsSection {
-    areaMetric: string
-    heightMetric: string
-    colorMetric: string
-    edgeMetric?: string
-    distributionMetric?: string
-    isColorMetricLinkedToHeightMetric?: boolean
+    readonly areaMetric: string
+    readonly heightMetric: string
+    readonly colorMetric: string
+    readonly edgeMetric?: string
+    readonly distributionMetric?: string
+    readonly isColorMetricLinkedToHeightMetric?: boolean
 }
 
 export interface ColorsSection {
-    colorRange: ColorRange
-    colorMode?: ColorMode
-    mapColors?: Partial<MapColors>
+    readonly colorRange: ColorRange
+    readonly colorMode?: ColorMode
+    readonly mapColors?: Partial<MapColors>
 }
 
 export interface CameraSection {
-    position: PlainPosition
-    target: PlainPosition
+    readonly position: PlainPosition
+    readonly target: PlainPosition
 }
 
 export interface FiltersSection {
-    blacklist: BlacklistItem[]
-    focusedNodePath: string[]
+    readonly blacklist: readonly BlacklistItem[]
+    readonly focusedNodePath: readonly string[]
 }
 
 export interface LabelsAndFoldersSection {
-    amountOfTopLabels: number
-    showMetricLabelNameValue: boolean
-    showMetricLabelNodeName: boolean
-    enableFloorLabels: boolean
-    colorLabels: ColorLabelOptions
-    markedPackages: MarkedPackage[]
+    readonly amountOfTopLabels: number
+    readonly showMetricLabelNameValue: boolean
+    readonly showMetricLabelNodeName: boolean
+    readonly enableFloorLabels: boolean
+    readonly colorLabels: ColorLabelOptions
+    readonly markedPackages: readonly MarkedPackage[]
 }
 
 export type ScenarioSectionKey = "metrics" | "colors" | "camera" | "filters" | "labelsAndFolders"
 
 export interface ScenarioSections {
-    metrics?: MetricsSection
-    colors?: ColorsSection
-    camera?: CameraSection
-    filters?: FiltersSection
-    labelsAndFolders?: LabelsAndFoldersSection
+    readonly metrics?: MetricsSection
+    readonly colors?: ColorsSection
+    readonly camera?: CameraSection
+    readonly filters?: FiltersSection
+    readonly labelsAndFolders?: LabelsAndFoldersSection
 }
 
 export interface Scenario {
-    id: string
-    name: string
-    description?: string
-    mapFileNames?: string[]
-    createdAt: number
-    isBuiltIn?: boolean
-    sections: ScenarioSections
+    readonly id: string
+    readonly name: string
+    readonly description?: string
+    readonly mapFileNames?: readonly string[]
+    readonly createdAt: number
+    readonly isBuiltIn?: boolean
+    readonly sections: ScenarioSections
 }
 
 export function getAvailableSectionKeys(scenario: Scenario): ScenarioSectionKey[] {
@@ -84,26 +84,21 @@ export const SCENARIO_SECTION_ICONS: Record<ScenarioSectionKey, string> = {
 export const CCSCENARIO_EXTENSION = ".ccscenario"
 
 export interface ScenarioFile {
-    schemaVersion: 1
-    name: string
-    description?: string
-    mapFileNames?: string[]
-    sections: ScenarioSections
+    readonly schemaVersion: 1
+    readonly name: string
+    readonly description?: string
+    readonly mapFileNames?: readonly string[]
+    readonly sections: ScenarioSections
 }
 
 export function toScenarioFile(scenario: Scenario): ScenarioFile {
-    const file: ScenarioFile = {
+    return {
         schemaVersion: 1,
         name: scenario.name,
+        ...(scenario.description ? { description: scenario.description } : {}),
+        ...(scenario.mapFileNames?.length > 0 ? { mapFileNames: scenario.mapFileNames } : {}),
         sections: scenario.sections
     }
-    if (scenario.description) {
-        file.description = scenario.description
-    }
-    if (scenario.mapFileNames?.length > 0) {
-        file.mapFileNames = scenario.mapFileNames
-    }
-    return file
 }
 
 export function fromScenarioFile(file: ScenarioFile): Scenario {

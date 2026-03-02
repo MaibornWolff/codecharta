@@ -76,8 +76,8 @@ export function buildOrderedStatePatches(
     let hasPhase3 = false
 
     if (selectedKeys.has("filters") && sections.filters) {
-        phase3.fileSettings = { blacklist: sections.filters.blacklist }
-        phase3.dynamicSettings = { focusedNodePath: sections.filters.focusedNodePath }
+        phase3.fileSettings = { blacklist: [...sections.filters.blacklist] }
+        phase3.dynamicSettings = { focusedNodePath: [...sections.filters.focusedNodePath] }
         hasPhase3 = true
     }
 
@@ -89,7 +89,7 @@ export function buildOrderedStatePatches(
             enableFloorLabels: sections.labelsAndFolders.enableFloorLabels,
             colorLabels: sections.labelsAndFolders.colorLabels
         }
-        phase3.fileSettings = { ...phase3.fileSettings, markedPackages: sections.labelsAndFolders.markedPackages }
+        phase3.fileSettings = { ...phase3.fileSettings, markedPackages: [...sections.labelsAndFolders.markedPackages] }
         hasPhase3 = true
     }
 
