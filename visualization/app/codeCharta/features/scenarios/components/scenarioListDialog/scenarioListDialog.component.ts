@@ -48,7 +48,7 @@ export class ScenarioListDialogComponent {
         invalid: [],
         parseErrors: []
     })
-    readonly acceptExtensions = CCSCENARIO_EXTENSION + ",.json"
+    readonly acceptExtensions = `${CCSCENARIO_EXTENSION},.json`
 
     readonly scenarios = toSignal(this.scenariosService.scenarios$, { initialValue: [] as Scenario[] })
     readonly metricData = toSignal(this.store.select(metricDataSelector), { requireSync: true })
@@ -108,7 +108,7 @@ export class ScenarioListDialogComponent {
 
     async handleImportFiles(event: Event) {
         const input = event.target as HTMLInputElement
-        if (!input.files?.length) {
+        if (!input.files || input.files.length === 0) {
             return
         }
         const result = await this.scenariosService.importScenarioFiles(input.files)
@@ -182,7 +182,7 @@ export function groupScenarios(scenarios: Scenario[], visibleFileNames: Set<stri
     return GROUP_DEFINITIONS.filter(def => buckets.has(def.priority)).map(def => ({
         label: def.label,
         icon: def.icon,
-        scenarios: buckets.get(def.priority)!
+        scenarios: buckets.get(def.priority) ?? []
     }))
 }
 
@@ -202,7 +202,7 @@ export function toScenarioView(scenario: Scenario, visibleFileNames: Set<string>
 
 export function getScenarioPriority(scenario: Scenario, visibleFileNames: Set<string>): number {
     const isBound = (scenario.mapFileNames?.length ?? 0) > 0
-    if (isBound && scenario.mapFileNames!.some(name => visibleFileNames.has(name))) {
+    if (isBound && scenario.mapFileNames?.some(name => visibleFileNames.has(name))) {
         return 0
     }
     if (!isBound && !scenario.isBuiltIn) {
