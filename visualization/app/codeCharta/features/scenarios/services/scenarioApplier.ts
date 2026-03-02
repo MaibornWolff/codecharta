@@ -14,30 +14,30 @@ function buildMetricsPatch(sections: ScenarioSections, metricData?: MetricData):
         return {}
     }
 
-    const available = metricData ? getAvailableMetricNames(metricData) : undefined
-    const metrics: Record<string, string | undefined> = {}
+    const availableMetricNames = metricData ? getAvailableMetricNames(metricData) : undefined
+    const metricOverrides: Record<string, string | undefined> = {}
 
     const nodeMetricKeys = ["areaMetric", "heightMetric", "colorMetric", "distributionMetric"] as const
     for (const key of nodeMetricKeys) {
         const value = sections.metrics[key]
-        if (value !== undefined && (!available || available.nodeMetrics.has(value))) {
-            metrics[key] = value
+        if (value !== undefined && (!availableMetricNames || availableMetricNames.nodeMetrics.has(value))) {
+            metricOverrides[key] = value
         }
     }
 
     const edgeMetric = sections.metrics.edgeMetric
-    if (edgeMetric !== undefined && (!available || !edgeMetric || available.edgeMetrics.has(edgeMetric))) {
-        metrics.edgeMetric = edgeMetric
+    if (edgeMetric !== undefined && (!availableMetricNames || !edgeMetric || availableMetricNames.edgeMetrics.has(edgeMetric))) {
+        metricOverrides.edgeMetric = edgeMetric
     }
 
-    const hasMetricOverrides = Object.keys(metrics).length > 0
+    const hasMetricOverrides = Object.keys(metricOverrides).length > 0
     if (!hasMetricOverrides && sections.metrics.isColorMetricLinkedToHeightMetric === undefined) {
         return {}
     }
 
     const patch: RecursivePartial<CcState> = {}
     if (hasMetricOverrides) {
-        patch.dynamicSettings = { ...metrics }
+        patch.dynamicSettings = { ...metricOverrides }
         if (sections.metrics.isColorMetricLinkedToHeightMetric !== undefined) {
             patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
         }
@@ -77,29 +77,32 @@ export function buildOrderedStatePatches(
     }
 
     // Phase 3: Filters + Labels
-    const phase3: RecursivePartial<CcState> = {}
-    let hasPhase3 = false
+    const filtersAndLabelsPatch: RecursivePartial<CcState> = {}
+    let hasFiltersOrLabels = false
 
     if (selectedKeys.has("filters") && sections.filters) {
-        phase3.fileSettings = { blacklist: [...sections.filters.blacklist] }
-        phase3.dynamicSettings = { focusedNodePath: [...sections.filters.focusedNodePath] }
-        hasPhase3 = true
+        filtersAndLabelsPatch.fileSettings = { blacklist: [...sections.filters.blacklist] }
+        filtersAndLabelsPatch.dynamicSettings = { focusedNodePath: [...sections.filters.focusedNodePath] }
+        hasFiltersOrLabels = true
     }
 
     if (selectedKeys.has("labelsAndFolders") && sections.labelsAndFolders) {
-        phase3.appSettings = {
+        filtersAndLabelsPatch.appSettings = {
             amountOfTopLabels: sections.labelsAndFolders.amountOfTopLabels,
             showMetricLabelNameValue: sections.labelsAndFolders.showMetricLabelNameValue,
             showMetricLabelNodeName: sections.labelsAndFolders.showMetricLabelNodeName,
             enableFloorLabels: sections.labelsAndFolders.enableFloorLabels,
             colorLabels: sections.labelsAndFolders.colorLabels
         }
-        phase3.fileSettings = { ...phase3.fileSettings, markedPackages: [...sections.labelsAndFolders.markedPackages] }
-        hasPhase3 = true
+        filtersAndLabelsPatch.fileSettings = {
+            ...filtersAndLabelsPatch.fileSettings,
+            markedPackages: [...sections.labelsAndFolders.markedPackages]
+        }
+        hasFiltersOrLabels = true
     }
 
-    if (hasPhase3) {
-        patches.push(phase3)
+    if (hasFiltersOrLabels) {
+        patches.push(filtersAndLabelsPatch)
     }
 
     return patches
