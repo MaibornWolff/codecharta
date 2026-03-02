@@ -86,8 +86,11 @@ describe("ApplyScenarioDialogComponent", () => {
         fixture.componentRef.setInput("metricData", { nodeMetricData: [], edgeMetricData: [] })
         fixture.detectChanges()
 
+        // Act
+        const result = fixture.componentInstance.hasMissing()
+
         // Assert
-        expect(fixture.componentInstance.hasMissing()).toBe(true)
+        expect(result).toBe(true)
     })
 
     it("should call applyScenario with only selected sections", () => {

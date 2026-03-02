@@ -37,8 +37,11 @@ describe("SaveScenarioDialogComponent", () => {
     })
 
     it("should require a name", () => {
+        // Act
+        const result = component.nameValid()
+
         // Assert
-        expect(component.nameValid()).toBe(false)
+        expect(result).toBe(false)
     })
 
     it("should be valid when name is provided", () => {
@@ -82,9 +85,13 @@ describe("SaveScenarioDialogComponent", () => {
     })
 
     it("should have no files when files state is empty", () => {
+        // Act
+        const hasFiles = component.hasFiles()
+        const fileNames = component.visibleFileNames()
+
         // Assert
-        expect(component.hasFiles()).toBe(false)
-        expect(component.visibleFileNames()).toEqual([])
+        expect(hasFiles).toBe(false)
+        expect(fileNames).toEqual([])
     })
 
     it("should resolve visible file names from store", () => {

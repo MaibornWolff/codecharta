@@ -125,8 +125,11 @@ describe("scenarioApplier", () => {
         })
 
         it("should return empty array when no keys are selected", () => {
+            // Arrange
+            const keys = new Set<ScenarioSectionKey>()
+
             // Act
-            const patches = buildOrderedStatePatches(testSections, new Set())
+            const patches = buildOrderedStatePatches(testSections, keys)
 
             // Assert
             expect(patches).toHaveLength(0)
