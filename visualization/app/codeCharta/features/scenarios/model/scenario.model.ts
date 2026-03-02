@@ -100,7 +100,7 @@ export function toScenarioFile(scenario: Scenario): ScenarioFile {
     if (scenario.description) {
         file.description = scenario.description
     }
-    if (scenario.mapFileNames?.length) {
+    if (scenario.mapFileNames?.length > 0) {
         file.mapFileNames = scenario.mapFileNames
     }
     return file

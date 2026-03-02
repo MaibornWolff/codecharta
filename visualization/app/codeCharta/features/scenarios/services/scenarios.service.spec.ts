@@ -7,7 +7,6 @@ import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMa
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ScenariosService } from "./scenarios.service"
 import { Scenario, ScenarioFile, ScenarioSectionKey } from "../model/scenario.model"
-import { ScenarioImportResult } from "./scenarios.service"
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { FileDownloader } from "../../../util/fileDownloader"

@@ -7,7 +7,6 @@ import { ScenariosService } from "../../services/scenarios.service"
 import { Scenario } from "../../model/scenario.model"
 import { ColorMode, MetricData } from "../../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
-import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 
 const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[]): Scenario => ({
     id,
@@ -327,8 +326,8 @@ describe("ScenarioListDialogComponent", () => {
             const globalView = groups.flatMap(g => g.scenarios).find(v => v.scenario.name === "Global")
 
             // Assert
-            expect(boundView!.mapBound).toBe(true)
-            expect(globalView!.mapBound).toBe(false)
+            expect(boundView?.mapBound).toBe(true)
+            expect(globalView?.mapBound).toBe(false)
         })
 
         it("should precompute mapMismatch on scenario views", () => {
@@ -357,8 +356,8 @@ describe("ScenarioListDialogComponent", () => {
             const builtInView = groups.flatMap(g => g.scenarios).find(v => v.scenario.name === "Built-In")
 
             // Assert
-            expect(fullView!.sectionKeys).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
-            expect(builtInView!.sectionKeys).toEqual(["metrics", "colors"])
+            expect(fullView?.sectionKeys).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
+            expect(builtInView?.sectionKeys).toEqual(["metrics", "colors"])
         })
     })
 
