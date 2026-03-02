@@ -80,6 +80,7 @@ function initializeAppSettings(target: CustomConfig) {
         isColorMetricLinkedToHeightMetric: false,
         enableFloorLabels: true,
         labelMode: undefined,
+        groupLabelCollisions: true,
         mapColors: {
             labelColorAndAlpha: { alpha: 0, rgb: "" },
             base: "",

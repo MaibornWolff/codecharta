@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
-import { CodeMapLabelService } from "./codeMap.label.service"
+import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { CcState, CodeMapNode, ColorLabelOptions, colorLabelTypes, LabelMode, LayoutAlgorithm, Node } from "../../codeCharta.model"
@@ -39,7 +39,7 @@ export class CodeMapRenderService implements OnDestroy {
         private readonly store: Store<CcState>,
         private readonly state: State<CcState>,
         private threeSceneService: ThreeSceneService,
-        private codeMapLabelService: CodeMapLabelService,
+        private labelSettingsFacade: LabelSettingsFacade,
         private codeMapArrowService: CodeMapArrowService,
         private threeStatsService: ThreeStatsService,
         private codeMapMouseEventService: CodeMapMouseEventService
@@ -78,10 +78,10 @@ export class CodeMapRenderService implements OnDestroy {
 
     scaleMap() {
         this.codeMapMouseEventService.unhoverNode()
-        this.codeMapLabelService.scale()
+        this.labelSettingsFacade.scale()
         this.codeMapArrowService.scale()
         this.threeSceneService.scaleHeight()
-        this.codeMapLabelService.clearLabels()
+        this.labelSettingsFacade.clearLabels()
         this.setLabels(this.unflattenedNodes)
     }
 
@@ -171,12 +171,12 @@ export class CodeMapRenderService implements OnDestroy {
 
     private setBuildingLabel(nodes: Node[], highestNodeInSet: number) {
         for (const node of nodes) {
-            this.codeMapLabelService.addLeafLabel(node, highestNodeInSet)
+            this.labelSettingsFacade.addLeafLabel(node, highestNodeInSet)
         }
     }
 
     private setLabels(sortedNodes: Node[]) {
-        this.codeMapLabelService.clearLabels()
+        this.labelSettingsFacade.clearLabels()
 
         if (sortedNodes === undefined || sortedNodes.length === 0) {
             return

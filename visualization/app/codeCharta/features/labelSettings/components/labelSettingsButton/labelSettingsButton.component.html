@@ -1,0 +1,14 @@
+<div class="flex justify-center" style="anchor-name: --label-settings-btn">
+	<cc-ribbon-bar-menu-button icon="fa-tag" [title]="'Open Label Settings'" (click)="togglePopover()">
+	</cc-ribbon-bar-menu-button>
+</div>
+
+<div
+	class="dropdown p-2 rounded-box bg-base-100 shadow-lg w-72"
+	popover
+	#popover
+	id="label-settings-popover"
+	style="position-anchor: --label-settings-btn"
+>
+	<cc-label-settings-panel></cc-label-settings-panel>
+</div>

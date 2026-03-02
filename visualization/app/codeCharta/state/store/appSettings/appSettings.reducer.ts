@@ -38,6 +38,7 @@ import {
 import { defaultIsSearchPanelPinned, isSearchPanelPinned } from "./isSearchPanelPinned/isSearchPanelPinned.reducer"
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
 import { defaultLabelMode, labelMode } from "./labelMode/labelMode.reducer"
+import { defaultGroupLabelCollisions, groupLabelCollisions } from "./groupLabelCollisions/groupLabelCollisions.reducer"
 import { combineReducers } from "@ngrx/store"
 import { defaultShowIncomingEdges, showIncomingEdges } from "./showEdges/incoming/showIncomingEdges.reducer"
 import { defaultShowOutgoingEdges, showOutgoingEdges } from "./showEdges/outgoing/showOutgoingEdges.reducer"
@@ -72,7 +73,8 @@ export const appSettings = combineReducers({
     sharpnessMode,
     isColorMetricLinkedToHeightMetric,
     enableFloorLabels,
-    labelMode
+    labelMode,
+    groupLabelCollisions
 })
 
 export const defaultAppSettings = {
@@ -105,5 +107,6 @@ export const defaultAppSettings = {
     sharpnessMode: defaultSharpnessMode,
     isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
     enableFloorLabels: defaultEnableFloorLabels,
-    labelMode: defaultLabelMode
+    labelMode: defaultLabelMode,
+    groupLabelCollisions: defaultGroupLabelCollisions
 }

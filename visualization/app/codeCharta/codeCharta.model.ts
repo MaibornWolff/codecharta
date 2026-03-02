@@ -171,6 +171,7 @@ export interface AppSettings {
     screenshotToClipboardEnabled: boolean
     colorLabels: ColorLabelOptions
     labelMode: LabelMode
+    groupLabelCollisions: boolean
     isColorMetricLinkedToHeightMetric: boolean
     enableFloorLabels: boolean
 }

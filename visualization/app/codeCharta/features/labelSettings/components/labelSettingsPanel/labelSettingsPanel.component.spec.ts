@@ -1,14 +1,14 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { setColorLabels } from "../../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { setLabelMode } from "../../../state/store/appSettings/labelMode/labelMode.actions"
+import { setColorLabels } from "../../../../state/store/appSettings/colorLabels/colorLabels.actions"
+import { setLabelMode } from "../../../../state/store/appSettings/labelMode/labelMode.actions"
 import { LabelSettingsPanelComponent } from "./labelSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../codeMap/codeMap.render.service"
+import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
+import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
 import { BehaviorSubject } from "rxjs"
-import { LabelMode } from "../../../codeCharta.model"
+import { LabelMode } from "../../../../codeCharta.model"
 
 describe("LabelSettingsPanelComponent", () => {
     let colorCategoryCounts$: BehaviorSubject<{ positive: number; neutral: number; negative: number }>
@@ -22,46 +22,68 @@ describe("LabelSettingsPanelComponent", () => {
     })
 
     it("should display top labels slider", async () => {
+        // Arrange & Act
         await render(LabelSettingsPanelComponent)
+
+        // Assert
         expect(screen.getByTitle("Display the labels of the 10 highest buildings")).not.toBe(null)
     })
 
     it("should never disable top labels slider when color labels are active", async () => {
+        // Arrange
         const { detectChanges } = await render(LabelSettingsPanelComponent)
         const store = TestBed.inject(Store)
+
+        // Act
         store.dispatch(setColorLabels({ value: { positive: true, negative: false, neutral: false } }))
         detectChanges()
 
+        // Assert
         expect(screen.getByTitle("Display the labels of the 10 highest buildings")).not.toBe(null)
     })
 
     it("should display show node names checkbox", async () => {
+        // Arrange & Act
         await render(LabelSettingsPanelComponent)
+
+        // Assert
         expect(screen.queryByText("Show node names")).not.toBe(null)
     })
 
     it("should display show metric values checkbox", async () => {
+        // Arrange & Act
         await render(LabelSettingsPanelComponent)
+
+        // Assert
         expect(screen.queryByText("Show metric values")).not.toBe(null)
     })
 
     it("should display Height and Color toggle buttons", async () => {
+        // Arrange & Act
         await render(LabelSettingsPanelComponent)
+
+        // Assert
         expect(screen.getByText("Height")).not.toBe(null)
         expect(screen.getByText("Color")).not.toBe(null)
     })
 
     it("should dispatch setLabelMode when clicking Color button", async () => {
+        // Arrange
         await render(LabelSettingsPanelComponent)
         const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
+        // Act
         await userEvent.click(screen.getByText("Color"))
 
+        // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setLabelMode({ value: LabelMode.Color }))
     })
 
     it("should hide color label checkboxes in Height mode", async () => {
+        // Arrange & Act
         await render(LabelSettingsPanelComponent)
+
+        // Assert
         expect(screen.queryByText("By Color Metric")).toBe(null)
     })
 

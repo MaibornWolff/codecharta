@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { CodeMapLabelService } from "./codeMap.label.service"
+import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { Node, CodeMapNode, CcState, LabelMode } from "../../codeCharta.model"
 import {
@@ -43,7 +43,7 @@ describe("codeMapRenderService", () => {
     let state: State<CcState>
     let codeMapRenderService: CodeMapRenderService
     let threeSceneService: ThreeSceneService
-    let codeMapLabelService: CodeMapLabelService
+    let labelSettingsFacade: LabelSettingsFacade
     let codeMapArrowService: CodeMapArrowService
     let threeStatsService: ThreeStatsService
     let codeMapMouseEventService: CodeMapMouseEventService
@@ -54,7 +54,7 @@ describe("codeMapRenderService", () => {
         restartSystem()
         rebuildService()
         withMockedThreeSceneService()
-        withMockedCodeMapLabelService()
+        withMockedLabelSettingsFacade()
         withMockedCodeMapArrowService()
         withMockedStatsService()
         withMockedCodeMapMouseEventService()
@@ -66,7 +66,7 @@ describe("codeMapRenderService", () => {
         })
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
-        codeMapLabelService = TestBed.inject(CodeMapLabelService)
+        labelSettingsFacade = TestBed.inject(LabelSettingsFacade)
         codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
         threeStatsService = TestBed.inject(ThreeStatsService)
         threeSceneService = TestBed.inject(ThreeSceneService)
@@ -88,7 +88,7 @@ describe("codeMapRenderService", () => {
             store,
             state,
             threeSceneService,
-            codeMapLabelService,
+            labelSettingsFacade,
             codeMapArrowService,
             threeStatsService,
             codeMapMouseEventService
@@ -96,8 +96,8 @@ describe("codeMapRenderService", () => {
         codeMapRenderService["showCouplingArrows"] = jest.fn()
     }
 
-    function withMockedCodeMapLabelService() {
-        codeMapLabelService = codeMapRenderService["codeMapLabelService"] = jest.fn().mockReturnValue({
+    function withMockedLabelSettingsFacade() {
+        labelSettingsFacade = codeMapRenderService["labelSettingsFacade"] = jest.fn().mockReturnValue({
             scale: jest.fn(),
             clearLabels: jest.fn(),
             addLeafLabel: jest.fn()
@@ -193,10 +193,10 @@ describe("codeMapRenderService", () => {
             expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledWith()
         })
 
-        it("should call codeMapLabelService.scale", () => {
+        it("should call labelSettingsFacade.scale", () => {
             codeMapRenderService["scaleMap"]()
 
-            expect(codeMapLabelService.scale).toHaveBeenCalledWith()
+            expect(labelSettingsFacade.scale).toHaveBeenCalledWith()
         })
 
         it("should call codeMapArrowService.scale", () => {
@@ -214,7 +214,7 @@ describe("codeMapRenderService", () => {
         it("should call threeSceneService.clearLabels", () => {
             codeMapRenderService["scaleMap"]()
 
-            expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
+            expect(labelSettingsFacade.clearLabels).toHaveBeenCalled()
         })
     })
 
@@ -282,20 +282,20 @@ describe("codeMapRenderService", () => {
         it("should only call clearLabels for empty nodes", () => {
             codeMapRenderService["setLabels"]([])
 
-            expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
-            expect(codeMapLabelService.addLeafLabel).not.toHaveBeenCalled()
+            expect(labelSettingsFacade.clearLabels).toHaveBeenCalled()
+            expect(labelSettingsFacade.addLeafLabel).not.toHaveBeenCalled()
         })
 
-        it("should call codeMapLabelService.clearLabels", () => {
+        it("should call labelSettingsFacade.clearLabels", () => {
             codeMapRenderService["setLabels"](nodes)
 
-            expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
+            expect(labelSettingsFacade.clearLabels).toHaveBeenCalled()
         })
 
-        it("should call codeMapLabelService.addLeafLabel for each shown leaf label", () => {
+        it("should call labelSettingsFacade.addLeafLabel for each shown leaf label", () => {
             codeMapRenderService["setLabels"](nodes)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(3)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(3)
         })
 
         it("should not generate labels when showMetricLabelNodeName and showMetricLabelNameValue are both false", () => {
@@ -304,21 +304,21 @@ describe("codeMapRenderService", () => {
 
             codeMapRenderService["setLabels"](nodes)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(0)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(0)
         })
 
         it("should not generate labels for flattened nodes", () => {
             codeMapRenderService["getNodes"] = () => [{ ...TEST_NODE_ROOT, flat: true }]
             codeMapRenderService.render(null)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(0)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(0)
         })
 
         it("should generate labels for not-flattened nodes", () => {
             codeMapRenderService["getNodes"] = jest.fn().mockReturnValue(nodes)
             codeMapRenderService.render(null)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
         })
 
         it("should generate labels for color if option is toggled on", () => {
@@ -331,7 +331,7 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
             // Assert
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
         })
 
         it("should generate labels for multiple colors if corresponding options are toggled on", () => {
@@ -344,7 +344,7 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
             // Assert
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
         })
 
         it("should not exceed amountOfTopLabels when multiple color types are selected", () => {
@@ -358,7 +358,7 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
             // Assert
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
         })
 
         it("should show no color labels when amountOfTopLabels is 0", () => {
@@ -372,7 +372,7 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
             // Assert
-            expect(codeMapLabelService.addLeafLabel).not.toHaveBeenCalled()
+            expect(labelSettingsFacade.addLeafLabel).not.toHaveBeenCalled()
         })
 
         it("should show all color nodes when fewer exist than amountOfTopLabels", () => {
@@ -385,7 +385,7 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
             // Assert
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
         })
 
         it("should show no color labels when no color type is selected in Color mode", () => {
@@ -398,7 +398,7 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
             // Assert
-            expect(codeMapLabelService.addLeafLabel).not.toHaveBeenCalled()
+            expect(labelSettingsFacade.addLeafLabel).not.toHaveBeenCalled()
         })
 
         it("should show height-based labels in Height mode regardless of color label settings", () => {
@@ -411,7 +411,7 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
             // Assert
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(3)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(3)
         })
     })
 
