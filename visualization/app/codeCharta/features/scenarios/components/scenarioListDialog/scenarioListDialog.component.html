@@ -1,7 +1,7 @@
-<dialog #dialog class="modal">
+<dialog #dialog class="modal" aria-labelledby="scenario-list-title">
 	<div class="modal-box max-w-xl">
 		<div class="flex items-center justify-between mb-4">
-			<h2 class="text-xl font-bold">Scenarios</h2>
+			<h2 id="scenario-list-title" class="text-xl font-bold">Scenarios</h2>
 			<div class="flex items-center gap-1">
 				<button class="btn btn-sm btn-ghost" title="Import scenarios" (click)="openImportDialog()">
 					<i class="fa fa-upload"></i>
@@ -17,6 +17,7 @@
 		<input
 			class="input input-bordered w-full mb-4"
 			placeholder="Search scenarios..."
+			aria-label="Search scenarios"
 			[ngModel]="searchTerm()"
 			(ngModelChange)="searchTerm.set($event)"
 		/>

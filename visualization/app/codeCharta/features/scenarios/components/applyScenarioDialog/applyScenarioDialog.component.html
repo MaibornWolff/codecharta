@@ -1,6 +1,6 @@
-<dialog #dialog class="modal">
+<dialog #dialog class="modal" aria-labelledby="apply-scenario-title">
 	<div class="modal-box max-w-md">
-		<h2 class="text-xl font-bold mb-1">Apply: {{ scenario().name }}</h2>
+		<h2 id="apply-scenario-title" class="text-xl font-bold mb-1">Apply: {{ scenario().name }}</h2>
 
 		@if (scenario().mapFileNames?.length) {
 			<div class="mb-3">

@@ -1,6 +1,6 @@
-<dialog #dialog class="modal">
+<dialog #dialog class="modal" aria-labelledby="delete-confirm-title">
 	<div class="modal-box max-w-sm">
-		<h3 class="text-lg font-bold mb-2">Delete Scenario</h3>
+		<h3 id="delete-confirm-title" class="text-lg font-bold mb-2">Delete Scenario</h3>
 		<p>Are you sure you want to delete "{{ scenarioName() }}"?</p>
 		<div class="modal-action">
 			<button class="btn" (click)="cancel()">Cancel</button>
