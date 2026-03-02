@@ -17,9 +17,10 @@ class ProjectBuilderTest {
 
     @Test
     fun `it should throw an exception when initialization is incorrect`() { // then
-        assertThatIllegalStateException().isThrownBy {
-            ProjectBuilder(listOf())
-        }.withMessageContaining("No unique root node was found, instead 0 candidates identified.")
+        assertThatIllegalStateException()
+            .isThrownBy {
+                ProjectBuilder(listOf())
+            }.withMessageContaining("No unique root node was found, instead 0 candidates identified.")
     }
 
     @Test
@@ -145,28 +146,38 @@ class ProjectBuilderTest {
             mapOf(
                 "number_of_tests" to
                     AttributeDescriptor(
-                        title = "Number of Tests", description = "", link = "",
+                        title = "Number of Tests",
+                        description = "",
+                        link = "",
                         direction = 1
                     ),
                 "new_line_coverage" to
                     AttributeDescriptor(
-                        title = "New Line Coverage", description = "",
-                        link = "", direction = 1
+                        title = "New Line Coverage",
+                        description = "",
+                        link = "",
+                        direction = 1
                     ),
                 "security_hotspots_reviewed" to
                     AttributeDescriptor(
                         title = "Security Hotspots Reviewed",
-                        description = "", link = "", direction = 1
+                        description = "",
+                        link = "",
+                        direction = 1
                     ),
                 "tests" to
                     AttributeDescriptor(
-                        title = "Test Density", description = "", link = "",
+                        title = "Test Density",
+                        description = "",
+                        link = "",
                         direction = 1
                     ),
                 "wont_fix_issues" to
                     AttributeDescriptor(
-                        title = "Number of Won't Fix Issues", description = "",
-                        link = "", direction = -1
+                        title = "Number of Won't Fix Issues",
+                        description = "",
+                        link = "",
+                        direction = -1
                     )
             )
 
@@ -213,28 +224,38 @@ class ProjectBuilderTest {
             mapOf(
                 "number_of_tests" to
                     AttributeDescriptor(
-                        title = "Number of Tests", description = "", link = "",
+                        title = "Number of Tests",
+                        description = "",
+                        link = "",
                         direction = 1
                     ),
                 "new_line_coverage" to
                     AttributeDescriptor(
-                        title = "New Line Coverage", description = "",
-                        link = "", direction = 1
+                        title = "New Line Coverage",
+                        description = "",
+                        link = "",
+                        direction = 1
                     ),
                 "security_hotspots_reviewed" to
                     AttributeDescriptor(
                         title = "Security Hotspots Reviewed",
-                        description = "", link = "", direction = 1
+                        description = "",
+                        link = "",
+                        direction = 1
                     ),
                 "tests" to
                     AttributeDescriptor(
-                        title = "Test Density", description = "", link = "",
+                        title = "Test Density",
+                        description = "",
+                        link = "",
                         direction = 1
                     ),
                 "wont_fix_issues" to
                     AttributeDescriptor(
-                        title = "Number of Won't Fix Issues", description = "",
-                        link = "", direction = -1
+                        title = "Number of Won't Fix Issues",
+                        description = "",
+                        link = "",
+                        direction = -1
                     )
             )
 

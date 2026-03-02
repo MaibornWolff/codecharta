@@ -4,8 +4,6 @@ sealed class MatchPattern {
     abstract fun matches(message: String): Boolean
 
     data class StartsWith(val prefix: String) : MatchPattern() {
-        override fun matches(message: String): Boolean {
-            return message.trim().startsWith(prefix, ignoreCase = true)
-        }
+        override fun matches(message: String): Boolean = message.trim().startsWith(prefix, ignoreCase = true)
     }
 }

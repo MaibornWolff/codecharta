@@ -29,12 +29,10 @@ class Dialog {
             return listOf(subcommand) + generalArgs + subcommandArgs
         }
 
-        internal fun collectSubcommand(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Do you already have a git.log and git ls file?",
-                onInputReady = testCallback()
-            )
-        }
+        internal fun collectSubcommand(session: Session): Boolean = session.promptConfirm(
+            message = "Do you already have a git.log and git ls file?",
+            onInputReady = testCallback()
+        )
 
         internal fun collectGeneralArgs(session: Session): List<String> {
             val outputFileName: String = session.promptInput(
@@ -43,10 +41,11 @@ class Dialog {
                 onInputReady = testCallback()
             )
 
-            val isCompressed = (outputFileName.isEmpty()) || session.promptConfirm(
-                message = "Do you want to compress the output file?",
-                onInputReady = testCallback()
-            )
+            val isCompressed = (outputFileName.isEmpty()) ||
+                session.promptConfirm(
+                    message = "Do you want to compress the output file?",
+                    onInputReady = testCallback()
+                )
 
             val isSilent: Boolean = session.promptConfirm(
                 message = "Do you want to suppress command line output?",

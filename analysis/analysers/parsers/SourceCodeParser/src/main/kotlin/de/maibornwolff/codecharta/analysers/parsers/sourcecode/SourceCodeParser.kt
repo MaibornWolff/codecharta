@@ -15,9 +15,9 @@ import kotlin.system.exitProcess
     description = [SourceCodeParser.DESCRIPTION],
     footer = [SourceCodeParser.FOOTER]
 )
-class SourceCodeParser(
-    private val output: PrintStream = System.out
-) : AnalyserInterface, AttributeGenerator {
+class SourceCodeParser(private val output: PrintStream = System.out) :
+    AnalyserInterface,
+    AttributeGenerator {
     constructor() : this(System.out)
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -100,15 +100,9 @@ class SourceCodeParser(
         exitProcess(1)
     }
 
-    override fun getDialog(): AnalyserDialogInterface {
-        return AnalyserDialogInterface { _: Session -> emptyList() }
-    }
+    override fun getDialog(): AnalyserDialogInterface = AnalyserDialogInterface { _: Session -> emptyList() }
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return emptyMap()
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = emptyMap()
 }

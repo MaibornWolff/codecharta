@@ -116,13 +116,11 @@ class Dialog {
             return arrayOf("--remove=$remove", "--output-file=$outputFileName")
         }
 
-        private fun collectOutputFileName(session: Session): String {
-            return session.promptInput(
-                message = "What is the name of the output file?",
-                allowEmptyInput = true,
-                onInputReady = testCallback()
-            )
-        }
+        private fun collectOutputFileName(session: Session): String = session.promptInput(
+            message = "What is the name of the output file?",
+            allowEmptyInput = true,
+            onInputReady = testCallback()
+        )
 
         internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }

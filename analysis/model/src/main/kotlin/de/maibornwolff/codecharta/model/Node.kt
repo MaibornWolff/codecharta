@@ -17,26 +17,18 @@ class Node(
         return Path(listOf((child.asTreeNode()).name))
     }
 
-    override fun toString(): String {
-        return "Node(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
-    }
+    override fun toString(): String = "Node(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
 
-    override fun insertAt(path: Path, node: Node) {
-        throw OperationNotSupportedException("no inserting in immutable nodes")
-    }
+    override fun insertAt(path: Path, node: Node): Unit = throw OperationNotSupportedException("no inserting in immutable nodes")
 
-    override fun merge(nodes: List<Node>): Node {
-        throw OperationNotSupportedException("no inserting in immutable nodes")
-    }
+    override fun merge(nodes: List<Node>): Node = throw OperationNotSupportedException("no inserting in immutable nodes")
 
-    fun toMutableNode(): MutableNode {
-        return MutableNode(
-            name,
-            type,
-            attributes,
-            link,
-            children.map { it.toMutableNode() }.toSet(),
-            checksum = checksum
-        )
-    }
+    fun toMutableNode(): MutableNode = MutableNode(
+        name,
+        type,
+        attributes,
+        link,
+        children.map { it.toMutableNode() }.toSet(),
+        checksum = checksum
+    )
 }

@@ -34,19 +34,14 @@ object NodeInserter {
         return root
     }
 
-    private fun getNode(root: MutableNode, name: String): MutableNode? {
-        return root.children.firstOrNull {
-            it.name == name
-        }
+    private fun getNode(root: MutableNode, name: String): MutableNode? = root.children.firstOrNull {
+        it.name == name
     }
 
-    private fun rootContainsNodeAlready(root: MutableNode, node: MutableNode): Boolean {
-        return root.children.any { it.name == node.name }
-    }
+    private fun rootContainsNodeAlready(root: MutableNode, node: MutableNode): Boolean = root.children.any { it.name == node.name }
 
-    private fun createFolderNode(name: String): MutableNode {
-        return MutableNode(name, NodeType.Folder, nodeMergingStrategy = NodeMaxAttributeMerger(true))
-    }
+    private fun createFolderNode(name: String): MutableNode =
+        MutableNode(name, NodeType.Folder, nodeMergingStrategy = NodeMaxAttributeMerger(true))
 
     private fun MutableNode.insertNewFolderNode(name: String): MutableNode {
         val folderNode = createFolderNode(name)

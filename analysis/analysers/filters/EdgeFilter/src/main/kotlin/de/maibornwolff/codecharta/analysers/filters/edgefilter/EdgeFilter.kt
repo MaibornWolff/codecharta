@@ -15,9 +15,7 @@ import java.io.PrintStream
     description = [EdgeFilter.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class EdgeFilter(
-    private val output: PrintStream = System.out
-) : AnalyserInterface {
+class EdgeFilter(private val output: PrintStream = System.out) : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
@@ -59,7 +57,5 @@ class EdgeFilter(
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 }

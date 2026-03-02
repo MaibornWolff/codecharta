@@ -6,11 +6,7 @@ import de.maibornwolff.codecharta.model.AttributeTypes
 
 val analyzerName = setOf("coverageImporter")
 
-enum class CoverageAttributes(
-    val attributeName: String,
-    val attributeDescriptor: AttributeDescriptor,
-    val attributeType: AttributeType
-) {
+enum class CoverageAttributes(val attributeName: String, val attributeDescriptor: AttributeDescriptor, val attributeType: AttributeType) {
     LINE_COVERAGE(
         "line_coverage",
         AttributeDescriptor(

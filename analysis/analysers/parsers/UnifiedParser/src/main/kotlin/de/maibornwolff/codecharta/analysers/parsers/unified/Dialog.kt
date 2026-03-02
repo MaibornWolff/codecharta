@@ -43,82 +43,62 @@ class Dialog {
             )
         }
 
-        private fun inputFileQuestion(session: Session): String {
-            return session.promptDefaultDirectoryAssistedInput(
-                inputType = InputType.FOLDER_AND_FILE,
-                fileExtensionList = listOf(),
-                onInputReady = testCallback()
-            )
-        }
+        private fun inputFileQuestion(session: Session): String = session.promptDefaultDirectoryAssistedInput(
+            inputType = InputType.FOLDER_AND_FILE,
+            fileExtensionList = listOf(),
+            onInputReady = testCallback()
+        )
 
-        private fun outputFileQuestion(session: Session): String {
-            return session.promptInput(
-                message = "What is the name of the output file?",
-                allowEmptyInput = true,
-                onInputReady = testCallback()
-            )
-        }
+        private fun outputFileQuestion(session: Session): String = session.promptInput(
+            message = "What is the name of the output file?",
+            allowEmptyInput = true,
+            onInputReady = testCallback()
+        )
 
-        private fun compressedQuestion(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Do you want to compress the output file?",
-                onInputReady = testCallback()
-            )
-        }
+        private fun compressedQuestion(session: Session): Boolean = session.promptConfirm(
+            message = "Do you want to compress the output file?",
+            onInputReady = testCallback()
+        )
 
-        private fun useGitignoreQuestion(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Exclude files specified in .gitignore files?",
-                onInputReady = testCallback()
-            )
-        }
+        private fun useGitignoreQuestion(session: Session): Boolean = session.promptConfirm(
+            message = "Exclude files specified in .gitignore files?",
+            onInputReady = testCallback()
+        )
 
-        private fun includeBuildFolderQuestion(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Include build folders (build, target, dist, out) and common resource folders " +
-                    "(e.g. resources, node_modules, files starting with '.')?",
-                onInputReady = testCallback()
-            )
-        }
+        private fun includeBuildFolderQuestion(session: Session): Boolean = session.promptConfirm(
+            message = "Include build folders (build, target, dist, out) and common resource folders " +
+                "(e.g. resources, node_modules, files starting with '.')?",
+            onInputReady = testCallback()
+        )
 
-        private fun addCustomExclusionsQuestion(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Add custom regex patterns to exclude files/folders?",
-                onInputReady = testCallback()
-            )
-        }
+        private fun addCustomExclusionsQuestion(session: Session): Boolean = session.promptConfirm(
+            message = "Add custom regex patterns to exclude files/folders?",
+            onInputReady = testCallback()
+        )
 
-        private fun excludeQuestion(session: Session): String {
-            return session.promptInput(
-                message = "Which regex patterns do you want to use to exclude files/folders from the analysis?",
-                hint = "regex1, regex2... (comma-separated)",
-                allowEmptyInput = true,
-                onInputReady = testCallback()
-            )
-        }
+        private fun excludeQuestion(session: Session): String = session.promptInput(
+            message = "Which regex patterns do you want to use to exclude files/folders from the analysis?",
+            hint = "regex1, regex2... (comma-separated)",
+            allowEmptyInput = true,
+            onInputReady = testCallback()
+        )
 
-        private fun limitFileExtensionsQuestion(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Limit analysis to specific file extensions?",
-                onInputReady = testCallback()
-            )
-        }
+        private fun limitFileExtensionsQuestion(session: Session): Boolean = session.promptConfirm(
+            message = "Limit analysis to specific file extensions?",
+            onInputReady = testCallback()
+        )
 
-        private fun includeFileExtensionsQuestion(session: Session): String {
-            return session.promptInput(
-                message = "Which file extensions do you want to include in the analysis?",
-                hint = "fileType1, fileType2... (leave empty to include all file-extensions)",
-                allowEmptyInput = true,
-                onInputReady = testCallback()
-            )
-        }
+        private fun includeFileExtensionsQuestion(session: Session): String = session.promptInput(
+            message = "Which file extensions do you want to include in the analysis?",
+            hint = "fileType1, fileType2... (leave empty to include all file-extensions)",
+            allowEmptyInput = true,
+            onInputReady = testCallback()
+        )
 
-        private fun verboseQuestion(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Do you want to suppress command line output?",
-                onInputReady = testCallback()
-            )
-        }
+        private fun verboseQuestion(session: Session): Boolean = session.promptConfirm(
+            message = "Do you want to suppress command line output?",
+            onInputReady = testCallback()
+        )
 
         internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }

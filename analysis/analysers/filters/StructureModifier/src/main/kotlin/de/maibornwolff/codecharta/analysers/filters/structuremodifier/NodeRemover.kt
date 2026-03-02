@@ -9,9 +9,7 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
-class NodeRemover(
-    private val project: Project
-) {
+class NodeRemover(private val project: Project) {
     fun remove(paths: Array<String>): Project {
         var pathSegments =
             paths.map {
@@ -94,9 +92,7 @@ class NodeRemover(
         return mergedAttributeTypes.toMutableMap()
     }
 
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
-        return project.attributeDescriptors.toMutableMap()
-    }
+    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> = project.attributeDescriptors.toMutableMap()
 
     private fun removeBlacklistItems(paths: Array<String>): MutableList<BlacklistItem> {
         var blacklist = project.blacklist

@@ -24,9 +24,7 @@ class SonarComponentProjectBuilder(
     val size: Int
         get() = projectBuilder.size
 
-    fun build(): Project {
-        return projectBuilder.build()
-    }
+    fun build(): Project = projectBuilder.build()
 
     fun addComponentMapsAsNodes(components: ComponentMap): SonarComponentProjectBuilder {
         setTotalComponents(components)
@@ -54,22 +52,15 @@ class SonarComponentProjectBuilder(
         return this
     }
 
-    private fun createAttributes(measures: List<Measure>): Map<String, Any> {
-        return measures.filter { this.isMeasureConvertible(it) }
-            .associate { this.convertMetricName(it) to this.convertMetricValue(it) }
-    }
+    private fun createAttributes(measures: List<Measure>): Map<String, Any> = measures
+        .filter { this.isMeasureConvertible(it) }
+        .associate { this.convertMetricName(it) to this.convertMetricValue(it) }
 
-    private fun convertMetricName(measure: Measure): String {
-        return translator.translate(measure.metric)
-    }
+    private fun convertMetricName(measure: Measure): String = translator.translate(measure.metric)
 
-    private fun createLink(component: Component): String {
-        return sonarCodeURLLinker.createUrlString(component)
-    }
+    private fun createLink(component: Component): String = sonarCodeURLLinker.createUrlString(component)
 
-    private fun convertMetricValue(measure: Measure): Any {
-        return java.lang.Double.parseDouble(measure.value!!)
-    }
+    private fun convertMetricValue(measure: Measure): Any = java.lang.Double.parseDouble(measure.value!!)
 
     private fun isMeasureConvertible(measure: Measure): Boolean {
         if (measure.value != null) {
@@ -84,11 +75,9 @@ class SonarComponentProjectBuilder(
         return false
     }
 
-    private fun createNodeTypeFromQualifier(qualifier: Qualifier): NodeType {
-        return when (qualifier) {
-            Qualifier.FIL, Qualifier.UTS -> NodeType.File
-            else -> NodeType.Folder
-        }
+    private fun createNodeTypeFromQualifier(qualifier: Qualifier): NodeType = when (qualifier) {
+        Qualifier.FIL, Qualifier.UTS -> NodeType.File
+        else -> NodeType.Folder
     }
 
     /**
@@ -97,15 +86,13 @@ class SonarComponentProjectBuilder(
      * @param component the given component
      * @return node name for this component
      */
-    private fun createNodeName(component: Component): String {
-        return if (!usePath && component.key != null) {
-            val normalizedKey = component.key.replace(':', '/')
-            normalizedKey.substring(normalizedKey.lastIndexOf('/') + 1)
-        } else if (usePath && component.path != null) {
-            component.path.substring(component.path.lastIndexOf('/') + 1)
-        } else {
-            component.name ?: component.id
-        }
+    private fun createNodeName(component: Component): String = if (!usePath && component.key != null) {
+        val normalizedKey = component.key.replace(':', '/')
+        normalizedKey.substring(normalizedKey.lastIndexOf('/') + 1)
+    } else if (usePath && component.path != null) {
+        component.path.substring(component.path.lastIndexOf('/') + 1)
+    } else {
+        component.name ?: component.id
     }
 
     /**
@@ -115,20 +102,16 @@ class SonarComponentProjectBuilder(
      * @param component given component
      * @return fs path of components parent
      */
-    private fun createParentPath(component: Component): Path {
-        return if (!usePath && component.key != null) {
-            val extendedPath = component.key.replace(':', '/')
-            PathFactory.fromFileSystemPath(getCuttedPath(extendedPath))
-        } else if (usePath && component.path != null) {
-            PathFactory.fromFileSystemPath(getCuttedPath(component.path))
-        } else {
-            Path.trivialPath()
-        }
+    private fun createParentPath(component: Component): Path = if (!usePath && component.key != null) {
+        val extendedPath = component.key.replace(':', '/')
+        PathFactory.fromFileSystemPath(getCuttedPath(extendedPath))
+    } else if (usePath && component.path != null) {
+        PathFactory.fromFileSystemPath(getCuttedPath(component.path))
+    } else {
+        Path.trivialPath()
     }
 
-    private fun getCuttedPath(path: String): String {
-        return path.substring(path.indexOf('/') + 1, path.lastIndexOf('/') + 1)
-    }
+    private fun getCuttedPath(path: String): String = path.substring(path.indexOf('/') + 1, path.lastIndexOf('/') + 1)
 
     private fun setTotalComponents(components: ComponentMap) {
         totalComponents = components.componentList.size

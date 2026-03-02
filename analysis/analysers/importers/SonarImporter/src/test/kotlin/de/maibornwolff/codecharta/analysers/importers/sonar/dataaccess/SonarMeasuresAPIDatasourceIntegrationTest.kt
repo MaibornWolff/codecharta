@@ -27,14 +27,11 @@ private const val PORT = 8089
 @WireMockTest(httpPort = PORT)
 class SonarMeasuresAPIDatasourceIntegrationTest {
     @Throws(IOException::class)
-    private fun createResponseString(): String {
-        return this.javaClass.classLoader.getResource("sonarqube_measures.json")!!.readText()
-    }
+    private fun createResponseString(): String = this.javaClass.classLoader.getResource("sonarqube_measures.json")!!.readText()
 
     @Throws(IOException::class)
-    private fun createPagedResponseString(page: Number): String {
-        return this.javaClass.classLoader.getResource("sonarqube_measures_paged_$page.json")!!.readText()
-    }
+    private fun createPagedResponseString(page: Number): String =
+        this.javaClass.classLoader.getResource("sonarqube_measures_paged_$page.json")!!.readText()
 
     @Throws(IOException::class)
     private fun createExpectedMeasures(): Measures {
@@ -53,21 +50,27 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     fun `getComponentMap from server if no authentication needed and result is paged`() { // given
         stubFor(
             get(urlEqualTo(URL_PATH)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createPagedResponseString(1))
             )
         )
 
         stubFor(
             get(urlEqualTo(URL_PATH_SECOND_PAGE)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createPagedResponseString(2))
             )
         )
 
         stubFor(
             get(urlEqualTo(URL_PATH_THIRD_PAGE)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createPagedResponseString(3))
             )
         )
@@ -86,21 +89,27 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     fun `getMeasures page from server if no authentication needed and result is paged`() { // given
         stubFor(
             get(urlEqualTo(URL_PATH)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createPagedResponseString(1))
             )
         )
 
         stubFor(
             get(urlEqualTo(URL_PATH_SECOND_PAGE)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createPagedResponseString(2))
             )
         )
 
         stubFor(
             get(urlEqualTo(URL_PATH_THIRD_PAGE)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createPagedResponseString(3))
             )
         )
@@ -123,7 +132,9 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     fun `getMeasures from server if no authentication needed`() { // given
         stubFor(
             get(urlEqualTo(URL_PATH)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createResponseString())
             )
         )
@@ -141,7 +152,9 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     fun `getMeasures from server if authenticated`() { // given
         stubFor(
             get(urlEqualTo(URL_PATH)).withBasicAuth(USERNAME, "").willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createResponseString())
             )
         )
@@ -210,7 +223,9 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     fun getComponents_from_server_if_no_authentication_needed() {
         stubFor(
             get(urlEqualTo(URL_PATH)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createResponseString())
             )
         )
@@ -225,7 +240,9 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     fun `should use deprecated query parameters if sonarqube version is too old`() {
         stubFor(
             get(urlEqualTo(URL_PATH_DEPRECATED)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(createResponseString())
             )
         )

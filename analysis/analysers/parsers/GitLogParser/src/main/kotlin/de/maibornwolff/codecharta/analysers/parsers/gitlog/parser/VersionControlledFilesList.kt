@@ -18,9 +18,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
      */
     private var nameConflictsMap: MutableMap<String, Int> = mutableMapOf()
 
-    fun get(key: String): VersionControlledFile? {
-        return versionControlledFiles[resolveFileKey(key)]
-    }
+    fun get(key: String): VersionControlledFile? = versionControlledFiles[resolveFileKey(key)]
 
     fun addFileBy(key: String): VersionControlledFile {
         var newVCFFileName = key
@@ -51,9 +49,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         return key + "_\\0_" + newMarker
     }
 
-    fun getList(): MutableMap<String, VersionControlledFile> {
-        return versionControlledFiles
-    }
+    fun getList(): MutableMap<String, VersionControlledFile> = versionControlledFiles
 
     fun rename(oldFileName: String, newFileName: String) {
         var newVCFFileName = newFileName
@@ -83,9 +79,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
     }
 
     // File A is called B then A again, this will mess up the currentFilename and oldFilename structure, therefore a special handling is needed
-    private fun isCyclicRename(oldFileName: String, newFileName: String): Boolean {
-        return get(oldFileName)!!.containsRename(newFileName)
-    }
+    private fun isCyclicRename(oldFileName: String, newFileName: String): Boolean = get(oldFileName)!!.containsRename(newFileName)
 
     private fun fileExistsAsDeleted(key: String): Boolean {
         val vcf = versionControlledFiles[key]
@@ -121,7 +115,5 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         return trackName
     }
 
-    private fun retrieveOldestName(possibleConflictName: String): String? {
-        return renamesMap[possibleConflictName]
-    }
+    private fun retrieveOldestName(possibleConflictName: String): String? = renamesMap[possibleConflictName]
 }

@@ -151,10 +151,14 @@ class CoverageImporterTest {
     fun `should handle piped input`() {
         val alreadyImportedCoverage = "src/test/resources/formats/lcov/coverage_full_paths.cc.json"
         val expectedOutputFileName = "src/test/resources/formats/lcov/expected_piped_output.cc.json"
-        val expectedOutput = File(expectedOutputFileName).bufferedReader().readLines()
+        val expectedOutput = File(expectedOutputFileName)
+            .bufferedReader()
+            .readLines()
             .joinToString(separator = "\n") { it }
 
-        val input = File(alreadyImportedCoverage).bufferedReader().readLines()
+        val input = File(alreadyImportedCoverage)
+            .bufferedReader()
+            .readLines()
             .joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf(reportFilePath, "-f=lcov", "--keep-leading-paths"))
 

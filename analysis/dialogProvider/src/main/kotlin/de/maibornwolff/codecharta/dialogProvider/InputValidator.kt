@@ -20,23 +20,25 @@ class InputValidator {
                 input.split(",").all { isFileOrFolderValid(inputType, fileExtensionList, false)(it.trim()) }
             } else {
                 val objectToVerify = File(input)
-                objectToVerify.exists() && when (inputType) {
-                    InputType.FOLDER -> {
-                        objectToVerify.isDirectory
+                objectToVerify.exists() &&
+                    when (inputType) {
+                        InputType.FOLDER -> {
+                            objectToVerify.isDirectory
+                        }
+                        InputType.FILE -> {
+                            verifyFile(
+                                objectToVerify,
+                                fileExtensionList
+                            )
+                        }
+                        else -> {
+                            objectToVerify.isDirectory ||
+                                verifyFile(
+                                    objectToVerify,
+                                    fileExtensionList
+                                )
+                        }
                     }
-                    InputType.FILE -> {
-                        verifyFile(
-                            objectToVerify,
-                            fileExtensionList
-                        )
-                    }
-                    else -> {
-                        objectToVerify.isDirectory || verifyFile(
-                            objectToVerify,
-                            fileExtensionList
-                        )
-                    }
-                }
             }
         }
 
@@ -44,9 +46,7 @@ class InputValidator {
             input.toInt() > minValue
         }
 
-        fun verifyFile(objectToVerify: File, fileExtensionList: List<FileExtension>): Boolean {
-            return objectToVerify.isFile &&
-                (fileExtensionList.isEmpty() || fileExtensionList.any { objectToVerify.name.endsWith(it.primaryExtension) })
-        }
+        fun verifyFile(objectToVerify: File, fileExtensionList: List<FileExtension>): Boolean = objectToVerify.isFile &&
+            (fileExtensionList.isEmpty() || fileExtensionList.any { objectToVerify.name.endsWith(it.primaryExtension) })
     }
 }

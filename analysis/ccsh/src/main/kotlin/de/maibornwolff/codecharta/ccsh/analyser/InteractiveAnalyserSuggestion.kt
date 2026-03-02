@@ -62,8 +62,6 @@ class InteractiveAnalyserSuggestion {
             return selectedAnalysers
         }
 
-        private fun isInputFileOrDirectory(inputFile: File): Boolean {
-            return (inputFile.isDirectory || inputFile.isFile)
-        }
+        private fun isInputFileOrDirectory(inputFile: File): Boolean = (inputFile.isDirectory || inputFile.isFile)
     }
 }

@@ -31,7 +31,9 @@ class RawTextParser(
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
     private val baseFileHelper: BaseFileResolver = BaseFileResolver()
-) : AnalyserInterface, AttributeGenerator, CommonAnalyserParameters() {
+) : CommonAnalyserParameters(),
+    AnalyserInterface,
+    AttributeGenerator {
     @CommandLine.Option(
         names = ["-m", "--metrics"],
         description = [
@@ -206,12 +208,11 @@ class RawTextParser(
         }
 
         val fileSearch = searchFile.walk()
-        return fileSearch.asSequence()
+        return fileSearch
+            .asSequence()
             .filter { it.isFile }
             .any()
     }
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors(10)
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors(10)
 }

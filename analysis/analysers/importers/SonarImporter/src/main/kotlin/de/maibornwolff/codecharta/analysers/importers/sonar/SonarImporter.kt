@@ -26,10 +26,9 @@ import java.net.URL
     description = [SonarImporter.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class SonarImporter(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out
-) : AnalyserInterface, AttributeGenerator {
+class SonarImporter(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) :
+    AnalyserInterface,
+    AttributeGenerator {
     @CommandLine.Option(
         names = ["-h", "--help"],
         usageHelp = true,
@@ -142,19 +141,20 @@ class SonarImporter(
             return false
         }
 
-        return inputFile.walk().maxDepth(2).asSequence().filter { isSonarPropertiesFile(it) }.any()
+        return inputFile
+            .walk()
+            .maxDepth(2)
+            .asSequence()
+            .filter { isSonarPropertiesFile(it) }
+            .any()
     }
 
-    private fun isUrl(inputString: String): Boolean {
-        return inputString.contains("^http(s)?://".toRegex())
-    }
+    private fun isUrl(inputString: String): Boolean = inputString.contains("^http(s)?://".toRegex())
 
     private fun isSonarPropertiesFile(inputFile: File): Boolean {
         val searchFile = "sonar-project.properties"
         return (inputFile.isFile && inputFile.name == searchFile)
     }
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors()
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors()
 }

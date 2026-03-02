@@ -49,9 +49,7 @@ class GitignoreHandler(private val root: File) {
         return isIgnored
     }
 
-    private fun isFileWithinRoot(file: File): Boolean {
-        return file.absolutePath.startsWith(root.absolutePath)
-    }
+    private fun isFileWithinRoot(file: File): Boolean = file.absolutePath.startsWith(root.absolutePath)
 
     private fun collectAncestorGitignoreRules(file: File): List<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>> {
         val applicableRules = mutableListOf<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>>()
@@ -100,9 +98,7 @@ class GitignoreHandler(private val root: File) {
         return applyGitignoreRulesHierarchically(parentDir, applicableRules)
     }
 
-    private fun getRelativePath(directory: File, file: File): Path {
-        return directory.toPath().relativize(file.toPath())
-    }
+    private fun getRelativePath(directory: File, file: File): Path = directory.toPath().relativize(file.toPath())
 
     private fun ruleMatchesFile(rule: GitignoreRule, relPath: Path, file: File): Boolean {
         val pathMatches = try {
@@ -116,7 +112,5 @@ class GitignoreHandler(private val root: File) {
         return pathMatches && (!rule.isDirOnly || file.isDirectory)
     }
 
-    fun getStatistics(): Pair<Int, List<String>> {
-        return Pair(excludedFileCount.get(), discoveredGitignoreFiles.toList())
-    }
+    fun getStatistics(): Pair<Int, List<String>> = Pair(excludedFileCount.get(), discoveredGitignoreFiles.toList())
 }

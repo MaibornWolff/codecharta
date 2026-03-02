@@ -23,17 +23,13 @@ class MutableNode(
         return Path(listOf((child.asTreeNode()).name))
     }
 
-    override fun toString(): String {
-        return "MutableNode(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
-    }
+    override fun toString(): String = "MutableNode(name='$name', type=$type, attributes=$attributes, link=$link, children=$children)"
 
     override fun insertAt(path: Path, node: MutableNode) {
         NodeInserter.insertByPath(this, path, node)
     }
 
-    override fun merge(nodes: List<MutableNode>): MutableNode {
-        return nodeMergingStrategy.merge(this, nodes)
-    }
+    override fun merge(nodes: List<MutableNode>): MutableNode = nodeMergingStrategy.merge(this, nodes)
 
     fun translateMetrics(metricNameTranslator: MetricNameTranslator, recursive: Boolean = false): MutableNode {
         if (recursive) {
@@ -45,25 +41,24 @@ class MutableNode(
                 }
             }
         }
-        attributes = attributes.mapKeys {
-            metricNameTranslator.translate(it.key)
-        }.filterKeys {
-            it.isNotBlank()
-        }
+        attributes = attributes
+            .mapKeys {
+                metricNameTranslator.translate(it.key)
+            }.filterKeys {
+                it.isNotBlank()
+            }
 
         return this
     }
 
-    fun toNode(): Node {
-        return Node(
-            name,
-            type,
-            attributes,
-            link,
-            children = children.map { it.toNode() }.toSet(),
-            checksum = checksum
-        )
-    }
+    fun toNode(): Node = Node(
+        name,
+        type,
+        attributes,
+        link,
+        children = children.map { it.toNode() }.toSet(),
+        checksum = checksum
+    )
 
     val isEmptyFolder
         get() = type == NodeType.Folder && children.isEmpty()

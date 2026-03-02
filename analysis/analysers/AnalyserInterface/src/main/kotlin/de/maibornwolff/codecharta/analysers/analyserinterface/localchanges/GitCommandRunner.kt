@@ -31,13 +31,12 @@ class GitCommandRunner(private val repoRoot: File) {
         return output
     }
 
-    fun runAndParseFileList(vararg args: String): Set<String> {
-        return parseFileList(run(*args))
-    }
+    fun runAndParseFileList(vararg args: String): Set<String> = parseFileList(run(*args))
 
     private fun parseFileList(output: String): Set<String> {
         if (output.isBlank()) return emptySet()
-        return output.lines()
+        return output
+            .lines()
             .map { it.trim() }
             .filter { it.isNotEmpty() }
             .toSet()

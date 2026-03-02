@@ -52,12 +52,10 @@ class CSVExporter : AnalyserInterface {
         }
     }
 
-    private fun writer(append: Boolean): Writer {
-        return if (outputFile.isEmpty()) {
-            OutputStreamWriter(System.out)
-        } else {
-            BufferedWriter(FileWriter(outputFile, append))
-        }
+    private fun writer(append: Boolean): Writer = if (outputFile.isEmpty()) {
+        OutputStreamWriter(System.out)
+    } else {
+        BufferedWriter(FileWriter(outputFile, append))
     }
 
     @Throws(IOException::class)
@@ -68,15 +66,17 @@ class CSVExporter : AnalyserInterface {
             "Invalid input file/folder for CSVExporter, stopping execution..."
         }
 
-        val files = sources.flatMap {
-            if (it.isDirectory) {
-                it.listFiles { _, name -> name.endsWith(".cc.json") }
-                    ?.toList()
-                    ?: emptyList()
-            } else {
-                listOf(it)
-            }
-        }.toTypedArray()
+        val files = sources
+            .flatMap {
+                if (it.isDirectory) {
+                    it
+                        .listFiles { _, name -> name.endsWith(".cc.json") }
+                        ?.toList()
+                        ?: emptyList()
+                } else {
+                    listOf(it)
+                }
+            }.toTypedArray()
 
         require(InputHelper.isInputValid(files, canInputContainFolders = false)) {
             "Invalid input file for CSVExporter, stopping execution..."
@@ -110,9 +110,10 @@ class CSVExporter : AnalyserInterface {
         val writer = CsvWriter(outputWriter, settings)
 
         val attributeNames: List<String> =
-            project.rootNode.nodes.flatMap {
-                it.value.attributes.keys
-            }.distinct()
+            project.rootNode.nodes
+                .flatMap {
+                    it.value.attributes.keys
+                }.distinct()
 
         val header =
             listOf("path", "name", "type").plus(attributeNames).plus(
@@ -152,15 +153,11 @@ class CSVExporter : AnalyserInterface {
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 }
 
-private fun Node.toAttributeList(attributeNames: List<String>): List<String> {
-    return attributeNames.map {
-        this.attributes[it]?.toString() ?: ""
-    }
+private fun Node.toAttributeList(attributeNames: List<String>): List<String> = attributeNames.map {
+    this.attributes[it]?.toString() ?: ""
 }
 
 private val Path.toPath: String

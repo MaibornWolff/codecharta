@@ -3,10 +3,7 @@ package de.maibornwolff.codecharta.analysers.analyserinterface.localchanges
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 
-class LocalChangesDetector(
-    repoRoot: File,
-    private val queries: GitDiffQueries = GitDiffQueries(GitCommandRunner(repoRoot))
-) {
+class LocalChangesDetector(repoRoot: File, private val queries: GitDiffQueries = GitDiffQueries(GitCommandRunner(repoRoot))) {
     companion object {
         private const val NOT_A_GIT_WORKTREE_MSG =
             "--local-changes requires a git repository, but '%s' is not inside a git work tree"
@@ -58,23 +55,13 @@ class LocalChangesDetector(
         }
     }
 
-    internal fun getCommittedNotPushedFiles(upstream: String): Set<String> {
-        return queries.changedFilesSince(upstream)
-    }
+    internal fun getCommittedNotPushedFiles(upstream: String): Set<String> = queries.changedFilesSince(upstream)
 
-    internal fun getStagedAndUnstagedFiles(): Set<String> {
-        return queries.stagedChangedFiles() + queries.unstagedChangedFiles()
-    }
+    internal fun getStagedAndUnstagedFiles(): Set<String> = queries.stagedChangedFiles() + queries.unstagedChangedFiles()
 
-    internal fun getDeletedFiles(upstream: String): Set<String> {
-        return queries.deletedFilesSince(upstream)
-    }
+    internal fun getDeletedFiles(upstream: String): Set<String> = queries.deletedFilesSince(upstream)
 
-    internal fun getStagedAndUnstagedDeletedFiles(): Set<String> {
-        return queries.stagedDeletedFiles() + queries.unstagedDeletedFiles()
-    }
+    internal fun getStagedAndUnstagedDeletedFiles(): Set<String> = queries.stagedDeletedFiles() + queries.unstagedDeletedFiles()
 
-    internal fun getUntrackedFiles(): Set<String> {
-        return queries.untrackedFiles()
-    }
+    internal fun getUntrackedFiles(): Set<String> = queries.untrackedFiles()
 }

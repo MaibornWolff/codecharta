@@ -8,9 +8,7 @@ class GitLogRawParsingHelper {
         private const val FILE_LINE_REGEX = ":\\d+\\s+\\d+\\s+\\S+\\s+\\S+\\s+.+"
         private const val FILE_LINE_SPLITTER = " "
 
-        fun isFileLine(commitLine: String): Boolean {
-            return commitLine.length >= 5 && commitLine.matches(FILE_LINE_REGEX.toRegex())
-        }
+        fun isFileLine(commitLine: String): Boolean = commitLine.length >= 5 && commitLine.matches(FILE_LINE_REGEX.toRegex())
 
         fun parseModification(fileLine: String): Modification {
             val lineParts = fileLine.split(FILE_LINE_SPLITTER.toRegex()).toTypedArray()

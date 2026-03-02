@@ -49,36 +49,36 @@ class SonarMeasuresAPIDatasource(
                     true
                 )
             )
-        flowable.flatMap { p ->
-            measureBatches++
-            getMeasures(componentKey, p).subscribeOn(Schedulers.computation())
-        }.blockingForEach { componentMap.updateComponent(it) }
+        flowable
+            .flatMap { p ->
+                measureBatches++
+                getMeasures(componentKey, p).subscribeOn(Schedulers.computation())
+            }.blockingForEach { componentMap.updateComponent(it) }
 
         System.err.println()
         return componentMap
     }
 
-    private fun getMeasures(componentKey: String, sublist: List<String>): Flowable<Component> {
-        return Flowable.create(
-            { subscriber ->
-                var page = 1
-                var total: Int
-                do {
-                    val measures = getMeasuresFromPage(componentKey, sublist, page)
-                    total = measures.paging.total
+    private fun getMeasures(componentKey: String, sublist: List<String>): Flowable<Component> = Flowable.create(
+        { subscriber ->
+            var page = 1
+            var total: Int
+            do {
+                val measures = getMeasuresFromPage(componentKey, sublist, page)
+                total = measures.paging.total
 
-                    if (measures.components != null) {
-                        measures.components.filter { c -> c.qualifier == Qualifier.FIL || c.qualifier == Qualifier.UTS }
-                            .forEach { subscriber.onNext(it) }
-                    }
+                if (measures.components != null) {
+                    measures.components
+                        .filter { c -> c.qualifier == Qualifier.FIL || c.qualifier == Qualifier.UTS }
+                        .forEach { subscriber.onNext(it) }
+                }
 
-                    updateProgress(total)
-                } while (page++ * PAGE_SIZE < total)
-                subscriber.onComplete()
-            },
-            BackpressureStrategy.BUFFER
-        )
-    }
+                updateProgress(total)
+            } while (page++ * PAGE_SIZE < total)
+            subscriber.onComplete()
+        },
+        BackpressureStrategy.BUFFER
+    )
 
     internal fun getMeasuresFromPage(componentKey: String, metrics: List<String>, pageNumber: Int): Measures {
         val measureAPIRequestURI = createMeasureAPIRequestURI(componentKey, metrics, pageNumber)

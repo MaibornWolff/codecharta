@@ -21,10 +21,7 @@ import java.io.PrintStream
     description = [StructureModifier.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class StructureModifier(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out
-) : AnalyserInterface {
+class StructureModifier(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
@@ -156,7 +153,5 @@ class StructureModifier(
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 }

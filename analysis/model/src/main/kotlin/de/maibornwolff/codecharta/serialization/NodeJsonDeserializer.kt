@@ -24,9 +24,7 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
         return Node(name, nodeType, attributes, link, children.toSet(), checksum)
     }
 
-    private fun deserializeLink(jsonNode: JsonObject): String? {
-        return jsonNode.get("link")?.asString
-    }
+    private fun deserializeLink(jsonNode: JsonObject): String? = jsonNode.get("link")?.asString
 
     private fun deserializeNodeType(jsonNode: JsonObject): NodeType {
         val typeElement = jsonNode.get("type") ?: throw JsonParseException("Type element is missing.")
@@ -60,7 +58,5 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
         }
     }
 
-    private fun deserializeChecksum(jsonNode: JsonObject): String? {
-        return jsonNode.get("checksum")?.asString
-    }
+    private fun deserializeChecksum(jsonNode: JsonObject): String? = jsonNode.get("checksum")?.asString
 }

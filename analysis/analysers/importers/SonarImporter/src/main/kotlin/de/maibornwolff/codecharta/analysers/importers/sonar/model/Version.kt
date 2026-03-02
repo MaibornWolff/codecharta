@@ -22,7 +22,5 @@ class Version(val major: Int, val minor: Int) {
         }
     }
 
-    fun isSmallerThan(version: Version): Boolean {
-        return major < version.major || major == version.major && minor < version.minor
-    }
+    fun isSmallerThan(version: Version): Boolean = major < version.major || major == version.major && minor < version.minor
 }

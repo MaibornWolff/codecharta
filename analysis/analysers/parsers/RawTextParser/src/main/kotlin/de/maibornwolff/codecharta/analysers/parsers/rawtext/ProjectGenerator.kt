@@ -10,7 +10,8 @@ class ProjectGenerator(private val projectBuilder: ProjectBuilder = ProjectBuild
     fun generate(projectMetrics: ProjectMetrics, maxIndentLevel: Int, pipedProject: Project?): Project {
         addMetricsAsNodes(projectMetrics.metricsMap)
         var project =
-            projectBuilder.addAttributeDescriptions(getAttributeDescriptors(maxIndentLevel))
+            projectBuilder
+                .addAttributeDescriptions(getAttributeDescriptors(maxIndentLevel))
                 .build(cleanAttributeDescriptors = true)
 
         if (pipedProject != null) {

@@ -78,7 +78,9 @@ class SonarMeasuresAPIImporterTest {
         val urlPath = "/api/measures/component_tree?component=$projectKey&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=500"
         stubFor(
             get(urlEqualTo(urlPath)).willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)
+                aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withStatus(200)
                     .withBody(this.javaClass.classLoader.getResource("sonarqube_measures.json")!!.readText())
             )
         )
@@ -93,9 +95,26 @@ class SonarMeasuresAPIImporterTest {
         assertEquals("root", project.rootNode.name)
         assertEquals(1, project.rootNode.children.size)
         assertEquals("codecharta", project.rootNode.children.first().name)
-        assertEquals(2, project.rootNode.children.first().children.size)
-        assertTrue(project.rootNode.children.first().children.map { it.name }.contains("import"))
-        assertTrue(project.rootNode.children.first().children.map { it.name }.contains("model"))
+        assertEquals(
+            2,
+            project.rootNode.children
+                .first()
+                .children.size
+        )
+        assertTrue(
+            project.rootNode.children
+                .first()
+                .children
+                .map { it.name }
+                .contains("import")
+        )
+        assertTrue(
+            project.rootNode.children
+                .first()
+                .children
+                .map { it.name }
+                .contains("model")
+        )
     }
 
     @Test

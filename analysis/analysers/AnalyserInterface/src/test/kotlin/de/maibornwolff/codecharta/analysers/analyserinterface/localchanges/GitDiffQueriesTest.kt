@@ -133,9 +133,7 @@ class GitDiffQueriesTest {
         assertThat(result).isEmpty()
     }
 
-    private fun createQueries(repoDir: File): GitDiffQueries {
-        return GitDiffQueries(GitCommandRunner(repoDir))
-    }
+    private fun createQueries(repoDir: File): GitDiffQueries = GitDiffQueries(GitCommandRunner(repoDir))
 
     private fun commitFile(repoDir: File, filename: String, content: String) {
         File(repoDir, filename).writeText(content)

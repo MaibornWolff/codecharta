@@ -52,18 +52,17 @@ open class ProjectBuilder(
         return this
     }
 
-    open fun build(): Project {
-        return build(false)
-    }
+    open fun build(): Project = build(false)
 
     open fun build(cleanAttributeDescriptors: Boolean = false): Project {
-        nodes.flatMap {
-            it.nodes.values
-        }.mapNotNull {
-            it.filterChildren(filterRule, false)
-        }.map {
-            it.translateMetrics(metricNameTranslator, false)
-        }
+        nodes
+            .flatMap {
+                it.nodes.values
+            }.mapNotNull {
+                it.filterChildren(filterRule, false)
+            }.map {
+                it.translateMetrics(metricNameTranslator, false)
+            }
 
         edges.forEach {
             it.translateMetrics(metricNameTranslator)
@@ -243,41 +242,32 @@ open class ProjectBuilder(
         return attributeNames
     }
 
-    private fun getCodeMetricsPositiveDirectionEnglish(): List<String> {
-        return listOf(
-            "covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
-            "succeeded", "fix", "fixed", "completion", "complete", "augmentation", "augmented", "enhancement",
-            "enhanced", "improvement", "improved", "added", "addition", "efficient", "efficiency", "velocity",
-            "reusable", "reusability", "reduced", "reduction"
-        )
-    }
+    private fun getCodeMetricsPositiveDirectionEnglish(): List<String> = listOf(
+        "covered", "coverage", "review", "reviewed", "documentation", "documented", "success",
+        "succeeded", "fix", "fixed", "completion", "complete", "augmentation", "augmented", "enhancement",
+        "enhanced", "improvement", "improved", "added", "addition", "efficient", "efficiency", "velocity",
+        "reusable", "reusability", "reduced", "reduction"
+    )
 
-    private fun getCodeMetricsNegativeDirectionEnglish(): List<String> {
-        return listOf(
-            "unchecked", "uncovered", "not", "failed", "failure", "reopened", "violation", "violated",
-            "duplication", "duplicated", "skipped", "error", "wont"
-        )
-    }
+    private fun getCodeMetricsNegativeDirectionEnglish(): List<String> = listOf(
+        "unchecked", "uncovered", "not", "failed", "failure", "reopened", "violation", "violated",
+        "duplication", "duplicated", "skipped", "error", "wont"
+    )
 
-    private fun getCodeMetricsPositiveDirectionGerman(): List<String> {
-        return listOf(
-            "abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
-            "beheben", "behoben", "vollständig", "erweitert", "verbessert", "hinzugefügt", "effizient", "effizienz",
-            "geschwindigkeit", "wiederverwendbar", "wiederverwendbarkeit"
-        )
-    }
+    private fun getCodeMetricsPositiveDirectionGerman(): List<String> = listOf(
+        "abgedeckt", "abdeckung", "überprüft", "dokumentation", "dokumentiert", "erfolg", "erfolgreich",
+        "beheben", "behoben", "vollständig", "erweitert", "verbessert", "hinzugefügt", "effizient", "effizienz",
+        "geschwindigkeit", "wiederverwendbar", "wiederverwendbarkeit"
+    )
 
-    private fun getCodeMetricsNegativeDirectionGerman(): List<String> {
-        return listOf("ungeprüft", "nicht", "gescheitert", "fehler", "wiedereröffnet", "dupliziert", "übersprungen")
-    }
+    private fun getCodeMetricsNegativeDirectionGerman(): List<String> =
+        listOf("ungeprüft", "nicht", "gescheitert", "fehler", "wiedereröffnet", "dupliziert", "übersprungen")
 
-    override fun toString(): String {
-        return "Project{nodes=$nodes," +
-            " edges=$edges," +
-            " attributeTypes=$attributeTypes," +
-            " attributeDescriptors=$attributeDescriptors," +
-            " blacklist=$blacklist}"
-    }
+    override fun toString(): String = "Project{nodes=$nodes," +
+        " edges=$edges," +
+        " attributeTypes=$attributeTypes," +
+        " attributeDescriptors=$attributeDescriptors," +
+        " blacklist=$blacklist}"
 
     companion object {
         const val DUMMY_PROJECT_NAME = ""
