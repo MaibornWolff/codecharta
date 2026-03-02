@@ -10,6 +10,13 @@ export async function readAllScenarios(): Promise<Scenario[]> {
 export async function addScenario(scenario: Scenario): Promise<void> {
     const database = await openCodeChartaDB()
     const tx = database.transaction(SCENARIOS_STORE_NAME, "readwrite")
+    await tx.store.add(scenario)
+    await tx.done
+}
+
+export async function updateScenario(scenario: Scenario): Promise<void> {
+    const database = await openCodeChartaDB()
+    const tx = database.transaction(SCENARIOS_STORE_NAME, "readwrite")
     await tx.store.put(scenario)
     await tx.done
 }
@@ -20,5 +27,3 @@ export async function deleteScenario(id: string): Promise<void> {
     await tx.store.delete(id)
     await tx.done
 }
-
-export const updateScenario = addScenario

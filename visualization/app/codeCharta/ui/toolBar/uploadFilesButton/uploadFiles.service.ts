@@ -27,6 +27,10 @@ export class UploadFilesService {
     }
 
     private async uploadFilesOnEvent(ccFileInput: HTMLInputElement) {
+        if (!ccFileInput.files || ccFileInput.files.length === 0) {
+            return
+        }
+
         try {
             this.isUploading = true
             this.store.dispatch(setIsLoadingFile({ value: true }))

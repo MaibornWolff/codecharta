@@ -55,10 +55,10 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
         this.selectedSections.update(current => ({ ...current, [key]: checked }))
     }
 
-    apply() {
+    async apply() {
         const selectedKeys = new Set<ScenarioSectionKey>(this.availableSectionKeys().filter(key => this.selectedSections()[key]))
-        this.scenariosService.applyScenario(this.scenario(), selectedKeys, this.metricData())
         this.dialogElement().nativeElement.close()
+        await this.scenariosService.applyScenario(this.scenario(), selectedKeys, this.metricData())
     }
 
     close() {

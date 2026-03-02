@@ -15,7 +15,7 @@ export function getMissingMetrics(metricsSection: MetricsSection, metricData: Me
         metricsSection.heightMetric,
         metricsSection.colorMetric,
         metricsSection.distributionMetric
-    ].filter((m): m is string => m !== undefined)
+    ].filter((m): m is string => !!m)
 
     const nodeMetrics = [...new Set(requiredNodeMetrics.filter(m => !availableNodeMetrics.has(m)))]
     const edgeMetrics = metricsSection.edgeMetric && !availableEdgeMetrics.has(metricsSection.edgeMetric) ? [metricsSection.edgeMetric] : []
