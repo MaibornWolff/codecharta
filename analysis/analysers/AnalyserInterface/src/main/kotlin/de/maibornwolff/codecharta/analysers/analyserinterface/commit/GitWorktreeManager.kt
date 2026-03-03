@@ -34,7 +34,9 @@ class GitWorktreeManager(private val repoRoot: File, private val git: GitCommand
         try {
             git.run("worktree", "add", tempDir.absolutePath, fullHash, "--detach")
         } catch (e: Exception) {
-            tempDir.delete()
+            if (!tempDir.delete()) {
+                tempDir.deleteOnExit()
+            }
             throw RuntimeException("Failed to create git worktree for commit $commitRef: ${e.message}", e)
         }
 

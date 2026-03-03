@@ -92,8 +92,9 @@ class RepoScanCommand : AnalyserInterface {
         if (commitRef == null) return CommitAnalysisContext(repoPath.toFile(), null, null)
 
         val manager = GitWorktreeManager(repoPath.toFile())
-        val shortHash = manager.shortCommitHash(commitRef)
-        val worktreeDir = manager.createWorktree(commitRef)
+        val resolvedCommit = manager.resolveCommitHash(commitRef)
+        val shortHash = manager.shortCommitHash(resolvedCommit)
+        val worktreeDir = manager.createWorktree(resolvedCommit)
         return CommitAnalysisContext(worktreeDir, manager, shortHash)
     }
 
