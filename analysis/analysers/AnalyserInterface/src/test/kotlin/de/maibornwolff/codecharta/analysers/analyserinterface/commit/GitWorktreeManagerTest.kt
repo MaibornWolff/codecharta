@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Path
+import java.util.concurrent.TimeUnit
 
 class GitWorktreeManagerTest {
     @TempDir
@@ -197,7 +198,11 @@ class GitWorktreeManagerTest {
             .redirectErrorStream(true)
             .start()
         val output = process.inputStream.bufferedReader().readText()
-        process.waitFor()
+        val finished = process.waitFor(30, TimeUnit.SECONDS)
+        if (!finished) {
+            process.destroyForcibly()
+            throw RuntimeException("Test git command timed out: ${command.joinToString(" ")}")
+        }
         if (process.exitValue() != 0) {
             throw RuntimeException("Test git command failed (exit ${process.exitValue()}): ${command.joinToString(" ")}\n$output")
         }

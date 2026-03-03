@@ -92,9 +92,13 @@ abstract class CommonAnalyserParameters {
 
         if (commitRef == null) return CommitAnalysisContext(inputFile, null, null)
 
-        val repoRoot = findGitRoot(inputFile)
-        val relativePath = repoRoot.toPath().relativize(inputFile.absoluteFile.toPath())
-        val manager = GitWorktreeManager(repoRoot)
+        val repoRootPath = findGitRoot(inputFile).absoluteFile.toPath().normalize()
+        val inputPath = inputFile.absoluteFile.toPath().normalize()
+        require(inputPath.startsWith(repoRootPath)) {
+            "Input path must be inside the git repository: $inputPath"
+        }
+        val relativePath = repoRootPath.relativize(inputPath)
+        val manager = GitWorktreeManager(repoRootPath.toFile())
         val shortHash = manager.shortCommitHash(commitRef)
         val worktreeDir = manager.createWorktree(commitRef)
         val effectiveInput = File(worktreeDir, relativePath.toString())
