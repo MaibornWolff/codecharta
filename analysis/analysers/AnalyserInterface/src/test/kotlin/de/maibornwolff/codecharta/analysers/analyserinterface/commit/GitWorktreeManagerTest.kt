@@ -135,6 +135,39 @@ class GitWorktreeManagerTest {
     }
 
     @Test
+    fun `should preserve original exception as cause when both rev-parse and date fallback fail`() {
+        // Arrange
+        val mockGit = mockk<GitCommandRunner>()
+        every { mockGit.run("rev-parse", "not-a-ref") } throws RuntimeException("unknown revision")
+        every { mockGit.run("log", "--before=not-a-ref", "-1", "--format=%H") } returns ""
+        val manager = GitWorktreeManager(tempDir.toFile(), mockGit)
+
+        // Act & Assert
+        assertThatThrownBy { manager.resolveCommitHash("not-a-ref") }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("No commit found for 'not-a-ref'")
+            .hasCauseInstanceOf(RuntimeException::class.java)
+            .cause()
+            .hasMessageContaining("unknown revision")
+    }
+
+    @Test
+    fun `should fall back to date resolution when rev-parse fails`() {
+        // Arrange
+        val mockGit = mockk<GitCommandRunner>()
+        val expectedHash = "abc1234567890abcdef1234567890abcdef123456"
+        every { mockGit.run("rev-parse", "2024-01-01") } throws RuntimeException("unknown revision")
+        every { mockGit.run("log", "--before=2024-01-01", "-1", "--format=%H") } returns "$expectedHash\n"
+        val manager = GitWorktreeManager(tempDir.toFile(), mockGit)
+
+        // Act
+        val result = manager.resolveCommitHash("2024-01-01")
+
+        // Assert
+        assertThat(result).isEqualTo(expectedHash)
+    }
+
+    @Test
     fun `should resolve date expression via git log fallback`() {
         // Arrange
         val repoDir = tempDir.toFile()
