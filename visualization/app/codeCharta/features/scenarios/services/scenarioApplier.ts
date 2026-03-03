@@ -1,6 +1,8 @@
 import { Vector3 } from "three"
 import { RecursivePartial, CcState, MetricData } from "../../../codeCharta.model"
-import { ScenarioSectionKey, ScenarioSections } from "../model/scenario.model"
+import { ColorsSection, FiltersSection, LabelsAndFoldersSection, ScenarioSectionKey, ScenarioSections } from "../model/scenario.model"
+
+const NODE_METRIC_KEYS = ["areaMetric", "heightMetric", "colorMetric", "distributionMetric"] as const
 
 export function getAvailableMetricNames(metricData: MetricData): { nodeMetrics: Set<string>; edgeMetrics: Set<string> } {
     return {
@@ -17,8 +19,7 @@ function buildMetricsPatch(sections: ScenarioSections, metricData?: MetricData):
     const availableMetricNames = metricData ? getAvailableMetricNames(metricData) : undefined
     const metricOverrides: Record<string, string | undefined> = {}
 
-    const nodeMetricKeys = ["areaMetric", "heightMetric", "colorMetric", "distributionMetric"] as const
-    for (const key of nodeMetricKeys) {
+    for (const key of NODE_METRIC_KEYS) {
         const value = sections.metrics[key]
         if (value !== undefined && (!availableMetricNames || availableMetricNames.nodeMetrics.has(value))) {
             metricOverrides[key] = value
@@ -45,6 +46,48 @@ function buildMetricsPatch(sections: ScenarioSections, metricData?: MetricData):
     return patch
 }
 
+function buildColorsPatch(colors: ColorsSection): RecursivePartial<CcState> {
+    const dynamicSettings: RecursivePartial<CcState["dynamicSettings"]> = { colorRange: colors.colorRange }
+    if (colors.colorMode !== undefined) {
+        dynamicSettings.colorMode = colors.colorMode
+    }
+    const patch: RecursivePartial<CcState> = { dynamicSettings }
+    if (colors.mapColors !== undefined) {
+        patch.appSettings = { mapColors: colors.mapColors }
+    }
+    return patch
+}
+
+function buildFiltersPatch(filters: FiltersSection): RecursivePartial<CcState> {
+    return {
+        fileSettings: { blacklist: [...filters.blacklist] },
+        dynamicSettings: { focusedNodePath: [...filters.focusedNodePath] }
+    }
+}
+
+function buildLabelsAndFoldersPatch(labelsAndFolders: LabelsAndFoldersSection): RecursivePartial<CcState> {
+    return {
+        appSettings: {
+            amountOfTopLabels: labelsAndFolders.amountOfTopLabels,
+            showMetricLabelNameValue: labelsAndFolders.showMetricLabelNameValue,
+            showMetricLabelNodeName: labelsAndFolders.showMetricLabelNodeName,
+            enableFloorLabels: labelsAndFolders.enableFloorLabels,
+            colorLabels: labelsAndFolders.colorLabels
+        },
+        fileSettings: { markedPackages: [...labelsAndFolders.markedPackages] }
+    }
+}
+
+function mergePatches(a: RecursivePartial<CcState>, b: RecursivePartial<CcState>): RecursivePartial<CcState> {
+    return {
+        ...a,
+        ...b,
+        ...(a.appSettings || b.appSettings ? { appSettings: { ...a.appSettings, ...b.appSettings } } : {}),
+        ...(a.dynamicSettings || b.dynamicSettings ? { dynamicSettings: { ...a.dynamicSettings, ...b.dynamicSettings } } : {}),
+        ...(a.fileSettings || b.fileSettings ? { fileSettings: { ...a.fileSettings, ...b.fileSettings } } : {})
+    }
+}
+
 /**
  * Builds ordered state patches to dispatch sequentially.
  * Order: metrics → colors/thresholds → filters + labels → (camera handled separately)
@@ -65,44 +108,19 @@ export function buildOrderedStatePatches(
 
     // Phase 2: Colors / thresholds (after metric effects have settled)
     if (selectedKeys.has("colors") && sections.colors) {
-        const dynamicSettings: RecursivePartial<CcState["dynamicSettings"]> = { colorRange: sections.colors.colorRange }
-        if (sections.colors.colorMode !== undefined) {
-            dynamicSettings.colorMode = sections.colors.colorMode
-        }
-        const colorPatch: RecursivePartial<CcState> = { dynamicSettings }
-        if (sections.colors.mapColors !== undefined) {
-            colorPatch.appSettings = { mapColors: sections.colors.mapColors }
-        }
-        patches.push(colorPatch)
+        patches.push(buildColorsPatch(sections.colors))
     }
 
-    // Phase 3: Filters + Labels
-    const filtersAndLabelsPatch: RecursivePartial<CcState> = {}
-    let hasFiltersOrLabels = false
-
+    // Phase 3: Filters + Labels (merged into single patch)
+    const phase3Parts: RecursivePartial<CcState>[] = []
     if (selectedKeys.has("filters") && sections.filters) {
-        filtersAndLabelsPatch.fileSettings = { blacklist: [...sections.filters.blacklist] }
-        filtersAndLabelsPatch.dynamicSettings = { focusedNodePath: [...sections.filters.focusedNodePath] }
-        hasFiltersOrLabels = true
+        phase3Parts.push(buildFiltersPatch(sections.filters))
     }
-
     if (selectedKeys.has("labelsAndFolders") && sections.labelsAndFolders) {
-        filtersAndLabelsPatch.appSettings = {
-            amountOfTopLabels: sections.labelsAndFolders.amountOfTopLabels,
-            showMetricLabelNameValue: sections.labelsAndFolders.showMetricLabelNameValue,
-            showMetricLabelNodeName: sections.labelsAndFolders.showMetricLabelNodeName,
-            enableFloorLabels: sections.labelsAndFolders.enableFloorLabels,
-            colorLabels: sections.labelsAndFolders.colorLabels
-        }
-        filtersAndLabelsPatch.fileSettings = {
-            ...filtersAndLabelsPatch.fileSettings,
-            markedPackages: [...sections.labelsAndFolders.markedPackages]
-        }
-        hasFiltersOrLabels = true
+        phase3Parts.push(buildLabelsAndFoldersPatch(sections.labelsAndFolders))
     }
-
-    if (hasFiltersOrLabels) {
-        patches.push(filtersAndLabelsPatch)
+    if (phase3Parts.length > 0) {
+        patches.push(phase3Parts.reduce(mergePatches))
     }
 
     return patches
