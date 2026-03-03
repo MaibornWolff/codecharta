@@ -167,12 +167,12 @@ class CommonAnalyserParametersTest {
             .directory(dir)
             .redirectErrorStream(true)
             .start()
-        val output = process.inputStream.bufferedReader().readText()
         val finished = process.waitFor(30, TimeUnit.SECONDS)
         if (!finished) {
             process.destroyForcibly()
             throw RuntimeException("Test git command timed out: ${command.joinToString(" ")}")
         }
+        val output = process.inputStream.bufferedReader().readText()
         if (process.exitValue() != 0) {
             throw RuntimeException("Test git command failed (exit ${process.exitValue()}): ${command.joinToString(" ")}\n$output")
         }

@@ -99,8 +99,9 @@ abstract class CommonAnalyserParameters {
         }
         val relativePath = repoRootPath.relativize(inputPath)
         val manager = GitWorktreeManager(repoRootPath.toFile())
-        val shortHash = manager.shortCommitHash(commitRef)
-        val worktreeDir = manager.createWorktree(commitRef)
+        val resolvedCommit = manager.resolveCommitHash(commitRef)
+        val shortHash = manager.shortCommitHash(resolvedCommit)
+        val worktreeDir = manager.createWorktree(resolvedCommit)
         val effectiveInput = File(worktreeDir, relativePath.toString())
         return CommitAnalysisContext(effectiveInput, manager, shortHash)
     }
