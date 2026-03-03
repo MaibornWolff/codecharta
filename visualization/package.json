@@ -114,7 +114,7 @@
     "@electron/get": "^4.0.2",
     "@electron/packager": "^19.0.2",
     "@playwright/test": "^1.58.0",
-    "@testing-library/angular": "^18.1.1",
+    "@testing-library/angular": "^19.0.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.9",
