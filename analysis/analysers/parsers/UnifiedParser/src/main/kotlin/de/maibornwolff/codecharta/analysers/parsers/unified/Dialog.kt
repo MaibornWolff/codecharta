@@ -31,6 +31,8 @@ class Dialog {
 
             val verbose = verboseQuestion(session)
 
+            val commitRef = commitQuestion(session)
+
             return listOfNotNull(
                 inputFileName,
                 "--output-file=$outputFileName",
@@ -39,7 +41,8 @@ class Dialog {
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
                 if (includeBuildFolders) "--include-build-folders" else null,
-                if (!useGitignore) "--bypass-gitignore" else null
+                if (!useGitignore) "--bypass-gitignore" else null,
+                if (commitRef.isNotEmpty()) "--commit=$commitRef" else null
             )
         }
 
@@ -97,6 +100,13 @@ class Dialog {
 
         private fun verboseQuestion(session: Session): Boolean = session.promptConfirm(
             message = "Do you want to suppress command line output?",
+            onInputReady = testCallback()
+        )
+
+        private fun commitQuestion(session: Session): String = session.promptInput(
+            message = "Analyze a specific commit? (leave empty for current state)",
+            hint = "e.g. HEAD~5, abc1234, v2.0.0",
+            allowEmptyInput = true,
             onInputReady = testCallback()
         )
 

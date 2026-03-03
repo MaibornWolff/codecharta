@@ -34,6 +34,8 @@ class Dialog {
 
             val fileExtensions = fileExtensionsQuestion(session)
 
+            val commitRef = commitQuestion(session)
+
             return listOfNotNull(
                 inputFileName,
                 "--output-file=$outputFileName",
@@ -45,7 +47,8 @@ class Dialog {
                 "--exclude=$exclude",
                 "--file-extensions=$fileExtensions",
                 if (includeBuildFolders) "--include-build-folders" else null,
-                if (!useGitignore) "--bypass-gitignore" else null
+                if (!useGitignore) "--bypass-gitignore" else null,
+                if (commitRef.isNotEmpty()) "--commit=$commitRef" else null
             )
         }
 
@@ -115,6 +118,13 @@ class Dialog {
         private fun fileExtensionsQuestion(session: Session): String = session.promptInput(
             message = "Do you only want to parse files with specific file-extensions?",
             hint = "fileType1, fileType2... (leave empty to include all file-extensions)",
+            allowEmptyInput = true,
+            onInputReady = testCallback()
+        )
+
+        private fun commitQuestion(session: Session): String = session.promptInput(
+            message = "Analyze a specific commit? (leave empty for current state)",
+            hint = "e.g. HEAD~5, abc1234, v2.0.0",
             allowEmptyInput = true,
             onInputReady = testCallback()
         )

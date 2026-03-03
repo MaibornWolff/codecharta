@@ -82,47 +82,54 @@ class RawTextParser(
             "Input invalid file for RawTextParser, stopping execution..."
         }
 
-        val validatedInput = inputFile!!
-        val useGitignore = !bypassGitignore
-        val effectivePatternsToExclude = determineExclusionPatterns(validatedInput, useGitignore)
-        val localChangesResult = if (localChanges) {
-            LocalChangesDetector(validatedInput).getLocallyChangedFiles()
-        } else {
-            LocalChangesResult.EMPTY
-        }
+        val context = resolveEffectiveInput(inputFile!!)
+        try {
+            val validatedInput = context.inputDir
+            val useGitignore = !bypassGitignore
+            val effectivePatternsToExclude = determineExclusionPatterns(validatedInput, useGitignore)
+            val localChangesResult = if (localChanges) {
+                LocalChangesDetector(validatedInput).getLocallyChangedFiles()
+            } else {
+                LocalChangesResult.EMPTY
+            }
 
-        val baseFileNodeMap = baseFileHelper.loadBaseFileNodes(baseFile)
-        val projectMetricsCollector =
-            ProjectMetricsCollector(
-                validatedInput,
-                effectivePatternsToExclude,
-                fileExtensionsToAnalyse,
-                metricNames,
-                verbose,
-                maxIndentLvl,
-                tabWidth,
-                baseFileNodeMap,
-                useGitignore,
-                localChangesResult.changedFiles
-            )
-        val projectMetrics: ProjectMetrics = projectMetricsCollector.parseProject()
-        addDeletedFileMetrics(projectMetrics, localChangesResult.deletedFiles)
-        println()
-
-        reportNotFoundFileExtensions(projectMetrics)
-        reportInvalidMetrics(projectMetrics)
-        reportGitignoreStatistics(projectMetricsCollector)
-
-        if (projectMetrics.isEmpty()) {
+            val baseFileNodeMap = baseFileHelper.loadBaseFileNodes(baseFile)
+            val projectMetricsCollector =
+                ProjectMetricsCollector(
+                    validatedInput,
+                    effectivePatternsToExclude,
+                    fileExtensionsToAnalyse,
+                    metricNames,
+                    verbose,
+                    maxIndentLvl,
+                    tabWidth,
+                    baseFileNodeMap,
+                    useGitignore,
+                    localChangesResult.changedFiles
+                )
+            val projectMetrics: ProjectMetrics = projectMetricsCollector.parseProject()
+            addDeletedFileMetrics(projectMetrics, localChangesResult.deletedFiles)
             println()
-            Logger.error { "No files with specified file extension(s) were found within the given folder - not generating an output file!" }
-            return null
+
+            reportNotFoundFileExtensions(projectMetrics)
+            reportInvalidMetrics(projectMetrics)
+            reportGitignoreStatistics(projectMetricsCollector)
+
+            if (projectMetrics.isEmpty()) {
+                println()
+                Logger.error {
+                    "No files with specified file extension(s) were found within the given folder - not generating an output file!"
+                }
+                return null
+            }
+
+            val pipedProject = ProjectDeserializer.deserializeProject(input)
+            val project = ProjectGenerator().generate(projectMetrics, maxIndentLvl, pipedProject)
+
+            ProjectSerializer.serializeToFileOrStream(project, context.resolveOutputFile(outputFile), output, compress)
+        } finally {
+            context.worktreeManager?.cleanup()
         }
-
-        val pipedProject = ProjectDeserializer.deserializeProject(input)
-        val project = ProjectGenerator().generate(projectMetrics, maxIndentLvl, pipedProject)
-
-        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
     }

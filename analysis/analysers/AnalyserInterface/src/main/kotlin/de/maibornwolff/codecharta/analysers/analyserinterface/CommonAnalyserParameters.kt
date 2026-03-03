@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.analyserinterface
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.commit.CommitAnalysisContext
+import de.maibornwolff.codecharta.analysers.analyserinterface.commit.GitWorktreeManager
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.FileExtensionConverter
@@ -74,4 +76,34 @@ abstract class CommonAnalyserParameters {
         description = ["only analyze files that differ from the remote tracking branch (uncommitted, staged, unstaged, untracked)"]
     )
     protected var localChanges = false
+
+    @CommandLine.Option(
+        names = ["--commit"],
+        description = ["analyze the codebase at a specific git commit (creates a temporary worktree)"]
+    )
+    protected var commit: String? = null
+
+    protected fun resolveEffectiveInput(inputFile: File): CommitAnalysisContext {
+        require(!(commit != null && localChanges)) {
+            "--commit and --local-changes are mutually exclusive"
+        }
+
+        if (commit == null) return CommitAnalysisContext(inputFile, null, null)
+
+        val repoRoot = findGitRoot(inputFile)
+        val manager = GitWorktreeManager(repoRoot)
+        val shortHash = manager.shortCommitHash(commit!!)
+        val worktreeDir = manager.createWorktree(commit!!)
+        return CommitAnalysisContext(worktreeDir, manager, shortHash)
+    }
+
+    private fun findGitRoot(startDir: File): File {
+        val absoluteStart = startDir.absoluteFile
+        var dir = if (absoluteStart.isFile) absoluteStart.parentFile else absoluteStart
+        while (dir != null) {
+            if (File(dir, ".git").exists()) return dir
+            dir = dir.parentFile
+        }
+        throw IllegalArgumentException("Not a git repository: ${absoluteStart.path}")
+    }
 }
