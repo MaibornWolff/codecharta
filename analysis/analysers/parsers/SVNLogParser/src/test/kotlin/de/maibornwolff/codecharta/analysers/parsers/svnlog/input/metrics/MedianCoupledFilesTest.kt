@@ -78,7 +78,10 @@ class MedianCoupledFilesTest {
         val commit = Commit("author", modificationList, OffsetDateTime.now())
         metric.registerCommit(commit)
 
-        modificationList.stream().filter { mod -> FILENAME == mod.filename }.findFirst()
+        modificationList
+            .stream()
+            .filter { mod -> FILENAME == mod.filename }
+            .findFirst()
             .ifPresent { metric.registerModification(it) }
     }
 }

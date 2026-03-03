@@ -22,26 +22,22 @@ class MetricsFactory {
         }
     }
 
-    private fun createAllMetrics(): List<Metric> {
-        return listOf(
-            AbsoluteCodeChurn(),
-            AddedLines(),
-            DeletedLines(),
-            NumberOfAuthors(),
-            NumberOfOccurencesInCommits(),
-            RangeOfWeeksWithCommits(),
-            SuccessiveWeeksWithCommits(),
-            WeeksWithCommits(),
-            HighlyCoupledFiles(),
-            MedianCoupledFiles(),
-            AbsoluteCoupledChurn(),
-            AverageCodeChurnPerCommit(),
-            NumberOfRenames(),
-            AgeInWeeks()
-        )
-    }
+    private fun createAllMetrics(): List<Metric> = listOf(
+        AbsoluteCodeChurn(),
+        AddedLines(),
+        DeletedLines(),
+        NumberOfAuthors(),
+        NumberOfOccurencesInCommits(),
+        RangeOfWeeksWithCommits(),
+        SuccessiveWeeksWithCommits(),
+        WeeksWithCommits(),
+        HighlyCoupledFiles(),
+        MedianCoupledFiles(),
+        AbsoluteCoupledChurn(),
+        AverageCodeChurnPerCommit(),
+        NumberOfRenames(),
+        AgeInWeeks()
+    )
 
-    fun createMetrics(): List<Metric> {
-        return metricClasses.map { createMetric(it) }
-    }
+    fun createMetrics(): List<Metric> = metricClasses.map { createMetric(it) }
 }

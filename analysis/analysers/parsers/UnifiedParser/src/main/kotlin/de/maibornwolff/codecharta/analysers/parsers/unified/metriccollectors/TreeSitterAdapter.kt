@@ -47,25 +47,23 @@ object TreeSitterAdapter {
     /**
      * Maps a FileExtension to TreesitterLibrary's Language enum.
      */
-    fun getLanguageForExtension(fileExtension: FileExtension): Language? {
-        return when (fileExtension) {
-            FileExtension.JAVA -> Language.JAVA
-            FileExtension.KOTLIN -> Language.KOTLIN
-            FileExtension.TYPESCRIPT -> Language.TYPESCRIPT
-            FileExtension.JAVASCRIPT -> Language.JAVASCRIPT
-            FileExtension.PYTHON -> Language.PYTHON
-            FileExtension.GO -> Language.GO
-            FileExtension.PHP -> Language.PHP
-            FileExtension.RUBY -> Language.RUBY
-            FileExtension.SWIFT -> Language.SWIFT
-            FileExtension.BASH -> Language.BASH
-            FileExtension.CSHARP -> Language.CSHARP
-            FileExtension.CPP -> Language.CPP
-            FileExtension.C -> Language.C
-            FileExtension.OBJECTIVE_C -> Language.OBJECTIVE_C
-            FileExtension.VUE -> Language.VUE
-            else -> null
-        }
+    fun getLanguageForExtension(fileExtension: FileExtension): Language? = when (fileExtension) {
+        FileExtension.JAVA -> Language.JAVA
+        FileExtension.KOTLIN -> Language.KOTLIN
+        FileExtension.TYPESCRIPT -> Language.TYPESCRIPT
+        FileExtension.JAVASCRIPT -> Language.JAVASCRIPT
+        FileExtension.PYTHON -> Language.PYTHON
+        FileExtension.GO -> Language.GO
+        FileExtension.PHP -> Language.PHP
+        FileExtension.RUBY -> Language.RUBY
+        FileExtension.SWIFT -> Language.SWIFT
+        FileExtension.BASH -> Language.BASH
+        FileExtension.CSHARP -> Language.CSHARP
+        FileExtension.CPP -> Language.CPP
+        FileExtension.C -> Language.C
+        FileExtension.OBJECTIVE_C -> Language.OBJECTIVE_C
+        FileExtension.VUE -> Language.VUE
+        else -> null
     }
 
     /**
@@ -79,9 +77,7 @@ object TreeSitterAdapter {
     /**
      * Checks if a file extension is supported by TreesitterLibrary.
      */
-    fun isSupported(fileExtension: FileExtension): Boolean {
-        return getLanguageForExtension(fileExtension) != null
-    }
+    fun isSupported(fileExtension: FileExtension): Boolean = getLanguageForExtension(fileExtension) != null
 
     private fun convertToMutableNode(fileName: String, result: MetricsResult, checksum: String?): MutableNode {
         val attributes = mutableMapOf<String, Double>()

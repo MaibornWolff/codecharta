@@ -51,7 +51,6 @@ class CSVProjectBuilderTest {
         return Edge(fromNodeName, toNodeName)
     }
 
-    private fun getAttributeValue(attributes: Map<String, Any>, attributeName: String): Int {
-        return attributes.filterKeys { s: String -> s == attributeName }[attributeName].toString().toInt()
-    }
+    private fun getAttributeValue(attributes: Map<String, Any>, attributeName: String): Int =
+        attributes.filterKeys { s: String -> s == attributeName }[attributeName].toString().toInt()
 }

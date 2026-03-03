@@ -2,11 +2,7 @@ package de.maibornwolff.codecharta.analysers.importers.codemaat
 
 import de.maibornwolff.codecharta.model.Edge
 
-class CSVRow(
-    private val row: Array<String?>,
-    private val header: CSVHeader,
-    private val pathSeparator: Char
-) {
+class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
     init {
         if (row.size <= header.pathColumn.size) {
             throw IllegalArgumentException(
@@ -25,26 +21,28 @@ class CSVRow(
     }
 
     private val allColumns: Map<String, String> =
-        header.columnNumbers.filter {
-            validAttributeValue(it)
-        }.associateBy(
-            {
-                header.getColumnName(it)
-            },
-            { row[it]!! }
-        )
+        header.columnNumbers
+            .filter {
+                validAttributeValue(it)
+            }.associateBy(
+                {
+                    header.getColumnName(it)
+                },
+                { row[it]!! }
+            )
 
     private val attributes: Map<String, Int> =
-        header.columnNumbers.filter {
-            validAttributeValue(it) && isAttributeColumn(it)
-        }.associateBy(
-            {
-                header.getColumnName(it)
-            },
-            {
-                row[it]!!.toInt()
-            }
-        )
+        header.columnNumbers
+            .filter {
+                validAttributeValue(it) && isAttributeColumn(it)
+            }.associateBy(
+                {
+                    header.getColumnName(it)
+                },
+                {
+                    row[it]!!.toInt()
+                }
+            )
 
     private fun validAttributeValue(i: Int) = i < row.size && row[i] != null
 

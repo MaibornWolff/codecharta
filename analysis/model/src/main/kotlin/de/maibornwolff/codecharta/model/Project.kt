@@ -19,22 +19,16 @@ class Project(
     val size: Int
         get() = rootNode.size
 
-    fun sizeOfEdges(): Int {
-        return edges.size
-    }
+    fun sizeOfEdges(): Int = edges.size
 
-    fun sizeOfBlacklist(): Int {
-        return blacklist.size
-    }
+    fun sizeOfBlacklist(): Int = blacklist.size
 
-    override fun toString(): String {
-        return "Project{projectName=$projectName," +
-            " apiVersion=$apiVersion," +
-            " nodes=$nodes, edges=$edges," +
-            " attributeTypes=$attributeTypes," +
-            " attributeDescriptors=$attributeDescriptors," +
-            " blacklist=$blacklist}"
-    }
+    override fun toString(): String = "Project{projectName=$projectName," +
+        " apiVersion=$apiVersion," +
+        " nodes=$nodes, edges=$edges," +
+        " attributeTypes=$attributeTypes," +
+        " attributeDescriptors=$attributeDescriptors," +
+        " blacklist=$blacklist}"
 
     companion object {
         private const val API_VERSION_MAJOR = "1"

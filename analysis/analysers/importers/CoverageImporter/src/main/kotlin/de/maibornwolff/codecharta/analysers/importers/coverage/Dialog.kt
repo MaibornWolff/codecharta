@@ -13,11 +13,12 @@ import java.util.Locale
 class Dialog {
     companion object : AnalyserDialogInterface {
         override fun collectAnalyserArgs(session: Session): List<String> {
-            val formatChoice: String = session.promptList(
-                message = "Specify the format of the coverage report",
-                choices = getFormatNames(),
-                onInputReady = testCallback()
-            ).lowercase(Locale.getDefault())
+            val formatChoice: String = session
+                .promptList(
+                    message = "Specify the format of the coverage report",
+                    choices = getFormatNames(),
+                    onInputReady = testCallback()
+                ).lowercase(Locale.getDefault())
 
             val format = getFormatByName(formatChoice)
 
@@ -34,10 +35,11 @@ class Dialog {
                 onInputReady = testCallback()
             )
 
-            val isCompressed = (outputFileName.isEmpty()) || session.promptConfirm(
-                message = "Do you want to compress the output file?",
-                onInputReady = testCallback()
-            )
+            val isCompressed = (outputFileName.isEmpty()) ||
+                session.promptConfirm(
+                    message = "Do you want to compress the output file?",
+                    onInputReady = testCallback()
+                )
 
             val keepLeadingPaths = session.promptConfirm(
                 message = "Do you want to cut leading file paths segments that come before the project root directory?",

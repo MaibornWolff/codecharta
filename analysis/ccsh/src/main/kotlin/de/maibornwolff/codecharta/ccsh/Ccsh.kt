@@ -26,6 +26,7 @@ import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserReposi
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.Logger
+import io.github.oshai.kotlinlogging.KotlinLoggingConfiguration
 import picocli.CommandLine
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -85,6 +86,7 @@ class Ccsh : Callable<Unit?> {
 
         @JvmStatic
         fun main(args: Array<String>) {
+            KotlinLoggingConfiguration.logStartupMessage = false
             registerAllAttributeGenerators()
             exitProcess(executeCommandLine(args))
         }
@@ -212,9 +214,7 @@ class Ccsh : Callable<Unit?> {
             return result
         }
 
-        private fun shouldStartInteractiveMode(args: Array<String>): Boolean {
-            return args.contains("--interactive") || args.contains("-i")
-        }
+        private fun shouldStartInteractiveMode(args: Array<String>): Boolean = args.contains("--interactive") || args.contains("-i")
 
         private fun selectAndExecuteInteractiveAnalyser(commandLine: CommandLine): Int {
             val selectedAnalyser = AnalyserService.selectAnalyser(commandLine, PicocliAnalyserRepository())
@@ -232,34 +232,32 @@ class Ccsh : Callable<Unit?> {
             return analyserList.contains(firstArg)
         }
 
-        private fun isAnalyserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean {
-            return isAnalyserKnown(args, commandLine) && args.size == 1
-        }
+        private fun isAnalyserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean =
+            isAnalyserKnown(args, commandLine) && args.size == 1
 
         // e.g. when command is in a pipe we do not have access to an interactive terminal
         // and cannot start a kotter session (our interactive mode) so we wait for piped input
-        private fun isInInteractiveTerminal(): Boolean {
-            return System.console() != null
-        }
+        private fun isInInteractiveTerminal(): Boolean = System.console() != null
 
         private fun sanitizeArgs(args: Array<String>): Array<String> {
-            return args.map { argument ->
-                var sanitizedArg = ""
-                if (argument.length > 1 && argument.substring(0, 2) == ("--")) {
-                    var skip = false
-                    argument.forEach {
-                        if (it == '=') skip = true
-                        if (it.isUpperCase() && !skip) {
-                            sanitizedArg += "-" + it.lowercaseChar()
-                        } else {
-                            sanitizedArg += it
+            return args
+                .map { argument ->
+                    var sanitizedArg = ""
+                    if (argument.length > 1 && argument.substring(0, 2) == ("--")) {
+                        var skip = false
+                        argument.forEach {
+                            if (it == '=') skip = true
+                            if (it.isUpperCase() && !skip) {
+                                sanitizedArg += "-" + it.lowercaseChar()
+                            } else {
+                                sanitizedArg += it
+                            }
                         }
+                    } else {
+                        sanitizedArg = argument
                     }
-                } else {
-                    sanitizedArg = argument
-                }
-                return@map sanitizedArg
-            }.toTypedArray()
+                    return@map sanitizedArg
+                }.toTypedArray()
         }
 
         private fun registerAllAttributeGenerators() {
@@ -279,13 +277,11 @@ class Ccsh : Callable<Unit?> {
 
     @SuppressWarnings("kotlin:S6516") // Not possible to use a lambda here, because picocli expects a class type
     object ManifestVersionProvider : CommandLine.IVersionProvider {
-        override fun getVersion(): Array<String> {
-            return arrayOf(
-                Ccsh::class.java.`package`.implementationTitle + "\n" +
-                    "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
-                    "Copyright(c) 2024, MaibornWolff GmbH"
-            )
-        }
+        override fun getVersion(): Array<String> = arrayOf(
+            Ccsh::class.java.`package`.implementationTitle + "\n" +
+                "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
+                "Copyright(c) 2024, MaibornWolff GmbH"
+        )
     }
 }
 

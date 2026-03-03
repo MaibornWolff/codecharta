@@ -52,13 +52,14 @@ class Dialog {
                     onInputReady = testCallback()
                 )
 
-                levenshteinDistance = session.promptInputNumber(
-                    message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
-                    hint = "3",
-                    invalidInputMessage = "Specify a number greater or equal to 0",
-                    inputValidator = InputValidator.isNumberGreaterThen(-1),
-                    onInputReady = testCallback()
-                ).toInt()
+                levenshteinDistance = session
+                    .promptInputNumber(
+                        message = "Select Levenshtein Distance for name match suggestions (0 for no suggestions)",
+                        hint = "3",
+                        invalidInputMessage = "Specify a number greater or equal to 0",
+                        inputValidator = InputValidator.isNumberGreaterThen(-1),
+                        onInputReady = testCallback()
+                    ).toInt()
             } else {
                 outputFileName = session.promptInput(
                     message = "What is the name of the output file?",
@@ -67,10 +68,11 @@ class Dialog {
                     onInputReady = testCallback()
                 )
 
-                isCompressed = (outputFileName.isEmpty()) || session.promptConfirm(
-                    message = "Do you want to compress the output file?",
-                    onInputReady = testCallback()
-                )
+                isCompressed = (outputFileName.isEmpty()) ||
+                    session.promptConfirm(
+                        message = "Do you want to compress the output file?",
+                        onInputReady = testCallback()
+                    )
             }
 
             val leafMergingStrategy = "Leaf Merging Strategy"
@@ -122,20 +124,16 @@ class Dialog {
             return basicMergeConfig
         }
 
-        fun askForceMerge(session: Session): Boolean {
-            return session.promptConfirm(
-                message = "Do you still want to merge non-overlapping at the top-level nodes?",
-                onInputReady = testCallback()
-            )
-        }
+        fun askForceMerge(session: Session): Boolean = session.promptConfirm(
+            message = "Do you still want to merge non-overlapping at the top-level nodes?",
+            onInputReady = testCallback()
+        )
 
-        fun askForMimoPrefix(session: Session, prefixOptions: Set<String>): String {
-            return session.promptList(
-                message = "Which prefix should be used for the output file?",
-                choices = prefixOptions.toList(),
-                onInputReady = testCallback()
-            )
-        }
+        fun askForMimoPrefix(session: Session, prefixOptions: Set<String>): String = session.promptList(
+            message = "Which prefix should be used for the output file?",
+            choices = prefixOptions.toList(),
+            onInputReady = testCallback()
+        )
 
         fun requestMimoFileSelection(session: Session, files: List<File>): List<File> {
             val fileNameList = files.map { it.name }

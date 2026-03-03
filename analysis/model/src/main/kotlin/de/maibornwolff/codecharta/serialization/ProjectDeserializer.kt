@@ -15,11 +15,13 @@ import java.io.Reader
 
 object ProjectDeserializer {
     private val GSON =
-        GsonBuilder().registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
+        GsonBuilder()
+            .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
             .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
             .registerTypeAdapter(BlacklistType::class.java, BlacklistTypeDeserializer())
             .registerTypeAdapter(AttributeType::class.java, AttributeTypeDeserializer())
-            .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer()).create()
+            .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer())
+            .create()
 
     fun deserializeProject(reader: Reader): Project {
         val projectWrapper = GSON.fromJson(reader, ProjectWrapper::class.java)

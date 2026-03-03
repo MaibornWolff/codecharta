@@ -38,7 +38,9 @@ class UnifiedParser(
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
     private val baseFileHelper: BaseFileResolver = BaseFileResolver()
-) : AnalyserInterface, AttributeGenerator, CommonAnalyserParameters() {
+) : CommonAnalyserParameters(),
+    AnalyserInterface,
+    AttributeGenerator {
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
@@ -173,9 +175,7 @@ class UnifiedParser(
         )
     }
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors()
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors()
 
     private fun determineExclusionPatterns(inputFile: File, useGitignore: Boolean): List<String> {
         val excludePatterns = specifiedExcludePatterns.toMutableList()
@@ -192,9 +192,7 @@ class UnifiedParser(
         return excludePatterns
     }
 
-    private fun formatFileExtensions(fileExtensions: Set<String>): String {
-        return fileExtensions.joinToString(separator = ", ") { ".$it" }
-    }
+    private fun formatFileExtensions(fileExtensions: Set<String>): String = fileExtensions.joinToString(separator = ", ") { ".$it" }
 
     private fun formatTime(duration: Duration): String {
         val totalSeconds = duration.inWholeSeconds

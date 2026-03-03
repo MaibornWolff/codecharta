@@ -40,9 +40,7 @@ class CSVProjectBuilder(
         return projectBuilder
     }
 
-    fun build(): Project {
-        return projectBuilder.build()
-    }
+    fun build(): Project = projectBuilder.build()
 
     private fun parseContent(parser: CsvParser, header: CSVHeader) {
         var row = parser.parseNext()

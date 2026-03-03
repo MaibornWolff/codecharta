@@ -6,9 +6,7 @@ import de.maibornwolff.codecharta.util.Logger
 /**
  * merges nodes recursively if their paths coincide
  */
-class RecursiveNodeMergerStrategy(
-    ignoreCase: Boolean = false
-) : NodeMergerStrategy {
+class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrategy {
     private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
 
     private var nodesProcessed = 0
@@ -18,15 +16,15 @@ class RecursiveNodeMergerStrategy(
         mergeConditionSatisfied =
             if (ignoreCase) {
                 {
-                        n1: MutableNode,
-                        n2: MutableNode
+                    n1: MutableNode,
+                    n2: MutableNode
                     ->
                     n1.name.equals(n2.name, ignoreCase = true)
                 }
             } else {
                 {
-                        n1: MutableNode,
-                        n2: MutableNode
+                    n1: MutableNode,
+                    n2: MutableNode
                     ->
                     n1.name == n2.name
                 }
@@ -38,8 +36,8 @@ class RecursiveNodeMergerStrategy(
 
         return nodeLists.reduce { mergedNodeList, nextNodeList ->
             nextNodeList.fold(mergedNodeList) {
-                    accumulatedNodes: List<MutableNode>,
-                    nextNode: MutableNode
+                accumulatedNodes: List<MutableNode>,
+                nextNode: MutableNode
                 ->
                 nodesProcessed++
                 mergeOrAppendNode(accumulatedNodes, nextNode)
@@ -48,9 +46,10 @@ class RecursiveNodeMergerStrategy(
     }
 
     private fun mergeOrAppendNode(nodeList: List<MutableNode>, node: MutableNode): List<MutableNode> {
-        if (nodeList.filter {
-                mergeConditionSatisfied(it, node)
-            }.isEmpty()
+        if (nodeList
+                .filter {
+                    mergeConditionSatisfied(it, node)
+                }.isEmpty()
         ) {
             return nodeList + node
         }
@@ -80,9 +79,10 @@ class RecursiveNodeMergerStrategy(
         val node = nodes[0].merge(nodes.toList())
         node.children.addAll(
             this.mergeNodeLists(
-                nodes.map {
-                    it.children.toList()
-                }.toList()
+                nodes
+                    .map {
+                        it.children.toList()
+                    }.toList()
             )
         )
         return node

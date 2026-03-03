@@ -23,8 +23,8 @@ internal class CommitCollector {
             return Collector.of(
                 { VersionControlledFilesList(metricsFactory) },
                 {
-                        versionControlledFiles,
-                        commit
+                    versionControlledFiles,
+                    commit
                     ->
                     collector.collectCommit(versionControlledFiles, commit)
                 },

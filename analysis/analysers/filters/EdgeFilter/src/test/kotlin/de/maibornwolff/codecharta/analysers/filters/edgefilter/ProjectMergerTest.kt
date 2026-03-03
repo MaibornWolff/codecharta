@@ -79,13 +79,20 @@ class ProjectMergerTest {
             mapOf(
                 "Test" to
                     AttributeDescriptor(
-                        description = "a", hintLowValue = "b", hintHighValue = "c",
-                        link = "d", direction = -1
+                        description = "a",
+                        hintLowValue = "b",
+                        hintHighValue = "c",
+                        link = "d",
+                        direction = -1
                     ),
                 "Test2" to
                     AttributeDescriptor(
-                        title = "a1", description = "b2", hintLowValue = "c3",
-                        hintHighValue = "d4", link = "e5", direction = -1
+                        title = "a1",
+                        description = "b2",
+                        hintLowValue = "c3",
+                        hintHighValue = "d4",
+                        link = "e5",
+                        direction = -1
                     )
             )
         assertEquals(project.attributeDescriptors, expectedDescriptors)
@@ -99,6 +106,5 @@ private fun getChildByName(children: List<Node>, nodeName: String): Node {
     return Node(nodeName)
 }
 
-private fun getAttributeValue(attributes: Map<String, Any>, attributeName: String): Int {
-    return attributes.filterKeys { s: String -> s == attributeName }[attributeName].toString().toInt()
-}
+private fun getAttributeValue(attributes: Map<String, Any>, attributeName: String): Int =
+    attributes.filterKeys { s: String -> s == attributeName }[attributeName].toString().toInt()

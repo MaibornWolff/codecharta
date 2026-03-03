@@ -15,12 +15,10 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
         }
     }
 
-    fun pathInTree(): Path {
-        return PathFactory.fromFileSystemPath(
-            path.substring(0, path.lastIndexOf(pathSeparator) + 1),
-            pathSeparator
-        )
-    }
+    fun pathInTree(): Path = PathFactory.fromFileSystemPath(
+        path.substring(0, path.lastIndexOf(pathSeparator) + 1),
+        pathSeparator
+    )
 
     fun asNode(): MutableNode {
         val filename = path.substring(path.lastIndexOf(pathSeparator) + 1)

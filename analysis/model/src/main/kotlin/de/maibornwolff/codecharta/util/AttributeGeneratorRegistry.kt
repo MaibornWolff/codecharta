@@ -10,9 +10,10 @@ object AttributeGeneratorRegistry {
         generators.add(generator)
     }
 
-    fun getAllAttributeDescriptors(): Map<String, AttributeDescriptor> = generators.flatMap {
-        it.getAttributeDescriptorMaps().entries
-    }.associate {
-        it.key to it.value
-    }
+    fun getAllAttributeDescriptors(): Map<String, AttributeDescriptor> = generators
+        .flatMap {
+            it.getAttributeDescriptorMaps().entries
+        }.associate {
+            it.key to it.value
+        }
 }

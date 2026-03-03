@@ -19,9 +19,7 @@ class ProjectConverterTest {
         every { metricsFactory.createMetrics() } returns listOf()
     }
 
-    private fun modificationsByFilename(vararg filenames: String): List<Modification> {
-        return filenames.map { Modification(it) }
-    }
+    private fun modificationsByFilename(vararg filenames: String): List<Modification> = filenames.map { Modification(it) }
 
     @Test
     @Throws(Exception::class)
@@ -45,7 +43,12 @@ class ProjectConverterTest {
         val project = projectConverter.convert(listOf(file1), metricsFactory)
 
         // then
-        assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isTrue()
+        assertThat(
+            project.rootNode.children
+                .toMutableList()[0]
+                .attributes
+                .containsKey("authors")
+        ).isTrue()
     }
 
     @Test
@@ -58,7 +61,12 @@ class ProjectConverterTest {
         val project = projectConverter.convert(listOf(file1), metricsFactory)
 
         // then
-        assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isFalse()
+        assertThat(
+            project.rootNode.children
+                .toMutableList()[0]
+                .attributes
+                .containsKey("authors")
+        ).isFalse()
     }
 
     @Test

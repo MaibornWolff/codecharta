@@ -29,16 +29,14 @@ class DialogTest {
         mockkObject(Dialog)
     }
 
-    private fun formatChoicesProvider(): List<Arguments> {
-        return Format.entries.map { format ->
-            Arguments.of(
-                format.formatName,
-                Format.entries.indexOf(format),
-                // ensure this default report file exists, otherwise the test will not complete and run into timeout
-                "$testResourceBaseFolder/${format.formatName.lowercase()}/${format.defaultReportFileName}",
-                "coverage_${format.formatName}_out.cc.json"
-            )
-        }
+    private fun formatChoicesProvider(): List<Arguments> = Format.entries.map { format ->
+        Arguments.of(
+            format.formatName,
+            Format.entries.indexOf(format),
+            // ensure this default report file exists, otherwise the test will not complete and run into timeout
+            "$testResourceBaseFolder/${format.formatName.lowercase()}/${format.defaultReportFileName}",
+            "coverage_${format.formatName}_out.cc.json"
+        )
     }
 
     @Test

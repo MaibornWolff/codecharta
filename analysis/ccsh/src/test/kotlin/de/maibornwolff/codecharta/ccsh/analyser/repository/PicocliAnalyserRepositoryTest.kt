@@ -60,19 +60,17 @@ class PicocliAnalyserRepositoryTest {
         unmockkAll()
     }
 
-    private fun getExpectedAnalysers(): List<AnalyserInterface> {
-        return listOf<AnalyserInterface>(
-            CSVExporter(),
-            EdgeFilter(), MergeFilter(),
-            StructureModifier(), CSVImporter(),
-            SonarImporter(), SourceMonitorImporter(),
-            SVNLogParser(), GitLogParser(),
-            SourceCodeParser(), CodeMaatImporter(),
-            TokeiImporter(), DependaChartaImporter(),
-            RawTextParser(),
-            ValidationTool(), InspectionTool()
-        )
-    }
+    private fun getExpectedAnalysers(): List<AnalyserInterface> = listOf<AnalyserInterface>(
+        CSVExporter(),
+        EdgeFilter(), MergeFilter(),
+        StructureModifier(), CSVImporter(),
+        SonarImporter(), SourceMonitorImporter(),
+        SVNLogParser(), GitLogParser(),
+        SourceCodeParser(), CodeMaatImporter(),
+        TokeiImporter(), DependaChartaImporter(),
+        RawTextParser(),
+        ValidationTool(), InspectionTool()
+    )
 
     companion object {
         @JvmStatic
@@ -86,26 +84,24 @@ class PicocliAnalyserRepositoryTest {
             return result
         }
 
-        fun getExpectedAnalyserNamesWithDescription(): List<List<String>> {
-            return listOf(
-                listOf(CSVExporter.NAME, " - " + CSVExporter.DESCRIPTION),
-                listOf(EdgeFilter.NAME, " - " + EdgeFilter.DESCRIPTION),
-                listOf(MergeFilter.NAME, " - " + MergeFilter.DESCRIPTION),
-                listOf(StructureModifier.NAME, " - " + StructureModifier.DESCRIPTION),
-                listOf(CSVImporter.NAME, " - " + CSVImporter.DESCRIPTION),
-                listOf(SonarImporter.NAME, " - " + SonarImporter.DESCRIPTION),
-                listOf(SourceMonitorImporter.NAME, " - " + SourceMonitorImporter.DESCRIPTION),
-                listOf(SVNLogParser.NAME, " - " + SVNLogParser.DESCRIPTION),
-                listOf(GitLogParser.NAME, " - " + GitLogParser.DESCRIPTION),
-                listOf(SourceCodeParser.NAME, " - " + SourceCodeParser.DESCRIPTION),
-                listOf(CodeMaatImporter.NAME, " - " + CodeMaatImporter.DESCRIPTION),
-                listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
-                listOf(DependaChartaImporter.NAME, " - " + DependaChartaImporter.DESCRIPTION),
-                listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
-                listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
-                listOf(InspectionTool.NAME, " - " + InspectionTool.DESCRIPTION)
-            )
-        }
+        fun getExpectedAnalyserNamesWithDescription(): List<List<String>> = listOf(
+            listOf(CSVExporter.NAME, " - " + CSVExporter.DESCRIPTION),
+            listOf(EdgeFilter.NAME, " - " + EdgeFilter.DESCRIPTION),
+            listOf(MergeFilter.NAME, " - " + MergeFilter.DESCRIPTION),
+            listOf(StructureModifier.NAME, " - " + StructureModifier.DESCRIPTION),
+            listOf(CSVImporter.NAME, " - " + CSVImporter.DESCRIPTION),
+            listOf(SonarImporter.NAME, " - " + SonarImporter.DESCRIPTION),
+            listOf(SourceMonitorImporter.NAME, " - " + SourceMonitorImporter.DESCRIPTION),
+            listOf(SVNLogParser.NAME, " - " + SVNLogParser.DESCRIPTION),
+            listOf(GitLogParser.NAME, " - " + GitLogParser.DESCRIPTION),
+            listOf(SourceCodeParser.NAME, " - " + SourceCodeParser.DESCRIPTION),
+            listOf(CodeMaatImporter.NAME, " - " + CodeMaatImporter.DESCRIPTION),
+            listOf(TokeiImporter.NAME, " - " + TokeiImporter.DESCRIPTION),
+            listOf(DependaChartaImporter.NAME, " - " + DependaChartaImporter.DESCRIPTION),
+            listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
+            listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
+            listOf(InspectionTool.NAME, " - " + InspectionTool.DESCRIPTION)
+        )
     }
 
     @Test

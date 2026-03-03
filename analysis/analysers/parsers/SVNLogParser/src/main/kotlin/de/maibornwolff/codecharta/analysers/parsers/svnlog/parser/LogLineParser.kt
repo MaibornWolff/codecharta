@@ -27,37 +27,38 @@ class LogLineParser(
 
     fun parse(logLines: Stream<String>): List<VersionControlledFile> {
         val parsedFilesOfCommit =
-            logLines.collect(parserStrategy.createLogLineCollector()).map { this.parseCommit(it) }
-                .filter { !it.isEmpty }.collect(CommitCollector.create(metricsFactory))
+            logLines
+                .collect(parserStrategy.createLogLineCollector())
+                .map { this.parseCommit(it) }
+                .filter { !it.isEmpty }
+                .collect(CommitCollector.create(metricsFactory))
 
         progressTracker.updateProgress(logSizeInByte, logSizeInByte, parsingUnit.name)
 
         return parsedFilesOfCommit
     }
 
-    internal fun parseCommit(commitLines: List<String>): Commit {
-        return try {
-            var author = ""
-            var commitDate = OffsetDateTime.now()
-            var modifications: List<Modification> = listOf()
+    internal fun parseCommit(commitLines: List<String>): Commit = try {
+        var author = ""
+        var commitDate = OffsetDateTime.now()
+        var modifications: List<Modification> = listOf()
 
-            runBlocking(Dispatchers.Default) {
-                launch {
-                    author = parserStrategy.parseAuthor(commitLines)
-                    commitDate = parserStrategy.parseDate(commitLines)
-                    modifications = parserStrategy.parseModifications(commitLines)
-                }
+        runBlocking(Dispatchers.Default) {
+            launch {
+                author = parserStrategy.parseAuthor(commitLines)
+                commitDate = parserStrategy.parseDate(commitLines)
+                modifications = parserStrategy.parseModifications(commitLines)
             }
-
-            commitLines.forEach {
-                currentBytesParsed += it.length
-            }
-
-            if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed, parsingUnit.name)
-            Commit(author, modifications, commitDate)
-        } catch (e: NoSuchElementException) {
-            System.err.println("Skipped commit with invalid syntax ($commitLines)")
-            Commit("", listOf(), OffsetDateTime.now())
         }
+
+        commitLines.forEach {
+            currentBytesParsed += it.length
+        }
+
+        if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed, parsingUnit.name)
+        Commit(author, modifications, commitDate)
+    } catch (e: NoSuchElementException) {
+        System.err.println("Skipped commit with invalid syntax ($commitLines)")
+        Commit("", listOf(), OffsetDateTime.now())
     }
 }

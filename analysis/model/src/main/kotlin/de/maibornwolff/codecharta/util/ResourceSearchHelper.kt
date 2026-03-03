@@ -14,9 +14,13 @@ class ResourceSearchHelper {
             }
 
             println("Did not find folder directly, scanning directory `${inputFile.absolutePath}` if folder exists at top level.")
-            return inputFile.walk().maxDepth(1).asSequence().filter {
-                it.isDirectory && isInputFileNameSearchToken(it, toBeSearchedFolder)
-            }.any()
+            return inputFile
+                .walk()
+                .maxDepth(1)
+                .asSequence()
+                .filter {
+                    it.isDirectory && isInputFileNameSearchToken(it, toBeSearchedFolder)
+                }.any()
         }
 
         fun isFileWithOneOrMoreOfEndingsPresent(resourcePath: String, toBeCheckedFileEndings: List<FileExtension>): Boolean {
@@ -33,14 +37,15 @@ class ResourceSearchHelper {
                 "Given resource did not end with any of the supplied file endings. " +
                     "Scanning directory `${inputFile.absolutePath}` if it contains a file with any of the supplied file endings."
             )
-            return inputFile.walk().asSequence().filter {
-                it.isFile && endsWithAtLeastOne(it.name, toBeCheckedFileEndings)
-            }.any()
+            return inputFile
+                .walk()
+                .asSequence()
+                .filter {
+                    it.isFile && endsWithAtLeastOne(it.name, toBeCheckedFileEndings)
+                }.any()
         }
 
-        fun isSearchableDirectory(inputFile: File): Boolean {
-            return (inputFile.isDirectory && inputFile.name != "")
-        }
+        fun isSearchableDirectory(inputFile: File): Boolean = (inputFile.isDirectory && inputFile.name != "")
 
         fun getFileFromStringIfExists(inputPath: String): File? {
             if (inputPath == "") {
@@ -53,9 +58,7 @@ class ResourceSearchHelper {
             return null
         }
 
-        private fun isInputFileNameSearchToken(inputFile: File, searchToken: String): Boolean {
-            return (inputFile.name == searchToken)
-        }
+        private fun isInputFileNameSearchToken(inputFile: File, searchToken: String): Boolean = (inputFile.name == searchToken)
 
         fun endsWithAtLeastOne(inputString: String, endings: List<FileExtension>): Boolean {
             for (ending in endings) {

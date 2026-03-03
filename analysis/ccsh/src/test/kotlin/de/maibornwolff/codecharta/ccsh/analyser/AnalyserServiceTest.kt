@@ -50,26 +50,24 @@ class AnalyserServiceTest {
 
     companion object {
         @JvmStatic
-        fun providerAnalyserArguments(): List<Arguments> {
-            return listOf(
-                Arguments.of("csvexport"),
-                Arguments.of("edgefilter"),
-                Arguments.of("merge"),
-                Arguments.of("modify"),
-                Arguments.of("codemaatimport"),
-                Arguments.of("csvimport"),
-                Arguments.of("sourcemonitorimport"),
-                Arguments.of("gitlogparser"),
-                Arguments.of("sonarimport"),
-                Arguments.of("sourcecodeparser"),
-                Arguments.of("svnlogparser"),
-                Arguments.of("tokeiimporter"),
-                Arguments.of("dependachartaimport"),
-                Arguments.of("rawtextparser"),
-                Arguments.of("check"),
-                Arguments.of("inspect")
-            )
-        }
+        fun providerAnalyserArguments(): List<Arguments> = listOf(
+            Arguments.of("csvexport"),
+            Arguments.of("edgefilter"),
+            Arguments.of("merge"),
+            Arguments.of("modify"),
+            Arguments.of("codemaatimport"),
+            Arguments.of("csvimport"),
+            Arguments.of("sourcemonitorimport"),
+            Arguments.of("gitlogparser"),
+            Arguments.of("sonarimport"),
+            Arguments.of("sourcecodeparser"),
+            Arguments.of("svnlogparser"),
+            Arguments.of("tokeiimporter"),
+            Arguments.of("dependachartaimport"),
+            Arguments.of("rawtextparser"),
+            Arguments.of("check"),
+            Arguments.of("inspect")
+        )
     }
 
     @ParameterizedTest

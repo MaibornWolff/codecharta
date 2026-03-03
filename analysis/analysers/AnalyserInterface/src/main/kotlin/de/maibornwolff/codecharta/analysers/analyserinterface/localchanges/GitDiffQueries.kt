@@ -16,39 +16,21 @@ class GitDiffQueries(private val git: GitCommandRunner) {
         private const val EXCLUDE_STANDARD = "--exclude-standard"
     }
 
-    fun isInsideWorkTree(): String {
-        return git.run(REV_PARSE, IS_INSIDE_WORK_TREE)
-    }
+    fun isInsideWorkTree(): String = git.run(REV_PARSE, IS_INSIDE_WORK_TREE)
 
-    fun upstreamBranchName(): String {
-        return git.run(REV_PARSE, ABBREV_REF, UPSTREAM_REF)
-    }
+    fun upstreamBranchName(): String = git.run(REV_PARSE, ABBREV_REF, UPSTREAM_REF)
 
-    fun changedFilesSince(ref: String): Set<String> {
-        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_CHANGED, "$ref...HEAD")
-    }
+    fun changedFilesSince(ref: String): Set<String> = git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_CHANGED, "$ref...HEAD")
 
-    fun stagedChangedFiles(): Set<String> {
-        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_CHANGED, CACHED)
-    }
+    fun stagedChangedFiles(): Set<String> = git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_CHANGED, CACHED)
 
-    fun unstagedChangedFiles(): Set<String> {
-        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_CHANGED)
-    }
+    fun unstagedChangedFiles(): Set<String> = git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_CHANGED)
 
-    fun deletedFilesSince(ref: String): Set<String> {
-        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_DELETED, "$ref...HEAD")
-    }
+    fun deletedFilesSince(ref: String): Set<String> = git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_DELETED, "$ref...HEAD")
 
-    fun stagedDeletedFiles(): Set<String> {
-        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_DELETED, CACHED)
-    }
+    fun stagedDeletedFiles(): Set<String> = git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_DELETED, CACHED)
 
-    fun unstagedDeletedFiles(): Set<String> {
-        return git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_DELETED)
-    }
+    fun unstagedDeletedFiles(): Set<String> = git.runAndParseFileList(DIFF, NAME_ONLY, DIFF_FILTER_DELETED)
 
-    fun untrackedFiles(): Set<String> {
-        return git.runAndParseFileList(LS_FILES, OTHERS, EXCLUDE_STANDARD)
-    }
+    fun untrackedFiles(): Set<String> = git.runAndParseFileList(LS_FILES, OTHERS, EXCLUDE_STANDARD)
 }

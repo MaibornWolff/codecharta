@@ -95,7 +95,5 @@ class RepoScanCommand : AnalyserInterface {
 
     override fun getDialog(): AnalyserDialogInterface = RepoScanDialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 }

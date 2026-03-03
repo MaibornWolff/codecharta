@@ -9,7 +9,5 @@ class FileMetrics {
         return this
     }
 
-    fun isEmpty(): Boolean {
-        return metricsMap.isEmpty()
-    }
+    fun isEmpty(): Boolean = metricsMap.isEmpty()
 }

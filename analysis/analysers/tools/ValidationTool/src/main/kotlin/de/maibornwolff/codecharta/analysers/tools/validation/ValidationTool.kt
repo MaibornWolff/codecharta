@@ -42,7 +42,5 @@ class ValidationTool : AnalyserInterface {
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 }

@@ -6,24 +6,16 @@ import de.maibornwolff.codecharta.model.AttributeType
 class NumberOfAuthors : Metric {
     private val authors = mutableSetOf<String>()
 
-    override fun description(): String {
-        return "Number of Authors: Number of authors that contributed to this file."
-    }
+    override fun description(): String = "Number of Authors: Number of authors that contributed to this file."
 
-    override fun metricName(): String {
-        return "number_of_authors"
-    }
+    override fun metricName(): String = "number_of_authors"
 
     override fun registerCommit(commit: Commit) {
         authors.add(commit.author)
         authors.addAll(commit.coAuthors)
     }
 
-    override fun value(): Number {
-        return authors.size
-    }
+    override fun value(): Number = authors.size
 
-    override fun attributeType(): AttributeType {
-        return AttributeType.RELATIVE
-    }
+    override fun attributeType(): AttributeType = AttributeType.RELATIVE
 }

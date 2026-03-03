@@ -29,9 +29,8 @@ class CSVProjectBuilder(
         return projectBuilder
     }
 
-    fun build(cleanAttributeDescriptors: Boolean = false): Project {
-        return projectBuilder.addAttributeDescriptions(this.attributeDescriptors).build(cleanAttributeDescriptors)
-    }
+    fun build(cleanAttributeDescriptors: Boolean = false): Project =
+        projectBuilder.addAttributeDescriptions(this.attributeDescriptors).build(cleanAttributeDescriptors)
 
     private fun parseContent(parser: CsvParser, header: CSVHeader) {
         var row = parser.parseNext()

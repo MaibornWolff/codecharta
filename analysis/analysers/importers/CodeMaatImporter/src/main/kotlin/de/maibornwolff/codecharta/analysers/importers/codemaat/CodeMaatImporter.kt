@@ -21,9 +21,9 @@ import java.io.PrintStream
     description = [CodeMaatImporter.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class CodeMaatImporter(
-    private val output: PrintStream = System.out
-) : AnalyserInterface, AttributeGenerator {
+class CodeMaatImporter(private val output: PrintStream = System.out) :
+    AnalyserInterface,
+    AttributeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -76,11 +76,12 @@ class CodeMaatImporter(
                 attributeTypes,
                 getAttributeDescriptorMaps()
             )
-        files.map {
-            it.inputStream()
-        }.forEach<InputStream> {
-            csvProjectBuilder.parseCSVStream(it)
-        }
+        files
+            .map {
+                it.inputStream()
+            }.forEach<InputStream> {
+                csvProjectBuilder.parseCSVStream(it)
+            }
         val project =
             csvProjectBuilder.build()
 
@@ -119,11 +120,7 @@ class CodeMaatImporter(
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors()
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors()
 }

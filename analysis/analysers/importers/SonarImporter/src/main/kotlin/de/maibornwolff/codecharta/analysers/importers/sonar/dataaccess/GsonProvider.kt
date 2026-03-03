@@ -27,9 +27,7 @@ class GsonProvider<T> : MessageBodyReader<T> {
         this.gson = builder.create()
     }
 
-    override fun isReadable(type: Class<*>, genericType: Type, annotations: Array<Annotation>, mediaType: MediaType): Boolean {
-        return true
-    }
+    override fun isReadable(type: Class<*>, genericType: Type, annotations: Array<Annotation>, mediaType: MediaType): Boolean = true
 
     @Throws(IOException::class, WebApplicationException::class)
     override fun readFrom(
