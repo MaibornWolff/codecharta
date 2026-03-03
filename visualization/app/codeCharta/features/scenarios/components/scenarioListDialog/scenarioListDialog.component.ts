@@ -7,21 +7,13 @@ import { CcState, MetricData } from "../../../../codeCharta.model"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { filesSelector } from "../../../../state/store/files/files.selector"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
-import { CCSCENARIO_EXTENSION, getAvailableSectionKeys, Scenario, ScenarioSectionKey } from "../../model/scenario.model"
+import { CCSCENARIO_EXTENSION, getAvailableSectionKeys, Scenario } from "../../model/scenario.model"
 import { ScenariosService } from "../../services/scenarios.service"
 import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
 import { DeleteConfirmDialogComponent } from "./deleteConfirmDialog/deleteConfirmDialog.component"
 import { ImportFeedbackDialogComponent } from "./importFeedbackDialog/importFeedbackDialog.component"
 import { ScenarioItemComponent } from "./scenarioItem/scenarioItem.component"
-
-export interface ScenarioView {
-    scenario: Scenario
-    warning: boolean
-    mapMismatch: boolean
-    mapBound: boolean
-    sectionKeys: ScenarioSectionKey[]
-    formattedDate: string
-}
+import { ScenarioView } from "./scenarioView.model"
 
 @Component({
     selector: "cc-scenario-list-dialog",
@@ -120,12 +112,6 @@ export class ScenarioListDialogComponent {
             await this.scenariosService.removeScenario(scenario.id)
         }
     }
-}
-
-export interface ScenarioGroup {
-    label: string
-    icon: string
-    scenarios: ScenarioView[]
 }
 
 const GROUP_DEFINITIONS: { priority: number; label: string; icon: string }[] = [
