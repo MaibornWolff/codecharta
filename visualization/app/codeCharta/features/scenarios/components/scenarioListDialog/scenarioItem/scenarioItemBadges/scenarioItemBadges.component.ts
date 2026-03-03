@@ -1,6 +1,6 @@
 import { Component, input } from "@angular/core"
 import { SCENARIO_SECTION_ICONS, SCENARIO_SECTION_LABELS } from "../../../../model/scenario.model"
-import { ScenarioView } from "../../scenarioListDialog.component"
+import { ScenarioView } from "../../scenarioView.model"
 
 @Component({
     selector: "cc-scenario-item-badges",

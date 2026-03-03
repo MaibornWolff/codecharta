@@ -1,5 +1,5 @@
 import { Component, input, output } from "@angular/core"
-import { ScenarioView } from "../scenarioListDialog.component"
+import { ScenarioView } from "../scenarioView.model"
 import { ScenarioItemBadgesComponent } from "./scenarioItemBadges/scenarioItemBadges.component"
 import { ScenarioItemActionsComponent } from "./scenarioItemActions/scenarioItemActions.component"
 
