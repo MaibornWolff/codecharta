@@ -84,17 +84,21 @@ abstract class CommonAnalyserParameters {
     protected var commit: String? = null
 
     protected fun resolveEffectiveInput(inputFile: File): CommitAnalysisContext {
-        require(!(commit != null && localChanges)) {
+        val commitRef = commit?.trim()?.takeIf { it.isNotEmpty() }
+
+        require(!(commitRef != null && localChanges)) {
             "--commit and --local-changes are mutually exclusive"
         }
 
-        if (commit == null) return CommitAnalysisContext(inputFile, null, null)
+        if (commitRef == null) return CommitAnalysisContext(inputFile, null, null)
 
         val repoRoot = findGitRoot(inputFile)
+        val relativePath = repoRoot.toPath().relativize(inputFile.absoluteFile.toPath())
         val manager = GitWorktreeManager(repoRoot)
-        val shortHash = manager.shortCommitHash(commit!!)
-        val worktreeDir = manager.createWorktree(commit!!)
-        return CommitAnalysisContext(worktreeDir, manager, shortHash)
+        val shortHash = manager.shortCommitHash(commitRef)
+        val worktreeDir = manager.createWorktree(commitRef)
+        val effectiveInput = File(worktreeDir, relativePath.toString())
+        return CommitAnalysisContext(effectiveInput, manager, shortHash)
     }
 
     private fun findGitRoot(startDir: File): File {

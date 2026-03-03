@@ -55,7 +55,7 @@ As this parser can generate metrics based on a given git-log file or given a git
 | `log-scan`                          | use log-scan mode - generates cc.json from a given git-log file                     |
 | `repo-scan`                         | use repo-scan mode - generates cc.json from an automatically generated git-log file |
 | `--add-author`                      | add an array of authors to every file                                               |
-| `--commit=<ref>`                    | analyze the repository at a specific git commit, tag, branch, or date expression (creates a temporary worktree, repo-scan only). See [Commit-Based Analysis](/docs/analysis/commit-analysis) |
+| `--commit=<ref>`                    | analyze the repository at a specific git commit, tag, branch, or date expression (creates a temporary worktree, repo-scan only). Cannot be combined with `--local-changes`. See [Commit-Based Analysis](/docs/analysis/commit-analysis) |
 | `--git-log=FILE`                    | git-log file to parse (only available for log-scan mode!)                           |
 | `-h, --help`                        | displays help and exits                                                             |
 | `-nc, --not-compressed`             | save uncompressed output File                                                       |

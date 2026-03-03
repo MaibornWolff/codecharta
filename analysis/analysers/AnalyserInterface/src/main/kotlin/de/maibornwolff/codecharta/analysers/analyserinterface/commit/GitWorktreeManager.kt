@@ -12,25 +12,19 @@ class GitWorktreeManager(private val repoRoot: File, private val git: GitCommand
         private const val WORKTREE_PREFIX = "codecharta-worktree-"
     }
 
-    fun resolveCommitHash(commitRef: String): String = tryRevParse(commitRef) ?: resolveByDate(commitRef)
+    fun resolveCommitHash(commitRef: String): String = try {
+        git.run("rev-parse", commitRef).trim()
+    } catch (revParseException: RuntimeException) {
+        val hash = git.run("log", "--before=$commitRef", "-1", "--format=%H").trim()
+        if (hash.isEmpty()) {
+            throw IllegalArgumentException("No commit found for '$commitRef'", revParseException)
+        }
+        hash
+    }
 
     fun shortCommitHash(commitRef: String): String {
         val fullHash = resolveCommitHash(commitRef)
         return git.run("rev-parse", "--short", fullHash).trim()
-    }
-
-    private fun tryRevParse(commitRef: String): String? = try {
-        git.run("rev-parse", commitRef).trim()
-    } catch (e: RuntimeException) {
-        null
-    }
-
-    private fun resolveByDate(dateRef: String): String {
-        val hash = git.run("log", "--before=$dateRef", "-1", "--format=%H").trim()
-        if (hash.isEmpty()) {
-            throw IllegalArgumentException("No commit found for '$dateRef'")
-        }
-        return hash
     }
 
     fun createWorktree(commitRef: String): File {
