@@ -73,12 +73,12 @@ class RepoScanCommand : AnalyserInterface {
         val context = resolveCommitContext(repoPath)
 
         try {
-            println("Creating git.log file...")
+            if (!silent) println("Creating git.log file...")
             val gitLogFile = createGitLogFile(context.inputDir.toPath())
-            println("Creating git-ls file...")
+            if (!silent) println("Creating git-ls file...")
             val gitLsFile = createGitLsFile(context.inputDir.toPath())
 
-            println("Parsing files...")
+            if (!silent) println("Parsing files...")
             GitLogParser().buildProject(gitLogFile, gitLsFile, context.resolveOutputFile(outputFilePath), addAuthor, silent, compress)
         } finally {
             context.worktreeManager?.cleanup()
