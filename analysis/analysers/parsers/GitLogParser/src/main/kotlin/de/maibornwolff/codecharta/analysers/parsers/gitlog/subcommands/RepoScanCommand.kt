@@ -88,11 +88,12 @@ class RepoScanCommand : AnalyserInterface {
     }
 
     private fun resolveCommitContext(repoPath: Path): CommitAnalysisContext {
-        if (commit == null) return CommitAnalysisContext(repoPath.toFile(), null, null)
+        val commitRef = commit?.trim()?.takeIf { it.isNotEmpty() }
+        if (commitRef == null) return CommitAnalysisContext(repoPath.toFile(), null, null)
 
         val manager = GitWorktreeManager(repoPath.toFile())
-        val shortHash = manager.shortCommitHash(commit!!)
-        val worktreeDir = manager.createWorktree(commit!!)
+        val shortHash = manager.shortCommitHash(commitRef)
+        val worktreeDir = manager.createWorktree(commitRef)
         return CommitAnalysisContext(worktreeDir, manager, shortHash)
     }
 

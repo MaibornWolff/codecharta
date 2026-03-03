@@ -67,7 +67,7 @@ Some metrics are calculated on a per-function basis rather than per-file. Each o
 | `--bypass-gitignore`                      | disable automatic .gitignore-based file exclusion (uses regex-based exclusion of common build folders)                                            |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders (applied in addition to .gitignore patterns)                                      |
 | `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: any)                                                                  |
-| `--commit=<ref>`                          | analyze the codebase at a specific git commit, tag, branch, or date expression (creates a temporary worktree). See [Commit-Based Analysis](/docs/analysis/commit-analysis) |
+| `--commit=<ref>`                          | analyze the codebase at a specific git commit, tag, branch, or date expression (creates a temporary worktree). Cannot be combined with `--local-changes`. See [Commit-Based Analysis](/docs/analysis/commit-analysis) |
 | `-h, --help`                              | displays this help and exits                                                                                                                      |
 | `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.') |
 | `--local-changes`                         | only analyze files that differ from the remote tracking branch (uncommitted, staged, unstaged, untracked). See [Local Changes](/docs/analysis/local-changes) |
