@@ -21,8 +21,21 @@ class RepoScanDialog {
                 ),
                 onInputReady = testCallback()
             )
-            return listOf("--repo-path=$repoPath")
+
+            val commitRef = commitQuestion(session)
+
+            return listOfNotNull(
+                "--repo-path=$repoPath",
+                if (commitRef.isNotEmpty()) "--commit=$commitRef" else null
+            )
         }
+
+        private fun commitQuestion(session: Session): String = session.promptInput(
+            message = "Analyze a specific commit? (leave empty for current state)",
+            hint = "e.g. HEAD~5, abc1234, v2.0.0",
+            allowEmptyInput = true,
+            onInputReady = testCallback()
+        )
 
         internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }
