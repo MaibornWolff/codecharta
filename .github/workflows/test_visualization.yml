@@ -59,7 +59,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
           name: coverage
           path: ./visualization/dist/
@@ -101,7 +101,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: Upload Playwright traces on failure
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: playwright-traces
@@ -120,7 +120,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v8
         with:
           name: coverage
           path: ./visualization/dist/
