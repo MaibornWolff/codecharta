@@ -1,17 +1,16 @@
 import { Component, input, output } from "@angular/core"
-import { SCENARIO_SECTION_ICONS, SCENARIO_SECTION_LABELS } from "../../../model/scenario.model"
 import { ScenarioView } from "../scenarioListDialog.component"
+import { ScenarioItemBadgesComponent } from "./scenarioItemBadges/scenarioItemBadges.component"
+import { ScenarioItemActionsComponent } from "./scenarioItemActions/scenarioItemActions.component"
 
 @Component({
     selector: "cc-scenario-item",
-    templateUrl: "./scenarioItem.component.html"
+    templateUrl: "./scenarioItem.component.html",
+    imports: [ScenarioItemBadgesComponent, ScenarioItemActionsComponent]
 })
 export class ScenarioItemComponent {
     readonly view = input.required<ScenarioView>()
     readonly applyRequested = output<void>()
     readonly exportRequested = output<void>()
     readonly deleteRequested = output<void>()
-
-    readonly sectionLabels = SCENARIO_SECTION_LABELS
-    readonly sectionIcons = SCENARIO_SECTION_ICONS
 }

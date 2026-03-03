@@ -17,31 +17,11 @@
 		@if (view().scenario.description) {
 			<div class="text-xs text-base-content/50 truncate">{{ view().scenario.description }}</div>
 		}
-		<div class="flex items-center gap-3 mt-1">
-			@if (view().scenario.isBuiltIn) {
-				<span class="badge badge-xs badge-info">Built-in</span>
-			} @else {
-				<span class="text-[11px] text-base-content/40">{{ view().formattedDate }}</span>
-			}
-			@if (view().mapBound) {
-				<span class="badge badge-xs badge-outline gap-1" [title]="'Bound to ' + view().scenario.mapFileNames!.join(', ')">
-					<i class="fa fa-map-pin text-[9px]"></i>
-					{{ view().scenario.mapFileNames!.join(', ') }}
-				</span>
-			}
-			<span class="flex gap-1.5 text-[11px] text-base-content/40">
-				@for (key of view().sectionKeys; track key) {
-					<i class="fa {{ sectionIcons[key] }}" [title]="sectionLabels[key]"></i>
-				}
-			</span>
-		</div>
+		<cc-scenario-item-badges [view]="view()" />
 	</div>
-	@if (!view().scenario.isBuiltIn) {
-		<button class="btn btn-ghost btn-sm" title="Export scenario" (click)="exportRequested.emit(); $event.stopPropagation()">
-			<i class="fa fa-download"></i>
-		</button>
-		<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="deleteRequested.emit(); $event.stopPropagation()">
-			<i class="fa fa-trash"></i>
-		</button>
-	}
+	<cc-scenario-item-actions
+		[isBuiltIn]="!!view().scenario.isBuiltIn"
+		(exportRequested)="exportRequested.emit()"
+		(deleteRequested)="deleteRequested.emit()"
+	/>
 </div>
