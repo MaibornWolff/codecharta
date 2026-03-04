@@ -1,5 +1,5 @@
 import { Component, ElementRef, output, viewChild } from "@angular/core"
-import { ScenarioImportResult } from "../../../services/scenarios.service"
+import { ScenarioImportResult } from "../../../services/scenarioImportExport.service"
 
 export interface ImportFeedback {
     duplicates: string[]

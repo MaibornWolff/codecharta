@@ -9,6 +9,7 @@ import { filesSelector } from "../../../../state/store/files/files.selector"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
 import { CCSCENARIO_EXTENSION, Scenario } from "../../model/scenario.model"
 import { ScenariosService } from "../../services/scenarios.service"
+import { ScenarioImportExportService } from "../../services/scenarioImportExport.service"
 import { DeleteConfirmDialogComponent } from "./deleteConfirmDialog/deleteConfirmDialog.component"
 import { ImportFeedbackDialogComponent } from "./importFeedbackDialog/importFeedbackDialog.component"
 import { ScenarioItemComponent } from "./scenarioItem/scenarioItem.component"
@@ -60,6 +61,7 @@ export class ScenarioListDialogComponent {
 
     constructor(
         private readonly scenariosService: ScenariosService,
+        private readonly importExportService: ScenarioImportExportService,
         private readonly store: Store<CcState>,
         private readonly helpers: ScenarioViewModelService
     ) {}
@@ -79,7 +81,7 @@ export class ScenarioListDialogComponent {
     }
 
     exportScenario(scenario: Scenario) {
-        this.scenariosService.exportScenario(scenario)
+        this.importExportService.exportScenario(scenario)
     }
 
     openImportDialog() {
@@ -91,7 +93,7 @@ export class ScenarioListDialogComponent {
         if (!input.files || input.files.length === 0) {
             return
         }
-        const result = await this.scenariosService.importScenarioFiles(input.files)
+        const result = await this.importExportService.importScenarioFiles(input.files)
         input.value = ""
         this.importFeedbackDialogRef().open(result)
     }

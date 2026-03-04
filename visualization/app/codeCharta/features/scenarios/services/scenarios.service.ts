@@ -4,23 +4,7 @@ import { BehaviorSubject } from "rxjs"
 import { CcState, ColorMode } from "../../../codeCharta.model"
 import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
-import {
-    CCSCENARIO_EXTENSION,
-    fromScenarioFile,
-    PlainPosition,
-    Scenario,
-    ScenarioFile,
-    ScenarioSections,
-    toScenarioFile
-} from "../model/scenario.model"
-
-export interface ScenarioImportResult {
-    imported: number
-    duplicates: string[]
-    invalid: string[]
-    parseErrors: string[]
-}
-import { FileDownloader } from "../../../util/fileDownloader"
+import { PlainPosition, Scenario, ScenarioSections } from "../model/scenario.model"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
 
 const DEFAULT_MAP_COLORS = {
@@ -176,43 +160,6 @@ export class ScenariosService {
         }
     }
 
-    exportScenario(scenario: Scenario): void {
-        const file = toScenarioFile(scenario)
-        const sanitizedName = scenario.name.replaceAll(/[^\w-]/g, "_")
-        FileDownloader.downloadData(JSON.stringify(file, null, 2), sanitizedName + CCSCENARIO_EXTENSION)
-    }
-
-    async importScenarioFiles(files: FileList): Promise<ScenarioImportResult> {
-        const existing = this.scenarios$.getValue()
-        const result: ScenarioImportResult = { imported: 0, duplicates: [], invalid: [], parseErrors: [] }
-        for (const file of files) {
-            let parsed: ScenarioFile
-            try {
-                const text = await file.text()
-                parsed = JSON.parse(text) as ScenarioFile
-            } catch {
-                result.parseErrors.push(file.name)
-                continue
-            }
-            if (parsed.schemaVersion !== 1 || !parsed.name || !parsed.sections) {
-                result.invalid.push(file.name)
-                continue
-            }
-            if (this.isDuplicate(parsed, existing)) {
-                result.duplicates.push(parsed.name)
-                continue
-            }
-            const scenario = fromScenarioFile(parsed)
-            existing.push(scenario)
-            await this.db.add(scenario)
-            result.imported++
-        }
-        if (result.imported > 0) {
-            await this.loadScenarios()
-        }
-        return result
-    }
-
     buildScenarioSections(state: CcState, cameraPosition: PlainPosition, cameraTarget: PlainPosition): ScenarioSections {
         return {
             metrics: {
@@ -263,9 +210,5 @@ export class ScenariosService {
             createdAt: Date.now(),
             sections: this.buildScenarioSections(state, cameraPosition, cameraTarget)
         }
-    }
-
-    private isDuplicate(file: ScenarioFile, existing: Scenario[]): boolean {
-        return existing.some(s => s.name === file.name && JSON.stringify(s.sections) === JSON.stringify(file.sections))
     }
 }
