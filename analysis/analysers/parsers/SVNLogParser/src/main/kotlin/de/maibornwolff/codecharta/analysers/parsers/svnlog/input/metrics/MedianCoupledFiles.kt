@@ -18,23 +18,15 @@ class MedianCoupledFiles : Metric {
         return list[len / 2]
     }
 
-    override fun description(): String {
-        return "Median Coupled Files: Median of number of other files that where commited with this file."
-    }
+    override fun description(): String = "Median Coupled Files: Median of number of other files that where commited with this file."
 
-    override fun metricName(): String {
-        return "median_coupled_files"
-    }
+    override fun metricName(): String = "median_coupled_files"
 
-    override fun value(): Number {
-        return numberCommitedFiles.map { v -> v.toDouble() }.median()
-    }
+    override fun value(): Number = numberCommitedFiles.map { v -> v.toDouble() }.median()
 
     override fun registerCommit(commit: Commit) {
         numberCommitedFiles.add(commit.modifications.size - 1)
     }
 
-    override fun attributeType(): AttributeType {
-        return AttributeType.RELATIVE
-    }
+    override fun attributeType(): AttributeType = AttributeType.RELATIVE
 }

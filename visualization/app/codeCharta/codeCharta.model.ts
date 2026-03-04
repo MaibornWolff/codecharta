@@ -1,7 +1,6 @@
 import { Vector3 } from "three"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { FileState } from "./model/files/files"
-import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
 
 export type Scaling = {
@@ -277,43 +276,6 @@ export interface NodeMetricData {
 export interface MetricData {
     nodeMetricData: NodeMetricData[]
     edgeMetricData: EdgeMetricData[]
-}
-
-export interface LocalStorageCustomConfigs {
-    version: string
-    customConfigs: [string, CustomConfig][]
-}
-
-export interface LocalStorageScenarios {
-    version: string
-    scenarios: [string, RecursivePartial<Scenario>][]
-}
-
-export interface Scenario {
-    name: string
-    area: {
-        areaMetric: string
-        margin: number
-    }
-    height: {
-        heightMetric: string
-        heightSlider: Vector3
-        labelSlider: number
-    }
-    color: {
-        colorMetric: string
-        colorRange: ColorRange
-        mapColors: MapColors
-    }
-    camera: {
-        camera: Vector3
-        cameraTarget: Vector3
-    }
-    edge: {
-        edgeMetric: string
-        edgePreview: number
-        edgeHeight: number
-    }
 }
 
 export type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> }

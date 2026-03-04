@@ -28,7 +28,8 @@ class CoverageImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : AnalyserInterface, AttributeGenerator {
+) : AnalyserInterface,
+    AttributeGenerator {
     @CommandLine.Option(
         names = ["-f", "--format"],
         description = ["Specify the format of the coverage report (e.g.jacoco, lcov, clover, etc.)"],
@@ -117,9 +118,7 @@ class CoverageImporter(
         return isAnyStrategyApplicable(resourceToBeParsed)
     }
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors()
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors()
 
     internal fun getReportFileFromString(resourceToSearch: String, format: Format): File {
         val existingFileOrDirectory = getFileFromStringIfExists(resourceToSearch)
@@ -135,9 +134,12 @@ class CoverageImporter(
 
         println("Scanning directory `${existingFileOrDirectory.absolutePath}` for matching files.")
 
-        val foundFiles = existingFileOrDirectory.walk().asSequence().filter {
-            it.isFile && it.name == format.defaultReportFileName
-        }.toList()
+        val foundFiles = existingFileOrDirectory
+            .walk()
+            .asSequence()
+            .filter {
+                it.isFile && it.name == format.defaultReportFileName
+            }.toList()
 
         if (foundFiles.isEmpty()) {
             throw FileNotFoundException(

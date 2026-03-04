@@ -15,9 +15,7 @@ import java.util.stream.Stream
 class CommitCollectorTest {
     private val metricsFactory = MetricsFactory()
 
-    private fun modificationsByFilename(vararg filenames: String): List<Modification> {
-        return filenames.map { Modification(it) }
-    }
+    private fun modificationsByFilename(vararg filenames: String): List<Modification> = filenames.map { Modification(it) }
 
     @Test
     fun `collects commits`() {
@@ -25,14 +23,15 @@ class CommitCollectorTest {
         val firstCommit = Commit("TheAuthor", modificationsByFilename("src/Main.java", "src/Util.java"), commitDate)
         val secondCommit = Commit("AnotherAuthor", modificationsByFilename("src/Util.java"), commitDate)
         val commits = Stream.of(firstCommit, secondCommit).collect(CommitCollector.create(metricsFactory))
-        assertThat(commits).extracting(
-            Function<VersionControlledFile, Any> { it.filename },
-            Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
-            Function<VersionControlledFile, Any> { it.authors }
-        ).containsExactly(
-            tuple("src/Main.java", 1L, setOf("TheAuthor")),
-            tuple("src/Util.java", 2L, HashSet(listOf("TheAuthor", "AnotherAuthor")))
-        )
+        assertThat(commits)
+            .extracting(
+                Function<VersionControlledFile, Any> { it.filename },
+                Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
+                Function<VersionControlledFile, Any> { it.authors }
+            ).containsExactly(
+                tuple("src/Main.java", 1L, setOf("TheAuthor")),
+                tuple("src/Util.java", 2L, HashSet(listOf("TheAuthor", "AnotherAuthor")))
+            )
     }
 
     @Test

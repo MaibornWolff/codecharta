@@ -70,9 +70,7 @@ internal enum class Format(
     )
 }
 
-internal fun getFormatNames(): List<String> {
-    return Format.entries.map { format -> format.formatName }
-}
+internal fun getFormatNames(): List<String> = Format.entries.map { format -> format.formatName }
 
 internal fun getFormatByName(formatName: String): Format {
     val element = Format.entries.firstOrNull {
@@ -84,8 +82,6 @@ internal fun getFormatByName(formatName: String): Format {
     return element
 }
 
-internal fun isAnyStrategyApplicable(resourceToBeParsed: String): Boolean {
-    return Format.entries.any {
-        isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, listOf(it.fileExtension))
-    }
+internal fun isAnyStrategyApplicable(resourceToBeParsed: String): Boolean = Format.entries.any {
+    isFileWithOneOrMoreOfEndingsPresent(resourceToBeParsed, listOf(it.fileExtension))
 }

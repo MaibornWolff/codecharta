@@ -6,9 +6,7 @@ import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { SearchPanelComponent } from "./searchPanel/searchPanel.component"
 import { RibbonBarPanelComponent } from "./ribbonBarPanel/ribbonBarPanel.component"
-import { ShowScenariosButtonComponent } from "./showScenariosButton/showScenariosButton.component"
-import { CustomConfigsComponent } from "../customConfigs/customConfigs.component"
-import { ArtificialIntelligenceComponent } from "./artificialIntelligence/artificialIntelligence.component"
+import { ScenariosPanelComponent } from "../../features/scenarios/components/scenariosPanel/scenariosPanel.component"
 import { AreaMetricChooserComponent } from "./areaMetricChooser/areaMetricChooser.component"
 import { RibbonBarPanelSettingsComponent } from "./ribbonBarPanel/ribbonBarPanelSettings.component"
 import { AreaSettingsPanelComponent } from "./areaSettingsPanel/areaSettingsPanel.component"
@@ -30,9 +28,7 @@ import { AsyncPipe } from "@angular/common"
     imports: [
         SearchPanelComponent,
         RibbonBarPanelComponent,
-        ShowScenariosButtonComponent,
-        CustomConfigsComponent,
-        ArtificialIntelligenceComponent,
+        ScenariosPanelComponent,
         AreaMetricChooserComponent,
         RibbonBarPanelSettingsComponent,
         AreaSettingsPanelComponent,

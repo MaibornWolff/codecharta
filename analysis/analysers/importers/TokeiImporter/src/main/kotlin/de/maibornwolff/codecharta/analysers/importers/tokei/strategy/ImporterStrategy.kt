@@ -15,9 +15,7 @@ interface ImporterStrategy {
 
     fun buildCCJson(languageSummaries: JsonObject, projectBuilder: ProjectBuilder)
 
-    fun isPathSeparatorArgumentEmpty(pathSeparator: String): Boolean {
-        return pathSeparator.isEmpty()
-    }
+    fun isPathSeparatorArgumentEmpty(pathSeparator: String): Boolean = pathSeparator.isEmpty()
 
     fun findPathSeparator(name: String): Boolean {
         val result = Regex("[\\\\|/]").find(name)

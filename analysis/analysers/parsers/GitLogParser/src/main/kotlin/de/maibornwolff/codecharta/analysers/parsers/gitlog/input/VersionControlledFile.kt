@@ -5,10 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.Metrics
 import de.maibornwolff.codecharta.model.Edge
 import java.util.Arrays
 
-class VersionControlledFile internal constructor(
-    filename: String,
-    private var metrics: List<Metric>
-) {
+class VersionControlledFile internal constructor(filename: String, private var metrics: List<Metric>) {
     val authors = mutableSetOf<String>()
     private val renames = mutableSetOf<String>()
 
@@ -43,17 +40,13 @@ class VersionControlledFile internal constructor(
         authors.add(commit.author)
     }
 
-    fun containsRename(rename: String): Boolean {
-        return renames.contains(rename)
-    }
+    fun containsRename(rename: String): Boolean = renames.contains(rename)
 
     fun addRename(rename: String) {
         renames.add(rename)
     }
 
-    override fun toString(): String {
-        return "$filename with metrics $metricsMap"
-    }
+    override fun toString(): String = "$filename with metrics $metricsMap"
 
     fun getEdgeList(): List<Edge> {
         val edgeMap = mutableMapOf<String, Edge>()
@@ -76,9 +69,7 @@ class VersionControlledFile internal constructor(
         }
     }
 
-    fun getMetricValue(metricName: String): Number {
-        return metricsMap[metricName] ?: error("No element found")
-    }
+    fun getMetricValue(metricName: String): Number = metricsMap[metricName] ?: error("No element found")
 
     fun removeMetricsToFreeMemory() {
         metrics = listOf()
@@ -92,9 +83,7 @@ class VersionControlledFile internal constructor(
         deleted = false
     }
 
-    fun isDeleted(): Boolean {
-        return deleted
-    }
+    fun isDeleted(): Boolean = deleted
 
     fun mutate() {
         mutated = true
@@ -104,7 +93,5 @@ class VersionControlledFile internal constructor(
         mutated = false
     }
 
-    fun isMutated(): Boolean {
-        return mutated
-    }
+    fun isMutated(): Boolean = mutated
 }

@@ -1,0 +1,8 @@
+@if (!isBuiltIn()) {
+	<button class="btn btn-ghost btn-sm" title="Export scenario" (click)="exportRequested.emit(); $event.stopPropagation()">
+		<i class="fa fa-download"></i>
+	</button>
+	<button class="btn btn-ghost btn-sm" title="Delete scenario" (click)="deleteRequested.emit(); $event.stopPropagation()">
+		<i class="fa fa-trash"></i>
+	</button>
+}

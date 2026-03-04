@@ -17,12 +17,10 @@ class InputHelperTest {
 
     companion object {
         @JvmStatic
-        fun provideBooleanValues(): List<Arguments> {
-            return listOf(
-                Arguments.of(false),
-                Arguments.of(true)
-            )
-        }
+        fun provideBooleanValues(): List<Arguments> = listOf(
+            Arguments.of(false),
+            Arguments.of(true)
+        )
     }
 
     @ParameterizedTest
@@ -96,7 +94,8 @@ class InputHelperTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(result).isFalse()
-        Assertions.assertThat(errContent.toString())
+        Assertions
+            .assertThat(errContent.toString())
             .contains("The specified path `${emptyTestDirectory.path}` exists but is empty!")
     }
 
@@ -197,7 +196,8 @@ class InputHelperTest {
         System.setErr(originalErr)
 
         Assertions.assertThat(result).isFalse()
-        Assertions.assertThat(errContent.toString())
+        Assertions
+            .assertThat(errContent.toString())
             .contains("Input empty string for input files/folders, which is not allowed!")
     }
 }

@@ -37,7 +37,8 @@ class GitLogParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
-) : AnalyserInterface, AttributeGenerator {
+) : AnalyserInterface,
+    AttributeGenerator {
     private val inputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -135,10 +136,8 @@ class GitLogParser(
         ProjectSerializer.serializeToFileOrStream(project, outputFilePath, output, compress)
     }
 
-    private fun getLogParserStrategyByInputFormat(formatName: InputFormatNames): LogParserStrategy {
-        return when (formatName) {
-            GIT_LOG_NUMSTAT_RAW_REVERSED -> GitLogNumstatRawParserStrategy()
-        }
+    private fun getLogParserStrategyByInputFormat(formatName: InputFormatNames): LogParserStrategy = when (formatName) {
+        GIT_LOG_NUMSTAT_RAW_REVERSED -> GitLogNumstatRawParserStrategy()
     }
 
     private fun readFileNameListFile(path: File): MutableList<String> {
@@ -177,7 +176,5 @@ class GitLogParser(
         return ResourceSearchHelper.isFolderDirectlyInGivenDirectory(resourceToBeParsed, ".git")
     }
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors()
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors()
 }

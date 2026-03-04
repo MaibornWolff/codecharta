@@ -16,9 +16,6 @@ import {
     Node,
     NodeMetricData,
     NodeType,
-    RecursivePartial,
-    Scenario,
-    Settings,
     SharpnessMode,
     SortingOption,
     CcState
@@ -30,9 +27,6 @@ import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
-import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
-import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
-import { ScenarioItem, ScenarioMetricProperty } from "../ui/ribbonBar/showScenariosButton/scenarioHelper"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 
 const DEFAULT_FILE_META = {
@@ -1277,15 +1271,6 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
     settings: DEFAULT_SETTINGS
 }
 
-export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
-    name: "Scenario2",
-    height: {
-        heightMetric: "mcc",
-        labelSlider: 31,
-        heightSlider: new Vector3(1, 1.8, 1)
-    }
-}
-
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
     name: "root",
     attributes: {},
@@ -2323,57 +2308,6 @@ export const DEFAULT_STATE: CcState = {
     }
 }
 
-export const SCENARIO: RecursivePartial<Scenario> = {
-    name: "Scenario1",
-    area: {
-        areaMetric: "rloc",
-        margin: 48
-    },
-    height: {
-        heightMetric: "mcc",
-        heightSlider: new Vector3(1, 1.8, 1),
-        labelSlider: 31
-    },
-    color: {
-        colorMetric: "mcc",
-        colorRange: {
-            from: 19,
-            to: 67
-        },
-        mapColors: DEFAULT_STATE.appSettings.mapColors
-    },
-    edge: {
-        edgeMetric: "pairingRate",
-        edgePreview: 5,
-        edgeHeight: 4
-    },
-    camera: {
-        camera: new Vector3(0, 300, 1000),
-        cameraTarget: new Vector3(1, 1, 1)
-    }
-}
-
-export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
-    dynamicSettings: {
-        areaMetric: "rloc",
-        heightMetric: "mcc",
-        colorMetric: "mcc",
-        edgeMetric: "pairingRate",
-        margin: 48,
-        colorRange: {
-            from: 19,
-            to: 67
-        }
-    },
-    appSettings: {
-        amountOfTopLabels: 31,
-        amountOfEdgePreviews: 5,
-        edgeHeight: 4,
-        scaling: new Vector3(1, 1.8, 1),
-        mapColors: DEFAULT_STATE.appSettings.mapColors
-    }
-}
-
 export const TEST_NODE_ROOT: Node = {
     name: "root",
     id: 0,
@@ -2399,211 +2333,6 @@ export const TEST_NODE_ROOT: Node = {
     incomingEdgePoint: new Vector3(),
     outgoingEdgePoint: new Vector3()
 }
-
-export const SCENARIO_ATTRIBUTE_CONTENT: ScenarioMetricProperty[] = [
-    {
-        metricType: "Camera-Position",
-        metricName: "",
-        savedValues: { camera: new Vector3(0, 300, 1000), cameraTarget: new Vector3(177, 0, 299) },
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Area-Metric",
-        metricName: "rloc",
-        savedValues: 48,
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Height-Metric",
-        metricName: "mcc",
-        savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Color-Metric",
-        metricName: "mcc",
-        savedValues: { colorRange: { from: 19, to: 67 }, mapColors: DEFAULT_STATE.appSettings.mapColors },
-        isSelected: true,
-        isDisabled: false
-    },
-    {
-        metricType: "Edge-Metric",
-        metricName: "pairingRate",
-        savedValues: { edgePreview: 5, edgeHeight: 4 },
-        isSelected: true,
-        isDisabled: false
-    }
-]
-
-export const SCENARIO_ITEMS: ScenarioItem[] = [
-    {
-        scenarioName: "Scenario",
-        isScenarioApplicable: true,
-        icons: [{ faIconClass: "fa fa-random", isSaved: false, tooltip: "random" }]
-    },
-    {
-        scenarioName: "Scenario2",
-        isScenarioApplicable: false,
-        icons: [{ faIconClass: "fa fa-some", isSaved: true, tooltip: "some" }]
-    }
-]
-
-export const CUSTOM_CONFIG_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
-    [
-        "File_A_STANDARD",
-        {
-            mapNames: "fileA",
-            mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-            hasApplicableItems: false,
-            customConfigItems: [
-                {
-                    id: "File_A_STANDARD_Sample_Map View #1",
-                    name: "SampleMap View #1",
-                    assignedMaps: new Map([["md5_fileA", "fileA"]]),
-                    mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-                    mapColors: {
-                        positive: "#69AE40",
-                        neutral: "#ddcc00",
-                        negative: "#820E0E",
-                        selected: "#EB8319",
-                        positiveDelta: "#64d051",
-                        negativeDelta: "#ff0E0E"
-                    },
-                    metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
-                    isApplicable: false
-                },
-                {
-                    id: "File_A_STANDARD_Sample_Map View #2",
-                    name: "SampleMap View #2",
-                    assignedMaps: new Map([["md5_fileA", "fileA"]]),
-                    mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-                    mapColors: {
-                        positive: "#69AE40",
-                        neutral: "#ddcc00",
-                        negative: "#820E0E",
-                        selected: "#EB8319",
-                        positiveDelta: "#64d051",
-                        negativeDelta: "#ff0E0E"
-                    },
-                    metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
-                    isApplicable: false
-                }
-            ]
-        }
-    ],
-    [
-        "File_B_File_C_STANDARD",
-        {
-            mapNames: "fileB fileC",
-            mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-            hasApplicableItems: true,
-            customConfigItems: [
-                {
-                    id: "File_B_File_C_STANDARD_Sample_Map View #1",
-                    name: "SampleMap View #1",
-                    assignedMaps: new Map([
-                        ["md5_fileB", "fileB"],
-                        ["md5_fileC", "fileC"]
-                    ]),
-                    mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-                    mapColors: {
-                        positive: "#69AE40",
-                        neutral: "#ddcc00",
-                        negative: "#820E0E",
-                        selected: "#EB8319",
-                        positiveDelta: "#64d051",
-                        negativeDelta: "#ff0E0E"
-                    },
-                    metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "functions", edgeMetric: "avgCommits" },
-                    isApplicable: true,
-                    note: "a note"
-                },
-                {
-                    id: "File_B_File_C_STANDARD_Sample_Map View #2",
-                    name: "SampleMap View #2",
-                    assignedMaps: new Map([
-                        ["md5_fileB", "fileB"],
-                        ["md5_fileC", "fileC"]
-                    ]),
-                    mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
-                    mapColors: {
-                        positive: "#69AE40",
-                        neutral: "#ddcc00",
-                        negative: "#820E0E",
-                        selected: "#EB8319",
-                        positiveDelta: "#64d051",
-                        negativeDelta: "#ff0E0E"
-                    },
-                    metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: "avgCommits" },
-                    isApplicable: true
-                }
-            ]
-        }
-    ],
-    [
-        "File_D_DELTA",
-        {
-            mapNames: "fileD",
-            mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
-            hasApplicableItems: false,
-            customConfigItems: [
-                {
-                    id: "File_D_DELTA_Sample_Map View #1",
-                    name: "SampleMap Delta View #1",
-                    assignedMaps: new Map([["md5_fileD", "fileD"]]),
-                    mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
-                    mapColors: {
-                        positive: "#69AE40",
-                        neutral: "#ddcc00",
-                        negative: "#820E0E",
-                        selected: "#EB8319",
-                        positiveDelta: "#64d051",
-                        negativeDelta: "#ff0E0E"
-                    },
-                    metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", edgeMetric: null },
-                    isApplicable: false
-                }
-            ]
-        }
-    ]
-])
-
-export const SCENARIO_ITEM_WITH_EVERYTHING_SAVED: ScenarioItem[] = [
-    {
-        scenarioName: "Scenario1",
-        isScenarioApplicable: false,
-        icons: [
-            {
-                faIconClass: "fa-video-camera",
-                isSaved: true,
-                tooltip: "Camera angle"
-            },
-            {
-                faIconClass: "fa-arrows-alt",
-                isSaved: true,
-                tooltip: "Area metric"
-            },
-            {
-                faIconClass: "fa-arrows-v",
-                isSaved: true,
-                tooltip: "Height metric"
-            },
-            {
-                faIconClass: "fa-paint-brush",
-                isSaved: true,
-                tooltip: "Color metric"
-            },
-            {
-                faIconClass: "fa-exchange",
-                isSaved: true,
-                tooltip: "Edge metric"
-            }
-        ]
-    }
-]
 
 export const TEST_NODE_LEAF: Node = {
     name: "root/big leaf.ts",

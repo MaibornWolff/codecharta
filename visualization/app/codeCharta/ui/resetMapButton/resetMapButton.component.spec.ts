@@ -7,13 +7,11 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { LoadFileService } from "../../services/loadFile/loadFile.service"
 import { LoadInitialFileService } from "../../services/loadInitialFile/loadInitialFile.service"
-import { AddCustomConfigButtonComponent } from "../customConfigs/addCustomConfigButton/addCustomConfigButton.component"
 import { ResetMapButtonComponent } from "./resetMapButton.component"
 
 describe("ResetMapButtonComponent", () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            imports: [AddCustomConfigButtonComponent],
             providers: [
                 provideMockStore(),
                 { provide: HttpClient, useValue: {} },

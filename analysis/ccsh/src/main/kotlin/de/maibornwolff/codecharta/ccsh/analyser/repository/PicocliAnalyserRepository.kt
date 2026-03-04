@@ -31,9 +31,7 @@ class PicocliAnalyserRepository : AnalyserRepository<CommandLine> {
         }
     }
 
-    override fun extractAnalyserName(analyserNameWithDescription: String): String {
-        return analyserNameWithDescription.substringBefore(' ')
-    }
+    override fun extractAnalyserName(analyserNameWithDescription: String): String = analyserNameWithDescription.substringBefore(' ')
 
     override fun getApplicableAnalysers(inputFile: String, allAnalysers: List<AnalyserInterface>): List<AnalyserInterface> {
         val usableAnalysers = mutableListOf<AnalyserInterface>()
@@ -70,14 +68,12 @@ class PicocliAnalyserRepository : AnalyserRepository<CommandLine> {
         return result
     }
 
-    override fun getAnalyserInterface(dataSource: CommandLine, name: String): AnalyserInterface? {
-        return try {
-            val subCommand = dataSource.subcommands.getValue(name)
-            val analyserObject = subCommand.commandSpec.userObject()
-            analyserObject as? AnalyserInterface
-        } catch (exception: NoSuchElementException) {
-            println("Could not find the specified analyser with the name '$name'!")
-            null
-        }
+    override fun getAnalyserInterface(dataSource: CommandLine, name: String): AnalyserInterface? = try {
+        val subCommand = dataSource.subcommands.getValue(name)
+        val analyserObject = subCommand.commandSpec.userObject()
+        analyserObject as? AnalyserInterface
+    } catch (exception: NoSuchElementException) {
+        println("Could not find the specified analyser with the name '$name'!")
+        null
     }
 }

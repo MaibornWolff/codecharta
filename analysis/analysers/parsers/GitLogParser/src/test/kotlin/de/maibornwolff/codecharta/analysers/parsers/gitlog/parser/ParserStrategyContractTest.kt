@@ -23,11 +23,11 @@ abstract class ParserStrategyContractTest {
     fun parsesCommit() {
         val parser = LogLineParser(logParserStrategy, metricsFactory)
         val commit = parser.parseCommit(fullCommit)
-        assertThat(commit).extracting(
-            java.util.function.Function<Commit, Any> { it.author },
-            java.util.function.Function<Commit, Any> { it.commitDate }
-        )
-            .containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
+        assertThat(commit)
+            .extracting(
+                java.util.function.Function<Commit, Any> { it.author },
+                java.util.function.Function<Commit, Any> { it.commitDate }
+            ).containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
         assertThat(commit.fileNameList).containsExactlyInAnyOrder(
             "src/Added.java",
             "src/Modified.java",
@@ -39,7 +39,8 @@ abstract class ParserStrategyContractTest {
     fun parsesFilesInCommitLines() {
         val modifications = logParserStrategy.parseModifications(fullCommit)
         assertThat(modifications).hasSize(3)
-        assertThat(modifications).extracting<String, RuntimeException> { it.currentFilename }
+        assertThat(modifications)
+            .extracting<String, RuntimeException> { it.currentFilename }
             .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
     }
 

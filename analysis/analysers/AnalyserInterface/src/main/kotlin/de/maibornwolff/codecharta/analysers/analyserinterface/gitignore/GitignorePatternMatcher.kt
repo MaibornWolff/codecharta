@@ -143,9 +143,7 @@ class GitignorePatternMatcher(private val baseDir: File) {
             rule.collapsedGlobstarMatcher?.matches(relativePath) == true
     }
 
-    private fun escapeGlobSpecialChars(pattern: String): String {
-        return pattern.replace("{", "\\{").replace("}", "\\}")
-    }
+    private fun escapeGlobSpecialChars(pattern: String): String = pattern.replace("{", "\\{").replace("}", "\\}")
 
     private fun removeUnquotedTrailingSpaces(pattern: String): String {
         var result = pattern
@@ -155,17 +153,12 @@ class GitignorePatternMatcher(private val baseDir: File) {
         return result
     }
 
-    private fun isComment(pattern: String): Boolean {
-        return pattern.startsWith("#") && !pattern.startsWith("\\#")
-    }
+    private fun isComment(pattern: String): Boolean = pattern.startsWith("#") && !pattern.startsWith("\\#")
 
-    private fun isNegationPattern(pattern: String): Boolean {
-        return pattern.startsWith("!") && !pattern.startsWith("\\!")
-    }
+    private fun isNegationPattern(pattern: String): Boolean = pattern.startsWith("!") && !pattern.startsWith("\\!")
 
-    private fun unescapeSpecialCharacters(pattern: String): String {
-        return pattern.replace("\\#", "#")
-            .replace("\\!", "!")
-            .replace("\\ ", " ")
-    }
+    private fun unescapeSpecialCharacters(pattern: String): String = pattern
+        .replace("\\#", "#")
+        .replace("\\!", "!")
+        .replace("\\ ", " ")
 }

@@ -1,14 +1,4 @@
-import { Vector3 } from "three"
-import {
-    AttributeDescriptors,
-    AttributeTypes,
-    AttributeTypeValue,
-    CodeMapNode,
-    Edge,
-    MarkedPackage,
-    RecursivePartial,
-    Settings
-} from "./codeCharta.model"
+import { AttributeDescriptors, AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage } from "./codeCharta.model"
 
 export interface ExportCCFile {
     projectName: string
@@ -45,15 +35,6 @@ export enum APIVersions {
     ONE_POINT_TWO = "1.2",
     ONE_POINT_THREE = "1.3",
     ONE_POINT_FIVE = "1.5"
-}
-
-export interface ExportScenario {
-    name: string
-    settings: RecursivePartial<Settings>
-    camera?: {
-        camera: Vector3
-        cameraTarget: Vector3
-    }
 }
 
 export interface OldAttributeTypes {

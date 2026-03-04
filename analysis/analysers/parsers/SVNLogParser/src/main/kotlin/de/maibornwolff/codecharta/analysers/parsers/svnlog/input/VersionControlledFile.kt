@@ -5,10 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.Metrics
 import de.maibornwolff.codecharta.model.Edge
 import java.util.Arrays
 
-class VersionControlledFile internal constructor(
-    filename: String,
-    private var metrics: List<Metric>
-) {
+class VersionControlledFile internal constructor(filename: String, private var metrics: List<Metric>) {
     // actual filename
     val actualFilename: String
     val authors = mutableSetOf<String>()
@@ -54,13 +51,9 @@ class VersionControlledFile internal constructor(
         metrics.forEach { it.registerModification(modification) }
     }
 
-    fun markedDeleted(): Boolean {
-        return markedDeleted
-    }
+    fun markedDeleted(): Boolean = markedDeleted
 
-    override fun toString(): String {
-        return "$actualFilename with metrics $metricsMap"
-    }
+    override fun toString(): String = "$actualFilename with metrics $metricsMap"
 
     fun getEdgeList(): List<Edge> {
         val edgeList = mutableListOf<Edge>()
@@ -80,9 +73,7 @@ class VersionControlledFile internal constructor(
         edgeList.add(edge)
     }
 
-    fun getMetricValue(metricName: String): Number {
-        return metrics.first { it.metricName() == metricName }.value()
-    }
+    fun getMetricValue(metricName: String): Number = metrics.first { it.metricName() == metricName }.value()
 
     fun removeMetricsToFreeMemory() {
         metrics = listOf()

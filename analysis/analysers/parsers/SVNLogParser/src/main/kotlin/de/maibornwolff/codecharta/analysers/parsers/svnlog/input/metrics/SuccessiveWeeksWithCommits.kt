@@ -7,13 +7,9 @@ import java.util.TreeSet
 class SuccessiveWeeksWithCommits : Metric {
     private val weeksWithCommits = TreeSet<CalendarWeek>()
 
-    override fun description(): String {
-        return "Successive Weeks With Commits: maximal number of successive weeks with commits."
-    }
+    override fun description(): String = "Successive Weeks With Commits: maximal number of successive weeks with commits."
 
-    override fun metricName(): String {
-        return "successive_weeks_with_commits"
-    }
+    override fun metricName(): String = "successive_weeks_with_commits"
 
     override fun registerCommit(commit: Commit) {
         weeksWithCommits.add(CalendarWeek.forDateTime(commit.commitDate))
@@ -37,7 +33,5 @@ class SuccessiveWeeksWithCommits : Metric {
         return numberOfSuccessiveWeeks
     }
 
-    override fun attributeType(): AttributeType {
-        return AttributeType.RELATIVE
-    }
+    override fun attributeType(): AttributeType = AttributeType.RELATIVE
 }

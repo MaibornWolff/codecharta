@@ -7,13 +7,9 @@ class AverageCodeChurnPerCommit : Metric {
     private var absoluteCodeChurn: Long = 0
     private var numberOfNontrivialCommits: Long = 0
 
-    override fun description(): String {
-        return "Average Code Churn: Average code churn per commit of this file."
-    }
+    override fun description(): String = "Average Code Churn: Average code churn per commit of this file."
 
-    override fun metricName(): String {
-        return "avg_code_churn"
-    }
+    override fun metricName(): String = "avg_code_churn"
 
     override fun registerModification(modification: Modification) {
         val commitsCodeChurn = modification.additions + modification.deletions
@@ -23,15 +19,9 @@ class AverageCodeChurnPerCommit : Metric {
         }
     }
 
-    private fun absoluteCodeChurn(): Long {
-        return absoluteCodeChurn
-    }
+    private fun absoluteCodeChurn(): Long = absoluteCodeChurn
 
-    override fun value(): Number {
-        return if (numberOfNontrivialCommits > 0) absoluteCodeChurn() / numberOfNontrivialCommits else 0L
-    }
+    override fun value(): Number = if (numberOfNontrivialCommits > 0) absoluteCodeChurn() / numberOfNontrivialCommits else 0L
 
-    override fun attributeType(): AttributeType {
-        return AttributeType.RELATIVE
-    }
+    override fun attributeType(): AttributeType = AttributeType.RELATIVE
 }

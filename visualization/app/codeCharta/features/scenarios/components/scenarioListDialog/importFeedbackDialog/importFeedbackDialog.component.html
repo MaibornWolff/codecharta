@@ -1,0 +1,52 @@
+<dialog #dialog class="modal" aria-labelledby="import-feedback-title">
+	<div class="modal-box max-w-lg">
+		<h3 id="import-feedback-title" class="text-lg font-bold mb-2">Import Results</h3>
+		<div class="flex flex-col gap-2">
+			@if (feedback.duplicates.length) {
+				<div class="alert alert-warning text-sm">
+					<div>
+						<i class="fa fa-exclamation-triangle mr-1"></i>
+						<strong>Already existing:</strong>
+						<ul class="list-disc list-inside ml-1">
+							@for (name of feedback.duplicates; track name) {
+								<li>{{ name }}</li>
+							}
+						</ul>
+					</div>
+				</div>
+			}
+			@if (feedback.invalid.length) {
+				<div class="alert alert-error text-sm">
+					<div>
+						<i class="fa fa-exclamation-circle mr-1"></i>
+						<strong>Invalid scenario files:</strong>
+						<ul class="list-disc list-inside ml-1">
+							@for (name of feedback.invalid; track name) {
+								<li>{{ name }}</li>
+							}
+						</ul>
+					</div>
+				</div>
+			}
+			@if (feedback.parseErrors.length) {
+				<div class="alert alert-error text-sm">
+					<div>
+						<i class="fa fa-exclamation-circle mr-1"></i>
+						<strong>Could not read (bad format):</strong>
+						<ul class="list-disc list-inside ml-1">
+							@for (name of feedback.parseErrors; track name) {
+								<li>{{ name }}</li>
+							}
+						</ul>
+					</div>
+				</div>
+			}
+		</div>
+		<div class="modal-action">
+			<button class="btn" (click)="close()">OK</button>
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button (click)="close()">close</button>
+	</form>
+</dialog>

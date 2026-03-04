@@ -12,21 +12,13 @@ interface Metric {
 
     fun value(): Number
 
-    fun edgeMetricName(): String? {
-        return null
-    }
+    fun edgeMetricName(): String? = null
 
-    fun getEdges(): List<Edge> {
-        return listOf()
-    }
+    fun getEdges(): List<Edge> = listOf()
 
-    fun attributeType(): AttributeType {
-        return AttributeType.ABSOLUTE
-    }
+    fun attributeType(): AttributeType = AttributeType.ABSOLUTE
 
-    fun edgeAttributeType(): AttributeType? {
-        return null
-    }
+    fun edgeAttributeType(): AttributeType? = null
 
     fun registerModification(modification: Modification) { // defaults to: do nothing
     }

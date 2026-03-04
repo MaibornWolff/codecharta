@@ -14,24 +14,18 @@ internal enum class Status(private val letter: Char) {
     MODIFY('M'),
     REPLACE('R') ;
 
-    fun statusLetter(): Char {
-        return letter
-    }
+    fun statusLetter(): Char = letter
 
-    fun toModificationType(): Modification.Type {
-        return when (this) {
-            ADD -> Modification.Type.ADD
-            DELETE -> Modification.Type.DELETE
-            MODIFY -> Modification.Type.MODIFY
-            REPLACE -> Modification.Type.UNKNOWN
-        }
+    fun toModificationType(): Modification.Type = when (this) {
+        ADD -> Modification.Type.ADD
+        DELETE -> Modification.Type.DELETE
+        MODIFY -> Modification.Type.MODIFY
+        REPLACE -> Modification.Type.UNKNOWN
     }
 
     companion object {
         val ALL_STATUS_LETTERS: List<Char> = Status.values().map { it.statusLetter() }
 
-        fun byCharacter(c: Char): Status {
-            return Status.values().first { status -> status.letter == c }
-        }
+        fun byCharacter(c: Char): Status = Status.values().first { status -> status.letter == c }
     }
 }

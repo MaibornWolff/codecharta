@@ -37,7 +37,10 @@ class NodeRemoverTest {
         // when
         val subProjectExtractor = NodeRemover(sampleProject)
         val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
-        val testFolder = result.rootNode.children.first().children.first()
+        val testFolder = result.rootNode.children
+            .first()
+            .children
+            .first()
 
         // then
         Assertions.assertThat(testFolder.name).isEqualTo("test")
@@ -52,11 +55,12 @@ class NodeRemoverTest {
 
         // then
         Assertions.assertThat(srcContent.size).isEqualTo(2)
-        Assertions.assertThat(
-            srcContent.map {
-                it.name
-            }
-        ).doesNotContain("main")
+        Assertions
+            .assertThat(
+                srcContent.map {
+                    it.name
+                }
+            ).doesNotContain("main")
     }
 
     @Test
@@ -68,16 +72,18 @@ class NodeRemoverTest {
         val mainContent = srcContent.first().children
 
         // then
-        Assertions.assertThat(
-            srcContent.map {
-                it.name
-            }
-        ).doesNotContain("folder3")
-        Assertions.assertThat(
-            mainContent.map {
-                it.name
-            }
-        ).containsOnly("file2.java")
+        Assertions
+            .assertThat(
+                srcContent.map {
+                    it.name
+                }
+            ).doesNotContain("folder3")
+        Assertions
+            .assertThat(
+                mainContent.map {
+                    it.name
+                }
+            ).containsOnly("file2.java")
     }
 
     @Test
@@ -89,16 +95,18 @@ class NodeRemoverTest {
         // then
         Assertions.assertThat(result.edges.size).isEqualTo(1)
         Assertions.assertThat(result.edges.first()).usingRecursiveComparison().isEqualTo(sampleProject.edges.last())
-        Assertions.assertThat(
-            result.edges.map {
-                it.fromNodeName
-            }
-        ).doesNotContain("/root/foo")
-        Assertions.assertThat(
-            result.edges.map {
-                it.toNodeName
-            }
-        ).doesNotContain("/root/foo")
+        Assertions
+            .assertThat(
+                result.edges.map {
+                    it.fromNodeName
+                }
+            ).doesNotContain("/root/foo")
+        Assertions
+            .assertThat(
+                result.edges.map {
+                    it.toNodeName
+                }
+            ).doesNotContain("/root/foo")
     }
 
     @Test
@@ -113,16 +121,18 @@ class NodeRemoverTest {
 
         // then
         Assertions.assertThat(result.edges.size).isEqualTo(2)
-        Assertions.assertThat(
-            result.edges.map {
-                it.fromNodeName
-            }
-        ).doesNotContainAnyElementsOf(shouldBeExcluded)
-        Assertions.assertThat(
-            result.edges.map {
-                it.toNodeName
-            }
-        ).doesNotContainAnyElementsOf(shouldBeExcluded)
+        Assertions
+            .assertThat(
+                result.edges.map {
+                    it.fromNodeName
+                }
+            ).doesNotContainAnyElementsOf(shouldBeExcluded)
+        Assertions
+            .assertThat(
+                result.edges.map {
+                    it.toNodeName
+                }
+            ).doesNotContainAnyElementsOf(shouldBeExcluded)
     }
 
     @Test
@@ -132,11 +142,12 @@ class NodeRemoverTest {
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
         // then
-        Assertions.assertThat(
-            result.blacklist.map {
-                it.path
-            }
-        ).doesNotContainSubsequence("/root/foo")
+        Assertions
+            .assertThat(
+                result.blacklist.map {
+                    it.path
+                }
+            ).doesNotContainSubsequence("/root/foo")
     }
 
     @Test
@@ -178,25 +189,33 @@ class NodeRemoverTest {
         // when
         val result = subProjectExtractor.remove(arrayOf(pathToRemove))
         val folderToKeep =
-            result.rootNode.children.find {
-                it.name == "src"
-            }?.children?.find {
-                it.name == "main"
-            }?.children?.find {
-                it.name == "java"
-            }?.children?.find {
-                it.name == "io"
-            }
+            result.rootNode.children
+                .find {
+                    it.name == "src"
+                }?.children
+                ?.find {
+                    it.name == "main"
+                }?.children
+                ?.find {
+                    it.name == "java"
+                }?.children
+                ?.find {
+                    it.name == "io"
+                }
         val folderToRemove =
-            result.rootNode.children.find {
-                it.name == "src"
-            }?.children?.find {
-                it.name == "test"
-            }?.children?.find {
-                it.name == "java"
-            }?.children?.find {
-                it.name == "io"
-            }
+            result.rootNode.children
+                .find {
+                    it.name == "src"
+                }?.children
+                ?.find {
+                    it.name == "test"
+                }?.children
+                ?.find {
+                    it.name == "java"
+                }?.children
+                ?.find {
+                    it.name == "io"
+                }
 
         // then
         Assertions.assertThat(folderToKeep).isNotNull()

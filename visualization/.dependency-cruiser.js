@@ -21,25 +21,28 @@ module.exports = {
             to: {}
         },
         {
-            name: "feature-globalSettings-no-external-access-to-services",
+            name: "feature-no-external-access-to-internals",
             severity: "error",
-            comment: "GlobalSettings services can only be accessed within the globalSettings feature",
+            comment: "Feature internals can only be accessed within the same feature. External code must use facade.ts or components/",
             from: {
-                pathNot: "^app/codeCharta/features/globalSettings/"
+                pathNot: "^app/codeCharta/features/"
             },
             to: {
-                path: "^app/codeCharta/features/globalSettings/services/"
+                path: "^app/codeCharta/features/",
+                pathNot: ["^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)"]
             }
         },
         {
-            name: "feature-changelog-no-external-access-to-services",
+            name: "feature-cross-feature-only-via-public-api",
             severity: "error",
-            comment: "Changelog services can only be accessed within the changelog feature",
+            comment:
+                "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden.",
             from: {
-                pathNot: "^app/codeCharta/features/changelog/"
+                path: "^app/codeCharta/features/([^/]+)/"
             },
             to: {
-                path: "^app/codeCharta/features/changelog/services/"
+                path: "^app/codeCharta/features/([^/]+)/",
+                pathNot: ["^app/codeCharta/features/$1/", "^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)"]
             }
         },
         {

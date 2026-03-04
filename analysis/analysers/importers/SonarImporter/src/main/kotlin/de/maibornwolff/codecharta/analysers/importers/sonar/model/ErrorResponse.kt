@@ -12,11 +12,7 @@ data class ErrorResponse(val errors: Array<ErrorEntity>) {
         return true
     }
 
-    override fun hashCode(): Int {
-        return errors.contentHashCode()
-    }
+    override fun hashCode(): Int = errors.contentHashCode()
 
-    override fun toString(): String {
-        return "ErrorResponse(errors=${errors.contentToString()})"
-    }
+    override fun toString(): String = "ErrorResponse(errors=${errors.contentToString()})"
 }

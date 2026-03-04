@@ -24,7 +24,8 @@ class ProjectScanner(
     private val excludePatterns: List<String> = listOf(),
     private val includeExtensions: List<String> = listOf(),
     private val baseFileNodes: Map<String, Node> = emptyMap(),
-    private val useGitignore: Boolean = true
+    private val useGitignore: Boolean = true,
+    private val localChangesFiles: Set<String> = emptySet()
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -40,17 +41,11 @@ class ProjectScanner(
 
     private val gitignoreHandler = GitignoreHandler(root)
 
-    fun foundParsableFiles(): Boolean {
-        return fileMetrics.isNotEmpty()
-    }
+    fun foundParsableFiles(): Boolean = fileMetrics.isNotEmpty()
 
-    fun getIgnoredFiles(): Pair<Long, Set<String>> {
-        return Pair(ignoredFiles, ignoredFileTypes)
-    }
+    fun getIgnoredFiles(): Pair<Long, Set<String>> = Pair(ignoredFiles, ignoredFileTypes)
 
-    fun getGitIgnoreStatistics(): Pair<Int, List<String>> {
-        return if (useGitignore) gitignoreHandler.getStatistics() else Pair(0, emptyList())
-    }
+    fun getGitIgnoreStatistics(): Pair<Int, List<String>> = if (useGitignore) gitignoreHandler.getStatistics() else Pair(0, emptyList())
 
     fun getNotFoundFileExtensions(): Set<String> {
         val result = mutableSetOf<String>()
@@ -64,7 +59,8 @@ class ProjectScanner(
 
     fun traverseInputProject(verbose: Boolean) {
         runBlocking(Dispatchers.Default) {
-            val parsableFiles = root.walkTopDown()
+            val parsableFiles = root
+                .walkTopDown()
                 .onEnter { dir -> !shouldSkipDirectory(dir) }
                 .filter { isParsableFile(it) }
                 .toList()
@@ -127,12 +123,12 @@ class ProjectScanner(
         filesAnalyzed.incrementAndGet()
     }
 
-    private fun getRelativeFileName(fileName: String): String {
-        return root.toPath().toAbsolutePath()
-            .relativize(Paths.get(fileName).toAbsolutePath())
-            .toString()
-            .replace('\\', '/')
-    }
+    private fun getRelativeFileName(fileName: String): String = root
+        .toPath()
+        .toAbsolutePath()
+        .relativize(Paths.get(fileName).toAbsolutePath())
+        .toString()
+        .replace('\\', '/')
 
     private fun shouldSkipDirectory(dir: File): Boolean {
         if (!dir.isDirectory) return false
@@ -144,7 +140,11 @@ class ProjectScanner(
 
         if (useGitignore && gitignoreHandler.shouldExclude(file)) return false
 
-        if (isPathExcluded(file) || !isFileExtensionIncluded(file.extension)) return false
+        val relativePath = getRelativeFileName(file.toString())
+
+        if (localChangesFiles.isNotEmpty() && !localChangesFiles.contains(relativePath)) return false
+
+        if (isPathExcluded(relativePath) || !isFileExtensionIncluded(file.extension)) return false
 
         return if (findCollectorForFileType(file.extension) != null) {
             true
@@ -155,19 +155,15 @@ class ProjectScanner(
         }
     }
 
-    private fun isPathExcluded(file: File): Boolean {
-        return this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn("/" + getRelativeFileName(file.toString()))
-    }
+    private fun isPathExcluded(relativePath: String): Boolean =
+        this.excludePatterns.isNotEmpty() && excludePatternRegex.containsMatchIn("/$relativePath")
 
-    private fun isFileExtensionIncluded(fileExtension: String): Boolean {
-        return includeExtensions.isEmpty() || includeExtensions.contains(fileExtension)
-    }
+    private fun isFileExtensionIncluded(fileExtension: String): Boolean =
+        includeExtensions.isEmpty() || includeExtensions.contains(fileExtension)
 
-    private fun findCollectorForFileType(fileExtension: String): AvailableCollectors? {
-        return AvailableCollectors.entries.find {
-            val extension = ".$fileExtension"
-            it.fileExtension.primaryExtension == extension || it.fileExtension.otherValidExtensions.contains(extension)
-        }
+    private fun findCollectorForFileType(fileExtension: String): AvailableCollectors? = AvailableCollectors.entries.find {
+        val extension = ".$fileExtension"
+        it.fileExtension.primaryExtension == extension || it.fileExtension.otherValidExtensions.contains(extension)
     }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {

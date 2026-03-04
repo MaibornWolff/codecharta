@@ -5,20 +5,14 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Modification
 class DeletedLines : Metric {
     private var loc: Long = 0
 
-    override fun description(): String {
-        return "Lines Of Code: Added lines for this file."
-    }
+    override fun description(): String = "Lines Of Code: Added lines for this file."
 
-    override fun metricName(): String {
-        return "deleted_lines"
-    }
+    override fun metricName(): String = "deleted_lines"
 
     override fun registerModification(modification: Modification) {
         loc += modification.additions
         loc -= modification.deletions
     }
 
-    override fun value(): Number {
-        return if (loc >= 0) 0L else -loc
-    }
+    override fun value(): Number = if (loc >= 0) 0L else -loc
 }

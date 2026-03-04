@@ -4,9 +4,7 @@ package de.maibornwolff.codecharta.model
  * Represents a path in a tree
  * may be seen as multiple edges in the tree of nodes
  */
-data class Path(
-    val edgesList: List<String>
-) {
+data class Path(val edgesList: List<String>) {
     /**
      * @return true, if there are no edges in the path
      */
@@ -55,12 +53,10 @@ data class Path(
      * @param path that will be added after the present path
      * @return concatinated path
      */
-    fun concat(path: Path): Path {
-        return when {
-            this.isTrivial -> path
-            path.isTrivial -> this
-            else -> Path(this.edgesList + path.edgesList)
-        }
+    fun concat(path: Path): Path = when {
+        this.isTrivial -> path
+        path.isTrivial -> this
+        else -> Path(this.edgesList + path.edgesList)
     }
 
     fun fittingEdgesFromTailWith(path: Path): Int {
@@ -74,9 +70,7 @@ data class Path(
     }
 
     companion object {
-        fun trivialPath(): Path {
-            return TRIVIAL
-        }
+        fun trivialPath(): Path = TRIVIAL
 
         val TRIVIAL = Path(emptyList())
     }

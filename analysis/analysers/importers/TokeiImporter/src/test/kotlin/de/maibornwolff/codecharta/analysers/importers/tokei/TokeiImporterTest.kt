@@ -106,7 +106,9 @@ class TokeiImporterTest {
     @Test
     fun `reads tokei piped input`() {
         val input =
-            File("src/test/resources/tokei_pre12_unix_root.json").bufferedReader().readLines()
+            File("src/test/resources/tokei_pre12_unix_root.json")
+                .bufferedReader()
+                .readLines()
                 .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input)
@@ -117,7 +119,9 @@ class TokeiImporterTest {
     @Test
     fun `projectStructure is correct`() {
         val input =
-            File("src/test/resources/tokei_pre12_windows.json").bufferedReader().readLines()
+            File("src/test/resources/tokei_pre12_windows.json")
+                .bufferedReader()
+                .readLines()
                 .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input, arrayOf("--path-separator=\\"))
@@ -133,7 +137,9 @@ class TokeiImporterTest {
     @Test
     fun `tokei 12 projectStructure is correct`() {
         val input =
-            File("src/test/resources/tokei_12_unix.json").bufferedReader().readLines()
+            File("src/test/resources/tokei_12_unix.json")
+                .bufferedReader()
+                .readLines()
                 .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input)
@@ -145,13 +151,21 @@ class TokeiImporterTest {
         assertThat(project.rootNode.children.toMutableList()[0].attributes["rloc"]).isEqualTo(500.0)
         assertThat(project.rootNode.children.toMutableList()[1].attributes["rloc"]).isNull()
         assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
-        assertThat(project.rootNode.children.toMutableList()[1].children.toMutableList().size).isEqualTo(2)
+        assertThat(
+            project.rootNode.children
+                .toMutableList()[1]
+                .children
+                .toMutableList()
+                .size
+        ).isEqualTo(2)
     }
 
     @Test
     fun `root-level files should be files not folders`() {
         val input =
-            File("src/test/resources/tokei_12_unix.json").bufferedReader().readLines()
+            File("src/test/resources/tokei_12_unix.json")
+                .bufferedReader()
+                .readLines()
                 .joinToString(separator = "") { it }
 
         val cliResult = executeForOutput(input)
@@ -172,8 +186,18 @@ class TokeiImporterTest {
         assertThat(project.rootNode.name).isEqualTo("root")
         assertThat(project.rootNode.children.size).isEqualTo(1)
         assertThat(project.rootNode.children.first().name).isEqualTo("bar")
-        assertThat(project.rootNode.children.first().children.size).isEqualTo(1)
-        assertThat(project.rootNode.children.first().children.first().name).isEqualTo("CHANGELOG.md")
+        assertThat(
+            project.rootNode.children
+                .first()
+                .children.size
+        ).isEqualTo(1)
+        assertThat(
+            project.rootNode.children
+                .first()
+                .children
+                .first()
+                .name
+        ).isEqualTo("CHANGELOG.md")
     }
 
     @Test
@@ -221,7 +245,9 @@ class TokeiImporterTest {
     @Test
     fun `reads project piped input multiline`() {
         val input =
-            File("src/test/resources/tokei_pre12_windows.json").bufferedReader().readLines()
+            File("src/test/resources/tokei_pre12_windows.json")
+                .bufferedReader()
+                .readLines()
                 .joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 

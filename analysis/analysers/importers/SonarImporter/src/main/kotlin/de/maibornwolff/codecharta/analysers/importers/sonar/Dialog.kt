@@ -45,9 +45,11 @@ class Dialog {
                 onInputReady = testCallback()
             )
 
-            val isCompressed: Boolean = (outputFileName.isEmpty()) || session.promptConfirm(
-                message = "Do you want to compress the output file?", onInputReady = testCallback()
-            )
+            val isCompressed: Boolean = (outputFileName.isEmpty()) ||
+                session.promptConfirm(
+                    message = "Do you want to compress the output file?",
+                    onInputReady = testCallback()
+                )
 
             val mergeModules: Boolean =
                 session.promptConfirm(message = "Do you want to merge modules in multi-module projects?", onInputReady = testCallback())

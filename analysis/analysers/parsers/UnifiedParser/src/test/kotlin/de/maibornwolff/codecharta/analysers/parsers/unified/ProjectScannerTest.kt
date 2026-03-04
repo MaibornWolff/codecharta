@@ -318,6 +318,88 @@ class ProjectScannerTest {
         assertThat(parsedFiles).doesNotContain("src/Debug.java")
     }
 
+    // ========== LOCAL CHANGES FILTER TESTS ==========
+
+    @Test
+    fun `should only parse files in localChangesFiles set`() {
+        // Arrange
+        val srcDir = File(rootDir, "src")
+        srcDir.mkdirs()
+        File(srcDir, "Changed.kt").writeText("fun changed() {}")
+        File(srcDir, "Unchanged.kt").writeText("fun unchanged() {}")
+        File(srcDir, "AlsoChanged.java").writeText("class AlsoChanged {}")
+
+        // Act
+        val scanner = ProjectScanner(
+            root = rootDir,
+            projectBuilder = projectBuilder,
+            excludePatterns = listOf(),
+            includeExtensions = listOf(),
+            useGitignore = false,
+            localChangesFiles = setOf("src/Changed.kt", "src/AlsoChanged.java")
+        )
+        scanner.traverseInputProject(verbose = false)
+
+        // Assert
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactlyInAnyOrder("src/Changed.kt", "src/AlsoChanged.java")
+        assertThat(parsedFiles).doesNotContain("src/Unchanged.kt")
+    }
+
+    @Test
+    fun `should parse all files when localChangesFiles is empty`() {
+        // Arrange
+        val srcDir = File(rootDir, "src")
+        srcDir.mkdirs()
+        File(srcDir, "A.kt").writeText("fun a() {}")
+        File(srcDir, "B.kt").writeText("fun b() {}")
+
+        // Act
+        val scanner = ProjectScanner(
+            root = rootDir,
+            projectBuilder = projectBuilder,
+            excludePatterns = listOf(),
+            includeExtensions = listOf(),
+            useGitignore = false,
+            localChangesFiles = emptySet()
+        )
+        scanner.traverseInputProject(verbose = false)
+
+        // Assert
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactlyInAnyOrder("src/A.kt", "src/B.kt")
+    }
+
+    @Test
+    fun `should combine localChangesFiles with gitignore filtering`() {
+        // Arrange
+        val gitignoreFile = File(rootDir, ".gitignore")
+        gitignoreFile.writeText("*.log")
+
+        val srcDir = File(rootDir, "src")
+        srcDir.mkdirs()
+        File(srcDir, "Changed.kt").writeText("fun changed() {}")
+        File(srcDir, "Unchanged.kt").writeText("fun unchanged() {}")
+        File(srcDir, "debug.log").writeText("log data")
+
+        // Act
+        val scanner = ProjectScanner(
+            root = rootDir,
+            projectBuilder = projectBuilder,
+            excludePatterns = listOf(),
+            includeExtensions = listOf(),
+            useGitignore = true,
+            localChangesFiles = setOf("src/Changed.kt", "src/debug.log")
+        )
+        scanner.traverseInputProject(verbose = false)
+
+        // Assert
+        val parsedFiles = getParsedFilePaths()
+        assertThat(parsedFiles).containsExactly("src/Changed.kt")
+        assertThat(parsedFiles).doesNotContain("src/Unchanged.kt")
+        assertThat(parsedFiles).doesNotContain("src/debug.log")
+    }
+
     // ========== INCLUDE EXTENSIONS TESTS ==========
 
     @Test

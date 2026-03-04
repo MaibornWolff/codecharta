@@ -34,7 +34,5 @@ class CSVHeader(private val header: Array<String?>, private val pathColumnName: 
         }
     }
 
-    fun getColumnName(i: Int): String {
-        return headerMap[i] ?: throw IllegalArgumentException("No ${i + 1}-th column present.")
-    }
+    fun getColumnName(i: Int): String = headerMap[i] ?: throw IllegalArgumentException("No ${i + 1}-th column present.")
 }

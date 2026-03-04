@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { StoreModule } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
-import { ScenarioService } from "../../../codeCharta/ui/ribbonBar/showScenariosButton/scenario.service"
 import { EdgeMetricData } from "../../codeCharta.model"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
@@ -9,6 +8,7 @@ import { appReducers, setStateMiddleware } from "../../state/store/state.manager
 import { VALID_NODE_WITH_PATH_AND_EXTENSION } from "../../util/dataMocks"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { RibbonBarComponent } from "./ribbonBar.component"
+import { ScenarioIndexedDBService } from "../../features/scenarios/facade"
 
 jest.mock("../../state/selectors/isDeltaState.selector", () => ({
     isDeltaStateSelector: jest.fn()
@@ -35,7 +35,10 @@ describe("RibbonBarComponent", () => {
         mockMetricDataSelector.mockImplementation(() => ({ edgeMetricData: [], nodeMetricData: [], nodeEdgeMetricsMap: new Map() }))
         TestBed.configureTestingModule({
             imports: [RibbonBarComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
-            providers: [ScenarioService, { provide: CodeMapMouseEventService, useValue: jest.fn() }]
+            providers: [
+                { provide: CodeMapMouseEventService, useValue: jest.fn() },
+                { provide: ScenarioIndexedDBService, useValue: { readAll: jest.fn().mockResolvedValue([]) } }
+            ]
         })
     })
 

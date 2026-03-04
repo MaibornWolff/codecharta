@@ -1,15 +1,15 @@
 package de.maibornwolff.codecharta.model
 
 object PathFactory {
-    fun fromFileSystemPath(path: String, pathSeparator: Char = '/'): Path {
-        return Path(
-            path.split(pathSeparator).dropLastWhile {
+    fun fromFileSystemPath(path: String, pathSeparator: Char = '/'): Path = Path(
+        path
+            .split(pathSeparator)
+            .dropLastWhile {
                 it.isEmpty()
             }.filter {
                 it.isNotEmpty()
             }
-        )
-    }
+    )
 
     fun extractOSIndependentPath(path: String): Path {
         if (path.contains("/") && path.contains("\\")) {

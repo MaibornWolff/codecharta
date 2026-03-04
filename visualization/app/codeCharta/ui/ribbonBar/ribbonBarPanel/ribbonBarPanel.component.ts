@@ -21,6 +21,7 @@ import { MatCard } from "@angular/material/card"
     imports: [MatCard]
 })
 export class RibbonBarPanelComponent implements OnInit, OnDestroy {
+    @HostBinding("attr.title") readonly noNativeTitle = null
     @Input() title?: string
     @Input() collapseOnPanelClick = true
 

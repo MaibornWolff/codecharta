@@ -18,25 +18,19 @@ internal enum class Status(private val letter: Char) {
     UNKNOWN('X'),
     UNMERGED('U') ;
 
-    fun toModificationType(): Modification.Type {
-        return when (this) {
-            ADDED -> Modification.Type.ADD
-            DELETED -> Modification.Type.DELETE
-            MODIFIED -> Modification.Type.MODIFY
-            RENAMED -> Modification.Type.RENAME
-            else -> Modification.Type.UNKNOWN
-        }
+    fun toModificationType(): Modification.Type = when (this) {
+        ADDED -> Modification.Type.ADD
+        DELETED -> Modification.Type.DELETE
+        MODIFIED -> Modification.Type.MODIFY
+        RENAMED -> Modification.Type.RENAME
+        else -> Modification.Type.UNKNOWN
     }
 
-    fun statusLetter(): Char {
-        return letter
-    }
+    fun statusLetter(): Char = letter
 
     companion object {
         val ALL_STATUS_LETTERS: List<Char> = Status.values().map { it.statusLetter() } // sanity check
 
-        fun byCharacter(character: Char): Status {
-            return Status.values().firstOrNull { status -> status.letter == character } ?: UNKNOWN
-        }
+        fun byCharacter(character: Char): Status = Status.values().firstOrNull { status -> status.letter == character } ?: UNKNOWN
     }
 }

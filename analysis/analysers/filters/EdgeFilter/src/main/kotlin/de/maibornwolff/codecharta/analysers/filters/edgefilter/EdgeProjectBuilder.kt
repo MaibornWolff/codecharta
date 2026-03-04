@@ -12,10 +12,7 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
-class EdgeProjectBuilder(
-    private val project: Project,
-    private val pathSeparator: Char
-) {
+class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
     private val projectBuilder =
         ProjectBuilder(
             listOf(MutableNode("root", NodeType.Folder)),
@@ -72,9 +69,10 @@ class EdgeProjectBuilder(
 
     private fun insertNodesWithAttributesFromEdges() {
         insertEdgeAttributesIntoNodes(
-            projectBuilder.rootNode.children.map {
-                it.toNode()
-            }.toSet()
+            projectBuilder.rootNode.children
+                .map {
+                    it.toNode()
+                }.toSet()
         )
     }
 
@@ -153,15 +151,11 @@ class EdgeProjectBuilder(
         listOfAttributes.forEach { key: String ->
             val attributeType = getAttributeTypeByKey(key)
             val filteredAttribute =
-                filteredEdges.filter {
-                        edge: Edge
-                    ->
+                filteredEdges.filter { edge: Edge ->
                     edge.attributes.containsKey(key)
                 }
             var aggregatedAttributeValue =
-                filteredAttribute.sumOf {
-                        edge: Edge
-                    ->
+                filteredAttribute.sumOf { edge: Edge ->
                     edge.attributes[key].toString().toFloat().toInt()
                 }
 

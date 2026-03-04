@@ -9,9 +9,7 @@ import java.nio.charset.StandardCharsets
 import kotlin.test.assertEquals
 
 class CSVProjectBuilderTest {
-    private fun toInputStream(content: String): InputStream {
-        return ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
-    }
+    private fun toInputStream(content: String): InputStream = ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
 
     @Test
     fun `it should ignore invalid csv content`() { // given
@@ -70,7 +68,10 @@ class CSVProjectBuilderTest {
         val csvProjectBuilder = CSVProjectBuilder(pathSeparator = '\\', csvDelimiter = ',')
         csvProjectBuilder.parseCSVStream(toInputStream("$csvHeader\n$csvRow\n"))
         val project = csvProjectBuilder.build()
-        val nodeAttributes = project.rootNode.children.iterator().next().attributes
+        val nodeAttributes = project.rootNode.children
+            .iterator()
+            .next()
+            .attributes
 
         // then
         assertEquals(nodeAttributes.size, 3)

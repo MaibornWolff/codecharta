@@ -1,0 +1,61 @@
+<dialog #dialog class="modal" aria-labelledby="save-scenario-title">
+	<div class="modal-box max-w-md">
+		<h2 id="save-scenario-title" class="text-xl font-bold mb-4">Save Scenario</h2>
+
+		<div class="form-control mb-4">
+			<label class="label" for="scenario-name">
+				<span class="label-text">Scenario Name</span>
+			</label>
+			<input
+				id="scenario-name"
+				class="input input-bordered w-full"
+				placeholder="Enter scenario name"
+				[ngModel]="name()"
+				(ngModelChange)="name.set($event)"
+			/>
+			@if (!nameValid() && name().length > 0) {
+				<span class="label-text-alt text-error">A name is required.</span>
+			}
+		</div>
+
+		<div class="form-control mb-4">
+			<label class="label" for="scenario-description">
+				<span class="label-text">Description (optional)</span>
+			</label>
+			<textarea
+				id="scenario-description"
+				class="textarea textarea-bordered w-full"
+				rows="3"
+				placeholder="Describe what this scenario captures"
+				[ngModel]="description()"
+				(ngModelChange)="description.set($event)"
+			></textarea>
+		</div>
+
+		<div class="form-control mb-4">
+			<label class="label cursor-pointer justify-start gap-3" [class.opacity-40]="!hasFiles()">
+				<input
+					type="checkbox"
+					class="checkbox checkbox-sm"
+					[ngModel]="bindToMap()"
+					(ngModelChange)="bindToMap.set($event)"
+					[disabled]="!hasFiles()"
+				/>
+				<span class="label-text">
+					Bind to current maps
+					@if (visibleFileNames().length > 0) {
+						<span class="text-xs text-base-content/50">({{ visibleFileNames().join(', ') }})</span>
+					}
+				</span>
+			</label>
+		</div>
+
+		<div class="modal-action">
+			<button class="btn" (click)="close()">Cancel</button>
+			<button class="btn btn-primary" [disabled]="!nameValid()" (click)="save()">Save</button>
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button (click)="close()">close</button>
+	</form>
+</dialog>

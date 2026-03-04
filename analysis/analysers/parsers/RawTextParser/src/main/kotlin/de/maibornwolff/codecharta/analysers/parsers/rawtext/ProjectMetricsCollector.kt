@@ -24,7 +24,8 @@ class ProjectMetricsCollector(
     private val maxIndentLvl: Int,
     private val tabWidth: Int,
     private val baseFileNodeMap: Map<String, Node> = emptyMap(),
-    useGitignore: Boolean = true
+    useGitignore: Boolean = true,
+    private val localChangesFiles: Set<String> = emptySet()
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -41,7 +42,8 @@ class ProjectMetricsCollector(
         val projectMetrics = ProjectMetrics()
 
         runBlocking(Dispatchers.Default) {
-            val files = root.walkTopDown()
+            val files = root
+                .walkTopDown()
                 .onEnter { dir -> !isExcludedByGitignore(dir) }
                 .filter { it.isFile && !isExcludedByGitignore(it) }
 
@@ -53,7 +55,8 @@ class ProjectMetricsCollector(
 
                     if (
                         !isPathExcluded(standardizedPath) &&
-                        isParsableFileExtension(standardizedPath)
+                        isParsableFileExtension(standardizedPath) &&
+                        isIncludedByLocalChanges(standardizedPath)
                     ) {
                         filesParsed++
                         logProgress(it.name, filesParsed)
@@ -70,9 +73,7 @@ class ProjectMetricsCollector(
         return projectMetrics
     }
 
-    private fun createExcludePatterns(): Regex {
-        return exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
-    }
+    private fun createExcludePatterns(): Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
     private fun createMetricsFromMetricNames(): List<Metric> {
         if (metricNames.isEmpty()) {
@@ -97,22 +98,19 @@ class ProjectMetricsCollector(
         return metrics.toList()
     }
 
-    private fun isParsableFileExtension(path: String): Boolean {
-        return fileExtensions.isEmpty() ||
-            fileExtensions.contains(path.substringAfterLast("."))
+    private fun isParsableFileExtension(path: String): Boolean = fileExtensions.isEmpty() ||
+        fileExtensions.contains(path.substringAfterLast("."))
+
+    private fun isPathExcluded(path: String): Boolean = exclude.isNotEmpty() && excludePatterns.containsMatchIn(path)
+
+    private fun isIncludedByLocalChanges(standardizedPath: String): Boolean {
+        if (localChangesFiles.isEmpty()) return true
+        return localChangesFiles.contains(standardizedPath.removePrefix("/"))
     }
 
-    private fun isPathExcluded(path: String): Boolean {
-        return exclude.isNotEmpty() && excludePatterns.containsMatchIn(path)
-    }
+    private fun isExcludedByGitignore(file: File): Boolean = gitignoreHandler?.shouldExclude(file) == true
 
-    private fun isExcludedByGitignore(file: File): Boolean {
-        return gitignoreHandler?.shouldExclude(file) == true
-    }
-
-    fun getGitIgnoreStatistics(): Pair<Int, List<String>> {
-        return gitignoreHandler?.getStatistics() ?: Pair(0, emptyList())
-    }
+    fun getGitIgnoreStatistics(): Pair<Int, List<String>> = gitignoreHandler?.getStatistics() ?: Pair(0, emptyList())
 
     private fun collectMetricsForFile(file: File, standardizedPath: String): FileMetrics {
         val fileContent = file.readText()
@@ -154,7 +152,9 @@ class ProjectMetricsCollector(
     private fun getStandardizedPath(file: File): String {
         val normalizedRoot = if (root.isFile) root.parentFile else root
         val relativePath =
-            normalizedRoot.toPath().toAbsolutePath()
+            normalizedRoot
+                .toPath()
+                .toAbsolutePath()
                 .relativize(file.toPath().toAbsolutePath())
                 .toString()
                 .replace(File.separatorChar, '/')

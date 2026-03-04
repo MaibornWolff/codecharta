@@ -8,9 +8,7 @@ class AnalysisObject(
     val stats: List<Stats>?,
     private val inaccurate: Boolean
 ) {
-    fun hasChildren(): Boolean {
-        return !stats.isNullOrEmpty()
-    }
+    fun hasChildren(): Boolean = !stats.isNullOrEmpty()
 }
 
 class Stats(

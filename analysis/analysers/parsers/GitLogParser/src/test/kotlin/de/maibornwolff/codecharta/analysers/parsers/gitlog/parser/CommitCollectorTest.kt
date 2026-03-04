@@ -15,8 +15,8 @@ import java.util.stream.Stream
 class CommitCollectorTest {
     private val metricsFactory = MetricsFactory()
 
-    private fun modificationsByFilename(vararg filenames: String): List<Modification> {
-        return filenames.map { Modification(it, 0, 0, Modification.Type.ADD) }
+    private fun modificationsByFilename(vararg filenames: String): List<Modification> = filenames.map {
+        Modification(it, 0, 0, Modification.Type.ADD)
     }
 
     private fun load_case_add_delete_modify_mutated(testFileName: String): Array<Commit> {
@@ -205,7 +205,8 @@ class CommitCollectorTest {
         val lastCommit = Commit("Last Commit", lastModifications, OffsetDateTime.now())
 
         val versionControlledFilesList =
-            Stream.of(*arrayOf(firstCommit, secondCommit, lastCommit))
+            Stream
+                .of(*arrayOf(firstCommit, secondCommit, lastCommit))
                 .collect(CommitCollector.create(metricsFactory))
 
         assertInstanceOf(VersionControlledFile::class.java, versionControlledFilesList.get("File2.kt"))

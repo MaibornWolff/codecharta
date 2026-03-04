@@ -27,7 +27,11 @@ allprojects {
     }
 
     apply(plugin = "jacoco")
-    apply(plugin = rootProject.libs.plugins.sonarqube.get().pluginId)
+    apply(
+        plugin = rootProject.libs.plugins.sonarqube
+            .get()
+            .pluginId
+    )
 
     configure<JacocoPluginExtension> {
         toolVersion = rootProject.libs.versions.jacoco.get()
@@ -36,7 +40,11 @@ allprojects {
 
 subprojects {
     apply(plugin = "kotlin")
-    apply(plugin = rootProject.libs.plugins.ktlint.get().pluginId)
+    apply(
+        plugin = rootProject.libs.plugins.ktlint
+            .get()
+            .pluginId
+    )
 
     dependencies {
         implementation(rootProject.libs.kotlin.logging.jvm)
@@ -46,7 +54,7 @@ subprojects {
         testImplementation(rootProject.libs.junit.jupiter.params)
         testImplementation(rootProject.libs.assertj.core)
         testImplementation(rootProject.libs.mockk)
-        testImplementation(rootProject.libs.junit.platform.runner)
+        testRuntimeOnly(rootProject.libs.junit.platform.launcher)
     }
 
     tasks.test {

@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { Subject } from "rxjs"
+import { ScenariosFacade } from "../../../features/scenarios/facade"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { UploadFilesService } from "../../../ui/toolBar/uploadFilesButton/uploadFiles.service"
@@ -19,15 +20,18 @@ describe("renderCodeMapEffect", () => {
     let threeRendererService: ThreeRendererService
     let codeMapRenderService: CodeMapRenderService
     let dispatchSpy: jest.SpyInstance
+    let scenariosFacadeMock: { isApplying: boolean }
 
     beforeEach(() => {
         threeRendererService = { render: jest.fn() } as unknown as ThreeRendererService
         codeMapRenderService = { render: jest.fn(), scaleMap: jest.fn() } as unknown as CodeMapRenderService
+        scenariosFacadeMock = { isApplying: false }
         actions$ = new Subject<Action>()
 
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([RenderCodeMapEffect])],
             providers: [
+                { provide: ScenariosFacade, useValue: scenariosFacadeMock },
                 { provide: UploadFilesService, useValue: { isUploading: false } },
                 { provide: ThreeRendererService, useValue: threeRendererService },
                 { provide: CodeMapRenderService, useValue: codeMapRenderService },
@@ -61,6 +65,19 @@ describe("renderCodeMapEffect", () => {
         await wait(maxFPS)
         expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
         expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+    })
+
+    it("should not remove loading indicators after render when a scenario is being applied", async () => {
+        // Arrange
+        scenariosFacadeMock.isApplying = true
+
+        // Act
+        actions$.next(setInvertArea({ value: true }))
+        await wait(maxFPS)
+
+        // Assert
+        expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
+        expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
     })
 
     it("should not remove loading indicators after render when a file is still being uploaded", async () => {

@@ -29,7 +29,8 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         ),
         "loc" to AttributeDescriptor(
             title = "Lines of Code",
-            description = "Lines of code including empty lines and comments", link = ghLink,
+            description = "Lines of code including empty lines and comments",
+            link = ghLink,
             direction = -1,
             analyzers = analyzerName
         ),
