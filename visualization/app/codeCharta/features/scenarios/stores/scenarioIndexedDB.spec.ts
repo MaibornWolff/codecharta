@@ -4,6 +4,7 @@ if (typeof globalThis.structuredClone === "undefined") {
     globalThis.structuredClone = <T>(value: T): T => JSON.parse(JSON.stringify(value))
 }
 
+import { ColorMode } from "../../../codeCharta.model"
 import { Scenario } from "../model/scenario.model"
 import { ScenarioIndexedDBService } from "./scenarioIndexedDB"
 
@@ -23,7 +24,7 @@ const createTestScenario = (overrides: Partial<Scenario> = {}): Scenario => ({
         },
         colors: {
             colorRange: { from: 1, to: 10 },
-            colorMode: "weightedGradient" as const,
+            colorMode: ColorMode.weightedGradient,
             mapColors: {
                 positive: "#69AE40",
                 neutral: "#ddcc00",
