@@ -37,6 +37,39 @@ describe("mapColorLabelPipe", () => {
         expect(new MapColorLabelPipe().transform("incomingEdge", colorRange, nodeMetricDataRange, colorMetric)).toBe("Incoming Edge")
     })
 
+    it("should show no matching buildings for positive when from equals min value", () => {
+        // Arrange
+        const range = { from: 0, to: 42 }
+
+        // Act
+        const result = new MapColorLabelPipe().transform("positive", range, nodeMetricDataRange, colorMetric)
+
+        // Assert
+        expect(result).toBe("– (no matching buildings)")
+    })
+
+    it("should show no matching buildings for neutral when from equals to", () => {
+        // Arrange
+        const range = { from: 42, to: 42 }
+
+        // Act
+        const result = new MapColorLabelPipe().transform("neutral", range, nodeMetricDataRange, colorMetric)
+
+        // Assert
+        expect(result).toBe("– (no matching buildings)")
+    })
+
+    it("should show no matching buildings for negative when to equals max value", () => {
+        // Arrange
+        const range = { from: 21, to: 9001 }
+
+        // Act
+        const result = new MapColorLabelPipe().transform("negative", range, nodeMetricDataRange, colorMetric)
+
+        // Assert
+        expect(result).toBe("– (no matching buildings)")
+    })
+
     it("should not throw when called with default null color range values", () => {
         expect(() => new MapColorLabelPipe().transform("neutral", { from: null, to: null }, nodeMetricDataRange, colorMetric)).not.toThrow()
     })

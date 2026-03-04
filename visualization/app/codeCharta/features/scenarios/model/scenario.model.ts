@@ -1,4 +1,4 @@
-import { BlacklistItem, ColorMode, ColorRange, MapColors, MarkedPackage, ColorLabelOptions } from "../../../codeCharta.model"
+import { BlacklistItem, ColorMode, ColorRange, LabelMode, MapColors, MarkedPackage, ColorLabelOptions } from "../../../codeCharta.model"
 
 export interface PlainPosition {
     readonly x: number
@@ -37,6 +37,8 @@ export interface LabelsAndFoldersSection {
     readonly showMetricLabelNodeName: boolean
     readonly enableFloorLabels: boolean
     readonly colorLabels: ColorLabelOptions
+    readonly labelMode: LabelMode
+    readonly groupLabelCollisions: boolean
     readonly markedPackages: readonly MarkedPackage[]
 }
 

@@ -8,6 +8,8 @@ import { MetricMinMax } from "../../state/selectors/accumulatedData/metricData/s
     standalone: true
 })
 export class MapColorLabelPipe implements PipeTransform {
+    private static readonly NO_MATCHING = "– (no matching buildings)"
+
     transform(metricName: keyof MapColors, colorRange: ColorRange, nodeMetricRange: MetricMinMax, colorMetric: string): string {
         switch (metricName) {
             case "positive": {
@@ -18,7 +20,7 @@ export class MapColorLabelPipe implements PipeTransform {
                     return `${nodeMetricRange.minValue} - ${nodeMetricRange.maxValue}`
                 }
                 if (isFromValueEqualMinValue) {
-                    return `-`
+                    return MapColorLabelPipe.NO_MATCHING
                 }
                 if (isFromValueEqualMaxValue) {
                     return `${nodeMetricRange.minValue} to ${this.formatNumber(colorRange.from)}`
@@ -29,7 +31,7 @@ export class MapColorLabelPipe implements PipeTransform {
                 const isFromValueEqualToValue = colorRange.from === colorRange.to
                 const isToValueEqualMaxValue = colorRange.to === nodeMetricRange.maxValue
                 if (isFromValueEqualToValue) {
-                    return `-`
+                    return MapColorLabelPipe.NO_MATCHING
                 }
                 if (isToValueEqualMaxValue) {
                     return `${this.formatNumber(colorRange.from)} to ${this.formatNumber(colorRange.to)}`
@@ -39,7 +41,7 @@ export class MapColorLabelPipe implements PipeTransform {
             case "negative": {
                 const isToValueEqualToMaxValue = nodeMetricRange.maxValue === colorRange.to
                 if (isToValueEqualToMaxValue) {
-                    return `-`
+                    return MapColorLabelPipe.NO_MATCHING
                 }
                 return `${this.formatNumber(colorRange.to)} to ${this.formatNumber(nodeMetricRange.maxValue)}`
             }

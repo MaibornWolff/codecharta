@@ -46,6 +46,17 @@ module.exports = {
             }
         },
         {
+            name: "feature-labelSettings-no-external-access-to-services",
+            severity: "error",
+            comment: "LabelSettings services can only be accessed within the labelSettings feature",
+            from: {
+                pathNot: "^app/codeCharta/features/labelSettings/"
+            },
+            to: {
+                path: "^app/codeCharta/features/labelSettings/services/"
+            }
+        },
+        {
             name: "feature-types-cannot-import-from-feature-internals",
             severity: "error",
             comment: "Features: types/ folder can only contain type definitions and cannot import from services, stores, or effects",
@@ -75,6 +86,17 @@ module.exports = {
             from: {},
             to: {
                 path: "^app/codeCharta/features/.*\\.scss$"
+            }
+        },
+        {
+            name: "features-no-angular-material",
+            severity: "error",
+            comment: "Angular Material is not allowed in features/ directory, use DaisyUI instead",
+            from: {
+                path: "^app/codeCharta/features/"
+            },
+            to: {
+                path: "@angular/material"
             }
         },
         {

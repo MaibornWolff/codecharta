@@ -1,0 +1,87 @@
+<div [title]="'Display the labels of the ' + amountOfTopLabels() + ' highest buildings'">
+    <span class="text-sm">Top Labels</span>
+    <div class="flex items-center gap-2">
+        <input type="range" class="range range-primary range-sm flex-1"
+            min="0" max="50" [value]="amountOfTopLabels()"
+            (input)="handleTopLabelsInput($event)" />
+        <input type="number" class="input input-sm input-bordered w-16 text-center"
+            min="0" max="50" [value]="amountOfTopLabels()"
+            (input)="handleTopLabelsInput($event)" />
+    </div>
+</div>
+
+<div class="join w-full" role="radiogroup" aria-label="Label mode">
+    <button
+        class="btn btn-sm join-item flex-1"
+        [class.btn-primary]="labelMode() === LabelMode.Height"
+        [attr.aria-checked]="labelMode() === LabelMode.Height"
+        role="radio"
+        (click)="setLabelMode(LabelMode.Height)"
+    >Height</button>
+    <button
+        class="btn btn-sm join-item flex-1"
+        [class.btn-primary]="labelMode() === LabelMode.Color"
+        [attr.aria-checked]="labelMode() === LabelMode.Color"
+        role="radio"
+        (click)="setLabelMode(LabelMode.Color)"
+    >Color</button>
+</div>
+
+<label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="checkbox checkbox-sm checkbox-primary"
+        [checked]="showMetricLabelNodeName()"
+        (change)="setShowMetricLabelNodeName($event)" />
+    <span>Show node names</span>
+</label>
+
+<label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="checkbox checkbox-sm checkbox-primary"
+        [checked]="showMetricLabelNodeValue()"
+        (change)="setShowMetricLabelNameValue($event)" />
+    <span>Show metric values</span>
+</label>
+
+<label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="checkbox checkbox-sm checkbox-primary"
+        [checked]="groupLabelCollisions()"
+        (change)="setGroupLabelCollisions($event)" />
+    <span>Group overlapping labels</span>
+</label>
+
+@if (showColorLabels()) {
+    <div class="flex flex-col gap-1">
+        <span class="text-xs opacity-60 mb-0.5">By Color Metric</span>
+        <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="checkbox checkbox-sm checkbox-primary"
+                [checked]="colorLabels().positive"
+                [disabled]="colorCategoryCounts().positive === 0"
+                (change)="setColorLabel($event, 'positive')"
+                aria-label="positive color label" />
+            <span class="inline-block w-4 h-4 rounded-sm" [style.background-color]="mapColors().positive"></span>
+            <span class="text-xs opacity-60">({{ colorCategoryCounts().positive }})</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="checkbox checkbox-sm checkbox-primary"
+                [checked]="colorLabels().neutral"
+                [disabled]="colorCategoryCounts().neutral === 0"
+                (change)="setColorLabel($event, 'neutral')"
+                aria-label="neutral color label" />
+            <span class="inline-block w-4 h-4 rounded-sm" [style.background-color]="mapColors().neutral"></span>
+            <span class="text-xs opacity-60">({{ colorCategoryCounts().neutral }})</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="checkbox checkbox-sm checkbox-primary"
+                [checked]="colorLabels().negative"
+                [disabled]="colorCategoryCounts().negative === 0"
+                (change)="setColorLabel($event, 'negative')"
+                aria-label="negative color label" />
+            <span class="inline-block w-4 h-4 rounded-sm" [style.background-color]="mapColors().negative"></span>
+            <span class="text-xs opacity-60">({{ colorCategoryCounts().negative }})</span>
+        </label>
+    </div>
+}
+
+<button class="btn btn-outline btn-error gap-2" (click)="resetSettings()" title="Reset label settings to their defaults">
+    <i class="fa fa-undo"></i>
+    <span>Reset label settings</span>
+</button>
