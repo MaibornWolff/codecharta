@@ -35,6 +35,15 @@ describe("HeightSettingsPanelComponent", () => {
         expect(dispatchSpy).toHaveBeenCalledWith(setInvertHeight({ value: true }))
     })
 
+    it("should have height slider with max value of 25", async () => {
+        // Arrange / Act
+        await render(HeightSettingsPanelComponent)
+
+        // Assert
+        const slider = screen.getByRole("slider") as HTMLInputElement
+        expect(slider.max).toBe("25")
+    })
+
     it("should not display invertHeight-checkbox when being in delta mode", async () => {
         // Arrange
         const { detectChanges } = await render(HeightSettingsPanelComponent)
