@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
-import { MetricData } from "../../../../codeCharta.model"
-import { getAvailableSectionKeys, Scenario } from "../../model/scenario.model"
-import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
-import { ScenarioView } from "./scenarioView.model"
+import { MetricData } from "../../../codeCharta.model"
+import { getAvailableSectionKeys, Scenario } from "../model/scenario.model"
+import { getMissingMetrics, hasMissingMetrics } from "./getMissingMetrics"
+import { ScenarioView } from "../components/scenarioListDialog/scenarioView.model"
 
 const GROUP_DEFINITIONS: { priority: number; label: string; icon: string }[] = [
     { priority: 0, label: "Current Map", icon: "fa-map-pin" },

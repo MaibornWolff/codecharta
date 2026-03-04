@@ -12,7 +12,7 @@ import { ScenariosService } from "../../services/scenarios.service"
 import { DeleteConfirmDialogComponent } from "./deleteConfirmDialog/deleteConfirmDialog.component"
 import { ImportFeedbackDialogComponent } from "./importFeedbackDialog/importFeedbackDialog.component"
 import { ScenarioItemComponent } from "./scenarioItem/scenarioItem.component"
-import { ScenarioListHelpersService } from "./scenarioListHelpers"
+import { ScenarioListHelpersService } from "../../services/scenarioListHelpers.service"
 
 @Component({
     selector: "cc-scenario-list-dialog",
