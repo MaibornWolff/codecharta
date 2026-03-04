@@ -1,0 +1,13 @@
+<dialog #dialog class="modal" aria-labelledby="delete-confirm-title">
+	<div class="modal-box max-w-sm">
+		<h3 id="delete-confirm-title" class="text-lg font-bold mb-2">Delete Scenario</h3>
+		<p>Are you sure you want to delete "{{ scenarioName() }}"?</p>
+		<div class="modal-action">
+			<button class="btn" (click)="cancel()">Cancel</button>
+			<button class="btn btn-error" (click)="confirm()">Delete</button>
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button (click)="cancel()">close</button>
+	</form>
+</dialog>

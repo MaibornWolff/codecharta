@@ -1,0 +1,25 @@
+<button
+	type="button"
+	class="flex items-center w-full px-4 py-2 border-t border-base-300 hover:bg-base-200 cursor-pointer bg-transparent text-left"
+	(click)="applyRequested.emit()"
+>
+	<div class="flex-1 min-w-0" [class.opacity-40]="view().mapMismatch">
+		<div class="font-medium text-sm">
+			{{ view().scenario.name }}
+			@if (view().warning) {
+				<span class="text-warning ml-1" title="Some metrics in this scenario are not available">
+					<i class="fa fa-exclamation-triangle text-xs"></i>
+				</span>
+			}
+		</div>
+		@if (view().scenario.description) {
+			<div class="text-xs text-base-content/50 truncate">{{ view().scenario.description }}</div>
+		}
+		<cc-scenario-item-badges [view]="view()" />
+	</div>
+	<cc-scenario-item-actions
+		[isBuiltIn]="!!view().scenario.isBuiltIn"
+		(exportRequested)="exportRequested.emit()"
+		(deleteRequested)="deleteRequested.emit()"
+	/>
+</button>

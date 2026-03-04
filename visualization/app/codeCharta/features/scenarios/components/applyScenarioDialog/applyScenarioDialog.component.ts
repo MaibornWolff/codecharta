@@ -1,0 +1,70 @@
+import { Component, AfterViewInit, DestroyRef, computed, ElementRef, inject, input, output, signal, viewChild } from "@angular/core"
+import { FormsModule } from "@angular/forms"
+import { MetricData } from "../../../../codeCharta.model"
+import {
+    getAvailableSectionKeys,
+    Scenario,
+    SCENARIO_SECTION_ICONS,
+    SCENARIO_SECTION_LABELS,
+    ScenarioSectionKey
+} from "../../model/scenario.model"
+import { ScenarioApplierService } from "../../services/scenarioApplier.service"
+
+@Component({
+    selector: "cc-apply-scenario-dialog",
+    templateUrl: "./applyScenarioDialog.component.html",
+    imports: [FormsModule]
+})
+export class ApplyScenarioDialogComponent implements AfterViewInit {
+    readonly scenario = input.required<Scenario>()
+    readonly metricData = input.required<MetricData>()
+    readonly closed = output<void>()
+
+    readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
+
+    readonly sectionLabels = SCENARIO_SECTION_LABELS
+    readonly sectionIcons = SCENARIO_SECTION_ICONS
+
+    readonly availableSectionKeys = computed(() => getAvailableSectionKeys(this.scenario()))
+
+    readonly selectedSections = signal<Record<ScenarioSectionKey, boolean>>({
+        metrics: true,
+        colors: true,
+        camera: true,
+        filters: true,
+        labelsAndFolders: true
+    })
+
+    readonly missingMetrics = computed(() => {
+        const metrics = this.scenario().sections.metrics
+        return metrics ? this.scenarioApplier.getMissingMetrics(metrics, this.metricData()) : { nodeMetrics: [], edgeMetrics: [] }
+    })
+    readonly hasMissing = computed(() => this.scenarioApplier.hasMissingMetrics(this.missingMetrics()))
+    readonly hasAnySelected = computed(() => this.availableSectionKeys().some(key => this.selectedSections()[key]))
+
+    private readonly destroyRef = inject(DestroyRef)
+
+    constructor(private readonly scenarioApplier: ScenarioApplierService) {}
+
+    ngAfterViewInit() {
+        const dialog = this.dialogElement().nativeElement
+        const handler = () => this.closed.emit()
+        dialog.addEventListener("close", handler)
+        this.destroyRef.onDestroy(() => dialog.removeEventListener("close", handler))
+        dialog.showModal()
+    }
+
+    toggleSection(key: ScenarioSectionKey, checked: boolean) {
+        this.selectedSections.update(current => ({ ...current, [key]: checked }))
+    }
+
+    async apply() {
+        const selectedKeys = new Set<ScenarioSectionKey>(this.availableSectionKeys().filter(key => this.selectedSections()[key]))
+        this.dialogElement().nativeElement.close()
+        await this.scenarioApplier.applyScenario(this.scenario(), selectedKeys, this.metricData())
+    }
+
+    close() {
+        this.dialogElement().nativeElement.close()
+    }
+}

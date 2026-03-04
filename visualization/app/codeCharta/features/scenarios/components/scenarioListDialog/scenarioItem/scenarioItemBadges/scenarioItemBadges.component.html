@@ -1,0 +1,18 @@
+<div class="flex items-center gap-3 mt-1">
+	@if (view().scenario.isBuiltIn) {
+		<span class="badge badge-xs badge-info">Built-in</span>
+	} @else {
+		<span class="text-[11px] text-base-content/40">{{ view().formattedDate }}</span>
+	}
+	@if (view().mapBound) {
+		<span class="badge badge-xs badge-outline gap-1" [title]="'Bound to ' + view().scenario.mapFileNames!.join(', ')">
+			<i class="fa fa-map-pin text-[9px]"></i>
+			{{ view().scenario.mapFileNames!.join(', ') }}
+		</span>
+	}
+	<span class="flex gap-1.5 text-[11px] text-base-content/40">
+		@for (key of view().sectionKeys; track key) {
+			<i class="fa {{ sectionIcons[key] }}" [title]="sectionLabels[key]"></i>
+		}
+	</span>
+</div>

@@ -1,0 +1,63 @@
+<dialog #dialog class="modal" aria-labelledby="scenario-list-title">
+	<div class="modal-box max-w-xl">
+		<div class="flex items-center justify-between mb-4">
+			<h2 id="scenario-list-title" class="text-xl font-bold">Scenarios</h2>
+			<div class="flex items-center gap-1">
+				<button class="btn btn-sm btn-ghost" title="Import scenarios" (click)="openImportDialog()">
+					<i class="fa fa-upload"></i>
+				</button>
+				<button class="btn btn-sm btn-ghost" (click)="close()">
+					<i class="fa fa-close"></i>
+				</button>
+			</div>
+		</div>
+
+		<input #fileInput type="file" class="hidden" [accept]="acceptExtensions" multiple (change)="handleImportFiles($event)" />
+
+		<input
+			class="input input-bordered w-full mb-4"
+			placeholder="Search scenarios..."
+			aria-label="Search scenarios"
+			[ngModel]="searchTerm()"
+			(ngModelChange)="searchTerm.set($event)"
+		/>
+
+		@if (filteredScenarios().length === 0) {
+			<p class="text-center py-8 text-base-content/50">No scenarios found.</p>
+		}
+
+		<div class="max-h-[60vh] overflow-y-auto">
+			@for (group of groupedScenarios(); track group.label; let first = $first) {
+				<div class="collapse collapse-arrow border border-base-300" [class.mt-1]="!first">
+					<input type="radio" name="scenario-accordion" [checked]="first" />
+					<div class="collapse-title font-semibold text-sm bg-primary text-primary-content">
+						<i class="fa {{ group.icon }} mr-2"></i>
+						{{ group.label }}
+						<span class="badge badge-sm ml-2">{{ group.scenarios.length }}</span>
+					</div>
+					<div class="collapse-content px-0">
+						@for (view of group.scenarios; track view.scenario.id) {
+							<cc-scenario-item
+								[view]="view"
+								(applyRequested)="applyScenario(view.scenario)"
+								(exportRequested)="exportScenario(view.scenario)"
+								(deleteRequested)="requestDelete(view.scenario)"
+							/>
+						}
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button (click)="close()">close</button>
+	</form>
+</dialog>
+
+<cc-delete-confirm-dialog
+	[scenarioName]="deleteTarget()?.name ?? ''"
+	(confirmed)="confirmDelete()"
+	(cancelled)="cancelDelete()"
+/>
+
+<cc-import-feedback-dialog />
