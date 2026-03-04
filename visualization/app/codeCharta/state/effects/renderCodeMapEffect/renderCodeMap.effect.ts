@@ -5,7 +5,7 @@ import { asyncScheduler, combineLatest, filter, share, tap, throttleTime } from 
 import { CcState } from "../../../codeCharta.model"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
-import { ScenariosService } from "../../../features/scenarios/services/scenarios.service"
+import { ScenariosFacade } from "../../../features/scenarios/facade"
 import { UploadFilesService } from "../../../ui/toolBar/uploadFilesButton/uploadFiles.service"
 import { accumulatedDataSelector } from "../../selectors/accumulatedData/accumulatedData.selector"
 import { actionsRequiringRerender } from "./actionsRequiringRerender"
@@ -19,7 +19,7 @@ export class RenderCodeMapEffect {
     constructor(
         private readonly store: Store<CcState>,
         private readonly actions$: Actions,
-        private readonly scenariosService: ScenariosService,
+        private readonly scenariosFacade: ScenariosFacade,
         private readonly uploadFilesService: UploadFilesService,
         private readonly threeRendererService: ThreeRendererService,
         private readonly codeMapRenderService: CodeMapRenderService
@@ -45,7 +45,7 @@ export class RenderCodeMapEffect {
     removeLoadingIndicatorAfterRender$ = createEffect(
         () =>
             this.renderCodeMap$.pipe(
-                filter(() => !this.uploadFilesService.isUploading && !this.scenariosService.isApplying),
+                filter(() => !this.uploadFilesService.isUploading && !this.scenariosFacade.isApplying),
                 tap(() => {
                     this.store.dispatch(setIsLoadingFile({ value: false }))
                     this.store.dispatch(setIsLoadingMap({ value: false }))
