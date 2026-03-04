@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, computed, ElementRef, input, output, signal, viewChild } from "@angular/core"
+import { Component, AfterViewInit, DestroyRef, computed, ElementRef, inject, input, output, signal, viewChild } from "@angular/core"
 import { FormsModule } from "@angular/forms"
 import { MetricData } from "../../../../codeCharta.model"
 import {
@@ -43,11 +43,15 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
     readonly hasMissing = computed(() => hasMissingMetrics(this.missingMetrics()))
     readonly hasAnySelected = computed(() => this.availableSectionKeys().some(key => this.selectedSections()[key]))
 
+    private readonly destroyRef = inject(DestroyRef)
+
     constructor(private readonly scenarioApplier: ScenarioApplierService) {}
 
     ngAfterViewInit() {
         const dialog = this.dialogElement().nativeElement
-        dialog.addEventListener("close", () => this.closed.emit())
+        const handler = () => this.closed.emit()
+        dialog.addEventListener("close", handler)
+        this.destroyRef.onDestroy(() => dialog.removeEventListener("close", handler))
         dialog.showModal()
     }
 
