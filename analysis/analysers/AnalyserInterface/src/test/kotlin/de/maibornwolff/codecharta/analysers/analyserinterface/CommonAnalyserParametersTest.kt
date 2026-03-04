@@ -140,6 +140,27 @@ class CommonAnalyserParametersTest {
             .hasMessageContaining("Not a git repository")
     }
 
+    @Test
+    fun `should find git root when input is a file inside a repo`() {
+        // Arrange
+        val repoDir = tempDir.toFile()
+        initGitRepoWithCommit(repoDir)
+        val fileInsideRepo = File(repoDir, "test.txt")
+        val params = TestableAnalyserParameters(commit = "HEAD", localChanges = false)
+
+        // Act
+        val context = params.testResolveEffectiveInput(fileInsideRepo)
+
+        // Assert
+        try {
+            assertThat(context.worktreeManager).isNotNull()
+            assertThat(context.shortHash).matches("[0-9a-f]{7,}")
+            assertThat(context.inputDir).exists()
+        } finally {
+            context.worktreeManager?.cleanup()
+        }
+    }
+
     private fun initGitRepoWithCommit(dir: File) {
         executeGit(dir, "init")
         executeGit(dir, "config", "user.email", "test@test.com")

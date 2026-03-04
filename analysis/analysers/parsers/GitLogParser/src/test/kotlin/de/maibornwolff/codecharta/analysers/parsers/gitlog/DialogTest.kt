@@ -127,8 +127,13 @@ class DialogTest {
                 terminal.press(Keys.ENTER)
             }
 
+            val commitCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
+
             every { RepoScanDialog.Companion.testCallback() } returnsMany listOf(
-                repoScanCallback
+                repoScanCallback,
+                commitCallback
             )
 
             parserArguments = RepoScanDialog.collectAnalyserArgs(this)
