@@ -10,7 +10,7 @@ import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { MetricsSection, Scenario, ScenarioSections, ScenarioSectionKey } from "../model/scenario.model"
 import { ScenarioApplierService } from "./scenarioApplier.service"
-import { ColorMode, MetricData, RecursivePartial, CcState } from "../../../codeCharta.model"
+import { ColorMode, LabelMode, MetricData, RecursivePartial, CcState } from "../../../codeCharta.model"
 
 const testSections: ScenarioSections = {
     metrics: {
@@ -53,6 +53,8 @@ const testSections: ScenarioSections = {
         showMetricLabelNodeName: false,
         enableFloorLabels: true,
         colorLabels: { positive: true, negative: false, neutral: false },
+        labelMode: LabelMode.Color,
+        groupLabelCollisions: true,
         markedPackages: [{ path: "/root/src", color: "#FF0000" }]
     }
 }
@@ -154,6 +156,8 @@ describe("ScenarioApplierService", () => {
             expect(patches[2].fileSettings?.blacklist).toEqual(testSections.filters.blacklist)
             expect(patches[2].dynamicSettings?.focusedNodePath).toEqual(["/root/src"])
             expect(patches[2].appSettings?.amountOfTopLabels).toBe(5)
+            expect(patches[2].appSettings?.labelMode).toBe(LabelMode.Color)
+            expect(patches[2].appSettings?.groupLabelCollisions).toBe(true)
             expect(patches[2].fileSettings?.markedPackages).toEqual(testSections.labelsAndFolders.markedPackages)
         })
 

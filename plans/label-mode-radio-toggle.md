@@ -43,6 +43,13 @@ Add a DaisyUI join radio button group to the label settings panel to toggle betw
 - [x] Update and add tests
 - [x] Run tests to verify
 
+## Post-Merge TODOs
+
+After merging main (which migrated scenarios to native dialog + DaisyUI + signals), `labelMode` and `groupLabelCollisions` are missing from the new scenario code. Add both to:
+- [ ] `LabelsAndFoldersSection` interface in `features/scenarios/model/scenario.model.ts`
+- [ ] `buildScenarioSections` in `features/scenarios/services/scenarios.service.ts`
+- [ ] `buildLabelsAndFoldersPatch` in `features/scenarios/services/scenarioApplier.service.ts`
+
 ## Notes
 
 - DaisyUI is already a dependency in the visualization project
