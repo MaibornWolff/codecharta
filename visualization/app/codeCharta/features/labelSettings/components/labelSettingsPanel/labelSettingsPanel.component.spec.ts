@@ -63,8 +63,8 @@ describe("LabelSettingsPanelComponent", () => {
         await render(LabelSettingsPanelComponent)
 
         // Assert
-        expect(screen.getByText("Height")).not.toBe(null)
-        expect(screen.getByText("Color")).not.toBe(null)
+        expect(screen.getByRole("radio", { name: "Height" })).not.toBe(null)
+        expect(screen.getByRole("radio", { name: "Color" })).not.toBe(null)
     })
 
     it("should dispatch setLabelMode when clicking Color button", async () => {
@@ -73,7 +73,7 @@ describe("LabelSettingsPanelComponent", () => {
         const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
         // Act
-        await userEvent.click(screen.getByText("Color"))
+        await userEvent.click(screen.getByRole("radio", { name: "Color" }))
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setLabelMode({ value: LabelMode.Color }))
