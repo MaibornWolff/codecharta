@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { MetricData } from "../../../codeCharta.model"
 import { getAvailableSectionKeys, Scenario } from "../model/scenario.model"
-import { getMissingMetrics, hasMissingMetrics } from "./getMissingMetrics"
+import { ScenarioApplierService } from "./scenarioApplier.service"
 import { ScenarioView } from "../components/scenarioListDialog/scenarioView.model"
 
 const GROUP_DEFINITIONS: { priority: number; label: string; icon: string }[] = [
@@ -19,6 +19,8 @@ interface RawScenarioGroup {
 
 @Injectable({ providedIn: "root" })
 export class ScenarioViewModelService {
+    constructor(private readonly scenarioApplier: ScenarioApplierService) {}
+
     groupScenarios(scenarios: Scenario[], visibleFileNames: Set<string>): RawScenarioGroup[] {
         const buckets = new Map<number, Scenario[]>()
         for (const scenario of scenarios) {
@@ -40,7 +42,9 @@ export class ScenarioViewModelService {
     toScenarioView(scenario: Scenario, visibleFileNames: Set<string>, metricData: MetricData): ScenarioView {
         const mapBound = (scenario.mapFileNames?.length ?? 0) > 0
         const mapMismatch = mapBound && !scenario.mapFileNames.some(name => visibleFileNames.has(name))
-        const warning = scenario.sections.metrics ? hasMissingMetrics(getMissingMetrics(scenario.sections.metrics, metricData)) : false
+        const warning = scenario.sections.metrics
+            ? this.scenarioApplier.hasMissingMetrics(this.scenarioApplier.getMissingMetrics(scenario.sections.metrics, metricData))
+            : false
         return {
             scenario,
             warning,

@@ -4,6 +4,7 @@ import { BehaviorSubject } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
 import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
 import { ScenarioViewModelService } from "../../services/scenarioViewModel.service"
+import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { ScenariosService } from "../../services/scenarios.service"
 import { Scenario } from "../../model/scenario.model"
 import { ColorMode, MetricData, NodeType } from "../../../../codeCharta.model"
@@ -62,7 +63,8 @@ const createFileState = (fileName: string): FileState => ({
 })
 
 const emptyMetricData: MetricData = { nodeMetricData: [], edgeMetricData: [] }
-const helpers = new ScenarioViewModelService()
+const applier = Object.create(ScenarioApplierService.prototype) as ScenarioApplierService
+const helpers = new ScenarioViewModelService(applier)
 
 describe("ScenarioListDialogComponent", () => {
     let component: ScenarioListDialogComponent

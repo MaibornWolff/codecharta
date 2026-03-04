@@ -9,7 +9,6 @@ import {
     ScenarioSectionKey
 } from "../../model/scenario.model"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
-import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
 
 @Component({
     selector: "cc-apply-scenario-dialog",
@@ -38,9 +37,9 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
 
     readonly missingMetrics = computed(() => {
         const metrics = this.scenario().sections.metrics
-        return metrics ? getMissingMetrics(metrics, this.metricData()) : { nodeMetrics: [], edgeMetrics: [] }
+        return metrics ? this.scenarioApplier.getMissingMetrics(metrics, this.metricData()) : { nodeMetrics: [], edgeMetrics: [] }
     })
-    readonly hasMissing = computed(() => hasMissingMetrics(this.missingMetrics()))
+    readonly hasMissing = computed(() => this.scenarioApplier.hasMissingMetrics(this.missingMetrics()))
     readonly hasAnySelected = computed(() => this.availableSectionKeys().some(key => this.selectedSections()[key]))
 
     private readonly destroyRef = inject(DestroyRef)
