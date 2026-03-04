@@ -12,7 +12,7 @@ import { ScenariosService } from "../../services/scenarios.service"
 import { DeleteConfirmDialogComponent } from "./deleteConfirmDialog/deleteConfirmDialog.component"
 import { ImportFeedbackDialogComponent } from "./importFeedbackDialog/importFeedbackDialog.component"
 import { ScenarioItemComponent } from "./scenarioItem/scenarioItem.component"
-import { ScenarioListHelpersService } from "../../services/scenarioListHelpers.service"
+import { ScenarioViewModelService } from "../../services/scenarioViewModel.service"
 
 @Component({
     selector: "cc-scenario-list-dialog",
@@ -61,7 +61,7 @@ export class ScenarioListDialogComponent {
     constructor(
         private readonly scenariosService: ScenariosService,
         private readonly store: Store<CcState>,
-        private readonly helpers: ScenarioListHelpersService
+        private readonly helpers: ScenarioViewModelService
     ) {}
 
     async open() {
