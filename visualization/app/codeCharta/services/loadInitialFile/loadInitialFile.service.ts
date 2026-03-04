@@ -61,6 +61,8 @@ import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/e
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { setIsColorMetricLinkedToHeightMetricAction } from "../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 import { setEnableFloorLabels } from "../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
+import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
+import { setGroupLabelCollisions } from "../../state/store/appSettings/groupLabelCollisions/groupLabelCollisions.actions"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
@@ -236,12 +238,16 @@ export class LoadInitialFileService {
         return missingDynamicSettings
     }
 
+    private static readonly optionalAppSettingsKeys = new Set(["labelMode", "groupLabelCollisions"])
+
     private applyAppSettings(savedAppSettings: AppSettings) {
         const currentAppSettings = (this.state.getValue() as CcState).appSettings
         const missingAppSettings = []
         for (const [key, value] of Object.entries(currentAppSettings)) {
             if (!(key in savedAppSettings)) {
-                missingAppSettings.push(key)
+                if (!LoadInitialFileService.optionalAppSettingsKeys.has(key)) {
+                    missingAppSettings.push(key)
+                }
             } else {
                 const currentValue = stringify(value)
                 const loadedValue = stringify(savedAppSettings[key])
@@ -403,6 +409,12 @@ export class LoadInitialFileService {
                 break
             case "enableFloorLabels":
                 this.store.dispatch(setEnableFloorLabels({ value }))
+                break
+            case "labelMode":
+                this.store.dispatch(setLabelMode({ value }))
+                break
+            case "groupLabelCollisions":
+                this.store.dispatch(setGroupLabelCollisions({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

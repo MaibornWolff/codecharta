@@ -10,6 +10,7 @@ import {
     EdgeMetricData,
     EdgeVisibility,
     FileMeta,
+    LabelMode,
     LayoutAlgorithm,
     MarkedPackage,
     Node,
@@ -2213,7 +2214,8 @@ export const STATE: CcState = {
         screenshotToClipboardEnabled: false,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
         sharpnessMode: SharpnessMode.Standard,
-        maxTreeMapFiles: 200
+        maxTreeMapFiles: 200,
+        labelMode: LabelMode.Height
     },
     files: [],
     appStatus: {
@@ -2271,7 +2273,8 @@ export const DEFAULT_STATE: CcState = {
         screenshotToClipboardEnabled: false,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
         sharpnessMode: SharpnessMode.Standard,
-        maxTreeMapFiles: 100
+        maxTreeMapFiles: 100,
+        labelMode: LabelMode.Height
     },
     dynamicSettings: {
         areaMetric: null,

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- **Height slider range increased**: The maximum height scaling slider value increased from 5 to 25, allowing taller buildings for greater visual contrast
 - **Faster map rendering**: The 3D map now renders significantly faster, especially on large codebases, due to a major overhaul of how building geometry is generated and updated on the GPU
 - **Smoother hover interactions**: Hovering over buildings is now more responsive — only the affected buildings are updated instead of reprocessing the entire map on every mouse move
 - **Color label settings moved**: Color label checkboxes are now in the Label Settings Panel instead of the Color Settings Panel

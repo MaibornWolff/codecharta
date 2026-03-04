@@ -96,6 +96,11 @@ export interface ColorLabelOptions {
 
 export const colorLabelTypes: readonly (keyof ColorLabelOptions)[] = ["positive", "neutral", "negative"] as const
 
+export enum LabelMode {
+    Height = "height",
+    Color = "color"
+}
+
 export interface FileMeta {
     fileName: string
     fileChecksum: string
@@ -164,6 +169,8 @@ export interface AppSettings {
     experimentalFeaturesEnabled: boolean
     screenshotToClipboardEnabled: boolean
     colorLabels: ColorLabelOptions
+    labelMode: LabelMode
+    groupLabelCollisions: boolean
     isColorMetricLinkedToHeightMetric: boolean
     enableFloorLabels: boolean
 }

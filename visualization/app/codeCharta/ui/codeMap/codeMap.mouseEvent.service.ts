@@ -8,7 +8,7 @@ import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
 import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
 import { hierarchy } from "d3-hierarchy"
 import { Raycaster, Vector2 } from "three"
-import { CodeMapLabelService } from "./codeMap.label.service"
+import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { setHoveredNodeId } from "../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
@@ -81,7 +81,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         private threeSceneService: ThreeSceneService,
         private readonly store: Store<CcState>,
         private readonly state: State<CcState>,
-        private readonly codeMapLabelService: CodeMapLabelService,
+        private readonly labelSettingsFacade: LabelSettingsFacade,
         private readonly tooltipService: CodeMapTooltipService,
         private readonly viewCubeMouseEvents: ViewCubeMouseEventsService,
         private readonly threeViewerService: ThreeViewerService,
@@ -177,7 +177,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         if (this.hasMouseMoved(this.oldMouse)) {
             if (this.isGrabbingOrMoving()) {
                 this.tooltipService.hide()
-                this.codeMapLabelService.restoreSuppressedLabel()
+                this.labelSettingsFacade.restoreSuppressedLabel()
                 this.threeRendererService.render()
                 return
             }
@@ -204,7 +204,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 
                 if (from?.id !== to?.id) {
                     this.tooltipService.hide()
-                    this.codeMapLabelService.restoreSuppressedLabel()
+                    this.labelSettingsFacade.restoreSuppressedLabel()
                     if (from && to && !this.isGrabbingOrMoving()) {
                         // Differential path: transition directly from one highlight to another
                         this.threeSceneService.prepareHighlightTransition()
@@ -226,30 +226,30 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     drawLabelSelectedBuilding(codeMapBuilding: CodeMapBuilding) {
         this.tooltipService.hide()
-        this.codeMapLabelService.restoreSuppressedLabel()
+        this.labelSettingsFacade.restoreSuppressedLabel()
         if (this.labelSelectedBuilding !== null) {
-            this.codeMapLabelService.clearTemporaryLabel(this.labelSelectedBuilding)
+            this.labelSettingsFacade.clearTemporaryLabel(this.labelSelectedBuilding)
         }
         if (!codeMapBuilding?.node?.isLeaf) {
             return
         }
 
-        if (!this.codeMapLabelService.hasLabelForNode(codeMapBuilding.node)) {
-            this.codeMapLabelService.addLeafLabel(codeMapBuilding.node, 0, true)
+        if (!this.labelSettingsFacade.hasLabelForNode(codeMapBuilding.node)) {
+            this.labelSettingsFacade.addLeafLabel(codeMapBuilding.node, 0, true)
         }
         this.labelSelectedBuilding = codeMapBuilding.node
     }
 
     private showTooltipForBuilding(building: CodeMapBuilding) {
-        if (this.codeMapLabelService.hasLabelForNode(building.node)) {
-            this.codeMapLabelService.suppressLabelForNode(building.node)
+        if (this.labelSettingsFacade.hasLabelForNode(building.node)) {
+            this.labelSettingsFacade.suppressLabelForNode(building.node)
         }
         this.tooltipService.show(building.node, this.mouse.x, this.mouse.y)
     }
 
     private clearLabelSelectedBuilding() {
         if (this.labelSelectedBuilding !== null) {
-            this.codeMapLabelService.clearTemporaryLabel(this.labelSelectedBuilding)
+            this.labelSettingsFacade.clearTemporaryLabel(this.labelSelectedBuilding)
             this.labelSelectedBuilding = null
         }
     }
@@ -264,9 +264,9 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     onDocumentMouseLeave(event: MouseEvent) {
-        this.codeMapLabelService.setSuppressLayout(false)
+        this.labelSettingsFacade.setSuppressLayout(false)
         this.tooltipService.hide()
-        this.codeMapLabelService.restoreSuppressedLabel()
+        this.labelSettingsFacade.restoreSuppressedLabel()
         this.unhoverBuilding()
         if (!(event.relatedTarget instanceof HTMLCanvasElement)) {
             this.enableOrbitalsRotation(false)
@@ -307,15 +307,15 @@ export class CodeMapMouseEventService implements OnDestroy {
             this.isGrabbing = true
             CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
         }
-        this.codeMapLabelService.setSuppressLayout(true)
+        this.labelSettingsFacade.setSuppressLayout(true)
         this.tooltipService.hide()
-        this.codeMapLabelService.restoreSuppressedLabel()
+        this.labelSettingsFacade.restoreSuppressedLabel()
         this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
         ;(document.activeElement as HTMLElement).blur()
     }
 
     onDocumentMouseUp(event: MouseEvent) {
-        this.codeMapLabelService.setSuppressLayout(false)
+        this.labelSettingsFacade.setSuppressLayout(false)
         this.viewCubeMouseEvents.resetIsDragging()
         if (event.button === ClickType.LeftClick) {
             this.onLeftClick()

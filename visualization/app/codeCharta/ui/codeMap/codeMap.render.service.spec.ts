@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { CodeMapLabelService } from "./codeMap.label.service"
+import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { Node, CodeMapNode, ColorLabelOptions, CcState } from "../../codeCharta.model"
+import { Node, CodeMapNode, CcState, LabelMode } from "../../codeCharta.model"
 import {
     COLOR_TEST_NODES,
     DEFAULT_STATE,
@@ -27,6 +27,7 @@ import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
@@ -42,7 +43,7 @@ describe("codeMapRenderService", () => {
     let state: State<CcState>
     let codeMapRenderService: CodeMapRenderService
     let threeSceneService: ThreeSceneService
-    let codeMapLabelService: CodeMapLabelService
+    let labelSettingsFacade: LabelSettingsFacade
     let codeMapArrowService: CodeMapArrowService
     let threeStatsService: ThreeStatsService
     let codeMapMouseEventService: CodeMapMouseEventService
@@ -53,7 +54,7 @@ describe("codeMapRenderService", () => {
         restartSystem()
         rebuildService()
         withMockedThreeSceneService()
-        withMockedCodeMapLabelService()
+        withMockedLabelSettingsFacade()
         withMockedCodeMapArrowService()
         withMockedStatsService()
         withMockedCodeMapMouseEventService()
@@ -65,7 +66,7 @@ describe("codeMapRenderService", () => {
         })
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
-        codeMapLabelService = TestBed.inject(CodeMapLabelService)
+        labelSettingsFacade = TestBed.inject(LabelSettingsFacade)
         codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
         threeStatsService = TestBed.inject(ThreeStatsService)
         threeSceneService = TestBed.inject(ThreeSceneService)
@@ -87,7 +88,7 @@ describe("codeMapRenderService", () => {
             store,
             state,
             threeSceneService,
-            codeMapLabelService,
+            labelSettingsFacade,
             codeMapArrowService,
             threeStatsService,
             codeMapMouseEventService
@@ -95,9 +96,8 @@ describe("codeMapRenderService", () => {
         codeMapRenderService["showCouplingArrows"] = jest.fn()
     }
 
-    function withMockedCodeMapLabelService() {
-        codeMapLabelService = codeMapRenderService["codeMapLabelService"] = jest.fn().mockReturnValue({
-            scale: jest.fn(),
+    function withMockedLabelSettingsFacade() {
+        labelSettingsFacade = codeMapRenderService["labelSettingsFacade"] = jest.fn().mockReturnValue({
             clearLabels: jest.fn(),
             addLeafLabel: jest.fn()
         })()
@@ -192,12 +192,6 @@ describe("codeMapRenderService", () => {
             expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledWith()
         })
 
-        it("should call codeMapLabelService.scale", () => {
-            codeMapRenderService["scaleMap"]()
-
-            expect(codeMapLabelService.scale).toHaveBeenCalledWith()
-        })
-
         it("should call codeMapArrowService.scale", () => {
             codeMapRenderService["scaleMap"]()
 
@@ -213,7 +207,7 @@ describe("codeMapRenderService", () => {
         it("should call threeSceneService.clearLabels", () => {
             codeMapRenderService["scaleMap"]()
 
-            expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
+            expect(labelSettingsFacade.clearLabels).toHaveBeenCalled()
         })
     })
 
@@ -281,20 +275,20 @@ describe("codeMapRenderService", () => {
         it("should only call clearLabels for empty nodes", () => {
             codeMapRenderService["setLabels"]([])
 
-            expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
-            expect(codeMapLabelService.addLeafLabel).not.toHaveBeenCalled()
+            expect(labelSettingsFacade.clearLabels).toHaveBeenCalled()
+            expect(labelSettingsFacade.addLeafLabel).not.toHaveBeenCalled()
         })
 
-        it("should call codeMapLabelService.clearLabels", () => {
+        it("should call labelSettingsFacade.clearLabels", () => {
             codeMapRenderService["setLabels"](nodes)
 
-            expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
+            expect(labelSettingsFacade.clearLabels).toHaveBeenCalled()
         })
 
-        it("should call codeMapLabelService.addLeafLabel for each shown leaf label", () => {
+        it("should call labelSettingsFacade.addLeafLabel for each shown leaf label", () => {
             codeMapRenderService["setLabels"](nodes)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(3)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(3)
         })
 
         it("should not generate labels when showMetricLabelNodeName and showMetricLabelNameValue are both false", () => {
@@ -303,53 +297,52 @@ describe("codeMapRenderService", () => {
 
             codeMapRenderService["setLabels"](nodes)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(0)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(0)
         })
 
         it("should not generate labels for flattened nodes", () => {
             codeMapRenderService["getNodes"] = () => [{ ...TEST_NODE_ROOT, flat: true }]
             codeMapRenderService.render(null)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(0)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(0)
         })
 
         it("should generate labels for not-flattened nodes", () => {
             codeMapRenderService["getNodes"] = jest.fn().mockReturnValue(nodes)
             codeMapRenderService.render(null)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
         })
 
         it("should generate labels for color if option is toggled on", () => {
-            const colorLabelsNegative: ColorLabelOptions = {
-                positive: false,
-                negative: true,
-                neutral: false
-            }
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
+            store.dispatch(setColorLabels({ value: { positive: false, negative: true, neutral: false } }))
 
-            store.dispatch(setColorLabels({ value: colorLabelsNegative }))
+            // Act
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
+            // Assert
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
         })
 
         it("should generate labels for multiple colors if corresponding options are toggled on", () => {
-            const colorLabelsPosNeut: ColorLabelOptions = {
-                positive: true,
-                negative: false,
-                neutral: true
-            }
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
+            store.dispatch(setColorLabels({ value: { positive: true, negative: false, neutral: true } }))
 
-            store.dispatch(setColorLabels({ value: colorLabelsPosNeut }))
+            // Act
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(2)
+            // Assert
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
         })
 
         it("should not exceed amountOfTopLabels when multiple color types are selected", () => {
-            // Arrange: 2 color types selected, 2 nodes total, but limit is 1
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
             store.dispatch(setAmountOfTopLabels({ value: 1 }))
             store.dispatch(setColorLabels({ value: { positive: true, negative: false, neutral: true } }))
 
@@ -357,12 +350,13 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
-            // Assert: only 1 label despite 2 matching nodes across both color types
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
+            // Assert
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
         })
 
         it("should show no color labels when amountOfTopLabels is 0", () => {
             // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
             store.dispatch(setAmountOfTopLabels({ value: 0 }))
             store.dispatch(setColorLabels({ value: { positive: true, negative: true, neutral: true } }))
 
@@ -371,31 +365,46 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
             // Assert
-            expect(codeMapLabelService.addLeafLabel).not.toHaveBeenCalled()
+            expect(labelSettingsFacade.addLeafLabel).not.toHaveBeenCalled()
         })
 
         it("should show all color nodes when fewer exist than amountOfTopLabels", () => {
-            // Arrange: amountOfTopLabels=31 (from STATE), only 1 positive node exists
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
             store.dispatch(setColorLabels({ value: { positive: true, negative: false, neutral: false } }))
 
             // Act
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
-            // Assert: shows the 1 available node, not 31
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(1)
+            // Assert
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
         })
 
-        it("should show no labels when no color type is selected even if nodes exist", () => {
+        it("should show no color labels when no color type is selected in Color mode", () => {
             // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Color }))
             store.dispatch(setColorLabels({ value: { positive: false, negative: false, neutral: false } }))
 
             // Act
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
             codeMapRenderService["setLabels"](COLOR_TEST_NODES)
 
-            // Assert: falls through to normal top-N path (amountOfTopLabels=31), not color path
-            expect(codeMapLabelService.addLeafLabel).toHaveBeenCalledTimes(3)
+            // Assert
+            expect(labelSettingsFacade.addLeafLabel).not.toHaveBeenCalled()
+        })
+
+        it("should show height-based labels in Height mode regardless of color label settings", () => {
+            // Arrange
+            store.dispatch(setLabelMode({ value: LabelMode.Height }))
+            store.dispatch(setColorLabels({ value: { positive: true, negative: true, neutral: true } }))
+
+            // Act
+            codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
+            codeMapRenderService["setLabels"](COLOR_TEST_NODES)
+
+            // Assert
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(3)
         })
     })
 

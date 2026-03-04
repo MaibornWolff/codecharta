@@ -198,7 +198,9 @@ export class ScenarioApplierService {
                 showMetricLabelNameValue: labelsAndFolders.showMetricLabelNameValue,
                 showMetricLabelNodeName: labelsAndFolders.showMetricLabelNodeName,
                 enableFloorLabels: labelsAndFolders.enableFloorLabels,
-                colorLabels: labelsAndFolders.colorLabels
+                colorLabels: labelsAndFolders.colorLabels,
+                labelMode: labelsAndFolders.labelMode,
+                groupLabelCollisions: labelsAndFolders.groupLabelCollisions
             },
             fileSettings: { markedPackages: [...labelsAndFolders.markedPackages] }
         }
