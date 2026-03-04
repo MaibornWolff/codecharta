@@ -21,36 +21,29 @@ module.exports = {
             to: {}
         },
         {
-            name: "feature-globalSettings-no-external-access-to-services",
+            name: "feature-no-external-access-to-internals",
             severity: "error",
-            comment: "GlobalSettings services can only be accessed within the globalSettings feature",
-            from: {
-                pathNot: "^app/codeCharta/features/globalSettings/"
-            },
-            to: {
-                path: "^app/codeCharta/features/globalSettings/services/"
-            }
-        },
-        {
-            name: "feature-changelog-no-external-access-to-services",
-            severity: "error",
-            comment: "Changelog services can only be accessed within the changelog feature",
-            from: {
-                pathNot: "^app/codeCharta/features/changelog/"
-            },
-            to: {
-                path: "^app/codeCharta/features/changelog/services/"
-            }
-        },
-        {
-            name: "feature-no-external-access-to-stores",
-            severity: "error",
-            comment: "Feature stores cannot be accessed from outside the features directory",
+            comment: "Feature internals can only be accessed within the same feature. External code must use facade.ts or components/",
             from: {
                 pathNot: ["^app/codeCharta/features/", "\\.spec\\.ts$"]
             },
             to: {
-                path: "^app/codeCharta/features/[^/]+/stores/"
+                path: "^app/codeCharta/features/",
+                pathNot: ["^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)"]
+            }
+        },
+        {
+            name: "feature-cross-feature-only-via-public-api",
+            severity: "error",
+            comment:
+                "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden.",
+            from: {
+                path: "^app/codeCharta/features/([^/]+)/",
+                pathNot: "\\.spec\\.ts$"
+            },
+            to: {
+                path: "^app/codeCharta/features/([^/]+)/",
+                pathNot: ["^app/codeCharta/features/$1/", "^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)"]
             }
         },
         {
