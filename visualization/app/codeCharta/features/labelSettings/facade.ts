@@ -7,6 +7,7 @@ import { ColorLabelsService } from "./services/colorLabels.service"
 import { GroupLabelCollisionsService } from "./services/groupLabelCollisions.service"
 import { LabelCreationService } from "./services/labelCreation.service"
 import { LabelCollisionService } from "./services/labelCollision.service"
+import { ConnectorDrawingService } from "./services/connectorDrawing.service"
 import { ColorLabelOptions, LabelMode, Node } from "../../codeCharta.model"
 
 @Injectable({
@@ -21,7 +22,8 @@ export class LabelSettingsFacade {
         private readonly colorLabelsService: ColorLabelsService,
         private readonly groupLabelCollisionsService: GroupLabelCollisionsService,
         private readonly labelCreationService: LabelCreationService,
-        private readonly labelCollisionService: LabelCollisionService
+        private readonly labelCollisionService: LabelCollisionService,
+        private readonly connectorDrawingService: ConnectorDrawingService
     ) {}
 
     // Settings observables
@@ -81,7 +83,7 @@ export class LabelSettingsFacade {
 
     clearLabels() {
         this.labelCreationService.clearLabels()
-        this.labelCollisionService.clearConnectors()
+        this.connectorDrawingService.clearConnectors()
     }
 
     clearTemporaryLabel(hoveredNode: Node) {
@@ -106,5 +108,6 @@ export class LabelSettingsFacade {
 
     destroy() {
         this.labelCollisionService.destroy()
+        this.connectorDrawingService.destroy()
     }
 }

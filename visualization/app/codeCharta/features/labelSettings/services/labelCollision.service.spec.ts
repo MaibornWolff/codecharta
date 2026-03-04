@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { LabelCollisionService } from "./labelCollision.service"
 import { LabelCreationService } from "./labelCreation.service"
+import { ConnectorDrawingService } from "./connectorDrawing.service"
 import { CcState, Node } from "../../../codeCharta.model"
 import { Group, BoxGeometry, Mesh, Scene } from "three"
 import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
@@ -20,6 +21,7 @@ describe("LabelCollisionService", () => {
     let tooltipService: Partial<CodeMapTooltipService>
     let labelCreationService: LabelCreationService
     let labelCollisionService: LabelCollisionService
+    let connectorDrawingService: ConnectorDrawingService
     let sampleLeaf: Node
     let otherSampleLeaf: Node
 
@@ -41,12 +43,13 @@ describe("LabelCollisionService", () => {
         threeSceneService.scene = new Scene()
 
         labelCreationService = new LabelCreationService(stateAccessStore, threeSceneService)
+        connectorDrawingService = new ConnectorDrawingService(threeRendererService, threeSceneService)
         labelCollisionService = new LabelCollisionService(
             threeRendererService,
-            threeSceneService,
             tooltipService as CodeMapTooltipService,
             labelCreationService,
-            stateAccessStore
+            stateAccessStore,
+            connectorDrawingService
         )
 
         sampleLeaf = {
@@ -361,28 +364,15 @@ describe("LabelCollisionService", () => {
             expect(labelCreationService.getLabels().length).toBe(0)
         })
 
-        it("should dispose connector geometry and remove from scene", () => {
+        it("should delegate connector cleanup to ConnectorDrawingService", () => {
             // Arrange
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-            labelCreationService.addLeafLabel(sampleLeaf, 10)
-            labelCollisionService.updateLabelLayout()
-            const segments = labelCollisionService["connectorSegments"]
-            expect(segments).not.toBeNull()
+            const destroySpy = jest.spyOn(connectorDrawingService, "destroy")
 
             // Act
             labelCollisionService.destroy()
 
             // Assert
-            expect(labelCollisionService["connectorSegments"]).toBeNull()
-            expect(labelCollisionService["connectorPositions"]).toBeNull()
-        })
-
-        it("should be a no-op when no connectors have been created", () => {
-            // Arrange
-            expect(labelCollisionService["connectorSegments"]).toBeNull()
-
-            // Act & Assert
-            expect(() => labelCollisionService.destroy()).not.toThrow()
+            expect(destroySpy).toHaveBeenCalled()
         })
 
         it("should clean up badges when destroyed", () => {
