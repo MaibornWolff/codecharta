@@ -7,8 +7,9 @@ import { ScenariosService } from "./scenarios.service"
 import { PlainPosition, Scenario, ScenarioFile } from "../model/scenario.model"
 import { FileDownloader } from "../../../util/fileDownloader"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
-import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
 import { Vector3 } from "three"
+
+const BUILT_IN_SCENARIO_COUNT = 6
 
 describe("ScenariosService", () => {
     let service: ScenariosService
@@ -57,7 +58,7 @@ describe("ScenariosService", () => {
             expect(scenario.name).toBe("Test Scenario")
             expect(scenario.description).toBe("A test description")
             expect(scenario.id).toBeDefined()
-            expect(service.scenarios$.getValue()).toHaveLength(1 + BUILT_IN_SCENARIOS.length)
+            expect(service.scenarios$.getValue()).toHaveLength(1 + BUILT_IN_SCENARIO_COUNT)
         })
 
         it("should save a scenario with mapFileNames when provided", async () => {
@@ -86,7 +87,7 @@ describe("ScenariosService", () => {
             await service.removeScenario(scenario.id)
 
             // Assert
-            expect(service.scenarios$.getValue()).toHaveLength(BUILT_IN_SCENARIOS.length)
+            expect(service.scenarios$.getValue()).toHaveLength(BUILT_IN_SCENARIO_COUNT)
         })
     })
 
@@ -97,7 +98,7 @@ describe("ScenariosService", () => {
 
             // Assert
             const scenarios = service.scenarios$.getValue()
-            expect(scenarios).toHaveLength(BUILT_IN_SCENARIOS.length)
+            expect(scenarios).toHaveLength(BUILT_IN_SCENARIO_COUNT)
             expect(scenarios.every(s => s.isBuiltIn)).toBe(true)
         })
 
@@ -110,7 +111,7 @@ describe("ScenariosService", () => {
 
             // Assert
             const scenarios = service.scenarios$.getValue()
-            expect(scenarios).toHaveLength(1 + BUILT_IN_SCENARIOS.length)
+            expect(scenarios).toHaveLength(1 + BUILT_IN_SCENARIO_COUNT)
             expect(scenarios[0].name).toBe("User Scenario")
             expect(scenarios[0].isBuiltIn).toBeUndefined()
             expect(scenarios[scenarios.length - 1].isBuiltIn).toBe(true)
@@ -390,6 +391,108 @@ describe("ScenariosService", () => {
 
             // Assert
             expect(scenario.mapFileNames).toBeUndefined()
+        })
+    })
+
+    describe("built-in scenarios", () => {
+        it("should have exactly 6 built-in scenarios", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
+            expect(builtIn).toHaveLength(6)
+        })
+
+        it("should all have isBuiltIn set to true", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
+            for (const scenario of builtIn) {
+                expect(scenario.isBuiltIn).toBe(true)
+            }
+        })
+
+        it("should all have deterministic ids starting with 'built-in-'", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
+            for (const scenario of builtIn) {
+                expect(scenario.id).toMatch(/^built-in-/)
+            }
+        })
+
+        it("should all have unique ids", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
+            const ids = builtIn.map(s => s.id)
+            expect(new Set(ids).size).toBe(ids.length)
+        })
+
+        it("should all have createdAt of 0", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
+            for (const scenario of builtIn) {
+                expect(scenario.createdAt).toBe(0)
+            }
+        })
+
+        it("should all have metrics and colors sections only", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
+            for (const scenario of builtIn) {
+                expect(scenario.sections.metrics).toBeDefined()
+                expect(scenario.sections.colors).toBeDefined()
+                expect(scenario.sections.camera).toBeUndefined()
+                expect(scenario.sections.filters).toBeUndefined()
+                expect(scenario.sections.labelsAndFolders).toBeUndefined()
+            }
+        })
+
+        it("should all have colorRange, colorMode, and mapColors in colors section", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
+            for (const scenario of builtIn) {
+                expect(scenario.sections.colors?.colorRange).toBeDefined()
+                expect(scenario.sections.colors?.colorMode).toBe("weightedGradient")
+                expect(scenario.sections.colors?.mapColors).toEqual({
+                    positive: "#69AE40",
+                    neutral: "#ddcc00",
+                    negative: "#820E0E"
+                })
+            }
+        })
+
+        it("should all have only areaMetric, heightMetric, colorMetric, and linking in metrics section", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
+            for (const scenario of builtIn) {
+                expect(scenario.sections.metrics?.areaMetric).toBeDefined()
+                expect(scenario.sections.metrics?.heightMetric).toBeDefined()
+                expect(scenario.sections.metrics?.colorMetric).toBeDefined()
+                expect(scenario.sections.metrics?.edgeMetric).toBeUndefined()
+                expect(scenario.sections.metrics?.distributionMetric).toBeUndefined()
+                expect(scenario.sections.metrics?.isColorMetricLinkedToHeightMetric).toBe(true)
+            }
         })
     })
 })

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State } from "@ngrx/store"
 import { BehaviorSubject } from "rxjs"
-import { CcState } from "../../../codeCharta.model"
+import { CcState, ColorMode } from "../../../codeCharta.model"
 import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import {
@@ -22,7 +22,106 @@ export interface ScenarioImportResult {
 }
 import { FileDownloader } from "../../../util/fileDownloader"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
-import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
+
+const DEFAULT_MAP_COLORS = {
+    positive: "#69AE40",
+    neutral: "#ddcc00",
+    negative: "#820E0E"
+}
+
+const BUILT_IN_SCENARIOS: Scenario[] = [
+    {
+        id: "built-in-rloc",
+        name: "Real Lines of Code",
+        description: "Visualize code size using real lines of code",
+        createdAt: 0,
+        isBuiltIn: true,
+        sections: {
+            metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc", isColorMetricLinkedToHeightMetric: true },
+            colors: { colorRange: { from: 250, to: 500 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
+        }
+    },
+    {
+        id: "built-in-complexity",
+        name: "Complexity",
+        description: "Visualize cyclomatic complexity",
+        createdAt: 0,
+        isBuiltIn: true,
+        sections: {
+            metrics: {
+                areaMetric: "rloc",
+                heightMetric: "complexity",
+                colorMetric: "complexity",
+                isColorMetricLinkedToHeightMetric: true
+            },
+            colors: { colorRange: { from: 50, to: 100 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
+        }
+    },
+    {
+        id: "built-in-comment-lines",
+        name: "Comment Lines",
+        description: "Visualize comment density",
+        createdAt: 0,
+        isBuiltIn: true,
+        sections: {
+            metrics: {
+                areaMetric: "rloc",
+                heightMetric: "comment_lines",
+                colorMetric: "comment_lines",
+                isColorMetricLinkedToHeightMetric: true
+            },
+            colors: { colorRange: { from: 50, to: 100 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
+        }
+    },
+    {
+        id: "built-in-code-smells",
+        name: "Code Smells",
+        description: "Visualize code smell density",
+        createdAt: 0,
+        isBuiltIn: true,
+        sections: {
+            metrics: {
+                areaMetric: "rloc",
+                heightMetric: "code_smell",
+                colorMetric: "code_smell",
+                isColorMetricLinkedToHeightMetric: true
+            },
+            colors: { colorRange: { from: 10, to: 50 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
+        }
+    },
+    {
+        id: "built-in-logic-complexity",
+        name: "Logic Complexity",
+        description: "Visualize cognitive/logic complexity",
+        createdAt: 0,
+        isBuiltIn: true,
+        sections: {
+            metrics: {
+                areaMetric: "rloc",
+                heightMetric: "logic_complexity",
+                colorMetric: "logic_complexity",
+                isColorMetricLinkedToHeightMetric: true
+            },
+            colors: { colorRange: { from: 40, to: 80 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
+        }
+    },
+    {
+        id: "built-in-max-complexity-per-function",
+        name: "Max Complexity per Function",
+        description: "Visualize maximum complexity per function",
+        createdAt: 0,
+        isBuiltIn: true,
+        sections: {
+            metrics: {
+                areaMetric: "rloc",
+                heightMetric: "max_complexity_per_function",
+                colorMetric: "max_complexity_per_function",
+                isColorMetricLinkedToHeightMetric: true
+            },
+            colors: { colorRange: { from: 10, to: 20 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
+        }
+    }
+]
 
 @Injectable({ providedIn: "root" })
 export class ScenariosService {
