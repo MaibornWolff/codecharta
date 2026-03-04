@@ -98,7 +98,6 @@ describe("codeMapRenderService", () => {
 
     function withMockedLabelSettingsFacade() {
         labelSettingsFacade = codeMapRenderService["labelSettingsFacade"] = jest.fn().mockReturnValue({
-            scale: jest.fn(),
             clearLabels: jest.fn(),
             addLeafLabel: jest.fn()
         })()
@@ -191,12 +190,6 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["scaleMap"]()
 
             expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledWith()
-        })
-
-        it("should call labelSettingsFacade.scale", () => {
-            codeMapRenderService["scaleMap"]()
-
-            expect(labelSettingsFacade.scale).toHaveBeenCalledWith()
         })
 
         it("should call codeMapArrowService.scale", () => {

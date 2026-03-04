@@ -218,6 +218,24 @@ describe("LabelCreationService", () => {
             expect(labelCreationService.getSuppressedLabel()).toBe(labelCreationService.getLabels()[0])
         })
 
+        it("should restore previously suppressed label before switching target", () => {
+            // Arrange
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            labelCreationService.addLeafLabel(sampleLeaf, 0)
+            labelCreationService.addLeafLabel(otherSampleLeaf, 0)
+            labelCreationService.suppressLabelForNode(sampleLeaf)
+
+            // Act
+            labelCreationService.suppressLabelForNode(otherSampleLeaf)
+
+            // Assert
+            const contentFirst = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const contentSecond = labelCreationService.getLabels()[1].labelElement.getContentElement()
+            expect(contentFirst.style.opacity).toBe("1")
+            expect(contentSecond.style.opacity).toBe("0")
+            expect(labelCreationService.getSuppressedLabel()).toBe(labelCreationService.getLabels()[1])
+        })
+
         it("should not suppress if node has no label", () => {
             // Act
             labelCreationService.suppressLabelForNode(sampleLeaf)

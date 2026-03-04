@@ -91,6 +91,7 @@ export class LabelCreationService {
     }
 
     suppressLabelForNode(node: Node) {
+        this.restoreSuppressedLabel()
         const label = this.labels.find(l => l.node === node)
         if (label) {
             this.suppressedLabel = label
