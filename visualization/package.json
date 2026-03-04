@@ -84,7 +84,7 @@
     "fake-indexeddb": "^6.2.5",
     "fflate": "^0.8.2",
     "font-awesome": "^4.7.0",
-    "hotkeys-js": "^3.13.15",
+    "hotkeys-js": "^4.0.0",
     "html2canvas-pro": "^1.6.6",
     "idb": "^8.0.3",
     "ignore": "^7.0.5",
