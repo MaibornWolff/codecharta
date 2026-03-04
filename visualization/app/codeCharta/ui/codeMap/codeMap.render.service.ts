@@ -78,7 +78,6 @@ export class CodeMapRenderService implements OnDestroy {
 
     scaleMap() {
         this.codeMapMouseEventService.unhoverNode()
-        this.labelSettingsFacade.scale()
         this.codeMapArrowService.scale()
         this.threeSceneService.scaleHeight()
         this.labelSettingsFacade.clearLabels()

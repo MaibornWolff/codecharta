@@ -69,9 +69,6 @@ export class LabelCreationService {
     }
 
     clearLabels() {
-        for (const label of this.labels) {
-            this.threeSceneService.labels.remove(label.labelElement.cssObject)
-        }
         this.threeSceneService.labels.clear()
         this.labels = []
         this.suppressedLabel = null
@@ -107,11 +104,5 @@ export class LabelCreationService {
             this.suppressedLabel.labelElement.setOpacity("1")
             this.suppressedLabel = null
         }
-    }
-
-    scale() {
-        // CSS2DRenderer handles projection automatically.
-        // Labels are cleared and recreated on scale changes,
-        // so no manual position adjustment is needed.
     }
 }

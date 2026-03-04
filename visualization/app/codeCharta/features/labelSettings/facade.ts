@@ -100,10 +100,6 @@ export class LabelSettingsFacade {
         this.labelCreationService.restoreSuppressedLabel()
     }
 
-    scale() {
-        this.labelCreationService.scale()
-    }
-
     setSuppressLayout(suppress: boolean) {
         this.labelCollisionService.setSuppressLayout(suppress)
     }

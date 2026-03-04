@@ -248,18 +248,4 @@ describe("LabelCreationService", () => {
             expect(() => labelCreationService.restoreSuppressedLabel()).not.toThrow()
         })
     })
-
-    describe("scale", () => {
-        it("should be a no-op (labels are cleared and recreated)", () => {
-            // Arrange
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-            labelCreationService.addLeafLabel(sampleLeaf, 0)
-
-            // Act
-            labelCreationService.scale()
-
-            // Assert
-            expect(labelCreationService.getLabels().length).toBe(1)
-        })
-    })
 })
