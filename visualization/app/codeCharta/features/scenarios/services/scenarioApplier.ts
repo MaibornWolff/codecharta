@@ -120,7 +120,7 @@ export function buildOrderedStatePatches(
         phase3Parts.push(buildLabelsAndFoldersPatch(sections.labelsAndFolders))
     }
     if (phase3Parts.length > 0) {
-        patches.push(phase3Parts.reduce(mergePatches))
+        patches.push(phase3Parts.reduce((a, b) => mergePatches(a, b), {} as RecursivePartial<CcState>))
     }
 
     return patches
