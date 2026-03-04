@@ -2,7 +2,8 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BehaviorSubject } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
-import { getScenarioPriority, groupScenarios, ScenarioListDialogComponent, toScenarioView } from "./scenarioListDialog.component"
+import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
+import { ScenarioListHelpersService } from "./scenarioListHelpers"
 import { ScenariosService } from "../../services/scenarios.service"
 import { Scenario } from "../../model/scenario.model"
 import { ColorMode, MetricData } from "../../../../codeCharta.model"
@@ -61,6 +62,7 @@ const createFileState = (fileName: string): FileState => ({
 })
 
 const emptyMetricData: MetricData = { nodeMetricData: [], edgeMetricData: [] }
+const helpers = new ScenarioListHelpersService()
 
 describe("ScenarioListDialogComponent", () => {
     let component: ScenarioListDialogComponent
@@ -243,7 +245,7 @@ describe("ScenarioListDialogComponent", () => {
             const visible = new Set(["my.cc.json"])
 
             // Act
-            const result = getScenarioPriority(scenario, visible)
+            const result = helpers.getScenarioPriority(scenario, visible)
 
             // Assert
             expect(result).toBe(0)
@@ -254,7 +256,7 @@ describe("ScenarioListDialogComponent", () => {
             const scenario = createTestScenario("Test", "id-1")
 
             // Act
-            const result = getScenarioPriority(scenario, new Set())
+            const result = helpers.getScenarioPriority(scenario, new Set())
 
             // Assert
             expect(result).toBe(1)
@@ -265,7 +267,7 @@ describe("ScenarioListDialogComponent", () => {
             const scenario = createBuiltInScenario("Test", "id-1")
 
             // Act
-            const result = getScenarioPriority(scenario, new Set())
+            const result = helpers.getScenarioPriority(scenario, new Set())
 
             // Assert
             expect(result).toBe(2)
@@ -277,7 +279,7 @@ describe("ScenarioListDialogComponent", () => {
             const visible = new Set(["my.cc.json"])
 
             // Act
-            const result = getScenarioPriority(scenario, visible)
+            const result = helpers.getScenarioPriority(scenario, visible)
 
             // Assert
             expect(result).toBe(3)
@@ -370,7 +372,7 @@ describe("ScenarioListDialogComponent", () => {
     describe("groupScenarios", () => {
         it("should return empty array for no scenarios", () => {
             // Act
-            const result = groupScenarios([], new Set())
+            const result = helpers.groupScenarios([], new Set())
 
             // Assert
             expect(result).toEqual([])
@@ -387,7 +389,7 @@ describe("ScenarioListDialogComponent", () => {
             ]
 
             // Act
-            const groups = groupScenarios(scenarios, visible)
+            const groups = helpers.groupScenarios(scenarios, visible)
 
             // Assert
             expect(groups).toHaveLength(4)
@@ -466,7 +468,7 @@ describe("ScenarioListDialogComponent", () => {
             const scenario: Scenario = { id: "id-1", name: "NoMetrics", createdAt: 0, sections: {} }
 
             // Act
-            const view = toScenarioView(scenario, new Set(), emptyMetricData)
+            const view = helpers.toScenarioView(scenario, new Set(), emptyMetricData)
 
             // Assert
             expect(view.warning).toBe(false)
@@ -481,7 +483,7 @@ describe("ScenarioListDialogComponent", () => {
             }
 
             // Act
-            const view = toScenarioView(builtIn, new Set(), metricData)
+            const view = helpers.toScenarioView(builtIn, new Set(), metricData)
 
             // Assert
             expect(view.warning).toBe(false)
@@ -493,8 +495,8 @@ describe("ScenarioListDialogComponent", () => {
             const global = createTestScenario("Global", "id-2")
 
             // Act
-            const boundView = toScenarioView(bound, new Set(), emptyMetricData)
-            const globalView = toScenarioView(global, new Set(), emptyMetricData)
+            const boundView = helpers.toScenarioView(bound, new Set(), emptyMetricData)
+            const globalView = helpers.toScenarioView(global, new Set(), emptyMetricData)
 
             // Assert
             expect(boundView.mapBound).toBe(true)
@@ -508,8 +510,8 @@ describe("ScenarioListDialogComponent", () => {
             const matching = new Set(["project.cc.json"])
 
             // Act
-            const mismatchView = toScenarioView(bound, visible, emptyMetricData)
-            const matchView = toScenarioView(bound, matching, emptyMetricData)
+            const mismatchView = helpers.toScenarioView(bound, visible, emptyMetricData)
+            const matchView = helpers.toScenarioView(bound, matching, emptyMetricData)
 
             // Assert
             expect(mismatchView.mapMismatch).toBe(true)
@@ -521,7 +523,7 @@ describe("ScenarioListDialogComponent", () => {
             const scenario = createTestScenario("Test", "id-1")
 
             // Act
-            const view = toScenarioView(scenario, new Set(), emptyMetricData)
+            const view = helpers.toScenarioView(scenario, new Set(), emptyMetricData)
 
             // Assert
             expect(view.formattedDate).toBeDefined()
@@ -534,8 +536,8 @@ describe("ScenarioListDialogComponent", () => {
             const builtIn = createBuiltInScenario("Built-In", "id-2")
 
             // Act
-            const fullView = toScenarioView(full, new Set(), emptyMetricData)
-            const builtInView = toScenarioView(builtIn, new Set(), emptyMetricData)
+            const fullView = helpers.toScenarioView(full, new Set(), emptyMetricData)
+            const builtInView = helpers.toScenarioView(builtIn, new Set(), emptyMetricData)
 
             // Assert
             expect(fullView.sectionKeys).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
