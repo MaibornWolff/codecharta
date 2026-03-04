@@ -8,7 +8,7 @@ import {
     SCENARIO_SECTION_LABELS,
     ScenarioSectionKey
 } from "../../model/scenario.model"
-import { ScenariosService } from "../../services/scenarios.service"
+import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
 
 @Component({
@@ -43,7 +43,7 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
     readonly hasMissing = computed(() => hasMissingMetrics(this.missingMetrics()))
     readonly hasAnySelected = computed(() => this.availableSectionKeys().some(key => this.selectedSections()[key]))
 
-    constructor(private readonly scenariosService: ScenariosService) {}
+    constructor(private readonly scenarioApplier: ScenarioApplierService) {}
 
     ngAfterViewInit() {
         const dialog = this.dialogElement().nativeElement
@@ -58,7 +58,7 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
     async apply() {
         const selectedKeys = new Set<ScenarioSectionKey>(this.availableSectionKeys().filter(key => this.selectedSections()[key]))
         this.dialogElement().nativeElement.close()
-        await this.scenariosService.applyScenario(this.scenario(), selectedKeys, this.metricData())
+        await this.scenarioApplier.applyScenario(this.scenario(), selectedKeys, this.metricData())
     }
 
     close() {
