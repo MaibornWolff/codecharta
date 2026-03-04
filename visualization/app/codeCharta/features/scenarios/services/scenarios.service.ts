@@ -14,7 +14,7 @@ export interface ScenarioImportResult {
 }
 import { FileDownloader } from "../../../util/fileDownloader"
 import { buildScenario } from "./scenarioBuilder"
-import { addScenario, deleteScenario as deleteScenarioFromDB, readAllScenarios } from "./scenarioIndexedDB"
+import { addScenario, deleteScenario as deleteScenarioFromDB, readAllScenarios } from "../stores/scenarioIndexedDB"
 import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
 
 @Injectable({ providedIn: "root" })

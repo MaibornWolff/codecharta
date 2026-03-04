@@ -6,11 +6,11 @@ import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMa
 import { ScenariosService } from "./scenarios.service"
 import { Scenario, ScenarioFile } from "../model/scenario.model"
 import { FileDownloader } from "../../../util/fileDownloader"
-import * as scenarioIndexedDB from "./scenarioIndexedDB"
+import * as scenarioIndexedDB from "../stores/scenarioIndexedDB"
 import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
 import { Vector3 } from "three"
 
-jest.mock("./scenarioIndexedDB")
+jest.mock("../stores/scenarioIndexedDB")
 
 describe("ScenariosService", () => {
     let service: ScenariosService

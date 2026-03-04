@@ -9,7 +9,7 @@ import { VALID_NODE_WITH_PATH_AND_EXTENSION } from "../../util/dataMocks"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { RibbonBarComponent } from "./ribbonBar.component"
 
-jest.mock("../../features/scenarios/services/scenarioIndexedDB", () => ({
+jest.mock("../../features/scenarios/stores/scenarioIndexedDB", () => ({
     readAllScenarios: jest.fn().mockResolvedValue([]),
     addScenario: jest.fn().mockResolvedValue(undefined),
     deleteScenario: jest.fn().mockResolvedValue(undefined)
