@@ -5,7 +5,7 @@ if (typeof globalThis.structuredClone === "undefined") {
 }
 
 import { Scenario } from "../model/scenario.model"
-import { addScenario, deleteScenario, readAllScenarios, updateScenario } from "./scenarioIndexedDB"
+import { ScenarioIndexedDBService } from "./scenarioIndexedDB"
 
 let idCounter = 0
 
@@ -59,25 +59,27 @@ const createTestScenario = (overrides: Partial<Scenario> = {}): Scenario => ({
     ...overrides
 })
 
-describe("scenarioIndexedDB", () => {
-    describe("readAllScenarios", () => {
+describe("ScenarioIndexedDBService", () => {
+    const service = new ScenarioIndexedDBService()
+
+    describe("readAll", () => {
         it("should return scenarios that were previously added", async () => {
             // Act
-            const result = await readAllScenarios()
+            const result = await service.readAll()
 
             // Assert
             expect(result).toEqual(expect.any(Array))
         })
     })
 
-    describe("addScenario", () => {
+    describe("add", () => {
         it("should add a scenario and read it back", async () => {
             // Arrange
             const scenario = createTestScenario()
 
             // Act
-            await addScenario(scenario)
-            const result = await readAllScenarios()
+            await service.add(scenario)
+            const result = await service.readAll()
 
             // Assert
             expect(result.find(s => s.id === scenario.id)).toEqual(scenario)
@@ -86,38 +88,38 @@ describe("scenarioIndexedDB", () => {
         it("should throw when adding a duplicate id", async () => {
             // Arrange
             const scenario = createTestScenario()
-            await addScenario(scenario)
+            await service.add(scenario)
 
             // Act & Assert
-            await expect(addScenario(scenario)).rejects.toThrow()
+            await expect(service.add(scenario)).rejects.toThrow()
         })
     })
 
-    describe("deleteScenario", () => {
+    describe("delete", () => {
         it("should delete a scenario by id", async () => {
             // Arrange
             const scenario = createTestScenario()
-            await addScenario(scenario)
+            await service.add(scenario)
 
             // Act
-            await deleteScenario(scenario.id)
-            const result = await readAllScenarios()
+            await service.delete(scenario.id)
+            const result = await service.readAll()
 
             // Assert
             expect(result.find(s => s.id === scenario.id)).toBeUndefined()
         })
     })
 
-    describe("updateScenario", () => {
+    describe("update", () => {
         it("should update an existing scenario", async () => {
             // Arrange
             const scenario = createTestScenario()
-            await addScenario(scenario)
+            await service.add(scenario)
 
             // Act
             const updated = { ...scenario, name: "Updated Scenario" }
-            await updateScenario(updated)
-            const result = await readAllScenarios()
+            await service.update(updated)
+            const result = await service.readAll()
 
             // Assert
             const found = result.find(s => s.id === scenario.id)

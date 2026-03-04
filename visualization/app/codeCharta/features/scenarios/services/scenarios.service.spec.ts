@@ -6,27 +6,28 @@ import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMa
 import { ScenariosService } from "./scenarios.service"
 import { Scenario, ScenarioFile } from "../model/scenario.model"
 import { FileDownloader } from "../../../util/fileDownloader"
-import * as scenarioIndexedDB from "../stores/scenarioIndexedDB"
+import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
 import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
 import { Vector3 } from "three"
-
-jest.mock("../stores/scenarioIndexedDB")
 
 describe("ScenariosService", () => {
     let service: ScenariosService
     let threeCameraService: { camera: { position: Vector3 } }
     let threeMapControlsService: { controls: { target: Vector3 } }
+    let db: { readAll: jest.Mock; add: jest.Mock; delete: jest.Mock }
     let storedScenarios: Scenario[]
 
     beforeEach(() => {
         storedScenarios = []
-        ;(scenarioIndexedDB.readAllScenarios as jest.Mock).mockImplementation(async () => [...storedScenarios])
-        ;(scenarioIndexedDB.addScenario as jest.Mock).mockImplementation(async (scenario: Scenario) => {
-            storedScenarios.push(scenario)
-        })
-        ;(scenarioIndexedDB.deleteScenario as jest.Mock).mockImplementation(async (id: string) => {
-            storedScenarios = storedScenarios.filter(s => s.id !== id)
-        })
+        db = {
+            readAll: jest.fn().mockImplementation(async () => [...storedScenarios]),
+            add: jest.fn().mockImplementation(async (scenario: Scenario) => {
+                storedScenarios.push(scenario)
+            }),
+            delete: jest.fn().mockImplementation(async (id: string) => {
+                storedScenarios = storedScenarios.filter(s => s.id !== id)
+            })
+        }
 
         threeCameraService = {
             camera: { position: new Vector3(0, 300, 1000) }
@@ -39,7 +40,8 @@ describe("ScenariosService", () => {
             providers: [
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeCameraService, useValue: threeCameraService },
-                { provide: ThreeMapControlsService, useValue: threeMapControlsService }
+                { provide: ThreeMapControlsService, useValue: threeMapControlsService },
+                { provide: ScenarioIndexedDBService, useValue: db }
             ]
         })
 
@@ -179,8 +181,8 @@ describe("ScenariosService", () => {
             expect(result.duplicates).toEqual([])
             expect(result.invalid).toEqual([])
             expect(result.parseErrors).toEqual([])
-            expect(scenarioIndexedDB.addScenario).toHaveBeenCalled()
-            expect(scenarioIndexedDB.readAllScenarios).toHaveBeenCalled()
+            expect(db.add).toHaveBeenCalled()
+            expect(db.readAll).toHaveBeenCalled()
         })
 
         it("should skip files with invalid schemaVersion and report them as invalid", async () => {
