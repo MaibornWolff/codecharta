@@ -3,7 +3,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BehaviorSubject } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
 import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
-import { ScenarioListHelpersService } from "../../services/scenarioListHelpers.service"
+import { ScenarioViewModelService } from "../../services/scenarioViewModel.service"
 import { ScenariosService } from "../../services/scenarios.service"
 import { Scenario } from "../../model/scenario.model"
 import { ColorMode, MetricData, NodeType } from "../../../../codeCharta.model"
@@ -62,7 +62,7 @@ const createFileState = (fileName: string): FileState => ({
 })
 
 const emptyMetricData: MetricData = { nodeMetricData: [], edgeMetricData: [] }
-const helpers = new ScenarioListHelpersService()
+const helpers = new ScenarioViewModelService()
 
 describe("ScenarioListDialogComponent", () => {
     let component: ScenarioListDialogComponent

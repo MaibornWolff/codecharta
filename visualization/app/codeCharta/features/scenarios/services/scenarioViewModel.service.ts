@@ -18,7 +18,7 @@ interface RawScenarioGroup {
 }
 
 @Injectable({ providedIn: "root" })
-export class ScenarioListHelpersService {
+export class ScenarioViewModelService {
     groupScenarios(scenarios: Scenario[], visibleFileNames: Set<string>): RawScenarioGroup[] {
         const buckets = new Map<number, Scenario[]>()
         for (const scenario of scenarios) {
