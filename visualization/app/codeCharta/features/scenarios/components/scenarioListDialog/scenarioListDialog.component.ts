@@ -7,13 +7,12 @@ import { CcState, MetricData } from "../../../../codeCharta.model"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { filesSelector } from "../../../../state/store/files/files.selector"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
-import { CCSCENARIO_EXTENSION, getAvailableSectionKeys, Scenario } from "../../model/scenario.model"
+import { CCSCENARIO_EXTENSION, Scenario } from "../../model/scenario.model"
 import { ScenariosService } from "../../services/scenarios.service"
-import { getMissingMetrics, hasMissingMetrics } from "../../services/getMissingMetrics"
 import { DeleteConfirmDialogComponent } from "./deleteConfirmDialog/deleteConfirmDialog.component"
 import { ImportFeedbackDialogComponent } from "./importFeedbackDialog/importFeedbackDialog.component"
 import { ScenarioItemComponent } from "./scenarioItem/scenarioItem.component"
-import { ScenarioView } from "./scenarioView.model"
+import { ScenarioListHelpersService } from "./scenarioListHelpers"
 
 @Component({
     selector: "cc-scenario-list-dialog",
@@ -46,22 +45,23 @@ export class ScenarioListDialogComponent {
         const filtered = term
             ? all.filter(s => s.name.toLowerCase().includes(term) || s.description?.toLowerCase().includes(term))
             : [...all]
-        return filtered.sort((a, b) => getScenarioPriority(a, visible) - getScenarioPriority(b, visible))
+        return filtered.sort((a, b) => this.helpers.getScenarioPriority(a, visible) - this.helpers.getScenarioPriority(b, visible))
     })
 
     readonly groupedScenarios = computed(() => {
         const visible = this.visibleFileNames()
         const metricData = this.metricData()
-        const groups = groupScenarios(this.filteredScenarios(), visible)
+        const groups = this.helpers.groupScenarios(this.filteredScenarios(), visible)
         return groups.map(group => ({
             ...group,
-            scenarios: group.scenarios.map(scenario => toScenarioView(scenario, visible, metricData))
+            scenarios: group.scenarios.map(scenario => this.helpers.toScenarioView(scenario, visible, metricData))
         }))
     })
 
     constructor(
         private readonly scenariosService: ScenariosService,
-        private readonly store: Store<CcState>
+        private readonly store: Store<CcState>,
+        private readonly helpers: ScenarioListHelpersService
     ) {}
 
     async open() {
@@ -112,63 +112,4 @@ export class ScenarioListDialogComponent {
             await this.scenariosService.removeScenario(scenario.id)
         }
     }
-}
-
-const GROUP_DEFINITIONS: { priority: number; label: string; icon: string }[] = [
-    { priority: 0, label: "Current Map", icon: "fa-map-pin" },
-    { priority: 1, label: "Global", icon: "fa-globe" },
-    { priority: 2, label: "Built-in", icon: "fa-cube" },
-    { priority: 3, label: "Other Maps", icon: "fa-map-o" }
-]
-
-interface RawScenarioGroup {
-    label: string
-    icon: string
-    scenarios: Scenario[]
-}
-
-export function groupScenarios(scenarios: Scenario[], visibleFileNames: Set<string>): RawScenarioGroup[] {
-    const buckets = new Map<number, Scenario[]>()
-    for (const scenario of scenarios) {
-        const priority = getScenarioPriority(scenario, visibleFileNames)
-        const bucket = buckets.get(priority)
-        if (bucket) {
-            bucket.push(scenario)
-        } else {
-            buckets.set(priority, [scenario])
-        }
-    }
-    return GROUP_DEFINITIONS.filter(def => buckets.has(def.priority)).map(def => ({
-        label: def.label,
-        icon: def.icon,
-        scenarios: buckets.get(def.priority) ?? []
-    }))
-}
-
-export function toScenarioView(scenario: Scenario, visibleFileNames: Set<string>, metricData: MetricData): ScenarioView {
-    const mapBound = (scenario.mapFileNames?.length ?? 0) > 0
-    const mapMismatch = mapBound && !scenario.mapFileNames.some(name => visibleFileNames.has(name))
-    const warning = scenario.sections.metrics ? hasMissingMetrics(getMissingMetrics(scenario.sections.metrics, metricData)) : false
-    return {
-        scenario,
-        warning,
-        mapMismatch,
-        mapBound,
-        sectionKeys: getAvailableSectionKeys(scenario),
-        formattedDate: new Date(scenario.createdAt).toLocaleDateString()
-    }
-}
-
-export function getScenarioPriority(scenario: Scenario, visibleFileNames: Set<string>): number {
-    const isBound = (scenario.mapFileNames?.length ?? 0) > 0
-    if (isBound && scenario.mapFileNames?.some(name => visibleFileNames.has(name))) {
-        return 0
-    }
-    if (!isBound && !scenario.isBuiltIn) {
-        return 1
-    }
-    if (scenario.isBuiltIn) {
-        return 2
-    }
-    return 3
 }
