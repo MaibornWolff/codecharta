@@ -4,6 +4,8 @@ import { of } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
 import { ScenariosPanelComponent } from "./scenariosPanel.component"
 import { ScenariosService } from "../../services/scenarios.service"
+import { ScenarioApplierService } from "../../services/scenarioApplier.service"
+import { ScenarioImportExportService } from "../../services/scenarioImportExport.service"
 
 describe("ScenariosPanelComponent", () => {
     let component: ScenariosPanelComponent
@@ -20,6 +22,22 @@ describe("ScenariosPanelComponent", () => {
                         removeScenario: jest.fn(),
                         saveScenario: jest.fn(),
                         loadScenarios: jest.fn().mockResolvedValue(undefined)
+                    }
+                },
+                {
+                    provide: ScenarioApplierService,
+                    useValue: {
+                        applyScenario: jest.fn(),
+                        getMissingMetrics: jest.fn().mockReturnValue({ nodeMetrics: [], edgeMetrics: [] }),
+                        hasMissingMetrics: jest.fn().mockReturnValue(false),
+                        getAvailableMetricNames: jest.fn().mockReturnValue({ nodeMetrics: new Set(), edgeMetrics: new Set() })
+                    }
+                },
+                {
+                    provide: ScenarioImportExportService,
+                    useValue: {
+                        exportScenario: jest.fn(),
+                        importScenarioFiles: jest.fn().mockResolvedValue({ imported: 0, duplicates: [], invalid: [], parseErrors: [] })
                     }
                 }
             ]
