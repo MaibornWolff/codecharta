@@ -6,6 +6,7 @@ import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
 import { ScenarioViewModelService } from "../../services/scenarioViewModel.service"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { ScenariosService } from "../../services/scenarios.service"
+import { ScenarioImportExportService } from "../../services/scenarioImportExport.service"
 import { Scenario } from "../../model/scenario.model"
 import { ColorMode, MetricData, NodeType } from "../../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
@@ -73,6 +74,8 @@ describe("ScenarioListDialogComponent", () => {
         scenarios$: BehaviorSubject<Scenario[]>
         removeScenario: jest.Mock
         loadScenarios: jest.Mock
+    }
+    let importExportService: {
         exportScenario: jest.Mock
         importScenarioFiles: jest.Mock
     }
@@ -86,14 +89,20 @@ describe("ScenarioListDialogComponent", () => {
         scenariosService = {
             scenarios$: scenariosSubject,
             removeScenario: jest.fn(),
-            loadScenarios: jest.fn().mockResolvedValue(undefined),
+            loadScenarios: jest.fn().mockResolvedValue(undefined)
+        }
+        importExportService = {
             exportScenario: jest.fn(),
             importScenarioFiles: jest.fn().mockResolvedValue({ imported: 1, duplicates: [], invalid: [], parseErrors: [] })
         }
 
         TestBed.configureTestingModule({
             imports: [ScenarioListDialogComponent],
-            providers: [provideMockStore({ initialState: defaultState }), { provide: ScenariosService, useValue: scenariosService }]
+            providers: [
+                provideMockStore({ initialState: defaultState }),
+                { provide: ScenariosService, useValue: scenariosService },
+                { provide: ScenarioImportExportService, useValue: importExportService }
+            ]
         })
 
         store = TestBed.inject(MockStore)
@@ -146,7 +155,7 @@ describe("ScenarioListDialogComponent", () => {
         component.exportScenario(scenario)
 
         // Assert
-        expect(scenariosService.exportScenario).toHaveBeenCalledWith(scenario)
+        expect(importExportService.exportScenario).toHaveBeenCalledWith(scenario)
     })
 
     describe("delete", () => {
@@ -422,7 +431,7 @@ describe("ScenarioListDialogComponent", () => {
             await component.handleImportFiles(mockEvent)
 
             // Assert
-            expect(scenariosService.importScenarioFiles).toHaveBeenCalled()
+            expect(importExportService.importScenarioFiles).toHaveBeenCalled()
         })
 
         it("should not import when no files selected", async () => {
@@ -433,13 +442,13 @@ describe("ScenarioListDialogComponent", () => {
             await component.handleImportFiles(mockEvent)
 
             // Assert
-            expect(scenariosService.importScenarioFiles).not.toHaveBeenCalled()
+            expect(importExportService.importScenarioFiles).not.toHaveBeenCalled()
         })
 
         it("should delegate import feedback to sub-component", async () => {
             // Arrange
             const importResult = { imported: 0, duplicates: [], invalid: [], parseErrors: ["broken.json"] }
-            scenariosService.importScenarioFiles.mockResolvedValue(importResult)
+            importExportService.importScenarioFiles.mockResolvedValue(importResult)
             const openSpy = jest.spyOn(component.importFeedbackDialogRef(), "open")
             const mockEvent = { target: { files: { length: 1 } as FileList, value: "broken.json" } } as unknown as Event
 
@@ -452,7 +461,7 @@ describe("ScenarioListDialogComponent", () => {
 
         it("should not call importFeedbackDialog.open when import succeeds without issues", async () => {
             // Arrange
-            scenariosService.importScenarioFiles.mockResolvedValue({ imported: 1, duplicates: [], invalid: [], parseErrors: [] })
+            importExportService.importScenarioFiles.mockResolvedValue({ imported: 1, duplicates: [], invalid: [], parseErrors: [] })
             const openSpy = jest.spyOn(component.importFeedbackDialogRef(), "open")
             const mockEvent = { target: { files: { length: 1 } as FileList, value: "file.ccscenario" } } as unknown as Event
 
