@@ -9,7 +9,7 @@ import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRende
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { Scenario, ScenarioSections, ScenarioSectionKey } from "../model/scenario.model"
-import { ScenarioApplierService, buildOrderedStatePatches, getCameraVectors } from "./scenarioApplier.service"
+import { ScenarioApplierService } from "./scenarioApplier.service"
 import { ColorMode, MetricData, RecursivePartial, CcState } from "../../../codeCharta.model"
 
 const testSections: ScenarioSections = {
@@ -81,13 +81,44 @@ const createTestScenario = (): Scenario => ({
 })
 
 describe("ScenarioApplierService", () => {
+    let service: ScenarioApplierService
+    let store: MockStore
+    let threeCameraService: { camera: { position: Vector3; lookAt: jest.Mock; updateProjectionMatrix: jest.Mock } }
+    let threeMapControlsService: { controls: { target: Vector3 }; setControlTarget: jest.Mock; updateControls: jest.Mock }
+    let threeRendererService: { render: jest.Mock }
+
+    beforeEach(() => {
+        threeCameraService = {
+            camera: { position: new Vector3(0, 300, 1000), lookAt: jest.fn(), updateProjectionMatrix: jest.fn() }
+        }
+        threeMapControlsService = {
+            controls: { target: new Vector3(0, 0, 0) },
+            setControlTarget: jest.fn(),
+            updateControls: jest.fn()
+        }
+        threeRendererService = { render: jest.fn() }
+
+        TestBed.configureTestingModule({
+            providers: [
+                provideMockStore({ initialState: defaultState }),
+                { provide: State, useValue: { getValue: () => defaultState } },
+                { provide: ThreeCameraService, useValue: threeCameraService },
+                { provide: ThreeMapControlsService, useValue: threeMapControlsService },
+                { provide: ThreeRendererService, useValue: threeRendererService }
+            ]
+        })
+
+        store = TestBed.inject(MockStore)
+        service = TestBed.inject(ScenarioApplierService)
+    })
+
     describe("buildOrderedStatePatches", () => {
         it("should produce metrics patch first when metrics is selected", () => {
             // Arrange
             const keys = new Set<ScenarioSectionKey>(["metrics"])
 
             // Act
-            const patches = buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSections, keys)
 
             // Assert
             expect(patches).toHaveLength(1)
@@ -101,7 +132,7 @@ describe("ScenarioApplierService", () => {
             const keys = new Set<ScenarioSectionKey>(["metrics", "colors"])
 
             // Act
-            const patches = buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSections, keys)
 
             // Assert — metrics is patch 0, colors is patch 1
             expect(patches).toHaveLength(2)
@@ -116,7 +147,7 @@ describe("ScenarioApplierService", () => {
             const keys = new Set<ScenarioSectionKey>(["metrics", "colors", "filters", "labelsAndFolders"])
 
             // Act
-            const patches = buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSections, keys)
 
             // Assert
             expect(patches).toHaveLength(3)
@@ -131,7 +162,7 @@ describe("ScenarioApplierService", () => {
             const keys = new Set<ScenarioSectionKey>(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
 
             // Act
-            const patches = buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSections, keys)
             const merged = mergePatches(patches)
 
             // Assert
@@ -146,7 +177,7 @@ describe("ScenarioApplierService", () => {
             const keys = new Set<ScenarioSectionKey>()
 
             // Act
-            const patches = buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSections, keys)
 
             // Assert
             expect(patches).toHaveLength(0)
@@ -161,7 +192,7 @@ describe("ScenarioApplierService", () => {
             }
 
             // Act
-            const patches = buildOrderedStatePatches(testSections, keys, metricData)
+            const patches = service.buildOrderedStatePatches(testSections, keys, metricData)
 
             // Assert — rloc is available, mcc and pairingRate are not
             expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
@@ -176,7 +207,7 @@ describe("ScenarioApplierService", () => {
             const keys = new Set<ScenarioSectionKey>(["metrics"])
 
             // Act
-            const patches = buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSections, keys)
 
             // Assert
             expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
@@ -193,7 +224,7 @@ describe("ScenarioApplierService", () => {
             const keys = new Set<ScenarioSectionKey>(["metrics", "colors"])
 
             // Act
-            const patches = buildOrderedStatePatches(partialSections, keys)
+            const patches = service.buildOrderedStatePatches(partialSections, keys)
 
             // Assert
             expect(patches).toHaveLength(2)
@@ -214,7 +245,7 @@ describe("ScenarioApplierService", () => {
             const keys = new Set<ScenarioSectionKey>(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
 
             // Act
-            const patches = buildOrderedStatePatches(partialSections, keys)
+            const patches = service.buildOrderedStatePatches(partialSections, keys)
 
             // Assert — only metrics patch, no colors/filters/labels
             expect(patches).toHaveLength(1)
@@ -225,7 +256,7 @@ describe("ScenarioApplierService", () => {
     describe("getCameraVectors", () => {
         it("should reconstruct Vector3 objects from plain positions", () => {
             // Act
-            const result = getCameraVectors(testSections)
+            const result = service.getCameraVectors(testSections)
 
             // Assert
             expect(result).toBeDefined()
@@ -242,7 +273,7 @@ describe("ScenarioApplierService", () => {
             const noCamera: ScenarioSections = { metrics: testSections.metrics }
 
             // Act
-            const result = getCameraVectors(noCamera)
+            const result = service.getCameraVectors(noCamera)
 
             // Assert
             expect(result).toBeUndefined()
@@ -250,37 +281,6 @@ describe("ScenarioApplierService", () => {
     })
 
     describe("applyScenario", () => {
-        let service: ScenarioApplierService
-        let store: MockStore
-        let threeCameraService: { camera: { position: Vector3; lookAt: jest.Mock; updateProjectionMatrix: jest.Mock } }
-        let threeMapControlsService: { controls: { target: Vector3 }; setControlTarget: jest.Mock; updateControls: jest.Mock }
-        let threeRendererService: { render: jest.Mock }
-
-        beforeEach(() => {
-            threeCameraService = {
-                camera: { position: new Vector3(0, 300, 1000), lookAt: jest.fn(), updateProjectionMatrix: jest.fn() }
-            }
-            threeMapControlsService = {
-                controls: { target: new Vector3(0, 0, 0) },
-                setControlTarget: jest.fn(),
-                updateControls: jest.fn()
-            }
-            threeRendererService = { render: jest.fn() }
-
-            TestBed.configureTestingModule({
-                providers: [
-                    provideMockStore({ initialState: defaultState }),
-                    { provide: State, useValue: { getValue: () => defaultState } },
-                    { provide: ThreeCameraService, useValue: threeCameraService },
-                    { provide: ThreeMapControlsService, useValue: threeMapControlsService },
-                    { provide: ThreeRendererService, useValue: threeRendererService }
-                ]
-            })
-
-            store = TestBed.inject(MockStore)
-            service = TestBed.inject(ScenarioApplierService)
-        })
-
         it("should show loading spinner during application and hide it after", async () => {
             // Arrange
             const scenario = createTestScenario()
