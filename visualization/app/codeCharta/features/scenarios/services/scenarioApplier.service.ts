@@ -12,10 +12,16 @@ import {
     ColorsSection,
     FiltersSection,
     LabelsAndFoldersSection,
+    MetricsSection,
     Scenario,
     ScenarioSectionKey,
     ScenarioSections
 } from "../model/scenario.model"
+
+export interface MissingMetrics {
+    nodeMetrics: string[]
+    edgeMetrics: string[]
+}
 
 const NODE_METRIC_KEYS = ["areaMetric", "heightMetric", "colorMetric", "distributionMetric"] as const
 
@@ -36,6 +42,27 @@ export class ScenarioApplierService {
             nodeMetrics: new Set(metricData.nodeMetricData.map(m => m.name)),
             edgeMetrics: new Set(metricData.edgeMetricData.map(m => m.name))
         }
+    }
+
+    getMissingMetrics(metricsSection: MetricsSection, metricData: MetricData): MissingMetrics {
+        const available = this.getAvailableMetricNames(metricData)
+
+        const requiredNodeMetrics = [
+            metricsSection.areaMetric,
+            metricsSection.heightMetric,
+            metricsSection.colorMetric,
+            metricsSection.distributionMetric
+        ].filter((m): m is string => !!m)
+
+        const nodeMetrics = [...new Set(requiredNodeMetrics.filter(m => !available.nodeMetrics.has(m)))]
+        const edgeMetrics =
+            metricsSection.edgeMetric && !available.edgeMetrics.has(metricsSection.edgeMetric) ? [metricsSection.edgeMetric] : []
+
+        return { nodeMetrics, edgeMetrics }
+    }
+
+    hasMissingMetrics(missing: MissingMetrics): boolean {
+        return missing.nodeMetrics.length > 0 || missing.edgeMetrics.length > 0
     }
 
     buildOrderedStatePatches(
