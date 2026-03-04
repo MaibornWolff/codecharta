@@ -7,7 +7,7 @@ import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneSer
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { CodeMapTooltipService } from "../../../ui/codeMap/codeMap.tooltip.service"
 import { setShowMetricLabelNodeName } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { State, Store, StoreModule } from "@ngrx/store"
+import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { StateAccessStore } from "../stores/stateAccess.store"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
@@ -99,7 +99,7 @@ describe("LabelCollisionService", () => {
     function stubRectsForLabels(rects: DOMRect[]) {
         const labels = labelCreationService.getLabels()
         for (let i = 0; i < rects.length; i++) {
-            const content = labels[i].cssObject.element.firstElementChild as HTMLDivElement
+            const content = labels[i].labelElement.getContentElement()
             jest.spyOn(content, "getBoundingClientRect").mockReturnValue(rects[i])
         }
     }
@@ -128,8 +128,8 @@ describe("LabelCollisionService", () => {
             store.dispatch(setShowMetricLabelNodeName({ value: true }))
             labelCreationService.addLeafLabel(sampleLeaf, 0)
             labelCreationService.addLeafLabel(otherSampleLeaf, 0)
-            const content0 = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
-            const content1 = labelCreationService.getLabels()[1].cssObject.element.firstElementChild as HTMLDivElement
+            const content0 = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const content1 = labelCreationService.getLabels()[1].labelElement.getContentElement()
 
             // Act
             labelCollisionService.updateLabelLayout()
@@ -149,7 +149,7 @@ describe("LabelCollisionService", () => {
         it("should set transform style on each label content element during layout", () => {
             // Arrange
             labelCreationService.addLeafLabel(sampleLeaf, 0)
-            const content = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
+            const content = labelCreationService.getLabels()[0].labelElement.getContentElement()
             jest.spyOn(content, "getBoundingClientRect").mockReturnValue(makeRect(100, 120, 50, 150))
 
             // Act
@@ -172,8 +172,8 @@ describe("LabelCollisionService", () => {
             labelCollisionService.updateLabelLayout()
 
             // Assert
-            const contentHigh = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
-            const contentLow = labelCreationService.getLabels()[1].cssObject.element.firstElementChild as HTMLDivElement
+            const contentHigh = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const contentLow = labelCreationService.getLabels()[1].labelElement.getContentElement()
             expect(contentHigh.style.opacity).toBe("1")
             expect(contentLow.style.opacity).toBe("0")
         })
@@ -191,7 +191,7 @@ describe("LabelCollisionService", () => {
             labelCollisionService.updateLabelLayout()
 
             // Assert
-            const winnerContent = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
+            const winnerContent = labelCreationService.getLabels()[0].labelElement.getContentElement()
             const badge = winnerContent.lastElementChild as HTMLDivElement
             expect(badge.textContent).toBe("+1 more")
         })
@@ -208,8 +208,8 @@ describe("LabelCollisionService", () => {
             labelCollisionService.updateLabelLayout()
 
             // Assert
-            const content0 = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
-            const content1 = labelCreationService.getLabels()[1].cssObject.element.firstElementChild as HTMLDivElement
+            const content0 = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const content1 = labelCreationService.getLabels()[1].labelElement.getContentElement()
             expect(content0.style.opacity).toBe("1")
             expect(content1.style.opacity).toBe("1")
             expect(content0.style.transform).toBe("translateY(-20px)")
@@ -229,8 +229,8 @@ describe("LabelCollisionService", () => {
             labelCollisionService.updateLabelLayout()
 
             // Assert
-            const contentLow = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
-            const contentHigh = labelCreationService.getLabels()[1].cssObject.element.firstElementChild as HTMLDivElement
+            const contentLow = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const contentHigh = labelCreationService.getLabels()[1].labelElement.getContentElement()
             expect(contentLow.style.opacity).toBe("0")
             expect(contentHigh.style.opacity).toBe("1")
         })
@@ -248,8 +248,8 @@ describe("LabelCollisionService", () => {
             labelCollisionService.updateLabelLayout()
 
             // Assert — "/root/a" < "/root/b" so leafA wins
-            const contentA = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
-            const contentB = labelCreationService.getLabels()[1].cssObject.element.firstElementChild as HTMLDivElement
+            const contentA = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const contentB = labelCreationService.getLabels()[1].labelElement.getContentElement()
             expect(contentA.style.opacity).toBe("1")
             expect(contentB.style.opacity).toBe("0")
         })
@@ -269,9 +269,9 @@ describe("LabelCollisionService", () => {
             labelCollisionService.updateLabelLayout()
 
             // Assert — all three should be in one group, A wins (highest mcc), badge shows +2
-            const contentA = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
-            const contentB = labelCreationService.getLabels()[1].cssObject.element.firstElementChild as HTMLDivElement
-            const contentC = labelCreationService.getLabels()[2].cssObject.element.firstElementChild as HTMLDivElement
+            const contentA = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const contentB = labelCreationService.getLabels()[1].labelElement.getContentElement()
+            const contentC = labelCreationService.getLabels()[2].labelElement.getContentElement()
             expect(contentA.style.opacity).toBe("1")
             expect(contentB.style.opacity).toBe("0")
             expect(contentC.style.opacity).toBe("0")
@@ -294,7 +294,7 @@ describe("LabelCollisionService", () => {
             labelCollisionService.updateLabelLayout()
 
             // Assert — only one badge should exist (old one cleaned up)
-            const winnerContent = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
+            const winnerContent = labelCreationService.getLabels()[0].labelElement.getContentElement()
             const badges = winnerContent.querySelectorAll("div")
             expect(badges.length).toBe(1)
         })
@@ -372,13 +372,16 @@ describe("LabelCollisionService", () => {
             const sharedRect = makeRect(100, 120, 50, 150)
             stubRectsForLabels([sharedRect, sharedRect])
             labelCollisionService.updateLabelLayout()
-            expect(labelCollisionService["badges"].length).toBe(1)
+
+            // Verify badge exists before destroy
+            const winnerContent = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            expect(winnerContent.querySelectorAll("div").length).toBe(1)
 
             // Act
             labelCollisionService.destroy()
 
-            // Assert
-            expect(labelCollisionService["badges"].length).toBe(0)
+            // Assert — labels are cleared, badges gone with them
+            expect(labelCreationService.getLabels().length).toBe(0)
         })
     })
 })

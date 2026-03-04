@@ -122,7 +122,7 @@ describe("LabelCreationService", () => {
             labelCreationService.addLeafLabel(sampleLeaf, 0)
 
             // Assert
-            const cssObject = labelCreationService.getLabels()[0].cssObject
+            const cssObject = labelCreationService.getLabels()[0].labelElement.cssObject
             expect(cssObject.userData.node).toBe(sampleLeaf)
         })
 
@@ -134,9 +134,9 @@ describe("LabelCreationService", () => {
             labelCreationService.addLeafLabel(sampleLeaf, 0)
 
             // Assert
-            const element = labelCreationService.getLabels()[0].cssObject.element
-            expect(element.firstElementChild).toBeTruthy()
-            expect(element.firstElementChild.textContent).toContain("sample")
+            const content = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            expect(content).toBeTruthy()
+            expect(content.textContent).toContain("sample")
         })
     })
 
@@ -213,7 +213,7 @@ describe("LabelCreationService", () => {
             labelCreationService.suppressLabelForNode(sampleLeaf)
 
             // Assert
-            const content = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
+            const content = labelCreationService.getLabels()[0].labelElement.getContentElement()
             expect(content.style.opacity).toBe("0")
             expect(labelCreationService.getSuppressedLabel()).toBe(labelCreationService.getLabels()[0])
         })
@@ -238,7 +238,7 @@ describe("LabelCreationService", () => {
             labelCreationService.restoreSuppressedLabel()
 
             // Assert
-            const content = labelCreationService.getLabels()[0].cssObject.element.firstElementChild as HTMLDivElement
+            const content = labelCreationService.getLabels()[0].labelElement.getContentElement()
             expect(content.style.opacity).toBe("1")
             expect(labelCreationService.getSuppressedLabel()).toBeNull()
         })

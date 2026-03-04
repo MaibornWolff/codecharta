@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core"
 import { Vector3 } from "three"
-import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js"
 import { LabelMode, Node } from "../../../codeCharta.model"
 import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 import { StateAccessStore } from "../stores/stateAccess.store"
+import { LabelElement } from "./labelElement"
 
 export interface InternalLabel {
-    cssObject: CSS2DObject
+    labelElement: LabelElement
     node: Node
     buildingTop: Vector3
     appliedOffset: number
@@ -15,8 +15,6 @@ export interface InternalLabel {
 
 @Injectable({ providedIn: "root" })
 export class LabelCreationService {
-    private static readonly BASE_OFFSET_PX = -20
-
     private labels: InternalLabel[] = []
     private suppressedLabel: InternalLabel | null = null
 
@@ -52,9 +50,9 @@ export class LabelCreationService {
             metricText = `${node.attributes[metric]} ${metric}`
         }
 
-        const labelElement = this.createLabelElement(nameText, metricText)
-        const cssObject = new CSS2DObject(labelElement)
-        cssObject.center.set(0.5, 1)
+        const labelElement = new LabelElement(nameText, metricText)
+        const cssObject = labelElement.cssObject
+        cssObject.userData = { node }
 
         const actualHeight = node.height + Math.abs(node.heightDelta ?? 0)
         const labelHeight = Math.max(actualHeight, highestNodeInSet)
@@ -63,17 +61,16 @@ export class LabelCreationService {
         const z = (node.y0 - treeMapSize + node.length / 2) * multiplier.z
 
         cssObject.position.set(x, (node.z0 + labelHeight) * multiplier.y, z)
-        cssObject.userData = { node }
 
         const buildingTop = new Vector3(x, (node.z0 + actualHeight) * multiplier.y, z)
 
         this.threeSceneService.labels.add(cssObject)
-        this.labels.push({ cssObject, node, buildingTop, appliedOffset: 0 })
+        this.labels.push({ labelElement, node, buildingTop, appliedOffset: 0 })
     }
 
     clearLabels() {
         for (const label of this.labels) {
-            this.threeSceneService.labels.remove(label.cssObject)
+            this.threeSceneService.labels.remove(label.labelElement.cssObject)
         }
         this.threeSceneService.labels.clear()
         this.labels = []
@@ -87,7 +84,7 @@ export class LabelCreationService {
             if (label === this.suppressedLabel) {
                 this.suppressedLabel = null
             }
-            this.threeSceneService.labels.remove(label.cssObject)
+            this.threeSceneService.labels.remove(label.labelElement.cssObject)
             this.labels.splice(index, 1)
         }
     }
@@ -100,20 +97,14 @@ export class LabelCreationService {
         const label = this.labels.find(l => l.node === node)
         if (label) {
             this.suppressedLabel = label
-            const content = label.cssObject.element.firstElementChild as HTMLDivElement
-            if (content) {
-                content.style.transition = "opacity 0.2s ease-out"
-                content.style.opacity = "0"
-            }
+            label.labelElement.setTransition("opacity 0.2s ease-out")
+            label.labelElement.setOpacity("0")
         }
     }
 
     restoreSuppressedLabel() {
         if (this.suppressedLabel) {
-            const content = this.suppressedLabel.cssObject.element.firstElementChild as HTMLDivElement
-            if (content) {
-                content.style.opacity = "1"
-            }
+            this.suppressedLabel.labelElement.setOpacity("1")
             this.suppressedLabel = null
         }
     }
@@ -122,49 +113,5 @@ export class LabelCreationService {
         // CSS2DRenderer handles projection automatically.
         // Labels are cleared and recreated on scale changes,
         // so no manual position adjustment is needed.
-    }
-
-    private createLabelElement(nameText: string, metricText: string): HTMLDivElement {
-        const wrapper = document.createElement("div")
-        const content = document.createElement("div")
-        content.style.cssText = this.buildLabelStyles()
-
-        if (nameText) {
-            const nameSpan = document.createElement("span")
-            nameSpan.style.cssText = "display: block; font-weight: 500;"
-            nameSpan.textContent = nameText
-            content.appendChild(nameSpan)
-        }
-
-        if (metricText) {
-            const metricSpan = document.createElement("span")
-            metricSpan.style.cssText = "display: block; font-size: 10px; color: #666; margin-top: 1px;"
-            metricSpan.textContent = metricText
-            content.appendChild(metricSpan)
-        }
-
-        wrapper.appendChild(content)
-        return wrapper
-    }
-
-    private buildLabelStyles(): string {
-        return `
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border-radius: 6px;
-            padding: 4px 8px;
-            font-family: Roboto, 'Helvetica Neue', sans-serif;
-            font-size: 12px;
-            line-height: 1.3;
-            color: #1a1a1a;
-            white-space: nowrap;
-            pointer-events: none;
-            user-select: none;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-            transform: translateY(${LabelCreationService.BASE_OFFSET_PX}px);
-            opacity: 0;
-            transition: opacity 0.2s ease-out;
-        `
     }
 }

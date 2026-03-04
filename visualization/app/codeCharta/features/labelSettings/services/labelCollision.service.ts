@@ -6,10 +6,10 @@ import { CodeMapTooltipService } from "../../../ui/codeMap/codeMap.tooltip.servi
 import { LabelCreationService, InternalLabel } from "./labelCreation.service"
 import { LabelMode } from "../../../codeCharta.model"
 import { StateAccessStore } from "../stores/stateAccess.store"
+import { BASE_OFFSET_PX, LABEL_GAP_PX, MAX_CONNECTORS, MAX_DISPLACEMENT_PX, MIN_CONNECTOR_DISTANCE } from "./label.constants"
 
 interface LabelLayoutInfo {
     label: InternalLabel
-    content: HTMLDivElement
     rect: DOMRect
     offset: number
     hidden: boolean
@@ -17,18 +17,11 @@ interface LabelLayoutInfo {
 
 @Injectable({ providedIn: "root" })
 export class LabelCollisionService {
-    private static readonly LABEL_GAP_PX = 4
-    private static readonly BASE_OFFSET_PX = -20
-    private static readonly MIN_CONNECTOR_DISTANCE = 0.5
-    private static readonly MAX_DISPLACEMENT_PX = 100
-    private static readonly MAX_CONNECTORS = 200
-
     private connectorSegments: LineSegments | null = null
     private connectorPositions: Float32Array | null = null
     private connectorsDirty = true
     private readonly projectionVec = new Vector3()
     private _suppressLayout = false
-    private badges: HTMLDivElement[] = []
 
     constructor(
         private readonly threeRendererService: ThreeRendererService,
@@ -48,11 +41,11 @@ export class LabelCollisionService {
         const labels = this.labelCreationService.getLabels()
         if (this._suppressLayout || labels.length === 0) {
             this.clearConnectors()
-            this.clearBadges()
+            this.clearBadges(labels)
             return
         }
 
-        this.clearBadges()
+        this.clearBadges(labels)
         const infos = this.collectLabelInfos(labels)
         const tooltipRect = this.tooltipService.getRect()
         this.resolveCollisions(infos)
@@ -74,8 +67,8 @@ export class LabelCollisionService {
     }
 
     destroy() {
+        this.clearBadges(this.labelCreationService.getLabels())
         this.labelCreationService.clearLabels()
-        this.clearBadges()
         if (this.connectorSegments) {
             this.connectorSegments.geometry.dispose()
             ;(this.connectorSegments.material as LineBasicMaterial).dispose()
@@ -85,15 +78,14 @@ export class LabelCollisionService {
         }
     }
 
-    private clearBadges() {
-        for (const badge of this.badges) {
-            badge.remove()
+    private clearBadges(labels: InternalLabel[]) {
+        for (const label of labels) {
+            label.labelElement.clearBadge()
         }
-        this.badges = []
     }
 
     private initConnectors() {
-        const maxVertices = LabelCollisionService.MAX_CONNECTORS * 2
+        const maxVertices = MAX_CONNECTORS * 2
         this.connectorPositions = new Float32Array(maxVertices * 3)
         const geometry = new BufferGeometry()
         geometry.setAttribute("position", new BufferAttribute(this.connectorPositions, 3))
@@ -115,11 +107,7 @@ export class LabelCollisionService {
         const infos: LabelLayoutInfo[] = []
 
         for (const label of labels) {
-            const content = label.cssObject.element.firstElementChild as HTMLDivElement
-            if (!content) {
-                continue
-            }
-            const domRect = content.getBoundingClientRect()
+            const domRect = label.labelElement.getContentRect()
             const baseRect = {
                 top: domRect.top - label.appliedOffset,
                 bottom: domRect.bottom - label.appliedOffset,
@@ -130,7 +118,7 @@ export class LabelCollisionService {
                 x: domRect.x,
                 y: domRect.y - label.appliedOffset
             } as DOMRect
-            infos.push({ label, content, rect: baseRect, offset: 0, hidden: false })
+            infos.push({ label, rect: baseRect, offset: 0, hidden: false })
         }
 
         return infos
@@ -165,7 +153,7 @@ export class LabelCollisionService {
                 }
             }
 
-            this.createBadge(winner, group.length - 1)
+            winner.label.labelElement.setBadge(group.length - 1)
         }
     }
 
@@ -228,21 +216,6 @@ export class LabelCollisionService {
         return winner
     }
 
-    private createBadge(winner: LabelLayoutInfo, hiddenCount: number) {
-        const badge = document.createElement("div")
-        badge.textContent = `+${hiddenCount} more`
-        badge.style.cssText = `
-            font-size: 10px;
-            color: #888;
-            margin-top: 2px;
-            text-align: center;
-            pointer-events: none;
-        `
-
-        winner.content.appendChild(badge)
-        this.badges.push(badge)
-    }
-
     private resolveTooltipCollisions(infos: LabelLayoutInfo[], tooltipRect: DOMRect | null) {
         if (!tooltipRect) {
             return
@@ -261,7 +234,7 @@ export class LabelCollisionService {
             const verticalOverlap = currentBottom > tooltipRect.top && currentTop < tooltipRect.bottom
 
             if (horizontalOverlap && verticalOverlap) {
-                const overlap = tooltipRect.bottom + LabelCollisionService.LABEL_GAP_PX - currentTop
+                const overlap = tooltipRect.bottom + LABEL_GAP_PX - currentTop
                 if (overlap > 0) {
                     current.offset += overlap
                 }
@@ -273,20 +246,16 @@ export class LabelCollisionService {
         const suppressedLabel = this.labelCreationService.getSuppressedLabel()
 
         for (const info of infos) {
-            const content = info.content
+            const labelElement = info.label.labelElement
             const isSuppressed = info.label === suppressedLabel
 
-            if (info.hidden) {
-                content.style.opacity = "0"
-                content.style.transform = `translateY(${LabelCollisionService.BASE_OFFSET_PX}px)`
-                info.label.appliedOffset = 0
-            } else if (info.offset > LabelCollisionService.MAX_DISPLACEMENT_PX) {
-                content.style.opacity = "0"
-                content.style.transform = `translateY(${LabelCollisionService.BASE_OFFSET_PX}px)`
+            if (info.hidden || info.offset > MAX_DISPLACEMENT_PX) {
+                labelElement.setOpacity("0")
+                labelElement.setTransform(0)
                 info.label.appliedOffset = 0
             } else {
-                content.style.opacity = isSuppressed ? "0" : "1"
-                content.style.transform = `translateY(${LabelCollisionService.BASE_OFFSET_PX + info.offset}px)`
+                labelElement.setOpacity(isSuppressed ? "0" : "1")
+                labelElement.setTransform(info.offset)
                 info.label.appliedOffset = info.offset
             }
         }
@@ -310,19 +279,19 @@ export class LabelCollisionService {
         const suppressedLabel = this.labelCreationService.getSuppressedLabel()
 
         for (const info of infos) {
-            if (info.hidden || info.offset > LabelCollisionService.MAX_DISPLACEMENT_PX || info.label === suppressedLabel) {
+            if (info.hidden || info.offset > MAX_DISPLACEMENT_PX || info.label === suppressedLabel) {
                 continue
             }
 
             const buildingTop = info.label.buildingTop
-            const labelPos = info.label.cssObject.position
+            const labelPos = info.label.labelElement.cssObject.position
 
             const dy = labelPos.y - buildingTop.y
-            if (dy < LabelCollisionService.MIN_CONNECTOR_DISTANCE) {
+            if (dy < MIN_CONNECTOR_DISTANCE) {
                 continue
             }
 
-            if (vertexIndex >= LabelCollisionService.MAX_CONNECTORS * 2) {
+            if (vertexIndex >= MAX_CONNECTORS * 2) {
                 break
             }
 
@@ -331,7 +300,7 @@ export class LabelCollisionService {
             // in screen space. Convert that shift to a world-space point by
             // projecting the anchor to NDC, adjusting Y, and unprojecting.
             this.projectionVec.copy(labelPos).project(camera)
-            const cssOffsetPx = LabelCollisionService.BASE_OFFSET_PX + info.offset
+            const cssOffsetPx = BASE_OFFSET_PX + info.offset
             this.projectionVec.y -= (cssOffsetPx * 2) / viewportH
             this.projectionVec.unproject(camera)
 
