@@ -43,6 +43,17 @@ module.exports = {
             }
         },
         {
+            name: "feature-no-external-access-to-stores",
+            severity: "error",
+            comment: "Feature stores cannot be accessed from outside the features directory",
+            from: {
+                pathNot: ["^app/codeCharta/features/", "\\.spec\\.ts$"]
+            },
+            to: {
+                path: "^app/codeCharta/features/[^/]+/stores/"
+            }
+        },
+        {
             name: "feature-types-cannot-import-from-feature-internals",
             severity: "error",
             comment: "Features: types/ folder can only contain type definitions and cannot import from services, stores, or effects",

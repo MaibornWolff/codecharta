@@ -14,7 +14,7 @@ export interface ScenarioImportResult {
 }
 import { FileDownloader } from "../../../util/fileDownloader"
 import { buildScenario } from "./scenarioBuilder"
-import { addScenario, deleteScenario as deleteScenarioFromDB, readAllScenarios } from "../stores/scenarioIndexedDB"
+import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
 import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
 
 @Injectable({ providedIn: "root" })
@@ -24,12 +24,13 @@ export class ScenariosService {
     constructor(
         private readonly state: State<CcState>,
         private readonly threeCameraService: ThreeCameraService,
-        private readonly threeMapControlsService: ThreeMapControlsService
+        private readonly threeMapControlsService: ThreeMapControlsService,
+        private readonly db: ScenarioIndexedDBService
     ) {}
 
     async loadScenarios(): Promise<void> {
         try {
-            const userScenarios = await readAllScenarios()
+            const userScenarios = await this.db.readAll()
             userScenarios.sort((a, b) => b.createdAt - a.createdAt)
             this.scenarios$.next([...userScenarios, ...BUILT_IN_SCENARIOS])
         } catch (error) {
@@ -52,7 +53,7 @@ export class ScenariosService {
         )
 
         try {
-            await addScenario(scenario)
+            await this.db.add(scenario)
             await this.loadScenarios()
         } catch (error) {
             console.error("Failed to save scenario:", error)
@@ -62,7 +63,7 @@ export class ScenariosService {
 
     async removeScenario(id: string): Promise<void> {
         try {
-            await deleteScenarioFromDB(id)
+            await this.db.delete(id)
             await this.loadScenarios()
         } catch (error) {
             console.error("Failed to remove scenario:", error)
@@ -97,7 +98,7 @@ export class ScenariosService {
             }
             const scenario = fromScenarioFile(parsed)
             existing.push(scenario)
-            await addScenario(scenario)
+            await this.db.add(scenario)
             result.imported++
         }
         if (result.imported > 0) {

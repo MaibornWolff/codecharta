@@ -8,12 +8,7 @@ import { appReducers, setStateMiddleware } from "../../state/store/state.manager
 import { VALID_NODE_WITH_PATH_AND_EXTENSION } from "../../util/dataMocks"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { RibbonBarComponent } from "./ribbonBar.component"
-
-jest.mock("../../features/scenarios/stores/scenarioIndexedDB", () => ({
-    readAllScenarios: jest.fn().mockResolvedValue([]),
-    addScenario: jest.fn().mockResolvedValue(undefined),
-    deleteScenario: jest.fn().mockResolvedValue(undefined)
-}))
+import { ScenarioIndexedDBService } from "../../features/scenarios/stores/scenarioIndexedDB"
 
 jest.mock("../../state/selectors/isDeltaState.selector", () => ({
     isDeltaStateSelector: jest.fn()
@@ -40,7 +35,10 @@ describe("RibbonBarComponent", () => {
         mockMetricDataSelector.mockImplementation(() => ({ edgeMetricData: [], nodeMetricData: [], nodeEdgeMetricsMap: new Map() }))
         TestBed.configureTestingModule({
             imports: [RibbonBarComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
-            providers: [{ provide: CodeMapMouseEventService, useValue: jest.fn() }]
+            providers: [
+                { provide: CodeMapMouseEventService, useValue: jest.fn() },
+                { provide: ScenarioIndexedDBService, useValue: { readAll: jest.fn().mockResolvedValue([]) } }
+            ]
         })
     })
 
