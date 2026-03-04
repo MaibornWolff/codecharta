@@ -8,7 +8,7 @@ import { appReducers, setStateMiddleware } from "../../state/store/state.manager
 import { VALID_NODE_WITH_PATH_AND_EXTENSION } from "../../util/dataMocks"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { RibbonBarComponent } from "./ribbonBar.component"
-import { ScenarioIndexedDBService } from "../../features/scenarios/stores/scenarioIndexedDB"
+import { ScenarioIndexedDBService } from "../../features/scenarios/facade"
 
 jest.mock("../../state/selectors/isDeltaState.selector", () => ({
     isDeltaStateSelector: jest.fn()

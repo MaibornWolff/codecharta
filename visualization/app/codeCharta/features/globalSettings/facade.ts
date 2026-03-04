@@ -7,7 +7,11 @@ import { AutomaticCameraResetService } from "./services/automaticCameraReset.ser
 import { MapLayoutService } from "./services/mapLayout.service"
 import { DisplayQualityService } from "./services/displayQuality.service"
 
-export { layoutAlgorithmSelector } from "./selectors/globalSettings.selectors"
+export {
+    layoutAlgorithmSelector,
+    resetCameraIfNewFileIsLoadedSelector,
+    screenshotToClipboardEnabledSelector
+} from "./selectors/globalSettings.selectors"
 
 @Injectable({
     providedIn: "root"

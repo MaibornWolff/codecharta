@@ -3,10 +3,7 @@ import { BehaviorSubject, Subject } from "rxjs"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
-import {
-    layoutAlgorithmSelector,
-    resetCameraIfNewFileIsLoadedSelector
-} from "../../../features/globalSettings/selectors/globalSettings.selectors"
+import { layoutAlgorithmSelector, resetCameraIfNewFileIsLoadedSelector } from "../../../features/globalSettings/facade"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapEffect } from "./autoFitCodeMap.effect"

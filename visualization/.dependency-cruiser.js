@@ -25,7 +25,7 @@ module.exports = {
             severity: "error",
             comment: "Feature internals can only be accessed within the same feature. External code must use facade.ts or components/",
             from: {
-                pathNot: ["^app/codeCharta/features/", "\\.spec\\.ts$"]
+                pathNot: "^app/codeCharta/features/"
             },
             to: {
                 path: "^app/codeCharta/features/",
@@ -38,8 +38,7 @@ module.exports = {
             comment:
                 "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden.",
             from: {
-                path: "^app/codeCharta/features/([^/]+)/",
-                pathNot: "\\.spec\\.ts$"
+                path: "^app/codeCharta/features/([^/]+)/"
             },
             to: {
                 path: "^app/codeCharta/features/([^/]+)/",
