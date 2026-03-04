@@ -20,16 +20,18 @@ describe("renderCodeMapEffect", () => {
     let threeRendererService: ThreeRendererService
     let codeMapRenderService: CodeMapRenderService
     let dispatchSpy: jest.SpyInstance
+    let scenariosFacadeMock: { isApplying: boolean }
 
     beforeEach(() => {
         threeRendererService = { render: jest.fn() } as unknown as ThreeRendererService
         codeMapRenderService = { render: jest.fn(), scaleMap: jest.fn() } as unknown as CodeMapRenderService
+        scenariosFacadeMock = { isApplying: false }
         actions$ = new Subject<Action>()
 
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([RenderCodeMapEffect])],
             providers: [
-                { provide: ScenariosFacade, useValue: { isApplying: false } },
+                { provide: ScenariosFacade, useValue: scenariosFacadeMock },
                 { provide: UploadFilesService, useValue: { isUploading: false } },
                 { provide: ThreeRendererService, useValue: threeRendererService },
                 { provide: CodeMapRenderService, useValue: codeMapRenderService },
@@ -67,8 +69,7 @@ describe("renderCodeMapEffect", () => {
 
     it("should not remove loading indicators after render when a scenario is being applied", async () => {
         // Arrange
-        const scenariosFacade = TestBed.inject(ScenariosFacade)
-        scenariosFacade.isApplying = true
+        scenariosFacadeMock.isApplying = true
 
         // Act
         actions$.next(setInvertArea({ value: true }))

@@ -3,12 +3,13 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { SaveScenarioDialogComponent } from "./saveScenarioDialog.component"
 import { ScenariosService } from "../../services/scenarios.service"
 import { defaultState } from "../../../../state/store/state.manager"
+import { NodeType } from "../../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 
 const createFileState = (fileName: string): FileState => ({
     file: {
         fileMeta: { fileName, fileChecksum: "abc", apiVersion: "1.3", projectName: "test", exportedFileSize: 100 },
-        map: { name: "root", type: "Folder", children: [], attributes: {} },
+        map: { name: "root", type: NodeType.FOLDER, children: [], attributes: {} },
         settings: { fileSettings: {} as any }
     },
     selectedAs: FileSelectionState.Partial

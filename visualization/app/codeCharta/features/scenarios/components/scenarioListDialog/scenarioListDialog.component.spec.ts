@@ -6,7 +6,7 @@ import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
 import { ScenarioListHelpersService } from "../../services/scenarioListHelpers.service"
 import { ScenariosService } from "../../services/scenarios.service"
 import { Scenario } from "../../model/scenario.model"
-import { ColorMode, MetricData } from "../../../../codeCharta.model"
+import { ColorMode, MetricData, NodeType } from "../../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 
 const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[]): Scenario => ({
@@ -55,7 +55,7 @@ const createBuiltInScenario = (name: string, id: string): Scenario => ({
 const createFileState = (fileName: string): FileState => ({
     file: {
         fileMeta: { fileName, fileChecksum: "abc", apiVersion: "1.3", projectName: "test", exportedFileSize: 100 },
-        map: { name: "root", type: "Folder", children: [], attributes: {} },
+        map: { name: "root", type: NodeType.FOLDER, children: [], attributes: {} },
         settings: { fileSettings: { edges: [], blacklist: [], attributeTypes: {}, attributeDescriptors: {}, markedPackages: [] } as any }
     },
     selectedAs: FileSelectionState.Partial

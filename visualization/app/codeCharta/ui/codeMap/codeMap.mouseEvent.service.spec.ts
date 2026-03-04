@@ -17,7 +17,14 @@ import { setRightClickedNodeData } from "../../state/store/appStatus/rightClicke
 import { State, Store } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { defaultState } from "../../state/store/state.manager"
-import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
+import { Box3 } from "three"
+import {
+    CODE_MAP_BUILDING,
+    CODE_MAP_BUILDING_TS_NODE,
+    CONSTANT_HIGHLIGHT,
+    TEST_FILE_WITH_PATHS,
+    TEST_NODE_ROOT
+} from "../../util/dataMocks"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
@@ -372,12 +379,10 @@ describe("codeMapMouseEventService", () => {
 
         it("should use differential path when transitioning between two buildings", () => {
             codeMapMouseEventService["modifiedLabel"] = null
-            const buildingA = klona(CODE_MAP_BUILDING)
-            buildingA["_id"] = 100
-            buildingA.node.id = 100
-            const buildingB = klona(CODE_MAP_BUILDING)
-            buildingB["_id"] = 200
-            buildingB.node.id = 200
+            const nodeA: Node = { ...TEST_NODE_ROOT, id: 100 }
+            const nodeB: Node = { ...TEST_NODE_ROOT, id: 200 }
+            const buildingA = new CodeMapBuilding(100, new Box3(), nodeA, "#69AE40")
+            const buildingB = new CodeMapBuilding(200, new Box3(), nodeB, "#69AE40")
 
             mockedIdToNodeSelector.mockImplementation(() => {
                 const idToNode = new Map<number, CodeMapNode>()
@@ -403,7 +408,7 @@ describe("codeMapMouseEventService", () => {
             ;(threeSceneService.clearHighlight as jest.Mock).mockClear()
             ;(threeSceneService.clearHoverHighlight as jest.Mock).mockClear()
             codeMapMouseEventService["oldMouse"] = { x: 0, y: 0 }
-            codeMapMouseEventService["mouse"] = { x: 5, y: 5 } as any
+            Object.defineProperty(codeMapMouseEventService, "mouse", { value: { x: 5, y: 5 }, writable: true })
 
             codeMapMouseEventService.updateHovering()
 
