@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { ApplyScenarioDialogComponent } from "./applyScenarioDialog.component"
-import { ScenariosService } from "../../services/scenarios.service"
+import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { Scenario, ScenarioSectionKey } from "../../model/scenario.model"
 import { ColorMode, MetricData } from "../../../../codeCharta.model"
 import { defaultState } from "../../../../state/store/state.manager"
@@ -46,17 +46,17 @@ const metricDataWithMetrics: MetricData = {
 
 describe("ApplyScenarioDialogComponent", () => {
     let component: ApplyScenarioDialogComponent
-    let scenariosService: { applyScenario: jest.Mock }
+    let scenarioApplier: { applyScenario: jest.Mock }
 
     beforeEach(() => {
         HTMLDialogElement.prototype.showModal = jest.fn()
         HTMLDialogElement.prototype.close = jest.fn()
 
-        scenariosService = { applyScenario: jest.fn() }
+        scenarioApplier = { applyScenario: jest.fn() }
 
         TestBed.configureTestingModule({
             imports: [ApplyScenarioDialogComponent],
-            providers: [{ provide: ScenariosService, useValue: scenariosService }]
+            providers: [{ provide: ScenarioApplierService, useValue: scenarioApplier }]
         })
 
         const fixture = TestBed.createComponent(ApplyScenarioDialogComponent)
@@ -102,7 +102,7 @@ describe("ApplyScenarioDialogComponent", () => {
         component.apply()
 
         // Assert
-        expect(scenariosService.applyScenario).toHaveBeenCalledWith(
+        expect(scenarioApplier.applyScenario).toHaveBeenCalledWith(
             component.scenario(),
             new Set<ScenarioSectionKey>(["metrics", "colors", "labelsAndFolders"]),
             metricDataWithMetrics
@@ -155,7 +155,7 @@ describe("ApplyScenarioDialogComponent", () => {
             partialComponent.apply()
 
             // Assert
-            expect(scenariosService.applyScenario).toHaveBeenCalledWith(
+            expect(scenarioApplier.applyScenario).toHaveBeenCalledWith(
                 partialComponent.scenario(),
                 new Set(["metrics", "colors"]),
                 metricDataWithMetrics

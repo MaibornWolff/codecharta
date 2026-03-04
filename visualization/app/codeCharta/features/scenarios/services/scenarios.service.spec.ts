@@ -1,14 +1,10 @@
 import { TestBed } from "@angular/core/testing"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
 import { defaultState } from "../../../state/store/state.manager"
 import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
-import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ScenariosService } from "./scenarios.service"
-import { Scenario, ScenarioFile, ScenarioSectionKey } from "../model/scenario.model"
-import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { Scenario, ScenarioFile } from "../model/scenario.model"
 import { FileDownloader } from "../../../util/fileDownloader"
 import * as scenarioIndexedDB from "./scenarioIndexedDB"
 import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
@@ -18,10 +14,8 @@ jest.mock("./scenarioIndexedDB")
 
 describe("ScenariosService", () => {
     let service: ScenariosService
-    let store: MockStore
-    let threeCameraService: { camera: { position: Vector3; lookAt: jest.Mock; updateProjectionMatrix: jest.Mock }; setPosition: jest.Mock }
-    let threeMapControlsService: { controls: { target: Vector3 }; setControlTarget: jest.Mock; updateControls: jest.Mock }
-    let threeRendererService: { render: jest.Mock }
+    let threeCameraService: { camera: { position: Vector3 } }
+    let threeMapControlsService: { controls: { target: Vector3 } }
     let storedScenarios: Scenario[]
 
     beforeEach(() => {
@@ -35,29 +29,20 @@ describe("ScenariosService", () => {
         })
 
         threeCameraService = {
-            camera: { position: new Vector3(0, 300, 1000), lookAt: jest.fn(), updateProjectionMatrix: jest.fn() },
-            setPosition: jest.fn()
+            camera: { position: new Vector3(0, 300, 1000) }
         }
         threeMapControlsService = {
-            controls: { target: new Vector3(0, 0, 0) },
-            setControlTarget: jest.fn(),
-            updateControls: jest.fn()
-        }
-        threeRendererService = {
-            render: jest.fn()
+            controls: { target: new Vector3(0, 0, 0) }
         }
 
         TestBed.configureTestingModule({
             providers: [
-                provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeCameraService, useValue: threeCameraService },
-                { provide: ThreeMapControlsService, useValue: threeMapControlsService },
-                { provide: ThreeRendererService, useValue: threeRendererService }
+                { provide: ThreeMapControlsService, useValue: threeMapControlsService }
             ]
         })
 
-        store = TestBed.inject(MockStore)
         service = TestBed.inject(ScenariosService)
     })
 
@@ -127,99 +112,6 @@ describe("ScenariosService", () => {
             expect(scenarios[0].name).toBe("User Scenario")
             expect(scenarios[0].isBuiltIn).toBeUndefined()
             expect(scenarios[scenarios.length - 1].isBuiltIn).toBe(true)
-        })
-    })
-
-    describe("applyScenario", () => {
-        it("should show loading spinner during application and hide it after", async () => {
-            // Arrange
-            const scenario = await service.saveScenario("Test")
-            const dispatchSpy = jest.spyOn(store, "dispatch")
-
-            // Act
-            expect(service.isApplying).toBe(false)
-            const promise = service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
-            expect(service.isApplying).toBe(true)
-            await promise
-
-            // Assert
-            expect(service.isApplying).toBe(false)
-            expect(dispatchSpy.mock.calls[0][0]).toEqual(setIsLoadingFile({ value: true }))
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
-        })
-
-        it("should dispatch setState for metrics section", async () => {
-            // Arrange
-            const scenario = await service.saveScenario("Test")
-            const dispatchSpy = jest.spyOn(store, "dispatch")
-
-            // Act
-            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
-
-            // Assert
-            expect(dispatchSpy).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    value: expect.objectContaining({
-                        dynamicSettings: expect.objectContaining({
-                            areaMetric: scenario.sections.metrics.areaMetric
-                        })
-                    })
-                })
-            )
-        })
-
-        it("should apply camera position when camera section is selected", async () => {
-            // Arrange
-            const scenario = await service.saveScenario("Test")
-
-            // Act
-            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["camera"]))
-
-            // Assert
-            expect(threeCameraService.camera.lookAt).toHaveBeenCalled()
-            expect(threeCameraService.camera.updateProjectionMatrix).toHaveBeenCalled()
-            expect(threeMapControlsService.setControlTarget).toHaveBeenCalled()
-            expect(threeMapControlsService.updateControls).toHaveBeenCalled()
-        })
-
-        it("should not apply camera when camera section is not selected", async () => {
-            // Arrange
-            const scenario = await service.saveScenario("Test")
-
-            // Act
-            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
-
-            // Assert
-            expect(threeCameraService.camera.lookAt).not.toHaveBeenCalled()
-        })
-
-        it("should always call render", async () => {
-            // Arrange
-            const scenario = await service.saveScenario("Test")
-
-            // Act
-            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
-
-            // Assert
-            expect(threeRendererService.render).toHaveBeenCalled()
-        })
-
-        it("should clear isApplying and loading state even when an error occurs during application", async () => {
-            // Arrange
-            const scenario = await service.saveScenario("Test")
-            threeRendererService.render.mockImplementation(() => {
-                throw new Error("render failed")
-            })
-            const dispatchSpy = jest.spyOn(store, "dispatch")
-
-            // Act
-            await expect(service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))).rejects.toThrow("render failed")
-
-            // Assert
-            expect(service.isApplying).toBe(false)
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
         })
     })
 

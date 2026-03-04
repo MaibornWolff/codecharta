@@ -1,6 +1,21 @@
+import { Injectable } from "@angular/core"
+import { Store, State } from "@ngrx/store"
 import { Vector3 } from "three"
 import { RecursivePartial, CcState, MetricData } from "../../../codeCharta.model"
-import { ColorsSection, FiltersSection, LabelsAndFoldersSection, ScenarioSectionKey, ScenarioSections } from "../model/scenario.model"
+import { setState } from "../../../state/store/state.actions"
+import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
+import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
+import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
+import {
+    ColorsSection,
+    FiltersSection,
+    LabelsAndFoldersSection,
+    Scenario,
+    ScenarioSectionKey,
+    ScenarioSections
+} from "../model/scenario.model"
 
 const NODE_METRIC_KEYS = ["areaMetric", "heightMetric", "colorMetric", "distributionMetric"] as const
 
@@ -88,12 +103,6 @@ function mergePatches(a: RecursivePartial<CcState>, b: RecursivePartial<CcState>
     }
 }
 
-/**
- * Builds ordered state patches to dispatch sequentially.
- * Order: metrics → colors → filters+labels → (camera handled separately)
- * Each patch is a separate dispatch so ngrx effects (e.g. resetColorRange)
- * triggered by earlier patches settle before subsequent ones override values.
- */
 export function buildOrderedStatePatches(
     sections: ScenarioSections,
     selectedKeys: Set<ScenarioSectionKey>,
@@ -129,5 +138,67 @@ export function getCameraVectors(sections: ScenarioSections): { position: Vector
     return {
         position: new Vector3(position.x, position.y, position.z),
         target: new Vector3(target.x, target.y, target.z)
+    }
+}
+
+@Injectable({ providedIn: "root" })
+export class ScenarioApplierService {
+    isApplying = false
+
+    constructor(
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>,
+        private readonly threeCameraService: ThreeCameraService,
+        private readonly threeMapControlsService: ThreeMapControlsService,
+        private readonly threeRendererService: ThreeRendererService
+    ) {}
+
+    async applyScenario(scenario: Scenario, selectedKeys: Set<ScenarioSectionKey>, metricData?: MetricData): Promise<void> {
+        this.isApplying = true
+        this.store.dispatch(setIsLoadingFile({ value: true }))
+
+        try {
+            const cameraVectors = selectedKeys.has("camera") ? getCameraVectors(scenario.sections) : undefined
+            const applyCamera = cameraVectors !== undefined
+            const patches = buildOrderedStatePatches(scenario.sections, selectedKeys, metricData)
+
+            // When applying camera, temporarily disable autoFit so it doesn't
+            // overwrite our camera position after the render cycle completes.
+            const previousResetCamera =
+                applyCamera && patches.length > 0 ? this.state.getValue().appSettings.resetCameraIfNewFileIsLoaded : undefined
+            if (previousResetCamera && patches.length > 0) {
+                patches[0].appSettings = { ...patches[0].appSettings, resetCameraIfNewFileIsLoaded: false }
+            }
+
+            // Dispatch patches with macrotask delays so effects triggered by
+            // earlier patches (e.g. resetColorRange after metric change)
+            // settle before subsequent patches override their values.
+            for (const patch of patches) {
+                this.store.dispatch(setState({ value: patch }))
+                await new Promise<void>(resolve => setTimeout(resolve))
+            }
+
+            if (applyCamera && this.threeCameraService.camera) {
+                const { position, target } = cameraVectors
+                this.threeCameraService.camera.position.set(position.x, position.y, position.z)
+                this.threeMapControlsService.setControlTarget(target)
+                this.threeCameraService.camera.lookAt(target)
+                this.threeCameraService.camera.updateProjectionMatrix()
+                this.threeMapControlsService.updateControls()
+
+                // Restore resetCameraIfNewFileIsLoaded after autoFit window has passed.
+                if (previousResetCamera) {
+                    setTimeout(() => {
+                        this.store.dispatch(setState({ value: { appSettings: { resetCameraIfNewFileIsLoaded: true } } }))
+                    })
+                }
+            }
+
+            this.threeRendererService.render()
+        } finally {
+            this.isApplying = false
+            this.store.dispatch(setIsLoadingFile({ value: false }))
+            this.store.dispatch(setIsLoadingMap({ value: false }))
+        }
     }
 }
