@@ -4,7 +4,15 @@ import { BehaviorSubject } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
-import { CCSCENARIO_EXTENSION, fromScenarioFile, Scenario, ScenarioFile, toScenarioFile } from "../model/scenario.model"
+import {
+    CCSCENARIO_EXTENSION,
+    fromScenarioFile,
+    PlainPosition,
+    Scenario,
+    ScenarioFile,
+    ScenarioSections,
+    toScenarioFile
+} from "../model/scenario.model"
 
 export interface ScenarioImportResult {
     imported: number
@@ -13,7 +21,6 @@ export interface ScenarioImportResult {
     parseErrors: string[]
 }
 import { FileDownloader } from "../../../util/fileDownloader"
-import { buildScenario } from "./scenarioBuilder"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
 import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
 
@@ -43,7 +50,7 @@ export class ScenariosService {
         const cameraPosition = this.threeCameraService.camera?.position
         const cameraTarget = this.threeMapControlsService.controls?.target
 
-        const scenario = buildScenario(
+        const scenario = this.buildScenario(
             name,
             this.state.getValue(),
             cameraPosition ? { x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z } : { x: 0, y: 300, z: 1000 },
@@ -105,6 +112,58 @@ export class ScenariosService {
             await this.loadScenarios()
         }
         return result
+    }
+
+    buildScenarioSections(state: CcState, cameraPosition: PlainPosition, cameraTarget: PlainPosition): ScenarioSections {
+        return {
+            metrics: {
+                areaMetric: state.dynamicSettings.areaMetric,
+                heightMetric: state.dynamicSettings.heightMetric,
+                colorMetric: state.dynamicSettings.colorMetric,
+                edgeMetric: state.dynamicSettings.edgeMetric,
+                distributionMetric: state.dynamicSettings.distributionMetric,
+                isColorMetricLinkedToHeightMetric: state.appSettings.isColorMetricLinkedToHeightMetric
+            },
+            colors: {
+                colorRange: { ...state.dynamicSettings.colorRange },
+                colorMode: state.dynamicSettings.colorMode,
+                mapColors: { ...state.appSettings.mapColors }
+            },
+            camera: {
+                position: { ...cameraPosition },
+                target: { ...cameraTarget }
+            },
+            filters: {
+                blacklist: [...state.fileSettings.blacklist],
+                focusedNodePath: [...state.dynamicSettings.focusedNodePath]
+            },
+            labelsAndFolders: {
+                amountOfTopLabels: state.appSettings.amountOfTopLabels,
+                showMetricLabelNameValue: state.appSettings.showMetricLabelNameValue,
+                showMetricLabelNodeName: state.appSettings.showMetricLabelNodeName,
+                enableFloorLabels: state.appSettings.enableFloorLabels,
+                colorLabels: { ...state.appSettings.colorLabels },
+                markedPackages: [...state.fileSettings.markedPackages]
+            }
+        }
+    }
+
+    buildScenario(
+        name: string,
+        state: CcState,
+        cameraPosition: PlainPosition,
+        cameraTarget: PlainPosition,
+        description?: string,
+        mapFileNames?: string[]
+    ): Scenario {
+        return {
+            id: crypto.randomUUID(),
+            name,
+            description,
+            mapFileNames,
+            createdAt: Date.now(),
+            sections: this.buildScenarioSections(state, cameraPosition, cameraTarget)
+        }
     }
 
     private isDuplicate(file: ScenarioFile, existing: Scenario[]): boolean {

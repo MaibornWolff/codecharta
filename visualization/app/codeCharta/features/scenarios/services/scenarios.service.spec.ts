@@ -4,7 +4,7 @@ import { defaultState } from "../../../state/store/state.manager"
 import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { ScenariosService } from "./scenarios.service"
-import { Scenario, ScenarioFile } from "../model/scenario.model"
+import { PlainPosition, Scenario, ScenarioFile } from "../model/scenario.model"
 import { FileDownloader } from "../../../util/fileDownloader"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
 import { BUILT_IN_SCENARIOS } from "./builtInScenarios"
@@ -291,6 +291,105 @@ describe("ScenariosService", () => {
             // Assert
             expect(result.imported).toBe(0)
             expect(result.parseErrors).toEqual(["broken.json"])
+        })
+    })
+
+    describe("buildScenarioSections", () => {
+        const cameraPosition: PlainPosition = { x: 100, y: 200, z: 300 }
+        const cameraTarget: PlainPosition = { x: 10, y: 0, z: 20 }
+
+        it("should extract metrics section from state", () => {
+            // Act
+            const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
+
+            // Assert
+            expect(sections.metrics.areaMetric).toBe(defaultState.dynamicSettings.areaMetric)
+            expect(sections.metrics.heightMetric).toBe(defaultState.dynamicSettings.heightMetric)
+            expect(sections.metrics.colorMetric).toBe(defaultState.dynamicSettings.colorMetric)
+            expect(sections.metrics.edgeMetric).toBe(defaultState.dynamicSettings.edgeMetric)
+            expect(sections.metrics.distributionMetric).toBe(defaultState.dynamicSettings.distributionMetric)
+        })
+
+        it("should extract colors section from state", () => {
+            // Act
+            const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
+
+            // Assert
+            expect(sections.colors.colorRange).toEqual(defaultState.dynamicSettings.colorRange)
+            expect(sections.colors.colorMode).toBe(defaultState.dynamicSettings.colorMode)
+            expect(sections.colors.mapColors).toEqual(defaultState.appSettings.mapColors)
+        })
+
+        it("should extract camera section from provided positions", () => {
+            // Act
+            const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
+
+            // Assert
+            expect(sections.camera.position).toEqual(cameraPosition)
+            expect(sections.camera.target).toEqual(cameraTarget)
+        })
+
+        it("should extract filters section from state", () => {
+            // Act
+            const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
+
+            // Assert
+            expect(sections.filters.blacklist).toEqual(defaultState.fileSettings.blacklist)
+            expect(sections.filters.focusedNodePath).toEqual(defaultState.dynamicSettings.focusedNodePath)
+        })
+
+        it("should extract labelsAndFolders section from state", () => {
+            // Act
+            const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
+
+            // Assert
+            expect(sections.labelsAndFolders.amountOfTopLabels).toBe(defaultState.appSettings.amountOfTopLabels)
+            expect(sections.labelsAndFolders.markedPackages).toEqual(defaultState.fileSettings.markedPackages)
+        })
+    })
+
+    describe("buildScenario", () => {
+        const cameraPosition: PlainPosition = { x: 100, y: 200, z: 300 }
+        const cameraTarget: PlainPosition = { x: 10, y: 0, z: 20 }
+
+        it("should create a scenario with id, name, and timestamp", () => {
+            // Act
+            const scenario = service.buildScenario("My Scenario", defaultState, cameraPosition, cameraTarget, "A description")
+
+            // Assert
+            expect(scenario.id).toBeDefined()
+            expect(scenario.name).toBe("My Scenario")
+            expect(scenario.description).toBe("A description")
+            expect(scenario.createdAt).toBeGreaterThan(0)
+            expect(scenario.sections).toBeDefined()
+        })
+
+        it("should create unique ids for different scenarios", () => {
+            // Act
+            const scenario1 = service.buildScenario("Scenario 1", defaultState, cameraPosition, cameraTarget)
+            const scenario2 = service.buildScenario("Scenario 2", defaultState, cameraPosition, cameraTarget)
+
+            // Assert
+            expect(scenario1.id).not.toBe(scenario2.id)
+        })
+
+        it("should include mapFileNames when provided", () => {
+            // Act
+            const scenario = service.buildScenario("Bound Scenario", defaultState, cameraPosition, cameraTarget, undefined, [
+                "project.cc.json",
+                "other.cc.json"
+            ])
+
+            // Assert
+            expect(scenario.mapFileNames).toEqual(["project.cc.json", "other.cc.json"])
+        })
+
+        it("should leave mapFileNames undefined when not provided", () => {
+            // Act
+            const scenario = service.buildScenario("Global Scenario", defaultState, cameraPosition, cameraTarget)
+
+            // Assert
+            expect(scenario.mapFileNames).toBeUndefined()
         })
     })
 })
