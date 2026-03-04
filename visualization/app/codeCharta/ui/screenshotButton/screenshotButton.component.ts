@@ -160,6 +160,8 @@ export class ScreenshotButtonComponent implements OnInit {
             el.style.backdropFilter = "none"
             el.style.setProperty("-webkit-backdrop-filter", "none")
             el.style.background = "white"
+            el.style.boxShadow = "none"
+            el.style.border = "1px solid rgba(0, 0, 0, 0.3)"
             el.style.transition = "none"
         }
         return saved
