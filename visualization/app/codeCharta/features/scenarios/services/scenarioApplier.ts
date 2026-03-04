@@ -90,40 +90,35 @@ function mergePatches(a: RecursivePartial<CcState>, b: RecursivePartial<CcState>
 
 /**
  * Builds ordered state patches to dispatch sequentially.
- * Order: metrics → colors/thresholds → filters + labels → (camera handled separately)
- * This ensures effects triggered by metric changes (e.g. resetColorRange, updateMapColors)
- * settle before we apply the desired thresholds and colors.
+ * Order: metrics → colors → filters+labels → (camera handled separately)
+ * Each patch is a separate dispatch so ngrx effects (e.g. resetColorRange)
+ * triggered by earlier patches settle before subsequent ones override values.
  */
 export function buildOrderedStatePatches(
     sections: ScenarioSections,
     selectedKeys: Set<ScenarioSectionKey>,
     metricData?: MetricData
 ): RecursivePartial<CcState>[] {
-    const patches: RecursivePartial<CcState>[] = []
+    return [
+        selectedKeys.has("metrics") && sections.metrics ? buildMetricsPatch(sections, metricData) : undefined,
+        selectedKeys.has("colors") && sections.colors ? buildColorsPatch(sections.colors) : undefined,
+        buildFiltersAndLabelsPatch(sections, selectedKeys)
+    ].filter((patch): patch is RecursivePartial<CcState> => patch !== undefined)
+}
 
-    // Phase 1: Metrics
-    if (selectedKeys.has("metrics") && sections.metrics) {
-        patches.push(buildMetricsPatch(sections, metricData))
+function buildFiltersAndLabelsPatch(
+    sections: ScenarioSections,
+    selectedKeys: Set<ScenarioSectionKey>
+): RecursivePartial<CcState> | undefined {
+    const filtersPatch = selectedKeys.has("filters") && sections.filters ? buildFiltersPatch(sections.filters) : undefined
+    const labelsPatch =
+        selectedKeys.has("labelsAndFolders") && sections.labelsAndFolders
+            ? buildLabelsAndFoldersPatch(sections.labelsAndFolders)
+            : undefined
+    if (filtersPatch && labelsPatch) {
+        return mergePatches(filtersPatch, labelsPatch)
     }
-
-    // Phase 2: Colors / thresholds (after metric effects have settled)
-    if (selectedKeys.has("colors") && sections.colors) {
-        patches.push(buildColorsPatch(sections.colors))
-    }
-
-    // Phase 3: Filters + Labels (merged into single patch)
-    const phase3Parts: RecursivePartial<CcState>[] = []
-    if (selectedKeys.has("filters") && sections.filters) {
-        phase3Parts.push(buildFiltersPatch(sections.filters))
-    }
-    if (selectedKeys.has("labelsAndFolders") && sections.labelsAndFolders) {
-        phase3Parts.push(buildLabelsAndFoldersPatch(sections.labelsAndFolders))
-    }
-    if (phase3Parts.length > 0) {
-        patches.push(phase3Parts.reduce((a, b) => mergePatches(a, b), {} as RecursivePartial<CcState>))
-    }
-
-    return patches
+    return filtersPatch ?? labelsPatch
 }
 
 export function getCameraVectors(sections: ScenarioSections): { position: Vector3; target: Vector3 } | undefined {
