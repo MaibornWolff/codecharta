@@ -27,9 +27,8 @@ class InputHelper {
          * If input can not contain folders, no element in the list can be a path to a folder.
          * All elements in the array have to either be existing files or if allowed, folders.
          */
-        fun isInputValid(inputResources: Array<File>, canInputContainFolders: Boolean): Boolean {
-            return !isInputEmpty(inputResources) && areInputResourcesValid(inputResources, canInputContainFolders)
-        }
+        fun isInputValid(inputResources: Array<File>, canInputContainFolders: Boolean): Boolean =
+            !isInputEmpty(inputResources) && areInputResourcesValid(inputResources, canInputContainFolders)
 
         private fun isInputEmpty(inputResources: Array<File>): Boolean {
             if (inputResources.isEmpty()) {

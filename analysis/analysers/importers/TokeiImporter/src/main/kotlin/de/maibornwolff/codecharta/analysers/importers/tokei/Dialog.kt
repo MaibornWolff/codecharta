@@ -41,10 +41,11 @@ class Dialog {
 
             if (pathSeparator == "\\") pathSeparator = "\\\\"
 
-            val isCompressed = (outputFileName.isEmpty()) || session.promptConfirm(
-                message = "Do you want to compress the output file?",
-                onInputReady = testCallback()
-            )
+            val isCompressed = (outputFileName.isEmpty()) ||
+                session.promptConfirm(
+                    message = "Do you want to compress the output file?",
+                    onInputReady = testCallback()
+                )
 
             return listOfNotNull(
                 inputFileName,

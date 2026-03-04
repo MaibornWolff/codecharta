@@ -11,17 +11,12 @@ class HighlyCoupledFiles : Metric {
     private var commits = mutableListOf<Commit>()
     private val simultaneouslyCommittedFiles = mutableMapOf<String, Int>()
 
-    override fun description(): String {
-        return "Highly Coupled Files: Number of highly coupled files (35% times modified the same time) with this file."
-    }
+    override fun description(): String =
+        "Highly Coupled Files: Number of highly coupled files (35% times modified the same time) with this file."
 
-    override fun metricName(): String {
-        return "highly_coupled_files"
-    }
+    override fun metricName(): String = "highly_coupled_files"
 
-    override fun edgeMetricName(): String {
-        return "temporal_coupling"
-    }
+    override fun edgeMetricName(): String = "temporal_coupling"
 
     override fun value(): Number {
         evaluateIfNecessary()
@@ -41,17 +36,16 @@ class HighlyCoupledFiles : Metric {
         if (simultaneouslyCommittedFiles.isNotEmpty()) return
 
         commits.forEach { commit ->
-            commit.modifications.filter { it.filename != fileName }
+            commit.modifications
+                .filter { it.filename != fileName }
                 .forEach { simultaneouslyCommittedFiles.merge(it.filename, 1) { x, y -> x + y } }
         }
     }
 
-    private fun isHighlyCoupled(value: Int): Boolean {
-        return if (value >= MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
-            value.toDouble() / numberOfCommits.toDouble() > HIGH_COUPLING_VALUE
-        } else {
-            false
-        }
+    private fun isHighlyCoupled(value: Int): Boolean = if (value >= MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
+        value.toDouble() / numberOfCommits.toDouble() > HIGH_COUPLING_VALUE
+    } else {
+        false
     }
 
     override fun registerCommit(commit: Commit) {
@@ -63,9 +57,7 @@ class HighlyCoupledFiles : Metric {
         fileName = modification.filename
     }
 
-    override fun edgeAttributeType(): AttributeType? {
-        return AttributeType.ABSOLUTE
-    }
+    override fun edgeAttributeType(): AttributeType? = AttributeType.ABSOLUTE
 
     companion object {
         private const val HIGH_COUPLING_VALUE = .35

@@ -32,24 +32,21 @@ class LargeMerge {
             return listOf(mutableRoot.toNode())
         }
 
-        private fun addFolderToEdgePaths(edges: List<Edge>, folderName: String): List<Edge> {
-            return edges.map { edge ->
-                Edge(
-                    fromNodeName = insertFolderIntoPath(edge.fromNodeName, folderName),
-                    toNodeName = insertFolderIntoPath(edge.toNodeName, folderName),
-                    attributes = edge.attributes
-                )
-            }
+        private fun addFolderToEdgePaths(edges: List<Edge>, folderName: String): List<Edge> = edges.map { edge ->
+            Edge(
+                fromNodeName = insertFolderIntoPath(edge.fromNodeName, folderName),
+                toNodeName = insertFolderIntoPath(edge.toNodeName, folderName),
+                attributes = edge.attributes
+            )
         }
 
-        private fun addFolderToBlackListPaths(blacklist: List<BlacklistItem>, folderName: String): List<BlacklistItem> {
-            return blacklist.map { item ->
+        private fun addFolderToBlackListPaths(blacklist: List<BlacklistItem>, folderName: String): List<BlacklistItem> =
+            blacklist.map { item ->
                 BlacklistItem(
                     path = insertFolderIntoPath(item.path, folderName),
                     type = item.type
                 )
             }
-        }
 
         private fun insertFolderIntoPath(path: String, folderName: String): String {
             val rootRegex = Regex("^/root/")

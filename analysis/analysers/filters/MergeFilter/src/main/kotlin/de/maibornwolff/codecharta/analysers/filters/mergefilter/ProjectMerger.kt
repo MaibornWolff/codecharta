@@ -9,32 +9,28 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
-class ProjectMerger(
-    private val projects: List<Project>,
-    private val nodeMerger: NodeMergerStrategy
-) {
-    fun merge(): Project {
-        return when {
-            areAllAPIVersionsCompatible() ->
-                ProjectBuilder(
-                    mergeProjectNodes(),
-                    mergeEdges(),
-                    mergeAttributeTypes(),
-                    mergeAttributeDescriptors(),
-                    mergeBlacklist()
-                ).build()
+class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
+    fun merge(): Project = when {
+        areAllAPIVersionsCompatible() ->
+            ProjectBuilder(
+                mergeProjectNodes(),
+                mergeEdges(),
+                mergeAttributeTypes(),
+                mergeAttributeDescriptors(),
+                mergeBlacklist()
+            ).build()
 
-            else -> throw MergeException("API versions not supported.")
-        }
+        else -> throw MergeException("API versions not supported.")
     }
 
     private fun areAllAPIVersionsCompatible(): Boolean {
         val unsupportedAPIVersions =
-            projects.map {
-                it.apiVersion
-            }.filter {
-                !Project.isAPIVersionCompatible(it)
-            }
+            projects
+                .map {
+                    it.apiVersion
+                }.filter {
+                    !Project.isAPIVersionCompatible(it)
+                }
 
         return unsupportedAPIVersions.isEmpty()
     }
@@ -50,12 +46,10 @@ class ProjectMerger(
         return mergedNodes
     }
 
-    private fun mergeEdges(): MutableList<Edge> {
-        return if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
-            getMergedEdges()
-        } else {
-            getEdgesOfMainAndWarnIfDiscards()
-        }
+    private fun mergeEdges(): MutableList<Edge> = if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
+        getMergedEdges()
+    } else {
+        getEdgesOfMainAndWarnIfDiscards()
     }
 
     private fun getEdgesOfMainAndWarnIfDiscards(): MutableList<Edge> {
@@ -76,9 +70,10 @@ class ProjectMerger(
                 mergedEdges.add(it)
             }
         }
-        return mergedEdges.distinctBy {
-            listOf(it.fromNodeName, it.toNodeName)
-        }.toMutableList()
+        return mergedEdges
+            .distinctBy {
+                listOf(it.fromNodeName, it.toNodeName)
+            }.toMutableList()
     }
 
     private fun mergeAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
@@ -146,8 +141,9 @@ class ProjectMerger(
                 mergedBlacklist.add(it)
             }
         }
-        return mergedBlacklist.distinctBy {
-            it.toString()
-        }.toMutableList()
+        return mergedBlacklist
+            .distinctBy {
+                it.toString()
+            }.toMutableList()
     }
 }

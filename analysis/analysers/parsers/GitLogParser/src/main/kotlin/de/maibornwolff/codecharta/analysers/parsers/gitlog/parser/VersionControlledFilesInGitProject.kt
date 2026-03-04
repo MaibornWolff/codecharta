@@ -21,9 +21,10 @@ class VersionControlledFilesInGitProject(
         val trackingNamesPerFilename = mutableMapOf<String, Set<String>>()
         duplicateFilenames.keys.forEach { element ->
             trackingNamesPerFilename[element] =
-                vcFList.keys.filter {
-                    vcFList[it]?.filename == element
-                }.toSet()
+                vcFList.keys
+                    .filter {
+                        vcFList[it]?.filename == element
+                    }.toSet()
         }
         return trackingNamesPerFilename
     }

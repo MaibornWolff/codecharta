@@ -18,7 +18,5 @@ class ProjectWrapper(
         return BigInteger(1, md5Algorithm.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }
 
-    override fun toString(): String {
-        return "ProjectWrapper{checksum=$checksum, data=$data}"
-    }
+    override fun toString(): String = "ProjectWrapper{checksum=$checksum, data=$data}"
 }

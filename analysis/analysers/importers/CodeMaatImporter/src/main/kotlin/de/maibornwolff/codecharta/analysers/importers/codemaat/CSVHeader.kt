@@ -2,9 +2,7 @@ package de.maibornwolff.codecharta.analysers.importers.codemaat
 
 import de.maibornwolff.codecharta.util.Logger
 
-class CSVHeader(
-    header: Array<String?>
-) {
+class CSVHeader(header: Array<String?>) {
     private val headerMap:
         MutableMap<Int, String>
 
@@ -43,7 +41,5 @@ class CSVHeader(
         }
     }
 
-    fun getColumnName(i: Int): String {
-        return headerMap[i] ?: throw IllegalArgumentException("No " + i + "th column present.")
-    }
+    fun getColumnName(i: Int): String = headerMap[i] ?: throw IllegalArgumentException("No " + i + "th column present.")
 }

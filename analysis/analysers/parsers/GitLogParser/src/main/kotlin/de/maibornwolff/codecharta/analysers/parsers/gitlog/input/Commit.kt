@@ -15,7 +15,5 @@ class Commit(
 
     val isEmpty = modifications.isEmpty()
 
-    fun isMergeCommit(): Boolean {
-        return mergeCommit
-    }
+    fun isMergeCommit(): Boolean = mergeCommit
 }

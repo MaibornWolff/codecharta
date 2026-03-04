@@ -3,6 +3,9 @@ package de.maibornwolff.codecharta.analysers.parsers.rawtext
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
+import de.maibornwolff.codecharta.analysers.analyserinterface.basefile.BaseFileResolver
+import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesDetector
+import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesResult
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.model.AttributeDescriptor
@@ -26,8 +29,11 @@ import java.io.PrintStream
 class RawTextParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
-) : AnalyserInterface, AttributeGenerator, CommonAnalyserParameters() {
+    private val error: PrintStream = System.err,
+    private val baseFileHelper: BaseFileResolver = BaseFileResolver()
+) : CommonAnalyserParameters(),
+    AnalyserInterface,
+    AttributeGenerator {
     @CommandLine.Option(
         names = ["-m", "--metrics"],
         description = [
@@ -76,13 +82,19 @@ class RawTextParser(
             "Input invalid file for RawTextParser, stopping execution..."
         }
 
+        val validatedInput = inputFile!!
         val useGitignore = !bypassGitignore
-        val effectivePatternsToExclude = determineExclusionPatterns(inputFile!!, useGitignore)
+        val effectivePatternsToExclude = determineExclusionPatterns(validatedInput, useGitignore)
+        val localChangesResult = if (localChanges) {
+            LocalChangesDetector(validatedInput).getLocallyChangedFiles()
+        } else {
+            LocalChangesResult.EMPTY
+        }
 
-        val baseFileNodeMap = loadBaseFileNodes()
+        val baseFileNodeMap = baseFileHelper.loadBaseFileNodes(baseFile)
         val projectMetricsCollector =
             ProjectMetricsCollector(
-                inputFile,
+                validatedInput,
                 effectivePatternsToExclude,
                 fileExtensionsToAnalyse,
                 metricNames,
@@ -90,9 +102,11 @@ class RawTextParser(
                 maxIndentLvl,
                 tabWidth,
                 baseFileNodeMap,
-                useGitignore
+                useGitignore,
+                localChangesResult.changedFiles
             )
         val projectMetrics: ProjectMetrics = projectMetricsCollector.parseProject()
+        addDeletedFileMetrics(projectMetrics, localChangesResult.deletedFiles)
         println()
 
         reportNotFoundFileExtensions(projectMetrics)
@@ -111,6 +125,15 @@ class RawTextParser(
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
 
         return null
+    }
+
+    private fun addDeletedFileMetrics(projectMetrics: ProjectMetrics, deletedFiles: Set<String>) {
+        for (filePath in deletedFiles) {
+            projectMetrics.addFileMetrics("/$filePath", FileMetrics())
+        }
+        if (deletedFiles.isNotEmpty()) {
+            Logger.info { "${deletedFiles.size} deleted files included with empty metrics" }
+        }
     }
 
     private fun determineExclusionPatterns(inputFile: File, useGitignore: Boolean): List<String> {
@@ -185,12 +208,11 @@ class RawTextParser(
         }
 
         val fileSearch = searchFile.walk()
-        return fileSearch.asSequence()
+        return fileSearch
+            .asSequence()
             .filter { it.isFile }
             .any()
     }
 
-    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> {
-        return getAttributeDescriptors(10)
-    }
+    override fun getAttributeDescriptorMaps(): Map<String, AttributeDescriptor> = getAttributeDescriptors(10)
 }

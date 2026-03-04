@@ -32,9 +32,7 @@ class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStra
         }
     }
 
-    override fun getLanguageSummaries(root: JsonElement): JsonObject {
-        return root.asJsonObject.get(TokeiImporter.TOP_LEVEL_OBJECT).asJsonObject
-    }
+    override fun getLanguageSummaries(root: JsonElement): JsonObject = root.asJsonObject.get(TokeiImporter.TOP_LEVEL_OBJECT).asJsonObject
 
     override fun determinePathSeparator(languageSummaries: JsonObject) {
         val gson = Gson()

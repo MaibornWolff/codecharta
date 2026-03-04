@@ -13,13 +13,9 @@ interface AnalyserInterface : Callable<Unit?> {
 
     fun isApplicable(resourceToBeParsed: String): Boolean
 
-    fun getAnalyserName(): String {
-        return name
-    }
+    fun getAnalyserName(): String = name
 
-    fun getAnalyserDescription(): String {
-        return description
-    }
+    fun getAnalyserDescription(): String = description
 
     fun logExecutionStartedSyncSignal() {
         print(CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG)

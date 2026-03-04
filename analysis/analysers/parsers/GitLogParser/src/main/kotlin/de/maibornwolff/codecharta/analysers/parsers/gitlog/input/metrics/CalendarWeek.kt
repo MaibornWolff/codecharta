@@ -6,12 +6,10 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 
 internal data class CalendarWeek(private val week: Int, private val year: Int) : Comparable<CalendarWeek> {
-    override fun compareTo(other: CalendarWeek): Int {
-        return numberOfWeeksBetween(
-            this,
-            other
-        )
-    }
+    override fun compareTo(other: CalendarWeek): Int = numberOfWeeksBetween(
+        this,
+        other
+    )
 
     companion object {
         fun forDateTime(dateTime: OffsetDateTime): CalendarWeek {
@@ -25,8 +23,8 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
             return CalendarWeek(week, year)
         }
 
-        fun numberOfWeeksBetween(a: CalendarWeek, b: CalendarWeek): Int {
-            return ChronoUnit.WEEKS.between(
+        fun numberOfWeeksBetween(a: CalendarWeek, b: CalendarWeek): Int = ChronoUnit.WEEKS
+            .between(
                 getWeekDate(
                     a.year,
                     a.week
@@ -36,11 +34,17 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
                     b.week
                 )
             ).toInt()
-        }
 
         private fun getWeekDate(year: Int, week: Int): OffsetDateTime? { // returns the date of Monday based on the week and year
-            return OffsetDateTime.now().withYear(year).with(WeekFields.ISO.weekOfWeekBasedYear(), week.toLong())
-                .with(WeekFields.ISO.dayOfWeek(), 1).withHour(12).withMinute(0).withSecond(0).withNano(0)
+            return OffsetDateTime
+                .now()
+                .withYear(year)
+                .with(WeekFields.ISO.weekOfWeekBasedYear(), week.toLong())
+                .with(WeekFields.ISO.dayOfWeek(), 1)
+                .withHour(12)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0)
                 .withOffsetSameInstant(ZoneOffset.UTC)
         }
 
@@ -66,16 +70,10 @@ internal data class CalendarWeek(private val week: Int, private val year: Int) :
             return year
         }
 
-        private fun dayIsOneOfTheFirstSevenDaysOfTheYear(dateTime: OffsetDateTime): Boolean {
-            return dateTime.dayOfYear < 7
-        }
+        private fun dayIsOneOfTheFirstSevenDaysOfTheYear(dateTime: OffsetDateTime): Boolean = dateTime.dayOfYear < 7
 
-        private fun isFirstOrSecondWeek(weekNumber: Int): Boolean {
-            return weekNumber <= 2
-        }
+        private fun isFirstOrSecondWeek(weekNumber: Int): Boolean = weekNumber <= 2
 
-        private fun dayIsOneOfTheLastSevenDaysInYear(dateTime: OffsetDateTime): Boolean {
-            return dateTime.dayOfYear > 358
-        }
+        private fun dayIsOneOfTheLastSevenDaysInYear(dateTime: OffsetDateTime): Boolean = dateTime.dayOfYear > 358
     }
 }

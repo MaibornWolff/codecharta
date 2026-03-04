@@ -83,7 +83,8 @@ class EveritValidatorTest {
         CommandLine(ValidationTool()).execute("thisDoesNotExist.cc.json").toString()
         System.setErr(originalErr)
 
-        Assertions.assertThat(errContent.toString())
+        Assertions
+            .assertThat(errContent.toString())
             .contains("Input invalid file for ValidationTool, stopping execution")
     }
 }

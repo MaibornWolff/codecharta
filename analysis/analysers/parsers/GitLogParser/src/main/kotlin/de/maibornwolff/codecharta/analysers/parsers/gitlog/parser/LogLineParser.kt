@@ -26,42 +26,43 @@ class LogLineParser(
 
     fun parse(logLines: Stream<String>): VersionControlledFilesList {
         val parsedFilesOfCommit =
-            logLines.collect(parserStrategy.createLogLineCollector()).map { this.parseCommit(it) }
-                .filter { !it.isEmpty }.collect(CommitCollector.create(metricsFactory))
+            logLines
+                .collect(parserStrategy.createLogLineCollector())
+                .map { this.parseCommit(it) }
+                .filter { !it.isEmpty }
+                .collect(CommitCollector.create(metricsFactory))
 
         progressTracker.updateProgress(logSizeInByte, logSizeInByte, parsingUnit.name)
         return parsedFilesOfCommit
     }
 
-    internal fun parseCommit(commitLines: List<String>): Commit {
-        return try {
-            var author = ""
-            var commitDate = OffsetDateTime.MIN
-            var modifications: List<Modification> = listOf()
-            var isMergeCommit = false
-            var message = ""
-            var coauthors: List<String> = emptyList()
+    internal fun parseCommit(commitLines: List<String>): Commit = try {
+        var author = ""
+        var commitDate = OffsetDateTime.MIN
+        var modifications: List<Modification> = listOf()
+        var isMergeCommit = false
+        var message = ""
+        var coauthors: List<String> = emptyList()
 
-            runBlocking(Dispatchers.Default) {
-                launch {
-                    author = parserStrategy.parseAuthor(commitLines)
-                    commitDate = parserStrategy.parseDate(commitLines)
-                    modifications = parserStrategy.parseModifications(commitLines)
-                    isMergeCommit = parserStrategy.parseIsMergeCommit(commitLines)
-                    message = parserStrategy.parseMessage(commitLines)
-                    coauthors = parserStrategy.parseCoAuthors(commitLines)
-                }
+        runBlocking(Dispatchers.Default) {
+            launch {
+                author = parserStrategy.parseAuthor(commitLines)
+                commitDate = parserStrategy.parseDate(commitLines)
+                modifications = parserStrategy.parseModifications(commitLines)
+                isMergeCommit = parserStrategy.parseIsMergeCommit(commitLines)
+                message = parserStrategy.parseMessage(commitLines)
+                coauthors = parserStrategy.parseCoAuthors(commitLines)
             }
-
-            commitLines.forEach {
-                currentBytesParsed += it.length
-            }
-
-            if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed, parsingUnit.name)
-            Commit(author, modifications, commitDate, isMergeCommit, message, coauthors)
-        } catch (e: NoSuchElementException) {
-            System.err.println("Skipped commit with invalid syntax ($commitLines)")
-            Commit("", listOf(), OffsetDateTime.now(), false, "")
         }
+
+        commitLines.forEach {
+            currentBytesParsed += it.length
+        }
+
+        if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed, parsingUnit.name)
+        Commit(author, modifications, commitDate, isMergeCommit, message, coauthors)
+    } catch (e: NoSuchElementException) {
+        System.err.println("Skipped commit with invalid syntax ($commitLines)")
+        Commit("", listOf(), OffsetDateTime.now(), false, "")
     }
 }

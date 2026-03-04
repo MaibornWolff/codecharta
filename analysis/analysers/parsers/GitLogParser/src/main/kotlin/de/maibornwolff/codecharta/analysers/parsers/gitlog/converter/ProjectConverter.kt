@@ -29,18 +29,18 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         projectBuilder.insertByPath(path, newNode)
         edges.forEach {
             projectBuilder.insertEdge(addRootToEdgePaths(it))
-        } // TODO improve memory utilization -> inject metrics for calculations instead of creating a hard reference in VersionControlledFile
+        }
+        // TODO improve memory utilization -> inject metrics for calculations
+        // instead of creating a hard reference in VersionControlledFile
         versionControlledFile.removeMetricsToFreeMemory()
     }
 
-    private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {
-        return if (containsAuthors) {
-            versionControlledFile.metricsMap.plus(
-                Pair("authors", versionControlledFile.authors)
-            )
-        } else {
-            versionControlledFile.metricsMap
-        }
+    private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> = if (containsAuthors) {
+        versionControlledFile.metricsMap.plus(
+            Pair("authors", versionControlledFile.authors)
+        )
+    } else {
+        versionControlledFile.metricsMap
     }
 
     private fun addRootToEdgePaths(edge: Edge): Edge {
@@ -57,7 +57,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(vcFList, filesInLog)
 
         versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().forEach { // TODO Coroutines?
-                vcFile ->
+            vcFile ->
             addVersionControlledFile(projectBuilder, vcFile)
         }
 

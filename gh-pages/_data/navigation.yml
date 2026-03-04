@@ -55,6 +55,8 @@ docs:
             url: "/docs/analysis/examples"
           - title: "Example with Sonar Qube"
             url: "/docs/analysis/example-sonar-qube"
+          - title: "Local Changes"
+            url: "/docs/analysis/local-changes"
     - title: "CCSH - Importer"
       children:
           - title: "Sonar"

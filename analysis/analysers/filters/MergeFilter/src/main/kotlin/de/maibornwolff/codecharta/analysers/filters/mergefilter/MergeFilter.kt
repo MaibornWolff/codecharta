@@ -21,9 +21,7 @@ import java.io.PrintStream
     description = [MergeFilter.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class MergeFilter(
-    private val output: PrintStream = System.out
-) : AnalyserInterface {
+class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
@@ -73,12 +71,10 @@ class MergeFilter(
         const val NAME = "merge"
         const val DESCRIPTION = "merges multiple cc.json files"
 
-        fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project {
-            return ProjectMerger(
-                listOf(pipedProject, currentProject),
-                RecursiveNodeMergerStrategy(false)
-            ).merge()
-        }
+        fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project = ProjectMerger(
+            listOf(pipedProject, currentProject),
+            RecursiveNodeMergerStrategy(false)
+        ).merge()
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -148,9 +144,7 @@ class MergeFilter(
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 
     private fun processMimoMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
         val groupedFiles: List<Pair<Boolean, List<File>>> = Mimo.generateProjectGroups(sourceFiles, levenshteinDistance)
@@ -208,26 +202,22 @@ class MergeFilter(
         ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
     }
 
-    private fun readInputFiles(files: List<File>): List<Project> {
-        return files.mapNotNull {
-            val input = it.inputStream()
-            try {
-                ProjectDeserializer.deserializeProject(input)
-            } catch (e: Exception) {
-                Logger.warn { "${it.name} is not a valid project file and will be skipped." }
-                null
-            }
+    private fun readInputFiles(files: List<File>): List<Project> = files.mapNotNull {
+        val input = it.inputStream()
+        try {
+            ProjectDeserializer.deserializeProject(input)
+        } catch (e: Exception) {
+            Logger.warn { "${it.name} is not a valid project file and will be skipped." }
+            null
         }
     }
 
-    private fun readInputFilesKeepFileNames(files: List<File>): List<Pair<String, Project>> {
-        return files.mapNotNull {
-            try {
-                Pair(it.name, ProjectDeserializer.deserializeProject(it.inputStream()))
-            } catch (e: Exception) {
-                Logger.warn { "${it.name} is not a valid project file and will be skipped." }
-                null
-            }
+    private fun readInputFilesKeepFileNames(files: List<File>): List<Pair<String, Project>> = files.mapNotNull {
+        try {
+            Pair(it.name, ProjectDeserializer.deserializeProject(it.inputStream()))
+        } catch (e: Exception) {
+            Logger.warn { "${it.name} is not a valid project file and will be skipped." }
+            null
         }
     }
 }

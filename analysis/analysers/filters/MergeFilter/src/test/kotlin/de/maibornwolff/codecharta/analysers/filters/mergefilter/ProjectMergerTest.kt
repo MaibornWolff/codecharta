@@ -96,7 +96,12 @@ class ProjectMergerTest {
         assertEquals(4, project.size)
         assertEquals(2, project.attributeTypes["edges"]!!.size)
         assertEquals(4, project.attributeTypes["nodes"]!!.size)
-        assertEquals(11, project.rootNode.children.first().attributes.size)
+        assertEquals(
+            11,
+            project.rootNode.children
+                .first()
+                .attributes.size
+        )
     }
 
     @Test
@@ -121,7 +126,12 @@ class ProjectMergerTest {
         assertNotEquals(project, originalProject2)
         assertEquals(project.sizeOfEdges(), 2)
         assertEquals(project.size, 4)
-        assertEquals(project.rootNode.children.first().attributes.size, 11)
+        assertEquals(
+            project.rootNode.children
+                .first()
+                .attributes.size,
+            11
+        )
     }
 
     @Test
@@ -140,13 +150,21 @@ class ProjectMergerTest {
             mapOf<String, AttributeDescriptor>(
                 "single" to
                     AttributeDescriptor(
-                        description = "a", hintLowValue = "b", hintHighValue = "c",
-                        link = "d", direction = -1, analyzers = setOf("e")
+                        description = "a",
+                        hintLowValue = "b",
+                        hintHighValue = "c",
+                        link = "d",
+                        direction = -1,
+                        analyzers = setOf("e")
                     ),
                 "merge" to
                     AttributeDescriptor(
-                        description = "w", hintLowValue = "x", hintHighValue = "y",
-                        link = "z", direction = -1, analyzers = setOf("Unknown", "5")
+                        description = "w",
+                        hintLowValue = "x",
+                        hintHighValue = "y",
+                        link = "z",
+                        direction = -1,
+                        analyzers = setOf("Unknown", "5")
                     ),
                 "somethingElse" to AttributeDescriptor(analyzers = setOf("Unknown"))
             )

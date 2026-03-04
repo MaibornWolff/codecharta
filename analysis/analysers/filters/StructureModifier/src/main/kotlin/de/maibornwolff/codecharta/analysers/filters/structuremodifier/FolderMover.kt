@@ -10,9 +10,7 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
-class FolderMover(
-    private val project: Project
-) {
+class FolderMover(private val project: Project) {
     private var toMove: List<MutableNode>? = null
 
     fun move(moveFrom: String?, moveTo: String?): Project? {
@@ -32,10 +30,8 @@ class FolderMover(
         ).build()
     }
 
-    private fun getPathSegments(path: String): List<String> {
-        return path.removePrefix("/").split("/").filter {
-            it.isNotEmpty()
-        }
+    private fun getPathSegments(path: String): List<String> = path.removePrefix("/").split("/").filter {
+        it.isNotEmpty()
     }
 
     private fun moveNodes(moveFrom: String, moveTo: String): List<MutableNode> {
@@ -57,19 +53,19 @@ class FolderMover(
         return newStructureList
     }
 
-    private fun removeMovedNodeFromStructure(originPath: List<String>, node: MutableNode): MutableNode? {
-        return if (originPath.isEmpty() || originPath.first() != node.name) {
+    private fun removeMovedNodeFromStructure(originPath: List<String>, node: MutableNode): MutableNode? =
+        if (originPath.isEmpty() || originPath.first() != node.name) {
             node
         } else if (originPath.size == 1) {
             toMove = node.children.toMutableList()
             null
         } else {
             node.children =
-                node.children.mapNotNull { child -> removeMovedNodeFromStructure(originPath.drop(1), child) }
+                node.children
+                    .mapNotNull { child -> removeMovedNodeFromStructure(originPath.drop(1), child) }
                     .toMutableSet()
             node
         }
-    }
 
     private fun insertInNewStructure(destinationPath: List<String>, node: MutableNode) {
         if (destinationPath.isEmpty()) {
@@ -83,7 +79,8 @@ class FolderMover(
                     !(
                         destinationNodeNamesAndType.containsKey(
                             it.name
-                        ) && destinationNodeNamesAndType[it.name] == it.type
+                        ) &&
+                            destinationNodeNamesAndType[it.name] == it.type
                     )
                 }
             if (filteredNodesToMove.size < toMove!!.size) {
@@ -94,9 +91,10 @@ class FolderMover(
             node.children.addAll(filteredNodesToMove)
         } else {
             var chosenChild: MutableNode? =
-                node.children.filter {
-                    destinationPath.first() == it.name
-                }.firstOrNull()
+                node.children
+                    .filter {
+                        destinationPath.first() == it.name
+                    }.firstOrNull()
 
             if (chosenChild == null) {
                 node.children.add(MutableNode(destinationPath.first(), type = NodeType.Folder))
@@ -112,11 +110,12 @@ class FolderMover(
     private fun extractEdges(from: String, to: String): MutableList<Edge> {
         val sanitizedFrom = "/" + from.removeSuffix("/").removePrefix("/")
         val sanitizedTo = "/" + to.removeSuffix("/").removePrefix("/")
-        return project.edges.map { edge ->
-            edge.fromNodeName = edge.fromNodeName.replace(sanitizedFrom, sanitizedTo)
-            edge.toNodeName = edge.toNodeName.replace(sanitizedFrom, sanitizedTo)
-            edge
-        }.toMutableList()
+        return project.edges
+            .map { edge ->
+                edge.fromNodeName = edge.fromNodeName.replace(sanitizedFrom, sanitizedTo)
+                edge.toNodeName = edge.toNodeName.replace(sanitizedFrom, sanitizedTo)
+                edge
+            }.toMutableList()
     }
 
     private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
@@ -127,14 +126,11 @@ class FolderMover(
         return mergedAttributeTypes.toMutableMap()
     }
 
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
-        return project.attributeDescriptors.toMutableMap()
-    }
+    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> = project.attributeDescriptors.toMutableMap()
 
-    private fun copyBlacklist(from: String, to: String): MutableList<BlacklistItem> {
-        return project.blacklist.map { blacklistItem ->
+    private fun copyBlacklist(from: String, to: String): MutableList<BlacklistItem> = project.blacklist
+        .map { blacklistItem ->
             blacklistItem.path = blacklistItem.path.replace(from, to)
             blacklistItem
         }.toMutableList()
-    }
 }

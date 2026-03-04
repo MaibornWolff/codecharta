@@ -9,10 +9,7 @@ import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 
-class MetricRenamer(
-    private val project: Project,
-    private val newName: String = "complexity"
-) {
+class MetricRenamer(private val project: Project, private val newName: String = "complexity") {
     fun rename(): Project {
         if (!doesProjectContainMCC(project)) {
             println("INFO: Project has not been altered as no MCC metric was found!")
@@ -83,19 +80,13 @@ class MetricRenamer(
         return updatedAttributeDescriptors
     }
 
-    private fun copyEdges(): MutableList<Edge> {
-        return project.edges.toMutableList()
-    }
+    private fun copyEdges(): MutableList<Edge> = project.edges.toMutableList()
 
-    private fun copyBlacklist(): MutableList<BlacklistItem> {
-        return project.blacklist.toMutableList()
-    }
+    private fun copyBlacklist(): MutableList<BlacklistItem> = project.blacklist.toMutableList()
 
-    private fun doesProjectContainMCC(project: Project): Boolean {
-        return doesMccExistInNodes(project.rootNode) ||
-            doesMccExistInAttributeTypes(project.attributeTypes) ||
-            doesMccExistInAttributeDescriptors(project.attributeDescriptors)
-    }
+    private fun doesProjectContainMCC(project: Project): Boolean = doesMccExistInNodes(project.rootNode) ||
+        doesMccExistInAttributeTypes(project.attributeTypes) ||
+        doesMccExistInAttributeDescriptors(project.attributeDescriptors)
 
     private fun doesMccExistInNodes(node: Node): Boolean {
         if (node.attributes.containsKey("mcc")) return true
@@ -111,7 +102,6 @@ class MetricRenamer(
         return nodeAttributeTypes.containsKey("mcc")
     }
 
-    private fun doesMccExistInAttributeDescriptors(attributeDescriptors: Map<String, AttributeDescriptor>): Boolean {
-        return attributeDescriptors.containsKey("mcc")
-    }
+    private fun doesMccExistInAttributeDescriptors(attributeDescriptors: Map<String, AttributeDescriptor>): Boolean =
+        attributeDescriptors.containsKey("mcc")
 }

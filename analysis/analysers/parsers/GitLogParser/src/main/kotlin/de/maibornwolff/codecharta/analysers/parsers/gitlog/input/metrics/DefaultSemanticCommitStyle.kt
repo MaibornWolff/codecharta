@@ -40,7 +40,5 @@ object DefaultSemanticCommitStyle {
         )
     )
 
-    fun getAllTypes(): List<SemanticCommitType> {
-        return defaultCommitTypes
-    }
+    fun getAllTypes(): List<SemanticCommitType> = defaultCommitTypes
 }

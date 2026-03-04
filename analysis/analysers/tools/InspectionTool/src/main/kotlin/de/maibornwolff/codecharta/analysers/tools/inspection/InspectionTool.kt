@@ -17,10 +17,7 @@ import java.io.PrintStream
     description = [InspectionTool.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class InspectionTool(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out
-) : AnalyserInterface {
+class InspectionTool(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) : AnalyserInterface {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
@@ -79,7 +76,5 @@ class InspectionTool(
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
-    override fun isApplicable(resourceToBeParsed: String): Boolean {
-        return false
-    }
+    override fun isApplicable(resourceToBeParsed: String): Boolean = false
 }

@@ -14,16 +14,12 @@ open class SonarCodeURLLinker {
         baseCodeUrl = baseUrlFrom.toString() + "/code?id="
     }
 
-    open fun createUrlString(component: Component): String {
-        return baseCodeUrl + component.key!!
-    }
+    open fun createUrlString(component: Component): String = baseCodeUrl + component.key!!
 
     companion object {
         val NULL: SonarCodeURLLinker =
             object : SonarCodeURLLinker() {
-                override fun createUrlString(component: Component): String {
-                    return ""
-                }
+                override fun createUrlString(component: Component): String = ""
             }
     }
 }

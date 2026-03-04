@@ -8,17 +8,12 @@ class HotfixCommitRatio : Metric {
     private var totalCommitsCount: Long = 0
     private var hotfixCommitsCount: Long = 0
 
-    override fun description(): String {
-        return "Hotfix Commit Ratio: Ratio of hotfix commits (containing 'hotfix') to total commits for this file."
-    }
+    override fun description(): String =
+        "Hotfix Commit Ratio: Ratio of hotfix commits (containing 'hotfix') to total commits for this file."
 
-    override fun metricName(): String {
-        return "hotfix_commit_ratio"
-    }
+    override fun metricName(): String = "hotfix_commit_ratio"
 
-    override fun attributeType(): AttributeType {
-        return AttributeType.RELATIVE
-    }
+    override fun attributeType(): AttributeType = AttributeType.RELATIVE
 
     override fun registerCommit(commit: Commit) {
         totalCommitsCount++
@@ -28,12 +23,10 @@ class HotfixCommitRatio : Metric {
         }
     }
 
-    override fun value(): Number {
-        return if (totalCommitsCount == 0L) {
-            0.0
-        } else {
-            val ratio = hotfixCommitsCount.toDouble() / totalCommitsCount.toDouble()
-            round(ratio * 100) / 100
-        }
+    override fun value(): Number = if (totalCommitsCount == 0L) {
+        0.0
+    } else {
+        val ratio = hotfixCommitsCount.toDouble() / totalCommitsCount.toDouble()
+        round(ratio * 100) / 100
     }
 }

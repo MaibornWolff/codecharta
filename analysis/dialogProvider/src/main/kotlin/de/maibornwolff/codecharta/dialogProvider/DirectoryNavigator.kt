@@ -8,11 +8,7 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.math.max
 
-class DirectoryNavigator(
-    val inputType: InputType,
-    private val fileExtensions: List<FileExtension>,
-    val multiple: Boolean
-) {
+class DirectoryNavigator(val inputType: InputType, private val fileExtensions: List<FileExtension>, val multiple: Boolean) {
     var validate: (String) -> Boolean
     private val systemSeparator = File.separatorChar
     internal var filesAllowed = true
@@ -50,19 +46,21 @@ class DirectoryNavigator(
         currentDirectoryContent = currentDirectory.listDirectoryEntries().sorted()
         possibleDirectories = currentDirectoryContent.filter { it.isDirectory() && it.toString().startsWith(splitInput) }
         if (filesAllowed) {
-            possibleFiles = currentDirectoryContent.filter {
-                InputValidator.verifyFile(it.toFile(), fileExtensions)
-            }.filter { it.toString().startsWith(splitInput) }
+            possibleFiles = currentDirectoryContent
+                .filter {
+                    InputValidator.verifyFile(it.toFile(), fileExtensions)
+                }.filter { it.toString().startsWith(splitInput) }
         }
     }
 
     fun getHints(): Array<String> {
-        val possibleMatches = currentDirectoryContent.filter { path ->
-            (
-                path.isDirectory() ||
-                    (filesAllowed && InputValidator.verifyFile(path.toFile(), fileExtensions))
-            )
-        }.map { if (it.isDirectory()) completedInput + it.toString() + systemSeparator else completedInput + it.toString() }
+        val possibleMatches = currentDirectoryContent
+            .filter { path ->
+                (
+                    path.isDirectory() ||
+                        (filesAllowed && InputValidator.verifyFile(path.toFile(), fileExtensions))
+                )
+            }.map { if (it.isDirectory()) completedInput + it.toString() + systemSeparator else completedInput + it.toString() }
 
         return possibleMatches.toTypedArray()
     }
@@ -98,9 +96,8 @@ class DirectoryNavigator(
         return finalizeOutputString(currentMatches, paddedSize)
     }
 
-    private fun isEntryPossible(entryCount: Int, entrySize: Int, newEntrySize: Int): Boolean {
-        return (entryCount + 1) * max(entrySize, newEntrySize) < targetLineLength * 2
-    }
+    private fun isEntryPossible(entryCount: Int, entrySize: Int, newEntrySize: Int): Boolean =
+        (entryCount + 1) * max(entrySize, newEntrySize) < targetLineLength * 2
 
     private fun finalizeOutputString(entries: List<String>, minimumSize: Int): String {
         val paddedEntries = entries.map { it.padEnd(minimumSize) }

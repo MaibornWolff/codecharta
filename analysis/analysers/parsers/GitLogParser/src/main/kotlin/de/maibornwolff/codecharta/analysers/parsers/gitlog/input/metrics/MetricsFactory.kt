@@ -1,9 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics
 
-data class MetricDefinition(
-    val metricName: String,
-    val factory: () -> Metric
-)
+data class MetricDefinition(val metricName: String, val factory: () -> Metric)
 
 class MetricsFactory(requestedMetrics: List<String> = emptyList()) {
     private val metricDefinitions = createAllDefinitions().selectMetrics(requestedMetrics)

@@ -9,9 +9,7 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.util.Logger
 
-class SubProjectExtractor(
-    private val project: Project
-) {
+class SubProjectExtractor(private val project: Project) {
     private lateinit var path: String
 
     fun extract(path: String): Project {
@@ -38,9 +36,11 @@ class SubProjectExtractor(
             return if (extractionPattern.size == 1) {
                 node.children.toMutableList()
             } else {
-                children.map { child ->
-                    extractNodes(extractionPattern.drop(1), child)
-                }.flatten().toMutableList()
+                children
+                    .map { child ->
+                        extractNodes(extractionPattern.drop(1), child)
+                    }.flatten()
+                    .toMutableList()
             }
         }
 
@@ -64,15 +64,14 @@ class SubProjectExtractor(
         return extractRenamedEdgesForPattern(trimmedExtractionPattern).toMutableList()
     }
 
-    private fun extractRenamedEdgesForPattern(pattern: String): List<Edge> {
-        return project.edges.filter {
+    private fun extractRenamedEdgesForPattern(pattern: String): List<Edge> = project.edges
+        .filter {
             it.fromNodeName.startsWith(pattern) && it.toNodeName.startsWith(pattern)
         }.map { edge ->
             edge.fromNodeName = "/root" + edge.fromNodeName.removePrefix(pattern)
             edge.toNodeName = "/root" + edge.toNodeName.removePrefix(pattern)
             edge
         }
-    }
 
     private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
         val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
@@ -82,11 +81,7 @@ class SubProjectExtractor(
         return mergedAttributeTypes.toMutableMap()
     }
 
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
-        return project.attributeDescriptors.toMutableMap()
-    }
+    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> = project.attributeDescriptors.toMutableMap()
 
-    private fun copyBlacklist(): MutableList<BlacklistItem> {
-        return project.blacklist.toMutableList()
-    }
+    private fun copyBlacklist(): MutableList<BlacklistItem> = project.blacklist.toMutableList()
 }

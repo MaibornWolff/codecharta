@@ -268,11 +268,9 @@ class DialogTest {
         assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name).isEqualTo(File(inputFileName).name)
     }
 
-    private fun provideInvalidTabWidth(): List<Arguments> {
-        return listOf(
-            Arguments.of("12.", 12),
-            Arguments.of("12a sa---__d", 12),
-            Arguments.of("noInt", 0)
-        )
-    }
+    private fun provideInvalidTabWidth(): List<Arguments> = listOf(
+        Arguments.of("12.", 12),
+        Arguments.of("12a sa---__d", 12),
+        Arguments.of("noInt", 0)
+    )
 }

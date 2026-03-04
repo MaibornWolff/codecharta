@@ -119,7 +119,8 @@ class CSVExporterTest {
         CommandLine(CSVExporter()).execute(invalidInputFilePath)
 
         // then
-        Assertions.assertThat(errContent.toString())
+        Assertions
+            .assertThat(errContent.toString())
             .contains("Invalid input file/folder for CSVExporter, stopping execution...")
 
         // clean up
@@ -142,7 +143,8 @@ class CSVExporterTest {
         CommandLine(CSVExporter()).execute(validInputFilePath, invalidInputFilePath)
 
         // then
-        Assertions.assertThat(errContent.toString())
+        Assertions
+            .assertThat(errContent.toString())
             .contains("Invalid input file/folder for CSVExporter, stopping execution...")
 
         // clean up
@@ -164,7 +166,8 @@ class CSVExporterTest {
         CommandLine(CSVExporter()).execute(pathToFolder).toString()
 
         // then
-        Assertions.assertThat(errContent.toString())
+        Assertions
+            .assertThat(errContent.toString())
             .contains("Invalid input file/folder for CSVExporter, stopping execution...")
 
         // clean up

@@ -78,7 +78,8 @@ class SourceMonitorImporterTest {
         main(arrayOf("thisDoesNotExist.cc.json"))
         System.setErr(originalErr)
 
-        Assertions.assertThat(errContent.toString())
+        Assertions
+            .assertThat(errContent.toString())
             .contains("Input invalid file for SourceMonitorImporter, stopping execution")
     }
 }
