@@ -300,6 +300,30 @@ describe("LabelCollisionService", () => {
         })
     })
 
+    describe("tooltip collision padding", () => {
+        beforeEach(() => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            store.dispatch(setHeightMetric({ value: "mcc" }))
+        })
+
+        it("should displace label that is near the tooltip but not pixel-overlapping", () => {
+            // Arrange — label rect is 14px below tooltip bottom (within 12px padding + 4px gap)
+            labelCreationService.addLeafLabel(sampleLeaf, 0)
+            const tooltipRect = makeRect(50, 100, 50, 200)
+            ;(tooltipService.getRect as jest.Mock).mockReturnValue(tooltipRect)
+            // Label top at 110 — gap of 10px from tooltip bottom (100).
+            // Without padding this wouldn't overlap. With 12px padding, padded bottom = 112 > 110.
+            stubRectsForLabels([makeRect(110, 130, 80, 180)])
+
+            // Act
+            labelCollisionService.updateLabelLayout()
+
+            // Assert — label should have been displaced (offset > 0 means transform shifted)
+            const content = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            expect(content.style.transform).not.toBe("translateY(-20px)")
+        })
+    })
+
     describe("setSuppressLayout", () => {
         it("should suppress layout when set to true", () => {
             // Arrange

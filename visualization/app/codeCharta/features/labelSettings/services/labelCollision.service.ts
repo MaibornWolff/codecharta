@@ -6,7 +6,14 @@ import { CodeMapTooltipService } from "../../../ui/codeMap/codeMap.tooltip.servi
 import { LabelCreationService, InternalLabel } from "./labelCreation.service"
 import { LabelMode } from "../../../codeCharta.model"
 import { StateAccessStore } from "../stores/stateAccess.store"
-import { BASE_OFFSET_PX, LABEL_GAP_PX, MAX_CONNECTORS, MAX_DISPLACEMENT_PX, MIN_CONNECTOR_DISTANCE } from "./label.constants"
+import {
+    BASE_OFFSET_PX,
+    LABEL_GAP_PX,
+    MAX_CONNECTORS,
+    MAX_DISPLACEMENT_PX,
+    MIN_CONNECTOR_DISTANCE,
+    TOOLTIP_COLLISION_PADDING_PX
+} from "./label.constants"
 
 interface LabelLayoutInfo {
     label: InternalLabel
@@ -221,6 +228,12 @@ export class LabelCollisionService {
             return
         }
 
+        const pad = TOOLTIP_COLLISION_PADDING_PX
+        const paddedLeft = tooltipRect.left - pad
+        const paddedRight = tooltipRect.right + pad
+        const paddedTop = tooltipRect.top - pad
+        const paddedBottom = tooltipRect.bottom + pad
+
         const suppressedLabel = this.labelCreationService.getSuppressedLabel()
 
         for (const current of infos) {
@@ -230,11 +243,11 @@ export class LabelCollisionService {
 
             const currentTop = current.rect.top + current.offset
             const currentBottom = current.rect.bottom + current.offset
-            const horizontalOverlap = current.rect.right > tooltipRect.left && current.rect.left < tooltipRect.right
-            const verticalOverlap = currentBottom > tooltipRect.top && currentTop < tooltipRect.bottom
+            const horizontalOverlap = current.rect.right > paddedLeft && current.rect.left < paddedRight
+            const verticalOverlap = currentBottom > paddedTop && currentTop < paddedBottom
 
             if (horizontalOverlap && verticalOverlap) {
-                const overlap = tooltipRect.bottom + LABEL_GAP_PX - currentTop
+                const overlap = paddedBottom + LABEL_GAP_PX - currentTop
                 if (overlap > 0) {
                     current.offset += overlap
                 }
