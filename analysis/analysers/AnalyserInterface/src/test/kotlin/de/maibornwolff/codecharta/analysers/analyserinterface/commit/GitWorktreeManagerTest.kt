@@ -169,6 +169,36 @@ class GitWorktreeManagerTest {
     }
 
     @Test
+    fun `should throw RuntimeException when git worktree add fails`() {
+        // Arrange
+        val mockGit = mockk<GitCommandRunner>()
+        val fullHash = "abc1234567890abcdef1234567890abcdef123456"
+        every { mockGit.run("rev-parse", "HEAD") } returns "$fullHash\n"
+        every { mockGit.run("worktree", "add", any(), fullHash, "--detach") } throws RuntimeException("worktree add failed")
+        val manager = GitWorktreeManager(tempDir.toFile(), mockGit)
+
+        // Act & Assert
+        assertThatThrownBy { manager.createWorktree("HEAD") }
+            .isInstanceOf(RuntimeException::class.java)
+            .hasMessageContaining("Failed to create git worktree")
+    }
+
+    @Test
+    fun `should handle cleanup failure gracefully without throwing`() {
+        // Arrange
+        val repoDir = tempDir.toFile()
+        initGitRepoWithCommit(repoDir)
+        val manager = GitWorktreeManager(repoDir)
+        val worktreePath = manager.createWorktree("HEAD")
+
+        // Manually delete the worktree directory to cause git worktree remove to fail
+        worktreePath.deleteRecursively()
+
+        // Act & Assert — should not throw
+        manager.cleanup()
+    }
+
+    @Test
     fun `should resolve date expression via git log fallback`() {
         // Arrange
         val repoDir = tempDir.toFile()

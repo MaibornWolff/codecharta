@@ -84,6 +84,9 @@ class DialogTest {
             val extensionCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
+            val commitCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
 
             every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
@@ -96,7 +99,8 @@ class DialogTest {
                 gitignoreCallback,
                 includeBuildFoldersCallback,
                 excludeCallback,
-                extensionCallback
+                extensionCallback,
+                commitCallback
             )
 
             parserArguments = collectAnalyserArgs(this)
@@ -164,6 +168,9 @@ class DialogTest {
             val extensionCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
+            val commitCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
 
             every { Dialog.testCallback() } returnsMany listOf(
                 inputFileCallback,
@@ -174,7 +181,8 @@ class DialogTest {
                 indentationCallback,
                 gitignoreCallback,
                 excludeCallback,
-                extensionCallback
+                extensionCallback,
+                commitCallback
             )
 
             parserArguments = collectAnalyserArgs(this)
@@ -246,6 +254,9 @@ class DialogTest {
             val extensionCallback: suspend RunScope.() -> Unit = {
                 terminal.press(Keys.ENTER)
             }
+            val commitCallback: suspend RunScope.() -> Unit = {
+                terminal.press(Keys.ENTER)
+            }
 
             every { Dialog.testCallback() } returnsMany listOf(
                 fileCallback,
@@ -257,7 +268,8 @@ class DialogTest {
                 indentationCallback,
                 gitignoreCallback,
                 excludeCallback,
-                extensionCallback
+                extensionCallback,
+                commitCallback
             )
 
             parserArguments = collectAnalyserArgs(this)
