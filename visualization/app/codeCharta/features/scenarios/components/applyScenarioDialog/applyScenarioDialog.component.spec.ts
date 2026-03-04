@@ -52,7 +52,13 @@ describe("ApplyScenarioDialogComponent", () => {
         HTMLDialogElement.prototype.showModal = jest.fn()
         HTMLDialogElement.prototype.close = jest.fn()
 
-        scenarioApplier = { applyScenario: jest.fn() }
+        const realApplier = Object.create(ScenarioApplierService.prototype) as ScenarioApplierService
+        scenarioApplier = {
+            applyScenario: jest.fn(),
+            getMissingMetrics: realApplier.getMissingMetrics.bind(realApplier),
+            hasMissingMetrics: realApplier.hasMissingMetrics.bind(realApplier),
+            getAvailableMetricNames: realApplier.getAvailableMetricNames.bind(realApplier)
+        }
 
         TestBed.configureTestingModule({
             imports: [ApplyScenarioDialogComponent],

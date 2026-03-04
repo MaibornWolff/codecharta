@@ -96,12 +96,15 @@ describe("ScenarioListDialogComponent", () => {
             importScenarioFiles: jest.fn().mockResolvedValue({ imported: 1, duplicates: [], invalid: [], parseErrors: [] })
         }
 
+        const realApplier = Object.create(ScenarioApplierService.prototype) as ScenarioApplierService
+
         TestBed.configureTestingModule({
             imports: [ScenarioListDialogComponent],
             providers: [
                 provideMockStore({ initialState: defaultState }),
                 { provide: ScenariosService, useValue: scenariosService },
-                { provide: ScenarioImportExportService, useValue: importExportService }
+                { provide: ScenarioImportExportService, useValue: importExportService },
+                { provide: ScenarioApplierService, useValue: realApplier }
             ]
         })
 
