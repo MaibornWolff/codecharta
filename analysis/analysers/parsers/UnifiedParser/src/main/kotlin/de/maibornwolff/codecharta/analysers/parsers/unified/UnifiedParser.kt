@@ -57,18 +57,23 @@ class UnifiedParser(
             "Input invalid file for UnifiedParser, stopping execution..."
         }
 
-        var project = scanInputProject(inputFiles[inputFileIndex])
+        val context = resolveEffectiveInput(inputFile)
+        try {
+            var project = scanInputProject(context.inputDir)
 
-        if (shouldProcessPipedInput(inputFiles)) {
-            val pipedProject = extractPipedProject(input)
-            if (pipedProject != null) {
-                project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
-            } else {
-                Logger.warn { "Skipping piped project..." }
+            if (shouldProcessPipedInput(inputFiles)) {
+                val pipedProject = extractPipedProject(input)
+                if (pipedProject != null) {
+                    project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
+                } else {
+                    Logger.warn { "Skipping piped project..." }
+                }
             }
-        }
 
-        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
+            ProjectSerializer.serializeToFileOrStream(project, context.resolveOutputFile(outputFile), output, compress)
+        } finally {
+            context.worktreeManager?.cleanup()
+        }
 
         return null
     }

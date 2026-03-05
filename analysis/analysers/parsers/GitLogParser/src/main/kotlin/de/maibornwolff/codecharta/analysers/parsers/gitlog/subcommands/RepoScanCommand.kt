@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.commit.CommitAnalysisContext
+import de.maibornwolff.codecharta.analysers.analyserinterface.commit.GitWorktreeManager
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.util.GitAdapter
 import de.maibornwolff.codecharta.util.InputHelper
@@ -42,6 +44,12 @@ class RepoScanCommand : AnalyserInterface {
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
 
+    @CommandLine.Option(
+        names = ["--commit"],
+        description = ["analyze the repository at a specific git commit (creates a temporary worktree)"]
+    )
+    private var commit: String? = null
+
     override val name = NAME
     override val description = DESCRIPTION
 
@@ -52,7 +60,6 @@ class RepoScanCommand : AnalyserInterface {
     }
 
     override fun call(): Unit? {
-        val repoPath: Path
         if (repoPathName == null ||
             !InputHelper.isInputValid(
                 arrayOf(File(repoPathName!!)),
@@ -60,17 +67,35 @@ class RepoScanCommand : AnalyserInterface {
             )
         ) {
             throw IllegalArgumentException("Input invalid file for GitRepoScan, stopping execution...")
-        } else {
-            repoPath = Paths.get(repoPathName!!).normalize().toAbsolutePath()
         }
-        println("Creating git.log file...")
-        val gitLogFile = createGitLogFile(repoPath)
-        println("Creating git-ls file...")
-        val gitLsFile = createGitLsFile(repoPath)
 
-        println("Parsing files...")
-        GitLogParser().buildProject(gitLogFile, gitLsFile, outputFilePath, addAuthor, silent, compress)
+        val repoPath = Paths.get(repoPathName!!).normalize().toAbsolutePath()
+        val context = resolveCommitContext(repoPath)
+
+        try {
+            if (!silent) println("Creating git.log file...")
+            val gitLogFile = createGitLogFile(context.inputDir.toPath())
+            if (!silent) println("Creating git-ls file...")
+            val gitLsFile = createGitLsFile(context.inputDir.toPath())
+
+            if (!silent) println("Parsing files...")
+            GitLogParser().buildProject(gitLogFile, gitLsFile, context.resolveOutputFile(outputFilePath), addAuthor, silent, compress)
+        } finally {
+            context.worktreeManager?.cleanup()
+        }
+
         return null
+    }
+
+    private fun resolveCommitContext(repoPath: Path): CommitAnalysisContext {
+        val commitRef = commit?.trim()?.takeIf { it.isNotEmpty() }
+        if (commitRef == null) return CommitAnalysisContext(repoPath.toFile(), null, null)
+
+        val manager = GitWorktreeManager(repoPath.toFile())
+        val resolvedCommit = manager.resolveCommitHash(commitRef)
+        val shortHash = manager.shortCommitHash(resolvedCommit)
+        val worktreeDir = manager.createWorktree(resolvedCommit)
+        return CommitAnalysisContext(worktreeDir, manager, shortHash)
     }
 
     private fun createGitLogFile(repoPath: Path): File {
