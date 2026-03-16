@@ -30,12 +30,13 @@ class RepoScanDialog {
             )
         }
 
-        private fun commitQuestion(session: Session): String = session.promptInput(
-            message = "Analyze a specific commit? (leave empty for current state)",
-            hint = "e.g. HEAD~5, abc1234, v2.0.0",
-            allowEmptyInput = true,
-            onInputReady = testCallback()
-        )
+        private fun commitQuestion(session: Session): String = session
+            .promptInput(
+                message = "Analyze a specific commit? (leave empty for current state)",
+                hint = "e.g. HEAD~5, abc1234, v2.0.0",
+                allowEmptyInput = true,
+                onInputReady = testCallback()
+            ).trim()
 
         internal fun testCallback(): suspend RunScope.() -> Unit = {}
     }

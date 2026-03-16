@@ -28,6 +28,9 @@ class GitWorktreeManager(private val repoRoot: File, private val git: GitCommand
     }
 
     fun createWorktree(commitRef: String): File {
+        require(worktreePath == null) {
+            "Worktree already created. Call cleanup() before creating another worktree."
+        }
         val fullHash = resolveCommitHash(commitRef)
         val tempDir = Files.createTempDirectory(WORKTREE_PREFIX).toFile()
 
