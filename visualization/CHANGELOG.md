@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.142.0] - 2026-03-16
+
 ### Added 🚀
 
 - **Label Settings Panel**: A new dedicated menu in the ribbon bar groups all label-related settings in one place — top labels count, show node names, show metric values, and color label toggles (with color swatches)
