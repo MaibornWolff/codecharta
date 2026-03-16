@@ -4,7 +4,8 @@ import { ScenarioView } from "../../scenarioView.model"
 
 @Component({
     selector: "cc-scenario-item-badges",
-    templateUrl: "./scenarioItemBadges.component.html"
+    templateUrl: "./scenarioItemBadges.component.html",
+    host: { class: "block overflow-hidden" }
 })
 export class ScenarioItemBadgesComponent {
     readonly view = input.required<ScenarioView>()

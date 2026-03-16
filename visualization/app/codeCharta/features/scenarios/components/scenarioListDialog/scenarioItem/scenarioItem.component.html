@@ -4,7 +4,7 @@
 	(click)="applyRequested.emit()"
 >
 	<div class="flex-1 min-w-0" [class.opacity-40]="view().mapMismatch">
-		<div class="font-medium text-sm">
+		<div class="font-medium text-sm truncate" [title]="view().scenario.name">
 			{{ view().scenario.name }}
 			@if (view().warning) {
 				<span class="text-warning ml-1" title="Some metrics in this scenario are not available">

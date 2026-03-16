@@ -1,12 +1,12 @@
 <dialog #dialog class="modal" aria-labelledby="apply-scenario-title">
 	<div class="modal-box max-w-md">
-		<h2 id="apply-scenario-title" class="text-xl font-bold mb-1">Apply: {{ scenario().name }}</h2>
+		<h2 id="apply-scenario-title" class="text-xl font-bold mb-1 truncate" [title]="'Apply: ' + scenario().name">Apply: {{ scenario().name }}</h2>
 
 		@if (scenario().mapFileNames?.length) {
 			<div class="mb-3">
-				<span class="badge badge-sm badge-outline gap-1">
-					<i class="fa fa-map-pin text-[9px]"></i>
-					{{ scenario().mapFileNames!.join(', ') }}
+				<span class="badge badge-sm badge-outline gap-1 max-w-full overflow-hidden" [title]="scenario().mapFileNames!.join(', ')">
+					<i class="fa fa-map-pin text-[9px] shrink-0"></i>
+					<span class="truncate">{{ scenario().mapFileNames!.join(', ') }}</span>
 				</span>
 			</div>
 		}

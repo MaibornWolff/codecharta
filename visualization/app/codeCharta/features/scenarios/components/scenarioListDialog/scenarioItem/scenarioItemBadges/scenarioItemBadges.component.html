@@ -1,13 +1,13 @@
-<div class="flex items-center gap-3 mt-1">
+<div class="flex items-center gap-3 mt-1 min-w-0">
 	@if (view().scenario.isBuiltIn) {
 		<span class="badge badge-xs badge-info">Built-in</span>
 	} @else {
 		<span class="text-[11px] text-base-content/40">{{ view().formattedDate }}</span>
 	}
 	@if (view().mapBound) {
-		<span class="badge badge-xs badge-outline gap-1" [title]="'Bound to ' + view().scenario.mapFileNames!.join(', ')">
-			<i class="fa fa-map-pin text-[9px]"></i>
-			{{ view().scenario.mapFileNames!.join(', ') }}
+		<span class="badge badge-xs badge-outline gap-1 max-w-full overflow-hidden" [title]="'Bound to ' + view().scenario.mapFileNames!.join(', ')">
+			<i class="fa fa-map-pin text-[9px] shrink-0"></i>
+			<span class="truncate">{{ view().scenario.mapFileNames!.join(', ') }}</span>
 		</span>
 	}
 	<span class="flex gap-1.5 text-[11px] text-base-content/40">
