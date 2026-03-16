@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add `--commit` option to directory-based analysers (UnifiedParser, RawTextParser, GitLogParser, RepoScanCommand) that creates a temporary git worktree at the specified commit and runs analysis against it. Supports commit hashes, tags, branches, relative refs (HEAD~5), and date expressions ("2 years ago", "2024-01-15"). Output files are automatically prefixed with the short commit hash.
+
+### Fixed 🐞
+
+- Fix `--commit` option edge cases: trim dialog commit input, guard worktree creation, handle delete return value, and resolve commit references correctly
+
+### Chore 👨‍💻 👩‍💻
+
+- Remove dead tree-sitter entries from version catalog
+- Update all analysis dependencies
+
 ## [1.141.0] - 2026-02-27
 
 ### Added 🚀
