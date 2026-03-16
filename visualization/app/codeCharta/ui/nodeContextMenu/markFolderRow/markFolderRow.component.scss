@@ -8,6 +8,9 @@
     }
 
     .colorButton {
+        border: 0;
+        margin: 6px 8px;
+        cursor: pointer;
         width: 32px;
         height: 32px;
 
@@ -26,6 +29,8 @@
     cc-color-picker {
         width: 32px;
         height: 32px;
+        margin: 6px 8px;
+        cursor: pointer;
 
         .cc-color-picker-trigger {
             font-size: 25px;
