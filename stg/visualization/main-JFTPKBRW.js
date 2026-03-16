@@ -5448,6 +5448,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Label Settings Panel**: A new dedicated menu in the ribbon bar groups all label-related settings in one place \u2014 top labels count, show node names, show metric values, and color label toggles (with color swatches)
 - **Building hover tooltip**: Hovering over a building now shows a tooltip that follows your cursor, displaying the building name and its current area, height, and color metric values
 - **Restyled building labels**: Top labels now use a modern frosted-glass style (rounded corners, soft shadow, subtle blur background). Labels fade in smoothly, automatically shift to avoid overlapping each other, draw a connector line to their building when displaced, and hide themselves gracefully if pushed too far off screen
+- **Scenarios**: Save, restore, and share visualization settings as named scenarios. Includes built-in scenarios with default color presets, map binding to associate a scenario with a specific file, duplicate and delete with confirmation dialog, and export/import via \`.ccscenario\` files
+- **Height/Color label mode toggle**: Switch between showing height or color metric values on building labels
 
 ### Changed
 
@@ -5464,10 +5466,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Fix memory usage growing steadily over time when reloading or switching maps
 - Fix setting edge preview count to 0 being ignored
+- Fix center map button positioning and icon alignment
+- Fix flatten icon alignment in distribution bar context menu
+- Fix button spacing on context menu color buttons
 
 ### Chore \u{1F468}\u200D\u{1F4BB} \u{1F469}\u200D\u{1F4BB}
 
 - Upgrade three.js from 0.168 to 0.182
+- Bump Angular to version 21, ngrx to v21
 
 ## [1.141.1] - 2025-12-19
 
