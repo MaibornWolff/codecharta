@@ -39,7 +39,7 @@ export class CodeMapRenderService implements OnDestroy {
         private readonly store: Store<CcState>,
         private readonly state: State<CcState>,
         private threeSceneService: ThreeSceneService,
-        private labelSettingsFacade: LabelSettingsFacade,
+        private readonly labelSettingsFacade: LabelSettingsFacade,
         private codeMapArrowService: CodeMapArrowService,
         private threeStatsService: ThreeStatsService,
         private codeMapMouseEventService: CodeMapMouseEventService

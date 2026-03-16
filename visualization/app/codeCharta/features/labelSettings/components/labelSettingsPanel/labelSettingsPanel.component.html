@@ -10,21 +10,17 @@
     </div>
 </div>
 
-<div class="join w-full" role="radiogroup" aria-label="Label mode">
-    <button
-        class="btn btn-sm join-item flex-1"
-        [class.btn-primary]="labelMode() === LabelMode.Height"
-        [attr.aria-checked]="labelMode() === LabelMode.Height"
-        role="radio"
-        (click)="setLabelMode(LabelMode.Height)"
-    >Height</button>
-    <button
-        class="btn btn-sm join-item flex-1"
-        [class.btn-primary]="labelMode() === LabelMode.Color"
-        [attr.aria-checked]="labelMode() === LabelMode.Color"
-        role="radio"
-        (click)="setLabelMode(LabelMode.Color)"
-    >Color</button>
+<div class="join w-full" aria-label="Label mode">
+    <input type="radio" name="labelMode"
+        class="join-item btn btn-sm flex-1"
+        aria-label="Height"
+        [checked]="labelMode() === LabelMode.Height"
+        (change)="setLabelMode(LabelMode.Height)" />
+    <input type="radio" name="labelMode"
+        class="join-item btn btn-sm flex-1"
+        aria-label="Color"
+        [checked]="labelMode() === LabelMode.Color"
+        (change)="setLabelMode(LabelMode.Color)" />
 </div>
 
 <label class="flex items-center gap-2 cursor-pointer">
