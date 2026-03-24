@@ -1,5 +1,4 @@
 {
-  "checksum": "5b7a2f53493f8755370905f1a7c2d7a0",
   "data": {
     "projectName": "",
     "nodes": [
@@ -19,7 +18,7 @@
               "number_of_functions": 1.0,
               "message_chains": 0.0,
               "rloc": 5.0,
-              "loc": 8.0,
+              "loc": 9.0,
               "long_method": 0.0,
               "long_parameter_list": 0.0,
               "excessive_comments": 0.0,
@@ -333,5 +332,6 @@
       }
     },
     "blacklist": []
-  }
+  },
+  "checksum": "05021104f5d70abdf86ad90667995d25"
 }
