@@ -92,9 +92,9 @@ class FolderMover(private val project: Project) {
         } else {
             var chosenChild: MutableNode? =
                 node.children
-                    .filter {
+                    .firstOrNull {
                         destinationPath.first() == it.name
-                    }.firstOrNull()
+                    }
 
             if (chosenChild == null) {
                 node.children.add(MutableNode(destinationPath.first(), type = NodeType.Folder))
