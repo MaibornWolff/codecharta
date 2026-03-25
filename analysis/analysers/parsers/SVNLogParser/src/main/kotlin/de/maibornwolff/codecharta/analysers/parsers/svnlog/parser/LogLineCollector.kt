@@ -39,7 +39,7 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
     }
 
     private fun removeIncompleteCommits(commits: MutableList<MutableList<String>>): Stream<MutableList<String>> =
-        commits.stream().filter { commit -> !commit.isEmpty() }
+        commits.stream().filter { commit -> commit.isNotEmpty() }
 
     companion object {
         private const val BOM = "\uFEFF"
