@@ -78,7 +78,6 @@ fun Session.promptInputDirectoryAssisted(
             lastInputEmpty = lastUserInput.isEmpty(),
             invalidInputMessage = invalidInputMessage,
             hint = hints,
-            displaySubInputText = true,
             subInputText = subInputText
         )
     }.runUntilSignal {
