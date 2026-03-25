@@ -29,9 +29,7 @@ class CSVHeader(private val header: Array<String?>, private val pathColumnName: 
             }
         }
 
-        if (headerMap.isEmpty()) {
-            throw IllegalArgumentException("Header is empty.")
-        }
+        require(headerMap.isNotEmpty()) { "Header is empty." }
     }
 
     fun getColumnName(i: Int): String = headerMap[i] ?: throw IllegalArgumentException("No ${i + 1}-th column present.")

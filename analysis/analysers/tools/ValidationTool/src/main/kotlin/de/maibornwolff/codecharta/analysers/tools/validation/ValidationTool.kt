@@ -31,8 +31,8 @@ class ValidationTool : AnalyserInterface {
     }
 
     override fun call(): Unit? {
-        if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for ValidationTool, stopping execution...")
+        require(InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
+            "Input invalid file for ValidationTool, stopping execution..."
         }
 
         EveritValidator(SCHEMA_PATH).validate(FileInputStream(file!!.absoluteFile))

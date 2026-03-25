@@ -54,8 +54,8 @@ class SourceMonitorImporter(private val output: PrintStream = System.out) :
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        if (!InputHelper.isInputValid(files.toTypedArray(), canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for SourceMonitorImporter, stopping execution...")
+        require(InputHelper.isInputValid(files.toTypedArray(), canInputContainFolders = false)) {
+            "Input invalid file for SourceMonitorImporter, stopping execution..."
         }
 
         val csvProjectBuilder =

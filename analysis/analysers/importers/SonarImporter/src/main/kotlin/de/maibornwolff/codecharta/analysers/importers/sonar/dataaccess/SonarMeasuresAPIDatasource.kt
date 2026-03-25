@@ -98,9 +98,7 @@ class SonarMeasuresAPIDatasource(
     }
 
     internal fun createMeasureAPIRequestURI(componentKey: String, metrics: List<String>, pageNumber: Int): URI {
-        if (metrics.isEmpty()) {
-            throw IllegalArgumentException("Empty list of metrics is not supported.")
-        }
+        require(metrics.isNotEmpty()) { "Empty list of metrics is not supported." }
 
         val metricString = metrics.joinToString(",") { it }
         try {

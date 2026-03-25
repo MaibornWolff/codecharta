@@ -4,11 +4,9 @@ import de.maibornwolff.codecharta.model.Edge
 
 class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
     init {
-        if (row.size <= header.pathColumn.size) {
-            throw IllegalArgumentException(
-                "Row " + row.contentToString() +
-                    " has no column containing the file path. Should be in one of " + header.pathColumn + " columns."
-            )
+        require(row.size > header.pathColumn.size) {
+            "Row " + row.contentToString() +
+                " has no column containing the file path. Should be in one of " + header.pathColumn + " columns."
         }
     }
 

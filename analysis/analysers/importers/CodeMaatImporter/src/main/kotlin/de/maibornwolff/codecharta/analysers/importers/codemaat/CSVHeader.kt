@@ -36,9 +36,7 @@ class CSVHeader(header: Array<String?>) {
             }
         }
 
-        if (headerMap.isEmpty()) {
-            throw IllegalArgumentException("Header is empty.")
-        }
+        require(headerMap.isNotEmpty()) { "Header is empty." }
     }
 
     fun getColumnName(i: Int): String = headerMap[i] ?: throw IllegalArgumentException("No " + i + "th column present.")
