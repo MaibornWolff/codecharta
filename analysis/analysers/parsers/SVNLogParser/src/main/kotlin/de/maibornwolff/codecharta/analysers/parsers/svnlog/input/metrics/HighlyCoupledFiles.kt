@@ -21,7 +21,7 @@ class HighlyCoupledFiles : Metric {
     override fun value(): Number {
         evaluateIfNecessary()
 
-        return simultaneouslyCommittedFiles.values.filter { isHighlyCoupled(it) }.count().toLong()
+        return simultaneouslyCommittedFiles.values.count { isHighlyCoupled(it) }.toLong()
     }
 
     override fun getEdges(): List<Edge> {
