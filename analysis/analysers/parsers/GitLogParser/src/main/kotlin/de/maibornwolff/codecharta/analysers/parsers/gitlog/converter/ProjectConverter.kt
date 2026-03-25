@@ -30,7 +30,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         edges.forEach {
             projectBuilder.insertEdge(addRootToEdgePaths(it))
         }
-        // TODO improve memory utilization -> inject metrics for calculations
+        // Note: memory utilization could be improved by injecting metrics for calculations
         // instead of creating a hard reference in VersionControlledFile
         versionControlledFile.removeMetricsToFreeMemory()
     }
@@ -56,8 +56,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
 
         val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(vcFList, filesInLog)
 
-        versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().forEach { // TODO Coroutines?
-            vcFile ->
+        versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().forEach { vcFile ->
             addVersionControlledFile(projectBuilder, vcFile)
         }
 
