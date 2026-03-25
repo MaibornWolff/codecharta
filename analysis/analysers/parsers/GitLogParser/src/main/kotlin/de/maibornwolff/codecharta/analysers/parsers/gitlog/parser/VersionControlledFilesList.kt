@@ -36,7 +36,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
     private fun hasNameConflict(key: String): Boolean {
         val vcf = versionControlledFiles[key]
         if (vcf != null) {
-            return !vcf.isDeleted()
+            return !vcf.isDeleted
         }
         return false
     }
@@ -84,7 +84,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
     private fun fileExistsAsDeleted(key: String): Boolean {
         val vcf = versionControlledFiles[key]
         if (vcf != null) {
-            return vcf.isDeleted()
+            return vcf.isDeleted
         }
         return false
     }

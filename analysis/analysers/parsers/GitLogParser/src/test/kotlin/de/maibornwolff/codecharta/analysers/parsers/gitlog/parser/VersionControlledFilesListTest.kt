@@ -80,14 +80,14 @@ class VersionControlledFilesListTest {
 
         assertEquals(vcfList.get(originalFileKey), originalFile)
         assertEquals(originalFileKey, originalFile.filename)
-        assertTrue(originalFile.isDeleted())
+        assertTrue(originalFile.isDeleted)
 
         val conflictingFileName = "src/File.kt"
         val nameConflictingFile = vcfList.addFileBy(conflictingFileName)
 
         assertEquals(conflictingFileName, nameConflictingFile.filename)
         assertEquals(vcfList.get(conflictingFileName), nameConflictingFile)
-        assertFalse(nameConflictingFile.isDeleted())
+        assertFalse(nameConflictingFile.isDeleted)
 
         assertEquals(vcfList.getList().size, 1)
     }
@@ -100,7 +100,7 @@ class VersionControlledFilesListTest {
 
         assertEquals(vcfList.get(originalFileKey), originalFile)
         assertEquals(originalFileKey, originalFile.filename)
-        assertTrue(originalFile.isDeleted())
+        assertTrue(originalFile.isDeleted)
 
         val otherFileName = "src/OtherFile.kt"
         val otherFile = vcfList.addFileBy(otherFileName)
@@ -108,7 +108,7 @@ class VersionControlledFilesListTest {
         vcfList.rename(otherFileName, originalFileKey)
 
         assertEquals(vcfList.get(originalFileKey), otherFile)
-        assertFalse(otherFile.isDeleted())
+        assertFalse(otherFile.isDeleted)
         assertTrue(otherFile.containsRename(otherFileName))
         assertTrue(otherFile.containsRename(originalFileKey))
 

@@ -8,11 +8,11 @@ class MergeCommitParser : CommitParser {
     override fun parse(commit: Commit, versionControlledFilesList: VersionControlledFilesList) {
         commit.modifications.forEach {
             val file = versionControlledFilesList.get(it.getTrackName())
-            if (file == null || !file.isMutated()) { // Handle mutated files only when a merge commit occurs
+            if (file == null || !file.isMutated) { // Handle mutated files only when a merge commit occurs
                 return
             }
 
-            if (file.isDeleted() && it.isTypeAdd()) {
+            if (file.isDeleted && it.isTypeAdd()) {
                 file.unmarkDeleted()
                 file.resetMutation()
             } else if (it.isTypeAdd()) { // Do not handle redundant Add modifications for the same file.
@@ -22,8 +22,8 @@ class MergeCommitParser : CommitParser {
             } else {
                 System.err.println(
                     "\nUnhandled Edge Case in MergeCommit: deleted: %s, mutated: %s, modification type: %s, initalAdd: %s, file: %s".format(
-                        file.isDeleted(),
-                        file.isMutated(),
+                        file.isDeleted,
+                        file.isMutated,
                         it.type,
                         it.isInitialAdd(),
                         file.filename

@@ -45,7 +45,7 @@ class StandardCommitParser : CommitParser {
         mod: Modification
     ) {
         val file = versionControlledFilesList.get(trackName)
-        if (file != null && !file.isDeleted() && mod.currentFilename == file.filename) {
+        if (file != null && !file.isDeleted && mod.currentFilename == file.filename) {
             file.registerCommit(commit, mod)
         } else {
             val vcfToBeAddedOrReplaced = versionControlledFilesList.addFileBy(trackName)

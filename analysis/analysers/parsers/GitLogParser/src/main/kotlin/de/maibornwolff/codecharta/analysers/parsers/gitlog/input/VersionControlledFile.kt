@@ -62,9 +62,9 @@ class VersionControlledFile internal constructor(filename: String, private var m
     }
 
     private fun flagCommitAsMutatedIfNeeded(commit: Commit, mod: Modification) {
-        if (this.isDeleted() && (mod.isTypeModify() || mod.isTypeRename())) {
+        if (this.isDeleted && (mod.isTypeModify() || mod.isTypeRename())) {
             this.mutate()
-        } else if (!commit.isMergeCommit() && !this.isDeleted() && mod.isTypeAdd() && !mod.isInitialAdd()) {
+        } else if (!commit.isMergeCommit() && !this.isDeleted && mod.isTypeAdd() && !mod.isInitialAdd()) {
             this.mutate()
         }
     }
@@ -83,7 +83,8 @@ class VersionControlledFile internal constructor(filename: String, private var m
         deleted = false
     }
 
-    fun isDeleted(): Boolean = deleted
+    val isDeleted: Boolean
+        get() = deleted
 
     fun mutate() {
         mutated = true
@@ -93,5 +94,6 @@ class VersionControlledFile internal constructor(filename: String, private var m
         mutated = false
     }
 
-    fun isMutated(): Boolean = mutated
+    val isMutated: Boolean
+        get() = mutated
 }
