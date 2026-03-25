@@ -16,10 +16,10 @@ object PathFactory {
             println("Both slash and backslash was found in path $path. Assumed this to be a unix path.")
             return fromFileSystemPath(path, '/')
         }
-        if (path.contains("\\")) {
-            return fromFileSystemPath(path, '\\')
+        return if (path.contains("\\")) {
+            fromFileSystemPath(path, '\\')
         } else {
-            return fromFileSystemPath(path, '/')
+            fromFileSystemPath(path, '/')
         }
     }
 }
