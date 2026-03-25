@@ -47,7 +47,7 @@ class SubProjectExtractor(private val project: Project) {
         return extractedNodes
     }
 
-    private fun addRoot(nodes: MutableList<MutableNode>): List<MutableNode> {
+    private fun addRoot(nodes: List<MutableNode>): List<MutableNode> {
         if (nodes.isEmpty()) {
             Logger.warn {
                 "No nodes with the specified path ($path) were found. The resulting project is therefore empty"

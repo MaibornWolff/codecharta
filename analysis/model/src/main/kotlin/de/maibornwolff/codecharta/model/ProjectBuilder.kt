@@ -219,7 +219,7 @@ open class ProjectBuilder(
         return
     }
 
-    private fun extractNodeAttributeNames(): MutableSet<String> {
+    private fun extractNodeAttributeNames(): Set<String> {
         val attributeNames = mutableSetOf<String>()
 
         fun traverse(node: MutableNode) {
@@ -232,7 +232,7 @@ open class ProjectBuilder(
         return attributeNames
     }
 
-    private fun extractEdgeAttributeNames(): MutableSet<String> {
+    private fun extractEdgeAttributeNames(): Set<String> {
         val attributeNames = mutableSetOf<String>()
 
         edges.forEach { edge ->

@@ -97,7 +97,7 @@ class MetricRenamer(private val project: Project, private val newName: String = 
         return resultOfChildNodes
     }
 
-    private fun doesMccExistInAttributeTypes(attributeTypes: Map<String, MutableMap<String, AttributeType>>): Boolean {
+    private fun doesMccExistInAttributeTypes(attributeTypes: Map<String, Map<String, AttributeType>>): Boolean {
         val nodeAttributeTypes = attributeTypes["nodes"] ?: return false
         return nodeAttributeTypes.containsKey("mcc")
     }

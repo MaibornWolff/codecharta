@@ -124,7 +124,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             project.edges.filter { edge ->
                 edge.fromNodeName == nodePath || edge.toNodeName == nodePath
             }
-        val attributeKeys: MutableList<String> = getAttributeKeys(filteredEdges)
+        val attributeKeys: List<String> = getAttributeKeys(filteredEdges)
         return getAggregatedAttributes(attributeKeys, filteredEdges)
     }
 
@@ -137,7 +137,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         return nodePath
     }
 
-    private fun getAttributeKeys(filteredEdges: List<Edge>): MutableList<String> {
+    private fun getAttributeKeys(filteredEdges: List<Edge>): List<String> {
         val attributeKeys: MutableList<String> = mutableListOf()
         filteredEdges.forEach {
             it.attributes.forEach { (key, _) -> if (!attributeKeys.contains(key)) attributeKeys.add(key) }
