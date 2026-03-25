@@ -45,8 +45,7 @@ class VersionControlledFile internal constructor(filename: String, private var m
         when (type) {
             Modification.Type.DELETE -> markedDeleted = true
             Modification.Type.RENAME -> filename = modification.oldFilename
-            else -> {
-            }
+            else -> Unit
         }
         metrics.forEach { it.registerModification(modification) }
     }
