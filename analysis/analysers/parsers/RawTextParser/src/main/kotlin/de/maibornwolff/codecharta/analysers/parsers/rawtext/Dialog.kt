@@ -28,7 +28,7 @@ class Dialog {
 
             val useGitignore = useGitignoreQuestion(session)
 
-            val includeBuildFolders = if (!useGitignore) includeBuildFoldersQuestion(session) else false
+            val includeBuildFolders = !useGitignore && includeBuildFoldersQuestion(session)
 
             val exclude = excludeQuestion(session)
 
