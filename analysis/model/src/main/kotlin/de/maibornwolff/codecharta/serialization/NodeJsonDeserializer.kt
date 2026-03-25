@@ -24,10 +24,10 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
         return Node(name, nodeType, attributes, link, children.toSet(), checksum)
     }
 
-    private fun deserializeLink(jsonNode: JsonObject): String? = jsonNode.get("link")?.asString
+    private fun deserializeLink(jsonNode: JsonObject): String? = jsonNode["link"]?.asString
 
     private fun deserializeNodeType(jsonNode: JsonObject): NodeType {
-        val typeElement = jsonNode.get("type") ?: throw JsonParseException("Type element is missing.")
+        val typeElement = jsonNode["type"] ?: throw JsonParseException("Type element is missing.")
         val nodeType: NodeType
         try {
             nodeType = NodeType.valueOf(typeElement.asString)
@@ -39,24 +39,24 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
     }
 
     private fun deserializeName(jsonNode: JsonObject): String {
-        val nameElement = jsonNode.get("name") ?: throw JsonParseException("Name element is missing.")
+        val nameElement = jsonNode["name"] ?: throw JsonParseException("Name element is missing.")
         return nameElement.asString
     }
 
     private fun deserializeAttributes(jsonNode: JsonObject): Map<String, Any> {
-        val attributes = jsonNode.get("attributes") ?: return mapOf()
+        val attributes = jsonNode["attributes"] ?: return mapOf()
 
         val gson = GsonBuilder().create()
         return gson.fromJson<Map<String, Any>>(attributes, Map::class.java)
     }
 
     private fun deserializeChildren(jsonNode: JsonObject): List<Node> {
-        val children = jsonNode.get("children") ?: return listOf()
+        val children = jsonNode["children"] ?: return listOf()
 
         return children.asJsonArray.mapTo(ArrayList()) {
             deserialize(it, Node::class.java, null)
         }
     }
 
-    private fun deserializeChecksum(jsonNode: JsonObject): String? = jsonNode.get("checksum")?.asString
+    private fun deserializeChecksum(jsonNode: JsonObject): String? = jsonNode["checksum"]?.asString
 }
