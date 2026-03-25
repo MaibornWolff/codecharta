@@ -19,8 +19,7 @@ fun MainRenderScope.drawInput(
     invalidInputMessage: String,
     lastInputEmpty: Boolean,
     vararg hint: String,
-    displaySubInputText: Boolean = false,
-    subInputText: String = ""
+    subInputText: String? = null
 ) {
     bold {
         this.green { this.text("? ") }
@@ -33,7 +32,7 @@ fun MainRenderScope.drawInput(
     }
     text("> ")
     input(Completions(*hint, ignoreCase = false), initialText = "")
-    if (displaySubInputText) {
+    if (subInputText != null) {
         text("\n")
         black(isBright = true) {
             text(subInputText)
