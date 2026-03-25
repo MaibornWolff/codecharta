@@ -12,7 +12,7 @@ class IndentationMetric(private var maxIndentation: Int, private var verbose: Bo
         const val NAME = "IndentationLevel"
     }
 
-    // TODO no mixed tab/ space possible at line start?
+    // Note: mixed tab/space indentation at line start is not currently handled
     override fun parseLine(line: String) {
         var tabIndent = line.length - line.trimStart('\t').length
         var spaceIndent = line.length - line.trimStart(' ').length
@@ -27,7 +27,7 @@ class IndentationMetric(private var maxIndentation: Int, private var verbose: Bo
         }
     }
 
-    // TODO tabSize - (offset % tabSize) from the current position
+    // Note: could use tabSize - (offset % tabSize) from the current position for more accuracy
     private fun guessTabWidth(): Int {
         tabWidth = 1
         if (spaceIndentations.sum() == 0) return tabWidth
