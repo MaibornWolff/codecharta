@@ -12,6 +12,7 @@ enum class FileExtension(val primaryExtension: String, val otherValidExtensions:
     GO(".go"),
     PHP(".php"),
     TYPESCRIPT(".ts", setOf("cts", ".mts")),
+    TSX(".tsx"),
     CSHARP(".cs"),
     CPP(".cpp", setOf(".cc", ".cxx", ".c++", ".hh", ".hpp", ".hxx")),
     C(".c", setOf(".h")),

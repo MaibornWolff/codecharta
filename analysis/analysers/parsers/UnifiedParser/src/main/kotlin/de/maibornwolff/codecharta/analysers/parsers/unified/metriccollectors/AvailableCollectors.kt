@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.api.Language
 
 enum class AvailableCollectors(val fileExtension: FileExtension, val collectorFactory: () -> TreeSitterLibraryCollector) {
     TYPESCRIPT(FileExtension.TYPESCRIPT, { TreeSitterLibraryCollector(Language.TYPESCRIPT) }),
+    TSX(FileExtension.TSX, { TreeSitterLibraryCollector(Language.TSX) }),
     JAVASCRIPT(FileExtension.JAVASCRIPT, { TreeSitterLibraryCollector(Language.JAVASCRIPT) }),
     KOTLIN(FileExtension.KOTLIN, { TreeSitterLibraryCollector(Language.KOTLIN) }),
     OBJECTIVE_C(FileExtension.OBJECTIVE_C, { TreeSitterLibraryCollector(Language.OBJECTIVE_C) }),

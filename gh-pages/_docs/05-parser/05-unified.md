@@ -20,6 +20,7 @@ CodeCharta. It generates either a cc.json or a csv file.
 |--------------|----------------------------------------|
 | Javascript   | .js, .cjs, .mjs                        |
 | Typescript   | .ts, .cts, .mts                        |
+| TSX          | .tsx                                   |
 | Java         | .java                                  |
 | Kotlin       | .kt                                    |
 | C#           | .cs                                    |
@@ -32,6 +33,7 @@ CodeCharta. It generates either a cc.json or a csv file.
 | Ruby         | .rb                                    |
 | Swift        | .swift                                 |
 | Bash         | .sh                                    |
+| Vue          | .vue                                   |
 
 ## Supported Metrics
 
@@ -146,6 +148,14 @@ contribute to complexity:
   `class_static_block`, `function_expression`
 - **Logical operators**: `&&`, `||`, `??` in binary expressions
 
+#### TSX (.tsx)
+
+- **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `for_in_statement`, `ternary_expression`,
+  `conditional_type`, `switch_case`, `switch_default`, `catch_clause`
+- **Functions**: `function_declaration`, `generator_function_declaration`, `arrow_function`, `generator_function`, `method_definition`,
+  `class_static_block`, `function_expression`
+- **Logical operators**: `&&`, `||`, `??` in binary expressions
+
 #### Java (.java)
 
 - **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `enhanced_for_statement`, `ternary_expression`,
@@ -235,7 +245,7 @@ contribute to complexity:
 
 Comment lines are counted based on language-specific comment syntax:
 
-- **JavaScript/TypeScript**: `comment`, `html_comment`
+- **JavaScript/TypeScript/TSX**: `comment`, `html_comment`
 - **Java**: `block_comment`, `line_comment`
 - **Kotlin**: `line_comment`, `multiline_comment`
 - **C#**: `comment`
@@ -258,6 +268,11 @@ Function counting identifies different types of function definitions per languag
 - **Arrow functions**: Assigned to variables (detected via `variable_declarator` with `arrow_function` value)
 
 #### TypeScript (.ts, .cts, .mts)
+
+- **Simple functions**: `function_declaration`, `generator_function_declaration`, `method_definition`, `function_expression`
+- **Arrow functions**: Assigned to variables (detected via `variable_declarator` with `arrow_function` value)
+
+#### TSX (.tsx)
 
 - **Simple functions**: `function_declaration`, `generator_function_declaration`, `method_definition`, `function_expression`
 - **Arrow functions**: Assigned to variables (detected via `variable_declarator` with `arrow_function` value)
@@ -338,7 +353,7 @@ This metric is calculated by counting all lines that are not identified as comme
 
 Parameters per function counts the number of parameters declared for each function. The metric identifies parameter nodes specific to each language:
 
-- **JavaScript/TypeScript**: `formal_parameter`, `required_parameter`
+- **JavaScript/TypeScript/TSX**: `formal_parameter`, `required_parameter`
 - **Java**: `formal_parameter`
 - **Kotlin**: `parameter`
 - **C#**: `parameter`
@@ -363,6 +378,11 @@ can indicate tight coupling and violations of the Law of Demeter. The metric cou
 - **Call nodes**: `call_expression`
 
 #### TypeScript (.ts, .cts, .mts)
+
+- **Chain nodes**: `call_expression`, `member_expression`
+- **Call nodes**: `call_expression`
+
+#### TSX (.tsx)
 
 - **Chain nodes**: `call_expression`, `member_expression`
 - **Call nodes**: `call_expression`

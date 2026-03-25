@@ -43,6 +43,7 @@ class UnifiedParserTest {
             Arguments.of("ruby", ".rb"),
             Arguments.of("swift", ".swift"),
             Arguments.of("typescript", ".ts"),
+            Arguments.of("tsx", ".tsx"),
             Arguments.of("vue", ".vue")
         )
     }
