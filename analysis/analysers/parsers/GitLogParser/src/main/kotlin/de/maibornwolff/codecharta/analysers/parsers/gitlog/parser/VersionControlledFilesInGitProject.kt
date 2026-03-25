@@ -36,7 +36,7 @@ class VersionControlledFilesInGitProject(
         trackingNamesPerFilename.keys.forEach { elem ->
             var chooseElement = ""
             trackingNamesPerFilename[elem]?.forEach {
-                if (!vcFList[it]?.isDeleted()!!) {
+                if (!vcFList[it]?.isDeleted!!) {
                     chooseElement = it
                 }
             }
