@@ -57,8 +57,8 @@ class CSVImporter(private val output: PrintStream = System.out) :
 
     @Throws(IOException::class)
     override fun call(): Unit? {
-        if (!InputHelper.isInputValid(files.toTypedArray(), canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for CSVImporter, stopping execution...")
+        require(InputHelper.isInputValid(files.toTypedArray(), canInputContainFolders = false)) {
+            "Input invalid file for CSVImporter, stopping execution..."
         }
 
         val csvProjectBuilder = CSVProjectBuilder(pathSeparator, csvDelimiter, pathColumnName)

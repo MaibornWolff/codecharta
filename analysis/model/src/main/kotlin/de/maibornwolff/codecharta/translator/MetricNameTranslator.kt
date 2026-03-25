@@ -30,13 +30,10 @@ open class MetricNameTranslator(private val translationMap: Map<String, String>,
         val seen = ArrayList<String>()
 
         for (value in translationMap.values) {
-            if (value.isNotEmpty() && seen.contains(value)) {
-                throw IllegalArgumentException(
-                    "Replacement map should not map distinct keys to equal values, e.g. $value"
-                )
-            } else {
-                seen.add(value)
+            require(!(value.isNotEmpty() && seen.contains(value))) {
+                "Replacement map should not map distinct keys to equal values, e.g. $value"
             }
+            seen.add(value)
         }
     }
 

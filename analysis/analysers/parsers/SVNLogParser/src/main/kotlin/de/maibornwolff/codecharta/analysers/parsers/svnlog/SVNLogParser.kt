@@ -111,8 +111,8 @@ class SVNLogParser(
     override fun call(): Unit? {
         logExecutionStartedSyncSignal()
 
-        if (!InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for SVNLogParser, stopping execution...")
+        require(InputHelper.isInputValidAndNotNull(arrayOf(file), canInputContainFolders = false)) {
+            "Input invalid file for SVNLogParser, stopping execution..."
         }
 
         var project =

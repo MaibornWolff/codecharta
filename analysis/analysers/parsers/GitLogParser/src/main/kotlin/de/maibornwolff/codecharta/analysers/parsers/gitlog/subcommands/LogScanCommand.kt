@@ -60,8 +60,8 @@ class LogScanCommand : AnalyserInterface {
     }
 
     override fun call(): Unit? {
-        if (!InputHelper.isInputValidAndNotNull(arrayOf(gitLogFile), canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for GitLogScan, stopping execution...")
+        require(InputHelper.isInputValidAndNotNull(arrayOf(gitLogFile), canInputContainFolders = false)) {
+            "Input invalid file for GitLogScan, stopping execution..."
         }
         GitLogParser().buildProject(gitLogFile!!, gitLsFile!!, outputFilePath, addAuthor, silent, compress)
         return null

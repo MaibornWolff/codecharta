@@ -8,10 +8,8 @@ import java.util.regex.Pattern
 
 class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
     init {
-        if (row.size <= header.pathColumn) {
-            throw IllegalArgumentException(
-                "Row  has no column containing the file path. Should be in ${header.pathColumn} th column."
-            )
+        require(row.size > header.pathColumn) {
+            "Row  has no column containing the file path. Should be in ${header.pathColumn} th column."
         }
     }
 
@@ -25,12 +23,7 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
         return MutableNode(filename, NodeType.File, attributes)
     }
 
-    private val path =
-        if (row[header.pathColumn] == null) {
-            throw IllegalArgumentException("Row has no path information.")
-        } else {
-            row[header.pathColumn]!!
-        }
+    private val path = requireNotNull(row[header.pathColumn]) { "Row has no path information." }
 
     private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
 

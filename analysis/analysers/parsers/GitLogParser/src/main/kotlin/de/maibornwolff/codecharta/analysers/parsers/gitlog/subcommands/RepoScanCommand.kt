@@ -60,14 +60,13 @@ class RepoScanCommand : AnalyserInterface {
     }
 
     override fun call(): Unit? {
-        if (repoPathName == null ||
-            !InputHelper.isInputValid(
-                arrayOf(File(repoPathName!!)),
-                canInputContainFolders = true
-            )
-        ) {
-            throw IllegalArgumentException("Input invalid file for GitRepoScan, stopping execution...")
-        }
+        require(
+            repoPathName != null &&
+                InputHelper.isInputValid(
+                    arrayOf(File(repoPathName!!)),
+                    canInputContainFolders = true
+                )
+        ) { "Input invalid file for GitRepoScan, stopping execution..." }
 
         val repoPath = Paths.get(repoPathName!!).normalize().toAbsolutePath()
         val context = resolveCommitContext(repoPath)

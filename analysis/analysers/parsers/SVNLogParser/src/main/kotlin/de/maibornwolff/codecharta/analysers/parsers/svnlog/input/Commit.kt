@@ -19,9 +19,8 @@ class Commit(val author: String, modifications: List<Modification>, val commitDa
 
     fun getModification(filename: String): Modification {
         val modifications = modifications.filter { filename == it.filename }
-        if (modifications.isEmpty()) {
-            throw IllegalStateException("File $filename could not be assigned to a modification.")
-        } else if (modifications.size > 1) {
+        check(modifications.isNotEmpty()) { "File $filename could not be assigned to a modification." }
+        if (modifications.size > 1) {
             System.err.println(
                 "No unique file name was found in commit for $filename, ${modifications.size} files were found"
             )

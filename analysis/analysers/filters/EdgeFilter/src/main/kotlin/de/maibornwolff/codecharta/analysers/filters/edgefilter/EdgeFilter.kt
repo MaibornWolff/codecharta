@@ -42,8 +42,8 @@ class EdgeFilter(private val output: PrintStream = System.out) : AnalyserInterfa
     }
 
     override fun call(): Unit? {
-        if (!InputHelper.isInputValidAndNotNull(arrayOf(source), canInputContainFolders = false)) {
-            throw IllegalArgumentException("Input invalid file for EdgeFilter, stopping execution...")
+        require(InputHelper.isInputValidAndNotNull(arrayOf(source), canInputContainFolders = false)) {
+            "Input invalid file for EdgeFilter, stopping execution..."
         }
 
         val srcProject = ProjectDeserializer.deserializeProject(source!!.inputStream())
