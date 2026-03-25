@@ -140,7 +140,7 @@ class GitLogParser(
         GIT_LOG_NUMSTAT_RAW_REVERSED -> GitLogNumstatRawParserStrategy()
     }
 
-    private fun readFileNameListFile(path: File): MutableList<String> {
+    private fun readFileNameListFile(path: File): List<String> {
         val inputStream: InputStream = path.inputStream()
         val lineList = mutableListOf<String>()
 

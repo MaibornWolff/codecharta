@@ -40,7 +40,7 @@ class PHPUnitStrategy : ImporterStrategy {
         val lineReportForFile = linesForFile.item(0) as Element
         val lineCoverage = lineReportForFile.getAttribute("percent").toDouble()
 
-        val attributeMap = mutableMapOf(
+        val attributeMap = mapOf(
             CoverageAttributes.LINE_COVERAGE.attributeName to lineCoverage
         )
 
