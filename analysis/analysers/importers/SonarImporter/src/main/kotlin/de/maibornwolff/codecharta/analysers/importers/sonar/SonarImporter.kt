@@ -19,7 +19,6 @@ import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
 import java.io.PrintStream
-import java.net.URL
 
 @CommandLine.Command(
     name = SonarImporter.NAME,
@@ -94,7 +93,7 @@ class SonarImporter(private val input: InputStream = System.`in`, private val ou
 
     private fun createMeasuresAPIImporter(): SonarMeasuresAPIImporter {
         if (url.endsWith("/")) url = url.substring(0, url.length - 1)
-        val baseUrl = URL(url)
+        val baseUrl = java.net.URI(url).toURL()
         val version = SonarVersionAPIDatasource(userToken, baseUrl).getSonarqubeVersion()
         val measuresDatasource = SonarMeasuresAPIDatasource(userToken, baseUrl, version)
         val metricsDatasource = SonarMetricsAPIDatasource(userToken, baseUrl)
