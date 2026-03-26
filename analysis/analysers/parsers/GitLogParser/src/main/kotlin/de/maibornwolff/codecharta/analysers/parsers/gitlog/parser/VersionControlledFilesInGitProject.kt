@@ -6,7 +6,7 @@ class VersionControlledFilesInGitProject(
     private val vcFList: MutableMap<String, VersionControlledFile>,
     private val filesInGitLog: List<String>
 ) {
-    // Note: salts should not be part of filenames, consider changing this logic
+    // TODO salts should not be part of filenames, change logic error
     private fun removeSaltFromFilenames() {
         vcFList.values.forEach {
             it.filename = it.filename.substringBefore("_\\0_")
