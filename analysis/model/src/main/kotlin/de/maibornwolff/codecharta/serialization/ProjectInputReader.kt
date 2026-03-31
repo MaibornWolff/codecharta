@@ -8,17 +8,24 @@ import java.io.InputStreamReader
 import java.util.Scanner
 
 object ProjectInputReader {
-/**
+    private const val MAX_WAIT_MS = 500L
+    private const val CHECK_INTERVAL_MS = 50L
+
+    /**
      * Extracts a JSON string representing a project from the given InputStream.
      * Because piped bash commands run concurrently, a pipeable ccsh-parser sends a sync flag
      * to signal other parsers to check for piped input.
-     * A short wait ensures the availability of potential sync flags.
+     * Polls for data availability to handle concurrent JVM startup delays.
      *
      * @param input InputStream with serialized project data.
      * @return JSON string of the project, or an empty string if no valid data is found.
      */
     fun extractProjectString(input: InputStream): String {
-        Thread.sleep(100)
+        var waited = 0L
+        while (input.available() <= 0 && waited < MAX_WAIT_MS) {
+            Thread.sleep(CHECK_INTERVAL_MS)
+            waited += CHECK_INTERVAL_MS
+        }
         val availableBytes = input.available()
         if (availableBytes <= 0) {
             return ""
