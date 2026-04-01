@@ -7,6 +7,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.Scanner
 
+/** Reads and extracts serialized project JSON from an [java.io.InputStream], handling pipe-based input with sync signalling. */
 object ProjectInputReader {
     private const val MAX_WAIT_MS = 500L
     private const val CHECK_INTERVAL_MS = 50L
@@ -57,6 +58,7 @@ object ProjectInputReader {
         return content.replace(Regex("[\\n\\r]"), "")
     }
 
+    /** Returns `true` if the first 1024 bytes of [input] contain the ccsh sync flag, leaving the stream reset to its original position. */
     private fun containsSyncSignal(input: InputStream): Boolean {
         val bufferSize = 1024
         val buffer = ByteArray(bufferSize)
@@ -69,6 +71,7 @@ object ProjectInputReader {
         return isSubarray(syncSignalBytes, buffer)
     }
 
+    /** Extracts the last complete JSON object from [streamContent] by scanning backwards for a balanced `{}`pair, returning the full string if no valid object is found. */
     private fun extractJsonObjectFromEndOfStream(streamContent: String): String {
         var count = 0
         val openingBracket = '{'
@@ -97,6 +100,7 @@ object ProjectInputReader {
         }
     }
 
+    /** Returns `true` if [subarray] appears as a contiguous subsequence anywhere within [buffer]. */
     private fun isSubarray(subarray: ByteArray, buffer: ByteArray): Boolean {
         for (i in 0 until buffer.size - subarray.size + 1) {
             if (buffer.copyOfRange(i, i + subarray.size).contentEquals(subarray)) {

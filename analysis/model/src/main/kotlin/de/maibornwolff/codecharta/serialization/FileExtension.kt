@@ -1,6 +1,12 @@
 package de.maibornwolff.codecharta.serialization
 
-enum class FileExtension(val primaryExtension: String, val otherValidExtensions: Set<String> = setOf()) {
+/** Canonical file extensions recognized by CodeCharta analysers. */
+enum class FileExtension(
+    /** The primary extension string, including the leading dot (e.g. `".java"`). */
+    val primaryExtension: String,
+    /** Additional valid extensions for this language beyond the primary one. */
+    val otherValidExtensions: Set<String> = setOf()
+) {
     JSON(".json"),
     CSV(".csv"),
     CODECHARTA(".cc"),
