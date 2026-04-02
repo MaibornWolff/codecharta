@@ -392,9 +392,11 @@
         "description": "The mean complexity found in the body of a function of this file.",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "",
+        "link": "https://codecharta.com/docs/parser/unified",
         "direction": -1,
-        "analyzers": []
+        "analyzers": [
+          "unifiedParser"
+        ]
       },
       "median_complexity_per_function": {
         "title": "Median complexity per function",
@@ -509,5 +511,5 @@
     },
     "blacklist": []
   },
-  "checksum": "702d21eea0467429b89dfb7ecb52dd78"
+  "checksum": "0b7ea0e9f7fd367f2b7d50f323962432"
 }
