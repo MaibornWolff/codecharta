@@ -12,7 +12,7 @@
         <button class="cc-file-select-action-button" (click)="handleSelectZeroFiles()">None</button>
         <button class="cc-file-select-action-button" (click)="handleInvertSelectedFiles()">Invert</button>
     </div>
-    @for (file of filesInUI; track file.file.fileMeta.fileName) {
+    @for (file of filesInUI; track file) {
         <mat-option class="cc-file-name" [value]="file.file" [ngStyle]="{ 'text-decoration': file.isRemoved ? 'line-through' : 'none' }">
             {{ file.file.fileMeta.fileName | removeExtension }}
             <cc-remove-file-button
