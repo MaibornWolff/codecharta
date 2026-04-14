@@ -17,6 +17,7 @@ describe("MetricChooserValueComponent", () => {
                 { provide: State, useValue: { getValue: () => DEFAULT_STATE } },
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn(() => of(null)) } },
                 provideMockStore({
+                    initialState: DEFAULT_STATE,
                     selectors: [
                         {
                             selector: primaryMetricNamesSelector,

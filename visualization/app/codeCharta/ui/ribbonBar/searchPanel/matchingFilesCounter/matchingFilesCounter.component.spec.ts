@@ -3,6 +3,7 @@ import { render } from "@testing-library/angular"
 import { expect } from "@jest/globals"
 import { MatchingFilesCounterComponent } from "./matchingFilesCounter.component"
 import { provideMockStore } from "@ngrx/store/testing"
+import { defaultState } from "../../../../state/store/state.manager"
 import { matchingFilesCounterSelector } from "./selectors/matchingFilesCounter.selector"
 
 describe("MatchingFilesCounterComponent", () => {
@@ -11,6 +12,7 @@ describe("MatchingFilesCounterComponent", () => {
             imports: [MatchingFilesCounterComponent],
             providers: [
                 provideMockStore({
+                    initialState: defaultState,
                     selectors: [
                         {
                             selector: matchingFilesCounterSelector,

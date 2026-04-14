@@ -5,12 +5,16 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { AttributeSideBarHeaderSectionComponent } from "./attributeSideBarHeaderSection.component"
 import { IsAttributeSideBarVisibleService } from "../../../services/isAttributeSideBarVisible.service"
+import { defaultState } from "../../../state/store/state.manager"
 
 describe("AttributeSideBarComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [AttributeSideBarComponent],
-            providers: [{ provide: IsAttributeSideBarVisibleService, useValue: { isOpen: true } }, provideMockStore()]
+            providers: [
+                { provide: IsAttributeSideBarVisibleService, useValue: { isOpen: true } },
+                provideMockStore({ initialState: defaultState })
+            ]
         })
     })
 

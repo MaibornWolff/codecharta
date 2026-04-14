@@ -10,6 +10,7 @@ import { AutoFitCodeMapEffect } from "./autoFitCodeMap.effect"
 import { EffectsModule } from "@ngrx/effects"
 import { Action } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { defaultState } from "../../store/state.manager"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { LayoutAlgorithm } from "../../../codeCharta.model"
 import { selectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
@@ -35,6 +36,7 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
             providers: [
                 { provide: RenderCodeMapEffect, useValue: { renderCodeMap$: mockedRenderCodeMap$ } },
                 provideMockStore({
+                    initialState: defaultState,
                     selectors: [
                         ...mockedSelectorsTriggeringAutoFit,
                         { selector: resetCameraIfNewFileIsLoadedSelector, value: true },
@@ -55,9 +57,7 @@ describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
     })
 
     afterEach(() => {
-        mockedRenderCodeMap$.complete()
-        actions$.complete()
-        resetCameraIfNewFileIsLoaded$.complete()
+        store.resetSelectors()
     })
 
     it("should skip first change", () => {

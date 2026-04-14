@@ -64,8 +64,12 @@ describe("FrontPrintContainerMesh", () => {
     let font: Font
     let fontData: FontData
     let geometryOptions: GeometryOptions
+    let addSpy: jest.SpyInstance
+    let removeSpy: jest.SpyInstance
 
     beforeEach(() => {
+        addSpy = jest.spyOn(FrontPrintContainerMesh.prototype, "add").mockReturnThis()
+        removeSpy = jest.spyOn(FrontPrintContainerMesh.prototype, "remove").mockReturnThis()
         font = new Font(fontData)
         geometryOptions = {
             width: 100,
@@ -75,6 +79,11 @@ describe("FrontPrintContainerMesh", () => {
             qrCodeText: "qrCodeText",
             secondRowVisible: true
         } as GeometryOptions
+    })
+
+    afterEach(() => {
+        addSpy.mockRestore()
+        removeSpy.mockRestore()
     })
 
     it("should initialize all children meshes and add them to the container", async () => {

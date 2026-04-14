@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
+import { defaultState } from "../../../state/store/state.manager"
 import { render } from "@testing-library/angular"
 import { Observable, of } from "rxjs"
 import { DIFFERENT_NODE } from "../../../util/dataMocks"
@@ -11,7 +12,7 @@ describe("metricChooserTypeComponent", () => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn(() => new Observable(null)) } },
-                provideMockStore()
+                provideMockStore({ initialState: defaultState })
             ]
         })
     })

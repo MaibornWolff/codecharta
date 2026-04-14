@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
+import { defaultState } from "../../state/store/state.manager"
 import { render, screen } from "@testing-library/angular"
 import { ColorPickerForMapColorComponent } from "./colorPickerForMapColor.component"
 import { mapColorsSelector } from "../../state/store/appSettings/mapColors/mapColors.selector"
@@ -13,6 +14,7 @@ describe("ColorPickerForMapColorComponent", () => {
             imports: [ColorPickerForMapColorComponent],
             providers: [
                 provideMockStore({
+                    initialState: defaultState,
                     selectors: [
                         { selector: mapColorsSelector, value: defaultMapColors },
                         { selector: colorRangeSelector, value: { from: 21, to: 100 } },

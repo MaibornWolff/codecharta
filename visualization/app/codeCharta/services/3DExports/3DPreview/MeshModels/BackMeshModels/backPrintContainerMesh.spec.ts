@@ -80,8 +80,10 @@ describe("BackPrintContainerMesh", () => {
     let font: Font
     let fontData: FontData
     let geometryOptions: GeometryOptions
+    let addSpy: jest.SpyInstance
 
     beforeEach(() => {
+        addSpy = jest.spyOn(BackPrintContainerMesh.prototype, "add").mockReturnThis()
         font = new Font(fontData)
         geometryOptions = {
             width: 100,
@@ -89,6 +91,10 @@ describe("BackPrintContainerMesh", () => {
             baseplateHeight: 20,
             qrCodeText: "qrCodeText"
         } as GeometryOptions
+    })
+
+    afterEach(() => {
+        addSpy.mockRestore()
     })
 
     it("should initialize all children meshes and add them to the container", async () => {
