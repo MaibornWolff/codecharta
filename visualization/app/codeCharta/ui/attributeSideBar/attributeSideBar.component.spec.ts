@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render } from "@testing-library/angular"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { defaultState } from "../../state/store/state.manager"
 import { expect } from "@jest/globals"
 import { TEST_ATTRIBUTE_DESCRIPTORS, TEST_NODE_FOLDER, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
@@ -42,6 +43,7 @@ describe("AttributeSideBarComponent", () => {
             providers: [
                 { provide: IsAttributeSideBarVisibleService, useValue: { isOpen: true } },
                 provideMockStore({
+                    initialState: defaultState,
                     selectors: [
                         { selector: primaryMetricNamesSelector, value: selectedMetricNames },
                         { selector: showAttributeTypeSelectorSelector, value: true },

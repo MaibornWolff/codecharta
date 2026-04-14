@@ -6,6 +6,7 @@ import { VALID_FILE_NODE_WITH_ID, VALID_NODE_WITH_PATH } from "../../../util/dat
 import { NodeContextMenuCardComponent } from "./nodeContextMenuCard.component"
 import { provideMockStore } from "@ngrx/store/testing"
 import { rightClickedCodeMapNodeSelector } from "../../../state/selectors/rightClickedCodeMapNode.selector"
+import { defaultState } from "../../../state/store/state.manager"
 
 describe("NodeContextMenuCardComponent", () => {
     beforeEach(() => {
@@ -28,7 +29,10 @@ describe("NodeContextMenuCardComponent", () => {
     it("should display all information", async () => {
         const { container } = await render(NodeContextMenuCardComponent, {
             excludeComponentDeclaration: true,
-            providers: provideMockStore({ selectors: [{ selector: rightClickedCodeMapNodeSelector, value: VALID_NODE_WITH_PATH }] })
+            providers: provideMockStore({
+                initialState: defaultState,
+                selectors: [{ selector: rightClickedCodeMapNodeSelector, value: VALID_NODE_WITH_PATH }]
+            })
         })
 
         expect(screen.getByText("/root")).not.toBe(null)
@@ -42,7 +46,10 @@ describe("NodeContextMenuCardComponent", () => {
     it("should not display mark folder option if node is a leaf", async () => {
         const { container } = await render(NodeContextMenuCardComponent, {
             excludeComponentDeclaration: true,
-            providers: provideMockStore({ selectors: [{ selector: rightClickedCodeMapNodeSelector, value: VALID_FILE_NODE_WITH_ID }] })
+            providers: provideMockStore({
+                initialState: defaultState,
+                selectors: [{ selector: rightClickedCodeMapNodeSelector, value: VALID_FILE_NODE_WITH_ID }]
+            })
         })
         expect(container.querySelector("cc-mark-folder-row")).toBe(null)
     })

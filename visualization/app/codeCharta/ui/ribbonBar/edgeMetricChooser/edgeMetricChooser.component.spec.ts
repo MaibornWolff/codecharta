@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { expect } from "@jest/globals"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { defaultState } from "../../../state/store/state.manager"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { firstValueFrom, of } from "rxjs"
@@ -20,6 +21,7 @@ describe("edgeMetricChooserComponent", () => {
             providers: [
                 { provide: NodeSelectionService, useValue: { createNodeObservable: jest.fn().mockReturnValue(of(null)) } },
                 provideMockStore({
+                    initialState: defaultState,
                     selectors: [
                         {
                             selector: metricDataSelector,

@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { SearchPanelComponent } from "./searchPanel.component"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { isSearchPanelPinnedSelector } from "../../../state/store/appSettings/isSearchPanelPinned/isSearchPanelPinned.selector"
+import { defaultState } from "../../../state/store/state.manager"
 
 describe(SearchPanelComponent.name, () => {
     let store: MockStore
@@ -11,6 +12,7 @@ describe(SearchPanelComponent.name, () => {
             imports: [SearchPanelComponent],
             providers: [
                 provideMockStore({
+                    initialState: defaultState,
                     selectors: [{ selector: isSearchPanelPinnedSelector, value: false }]
                 })
             ]

@@ -5,6 +5,7 @@ import { render } from "@testing-library/angular"
 import { FileSelectionModeService } from "../../../codeCharta/ui/filePanel/fileSelectionMode.service"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { FilePanelComponent } from "./filePanel.component"
+import { defaultState } from "../../state/store/state.manager"
 
 describe("filePanelComponent", () => {
     beforeEach(() => {
@@ -17,7 +18,7 @@ describe("filePanelComponent", () => {
     it("should render delta-selector when in delta mode", async () => {
         const { container } = await render(FilePanelComponent, {
             excludeComponentDeclaration: true,
-            providers: [provideMockStore({ selectors: [{ selector: isDeltaStateSelector, value: true }] })]
+            providers: [provideMockStore({ initialState: defaultState, selectors: [{ selector: isDeltaStateSelector, value: true }] })]
         })
         expect(container.querySelector("cc-file-panel-delta-selector")).not.toBe(null)
         expect(container.querySelector("cc-file-panel-file-selector")).toBe(null)
@@ -26,7 +27,7 @@ describe("filePanelComponent", () => {
     it("should render file-selector when not in delta mode", async () => {
         const { container } = await render(FilePanelComponent, {
             excludeComponentDeclaration: true,
-            providers: [provideMockStore({ selectors: [{ selector: isDeltaStateSelector, value: false }] })]
+            providers: [provideMockStore({ initialState: defaultState, selectors: [{ selector: isDeltaStateSelector, value: false }] })]
         })
         expect(container.querySelector("cc-file-panel-file-selector")).not.toBe(null)
         expect(container.querySelector("cc-file-panel-delta-selector")).toBe(null)

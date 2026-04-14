@@ -11,7 +11,7 @@ describe("MapMesh", () => {
 
     beforeEach(() => {
         originalMapMesh = new Mesh(new BufferGeometry(), new MeshBasicMaterial())
-        originalMapMesh.geometry.setAttribute("color", new Float32BufferAttribute([0.8, 0.8, 0.8, 0.9, 0.2, 0.2], 3))
+        originalMapMesh.geometry.setAttribute("color", new Float32BufferAttribute([0.8, 0.8, 0.8, 0.9, 0.05, 0.05], 3))
         originalMapMesh.geometry.setAttribute("position", new Float32BufferAttribute([0, 0, 0, 1, 1, 1, 2, 2, 2], 3))
 
         originalMapMesh.geometry.computeBoundingBox = jest.fn(() => {
@@ -80,7 +80,7 @@ describe("MapMesh", () => {
         // Arrange
         const verticesPerBox = 24
         const numBoxes = 2
-        const positions = new Float32Array(numBoxes * verticesPerBox * 3)
+        const positions = new Float32Array(numBoxes * verticesPerBox * 3).map((_, index) => (index % 3) + 1)
         const colors = new Float32Array(numBoxes * verticesPerBox * 3).fill(0.5)
         const indices = new Uint32Array(numBoxes * indicesPerNode)
         for (let box = 0; box < numBoxes; box++) {
@@ -118,7 +118,7 @@ describe("MapMesh", () => {
         // Arrange
         const verticesPerBox = 24
         const numBoxes = 1
-        const positions = new Float32Array(numBoxes * verticesPerBox * 3)
+        const positions = new Float32Array(numBoxes * verticesPerBox * 3).map((_, index) => (index % 3) + 1)
         const colors = new Float32Array(numBoxes * verticesPerBox * 3).fill(0.5)
         const indices = new Uint32Array(numBoxes * indicesPerNode)
         for (let index = 0; index < indicesPerNode; index++) {
@@ -144,7 +144,7 @@ describe("MapMesh", () => {
         // Arrange
         const verticesPerBox = 24
         const numBoxes = 3
-        const positions = new Float32Array(numBoxes * verticesPerBox * 3)
+        const positions = new Float32Array(numBoxes * verticesPerBox * 3).map((_, index) => (index % 3) + 1)
         const colors = new Float32Array(numBoxes * verticesPerBox * 3).fill(0.5)
         const indices = new Uint32Array(numBoxes * indicesPerNode)
         for (let box = 0; box < numBoxes; box++) {
