@@ -87,6 +87,7 @@ export class ThreeRendererService {
         this.labelRenderer.domElement.style.top = "0"
         this.labelRenderer.domElement.style.left = "0"
         this.labelRenderer.domElement.style.pointerEvents = "none"
+        this.labelRenderer.domElement.style.isolation = "isolate"
 
         if (this.enableFXAA) {
             this.initComposer()
