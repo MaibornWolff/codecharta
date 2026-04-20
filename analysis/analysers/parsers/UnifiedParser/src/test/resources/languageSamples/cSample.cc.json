@@ -1,5 +1,4 @@
 {
-  "checksum": "6f746426c61c9cc7feebb4a20258a772",
   "data": {
     "projectName": "",
     "nodes": [
@@ -185,9 +184,11 @@
         "description": "The mean complexity found in the body of a function of this file.",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "",
+        "link": "https://codecharta.com/docs/parser/unified",
         "direction": -1,
-        "analyzers": []
+        "analyzers": [
+          "unifiedParser"
+        ]
       },
       "median_complexity_per_function": {
         "title": "Median complexity per function",
@@ -301,5 +302,6 @@
       }
     },
     "blacklist": []
-  }
+  },
+  "checksum": "e93e8849a0bb43f86156eed4ccc2085f"
 }

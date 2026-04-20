@@ -51,6 +51,7 @@ object TreeSitterAdapter {
         FileExtension.JAVA -> Language.JAVA
         FileExtension.KOTLIN -> Language.KOTLIN
         FileExtension.TYPESCRIPT -> Language.TYPESCRIPT
+        FileExtension.TSX -> Language.TSX
         FileExtension.JAVASCRIPT -> Language.JAVASCRIPT
         FileExtension.PYTHON -> Language.PYTHON
         FileExtension.GO -> Language.GO

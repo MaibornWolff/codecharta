@@ -1,5 +1,4 @@
 {
-  "checksum": "aa9b37b414625bf132a81d323e3e5b75",
   "data": {
     "projectName": "",
     "nodes": [
@@ -123,7 +122,7 @@
               "number_of_functions": 0.0,
               "message_chains": 0.0,
               "rloc": 9.0,
-              "loc": 14.0,
+              "loc": 15.0,
               "long_method": 0.0,
               "long_parameter_list": 0.0,
               "excessive_comments": 0.0,
@@ -155,7 +154,7 @@
               "number_of_functions": 1.0,
               "message_chains": 0.0,
               "rloc": 5.0,
-              "loc": 8.0,
+              "loc": 9.0,
               "long_method": 0.0,
               "long_parameter_list": 0.0,
               "excessive_comments": 0.0,
@@ -353,9 +352,11 @@
         "description": "The mean complexity found in the body of a function of this file.",
         "hintLowValue": "",
         "hintHighValue": "",
-        "link": "",
+        "link": "https://codecharta.com/docs/parser/unified",
         "direction": -1,
-        "analyzers": []
+        "analyzers": [
+          "unifiedParser"
+        ]
       },
       "median_complexity_per_function": {
         "title": "Median complexity per function",
@@ -469,5 +470,6 @@
       }
     },
     "blacklist": []
-  }
+  },
+  "checksum": "4dad66260a46298f0ab7ea55b6f12aee"
 }

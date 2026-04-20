@@ -94,7 +94,10 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         ),
         "mean_complexity_per_function" to AttributeDescriptor(
             title = "Mean complexity per function",
-            description = "The mean complexity found in the body of a function of this file."
+            description = "The mean complexity found in the body of a function of this file.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
         ),
         "median_complexity_per_function" to AttributeDescriptor(
             title = "Median complexity per function",

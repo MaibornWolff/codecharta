@@ -9,36 +9,36 @@
         "link": "",
         "children": [
           {
-            "name": "javaSample.java",
+            "name": "tsxSample.tsx",
             "type": "File",
             "attributes": {
-              "complexity": 14.0,
-              "logic_complexity": 9.0,
-              "comment_lines": 7.0,
-              "number_of_functions": 5.0,
+              "complexity": 23.0,
+              "logic_complexity": 16.0,
+              "comment_lines": 25.0,
+              "number_of_functions": 3.0,
               "message_chains": 0.0,
-              "rloc": 58.0,
-              "loc": 73.0,
-              "long_method": 0.0,
+              "rloc": 69.0,
+              "loc": 109.0,
+              "long_method": 2.0,
               "long_parameter_list": 0.0,
-              "excessive_comments": 0.0,
-              "comment_ratio": 0.12,
+              "excessive_comments": 1.0,
+              "comment_ratio": 0.36,
               "max_parameters_per_function": 2.0,
               "min_parameters_per_function": 1.0,
-              "mean_parameters_per_function": 1.2,
+              "mean_parameters_per_function": 1.33,
               "median_parameters_per_function": 1.0,
-              "max_complexity_per_function": 4.0,
-              "min_complexity_per_function": 1.0,
-              "mean_complexity_per_function": 1.8,
-              "median_complexity_per_function": 1.0,
-              "max_rloc_per_function": 10.0,
-              "min_rloc_per_function": 5.0,
-              "mean_rloc_per_function": 6.4,
-              "median_rloc_per_function": 6.0
+              "max_complexity_per_function": 9.0,
+              "min_complexity_per_function": 3.0,
+              "mean_complexity_per_function": 6.67,
+              "median_complexity_per_function": 8.0,
+              "max_rloc_per_function": 18.0,
+              "min_rloc_per_function": 8.0,
+              "mean_rloc_per_function": 14.67,
+              "median_rloc_per_function": 18.0
             },
             "link": "",
             "children": [],
-            "checksum": "c017327e52f10868"
+            "checksum": "63beee9616698ee1"
           }
         ]
       }
@@ -303,5 +303,5 @@
     },
     "blacklist": []
   },
-  "checksum": "c08a655ca790705609de74a1a8af84a9"
+  "checksum": "e89455844b9df25247764607e28a5f30"
 }
