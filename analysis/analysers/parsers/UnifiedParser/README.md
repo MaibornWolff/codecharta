@@ -10,6 +10,7 @@ The Unified Parser is parser to generate code metrics from a source code file or
 |--------------|----------------------------------------|
 | Javascript   | .js, .cjs, .mjs                        |
 | Typescript   | .ts, .cts, .mts                        |
+| TSX          | .tsx                                   |
 | Java         | .java                                  |
 | Kotlin       | .kt                                    |
 | C#           | .cs                                    |
@@ -22,6 +23,7 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Ruby         | .rb                                    |
 | Swift        | .swift                                 |
 | Bash         | .sh                                    |
+| Vue          | .vue                                   |
 
 ## Supported Metrics
 
