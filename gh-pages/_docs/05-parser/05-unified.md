@@ -11,14 +11,14 @@ toc_label: "Jump to Section"
 
 **Category**: Parser (takes in source code and outputs cc.json)
 
-The Unified Parser is parser to generate code metrics from a source code file or a project folder without relying on tools other than
+The Unified Parser is a parser to generate code metrics from a source code file or a project folder without relying on tools other than
 CodeCharta. It generates either a cc.json or a csv file.
 
 ## Supported Languages
 
 | Language     | Supported file extensions              |
 |--------------|----------------------------------------|
-| Javascript   | .js, .cjs, .mjs                        |
+| Javascript   | .js, .cjs, .mjs, .jsx                  |
 | Typescript   | .ts, .cts, .mts                        |
 | TSX          | .tsx                                   |
 | Java         | .java                                  |
@@ -133,7 +133,7 @@ specific AST node types for each metric.
 Complexity is calculated using McCabe Complexity, counting the number of paths through the code. Each language has specific constructs that
 contribute to complexity:
 
-#### JavaScript (.js, .cjs, .mjs)
+#### JavaScript (.js, .cjs, .mjs, .jsx)
 
 - **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `for_in_statement`, `ternary_expression`,
   `switch_case`, `switch_default`, `catch_clause`
@@ -270,7 +270,7 @@ Comment lines are counted based on language-specific comment syntax:
 
 Function counting identifies different types of function definitions per language:
 
-#### JavaScript (.js, .cjs, .mjs)
+#### JavaScript (.js, .cjs, .mjs, .jsx)
 
 - **Simple functions**: `function_declaration`, `generator_function_declaration`, `method_definition`, `function_expression`
 - **Arrow functions**: Assigned to variables (detected via `variable_declarator` with `arrow_function` value)
@@ -386,7 +386,7 @@ Parameters per function counts the number of parameters declared for each functi
 Message Chains is a code smell that detects method call chains with 4 or more consecutive calls (e.g., `obj.a().b().c().d()`), which
 can indicate tight coupling and violations of the Law of Demeter. The metric counts only method/function calls, not property accesses.
 
-#### JavaScript (.js, .cjs, .mjs)
+#### JavaScript (.js, .cjs, .mjs, .jsx)
 
 - **Chain nodes**: `call_expression`, `member_expression`
 - **Call nodes**: `call_expression`
