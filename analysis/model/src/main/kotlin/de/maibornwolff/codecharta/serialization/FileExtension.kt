@@ -23,7 +23,7 @@ enum class FileExtension(
     CPP(".cpp", setOf(".cc", ".cxx", ".c++", ".hh", ".hpp", ".hxx")),
     C(".c", setOf(".h")),
     JAVA(".java"),
-    JAVASCRIPT(".js", setOf(".cjs", ".mjs")),
+    JAVASCRIPT(".js", setOf(".cjs", ".mjs", ".jsx")),
     KOTLIN(".kt"),
     OBJECTIVE_C(".m"),
     PYTHON(".py"),

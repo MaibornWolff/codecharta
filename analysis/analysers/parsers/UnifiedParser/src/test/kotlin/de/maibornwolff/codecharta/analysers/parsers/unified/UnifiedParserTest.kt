@@ -37,6 +37,7 @@ class UnifiedParserTest {
             Arguments.of("go", ".go"),
             Arguments.of("java", ".java"),
             Arguments.of("javascript", ".js"),
+            Arguments.of("jsx", ".jsx"),
             Arguments.of("kotlin", ".kt"),
             Arguments.of("objectiveC", ".m"),
             Arguments.of("php", ".php"),
