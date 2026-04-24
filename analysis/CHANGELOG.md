@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- Add JSX support to UnifiedParser
+- Add TSX support to UnifiedParser
+
 ## [1.143.0] - 2026-04-28
 
 ### Added 🚀
