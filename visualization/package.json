@@ -80,7 +80,7 @@
     "d3": "^7.9.0",
     "d3-hierarchy": "^3.1.2",
     "dequal": "^2.0.3",
-    "electron": "40.6.1",
+    "electron": "40.8.5",
     "fake-indexeddb": "^6.2.5",
     "fflate": "^0.8.2",
     "font-awesome": "^4.7.0",
