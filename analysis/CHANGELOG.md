@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.143.0] - 2026-04-28
+
 ### Added 🚀
 
 - Add Delphi support to UnifiedParser (.pas, .dpr)
