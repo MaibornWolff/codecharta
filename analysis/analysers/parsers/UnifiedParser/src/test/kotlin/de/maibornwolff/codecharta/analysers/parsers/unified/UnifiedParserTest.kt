@@ -33,6 +33,7 @@ class UnifiedParserTest {
             Arguments.of("cpp", ".cpp"),
             Arguments.of("c", ".c"),
             Arguments.of("cSharp", ".cs"),
+            Arguments.of("delphi", ".pas"),
             Arguments.of("go", ".go"),
             Arguments.of("java", ".java"),
             Arguments.of("javascript", ".js"),
