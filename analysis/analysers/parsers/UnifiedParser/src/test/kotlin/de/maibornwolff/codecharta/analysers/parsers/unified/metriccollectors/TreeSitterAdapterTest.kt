@@ -76,7 +76,8 @@ class TreeSitterAdapterTest {
             FileExtension.CPP to Language.CPP,
             FileExtension.C to Language.C,
             FileExtension.OBJECTIVE_C to Language.OBJECTIVE_C,
-            FileExtension.VUE to Language.VUE
+            FileExtension.VUE to Language.VUE,
+            FileExtension.DELPHI to Language.DELPHI
         )
 
         // Act & Assert
@@ -106,11 +107,15 @@ class TreeSitterAdapterTest {
         val javaFile = File("Test.java")
         val kotlinFile = File("Test.kt")
         val pythonFile = File("test.py")
+        val delphiUnitFile = File("Unit.pas")
+        val delphiProjectFile = File("Project.dpr")
 
         // Act & Assert
         assertThat(TreeSitterAdapter.getLanguageForFile(javaFile)).isEqualTo(Language.JAVA)
         assertThat(TreeSitterAdapter.getLanguageForFile(kotlinFile)).isEqualTo(Language.KOTLIN)
         assertThat(TreeSitterAdapter.getLanguageForFile(pythonFile)).isEqualTo(Language.PYTHON)
+        assertThat(TreeSitterAdapter.getLanguageForFile(delphiUnitFile)).isEqualTo(Language.DELPHI)
+        assertThat(TreeSitterAdapter.getLanguageForFile(delphiProjectFile)).isEqualTo(Language.DELPHI)
     }
 
     @Test
@@ -156,7 +161,8 @@ class TreeSitterAdapterTest {
             FileExtension.CPP,
             FileExtension.C,
             FileExtension.OBJECTIVE_C,
-            FileExtension.VUE
+            FileExtension.VUE,
+            FileExtension.DELPHI
         )
 
         // Act & Assert

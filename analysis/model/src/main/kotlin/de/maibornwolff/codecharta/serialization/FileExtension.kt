@@ -30,5 +30,6 @@ enum class FileExtension(
     RUBY(".rb"),
     SWIFT(".swift"),
     BASH(".sh"),
-    VUE(".vue")
+    VUE(".vue"),
+    DELPHI(".pas", setOf(".dpr"))
 }
