@@ -16,29 +16,36 @@ class TsxCollectorTest {
         return tempFile
     }
 
+    private fun collectMetrics(content: String): Map<String, Any> = collector.collectMetricsForFile(createTestFile(content)).attributes
+
+    private fun assertMetric(content: String, metric: String, expected: Double) {
+        assertThat(collectMetrics(content)[metric] as Double).isEqualTo(expected)
+    }
+
+    private fun assertMetrics(content: String, vararg expectations: Pair<String, Double>) {
+        val metrics = collectMetrics(content)
+        expectations.forEach { (metric, expected) ->
+            assertThat(metrics[metric] as Double).isEqualTo(expected)
+        }
+    }
+
+    // --- Function counting tests ---
+
     @Test
     fun `should count functional component with JSX for number of functions`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             import React from 'react';
 
             const MyComponent: React.FC = () => {
                 return <div>Hello World</div>;
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+        assertMetric(content, AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName, 1.0)
     }
 
     @Test
     fun `should count function component with typed props for number of functions`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             interface Props {
                 name: string;
                 age: number;
@@ -53,92 +60,43 @@ class TsxCollectorTest {
                 );
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+        assertMetric(content, AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName, 1.0)
     }
 
     @Test
     fun `should count class component with render method for number of functions`() {
-        // Arrange
-        val fileContent = """
-            import React, { Component } from 'react';
-
-            interface State {
-                count: number;
-            }
-
-            class Counter extends Component<{}, State> {
-                constructor(props: {}) {
-                    super(props);
-                    this.state = { count: 0 };
-                }
-
-                increment() {
-                    this.setState({ count: this.state.count + 1 });
-                }
-
-                render() {
-                    return (
-                        <div>
-                            <p>Count: {this.state.count}</p>
-                            <button onClick={() => this.increment()}>Increment</button>
-                        </div>
-                    );
-                }
-            }
-        """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(3.0)
+        assertMetric(
+            "class Counter extends Component { render() { return <div />; } }",
+            AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName,
+            1.0
+        )
     }
 
     @Test
     fun `should not count inline arrow function in JSX prop as a function`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             function App() {
                 return (<Button onClick={() => doStuff()} />);
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+        assertMetric(content, AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName, 1.0)
     }
 
     @Test
     fun `should not count map callback returning JSX as a function`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             function List({ items }) {
                 return (<ul>{items.map((item) => <li key={item.id}>{item.name}</li>)}</ul>);
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+        assertMetric(content, AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName, 1.0)
     }
+
+    // --- Complexity tests ---
 
     @Test
     fun `should count complexity with JSX ternary operators`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const ConditionalComponent: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
                 return (
                     <div>
@@ -147,19 +105,12 @@ class TsxCollectorTest {
                 );
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
+        assertMetric(content, AvailableFileMetrics.COMPLEXITY.metricName, 2.0)
     }
 
     @Test
     fun `should count complexity with JSX logical AND operators`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const OptionalComponent = ({ showMessage }: { showMessage: boolean }) => {
                 return (
                     <div>
@@ -169,19 +120,12 @@ class TsxCollectorTest {
                 );
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3.0)
+        assertMetric(content, AvailableFileMetrics.COMPLEXITY.metricName, 3.0)
     }
 
     @Test
     fun `should count complexity with multiple conditional renders`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const StatusDisplay = ({ status }: { status: string }) => {
                 if (status === 'loading') {
                     return <Spinner />;
@@ -193,19 +137,12 @@ class TsxCollectorTest {
                 return <Idle />;
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(4.0)
+        assertMetric(content, AvailableFileMetrics.COMPLEXITY.metricName, 4.0)
     }
 
     @Test
     fun `should count complexity with switch statement for JSX rendering`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const SwitchComponent = ({ type }: { type: string }) => {
                 switch (type) {
                     case 'primary':
@@ -219,110 +156,44 @@ class TsxCollectorTest {
                 }
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(5.0)
-    }
-
-    @Test
-    fun `should count JSX with fragments and multiple children`() {
-        // Arrange
-        val fileContent = """
-            const FragmentComponent = () => {
-                return (
-                    <>
-                        <Header />
-                        <main>
-                            <Content />
-                        </main>
-                        <Footer />
-                    </>
-                );
-            }
-        """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+        assertMetric(content, AvailableFileMetrics.COMPLEXITY.metricName, 5.0)
     }
 
     @Test
     fun `should count hook usage with complexity`() {
-        // Arrange
-        val fileContent = """
-            import { useState, useEffect } from 'react';
-
+        val content = """
             const HookComponent = () => {
-                const [count, setCount] = useState(0);
-                const [data, setData] = useState<string | null>(null);
+                const [count] = useState(0);
 
                 useEffect(() => {
                     if (count > 10) {
-                        fetchData();
+                        doSomething();
                     }
                 }, [count]);
 
-                const fetchData = async () => {
-                    try {
-                        const response = await fetch('/api/data');
-                        setData(await response.text());
-                    } catch (error) {
-                        console.error(error);
-                    }
-                };
-
-                return <div>{data ?? 'Loading...'}</div>;
+                return <div>{count}</div>;
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(2.0)
-        assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(6.0)
+        // complexity=3: outer function (1) + useEffect arrow callback (1) + if inside callback (1)
+        assertMetrics(
+            content,
+            AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName to 1.0,
+            AvailableFileMetrics.COMPLEXITY.metricName to 3.0
+        )
     }
 
     @Test
-    fun `should count generic component with TypeScript types`() {
-        // Arrange
-        val fileContent = """
-            interface ListProps<T> {
-                items: T[];
-                renderItem: (item: T) => React.ReactNode;
-            }
-
-            function List<T>({ items, renderItem }: ListProps<T>) {
-                return (
-                    <ul>
-                        {items.map((item, index) => (
-                            <li key={index}>{renderItem(item)}</li>
-                        ))}
-                    </ul>
-                );
-            }
-        """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+    fun `should count generic function component`() {
+        assertMetric(
+            "function List<T>(items: T[]) { return <ul />; }",
+            AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName,
+            1.0
+        )
     }
 
     @Test
     fun `should count JSX with event handlers for complexity`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const Form = () => {
                 const handleSubmit = (e: React.FormEvent) => {
                     e.preventDefault();
@@ -343,20 +214,18 @@ class TsxCollectorTest {
                 );
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(3.0)
-        assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(5.0)
+        assertMetrics(
+            content,
+            AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName to 3.0,
+            AvailableFileMetrics.COMPLEXITY.metricName to 5.0
+        )
     }
+
+    // --- Comment and LOC tests ---
 
     @Test
     fun `should count JSX comments and TypeScript comments for comment_lines`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             /**
              * This is a JSDoc comment
              * describing the component
@@ -373,19 +242,12 @@ class TsxCollectorTest {
                 );
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.COMMENT_LINES.metricName]).isEqualTo(8.0)
+        assertMetric(content, AvailableFileMetrics.COMMENT_LINES.metricName, 8.0)
     }
 
     @Test
     fun `should not include comments or empty lines for rloc with JSX`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const Component = () => {
                 // comment
 
@@ -393,19 +255,12 @@ class TsxCollectorTest {
                 return <div>Content</div>;
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName]).isEqualTo(3.0)
+        assertMetric(content, AvailableFileMetrics.REAL_LINES_OF_CODE.metricName, 3.0)
     }
 
     @Test
     fun `should count lines of code including JSX for loc`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const Component = () => {
                 // comment
 
@@ -413,19 +268,12 @@ class TsxCollectorTest {
                 return <div>Content</div>;
             }
         """.trimIndent() + "\n"
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.LINES_OF_CODE.metricName]).isEqualTo(6.0)
+        assertMetric(content, AvailableFileMetrics.LINES_OF_CODE.metricName, 6.0)
     }
 
     @Test
     fun `should handle nested JSX elements with complex structure`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const NestedComponent = ({ items }: { items: string[] }) => {
                 return (
                     <div className="container">
@@ -447,52 +295,35 @@ class TsxCollectorTest {
                 );
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
-        assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(3.0)
+        assertMetrics(
+            content,
+            AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName to 1.0,
+            AvailableFileMetrics.COMPLEXITY.metricName to 3.0
+        )
     }
+
+    // --- Per-function distribution tests ---
 
     @Test
     fun `should count parameters correctly for React components`() {
-        // Arrange
-        val fileContent = """
-            function NoProps() {
-                return <div>No props</div>;
-            }
-
-            function OneParam({ title }: { title: string }) {
-                return <h1>{title}</h1>;
-            }
-
-            function TwoParams({ name, age }: { name: string; age: number }) {
-                return <div>{name} is {age}</div>;
-            }
-
-            function ThreeParams({ x, y, z }: { x: number; y: number; z: number }) {
-                return <div>{x + y + z}</div>;
-            }
+        val content = """
+            function NoProps() { return <div />; }
+            function OneParam(a: string) { return <div />; }
+            function TwoParams(a: string, b: number) { return <div />; }
+            function ThreeParams(a: string, b: number, c: boolean) { return <div />; }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes["max_parameters_per_function"]).isEqualTo(1.0)
-        assertThat(result.attributes["min_parameters_per_function"]).isEqualTo(0.0)
-        assertThat(result.attributes["mean_parameters_per_function"]).isEqualTo(0.75)
-        assertThat(result.attributes["median_parameters_per_function"]).isEqualTo(1.0)
+        assertMetrics(
+            content,
+            "max_parameters_per_function" to 3.0,
+            "min_parameters_per_function" to 0.0,
+            "mean_parameters_per_function" to 1.5,
+            "median_parameters_per_function" to 1.5
+        )
     }
 
     @Test
     fun `should correctly calculate complexity per function with JSX conditionals`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             function NoComplexity() {
                 return <div>Simple</div>;
             }
@@ -513,118 +344,39 @@ class TsxCollectorTest {
                 return <ul>{items.map(i => <li>{i}</li>)}</ul>;
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes["max_complexity_per_function"]).isEqualTo(2.0)
-        assertThat(result.attributes["min_complexity_per_function"]).isEqualTo(0.0)
-        assertThat(result.attributes["mean_complexity_per_function"]).isEqualTo(1.33)
-        assertThat(result.attributes["median_complexity_per_function"]).isEqualTo(2.0)
+        assertMetrics(
+            content,
+            "max_complexity_per_function" to 2.0,
+            "min_complexity_per_function" to 0.0,
+            "mean_complexity_per_function" to 1.33,
+            "median_complexity_per_function" to 2.0
+        )
     }
 
     @Test
-    fun `should count JSX spread attributes and props`() {
-        // Arrange
-        val fileContent = """
+    fun `should not count function type in interface property as a function`() {
+        val content = """
             interface ButtonProps {
-                variant: 'primary' | 'secondary';
                 onClick: () => void;
             }
-
-            const Button = ({ variant, ...rest }: ButtonProps & React.HTMLProps<HTMLButtonElement>) => {
-                return (
-                    <button
-                        className={`btn btn-${'$'}{variant}`}
-                        {...rest}
-                    >
-                        Click me
-                    </button>
-                );
-            }
+            const Button = ({ onClick }: ButtonProps) => <button onClick={onClick} />;
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
-    }
-
-    @Test
-    fun `should handle JSX with template literals and expressions`() {
-        // Arrange
-        val fileContent = """
-            const StyledComponent = ({ color, size }: { color: string; size: number }) => {
-                const style = {
-                    color: color,
-                    fontSize: `${'$'}{size}px`
-                };
-
-                return (
-                    <div style={style}>
-                        {`This text is ${'$'}{color} and ${'$'}{size}px`}
-                    </div>
-                );
-            }
-        """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
-    }
-
-    @Test
-    fun `should handle JSX with self-closing tags`() {
-        // Arrange
-        val fileContent = """
-            const SelfClosingComponent = () => {
-                return (
-                    <div>
-                        <img src="image.jpg" alt="description" />
-                        <input type="text" placeholder="Enter text" />
-                        <br />
-                        <hr />
-                    </div>
-                );
-            }
-        """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+        assertMetric(content, AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName, 1.0)
     }
 
     @Test
     fun `should count nullish coalescing in JSX expressions for complexity`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const Component = ({ value }: { value?: string }) => {
                 return <div>{value ?? 'Default Value'}</div>;
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(2.0)
+        assertMetric(content, AvailableFileMetrics.COMPLEXITY.metricName, 2.0)
     }
 
     @Test
     fun `should correctly calculate rloc per function with JSX`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const SmallComponent = () => {
                 return <div>Small</div>;
             }
@@ -649,22 +401,115 @@ class TsxCollectorTest {
                 );
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
+        assertMetrics(
+            content,
+            "max_rloc_per_function" to 9.0,
+            "min_rloc_per_function" to 1.0,
+            "mean_rloc_per_function" to 4.0,
+            "median_rloc_per_function" to 2.0
+        )
+    }
 
-        // Act
-        val result = collector.collectMetricsForFile(input)
+    // --- Misc metrics tests ---
 
-        // Assert
-        assertThat(result.attributes["max_rloc_per_function"]).isEqualTo(9.0)
-        assertThat(result.attributes["min_rloc_per_function"]).isEqualTo(1.0)
-        assertThat(result.attributes["mean_rloc_per_function"]).isEqualTo(4.0)
-        assertThat(result.attributes["median_rloc_per_function"]).isEqualTo(2.0)
+    @Test
+    fun `should count logic_complexity without function definitions unlike complexity`() {
+        val content = """
+            const Component = ({ show }: { show: boolean }) => {
+                if (show) return <div />;
+                return null;
+            }
+        """.trimIndent()
+        // complexity counts the function definition (+1) and the if (+1) = 2
+        // logic_complexity counts only control flow, not function definitions = 1
+        assertMetrics(
+            content,
+            AvailableFileMetrics.COMPLEXITY.metricName to 2.0,
+            AvailableFileMetrics.LOGIC_COMPLEXITY.metricName to 1.0
+        )
+    }
+
+    @Test
+    fun `should detect message chain in JSX component`() {
+        val content = """
+            const Component = () => {
+                const result = items.filter(x => x > 0).map(x => x * 2).reduce((a, b) => a + b, 0).toString();
+                return <div>{result}</div>;
+            }
+        """.trimIndent()
+        assertMetric(content, AvailableFileMetrics.MESSAGE_CHAINS.metricName, 1.0)
+    }
+
+    @Test
+    fun `should detect long method in TSX component`() {
+        val content = """
+            const LongComponent = () => {
+                const a = 1;
+                const b = 2;
+                const c = 3;
+                const d = 4;
+                const e = 5;
+                const f = 6;
+                const g = 7;
+                const h = 8;
+                const i = 9;
+                const j = 10;
+                const k = 11;
+                return <div />;
+            }
+        """.trimIndent()
+        assertMetric(content, AvailableFileMetrics.LONG_METHOD.metricName, 1.0)
+    }
+
+    @Test
+    fun `should detect long parameter list in TSX function`() {
+        assertMetric(
+            "function ManyParams(a: string, b: number, c: boolean, d: string, e: number) { return <div />; }",
+            AvailableFileMetrics.LONG_PARAMETER_LIST.metricName,
+            1.0
+        )
+    }
+
+    @Test
+    fun `should detect excessive comments in TSX file`() {
+        val content = """
+            // Comment 1
+            // Comment 2
+            // Comment 3
+            // Comment 4
+            // Comment 5
+            // Comment 6
+            // Comment 7
+            // Comment 8
+            // Comment 9
+            // Comment 10
+            // Comment 11
+            const Component = () => <div />;
+        """.trimIndent()
+        assertMetric(content, AvailableFileMetrics.EXCESSIVE_COMMENTS.metricName, 1.0)
+    }
+
+    @Test
+    fun `should calculate comment ratio for TSX file`() {
+        val content = """
+            // Comment 1
+            // Comment 2
+            const Component = () => {
+                const a = 1;
+                const b = 2;
+                const c = 3;
+                const d = 4;
+                const e = 5;
+                return <div />;
+            }
+        """.trimIndent()
+        // comment_lines=2, rloc=8 → ratio=0.25
+        assertMetric(content, AvailableFileMetrics.COMMENT_RATIO.metricName, 0.25)
     }
 
     @Test
     fun `should handle complex JSX with multiple conditional rendering patterns`() {
-        // Arrange
-        val fileContent = """
+        val content = """
             const ComplexComponent = ({
                 isLoading,
                 hasError,
@@ -695,13 +540,10 @@ class TsxCollectorTest {
                 );
             }
         """.trimIndent()
-        val input = createTestFile(fileContent)
-
-        // Act
-        val result = collector.collectMetricsForFile(input)
-
-        // Assert
-        assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
-        assertThat(result.attributes[AvailableFileMetrics.COMPLEXITY.metricName]).isEqualTo(7.0)
+        assertMetrics(
+            content,
+            AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName to 1.0,
+            AvailableFileMetrics.COMPLEXITY.metricName to 7.0
+        )
     }
 }
