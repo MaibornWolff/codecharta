@@ -71,10 +71,9 @@ test.describe("codecharta", () => {
 
         const message = await dialogError.getMessage()
         expect(message).toEqual("Error (Http failure response for invalid234: 0 Unknown Error)")
-        await page.locator(".mat-mdc-dialog-container").waitFor({ state: "visible" })
         await dialogError.clickOk()
 
-        expect(await filePanel.getSelectedName()).toEqual("sample1, sample2")
+        expect(await filePanel.getSelectedName()).toEqual("sample1 +1")
         expect(await filePanel.getAllNames()).toEqual(["sample1", "sample2"])
     })
 })

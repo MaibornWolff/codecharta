@@ -5,7 +5,7 @@ export class NavBarFolderButtonPageObject {
     constructor(private page: Page) {}
 
     async openFiles(paths: string[], clickOnFileChooser = true) {
-        const fileChooserPromise = this.page.waitForEvent("filechooser", { timeout: 60_000 })
+        const fileChooserPromise = this.page.waitForEvent("filechooser")
 
         if (clickOnFileChooser) {
             await clickButtonOnPageElement(this.page, "[title='Load cc.json files']")
@@ -14,7 +14,7 @@ export class NavBarFolderButtonPageObject {
         const fileChooser = await fileChooserPromise
         await fileChooser.setFiles(paths)
 
-        await this.page.locator("#loading-gif-file").waitFor({ state: "hidden", timeout: 60_000 })
+        await this.page.locator("#loading-gif-file").waitFor({ state: "hidden" })
     }
 
     async cancelOpeningFile() {

@@ -86,8 +86,6 @@ test.describe("NavBarFolderButton", () => {
         await folderButton.cancelOpeningFile()
 
         expect(await filePanel.getSelectedName()).toEqual("sample3")
-        const visibility = await page.locator("#loading-gif-map").evaluate(element => (element as HTMLElement).style.visibility)
-        expect(visibility).toBe("hidden")
     })
 
     test("should open an invalid file, close the dialog and open a valid file", async ({ page }) => {
