@@ -1,0 +1,17 @@
+@if (breadcrumbs().length > 0) {
+    <div class="text-xs whitespace-nowrap overflow-hidden text-ellipsis flex items-center">
+        @for (crumb of breadcrumbs(); track crumb.key) {
+            @if (crumb.isLast) {
+                <i
+                    class="fa mx-1"
+                    [class.fa-file-o]="isFile()"
+                    [class.fa-folder]="!isFile()"
+                ></i>
+                <span class="font-semibold">{{ crumb.segment }}</span>
+            } @else {
+                <span>{{ crumb.segment }}</span>
+                <i class="fa fa-angle-right text-base-content/40 mx-1"></i>
+            }
+        }
+    </div>
+}

@@ -3,7 +3,7 @@ import { clearIndexedDB, goto } from "../../../../playwright.helper"
 import { EdgeChooserPageObject } from "./edgeChooser.po"
 import { MapTreeViewLevelPageObject } from "../searchPanel/mapTreeView/mapTreeView.level.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
-import { UploadFileButtonPageObject } from "../../toolBar/uploadFilesButton/uploadFilesButton.po"
+import { NavBarFolderButtonPageObject } from "../../../features/navBar/components/navBarFolderButton/navBarFolderButton.po"
 
 test.describe("MapTreeViewLevel", () => {
     test.beforeEach(async ({ page }) => {
@@ -17,7 +17,7 @@ test.describe("MapTreeViewLevel", () => {
     test.describe("EdgeChooser", () => {
         test("should update metrics correctly after switching to a map with different metrics", async ({ page }) => {
             const edgeChooser = new EdgeChooserPageObject(page)
-            const uploadFilesButton = new UploadFileButtonPageObject(page)
+            const uploadFilesButton = new NavBarFolderButtonPageObject(page)
 
             await uploadFilesButton.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
             await edgeChooser.open()

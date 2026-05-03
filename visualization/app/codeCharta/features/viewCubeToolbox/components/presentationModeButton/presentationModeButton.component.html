@@ -1,0 +1,10 @@
+<button
+    type="button"
+    class="join-item btn btn-sm btn-square"
+    [class.btn-active]="isPresentationMode()"
+    [title]="tooltip()"
+    aria-label="Presentation mode"
+    (click)="handleToggle()"
+>
+    <i class="fa fa-lightbulb-o"></i>
+</button>

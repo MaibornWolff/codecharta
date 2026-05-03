@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http"
 import { TestBed } from "@angular/core/testing"
-import { MatDialog } from "@angular/material/dialog"
 import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
@@ -23,6 +22,7 @@ import { appReducers, defaultState, setStateMiddleware } from "../../state/store
 import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { readCcState } from "../../util/indexedDB/indexedDBWriter"
 import { getLastAction } from "../../util/testUtils/store.utils"
+import { ErrorDialogService } from "../../ui/dialogs/errorDialog/errorDialog.service"
 import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService } from "../loadFile/loadFile.service"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "./loadInitialFile.service"
@@ -37,15 +37,15 @@ describe("LoadInitialFileService", () => {
     let store: MockStore
     let loadFileService: LoadFileService
     let loadInitialFileService: LoadInitialFileService
-    let mockedDialog: MatDialog
+    let mockedErrorDialogService: ErrorDialogService
 
     beforeEach(() => {
-        mockedDialog = { open: jest.fn() } as unknown as MatDialog
+        mockedErrorDialogService = { open: jest.fn() } as unknown as ErrorDialogService
 
         TestBed.configureTestingModule({
             imports: [[StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]],
             providers: [
-                { provide: MatDialog, useValue: mockedDialog },
+                { provide: ErrorDialogService, useValue: mockedErrorDialogService },
                 { provide: HttpClient, useValue: {} },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: State, useValue: { getValue: () => defaultState } },
@@ -85,7 +85,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
         })
 
         it("should load sample files when load files from query params throws error", async () => {
@@ -97,7 +97,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
-            expect(mockedDialog.open).toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).toHaveBeenCalled()
         })
 
         it("should dispatch currentFilesAreSampleFiles when query param currentFilesAreSampleFiles is true", async () => {
@@ -165,7 +165,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: AMOUNT_OF_TOP_LABELS }))
         })
 
@@ -188,7 +188,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(await getLastAction(store)).toEqual({ type: "@ngrx/store/init" })
         })
 
@@ -215,7 +215,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(await getLastAction(store)).toEqual(setDelta({ referenceFile: TEST_DELTA_MAP_A, comparisonFile: TEST_DELTA_MAP_B }))
         })
 
@@ -262,7 +262,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
 
             await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric({ value: "mcc" })))
             await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setHeightMetric({ value: "rloc" })))
@@ -282,7 +282,7 @@ describe("LoadInitialFileService", () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
             await loadInitialFileService.loadFilesOrSampleFiles()
 
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(savedNameDataPairs)
             expect(dispatchSpy).toHaveBeenCalledWith(setFiles({ value: savedFileStates }))
         })
@@ -292,7 +292,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
         })
         it("should load sample files when load files from indexeddb throws error", async () => {
             jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
@@ -306,7 +306,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
-            expect(mockedDialog.open).toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).toHaveBeenCalled()
         })
 
         it("should set currentFilesAreSampleFiles to true if sample files are loaded", async () => {
@@ -352,7 +352,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.fileSettings, defaultFileSettings))
         })
 
@@ -371,7 +371,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.dynamicSettings, defaultDynamicSettings))
         })
 
@@ -390,7 +390,7 @@ describe("LoadInitialFileService", () => {
             await loadInitialFileService.loadFilesOrSampleFiles()
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedDialog.open).not.toHaveBeenCalled()
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.appSettings, defaultAppSettings) - 2)
         })
     })

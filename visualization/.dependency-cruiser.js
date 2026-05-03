@@ -46,17 +46,6 @@ module.exports = {
             }
         },
         {
-            name: "feature-labelSettings-no-external-access-to-services",
-            severity: "error",
-            comment: "LabelSettings services can only be accessed within the labelSettings feature",
-            from: {
-                pathNot: "^app/codeCharta/features/labelSettings/"
-            },
-            to: {
-                path: "^app/codeCharta/features/labelSettings/services/"
-            }
-        },
-        {
             name: "feature-types-cannot-import-from-feature-internals",
             severity: "error",
             comment: "Features: types/ folder can only contain type definitions and cannot import from services, stores, or effects",
@@ -93,7 +82,8 @@ module.exports = {
             severity: "error",
             comment: "Angular Material is not allowed in features/ directory, use DaisyUI instead",
             from: {
-                path: "^app/codeCharta/features/"
+                path: "^app/codeCharta/features/",
+                pathNot: "\\.spec\\.ts$"
             },
             to: {
                 path: "@angular/material"
@@ -105,7 +95,7 @@ module.exports = {
             comment: "Only stores/ folder can import from @ngrx/store. Components use services, services use stores.",
             from: {
                 path: "^app/codeCharta/features/[^/]+/",
-                pathNot: "^app/codeCharta/features/[^/]+/stores/"
+                pathNot: ["^app/codeCharta/features/[^/]+/(stores|selectors)/", "\\.spec\\.ts$"]
             },
             to: {
                 path: "@ngrx/store",
@@ -118,7 +108,9 @@ module.exports = {
             path: "node_modules",
             dependencyTypes: ["npm", "npm-dev", "npm-optional", "npm-peer", "npm-bundled", "npm-no-pkg"]
         },
-        includeOnly: "^app/",
+        exclude: {
+            path: "(^|/)node_modules/(?!@(ngrx|angular)/)"
+        },
         tsPreCompilationDeps: true,
         tsConfig: {
             fileName: "tsconfig.json"

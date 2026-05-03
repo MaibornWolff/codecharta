@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test"
 import { clearIndexedDB, clickButtonOnPageElement, goto } from "../../../playwright.helper"
 import { LegendPanelObject } from "./legendPanel.po"
 import { MapTreeViewLevelPageObject } from "../ribbonBar/searchPanel/mapTreeView/mapTreeView.level.po"
-import { UploadFileButtonPageObject } from "../toolBar/uploadFilesButton/uploadFilesButton.po"
+import { NavBarFolderButtonPageObject } from "../../features/navBar/components/navBarFolderButton/navBarFolderButton.po"
 import { SearchPanelPageObject } from "../ribbonBar/searchPanel/searchPanel.po"
 
 test.describe("LegendPanel", () => {
@@ -15,7 +15,7 @@ test.describe("LegendPanel", () => {
     })
 
     async function setupTest(page) {
-        const uploadFilesButton = new UploadFileButtonPageObject(page)
+        const uploadFilesButton = new NavBarFolderButtonPageObject(page)
         const mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
         const searchPanel = new SearchPanelPageObject(page)
         const legendPanelObject = new LegendPanelObject(page)

@@ -1,0 +1,192 @@
+import { inject, Injectable } from "@angular/core"
+import html2canvas from "html2canvas-pro"
+import { Color, WebGLRenderer } from "three"
+import { FileState } from "../../../model/files/files"
+import { createPNGFileName } from "../../../model/files/files.helper"
+import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
+import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
+import { checkWriteToClipboardAllowed, setToClipboard } from "../../../util/clipboard/clipboardWriter"
+import { StateAccessStore } from "../stores/stateAccess.store"
+
+@Injectable({ providedIn: "root" })
+export class ScreenshotService {
+    private readonly threeRendererService = inject(ThreeRendererService)
+    private readonly threeSceneService = inject(ThreeSceneService)
+    private readonly threeCameraService = inject(ThreeCameraService)
+    private readonly stateAccessStore = inject(StateAccessStore)
+
+    readonly isWriteToClipboardAllowed = checkWriteToClipboardAllowed()
+
+    async makeScreenshotToFile(): Promise<void> {
+        const renderer = this.threeRendererService.renderer
+        const renderSettings = this.saveRenderSettings(renderer)
+        const canvas = await this.buildScreenShotCanvas(renderer)
+
+        this.downloadScreenshot(canvas, this.stateAccessStore.getFiles())
+        this.applyRenderSettings(renderer, renderSettings)
+    }
+
+    async makeScreenshotToClipboard(): Promise<void> {
+        if (!this.isWriteToClipboardAllowed) {
+            return
+        }
+        const renderer = this.threeRendererService.renderer
+        const renderSettings = this.saveRenderSettings(renderer)
+        const canvas = await this.buildScreenShotCanvas(renderer)
+
+        const canvasToBlobPromise: Promise<Blob> = new Promise(resolve => canvas.toBlob(resolve))
+        this.applyRenderSettings(renderer, renderSettings)
+        const blob = await canvasToBlobPromise
+        await setToClipboard(blob)
+    }
+
+    private downloadScreenshot(canvas: HTMLCanvasElement, files: FileState[]) {
+        const dataUrl = canvas.toDataURL("image/png")
+        const downloadLink = document.createElement("a")
+        downloadLink.download = createPNGFileName(files, "map")
+        downloadLink.href = dataUrl
+        document.body.appendChild(downloadLink)
+        downloadLink.click()
+        downloadLink.remove()
+    }
+
+    private saveRenderSettings(renderer: WebGLRenderer) {
+        const pixelRatio = renderer.getPixelRatio()
+        const clearColor = new Color()
+        renderer.getClearColor(clearColor)
+        return { pixelRatio, clearColor }
+    }
+
+    private applyRenderSettings(renderer: WebGLRenderer, settings: { pixelRatio: number; clearColor: Color }) {
+        const { pixelRatio, clearColor } = settings
+        renderer.setPixelRatio(pixelRatio)
+        renderer.setClearColor(clearColor)
+        renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
+    }
+
+    private async buildScreenShotCanvas(renderer: WebGLRenderer): Promise<HTMLCanvasElement> {
+        renderer.setPixelRatio(window.devicePixelRatio)
+        renderer.setClearColor(new Color(0, 0, 0), 0)
+        renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
+
+        const savedLabelStyles = this.prepareLabelsForScreenshot()
+
+        const tagsNamesToIgnore = new Set([
+            "cc-logo",
+            "cc-tool-bar",
+            "cc-view-cube",
+            "cc-ribbon-bar",
+            "cc-file-extension-bar",
+            "cc-attribute-side-bar",
+            "cc-loading-file-progess-spinner",
+            "cc-bottom-bar"
+        ])
+
+        const idsToIgnore = new Set(["legend-panel-button"])
+
+        const bodyHeight = document.querySelector("body")?.offsetHeight ?? 0
+        const navBarHeight = (document.querySelector("cc-nav-bar") as HTMLElement | null)?.offsetHeight ?? 0
+        const ribbonBarHeight = (document.querySelector("cc-ribbon-bar") as HTMLElement | null)?.offsetHeight ?? 0
+        const fileExtensionBarHeight = (document.querySelector("cc-file-extension-bar") as HTMLElement | null)?.offsetHeight ?? 0
+        const bottomBarHeight = (document.querySelector("cc-bottom-bar") as HTMLElement | null)?.offsetHeight ?? 0
+        const topBarsHeight = navBarHeight + ribbonBarHeight + fileExtensionBarHeight
+
+        const canvas = await html2canvas(document.querySelector("body"), {
+            removeContainer: true,
+            backgroundColor: null,
+            scrollY: -topBarsHeight,
+            height: Math.max(0, bodyHeight - topBarsHeight - bottomBarHeight),
+            ignoreElements(element) {
+                return (
+                    tagsNamesToIgnore.has(element.tagName.toLowerCase()) ||
+                    idsToIgnore.has(element.id) ||
+                    (element as HTMLElement).style.zIndex === "10000"
+                )
+            }
+        })
+
+        this.restoreLabelsAfterScreenshot(savedLabelStyles)
+
+        return this.getCroppedCanvas(canvas)
+    }
+
+    /**
+     * html2canvas cannot render backdrop-filter, box-shadow, or transitions.
+     * Temporarily swap to opaque backgrounds so labels look correct in screenshots.
+     */
+    private prepareLabelsForScreenshot(): Map<HTMLElement, string> {
+        const saved = new Map<HTMLElement, string>()
+        const container = document.querySelector("#codeMapLabels")
+        if (!container) {
+            return saved
+        }
+
+        for (const element of container.querySelectorAll("div")) {
+            const el = element as HTMLElement
+            if (!el.style.backdropFilter) {
+                continue
+            }
+            saved.set(el, el.style.cssText)
+            el.style.backdropFilter = "none"
+            el.style.setProperty("-webkit-backdrop-filter", "none")
+            el.style.background = "white"
+            el.style.boxShadow = "none"
+            el.style.border = "1px solid rgba(0, 0, 0, 0.3)"
+            el.style.transition = "none"
+        }
+        return saved
+    }
+
+    private restoreLabelsAfterScreenshot(saved: Map<HTMLElement, string>) {
+        for (const [el, cssText] of saved) {
+            el.style.cssText = cssText
+        }
+    }
+
+    private getCroppedCanvas(canvas: HTMLCanvasElement) {
+        const context = canvas.getContext("2d")
+        const width = canvas.width
+        const height = canvas.height
+
+        const imageData = context.getImageData(0, 0, width, height)
+        const data = imageData.data
+
+        let minX = width,
+            minY = height,
+            maxX = 0,
+            maxY = 0
+
+        for (let x = 0; x < width; x++) {
+            for (let y = 0; y < height; y++) {
+                const alpha = data[(width * y + x) * 4 + 3]
+                if (alpha > 0) {
+                    minX = Math.min(minX, x)
+                    maxX = Math.max(maxX, x)
+                    minY = Math.min(minY, y)
+                    maxY = Math.max(maxY, y)
+                }
+            }
+        }
+
+        const croppedCanvas = document.createElement("canvas")
+        const croppedContext = croppedCanvas.getContext("2d")
+
+        croppedCanvas.width = maxX - minX + 1
+        croppedCanvas.height = maxY - minY + 1
+
+        croppedContext.drawImage(
+            canvas,
+            minX,
+            minY,
+            croppedCanvas.width,
+            croppedCanvas.height,
+            0,
+            0,
+            croppedCanvas.width,
+            croppedCanvas.height
+        )
+
+        return croppedCanvas
+    }
+}

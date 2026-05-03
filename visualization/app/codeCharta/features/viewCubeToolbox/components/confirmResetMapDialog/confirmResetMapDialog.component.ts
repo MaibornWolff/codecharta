@@ -1,0 +1,57 @@
+import { HttpClient } from "@angular/common/http"
+import { Component, ElementRef, viewChild } from "@angular/core"
+import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
+import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../services/loadInitialFile/loadInitialFile.service"
+import { UrlExtractor } from "../../../../services/loadInitialFile/urlExtractor"
+import { deleteCcState } from "../../../../util/indexedDB/indexedDBWriter"
+import { MapResetStore } from "../../stores/mapReset.store"
+
+@Component({
+    selector: "cc-confirm-reset-map-dialog",
+    templateUrl: "./confirmResetMapDialog.component.html"
+})
+export class ConfirmResetMapDialogComponent {
+    readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
+
+    private urlUtils = new UrlExtractor(this.httpClient)
+
+    constructor(
+        private mapResetStore: MapResetStore,
+        private httpClient: HttpClient,
+        private loadFileService: LoadFileService,
+        private loadInitialFileService: LoadInitialFileService
+    ) {}
+
+    open() {
+        this.dialogElement().nativeElement.showModal()
+    }
+
+    close() {
+        this.dialogElement().nativeElement.close()
+    }
+
+    async confirmReset() {
+        this.close()
+        await this.resetMap()
+    }
+
+    async resetMap() {
+        await deleteCcState()
+        this.mapResetStore.resetState()
+
+        const isFileQueryParameterPresent = this.loadInitialFileService.checkFileQueryParameterPresent()
+        if (isFileQueryParameterPresent) {
+            try {
+                const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
+                this.loadFileService.loadFiles(urlNameDataPairs)
+                this.loadInitialFileService.setRenderStateFromUrl()
+            } catch {
+                this.loadFileService.loadFiles([sampleFile1, sampleFile2])
+            }
+        } else {
+            this.loadFileService.loadFiles([sampleFile1, sampleFile2])
+        }
+
+        this.mapResetStore.resetMetricsToDefault()
+    }
+}

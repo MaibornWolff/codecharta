@@ -1,16 +1,9 @@
-import { filesSelector } from "../../../../state/store/files/files.selector"
-import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { FileNameHelper } from "../../../../util/fileNameHelper"
-import { getVisibleFileStates, isDeltaState } from "../../../../model/files/files.helper"
-import { FileDownloader } from "../../../../util/fileDownloader"
 import { AfterViewInit, Component, ElementRef, output, signal, viewChild } from "@angular/core"
-import { State } from "@ngrx/store"
-import { CcState, NodeMetricData } from "../../../../codeCharta.model"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { Color, Mesh, PerspectiveCamera, Scene, ShaderMaterial, Vector3, WebGLRenderer } from "three"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { STLExporter } from "three/addons/exporters/STLExporter.js"
-import { metricTitles } from "../../../../util/metric/metricTitles"
+import { NodeMetricData } from "../../../../codeCharta.model"
+import { getVisibleFileStates, isDeltaState } from "../../../../model/files/files.helper"
 import { serialize3mf } from "../../../../services/3DExports/serialize3mf.service"
 import {
     calculateMaxPossibleWidthForPreview3DPrintMesh,
@@ -18,13 +11,18 @@ import {
     Preview3DPrintMesh
 } from "../../../../services/3DExports/3DPreview/preview3DPrintMesh"
 import { calculateNodeMetricData } from "../../../../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
-import { PrinterPresetSelectionComponent, Printer, PRINTER_PRESETS } from "./printerPresetSelection/printerPresetSelection.component"
-import { ScaleSliderComponent } from "./scaleSlider/scaleSlider.component"
-import { FrontTextInputComponent } from "./frontTextInput/frontTextInput.component"
-import { SecondRowTextInputComponent } from "./secondRowTextInput/secondRowTextInput.component"
-import { QrCodeSettingsComponent } from "./qrCodeSettings/qrCodeSettings.component"
-import { LogoUploadComponent } from "./logoUpload/logoUpload.component"
+import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { FileDownloader } from "../../../../util/fileDownloader"
+import { FileNameHelper } from "../../../../util/fileNameHelper"
+import { metricTitles } from "../../../../util/metric/metricTitles"
+import { Print3DStateAccessStore } from "../../stores/stateAccess.store"
 import { ExportActionsComponent } from "./exportActions/exportActions.component"
+import { FrontTextInputComponent } from "./frontTextInput/frontTextInput.component"
+import { LogoUploadComponent } from "./logoUpload/logoUpload.component"
+import { PrinterPresetSelectionComponent, Printer, PRINTER_PRESETS } from "./printerPresetSelection/printerPresetSelection.component"
+import { QrCodeSettingsComponent } from "./qrCodeSettings/qrCodeSettings.component"
+import { ScaleSliderComponent } from "./scaleSlider/scaleSlider.component"
+import { SecondRowTextInputComponent } from "./secondRowTextInput/secondRowTextInput.component"
 
 @Component({
     selector: "cc-export-3D-map-dialog",
@@ -81,7 +79,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
     private readonly primaryShaderMaterialIndex = 0
 
     constructor(
-        private readonly state: State<CcState>,
+        private readonly stateAccessStore: Print3DStateAccessStore,
         private readonly threeSceneService: ThreeSceneService
     ) {
         this.exportMesh = this.threeSceneService.getMapMesh().toExportMesh()
@@ -100,12 +98,12 @@ export class Export3DMapDialogComponent implements AfterViewInit {
         })
         this.currentNumberOfColors = this.selectedPrinter().numberOfColors
 
-        this.areaMetric = this.state.getValue().dynamicSettings.areaMetric
-        this.heightMetric = this.state.getValue().dynamicSettings.heightMetric
-        this.colorMetric = this.state.getValue().dynamicSettings.colorMetric
+        this.areaMetric = this.stateAccessStore.getAreaMetric()
+        this.heightMetric = this.stateAccessStore.getHeightMetric()
+        this.colorMetric = this.stateAccessStore.getColorMetric()
 
-        const visibleFileStates = getVisibleFileStates(this.state.getValue().files)
-        const blacklist = this.state.getValue().fileSettings.blacklist
+        const visibleFileStates = getVisibleFileStates(this.stateAccessStore.getFiles())
+        const blacklist = this.stateAccessStore.getBlacklist()
         const nodeMetricData = calculateNodeMetricData(visibleFileStates, blacklist)
         this.nodeMetricData = nodeMetricData.filter(
             metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
@@ -279,7 +277,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
     }
 
     private initGeometryOptions(): GeometryOptions {
-        const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
+        const attributeDescriptors = this.stateAccessStore.getAttributeDescriptors()
         const fallbackTitles: Map<string, string> = metricTitles
 
         const areaMetricTitle = attributeDescriptors[this.areaMetric]?.title || fallbackTitles.get(this.areaMetric)
@@ -295,7 +293,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
             heightMetricData: this.nodeMetricData.find(metric => metric.name === this.heightMetric),
             colorMetricTitle,
             colorMetricData: this.nodeMetricData.find(metric => metric.name === this.colorMetric),
-            colorRange: this.state.getValue().dynamicSettings.colorRange,
+            colorRange: this.stateAccessStore.getColorRange(),
             frontText: this.frontText(),
             secondRowText: this.secondRowText(),
             secondRowVisible: this.secondRowVisible(),
@@ -313,8 +311,8 @@ export class Export3DMapDialogComponent implements AfterViewInit {
     }
 
     private downloadFile(data: string, fileExtension: string) {
-        const files = filesSelector(this.state.getValue())
-        const fileName = accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName
+        const files = this.stateAccessStore.getFiles()
+        const fileName = this.stateAccessStore.getAccumulatedFileName()
         const downloadFileName = `${FileNameHelper.getNewFileName(fileName, isDeltaState(files))}.${fileExtension}`
         FileDownloader.downloadData(data, downloadFileName)
     }

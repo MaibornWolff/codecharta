@@ -1,0 +1,13 @@
+<dialog #dialog class="modal" aria-labelledby="confirm-reset-title">
+    <div class="modal-box">
+        <h2 id="confirm-reset-title" class="text-lg font-bold mb-2">Confirm reset map to default</h2>
+        <p class="py-2">Uploaded maps, selected metrics and settings are reset to default</p>
+        <div class="modal-action">
+            <button class="btn" (click)="close()">No</button>
+            <button class="btn btn-primary" (click)="confirmReset()">Yes</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>

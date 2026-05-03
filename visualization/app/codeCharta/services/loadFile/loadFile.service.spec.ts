@@ -9,10 +9,9 @@ import { CCFileValidationResult, ERROR_MESSAGES } from "../../util/fileValidator
 import packageJson from "../../../../package.json"
 import { clone } from "../../util/clone"
 import { klona } from "klona"
-import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
+import { ErrorDialogService } from "../../ui/dialogs/errorDialog/errorDialog.service"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
 import { fileRoot } from "./fileRoot"
-import { MatDialog } from "@angular/material/dialog"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
@@ -30,7 +29,7 @@ describe("loadFileService", () => {
     let store: Store<CcState>
     let storeDispatchSpy: jest.SpyInstance
     let state: State<CcState>
-    let dialog: MatDialog
+    let errorDialogService: ErrorDialogService
     let validFileContent: ExportCCFile
     let metricData: NodeMetricData[]
     const fileName = "someFileName"
@@ -59,11 +58,11 @@ describe("loadFileService", () => {
         })
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
-        dialog = { open: jest.fn() } as unknown as MatDialog
+        errorDialogService = { open: jest.fn() } as unknown as ErrorDialogService
     }
 
     function rebuildService() {
-        codeChartaService = new LoadFileService(store, state, dialog)
+        codeChartaService = new LoadFileService(store, state, errorDialogService)
     }
 
     describe("loadFiles", () => {
@@ -160,7 +159,7 @@ describe("loadFileService", () => {
 
             expect(getCCFiles(state.getValue().files)[0]).toEqual(expected)
             expect(isPartialState(state.getValue().files)).toBeTruthy()
-            expect(dialog.open).not.toHaveBeenCalled()
+            expect(errorDialogService.open).not.toHaveBeenCalled()
 
             expect(fileRoot.rootName).toBe(expected.map.name)
             expect(fileRoot.rootPath).toBe(`/${expected.map.name}`)
@@ -471,7 +470,7 @@ describe("loadFileService", () => {
             expect(() => codeChartaService.loadFiles([{ fileName, content: null, fileSize: 0 }])).toThrow("File(s) could not be loaded")
 
             expect(state.getValue().files).toHaveLength(0)
-            expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: loadFilesValidationToErrorDialog(expectedError) })
+            expect(errorDialogService.open).toHaveBeenCalledWith(loadFilesValidationToErrorDialog(expectedError))
         })
 
         it("should show error on a random string", () => {
@@ -488,7 +487,7 @@ describe("loadFileService", () => {
             )
 
             expect(state.getValue().files).toHaveLength(0)
-            expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: loadFilesValidationToErrorDialog(expectedError) })
+            expect(errorDialogService.open).toHaveBeenCalledWith(loadFilesValidationToErrorDialog(expectedError))
         })
 
         it("should show error if a file is missing a required property", () => {
@@ -507,7 +506,7 @@ describe("loadFileService", () => {
             )
 
             expect(state.getValue().files).toHaveLength(0)
-            expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: loadFilesValidationToErrorDialog(expectedError) })
+            expect(errorDialogService.open).toHaveBeenCalledWith(loadFilesValidationToErrorDialog(expectedError))
         })
 
         it("should convert old blacklist type", () => {
@@ -531,7 +530,7 @@ describe("loadFileService", () => {
 
             codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
-            expect(dialog.open).toHaveBeenCalledTimes(0)
+            expect(errorDialogService.open).toHaveBeenCalledTimes(0)
             expect(state.getValue().files).toHaveLength(1)
         })
 
@@ -550,7 +549,7 @@ describe("loadFileService", () => {
                 "File(s) could not be loaded"
             )
 
-            expect(dialog.open).toHaveBeenCalledWith(ErrorDialogComponent, { data: loadFilesValidationToErrorDialog(expectedError) })
+            expect(errorDialogService.open).toHaveBeenCalledWith(loadFilesValidationToErrorDialog(expectedError))
         })
 
         it("should not show a validation error if two files in a folder have the same name but different type", () => {
@@ -561,7 +560,7 @@ describe("loadFileService", () => {
 
             codeChartaService.loadFiles([{ fileName, content: validFileContent, fileSize: 42 }])
 
-            expect(dialog.open).toHaveBeenCalledTimes(0)
+            expect(errorDialogService.open).toHaveBeenCalledTimes(0)
             expect(state.getValue().files).toHaveLength(1)
         })
 
@@ -629,8 +628,6 @@ describe("loadFileService", () => {
 
         codeChartaService.loadFiles([{ fileName: "FirstFile", content: ccFile, fileSize: 42 }])
 
-        expect(dialog.open).toHaveBeenLastCalledWith(ErrorDialogComponent, {
-            data: loadFilesValidationToErrorDialog(expectedFileValidationResult)
-        })
+        expect(errorDialogService.open).toHaveBeenLastCalledWith(loadFilesValidationToErrorDialog(expectedFileValidationResult))
     })
 })
