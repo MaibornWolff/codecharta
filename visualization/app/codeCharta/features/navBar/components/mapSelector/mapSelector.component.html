@@ -1,0 +1,68 @@
+<div class="dropdown" [class.dropdown-open]="isOpen()">
+    <button
+        type="button"
+        class="btn btn-ghost btn-sm justify-between min-w-[14rem]"
+        (click)="toggleOpen()"
+    >
+        <span class="truncate">{{ triggerLabel() }}</span>
+        <i class="fa fa-caret-down ml-2"></i>
+    </button>
+    @if (isOpen()) {
+        <div class="dropdown-content bg-base-100 rounded-box border border-base-300 shadow-md mt-1 min-w-[14rem] w-max max-w-[32rem] z-50 p-2">
+            <div class="flex items-center gap-1 px-1 pb-2 border-b border-base-200">
+                <button type="button" class="btn btn-ghost btn-xs flex-1" (click)="handleSelectAll()">All</button>
+                <button type="button" class="btn btn-ghost btn-xs flex-1" (click)="handleSelectNone()">None</button>
+                <button type="button" class="btn btn-ghost btn-xs flex-1" (click)="handleSelectInvert()">Invert</button>
+            </div>
+            <ul class="flex flex-col gap-0.5 p-0 m-0 list-none max-h-72 overflow-y-auto">
+                @for (file of filesInUI(); track file.file.fileMeta.fileName) {
+                    <li class="w-full">
+                        <label class="flex items-center gap-2 w-full cursor-pointer rounded-md px-2 py-1 hover:bg-base-200">
+                            <input
+                                type="checkbox"
+                                class="checkbox checkbox-xs shrink-0"
+                                [checked]="isFileSelected(file.file)"
+                                [disabled]="file.isRemoved"
+                                (change)="handleCheckboxChange(file.file, $any($event.target).checked)"
+                            />
+                            <span
+                                class="flex-1 whitespace-nowrap"
+                                [class.line-through]="file.isRemoved"
+                            >
+                                {{ file.file.fileMeta.fileName | removeExtension }}
+                            </span>
+                            <button
+                                type="button"
+                                class="btn btn-ghost btn-xs btn-square shrink-0"
+                                [title]="file.isRemoved ? 'Undo remove map' : 'Remove map'"
+                                (click)="handleRemoveFileToggle(file.file, $event)"
+                            >
+                                @if (file.isRemoved) {
+                                    <i class="fa fa-undo"></i>
+                                } @else {
+                                    <i class="fa fa-trash"></i>
+                                }
+                            </button>
+                        </label>
+                    </li>
+                }
+            </ul>
+            <div class="flex justify-end mt-2">
+                <span
+                    class="tooltip"
+                    [class.tooltip-disabled]="!applyButtonState().disabled"
+                    [attr.data-tip]="applyButtonState().tooltip || null"
+                >
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        [disabled]="applyButtonState().disabled"
+                        (click)="handleApply()"
+                    >
+                        Apply
+                    </button>
+                </span>
+            </div>
+        </div>
+    }
+</div>

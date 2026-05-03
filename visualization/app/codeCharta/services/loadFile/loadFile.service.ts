@@ -1,13 +1,12 @@
 import { Injectable, OnDestroy } from "@angular/core"
 import { tap } from "rxjs"
-import { MatDialog } from "@angular/material/dialog"
 import { clone } from "../../util/clone"
 import { CCFileValidationResult } from "../../util/fileValidator"
 import { setFiles, setStandardByNames } from "../../state/store/files/files.actions"
 import { FileState } from "../../model/files/files"
 import { NameDataPair, CcState } from "../../codeCharta.model"
 import { referenceFileSelector } from "../../state/selectors/referenceFile/referenceFile.selector"
-import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
+import { ErrorDialogService } from "../../ui/dialogs/errorDialog/errorDialog.service"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
 import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParser"
 import { fileRoot } from "./fileRoot"
@@ -35,7 +34,7 @@ export class LoadFileService implements OnDestroy {
     constructor(
         private readonly store: Store<CcState>,
         private readonly state: State<CcState>,
-        private readonly dialog: MatDialog
+        private readonly errorDialogService: ErrorDialogService
     ) {}
 
     ngOnDestroy(): void {
@@ -57,9 +56,7 @@ export class LoadFileService implements OnDestroy {
         )
 
         if (fileValidationResults.length > 0) {
-            this.dialog.open(ErrorDialogComponent, {
-                data: loadFilesValidationToErrorDialog(fileValidationResults)
-            })
+            this.errorDialogService.open(loadFilesValidationToErrorDialog(fileValidationResults))
         }
 
         if (recentFiles.length === 0) {

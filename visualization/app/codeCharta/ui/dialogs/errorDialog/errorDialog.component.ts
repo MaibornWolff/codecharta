@@ -1,17 +1,38 @@
-import { Component, Inject } from "@angular/core"
-import { MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog"
-import { CdkScrollable } from "@angular/cdk/scrolling"
+import { Component, ElementRef, inject, OnInit, signal, viewChild } from "@angular/core"
+import { ErrorDialogService } from "./errorDialog.service"
 
-import { MatButton } from "@angular/material/button"
+export interface ErrorDialogData {
+    title: string
+    message: string
+    resolveErrorData?: { buttonText: string; onResolveErrorClick: () => void }
+}
 
 @Component({
     selector: "cc-error-dialog",
-    templateUrl: "./errorDialog.component.html",
-    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose]
+    templateUrl: "./errorDialog.component.html"
 })
-export class ErrorDialogComponent {
-    constructor(
-        @Inject(MAT_DIALOG_DATA)
-        public data: { title: string; message: string; resolveErrorData?: { buttonText: string; onResolveErrorClick: () => void } }
-    ) {}
+export class ErrorDialogComponent implements OnInit {
+    private readonly errorDialogService = inject(ErrorDialogService)
+
+    readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
+
+    readonly data = signal<ErrorDialogData | null>(null)
+
+    ngOnInit(): void {
+        this.errorDialogService.register(this)
+    }
+
+    open(data: ErrorDialogData) {
+        this.data.set(data)
+        this.dialog().nativeElement.showModal()
+    }
+
+    close() {
+        this.dialog().nativeElement.close()
+    }
+
+    handleResolveClick() {
+        this.data()?.resolveErrorData?.onResolveErrorClick()
+        this.close()
+    }
 }

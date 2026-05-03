@@ -1,19 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, output, signal, viewChild } from "@angular/core"
-import { FormsModule } from "@angular/forms"
-import { Store } from "@ngrx/store"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { FormsModule } from "@angular/forms"
 import { map } from "rxjs"
-import { CcState, MetricData } from "../../../../codeCharta.model"
-import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { filesSelector } from "../../../../state/store/files/files.selector"
+import { MetricData } from "../../../../codeCharta.model"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
 import { CCSCENARIO_EXTENSION, Scenario } from "../../model/scenario.model"
-import { ScenariosService } from "../../services/scenarios.service"
 import { ScenarioImportExportService } from "../../services/scenarioImportExport.service"
+import { ScenarioViewModelService } from "../../services/scenarioViewModel.service"
+import { ScenariosService } from "../../services/scenarios.service"
+import { ScenarioDialogStore } from "../../stores/scenarioDialog.store"
 import { DeleteConfirmDialogComponent } from "./deleteConfirmDialog/deleteConfirmDialog.component"
 import { ImportFeedbackDialogComponent } from "./importFeedbackDialog/importFeedbackDialog.component"
 import { ScenarioItemComponent } from "./scenarioItem/scenarioItem.component"
-import { ScenarioViewModelService } from "../../services/scenarioViewModel.service"
 
 @Component({
     selector: "cc-scenario-list-dialog",
@@ -31,11 +29,11 @@ export class ScenarioListDialogComponent {
     readonly acceptExtensions = `${CCSCENARIO_EXTENSION},.json`
 
     readonly scenarios = toSignal(this.scenariosService.scenarios$, { initialValue: [] as Scenario[] })
-    readonly metricData = toSignal(this.store.select(metricDataSelector), { requireSync: true })
+    readonly metricData = toSignal(this.scenarioDialogStore.metricData$, { requireSync: true })
     readonly searchTerm = signal("")
 
     readonly visibleFileNames = toSignal(
-        this.store.select(filesSelector).pipe(map(fileStates => new Set(getVisibleFiles(fileStates).map(f => f.fileMeta.fileName)))),
+        this.scenarioDialogStore.files$.pipe(map(fileStates => new Set(getVisibleFiles(fileStates).map(f => f.fileMeta.fileName)))),
         { initialValue: new Set<string>() }
     )
 
@@ -62,7 +60,7 @@ export class ScenarioListDialogComponent {
     constructor(
         private readonly scenariosService: ScenariosService,
         private readonly importExportService: ScenarioImportExportService,
-        private readonly store: Store<CcState>,
+        private readonly scenarioDialogStore: ScenarioDialogStore,
         private readonly helpers: ScenarioViewModelService
     ) {}
 

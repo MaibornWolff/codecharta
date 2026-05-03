@@ -30,6 +30,8 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
         )
         .subscribe()
 
+    private barsResizeObserver?: ResizeObserver
+
     constructor(
         public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
         private readonly store: Store<CcState>,
@@ -42,11 +44,32 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
     ngAfterViewInit(): void {
         this.threeViewerService.init(this.elementReference.nativeElement.querySelector("#codeMap"))
         this.codeMapMouseEventService.start()
+        this.observeBarsHeight()
     }
 
     ngOnDestroy(): void {
         this.restartOnSharpnessModeChangesSubscription.unsubscribe()
         this.threeViewerService.stopAnimate()
         this.threeViewerService.destroy()
+        this.barsResizeObserver?.disconnect()
+    }
+
+    private observeBarsHeight(): void {
+        const codeMapElement = this.elementReference.nativeElement.querySelector("#codeMap") as HTMLElement
+        const bars = ["cc-nav-bar", "cc-ribbon-bar", "cc-file-extension-bar"]
+            .map(selector => document.querySelector(selector) as HTMLElement | null)
+            .filter((el): el is HTMLElement => el !== null)
+        if (bars.length === 0) {
+            return
+        }
+        const updateHeight = () => {
+            const total = bars.reduce((sum, el) => sum + el.getBoundingClientRect().height, 0)
+            codeMapElement.style.setProperty("--cc-bars-height", `${Math.round(total)}px`)
+        }
+        updateHeight()
+        this.barsResizeObserver = new ResizeObserver(updateHeight)
+        for (const bar of bars) {
+            this.barsResizeObserver.observe(bar)
+        }
     }
 }

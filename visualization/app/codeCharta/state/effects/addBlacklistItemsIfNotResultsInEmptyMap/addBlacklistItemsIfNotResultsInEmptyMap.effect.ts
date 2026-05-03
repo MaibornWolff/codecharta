@@ -1,12 +1,11 @@
 import { Injectable } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { filter, map, share, tap, withLatestFrom } from "rxjs"
 import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../store/fileSettings/blacklist/blacklist.actions"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.selector"
 import { resultsInEmptyMap } from "./resultsInEmptyMap"
-import { ErrorDialogComponent } from "../../../ui/dialogs/errorDialog/errorDialog.component"
+import { ErrorDialogService } from "../../../ui/dialogs/errorDialog/errorDialog.service"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 
@@ -15,7 +14,7 @@ export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
     constructor(
         private readonly actions$: Actions,
         private readonly store: Store<CcState>,
-        private readonly dialog: MatDialog
+        private readonly errorDialogService: ErrorDialogService
     ) {}
 
     doBlacklistItemsResultInEmptyMap$ = this.actions$.pipe(
@@ -33,8 +32,9 @@ export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
             this.doBlacklistItemsResultInEmptyMap$.pipe(
                 filter(event => event.resultsInEmptyMap),
                 tap(() => {
-                    this.dialog.open(ErrorDialogComponent, {
-                        data: { title: "Blacklist Error", message: "Excluding all buildings is not possible." }
+                    this.errorDialogService.open({
+                        title: "Blacklist Error",
+                        message: "Excluding all buildings is not possible."
                     })
                 })
             ),

@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test"
 import { CC_URL, clearIndexedDB, goto } from "../../playwright.helper"
-import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
+import { MapSelectorPageObject } from "../features/navBar/components/mapSelector/mapSelector.po"
 import sample1 from "../assets/sample1.cc.json"
 import sample3 from "../assets/sample3.cc.json"
 import sample2 from "../assets/sample2.cc.json"
@@ -17,7 +17,7 @@ test.describe("codecharta", () => {
     })
 
     test("should load data when compressed file parameters in url are valid", async ({ page }) => {
-        const filePanel = new FilePanelPageObject(page)
+        const filePanel = new MapSelectorPageObject(page)
 
         await page.route("**/*", async route => {
             if (route.request().url().includes("/fileThree.json.gz")) {
@@ -39,7 +39,7 @@ test.describe("codecharta", () => {
     })
 
     test("should load data when file parameters in url are valid", async ({ page }) => {
-        const filePanel = new FilePanelPageObject(page)
+        const filePanel = new MapSelectorPageObject(page)
 
         await page.route("**/*", async route => {
             if (route.request().url().includes("/fileOne.json")) {
@@ -65,7 +65,7 @@ test.describe("codecharta", () => {
 
     test("should throw errors when file parameters in url are invalid and load sample data instead", async ({ page }) => {
         const dialogError = new DialogErrorPageObject(page)
-        const filePanel = new FilePanelPageObject(page)
+        const filePanel = new MapSelectorPageObject(page)
 
         await goto(page, `${CC_URL}?file=invalid234`)
 

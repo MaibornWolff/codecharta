@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core"
-import { State } from "@ngrx/store"
 import { BehaviorSubject } from "rxjs"
 import { CcState, ColorMode } from "../../../codeCharta.model"
 import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { PlainPosition, Scenario, ScenarioSections } from "../model/scenario.model"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
+import { ScenariosStore } from "../stores/scenarios.store"
 
 const DEFAULT_MAP_COLORS = {
     positive: "#69AE40",
@@ -112,7 +112,7 @@ export class ScenariosService {
     scenarios$ = new BehaviorSubject<Scenario[]>([])
 
     constructor(
-        private readonly state: State<CcState>,
+        private readonly scenariosStore: ScenariosStore,
         private readonly threeCameraService: ThreeCameraService,
         private readonly threeMapControlsService: ThreeMapControlsService,
         private readonly db: ScenarioIndexedDBService
@@ -135,7 +135,7 @@ export class ScenariosService {
 
         const scenario = this.buildScenario(
             name,
-            this.state.getValue(),
+            this.scenariosStore.getValue(),
             cameraPosition ? { x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z } : { x: 0, y: 300, z: 1000 },
             cameraTarget ? { x: cameraTarget.x, y: cameraTarget.y, z: cameraTarget.z } : { x: 0, y: 0, z: 0 },
             description,

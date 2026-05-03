@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
-import { MatDialog } from "@angular/material/dialog"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
 import { readCcState } from "../../util/indexedDB/indexedDBWriter"
@@ -15,7 +14,7 @@ import { metricDataSelector } from "../../state/selectors/accumulatedData/metric
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { setDelta, setFiles } from "../../state/store/files/files.actions"
-import { ErrorDialogComponent } from "../../ui/dialogs/errorDialog/errorDialog.component"
+import { ErrorDialogService } from "../../ui/dialogs/errorDialog/errorDialog.service"
 import { buildHtmlMessage } from "../../util/loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "../loadFile/loadFile.service"
@@ -76,7 +75,7 @@ export class LoadInitialFileService {
     constructor(
         private readonly store: Store,
         private readonly state: State<CcState>,
-        private readonly dialog: MatDialog,
+        private readonly errorDialogService: ErrorDialogService,
         private readonly loadFileService: LoadFileService,
         private readonly httpClient: HttpClient
     ) {}
@@ -446,9 +445,7 @@ export class LoadInitialFileService {
     }
 
     private showErrorDialog(title: string, message: string) {
-        this.dialog.open(ErrorDialogComponent, {
-            data: { title, message }
-        })
+        this.errorDialogService.open({ title, message })
     }
 
     private createTitleUrlErrorDialog(error: Error & { statusText?: string; status?: number }) {

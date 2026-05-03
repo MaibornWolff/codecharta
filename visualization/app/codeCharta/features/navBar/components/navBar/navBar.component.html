@@ -1,0 +1,17 @@
+<div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+    <div class="navbar-start gap-1">
+        <cc-nav-bar-logo></cc-nav-bar-logo>
+        <div class="divider divider-horizontal mx-0"></div>
+        <cc-nav-bar-folder-button></cc-nav-bar-folder-button>
+        @if (isDeltaState()) {
+            <cc-delta-selector></cc-delta-selector>
+        } @else {
+            <cc-map-selector></cc-map-selector>
+        }
+    </div>
+    <div class="navbar-end gap-1">
+        <cc-mode-toggle></cc-mode-toggle>
+        <cc-print-3d-button></cc-print-3d-button>
+        <cc-settings-button></cc-settings-button>
+    </div>
+</div>

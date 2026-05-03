@@ -15,14 +15,14 @@ import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
 import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { Component, ElementRef, OnInit } from "@angular/core"
-import { CenterMapButtonComponent } from "./centerMapButton/centerMapButton.component"
+import { ViewCubeToolboxComponent } from "../../features/viewCubeToolbox/facade"
 import { ZoomSliderComponent } from "./zoomSlider/zoomSlider.component"
 
 @Component({
     selector: "cc-view-cube",
     templateUrl: "./viewCube.component.html",
     styleUrls: ["./viewCube.component.scss"],
-    imports: [CenterMapButtonComponent, ZoomSliderComponent]
+    imports: [ViewCubeToolboxComponent, ZoomSliderComponent]
 })
 export class ViewCubeComponent implements OnInit {
     private lights: Group

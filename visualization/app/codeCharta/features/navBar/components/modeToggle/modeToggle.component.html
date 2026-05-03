@@ -1,0 +1,22 @@
+<div role="tablist" class="flex items-center gap-1">
+    <button
+        type="button"
+        role="tab"
+        class="btn btn-ghost btn-sm"
+        [class.text-primary]="!isDeltaState()"
+        [class.font-bold]="!isDeltaState()"
+        (click)="selectExplore()"
+    >
+        Explore
+    </button>
+    <button
+        type="button"
+        role="tab"
+        class="btn btn-ghost btn-sm"
+        [class.text-primary]="isDeltaState()"
+        [class.font-bold]="isDeltaState()"
+        (click)="selectCompare()"
+    >
+        Compare
+    </button>
+</div>

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
-import { MatDialog } from "@angular/material/dialog"
 import { BehaviorSubject } from "rxjs"
 
+import { ErrorDialogService } from "../../../ui/dialogs/errorDialog/errorDialog.service"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { EffectsModule } from "@ngrx/effects"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
@@ -14,18 +14,18 @@ import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../.
 import { FILE_STATES_JAVA } from "../../../util/dataMocks"
 
 describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
-    const mockedDialog = { open: jest.fn() }
+    const mockedErrorDialogService = { open: jest.fn() }
     let actions$: BehaviorSubject<Action>
     let store: MockStore
 
     beforeEach(() => {
         actions$ = new BehaviorSubject({ type: "" })
-        mockedDialog.open = jest.fn()
+        mockedErrorDialogService.open = jest.fn()
 
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([AddBlacklistItemsIfNotResultsInEmptyMapEffect])],
             providers: [
-                { provide: MatDialog, useValue: mockedDialog },
+                { provide: ErrorDialogService, useValue: mockedErrorDialogService },
                 provideMockStore({
                     selectors: [
                         {
@@ -51,13 +51,13 @@ describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
     it("should ignore a not relevant action", async () => {
         actions$.next({ type: "whatever" })
         expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
-        expect(mockedDialog.open).not.toHaveBeenCalled()
+        expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
     })
 
     it("should not blacklist items if it would lead to an empty map but show error dialog", () => {
         actions$.next(addBlacklistItemsIfNotResultsInEmptyMap({ items: [{ type: "exclude", path: "foo/bar" }] }))
         store.refreshState()
-        expect(mockedDialog.open).toHaveBeenCalledTimes(1)
+        expect(mockedErrorDialogService.open).toHaveBeenCalledTimes(1)
     })
 
     it("should blacklist items if it doesn't lead to an empty map", async () => {
@@ -66,6 +66,6 @@ describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
         actions$.next(addBlacklistItemsIfNotResultsInEmptyMap({ items: [{ type: "exclude", path: "/root/src/main/file1.java" }] }))
 
         expect(await getLastAction(store)).toEqual(addBlacklistItems({ items: [{ type: "exclude", path: "/root/src/main/file1.java" }] }))
-        expect(mockedDialog.open).not.toHaveBeenCalled()
+        expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
     })
 })

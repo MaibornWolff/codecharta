@@ -1,0 +1,71 @@
+<div class="flex items-center gap-1">
+    <div class="dropdown" [class.dropdown-open]="openDropdown() === 'reference'">
+        <button
+            type="button"
+            class="btn btn-ghost btn-sm justify-between min-w-[12rem]"
+            (click)="toggleDropdown('reference')"
+        >
+            <span class="truncate">{{ referenceLabel() }}</span>
+            <i class="fa fa-caret-down ml-2"></i>
+        </button>
+        @if (openDropdown() === 'reference') {
+            <div class="dropdown-content bg-base-100 rounded-box border border-base-300 shadow-md mt-1 min-w-[12rem] w-max max-w-[24rem] z-50 p-1">
+                <ul class="flex flex-col gap-0.5 p-0 m-0 list-none max-h-72 overflow-y-auto">
+                    @for (file of referenceOptions(); track file.fileMeta.fileName) {
+                        <li class="w-full">
+                            <button
+                                type="button"
+                                class="flex items-center gap-2 w-full text-left rounded-md px-2 py-1 hover:bg-base-200"
+                                [class.bg-base-200]="isReferenceSelected(file)"
+                                [class.font-bold]="isReferenceSelected(file)"
+                                (click)="handleReferenceChange(file)"
+                            >
+                                <span class="flex-1 whitespace-nowrap">{{ file.fileMeta.fileName | removeExtension }}</span>
+                            </button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+
+    <button
+        type="button"
+        class="btn btn-ghost btn-sm btn-square"
+        title="Switch reference and comparison file"
+        [disabled]="swapDisabled()"
+        (click)="handleSwap()"
+    >
+        <i class="fa fa-arrows-h"></i>
+    </button>
+
+    <div class="dropdown" [class.dropdown-open]="openDropdown() === 'comparison'">
+        <button
+            type="button"
+            class="btn btn-ghost btn-sm justify-between min-w-[12rem]"
+            (click)="toggleDropdown('comparison')"
+        >
+            <span class="truncate">{{ comparisonLabel() }}</span>
+            <i class="fa fa-caret-down ml-2"></i>
+        </button>
+        @if (openDropdown() === 'comparison') {
+            <div class="dropdown-content bg-base-100 rounded-box border border-base-300 shadow-md mt-1 min-w-[12rem] w-max max-w-[24rem] z-50 p-1">
+                <ul class="flex flex-col gap-0.5 p-0 m-0 list-none max-h-72 overflow-y-auto">
+                    @for (file of comparisonOptions(); track file.fileMeta.fileName) {
+                        <li class="w-full">
+                            <button
+                                type="button"
+                                class="flex items-center gap-2 w-full text-left rounded-md px-2 py-1 hover:bg-base-200"
+                                [class.bg-base-200]="isComparisonSelected(file)"
+                                [class.font-bold]="isComparisonSelected(file)"
+                                (click)="handleComparisonChange(file)"
+                            >
+                                <span class="flex-1 whitespace-nowrap">{{ file.fileMeta.fileName | removeExtension }}</span>
+                            </button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</div>

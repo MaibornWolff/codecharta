@@ -1,10 +1,6 @@
 import { Injectable } from "@angular/core"
-import { Store, State } from "@ngrx/store"
 import { Vector3 } from "three"
-import { RecursivePartial, CcState, MetricData } from "../../../codeCharta.model"
-import { setState } from "../../../state/store/state.actions"
-import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { CcState, MetricData, RecursivePartial } from "../../../codeCharta.model"
 import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
 import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
@@ -17,6 +13,7 @@ import {
     ScenarioSectionKey,
     ScenarioSections
 } from "../model/scenario.model"
+import { ScenarioApplierStore } from "../stores/scenarioApplier.store"
 
 export interface MissingMetrics {
     nodeMetrics: string[]
@@ -30,8 +27,7 @@ export class ScenarioApplierService {
     isApplying = false
 
     constructor(
-        private readonly store: Store<CcState>,
-        private readonly state: State<CcState>,
+        private readonly scenarioApplierStore: ScenarioApplierStore,
         private readonly threeCameraService: ThreeCameraService,
         private readonly threeMapControlsService: ThreeMapControlsService,
         private readonly threeRendererService: ThreeRendererService
@@ -90,7 +86,7 @@ export class ScenarioApplierService {
 
     async applyScenario(scenario: Scenario, selectedKeys: Set<ScenarioSectionKey>, metricData?: MetricData): Promise<void> {
         this.isApplying = true
-        this.store.dispatch(setIsLoadingFile({ value: true }))
+        this.scenarioApplierStore.setIsLoadingFile(true)
 
         try {
             const cameraVectors = selectedKeys.has("camera") ? this.getCameraVectors(scenario.sections) : undefined
@@ -100,7 +96,9 @@ export class ScenarioApplierService {
             // When applying camera, temporarily disable autoFit so it doesn't
             // overwrite our camera position after the render cycle completes.
             const previousResetCamera =
-                applyCamera && patches.length > 0 ? this.state.getValue().appSettings.resetCameraIfNewFileIsLoaded : undefined
+                applyCamera && patches.length > 0
+                    ? this.scenarioApplierStore.getValue().appSettings.resetCameraIfNewFileIsLoaded
+                    : undefined
             if (previousResetCamera && patches.length > 0) {
                 patches[0].appSettings = { ...patches[0].appSettings, resetCameraIfNewFileIsLoaded: false }
             }
@@ -109,7 +107,7 @@ export class ScenarioApplierService {
             // earlier patches (e.g. resetColorRange after metric change)
             // settle before subsequent patches override their values.
             for (const patch of patches) {
-                this.store.dispatch(setState({ value: patch }))
+                this.scenarioApplierStore.setStatePatch(patch)
                 await new Promise<void>(resolve => setTimeout(resolve))
             }
 
@@ -124,7 +122,7 @@ export class ScenarioApplierService {
                 // Restore resetCameraIfNewFileIsLoaded after autoFit window has passed.
                 if (previousResetCamera) {
                     setTimeout(() => {
-                        this.store.dispatch(setState({ value: { appSettings: { resetCameraIfNewFileIsLoaded: true } } }))
+                        this.scenarioApplierStore.setStatePatch({ appSettings: { resetCameraIfNewFileIsLoaded: true } })
                     })
                 }
             }
@@ -132,8 +130,8 @@ export class ScenarioApplierService {
             this.threeRendererService.render()
         } finally {
             this.isApplying = false
-            this.store.dispatch(setIsLoadingFile({ value: false }))
-            this.store.dispatch(setIsLoadingMap({ value: false }))
+            this.scenarioApplierStore.setIsLoadingFile(false)
+            this.scenarioApplierStore.setIsLoadingMap(false)
         }
     }
 
