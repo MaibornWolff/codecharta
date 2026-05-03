@@ -10,7 +10,7 @@ export class MapSelectorPageObject {
     async getAllNames() {
         const trigger = this.page.locator("cc-map-selector .dropdown > button")
         await trigger.click()
-        const items = this.page.locator("cc-map-selector .dropdown-content ul li label > span > span")
+        const items = this.page.locator("cc-map-selector .dropdown-content ul li label > span.flex-1")
         await items.first().waitFor({ state: "visible" })
         const count = await items.count()
         const names: string[] = []
