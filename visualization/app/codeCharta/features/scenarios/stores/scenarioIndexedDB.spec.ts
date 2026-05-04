@@ -4,7 +4,7 @@ if (typeof globalThis.structuredClone === "undefined") {
     globalThis.structuredClone = <T>(value: T): T => JSON.parse(JSON.stringify(value))
 }
 
-import { ColorMode } from "../../../codeCharta.model"
+import { ColorMode, LabelMode } from "../../../codeCharta.model"
 import { Scenario } from "../model/scenario.model"
 import { ScenarioIndexedDBService } from "./scenarioIndexedDB"
 
@@ -50,10 +50,13 @@ const createTestScenario = (overrides: Partial<Scenario> = {}): Scenario => ({
         },
         labelsAndFolders: {
             amountOfTopLabels: 1,
+            labelSize: 1,
             showMetricLabelNameValue: true,
             showMetricLabelNodeName: true,
             enableFloorLabels: false,
             colorLabels: { positive: false, negative: false, neutral: false },
+            labelMode: LabelMode.Height,
+            groupLabelCollisions: false,
             markedPackages: []
         }
     },

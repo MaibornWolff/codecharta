@@ -143,6 +143,7 @@ export interface DynamicSettings extends PrimaryMetrics {
 
 export interface AppSettings {
     amountOfTopLabels: number
+    labelSize: number
     amountOfEdgePreviews: number
     edgeHeight: number
     scaling: Scaling

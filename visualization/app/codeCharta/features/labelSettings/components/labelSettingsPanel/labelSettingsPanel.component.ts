@@ -3,6 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { ColorLabelOptions, LabelMode } from "../../../../codeCharta.model"
 import { LabelModeService } from "../../services/labelMode.service"
 import { AmountOfTopLabelsService } from "../../services/amountOfTopLabels.service"
+import { LabelSizeService } from "../../services/labelSize.service"
 import { ShowMetricLabelNodeNameService } from "../../services/showMetricLabelNodeName.service"
 import { ShowMetricLabelNameValueService } from "../../services/showMetricLabelNameValue.service"
 import { ColorLabelsService } from "../../services/colorLabels.service"
@@ -11,6 +12,7 @@ import { StateAccessStore } from "../../stores/stateAccess.store"
 import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
 import { debounce } from "../../../../util/debounce"
 import { parseNumberInput } from "../../../../util/parseNumberInput"
+import { LABEL_SIZE_STEP, MAX_LABEL_SIZE, MIN_LABEL_SIZE } from "../../services/label.constants"
 
 @Component({
     selector: "cc-label-settings-panel",
@@ -23,6 +25,7 @@ export class LabelSettingsPanelComponent {
 
     private readonly labelModeService = inject(LabelModeService)
     private readonly amountOfTopLabelsService = inject(AmountOfTopLabelsService)
+    private readonly labelSizeService = inject(LabelSizeService)
     private readonly showMetricLabelNodeNameService = inject(ShowMetricLabelNodeNameService)
     private readonly showMetricLabelNameValueService = inject(ShowMetricLabelNameValueService)
     private readonly colorLabelsService = inject(ColorLabelsService)
@@ -31,9 +34,13 @@ export class LabelSettingsPanelComponent {
     private readonly codeMapRenderService = inject(CodeMapRenderService)
 
     readonly LabelMode = LabelMode
+    readonly MIN_LABEL_SIZE = MIN_LABEL_SIZE
+    readonly MAX_LABEL_SIZE = MAX_LABEL_SIZE
+    readonly LABEL_SIZE_STEP = LABEL_SIZE_STEP
 
     readonly resetSettingsKeys = [
         "appSettings.amountOfTopLabels",
+        "appSettings.labelSize",
         "appSettings.showMetricLabelNodeName",
         "appSettings.showMetricLabelNameValue",
         "appSettings.colorLabels",
@@ -42,6 +49,7 @@ export class LabelSettingsPanelComponent {
     ]
 
     readonly amountOfTopLabels = toSignal(this.amountOfTopLabelsService.amountOfTopLabels$(), { requireSync: true })
+    readonly labelSize = toSignal(this.labelSizeService.labelSize$(), { requireSync: true })
     readonly showMetricLabelNodeName = toSignal(this.showMetricLabelNodeNameService.showMetricLabelNodeName$(), { requireSync: true })
     readonly showMetricLabelNodeValue = toSignal(this.showMetricLabelNameValueService.showMetricLabelNameValue$(), { requireSync: true })
     readonly colorLabels = toSignal(this.colorLabelsService.colorLabels$(), { requireSync: true })
@@ -57,10 +65,27 @@ export class LabelSettingsPanelComponent {
         this.amountOfTopLabelsService.setAmountOfTopLabels(amountOfTopLabels)
     }, LabelSettingsPanelComponent.DEBOUNCE_TIME)
 
+    readonly applyDebouncedLabelSize = debounce((labelSize: number) => {
+        this.labelSizeService.setLabelSize(labelSize)
+    }, LabelSettingsPanelComponent.DEBOUNCE_TIME)
+
     handleTopLabelsInput(event: Event) {
         const value = parseNumberInput(event, 0, 50)
         if (!Number.isNaN(value) && value !== this.amountOfTopLabels()) {
             this.applyDebouncedTopLabels(value)
+        }
+    }
+
+    handleLabelSizeInput(event: Event) {
+        const raw = Number.parseFloat((event.target as HTMLInputElement).value)
+        if (Number.isNaN(raw)) {
+            return
+        }
+        const clamped = Math.min(MAX_LABEL_SIZE, Math.max(MIN_LABEL_SIZE, raw))
+        const snapped = Math.round(clamped / LABEL_SIZE_STEP) * LABEL_SIZE_STEP
+        const value = Math.round(snapped * 100) / 100
+        if (value !== this.labelSize()) {
+            this.applyDebouncedLabelSize(value)
         }
     }
 

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core"
 import { LabelModeService } from "./services/labelMode.service"
 import { AmountOfTopLabelsService } from "./services/amountOfTopLabels.service"
+import { LabelSizeService } from "./services/labelSize.service"
 import { ShowMetricLabelNodeNameService } from "./services/showMetricLabelNodeName.service"
 import { ShowMetricLabelNameValueService } from "./services/showMetricLabelNameValue.service"
 import { ColorLabelsService } from "./services/colorLabels.service"
@@ -17,6 +18,7 @@ export class LabelSettingsFacade {
     constructor(
         private readonly labelModeService: LabelModeService,
         private readonly amountOfTopLabelsService: AmountOfTopLabelsService,
+        private readonly labelSizeService: LabelSizeService,
         private readonly showMetricLabelNodeNameService: ShowMetricLabelNodeNameService,
         private readonly showMetricLabelNameValueService: ShowMetricLabelNameValueService,
         private readonly colorLabelsService: ColorLabelsService,
@@ -33,6 +35,10 @@ export class LabelSettingsFacade {
 
     amountOfTopLabels$() {
         return this.amountOfTopLabelsService.amountOfTopLabels$()
+    }
+
+    labelSize$() {
+        return this.labelSizeService.labelSize$()
     }
 
     showMetricLabelNodeName$() {
@@ -58,6 +64,10 @@ export class LabelSettingsFacade {
 
     setAmountOfTopLabels(value: number) {
         this.amountOfTopLabelsService.setAmountOfTopLabels(value)
+    }
+
+    setLabelSize(value: number) {
+        this.labelSizeService.setLabelSize(value)
     }
 
     setShowMetricLabelNodeName(value: boolean) {

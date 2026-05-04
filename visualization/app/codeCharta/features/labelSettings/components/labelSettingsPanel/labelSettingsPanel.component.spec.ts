@@ -3,6 +3,8 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { setColorLabels } from "../../../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { setLabelMode } from "../../../../state/store/appSettings/labelMode/labelMode.actions"
+import { setLabelSize } from "../../../../state/store/appSettings/labelSize/labelSize.actions"
+import { fireEvent } from "@testing-library/angular"
 import { LabelSettingsPanelComponent } from "./labelSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
@@ -150,5 +152,67 @@ describe("LabelSettingsPanelComponent", () => {
 
         const positiveCheckbox = screen.getByRole("checkbox", { name: "positive color label" }) as HTMLInputElement
         expect(positiveCheckbox.disabled).toBe(false)
+    })
+
+    describe("Label Size slider", () => {
+        const flushDebounce = () => new Promise(resolve => setTimeout(resolve, 500))
+
+        it("should render the Label Size slider with the default value", async () => {
+            // Arrange & Act
+            await render(LabelSettingsPanelComponent)
+
+            // Assert
+            const sliderContainer = screen.getByTitle("Scale floating label font size")
+            const sliders = sliderContainer.querySelectorAll("input")
+            expect(sliders).toHaveLength(2)
+            expect((sliders[0] as HTMLInputElement).value).toBe("1")
+            expect((sliders[1] as HTMLInputElement).value).toBe("1")
+        })
+
+        it("should dispatch setLabelSize when the slider value changes", async () => {
+            // Arrange
+            await render(LabelSettingsPanelComponent)
+            const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
+            const sliderContainer = screen.getByTitle("Scale floating label font size")
+            const rangeSlider = sliderContainer.querySelectorAll("input")[0] as HTMLInputElement
+
+            // Act
+            fireEvent.input(rangeSlider, { target: { value: "1.75" } })
+            await flushDebounce()
+
+            // Assert
+            expect(dispatchSpy).toHaveBeenCalledWith(setLabelSize({ value: 1.75 }))
+        })
+
+        it("should clamp values above MAX_LABEL_SIZE", async () => {
+            // Arrange
+            await render(LabelSettingsPanelComponent)
+            const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
+            const sliderContainer = screen.getByTitle("Scale floating label font size")
+            const numberInput = sliderContainer.querySelectorAll("input")[1] as HTMLInputElement
+
+            // Act
+            fireEvent.input(numberInput, { target: { value: "10" } })
+            await flushDebounce()
+
+            // Assert
+            expect(dispatchSpy).toHaveBeenCalledWith(setLabelSize({ value: 2.5 }))
+        })
+
+        it("should reset labelSize to its default when reset button is clicked", async () => {
+            // Arrange
+            const { detectChanges } = await render(LabelSettingsPanelComponent)
+            const store = TestBed.inject(Store)
+            store.dispatch(setLabelSize({ value: 2 }))
+            detectChanges()
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            screen.getByText("Reset label settings").click()
+
+            // Assert
+            const lastCall = dispatchSpy.mock.calls.at(-1)?.[0] as { value?: { appSettings?: { labelSize?: number } } }
+            expect(lastCall?.value?.appSettings?.labelSize).toBe(1)
+        })
     })
 })

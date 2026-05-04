@@ -1,5 +1,6 @@
 import { setAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { setAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
+import { setLabelSize } from "./labelSize/labelSize.actions"
 import { setColorLabels } from "./colorLabels/colorLabels.actions"
 import { setEdgeHeight } from "./edgeHeight/edgeHeight.actions"
 import { setScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
@@ -52,6 +53,7 @@ export const appSettingsActions = [
     setEdgeHeight,
     setAmountOfEdgePreviews,
     setAmountOfTopLabels,
+    setLabelSize,
     setPresentationMode,
     setExperimentalFeaturesEnabled,
     setScreenshotToClipboardEnabled,

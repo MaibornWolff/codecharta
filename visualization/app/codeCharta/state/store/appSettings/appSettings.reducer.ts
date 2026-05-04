@@ -20,6 +20,7 @@ import { defaultScaling, scaling } from "./scaling/scaling.reducer"
 import { defaultEdgeHeight, edgeHeight } from "./edgeHeight/edgeHeight.reducer"
 import { amountOfEdgePreviews, defaultAmountOfEdgesPreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.reducer"
 import { amountOfTopLabels, defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.reducer"
+import { defaultLabelSize, labelSize } from "./labelSize/labelSize.reducer"
 import { defaultIsPresentationMode, isPresentationMode } from "./isPresentationMode/isPresentationMode.reducer"
 import {
     defaultExperimentalFeaturesEnabled,
@@ -65,6 +66,7 @@ export const appSettings = combineReducers({
     edgeHeight,
     amountOfEdgePreviews,
     amountOfTopLabels,
+    labelSize,
     isPresentationMode,
     experimentalFeaturesEnabled,
     screenshotToClipboardEnabled,
@@ -99,6 +101,7 @@ export const defaultAppSettings = {
     edgeHeight: defaultEdgeHeight,
     amountOfEdgePreviews: defaultAmountOfEdgesPreviews,
     amountOfTopLabels: defaultAmountOfTopLabels,
+    labelSize: defaultLabelSize,
     isPresentationMode: defaultIsPresentationMode,
     experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
     screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,

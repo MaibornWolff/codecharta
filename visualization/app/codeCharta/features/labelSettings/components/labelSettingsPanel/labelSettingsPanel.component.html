@@ -10,6 +10,18 @@
     </div>
 </div>
 
+<div title="Scale floating label font size">
+    <span class="text-sm">Label Size</span>
+    <div class="flex items-center gap-2">
+        <input type="range" class="range range-primary range-sm flex-1"
+            [min]="MIN_LABEL_SIZE" [max]="MAX_LABEL_SIZE" [step]="LABEL_SIZE_STEP" [value]="labelSize()"
+            (input)="handleLabelSizeInput($event)" />
+        <input type="number" class="input input-sm input-bordered w-16 text-center"
+            [min]="MIN_LABEL_SIZE" [max]="MAX_LABEL_SIZE" [step]="LABEL_SIZE_STEP" [value]="labelSize()"
+            (input)="handleLabelSizeInput($event)" />
+    </div>
+</div>
+
 <div class="join w-full" aria-label="Label mode">
     <input type="radio" name="labelMode"
         class="join-item btn btn-sm flex-1"

@@ -1,5 +1,6 @@
 import { setAmountOfEdgePreviews } from "../../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setLabelSize } from "../../store/appSettings/labelSize/labelSize.actions"
 import { setColorLabels } from "../../store/appSettings/colorLabels/colorLabels.actions"
 import { setEdgeHeight } from "../../store/appSettings/edgeHeight/edgeHeight.actions"
 import { setHideFlatBuildings } from "../../store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
@@ -53,6 +54,7 @@ export const actionsRequiringRerender = [
     setShowIncomingEdges,
     setShowOutgoingEdges,
     setAmountOfTopLabels,
+    setLabelSize,
     setLayoutAlgorithm,
     setMaxTreeMapFiles,
     setSharpnessMode,

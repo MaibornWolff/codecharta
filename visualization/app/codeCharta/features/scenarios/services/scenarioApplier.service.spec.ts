@@ -49,6 +49,7 @@ const testSections: ScenarioSections = {
     },
     labelsAndFolders: {
         amountOfTopLabels: 5,
+        labelSize: 1.5,
         showMetricLabelNameValue: true,
         showMetricLabelNodeName: false,
         enableFloorLabels: true,
