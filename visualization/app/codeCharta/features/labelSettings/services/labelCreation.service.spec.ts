@@ -5,6 +5,7 @@ import { Group, BoxGeometry, Mesh } from "three"
 import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
 import { StateAccessStore } from "../stores/stateAccess.store"
 import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setLabelSize } from "../../../state/store/appSettings/labelSize/labelSize.actions"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setShowMetricLabelNameValue } from "../../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
@@ -137,6 +138,37 @@ describe("LabelCreationService", () => {
             const content = labelCreationService.getLabels()[0].labelElement.getContentElement()
             expect(content).toBeTruthy()
             expect(content.textContent).toContain("sample")
+        })
+
+        it("should scale font sizes by labelSize multiplier", () => {
+            // Arrange
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            store.dispatch(setShowMetricLabelNameValue({ value: true }))
+            store.dispatch(setLabelSize({ value: 2 }))
+
+            // Act
+            labelCreationService.addLeafLabel(sampleLeaf, 0)
+
+            // Assert
+            const content = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            expect(content.style.fontSize).toBe("24px")
+            const metricSpan = content.querySelectorAll("span")[1] as HTMLSpanElement
+            expect(metricSpan.style.fontSize).toBe("20px")
+        })
+
+        it("should keep base font sizes at default labelSize of 1", () => {
+            // Arrange
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            store.dispatch(setShowMetricLabelNameValue({ value: true }))
+
+            // Act
+            labelCreationService.addLeafLabel(sampleLeaf, 0)
+
+            // Assert
+            const content = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            expect(content.style.fontSize).toBe("12px")
+            const metricSpan = content.querySelectorAll("span")[1] as HTMLSpanElement
+            expect(metricSpan.style.fontSize).toBe("10px")
         })
     })
 

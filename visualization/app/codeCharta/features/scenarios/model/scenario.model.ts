@@ -33,6 +33,7 @@ export interface FiltersSection {
 
 export interface LabelsAndFoldersSection {
     readonly amountOfTopLabels: number
+    readonly labelSize: number
     readonly showMetricLabelNameValue: boolean
     readonly showMetricLabelNodeName: boolean
     readonly enableFloorLabels: boolean

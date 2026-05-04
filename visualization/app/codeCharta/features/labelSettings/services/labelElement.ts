@@ -1,15 +1,17 @@
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js"
-import { BASE_OFFSET_PX } from "./label.constants"
+import { BASE_BADGE_FONT_PX, BASE_METRIC_FONT_PX, BASE_NAME_FONT_PX, BASE_OFFSET_PX } from "./label.constants"
 
 export class LabelElement {
     readonly cssObject: CSS2DObject
     private readonly content: HTMLDivElement
+    private readonly labelSize: number
     private badge: HTMLDivElement | null = null
 
-    constructor(nameText: string, metricText: string) {
+    constructor(nameText: string, metricText: string, labelSize: number) {
+        this.labelSize = labelSize
         const wrapper = document.createElement("div")
         this.content = document.createElement("div")
-        this.content.style.cssText = LabelElement.buildContentStyles()
+        this.content.style.cssText = LabelElement.buildContentStyles(labelSize)
 
         if (nameText) {
             const nameSpan = document.createElement("span")
@@ -20,7 +22,7 @@ export class LabelElement {
 
         if (metricText) {
             const metricSpan = document.createElement("span")
-            metricSpan.style.cssText = "display: block; font-size: 10px; color: #666; margin-top: 1px;"
+            metricSpan.style.cssText = `display: block; font-size: ${BASE_METRIC_FONT_PX * labelSize}px; color: #666; margin-top: 1px;`
             metricSpan.textContent = metricText
             this.content.appendChild(metricSpan)
         }
@@ -55,7 +57,7 @@ export class LabelElement {
         this.badge = document.createElement("div")
         this.badge.textContent = `+${hiddenCount} more`
         this.badge.style.cssText = `
-            font-size: 10px;
+            font-size: ${BASE_BADGE_FONT_PX * this.labelSize}px;
             color: #888;
             margin-top: 2px;
             text-align: center;
@@ -71,7 +73,7 @@ export class LabelElement {
         }
     }
 
-    private static buildContentStyles(): string {
+    private static buildContentStyles(labelSize: number): string {
         return `
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(6px);
@@ -79,7 +81,7 @@ export class LabelElement {
             border-radius: 6px;
             padding: 4px 8px;
             font-family: Roboto, 'Helvetica Neue', sans-serif;
-            font-size: 12px;
+            font-size: ${BASE_NAME_FONT_PX * labelSize}px;
             line-height: 1.3;
             color: #1a1a1a;
             white-space: nowrap;

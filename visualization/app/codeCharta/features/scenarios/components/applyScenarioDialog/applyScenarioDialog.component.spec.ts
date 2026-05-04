@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { ApplyScenarioDialogComponent } from "./applyScenarioDialog.component"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { Scenario, ScenarioSectionKey } from "../../model/scenario.model"
-import { ColorMode, MetricData } from "../../../../codeCharta.model"
+import { ColorMode, LabelMode, MetricData } from "../../../../codeCharta.model"
 import { defaultState } from "../../../../state/store/state.manager"
 
 const createTestScenario = (): Scenario => ({
@@ -27,10 +27,13 @@ const createTestScenario = (): Scenario => ({
         filters: { blacklist: [], focusedNodePath: [] },
         labelsAndFolders: {
             amountOfTopLabels: 1,
+            labelSize: 1,
             showMetricLabelNameValue: true,
             showMetricLabelNodeName: true,
             enableFloorLabels: false,
             colorLabels: { positive: false, negative: false, neutral: false },
+            labelMode: LabelMode.Height,
+            groupLabelCollisions: false,
             markedPackages: []
         }
     }

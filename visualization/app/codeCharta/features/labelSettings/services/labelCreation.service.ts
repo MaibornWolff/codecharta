@@ -33,7 +33,7 @@ export class LabelCreationService {
 
     addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
         const { appSettings, dynamicSettings } = this.stateAccessStore.getValue()
-        const { scaling, showMetricLabelNodeName, showMetricLabelNameValue, labelMode } = appSettings
+        const { scaling, showMetricLabelNodeName, showMetricLabelNameValue, labelMode, labelSize } = appSettings
         const { heightMetric, colorMetric } = dynamicSettings
         const multiplier = new Vector3(scaling.x, scaling.y, scaling.z)
 
@@ -50,7 +50,7 @@ export class LabelCreationService {
             metricText = `${node.attributes[metric]} ${metric}`
         }
 
-        const labelElement = new LabelElement(nameText, metricText)
+        const labelElement = new LabelElement(nameText, metricText, labelSize)
         const cssObject = labelElement.cssObject
         cssObject.userData = { node }
 

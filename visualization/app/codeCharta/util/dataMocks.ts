@@ -2170,6 +2170,7 @@ export const STATE: CcState = {
     },
     appSettings: {
         amountOfTopLabels: 31,
+        labelSize: 1,
         amountOfEdgePreviews: 5,
         colorLabels: {
             positive: false,
@@ -2215,7 +2216,8 @@ export const STATE: CcState = {
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
         sharpnessMode: SharpnessMode.Standard,
         maxTreeMapFiles: 200,
-        labelMode: LabelMode.Height
+        labelMode: LabelMode.Height,
+        groupLabelCollisions: false
     },
     files: [],
     appStatus: {
@@ -2229,6 +2231,7 @@ export const STATE: CcState = {
 export const DEFAULT_STATE: CcState = {
     appSettings: {
         amountOfTopLabels: 1,
+        labelSize: 1,
         amountOfEdgePreviews: 1,
         colorLabels: {
             positive: false,
@@ -2274,7 +2277,8 @@ export const DEFAULT_STATE: CcState = {
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
         sharpnessMode: SharpnessMode.Standard,
         maxTreeMapFiles: 100,
-        labelMode: LabelMode.Height
+        labelMode: LabelMode.Height,
+        groupLabelCollisions: false
     },
     dynamicSettings: {
         areaMetric: null,

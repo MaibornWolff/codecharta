@@ -14,4 +14,13 @@ describe("getPartialDefaultState", () => {
 
         expect(actualSettings).toEqual(expectedSettings)
     })
+
+    it("should reset 'labelSize' to its static default of 1", () => {
+        const keySettings = ["appSettings.labelSize"]
+        const expectedSettings = { appSettings: { labelSize: 1 } }
+
+        const actualSettings = getPartialDefaultState(keySettings, DEFAULT_STATE)
+
+        expect(actualSettings).toEqual(expectedSettings)
+    })
 })

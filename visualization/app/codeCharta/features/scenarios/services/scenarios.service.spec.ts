@@ -167,6 +167,7 @@ describe("ScenariosService", () => {
 
             // Assert
             expect(sections.labelsAndFolders.amountOfTopLabels).toBe(defaultState.appSettings.amountOfTopLabels)
+            expect(sections.labelsAndFolders.labelSize).toBe(defaultState.appSettings.labelSize)
             expect(sections.labelsAndFolders.labelMode).toBe(defaultState.appSettings.labelMode)
             expect(sections.labelsAndFolders.groupLabelCollisions).toBe(defaultState.appSettings.groupLabelCollisions)
             expect(sections.labelsAndFolders.markedPackages).toEqual(defaultState.fileSettings.markedPackages)

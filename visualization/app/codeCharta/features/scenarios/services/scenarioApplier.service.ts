@@ -195,6 +195,7 @@ export class ScenarioApplierService {
         return {
             appSettings: {
                 amountOfTopLabels: labelsAndFolders.amountOfTopLabels,
+                labelSize: labelsAndFolders.labelSize,
                 showMetricLabelNameValue: labelsAndFolders.showMetricLabelNameValue,
                 showMetricLabelNodeName: labelsAndFolders.showMetricLabelNodeName,
                 enableFloorLabels: labelsAndFolders.enableFloorLabels,

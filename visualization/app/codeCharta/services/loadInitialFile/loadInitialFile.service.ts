@@ -40,6 +40,8 @@ import { setAllFocusedNodes } from "../../state/store/dynamicSettings/focusedNod
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setAmountOfEdgePreviews } from "../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
+import { setLabelSize } from "../../state/store/appSettings/labelSize/labelSize.actions"
 import { setEdgeHeight } from "../../state/store/appSettings/edgeHeight/edgeHeight.actions"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setHideFlatBuildings } from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
@@ -238,7 +240,7 @@ export class LoadInitialFileService {
         return missingDynamicSettings
     }
 
-    private static readonly optionalAppSettingsKeys = new Set(["labelMode", "groupLabelCollisions"])
+    private static readonly optionalAppSettingsKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize"])
 
     private applyAppSettings(savedAppSettings: AppSettings) {
         const currentAppSettings = (this.state.getValue() as CcState).appSettings
@@ -328,8 +330,11 @@ export class LoadInitialFileService {
             case "amountOfTopLabels":
                 this.store.dispatch(setAmountOfTopLabels({ value }))
                 break
+            case "labelSize":
+                this.store.dispatch(setLabelSize({ value }))
+                break
             case "amountOfEdgePreviews":
-                this.store.dispatch(setAmountOfTopLabels({ value }))
+                this.store.dispatch(setAmountOfEdgePreviews({ value }))
                 break
             case "edgeHeight":
                 this.store.dispatch(setEdgeHeight({ value }))

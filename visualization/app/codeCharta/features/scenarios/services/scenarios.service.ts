@@ -185,6 +185,7 @@ export class ScenariosService {
             },
             labelsAndFolders: {
                 amountOfTopLabels: state.appSettings.amountOfTopLabels,
+                labelSize: state.appSettings.labelSize,
                 showMetricLabelNameValue: state.appSettings.showMetricLabelNameValue,
                 showMetricLabelNodeName: state.appSettings.showMetricLabelNodeName,
                 enableFloorLabels: state.appSettings.enableFloorLabels,

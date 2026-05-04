@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Label Size slider**: New slider in the Label Settings panel scales floating label text (name, metric value, and "+N more" badge) between 0.75× and 2.5×. The setting is preserved in scenarios.
+
+### Fixed 🐞
+
+- Fix `amountOfEdgePreviews` being silently overwritten when restoring saved state — it incorrectly dispatched the top-labels action instead.
+
 ## [1.142.0] - 2026-03-16
 
 ### Added 🚀
