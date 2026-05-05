@@ -7,7 +7,7 @@ import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../addBlacklistIt
 import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
 import { searchPatternSelector } from "../../store/dynamicSettings/searchPattern/searchPattern.selector"
 import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../store/fileSettings/blacklist/blacklist.actions"
-import { parseBlacklistItems } from "../../../ui/ribbonBar/searchPanel/searchBar/utils/parseBlacklistItems"
+import { parseBlacklistItems } from "../../../util/blacklist/parseBlacklistItems"
 
 type BlacklistSearchPatternAction = {
     type: "BlacklistSearchPatternAction"

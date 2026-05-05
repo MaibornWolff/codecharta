@@ -1,0 +1,24 @@
+@if (isInteractive()) {
+    <button
+        type="button"
+        class="flex flex-col items-center justify-center flex-1 px-1 py-1 gap-0.5 cursor-pointer hover:bg-base-200 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+        [attr.popovertarget]="popoverId()"
+        [attr.style]="anchorStyle()"
+        [title]="displayTooltip()"
+    >
+        <span class="text-[9px] uppercase tracking-wide opacity-60 leading-none flex items-center gap-0.5">
+            {{ label() }}
+            <i class="fa fa-caret-down text-[8px]"></i>
+        </span>
+        <span class="text-sm font-semibold leading-none">{{ displayCount() }}</span>
+    </button>
+} @else {
+    <span
+        class="flex flex-col items-center justify-center flex-1 px-1 py-1 gap-0.5"
+        [attr.style]="anchorStyle()"
+        [title]="displayTooltip()"
+    >
+        <span class="text-[9px] uppercase tracking-wide opacity-60 leading-none">{{ label() }}</span>
+        <span class="text-sm font-semibold leading-none">{{ displayCount() }}</span>
+    </span>
+}

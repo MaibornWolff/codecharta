@@ -1,0 +1,56 @@
+<div class="flex items-center gap-1 px-2 py-1">
+    <label class="input input-sm input-bordered flex items-center gap-1 flex-1">
+        <i class="fa fa-search opacity-60"></i>
+        <input
+            type="text"
+            class="grow"
+            placeholder="*.js, **/app/*"
+            [value]="searchPattern()"
+            (input)="setSearchPattern($event)"
+        />
+        @if (!isSearchPatternEmpty()) {
+            <button
+                type="button"
+                class="btn btn-ghost btn-xs btn-square"
+                data-testid="search-bar-clear-button"
+                (click)="resetSearchPattern()"
+                title="Clear search"
+            >
+                <i class="fa fa-times"></i>
+            </button>
+        }
+    </label>
+
+    <div class="dropdown dropdown-end">
+        <button type="button" tabindex="0" class="btn btn-ghost btn-sm btn-square" title="Add to Blacklist">
+            <i class="fa fa-ellipsis-v"></i>
+        </button>
+        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-44 p-2 shadow">
+            @if (isSearchPatternEmpty()) {
+                <li class="px-2 py-1 text-xs opacity-60">Enter a pattern to enable Flatten/Exclude</li>
+            }
+            <li>
+                <button
+                    type="button"
+                    data-testid="search-bar-flatten-button"
+                    [disabled]="isFlattenPatternDisabled()"
+                    (click)="flattenPattern()"
+                >
+                    <i class="fa fa-eye-slash"></i>
+                    Flatten
+                </button>
+            </li>
+            <li>
+                <button
+                    type="button"
+                    data-testid="search-bar-exclude-button"
+                    [disabled]="isExcludePatternDisabled()"
+                    (click)="excludePattern()"
+                >
+                    <i class="fa fa-ban"></i>
+                    Exclude
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>

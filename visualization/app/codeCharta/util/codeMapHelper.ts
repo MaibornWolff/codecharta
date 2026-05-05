@@ -99,6 +99,10 @@ export function isLeaf(node: MaybeLeaf) {
     return node.children === undefined || node.children.length === 0
 }
 
+export function isAreaValid(node: CodeMapNode, areaMetric: string): boolean {
+    return node.deltas?.[areaMetric] < 0 || node.attributes?.[areaMetric] > 0
+}
+
 export enum MAP_RESOLUTION_SCALE {
     SMALL_MAP = 1,
     MEDIUM_MAP = 0.5,

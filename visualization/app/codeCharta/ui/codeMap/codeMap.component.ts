@@ -55,7 +55,6 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     private observeBarsHeight(): void {
-        const codeMapElement = this.elementReference.nativeElement.querySelector("#codeMap") as HTMLElement
         const bars = ["cc-nav-bar", "cc-ribbon-bar", "cc-file-extension-bar"]
             .map(selector => document.querySelector(selector) as HTMLElement | null)
             .filter((el): el is HTMLElement => el !== null)
@@ -64,7 +63,7 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
         }
         const updateHeight = () => {
             const total = bars.reduce((sum, el) => sum + el.getBoundingClientRect().height, 0)
-            codeMapElement.style.setProperty("--cc-bars-height", `${Math.round(total)}px`)
+            document.documentElement.style.setProperty("--cc-bars-height", `${Math.round(total)}px`)
         }
         updateHeight()
         this.barsResizeObserver = new ResizeObserver(updateHeight)

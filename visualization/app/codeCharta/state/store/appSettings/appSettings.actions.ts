@@ -17,7 +17,6 @@ import {
     toggleIsColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
-import { setIsSearchPanelPinned, toggleIsSearchPanelPinned } from "./isSearchPanelPinned/isSearchPanelPinned.actions"
 import { setIsWhiteBackground } from "./isWhiteBackground/isWhiteBackground.actions"
 import { setLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
 import { setMapColors, invertColorRange, invertDeltaColors } from "./mapColors/mapColors.actions"
@@ -36,8 +35,6 @@ export const appSettingsActions = [
     setShowMetricLabelNameValue,
     setSortingOrderAscending,
     toggleSortingOrderAscending,
-    setIsSearchPanelPinned,
-    toggleIsSearchPanelPinned,
     setMapColors,
     invertColorRange,
     invertDeltaColors,
