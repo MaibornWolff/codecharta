@@ -27,8 +27,11 @@ export const NodeDecorator = {
         for (const item of blacklist) {
             const target = item.type === "flatten" ? flattenCombined : excludeCombined
             if (addRulePatternsToEngine(target, item.path)) {
-                if (item.type === "flatten") hasPosFlatten = true
-                else hasPosExclude = true
+                if (item.type === "flatten") {
+                    hasPosFlatten = true
+                } else {
+                    hasPosExclude = true
+                }
             } else {
                 negativeRules.push({ ignoredNodePaths: returnIgnore(item.path).ignoredNodePaths, type: item.type })
             }
@@ -49,8 +52,11 @@ export const NodeDecorator = {
             }
             for (const { ignoredNodePaths, type } of negativeRules) {
                 if (!ignoredNodePaths.ignores(transformedPath)) {
-                    if (type === "flatten") data.isFlattened = true
-                    else if (isLeafNode) data.isExcluded = true
+                    if (type === "flatten") {
+                        data.isFlattened = true
+                    } else if (isLeafNode) {
+                        data.isExcluded = true
+                    }
                 }
             }
         }
