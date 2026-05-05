@@ -129,7 +129,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
         this.isScrollListenerRegistered = false
     }
 
-    private scrollFunction = () => {
+    private readonly scrollFunction = () => {
         this.appStatusStore.setRightClickedNodeData(null)
         this.removeScrollListener()
     }

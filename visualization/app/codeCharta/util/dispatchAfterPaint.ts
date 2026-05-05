@@ -21,7 +21,7 @@ export function dispatchAfterPaint(store: Store<CcState>, action: Action | Actio
     // In jest tests rAF is async via setTimeout — skip the deferral so existing
     // dispatch-assertion tests stay synchronous. The spinner UX only matters at
     // runtime.
-    if (typeof window !== "undefined" && (window as unknown as { __TEST_ENVIRONMENT__?: boolean }).__TEST_ENVIRONMENT__) {
+    if ((globalThis as unknown as { __TEST_ENVIRONMENT__?: boolean }).__TEST_ENVIRONMENT__) {
         for (const a of actions) {
             store.dispatch(a)
         }

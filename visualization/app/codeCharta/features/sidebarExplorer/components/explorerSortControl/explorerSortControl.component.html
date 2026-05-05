@@ -1,7 +1,6 @@
 <div class="dropdown dropdown-start w-full px-2 mt-2">
-    <div
-        tabindex="0"
-        role="button"
+    <button
+        type="button"
         class="btn btn-ghost btn-sm w-full justify-between normal-case font-normal"
         [title]="'Sort: ' + currentOption()"
     >
@@ -11,8 +10,8 @@
             <i class="fa text-[10px]" [class.fa-arrow-up]="isAscending()" [class.fa-arrow-down]="!isAscending()"></i>
         </span>
         <i class="fa fa-chevron-down text-[10px] opacity-60"></i>
-    </div>
-    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-20 w-full mx-2 p-2 shadow">
+    </button>
+    <ul class="dropdown-content menu bg-base-100 rounded-box z-20 w-full mx-2 p-2 shadow">
         @for (option of sortOptions; track option) {
             <li>
                 <button
