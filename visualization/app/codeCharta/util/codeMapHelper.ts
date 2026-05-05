@@ -61,7 +61,7 @@ export function returnIgnore(gitignorePath: string) {
 // merged into the combined engine and must keep a per-rule engine instead.
 // Mirrors the pattern-transformation logic of `returnIgnore`.
 export function addRulePatternsToEngine(engine: ReturnType<typeof ignore>, rulePath: string): boolean {
-    let path = transformPath(rulePath.trimStart())
+    const path = transformPath(rulePath.trimStart())
     if (path.startsWith("!")) {
         return false
     }
