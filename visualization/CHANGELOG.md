@@ -10,10 +10,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - **Label Size slider**: New slider in the Label Settings panel scales floating label text (name, metric value, and "+N more" badge) between 0.75× and 2.5×. The setting is preserved in scenarios.
+- **File Explorer sidebar**: The file tree was redesigned as a dedicated left-side sidebar drawer that overlays the codemap. The drawer adds a Shown/Flattened/Hidden chip row at the top, a sort control, and click-to-edit popovers for the active flatten and exclude rules.
+- **Collapsible File Explorer**: The sidebar can now be collapsed via the `«` button in the header. Collapsed mode shows a small floating search box (with the kebab Flatten/Exclude menu) pinned at the top-left, freeing the full viewport for the codemap. Re-expand with the folder-tree button.
+
+### Changed
+
+- **Faster blacklist operations**: Adding or removing flatten and exclude patterns is significantly faster on large codebases — the matching engines are now cached and only rebuilt when the blacklist itself changes.
 
 ### Fixed 🐞
 
 - Fix `amountOfEdgePreviews` being silently overwritten when restoring saved state — it incorrectly dispatched the top-labels action instead.
+- Loading spinner now stays visible until the codemap's full initial render completes; previously it disappeared too early.
+
+### Chore 👨‍💻 👩‍💻
+
+- Upgrade FontAwesome from 4.7 to 7 (`@fortawesome/fontawesome-free`); existing icon usages keep working via the v4 compatibility shim.
 
 ## [1.142.0] - 2026-03-16
 
