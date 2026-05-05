@@ -1,10 +1,12 @@
 import { createSelector } from "@ngrx/store"
+import ignore from "ignore"
 import { BlacklistItem, BlacklistType, CodeMapNode } from "../../../codeCharta.model"
 import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/codeMapNodes.selector"
 import { searchedNodesSelector } from "../../../state/selectors/searchedNodes/searchedNodes.selector"
 import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { isAreaValid, isLeaf, isPathBlacklisted } from "../../../util/codeMapHelper"
+import { blacklistMatcherSelector } from "../../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
+import { BlacklistMatcher, isAreaValid, isLeaf, transformPath } from "../../../util/codeMapHelper"
 import { isPatternRule } from "./isPattern"
 
 export type ExplorerCounts = {
@@ -22,7 +24,7 @@ export type RuleWithCount = {
 
 export const _calculateExplorerCounts = (
     searchedNodes: CodeMapNode[],
-    blacklist: BlacklistItem[],
+    matcher: BlacklistMatcher,
     allLeaves: CodeMapNode[],
     areaMetric: string
 ): ExplorerCounts => {
@@ -32,8 +34,8 @@ export const _calculateExplorerCounts = (
     let shown = 0
     let noArea = 0
     for (const leaf of matchingLeaves) {
-        const isFlat = isPathBlacklisted(leaf.path, blacklist, "flatten")
-        const isHide = isPathBlacklisted(leaf.path, blacklist, "exclude")
+        const isFlat = matcher.isFlattened(leaf.path)
+        const isHide = matcher.isExcluded(leaf.path)
         if (isFlat) flattened++
         if (isHide) hidden++
         if (!isFlat && !isHide) {
@@ -46,7 +48,7 @@ export const _calculateExplorerCounts = (
 
 export const explorerCountsSelector = createSelector(
     searchedNodesSelector,
-    blacklistSelector,
+    blacklistMatcherSelector,
     codeMapNodesSelector,
     areaMetricSelector,
     _calculateExplorerCounts
@@ -54,10 +56,38 @@ export const explorerCountsSelector = createSelector(
 
 const buildRulesWithCount = (blacklist: BlacklistItem[], allLeaves: CodeMapNode[], type: BlacklistType): RuleWithCount[] => {
     const itemsOfType = blacklist.filter(item => item.type === type)
-    return itemsOfType
-        .map(item => ({
+    if (itemsOfType.length === 0) {
+        return []
+    }
+
+    const transformedLeafPaths = allLeaves.map(node => transformPath(node.path))
+
+    const combinedEngine = ignore()
+    for (const item of itemsOfType) {
+        combinedEngine.add(transformPath(item.path))
+    }
+
+    const rulesWithStats = itemsOfType.map(item => ({
+        item,
+        engine: ignore().add(transformPath(item.path)),
+        count: 0
+    }))
+
+    for (const path of transformedLeafPaths) {
+        if (!combinedEngine.ignores(path)) {
+            continue
+        }
+        for (const r of rulesWithStats) {
+            if (r.engine.ignores(path)) {
+                r.count++
+            }
+        }
+    }
+
+    return rulesWithStats
+        .map(({ item, count }) => ({
             item,
-            affectedCount: allLeaves.reduce((count, node) => (isPathBlacklisted(node.path, [item], type) ? count + 1 : count), 0),
+            affectedCount: count,
             kind: (isPatternRule(item.path) ? "RULE" : "MANUAL") as "RULE" | "MANUAL"
         }))
         .sort((a, b) => a.item.path.localeCompare(b.item.path))

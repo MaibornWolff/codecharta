@@ -4,6 +4,7 @@ import { BlacklistType, CcState } from "../../../codeCharta.model"
 import { searchPatternSelector } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
 import { setSearchPattern } from "../../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import { blacklistSearchPattern } from "../../../state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
+import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 import { isSearchPatternEmptySelector } from "../selectors/searchBar/isSearchPatternEmpty.selector"
 import { isFlattenPatternDisabledSelector } from "../selectors/searchBar/isFlattenPatternDisabled.selector"
 import { isExcludePatternDisabledSelector } from "../selectors/searchBar/isExcludePatternDisabled.selector"
@@ -28,6 +29,6 @@ export class SearchPatternStore {
     }
 
     blacklistSearchPattern(type: BlacklistType) {
-        this.store.dispatch(blacklistSearchPattern(type))
+        dispatchAfterPaint(this.store, blacklistSearchPattern(type))
     }
 }

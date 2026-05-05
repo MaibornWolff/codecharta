@@ -1,7 +1,8 @@
 import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CcState, CodeMapNode } from "../../../codeCharta.model"
 import { addBlacklistItem, removeBlacklistItem } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 import { MatButton } from "@angular/material/button"
 
 @Component({
@@ -13,10 +14,11 @@ import { MatButton } from "@angular/material/button"
 export class FlattenButtonsComponent {
     @Input() codeMapNode: Pick<CodeMapNode, "path" | "type" | "isFlattened">
 
-    constructor(private readonly store: Store) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     flattenNode() {
-        this.store.dispatch(
+        dispatchAfterPaint(
+            this.store,
             addBlacklistItem({
                 item: {
                     path: this.codeMapNode.path,
@@ -28,7 +30,8 @@ export class FlattenButtonsComponent {
     }
 
     unFlattenNode() {
-        this.store.dispatch(
+        dispatchAfterPaint(
+            this.store,
             removeBlacklistItem({
                 item: {
                     path: this.codeMapNode.path,

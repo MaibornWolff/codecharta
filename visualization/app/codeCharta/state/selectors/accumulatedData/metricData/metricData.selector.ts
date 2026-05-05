@@ -1,12 +1,12 @@
 import { createSelector } from "@ngrx/store"
-import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
+import { blacklistMatcherSelector } from "../../../store/fileSettings/blacklist/blacklistMatcher.selector"
 import { visibleFileStatesSelector } from "../../visibleFileStates/visibleFileStates.selector"
 import { calculateEdgeMetricData } from "./edgeMetricData.calculator"
 import { calculateNodeMetricData } from "./nodeMetricData.calculator"
 
-export const metricDataSelector = createSelector(visibleFileStatesSelector, blacklistSelector, (visibleFileStates, blacklist) => {
+export const metricDataSelector = createSelector(visibleFileStatesSelector, blacklistMatcherSelector, (visibleFileStates, matcher) => {
     return {
-        nodeMetricData: calculateNodeMetricData(visibleFileStates, blacklist),
-        ...calculateEdgeMetricData(visibleFileStates, blacklist)
+        nodeMetricData: calculateNodeMetricData(visibleFileStates, matcher),
+        ...calculateEdgeMetricData(visibleFileStates, matcher)
     }
 })

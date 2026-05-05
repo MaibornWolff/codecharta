@@ -12,6 +12,7 @@ import {
 } from "../../../../services/3DExports/3DPreview/preview3DPrintMesh"
 import { calculateNodeMetricData } from "../../../../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { createBlacklistMatcher } from "../../../../util/codeMapHelper"
 import { FileDownloader } from "../../../../util/fileDownloader"
 import { FileNameHelper } from "../../../../util/fileNameHelper"
 import { metricTitles } from "../../../../util/metric/metricTitles"
@@ -104,7 +105,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
 
         const visibleFileStates = getVisibleFileStates(this.stateAccessStore.getFiles())
         const blacklist = this.stateAccessStore.getBlacklist()
-        const nodeMetricData = calculateNodeMetricData(visibleFileStates, blacklist)
+        const nodeMetricData = calculateNodeMetricData(visibleFileStates, createBlacklistMatcher(blacklist))
         this.nodeMetricData = nodeMetricData.filter(
             metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
         )

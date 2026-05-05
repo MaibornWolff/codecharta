@@ -1,13 +1,13 @@
 import { hierarchy } from "d3-hierarchy"
-import { BlacklistItem, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
+import { Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
-import { isPathBlacklisted } from "../../../../util/codeMapHelper"
+import { BlacklistMatcher } from "../../../../util/codeMapHelper"
 import { sortByMetricName } from "./sortByMetricName"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 
-export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklist: BlacklistItem[]) {
+export function calculateEdgeMetricData(visibleFileStates: FileState[], matcher: BlacklistMatcher) {
     const nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 
     const allFilePaths: Set<string> = new Set()
@@ -20,7 +20,7 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], blacklis
 
     for (const fileState of visibleFileStates) {
         for (const edge of fileState.file.settings.fileSettings.edges) {
-            if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
+            if (bothNodesAssociatedAreVisible(edge, allFilePaths, matcher)) {
                 // TODO: We likely only need the attributes once per file.
                 for (const edgeMetric of Object.keys(edge.attributes)) {
                     const edgeMetricEntry = updateEntryForMetric(nodeEdgeMetricsMap, edgeMetric)
@@ -48,9 +48,9 @@ export function calculateNodePath(visibleFiles: number, fileState: FileState, no
     return nodeName
 }
 
-function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]) {
+function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, matcher: BlacklistMatcher) {
     if (filePaths.has(edge.fromNodeName) && filePaths.has(edge.toNodeName)) {
-        return !isPathBlacklisted(edge.fromNodeName, blacklist, "exclude") && !isPathBlacklisted(edge.toNodeName, blacklist, "exclude")
+        return !matcher.isExcluded(edge.fromNodeName) && !matcher.isExcluded(edge.toNodeName)
     }
     return false
 }

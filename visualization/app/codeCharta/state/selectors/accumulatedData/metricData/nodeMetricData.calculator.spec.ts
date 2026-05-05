@@ -1,5 +1,6 @@
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { clone } from "../../../../util/clone"
+import { createBlacklistMatcher } from "../../../../util/codeMapHelper"
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../../../util/dataMocks"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
 import { UNARY_METRIC, calculateNodeMetricData } from "./nodeMetricData.calculator"
@@ -24,7 +25,7 @@ describe("nodeMetricDataCalculator", () => {
             { maxValue: 1, minValue: 1, name: UNARY_METRIC, values: undefined }
         ]
 
-        const result = calculateNodeMetricData([fileState], [])
+        const result = calculateNodeMetricData([fileState], createBlacklistMatcher([]))
 
         expect(result).toEqual(expected)
     })
@@ -37,13 +38,13 @@ describe("nodeMetricDataCalculator", () => {
             { maxValue: 1, minValue: 1, name: UNARY_METRIC, values: undefined }
         ]
 
-        const result = calculateNodeMetricData([fileState], [{ path: "root/big leaf", type: "exclude" }])
+        const result = calculateNodeMetricData([fileState], createBlacklistMatcher([{ path: "root/big leaf", type: "exclude" }]))
 
         expect(result).toEqual(expected)
     })
 
     it("should always add unary metric if it's not included yet", () => {
-        const result = calculateNodeMetricData([fileState], [])
+        const result = calculateNodeMetricData([fileState], createBlacklistMatcher([]))
 
         expect(result.filter(x => x.name === UNARY_METRIC)).toHaveLength(1)
     })
@@ -51,13 +52,13 @@ describe("nodeMetricDataCalculator", () => {
     it("should not add unary metric a second time if the cc.json already contains unary", () => {
         fileState.file.map = VALID_NODE_WITH_ROOT_UNARY
 
-        const result = calculateNodeMetricData([fileState], [])
+        const result = calculateNodeMetricData([fileState], createBlacklistMatcher([]))
 
         expect(result.filter(x => x.name === UNARY_METRIC).length).toBe(1)
     })
 
     it("should return empty metricData when there are no files selected. If it would contain default metrics someone might falsely assume all parsing was already done", () => {
-        const result = calculateNodeMetricData([], [])
+        const result = calculateNodeMetricData([], createBlacklistMatcher([]))
         expect(result.length).toBe(0)
     })
 })

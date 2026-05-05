@@ -11,6 +11,7 @@ import { accumulatedDataSelector } from "../../selectors/accumulatedData/accumul
 import { actionsRequiringRerender } from "./actionsRequiringRerender"
 import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { clearPendingHeavyDispatch } from "../../../util/dispatchAfterPaint"
 
 export const maxFPS = 1000 / 60
 
@@ -36,6 +37,7 @@ export class RenderCodeMapEffect {
                     this.codeMapRenderService.render(accumulatedData.unifiedMapNode)
                     this.codeMapRenderService.scaleMap()
                     this.threeRendererService.render()
+                    clearPendingHeavyDispatch()
                 }),
                 share()
             ),

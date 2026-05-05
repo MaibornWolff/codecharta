@@ -9,6 +9,7 @@ import { removeBlacklistItems } from "../../state/store/fileSettings/blacklist/b
 import { combineLatest, map, Observable, take } from "rxjs"
 import { hoveredNodeSelector } from "../../state/selectors/hoveredNode.selector"
 import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
+import { dispatchAfterPaint } from "../../util/dispatchAfterPaint"
 
 export function addPrefixWildcard(extension: string) {
     return `*.${extension}`
@@ -67,21 +68,21 @@ export class BlackListExtensionService {
             const flattenedItemsMap = this.createFlattenedItemsMap(ctx.flattenedItems)
             const itemsToRemove = extensionPatterns.map(pattern => flattenedItemsMap.get(pattern))
 
-            this.store.dispatch(removeBlacklistItems({ items: itemsToRemove }))
+            dispatchAfterPaint(this.store, removeBlacklistItems({ items: itemsToRemove }))
         })
     }
 
     exclude(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
             const extensionPatterns = buildGlobPatterns(fileExtension, ctx.distribution, ctx.node)
-            this.store.dispatch(blacklistExtensionsPattern("exclude", ...extensionPatterns))
+            dispatchAfterPaint(this.store, blacklistExtensionsPattern("exclude", ...extensionPatterns))
         })
     }
 
     flatten(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
             const extensionPatterns = buildGlobPatterns(fileExtension, ctx.distribution, ctx.node)
-            this.store.dispatch(blacklistExtensionsPattern("flatten", ...extensionPatterns))
+            dispatchAfterPaint(this.store, blacklistExtensionsPattern("flatten", ...extensionPatterns))
         })
     }
 
