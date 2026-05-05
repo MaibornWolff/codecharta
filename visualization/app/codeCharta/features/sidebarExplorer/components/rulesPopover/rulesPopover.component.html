@@ -20,10 +20,12 @@
     @if (rules().length === 0) {
         <div class="text-xs opacity-60 px-2 py-3">No rules</div>
     } @else {
-        <div role="list" class="flex flex-col max-h-[60vh] overflow-y-auto">
+        <ul class="flex flex-col max-h-[60vh] overflow-y-auto m-0 p-0 list-none">
             @for (rule of rules(); track rule.item.path) {
-                <cc-rule-row [item]="rule.item" [affectedCount]="rule.affectedCount" [kind]="rule.kind"></cc-rule-row>
+                <li>
+                    <cc-rule-row [item]="rule.item" [affectedCount]="rule.affectedCount" [kind]="rule.kind"></cc-rule-row>
+                </li>
             }
-        </div>
+        </ul>
     }
 </div>

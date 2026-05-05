@@ -91,11 +91,13 @@ const buildRulesWithCount = (blacklist: BlacklistItem[], allLeaves: CodeMapNode[
     }
 
     return rulesWithStats
-        .map(({ item, count }) => ({
-            item,
-            affectedCount: count,
-            kind: (isPatternRule(item.path) ? "RULE" : "MANUAL") as "RULE" | "MANUAL"
-        }))
+        .map(
+            ({ item, count }): RuleWithCount => ({
+                item,
+                affectedCount: count,
+                kind: isPatternRule(item.path) ? "RULE" : "MANUAL"
+            })
+        )
         .sort((a, b) => a.item.path.localeCompare(b.item.path))
 }
 
