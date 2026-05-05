@@ -7,7 +7,7 @@ import { UploadFilesService } from "../../../features/navBar/facade"
 import { wait } from "../../../util/testUtils/wait"
 import { accumulatedDataSelector } from "../../selectors/accumulatedData/accumulatedData.selector"
 import { setInvertArea } from "../../store/appSettings/invertArea/invertArea.actions"
-import { maxFPS, RenderCodeMapEffect } from "./renderCodeMap.effect"
+import { LOADING_INDICATOR_QUIET_PERIOD_MS, maxFPS, RenderCodeMapEffect } from "./renderCodeMap.effect"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
@@ -60,9 +60,16 @@ describe("renderCodeMapEffect", () => {
         expect(codeMapRenderService.scaleMap).toHaveBeenCalledTimes(1)
     })
 
-    it("should remove loading indicators after render", async () => {
+    it("should remove loading indicators after a quiet period following the render", async () => {
         actions$.next(setInvertArea({ value: true }))
+        // Right after the render the indicators must NOT be dismissed yet — the debounce keeps them
+        // up until the burst of late renders (blacklist apply, autoFit) settles.
         await wait(maxFPS)
+        expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
+        expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+
+        // After the quiet period elapses, the indicators are dismissed.
+        await wait(LOADING_INDICATOR_QUIET_PERIOD_MS + maxFPS)
         expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
         expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
     })
@@ -73,7 +80,7 @@ describe("renderCodeMapEffect", () => {
 
         // Act
         actions$.next(setInvertArea({ value: true }))
-        await wait(maxFPS)
+        await wait(LOADING_INDICATOR_QUIET_PERIOD_MS + maxFPS)
 
         // Assert
         expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
@@ -84,7 +91,7 @@ describe("renderCodeMapEffect", () => {
         const uploadFileService = TestBed.inject(UploadFilesService)
         uploadFileService.isUploading = true
         actions$.next(setInvertArea({ value: true }))
-        await wait(maxFPS)
+        await wait(LOADING_INDICATOR_QUIET_PERIOD_MS + maxFPS)
         expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
         expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
     })

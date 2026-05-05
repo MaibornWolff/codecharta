@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
-import { asyncScheduler, combineLatest, filter, share, tap, throttleTime } from "rxjs"
+import { asyncScheduler, combineLatest, debounceTime, filter, share, tap, throttleTime } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
@@ -14,6 +14,7 @@ import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingM
 import { clearPendingHeavyDispatch } from "../../../util/dispatchAfterPaint"
 
 export const maxFPS = 1000 / 60
+export const LOADING_INDICATOR_QUIET_PERIOD_MS = 350
 
 @Injectable()
 export class RenderCodeMapEffect {
@@ -48,6 +49,9 @@ export class RenderCodeMapEffect {
         () =>
             this.renderCodeMap$.pipe(
                 filter(() => !this.uploadFilesService.isUploading && !this.scenariosFacade.isApplying),
+                // Wait for the burst of late-arriving renders (blacklist apply, autoFit) to settle
+                // before hiding the spinner, otherwise the user sees the map jump after the spinner clears.
+                debounceTime(LOADING_INDICATOR_QUIET_PERIOD_MS),
                 tap(() => {
                     this.store.dispatch(setIsLoadingFile({ value: false }))
                     this.store.dispatch(setIsLoadingMap({ value: false }))
