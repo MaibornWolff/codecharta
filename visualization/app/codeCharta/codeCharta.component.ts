@@ -4,6 +4,7 @@ import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFi
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { NavBarComponent } from "./features/navBar/facade"
 import { BottomBarComponent } from "./features/bottomBar/facade"
+import { SidebarExplorerComponent } from "./features/sidebarExplorer/facade"
 import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBar.component"
 import { RibbonBarComponent } from "./ui/ribbonBar/ribbonBar.component"
 import { CodeMapComponent } from "./ui/codeMap/codeMap.component"
@@ -19,6 +20,7 @@ import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.compo
         NavBarComponent,
         FileExtensionBarComponent,
         RibbonBarComponent,
+        SidebarExplorerComponent,
         CodeMapComponent,
         LegendPanelComponent,
         LoadingFileProgressSpinnerComponent,

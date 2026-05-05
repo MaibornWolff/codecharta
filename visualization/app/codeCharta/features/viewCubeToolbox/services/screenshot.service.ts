@@ -80,7 +80,8 @@ export class ScreenshotService {
             "cc-file-extension-bar",
             "cc-attribute-side-bar",
             "cc-loading-file-progess-spinner",
-            "cc-bottom-bar"
+            "cc-bottom-bar",
+            "cc-sidebar-explorer"
         ])
 
         const idsToIgnore = new Set(["legend-panel-button"])

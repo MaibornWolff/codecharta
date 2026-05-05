@@ -1,0 +1,22 @@
+<span
+    class="text-[10px] uppercase tracking-wide font-semibold border rounded px-1.5 py-0.5 shrink-0"
+    [class.border-primary]="kind() === 'RULE'"
+    [class.text-primary]="kind() === 'RULE'"
+    [class.border-warning]="kind() === 'MANUAL'"
+    [class.text-warning]="kind() === 'MANUAL'"
+>
+    {{ kind() }}
+</span>
+<span class="flex-1 truncate text-xs font-mono" [title]="item().path">{{ item().path }}</span>
+<span class="text-xs font-semibold bg-neutral text-neutral-content rounded px-1.5 py-0.5 shrink-0 min-w-[1.5rem] text-center">
+    {{ affectedCount() }}
+</span>
+<button
+    type="button"
+    class="btn btn-ghost btn-xs btn-square shrink-0"
+    (click)="remove()"
+    [title]="'Remove rule ' + item().path"
+    data-testid="rule-row-remove-button"
+>
+    <i class="fa fa-times"></i>
+</button>

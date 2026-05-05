@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store"
 import { filter, map, share, tap } from "rxjs"
 import { BlacklistType, CcState } from "../../../codeCharta.model"
 import { addBlacklistItems } from "../../store/fileSettings/blacklist/blacklist.actions"
-import { parseBlacklistItems } from "../../../ui/ribbonBar/searchPanel/searchBar/utils/parseBlacklistItems"
+import { parseBlacklistItems } from "../../../util/blacklist/parseBlacklistItems"
 
 const ACTION_IDENTIFIER = "BlacklistExtensionAction"
 

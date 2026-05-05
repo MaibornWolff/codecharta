@@ -1,0 +1,45 @@
+@if (!node().isExcluded) {
+    <div class="tree-element-{{ depth() }} {{ isLeafNode() ? 'tree-leaf' : 'tree-parent' }}">
+        <div
+            id="{{ node().path }}"
+            class="tree-element-label-{{ depth() }} tree-element-label flex items-center px-1 py-0.5 cursor-pointer"
+            [class.hovered]="isHovered()"
+            [class.bg-base-200]="isHovered() && !isSelected()"
+            [class.marked]="isMarked()"
+            [class.selected]="isSelected()"
+            [class.font-semibold]="isSelected()"
+            [class.ring-2]="isMarked()"
+            [class.ring-primary]="isMarked()"
+            [ngClass]="{ 'bg-error/20': isSelected() }"
+            (mouseenter)="onMouseEnter()"
+            (mouseleave)="onMouseLeave()"
+            (click)="onClick()"
+            (contextmenu)="openNodeContextMenu($event)"
+            [title]="isAreaMetricValid() ? '' : 'No Node Area for Chosen Metric'"
+        >
+            <cc-explorer-tree-item-icon [node]="node()" [isOpen]="isOpen()"></cc-explorer-tree-item-icon>
+            <cc-explorer-tree-item-name
+                class="ml-1 flex-1 truncate"
+                [node]="node()"
+                [isUnclickable]="isUnclickable()"
+            ></cc-explorer-tree-item-name>
+            @if (node().isFlattened) {
+                <i class="fa fa-eye-slash text-xs opacity-60 ml-1 shrink-0" title="Flattened"></i>
+            }
+            @if (!isLeafNode() && node().attributes.unary != null) {
+                <span class="text-xs opacity-60 ml-2 shrink-0 tabular-nums">
+                    {{ unaryPercentage() }}% / {{ unaryDisplay() }}
+                </span>
+            }
+        </div>
+        <div class="tree-element-children tree-element-children-{{ depth() }} pl-3">
+            @if (isOpen()) {
+                @for (childNode of children(); track childNode.path) {
+                    <div>
+                        <cc-explorer-tree-level [node]="childNode" [depth]="depth() + 1"></cc-explorer-tree-level>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}

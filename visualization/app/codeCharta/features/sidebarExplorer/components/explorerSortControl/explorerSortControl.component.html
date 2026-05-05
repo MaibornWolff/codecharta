@@ -1,0 +1,34 @@
+<div class="dropdown dropdown-start w-full px-2 mt-2">
+    <div
+        tabindex="0"
+        role="button"
+        class="btn btn-ghost btn-sm w-full justify-between normal-case font-normal"
+        [title]="'Sort: ' + currentOption()"
+    >
+        <span class="flex items-center gap-1">
+            <i class="fa fa-bars text-[10px] opacity-60"></i>
+            <span class="text-xs">{{ currentOption() }}</span>
+            <i class="fa text-[10px]" [class.fa-arrow-up]="isAscending()" [class.fa-arrow-down]="!isAscending()"></i>
+        </span>
+        <i class="fa fa-chevron-down text-[10px] opacity-60"></i>
+    </div>
+    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-20 w-full mx-2 p-2 shadow">
+        @for (option of sortOptions; track option) {
+            <li>
+                <button
+                    type="button"
+                    [class.font-semibold]="option === currentOption()"
+                    (click)="setSortingOption(option)"
+                >
+                    {{ option }}
+                </button>
+            </li>
+        }
+        <li class="border-t border-base-300 mt-1 pt-1">
+            <button type="button" (click)="toggleSortOrder()">
+                <i class="fa" [class.fa-arrow-up]="!isAscending()" [class.fa-arrow-down]="isAscending()"></i>
+                {{ isAscending() ? "Sort descending" : "Sort ascending" }}
+            </button>
+        </li>
+    </ul>
+</div>

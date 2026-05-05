@@ -375,7 +375,7 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.dynamicSettings, defaultDynamicSettings))
         })
 
-        it("should set all differing  except sortingOrderAscending and isSearchPanelPinned", async () => {
+        it("should set all differing except sortingOrderAscending", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
             jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
             jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
@@ -391,7 +391,7 @@ describe("LoadInitialFileService", () => {
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
-            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.appSettings, defaultAppSettings) - 2)
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.appSettings, defaultAppSettings) - 1)
         })
     })
 })

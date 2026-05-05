@@ -381,7 +381,6 @@ export class LoadInitialFileService {
                 this.store.dispatch(setIsLoadingFile({ value }))
                 break
             case "sortingOrderAscending":
-            case "isSearchPanelPinned":
                 // ignore settings for the file-explorer
                 break
             case "showMetricLabelNameValue":

@@ -36,7 +36,6 @@ import {
     defaultIsColorMetricLinkedToHeightMetric,
     isColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
-import { defaultIsSearchPanelPinned, isSearchPanelPinned } from "./isSearchPanelPinned/isSearchPanelPinned.reducer"
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
 import { defaultLabelMode, labelMode } from "./labelMode/labelMode.reducer"
 import { defaultGroupLabelCollisions, groupLabelCollisions } from "./groupLabelCollisions/groupLabelCollisions.reducer"
@@ -49,7 +48,6 @@ export const appSettings = combineReducers({
     showMetricLabelNodeName,
     showMetricLabelNameValue,
     sortingOrderAscending,
-    isSearchPanelPinned,
     isLoadingFile,
     isLoadingMap,
     mapColors,
@@ -84,7 +82,6 @@ export const defaultAppSettings = {
     showMetricLabelNodeName: defaultShowMetricLabelNodeName,
     showMetricLabelNameValue: defaultShowMetricLabelNameValue,
     sortingOrderAscending: defaultSortingOrderAscending,
-    isSearchPanelPinned: defaultIsSearchPanelPinned,
     isLoadingFile: defaultIsLoadingFile,
     isLoadingMap: defaultIsLoadingMap,
     mapColors: defaultMapColors,

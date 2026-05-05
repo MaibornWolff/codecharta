@@ -4,7 +4,6 @@ import { map } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
-import { SearchPanelComponent } from "./searchPanel/searchPanel.component"
 import { RibbonBarPanelComponent } from "./ribbonBarPanel/ribbonBarPanel.component"
 import { ScenariosPanelComponent } from "../../features/scenarios/components/scenariosPanel/scenariosPanel.component"
 import { AreaMetricChooserComponent } from "./areaMetricChooser/areaMetricChooser.component"
@@ -26,7 +25,6 @@ import { AsyncPipe } from "@angular/common"
     templateUrl: "./ribbonBar.component.html",
     styleUrls: ["./ribbonBar.component.scss"],
     imports: [
-        SearchPanelComponent,
         RibbonBarPanelComponent,
         ScenariosPanelComponent,
         AreaMetricChooserComponent,

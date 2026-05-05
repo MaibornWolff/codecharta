@@ -161,7 +161,6 @@ export interface AppSettings {
     isLoadingMap: boolean
     isLoadingFile: boolean
     sortingOrderAscending: boolean
-    isSearchPanelPinned: boolean
     showMetricLabelNameValue: boolean
     showMetricLabelNodeName: boolean
     layoutAlgorithm: LayoutAlgorithm

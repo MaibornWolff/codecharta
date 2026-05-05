@@ -52,7 +52,7 @@ export class NodeContextMenuService {
         document.removeEventListener("mousedown", this.onRightClickHideNodeContextMenu, true)
         document.getElementById("codeMap").removeEventListener("wheel", this.close, true)
 
-        this.store.dispatch(setRightClickedNodeData(null))
+        this.store.dispatch(setRightClickedNodeData({ value: null }))
 
         if (this.overlayReference) {
             this.resetOverlay()

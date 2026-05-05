@@ -1,0 +1,29 @@
+<div
+    class="dropdown p-2 rounded-box bg-base-100 shadow-lg w-80"
+    popover
+    #popover
+    [id]="popoverId()"
+    [style.position-anchor]="'--' + anchorName()"
+>
+    <div class="flex items-center justify-between border-b border-base-300 pb-1 mb-1">
+        <span class="text-sm font-semibold uppercase tracking-wide">{{ title() }}</span>
+        <button
+            type="button"
+            class="btn btn-ghost btn-xs btn-square"
+            (click)="closePopover()"
+            title="Close"
+            data-testid="rules-popover-close-button"
+        >
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    @if (rules().length === 0) {
+        <div class="text-xs opacity-60 px-2 py-3">No rules</div>
+    } @else {
+        <div role="list" class="flex flex-col max-h-[60vh] overflow-y-auto">
+            @for (rule of rules(); track rule.item.path) {
+                <cc-rule-row [item]="rule.item" [affectedCount]="rule.affectedCount" [kind]="rule.kind"></cc-rule-row>
+            }
+        </div>
+    }
+</div>
