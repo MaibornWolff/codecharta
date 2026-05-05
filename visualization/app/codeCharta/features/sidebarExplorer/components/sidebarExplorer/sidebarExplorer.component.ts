@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
+import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerHeaderComponent } from "../explorerHeader/explorerHeader.component"
 import { ExplorerSearchBarComponent } from "../explorerSearchBar/explorerSearchBar.component"
 import { ExplorerSortControlComponent } from "../explorerSortControl/explorerSortControl.component"
@@ -18,7 +19,17 @@ import { RulesPopoverComponent } from "../rulesPopover/rulesPopover.component"
     ],
     host: {
         class: "fixed left-0 w-72 bg-base-100 overflow-hidden flex flex-col shadow-[2px_0_8px_-2px_rgba(0,0,0,0.15)]",
-        style: "top: var(--cc-bars-height, 98px); height: calc(100vh - var(--cc-bars-height, 98px))"
+        "[class.rounded-br-md]": "isCollapsed()",
+        "[style.top]": "'var(--cc-bars-height, 98px)'",
+        "[style.height]": "isCollapsed() ? 'auto' : 'calc(100vh - var(--cc-bars-height, 98px))'"
     }
 })
-export class SidebarExplorerComponent {}
+export class SidebarExplorerComponent {
+    private readonly collapseService = inject(ExplorerCollapseService)
+
+    readonly isCollapsed = this.collapseService.isCollapsed
+
+    toggle() {
+        this.collapseService.toggle()
+    }
+}

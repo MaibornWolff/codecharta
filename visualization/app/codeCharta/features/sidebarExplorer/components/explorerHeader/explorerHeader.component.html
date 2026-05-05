@@ -1,5 +1,14 @@
-<div class="flex items-center px-2 py-2 border-b border-base-300">
+<div class="flex items-center justify-between px-2 py-2 border-b border-base-300">
     <span class="text-xs font-semibold uppercase tracking-wide">Explorer</span>
+    <button
+        type="button"
+        class="btn btn-ghost btn-xs btn-square"
+        (click)="collapse()"
+        title="Collapse explorer"
+        data-testid="explorer-collapse-button"
+    >
+        <i class="fa fa-angle-double-left"></i>
+    </button>
 </div>
 
 <div class="flex items-stretch border border-base-300 mx-2 mt-2 rounded-md overflow-hidden divide-x divide-base-300">

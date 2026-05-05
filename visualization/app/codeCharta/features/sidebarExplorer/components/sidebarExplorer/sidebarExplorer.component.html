@@ -1,8 +1,23 @@
-<cc-explorer-header></cc-explorer-header>
-<cc-explorer-search-bar></cc-explorer-search-bar>
-<cc-explorer-sort-control></cc-explorer-sort-control>
-<div id="explorer-scroll" class="flex-1 overflow-auto px-1 py-1">
-    <cc-explorer-tree></cc-explorer-tree>
-</div>
-<cc-rules-popover kind="flatten" popoverId="explorer-flatten-rules" anchorName="explorer-flat-chip"></cc-rules-popover>
-<cc-rules-popover kind="exclude" popoverId="explorer-hidden-rules" anchorName="explorer-hidden-chip"></cc-rules-popover>
+@if (isCollapsed()) {
+    <div class="flex items-center gap-1 px-2 py-1">
+        <button
+            type="button"
+            class="btn btn-ghost btn-sm btn-square"
+            (click)="toggle()"
+            title="Expand explorer"
+            data-testid="explorer-expand-button"
+        >
+            <i class="fa-solid fa-folder-tree"></i>
+        </button>
+        <cc-explorer-search-bar class="flex-1"></cc-explorer-search-bar>
+    </div>
+} @else {
+    <cc-explorer-header></cc-explorer-header>
+    <cc-explorer-search-bar></cc-explorer-search-bar>
+    <cc-explorer-sort-control></cc-explorer-sort-control>
+    <div id="explorer-scroll" class="flex-1 overflow-auto px-1 py-1">
+        <cc-explorer-tree></cc-explorer-tree>
+    </div>
+    <cc-rules-popover kind="flatten" popoverId="explorer-flatten-rules" anchorName="explorer-flat-chip"></cc-rules-popover>
+    <cc-rules-popover kind="exclude" popoverId="explorer-hidden-rules" anchorName="explorer-hidden-chip"></cc-rules-popover>
+}
