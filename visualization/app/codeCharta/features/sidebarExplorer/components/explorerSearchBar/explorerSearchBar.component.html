@@ -21,36 +21,51 @@
         }
     </label>
 
-    <div class="dropdown dropdown-end">
-        <button type="button" tabindex="0" class="btn btn-ghost btn-sm btn-square" title="Add to Blacklist">
-            <i class="fa fa-ellipsis-v"></i>
-        </button>
-        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-44 p-2 shadow">
-            @if (isSearchPatternEmpty()) {
-                <li class="px-2 py-1 text-xs opacity-60">Enter a pattern to enable Flatten/Exclude</li>
-            }
-            <li>
-                <button
-                    type="button"
-                    data-testid="search-bar-flatten-button"
-                    [disabled]="isFlattenPatternDisabled()"
-                    (click)="flattenPattern()"
-                >
-                    <i class="fa fa-eye-slash"></i>
-                    Flatten
-                </button>
-            </li>
-            <li>
-                <button
-                    type="button"
-                    data-testid="search-bar-exclude-button"
-                    [disabled]="isExcludePatternDisabled()"
-                    (click)="excludePattern()"
-                >
-                    <i class="fa fa-ban"></i>
-                    Exclude
-                </button>
-            </li>
-        </ul>
-    </div>
+    <button
+        type="button"
+        class="btn btn-ghost btn-sm btn-square"
+        popovertarget="explorer-search-actions"
+        style="anchor-name: --explorer-search-actions"
+        title="Add to Blacklist"
+        data-testid="search-bar-actions-trigger"
+    >
+        <i class="fa fa-ellipsis-v"></i>
+    </button>
+
+    <ul
+        popover
+        id="explorer-search-actions"
+        style="position-anchor: --explorer-search-actions"
+        class="dropdown menu bg-base-100 rounded-box w-44 p-2 shadow-lg"
+    >
+        @if (isSearchPatternEmpty()) {
+            <li class="px-2 py-1 text-xs opacity-60">Enter a pattern to enable Flatten/Exclude</li>
+        }
+        <li>
+            <button
+                type="button"
+                data-testid="search-bar-flatten-button"
+                popovertarget="explorer-search-actions"
+                popovertargetaction="hide"
+                [disabled]="isFlattenPatternDisabled()"
+                (click)="flattenPattern()"
+            >
+                <i class="fa fa-eye-slash"></i>
+                Flatten
+            </button>
+        </li>
+        <li>
+            <button
+                type="button"
+                data-testid="search-bar-exclude-button"
+                popovertarget="explorer-search-actions"
+                popovertargetaction="hide"
+                [disabled]="isExcludePatternDisabled()"
+                (click)="excludePattern()"
+            >
+                <i class="fa fa-ban"></i>
+                Exclude
+            </button>
+        </li>
+    </ul>
 </div>

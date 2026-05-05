@@ -1,8 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { defaultState } from "../../../../state/store/state.manager"
 import { explorerCountsSelector } from "../../selectors/sidebarExplorer.selectors"
+import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerHeaderComponent } from "./explorerHeader.component"
 
 describe("ExplorerHeaderComponent", () => {
@@ -52,5 +54,18 @@ describe("ExplorerHeaderComponent", () => {
         expect(shownChip.querySelector("[popovertarget]")).toBe(null)
         expect(flattenedChip.querySelector("[popovertarget='explorer-flatten-rules']")).not.toBe(null)
         expect(hiddenChip.querySelector("[popovertarget='explorer-hidden-rules']")).not.toBe(null)
+    })
+
+    it("should toggle the ExplorerCollapseService when the collapse button is clicked", async () => {
+        // Arrange
+        await render(ExplorerHeaderComponent)
+        const collapseService = TestBed.inject(ExplorerCollapseService)
+        expect(collapseService.isCollapsed()).toBe(false)
+
+        // Act
+        await userEvent.click(screen.getByTestId("explorer-collapse-button"))
+
+        // Assert
+        expect(collapseService.isCollapsed()).toBe(true)
     })
 })
