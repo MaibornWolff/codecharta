@@ -1,15 +1,16 @@
 import { createSelector } from "@ngrx/store"
 import { visibleFileStatesSelector } from "../../visibleFileStates/visibleFileStates.selector"
-import { blacklistSelector } from "../../../store/fileSettings/blacklist/blacklist.selector"
+import { blacklistMatcherSelector } from "../../../store/fileSettings/blacklist/blacklistMatcher.selector"
 import { calculateEdgeMetricData, EdgeMetricCountMap, NodeEdgeMetricsMap } from "./edgeMetricData.calculator"
 import { FileState } from "../../../../model/files/files"
-import { BlacklistItem, EdgeMetricCount } from "../../../../codeCharta.model"
+import { EdgeMetricCount } from "../../../../codeCharta.model"
+import { BlacklistMatcher } from "../../../../util/codeMapHelper"
 import { showIncomingEdgesSelector } from "../../../store/appSettings/showEdges/incoming/showIncomingEdges.selector"
 import { showOutgoingEdgesSelector } from "../../../store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
 
 export const sortedNodeEdgeMetricsMapSelector = createSelector(
     visibleFileStatesSelector,
-    blacklistSelector,
+    blacklistMatcherSelector,
     showIncomingEdgesSelector,
     showOutgoingEdgesSelector,
     sortNodeEdgeMetricsMap
@@ -17,11 +18,11 @@ export const sortedNodeEdgeMetricsMapSelector = createSelector(
 
 function sortNodeEdgeMetricsMap(
     visibleFileStates: FileState[],
-    blacklist: BlacklistItem[],
+    matcher: BlacklistMatcher,
     showIncomingEdges: boolean,
     showOutgoingEdges: boolean
 ): NodeEdgeMetricsMap {
-    const { nodeEdgeMetricsMap } = calculateEdgeMetricData(visibleFileStates, blacklist)
+    const { nodeEdgeMetricsMap } = calculateEdgeMetricData(visibleFileStates, matcher)
 
     const noEdgesAreShown = !showIncomingEdges && !showOutgoingEdges
     if (noEdgesAreShown) {

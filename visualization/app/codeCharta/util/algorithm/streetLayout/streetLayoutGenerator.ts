@@ -6,21 +6,27 @@ import House from "./house"
 import TreeMap from "./treeMap"
 import { Vector2 } from "three"
 import { StreetOrientation } from "./street"
-import { getMapResolutionScaleFactor, isLeaf, isPathBlacklisted } from "../../codeMapHelper"
+import { BlacklistMatcher, getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
 import { treeMapSize } from "../treeMapLayout/treeMapHelper"
 
 const MARGIN_SCALING_FACTOR = 0.02
 export class StreetLayoutGenerator {
-    static createStreetLayoutNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
+    static createStreetLayoutNodes(
+        map: CodeMapNode,
+        state: CcState,
+        metricData: NodeMetricData[],
+        matcher: BlacklistMatcher,
+        isDeltaState: boolean
+    ): Node[] {
         const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
         const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
 
         const metricName = state.dynamicSettings.areaMetric
         const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
         const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
-        const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 1, maxTreeMapFiles)
+        const childBoxes = this.createBoxes(mergedMap, metricName, state, matcher, StreetOrientation.Vertical, 1, maxTreeMapFiles)
         const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
         rootStreet.calculateDimension(metricName)
         const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
@@ -41,6 +47,7 @@ export class StreetLayoutGenerator {
         node: CodeMapNode,
         metricName: string,
         state: CcState,
+        matcher: BlacklistMatcher,
         orientation: StreetOrientation,
         depth: number,
         maxTreeMapFiles: number
@@ -52,7 +59,7 @@ export class StreetLayoutGenerator {
                 children.push(new House(child))
                 continue
             }
-            if (isPathBlacklisted(child.path, state.fileSettings.blacklist, "exclude")) {
+            if (matcher.isExcluded(child.path)) {
                 continue
             }
 
@@ -67,6 +74,7 @@ export class StreetLayoutGenerator {
                     child,
                     metricName,
                     state,
+                    matcher,
                     1 - orientation,
                     depth + 1,
                     maxTreeMapFiles

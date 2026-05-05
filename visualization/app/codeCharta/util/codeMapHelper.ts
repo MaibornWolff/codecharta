@@ -56,6 +56,28 @@ export function returnIgnore(gitignorePath: string) {
     return { ignoredNodePaths, condition }
 }
 
+// Adds the patterns of a positive (non-negated) rule to an existing ignore engine.
+// Returns false if the rule is negated (`!`-prefix) so the caller knows it cannot be
+// merged into the combined engine and must keep a per-rule engine instead.
+// Mirrors the pattern-transformation logic of `returnIgnore`.
+export function addRulePatternsToEngine(engine: ReturnType<typeof ignore>, rulePath: string): boolean {
+    let path = transformPath(rulePath.trimStart())
+    if (path.startsWith("!")) {
+        return false
+    }
+    for (let p of path.split(",")) {
+        p = p.trimStart()
+        if (!p.startsWith("*") && !p.endsWith("*")) {
+            p = p.startsWith('"') && p.endsWith('"') ? p.slice(1, -1) : `*${p}*`
+        }
+        if (p.length === 0) {
+            continue
+        }
+        engine.add(transformPath(p))
+    }
+    return true
+}
+
 export function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>) {
     return isPathBlacklisted(path, blacklist, "exclude") || isPathBlacklisted(path, blacklist, "flatten")
 }
@@ -71,6 +93,28 @@ export function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>,
         }
     }
     return ig.ignores(transformPath(path))
+}
+
+export interface BlacklistMatcher {
+    isExcluded(path: string): boolean
+    isFlattened(path: string): boolean
+}
+
+export function createBlacklistMatcher(blacklist: BlacklistItem[]): BlacklistMatcher {
+    const flatten = ignore()
+    const exclude = ignore()
+    for (const entry of blacklist) {
+        const transformed = transformPath(entry.path)
+        if (entry.type === "flatten") {
+            flatten.add(transformed)
+        } else {
+            exclude.add(transformed)
+        }
+    }
+    return {
+        isExcluded: path => exclude.ignores(transformPath(path)),
+        isFlattened: path => flatten.ignores(transformPath(path))
+    }
 }
 
 export function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string | void {

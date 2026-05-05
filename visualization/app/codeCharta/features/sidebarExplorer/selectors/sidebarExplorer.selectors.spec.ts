@@ -1,4 +1,5 @@
 import { BlacklistItem, CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { createBlacklistMatcher } from "../../../util/codeMapHelper"
 import { _calculateExplorerCounts } from "./sidebarExplorer.selectors"
 
 const makeLeaf = (path: string, attributes: Record<string, number> = { unary: 1, rloc: 1 }): CodeMapNode => ({
@@ -24,7 +25,7 @@ describe("sidebarExplorer.selectors", () => {
             const searchedNodes: CodeMapNode[] = []
 
             // Act
-            const result = _calculateExplorerCounts(searchedNodes, blacklist, allLeaves, "rloc")
+            const result = _calculateExplorerCounts(searchedNodes, createBlacklistMatcher(blacklist), allLeaves, "rloc")
 
             // Assert
             expect(result).toEqual({ shown: 5, flattened: 0, hidden: 0, noArea: 0 })
@@ -35,7 +36,7 @@ describe("sidebarExplorer.selectors", () => {
             const blacklist: BlacklistItem[] = [{ type: "flatten", path: "*.spec.ts*" }]
 
             // Act
-            const result = _calculateExplorerCounts([], blacklist, allLeaves, "rloc")
+            const result = _calculateExplorerCounts([], createBlacklistMatcher(blacklist), allLeaves, "rloc")
 
             // Assert
             expect(result).toEqual({ shown: 3, flattened: 2, hidden: 0, noArea: 0 })
@@ -46,7 +47,7 @@ describe("sidebarExplorer.selectors", () => {
             const blacklist: BlacklistItem[] = [{ type: "exclude", path: "*test*" }]
 
             // Act
-            const result = _calculateExplorerCounts([], blacklist, allLeaves, "rloc")
+            const result = _calculateExplorerCounts([], createBlacklistMatcher(blacklist), allLeaves, "rloc")
 
             // Assert
             expect(result).toEqual({ shown: 3, flattened: 0, hidden: 2, noArea: 0 })
@@ -60,7 +61,7 @@ describe("sidebarExplorer.selectors", () => {
             ]
 
             // Act
-            const result = _calculateExplorerCounts([], blacklist, allLeaves, "rloc")
+            const result = _calculateExplorerCounts([], createBlacklistMatcher(blacklist), allLeaves, "rloc")
 
             // Assert
             expect(result).toEqual({ shown: 2, flattened: 2, hidden: 1, noArea: 0 })
@@ -76,7 +77,7 @@ describe("sidebarExplorer.selectors", () => {
             ]
 
             // Act
-            const result = _calculateExplorerCounts([], [], leaves, "rloc")
+            const result = _calculateExplorerCounts([], createBlacklistMatcher([]), leaves, "rloc")
 
             // Assert
             expect(result.shown).toBe(4)
@@ -89,7 +90,7 @@ describe("sidebarExplorer.selectors", () => {
             const blacklist: BlacklistItem[] = [{ type: "exclude", path: "*a*" }]
 
             // Act
-            const result = _calculateExplorerCounts([], blacklist, leaves, "rloc")
+            const result = _calculateExplorerCounts([], createBlacklistMatcher(blacklist), leaves, "rloc")
 
             // Assert
             expect(result.noArea).toBe(1)
@@ -97,7 +98,7 @@ describe("sidebarExplorer.selectors", () => {
 
         it("should return zero counts for empty file set", () => {
             // Arrange & Act
-            const result = _calculateExplorerCounts([], [], [], "rloc")
+            const result = _calculateExplorerCounts([], createBlacklistMatcher([]), [], "rloc")
 
             // Assert
             expect(result).toEqual({ shown: 0, flattened: 0, hidden: 0, noArea: 0 })
@@ -109,7 +110,7 @@ describe("sidebarExplorer.selectors", () => {
             const blacklist: BlacklistItem[] = [{ type: "flatten", path: "*alpha*" }]
 
             // Act
-            const result = _calculateExplorerCounts(searched, blacklist, allLeaves, "rloc")
+            const result = _calculateExplorerCounts(searched, createBlacklistMatcher(blacklist), allLeaves, "rloc")
 
             // Assert
             expect(result.shown).toBe(1)
@@ -129,7 +130,7 @@ describe("sidebarExplorer.selectors", () => {
             const searched = [folderNode, allLeaves[0]]
 
             // Act
-            const result = _calculateExplorerCounts(searched, [], allLeaves, "rloc")
+            const result = _calculateExplorerCounts(searched, createBlacklistMatcher([]), allLeaves, "rloc")
 
             // Assert
             expect(result.shown).toBe(1)

@@ -1,6 +1,7 @@
 import { hierarchy } from "d3-hierarchy"
+import ignore from "ignore"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
-import { isLeaf, isNodeExcludedOrFlattened } from "./codeMapHelper"
+import { addRulePatternsToEngine, isLeaf, returnIgnore, transformPath } from "./codeMapHelper"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 
 const enum MedianSelectors {
@@ -17,15 +18,39 @@ const enum EdgeAttributeType {
 
 export const NodeDecorator = {
     decorateMap(map: CodeMapNode, metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">, blacklist: BlacklistItem[]) {
+        const flattenCombined = ignore()
+        const excludeCombined = ignore()
+        let hasPosFlatten = false
+        let hasPosExclude = false
+        const negativeRules: { ignoredNodePaths: ReturnType<typeof returnIgnore>["ignoredNodePaths"]; type: BlacklistItem["type"] }[] = []
+
+        for (const item of blacklist) {
+            const target = item.type === "flatten" ? flattenCombined : excludeCombined
+            if (addRulePatternsToEngine(target, item.path)) {
+                if (item.type === "flatten") hasPosFlatten = true
+                else hasPosExclude = true
+            } else {
+                negativeRules.push({ ignoredNodePaths: returnIgnore(item.path).ignoredNodePaths, type: item.type })
+            }
+        }
+
         for (const { data } of hierarchy(map)) {
             data.isFlattened = false
             data.isExcluded = false
 
-            for (const item of blacklist) {
-                if (item.type === "flatten") {
-                    data.isFlattened = data.isFlattened || isNodeExcludedOrFlattened(data, item.path)
-                } else {
-                    data.isExcluded = data.isExcluded || (isNodeExcludedOrFlattened(data, item.path) && isLeaf(data))
+            const transformedPath = transformPath(data.path)
+            const isLeafNode = isLeaf(data)
+
+            if (hasPosFlatten && flattenCombined.ignores(transformedPath)) {
+                data.isFlattened = true
+            }
+            if (hasPosExclude && isLeafNode && excludeCombined.ignores(transformedPath)) {
+                data.isExcluded = true
+            }
+            for (const { ignoredNodePaths, type } of negativeRules) {
+                if (!ignoredNodePaths.ignores(transformedPath)) {
+                    if (type === "flatten") data.isFlattened = true
+                    else if (isLeafNode) data.isExcluded = true
                 }
             }
         }

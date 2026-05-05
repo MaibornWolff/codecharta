@@ -8,6 +8,7 @@ import { resultsInEmptyMap } from "./resultsInEmptyMap"
 import { ErrorDialogService } from "../../../ui/dialogs/errorDialog/errorDialog.service"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
+import { createBlacklistMatcher } from "../../../util/codeMapHelper"
 
 @Injectable()
 export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
@@ -22,7 +23,7 @@ export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {
         withLatestFrom(this.store.select(visibleFileStatesSelector), this.store.select(blacklistSelector)),
         map(([action, visibleFiles, blacklist]) => ({
             items: action.items,
-            resultsInEmptyMap: resultsInEmptyMap(visibleFiles, blacklist, action.items)
+            resultsInEmptyMap: resultsInEmptyMap(visibleFiles, createBlacklistMatcher([...blacklist, ...action.items]))
         })),
         share()
     )

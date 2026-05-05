@@ -2,6 +2,9 @@ import { calculateEdgeMetricData, calculateNodePath } from "./edgeMetricData.cal
 import { FILE_STATES, FILE_STATES_TWO_FILES, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
 import { FileState } from "../../../../model/files/files"
 import { clone } from "../../../../util/clone"
+import { createBlacklistMatcher } from "../../../../util/codeMapHelper"
+
+const emptyMatcher = createBlacklistMatcher([])
 
 describe("edgeMetricDataCalculator", () => {
     let fileStates: FileState[]
@@ -17,34 +20,34 @@ describe("edgeMetricDataCalculator", () => {
     })
 
     it("should create correct edge Metrics", () => {
-        const { edgeMetricData } = calculateEdgeMetricData(fileStates, [])
+        const { edgeMetricData } = calculateEdgeMetricData(fileStates, emptyMatcher)
 
         expect(edgeMetricData.map(x => x.name)).toContain("pairingRate")
         expect(edgeMetricData.map(x => x.name)).toContain("otherMetric")
     })
 
     it("should calculate correct maximum value for edge Metrics", () => {
-        const { edgeMetricData } = calculateEdgeMetricData(fileStates, [])
+        const { edgeMetricData } = calculateEdgeMetricData(fileStates, emptyMatcher)
 
         expect(edgeMetricData.find(x => x.name === "pairingRate").maxValue).toEqual(2)
         expect(edgeMetricData.find(x => x.name === "otherMetric").maxValue).toEqual(1)
     })
 
     it("should calculate correct maximum value for edge Metrics", () => {
-        const { edgeMetricData } = calculateEdgeMetricData(fileStates, [])
+        const { edgeMetricData } = calculateEdgeMetricData(fileStates, emptyMatcher)
 
         expect(edgeMetricData.find(x => x.name === "pairingRate").minValue).toEqual(1)
         expect(edgeMetricData.find(x => x.name === "otherMetric").minValue).toEqual(1)
     })
 
     it("should calculate correct values for edge Metrics", () => {
-        const { edgeMetricData } = calculateEdgeMetricData(fileStates, [])
+        const { edgeMetricData } = calculateEdgeMetricData(fileStates, emptyMatcher)
 
         expect(edgeMetricData.find(x => x.name === "pairingRate").values).toEqual([1, 2, 1])
     })
 
     it("should sort the metrics after calculating them", () => {
-        const { edgeMetricData } = calculateEdgeMetricData(fileStates, [])
+        const { edgeMetricData } = calculateEdgeMetricData(fileStates, emptyMatcher)
 
         expect(edgeMetricData).toHaveLength(3)
         expect(edgeMetricData[0].name).toBe("avgCommits")
@@ -53,7 +56,7 @@ describe("edgeMetricDataCalculator", () => {
     })
 
     it("should provide nodeEdgeMetricsMap", () => {
-        const { nodeEdgeMetricsMap } = calculateEdgeMetricData(fileStates, [])
+        const { nodeEdgeMetricsMap } = calculateEdgeMetricData(fileStates, emptyMatcher)
 
         const pairingRateMapKeys = [...nodeEdgeMetricsMap.get("pairingRate").keys()]
 
@@ -63,7 +66,7 @@ describe("edgeMetricDataCalculator", () => {
     })
 
     it("should provide nodeEdgeMetricsMap for multiple files", () => {
-        const { nodeEdgeMetricsMap } = calculateEdgeMetricData(fileStatesTwoFiles, [])
+        const { nodeEdgeMetricsMap } = calculateEdgeMetricData(fileStatesTwoFiles, emptyMatcher)
 
         const pairingRateMapKeys = [...nodeEdgeMetricsMap.get("pairingRate").keys()]
 

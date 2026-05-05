@@ -1,8 +1,9 @@
 import { Component } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { Observable } from "rxjs"
+import { combineLatest, map, Observable } from "rxjs"
 import { CcState } from "../../codeCharta.model"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
+import { isPendingHeavyDispatch$ } from "../../util/dispatchAfterPaint"
 import { MatProgressSpinner } from "@angular/material/progress-spinner"
 import { AsyncPipe } from "@angular/common"
 
@@ -13,9 +14,11 @@ import { AsyncPipe } from "@angular/common"
     imports: [MatProgressSpinner, AsyncPipe]
 })
 export class LoadingFileProgressSpinnerComponent {
-    isLoadingFile$: Observable<boolean>
+    isLoading$: Observable<boolean>
 
     constructor(store: Store<CcState>) {
-        this.isLoadingFile$ = store.select(isLoadingFileSelector)
+        this.isLoading$ = combineLatest([store.select(isLoadingFileSelector), isPendingHeavyDispatch$]).pipe(
+            map(([isLoadingFile, isPendingHeavy]) => isLoadingFile || isPendingHeavy)
+        )
     }
 }

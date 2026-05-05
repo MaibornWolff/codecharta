@@ -12,6 +12,7 @@ import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { BehaviorSubject, Subscription, tap } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { blacklistMatcherSelector } from "../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
 import { State, Store } from "@ngrx/store"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 
@@ -95,7 +96,13 @@ export class CodeMapRenderService implements OnDestroy {
         switch (layoutAlgorithm) {
             case LayoutAlgorithm.StreetMap:
             case LayoutAlgorithm.TreeMapStreet:
-                return StreetLayoutGenerator.createStreetLayoutNodes(map, state, nodeMetricData, deltaState)
+                return StreetLayoutGenerator.createStreetLayoutNodes(
+                    map,
+                    state,
+                    nodeMetricData,
+                    blacklistMatcherSelector(state),
+                    deltaState
+                )
             case LayoutAlgorithm.SquarifiedTreeMap:
                 return createTreemapNodes(map, state, nodeMetricData, deltaState)
             default:

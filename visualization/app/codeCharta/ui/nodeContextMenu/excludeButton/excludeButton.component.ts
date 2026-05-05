@@ -1,7 +1,8 @@
 import { Component, Input } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CcState, CodeMapNode } from "../../../codeCharta.model"
 import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 import { MatButton } from "@angular/material/button"
 
 @Component({
@@ -13,10 +14,11 @@ import { MatButton } from "@angular/material/button"
 export class ExcludeButtonComponent {
     @Input() codeMapNode: Pick<CodeMapNode, "path" | "type">
 
-    constructor(private readonly store: Store) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     excludeNode() {
-        this.store.dispatch(
+        dispatchAfterPaint(
+            this.store,
             addBlacklistItemsIfNotResultsInEmptyMap({
                 items: [
                     {
