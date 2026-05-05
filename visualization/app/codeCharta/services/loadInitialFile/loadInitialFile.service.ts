@@ -375,10 +375,9 @@ export class LoadInitialFileService {
                 this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
                 break
             case "isLoadingMap":
-                this.store.dispatch(setIsLoadingMap({ value }))
-                break
             case "isLoadingFile":
-                this.store.dispatch(setIsLoadingFile({ value }))
+                // runtime-only flags; restoring them from a previous session's persisted state
+                // would briefly flash the spinner off mid-boot. Ignore.
                 break
             case "sortingOrderAscending":
                 // ignore settings for the file-explorer
