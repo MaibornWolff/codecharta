@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Fix `amountOfEdgePreviews` being silently overwritten when restoring saved state — it incorrectly dispatched the top-labels action instead.
 - Loading spinner now stays visible until the codemap's full initial render completes; previously it disappeared too early.
+- File Explorer sort dropdown now closes after selecting a sort key, toggling the order, or clicking outside the menu.
 
 ### Chore 👨‍💻 👩‍💻
 
