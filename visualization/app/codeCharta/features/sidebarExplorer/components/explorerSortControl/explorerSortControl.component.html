@@ -1,8 +1,9 @@
-<div class="dropdown dropdown-start w-full px-2 mt-2">
+<div class="dropdown dropdown-start w-full px-2 mt-2" [class.dropdown-open]="isOpen()">
     <button
         type="button"
         class="btn btn-ghost btn-sm w-full justify-between normal-case font-normal"
         [title]="'Sort: ' + currentOption()"
+        (click)="toggleOpen()"
     >
         <span class="flex items-center gap-1">
             <i class="fa fa-bars text-[10px] opacity-60"></i>
@@ -11,23 +12,25 @@
         </span>
         <i class="fa fa-chevron-down text-[10px] opacity-60"></i>
     </button>
-    <ul class="dropdown-content menu bg-base-100 rounded-box z-20 w-full mx-2 p-2 shadow">
-        @for (option of sortOptions; track option) {
-            <li>
-                <button
-                    type="button"
-                    [class.font-semibold]="option === currentOption()"
-                    (click)="setSortingOption(option)"
-                >
-                    {{ option }}
+    @if (isOpen()) {
+        <ul class="dropdown-content menu bg-base-100 rounded-box z-20 w-full mx-2 p-2 shadow">
+            @for (option of sortOptions; track option) {
+                <li>
+                    <button
+                        type="button"
+                        [class.font-semibold]="option === currentOption()"
+                        (click)="setSortingOption(option)"
+                    >
+                        {{ option }}
+                    </button>
+                </li>
+            }
+            <li class="border-t border-base-300 mt-1 pt-1">
+                <button type="button" (click)="toggleSortOrder()">
+                    <i class="fa" [class.fa-arrow-up]="!isAscending()" [class.fa-arrow-down]="isAscending()"></i>
+                    {{ isAscending() ? "Sort descending" : "Sort ascending" }}
                 </button>
             </li>
-        }
-        <li class="border-t border-base-300 mt-1 pt-1">
-            <button type="button" (click)="toggleSortOrder()">
-                <i class="fa" [class.fa-arrow-up]="!isAscending()" [class.fa-arrow-down]="isAscending()"></i>
-                {{ isAscending() ? "Sort descending" : "Sort ascending" }}
-            </button>
-        </li>
-    </ul>
+        </ul>
+    }
 </div>
