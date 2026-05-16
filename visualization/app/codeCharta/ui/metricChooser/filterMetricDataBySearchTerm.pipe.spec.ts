@@ -146,8 +146,8 @@ describe("FilterMetricDataBySearchTermPipe", () => {
         })
     })
 
-    describe("special case handling (formerly mcc)", () => {
-        it("should match 'complexity' when searching for 'mcc'", () => {
+    describe("special case handling (formerly mcc aliases removed)", () => {
+        it("should not match 'mcc' after the formerly-mcc aliases were removed", () => {
             // Arrange
             const searchTerm = "mcc"
 
@@ -155,12 +155,10 @@ describe("FilterMetricDataBySearchTermPipe", () => {
             const results = pipe.transform(metricData, searchTerm)
 
             // Assert
-            expect(results.length).toBe(2)
-            expect(results.map(r => r.name)).toContain("complexity")
-            expect(results.map(r => r.name)).toContain("sonar_complexity")
+            expect(results.length).toBe(0)
         })
 
-        it("should match 'complexity' when searching for 'formerly'", () => {
+        it("should not match 'formerly' after the formerly-mcc aliases were removed", () => {
             // Arrange
             const searchTerm = "formerly"
 
@@ -168,9 +166,7 @@ describe("FilterMetricDataBySearchTermPipe", () => {
             const results = pipe.transform(metricData, searchTerm)
 
             // Assert
-            expect(results.length).toBe(2)
-            expect(results.map(r => r.name)).toContain("complexity")
-            expect(results.map(r => r.name)).toContain("sonar_complexity")
+            expect(results.length).toBe(0)
         })
 
         it("should still match 'complexity' with normal search", () => {
