@@ -191,6 +191,34 @@ describe("codeMapMesh", () => {
             // Assert
             expect(building.color).toBe(originalColor)
         })
+
+        it("should invalidate the incremental highlight cache on selectBuilding so the next pass recolors deselected buildings", () => {
+            // Arrange
+            const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)
+            const building = mesh.getMeshDescription().buildings[0]
+            mesh.highlightBuilding(new Set([building.id]), building, null, STATE, new Map())
+            expect(mesh["_prevHighlightedIds"]).not.toBeNull()
+
+            // Act
+            mesh.selectBuilding(building, "#aabbcc")
+
+            // Assert
+            expect(mesh["_prevHighlightedIds"]).toBeNull()
+        })
+
+        it("should invalidate the incremental highlight cache on clearSelection", () => {
+            // Arrange
+            const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)
+            const building = mesh.getMeshDescription().buildings[0]
+            mesh.highlightBuilding(new Set([building.id]), building, null, STATE, new Map())
+            expect(mesh["_prevHighlightedIds"]).not.toBeNull()
+
+            // Act
+            mesh.clearSelection(building)
+
+            // Assert
+            expect(mesh["_prevHighlightedIds"]).toBeNull()
+        })
     })
 
     describe("setScale", () => {

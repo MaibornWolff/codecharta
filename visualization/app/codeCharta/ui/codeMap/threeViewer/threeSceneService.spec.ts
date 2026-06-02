@@ -68,6 +68,40 @@ describe("ThreeSceneService", () => {
         })
     })
 
+    describe("selectBuilding", () => {
+        beforeEach(() => {
+            threeSceneService["threeRendererService"].render = jest.fn()
+            threeSceneService["mapMesh"].selectBuilding = jest.fn()
+            threeSceneService["mapMesh"].clearSelection = jest.fn()
+            threeSceneService["mapMesh"].highlightBuilding = jest.fn()
+        })
+
+        it("should clear the previously selected building before selecting a different one", () => {
+            // Arrange
+            threeSceneService.selectBuilding(CODE_MAP_BUILDING)
+            ;(threeSceneService["mapMesh"].clearSelection as jest.Mock).mockClear()
+
+            // Act
+            threeSceneService.selectBuilding(CODE_MAP_BUILDING_TS_NODE)
+
+            // Assert
+            expect(threeSceneService["mapMesh"].clearSelection).toHaveBeenCalledWith(CODE_MAP_BUILDING)
+            expect(threeSceneService["selected"]).toBe(CODE_MAP_BUILDING_TS_NODE)
+        })
+
+        it("should not clear selection when the same building is selected again", () => {
+            // Arrange
+            threeSceneService.selectBuilding(CODE_MAP_BUILDING)
+            ;(threeSceneService["mapMesh"].clearSelection as jest.Mock).mockClear()
+
+            // Act
+            threeSceneService.selectBuilding(CODE_MAP_BUILDING)
+
+            // Assert
+            expect(threeSceneService["mapMesh"].clearSelection).not.toHaveBeenCalled()
+        })
+    })
+
     describe("addBuildingsToHighlightingList", () => {
         it("should add the given building to the HighlightingList ", () => {
             threeSceneService["highlightedBuildingIds"].clear()

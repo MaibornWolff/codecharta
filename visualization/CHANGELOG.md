@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Top metric labels now follow the height-metric **value** ranking instead of the rendered building height, so the highest-value buildings are labeled even when the height metric is rendered inverted (inverted attribute direction or "invert height" enabled).
 - The Color settings `Reset thresholds` button now resets only the color range; it previously also reset the delta map colors as an unintended side effect.
 - Numeric metric settings inputs (margin, height scaling, color-range thresholds) now accept decimal values instead of truncating them to whole numbers.
+- Selecting a different building now immediately clears the previously selected building's highlight, instead of leaving it highlighted until the next hover.
 
 ### Chore 👨‍💻 👩‍💻
 

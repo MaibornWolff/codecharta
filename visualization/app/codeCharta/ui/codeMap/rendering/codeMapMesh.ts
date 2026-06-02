@@ -99,12 +99,16 @@ export class CodeMapMesh {
         building.setColor(color)
         building.setDeltaColor(color)
         this.setInstanceColor(building.id, building.getColorVector(), building.getDeltaColorVector())
+        // Selection changes which building the highlight pass skips, so the incremental
+        // diff cache is stale — force the next highlightBuilding() to do a full recompute.
+        this._prevHighlightedIds = null
         this.updateVertices()
     }
 
     clearSelection(selected: CodeMapBuilding) {
         selected.resetColor()
         this.setInstanceColor(selected.id, selected.getDefaultColorVector(), selected.getDefaultDeltaColorVector())
+        this._prevHighlightedIds = null
         this.updateVertices()
     }
 
