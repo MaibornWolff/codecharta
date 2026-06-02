@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - The Color settings `Reset thresholds` button now resets only the color range; it previously also reset the delta map colors as an unintended side effect.
 - Numeric metric settings inputs (margin, height scaling, color-range thresholds) now accept decimal values instead of truncating them to whole numbers.
 - Selecting a different building now immediately clears the previously selected building's highlight, instead of leaving it highlighted until the next hover.
+- The hovered/active option in a metric-select dropdown now shows a grey background instead of a primary-colored outline.
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -41,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Backfilled unit specs across the new metrics bar components (segments, settings popovers, color range slider/diagram, metric select) and the `visibleNodeMetricValues` selector.
 - Deduplicated the metrics bar: shared `MetricSegmentBase` for the area/height segments and a shared `cc-settings-popover-shell` container for the four settings popovers. Added Playwright e2e coverage for the metric-select flow.
 - Reworked the metrics bar onto the feature `stores`/`services`/`selectors` architecture (matching `labelSettings`) so it passes the dependency-cruiser architecture lint: components no longer inject the ngrx `Store` directly, and the scenarios feature is accessed through its `facade`.
+- Top metric label selection now uses a single-pass top-N selection instead of sorting every building, reducing work when rendering labels on large maps.
 
 ## [1.142.0] - 2026-03-16
 
