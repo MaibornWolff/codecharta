@@ -13,11 +13,10 @@ import {
 } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { FormsModule } from "@angular/forms"
-import { Store } from "@ngrx/store"
-import { CcState, EdgeMetricData, NodeMetricData } from "../../../../codeCharta.model"
-import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { attributeDescriptorsSelector } from "../../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { EdgeMetricData, NodeMetricData } from "../../../../codeCharta.model"
 import { AttributeDescriptorTooltipPipe } from "../../../../util/pipes/attributeDescriptorTooltip.pipe"
+import { AttributeDescriptorsService } from "../../services/attributeDescriptors.service"
+import { MetricDataService } from "../../services/metricData.service"
 import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
 
 export type MetricSelectKind = "node" | "edge"
@@ -30,7 +29,8 @@ export type MetricSelectKind = "node" | "edge"
     imports: [FormsModule, FilterMetricDataBySearchTermPipe, AttributeDescriptorTooltipPipe]
 })
 export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
-    private readonly store = inject(Store<CcState>)
+    private readonly metricDataService = inject(MetricDataService)
+    private readonly attributeDescriptorsService = inject(AttributeDescriptorsService)
 
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
@@ -45,10 +45,10 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
     readonly searchTerm = signal("")
     readonly activeIndex = signal(0)
 
-    private readonly metricDataState = toSignal(this.store.select(metricDataSelector), {
+    private readonly metricDataState = toSignal(this.metricDataService.metricData$(), {
         initialValue: { nodeMetricData: [], edgeMetricData: [], nodeEdgeMetricsMap: new Map() }
     })
-    readonly attributeDescriptors = toSignal(this.store.select(attributeDescriptorsSelector), { initialValue: {} })
+    readonly attributeDescriptors = toSignal(this.attributeDescriptorsService.attributeDescriptors$(), { initialValue: {} })
 
     readonly metricData = computed<NodeMetricData[] | EdgeMetricData[]>(() => {
         const data = this.metricDataState()

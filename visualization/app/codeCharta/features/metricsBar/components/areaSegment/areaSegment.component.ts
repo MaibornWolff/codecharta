@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { AreaMetricService } from "../../services/areaMetric.service"
 import { MetricSegmentBase } from "../../util/metricSegmentBase"
 import { AreaSettingsPopoverComponent } from "../areaSettingsPopover/areaSettingsPopover.component"
 import { DistributionSegmentComponent } from "../distributionSegment/distributionSegment.component"
@@ -19,10 +18,12 @@ export class AreaSegmentComponent extends MetricSegmentBase {
     readonly settingsPopoverId = "metric-settings-popover-area"
     readonly settingsAnchorName = "metric-segment-area-cog"
 
-    readonly areaMetric = toSignal(this.store.select(areaMetricSelector), { initialValue: "" })
+    private readonly areaMetricService = inject(AreaMetricService)
+
+    readonly areaMetric = toSignal(this.areaMetricService.areaMetric$(), { initialValue: "" })
     protected readonly metric = this.areaMetric
 
     handleMetricSelected(value: string) {
-        this.store.dispatch(setAreaMetric({ value }))
+        this.areaMetricService.setAreaMetric(value)
     }
 }

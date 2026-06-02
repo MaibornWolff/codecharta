@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { heightMetricSelector } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
+import { HeightMetricService } from "../../services/heightMetric.service"
 import { MetricSegmentBase } from "../../util/metricSegmentBase"
 import { DistributionSegmentComponent } from "../distributionSegment/distributionSegment.component"
 import { HeightSettingsPopoverComponent } from "../heightSettingsPopover/heightSettingsPopover.component"
@@ -19,10 +18,12 @@ export class HeightSegmentComponent extends MetricSegmentBase {
     readonly settingsPopoverId = "metric-settings-popover-height"
     readonly settingsAnchorName = "metric-segment-height-cog"
 
-    readonly heightMetric = toSignal(this.store.select(heightMetricSelector), { initialValue: "" })
+    private readonly heightMetricService = inject(HeightMetricService)
+
+    readonly heightMetric = toSignal(this.heightMetricService.heightMetric$(), { initialValue: "" })
     protected readonly metric = this.heightMetric
 
     handleMetricSelected(value: string) {
-        this.store.dispatch(setHeightMetric({ value }))
+        this.heightMetricService.setHeightMetric(value)
     }
 }

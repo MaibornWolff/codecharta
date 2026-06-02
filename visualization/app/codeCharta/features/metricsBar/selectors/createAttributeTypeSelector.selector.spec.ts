@@ -1,6 +1,6 @@
-import { AttributeTypeValue } from "../../../../codeCharta.model"
-import { defaultState } from "../../../../state/store/state.manager"
-import { clone } from "../../../../util/clone"
+import { AttributeTypeValue } from "../../../codeCharta.model"
+import { defaultState } from "../../../state/store/state.manager"
+import { clone } from "../../../util/clone"
 import { createAttributeTypeSelector } from "./createAttributeTypeSelector.selector"
 
 describe("createAttributeTypeSelector", () => {

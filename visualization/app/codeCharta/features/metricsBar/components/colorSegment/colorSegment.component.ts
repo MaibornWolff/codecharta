@@ -1,14 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../../../codeCharta.model"
-import { selectedColorMetricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
-import { visibleNodeMetricValuesSelector } from "../../../../state/selectors/visibleNodeMetricValues/visibleNodeMetricValues.selector"
-import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
-import { isColorMetricLinkedToHeightMetricSelector } from "../../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
-import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { colorMetricSelector } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
-import { colorRangeSelector } from "../../../../state/store/dynamicSettings/colorRange/colorRange.selector"
+import { ColorMetricService } from "../../services/colorMetric.service"
+import { IsHeightAndColorMetricLinkedService } from "../../services/isHeightAndColorMetricLinked.service"
+import { MapColorsService } from "../../services/mapColors.service"
+import { ColorRangeService } from "../../services/colorRange.service"
+import { SelectedColorMetricDataService } from "../../services/selectedColorMetricData.service"
+import { VisibleNodeMetricValuesService } from "../../services/visibleNodeMetricValues.service"
 import { AxisCardComponent } from "../axisCard/axisCard.component"
 import { AxisColorRampComponent } from "../axisColorRamp/axisColorRamp.component"
 import { ColorSettingsPopoverComponent } from "../colorSettingsPopover/colorSettingsPopover.component"
@@ -29,21 +26,28 @@ import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelec
     ]
 })
 export class ColorSegmentComponent {
-    private readonly store = inject(Store<CcState>)
+    constructor(
+        private readonly colorMetricService: ColorMetricService,
+        private readonly isHeightAndColorMetricLinkedService: IsHeightAndColorMetricLinkedService,
+        private readonly visibleNodeMetricValuesService: VisibleNodeMetricValuesService,
+        private readonly selectedColorMetricDataService: SelectedColorMetricDataService,
+        private readonly colorRangeService: ColorRangeService,
+        private readonly mapColorsService: MapColorsService
+    ) {}
 
     readonly searchPopoverId = "metric-select-popover-color"
     readonly searchAnchorName = "metric-segment-color"
     readonly settingsPopoverId = "metric-settings-popover-color"
     readonly settingsAnchorName = "metric-segment-color-cog"
 
-    readonly colorMetric = toSignal(this.store.select(colorMetricSelector), { initialValue: "" })
-    readonly isLinked = toSignal(this.store.select(isColorMetricLinkedToHeightMetricSelector), { initialValue: false })
-    readonly visibleMetricValues = toSignal(this.store.select(visibleNodeMetricValuesSelector), { initialValue: {} })
-    readonly colorMetricData = toSignal(this.store.select(selectedColorMetricDataSelector), {
+    readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
+    readonly isLinked = toSignal(this.isHeightAndColorMetricLinkedService.isHeightAndColorMetricLinked$(), { initialValue: false })
+    readonly visibleMetricValues = toSignal(this.visibleNodeMetricValuesService.visibleNodeMetricValues$(), { initialValue: {} })
+    readonly colorMetricData = toSignal(this.selectedColorMetricDataService.selectedColorMetricData$(), {
         initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
     })
-    readonly colorRange = toSignal(this.store.select(colorRangeSelector), { initialValue: { from: null, to: null } })
-    readonly mapColors = toSignal(this.store.select(mapColorsSelector))
+    readonly colorRange = toSignal(this.colorRangeService.colorRange$(), { initialValue: { from: null, to: null } })
+    readonly mapColors = toSignal(this.mapColorsService.mapColors$())
 
     // Bar heights reflect the visible (rendered) buildings, but they are binned on the color
     // metric's global value axis — the same range the color thresholds (from/to) are derived
@@ -56,6 +60,6 @@ export class ColorSegmentComponent {
     readonly maxLabel = computed(() => this.maxValue().toLocaleString())
 
     handleMetricSelected(value: string) {
-        this.store.dispatch(setColorMetric({ value }))
+        this.colorMetricService.setColorMetric(value)
     }
 }

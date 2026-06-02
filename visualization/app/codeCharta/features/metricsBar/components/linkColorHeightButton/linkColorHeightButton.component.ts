@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../../../codeCharta.model"
-import { toggleIsColorMetricLinkedToHeightMetric } from "../../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
-import { isColorMetricLinkedToHeightMetricSelector } from "../../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
+import { IsHeightAndColorMetricLinkedService } from "../../services/isHeightAndColorMetricLinked.service"
 
 @Component({
     selector: "cc-link-color-height-button",
@@ -12,9 +9,9 @@ import { isColorMetricLinkedToHeightMetricSelector } from "../../../../state/sto
     host: { class: "self-center px-1" }
 })
 export class LinkColorHeightButtonComponent {
-    private readonly store = inject(Store<CcState>)
+    private readonly isHeightAndColorMetricLinkedService = inject(IsHeightAndColorMetricLinkedService)
 
-    readonly isLinked = toSignal(this.store.select(isColorMetricLinkedToHeightMetricSelector), { initialValue: false })
+    readonly isLinked = toSignal(this.isHeightAndColorMetricLinkedService.isHeightAndColorMetricLinked$(), { initialValue: false })
 
     readonly iconClass = computed(() => (this.isLinked() ? "fa fa-link" : "fa fa-unlink"))
     readonly title = computed(() => (this.isLinked() ? "Unlink Height and Color Metric" : "Link Height and Color Metric"))
@@ -25,6 +22,6 @@ export class LinkColorHeightButtonComponent {
     )
 
     toggle() {
-        this.store.dispatch(toggleIsColorMetricLinkedToHeightMetric())
+        this.isHeightAndColorMetricLinkedService.toggleIsHeightAndColorMetricLinked()
     }
 }

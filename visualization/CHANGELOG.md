@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Upgrade FontAwesome from 4.7 to 7 (`@fortawesome/fontawesome-free`); existing icon usages keep working via the v4 compatibility shim.
 - Backfilled unit specs across the new metrics bar components (segments, settings popovers, color range slider/diagram, metric select) and the `visibleNodeMetricValues` selector.
 - Deduplicated the metrics bar: shared `MetricSegmentBase` for the area/height segments and a shared `cc-settings-popover-shell` container for the four settings popovers. Added Playwright e2e coverage for the metric-select flow.
+- Reworked the metrics bar onto the feature `stores`/`services`/`selectors` architecture (matching `labelSettings`) so it passes the dependency-cruiser architecture lint: components no longer inject the ngrx `Store` directly, and the scenarios feature is accessed through its `facade`.
 
 ## [1.142.0] - 2026-03-16
 

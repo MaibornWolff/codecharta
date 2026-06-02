@@ -1,19 +1,17 @@
 import { Signal, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { visibleNodeMetricValuesSelector } from "../../../state/selectors/visibleNodeMetricValues/visibleNodeMetricValues.selector"
+import { VisibleNodeMetricValuesService } from "../services/visibleNodeMetricValues.service"
 
 /**
  * Shared base for the area and height metric segments. Both segments derive the
  * currently selected metric's values and min/max labels from
- * {@link visibleNodeMetricValuesSelector} and dispatch a metric-set action on
+ * {@link VisibleNodeMetricValuesService} and dispatch a metric-set action on
  * selection. Subclasses only provide the metric signal and the dispatch.
  */
 export abstract class MetricSegmentBase {
-    protected readonly store = inject(Store<CcState>)
+    protected readonly visibleNodeMetricValuesService = inject(VisibleNodeMetricValuesService)
 
-    readonly visibleMetricValues = toSignal(this.store.select(visibleNodeMetricValuesSelector), { initialValue: {} })
+    readonly visibleMetricValues = toSignal(this.visibleNodeMetricValuesService.visibleNodeMetricValues$(), { initialValue: {} })
 
     /** The metric name this segment is bound to (e.g. the area or height metric). */
     protected abstract readonly metric: Signal<string>

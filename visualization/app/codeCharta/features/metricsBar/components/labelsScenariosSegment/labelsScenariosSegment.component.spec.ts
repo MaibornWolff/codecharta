@@ -5,8 +5,7 @@ import { BehaviorSubject, of } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
 import { defaultState } from "../../../../state/store/state.manager"
 import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
-import { Scenario } from "../../../scenarios/model/scenario.model"
-import { ScenariosService } from "../../../scenarios/services/scenarios.service"
+import { Scenario, ScenariosService } from "../../../scenarios/facade"
 import { LabelsScenariosSegmentComponent } from "./labelsScenariosSegment.component"
 
 const createScenario = (name: string, id = "id-1"): Scenario => ({

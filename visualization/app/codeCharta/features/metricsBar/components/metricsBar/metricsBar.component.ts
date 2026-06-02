@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
 import { map } from "rxjs"
-import { CcState } from "../../../../codeCharta.model"
-import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
+import { IsDeltaStateService } from "../../services/isDeltaState.service"
+import { MetricDataService } from "../../services/metricData.service"
 import { AreaSegmentComponent } from "../areaSegment/areaSegment.component"
 import { AxisCardComponent } from "../axisCard/axisCard.component"
 import { ColorSegmentComponent } from "../colorSegment/colorSegment.component"
@@ -41,10 +39,11 @@ import { LinkColorHeightButtonComponent } from "../linkColorHeightButton/linkCol
     }
 })
 export class MetricsBarComponent {
-    private readonly store = inject(Store<CcState>)
+    private readonly isDeltaStateService = inject(IsDeltaStateService)
+    private readonly metricDataService = inject(MetricDataService)
 
-    readonly isDeltaState = toSignal(this.store.select(isDeltaStateSelector), { initialValue: false })
-    readonly hasEdgeMetric = toSignal(this.store.select(metricDataSelector).pipe(map(metricData => metricData.edgeMetricData.length > 0)), {
+    readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
+    readonly hasEdgeMetric = toSignal(this.metricDataService.metricData$().pipe(map(metricData => metricData.edgeMetricData.length > 0)), {
         initialValue: false
     })
 

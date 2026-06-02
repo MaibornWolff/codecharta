@@ -5,8 +5,7 @@ import { LabelSettingsPanelComponent } from "../../../labelSettings/components/l
 import { ApplyScenarioDialogComponent } from "../../../scenarios/components/applyScenarioDialog/applyScenarioDialog.component"
 import { SaveScenarioDialogComponent } from "../../../scenarios/components/saveScenarioDialog/saveScenarioDialog.component"
 import { ScenarioListDialogComponent } from "../../../scenarios/components/scenarioListDialog/scenarioListDialog.component"
-import { Scenario } from "../../../scenarios/model/scenario.model"
-import { ScenariosService } from "../../../scenarios/services/scenarios.service"
+import { Scenario, ScenariosService } from "../../../scenarios/facade"
 
 @Component({
     selector: "cc-labels-scenarios-segment",

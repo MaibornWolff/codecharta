@@ -1,23 +1,20 @@
 import { Injectable } from "@angular/core"
-import { Store } from "@ngrx/store"
 import { Observable, combineLatest, filter, map, shareReplay } from "rxjs"
-import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
-import { AccumulatedData, accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
-import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
+import { CodeMapNode, Node } from "../../../codeCharta.model"
+import { AccumulatedData } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { CodeMapRenderService } from "../../../ui/codeMap/codeMap.render.service"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
+import { NodeSelectionStore } from "../stores/nodeSelection.store"
 
 @Injectable({ providedIn: "root" })
 export class NodeSelectionService {
     private readonly node$: Observable<CodeMapNode | Node | undefined>
 
     constructor(
-        private store: Store<CcState>,
+        private nodeSelectionStore: NodeSelectionStore,
         private codeMapRenderService: CodeMapRenderService
     ) {
-        const hoveredNode$ = this.store.select(hoveredNodeSelector)
-        const selectedNode$ = this.store.select(selectedNodeSelector)
+        const hoveredNode$ = this.nodeSelectionStore.hoveredNode$
+        const selectedNode$ = this.nodeSelectionStore.selectedNode$
         const topLevelNode$ = this.createTopLevelNodeObservable()
 
         this.node$ = combineLatest([hoveredNode$, selectedNode$, topLevelNode$]).pipe(
@@ -31,7 +28,7 @@ export class NodeSelectionService {
     }
 
     private createTopLevelNodeObservable(): Observable<Node | undefined> {
-        return combineLatest([this.store.select(accumulatedDataSelector), this.store.select(dynamicSettingsSelector)]).pipe(
+        return combineLatest([this.nodeSelectionStore.accumulatedData$, this.nodeSelectionStore.dynamicSettings$]).pipe(
             filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
             map(([accumulatedData]) => this.findTopLevelNode(accumulatedData))
         )

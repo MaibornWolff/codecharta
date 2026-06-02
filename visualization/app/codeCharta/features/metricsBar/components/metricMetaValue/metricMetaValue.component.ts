@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
-import { CcState, CodeMapNode, Node, PrimaryMetrics } from "../../../../codeCharta.model"
-import { primaryMetricNamesSelector } from "../../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
+import { CodeMapNode, Node, PrimaryMetrics } from "../../../../codeCharta.model"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
+import { PrimaryMetricsService } from "../../services/primaryMetrics.service"
 import { MetricChooserTypeComponent } from "./metricChooserType.component"
 
 @Component({
@@ -13,13 +12,13 @@ import { MetricChooserTypeComponent } from "./metricChooserType.component"
     imports: [MetricChooserTypeComponent]
 })
 export class MetricMetaValueComponent {
-    private readonly store = inject(Store<CcState>)
     private readonly nodeSelectionService = inject(NodeSelectionService)
+    private readonly primaryMetricsService = inject(PrimaryMetricsService)
 
     readonly metricFor = input.required<keyof PrimaryMetrics>()
 
     readonly node = toSignal<CodeMapNode | Node | undefined>(this.nodeSelectionService.createNodeObservable())
-    readonly primaryMetricNames = toSignal(this.store.select(primaryMetricNamesSelector))
+    readonly primaryMetricNames = toSignal(this.primaryMetricsService.primaryMetricNames$())
 
     readonly metricName = computed(() => {
         const names = this.primaryMetricNames()

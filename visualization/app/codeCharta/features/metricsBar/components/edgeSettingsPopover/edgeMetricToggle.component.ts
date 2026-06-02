@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../../../codeCharta.model"
-import { toggleEdgeMetricVisible } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
-import { isEdgeMetricVisibleSelector } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
+import { IsEdgeMetricVisibleService } from "../../services/isEdgeMetricVisible.service"
 
 @Component({
     selector: "cc-edge-metric-toggle",
@@ -12,11 +9,11 @@ import { isEdgeMetricVisibleSelector } from "../../../../state/store/appSettings
     standalone: true
 })
 export class EdgeMetricToggleComponent {
-    private readonly store = inject(Store<CcState>)
+    private readonly isEdgeMetricVisibleService = inject(IsEdgeMetricVisibleService)
 
-    readonly isEdgeMetricVisible = toSignal(this.store.select(isEdgeMetricVisibleSelector), { initialValue: true })
+    readonly isEdgeMetricVisible = toSignal(this.isEdgeMetricVisibleService.isEdgeMetricVisible$(), { initialValue: true })
 
     toggle() {
-        this.store.dispatch(toggleEdgeMetricVisible())
+        this.isEdgeMetricVisibleService.toggleEdgeMetricVisible()
     }
 }

@@ -1,26 +1,22 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnDestroy } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, input, OnDestroy } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { State, Store } from "@ngrx/store"
-import { map } from "rxjs"
-import { CcState, ColorMode, ColorRange } from "../../../../codeCharta.model"
-import { selectedColorMetricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
-import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
-import { invertColorRange, invertDeltaColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
+import { combineLatest, map } from "rxjs"
+import { ColorMode, ColorRange } from "../../../../codeCharta.model"
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
-import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
-import { colorMetricSelector } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
-import { setColorMode } from "../../../../state/store/dynamicSettings/colorMode/colorMode.actions"
-import { colorModeSelector } from "../../../../state/store/dynamicSettings/colorMode/colorMode.selector"
 import { calculateInitialColorRange } from "../../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
-import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ColorPickerForMapColorComponent } from "../../../../ui/colorPickerForMapColor/colorPickerForMapColor.component"
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
-import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
-import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
-import { metricColorRangeColorsSelector } from "./selectors/metricColorRangeColors.selector"
-import { metricColorRangeValuesSelector } from "./selectors/metricColorRangeValues.selector"
+import { AttributeDescriptorsService } from "../../services/attributeDescriptors.service"
+import { ColorMetricService } from "../../services/colorMetric.service"
+import { ColorModeService } from "../../services/colorMode.service"
+import { ColorRangeService } from "../../services/colorRange.service"
+import { IsDeltaStateService } from "../../services/isDeltaState.service"
+import { MapColorsService } from "../../services/mapColors.service"
+import { SelectedColorMetricDataService } from "../../services/selectedColorMetricData.service"
 import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
+import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
+import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
 
 @Component({
     selector: "cc-color-settings-popover",
@@ -36,32 +32,40 @@ import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsP
     ]
 })
 export class ColorSettingsPopoverComponent implements OnDestroy {
-    private readonly store = inject(Store<CcState>)
-    private readonly state = inject(State<CcState>)
+    constructor(
+        private readonly colorModeService: ColorModeService,
+        private readonly colorMetricService: ColorMetricService,
+        private readonly isDeltaStateService: IsDeltaStateService,
+        private readonly colorRangeService: ColorRangeService,
+        private readonly attributeDescriptorsService: AttributeDescriptorsService,
+        private readonly mapColorsService: MapColorsService,
+        private readonly selectedColorMetricDataService: SelectedColorMetricDataService
+    ) {}
 
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
 
-    readonly colorMode = toSignal(this.store.select(colorModeSelector), { initialValue: "absolute" as ColorMode })
-    readonly colorMetric = toSignal(this.store.select(colorMetricSelector), { initialValue: "" })
-    readonly isDeltaState = toSignal(this.store.select(isDeltaStateSelector), { initialValue: false })
-    readonly sliderValues = toSignal(this.store.select(metricColorRangeValuesSelector), {
+    readonly colorMode = toSignal(this.colorModeService.colorMode$(), { initialValue: "absolute" as ColorMode })
+    readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
+    readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
+    readonly sliderValues = toSignal(this.colorRangeService.metricColorRangeValues$(), {
         initialValue: { values: [], min: 0, max: 0, from: 0, to: 0 }
     })
-    readonly sliderColors = toSignal(this.store.select(metricColorRangeColorsSelector), {
+    readonly sliderColors = toSignal(this.colorRangeService.metricColorRangeColors$(), {
         initialValue: { leftColor: "#000", middleColor: "#000", rightColor: "#000" }
     })
     readonly isAttributeDirectionInversed = toSignal(
-        this.store.select(colorMetricSelector).pipe(
-            map(colorMetric => {
-                const attributeDescriptors = this.state.getValue().fileSettings.attributeDescriptors
-                return attributeDescriptors[colorMetric]?.direction === 1
-            })
+        combineLatest([this.colorMetricService.colorMetric$(), this.attributeDescriptorsService.attributeDescriptors$()]).pipe(
+            map(([colorMetric, attributeDescriptors]) => attributeDescriptors[colorMetric]?.direction === 1)
         ),
         { initialValue: false }
     )
 
-    readonly mapColors = toSignal(this.store.select(mapColorsSelector), { initialValue: defaultMapColors })
+    readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
+
+    private readonly selectedColorMetricData = toSignal(this.selectedColorMetricDataService.selectedColorMetricData$(), {
+        initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
+    })
 
     readonly isColorRangeInverted = computed(
         () => this.mapColors().positive === defaultMapColors.negative && this.mapColors().negative === defaultMapColors.positive
@@ -107,7 +111,7 @@ export class ColorSettingsPopoverComponent implements OnDestroy {
             if (this.pendingRightValue !== null) {
                 newColorRange.to = this.pendingRightValue
             }
-            this.store.dispatch(setColorRange({ value: newColorRange }))
+            this.colorRangeService.setColorRange(newColorRange)
 
             this.pendingLeftValue = null
             this.pendingRightValue = null
@@ -115,20 +119,19 @@ export class ColorSettingsPopoverComponent implements OnDestroy {
     }
 
     handleColorModeChange(value: string) {
-        this.store.dispatch(setColorMode({ value: value as ColorMode }))
+        this.colorModeService.setColorMode(value as ColorMode)
     }
 
     handleIsColorRangeInvertedChange() {
-        this.store.dispatch(invertColorRange())
+        this.mapColorsService.invertColorRange()
     }
 
     handleAreDeltaColorsInvertedChange() {
-        this.store.dispatch(invertDeltaColors())
+        this.mapColorsService.invertDeltaColors()
     }
 
     resetColorRange = () => {
-        const selectedColorMetricData = selectedColorMetricDataSelector(this.state.getValue())
-        this.store.dispatch(setColorRange({ value: calculateInitialColorRange(selectedColorMetricData) }))
+        this.colorRangeService.setColorRange(calculateInitialColorRange(this.selectedColorMetricData()))
     }
 
     resetColorsKeys() {

@@ -1,22 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
 import { map } from "rxjs"
-import { CcState } from "../../../../codeCharta.model"
-import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../state/selectors/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
-import { setAmountOfEdgePreviews } from "../../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
-import { amountOfEdgePreviewsSelector } from "../../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
-import { setEdgeHeight } from "../../../../state/store/appSettings/edgeHeight/edgeHeight.actions"
-import { edgeHeightSelector } from "../../../../state/store/appSettings/edgeHeight/edgeHeight.selector"
-import { setShowIncomingEdges } from "../../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.actions"
-import { showIncomingEdgesSelector } from "../../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.selector"
-import { setShowOutgoingEdges } from "../../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
-import { showOutgoingEdgesSelector } from "../../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
-import { setShowOnlyBuildingsWithEdges } from "../../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
-import { showOnlyBuildingsWithEdgesSelector } from "../../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.selector"
 import { ColorPickerForMapColorComponent } from "../../../../ui/colorPickerForMapColor/colorPickerForMapColor.component"
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
 import { parseNumberInput } from "../../../../util/parseNumberInput"
+import { AmountOfBuildingsWithSelectedEdgeMetricService } from "../../services/amountOfBuildingsWithSelectedEdgeMetric.service"
+import { AmountOfEdgePreviewsService } from "../../services/amountOfEdgePreviews.service"
+import { EdgeHeightService } from "../../services/edgeHeight.service"
+import { ShowIncomingEdgesService } from "../../services/showIncomingEdges.service"
+import { ShowOnlyBuildingsWithEdgesService } from "../../services/showOnlyBuildingsWithEdges.service"
+import { ShowOutgoingEdgesService } from "../../services/showOutgoingEdges.service"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 
@@ -28,25 +21,35 @@ import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsP
     imports: [ColorPickerForMapColorComponent, ResetSettingsButtonComponent, EdgeMetricToggleComponent, SettingsPopoverShellComponent]
 })
 export class EdgeSettingsPopoverComponent {
-    private readonly store = inject(Store<CcState>)
+    private readonly amountOfBuildingsWithSelectedEdgeMetricService = inject(AmountOfBuildingsWithSelectedEdgeMetricService)
+    private readonly amountOfEdgePreviewsService = inject(AmountOfEdgePreviewsService)
+    private readonly edgeHeightService = inject(EdgeHeightService)
+    private readonly showOutgoingEdgesService = inject(ShowOutgoingEdgesService)
+    private readonly showIncomingEdgesService = inject(ShowIncomingEdgesService)
+    private readonly showOnlyBuildingsWithEdgesService = inject(ShowOnlyBuildingsWithEdgesService)
 
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
 
-    readonly amountOfBuildingsWithSelectedEdgeMetric = toSignal(this.store.select(amountOfBuildingsWithSelectedEdgeMetricSelector), {
-        initialValue: 0
-    })
+    readonly amountOfBuildingsWithSelectedEdgeMetric = toSignal(
+        this.amountOfBuildingsWithSelectedEdgeMetricService.amountOfBuildingsWithSelectedEdgeMetric$(),
+        {
+            initialValue: 0
+        }
+    )
     readonly edgePreviewLabel = toSignal(
-        this.store
-            .select(amountOfBuildingsWithSelectedEdgeMetricSelector)
+        this.amountOfBuildingsWithSelectedEdgeMetricService
+            .amountOfBuildingsWithSelectedEdgeMetric$()
             .pipe(map(amount => `Preview the edges of up to ${amount} buildings with the highest amount of incoming and outgoing edges`)),
         { initialValue: "" }
     )
-    readonly amountOfEdgePreviews = toSignal(this.store.select(amountOfEdgePreviewsSelector), { initialValue: 0 })
-    readonly edgeHeight = toSignal(this.store.select(edgeHeightSelector), { initialValue: 1 })
-    readonly showOutgoingEdges = toSignal(this.store.select(showOutgoingEdgesSelector), { initialValue: false })
-    readonly showIncomingEdges = toSignal(this.store.select(showIncomingEdgesSelector), { initialValue: false })
-    readonly showOnlyBuildingsWithEdges = toSignal(this.store.select(showOnlyBuildingsWithEdgesSelector), { initialValue: false })
+    readonly amountOfEdgePreviews = toSignal(this.amountOfEdgePreviewsService.amountOfEdgePreviews$(), { initialValue: 0 })
+    readonly edgeHeight = toSignal(this.edgeHeightService.edgeHeight$(), { initialValue: 1 })
+    readonly showOutgoingEdges = toSignal(this.showOutgoingEdgesService.showOutgoingEdges$(), { initialValue: false })
+    readonly showIncomingEdges = toSignal(this.showIncomingEdgesService.showIncomingEdges$(), { initialValue: false })
+    readonly showOnlyBuildingsWithEdges = toSignal(this.showOnlyBuildingsWithEdgesService.showOnlyBuildingsWithEdges$(), {
+        initialValue: false
+    })
 
     readonly resetKeys = [
         "appSettings.amountOfEdgePreviews",
@@ -64,7 +67,7 @@ export class EdgeSettingsPopoverComponent {
         if (Number.isNaN(value) || value === this.amountOfEdgePreviews()) {
             return
         }
-        this.store.dispatch(setAmountOfEdgePreviews({ value }))
+        this.amountOfEdgePreviewsService.setAmountOfEdgePreviews(value)
     }
 
     handleEdgeHeightInput(event: Event) {
@@ -72,21 +75,21 @@ export class EdgeSettingsPopoverComponent {
         if (Number.isNaN(value) || value === this.edgeHeight()) {
             return
         }
-        this.store.dispatch(setEdgeHeight({ value }))
+        this.edgeHeightService.setEdgeHeight(value)
     }
 
     setShowOutgoingEdges(event: Event) {
         const checked = (event.target as HTMLInputElement).checked
-        this.store.dispatch(setShowOutgoingEdges({ value: checked }))
+        this.showOutgoingEdgesService.setShowOutgoingEdges(checked)
     }
 
     setShowIncomingEdges(event: Event) {
         const checked = (event.target as HTMLInputElement).checked
-        this.store.dispatch(setShowIncomingEdges({ value: checked }))
+        this.showIncomingEdgesService.setShowIncomingEdges(checked)
     }
 
     setShowOnlyBuildingsWithEdges(event: Event) {
         const checked = (event.target as HTMLInputElement).checked
-        this.store.dispatch(setShowOnlyBuildingsWithEdges({ value: checked }))
+        this.showOnlyBuildingsWithEdgesService.setShowOnlyBuildingsWithEdges(checked)
     }
 }
