@@ -28,6 +28,7 @@ import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
@@ -312,6 +313,22 @@ describe("codeMapRenderService", () => {
             codeMapRenderService.render(null)
 
             expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
+        })
+
+        it("should pick top labels by height-metric value, not by rendered building height", () => {
+            // Arrange — height metric is "mcc"; nodes arrive pre-sorted by rendered height descending.
+            // The tallest-rendered building has the LOWEST metric value (e.g. inverted height direction).
+            store.dispatch(setHeightMetric({ value: "mcc" }))
+            store.dispatch(setAmountOfTopLabels({ value: 1 }))
+            const tallButLowValue = { ...TEST_NODE_LEAF, name: "tall-low", isLeaf: true, height: 100, attributes: { mcc: 4 } } as Node
+            const shortButHighValue = { ...TEST_NODE_LEAF, name: "short-high", isLeaf: true, height: 10, attributes: { mcc: 223 } } as Node
+
+            // Act
+            codeMapRenderService["setLabels"]([tallButLowValue, shortButHighValue])
+
+            // Assert — the highest-metric-value building is labeled, not the tallest-rendered one
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(shortButHighValue, expect.anything())
         })
 
         it("should generate labels for color if option is toggled on", () => {

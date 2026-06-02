@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Screenshots no longer include an empty strip at the bottom — the bottom bar height is accounted for again in the capture region.
 - Color range diagram no longer renders `NaN` when a saved color range falls outside the current metric's value range.
 - Color range slider thumbs are now keyboard-accessible (arrow keys, Home/End) and expose proper `slider` ARIA roles; the link Color/Height button now has an accessible label.
+- Top metric labels now follow the height-metric **value** ranking instead of the rendered building height, so the highest-value buildings are labeled even when the height metric is rendered inverted (inverted attribute direction or "invert height" enabled).
 
 ### Chore 👨‍💻 👩‍💻
 

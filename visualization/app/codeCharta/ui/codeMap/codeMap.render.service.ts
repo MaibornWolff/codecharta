@@ -209,7 +209,11 @@ export class CodeMapRenderService implements OnDestroy {
                     .slice(0, amountOfTopLabels)
                 this.setBuildingLabel(selectedColorNodes, highestNodeInSet)
             } else {
-                const nodes = sortedNodes.filter(node => node.isLeaf).slice(0, amountOfTopLabels)
+                const { heightMetric } = this.state.getValue().dynamicSettings
+                const nodes = sortedNodes
+                    .filter(node => node.isLeaf)
+                    .sort((a, b) => (b.attributes[heightMetric] ?? 0) - (a.attributes[heightMetric] ?? 0))
+                    .slice(0, amountOfTopLabels)
                 this.setBuildingLabel(nodes, highestNodeInSet)
             }
         }
