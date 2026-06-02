@@ -77,7 +77,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
     it("should dispatch setAmountOfEdgePreviews when the preview value changes", async () => {
         // Arrange
-        const { fixture } = await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
+        await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
         const previewNumberInput = screen.getAllByRole("spinbutton")[0]
@@ -91,7 +91,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
     it("should not dispatch setAmountOfEdgePreviews when the value is unchanged", async () => {
         // Arrange
-        const { fixture } = await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
+        await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
         const previewNumberInput = screen.getAllByRole("spinbutton")[0]
@@ -100,12 +100,68 @@ describe("EdgeSettingsPopoverComponent", () => {
         fireEvent.input(previewNumberInput, { target: { value: "3" } })
 
         // Assert
-        expect(dispatchSpy).not.toHaveBeenCalledWith(setAmountOfEdgePreviews({ value: 3 }))
+        expect(dispatchSpy).not.toHaveBeenCalled()
+    })
+
+    it("should clamp and dispatch setAmountOfEdgePreviews to the amount of buildings when above the max", async () => {
+        // Arrange
+        await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+        const previewNumberInput = screen.getAllByRole("spinbutton")[0]
+
+        // Act
+        fireEvent.input(previewNumberInput, { target: { value: "99" } })
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfEdgePreviews({ value: 10 }))
+    })
+
+    it("should dispatch setAmountOfEdgePreviews from the preview range slider", async () => {
+        // Arrange
+        await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+        const previewRange = screen.getAllByRole("slider")[0]
+
+        // Act
+        fireEvent.input(previewRange, { target: { value: "6" } })
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfEdgePreviews({ value: 6 }))
+    })
+
+    it("should not dispatch setEdgeHeight when the value is unchanged", async () => {
+        // Arrange
+        await setup({ edgeHeight: 4 })
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+        const heightNumberInput = screen.getAllByRole("spinbutton")[1]
+
+        // Act
+        fireEvent.input(heightNumberInput, { target: { value: "4" } })
+
+        // Assert
+        expect(dispatchSpy).not.toHaveBeenCalled()
+    })
+
+    it("should dispatch setShowOutgoingEdges with false when toggled off", async () => {
+        // Arrange
+        await setup({ showOutgoing: true })
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+        const checkboxes = screen.getAllByRole("checkbox")
+
+        // Act
+        fireEvent.click(checkboxes[0])
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(setShowOutgoingEdges({ value: false }))
     })
 
     it("should dispatch setEdgeHeight when the height value changes", async () => {
         // Arrange
-        const { fixture } = await setup({ edgeHeight: 1 })
+        await setup({ edgeHeight: 1 })
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
         const heightNumberInput = screen.getAllByRole("spinbutton")[1]

@@ -40,6 +40,21 @@ describe("LinkColorHeightButtonComponent", () => {
         fireEvent.click(screen.getByTestId("metric-link-button"))
 
         // Assert
+        expect(dispatchSpy).toHaveBeenCalledTimes(1)
+        expect(dispatchSpy).toHaveBeenCalledWith(toggleIsColorMetricLinkedToHeightMetric())
+    })
+
+    it("should dispatch the link toggle action on click when already linked", async () => {
+        // Arrange
+        await setup(true)
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+
+        // Act
+        fireEvent.click(screen.getByTestId("metric-link-button"))
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledTimes(1)
         expect(dispatchSpy).toHaveBeenCalledWith(toggleIsColorMetricLinkedToHeightMetric())
     })
 

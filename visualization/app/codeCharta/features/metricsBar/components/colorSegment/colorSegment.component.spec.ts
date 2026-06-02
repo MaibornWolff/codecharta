@@ -99,7 +99,19 @@ describe("ColorSegmentComponent", () => {
         fixture.componentInstance.handleMetricSelected("loc")
 
         // Assert
+        expect(dispatchSpy).toHaveBeenCalledTimes(1)
         expect(dispatchSpy).toHaveBeenCalledWith(setColorMetric({ value: "loc" }))
+    })
+
+    it("should wire the settings cog to the color settings popover via popovertarget", async () => {
+        // Arrange & Act
+        await setup()
+
+        // Assert
+        const cogButton = screen.getByTestId("metric-segment-color-cog")
+        expect(cogButton.getAttribute("popovertarget")).toBe("metric-settings-popover-color")
+        expect(document.getElementById("metric-settings-popover-color")).not.toBeNull()
+        expect(document.getElementById("metric-select-popover-color")).not.toBeNull()
     })
 
     it("should derive min/max labels and values from the global color metric data", async () => {

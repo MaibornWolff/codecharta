@@ -147,4 +147,56 @@ describe("visibleNodeMetricValuesSelector", () => {
         // Assert
         expect(result.rloc.values).toEqual([4])
     })
+
+    it("should use only the top-of-stack focused path element for filtering when multiple are present", () => {
+        // Arrange
+        const root = folder("root", "/root", [
+            folder("focused", "/root/focused", [leaf("a.ts", "/root/focused/a.ts", { rloc: 5 })]),
+            folder("other", "/root/other", [leaf("c.ts", "/root/other/c.ts", { rloc: 99 })])
+        ])
+
+        // Act
+        const result = run(root, ["/root/focused", "/root/other"])
+
+        // Assert
+        expect(result.rloc.values).toEqual([5])
+    })
+
+    it("should handle leaf nodes with empty attributes without contributing any values", () => {
+        // Arrange
+        const root = folder("root", "/root", [leaf("a.ts", "/root/a.ts", {}), leaf("b.ts", "/root/b.ts", { rloc: 8 })])
+
+        // Act
+        const result = run(root)
+
+        // Assert
+        expect(result.rloc.values).toEqual([8])
+        expect(Object.keys(result)).toEqual(["rloc"])
+    })
+
+    it("should return an empty object when the focused path prefix matches no node", () => {
+        // Arrange
+        const root = folder("root", "/root", [leaf("a.ts", "/root/a.ts", { rloc: 5 }), leaf("b.ts", "/root/b.ts", { rloc: 7 })])
+
+        // Act
+        const result = run(root, ["/root/does-not-exist"])
+
+        // Assert
+        expect(result).toEqual({})
+    })
+
+    it("should not throw when a leaf node has no path", () => {
+        // Arrange
+        const root = folder("root", "/root", [
+            leaf("a.ts", undefined as unknown as string, { rloc: 5 }),
+            leaf("b.ts", "/root/b.ts", { rloc: 7 })
+        ])
+
+        // Act
+        const act = () => run(root, ["/root"])
+
+        // Assert
+        expect(act).not.toThrow()
+        expect(act().rloc.values.sort()).toEqual([5, 7])
+    })
 })

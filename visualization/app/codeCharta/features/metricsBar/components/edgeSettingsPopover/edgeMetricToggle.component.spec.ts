@@ -67,6 +67,22 @@ describe("EdgeMetricToggleComponent", () => {
         fireEvent.click(checkbox)
 
         // Assert
+        expect(dispatchSpy).toHaveBeenCalledTimes(1)
+        expect(dispatchSpy).toHaveBeenCalledWith(toggleEdgeMetricVisible())
+    })
+
+    it("should dispatch toggleEdgeMetricVisible when re-enabling from a hidden state", async () => {
+        // Arrange
+        await setup(false)
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+        const checkbox = screen.getByRole("checkbox")
+
+        // Act
+        fireEvent.click(checkbox)
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledTimes(1)
         expect(dispatchSpy).toHaveBeenCalledWith(toggleEdgeMetricVisible())
     })
 

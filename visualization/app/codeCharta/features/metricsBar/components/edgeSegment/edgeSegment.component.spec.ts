@@ -123,6 +123,18 @@ describe("EdgeSegmentComponent", () => {
         component.handleMetricSelected("avgCommits")
 
         // Assert
+        expect(dispatchSpy).toHaveBeenCalledTimes(1)
         expect(dispatchSpy).toHaveBeenCalledWith(setEdgeMetric({ value: "avgCommits" }))
+    })
+
+    it("should wire the settings cog to the edge settings popover via popovertarget", async () => {
+        // Arrange & Act
+        await setup()
+
+        // Assert
+        const cogButton = screen.getByTestId("metric-segment-edges-cog")
+        expect(cogButton.getAttribute("popovertarget")).toBe("metric-settings-popover-edge")
+        expect(document.getElementById("metric-settings-popover-edge")).not.toBeNull()
+        expect(document.getElementById("metric-select-popover-edge")).not.toBeNull()
     })
 })

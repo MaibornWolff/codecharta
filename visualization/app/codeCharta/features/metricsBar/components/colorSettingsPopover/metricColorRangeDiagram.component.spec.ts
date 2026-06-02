@@ -37,7 +37,6 @@ describe("MetricColorRangeDiagramComponent", () => {
                 }
             ]
         })
-        // biome-ignore lint/suspicious/noExplicitAny: accessing private calc methods for behavior testing
         return result.fixture.componentInstance as any
     }
 
