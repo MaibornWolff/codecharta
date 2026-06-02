@@ -11,13 +11,14 @@ import { marginSelector } from "../../../../state/store/dynamicSettings/margin/m
 import { debounce } from "../../../../util/debounce"
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
 import { SETTINGS_INPUT_DEBOUNCE_MS, parseChangedNumberInput } from "../../util/settingsInput"
+import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 
 @Component({
     selector: "cc-area-settings-popover",
     templateUrl: "./areaSettingsPopover.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [ResetSettingsButtonComponent]
+    imports: [ResetSettingsButtonComponent, SettingsPopoverShellComponent]
 })
 export class AreaSettingsPopoverComponent {
     private readonly store = inject(Store<CcState>)

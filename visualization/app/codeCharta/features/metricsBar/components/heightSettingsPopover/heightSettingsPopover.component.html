@@ -1,10 +1,4 @@
-<div
-    class="dropdown rounded-box bg-base-100 shadow-lg w-72 flex flex-col gap-2.5 py-2 px-5"
-    popover
-    [id]="popoverId()"
-    [style.position-anchor]="'--' + anchorName()"
-    [style.position-area]="'top span-right'"
->
+<cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()">
     <div title="Height scaling">
         <span class="text-sm">Height</span>
         <div class="flex items-center gap-2">
@@ -46,4 +40,4 @@
         tooltip="Reset height metric settings to their defaults"
         label="Reset height metric settings"
     ></cc-reset-settings-button>
-</div>
+</cc-settings-popover-shell>

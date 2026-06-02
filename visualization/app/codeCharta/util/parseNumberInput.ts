@@ -1,6 +1,6 @@
 export const parseNumberInput = (event: Event, min: number, max: number) => {
     const input = event.target as HTMLInputElement
-    const value = Number.parseInt(input.value)
+    const value = Number.parseFloat(input.value)
     if (Number.isNaN(value)) {
         return value
     }

@@ -10,13 +10,14 @@ import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.s
 import { debounce } from "../../../../util/debounce"
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
 import { SETTINGS_INPUT_DEBOUNCE_MS, parseChangedNumberInput } from "../../util/settingsInput"
+import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 
 @Component({
     selector: "cc-height-settings-popover",
     templateUrl: "./heightSettingsPopover.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [ResetSettingsButtonComponent]
+    imports: [ResetSettingsButtonComponent, SettingsPopoverShellComponent]
 })
 export class HeightSettingsPopoverComponent {
     private readonly store = inject(Store<CcState>)

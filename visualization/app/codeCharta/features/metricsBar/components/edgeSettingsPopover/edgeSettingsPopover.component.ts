@@ -18,13 +18,14 @@ import { ColorPickerForMapColorComponent } from "../../../../ui/colorPickerForMa
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
 import { parseNumberInput } from "../../../../util/parseNumberInput"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
+import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 
 @Component({
     selector: "cc-edge-settings-popover",
     templateUrl: "./edgeSettingsPopover.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [ColorPickerForMapColorComponent, ResetSettingsButtonComponent, EdgeMetricToggleComponent]
+    imports: [ColorPickerForMapColorComponent, ResetSettingsButtonComponent, EdgeMetricToggleComponent, SettingsPopoverShellComponent]
 })
 export class EdgeSettingsPopoverComponent {
     private readonly store = inject(Store<CcState>)

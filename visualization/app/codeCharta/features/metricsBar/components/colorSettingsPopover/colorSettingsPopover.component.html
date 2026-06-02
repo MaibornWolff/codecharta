@@ -1,9 +1,7 @@
-<div
-    [class]="'dropdown rounded-box bg-base-100 shadow-lg max-w-[95vw] flex flex-col gap-2.5 py-2 px-5 ' + (isWidePopover() ? 'w-[640px]' : 'w-80')"
-    popover
-    [id]="popoverId()"
-    [style.position-anchor]="'--' + anchorName()"
-    [style.position-area]="'top span-right'"
+<cc-settings-popover-shell
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    [widthClass]="'max-w-[95vw] ' + (isWidePopover() ? 'w-[640px]' : 'w-80')"
 >
     @if (!isDeltaState() && colorMetric() !== "unary") {
         <div class="flex items-center gap-2">
@@ -92,4 +90,4 @@
             label="Reset colors"
         ></cc-reset-settings-button>
     </div>
-</div>
+</cc-settings-popover-shell>

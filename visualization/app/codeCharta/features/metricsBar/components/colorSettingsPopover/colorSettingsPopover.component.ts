@@ -20,6 +20,7 @@ import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColo
 import { metricColorRangeColorsSelector } from "./selectors/metricColorRangeColors.selector"
 import { metricColorRangeValuesSelector } from "./selectors/metricColorRangeValues.selector"
 import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
+import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 
 @Component({
     selector: "cc-color-settings-popover",
@@ -30,7 +31,8 @@ import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
         MetricColorRangeSliderComponent,
         MetricColorRangeDiagramComponent,
         ColorPickerForMapColorComponent,
-        ResetSettingsButtonComponent
+        ResetSettingsButtonComponent,
+        SettingsPopoverShellComponent
     ]
 })
 export class ColorSettingsPopoverComponent implements OnDestroy {
@@ -72,7 +74,7 @@ export class ColorSettingsPopoverComponent implements OnDestroy {
 
     readonly isWidePopover = computed(() => !this.isDeltaState() && this.colorMetric() !== "unary")
 
-    readonly resetThresholdsKeys = ["appSettings.mapColors.positiveDelta", "appSettings.mapColors.negativeDelta"]
+    readonly resetThresholdsKeys = ["dynamicSettings.colorRange"]
 
     private pendingLeftValue: null | number = null
     private pendingRightValue: null | number = null
