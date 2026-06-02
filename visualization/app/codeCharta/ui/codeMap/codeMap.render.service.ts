@@ -15,6 +15,7 @@ import { metricDataSelector } from "../../state/selectors/accumulatedData/metric
 import { blacklistMatcherSelector } from "../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
 import { State, Store } from "@ngrx/store"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
+import { selectTopNByValue } from "../../util/selectTopNByValue"
 
 export interface ColorCategoryCounts {
     positive: number
@@ -210,10 +211,11 @@ export class CodeMapRenderService implements OnDestroy {
                 this.setBuildingLabel(selectedColorNodes, highestNodeInSet)
             } else {
                 const { heightMetric } = this.state.getValue().dynamicSettings
-                const nodes = sortedNodes
-                    .filter(node => node.isLeaf)
-                    .sort((a, b) => (b.attributes[heightMetric] ?? 0) - (a.attributes[heightMetric] ?? 0))
-                    .slice(0, amountOfTopLabels)
+                const nodes = selectTopNByValue(
+                    sortedNodes.filter(node => node.isLeaf),
+                    node => node.attributes[heightMetric] ?? 0,
+                    amountOfTopLabels
+                )
                 this.setBuildingLabel(nodes, highestNodeInSet)
             }
         }
