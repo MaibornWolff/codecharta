@@ -26,8 +26,8 @@
             <li class="flex">
                 <button
                     type="button"
-                    class="flex items-center justify-between gap-2 w-full px-2 py-1 rounded bg-transparent border-0 text-left cursor-pointer"
-                    [class]="i === activeIndex() ? 'bg-base-200 ring-1 ring-primary' : 'hover:bg-base-200'"
+                    class="flex items-center justify-between gap-2 w-full px-2 py-1 rounded border-0 text-left cursor-pointer"
+                    [class]="i === activeIndex() ? 'bg-base-200' : 'bg-transparent hover:bg-base-200'"
                     [class.font-semibold]="option.name === selected()"
                     [attr.data-metric-name]="option.name"
                     [attr.data-active]="i === activeIndex() ? 'true' : null"
