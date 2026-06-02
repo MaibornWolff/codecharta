@@ -1,0 +1,7 @@
+@for (height of heights(); track $index) {
+    <div
+        class="flex-1 bg-base-content/70 rounded-t-sm min-h-px"
+        [style.height.%]="height * 100"
+        data-testid="axis-distribution-bar"
+    ></div>
+}

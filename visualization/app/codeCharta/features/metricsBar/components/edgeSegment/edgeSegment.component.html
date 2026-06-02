@@ -1,0 +1,34 @@
+<cc-axis-card
+    label="Edges"
+    [metricName]="edgeMetric()"
+    [hasCog]="true"
+    [cogPopoverId]="settingsPopoverId"
+    [cogAnchorName]="settingsAnchorName"
+    [searchPopoverId]="searchPopoverId"
+    [searchAnchorName]="searchAnchorName"
+    [disabled]="!isEdgeMetricVisible()"
+    [testId]="'metric-segment-edges'"
+    [cogTestId]="'metric-segment-edges-cog'"
+>
+    <div body class="flex items-center justify-center text-xs opacity-60 leading-tight min-h-4">
+        @if (hoveredEdgeValue(); as value) {
+            <span>{{ value }}</span>
+        } @else {
+            <span aria-hidden="true">&nbsp;</span>
+        }
+    </div>
+</cc-axis-card>
+
+<cc-metric-select-popover
+    [popoverId]="searchPopoverId"
+    [anchorName]="searchAnchorName"
+    placeholder="Edge Metric (highest value)"
+    kind="edge"
+    [selected]="edgeMetric()"
+    (metricSelected)="handleMetricSelected($event)"
+></cc-metric-select-popover>
+
+<cc-edge-settings-popover
+    [popoverId]="settingsPopoverId"
+    [anchorName]="settingsAnchorName"
+></cc-edge-settings-popover>

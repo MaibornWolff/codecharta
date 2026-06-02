@@ -2,7 +2,7 @@
     .side-bar-container {
         transition: right 0.3s ease;
         width: 350px;
-        height: calc(100% - 98px); // canvas overflow (ribbonBar height)
+        height: calc(100% - var(--cc-bars-height, 98px)); // canvas overflow (top bars)
         padding: 8px;
         font-size: 11pt;
         position: absolute;

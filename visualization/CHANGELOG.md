@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- **Metrics bar: distribution variant**: Redesigned the floating metrics bar with per-axis distribution histograms, a primary-tinted COLOR axis whose bars are colored by the active color ramp, an EDGES strength gauge, and clearer link/unlink visual affordances. The histograms only count buildings that are actually rendered — flattened and excluded buildings are skipped, the distribution narrows to the focused subtree when focus is active, and hovering a folder temporarily narrows it to that folder's subtree.
+- **Floating metrics bar**: Replaced the top-of-page ribbon with a single rounded card that floats just above the bottom bar (`features/metricsBar/`). Each metric segment (Scenario, Area, Height, Color, Edges, Labels) opens a native popover for search and settings; the bar uses DaisyUI primitives and is free of `@angular/material`.
+- **Metric settings popovers**: Restyled the Area, Height, Color, and Edge settings popovers to match the Label settings panel — same DaisyUI spacing (`gap-2.5 py-2 px-5`) and a full `btn btn-outline btn-error` reset button that stretches to the popover width.
+- **Color settings popover layout**: Re-laid out the Color settings popover so the threshold slider rail aligns with the number inputs, the `Reset thresholds` button sits inline at the end of the slider row, the popover narrows to `w-80` in delta or unary-metric mode, and the bottom row reads `Invert Colors` (left) → `Reset colors` (right).
 - **Faster blacklist operations**: Adding or removing flatten and exclude patterns is significantly faster on large codebases — the matching engines are now cached and only rebuilt when the blacklist itself changes.
 
 ### Fixed 🐞
@@ -22,10 +26,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fix `amountOfEdgePreviews` being silently overwritten when restoring saved state — it incorrectly dispatched the top-labels action instead.
 - Loading spinner now stays visible until the codemap's full initial render completes; previously it disappeared too early.
 - File Explorer sort dropdown now closes after selecting a sort key, toggling the order, or clicking outside the menu.
+- Metric distribution histograms no longer include sibling folders that merely share a path prefix with the focused or hovered subtree.
+- Screenshots no longer include an empty strip at the bottom — the bottom bar height is accounted for again in the capture region.
+- Color range diagram no longer renders `NaN` when a saved color range falls outside the current metric's value range.
+- Color range slider thumbs are now keyboard-accessible (arrow keys, Home/End) and expose proper `slider` ARIA roles; the link Color/Height button now has an accessible label.
 
 ### Chore 👨‍💻 👩‍💻
 
 - Upgrade FontAwesome from 4.7 to 7 (`@fortawesome/fontawesome-free`); existing icon usages keep working via the v4 compatibility shim.
+- Backfilled unit specs across the new metrics bar components (segments, settings popovers, color range slider/diagram, metric select) and the `visibleNodeMetricValues` selector.
 
 ## [1.142.0] - 2026-03-16
 

@@ -1,0 +1,56 @@
+<div
+    class="dropdown p-2 rounded-box bg-base-100 shadow-lg w-80 flex flex-col gap-2"
+    popover
+    #popover
+    [id]="popoverId()"
+    [style.position-anchor]="'--' + anchorName()"
+    [style.position-area]="'top span-right'"
+    [attr.data-testid]="'metric-select-popover-' + anchorName()"
+>
+    <label class="input input-sm input-bordered flex items-center gap-2">
+        <i class="fa fa-search opacity-60"></i>
+        <input
+            #searchInput
+            type="text"
+            class="grow"
+            autofocus
+            [placeholder]="placeholder()"
+            [value]="searchTerm()"
+            (input)="handleSearchTermChange($any($event.target).value)"
+            (keydown)="handleKeyDown($event)"
+        />
+    </label>
+
+    <ul class="flex flex-col max-h-[440px] overflow-y-auto m-0 p-0 list-none">
+        @for (option of metricData() | filterMetricDataBySearchTerm: searchTerm(); track option.name; let i = $index) {
+            <li class="flex">
+                <button
+                    type="button"
+                    class="flex items-center justify-between gap-2 w-full px-2 py-1 rounded bg-transparent border-0 text-left cursor-pointer"
+                    [class]="i === activeIndex() ? 'bg-base-200 ring-1 ring-primary' : 'hover:bg-base-200'"
+                    [class.font-semibold]="option.name === selected()"
+                    [attr.data-metric-name]="option.name"
+                    [attr.data-active]="i === activeIndex() ? 'true' : null"
+                    [title]="attributeDescriptors()[option.name] | attributeDescriptorTooltip: option.name"
+                    (click)="handleSelect(option.name)"
+                    (mouseenter)="activeIndex.set(i)"
+                >
+                    <span class="flex flex-col items-start gap-0.5 min-w-0 flex-1">
+                        <span class="truncate w-full">
+                            {{ option.name }}
+                            @if (option.name === "complexity" || option.name === "sonar_complexity") {
+                                <span class="text-xs opacity-50">(formerly mcc)</span>
+                            }
+                        </span>
+                        @if (attributeDescriptors()[option.name]?.description; as descriptorSubtitle) {
+                            <span class="text-xs opacity-60 truncate w-full">{{ descriptorSubtitle }}</span>
+                        }
+                    </span>
+                    <span class="text-xs opacity-60 shrink-0">({{ option.maxValue }})</span>
+                </button>
+            </li>
+        } @empty {
+            <li class="px-2 py-3 text-xs opacity-60">No metrics found</li>
+        }
+    </ul>
+</div>

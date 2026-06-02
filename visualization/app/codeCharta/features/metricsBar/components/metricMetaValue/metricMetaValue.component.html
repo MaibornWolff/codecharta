@@ -1,0 +1,13 @@
+<div class="flex items-center justify-center gap-1 text-xs leading-tight min-h-4">
+    @if (node()) {
+        <span class="opacity-60">
+            <cc-metric-chooser-type [metricFor]="metricFor()"></cc-metric-chooser-type>
+        </span>
+        <span class="font-medium">{{ value() ?? "—" }}</span>
+        @if (deltaLabel(); as delta) {
+            <span class="font-medium" [class]="deltaClass()">Δ{{ delta }}</span>
+        }
+    } @else {
+        <span aria-hidden="true">&nbsp;</span>
+    }
+</div>

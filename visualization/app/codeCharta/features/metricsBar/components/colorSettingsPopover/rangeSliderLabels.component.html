@@ -1,0 +1,40 @@
+<div
+    #minLabel
+    class="absolute -top-6 leading-6 text-sm text-base-content/60"
+    [style.left.px]="0"
+    [style.visibility]="hideMinLabel ? 'hidden' : 'visible'"
+>
+    {{ minValue }}
+</div>
+<div
+    #currentLeftLabel
+    class="absolute -top-6 leading-6 text-sm text-base-content/60"
+    [style.left.px]="currentLeftLabelLeftPosition"
+    [style.visibility]="doLeftRightLabelOverlap ? 'hidden' : 'visible'"
+>
+    {{ leftValueLabel }}
+</div>
+<div
+    #currentRightLabel
+    class="absolute -top-6 leading-6 text-sm text-base-content/60"
+    [style.left.px]="currentRightLabelLeftPosition"
+    [style.visibility]="doLeftRightLabelOverlap ? 'hidden' : 'visible'"
+>
+    {{ rightValueLabel }}
+</div>
+<div
+    #combinedCurrentLeftRightLabel
+    class="absolute -top-6 leading-6 text-sm text-base-content/60"
+    [style.left.px]="combinedCurrentLeftRightLabelLeftPosition"
+    [style.visibility]="doLeftRightLabelOverlap ? 'visible' : 'hidden'"
+>
+    {{ leftValueLabel }} - {{ rightValueLabel }}
+</div>
+<div
+    #maxLabel
+    class="absolute -top-6 leading-6 text-sm text-base-content/60"
+    [style.right.px]="0"
+    [style.visibility]="hideMaxLabel ? 'hidden' : 'visible'"
+>
+    {{ maxValue }}
+</div>

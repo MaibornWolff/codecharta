@@ -1,0 +1,17 @@
+<cc-distribution-segment
+    label="Area"
+    [metricName]="areaMetric()"
+    metricFor="areaMetric"
+    placeholder="Area Metric (highest value)"
+    [searchPopoverId]="searchPopoverId"
+    [searchAnchorName]="searchAnchorName"
+    [settingsPopoverId]="settingsPopoverId"
+    [settingsAnchorName]="settingsAnchorName"
+    testIdPrefix="metric-segment-area"
+    [values]="values()"
+    [minLabel]="minLabel()"
+    [maxLabel]="maxLabel()"
+    (metricSelected)="handleMetricSelected($event)"
+>
+    <cc-area-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-area-settings-popover>
+</cc-distribution-segment>

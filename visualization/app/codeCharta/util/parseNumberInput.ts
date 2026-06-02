@@ -1,10 +1,12 @@
 export const parseNumberInput = (event: Event, min: number, max: number) => {
-    const value = Number.parseInt((event.target as HTMLInputElement).value)
-    if (value < min) {
-        return min
+    const input = event.target as HTMLInputElement
+    const value = Number.parseInt(input.value)
+    if (Number.isNaN(value)) {
+        return value
     }
-    if (value > max) {
-        return max
+    const clamped = Math.min(Math.max(value, min), max)
+    if (clamped !== value) {
+        input.value = String(clamped)
     }
-    return value
+    return clamped
 }

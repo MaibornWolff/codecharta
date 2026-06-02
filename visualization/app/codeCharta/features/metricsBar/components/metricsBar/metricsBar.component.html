@@ -1,0 +1,27 @@
+<cc-area-segment></cc-area-segment>
+<cc-height-segment></cc-height-segment>
+
+@if (showColorMetricSegment()) {
+    <cc-link-color-height-button></cc-link-color-height-button>
+    <cc-color-segment></cc-color-segment>
+} @else {
+    <cc-axis-card
+        label="Color"
+        [metricName]="'Settings'"
+        [hasCog]="true"
+        [cogPopoverId]="deltaColorSettingsPopoverId"
+        [cogAnchorName]="deltaColorSettingsAnchorName"
+        [testId]="'metric-segment-color-settings'"
+        [cogTestId]="'metric-segment-color-settings-cog'"
+    ></cc-axis-card>
+    <cc-color-settings-popover
+        [popoverId]="deltaColorSettingsPopoverId"
+        [anchorName]="deltaColorSettingsAnchorName"
+    ></cc-color-settings-popover>
+}
+
+@if (hasEdgeMetric()) {
+    <cc-edge-segment></cc-edge-segment>
+}
+
+<cc-labels-scenarios-segment></cc-labels-scenarios-segment>

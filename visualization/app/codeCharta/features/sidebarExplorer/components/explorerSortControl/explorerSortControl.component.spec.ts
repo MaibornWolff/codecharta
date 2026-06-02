@@ -37,18 +37,6 @@ describe("ExplorerSortControlComponent", () => {
         expect(screen.getByText(SortingOption.AREA_SIZE)).not.toBeNull()
     })
 
-    it("should reveal the option list when the trigger is clicked", async () => {
-        // Arrange
-        await render(ExplorerSortControlComponent)
-        expect(screen.queryByText(SortingOption.AREA_SIZE)).toBeNull()
-
-        // Act
-        await userEvent.click(screen.getByTitle(`Sort: ${SortingOption.NAME}`))
-
-        // Assert
-        expect(screen.getByText(SortingOption.AREA_SIZE)).not.toBeNull()
-    })
-
     it("should dispatch setSortingOption and close the menu when an option is selected", async () => {
         // Arrange
         await render(ExplorerSortControlComponent)

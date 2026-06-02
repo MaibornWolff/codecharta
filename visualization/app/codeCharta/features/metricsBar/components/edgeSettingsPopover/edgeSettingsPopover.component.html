@@ -1,0 +1,101 @@
+<div
+    class="dropdown rounded-box bg-base-100 shadow-lg w-80 flex flex-col gap-2.5 py-2 px-5"
+    popover
+    [id]="popoverId()"
+    [style.position-anchor]="'--' + anchorName()"
+    [style.position-area]="'top span-right'"
+>
+    <div [title]="edgePreviewLabel()">
+        <span class="text-sm">Preview</span>
+        <div class="flex items-center gap-2">
+            <input
+                type="range"
+                class="range range-primary range-sm flex-1"
+                min="0"
+                [max]="amountOfBuildingsWithSelectedEdgeMetric()"
+                [value]="amountOfEdgePreviews()"
+                [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
+                (input)="handleAmountOfEdgePreviewsInput($event)"
+            />
+            <input
+                type="number"
+                class="input input-sm input-bordered w-16 text-center"
+                min="0"
+                [max]="amountOfBuildingsWithSelectedEdgeMetric()"
+                [value]="amountOfEdgePreviews()"
+                [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
+                (input)="handleAmountOfEdgePreviewsInput($event)"
+            />
+        </div>
+    </div>
+
+    <div title="Adjust the curve height">
+        <span class="text-sm">Height</span>
+        <div class="flex items-center gap-2">
+            <input
+                type="range"
+                class="range range-primary range-sm flex-1"
+                min="1"
+                max="9"
+                [value]="edgeHeight()"
+                [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
+                (input)="handleEdgeHeightInput($event)"
+            />
+            <input
+                type="number"
+                class="input input-sm input-bordered w-16 text-center"
+                min="1"
+                max="9"
+                [value]="edgeHeight()"
+                [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
+                (input)="handleEdgeHeightInput($event)"
+            />
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-2">
+            <cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'" class="flex-1"></cc-color-picker-for-map-color>
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                    type="checkbox"
+                    class="checkbox checkbox-sm checkbox-primary"
+                    [checked]="showOutgoingEdges()"
+                    (change)="setShowOutgoingEdges($event)"
+                />
+                <span>Show</span>
+            </label>
+        </div>
+        <div class="flex items-center gap-2">
+            <cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'" class="flex-1"></cc-color-picker-for-map-color>
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                    type="checkbox"
+                    class="checkbox checkbox-sm checkbox-primary"
+                    [checked]="showIncomingEdges()"
+                    (change)="setShowIncomingEdges($event)"
+                />
+                <span>Show</span>
+            </label>
+        </div>
+    </div>
+
+    <label class="flex items-center gap-2 cursor-pointer">
+        <input
+            type="checkbox"
+            class="checkbox checkbox-sm checkbox-primary"
+            [checked]="showOnlyBuildingsWithEdges()"
+            [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
+            (change)="setShowOnlyBuildingsWithEdges($event)"
+        />
+        <span>Only show nodes with edges</span>
+    </label>
+
+    <cc-edge-metric-toggle></cc-edge-metric-toggle>
+
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        tooltip="Reset edge metric settings to their defaults"
+        label="Reset edge metric settings"
+    ></cc-reset-settings-button>
+</div>

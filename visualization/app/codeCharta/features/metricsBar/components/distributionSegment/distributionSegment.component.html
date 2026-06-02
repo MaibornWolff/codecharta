@@ -1,0 +1,31 @@
+<cc-axis-card
+    [label]="label()"
+    [metricName]="metricName()"
+    [hasCog]="true"
+    [cogPopoverId]="settingsPopoverId()"
+    [cogAnchorName]="settingsAnchorName()"
+    [searchPopoverId]="searchPopoverId()"
+    [searchAnchorName]="searchAnchorName()"
+    [testId]="testIdPrefix()"
+    [cogTestId]="testIdPrefix() + '-cog'"
+>
+    <div body class="flex flex-col items-stretch gap-1">
+        <cc-metric-meta-value [metricFor]="metricFor()"></cc-metric-meta-value>
+        <cc-axis-distribution [values]="values()" [attr.data-testid]="testIdPrefix() + '-distribution'"></cc-axis-distribution>
+        <div class="flex items-center justify-between text-[10px] opacity-60 leading-none">
+            <span>{{ minLabel() }}</span>
+            <span>{{ maxLabel() }}</span>
+        </div>
+    </div>
+</cc-axis-card>
+
+<cc-metric-select-popover
+    [popoverId]="searchPopoverId()"
+    [anchorName]="searchAnchorName()"
+    [placeholder]="placeholder()"
+    kind="node"
+    [selected]="metricName()"
+    (metricSelected)="metricSelected.emit($event)"
+></cc-metric-select-popover>
+
+<ng-content></ng-content>

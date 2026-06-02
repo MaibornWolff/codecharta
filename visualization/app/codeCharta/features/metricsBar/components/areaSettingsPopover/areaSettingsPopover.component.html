@@ -1,0 +1,55 @@
+<div
+    class="dropdown rounded-box bg-base-100 shadow-lg w-72 flex flex-col gap-2.5 py-2 px-5"
+    popover
+    [id]="popoverId()"
+    [style.position-anchor]="'--' + anchorName()"
+    [style.position-area]="'top span-right'"
+>
+    <div title="Amount of space between buildings in percent">
+        <span class="text-sm">Margin</span>
+        <div class="flex items-center gap-2">
+            <input
+                type="range"
+                class="range range-primary range-sm flex-1"
+                min="1"
+                max="100"
+                [value]="margin()"
+                (input)="handleMarginInput($event)"
+            />
+            <input
+                type="number"
+                class="input input-sm input-bordered w-16 text-center"
+                min="1"
+                max="100"
+                [value]="margin()"
+                (input)="handleMarginInput($event)"
+            />
+        </div>
+    </div>
+
+    <label class="flex items-center gap-2 cursor-pointer">
+        <input
+            type="checkbox"
+            class="checkbox checkbox-sm checkbox-primary"
+            [checked]="enableFloorLabels()"
+            (change)="setEnableFloorLabel($event)"
+        />
+        <span>Enable Floor Labels</span>
+    </label>
+
+    <label class="flex items-center gap-2 cursor-pointer">
+        <input
+            type="checkbox"
+            class="checkbox checkbox-sm checkbox-primary"
+            [checked]="isInvertedArea()"
+            (change)="toggleInvertingArea($event)"
+        />
+        <span>Invert Area</span>
+    </label>
+
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        tooltip="Reset area metric settings to their defaults"
+        label="Reset area metric settings"
+    ></cc-reset-settings-button>
+</div>
