@@ -1,6 +1,6 @@
 import { BlacklistItem, CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { createBlacklistMatcher } from "../../../util/codeMapHelper"
-import { _calculateExplorerCounts } from "./sidebarExplorer.selectors"
+import { _calculateExplorerCounts, flattenRulesWithCountSelector } from "./sidebarExplorer.selectors"
 
 const makeLeaf = (path: string, attributes: Record<string, number> = { unary: 1, rloc: 1 }): CodeMapNode => ({
     name: path.split("/").pop() ?? path,
@@ -134,6 +134,60 @@ describe("sidebarExplorer.selectors", () => {
 
             // Assert
             expect(result.shown).toBe(1)
+        })
+
+        it("should flatten every leaf that does not match a negated rule", () => {
+            // Arrange: "!alpha" flattens everything except the two paths containing "alpha"
+            const blacklist: BlacklistItem[] = [{ type: "flatten", path: "!alpha" }]
+
+            // Act
+            const result = _calculateExplorerCounts([], createBlacklistMatcher(blacklist), allLeaves, "rloc")
+
+            // Assert
+            expect(result).toEqual({ shown: 2, flattened: 3, hidden: 0, noArea: 0 })
+        })
+
+        it("should match a bare rule as a substring, mirroring the decorator", () => {
+            // Arrange: bare "beta" affects every path containing "beta", not only exact matches
+            const blacklist: BlacklistItem[] = [{ type: "flatten", path: "beta" }]
+
+            // Act
+            const result = _calculateExplorerCounts([], createBlacklistMatcher(blacklist), allLeaves, "rloc")
+
+            // Assert
+            expect(result.flattened).toBe(2)
+        })
+    })
+
+    describe("flattenRulesWithCountSelector", () => {
+        const allLeaves: CodeMapNode[] = [
+            makeLeaf("/root/src/alpha.kt"),
+            makeLeaf("/root/src/beta.kt"),
+            makeLeaf("/root/src/gamma.kt"),
+            makeLeaf("/root/test/alpha.spec.ts")
+        ]
+
+        it("should count leaves affected by a negated rule instead of returning zero", () => {
+            // Arrange: "!alpha" flattens the two leaves that do not contain "alpha"
+            const blacklist: BlacklistItem[] = [{ type: "flatten", path: "!alpha" }]
+
+            // Act
+            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves)
+
+            // Assert
+            expect(result).toHaveLength(1)
+            expect(result[0].affectedCount).toBe(2)
+        })
+
+        it("should count a bare rule as a substring match", () => {
+            // Arrange
+            const blacklist: BlacklistItem[] = [{ type: "flatten", path: "alpha" }]
+
+            // Act
+            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves)
+
+            // Assert
+            expect(result[0].affectedCount).toBe(2)
         })
     })
 })

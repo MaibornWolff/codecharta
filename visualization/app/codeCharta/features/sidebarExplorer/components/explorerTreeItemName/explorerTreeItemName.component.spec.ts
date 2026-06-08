@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../../../codeCharta.model"
 import { searchedNodePathsSelector } from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { ExplorerTreeItemNameComponent } from "./explorerTreeItemName.component"
@@ -73,5 +73,25 @@ describe("ExplorerTreeItemNameComponent", () => {
 
         // Assert
         expect(container.textContent).toContain("foo.ts")
+    })
+
+    it("should line through a flattened file", async () => {
+        // Arrange & Act
+        const { container } = await render(ExplorerTreeItemNameComponent, {
+            inputs: { node: { path: "/x", type: NodeType.FILE, isFlattened: true, attributes: { rloc: 1 } } as unknown as CodeMapNode }
+        })
+
+        // Assert
+        expect(container.querySelector(".node-name")?.classList.contains("line-through")).toBe(true)
+    })
+
+    it("should not line through a flattened folder", async () => {
+        // Arrange & Act
+        const { container } = await render(ExplorerTreeItemNameComponent, {
+            inputs: { node: { path: "/x", type: NodeType.FOLDER, isFlattened: true, attributes: { rloc: 1 } } as unknown as CodeMapNode }
+        })
+
+        // Assert
+        expect(container.querySelector(".node-name")?.classList.contains("line-through")).toBe(false)
     })
 })

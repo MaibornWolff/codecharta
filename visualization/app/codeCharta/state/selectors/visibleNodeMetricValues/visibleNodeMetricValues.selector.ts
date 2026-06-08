@@ -42,34 +42,38 @@ function resolvePathPrefix(hoveredNode: CodeMapNode | undefined, focusedNodePath
 
 function collectMetrics(node: CodeMapNode, pathPrefix: string | null, result: Record<string, VisibleMetricValues>) {
     const isLeafNode = !node.children || node.children.length === 0
-    if (isLeafNode) {
-        if (isNodeVisibleForHistogram(node, pathPrefix) && node.attributes) {
-            for (const metric in node.attributes) {
-                const value = node.attributes[metric]
-                if (typeof value !== "number" || !Number.isFinite(value)) {
-                    continue
-                }
-                let entry = result[metric]
-                if (!entry) {
-                    entry = { values: [], minValue: value, maxValue: value, sum: 0 }
-                    result[metric] = entry
-                }
-                entry.values.push(value)
-                entry.sum += value
-                if (value < entry.minValue) {
-                    entry.minValue = value
-                }
-                if (value > entry.maxValue) {
-                    entry.maxValue = value
-                }
-            }
-        }
-        return
-    }
-    if (node.children) {
+    if (!isLeafNode) {
         for (const child of node.children) {
             collectMetrics(child, pathPrefix, result)
         }
+        return
+    }
+
+    if (!isNodeVisibleForHistogram(node, pathPrefix) || !node.attributes) {
+        return
+    }
+    for (const metric in node.attributes) {
+        accumulateMetricValue(result, metric, node.attributes[metric])
+    }
+}
+
+function accumulateMetricValue(result: Record<string, VisibleMetricValues>, metric: string, value: number) {
+    if (typeof value !== "number" || !Number.isFinite(value)) {
+        return
+    }
+
+    let entry = result[metric]
+    if (!entry) {
+        entry = { values: [], minValue: value, maxValue: value, sum: 0 }
+        result[metric] = entry
+    }
+    entry.values.push(value)
+    entry.sum += value
+    if (value < entry.minValue) {
+        entry.minValue = value
+    }
+    if (value > entry.maxValue) {
+        entry.maxValue = value
     }
 }
 

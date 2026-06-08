@@ -1,12 +1,11 @@
 import { createSelector } from "@ngrx/store"
-import ignore from "ignore"
 import { BlacklistItem, BlacklistType, CodeMapNode } from "../../../codeCharta.model"
 import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/codeMapNodes.selector"
 import { searchedNodesSelector } from "../../../state/selectors/searchedNodes/searchedNodes.selector"
 import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
 import { blacklistMatcherSelector } from "../../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
-import { BlacklistMatcher, isAreaValid, isLeaf, transformPath } from "../../../util/codeMapHelper"
+import { BlacklistMatcher, isAreaValid, isLeaf, returnIgnore, transformPath } from "../../../util/codeMapHelper"
 import { isPatternRule } from "./isPattern"
 
 export type ExplorerCounts = {
@@ -68,36 +67,23 @@ const buildRulesWithCount = (blacklist: BlacklistItem[], allLeaves: CodeMapNode[
 
     const transformedLeafPaths = allLeaves.map(node => transformPath(node.path))
 
-    const combinedEngine = ignore()
-    for (const item of itemsOfType) {
-        combinedEngine.add(transformPath(item.path))
-    }
-
-    const rulesWithStats = itemsOfType.map(item => ({
-        item,
-        engine: ignore().add(transformPath(item.path)),
-        count: 0
-    }))
-
-    for (const path of transformedLeafPaths) {
-        if (!combinedEngine.ignores(path)) {
-            continue
-        }
-        for (const r of rulesWithStats) {
-            if (r.engine.ignores(path)) {
-                r.count++
+    return itemsOfType
+        .map((item): RuleWithCount => {
+            // Reuse `returnIgnore` so the count matches how NodeDecorator actually flattens/excludes
+            // nodes – including negated `!`-rules, which affect every path that does *not* match.
+            const { ignoredNodePaths, condition } = returnIgnore(item.path)
+            let affectedCount = 0
+            for (const path of transformedLeafPaths) {
+                if (ignoredNodePaths.ignores(path) === condition) {
+                    affectedCount++
+                }
             }
-        }
-    }
-
-    return rulesWithStats
-        .map(
-            ({ item, count }): RuleWithCount => ({
+            return {
                 item,
-                affectedCount: count,
+                affectedCount,
                 kind: isPatternRule(item.path) ? "RULE" : "MANUAL"
-            })
-        )
+            }
+        })
         .sort((a, b) => a.item.path.localeCompare(b.item.path))
 }
 

@@ -101,20 +101,31 @@ export interface BlacklistMatcher {
 }
 
 export function createBlacklistMatcher(blacklist: BlacklistItem[]): BlacklistMatcher {
-    const flatten = ignore()
-    const exclude = ignore()
+    const flattenRules: BlacklistRule[] = []
+    const excludeRules: BlacklistRule[] = []
     for (const entry of blacklist) {
-        const transformed = transformPath(entry.path)
+        const rule = returnIgnore(entry.path)
         if (entry.type === "flatten") {
-            flatten.add(transformed)
+            flattenRules.push(rule)
         } else {
-            exclude.add(transformed)
+            excludeRules.push(rule)
         }
     }
     return {
-        isExcluded: path => exclude.ignores(transformPath(path)),
-        isFlattened: path => flatten.ignores(transformPath(path))
+        isExcluded: path => matchesAnyRule(excludeRules, path),
+        isFlattened: path => matchesAnyRule(flattenRules, path)
     }
+}
+
+type BlacklistRule = ReturnType<typeof returnIgnore>
+
+// Mirrors how NodeDecorator applies blacklist rules: a node is affected when its
+// path matches the rule's pattern (positive rule) or, for a negated `!`-rule, when
+// it does *not* match. Keeping this in sync with `returnIgnore` ensures counts and
+// the matcher agree with the actual `isFlattened`/`isExcluded` flags on the map.
+function matchesAnyRule(rules: BlacklistRule[], path: string): boolean {
+    const transformedPath = transformPath(path)
+    return rules.some(({ ignoredNodePaths, condition }) => ignoredNodePaths.ignores(transformedPath) === condition)
 }
 
 export function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string | void {

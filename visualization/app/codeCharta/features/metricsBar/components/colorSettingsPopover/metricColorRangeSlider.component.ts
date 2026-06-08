@@ -43,7 +43,7 @@ export class MetricColorRangeSliderComponent implements OnChanges {
 
     private currentlySliding: CurrentlySliding = undefined
 
-    constructor(private changeDetectorRef: ChangeDetectorRef) {}
+    constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
 
     ngOnChanges(changes: SimpleChanges) {
         if (!this.currentlySliding) {

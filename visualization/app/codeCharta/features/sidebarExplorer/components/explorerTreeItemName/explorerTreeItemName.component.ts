@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../../../codeCharta.model"
 import { isAreaValid } from "../../../../util/codeMapHelper"
 import { AreaMetricStore } from "../../stores/areaMetric.store"
 import { SearchedNodePathsStore } from "../../stores/searchedNodePaths.store"
@@ -22,4 +22,5 @@ export class ExplorerTreeItemNameComponent {
 
     readonly isAreaMetricValid = computed(() => isAreaValid(this.node(), this.areaMetric()))
     readonly isSearchResult = computed(() => this.searchedNodePaths().has(this.node().path))
+    readonly isFlattenedFile = computed(() => Boolean(this.node().isFlattened) && this.node().type === NodeType.FILE)
 }

@@ -10,8 +10,8 @@ export class NodeSelectionService {
     private readonly node$: Observable<CodeMapNode | Node | undefined>
 
     constructor(
-        private nodeSelectionStore: NodeSelectionStore,
-        private codeMapRenderService: CodeMapRenderService
+        private readonly nodeSelectionStore: NodeSelectionStore,
+        private readonly codeMapRenderService: CodeMapRenderService
     ) {
         const hoveredNode$ = this.nodeSelectionStore.hoveredNode$
         const selectedNode$ = this.nodeSelectionStore.selectedNode$

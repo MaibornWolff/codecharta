@@ -1,41 +1,52 @@
 export function histogramBins(values: readonly number[], binCount = 12, range?: { min: number; max: number }): number[] {
     const empty = new Array(binCount).fill(0) as number[]
 
-    if (!values || values.length === 0) {
+    const finite = toFiniteValues(values)
+    if (finite.length === 0) {
         return empty
     }
 
+    const { min, max } = resolveBounds(finite, range)
+    if (max === min) {
+        return empty
+    }
+
+    const counts = countValuesPerBin(finite, min, max, binCount)
+    return normalizeCounts(counts, empty)
+}
+
+function toFiniteValues(values: readonly number[]): number[] {
     const finite: number[] = []
+    if (!values) {
+        return finite
+    }
     for (const value of values) {
         if (Number.isFinite(value)) {
             finite.push(value)
         }
     }
-    if (finite.length === 0) {
-        return empty
+    return finite
+}
+
+function resolveBounds(finite: number[], range?: { min: number; max: number }): { min: number; max: number } {
+    if (range && Number.isFinite(range.min) && Number.isFinite(range.max)) {
+        return { min: range.min, max: range.max }
     }
 
-    let min: number
-    let max: number
-    if (range && Number.isFinite(range.min) && Number.isFinite(range.max)) {
-        min = range.min
-        max = range.max
-    } else {
-        min = finite[0]
-        max = finite[0]
-        for (const value of finite) {
-            if (value < min) {
-                min = value
-            }
-            if (value > max) {
-                max = value
-            }
+    let min = finite[0]
+    let max = finite[0]
+    for (const value of finite) {
+        if (value < min) {
+            min = value
+        }
+        if (value > max) {
+            max = value
         }
     }
-    if (max === min) {
-        return empty
-    }
+    return { min, max }
+}
 
+function countValuesPerBin(finite: number[], min: number, max: number, binCount: number): number[] {
     const counts = new Array(binCount).fill(0) as number[]
     const span = max - min
     for (const value of finite) {
@@ -48,7 +59,10 @@ export function histogramBins(values: readonly number[], binCount = 12, range?: 
         }
         counts[index]++
     }
+    return counts
+}
 
+function normalizeCounts(counts: number[], empty: number[]): number[] {
     let maxCount = 0
     for (const count of counts) {
         if (count > maxCount) {

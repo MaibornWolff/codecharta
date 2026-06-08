@@ -27,30 +27,39 @@
 
         <div
             #leftThumb
+            aria-hidden="true"
             class="cursor-pointer absolute -top-1 rounded-full border-[7px] border-primary"
             [style.left.px]="sliderRangePosition.leftEnd - thumbRadius"
             (mousedown)="setCurrentlySliding('leftThumb')"
-            (keydown)="handleLeftThumbKeydown($event)"
-            role="slider"
-            aria-label="Lower color range value"
-            [attr.aria-valuemin]="minValue"
-            [attr.aria-valuemax]="currentRightValue"
-            [attr.aria-valuenow]="currentLeftValue"
-            tabindex="0"
         ></div>
         <div
             #rightThumb
+            aria-hidden="true"
             class="cursor-pointer absolute -top-1 rounded-full border-[7px] border-primary"
             [style.left.px]="sliderRangePosition.rightStart - thumbRadius"
             (mousedown)="setCurrentlySliding('rightThumb')"
-            (keydown)="handleRightThumbKeydown($event)"
-            role="slider"
-            aria-label="Upper color range value"
-            [attr.aria-valuemin]="currentLeftValue"
-            [attr.aria-valuemax]="maxValue"
-            [attr.aria-valuenow]="currentRightValue"
-            tabindex="0"
         ></div>
+
+        <input
+            type="range"
+            class="absolute inset-0 m-0 h-full w-full opacity-0 pointer-events-none"
+            step="1"
+            [min]="minValue"
+            [max]="currentRightValue"
+            [value]="currentLeftValue"
+            (keydown)="handleLeftThumbKeydown($event)"
+            aria-label="Lower color range value"
+        />
+        <input
+            type="range"
+            class="absolute inset-0 m-0 h-full w-full opacity-0 pointer-events-none"
+            step="1"
+            [min]="currentLeftValue"
+            [max]="maxValue"
+            [value]="currentRightValue"
+            (keydown)="handleRightThumbKeydown($event)"
+            aria-label="Upper color range value"
+        />
         <cc-range-slider-labels
             [minValue]="minValue"
             [maxValue]="maxValue"

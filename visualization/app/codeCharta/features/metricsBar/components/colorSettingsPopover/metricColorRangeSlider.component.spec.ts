@@ -17,22 +17,22 @@ describe("MetricColorRangeSliderComponent", () => {
                 ...overrides
             }
         })
-        const leftThumb = screen.getByLabelText("Lower color range value")
-        const rightThumb = screen.getByLabelText("Upper color range value")
+        const leftThumb = screen.getByLabelText("Lower color range value") as HTMLInputElement
+        const rightThumb = screen.getByLabelText("Upper color range value") as HTMLInputElement
         return { ...renderResult, handleValueChange, leftThumb, rightThumb }
     }
 
-    it("should expose current/min/max via aria-value attributes on both thumbs", async () => {
+    it("should expose current/min/max via the native range inputs on both thumbs", async () => {
         // Arrange & Act
         const { leftThumb, rightThumb } = await setup()
 
         // Assert
-        expect(leftThumb.getAttribute("aria-valuemin")).toBe("0")
-        expect(leftThumb.getAttribute("aria-valuemax")).toBe("70")
-        expect(leftThumb.getAttribute("aria-valuenow")).toBe("30")
-        expect(rightThumb.getAttribute("aria-valuemin")).toBe("30")
-        expect(rightThumb.getAttribute("aria-valuemax")).toBe("100")
-        expect(rightThumb.getAttribute("aria-valuenow")).toBe("70")
+        expect(leftThumb.min).toBe("0")
+        expect(leftThumb.max).toBe("70")
+        expect(leftThumb.value).toBe("30")
+        expect(rightThumb.min).toBe("30")
+        expect(rightThumb.max).toBe("100")
+        expect(rightThumb.value).toBe("70")
     })
 
     it("should decrement the left value by 1 on ArrowLeft", async () => {

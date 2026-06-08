@@ -29,8 +29,8 @@ export class LabelsScenariosSegmentComponent implements OnInit {
         return `${count} ${count === 1 ? "scenario" : "scenarios"} available`
     })
 
-    ngOnInit(): void {
-        void this.scenariosService.loadScenarios()
+    async ngOnInit(): Promise<void> {
+        await this.scenariosService.loadScenarios()
     }
 
     openScenarioList() {
