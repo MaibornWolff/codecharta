@@ -12,6 +12,10 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { ColorSettingsPopoverComponent } from "./colorSettingsPopover.component"
 
 describe("ColorSettingsPopoverComponent", () => {
+    afterEach(() => {
+        jest.useRealTimers()
+    })
+
     async function setup(mapColors = defaultMapColors) {
         const renderResult = await render(ColorSettingsPopoverComponent, {
             inputs: {
@@ -50,7 +54,6 @@ describe("ColorSettingsPopoverComponent", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setColorRange({ value: { from: 5, to: 42 } }))
-        jest.useRealTimers()
     })
 
     it("should debounce rapid changes into a single dispatch using the latest values", async () => {
@@ -69,7 +72,6 @@ describe("ColorSettingsPopoverComponent", () => {
         // Assert
         expect(dispatchSpy).toHaveBeenCalledTimes(1)
         expect(dispatchSpy).toHaveBeenCalledWith(setColorRange({ value: { from: 1, to: 9 } }))
-        jest.useRealTimers()
     })
 
     it("should flush a pending color range when destroyed before the debounce timer fires", async () => {
@@ -88,7 +90,6 @@ describe("ColorSettingsPopoverComponent", () => {
 
         jest.advanceTimersByTime(400)
         expect(dispatchSpy).toHaveBeenCalledTimes(1)
-        jest.useRealTimers()
     })
 
     it("should report colors as not inverted for the default map colors", async () => {
