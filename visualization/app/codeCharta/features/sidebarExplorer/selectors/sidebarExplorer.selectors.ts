@@ -5,7 +5,8 @@ import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/c
 import { searchedNodesSelector } from "../../../state/selectors/searchedNodes/searchedNodes.selector"
 import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { addRulePatternsToEngine, isAreaValid, isLeaf, returnIgnore, transformPath } from "../../../util/codeMapHelper"
+import { addRulePatternsToEngine, returnIgnore, transformPath } from "../../../util/blacklist/blacklistMatcher"
+import { isAreaValid, isLeaf } from "../../../util/codeMapHelper"
 import { isPatternRule } from "./isPattern"
 
 export type ExplorerCounts = {

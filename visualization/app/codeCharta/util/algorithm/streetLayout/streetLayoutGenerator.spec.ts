@@ -2,7 +2,7 @@ import { StreetLayoutGenerator } from "./streetLayoutGenerator"
 import { CodeMapNode, LayoutAlgorithm } from "../../../codeCharta.model"
 import { klona } from "klona"
 import { METRIC_DATA, STATE, VALID_NODE_WITH_PATH } from "../../dataMocks"
-import { createBlacklistMatcher } from "../../codeMapHelper"
+import { createBlacklistMatcher } from "../../blacklist/blacklistMatcher"
 
 describe("horizontalStreet", () => {
     let codeMapNode: CodeMapNode

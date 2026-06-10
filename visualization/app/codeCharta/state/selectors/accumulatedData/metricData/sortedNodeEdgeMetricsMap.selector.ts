@@ -4,7 +4,7 @@ import { blacklistMatcherSelector } from "../../../store/fileSettings/blacklist/
 import { calculateEdgeMetricData, EdgeMetricCountMap, NodeEdgeMetricsMap } from "./edgeMetricData.calculator"
 import { FileState } from "../../../../model/files/files"
 import { EdgeMetricCount } from "../../../../codeCharta.model"
-import { BlacklistMatcher } from "../../../../util/codeMapHelper"
+import { BlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
 import { showIncomingEdgesSelector } from "../../../store/appSettings/showEdges/incoming/showIncomingEdges.selector"
 import { showOutgoingEdgesSelector } from "../../../store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
 

@@ -2,7 +2,8 @@ import { hierarchy } from "d3-hierarchy"
 
 import { NodeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
-import { BlacklistMatcher, isLeaf } from "../../../../util/codeMapHelper"
+import { BlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
+import { isLeaf } from "../../../../util/codeMapHelper"
 import { sortByMetricName } from "./sortByMetricName"
 
 export const UNARY_METRIC = "unary"

@@ -1,7 +1,7 @@
 import { hierarchy } from "d3-hierarchy"
 import { Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
-import { BlacklistMatcher } from "../../../../util/codeMapHelper"
+import { BlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
 import { sortByMetricName } from "./sortByMetricName"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>

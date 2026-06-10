@@ -1,5 +1,5 @@
 import { BlacklistItem, CodeMapNode, NodeType } from "../../../codeCharta.model"
-import { createBlacklistMatcher } from "../../../util/codeMapHelper"
+import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 import { _calculateExplorerCounts, flattenRulesWithCountSelector } from "./sidebarExplorer.selectors"
 
 const makeLeaf = (path: string, attributes: Record<string, number> = { unary: 1, rloc: 1 }): CodeMapNode => ({

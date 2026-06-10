@@ -5,7 +5,7 @@ import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.ser
 import { BlacklistItem, CcState, Node } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
-import { isPathHiddenOrExcluded } from "../../util/codeMapHelper"
+import { isPathHiddenOrExcluded } from "../../util/blacklist/blacklistMatcher"
 import { hierarchy } from "d3-hierarchy"
 import { Raycaster, Vector2 } from "three"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
