@@ -45,9 +45,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - The edge metric chooser stays usable while edges are hidden (it is only dimmed), and the hovered edge values show the sum/median aggregation indicator again.
 - Pressing Enter right after opening a metric search popover no longer switches to the first list entry — keyboard navigation starts on the currently selected metric.
 - Settings popovers open next to their metric segment in browsers without CSS anchor positioning (e.g. Firefox) instead of centered in the viewport.
-- Divider lines between the metrics-bar segments render again.
 - A metric whose values are all identical (e.g. `unary`) now shows one full histogram bar instead of looking like "no data".
 - Hovering a folder outside the focused subtree no longer rebuilds the metrics-bar histograms from buildings that are not rendered.
+- The metrics-bar histograms now stay pinned to the selected folder, matching the displayed metric values (hovered, then selected, then whole map).
 - The selected building no longer survives a map rebuild as a stale reference: it is remapped onto the new mesh (or deselected when it disappears), preventing wrong recoloring after changing a metric and clicking another building.
 
 ### Chore 👨‍💻 👩‍💻

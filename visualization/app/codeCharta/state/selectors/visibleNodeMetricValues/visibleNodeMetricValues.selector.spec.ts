@@ -13,13 +13,15 @@ function run(
     unifiedMapNode: CodeMapNode | undefined,
     focusedNodePath: string[] = [],
     hoveredNode?: CodeMapNode,
-    metrics: { area: string; height: string; color: string } = { area: "rloc", height: "rloc", color: "rloc" }
+    metrics: { area: string; height: string; color: string } = { area: "rloc", height: "rloc", color: "rloc" },
+    selectedNode?: CodeMapNode
 ) {
-    const hoveredFolderPath = hoveredNode?.children && hoveredNode.children.length > 0 && hoveredNode.path ? hoveredNode.path : null
+    const toFolderPath = (node?: CodeMapNode) => (node?.children && node.children.length > 0 && node.path ? node.path : null)
     return visibleNodeMetricValuesSelector.projector(
         { unifiedMapNode, unifiedFileMeta: undefined },
         focusedNodePath,
-        hoveredFolderPath,
+        toFolderPath(hoveredNode),
+        toFolderPath(selectedNode),
         metrics.area,
         metrics.height,
         metrics.color
@@ -121,6 +123,46 @@ describe("visibleNodeMetricValuesSelector", () => {
 
         // Assert
         expect(result.rloc.values).toEqual([42])
+    })
+
+    it("should stay pinned to a selected folder when nothing is hovered", () => {
+        // Arrange: like the displayed metric values, the histogram follows the selection
+        const selectedFolder = folder("nested", "/root/nested", [
+            leaf("a.ts", "/root/nested/a.ts", { rloc: 1 }),
+            leaf("b.ts", "/root/nested/b.ts", { rloc: 2 })
+        ])
+        const root = folder("root", "/root", [selectedFolder, leaf("c.ts", "/root/c.ts", { rloc: 99 })])
+
+        // Act
+        const result = run(root, [], undefined, undefined, selectedFolder)
+
+        // Assert
+        expect(result.rloc.values.sort()).toEqual([1, 2])
+    })
+
+    it("should prefer the hovered folder over the selected folder", () => {
+        // Arrange
+        const hoveredFolder = folder("hovered", "/root/hovered", [leaf("a.ts", "/root/hovered/a.ts", { rloc: 42 })])
+        const selectedFolder = folder("selected", "/root/selected", [leaf("b.ts", "/root/selected/b.ts", { rloc: 7 })])
+        const root = folder("root", "/root", [hoveredFolder, selectedFolder])
+
+        // Act
+        const result = run(root, [], hoveredFolder, undefined, selectedFolder)
+
+        // Assert
+        expect(result.rloc.values).toEqual([42])
+    })
+
+    it("should ignore selected leaf nodes", () => {
+        // Arrange
+        const selectedLeaf = leaf("a.ts", "/root/a.ts", { rloc: 5 })
+        const root = folder("root", "/root", [selectedLeaf, leaf("b.ts", "/root/b.ts", { rloc: 10 })])
+
+        // Act
+        const result = run(root, [], undefined, undefined, selectedLeaf)
+
+        // Assert
+        expect(result.rloc.values.sort()).toEqual([10, 5])
     })
 
     it("should keep the focused subtree when hovering a folder outside of it", () => {

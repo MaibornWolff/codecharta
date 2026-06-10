@@ -7,6 +7,7 @@ import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNode
 import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
 import { accumulatedDataSelector } from "../accumulatedData/accumulatedData.selector"
 import { hoveredNodeSelector } from "../hoveredNode.selector"
+import { selectedNodeSelector } from "../selectedNode.selector"
 
 export interface VisibleMetricValues {
     values: number[]
@@ -18,21 +19,34 @@ export type VisibleNodeMetricValues = Record<string, VisibleMetricValues>
 
 const EMPTY: VisibleNodeMetricValues = Object.freeze({}) as VisibleNodeMetricValues
 
-// Derive the hovered *folder* path first: hovering a leaf cannot change the histogram,
-// so this memoization barrier keeps building hovers (10-30/s while sweeping the map)
+// Derive the hovered/selected *folder* paths first: leaves cannot change the histogram,
+// so these memoization barriers keep building hovers (10-30/s while sweeping the map)
 // from re-walking the whole map on every mousemove.
 const hoveredFolderPathSelector = createSelector(hoveredNodeSelector, hoveredNode =>
     hoveredNode?.children && hoveredNode.children.length > 0 && hoveredNode.path ? hoveredNode.path : null
+)
+
+const selectedFolderPathSelector = createSelector(selectedNodeSelector, selectedNode =>
+    selectedNode?.children && selectedNode.children.length > 0 && selectedNode.path ? selectedNode.path : null
 )
 
 export const visibleNodeMetricValuesSelector = createSelector(
     accumulatedDataSelector,
     focusedNodePathSelector,
     hoveredFolderPathSelector,
+    selectedFolderPathSelector,
     areaMetricSelector,
     heightMetricSelector,
     colorMetricSelector,
-    (accumulatedData, focusedNodePath, hoveredFolderPath, areaMetric, heightMetric, colorMetric): VisibleNodeMetricValues => {
+    (
+        accumulatedData,
+        focusedNodePath,
+        hoveredFolderPath,
+        selectedFolderPath,
+        areaMetric,
+        heightMetric,
+        colorMetric
+    ): VisibleNodeMetricValues => {
         const root = accumulatedData.unifiedMapNode
         if (!root) {
             return EMPTY
@@ -42,7 +56,7 @@ export const visibleNodeMetricValuesSelector = createSelector(
         if (metrics.length === 0) {
             return EMPTY
         }
-        const prefix = resolvePathPrefix(hoveredFolderPath, focusedNodePath)
+        const prefix = resolvePathPrefix(hoveredFolderPath, selectedFolderPath, focusedNodePath)
         const result: Record<string, VisibleMetricValues> = {}
 
         collectMetrics(root, prefix, metrics, result)
@@ -51,14 +65,16 @@ export const visibleNodeMetricValuesSelector = createSelector(
     }
 )
 
-function resolvePathPrefix(hoveredFolderPath: string | null, focusedNodePath: string[]): string | null {
+// Mirrors the metrics bar's display precedence (hovered ?? selected ?? top level): while a
+// folder is selected, the histograms stay pinned to it just like the displayed metric values.
+function resolvePathPrefix(hoveredFolderPath: string | null, selectedFolderPath: string | null, focusedNodePath: string[]): string | null {
     const focusPrefix = focusedNodePath.length > 0 ? focusedNodePath[0] : null
-    if (hoveredFolderPath) {
-        // a hovered folder narrows the histogram only when it lies inside the focused
-        // subtree: the file explorer shows the full tree, but only the focused part is
-        // rendered, so hovering outside of it must not widen the histogram
-        if (!focusPrefix || hoveredFolderPath === focusPrefix || hoveredFolderPath.startsWith(`${focusPrefix}/`)) {
-            return hoveredFolderPath
+    for (const candidate of [hoveredFolderPath, selectedFolderPath]) {
+        // a folder narrows the histogram only when it lies inside the focused subtree:
+        // the file explorer shows the full tree, but only the focused part is rendered,
+        // so hovering outside of it must not widen the histogram
+        if (candidate && (!focusPrefix || candidate === focusPrefix || candidate.startsWith(`${focusPrefix}/`))) {
+            return candidate
         }
     }
     return focusPrefix
