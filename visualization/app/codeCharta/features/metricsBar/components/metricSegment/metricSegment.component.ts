@@ -21,7 +21,5 @@ export class MetricSegmentComponent {
     readonly settingsPopoverId = input.required<string>()
     readonly settingsAnchorName = input.required<string>()
     readonly testIdPrefix = input.required<string>()
-    readonly minLabel = input("0")
-    readonly maxLabel = input("0")
     readonly metricSelected = output<string>()
 }

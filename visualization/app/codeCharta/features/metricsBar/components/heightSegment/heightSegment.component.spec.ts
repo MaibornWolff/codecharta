@@ -3,10 +3,6 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import {
-    VisibleNodeMetricValues,
-    visibleNodeMetricValuesSelector
-} from "../../../../state/selectors/visibleNodeMetricValues/visibleNodeMetricValues.selector"
 import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { heightMetricSelector } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
@@ -14,15 +10,12 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { HeightSegmentComponent } from "./heightSegment.component"
 
 describe("HeightSegmentComponent", () => {
-    async function setup(heightMetric = "mcc", visibleMetricValues: VisibleNodeMetricValues = { mcc: { minValue: 1, maxValue: 3 } }) {
+    async function setup(heightMetric = "mcc") {
         const renderResult = await render(HeightSegmentComponent, {
             providers: [
                 provideMockStore({
                     initialState: defaultState,
-                    selectors: [
-                        { selector: heightMetricSelector, value: heightMetric },
-                        { selector: visibleNodeMetricValuesSelector, value: visibleMetricValues }
-                    ]
+                    selectors: [{ selector: heightMetricSelector, value: heightMetric }]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 {
@@ -38,13 +31,14 @@ describe("HeightSegmentComponent", () => {
         return { ...renderResult, component: renderResult.fixture.componentInstance }
     }
 
-    it("should forward the Height label and selected metric name to the distribution segment", async () => {
+    it("should forward the Height label and selected metric name to the metric segment", async () => {
         // Arrange & Act
         await setup("mcc")
 
-        // Assert
-        expect(screen.getAllByText("Height").length).toBeGreaterThan(0)
-        expect(screen.getByText("mcc")).not.toBeNull()
+        // Assert — "Height" also appears inside the settings popover, so scope to the card
+        const heightCard = screen.getByTestId("metric-segment-height")
+        expect(heightCard.textContent).toContain("Height")
+        expect(heightCard.textContent).toContain("mcc")
     })
 
     it("should expose the height-specific test ids", async () => {
@@ -54,25 +48,6 @@ describe("HeightSegmentComponent", () => {
         // Assert
         expect(screen.getByTestId("metric-segment-height")).not.toBeNull()
         expect(screen.getByTestId("metric-segment-height-cog")).not.toBeNull()
-    })
-
-    it("should compute min and max labels from the store metric values", async () => {
-        // Arrange & Act
-        const { component } = await setup("mcc", { mcc: { minValue: 4, maxValue: 10 } })
-
-        // Assert
-        expect(component.minLabel()).toBe((4).toLocaleString())
-        expect(component.maxLabel()).toBe((10).toLocaleString())
-    })
-
-    it("should fall back to zero labels when the metric has no data", async () => {
-        // Arrange & Act
-        const { component } = await setup("unknown_metric", {})
-
-        // Assert
-        expect(component.currentMetric()).toBeNull()
-        expect(component.minLabel()).toBe("0")
-        expect(component.maxLabel()).toBe("0")
     })
 
     it("should dispatch setHeightMetric when a metric is selected", async () => {

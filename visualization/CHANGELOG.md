@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- **Metrics bar: value ranges**: Each metric axis shows the min/max value range of the buildings that are actually rendered — flattened and excluded buildings are skipped, the range narrows to the focused subtree when focus is active, and hovering or selecting a folder narrows it to that folder's subtree.
 - **Floating metrics bar**: Replaced the top-of-page ribbon with a single rounded card that floats just above the bottom bar (`features/metricsBar/`). Each metric segment (Scenario, Area, Height, Color, Edges, Labels) opens a native popover for search and settings; the bar uses DaisyUI primitives and is free of `@angular/material`.
 - **Metric settings popovers**: Restyled the Area, Height, Color, and Edge settings popovers to match the Label settings panel — same DaisyUI spacing (`gap-2.5 py-2 px-5`) and a full `btn btn-outline btn-error` reset button that stretches to the popover width.
 - **Color settings popover layout**: Re-laid out the Color settings popover so the threshold slider rail aligns with the number inputs, the `Reset thresholds` button sits inline at the end of the slider row, the popover narrows to `w-80` in delta or unary-metric mode, and the bottom row reads `Invert Colors` (left) → `Reset colors` (right).
@@ -26,7 +25,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fix `amountOfEdgePreviews` being silently overwritten when restoring saved state — it incorrectly dispatched the top-labels action instead.
 - Loading spinner now stays visible until the codemap's full initial render completes; previously it disappeared too early.
 - File Explorer sort dropdown now closes after selecting a sort key, toggling the order, or clicking outside the menu.
-- The metrics-bar value ranges no longer include sibling folders that merely share a path prefix with the focused or hovered subtree.
 - Screenshots no longer include an empty strip at the bottom — the bottom bar height is accounted for again in the capture region.
 - Color range diagram no longer renders `NaN` when a saved color range falls outside the current metric's value range.
 - Color range slider thumbs are now keyboard-accessible (arrow keys, Home/End) and expose proper `slider` ARIA roles; the link Color/Height button now has an accessible label.
@@ -44,18 +42,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - The edge metric chooser stays usable while edges are hidden (it is only dimmed), and the hovered edge values show the sum/median aggregation indicator again.
 - Pressing Enter right after opening a metric search popover no longer switches to the first list entry — keyboard navigation starts on the currently selected metric.
 - Settings popovers open next to their metric segment in browsers without CSS anchor positioning (e.g. Firefox) instead of centered in the viewport.
-- Hovering a folder outside the focused subtree no longer rebuilds the metrics-bar value ranges from buildings that are not rendered.
-- The metrics-bar value ranges stay pinned to the selected folder, matching the displayed metric values (hovered, then selected, then whole map).
 - The selected building no longer survives a map rebuild as a stale reference: it is remapped onto the new mesh (or deselected when it disappears), preventing wrong recoloring after changing a metric and clicking another building.
 
 ### Chore 👨‍💻 👩‍💻
 
 - Upgrade FontAwesome from 4.7 to 7 (`@fortawesome/fontawesome-free`); existing icon usages keep working via the v4 compatibility shim.
-- Backfilled unit specs across the new metrics bar components (segments, settings popovers, color range slider/diagram, metric select) and the `visibleNodeMetricValues` selector.
+- Backfilled unit specs across the new metrics bar components (segments, settings popovers, color range slider/diagram, metric select).
 - Deduplicated the metrics bar: shared `MetricSegmentBase` for the area/height segments and a shared `cc-settings-popover-shell` container for the four settings popovers. Added Playwright e2e coverage for the metric-select flow.
 - Reworked the metrics bar onto the feature `stores`/`services`/`selectors` architecture (matching `labelSettings`) so it passes the dependency-cruiser architecture lint: components no longer inject the ngrx `Store` directly, and the scenarios feature is accessed through its `facade`.
 - Top metric label selection now uses a single-pass top-N selection instead of sorting every building, reducing work when rendering labels on large maps.
-- Performance: building hovers no longer re-walk the whole map for the metrics-bar value ranges (only folder hovers can change them); the layout is no longer re-run on every search keystroke or margin drag for a fallback display value; metric option lists render lazily on popover open; selection clicks update the highlight colors incrementally instead of re-uploading the full color buffer; the color-range diagram computes percentiles with a single sort and pauses entirely while its popover is closed.
+- Performance: the layout is no longer re-run on every search keystroke or margin drag for a fallback display value; metric option lists render lazily on popover open; selection clicks update the highlight colors incrementally instead of re-uploading the full color buffer; the color-range diagram computes percentiles with a single sort and pauses entirely while its popover is closed.
 - Removed dead metrics-bar store/service mirror pairs and never-called setters; renamed the duplicate `AreaMetricStore`/`ColorModeStore` singletons to feature-scoped names so auto-imports cannot mix them up; the metric select popover and labels/scenarios segment reuse the shared popover shell.
 
 ## [1.142.0] - 2026-03-16

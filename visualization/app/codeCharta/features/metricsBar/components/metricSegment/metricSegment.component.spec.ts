@@ -21,9 +21,7 @@ describe("MetricSegmentComponent", () => {
                     searchAnchorName: "metric-segment-area",
                     settingsPopoverId: "metric-settings-popover-area",
                     settingsAnchorName: "metric-segment-area-cog",
-                    testIdPrefix: "metric-segment-area",
-                    minLabel: "0",
-                    maxLabel: "100"
+                    testIdPrefix: "metric-segment-area"
                 },
                 on: { metricSelected },
                 providers: [

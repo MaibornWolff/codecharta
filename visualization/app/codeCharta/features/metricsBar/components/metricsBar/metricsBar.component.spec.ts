@@ -4,7 +4,6 @@ import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { visibleNodeMetricValuesSelector } from "../../../../state/selectors/visibleNodeMetricValues/visibleNodeMetricValues.selector"
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { heightMetricSelector } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
@@ -12,17 +11,7 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { MetricsBarComponent } from "./metricsBar.component"
 
 describe("MetricsBarComponent", () => {
-    async function setup({
-        isDelta = false,
-        hasEdgeMetric = false,
-        values = [] as number[]
-    }: {
-        isDelta?: boolean
-        hasEdgeMetric?: boolean
-        values?: number[]
-    } = {}) {
-        const metricValues =
-            values.length > 0 ? { minValue: Math.min(...values), maxValue: Math.max(...values) } : { minValue: 0, maxValue: 0 }
+    async function setup({ isDelta = false, hasEdgeMetric = false }: { isDelta?: boolean; hasEdgeMetric?: boolean } = {}) {
         return render(MetricsBarComponent, {
             providers: [
                 provideMockStore({
@@ -32,13 +21,9 @@ describe("MetricsBarComponent", () => {
                         { selector: areaMetricSelector, value: "rloc" },
                         { selector: heightMetricSelector, value: "mcc" },
                         {
-                            selector: visibleNodeMetricValuesSelector,
-                            value: { rloc: metricValues, mcc: metricValues }
-                        },
-                        {
                             selector: metricDataSelector,
                             value: {
-                                nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0, values }],
+                                nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0 }],
                                 edgeMetricData: hasEdgeMetric ? [{ name: "pairing_rate", maxValue: 10, minValue: 0, values: [] }] : [],
                                 nodeEdgeMetricsMap: new Map()
                             }
@@ -67,14 +52,6 @@ describe("MetricsBarComponent", () => {
         expect(screen.getByTestId("metric-segment-color")).not.toBeNull()
         expect(screen.getByTestId("metric-segment-labels")).not.toBeNull()
         expect(screen.queryByTestId("metric-segment-edges")).toBeNull()
-    })
-
-    it("should render the min and max of the visible node metric values", async () => {
-        await setup({ values: [4, 7, 10] })
-
-        const areaSegment = screen.getByTestId("metric-segment-area")
-        expect(areaSegment.textContent).toContain((4).toLocaleString())
-        expect(areaSegment.textContent).toContain((10).toLocaleString())
     })
 
     it("should swap color metric segment for color settings segment in delta state", async () => {

@@ -3,10 +3,6 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import {
-    VisibleNodeMetricValues,
-    visibleNodeMetricValuesSelector
-} from "../../../../state/selectors/visibleNodeMetricValues/visibleNodeMetricValues.selector"
 import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
@@ -14,15 +10,12 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { AreaSegmentComponent } from "./areaSegment.component"
 
 describe("AreaSegmentComponent", () => {
-    async function setup(areaMetric = "rloc", visibleMetricValues: VisibleNodeMetricValues = { rloc: { minValue: 1, maxValue: 3 } }) {
+    async function setup(areaMetric = "rloc") {
         const renderResult = await render(AreaSegmentComponent, {
             providers: [
                 provideMockStore({
                     initialState: defaultState,
-                    selectors: [
-                        { selector: areaMetricSelector, value: areaMetric },
-                        { selector: visibleNodeMetricValuesSelector, value: visibleMetricValues }
-                    ]
+                    selectors: [{ selector: areaMetricSelector, value: areaMetric }]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 {
@@ -38,7 +31,7 @@ describe("AreaSegmentComponent", () => {
         return { ...renderResult, component: renderResult.fixture.componentInstance }
     }
 
-    it("should forward the Area label and selected metric name to the distribution segment", async () => {
+    it("should forward the Area label and selected metric name to the metric segment", async () => {
         // Arrange & Act
         await setup("rloc")
 
@@ -54,25 +47,6 @@ describe("AreaSegmentComponent", () => {
         // Assert
         expect(screen.getByTestId("metric-segment-area")).not.toBeNull()
         expect(screen.getByTestId("metric-segment-area-cog")).not.toBeNull()
-    })
-
-    it("should compute min and max labels from the store metric values", async () => {
-        // Arrange & Act
-        const { component } = await setup("rloc", { rloc: { minValue: 4, maxValue: 10 } })
-
-        // Assert
-        expect(component.minLabel()).toBe((4).toLocaleString())
-        expect(component.maxLabel()).toBe((10).toLocaleString())
-    })
-
-    it("should fall back to zero labels when the metric has no data", async () => {
-        // Arrange & Act
-        const { component } = await setup("unknown_metric", {})
-
-        // Assert
-        expect(component.currentMetric()).toBeNull()
-        expect(component.minLabel()).toBe("0")
-        expect(component.maxLabel()).toBe("0")
     })
 
     it("should dispatch setAreaMetric when a metric is selected", async () => {

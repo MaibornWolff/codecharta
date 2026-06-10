@@ -3,7 +3,6 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { selectedColorMetricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { colorMetricSelector } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
@@ -12,23 +11,14 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { ColorSegmentComponent } from "./colorSegment.component"
 
 describe("ColorSegmentComponent", () => {
-    async function setup({
-        colorMetric = "mcc",
-        isLinked = false,
-        colorMetricData = { values: [1, 2, 3] as number[], minValue: 0, maxValue: 100 }
-    }: {
-        colorMetric?: string
-        isLinked?: boolean
-        colorMetricData?: { values: number[]; minValue: number; maxValue: number }
-    } = {}) {
+    async function setup({ colorMetric = "mcc", isLinked = false }: { colorMetric?: string; isLinked?: boolean } = {}) {
         return render(ColorSegmentComponent, {
             providers: [
                 provideMockStore({
                     initialState: defaultState,
                     selectors: [
                         { selector: colorMetricSelector, value: colorMetric },
-                        { selector: isColorMetricLinkedToHeightMetricSelector, value: isLinked },
-                        { selector: selectedColorMetricDataSelector, value: colorMetricData }
+                        { selector: isColorMetricLinkedToHeightMetricSelector, value: isLinked }
                     ]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
@@ -86,19 +76,6 @@ describe("ColorSegmentComponent", () => {
         expect(cogButton.getAttribute("popovertarget")).toBe("metric-settings-popover-color")
         expect(document.getElementById("metric-settings-popover-color")).not.toBeNull()
         expect(document.getElementById("metric-select-popover-color")).not.toBeNull()
-    })
-
-    it("should derive min/max labels from the global color metric data", async () => {
-        // Arrange & Act
-        const { fixture } = await setup({
-            colorMetric: "mcc",
-            colorMetricData: { values: [5, 6], minValue: 2, maxValue: 250 }
-        })
-        const component = fixture.componentInstance
-
-        // Assert
-        expect(component.minLabel()).toBe((2).toLocaleString())
-        expect(component.maxLabel()).toBe((250).toLocaleString())
     })
 
     it("should disable the color metric selection when color metric is linked to height metric", async () => {
