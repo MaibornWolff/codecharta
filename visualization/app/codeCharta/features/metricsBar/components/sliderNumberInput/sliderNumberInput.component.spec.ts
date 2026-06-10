@@ -91,6 +91,25 @@ describe("SliderNumberInputComponent", () => {
         expect(valueChange).toHaveBeenCalledWith(3)
     })
 
+    it("should restart the debounce window on every keystroke, including retyping the pending value", async () => {
+        // Arrange
+        jest.useFakeTimers()
+        const { numberInput, valueChange } = await setup({ value: 50 })
+
+        // Act: schedule 4, then retype the same 4 (select-all + same digit) shortly before the timer fires
+        fireEvent.input(numberInput, { target: { value: "4" } })
+        jest.advanceTimersByTime(300)
+        fireEvent.input(numberInput, { target: { value: "4" } })
+        jest.advanceTimersByTime(300)
+
+        // Assert: still typing, so nothing committed yet
+        expect(valueChange).not.toHaveBeenCalled()
+
+        jest.advanceTimersByTime(100)
+        expect(valueChange).toHaveBeenCalledTimes(1)
+        expect(valueChange).toHaveBeenCalledWith(4)
+    })
+
     it("should drop a pending intermediate value when typing returns to the committed value", async () => {
         // Arrange
         jest.useFakeTimers()

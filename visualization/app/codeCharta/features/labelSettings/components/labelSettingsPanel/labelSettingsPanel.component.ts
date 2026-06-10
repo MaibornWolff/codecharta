@@ -72,9 +72,15 @@ export class LabelSettingsPanelComponent {
 
     handleTopLabelsInput(event: Event) {
         const value = parseNumberInput(event, 0, 50, { round: true })
-        if (!Number.isNaN(value) && value !== this.amountOfTopLabels()) {
-            this.applyDebouncedTopLabels(value)
+        if (Number.isNaN(value)) {
+            return
         }
+        if (value === this.amountOfTopLabels()) {
+            // typed back to the committed value: drop a pending intermediate instead of committing it
+            this.applyDebouncedTopLabels.cancel()
+            return
+        }
+        this.applyDebouncedTopLabels(value)
     }
 
     handleLabelSizeInput(event: Event) {
@@ -85,9 +91,11 @@ export class LabelSettingsPanelComponent {
         const clamped = Math.min(MAX_LABEL_SIZE, Math.max(MIN_LABEL_SIZE, raw))
         const snapped = Math.round(clamped / LABEL_SIZE_STEP) * LABEL_SIZE_STEP
         const value = Math.round(snapped * 100) / 100
-        if (value !== this.labelSize()) {
-            this.applyDebouncedLabelSize(value)
+        if (value === this.labelSize()) {
+            this.applyDebouncedLabelSize.cancel()
+            return
         }
+        this.applyDebouncedLabelSize(value)
     }
 
     setShowMetricLabelNodeName(event: Event) {

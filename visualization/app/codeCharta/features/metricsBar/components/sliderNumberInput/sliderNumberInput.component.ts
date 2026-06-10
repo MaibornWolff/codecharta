@@ -36,7 +36,7 @@ export class SliderNumberInputComponent implements OnDestroy {
 
     handleInput(event: Event) {
         const value = this.parseAndNormalize((event.target as HTMLInputElement).value)
-        if (value === undefined || value === (this.scheduledValue ?? this.value())) {
+        if (value === undefined) {
             return
         }
         if (value === this.value()) {
@@ -45,6 +45,8 @@ export class SliderNumberInputComponent implements OnDestroy {
             this.emitValueDebounced.cancel()
             return
         }
+        // re-arm on every keystroke (even when the value matches the pending one):
+        // the user is still typing, so the commit must keep moving out
         this.scheduledValue = value
         this.emitValueDebounced(value)
     }
