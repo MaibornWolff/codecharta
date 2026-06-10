@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+- npm no longer executes dependency install scripts (`ignore-scripts=true` in `.npmrc`) — the main npm supply-chain attack vector. All native dependencies ship prebuilt platform packages; electron's binary download now happens on demand via `script/ensureElectron.js` when running `npm run start`/`npm run package`, and git hooks are set up via `npm run prepare` (done automatically by `mise run install`).
 - Upgrade FontAwesome from 4.7 to 7 (`@fortawesome/fontawesome-free`); existing icon usages keep working via the v4 compatibility shim.
 - Backfilled unit specs across the new metrics bar components (segments, settings popovers, color range slider/diagram, metric select).
 - Deduplicated the metrics bar: shared `MetricSegmentBase` for the area/height segments and a shared `cc-settings-popover-shell` container for the four settings popovers. Added Playwright e2e coverage for the metric-select flow.

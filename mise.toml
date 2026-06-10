@@ -10,6 +10,7 @@ node = "24"
 description = "Install all dependencies (root, visualization, analysis)"
 run = [
   "npm ci",
+  "npm run prepare", # git hooks (husky); not run by npm ci because install scripts are disabled
   "npm --prefix visualization ci",
   "cd analysis && ./gradlew assemble",
 ]
