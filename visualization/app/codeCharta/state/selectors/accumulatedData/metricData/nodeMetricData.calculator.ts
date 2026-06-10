@@ -18,7 +18,7 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], matcher:
 
     for (const { file } of visibleFileStates) {
         for (const node of hierarchy(file.map)) {
-            if (isLeaf(node) && node.data.path && !matcher.isExcluded(node.data.path)) {
+            if (isLeaf(node) && node.data.path && !matcher.isExcludedLeaf(node.data.path)) {
                 for (const metric of Object.keys(node.data.attributes)) {
                     const maxValue = metricMaxValues.get(metric)
                     const minValue = metricMinValues.get(metric)

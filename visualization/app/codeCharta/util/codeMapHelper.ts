@@ -28,11 +28,6 @@ export function getAllNodes(root: CodeMapNode): CodeMapNode[] {
     return filtered
 }
 
-export function isNodeExcludedOrFlattened(node: CodeMapNode, gitignorePath: string): boolean {
-    const ignoreResults = returnIgnore(gitignorePath)
-    return ignoreResults.ignoredNodePaths.ignores(transformPath(node.path)) === ignoreResults.condition
-}
-
 export function returnIgnore(gitignorePath: string) {
     gitignorePath = transformPath(gitignorePath.trimStart())
 
@@ -78,54 +73,87 @@ export function addRulePatternsToEngine(engine: ReturnType<typeof ignore>, ruleP
     return true
 }
 
-export function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>) {
-    return isPathBlacklisted(path, blacklist, "exclude") || isPathBlacklisted(path, blacklist, "flatten")
+export function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>, isLeafNode = true) {
+    return isPathBlacklisted(path, blacklist, "exclude", isLeafNode) || isPathBlacklisted(path, blacklist, "flatten", isLeafNode)
 }
 
-export function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType) {
+export function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType, isLeafNode = true) {
     if (blacklist.length === 0) {
         return false
     }
-    const ig = ignore()
-    for (const entry of blacklist) {
-        if (entry.type === type) {
-            ig.add(transformPath(entry.path))
-        }
+    const matcher = createBlacklistMatcher(blacklist)
+    if (type === "flatten") {
+        return matcher.isFlattened(path)
     }
-    return ig.ignores(transformPath(path))
+    return isLeafNode ? matcher.isExcludedLeaf(path) : matcher.isExcludedSubtree(path)
 }
 
 export interface BlacklistMatcher {
-    isExcluded(path: string): boolean
+    /** A leaf is excluded when a positive exclude rule matches it or a negated (`!`) rule does not match it. */
+    isExcludedLeaf(path: string): boolean
+    /**
+     * Safe whole-subtree check for folders: true only when a positive exclude rule matches the
+     * folder itself, which in gitignore semantics also excludes every descendant. Negated rules
+     * are deliberately not considered — they apply to leaves only, so a folder that fails to
+     * match a negated rule can still contain leaves that match it and must stay visible.
+     */
+    isExcludedSubtree(path: string): boolean
+    /** Flattening applies to any node, leaf or folder. */
     isFlattened(path: string): boolean
 }
 
+type IgnoreEngine = ReturnType<typeof ignore>
+
+/**
+ * The single matching engine for blacklist rules, shared by NodeDecorator (which writes the
+ * `isExcluded`/`isFlattened` flags), the layouts, the metric calculators and the file explorer,
+ * so they can never disagree on what a rule affects. Positive rules are merged into one
+ * combined engine per type; negated `!`-rules need per-rule engines because they affect every
+ * path that does *not* match.
+ */
 export function createBlacklistMatcher(blacklist: BlacklistItem[]): BlacklistMatcher {
-    const flattenRules: BlacklistRule[] = []
-    const excludeRules: BlacklistRule[] = []
-    for (const entry of blacklist) {
-        const rule = returnIgnore(entry.path)
-        if (entry.type === "flatten") {
-            flattenRules.push(rule)
+    const flattenCombined = ignore()
+    const excludeCombined = ignore()
+    let hasPositiveFlatten = false
+    let hasPositiveExclude = false
+    const negatedFlattenEngines: IgnoreEngine[] = []
+    const negatedExcludeEngines: IgnoreEngine[] = []
+
+    for (const item of blacklist) {
+        const combined = item.type === "flatten" ? flattenCombined : excludeCombined
+        if (addRulePatternsToEngine(combined, item.path)) {
+            if (item.type === "flatten") {
+                hasPositiveFlatten = true
+            } else {
+                hasPositiveExclude = true
+            }
         } else {
-            excludeRules.push(rule)
+            const engine = returnIgnore(item.path).ignoredNodePaths
+            if (item.type === "flatten") {
+                negatedFlattenEngines.push(engine)
+            } else {
+                negatedExcludeEngines.push(engine)
+            }
         }
     }
+
     return {
-        isExcluded: path => matchesAnyRule(excludeRules, path),
-        isFlattened: path => matchesAnyRule(flattenRules, path)
+        isExcludedLeaf: path => {
+            const transformedPath = transformPath(path)
+            return (
+                (hasPositiveExclude && excludeCombined.ignores(transformedPath)) ||
+                negatedExcludeEngines.some(engine => !engine.ignores(transformedPath))
+            )
+        },
+        isExcludedSubtree: path => hasPositiveExclude && excludeCombined.ignores(transformPath(path)),
+        isFlattened: path => {
+            const transformedPath = transformPath(path)
+            return (
+                (hasPositiveFlatten && flattenCombined.ignores(transformedPath)) ||
+                negatedFlattenEngines.some(engine => !engine.ignores(transformedPath))
+            )
+        }
     }
-}
-
-type BlacklistRule = ReturnType<typeof returnIgnore>
-
-// Mirrors how NodeDecorator applies blacklist rules: a node is affected when its
-// path matches the rule's pattern (positive rule) or, for a negated `!`-rule, when
-// it does *not* match. Keeping this in sync with `returnIgnore` ensures counts and
-// the matcher agree with the actual `isFlattened`/`isExcluded` flags on the map.
-function matchesAnyRule(rules: BlacklistRule[], path: string): boolean {
-    const transformedPath = transformPath(path)
-    return rules.some(({ ignoredNodePaths, condition }) => ignoredNodePaths.ignores(transformedPath) === condition)
 }
 
 export function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string | void {

@@ -22,4 +22,4 @@ const resultsInEmptyFile = (file: CCFile, matcher: BlacklistMatcher) => {
 }
 
 const isNodeIncluded = (node: HierarchyNode<CodeMapNode>, matcher: BlacklistMatcher) =>
-    isLeaf(node) && node.data.path && !matcher.isExcluded(node.data.path)
+    isLeaf(node) && node.data.path && !matcher.isExcludedLeaf(node.data.path)

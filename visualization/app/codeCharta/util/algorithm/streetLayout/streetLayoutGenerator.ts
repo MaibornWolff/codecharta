@@ -59,7 +59,7 @@ export class StreetLayoutGenerator {
                 children.push(new House(child))
                 continue
             }
-            if (matcher.isExcluded(child.path)) {
+            if (matcher.isExcludedSubtree(child.path)) {
                 continue
             }
 

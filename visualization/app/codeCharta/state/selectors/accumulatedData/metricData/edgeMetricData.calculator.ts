@@ -50,7 +50,7 @@ export function calculateNodePath(visibleFiles: number, fileState: FileState, no
 
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, matcher: BlacklistMatcher) {
     if (filePaths.has(edge.fromNodeName) && filePaths.has(edge.toNodeName)) {
-        return !matcher.isExcluded(edge.fromNodeName) && !matcher.isExcluded(edge.toNodeName)
+        return !matcher.isExcludedLeaf(edge.fromNodeName) && !matcher.isExcludedLeaf(edge.toNodeName)
     }
     return false
 }

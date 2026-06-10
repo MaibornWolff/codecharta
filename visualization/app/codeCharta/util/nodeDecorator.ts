@@ -1,7 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
-import ignore from "ignore"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
-import { addRulePatternsToEngine, isLeaf, returnIgnore, transformPath } from "./codeMapHelper"
+import { createBlacklistMatcher, isLeaf } from "./codeMapHelper"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 
 const enum MedianSelectors {
@@ -18,11 +17,10 @@ const enum EdgeAttributeType {
 
 export const NodeDecorator = {
     decorateMap(map: CodeMapNode, metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">, blacklist: BlacklistItem[]) {
-        const engines = buildBlacklistEngines(blacklist)
+        const matcher = createBlacklistMatcher(blacklist)
         for (const { data } of hierarchy(map)) {
-            data.isFlattened = false
-            data.isExcluded = false
-            applyBlacklistToNode(data, engines)
+            data.isFlattened = matcher.isFlattened(data.path)
+            data.isExcluded = isLeaf(data) && matcher.isExcludedLeaf(data.path)
         }
         map.isExcluded = false
         this.decorateMapWithMetricData(map, metricData)
@@ -171,62 +169,6 @@ export const NodeDecorator = {
                     map.deltas[name] = getMedian(medians.get(`${MedianSelectors.DELTA}${name}${map.path}`))
                 }
             }
-        }
-    }
-}
-
-type NegativeRule = { ignoredNodePaths: ReturnType<typeof returnIgnore>["ignoredNodePaths"]; type: BlacklistItem["type"] }
-
-type BlacklistEngines = {
-    flattenCombined: ReturnType<typeof ignore>
-    excludeCombined: ReturnType<typeof ignore>
-    hasPosFlatten: boolean
-    hasPosExclude: boolean
-    negativeRules: NegativeRule[]
-}
-
-function buildBlacklistEngines(blacklist: BlacklistItem[]): BlacklistEngines {
-    const flattenCombined = ignore()
-    const excludeCombined = ignore()
-    let hasPosFlatten = false
-    let hasPosExclude = false
-    const negativeRules: NegativeRule[] = []
-
-    for (const item of blacklist) {
-        const target = item.type === "flatten" ? flattenCombined : excludeCombined
-        if (!addRulePatternsToEngine(target, item.path)) {
-            negativeRules.push({ ignoredNodePaths: returnIgnore(item.path).ignoredNodePaths, type: item.type })
-            continue
-        }
-        if (item.type === "flatten") {
-            hasPosFlatten = true
-        } else {
-            hasPosExclude = true
-        }
-    }
-
-    return { flattenCombined, excludeCombined, hasPosFlatten, hasPosExclude, negativeRules }
-}
-
-function applyBlacklistToNode(data: CodeMapNode, engines: BlacklistEngines) {
-    const transformedPath = transformPath(data.path)
-    const isLeafNode = isLeaf(data)
-    const { flattenCombined, excludeCombined, hasPosFlatten, hasPosExclude, negativeRules } = engines
-
-    if (hasPosFlatten && flattenCombined.ignores(transformedPath)) {
-        data.isFlattened = true
-    }
-    if (hasPosExclude && isLeafNode && excludeCombined.ignores(transformedPath)) {
-        data.isExcluded = true
-    }
-    for (const { ignoredNodePaths, type } of negativeRules) {
-        if (ignoredNodePaths.ignores(transformedPath)) {
-            continue
-        }
-        if (type === "flatten") {
-            data.isFlattened = true
-        } else if (isLeafNode) {
-            data.isExcluded = true
         }
     }
 }
