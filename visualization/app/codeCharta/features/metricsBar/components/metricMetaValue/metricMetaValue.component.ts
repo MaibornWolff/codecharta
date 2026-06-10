@@ -5,6 +5,16 @@ import { NodeSelectionService } from "../../services/nodeSelection.service"
 import { PrimaryMetricsService } from "../../services/primaryMetrics.service"
 import { MetricChooserTypeComponent } from "./metricChooserType.component"
 
+type DeltaDisplay = {
+    label: string
+    styleClass: string
+}
+
+type MetricDisplay = {
+    value: string
+    delta: DeltaDisplay | null
+}
+
 @Component({
     selector: "cc-metric-meta-value",
     templateUrl: "./metricMetaValue.component.html",
@@ -18,49 +28,49 @@ export class MetricMetaValueComponent {
     readonly metricFor = input.required<keyof PrimaryMetrics>()
 
     readonly node = toSignal<CodeMapNode | Node | undefined>(this.nodeSelectionService.createNodeObservable())
-    readonly primaryMetricNames = toSignal(this.primaryMetricsService.primaryMetricNames$())
+    private readonly primaryMetricNames = toSignal(this.primaryMetricsService.primaryMetricNames$())
 
-    readonly metricName = computed(() => {
-        const names = this.primaryMetricNames()
-        return names ? names[this.metricFor()] : null
-    })
+    private readonly metricName = computed(() => this.primaryMetricNames()?.[this.metricFor()] ?? null)
 
-    readonly value = computed(() => {
-        const node = this.node()
-        const metric = this.metricName()
-        if (!node || !metric) {
-            return null
-        }
-        const raw = node.attributes?.[metric]
-        return typeof raw === "number" ? raw.toLocaleString() : null
-    })
+    readonly display = computed(() => toMetricDisplay(this.node(), this.metricName(), this.metricFor()))
+}
 
-    readonly delta = computed(() => {
-        const node = this.node()
-        const metric = this.metricName()
-        if (!node || !metric || !("deltas" in node) || !node.deltas) {
-            return null
-        }
-        const raw = node.deltas[metric]
-        return typeof raw === "number" ? raw : null
-    })
+function toMetricDisplay(
+    node: CodeMapNode | Node | undefined,
+    metricName: string | null,
+    metricFor: keyof PrimaryMetrics
+): MetricDisplay | null {
+    if (!node || !metricName) {
+        return null
+    }
+    return {
+        value: formatMetricValue(node, metricName),
+        delta: toDeltaDisplay(node, metricName, metricFor)
+    }
+}
 
-    readonly deltaLabel = computed(() => {
-        const value = this.delta()
-        return value === null ? null : value.toLocaleString()
-    })
+function formatMetricValue(node: CodeMapNode | Node, metricName: string): string {
+    const value = node.attributes?.[metricName]
+    return typeof value === "number" ? value.toLocaleString() : "—"
+}
 
-    readonly deltaClass = computed(() => {
-        const value = this.delta()
-        if (value === null) {
-            return null
-        }
-        if (this.metricFor() === "heightMetric" && value > 0) {
-            return "text-success"
-        }
-        if (value < 0) {
-            return "text-error"
-        }
-        return "text-base-content"
-    })
+function toDeltaDisplay(node: CodeMapNode | Node, metricName: string, metricFor: keyof PrimaryMetrics): DeltaDisplay | null {
+    if (!("deltas" in node) || !node.deltas) {
+        return null
+    }
+    const delta = node.deltas[metricName]
+    if (typeof delta !== "number") {
+        return null
+    }
+    return { label: delta.toLocaleString(), styleClass: deltaStyleClass(delta, metricFor) }
+}
+
+function deltaStyleClass(delta: number, metricFor: keyof PrimaryMetrics): string {
+    if (metricFor === "heightMetric" && delta > 0) {
+        return "text-success"
+    }
+    if (delta < 0) {
+        return "text-error"
+    }
+    return "text-base-content"
 }

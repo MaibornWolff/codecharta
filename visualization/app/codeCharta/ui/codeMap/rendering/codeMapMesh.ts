@@ -134,22 +134,13 @@ export class CodeMapMesh {
         constantHighlight: Map<number, CodeMapBuilding>
     ) {
         const { isPresentationMode } = state.appSettings
-
-        // force full re-render when presentation mode is toggled mid-hover
-        if (this._prevIsPresentationMode !== null && this._prevIsPresentationMode !== isPresentationMode) {
-            this._prevHighlightedIds = null
-        }
+        this.invalidateDiffCacheWhenPresentationModeChanged(isPresentationMode)
 
         const prev = this._prevHighlightedIds
         const selectedId = selected ? selected.id : null
 
         if (prev && !isPresentationMode) {
-            // a selection change invalidates one building of the diff cache: the formerly
-            // selected building was skipped by the last pass and must be repainted to its
-            // current highlight state (the newly selected one was painted by selectBuilding)
-            if (this._prevSelectedId !== null && this._prevSelectedId !== selectedId) {
-                this.repaintFormerlySelected(this._prevSelectedId, highlightedBuildingIds, constantHighlight)
-            }
+            this.repaintFormerlySelectedWhenSelectionChanged(selectedId, highlightedBuildingIds, constantHighlight)
             this.updateDimmedBuildings(prev, highlightedBuildingIds, constantHighlight, selected)
             this.updateHighlightedBuildings(prev, highlightedBuildingIds, selected)
         } else {
@@ -162,15 +153,28 @@ export class CodeMapMesh {
         this.updateVertices()
     }
 
-    private repaintFormerlySelected(id: number, highlightedBuildingIds: Set<number>, constantHighlight: Map<number, CodeMapBuilding>) {
-        const building = this.mapGeomDesc.buildings[id]
+    private invalidateDiffCacheWhenPresentationModeChanged(isPresentationMode: boolean) {
+        if (this._prevIsPresentationMode !== null && this._prevIsPresentationMode !== isPresentationMode) {
+            this._prevHighlightedIds = null
+        }
+    }
+
+    private repaintFormerlySelectedWhenSelectionChanged(
+        selectedId: number | null,
+        highlightedBuildingIds: Set<number>,
+        constantHighlight: Map<number, CodeMapBuilding>
+    ) {
+        if (this._prevSelectedId === null || this._prevSelectedId === selectedId) {
+            return
+        }
+        const building = this.mapGeomDesc.buildings[this._prevSelectedId]
         if (!building) {
             return
         }
-        if (highlightedBuildingIds.has(id) || constantHighlight.has(id)) {
-            this.setInstanceColor(id, building.getHighlightedColorVector(), building.getHighlightedDeltaColorVector())
+        if (highlightedBuildingIds.has(building.id) || constantHighlight.has(building.id)) {
+            this.setInstanceColor(building.id, building.getHighlightedColorVector(), building.getHighlightedDeltaColorVector())
         } else {
-            this.setInstanceColor(id, building.getDimmedColorVector(), building.getDimmedDeltaColorVector())
+            this.setInstanceColor(building.id, building.getDimmedColorVector(), building.getDimmedDeltaColorVector())
         }
     }
 

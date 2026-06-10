@@ -51,27 +51,24 @@ describe("MetricMetaValueComponent", () => {
         expect(screen.getByText((1234).toLocaleString())).not.toBeNull()
     })
 
-    it("should expose a null value when the node has no value for the metric", async () => {
+    it("should show the missing-value dash when the node has no value for the metric", async () => {
         // Arrange
         const { fixture } = await setup({ attributes: {} } as Partial<CodeMapNode>)
         const component = fixture.componentInstance as MetricMetaValueComponent
 
         // Act & Assert
-        expect(component.value()).toBeNull()
+        expect(component.display()?.value).toBe("—")
         expect(screen.getByText("—")).not.toBeNull()
     })
 
-    it("should render a placeholder and expose null computed signals when no node is selected", async () => {
+    it("should render a placeholder and no display when no node is selected", async () => {
         // Arrange
         const { fixture } = await setup(undefined)
         const component = fixture.componentInstance as MetricMetaValueComponent
 
         // Act & Assert
         expect(component.node()).toBeUndefined()
-        expect(component.value()).toBeNull()
-        expect(component.delta()).toBeNull()
-        expect(component.deltaLabel()).toBeNull()
-        expect(component.deltaClass()).toBeNull()
+        expect(component.display()).toBeNull()
         expect(screen.queryByText("—")).toBeNull()
     })
 
@@ -82,9 +79,7 @@ describe("MetricMetaValueComponent", () => {
         const component = fixture.componentInstance as MetricMetaValueComponent
 
         // Act & Assert
-        expect(component.delta()).toBe(5)
-        expect(component.deltaLabel()).toBe((5).toLocaleString())
-        expect(component.deltaClass()).toBe("text-success")
+        expect(component.display()?.delta).toEqual({ label: (5).toLocaleString(), styleClass: "text-success" })
         expect(screen.getByText(`Δ${(5).toLocaleString()}`)).not.toBeNull()
     })
 
@@ -95,7 +90,7 @@ describe("MetricMetaValueComponent", () => {
         const component = fixture.componentInstance as MetricMetaValueComponent
 
         // Act & Assert
-        expect(component.deltaClass()).toBe("text-error")
+        expect(component.display()?.delta?.styleClass).toBe("text-error")
     })
 
     it("should style a positive non-heightMetric delta as base content", async () => {
@@ -105,17 +100,15 @@ describe("MetricMetaValueComponent", () => {
         const component = fixture.componentInstance as MetricMetaValueComponent
 
         // Act & Assert
-        expect(component.deltaClass()).toBe("text-base-content")
+        expect(component.display()?.delta?.styleClass).toBe("text-base-content")
     })
 
-    it("should expose null delta signals when the node carries no deltas", async () => {
+    it("should show no delta when the node carries no deltas", async () => {
         // Arrange
         const { fixture } = await setup({ attributes: { mcc: 10 } } as Partial<CodeMapNode>)
         const component = fixture.componentInstance as MetricMetaValueComponent
 
         // Act & Assert
-        expect(component.delta()).toBeNull()
-        expect(component.deltaLabel()).toBeNull()
-        expect(component.deltaClass()).toBeNull()
+        expect(component.display()?.delta).toBeNull()
     })
 })

@@ -1,10 +1,10 @@
 import { Pipe, PipeTransform } from "@angular/core"
 import { EdgeMetricData, NodeMetricData } from "../../../../codeCharta.model"
 
-const METRIC_ALIASES: Record<string, string[]> = {
-    complexity: ["formerly mcc"],
-    sonar_complexity: ["formerly mcc"]
-}
+const METRIC_ALIASES = new Map<string, string[]>([
+    ["complexity", ["formerly mcc"]],
+    ["sonar_complexity", ["formerly mcc"]]
+])
 
 @Pipe({
     name: "filterMetricDataBySearchTerm",
@@ -30,12 +30,8 @@ export class FilterMetricDataBySearchTermPipe implements PipeTransform {
     }
 
     private getDisplayName(metricName: string): string {
-        // hasOwn guard: a metric named like an Object prototype member
-        // ("constructor", "toString") must not resolve to the prototype
-        if (Object.hasOwn(METRIC_ALIASES, metricName)) {
-            return `${metricName} ${METRIC_ALIASES[metricName].join(" ")}`
-        }
-        return metricName
+        const aliases = METRIC_ALIASES.get(metricName)
+        return aliases ? `${metricName} ${aliases.join(" ")}` : metricName
     }
 
     private matchesSearch(normalizedMetricName: string, searchWords: string[]): boolean {
