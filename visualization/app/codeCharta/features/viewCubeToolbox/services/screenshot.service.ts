@@ -92,7 +92,7 @@ export class ScreenshotService {
         // the cc-bottom-bar host has zero height (its only child is position:fixed),
         // so measure the inner footer like bottomBar.component does
         const bottomBarElement = document.querySelector("cc-bottom-bar") as HTMLElement | null
-        const bottomBarHeight = ((bottomBarElement?.querySelector("footer") as HTMLElement | null) ?? bottomBarElement)?.offsetHeight ?? 0
+        const bottomBarHeight = (bottomBarElement?.querySelector("footer") ?? bottomBarElement)?.offsetHeight ?? 0
         const topBarsHeight = navBarHeight + fileExtensionBarHeight
 
         const canvas = await html2canvas(document.querySelector("body"), {

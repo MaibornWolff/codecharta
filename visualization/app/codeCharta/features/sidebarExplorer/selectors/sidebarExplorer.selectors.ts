@@ -59,6 +59,13 @@ export const explorerCountsSelector = createSelector(
     _calculateExplorerCounts
 )
 
+type RuleEvaluation = {
+    item: BlacklistItem
+    ignoredNodePaths: ReturnType<typeof ignore>
+    condition: boolean
+    affectedCount: number
+}
+
 const buildRulesWithCount = (blacklist: BlacklistItem[], allLeaves: CodeMapNode[], type: BlacklistType): RuleWithCount[] => {
     const itemsOfType = blacklist.filter(item => item.type === type)
     if (itemsOfType.length === 0) {
@@ -73,30 +80,15 @@ const buildRulesWithCount = (blacklist: BlacklistItem[], allLeaves: CodeMapNode[
     // used as a prefilter: most paths match no rule at all, so they cost one engine test
     // instead of one per rule.
     const combinedPositive = ignore()
-    const rules = itemsOfType.map(item => {
+    const rules = itemsOfType.map((item): RuleEvaluation => {
         const { ignoredNodePaths, condition } = returnIgnore(item.path)
         if (condition) {
             addRulePatternsToEngine(combinedPositive, item.path)
         }
         return { item, ignoredNodePaths, condition, affectedCount: 0 }
     })
-    const positiveRules = rules.filter(rule => rule.condition)
-    const negatedRules = rules.filter(rule => !rule.condition)
 
-    for (const path of transformedLeafPaths) {
-        if (positiveRules.length > 0 && combinedPositive.ignores(path)) {
-            for (const rule of positiveRules) {
-                if (rule.ignoredNodePaths.ignores(path)) {
-                    rule.affectedCount++
-                }
-            }
-        }
-        for (const rule of negatedRules) {
-            if (!rule.ignoredNodePaths.ignores(path)) {
-                rule.affectedCount++
-            }
-        }
-    }
+    countAffectedLeaves(rules, combinedPositive, transformedLeafPaths)
 
     return rules
         .map(
@@ -107,6 +99,26 @@ const buildRulesWithCount = (blacklist: BlacklistItem[], allLeaves: CodeMapNode[
             })
         )
         .sort((a, b) => a.item.path.localeCompare(b.item.path))
+}
+
+function countAffectedLeaves(rules: RuleEvaluation[], combinedPositive: ReturnType<typeof ignore>, transformedLeafPaths: string[]) {
+    const positiveRules = rules.filter(rule => rule.condition)
+    const negatedRules = rules.filter(rule => !rule.condition)
+
+    for (const path of transformedLeafPaths) {
+        if (positiveRules.length > 0 && combinedPositive.ignores(path)) {
+            incrementRulesMatching(positiveRules, path, true)
+        }
+        incrementRulesMatching(negatedRules, path, false)
+    }
+}
+
+function incrementRulesMatching(rules: RuleEvaluation[], path: string, shouldMatch: boolean) {
+    for (const rule of rules) {
+        if (rule.ignoredNodePaths.ignores(path) === shouldMatch) {
+            rule.affectedCount++
+        }
+    }
 }
 
 export const flattenRulesWithCountSelector = createSelector(blacklistSelector, codeMapNodesSelector, (blacklist, allLeaves) =>

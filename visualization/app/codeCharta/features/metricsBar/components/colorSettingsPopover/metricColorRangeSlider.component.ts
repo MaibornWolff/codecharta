@@ -72,7 +72,7 @@ export class MetricColorRangeSliderComponent implements OnChanges, AfterViewInit
         // measured instead of assumed; otherwise thumb math drifts on narrow viewports.
         if (typeof ResizeObserver !== "undefined") {
             this.resizeObserver = new ResizeObserver(entries => {
-                const width = entries[entries.length - 1].contentRect.width
+                const width = entries.at(-1).contentRect.width
                 if (width > 0 && width !== this.actualSliderWidth) {
                     this.actualSliderWidth = width
                     if (!this.currentlySliding) {

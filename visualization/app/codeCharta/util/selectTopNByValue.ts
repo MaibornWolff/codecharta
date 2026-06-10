@@ -12,7 +12,7 @@
  */
 export function selectTopNByValue<T>(items: T[], getValue: (item: T) => number, n: number): T[] {
     const limit = Math.floor(n)
-    if (!(limit > 0)) {
+    if (Number.isNaN(limit) || limit <= 0) {
         return []
     }
     const getComparableValue = (item: T) => {

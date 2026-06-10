@@ -21,7 +21,7 @@ export const _getNodesWithHighestValue = (
     // floor: a fractional amount (e.g. restored from a URL) must not disable the cutoff
     const limit = Math.floor(amountOfEdgePreviews)
 
-    if (!(limit > 0)) {
+    if (Number.isNaN(limit) || limit <= 0) {
         return keys
     }
 
