@@ -17,7 +17,7 @@ import { MapColorLabelPipe } from "./mapColorLabel.pipe"
     imports: [LabelledColorPickerComponent, AsyncPipe, MapColorLabelPipe]
 })
 export class ColorPickerForMapColorComponent {
-    @Input() mapColorFor: keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors">
+    @Input() mapColorFor: keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors" | "isColorRangeInverted" | "areDeltaColorsInverted">
 
     colorMetric$ = this.store.select(colorMetricSelector)
     mapColors$ = this.store.select(mapColorsSelector)
