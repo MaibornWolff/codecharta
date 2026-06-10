@@ -27,7 +27,7 @@ import { LinkColorHeightButtonComponent } from "../linkColorHeightButton/linkCol
         LinkColorHeightButtonComponent
     ],
     host: {
-        class: "fixed flex bg-base-100 rounded-box shadow-lg border border-base-300 divide-x divide-base-300",
+        class: "fixed flex bg-base-100 rounded-box shadow-lg border border-base-300",
         "[style.bottom]": "'calc(var(--cc-bottom-bar-height, 32px) + 12px)'",
         "[style.left]": "'0'",
         "[style.right]": "'0'",
