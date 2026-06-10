@@ -19,6 +19,10 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { EdgeSettingsPopoverComponent } from "./edgeSettingsPopover.component"
 
 describe("EdgeSettingsPopoverComponent", () => {
+    afterEach(() => {
+        jest.useRealTimers()
+    })
+
     async function setup(
         overrides: {
             amountOfBuildings?: number
@@ -77,6 +81,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
     it("should dispatch setAmountOfEdgePreviews when the preview value changes", async () => {
         // Arrange
+        jest.useFakeTimers()
         await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -84,6 +89,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
         // Act
         fireEvent.input(previewNumberInput, { target: { value: "5" } })
+        jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfEdgePreviews({ value: 5 }))
@@ -91,6 +97,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
     it("should not dispatch setAmountOfEdgePreviews when the value is unchanged", async () => {
         // Arrange
+        jest.useFakeTimers()
         await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -98,6 +105,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
         // Act
         fireEvent.input(previewNumberInput, { target: { value: "3" } })
+        jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).not.toHaveBeenCalled()
@@ -105,6 +113,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
     it("should clamp and dispatch setAmountOfEdgePreviews to the amount of buildings when above the max", async () => {
         // Arrange
+        jest.useFakeTimers()
         await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -112,6 +121,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
         // Act
         fireEvent.input(previewNumberInput, { target: { value: "99" } })
+        jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfEdgePreviews({ value: 10 }))
@@ -119,6 +129,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
     it("should dispatch setAmountOfEdgePreviews from the preview range slider", async () => {
         // Arrange
+        jest.useFakeTimers()
         await setup({ amountOfBuildings: 10, amountOfEdgePreviews: 3 })
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -126,6 +137,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
         // Act
         fireEvent.input(previewRange, { target: { value: "6" } })
+        jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setAmountOfEdgePreviews({ value: 6 }))
@@ -133,6 +145,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
     it("should not dispatch setEdgeHeight when the value is unchanged", async () => {
         // Arrange
+        jest.useFakeTimers()
         await setup({ edgeHeight: 4 })
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -140,6 +153,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
         // Act
         fireEvent.input(heightNumberInput, { target: { value: "4" } })
+        jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).not.toHaveBeenCalled()
@@ -161,6 +175,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
     it("should dispatch setEdgeHeight when the height value changes", async () => {
         // Arrange
+        jest.useFakeTimers()
         await setup({ edgeHeight: 1 })
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -168,6 +183,7 @@ describe("EdgeSettingsPopoverComponent", () => {
 
         // Act
         fireEvent.input(heightNumberInput, { target: { value: "4" } })
+        jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setEdgeHeight({ value: 4 }))

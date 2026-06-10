@@ -1,50 +1,24 @@
 <cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()" widthClass="w-80">
     <div [title]="edgePreviewLabel()">
         <span class="text-sm">Preview</span>
-        <div class="flex items-center gap-2">
-            <input
-                type="range"
-                class="range range-primary range-sm flex-1"
-                min="0"
-                [max]="amountOfBuildingsWithSelectedEdgeMetric()"
-                [value]="amountOfEdgePreviews()"
-                [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
-                (input)="handleAmountOfEdgePreviewsInput($event)"
-            />
-            <input
-                type="number"
-                class="input input-sm input-bordered w-16 text-center"
-                min="0"
-                [max]="amountOfBuildingsWithSelectedEdgeMetric()"
-                [value]="amountOfEdgePreviews()"
-                [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
-                (input)="handleAmountOfEdgePreviewsInput($event)"
-            />
-        </div>
+        <cc-slider-number-input
+            [min]="0"
+            [max]="amountOfBuildingsWithSelectedEdgeMetric()"
+            [value]="amountOfEdgePreviews()"
+            [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
+            (valueChange)="setAmountOfEdgePreviews($event)"
+        ></cc-slider-number-input>
     </div>
 
     <div title="Adjust the curve height">
         <span class="text-sm">Height</span>
-        <div class="flex items-center gap-2">
-            <input
-                type="range"
-                class="range range-primary range-sm flex-1"
-                min="1"
-                max="9"
-                [value]="edgeHeight()"
-                [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
-                (input)="handleEdgeHeightInput($event)"
-            />
-            <input
-                type="number"
-                class="input input-sm input-bordered w-16 text-center"
-                min="1"
-                max="9"
-                [value]="edgeHeight()"
-                [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
-                (input)="handleEdgeHeightInput($event)"
-            />
-        </div>
+        <cc-slider-number-input
+            [min]="1"
+            [max]="9"
+            [value]="edgeHeight()"
+            [disabled]="amountOfBuildingsWithSelectedEdgeMetric() === 0"
+            (valueChange)="setEdgeHeight($event)"
+        ></cc-slider-number-input>
     </div>
 
     <div class="flex flex-col gap-2">

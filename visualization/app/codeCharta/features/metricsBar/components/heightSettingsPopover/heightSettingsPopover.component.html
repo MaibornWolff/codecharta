@@ -1,26 +1,7 @@
 <cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()">
     <div title="Height scaling">
         <span class="text-sm">Height</span>
-        <div class="flex items-center gap-2">
-            <input
-                type="range"
-                class="range range-primary range-sm flex-1"
-                min="1"
-                max="25"
-                step="1"
-                [value]="scalingY().y"
-                (input)="handleScalingInput($event)"
-            />
-            <input
-                type="number"
-                class="input input-sm input-bordered w-16 text-center"
-                min="1"
-                max="25"
-                step="1"
-                [value]="scalingY().y"
-                (input)="handleScalingInput($event)"
-            />
-        </div>
+        <cc-slider-number-input [min]="1" [max]="25" [value]="scalingY().y" (valueChange)="setScalingY($event)"></cc-slider-number-input>
     </div>
 
     @if (!isDeltaState()) {

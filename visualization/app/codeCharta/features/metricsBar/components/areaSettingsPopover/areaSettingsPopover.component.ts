@@ -1,19 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { debounce } from "../../../../util/debounce"
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
 import { EnableFloorLabelsService } from "../../services/enableFloorLabels.service"
 import { InvertAreaService } from "../../services/invertArea.service"
 import { MarginService } from "../../services/margin.service"
-import { SETTINGS_INPUT_DEBOUNCE_MS, parseChangedNumberInput } from "../../util/settingsInput"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
+import { SliderNumberInputComponent } from "../sliderNumberInput/sliderNumberInput.component"
 
 @Component({
     selector: "cc-area-settings-popover",
     templateUrl: "./areaSettingsPopover.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [ResetSettingsButtonComponent, SettingsPopoverShellComponent]
+    imports: [ResetSettingsButtonComponent, SettingsPopoverShellComponent, SliderNumberInputComponent]
 })
 export class AreaSettingsPopoverComponent {
     private readonly marginService = inject(MarginService)
@@ -29,16 +28,8 @@ export class AreaSettingsPopoverComponent {
 
     readonly resetKeys = ["dynamicSettings.margin", "appSettings.invertArea", "appSettings.enableFloorLabels"]
 
-    private readonly applyDebouncedMargin = debounce((margin: number) => {
+    setMargin(margin: number) {
         this.marginService.setMargin(margin)
-    }, SETTINGS_INPUT_DEBOUNCE_MS)
-
-    handleMarginInput(event: Event) {
-        const value = parseChangedNumberInput(event, 1, 100, this.margin())
-        if (value === undefined) {
-            return
-        }
-        this.applyDebouncedMargin(value)
     }
 
     setEnableFloorLabel(event: Event) {

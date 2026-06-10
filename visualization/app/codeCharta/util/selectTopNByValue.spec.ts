@@ -49,6 +49,36 @@ describe("selectTopNByValue", () => {
         expect(selectTopNByValue(items, getValue, -3)).toEqual([])
     })
 
+    it("should floor a fractional n instead of crashing", () => {
+        // Arrange
+        const items = [{ v: 4 }, { v: 223 }, { v: 17 }, { v: 1 }, { v: 99 }]
+
+        // Act
+        const result = selectTopNByValue(items, getValue, 2.5)
+
+        // Assert
+        expect(result.map(getValue)).toEqual([223, 99])
+    })
+
+    it("should return an empty array for a NaN n", () => {
+        // Arrange
+        const items = [{ v: 1 }, { v: 2 }]
+
+        // Act & Assert
+        expect(selectTopNByValue(items, getValue, Number.NaN)).toEqual([])
+    })
+
+    it("should rank NaN values below every real value instead of blocking the window", () => {
+        // Arrange
+        const items = [{ v: Number.NaN }, { v: 1 }, { v: 99 }, { v: 4 }, { v: 17 }]
+
+        // Act
+        const result = selectTopNByValue(items, getValue, 2)
+
+        // Assert
+        expect(result.map(getValue)).toEqual([99, 17])
+    })
+
     it("should keep the original relative order for tied values", () => {
         // Arrange
         const a = { v: 5, id: "a" }

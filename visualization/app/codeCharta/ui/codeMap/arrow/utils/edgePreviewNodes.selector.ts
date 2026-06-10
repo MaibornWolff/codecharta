@@ -18,8 +18,10 @@ export const _getNodesWithHighestValue = (
     amountOfEdgePreviews: number
 ) => {
     const keys: string[] = []
+    // floor: a fractional amount (e.g. restored from a URL) must not disable the cutoff
+    const limit = Math.floor(amountOfEdgePreviews)
 
-    if (amountOfEdgePreviews === 0) {
+    if (!(limit > 0)) {
         return keys
     }
 
@@ -31,7 +33,7 @@ export const _getNodesWithHighestValue = (
 
     for (const key of sortedNodeEdgeMetrics.keys()) {
         keys.push(key)
-        if (keys.length === amountOfEdgePreviews) {
+        if (keys.length >= limit) {
             break
         }
     }

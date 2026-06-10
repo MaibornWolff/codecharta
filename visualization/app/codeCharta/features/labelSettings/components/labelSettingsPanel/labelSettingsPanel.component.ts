@@ -70,7 +70,7 @@ export class LabelSettingsPanelComponent {
     }, LabelSettingsPanelComponent.DEBOUNCE_TIME)
 
     handleTopLabelsInput(event: Event) {
-        const value = parseNumberInput(event, 0, 50)
+        const value = parseNumberInput(event, 0, 50, { round: true })
         if (!Number.isNaN(value) && value !== this.amountOfTopLabels()) {
             this.applyDebouncedTopLabels(value)
         }

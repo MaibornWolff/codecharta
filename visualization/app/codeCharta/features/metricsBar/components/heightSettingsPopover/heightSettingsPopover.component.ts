@@ -1,19 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { debounce } from "../../../../util/debounce"
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
 import { InvertHeightService } from "../../services/invertHeight.service"
 import { IsDeltaStateService } from "../../services/isDeltaState.service"
 import { ScalingService } from "../../services/scaling.service"
-import { SETTINGS_INPUT_DEBOUNCE_MS, parseChangedNumberInput } from "../../util/settingsInput"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
+import { SliderNumberInputComponent } from "../sliderNumberInput/sliderNumberInput.component"
 
 @Component({
     selector: "cc-height-settings-popover",
     templateUrl: "./heightSettingsPopover.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [ResetSettingsButtonComponent, SettingsPopoverShellComponent]
+    imports: [ResetSettingsButtonComponent, SettingsPopoverShellComponent, SliderNumberInputComponent]
 })
 export class HeightSettingsPopoverComponent {
     private readonly scalingService = inject(ScalingService)
@@ -29,16 +28,8 @@ export class HeightSettingsPopoverComponent {
 
     readonly resetKeys = ["appSettings.scaling.y", "appSettings.invertHeight"]
 
-    private readonly applyDebouncedScalingY = debounce((y: number) => {
+    setScalingY(y: number) {
         this.scalingService.setScaling({ y })
-    }, SETTINGS_INPUT_DEBOUNCE_MS)
-
-    handleScalingInput(event: Event) {
-        const value = parseChangedNumberInput(event, 1, 25, this.scalingY().y)
-        if (value === undefined) {
-            return
-        }
-        this.applyDebouncedScalingY(value)
     }
 
     toggleInvertHeight(event: Event) {

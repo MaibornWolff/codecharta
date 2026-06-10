@@ -3,7 +3,6 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
 import { ColorPickerForMapColorComponent } from "../../../../ui/colorPickerForMapColor/colorPickerForMapColor.component"
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
-import { parseNumberInput } from "../../../../util/parseNumberInput"
 import { AmountOfBuildingsWithSelectedEdgeMetricService } from "../../services/amountOfBuildingsWithSelectedEdgeMetric.service"
 import { AmountOfEdgePreviewsService } from "../../services/amountOfEdgePreviews.service"
 import { EdgeHeightService } from "../../services/edgeHeight.service"
@@ -12,13 +11,20 @@ import { ShowOnlyBuildingsWithEdgesService } from "../../services/showOnlyBuildi
 import { ShowOutgoingEdgesService } from "../../services/showOutgoingEdges.service"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
+import { SliderNumberInputComponent } from "../sliderNumberInput/sliderNumberInput.component"
 
 @Component({
     selector: "cc-edge-settings-popover",
     templateUrl: "./edgeSettingsPopover.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [ColorPickerForMapColorComponent, ResetSettingsButtonComponent, EdgeMetricToggleComponent, SettingsPopoverShellComponent]
+    imports: [
+        ColorPickerForMapColorComponent,
+        ResetSettingsButtonComponent,
+        EdgeMetricToggleComponent,
+        SettingsPopoverShellComponent,
+        SliderNumberInputComponent
+    ]
 })
 export class EdgeSettingsPopoverComponent {
     private readonly amountOfBuildingsWithSelectedEdgeMetricService = inject(AmountOfBuildingsWithSelectedEdgeMetricService)
@@ -62,19 +68,11 @@ export class EdgeSettingsPopoverComponent {
         "appSettings.isEdgeMetricVisible"
     ]
 
-    handleAmountOfEdgePreviewsInput(event: Event) {
-        const value = parseNumberInput(event, 0, this.amountOfBuildingsWithSelectedEdgeMetric())
-        if (Number.isNaN(value) || value === this.amountOfEdgePreviews()) {
-            return
-        }
+    setAmountOfEdgePreviews(value: number) {
         this.amountOfEdgePreviewsService.setAmountOfEdgePreviews(value)
     }
 
-    handleEdgeHeightInput(event: Event) {
-        const value = parseNumberInput(event, 1, 9)
-        if (Number.isNaN(value) || value === this.edgeHeight()) {
-            return
-        }
+    setEdgeHeight(value: number) {
         this.edgeHeightService.setEdgeHeight(value)
     }
 

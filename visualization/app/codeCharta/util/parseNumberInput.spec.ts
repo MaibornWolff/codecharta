@@ -45,9 +45,9 @@ describe("parseNumberInput", () => {
         expect(result).toBeNaN()
     })
 
-    it("should write the clamped value back to input.value when out of range", () => {
+    it("should not write the clamped value back into the input while typing", () => {
         // Arrange
-        const target = { value: 9999 }
+        const target = { value: "9999" }
         const fakeEvent = { target } as unknown as InputEvent
 
         // Act
@@ -55,7 +55,7 @@ describe("parseNumberInput", () => {
 
         // Assert
         expect(result).toBe(9000)
-        expect(target.value).toBe("9000")
+        expect(target.value).toBe("9999")
     })
 
     it("should preserve decimals for in-range input", () => {
@@ -71,14 +71,34 @@ describe("parseNumberInput", () => {
 
     it("should clamp a decimal value that exceeds max", () => {
         // Arrange
-        const target = { value: "2.7" }
-        const fakeEvent = { target } as unknown as InputEvent
+        const fakeEvent = { target: { value: "2.7" } } as unknown as InputEvent
 
         // Act
         const result = parseNumberInput(fakeEvent, 0, 2)
 
         // Assert
         expect(result).toBe(2)
-        expect(target.value).toBe("2")
+    })
+
+    it("should round fractional input to an integer when the round option is set", () => {
+        // Arrange
+        const fakeEvent = { target: { value: "2.7" } } as unknown as InputEvent
+
+        // Act
+        const result = parseNumberInput(fakeEvent, 0, 100, { round: true })
+
+        // Assert
+        expect(result).toBe(3)
+    })
+
+    it("should clamp after rounding when the rounded value is out of range", () => {
+        // Arrange
+        const fakeEvent = { target: { value: "100.4" } } as unknown as InputEvent
+
+        // Act
+        const result = parseNumberInput(fakeEvent, 0, 100, { round: true })
+
+        // Assert
+        expect(result).toBe(100)
     })
 })

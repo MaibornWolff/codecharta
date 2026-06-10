@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { render } from "@testing-library/angular"
+import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { setEnableFloorLabels } from "../../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 import { setInvertArea } from "../../../../state/store/appSettings/invertArea/invertArea.actions"
@@ -12,6 +12,10 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { AreaSettingsPopoverComponent } from "./areaSettingsPopover.component"
 
 describe("AreaSettingsPopoverComponent", () => {
+    afterEach(() => {
+        jest.useRealTimers()
+    })
+
     async function setup(margin = 0) {
         const renderResult = await render(AreaSettingsPopoverComponent, {
             inputs: {
@@ -34,100 +38,106 @@ describe("AreaSettingsPopoverComponent", () => {
                 }
             ]
         })
-        return { component: renderResult.fixture.componentInstance }
+        const marginNumberInput = screen.getByRole("spinbutton") as HTMLInputElement
+        return { component: renderResult.fixture.componentInstance, marginNumberInput }
     }
 
-    function marginEvent(rawValue: string): Event {
-        // Arrange a minimal input event whose target carries the typed value
-        const input = document.createElement("input")
-        input.value = rawValue
-        return { target: input } as unknown as Event
-    }
-
-    it("should dispatch setMargin with the parsed value after the debounce time elapses", async () => {
+    it("should dispatch setMargin with the typed value after the debounce time elapses", async () => {
         // Arrange
         jest.useFakeTimers()
-        const { component } = await setup(0)
+        const { marginNumberInput } = await setup(0)
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
 
         // Act
-        component.handleMarginInput(marginEvent("42"))
+        fireEvent.input(marginNumberInput, { target: { value: "42" } })
         jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setMargin({ value: 42 }))
-        jest.useRealTimers()
     })
 
     it("should not dispatch setMargin before the debounce time elapses", async () => {
         // Arrange
         jest.useFakeTimers()
-        const { component } = await setup(0)
+        const { marginNumberInput } = await setup(0)
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
 
         // Act
-        component.handleMarginInput(marginEvent("42"))
+        fireEvent.input(marginNumberInput, { target: { value: "42" } })
         jest.advanceTimersByTime(399)
 
         // Assert
         expect(dispatchSpy).not.toHaveBeenCalledWith(setMargin({ value: 42 }))
-        jest.useRealTimers()
     })
 
     it("should debounce rapid margin inputs into a single dispatch using the latest value", async () => {
         // Arrange
         jest.useFakeTimers()
-        const { component } = await setup(0)
+        const { marginNumberInput } = await setup(0)
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
         dispatchSpy.mockClear()
 
         // Act
-        component.handleMarginInput(marginEvent("10"))
+        fireEvent.input(marginNumberInput, { target: { value: "10" } })
         jest.advanceTimersByTime(100)
-        component.handleMarginInput(marginEvent("25"))
+        fireEvent.input(marginNumberInput, { target: { value: "25" } })
         jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledTimes(1)
         expect(dispatchSpy).toHaveBeenCalledWith(setMargin({ value: 25 }))
-        jest.useRealTimers()
     })
 
     it("should reject NaN input and not dispatch setMargin", async () => {
         // Arrange
         jest.useFakeTimers()
-        const { component } = await setup(0)
+        const { marginNumberInput } = await setup(0)
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
         dispatchSpy.mockClear()
 
         // Act
-        component.handleMarginInput(marginEvent(""))
+        fireEvent.input(marginNumberInput, { target: { value: "" } })
         jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).not.toHaveBeenCalled()
-        jest.useRealTimers()
     })
 
-    it("should skip dispatching when the parsed margin equals the current margin", async () => {
+    it("should skip dispatching when the typed margin equals the current margin", async () => {
         // Arrange
         jest.useFakeTimers()
-        const { component } = await setup(50)
+        const { marginNumberInput } = await setup(50)
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
         dispatchSpy.mockClear()
 
         // Act
-        component.handleMarginInput(marginEvent("50"))
+        fireEvent.input(marginNumberInput, { target: { value: "50" } })
         jest.advanceTimersByTime(400)
 
         // Assert
         expect(dispatchSpy).not.toHaveBeenCalledWith(setMargin({ value: 50 }))
-        jest.useRealTimers()
+    })
+
+    it("should not commit a stale intermediate value when retyping the current margin", async () => {
+        // Arrange
+        jest.useFakeTimers()
+        const { marginNumberInput } = await setup(50)
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+        dispatchSpy.mockClear()
+
+        // Act: retyping "50" passes through the intermediate "5"
+        fireEvent.input(marginNumberInput, { target: { value: "5" } })
+        fireEvent.input(marginNumberInput, { target: { value: "50" } })
+        jest.advanceTimersByTime(400)
+
+        // Assert
+        expect(dispatchSpy).not.toHaveBeenCalledWith(setMargin({ value: 5 }))
     })
 
     it("should dispatch setEnableFloorLabels with the checkbox checked state", async () => {
