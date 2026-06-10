@@ -1,0 +1,38 @@
+# mise configuration — pins toolchain and provides bootstrap tasks.
+# Versions match CI (.github/workflows). Install mise: https://mise.jdx.dev
+# Usage: `mise install` to get tools, then `mise run install` to install deps.
+
+[tools]
+java = "zulu-21"
+node = "24"
+
+[tasks.install]
+description = "Install all dependencies (root, visualization, analysis)"
+run = [
+  "npm ci",
+  "npm --prefix visualization ci",
+  "cd analysis && ./gradlew assemble",
+]
+
+[tasks.dev]
+description = "Start the visualization dev server"
+dir = "visualization"
+run = "npm run dev"
+
+[tasks.build]
+description = "Build visualization and analysis"
+run = [
+  "npm --prefix visualization run build",
+  "cd analysis && ./gradlew build",
+]
+
+[tasks.test]
+description = "Run all unit tests (visualization + analysis)"
+run = [
+  "npm --prefix visualization test",
+  "cd analysis && ./gradlew test",
+]
+
+[tasks.format]
+description = "Format all files"
+run = "npm run format"
