@@ -191,6 +191,39 @@ describe("codeMapMesh", () => {
             // Assert
             expect(building.color).toBe(originalColor)
         })
+
+        it("should keep the incremental highlight cache on selectBuilding instead of forcing a full repaint", () => {
+            // Arrange
+            const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)
+            const building = mesh.getMeshDescription().buildings[0]
+            mesh.highlightBuilding(new Set([building.id]), building, null, STATE, new Map())
+            expect(mesh["_prevHighlightedIds"]).not.toBeNull()
+
+            // Act
+            mesh.selectBuilding(building, "#aabbcc")
+
+            // Assert
+            expect(mesh["_prevHighlightedIds"]).not.toBeNull()
+        })
+
+        it("should repaint the formerly selected building on the next highlight pass after the selection changes", () => {
+            // Arrange
+            const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)
+            const building = mesh.getMeshDescription().buildings[0]
+            const colorAttr = mesh.getThreeMesh().geometry.getAttribute("color") as InstancedBufferAttribute
+            mesh.highlightBuilding(new Set([building.id]), building, building, STATE, new Map())
+            mesh.selectBuilding(building, "#aabbcc")
+            mesh.highlightBuilding(new Set([building.id]), building, building, STATE, new Map())
+            const selectedColor = [colorAttr.getX(building.id), colorAttr.getY(building.id), colorAttr.getZ(building.id)]
+
+            // Act — deselect, then run a highlight pass without the selection
+            mesh.clearSelection(building)
+            mesh.highlightBuilding(new Set([building.id]), building, null, STATE, new Map())
+
+            // Assert — the building no longer carries the selection color
+            const repaintedColor = [colorAttr.getX(building.id), colorAttr.getY(building.id), colorAttr.getZ(building.id)]
+            expect(repaintedColor).not.toEqual(selectedColor)
+        })
     })
 
     describe("setScale", () => {

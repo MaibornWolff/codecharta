@@ -6,7 +6,7 @@ import { NavBarComponent } from "./features/navBar/facade"
 import { BottomBarComponent } from "./features/bottomBar/facade"
 import { SidebarExplorerComponent } from "./features/sidebarExplorer/facade"
 import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBar.component"
-import { RibbonBarComponent } from "./ui/ribbonBar/ribbonBar.component"
+import { MetricsBarComponent } from "./features/metricsBar/facade"
 import { CodeMapComponent } from "./ui/codeMap/codeMap.component"
 import { LegendPanelComponent } from "./ui/legendPanel/legendPanel.component"
 import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
@@ -19,7 +19,7 @@ import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.compo
     imports: [
         NavBarComponent,
         FileExtensionBarComponent,
-        RibbonBarComponent,
+        MetricsBarComponent,
         SidebarExplorerComponent,
         CodeMapComponent,
         LegendPanelComponent,

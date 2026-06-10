@@ -18,10 +18,10 @@ import { RulesPopoverComponent } from "../rulesPopover/rulesPopover.component"
         RulesPopoverComponent
     ],
     host: {
-        class: "fixed left-0 w-72 bg-base-100 overflow-hidden flex flex-col shadow-[2px_0_8px_-2px_rgba(0,0,0,0.15)]",
+        class: "fixed left-0 z-[60] w-72 bg-base-100 overflow-hidden flex flex-col shadow-[2px_0_8px_-2px_rgba(0,0,0,0.15)]",
         "[class.rounded-br-md]": "isCollapsed()",
         "[style.top]": "'var(--cc-bars-height, 98px)'",
-        "[style.height]": "isCollapsed() ? 'auto' : 'calc(100vh - var(--cc-bars-height, 98px))'"
+        "[style.height]": "isCollapsed() ? 'auto' : 'calc(100vh - var(--cc-bars-height, 98px) - var(--cc-bottom-bar-height, 32px))'"
     }
 })
 export class SidebarExplorerComponent {

@@ -1,18 +1,18 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { AreaMetricStore } from "./areaMetric.store"
+import { ExplorerAreaMetricStore } from "./areaMetric.store"
 import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 
-describe("AreaMetricStore", () => {
-    let store: AreaMetricStore
+describe("ExplorerAreaMetricStore", () => {
+    let store: ExplorerAreaMetricStore
     let mockStore: MockStore
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [AreaMetricStore, provideMockStore({ selectors: [{ selector: areaMetricSelector, value: "unary" }] })]
+            providers: [ExplorerAreaMetricStore, provideMockStore({ selectors: [{ selector: areaMetricSelector, value: "unary" }] })]
         })
 
-        store = TestBed.inject(AreaMetricStore)
+        store = TestBed.inject(ExplorerAreaMetricStore)
         mockStore = TestBed.inject(MockStore)
     })
 

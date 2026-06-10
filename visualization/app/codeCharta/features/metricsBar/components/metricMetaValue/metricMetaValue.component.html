@@ -1,0 +1,13 @@
+<div class="flex items-center justify-center gap-1 text-xs leading-tight min-h-4">
+    @if (display(); as display) {
+        <span class="opacity-60">
+            <cc-metric-chooser-type [metricFor]="metricFor()"></cc-metric-chooser-type>
+        </span>
+        <span class="font-medium">{{ display.value }}</span>
+        @if (display.delta; as delta) {
+            <span class="font-medium" [class]="delta.styleClass">Δ{{ delta.label }}</span>
+        }
+    } @else {
+        <span aria-hidden="true">&nbsp;</span>
+    }
+</div>

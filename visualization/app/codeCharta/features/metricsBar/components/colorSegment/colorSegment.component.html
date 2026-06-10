@@ -1,0 +1,30 @@
+<cc-axis-card
+    label="Color"
+    [metricName]="colorMetric()"
+    [hasCog]="true"
+    [cogPopoverId]="settingsPopoverId"
+    [cogAnchorName]="settingsAnchorName"
+    [searchPopoverId]="searchPopoverId"
+    [searchAnchorName]="searchAnchorName"
+    [disabled]="isLinked()"
+    [testId]="'metric-segment-color'"
+    [cogTestId]="'metric-segment-color-cog'"
+>
+    <div body class="flex flex-col items-stretch gap-1">
+        <cc-metric-meta-value metricFor="colorMetric"></cc-metric-meta-value>
+    </div>
+</cc-axis-card>
+
+<cc-metric-select-popover
+    [popoverId]="searchPopoverId"
+    [anchorName]="searchAnchorName"
+    placeholder="Color Metric (highest value)"
+    kind="node"
+    [selected]="colorMetric()"
+    (metricSelected)="handleMetricSelected($event)"
+></cc-metric-select-popover>
+
+<cc-color-settings-popover
+    [popoverId]="settingsPopoverId"
+    [anchorName]="settingsAnchorName"
+></cc-color-settings-popover>

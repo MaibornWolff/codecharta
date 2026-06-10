@@ -55,7 +55,7 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     private observeBarsHeight(): void {
-        const bars = ["cc-nav-bar", "cc-ribbon-bar", "cc-file-extension-bar"]
+        const bars = ["cc-nav-bar", "cc-file-extension-bar"]
             .map(selector => document.querySelector(selector) as HTMLElement | null)
             .filter((el): el is HTMLElement => el !== null)
         if (bars.length === 0) {

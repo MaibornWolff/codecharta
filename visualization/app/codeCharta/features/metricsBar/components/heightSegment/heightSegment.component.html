@@ -1,0 +1,14 @@
+<cc-metric-segment
+    label="Height"
+    [metricName]="heightMetric()"
+    metricFor="heightMetric"
+    placeholder="Height Metric (highest value)"
+    [searchPopoverId]="searchPopoverId"
+    [searchAnchorName]="searchAnchorName"
+    [settingsPopoverId]="settingsPopoverId"
+    [settingsAnchorName]="settingsAnchorName"
+    testIdPrefix="metric-segment-height"
+    (metricSelected)="handleMetricSelected($event)"
+>
+    <cc-height-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-height-settings-popover>
+</cc-metric-segment>

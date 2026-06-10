@@ -1,0 +1,24 @@
+<cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()">
+    <div title="Height scaling">
+        <span class="text-sm">Height</span>
+        <cc-slider-number-input [min]="1" [max]="25" [value]="scalingY().y" (valueChange)="setScalingY($event)"></cc-slider-number-input>
+    </div>
+
+    @if (!isDeltaState()) {
+        <label class="flex items-center gap-2 cursor-pointer">
+            <input
+                type="checkbox"
+                class="checkbox checkbox-sm checkbox-primary"
+                [checked]="invertHeight()"
+                (change)="toggleInvertHeight($event)"
+            />
+            <span>Invert Height</span>
+        </label>
+    }
+
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        tooltip="Reset height metric settings to their defaults"
+        label="Reset height metric settings"
+    ></cc-reset-settings-button>
+</cc-settings-popover-shell>

@@ -1,0 +1,11 @@
+<button
+    type="button"
+    [class]="buttonClass()"
+    [title]="title()"
+    [attr.aria-label]="title()"
+    [attr.data-testid]="'metric-link-button'"
+    [attr.aria-pressed]="isLinked()"
+    (click)="toggle()"
+>
+    <i [class]="iconClass()"></i>
+</button>

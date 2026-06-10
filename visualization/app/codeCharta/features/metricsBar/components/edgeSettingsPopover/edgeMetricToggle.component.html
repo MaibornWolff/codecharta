@@ -1,0 +1,9 @@
+<label class="flex items-center gap-2 cursor-pointer">
+    <input
+        type="checkbox"
+        class="checkbox checkbox-sm checkbox-primary"
+        [checked]="!isEdgeMetricVisible()"
+        (change)="toggle()"
+    />
+    <span>Disable edge metric</span>
+</label>

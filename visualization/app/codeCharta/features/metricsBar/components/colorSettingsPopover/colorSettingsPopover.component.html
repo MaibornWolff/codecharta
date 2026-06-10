@@ -1,0 +1,93 @@
+<cc-settings-popover-shell
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    [widthClass]="'max-w-[95vw] ' + (isWidePopover() ? 'w-[640px]' : 'w-80')"
+>
+    @if (!isDeltaState() && colorMetric() !== "unary") {
+        <div class="flex items-center gap-2">
+            <cc-metric-color-range-slider
+                class="block flex-1"
+                [minValue]="sliderValues().min"
+                [maxValue]="sliderValues().max"
+                [currentLeftValue]="sliderValues().from"
+                [currentRightValue]="sliderValues().to"
+                [leftColor]="sliderColors().leftColor"
+                [middleColor]="sliderColors().middleColor"
+                [rightColor]="sliderColors().rightColor"
+                [handleValueChange]="handleValueChange"
+                [sliderWidth]="395"
+            ></cc-metric-color-range-slider>
+            <cc-reset-settings-button
+                [settingsKeys]="resetThresholdsKeys"
+                [callback]="resetColorRange"
+                tooltip="Reset slider thresholds to default"
+            ></cc-reset-settings-button>
+        </div>
+        <cc-metric-color-range-diagram
+            [minValue]="sliderValues().min"
+            [maxValue]="sliderValues().max"
+            [currentLeftValue]="sliderValues().from"
+            [currentRightValue]="sliderValues().to"
+            [leftColor]="sliderColors().leftColor"
+            [middleColor]="sliderColors().middleColor"
+            [rightColor]="sliderColors().rightColor"
+            [colorMetric]="colorMetric()"
+            [values]="sliderValues().values"
+            [isAttributeDirectionInverted]="isAttributeDirectionInversed()"
+        ></cc-metric-color-range-diagram>
+        <label class="form-control">
+            <div class="label py-1">
+                <span class="label-text">Gradient Mode</span>
+            </div>
+            <select
+                class="select select-sm select-bordered w-full"
+                [value]="colorMode()"
+                (change)="handleColorModeChange($any($event.target).value)"
+            >
+                <option value="absolute">Absolute</option>
+                <option value="focusedGradient">Focused Gradient</option>
+                <option value="weightedGradient">Weighted Gradient</option>
+                <option value="trueGradient">True Gradient</option>
+            </select>
+        </label>
+    }
+
+    @if (!isDeltaState()) {
+        <cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
+        <cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
+        <cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
+    } @else {
+        <cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
+        <cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"></cc-color-picker-for-map-color>
+    }
+    <cc-color-picker-for-map-color [mapColorFor]="'selected'"></cc-color-picker-for-map-color>
+
+    <div class="flex items-center justify-between gap-2">
+        @if (!isDeltaState()) {
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                    type="checkbox"
+                    class="checkbox checkbox-sm checkbox-primary"
+                    [checked]="isColorRangeInverted()"
+                    (change)="handleIsColorRangeInvertedChange()"
+                />
+                <span>Invert Colors</span>
+            </label>
+        } @else {
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                    type="checkbox"
+                    class="checkbox checkbox-sm checkbox-primary"
+                    [checked]="areDeltaColorsInverted()"
+                    (change)="handleAreDeltaColorsInvertedChange()"
+                />
+                <span>Invert Colors</span>
+            </label>
+        }
+        <cc-reset-settings-button
+            [settingsKeys]="resetColorsKeys()"
+            tooltip="Reset color values to default"
+            label="Reset colors"
+        ></cc-reset-settings-button>
+    </div>
+</cc-settings-popover-shell>

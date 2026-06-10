@@ -15,12 +15,24 @@ export const defaultMapColors: MapColors = {
     markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
     incomingEdge: "#00ffff",
     outgoingEdge: "#ff00ff",
-    labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
+    labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 },
+    isColorRangeInverted: false,
+    areDeltaColorsInverted: false
 }
 
 export const mapColors = createReducer(
     defaultMapColors,
     on(setMapColors, mergeState(defaultMapColors)),
-    on(invertColorRange, state => ({ ...state, positive: state.negative, negative: state.positive })),
-    on(invertDeltaColors, state => ({ ...state, positiveDelta: state.negativeDelta, negativeDelta: state.positiveDelta }))
+    on(invertColorRange, state => ({
+        ...state,
+        positive: state.negative,
+        negative: state.positive,
+        isColorRangeInverted: !state.isColorRangeInverted
+    })),
+    on(invertDeltaColors, state => ({
+        ...state,
+        positiveDelta: state.negativeDelta,
+        negativeDelta: state.positiveDelta,
+        areDeltaColorsInverted: !state.areDeltaColorsInverted
+    }))
 )

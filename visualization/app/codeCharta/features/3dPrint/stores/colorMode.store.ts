@@ -5,7 +5,7 @@ import { setColorMode } from "../../../state/store/dynamicSettings/colorMode/col
 import { colorModeSelector } from "../selectors/3dPrint.selectors"
 
 @Injectable({ providedIn: "root" })
-export class ColorModeStore {
+export class Export3DColorModeStore {
     constructor(
         private readonly store: Store<CcState>,
         private readonly state: State<CcState>

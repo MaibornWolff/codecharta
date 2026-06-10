@@ -18,7 +18,8 @@ import { LABEL_SIZE_STEP, MAX_LABEL_SIZE, MIN_LABEL_SIZE } from "../../services/
     selector: "cc-label-settings-panel",
     templateUrl: "./labelSettingsPanel.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: "flex flex-col gap-2.5 py-2 px-5" }
+    // layout and padding come from the surrounding settings popover shell
+    host: { class: "contents" }
 })
 export class LabelSettingsPanelComponent {
     private static readonly DEBOUNCE_TIME = 400
@@ -70,10 +71,16 @@ export class LabelSettingsPanelComponent {
     }, LabelSettingsPanelComponent.DEBOUNCE_TIME)
 
     handleTopLabelsInput(event: Event) {
-        const value = parseNumberInput(event, 0, 50)
-        if (!Number.isNaN(value) && value !== this.amountOfTopLabels()) {
-            this.applyDebouncedTopLabels(value)
+        const value = parseNumberInput(event, 0, 50, { round: true })
+        if (Number.isNaN(value)) {
+            return
         }
+        if (value === this.amountOfTopLabels()) {
+            // typed back to the committed value: drop a pending intermediate instead of committing it
+            this.applyDebouncedTopLabels.cancel()
+            return
+        }
+        this.applyDebouncedTopLabels(value)
     }
 
     handleLabelSizeInput(event: Event) {
@@ -84,9 +91,11 @@ export class LabelSettingsPanelComponent {
         const clamped = Math.min(MAX_LABEL_SIZE, Math.max(MIN_LABEL_SIZE, raw))
         const snapped = Math.round(clamped / LABEL_SIZE_STEP) * LABEL_SIZE_STEP
         const value = Math.round(snapped * 100) / 100
-        if (value !== this.labelSize()) {
-            this.applyDebouncedLabelSize(value)
+        if (value === this.labelSize()) {
+            this.applyDebouncedLabelSize.cancel()
+            return
         }
+        this.applyDebouncedLabelSize(value)
     }
 
     setShowMetricLabelNodeName(event: Event) {

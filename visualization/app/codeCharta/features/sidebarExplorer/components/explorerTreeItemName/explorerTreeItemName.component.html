@@ -1,7 +1,7 @@
 <span
     class="node-name"
     [title]="node().name"
-    [class.line-through]="node().isFlattened"
+    [class.line-through]="isFlattenedFile()"
     [class.italic]="isUnclickable() || !isAreaMetricValid()"
     [class.opacity-50]="!isAreaMetricValid()"
     [class.text-primary]="isSearchResult()"

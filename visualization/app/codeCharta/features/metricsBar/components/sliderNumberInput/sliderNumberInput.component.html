@@ -1,0 +1,23 @@
+<div class="flex items-center gap-2">
+    <input
+        type="range"
+        class="range range-primary range-sm flex-1"
+        [min]="min()"
+        [max]="max()"
+        [step]="step()"
+        [value]="value()"
+        [disabled]="disabled()"
+        (input)="handleInput($event)"
+    />
+    <input
+        type="number"
+        class="input input-sm input-bordered w-16 text-center"
+        [min]="min()"
+        [max]="max()"
+        [step]="step()"
+        [value]="value()"
+        [disabled]="disabled()"
+        (input)="handleInput($event)"
+        (change)="handleNumberChange($event)"
+    />
+</div>

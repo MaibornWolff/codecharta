@@ -1,0 +1,44 @@
+<div
+    [class]="cardClasses + ' ' + minWidthClass()"
+    [style.anchor-name]="bodyAnchorStyle()"
+    [attr.data-anchor-name]="searchAnchorName()"
+    [attr.data-testid]="testId()"
+>
+    <cc-axis-card-header
+        [label]="label()"
+        [hasCog]="hasCog()"
+        [cogPopoverId]="cogPopoverId()"
+        [cogAnchorName]="cogAnchorName()"
+        [cogTestId]="cogTestId()"
+    ></cc-axis-card-header>
+
+    <ng-template #cardContent>
+        @if (metricName(); as name) {
+            <div
+                [class.opacity-50]="disabled() || dimmed()"
+                class="text-sm font-semibold leading-tight text-center whitespace-nowrap overflow-hidden text-ellipsis"
+            >
+                {{ name }}
+            </div>
+        }
+        <div class="flex flex-col items-stretch gap-1">
+            <ng-content select="[body]"></ng-content>
+        </div>
+    </ng-template>
+
+    @if (searchPopoverId() !== null) {
+        <button
+            type="button"
+            [class]="contentButtonClasses()"
+            [disabled]="disabled()"
+            [attr.popovertarget]="disabled() ? null : searchPopoverId()"
+        >
+            <ng-container [ngTemplateOutlet]="cardContent"></ng-container>
+        </button>
+    } @else {
+        <div class="flex flex-col items-stretch gap-1 text-current">
+            <ng-container [ngTemplateOutlet]="cardContent"></ng-container>
+        </div>
+    }
+    <ng-content></ng-content>
+</div>

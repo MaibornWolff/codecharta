@@ -1,0 +1,81 @@
+<div class="flex items-center gap-2">
+    <input
+        type="number"
+        class="input input-sm input-bordered w-16 text-center"
+        [value]="currentLeftValue"
+        (input)="handleCurrentLeftInputChanged($event)"
+        [min]="minValue"
+        [max]="upcomingRightValue"
+    />
+
+    <div #rangeSliderContainer class="flex flex-1 mx-2 relative leading-[48px]">
+        <span
+            class="inline-block border-b-4 border-solid"
+            [style.width.px]="sliderRangePosition.leftEnd"
+            [style.border-bottom-color]="leftColor"
+        ></span>
+        <span
+            class="inline-block border-b-4 border-solid"
+            [style.width.px]="sliderRangePosition.rightStart - sliderRangePosition.leftEnd"
+            [style.border-bottom-color]="middleColor"
+        ></span>
+        <span
+            class="inline-block border-b-4 border-solid"
+            [style.width.px]="actualSliderWidth - sliderRangePosition.rightStart"
+            [style.border-bottom-color]="rightColor"
+        ></span>
+
+        <div
+            #leftThumb
+            aria-hidden="true"
+            class="cursor-pointer absolute -top-1 rounded-full border-[7px] border-primary"
+            [style.left.px]="sliderRangePosition.leftEnd - thumbRadius"
+            (mousedown)="setCurrentlySliding('leftThumb')"
+        ></div>
+        <div
+            #rightThumb
+            aria-hidden="true"
+            class="cursor-pointer absolute -top-1 rounded-full border-[7px] border-primary"
+            [style.left.px]="sliderRangePosition.rightStart - thumbRadius"
+            (mousedown)="setCurrentlySliding('rightThumb')"
+        ></div>
+
+        <input
+            type="range"
+            class="absolute inset-0 m-0 h-full w-full opacity-0 pointer-events-none"
+            step="1"
+            [min]="minValue"
+            [max]="currentRightValue"
+            [value]="currentLeftValue"
+            (keydown)="handleLeftThumbKeydown($event)"
+            aria-label="Lower color range value"
+        />
+        <input
+            type="range"
+            class="absolute inset-0 m-0 h-full w-full opacity-0 pointer-events-none"
+            step="1"
+            [min]="currentLeftValue"
+            [max]="maxValue"
+            [value]="currentRightValue"
+            (keydown)="handleRightThumbKeydown($event)"
+            aria-label="Upper color range value"
+        />
+        <cc-range-slider-labels
+            [minValue]="minValue"
+            [maxValue]="maxValue"
+            [leftValueLabel]="upcomingLeftValue"
+            [rightValueLabel]="upcomingRightValue"
+            [sliderRangePosition]="sliderRangePosition"
+            [sliderWidth]="actualSliderWidth"
+        ></cc-range-slider-labels>
+    </div>
+
+    <input
+        type="number"
+        class="input input-sm input-bordered w-16 text-center"
+        [value]="currentRightValue"
+        (input)="handleCurrentRightInputChanged($event)"
+        [min]="upcomingLeftValue"
+        [max]="maxValue"
+    />
+</div>

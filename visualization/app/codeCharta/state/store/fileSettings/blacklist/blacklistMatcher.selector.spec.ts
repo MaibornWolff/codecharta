@@ -28,7 +28,7 @@ describe("blacklistMatcherSelector", () => {
         expect(second).toBe(first)
     })
 
-    it("should answer isExcluded and isFlattened correctly for exact path, glob pattern, and non-match", () => {
+    it("should answer isExcludedLeaf and isFlattened correctly for exact path, glob pattern, and non-match", () => {
         // Arrange
         const blacklist: BlacklistItem[] = [
             { type: "exclude", path: "/root/exact/file.ts" },
@@ -37,13 +37,13 @@ describe("blacklistMatcherSelector", () => {
         const matcher = blacklistMatcherSelector(stateWithBlacklist(blacklist))
 
         // Act & Assert — exact path match
-        expect(matcher.isExcluded("/root/exact/file.ts")).toBe(true)
+        expect(matcher.isExcludedLeaf("/root/exact/file.ts")).toBe(true)
         // glob pattern match
         expect(matcher.isFlattened("/root/some/path/foo.spec.ts")).toBe(true)
         // non-match
-        expect(matcher.isExcluded("/root/other/file.ts")).toBe(false)
+        expect(matcher.isExcludedLeaf("/root/other/file.ts")).toBe(false)
         expect(matcher.isFlattened("/root/other/file.ts")).toBe(false)
         // type isolation: a flatten rule should not mark the path excluded
-        expect(matcher.isExcluded("/root/some/path/foo.spec.ts")).toBe(false)
+        expect(matcher.isExcludedLeaf("/root/some/path/foo.spec.ts")).toBe(false)
     })
 })

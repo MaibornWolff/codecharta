@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from "@an
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { getMarkingColor, isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
-import { AreaMetricStore } from "../../stores/areaMetric.store"
+import { ExplorerAreaMetricStore } from "../../stores/areaMetric.store"
 import { MarkedPackagesStore } from "../../stores/markedPackages.store"
 
 @Component({
@@ -14,7 +14,7 @@ export class ExplorerTreeItemIconComponent {
     private static readonly DEFAULT_FOLDER_COLOR = "#000000"
     private static readonly NO_AREA_COLOR = "#BDBDBD"
 
-    private readonly areaMetricStore = inject(AreaMetricStore)
+    private readonly areaMetricStore = inject(ExplorerAreaMetricStore)
     private readonly markedPackagesStore = inject(MarkedPackagesStore)
 
     readonly node = input.required<CodeMapNode>()

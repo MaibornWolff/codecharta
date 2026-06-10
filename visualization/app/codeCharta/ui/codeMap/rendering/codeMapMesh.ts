@@ -71,6 +71,7 @@ export class CodeMapMesh {
     private nodes: Node[]
     private dirtyRange: DirtyRange | null = null
     private _prevHighlightedIds: Set<number> | null = null
+    private _prevSelectedId: number | null = null
     private _prevIsPresentationMode: boolean | null = null
 
     constructor(nodes: Node[], state: CcState, isDeltaState: boolean) {
@@ -133,15 +134,13 @@ export class CodeMapMesh {
         constantHighlight: Map<number, CodeMapBuilding>
     ) {
         const { isPresentationMode } = state.appSettings
-
-        // force full re-render when presentation mode is toggled mid-hover
-        if (this._prevIsPresentationMode !== null && this._prevIsPresentationMode !== isPresentationMode) {
-            this._prevHighlightedIds = null
-        }
+        this.invalidateDiffCacheWhenPresentationModeChanged(isPresentationMode)
 
         const prev = this._prevHighlightedIds
+        const selectedId = selected ? selected.id : null
 
         if (prev && !isPresentationMode) {
+            this.repaintFormerlySelectedWhenSelectionChanged(selectedId, highlightedBuildingIds, constantHighlight)
             this.updateDimmedBuildings(prev, highlightedBuildingIds, constantHighlight, selected)
             this.updateHighlightedBuildings(prev, highlightedBuildingIds, selected)
         } else {
@@ -149,12 +148,39 @@ export class CodeMapMesh {
         }
 
         this._prevHighlightedIds = new Set(highlightedBuildingIds)
+        this._prevSelectedId = selectedId
         this._prevIsPresentationMode = isPresentationMode
         this.updateVertices()
     }
 
+    private invalidateDiffCacheWhenPresentationModeChanged(isPresentationMode: boolean) {
+        if (this._prevIsPresentationMode !== null && this._prevIsPresentationMode !== isPresentationMode) {
+            this._prevHighlightedIds = null
+        }
+    }
+
+    private repaintFormerlySelectedWhenSelectionChanged(
+        selectedId: number | null,
+        highlightedBuildingIds: Set<number>,
+        constantHighlight: Map<number, CodeMapBuilding>
+    ) {
+        if (this._prevSelectedId === null || this._prevSelectedId === selectedId) {
+            return
+        }
+        const building = this.mapGeomDesc.buildings[this._prevSelectedId]
+        if (!building) {
+            return
+        }
+        if (highlightedBuildingIds.has(building.id) || constantHighlight.has(building.id)) {
+            this.setInstanceColor(building.id, building.getHighlightedColorVector(), building.getHighlightedDeltaColorVector())
+        } else {
+            this.setInstanceColor(building.id, building.getDimmedColorVector(), building.getDimmedDeltaColorVector())
+        }
+    }
+
     clearUnselectedBuildings(selected: CodeMapBuilding) {
         this._prevHighlightedIds = null
+        this._prevSelectedId = null
         this._prevIsPresentationMode = null
         for (const currentBuilding of this.mapGeomDesc.buildings) {
             if (this.isBuildingSelected(selected, currentBuilding)) {

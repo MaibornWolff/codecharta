@@ -8,7 +8,7 @@ import { resultsInEmptyMap } from "./resultsInEmptyMap"
 import { ErrorDialogService } from "../../../ui/dialogs/errorDialog/errorDialog.service"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { createBlacklistMatcher } from "../../../util/codeMapHelper"
+import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 
 @Injectable()
 export class AddBlacklistItemsIfNotResultsInEmptyMapEffect {

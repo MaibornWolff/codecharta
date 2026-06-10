@@ -9,7 +9,7 @@
             <i class="fa fa-caret-down ml-2"></i>
         </button>
         @if (openDropdown() === 'reference') {
-            <div class="dropdown-content bg-base-100 rounded-box border border-base-300 shadow-md mt-1 min-w-[12rem] w-max max-w-[24rem] z-50 p-1">
+            <div class="dropdown-content bg-base-100 rounded-box border border-base-300 shadow-md mt-1 min-w-[12rem] w-max max-w-[24rem] z-[70] p-1">
                 <ul class="flex flex-col gap-0.5 p-0 m-0 list-none max-h-72 overflow-y-auto">
                     @for (file of referenceOptions(); track file.fileMeta.fileName) {
                         <li class="w-full">
@@ -49,7 +49,7 @@
             <i class="fa fa-caret-down ml-2"></i>
         </button>
         @if (openDropdown() === 'comparison') {
-            <div class="dropdown-content bg-base-100 rounded-box border border-base-300 shadow-md mt-1 min-w-[12rem] w-max max-w-[24rem] z-50 p-1">
+            <div class="dropdown-content bg-base-100 rounded-box border border-base-300 shadow-md mt-1 min-w-[12rem] w-max max-w-[24rem] z-[70] p-1">
                 <ul class="flex flex-col gap-0.5 p-0 m-0 list-none max-h-72 overflow-y-auto">
                     @for (file of comparisonOptions(); track file.fileMeta.fileName) {
                         <li class="w-full">

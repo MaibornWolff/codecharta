@@ -49,7 +49,9 @@ const metricDataWithMetrics: MetricData = {
 
 describe("ApplyScenarioDialogComponent", () => {
     let component: ApplyScenarioDialogComponent
-    let scenarioApplier: { applyScenario: jest.Mock }
+    let scenarioApplier: Pick<ScenarioApplierService, "getMissingMetrics" | "hasMissingMetrics" | "getAvailableMetricNames"> & {
+        applyScenario: jest.Mock
+    }
 
     beforeEach(() => {
         HTMLDialogElement.prototype.showModal = jest.fn()

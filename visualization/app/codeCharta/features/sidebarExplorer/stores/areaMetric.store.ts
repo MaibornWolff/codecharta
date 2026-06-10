@@ -6,7 +6,7 @@ import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMet
 @Injectable({
     providedIn: "root"
 })
-export class AreaMetricStore {
+export class ExplorerAreaMetricStore {
     constructor(private readonly store: Store<CcState>) {}
 
     areaMetric$ = this.store.select(areaMetricSelector)

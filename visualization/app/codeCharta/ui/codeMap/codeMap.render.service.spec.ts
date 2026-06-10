@@ -28,6 +28,7 @@ import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
@@ -97,10 +98,11 @@ describe("codeMapRenderService", () => {
     }
 
     function withMockedLabelSettingsFacade() {
-        labelSettingsFacade = codeMapRenderService["labelSettingsFacade"] = jest.fn().mockReturnValue({
+        labelSettingsFacade = jest.fn().mockReturnValue({
             clearLabels: jest.fn(),
             addLeafLabel: jest.fn()
         })()
+        Object.defineProperty(codeMapRenderService, "labelSettingsFacade", { value: labelSettingsFacade })
     }
 
     function withMockedThreeSceneService() {
@@ -312,6 +314,23 @@ describe("codeMapRenderService", () => {
             codeMapRenderService.render(null)
 
             expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
+        })
+
+        it("should pick top labels by rendered building height, not by raw height-metric value", () => {
+            // Arrange — height metric is "mcc"; nodes arrive pre-sorted by rendered height descending.
+            // With invertHeight or direction-1 metrics the tallest-rendered building can have the
+            // LOWEST raw metric value; the label must follow what the user actually sees.
+            store.dispatch(setHeightMetric({ value: "mcc" }))
+            store.dispatch(setAmountOfTopLabels({ value: 1 }))
+            const tallButLowValue = { ...TEST_NODE_LEAF, name: "tall-low", isLeaf: true, height: 100, attributes: { mcc: 4 } } as Node
+            const shortButHighValue = { ...TEST_NODE_LEAF, name: "short-high", isLeaf: true, height: 10, attributes: { mcc: 223 } } as Node
+
+            // Act
+            codeMapRenderService["setLabels"]([tallButLowValue, shortButHighValue])
+
+            // Assert — the visually tallest building is labeled
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(tallButLowValue, expect.anything())
         })
 
         it("should generate labels for color if option is toggled on", () => {

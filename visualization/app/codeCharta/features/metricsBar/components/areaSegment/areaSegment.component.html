@@ -1,0 +1,14 @@
+<cc-metric-segment
+    label="Area"
+    [metricName]="areaMetric()"
+    metricFor="areaMetric"
+    placeholder="Area Metric (highest value)"
+    [searchPopoverId]="searchPopoverId"
+    [searchAnchorName]="searchAnchorName"
+    [settingsPopoverId]="settingsPopoverId"
+    [settingsAnchorName]="settingsAnchorName"
+    testIdPrefix="metric-segment-area"
+    (metricSelected)="handleMetricSelected($event)"
+>
+    <cc-area-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-area-settings-popover>
+</cc-metric-segment>

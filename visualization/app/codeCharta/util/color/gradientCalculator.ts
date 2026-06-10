@@ -1,10 +1,48 @@
-import { ColorRange, MapColors } from "../../codeCharta.model"
+import { ColorMode, ColorRange, MapColors } from "../../codeCharta.model"
 import { ColorConverter } from "./colorConverter"
 import { Color } from "three"
 import { MetricMinMax } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 
+export type CategoricalMapColors = Pick<MapColors, "positive" | "neutral" | "negative">
+
+/**
+ * Single source of truth for mapping a metric value to its display color.
+ * Used by the 3D map (getBuildingColor) and the metrics-bar color ramp so
+ * both always classify boundary values identically (a value exactly at
+ * colorRange.to is negative).
+ */
+export function getColorByMetricValue(
+    mapColors: CategoricalMapColors,
+    colorRange: ColorRange,
+    colorMode: ColorMode,
+    nodeMetricDataRange: MetricMinMax,
+    metricValue: number
+): string {
+    if (colorMode === ColorMode.absolute) {
+        if (metricValue < colorRange.from || colorRange.from === nodeMetricDataRange.maxValue) {
+            return mapColors.positive
+        }
+        if (metricValue < colorRange.to || colorRange.to === nodeMetricDataRange.maxValue) {
+            return mapColors.neutral
+        }
+        return mapColors.negative
+    }
+    if (colorMode === ColorMode.trueGradient) {
+        return gradientCalculator.getColorByTrueGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
+    }
+    if (colorMode === ColorMode.focusedGradient) {
+        return gradientCalculator.getColorByFocusedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
+    }
+    return gradientCalculator.getColorByWeightedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
+}
+
 export const gradientCalculator = {
-    getColorByTrueGradient(mapColors: MapColors, colorRange: ColorRange, nodeMetricDataRange: MetricMinMax, metricValue: number) {
+    getColorByTrueGradient(
+        mapColors: CategoricalMapColors,
+        colorRange: ColorRange,
+        nodeMetricDataRange: MetricMinMax,
+        metricValue: number
+    ) {
         const middle = (colorRange.from + colorRange.to) / 2
         const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
 
@@ -19,7 +57,12 @@ export const gradientCalculator = {
         return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, negativeFactor))
     },
 
-    getColorByFocusedGradient(mapColors: MapColors, colorRange: ColorRange, nodeMetricDataRange: MetricMinMax, metricValue: number) {
+    getColorByFocusedGradient(
+        mapColors: CategoricalMapColors,
+        colorRange: ColorRange,
+        nodeMetricDataRange: MetricMinMax,
+        metricValue: number
+    ) {
         const middle = (colorRange.from + colorRange.to) / 2
         const neutralColorRGB = ColorConverter.convertHexToColorObject(mapColors.neutral)
 
@@ -46,7 +89,12 @@ export const gradientCalculator = {
         return ColorConverter.convertColorToHex(new Color().lerpColors(neutralColorRGB, negativeColorRGB, negativeFactor))
     },
 
-    getColorByWeightedGradient(mapColors: MapColors, colorRange: ColorRange, nodeMetricDataRange: MetricMinMax, metricValue: number) {
+    getColorByWeightedGradient(
+        mapColors: CategoricalMapColors,
+        colorRange: ColorRange,
+        nodeMetricDataRange: MetricMinMax,
+        metricValue: number
+    ) {
         const endPositive = Math.max(colorRange.from - (colorRange.to - colorRange.from) / 2, colorRange.from / 2)
         const startNeutral = 2 * colorRange.from - endPositive
         const endNeutral = colorRange.to - (colorRange.to - colorRange.from) / 2

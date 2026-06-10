@@ -1,0 +1,16 @@
+<div class="flex items-center justify-between gap-1">
+    <span class="text-[10px] uppercase tracking-wide opacity-70">{{ label() }}</span>
+    @if (hasCog()) {
+        <button
+            type="button"
+            class="btn btn-ghost btn-xs btn-square"
+            [attr.popovertarget]="cogPopoverId()"
+            [style.anchor-name]="cogAnchorStyle()"
+            [attr.data-anchor-name]="cogAnchorName()"
+            [attr.data-testid]="cogTestId()"
+            title="Settings"
+        >
+            <i class="fa fa-cog text-[10px]"></i>
+        </button>
+    }
+</div>

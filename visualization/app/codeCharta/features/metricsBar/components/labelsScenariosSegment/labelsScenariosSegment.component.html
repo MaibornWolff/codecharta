@@ -1,0 +1,55 @@
+<div class="flex flex-col items-stretch gap-1.5 px-2 py-1 rounded-md transition-colors max-w-[220px] min-w-[160px]">
+    <div class="flex flex-col gap-1" data-testid="metric-segment-labels">
+        <div class="flex items-center justify-between gap-1">
+            <span class="text-[10px] uppercase tracking-wide opacity-70">Labels</span>
+            <button
+                type="button"
+                class="btn btn-ghost btn-xs btn-square"
+                popovertarget="metric-settings-popover-labels"
+                style="anchor-name: --metric-segment-labels"
+                data-anchor-name="metric-segment-labels"
+                title="Label Settings"
+            >
+                <i class="fa fa-cog text-[10px]"></i>
+            </button>
+        </div>
+    </div>
+    <div class="border-t border-base-300 -mx-1"></div>
+    <div class="flex flex-col gap-1" data-testid="metric-segment-scenario">
+        <div class="flex items-center justify-between gap-1">
+            <span class="text-[10px] uppercase tracking-wide opacity-70">Scenarios</span>
+            <button
+                type="button"
+                class="btn btn-ghost btn-xs btn-square"
+                title="Save current state as scenario"
+                data-testid="metric-segment-scenario-save"
+                (click)="openSaveDialog()"
+            >
+                <i class="fa fa-plus text-[10px]"></i>
+            </button>
+        </div>
+        <button
+            type="button"
+            class="text-sm font-semibold leading-tight text-center bg-transparent border-0 p-0 rounded-sm cursor-pointer hover:bg-base-200 whitespace-nowrap overflow-hidden text-ellipsis"
+            title="Open saved scenarios"
+            (click)="openScenarioList()"
+        >
+            {{ scenariosCountLabel() }}
+        </button>
+    </div>
+</div>
+
+<cc-settings-popover-shell popoverId="metric-settings-popover-labels" anchorName="metric-segment-labels" widthClass="w-80">
+    <cc-label-settings-panel></cc-label-settings-panel>
+</cc-settings-popover-shell>
+
+<cc-scenario-list-dialog #listDialog (applyRequested)="handleApplyRequested($event)"></cc-scenario-list-dialog>
+<cc-save-scenario-dialog #saveDialog></cc-save-scenario-dialog>
+
+@if (applyTarget(); as target) {
+    <cc-apply-scenario-dialog
+        [scenario]="target.scenario"
+        [metricData]="target.metricData"
+        (closed)="handleApplyClosed()"
+    ></cc-apply-scenario-dialog>
+}

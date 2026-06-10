@@ -76,7 +76,7 @@ export class ScreenshotService {
             "cc-logo",
             "cc-tool-bar",
             "cc-view-cube",
-            "cc-ribbon-bar",
+            "cc-metrics-bar",
             "cc-file-extension-bar",
             "cc-attribute-side-bar",
             "cc-loading-file-progess-spinner",
@@ -88,10 +88,12 @@ export class ScreenshotService {
 
         const bodyHeight = document.querySelector("body")?.offsetHeight ?? 0
         const navBarHeight = (document.querySelector("cc-nav-bar") as HTMLElement | null)?.offsetHeight ?? 0
-        const ribbonBarHeight = (document.querySelector("cc-ribbon-bar") as HTMLElement | null)?.offsetHeight ?? 0
         const fileExtensionBarHeight = (document.querySelector("cc-file-extension-bar") as HTMLElement | null)?.offsetHeight ?? 0
-        const bottomBarHeight = (document.querySelector("cc-bottom-bar") as HTMLElement | null)?.offsetHeight ?? 0
-        const topBarsHeight = navBarHeight + ribbonBarHeight + fileExtensionBarHeight
+        // the cc-bottom-bar host has zero height (its only child is position:fixed),
+        // so measure the inner footer like bottomBar.component does
+        const bottomBarElement = document.querySelector("cc-bottom-bar") as HTMLElement | null
+        const bottomBarHeight = (bottomBarElement?.querySelector("footer") ?? bottomBarElement)?.offsetHeight ?? 0
+        const topBarsHeight = navBarHeight + fileExtensionBarHeight
 
         const canvas = await html2canvas(document.querySelector("body"), {
             removeContainer: true,

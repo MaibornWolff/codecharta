@@ -6,7 +6,8 @@ import House from "./house"
 import TreeMap from "./treeMap"
 import { Vector2 } from "three"
 import { StreetOrientation } from "./street"
-import { BlacklistMatcher, getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
+import { BlacklistMatcher } from "../../blacklist/blacklistMatcher"
+import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
 import { StreetViewHelper } from "./streetViewHelper"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
 import { treeMapSize } from "../treeMapLayout/treeMapHelper"
@@ -59,7 +60,7 @@ export class StreetLayoutGenerator {
                 children.push(new House(child))
                 continue
             }
-            if (matcher.isExcluded(child.path)) {
+            if (matcher.isExcludedSubtree(child.path)) {
                 continue
             }
 

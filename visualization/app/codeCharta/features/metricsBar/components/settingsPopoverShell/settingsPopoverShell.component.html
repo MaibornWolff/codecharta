@@ -1,0 +1,11 @@
+<div
+    [class]="'dropdown rounded-box bg-base-100 shadow-lg flex flex-col ' + contentClass() + ' ' + widthClass()"
+    popover
+    #popover
+    [id]="popoverId()"
+    [style.position-anchor]="'--' + anchorName()"
+    [style.position-area]="'top span-right'"
+    [attr.data-testid]="testId()"
+>
+    <ng-content></ng-content>
+</div>
