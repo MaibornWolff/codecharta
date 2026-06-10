@@ -22,32 +22,14 @@
     <ul class="flex flex-col max-h-[440px] overflow-y-auto m-0 p-0 list-none">
         @if (isOpen()) {
             @for (option of metricData() | filterMetricDataBySearchTerm: searchTerm(); track option.name; let i = $index) {
-                <li class="flex">
-                    <button
-                        type="button"
-                        class="flex items-center justify-between gap-2 w-full px-2 py-1 rounded border-0 text-left cursor-pointer"
-                        [class]="i === activeIndex() ? 'bg-base-200' : 'bg-transparent hover:bg-base-200'"
-                        [class.font-semibold]="option.name === selected()"
-                        [attr.data-metric-name]="option.name"
-                        [attr.data-active]="i === activeIndex() ? 'true' : null"
-                        [title]="attributeDescriptors()[option.name] | attributeDescriptorTooltip: option.name"
-                        (click)="handleSelect(option.name)"
-                        (mouseenter)="activeIndex.set(i)"
-                    >
-                        <span class="flex flex-col items-start gap-0.5 min-w-0 flex-1">
-                            <span class="truncate w-full">
-                                {{ option.name }}
-                                @if (option.name === "complexity" || option.name === "sonar_complexity") {
-                                    <span class="text-xs opacity-50">(formerly mcc)</span>
-                                }
-                            </span>
-                            @if (attributeDescriptors()[option.name]?.description; as descriptorSubtitle) {
-                                <span class="text-xs opacity-60 truncate w-full">{{ descriptorSubtitle }}</span>
-                            }
-                        </span>
-                        <span class="text-xs opacity-60 shrink-0">({{ option.maxValue }})</span>
-                    </button>
-                </li>
+                <cc-metric-select-option
+                    [option]="option"
+                    [isActive]="i === activeIndex()"
+                    [isSelected]="option.name === selected()"
+                    [descriptor]="attributeDescriptors()[option.name] ?? null"
+                    (selectOption)="handleSelect($event)"
+                    (hovered)="activeIndex.set(i)"
+                ></cc-metric-select-option>
             } @empty {
                 <li class="px-2 py-3 text-xs opacity-60">No metrics found</li>
             }

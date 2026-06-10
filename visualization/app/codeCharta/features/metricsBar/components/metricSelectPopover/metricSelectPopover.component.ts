@@ -14,11 +14,11 @@ import {
 import { toSignal } from "@angular/core/rxjs-interop"
 import { FormsModule } from "@angular/forms"
 import { EdgeMetricData, NodeMetricData } from "../../../../codeCharta.model"
-import { AttributeDescriptorTooltipPipe } from "../../../../util/pipes/attributeDescriptorTooltip.pipe"
 import { AttributeDescriptorsService } from "../../services/attributeDescriptors.service"
 import { MetricDataService } from "../../services/metricData.service"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
+import { MetricSelectOptionComponent } from "./metricSelectOption.component"
 
 export type MetricSelectKind = "node" | "edge"
 
@@ -27,7 +27,7 @@ export type MetricSelectKind = "node" | "edge"
     templateUrl: "./metricSelectPopover.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [FormsModule, FilterMetricDataBySearchTermPipe, AttributeDescriptorTooltipPipe, SettingsPopoverShellComponent]
+    imports: [FormsModule, FilterMetricDataBySearchTermPipe, SettingsPopoverShellComponent, MetricSelectOptionComponent]
 })
 export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
     private readonly metricDataService = inject(MetricDataService)
@@ -49,7 +49,6 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
 
     readonly searchTerm = signal("")
     readonly activeIndex = signal(0)
-    /** The option list (~hundreds of buttons incl. tooltip pipes) is only rendered while open. */
     readonly isOpen = signal(false)
 
     private readonly metricDataState = toSignal(this.metricDataService.metricData$(), {
@@ -67,8 +66,6 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
         this.isOpen.set(customEvent.newState === "open")
         if (customEvent.newState === "open") {
             this.searchTerm.set("")
-            // start keyboard navigation on the currently selected metric, so Enter
-            // right after opening is a no-op instead of switching to the first entry
             this.activeIndex.set(this.getSelectedMetricIndex())
             queueMicrotask(() => {
                 this.searchInput().nativeElement.focus()

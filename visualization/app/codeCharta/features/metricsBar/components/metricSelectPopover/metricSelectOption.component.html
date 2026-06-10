@@ -1,0 +1,26 @@
+<li class="flex">
+    <button
+        type="button"
+        class="flex items-center justify-between gap-2 w-full px-2 py-1 rounded border-0 text-left cursor-pointer"
+        [class]="isActive() ? 'bg-base-200' : 'bg-transparent hover:bg-base-200'"
+        [class.font-semibold]="isSelected()"
+        [attr.data-metric-name]="option().name"
+        [attr.data-active]="isActive() ? 'true' : null"
+        [title]="descriptor() | attributeDescriptorTooltip: option().name"
+        (click)="selectOption.emit(option().name)"
+        (mouseenter)="hovered.emit()"
+    >
+        <span class="flex flex-col items-start gap-0.5 min-w-0 flex-1">
+            <span class="truncate w-full">
+                {{ option().name }}
+                @if (option().name === "complexity" || option().name === "sonar_complexity") {
+                    <span class="text-xs opacity-50">(formerly mcc)</span>
+                }
+            </span>
+            @if (descriptor()?.description; as descriptorSubtitle) {
+                <span class="text-xs opacity-60 truncate w-full">{{ descriptorSubtitle }}</span>
+            }
+        </span>
+        <span class="text-xs opacity-60 shrink-0">({{ option().maxValue }})</span>
+    </button>
+</li>

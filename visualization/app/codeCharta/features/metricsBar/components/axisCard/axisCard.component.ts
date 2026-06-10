@@ -1,10 +1,13 @@
+import { NgTemplateOutlet } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
+import { AxisCardHeaderComponent } from "./axisCardHeader.component"
 
 @Component({
     selector: "cc-axis-card",
     templateUrl: "./axisCard.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: "group flex flex-col items-stretch px-3 py-2 transition-colors relative" }
+    host: { class: "group flex flex-col items-stretch px-3 py-2 transition-colors relative" },
+    imports: [NgTemplateOutlet, AxisCardHeaderComponent]
 })
 export class AxisCardComponent {
     readonly label = input.required<string>()
@@ -15,7 +18,6 @@ export class AxisCardComponent {
     readonly searchPopoverId = input<string | null>(null)
     readonly searchAnchorName = input<string | null>(null)
     readonly disabled = input(false)
-    /** Visual hint that the metric is currently inactive while keeping the chooser usable. */
     readonly dimmed = input(false)
     readonly testId = input<string | null>(null)
     readonly cogTestId = input<string | null>(null)
@@ -25,11 +27,6 @@ export class AxisCardComponent {
 
     readonly bodyAnchorStyle = computed(() => {
         const anchor = this.searchAnchorName()
-        return anchor ? `--${anchor}` : null
-    })
-
-    readonly cogAnchorStyle = computed(() => {
-        const anchor = this.cogAnchorName()
         return anchor ? `--${anchor}` : null
     })
 

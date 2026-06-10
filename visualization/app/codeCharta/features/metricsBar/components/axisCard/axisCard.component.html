@@ -4,22 +4,28 @@
     [attr.data-anchor-name]="searchAnchorName()"
     [attr.data-testid]="testId()"
 >
-    <div class="flex items-center justify-between gap-1">
-        <span class="text-[10px] uppercase tracking-wide opacity-70">{{ label() }}</span>
-        @if (hasCog()) {
-            <button
-                type="button"
-                class="btn btn-ghost btn-xs btn-square"
-                [attr.popovertarget]="cogPopoverId()"
-                [style.anchor-name]="cogAnchorStyle()"
-                [attr.data-anchor-name]="cogAnchorName()"
-                [attr.data-testid]="cogTestId()"
-                title="Settings"
+    <cc-axis-card-header
+        [label]="label()"
+        [hasCog]="hasCog()"
+        [cogPopoverId]="cogPopoverId()"
+        [cogAnchorName]="cogAnchorName()"
+        [cogTestId]="cogTestId()"
+    ></cc-axis-card-header>
+
+    <ng-template #cardContent>
+        @if (metricName(); as name) {
+            <div
+                [class.opacity-50]="disabled() || dimmed()"
+                class="text-sm font-semibold leading-tight text-center whitespace-nowrap overflow-hidden text-ellipsis"
             >
-                <i class="fa fa-cog text-[10px]"></i>
-            </button>
+                {{ name }}
+            </div>
         }
-    </div>
+        <div class="flex flex-col items-stretch gap-1">
+            <ng-content select="[body]"></ng-content>
+        </div>
+    </ng-template>
+
     @if (searchPopoverId() !== null) {
         <button
             type="button"
@@ -27,28 +33,11 @@
             [disabled]="disabled()"
             [attr.popovertarget]="disabled() ? null : searchPopoverId()"
         >
-            @if (metricName(); as name) {
-                <div
-                    [class.opacity-50]="disabled() || dimmed()"
-                    class="text-sm font-semibold leading-tight text-center whitespace-nowrap overflow-hidden text-ellipsis"
-                >
-                    {{ name }}
-                </div>
-            }
-            <div class="flex flex-col items-stretch gap-1">
-                <ng-content select="[body]"></ng-content>
-            </div>
+            <ng-container [ngTemplateOutlet]="cardContent"></ng-container>
         </button>
     } @else {
         <div class="flex flex-col items-stretch gap-1 text-current">
-            @if (metricName(); as name) {
-                <div class="text-sm font-semibold leading-tight text-center whitespace-nowrap overflow-hidden text-ellipsis">
-                    {{ name }}
-                </div>
-            }
-            <div class="flex flex-col items-stretch gap-1">
-                <ng-content select="[body]"></ng-content>
-            </div>
+            <ng-container [ngTemplateOutlet]="cardContent"></ng-container>
         </div>
     }
     <ng-content></ng-content>
