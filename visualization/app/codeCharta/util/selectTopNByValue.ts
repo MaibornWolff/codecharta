@@ -24,13 +24,20 @@ export function selectTopNByValue<T>(items: T[], getValue: (item: T) => number, 
     }
 
     const top: T[] = []
+    // cache the window's smallest value so the common case (value not in the top n)
+    // costs one comparison instead of re-reading the boundary item every iteration
+    let boundaryValue = Number.POSITIVE_INFINITY
     for (const item of items) {
         const value = getComparableValue(item)
         if (top.length < limit) {
             insertDescending(top, item, value, getComparableValue)
-        } else if (value > getComparableValue(top[limit - 1])) {
+            if (top.length === limit) {
+                boundaryValue = getComparableValue(top[limit - 1])
+            }
+        } else if (value > boundaryValue) {
             top.pop()
             insertDescending(top, item, value, getComparableValue)
+            boundaryValue = getComparableValue(top[limit - 1])
         }
     }
     return top

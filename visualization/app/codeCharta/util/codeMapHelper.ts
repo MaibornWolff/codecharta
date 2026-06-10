@@ -100,6 +100,11 @@ export interface BlacklistMatcher {
     isExcludedSubtree(path: string): boolean
     /** Flattening applies to any node, leaf or folder. */
     isFlattened(path: string): boolean
+    /**
+     * Combined flatten+exclude classification with a single path transformation —
+     * use this in per-node loops over the whole map (NodeDecorator, explorer counts).
+     */
+    classify(path: string, isLeafNode: boolean): { isFlattened: boolean; isExcluded: boolean }
 }
 
 type IgnoreEngine = ReturnType<typeof ignore>
@@ -137,21 +142,40 @@ export function createBlacklistMatcher(blacklist: BlacklistItem[]): BlacklistMat
         }
     }
 
+    // plain loops instead of Array.some: these run once per node over the whole map
+    const isFlattenedTransformed = (transformedPath: string): boolean => {
+        if (hasPositiveFlatten && flattenCombined.ignores(transformedPath)) {
+            return true
+        }
+        for (const engine of negatedFlattenEngines) {
+            if (!engine.ignores(transformedPath)) {
+                return true
+            }
+        }
+        return false
+    }
+    const isExcludedLeafTransformed = (transformedPath: string): boolean => {
+        if (hasPositiveExclude && excludeCombined.ignores(transformedPath)) {
+            return true
+        }
+        for (const engine of negatedExcludeEngines) {
+            if (!engine.ignores(transformedPath)) {
+                return true
+            }
+        }
+        return false
+    }
+
     return {
-        isExcludedLeaf: path => {
-            const transformedPath = transformPath(path)
-            return (
-                (hasPositiveExclude && excludeCombined.ignores(transformedPath)) ||
-                negatedExcludeEngines.some(engine => !engine.ignores(transformedPath))
-            )
-        },
+        isExcludedLeaf: path => isExcludedLeafTransformed(transformPath(path)),
         isExcludedSubtree: path => hasPositiveExclude && excludeCombined.ignores(transformPath(path)),
-        isFlattened: path => {
+        isFlattened: path => isFlattenedTransformed(transformPath(path)),
+        classify: (path, isLeafNode) => {
             const transformedPath = transformPath(path)
-            return (
-                (hasPositiveFlatten && flattenCombined.ignores(transformedPath)) ||
-                negatedFlattenEngines.some(engine => !engine.ignores(transformedPath))
-            )
+            return {
+                isFlattened: isFlattenedTransformed(transformedPath),
+                isExcluded: isLeafNode && isExcludedLeafTransformed(transformedPath)
+            }
         }
     }
 }

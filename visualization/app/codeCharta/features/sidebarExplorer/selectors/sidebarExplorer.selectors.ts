@@ -34,8 +34,7 @@ export const _calculateExplorerCounts = (
     let shown = 0
     let noArea = 0
     for (const leaf of matchingLeaves) {
-        const isFlat = matcher.isFlattened(leaf.path)
-        const isHide = matcher.isExcludedLeaf(leaf.path)
+        const { isFlattened: isFlat, isExcluded: isHide } = matcher.classify(leaf.path, true)
         if (isFlat) {
             flattened++
         }

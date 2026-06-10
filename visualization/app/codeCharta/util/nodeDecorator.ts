@@ -19,8 +19,9 @@ export const NodeDecorator = {
     decorateMap(map: CodeMapNode, metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">, blacklist: BlacklistItem[]) {
         const matcher = createBlacklistMatcher(blacklist)
         for (const { data } of hierarchy(map)) {
-            data.isFlattened = matcher.isFlattened(data.path)
-            data.isExcluded = isLeaf(data) && matcher.isExcludedLeaf(data.path)
+            const { isFlattened, isExcluded } = matcher.classify(data.path, isLeaf(data))
+            data.isFlattened = isFlattened
+            data.isExcluded = isExcluded
         }
         map.isExcluded = false
         this.decorateMapWithMetricData(map, metricData)
