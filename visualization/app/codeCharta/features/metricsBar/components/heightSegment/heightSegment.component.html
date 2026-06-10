@@ -1,4 +1,4 @@
-<cc-distribution-segment
+<cc-metric-segment
     label="Height"
     [metricName]="heightMetric()"
     metricFor="heightMetric"
@@ -8,10 +8,9 @@
     [settingsPopoverId]="settingsPopoverId"
     [settingsAnchorName]="settingsAnchorName"
     testIdPrefix="metric-segment-height"
-    [values]="values()"
     [minLabel]="minLabel()"
     [maxLabel]="maxLabel()"
     (metricSelected)="handleMetricSelected($event)"
 >
     <cc-height-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-height-settings-popover>
-</cc-distribution-segment>
+</cc-metric-segment>

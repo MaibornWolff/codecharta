@@ -4,7 +4,7 @@ import { VisibleNodeMetricValuesService } from "../services/visibleNodeMetricVal
 
 /**
  * Shared base for the area and height metric segments. Both segments derive the
- * currently selected metric's values and min/max labels from
+ * currently selected metric's min/max labels from
  * {@link VisibleNodeMetricValuesService} and dispatch a metric-set action on
  * selection. Subclasses only provide the metric signal and the dispatch.
  */
@@ -17,7 +17,6 @@ export abstract class MetricSegmentBase {
     protected abstract readonly metric: Signal<string>
 
     readonly currentMetric = computed(() => this.visibleMetricValues()[this.metric()] ?? null)
-    readonly values = computed(() => this.currentMetric()?.values ?? [])
     readonly minLabel = computed(() => this.currentMetric()?.minValue.toLocaleString() ?? "0")
     readonly maxLabel = computed(() => this.currentMetric()?.maxValue.toLocaleString() ?? "0")
 

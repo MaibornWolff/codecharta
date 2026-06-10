@@ -12,17 +12,6 @@
 >
     <div body class="flex flex-col items-stretch gap-1">
         <cc-metric-meta-value metricFor="colorMetric"></cc-metric-meta-value>
-        @if (mapColors(); as mc) {
-            <cc-axis-color-ramp
-                [values]="values()"
-                [min]="minValue()"
-                [max]="maxValue()"
-                [colorRange]="colorRange()"
-                [colorMode]="colorMode()"
-                [mapColors]="mc"
-                data-testid="metric-segment-color-distribution"
-            ></cc-axis-color-ramp>
-        }
         <div class="flex items-center justify-between text-[10px] opacity-60 leading-none">
             <span>{{ minLabel() }}</span>
             <span>{{ maxLabel() }}</span>

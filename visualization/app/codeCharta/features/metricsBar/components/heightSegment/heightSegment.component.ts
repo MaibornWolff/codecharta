@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { HeightMetricService } from "../../services/heightMetric.service"
 import { MetricSegmentBase } from "../../util/metricSegmentBase"
-import { DistributionSegmentComponent } from "../distributionSegment/distributionSegment.component"
+import { MetricSegmentComponent } from "../metricSegment/metricSegment.component"
 import { HeightSettingsPopoverComponent } from "../heightSettingsPopover/heightSettingsPopover.component"
 
 @Component({
@@ -10,7 +10,7 @@ import { HeightSettingsPopoverComponent } from "../heightSettingsPopover/heightS
     templateUrl: "./heightSegment.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [DistributionSegmentComponent, HeightSettingsPopoverComponent]
+    imports: [MetricSegmentComponent, HeightSettingsPopoverComponent]
 })
 export class HeightSegmentComponent extends MetricSegmentBase {
     readonly searchPopoverId = "metric-select-popover-height"

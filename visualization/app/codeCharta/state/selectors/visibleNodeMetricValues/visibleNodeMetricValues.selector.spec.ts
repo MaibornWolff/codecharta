@@ -37,7 +37,7 @@ describe("visibleNodeMetricValuesSelector", () => {
         expect(result).toEqual({})
     })
 
-    it("should collect values from leaf attributes", () => {
+    it("should collect min and max from leaf attributes", () => {
         // Arrange
         const root = folder("root", "/root", [leaf("a.ts", "/root/a.ts", { rloc: 10 }), leaf("b.ts", "/root/b.ts", { rloc: 20 })])
 
@@ -45,7 +45,6 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root)
 
         // Assert
-        expect(result.rloc.values).toEqual([10, 20])
         expect(result.rloc.minValue).toBe(10)
         expect(result.rloc.maxValue).toBe(20)
     })
@@ -61,7 +60,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root)
 
         // Assert
-        expect(result.rloc.values).toEqual([20])
+        expect(result.rloc.minValue).toBe(20)
+        expect(result.rloc.maxValue).toBe(20)
     })
 
     it("should skip flattened leaf nodes", () => {
@@ -75,7 +75,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root)
 
         // Assert
-        expect(result.rloc.values).toEqual([20])
+        expect(result.rloc.minValue).toBe(20)
+        expect(result.rloc.maxValue).toBe(20)
     })
 
     it("should restrict values to the focused subtree", () => {
@@ -92,7 +93,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, ["/root/focused"])
 
         // Assert
-        expect(result.rloc.values.sort()).toEqual([5, 7])
+        expect(result.rloc.minValue).toBe(5)
+        expect(result.rloc.maxValue).toBe(7)
     })
 
     it("should restrict values to the hovered folder's subtree", () => {
@@ -107,7 +109,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, [], hoveredFolder)
 
         // Assert
-        expect(result.rloc.values.sort()).toEqual([1, 2])
+        expect(result.rloc.minValue).toBe(1)
+        expect(result.rloc.maxValue).toBe(2)
     })
 
     it("should prefer the hovered folder over the focused path", () => {
@@ -122,11 +125,12 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, ["/root/focused"], hoveredFolder)
 
         // Assert
-        expect(result.rloc.values).toEqual([42])
+        expect(result.rloc.minValue).toBe(42)
+        expect(result.rloc.maxValue).toBe(42)
     })
 
     it("should stay pinned to a selected folder when nothing is hovered", () => {
-        // Arrange: like the displayed metric values, the histogram follows the selection
+        // Arrange: like the displayed metric values, the value range follows the selection
         const selectedFolder = folder("nested", "/root/nested", [
             leaf("a.ts", "/root/nested/a.ts", { rloc: 1 }),
             leaf("b.ts", "/root/nested/b.ts", { rloc: 2 })
@@ -137,7 +141,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, [], undefined, undefined, selectedFolder)
 
         // Assert
-        expect(result.rloc.values.sort()).toEqual([1, 2])
+        expect(result.rloc.minValue).toBe(1)
+        expect(result.rloc.maxValue).toBe(2)
     })
 
     it("should prefer the hovered folder over the selected folder", () => {
@@ -150,7 +155,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, [], hoveredFolder, undefined, selectedFolder)
 
         // Assert
-        expect(result.rloc.values).toEqual([42])
+        expect(result.rloc.minValue).toBe(42)
+        expect(result.rloc.maxValue).toBe(42)
     })
 
     it("should ignore selected leaf nodes", () => {
@@ -162,7 +168,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, [], undefined, undefined, selectedLeaf)
 
         // Assert
-        expect(result.rloc.values.sort()).toEqual([10, 5])
+        expect(result.rloc.minValue).toBe(5)
+        expect(result.rloc.maxValue).toBe(10)
     })
 
     it("should keep the focused subtree when hovering a folder outside of it", () => {
@@ -177,7 +184,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, ["/root/focused"], hoveredOutside)
 
         // Assert
-        expect(result.rloc.values).toEqual([5])
+        expect(result.rloc.minValue).toBe(5)
+        expect(result.rloc.maxValue).toBe(5)
     })
 
     it("should collect only the displayed area, height and color metrics", () => {
@@ -200,7 +208,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, [], hoveredLeaf)
 
         // Assert
-        expect(result.rloc.values.sort()).toEqual([10, 5])
+        expect(result.rloc.minValue).toBe(5)
+        expect(result.rloc.maxValue).toBe(10)
     })
 
     it("should exclude sibling folders that share a path prefix with the focused subtree", () => {
@@ -214,7 +223,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, ["/root/components"])
 
         // Assert
-        expect(result.rloc.values).toEqual([5])
+        expect(result.rloc.minValue).toBe(5)
+        expect(result.rloc.maxValue).toBe(5)
     })
 
     it("should ignore non-finite metric values", () => {
@@ -225,7 +235,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root)
 
         // Assert
-        expect(result.rloc.values).toEqual([4])
+        expect(result.rloc.minValue).toBe(4)
+        expect(result.rloc.maxValue).toBe(4)
     })
 
     it("should use only the top-of-stack focused path element for filtering when multiple are present", () => {
@@ -239,7 +250,8 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root, ["/root/focused", "/root/other"])
 
         // Assert
-        expect(result.rloc.values).toEqual([5])
+        expect(result.rloc.minValue).toBe(5)
+        expect(result.rloc.maxValue).toBe(5)
     })
 
     it("should handle leaf nodes with empty attributes without contributing any values", () => {
@@ -250,7 +262,7 @@ describe("visibleNodeMetricValuesSelector", () => {
         const result = run(root)
 
         // Assert
-        expect(result.rloc.values).toEqual([8])
+        expect(result.rloc.minValue).toBe(8)
         expect(Object.keys(result)).toEqual(["rloc"])
     })
 
@@ -277,6 +289,7 @@ describe("visibleNodeMetricValuesSelector", () => {
 
         // Assert
         expect(act).not.toThrow()
-        expect(act().rloc.values.sort()).toEqual([5, 7])
+        expect(act().rloc.minValue).toBe(5)
+        expect(act().rloc.maxValue).toBe(7)
     })
 })

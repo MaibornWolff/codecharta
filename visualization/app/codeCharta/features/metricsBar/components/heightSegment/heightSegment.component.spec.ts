@@ -14,10 +14,7 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { HeightSegmentComponent } from "./heightSegment.component"
 
 describe("HeightSegmentComponent", () => {
-    async function setup(
-        heightMetric = "mcc",
-        visibleMetricValues: VisibleNodeMetricValues = { mcc: { values: [1, 2, 3], minValue: 1, maxValue: 3 } }
-    ) {
+    async function setup(heightMetric = "mcc", visibleMetricValues: VisibleNodeMetricValues = { mcc: { minValue: 1, maxValue: 3 } }) {
         const renderResult = await render(HeightSegmentComponent, {
             providers: [
                 provideMockStore({
@@ -57,26 +54,23 @@ describe("HeightSegmentComponent", () => {
         // Assert
         expect(screen.getByTestId("metric-segment-height")).not.toBeNull()
         expect(screen.getByTestId("metric-segment-height-cog")).not.toBeNull()
-        expect(screen.getByTestId("metric-segment-height-distribution")).not.toBeNull()
     })
 
-    it("should compute values, min and max labels from the store metric values", async () => {
+    it("should compute min and max labels from the store metric values", async () => {
         // Arrange & Act
-        const { component } = await setup("mcc", { mcc: { values: [4, 7, 10], minValue: 4, maxValue: 10 } })
+        const { component } = await setup("mcc", { mcc: { minValue: 4, maxValue: 10 } })
 
         // Assert
-        expect(component.values()).toEqual([4, 7, 10])
         expect(component.minLabel()).toBe((4).toLocaleString())
         expect(component.maxLabel()).toBe((10).toLocaleString())
     })
 
-    it("should fall back to empty values and zero labels when the metric has no data", async () => {
+    it("should fall back to zero labels when the metric has no data", async () => {
         // Arrange & Act
         const { component } = await setup("unknown_metric", {})
 
         // Assert
         expect(component.currentMetric()).toBeNull()
-        expect(component.values()).toEqual([])
         expect(component.minLabel()).toBe("0")
         expect(component.maxLabel()).toBe("0")
     })

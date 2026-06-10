@@ -3,14 +3,14 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { AreaMetricService } from "../../services/areaMetric.service"
 import { MetricSegmentBase } from "../../util/metricSegmentBase"
 import { AreaSettingsPopoverComponent } from "../areaSettingsPopover/areaSettingsPopover.component"
-import { DistributionSegmentComponent } from "../distributionSegment/distributionSegment.component"
+import { MetricSegmentComponent } from "../metricSegment/metricSegment.component"
 
 @Component({
     selector: "cc-area-segment",
     templateUrl: "./areaSegment.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [DistributionSegmentComponent, AreaSettingsPopoverComponent]
+    imports: [MetricSegmentComponent, AreaSettingsPopoverComponent]
 })
 export class AreaSegmentComponent extends MetricSegmentBase {
     readonly searchPopoverId = "metric-select-popover-area"

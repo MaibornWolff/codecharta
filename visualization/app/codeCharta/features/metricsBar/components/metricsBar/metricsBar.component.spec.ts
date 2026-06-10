@@ -22,9 +22,7 @@ describe("MetricsBarComponent", () => {
         values?: number[]
     } = {}) {
         const metricValues =
-            values.length > 0
-                ? { values, minValue: Math.min(...values), maxValue: Math.max(...values) }
-                : { values: [], minValue: 0, maxValue: 0 }
+            values.length > 0 ? { minValue: Math.min(...values), maxValue: Math.max(...values) } : { minValue: 0, maxValue: 0 }
         return render(MetricsBarComponent, {
             providers: [
                 provideMockStore({
@@ -71,23 +69,12 @@ describe("MetricsBarComponent", () => {
         expect(screen.queryByTestId("metric-segment-edges")).toBeNull()
     })
 
-    it("should render area and height distribution histograms from the visible node metric values", async () => {
-        await setup({ values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] })
+    it("should render the min and max of the visible node metric values", async () => {
+        await setup({ values: [4, 7, 10] })
 
-        for (const testId of ["metric-segment-area-distribution", "metric-segment-height-distribution"]) {
-            const distribution = screen.getByTestId(testId)
-            const bars = Array.from(distribution.querySelectorAll<HTMLElement>('[data-testid="axis-distribution-bar"]'))
-            expect(bars).toHaveLength(12)
-            expect(bars.some(bar => Number.parseFloat(bar.style.height) > 0)).toBe(true)
-        }
-    })
-
-    it("should render empty histograms when there are no visible metric values", async () => {
-        await setup({ values: [] })
-
-        const distribution = screen.getByTestId("metric-segment-area-distribution")
-        const bars = Array.from(distribution.querySelectorAll<HTMLElement>('[data-testid="axis-distribution-bar"]'))
-        expect(bars.every(bar => Number.parseFloat(bar.style.height) === 0)).toBe(true)
+        const areaSegment = screen.getByTestId("metric-segment-area")
+        expect(areaSegment.textContent).toContain((4).toLocaleString())
+        expect(areaSegment.textContent).toContain((10).toLocaleString())
     })
 
     it("should swap color metric segment for color settings segment in delta state", async () => {
@@ -95,9 +82,6 @@ describe("MetricsBarComponent", () => {
 
         expect(screen.queryByTestId("metric-segment-color")).toBeNull()
         expect(screen.getByTestId("metric-segment-color-settings")).not.toBeNull()
-        expect(screen.queryByTestId("metric-segment-color-distribution")).toBeNull()
-        expect(screen.getByTestId("metric-segment-area-distribution")).not.toBeNull()
-        expect(screen.getByTestId("metric-segment-height-distribution")).not.toBeNull()
     })
 
     it("should render edges segment when edge metric data is present", async () => {

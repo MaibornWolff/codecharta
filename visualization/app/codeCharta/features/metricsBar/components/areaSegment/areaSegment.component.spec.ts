@@ -14,10 +14,7 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { AreaSegmentComponent } from "./areaSegment.component"
 
 describe("AreaSegmentComponent", () => {
-    async function setup(
-        areaMetric = "rloc",
-        visibleMetricValues: VisibleNodeMetricValues = { rloc: { values: [1, 2, 3], minValue: 1, maxValue: 3 } }
-    ) {
+    async function setup(areaMetric = "rloc", visibleMetricValues: VisibleNodeMetricValues = { rloc: { minValue: 1, maxValue: 3 } }) {
         const renderResult = await render(AreaSegmentComponent, {
             providers: [
                 provideMockStore({
@@ -57,26 +54,23 @@ describe("AreaSegmentComponent", () => {
         // Assert
         expect(screen.getByTestId("metric-segment-area")).not.toBeNull()
         expect(screen.getByTestId("metric-segment-area-cog")).not.toBeNull()
-        expect(screen.getByTestId("metric-segment-area-distribution")).not.toBeNull()
     })
 
-    it("should compute values, min and max labels from the store metric values", async () => {
+    it("should compute min and max labels from the store metric values", async () => {
         // Arrange & Act
-        const { component } = await setup("rloc", { rloc: { values: [4, 7, 10], minValue: 4, maxValue: 10 } })
+        const { component } = await setup("rloc", { rloc: { minValue: 4, maxValue: 10 } })
 
         // Assert
-        expect(component.values()).toEqual([4, 7, 10])
         expect(component.minLabel()).toBe((4).toLocaleString())
         expect(component.maxLabel()).toBe((10).toLocaleString())
     })
 
-    it("should fall back to empty values and zero labels when the metric has no data", async () => {
+    it("should fall back to zero labels when the metric has no data", async () => {
         // Arrange & Act
         const { component } = await setup("unknown_metric", {})
 
         // Assert
         expect(component.currentMetric()).toBeNull()
-        expect(component.values()).toEqual([])
         expect(component.minLabel()).toBe("0")
         expect(component.maxLabel()).toBe("0")
     })

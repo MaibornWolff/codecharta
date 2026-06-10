@@ -5,13 +5,13 @@ import { of } from "rxjs"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { defaultState } from "../../../../state/store/state.manager"
 import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
-import { DistributionSegmentComponent } from "./distributionSegment.component"
+import { MetricSegmentComponent } from "./metricSegment.component"
 
-describe("DistributionSegmentComponent", () => {
+describe("MetricSegmentComponent", () => {
     async function setup(metricSelected = jest.fn()) {
         return {
             metricSelected,
-            ...(await render(DistributionSegmentComponent, {
+            ...(await render(MetricSegmentComponent, {
                 inputs: {
                     label: "Area",
                     metricName: "rloc",
@@ -22,7 +22,6 @@ describe("DistributionSegmentComponent", () => {
                     settingsPopoverId: "metric-settings-popover-area",
                     settingsAnchorName: "metric-segment-area-cog",
                     testIdPrefix: "metric-segment-area",
-                    values: [1, 2, 3],
                     minLabel: "0",
                     maxLabel: "100"
                 },
@@ -64,14 +63,13 @@ describe("DistributionSegmentComponent", () => {
         expect(screen.getByText("rloc")).not.toBeNull()
     })
 
-    it("should derive card, cog and distribution test ids from the prefix", async () => {
+    it("should derive card and cog test ids from the prefix", async () => {
         // Arrange & Act
         await setup()
 
         // Assert
         expect(screen.getByTestId("metric-segment-area")).not.toBeNull()
         expect(screen.getByTestId("metric-segment-area-cog")).not.toBeNull()
-        expect(screen.getByTestId("metric-segment-area-distribution")).not.toBeNull()
     })
 
     it("should wire the search popover id and anchor onto the metric select popover", async () => {

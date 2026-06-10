@@ -10,7 +10,6 @@ import { hoveredNodeSelector } from "../hoveredNode.selector"
 import { selectedNodeSelector } from "../selectedNode.selector"
 
 export interface VisibleMetricValues {
-    values: number[]
     minValue: number
     maxValue: number
 }
@@ -19,7 +18,7 @@ export type VisibleNodeMetricValues = Record<string, VisibleMetricValues>
 
 const EMPTY: VisibleNodeMetricValues = Object.freeze({}) as VisibleNodeMetricValues
 
-// Derive the hovered/selected *folder* paths first: leaves cannot change the histogram,
+// Derive the hovered/selected *folder* paths first: leaves cannot change the value range,
 // so these memoization barriers keep building hovers (10-30/s while sweeping the map)
 // from re-walking the whole map on every mousemove.
 const hoveredFolderPathSelector = createSelector(hoveredNodeSelector, hoveredNode =>
@@ -66,13 +65,13 @@ export const visibleNodeMetricValuesSelector = createSelector(
 )
 
 // Mirrors the metrics bar's display precedence (hovered ?? selected ?? top level): while a
-// folder is selected, the histograms stay pinned to it just like the displayed metric values.
+// folder is selected, the value ranges stay pinned to it just like the displayed metric values.
 function resolvePathPrefix(hoveredFolderPath: string | null, selectedFolderPath: string | null, focusedNodePath: string[]): string | null {
     const focusPrefix = focusedNodePath.length > 0 ? focusedNodePath[0] : null
     for (const candidate of [hoveredFolderPath, selectedFolderPath]) {
-        // a folder narrows the histogram only when it lies inside the focused subtree:
+        // a folder narrows the value range only when it lies inside the focused subtree:
         // the file explorer shows the full tree, but only the focused part is rendered,
-        // so hovering outside of it must not widen the histogram
+        // so hovering outside of it must not widen the range
         if (candidate && (!focusPrefix || candidate === focusPrefix || candidate.startsWith(`${focusPrefix}/`))) {
             return candidate
         }
@@ -88,7 +87,7 @@ function collectMetrics(node: CodeMapNode, pathPrefix: string | null, metrics: s
         return
     }
 
-    if (!isNodeVisibleForHistogram(node, pathPrefix) || !node.attributes) {
+    if (!isNodeVisibleInContext(node, pathPrefix) || !node.attributes) {
         return
     }
     for (const metric of metrics) {
@@ -103,10 +102,9 @@ function accumulateMetricValue(result: Record<string, VisibleMetricValues>, metr
 
     let entry = result[metric]
     if (!entry) {
-        entry = { values: [], minValue: value, maxValue: value }
+        entry = { minValue: value, maxValue: value }
         result[metric] = entry
     }
-    entry.values.push(value)
     if (value < entry.minValue) {
         entry.minValue = value
     }
@@ -115,7 +113,7 @@ function accumulateMetricValue(result: Record<string, VisibleMetricValues>, metr
     }
 }
 
-function isNodeVisibleForHistogram(node: CodeMapNode, pathPrefix: string | null): boolean {
+function isNodeVisibleInContext(node: CodeMapNode, pathPrefix: string | null): boolean {
     if (node.isExcluded || node.isFlattened) {
         return false
     }
