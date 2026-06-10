@@ -108,12 +108,15 @@ export class ThreeSceneService implements OnDestroy {
         const experimentalFeaturesEnabled = this.state.getValue().appSettings.experimentalFeaturesEnabled
         const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
 
+        const maxAnisotropy = this.threeRendererService.renderer?.capabilities.getMaxAnisotropy() ?? 1
+
         this.floorLabelDrawer = new FloorLabelDrawer(
             this.mapMesh.getNodes(),
             rootNode,
             treeMapSize,
             scalingVector,
-            experimentalFeaturesEnabled
+            experimentalFeaturesEnabled,
+            maxAnisotropy
         )
         const floorLabels = this.floorLabelDrawer.draw()
 
