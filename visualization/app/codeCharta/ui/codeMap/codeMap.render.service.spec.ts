@@ -98,10 +98,11 @@ describe("codeMapRenderService", () => {
     }
 
     function withMockedLabelSettingsFacade() {
-        labelSettingsFacade = codeMapRenderService["labelSettingsFacade"] = jest.fn().mockReturnValue({
+        labelSettingsFacade = jest.fn().mockReturnValue({
             clearLabels: jest.fn(),
             addLeafLabel: jest.fn()
         })()
+        Object.defineProperty(codeMapRenderService, "labelSettingsFacade", { value: labelSettingsFacade })
     }
 
     function withMockedThreeSceneService() {

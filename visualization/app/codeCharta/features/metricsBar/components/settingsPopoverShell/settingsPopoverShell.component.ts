@@ -10,6 +10,7 @@ export class SettingsPopoverShellComponent implements AfterViewInit, OnDestroy {
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
     readonly widthClass = input<string>("w-72")
+    readonly contentClass = input<string>("gap-2.5 py-2 px-5")
     readonly testId = input<string | null>(null)
 
     readonly popover = viewChild.required<ElementRef<HTMLElement>>("popover")

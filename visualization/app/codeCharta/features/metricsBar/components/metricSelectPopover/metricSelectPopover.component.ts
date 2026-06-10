@@ -17,6 +17,7 @@ import { EdgeMetricData, NodeMetricData } from "../../../../codeCharta.model"
 import { AttributeDescriptorTooltipPipe } from "../../../../util/pipes/attributeDescriptorTooltip.pipe"
 import { AttributeDescriptorsService } from "../../services/attributeDescriptors.service"
 import { MetricDataService } from "../../services/metricData.service"
+import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
 
 export type MetricSelectKind = "node" | "edge"
@@ -26,7 +27,7 @@ export type MetricSelectKind = "node" | "edge"
     templateUrl: "./metricSelectPopover.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [FormsModule, FilterMetricDataBySearchTermPipe, AttributeDescriptorTooltipPipe]
+    imports: [FormsModule, FilterMetricDataBySearchTermPipe, AttributeDescriptorTooltipPipe, SettingsPopoverShellComponent]
 })
 export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
     private readonly metricDataService = inject(MetricDataService)
@@ -39,8 +40,12 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
     readonly selected = input<string | null>(null)
     readonly metricSelected = output<string>()
 
-    readonly popover = viewChild.required<ElementRef<HTMLElement>>("popover")
+    readonly shell = viewChild.required(SettingsPopoverShellComponent)
     readonly searchInput = viewChild.required<ElementRef<HTMLInputElement>>("searchInput")
+
+    private popover(): ElementRef<HTMLElement> {
+        return this.shell().popover()
+    }
 
     readonly searchTerm = signal("")
     readonly activeIndex = signal(0)

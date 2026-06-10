@@ -1,11 +1,9 @@
-<div
-    class="dropdown p-2 rounded-box bg-base-100 shadow-lg w-80 flex flex-col gap-2"
-    popover
-    #popover
-    [id]="popoverId()"
-    [style.position-anchor]="'--' + anchorName()"
-    [style.position-area]="'top span-right'"
-    [attr.data-testid]="'metric-select-popover-' + anchorName()"
+<cc-settings-popover-shell
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    widthClass="w-80"
+    contentClass="gap-2 p-2"
+    [testId]="'metric-select-popover-' + anchorName()"
 >
     <label class="input input-sm input-bordered flex items-center gap-2">
         <i class="fa fa-search opacity-60"></i>
@@ -55,4 +53,4 @@
             }
         }
     </ul>
-</div>
+</cc-settings-popover-shell>

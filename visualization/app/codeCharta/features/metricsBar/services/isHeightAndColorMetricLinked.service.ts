@@ -11,10 +11,6 @@ export class IsHeightAndColorMetricLinkedService {
         return this.isHeightAndColorMetricLinkedStore.isHeightAndColorMetricLinked$
     }
 
-    setIsHeightAndColorMetricLinked(value: boolean) {
-        this.isHeightAndColorMetricLinkedStore.setIsHeightAndColorMetricLinked(value)
-    }
-
     toggleIsHeightAndColorMetricLinked() {
         this.isHeightAndColorMetricLinkedStore.toggleIsHeightAndColorMetricLinked()
     }

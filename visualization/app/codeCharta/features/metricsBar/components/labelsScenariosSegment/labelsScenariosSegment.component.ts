@@ -6,13 +6,20 @@ import { ApplyScenarioDialogComponent } from "../../../scenarios/components/appl
 import { SaveScenarioDialogComponent } from "../../../scenarios/components/saveScenarioDialog/saveScenarioDialog.component"
 import { ScenarioListDialogComponent } from "../../../scenarios/components/scenarioListDialog/scenarioListDialog.component"
 import { Scenario, ScenariosService } from "../../../scenarios/facade"
+import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 
 @Component({
     selector: "cc-labels-scenarios-segment",
     templateUrl: "./labelsScenariosSegment.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "group flex flex-col items-stretch px-3 py-2 transition-colors relative" },
-    imports: [LabelSettingsPanelComponent, ScenarioListDialogComponent, SaveScenarioDialogComponent, ApplyScenarioDialogComponent]
+    imports: [
+        LabelSettingsPanelComponent,
+        ScenarioListDialogComponent,
+        SaveScenarioDialogComponent,
+        ApplyScenarioDialogComponent,
+        SettingsPopoverShellComponent
+    ]
 })
 export class LabelsScenariosSegmentComponent implements OnInit {
     private readonly scenariosService = inject(ScenariosService)

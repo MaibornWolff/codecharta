@@ -2,10 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
-import {
-    setIsColorMetricLinkedToHeightMetricAction,
-    toggleIsColorMetricLinkedToHeightMetric
-} from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
+import { toggleIsColorMetricLinkedToHeightMetric } from "../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 
 @Injectable({
     providedIn: "root"
@@ -14,10 +11,6 @@ export class IsHeightAndColorMetricLinkedStore {
     constructor(private readonly store: Store<CcState>) {}
 
     isHeightAndColorMetricLinked$ = this.store.select(isColorMetricLinkedToHeightMetricSelector)
-
-    setIsHeightAndColorMetricLinked(value: boolean) {
-        this.store.dispatch(setIsColorMetricLinkedToHeightMetricAction({ value }))
-    }
 
     toggleIsHeightAndColorMetricLinked() {
         this.store.dispatch(toggleIsColorMetricLinkedToHeightMetric())

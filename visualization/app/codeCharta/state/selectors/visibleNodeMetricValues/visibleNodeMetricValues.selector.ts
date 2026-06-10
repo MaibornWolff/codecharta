@@ -1,5 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { CodeMapNode } from "../../../codeCharta.model"
+import { isLeaf } from "../../../util/codeMapHelper"
 import { areaMetricSelector } from "../../store/dynamicSettings/areaMetric/areaMetric.selector"
 import { colorMetricSelector } from "../../store/dynamicSettings/colorMetric/colorMetric.selector"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
@@ -64,8 +65,7 @@ function resolvePathPrefix(hoveredFolderPath: string | null, focusedNodePath: st
 }
 
 function collectMetrics(node: CodeMapNode, pathPrefix: string | null, metrics: string[], result: Record<string, VisibleMetricValues>) {
-    const isLeafNode = !node.children || node.children.length === 0
-    if (!isLeafNode) {
+    if (!isLeaf(node)) {
         for (const child of node.children) {
             collectMetrics(child, pathPrefix, metrics, result)
         }

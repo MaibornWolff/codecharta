@@ -18,7 +18,8 @@ import { LABEL_SIZE_STEP, MAX_LABEL_SIZE, MIN_LABEL_SIZE } from "../../services/
     selector: "cc-label-settings-panel",
     templateUrl: "./labelSettingsPanel.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: "flex flex-col gap-2.5 py-2 px-5" }
+    // layout and padding come from the surrounding settings popover shell
+    host: { class: "contents" }
 })
 export class LabelSettingsPanelComponent {
     private static readonly DEBOUNCE_TIME = 400

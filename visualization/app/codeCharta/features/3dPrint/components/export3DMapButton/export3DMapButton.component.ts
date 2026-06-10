@@ -3,7 +3,7 @@ import { take } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
 import { ActionIconComponent } from "../../../../ui/actionIcon/actionIcon.component"
 import { ErrorDialogComponent } from "../../../../ui/dialogs/errorDialog/errorDialog.component"
-import { ColorModeStore } from "../../stores/colorMode.store"
+import { Export3DColorModeStore } from "../../stores/colorMode.store"
 import { Export3DMapDialogComponent } from "../export3DMapDialog/export3DMapDialog.component"
 
 @Component({
@@ -15,7 +15,7 @@ export class Export3DMapButtonComponent {
     showDialog = signal(false)
     readonly errorDialog = viewChild.required<ErrorDialogComponent>("errorDialog")
 
-    constructor(private readonly colorModeStore: ColorModeStore) {}
+    constructor(private readonly colorModeStore: Export3DColorModeStore) {}
 
     export3DMap() {
         const colorMode = this.colorModeStore.getColorMode()

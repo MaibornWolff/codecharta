@@ -11,10 +11,6 @@ export class IsEdgeMetricVisibleService {
         return this.isEdgeMetricVisibleStore.isEdgeMetricVisible$
     }
 
-    setIsEdgeMetricVisible(value: boolean) {
-        this.isEdgeMetricVisibleStore.setIsEdgeMetricVisible(value)
-    }
-
     toggleEdgeMetricVisible() {
         this.isEdgeMetricVisibleStore.toggleEdgeMetricVisible()
     }

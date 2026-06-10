@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from "@angular/core"
 import { take } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
-import { ColorModeStore } from "../../../3dPrint/facade"
+import { Export3DColorModeStore } from "../../../3dPrint/facade"
 import { Export3DMapDialogComponent } from "../../../3dPrint/components/export3DMapDialog/export3DMapDialog.component"
 import { ErrorDialogComponent } from "../../../../ui/dialogs/errorDialog/errorDialog.component"
 
@@ -12,7 +12,7 @@ import { ErrorDialogComponent } from "../../../../ui/dialogs/errorDialog/errorDi
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Print3DButtonComponent {
-    private readonly colorModeStore = inject(ColorModeStore)
+    private readonly colorModeStore = inject(Export3DColorModeStore)
 
     readonly errorDialog = viewChild.required<ErrorDialogComponent>("errorDialog")
 

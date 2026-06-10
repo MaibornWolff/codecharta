@@ -7,6 +7,7 @@
                 class="btn btn-ghost btn-xs btn-square"
                 popovertarget="metric-settings-popover-labels"
                 style="anchor-name: --metric-segment-labels"
+                data-anchor-name="metric-segment-labels"
                 title="Label Settings"
             >
                 <i class="fa fa-cog text-[10px]"></i>
@@ -38,14 +39,9 @@
     </div>
 </div>
 
-<div
-    class="dropdown p-2 rounded-box bg-base-100 shadow-lg w-80"
-    popover
-    id="metric-settings-popover-labels"
-    style="position-anchor: --metric-segment-labels; position-area: top span-right"
->
+<cc-settings-popover-shell popoverId="metric-settings-popover-labels" anchorName="metric-segment-labels" widthClass="w-80">
     <cc-label-settings-panel></cc-label-settings-panel>
-</div>
+</cc-settings-popover-shell>
 
 <cc-scenario-list-dialog #listDialog (applyRequested)="handleApplyRequested($event)"></cc-scenario-list-dialog>
 <cc-save-scenario-dialog #saveDialog></cc-save-scenario-dialog>

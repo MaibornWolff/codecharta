@@ -9,7 +9,7 @@ import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeScene
 import { isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
 import { formatCompactNumber } from "../../../../util/formatCompactNumber"
 import { AppStatusStore } from "../../stores/appStatus.store"
-import { AreaMetricStore } from "../../stores/areaMetric.store"
+import { ExplorerAreaMetricStore } from "../../stores/areaMetric.store"
 import { RootUnaryStore } from "../../stores/rootUnary.store"
 import { ExplorerTreeItemIconComponent } from "../explorerTreeItemIcon/explorerTreeItemIcon.component"
 import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerTreeItemName.component"
@@ -22,7 +22,7 @@ import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerT
 })
 export class ExplorerTreeLevelComponent implements OnInit {
     private readonly appStatusStore = inject(AppStatusStore)
-    private readonly areaMetricStore = inject(AreaMetricStore)
+    private readonly areaMetricStore = inject(ExplorerAreaMetricStore)
     private readonly rootUnaryStore = inject(RootUnaryStore)
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly idToBuildingService = inject(IdToBuildingService)

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from "@an
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode, NodeType } from "../../../../codeCharta.model"
 import { isAreaValid } from "../../../../util/codeMapHelper"
-import { AreaMetricStore } from "../../stores/areaMetric.store"
+import { ExplorerAreaMetricStore } from "../../stores/areaMetric.store"
 import { SearchedNodePathsStore } from "../../stores/searchedNodePaths.store"
 
 @Component({
@@ -11,7 +11,7 @@ import { SearchedNodePathsStore } from "../../stores/searchedNodePaths.store"
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExplorerTreeItemNameComponent {
-    private readonly areaMetricStore = inject(AreaMetricStore)
+    private readonly areaMetricStore = inject(ExplorerAreaMetricStore)
     private readonly searchedNodePathsStore = inject(SearchedNodePathsStore)
 
     readonly node = input.required<CodeMapNode>()
