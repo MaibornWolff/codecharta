@@ -3,6 +3,7 @@
 import { Node } from "../../../../codeCharta.model"
 import { CanvasTexture, BackSide, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
 import { FloorLabelHelper } from "./floorLabelHelper"
+import { getFloorLabelPadding } from "../../../../util/algorithm/treeMapLayout/treeMapGenerator"
 
 export class FloorLabelDrawer {
     private floorLabelPlanes: Mesh[] = []
@@ -87,11 +88,17 @@ export class FloorLabelDrawer {
     }
 
     private writeLabelsOnCanvas(context: CanvasRenderingContext2D, floorNodesOfCurrentLevel: Node[], mapResolutionScaling: number) {
-        const { width: rootNodeWidth, length: rootNodeHeight } = this.rootNode
+        const { length: rootNodeHeight } = this.rootNode
 
         for (const floorNode of floorNodesOfCurrentLevel) {
+            // The label has to fit into the padding strip that the treemap layout reserved for it,
+            // which is proportional to the folder itself (see getFloorLabelPadding).
+            const reservedLabelStrip = getFloorLabelPadding(floorNode.width, floorNode.depth)
             let fontSize =
-                floorNode.depth === 0 ? Math.max(Math.floor(rootNodeWidth * 0.03), 120) : Math.max(Math.floor(rootNodeWidth * 0.023), 95)
+                floorNode.depth === 0
+                    ? Math.max(Math.floor(floorNode.width * 0.03), 120)
+                    : Math.max(Math.floor(floorNode.width * 0.023), 95)
+            fontSize = Math.max(Math.floor(Math.min(fontSize, reservedLabelStrip)), 1)
             fontSize = fontSize * mapResolutionScaling
 
             context.font = `${fontSize}px Arial`

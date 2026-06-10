@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Treemap maps are packed substantially denser: margins and floor-label strips now scale with the folder they belong to instead of being fixed pixel amounts (or sized from the whole map). Small files in crowded folders are no longer squeezed invisible, and files with the same metric value are drawn at comparable sizes across different folders.
 - Fix `amountOfEdgePreviews` being silently overwritten when restoring saved state — it incorrectly dispatched the top-labels action instead.
 - Loading spinner now stays visible until the codemap's full initial render completes; previously it disappeared too early.
 - File Explorer sort dropdown now closes after selecting a sort key, toggling the order, or clicking outside the menu.

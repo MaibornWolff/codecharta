@@ -10,7 +10,19 @@ const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2 = 95
 const DEFAULT_ROOT_FLOOR_LABEL_SCALING = 0.035
 const DEFAULT_SUB_FLOOR_LABEL_SCALING = 0.028
+// Maps the margin setting to a fraction of the average child footprint side,
+// so that gaps scale with the buildings they separate instead of being absolute.
+const MARGIN_TO_CHILD_SIZE_FRACTION = 0.000_5
+export const FLOOR_LABEL_MAX_FRACTION_OF_FOLDER = 0.15
 export const HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDARY = 3
+
+export function getFloorLabelPadding(folderWidth: number, depth: number) {
+    const labelScaling = depth === 0 ? DEFAULT_ROOT_FLOOR_LABEL_SCALING : DEFAULT_SUB_FLOOR_LABEL_SCALING
+    const minimumPadding = depth === 0 ? DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 : DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2
+    // Reserve a strip proportional to the folder itself (not the root map) and
+    // never more than a fixed fraction of the folder, so small folders are not consumed by their label.
+    return Math.min(Math.max(folderWidth * labelScaling, minimumPadding), folderWidth * FLOOR_LABEL_MAX_FRACTION_OF_FOLDER)
+}
 
 export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
     const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -24,9 +36,10 @@ export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData:
         // Base root folder has width: 100px and length: 100px
         const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(hierarchyNode.data, heightScale, state, isDeltaState)] // nosonar
 
-        // Multiply mapSize of (default) 250px by 2 = 500px and add the total margin
-        const totalMapSize =
-            treeMapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * (state.dynamicSettings.margin / PADDING_SCALING_FACTOR)
+        // Multiply mapSize of (default) 250px by 2 = 500px and add the total margin.
+        // Uses the same margin compensation as getSquarifiedTreeMap so fixed-folder maps
+        // are scaled consistently with regular maps.
+        const totalMapSize = treeMapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin
 
         // than divide through the root folder width and length to get a scale factor for calculation for all following nodes.
         const scaleLength = totalMapSize / nodes[0].width
@@ -196,35 +209,31 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutio
     const width = (mapWidth + nodesPerSide * margin + addedLabelSpace) * mapSizeResolutionScaling
     const height = (mapHeight + nodesPerSide * margin + addedLabelSpace) * mapSizeResolutionScaling
 
-    let rootNode
+    // Padding is proportional to the average child footprint of each folder (and capped by the
+    // configured absolute padding), so that crowded or deeply nested folders are not eaten up by
+    // fixed pixel gaps. Fixed gaps squeezed small buildings to zero area and made the drawn area
+    // of equally sized files differ by orders of magnitude between folders.
+    const proportionalPadding = (node: HierarchyRectangularNode<CodeMapNode>) => {
+        const nodeWidth = node.x1 - node.x0
+        const nodeHeight = node.y1 - node.y0
+        const averageChildSide = Math.sqrt((nodeWidth * nodeHeight) / (node.children?.length ?? 1))
+        return Math.min(padding, margin * MARGIN_TO_CHILD_SIZE_FRACTION * averageChildSide)
+    }
+
     const treeMap = treemap<CodeMapNode>()
         .size([width, height])
-        .paddingOuter(padding)
-        .paddingInner(padding)
+        .paddingOuter(node => proportionalPadding(node) / 2)
+        .paddingInner(proportionalPadding)
         .paddingRight(node => {
-            if (!rootNode && node.parent === null) {
-                rootNode = node
-            }
-
             // TODO This will not work for FixedFolders
             // it seems that depth property is missing in that case
             // so the default padding will be added, which is fine though.
-            if (rootNode && enableFloorLabels) {
-                // Start the labels at level 1 not 0 because the root folder should not be labeled
-                if (node.depth === 0) {
-                    // Add a big padding for the first folder level (the font is bigger than in deeper levels)
-                    return Math.max(
-                        (rootNode.x1 - rootNode.x0) * DEFAULT_ROOT_FLOOR_LABEL_SCALING,
-                        DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1
-                    )
-                }
-                if (node.depth > 0 && node.depth < HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDARY) {
-                    return Math.max((rootNode.x1 - rootNode.x0) * DEFAULT_SUB_FLOOR_LABEL_SCALING, DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_2)
-                }
+            if (enableFloorLabels && node.depth < HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDARY) {
+                return getFloorLabelPadding(node.x1 - node.x0, node.depth)
             }
 
             // add treemap algorithm default padding otherwise
-            return padding
+            return proportionalPadding(node) / 2
         })
 
     return {
