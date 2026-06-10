@@ -36,7 +36,7 @@
     "last 2 safari version"
   ],
   "scripts": {
-    "start": "electron dist/bundler/browser",
+    "start": "node script/ensureElectron.js && electron dist/bundler/browser",
     "build": "ng build && cp electron/* package.json dist/bundler/browser",
     "dev": "ng serve",
     "test": "npm run test:ci -- --maxWorkers=25%",
@@ -48,7 +48,7 @@
     "e2e": "npx playwright test",
     "e2e:auto": "npx playwright test --ui",
     "e2e:ci": "npx playwright test --workers=1",
-    "package": "node script/appMain.js",
+    "package": "node script/ensureElectron.js && node script/appMain.js",
     "package:local": "npm run package -- --local",
     "schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json",
     "lint:architecture": "depcruise app --config .dependency-cruiser.js",
