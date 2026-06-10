@@ -89,7 +89,10 @@ export class ScreenshotService {
         const bodyHeight = document.querySelector("body")?.offsetHeight ?? 0
         const navBarHeight = (document.querySelector("cc-nav-bar") as HTMLElement | null)?.offsetHeight ?? 0
         const fileExtensionBarHeight = (document.querySelector("cc-file-extension-bar") as HTMLElement | null)?.offsetHeight ?? 0
-        const bottomBarHeight = (document.querySelector("cc-bottom-bar") as HTMLElement | null)?.offsetHeight ?? 0
+        // the cc-bottom-bar host has zero height (its only child is position:fixed),
+        // so measure the inner footer like bottomBar.component does
+        const bottomBarElement = document.querySelector("cc-bottom-bar") as HTMLElement | null
+        const bottomBarHeight = ((bottomBarElement?.querySelector("footer") as HTMLElement | null) ?? bottomBarElement)?.offsetHeight ?? 0
         const topBarsHeight = navBarHeight + fileExtensionBarHeight
 
         const canvas = await html2canvas(document.querySelector("body"), {

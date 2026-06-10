@@ -202,18 +202,21 @@ export class CodeMapRenderService implements OnDestroy {
 
             if (labelMode === LabelMode.Color) {
                 const { colorMetric } = this.state.getValue().dynamicSettings
-                const selectedColorNodes = colorLabelTypes
-                    .filter(colorType => colorLabelOptions[colorType])
-                    .flatMap(colorType => this.nodesByColor[colorType])
-                    .filter(node => Number.isFinite(node.attributes[colorMetric]))
-                    .sort((a, b) => b.attributes[colorMetric] - a.attributes[colorMetric])
-                    .slice(0, amountOfTopLabels)
+                const selectedColorNodes = selectTopNByValue(
+                    colorLabelTypes
+                        .filter(colorType => colorLabelOptions[colorType])
+                        .flatMap(colorType => this.nodesByColor[colorType])
+                        .filter(node => Number.isFinite(node.attributes[colorMetric])),
+                    node => node.attributes[colorMetric],
+                    amountOfTopLabels
+                )
                 this.setBuildingLabel(selectedColorNodes, highestNodeInSet)
             } else {
-                const { heightMetric } = this.state.getValue().dynamicSettings
+                // rank by rendered height, not the raw metric: with invertHeight or
+                // direction-1 metrics the tallest buildings are not the highest values
                 const nodes = selectTopNByValue(
                     sortedNodes.filter(node => node.isLeaf),
-                    node => node.attributes[heightMetric] ?? 0,
+                    node => node.height ?? 0,
                     amountOfTopLabels
                 )
                 this.setBuildingLabel(nodes, highestNodeInSet)

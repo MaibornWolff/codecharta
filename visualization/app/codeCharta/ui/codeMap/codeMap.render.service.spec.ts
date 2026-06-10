@@ -315,9 +315,10 @@ describe("codeMapRenderService", () => {
             expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
         })
 
-        it("should pick top labels by height-metric value, not by rendered building height", () => {
+        it("should pick top labels by rendered building height, not by raw height-metric value", () => {
             // Arrange — height metric is "mcc"; nodes arrive pre-sorted by rendered height descending.
-            // The tallest-rendered building has the LOWEST metric value (e.g. inverted height direction).
+            // With invertHeight or direction-1 metrics the tallest-rendered building can have the
+            // LOWEST raw metric value; the label must follow what the user actually sees.
             store.dispatch(setHeightMetric({ value: "mcc" }))
             store.dispatch(setAmountOfTopLabels({ value: 1 }))
             const tallButLowValue = { ...TEST_NODE_LEAF, name: "tall-low", isLeaf: true, height: 100, attributes: { mcc: 4 } } as Node
@@ -326,9 +327,9 @@ describe("codeMapRenderService", () => {
             // Act
             codeMapRenderService["setLabels"]([tallButLowValue, shortButHighValue])
 
-            // Assert — the highest-metric-value building is labeled, not the tallest-rendered one
+            // Assert — the visually tallest building is labeled
             expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
-            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(shortButHighValue, expect.anything())
+            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(tallButLowValue, expect.anything())
         })
 
         it("should generate labels for color if option is toggled on", () => {

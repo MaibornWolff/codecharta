@@ -34,10 +34,16 @@ export const visibleNodeMetricValuesSelector = createSelector(
 )
 
 function resolvePathPrefix(hoveredNode: CodeMapNode | undefined, focusedNodePath: string[]): string | null {
+    const focusPrefix = focusedNodePath.length > 0 ? focusedNodePath[0] : null
     if (hoveredNode?.children && hoveredNode.children.length > 0 && hoveredNode.path) {
-        return hoveredNode.path
+        // a hovered folder narrows the histogram only when it lies inside the focused
+        // subtree: the file explorer shows the full tree, but only the focused part is
+        // rendered, so hovering outside of it must not widen the histogram
+        if (!focusPrefix || hoveredNode.path === focusPrefix || hoveredNode.path.startsWith(`${focusPrefix}/`)) {
+            return hoveredNode.path
+        }
     }
-    return focusedNodePath.length > 0 ? focusedNodePath[0] : null
+    return focusPrefix
 }
 
 function collectMetrics(node: CodeMapNode, pathPrefix: string | null, result: Record<string, VisibleMetricValues>) {

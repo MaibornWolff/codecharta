@@ -299,11 +299,13 @@ export class ThreeSceneService implements OnDestroy {
             this.store.dispatch(setSelectedBuildingId({ value: null }))
             this.eventEmitter.emit("onBuildingDeselected")
         }
+        // null before repainting: the highlight pass must not treat the
+        // just-deselected building as still selected
+        this.selected = null
 
         if (this.highlightedBuildingIds.size > 0) {
             this.applyHighlights()
         }
-        this.selected = null
         const materials = this.getMapMaterials()
         if (materials) {
             this.resetMaterial(materials)
@@ -338,6 +340,24 @@ export class ThreeSceneService implements OnDestroy {
         this.mapGeometry.add(this.mapMesh.getThreeMesh())
 
         this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
+        this.remapSelectedBuilding()
+    }
+
+    // The selection must not survive a mesh swap pointing at a building of the old
+    // mesh: remap it onto the new mesh by path, or drop it when the building is gone.
+    private remapSelectedBuilding() {
+        if (!this.selected) {
+            return
+        }
+        const buildingOnNewMesh = this.mapMesh.getBuildingByPath(this.selected.node.path)
+        if (buildingOnNewMesh) {
+            this.selected = buildingOnNewMesh
+            this.mapMesh.selectBuilding(buildingOnNewMesh, this.folderLabelColorSelected)
+        } else {
+            this.selected = null
+            this.store.dispatch(setSelectedBuildingId({ value: null }))
+            this.eventEmitter.emit("onBuildingDeselected")
+        }
     }
 
     getMapMesh() {
