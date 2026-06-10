@@ -30,9 +30,10 @@ export class FilterMetricDataBySearchTermPipe implements PipeTransform {
     }
 
     private getDisplayName(metricName: string): string {
-        const aliases = METRIC_ALIASES[metricName]
-        if (aliases) {
-            return `${metricName} ${aliases.join(" ")}`
+        // hasOwn guard: a metric named like an Object prototype member
+        // ("constructor", "toString") must not resolve to the prototype
+        if (Object.hasOwn(METRIC_ALIASES, metricName)) {
+            return `${metricName} ${METRIC_ALIASES[metricName].join(" ")}`
         }
         return metricName
     }

@@ -59,9 +59,23 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
         const customEvent = event as ToggleEvent
         if (customEvent.newState === "open") {
             this.searchTerm.set("")
-            this.activeIndex.set(0)
-            queueMicrotask(() => this.searchInput().nativeElement.focus())
+            // start keyboard navigation on the currently selected metric, so Enter
+            // right after opening is a no-op instead of switching to the first entry
+            this.activeIndex.set(this.getSelectedMetricIndex())
+            queueMicrotask(() => {
+                this.searchInput().nativeElement.focus()
+                this.scrollActiveIntoView(this.popover().nativeElement)
+            })
         }
+    }
+
+    private getSelectedMetricIndex(): number {
+        const selected = this.selected()
+        if (!selected) {
+            return 0
+        }
+        const index = this.metricData().findIndex(metric => metric.name === selected)
+        return index === -1 ? 0 : index
     }
 
     ngAfterViewInit(): void {

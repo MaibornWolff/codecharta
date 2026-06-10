@@ -15,6 +15,8 @@ export class AxisCardComponent {
     readonly searchPopoverId = input<string | null>(null)
     readonly searchAnchorName = input<string | null>(null)
     readonly disabled = input(false)
+    /** Visual hint that the metric is currently inactive while keeping the chooser usable. */
+    readonly dimmed = input(false)
     readonly testId = input<string | null>(null)
     readonly cogTestId = input<string | null>(null)
     readonly minWidthClass = input("min-w-[120px]")

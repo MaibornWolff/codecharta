@@ -8,7 +8,11 @@ export function histogramBins(values: readonly number[], binCount = 12, range?: 
 
     const { min, max } = resolveBounds(finite, range)
     if (max === min) {
-        return empty
+        // degenerate axis (e.g. unary, all values identical): render one full bin so a
+        // populated metric is distinguishable from "no data"
+        const singleBin = empty.slice()
+        singleBin[0] = 1
+        return singleBin
     }
 
     const counts = countValuesPerBin(finite, min, max, binCount)

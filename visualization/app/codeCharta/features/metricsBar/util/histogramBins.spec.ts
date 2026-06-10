@@ -13,7 +13,7 @@ describe("histogramBins", () => {
         expect(result.every(height => height === 0)).toBe(true)
     })
 
-    it("should return 12 zeros when all values are equal", () => {
+    it("should render one full bin when all values are equal so the metric is distinguishable from no data", () => {
         // Arrange
         const values = [5, 5, 5, 5, 5]
 
@@ -22,7 +22,8 @@ describe("histogramBins", () => {
 
         // Assert
         expect(result).toHaveLength(12)
-        expect(result.every(height => height === 0)).toBe(true)
+        expect(result[0]).toBe(1)
+        expect(result.slice(1).every(height => height === 0)).toBe(true)
     })
 
     it("should return 12 zeros when only NaN values are present", () => {

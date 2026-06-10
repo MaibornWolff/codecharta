@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toObservable, toSignal } from "@angular/core/rxjs-interop"
-import { combineLatest, map, switchMap } from "rxjs"
-import { AttributeTypes, CodeMapNode, Node, PrimaryMetrics } from "../../../../codeCharta.model"
+import { Store } from "@ngrx/store"
+import { switchMap } from "rxjs"
+import { AttributeTypes, CcState, CodeMapNode, Node, PrimaryMetrics } from "../../../../codeCharta.model"
 import { isLeaf } from "../../../../util/codeMapHelper"
-import { AttributeTypesService } from "../../services/attributeTypes.service"
+import { createAttributeTypeSelector } from "../../selectors/createAttributeTypeSelector.selector"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
-import { PrimaryMetricsService } from "../../services/primaryMetrics.service"
 
 @Component({
     selector: "cc-metric-chooser-type",
@@ -14,8 +14,7 @@ import { PrimaryMetricsService } from "../../services/primaryMetrics.service"
 })
 export class MetricChooserTypeComponent {
     private readonly nodeSelectionService = inject(NodeSelectionService)
-    private readonly primaryMetricsService = inject(PrimaryMetricsService)
-    private readonly attributeTypesService = inject(AttributeTypesService)
+    private readonly store = inject<Store<CcState>>(Store)
 
     readonly metricFor = input.required<keyof PrimaryMetrics>()
     readonly attributeType = input<keyof AttributeTypes>("nodes")
@@ -37,14 +36,7 @@ export class MetricChooserTypeComponent {
 
     readonly attributeTypeLabel = toSignal(
         toObservable(this.selectorInputs).pipe(
-            switchMap(({ attributeType, metricFor }) =>
-                combineLatest([this.primaryMetricsService.primaryMetricNames$(), this.attributeTypesService.attributeTypes$()]).pipe(
-                    map(([primaryMetricNames, attributeTypes]) => {
-                        const metricName = primaryMetricNames[metricFor]
-                        return attributeTypes[attributeType][metricName] === "relative" ? "x͂" : "Σ"
-                    })
-                )
-            )
+            switchMap(({ attributeType, metricFor }) => this.store.select(createAttributeTypeSelector(attributeType, metricFor)))
         )
     )
 }

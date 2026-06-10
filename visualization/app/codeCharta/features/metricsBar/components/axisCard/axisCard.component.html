@@ -1,6 +1,7 @@
 <div
     [class]="cardClasses + ' ' + minWidthClass()"
     [style.anchor-name]="bodyAnchorStyle()"
+    [attr.data-anchor-name]="searchAnchorName()"
     [attr.data-testid]="testId()"
 >
     <div class="flex items-center justify-between gap-1">
@@ -11,6 +12,7 @@
                 class="btn btn-ghost btn-xs btn-square"
                 [attr.popovertarget]="cogPopoverId()"
                 [style.anchor-name]="cogAnchorStyle()"
+                [attr.data-anchor-name]="cogAnchorName()"
                 [attr.data-testid]="cogTestId()"
                 title="Settings"
             >
@@ -27,7 +29,7 @@
         >
             @if (metricName(); as name) {
                 <div
-                    [class.opacity-50]="disabled()"
+                    [class.opacity-50]="disabled() || dimmed()"
                     class="text-sm font-semibold leading-tight text-center whitespace-nowrap overflow-hidden text-ellipsis"
                 >
                     {{ name }}

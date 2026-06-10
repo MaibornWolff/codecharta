@@ -5,6 +5,7 @@ import { IsEdgeMetricVisibleService } from "../../services/isEdgeMetricVisible.s
 import { NodeSelectionService } from "../../services/nodeSelection.service"
 import { AxisCardComponent } from "../axisCard/axisCard.component"
 import { EdgeSettingsPopoverComponent } from "../edgeSettingsPopover/edgeSettingsPopover.component"
+import { MetricChooserTypeComponent } from "../metricMetaValue/metricChooserType.component"
 import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelectPopover.component"
 
 @Component({
@@ -12,7 +13,7 @@ import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelec
     templateUrl: "./edgeSegment.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [AxisCardComponent, MetricSelectPopoverComponent, EdgeSettingsPopoverComponent]
+    imports: [AxisCardComponent, MetricChooserTypeComponent, MetricSelectPopoverComponent, EdgeSettingsPopoverComponent]
 })
 export class EdgeSegmentComponent {
     private readonly edgeMetricService = inject(EdgeMetricService)
