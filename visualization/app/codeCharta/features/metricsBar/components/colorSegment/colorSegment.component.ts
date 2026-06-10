@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { ColorMode } from "../../../../codeCharta.model"
 import { ColorMetricService } from "../../services/colorMetric.service"
+import { ColorModeService } from "../../services/colorMode.service"
 import { IsHeightAndColorMetricLinkedService } from "../../services/isHeightAndColorMetricLinked.service"
 import { MapColorsService } from "../../services/mapColors.service"
 import { ColorRangeService } from "../../services/colorRange.service"
@@ -28,6 +30,7 @@ import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelec
 export class ColorSegmentComponent {
     constructor(
         private readonly colorMetricService: ColorMetricService,
+        private readonly colorModeService: ColorModeService,
         private readonly isHeightAndColorMetricLinkedService: IsHeightAndColorMetricLinkedService,
         private readonly visibleNodeMetricValuesService: VisibleNodeMetricValuesService,
         private readonly selectedColorMetricDataService: SelectedColorMetricDataService,
@@ -47,6 +50,7 @@ export class ColorSegmentComponent {
         initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
     })
     readonly colorRange = toSignal(this.colorRangeService.colorRange$(), { initialValue: { from: null, to: null } })
+    readonly colorMode = toSignal(this.colorModeService.colorMode$(), { initialValue: ColorMode.absolute })
     readonly mapColors = toSignal(this.mapColorsService.mapColors$())
 
     // Bar heights reflect the visible (rendered) buildings, but they are binned on the color

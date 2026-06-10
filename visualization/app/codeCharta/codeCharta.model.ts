@@ -188,6 +188,10 @@ export interface MapColors {
     outgoingEdge: string
     incomingEdge: string
     labelColorAndAlpha: { rgb: string; alpha: number }
+    /** Tracks whether positive/negative were swapped, so the Invert Colors
+     * checkbox stays meaningful after individual colors are customized. */
+    isColorRangeInverted?: boolean
+    areDeltaColorsInverted?: boolean
 }
 
 export interface ColorRange {

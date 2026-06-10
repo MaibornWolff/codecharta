@@ -128,4 +128,60 @@ describe("MetricColorRangeSliderComponent", () => {
         // Assert
         expect(handleValueChange).toHaveBeenCalledWith({ newLeftValue: 45 })
     })
+
+    it("should build repeated arrow presses on the pending value while commits are debounced", async () => {
+        // Arrange: the committed input value lags behind the parent's debounce,
+        // so the second press must step from 31, not from the stale 30
+        const { leftThumb, handleValueChange } = await setup()
+
+        // Act
+        fireEvent.keyDown(leftThumb, { key: "ArrowRight" })
+        fireEvent.keyDown(leftThumb, { key: "ArrowRight" })
+
+        // Assert
+        expect(handleValueChange).toHaveBeenNthCalledWith(1, { newLeftValue: 31 })
+        expect(handleValueChange).toHaveBeenNthCalledWith(2, { newLeftValue: 32 })
+    })
+
+    it("should compare a typed value against the pending value, not the stale committed input", async () => {
+        // Arrange
+        const { fixture, handleValueChange } = await setup()
+        const leftInput = fixture.nativeElement.querySelectorAll("input[type=number]")[0] as HTMLInputElement
+
+        // Act: 30 equals the committed currentLeftValue but differs from the pending 45
+        leftInput.value = "45"
+        fireEvent.input(leftInput)
+        leftInput.value = "30"
+        fireEvent.input(leftInput)
+
+        // Assert
+        expect(handleValueChange).toHaveBeenNthCalledWith(2, { newLeftValue: 30 })
+    })
+
+    it("should abort a drag without dispatching when the slider is hidden mid-drag", async () => {
+        // Arrange: in jsdom the container rect is zero-width, exactly like a
+        // light-dismissed (display:none) popover mid-drag
+        const { fixture, handleValueChange } = await setup()
+        fixture.componentInstance.setCurrentlySliding("leftThumb")
+
+        // Act
+        fireEvent.mouseMove(document)
+        fireEvent.mouseMove(document)
+
+        // Assert: no garbage color range is dispatched and listeners are gone
+        expect(handleValueChange).not.toHaveBeenCalled()
+    })
+
+    it("should not react to document mouse moves after being destroyed mid-drag", async () => {
+        // Arrange
+        const { fixture, handleValueChange } = await setup()
+        fixture.componentInstance.setCurrentlySliding("leftThumb")
+
+        // Act
+        fixture.destroy()
+        fireEvent.mouseMove(document)
+
+        // Assert
+        expect(handleValueChange).not.toHaveBeenCalled()
+    })
 })

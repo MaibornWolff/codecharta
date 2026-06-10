@@ -72,7 +72,7 @@ describe("ColorSettingsPopoverComponent", () => {
         jest.useRealTimers()
     })
 
-    it("should not dispatch setColorRange when destroyed before the debounce timer fires", async () => {
+    it("should flush a pending color range when destroyed before the debounce timer fires", async () => {
         // Arrange
         jest.useFakeTimers()
         const { component } = await setup()
@@ -82,10 +82,12 @@ describe("ColorSettingsPopoverComponent", () => {
         // Act
         component.handleValueChange({ newLeftValue: 5, newRightValue: 42 })
         component.ngOnDestroy()
-        jest.advanceTimersByTime(400)
 
-        // Assert
-        expect(dispatchSpy).not.toHaveBeenCalledWith(setColorRange({ value: { from: 5, to: 42 } }))
+        // Assert: the adjustment is committed instead of silently discarded
+        expect(dispatchSpy).toHaveBeenCalledWith(setColorRange({ value: { from: 5, to: 42 } }))
+
+        jest.advanceTimersByTime(400)
+        expect(dispatchSpy).toHaveBeenCalledTimes(1)
         jest.useRealTimers()
     })
 
@@ -98,24 +100,38 @@ describe("ColorSettingsPopoverComponent", () => {
         expect(component.areDeltaColorsInverted()).toBe(false)
     })
 
-    it("should report colors as inverted when positive and negative are swapped", async () => {
+    it("should report colors as inverted based on the explicit inversion flag", async () => {
         // Arrange & Act
         const { component } = await setup({
             ...defaultMapColors,
             positive: defaultMapColors.negative,
-            negative: defaultMapColors.positive
+            negative: defaultMapColors.positive,
+            isColorRangeInverted: true
         })
 
         // Assert
         expect(component.isColorRangeInverted()).toBe(true)
     })
 
-    it("should report delta colors as inverted when positiveDelta and negativeDelta are swapped", async () => {
+    it("should keep reporting inversion when individual colors were customized afterwards", async () => {
+        // Arrange & Act
+        const { component } = await setup({
+            ...defaultMapColors,
+            positive: "#123456",
+            isColorRangeInverted: true
+        })
+
+        // Assert: the checkbox must not desync once a color is customized
+        expect(component.isColorRangeInverted()).toBe(true)
+    })
+
+    it("should report delta colors as inverted based on the explicit inversion flag", async () => {
         // Arrange & Act
         const { component } = await setup({
             ...defaultMapColors,
             positiveDelta: defaultMapColors.negativeDelta,
-            negativeDelta: defaultMapColors.positiveDelta
+            negativeDelta: defaultMapColors.positiveDelta,
+            areDeltaColorsInverted: true
         })
 
         // Assert

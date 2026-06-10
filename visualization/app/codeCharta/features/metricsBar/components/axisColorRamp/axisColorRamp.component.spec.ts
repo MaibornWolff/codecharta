@@ -48,8 +48,8 @@ describe("AxisColorRampComponent", () => {
         expect(rgbToHex(bars[11].style.backgroundColor)).toBe("#ff0000")
     })
 
-    it("should classify bars correctly when colorRange is inverted (from > to)", async () => {
-        // Arrange
+    it("should render a bin exactly at the thresholds with the same color its buildings have on the map", async () => {
+        // Arrange: midpoints are 0.5, 1.5, ... so from/to land exactly on bin midpoints
         const values = Array.from({ length: 12 }, (_, i) => i)
 
         // Act
@@ -58,25 +58,18 @@ describe("AxisColorRampComponent", () => {
                 values,
                 min: 0,
                 max: 12,
-                colorRange: { from: 10, to: 5 },
+                colorRange: { from: 5.5, to: 9.5 },
                 mapColors
             }
         })
 
-        // Assert
+        // Assert: the map classifies value < from as positive, value < to as neutral
+        // and value >= to as negative — a bin exactly at `to` must be negative
         const bars = screen.getAllByTestId("axis-color-ramp-bar") as HTMLElement[]
-        expect(bars).toHaveLength(12)
-
-        // Inverted range should normalize to lower=5, upper=10
-        // Below 5 → positive (#0f0)
-        // Between 5 and 10 → neutral (#ff0)
-        // Above 10 → negative (#f00)
-        expect(rgbToHex(bars[0].style.backgroundColor)).toBe("#00ff00")
         expect(rgbToHex(bars[4].style.backgroundColor)).toBe("#00ff00")
         expect(rgbToHex(bars[5].style.backgroundColor)).toBe("#ffff00")
-        expect(rgbToHex(bars[9].style.backgroundColor)).toBe("#ffff00")
-        expect(rgbToHex(bars[10].style.backgroundColor)).toBe("#ff0000")
-        expect(rgbToHex(bars[11].style.backgroundColor)).toBe("#ff0000")
+        expect(rgbToHex(bars[8].style.backgroundColor)).toBe("#ffff00")
+        expect(rgbToHex(bars[9].style.backgroundColor)).toBe("#ff0000")
     })
 
     it("should fall back to neutral color when colorRange is null", async () => {

@@ -1,10 +1,10 @@
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
-import { CcState, CodeMapNode, ColorMode, Node } from "../../../codeCharta.model"
+import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
-import { gradientCalculator } from "../../color/gradientCalculator"
+import { getColorByMetricValue } from "../../color/gradientCalculator"
 import {
     MetricMinMax,
     selectedColorMetricDataSelector
@@ -241,25 +241,7 @@ export function getBuildingColor(
         return mapColors.positive
     }
 
-    if (colorMode === ColorMode.absolute) {
-        if (metricValue < colorRange.from || colorRange.from === nodeMetricDataRange.maxValue) {
-            return mapColors.positive
-        }
-        if (metricValue < colorRange.to || colorRange.to === nodeMetricDataRange.maxValue) {
-            return mapColors.neutral
-        }
-        return mapColors.negative
-    }
-
-    if (colorMode === ColorMode.trueGradient) {
-        return gradientCalculator.getColorByTrueGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
-    }
-
-    if (colorMode === ColorMode.focusedGradient) {
-        return gradientCalculator.getColorByFocusedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
-    }
-
-    return gradientCalculator.getColorByWeightedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
+    return getColorByMetricValue(mapColors, colorRange, colorMode, nodeMetricDataRange, metricValue)
 }
 
 export const TreeMapHelper = {

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input, OnDestroy } from "
 import { toSignal } from "@angular/core/rxjs-interop"
 import { combineLatest, map } from "rxjs"
 import { ColorMode, ColorRange } from "../../../../codeCharta.model"
+import { debounce } from "../../../../util/debounce"
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { calculateInitialColorRange } from "../../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
 import { ColorPickerForMapColorComponent } from "../../../../ui/colorPickerForMapColor/colorPickerForMapColor.component"
@@ -67,14 +68,8 @@ export class ColorSettingsPopoverComponent implements OnDestroy {
         initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
     })
 
-    readonly isColorRangeInverted = computed(
-        () => this.mapColors().positive === defaultMapColors.negative && this.mapColors().negative === defaultMapColors.positive
-    )
-    readonly areDeltaColorsInverted = computed(
-        () =>
-            this.mapColors().positiveDelta === defaultMapColors.negativeDelta &&
-            this.mapColors().negativeDelta === defaultMapColors.positiveDelta
-    )
+    readonly isColorRangeInverted = computed(() => this.mapColors().isColorRangeInverted ?? false)
+    readonly areDeltaColorsInverted = computed(() => this.mapColors().areDeltaColorsInverted ?? false)
 
     readonly isWidePopover = computed(() => !this.isDeltaState() && this.colorMetric() !== "unary")
 
@@ -82,40 +77,30 @@ export class ColorSettingsPopoverComponent implements OnDestroy {
 
     private pendingLeftValue: null | number = null
     private pendingRightValue: null | number = null
-    private debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+    private readonly commitColorRange = debounce(() => {
+        const newColorRange: Partial<ColorRange> = {}
+        if (this.pendingLeftValue !== null) {
+            newColorRange.from = this.pendingLeftValue
+        }
+        if (this.pendingRightValue !== null) {
+            newColorRange.to = this.pendingRightValue
+        }
+        this.pendingLeftValue = null
+        this.pendingRightValue = null
+        this.colorRangeService.setColorRange(newColorRange)
+    }, SETTINGS_INPUT_DEBOUNCE_MS)
 
     handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
-        this.updateColorRangeDebounced(newLeftValue, newRightValue)
+        this.pendingLeftValue = newLeftValue ?? this.pendingLeftValue
+        this.pendingRightValue = newRightValue ?? this.pendingRightValue
+        this.commitColorRange()
     }
 
     ngOnDestroy(): void {
-        if (this.debounceTimer !== null) {
-            clearTimeout(this.debounceTimer)
-            this.debounceTimer = null
-        }
-    }
-
-    private readonly updateColorRangeDebounced = (newLeftValue: number | undefined, newRightValue: number | undefined) => {
-        this.pendingLeftValue = newLeftValue ?? this.pendingLeftValue
-        this.pendingRightValue = newRightValue ?? this.pendingRightValue
-
-        if (this.debounceTimer !== null) {
-            clearTimeout(this.debounceTimer)
-        }
-        this.debounceTimer = setTimeout(() => {
-            this.debounceTimer = null
-            const newColorRange: Partial<ColorRange> = {}
-            if (this.pendingLeftValue !== null) {
-                newColorRange.from = this.pendingLeftValue
-            }
-            if (this.pendingRightValue !== null) {
-                newColorRange.to = this.pendingRightValue
-            }
-            this.colorRangeService.setColorRange(newColorRange)
-
-            this.pendingLeftValue = null
-            this.pendingRightValue = null
-        }, SETTINGS_INPUT_DEBOUNCE_MS)
+        // commit instead of discarding: a pending threshold adjustment must not be
+        // silently dropped when the popover is destroyed within the debounce window
+        this.commitColorRange.flush()
     }
 
     handleColorModeChange(value: string) {
@@ -136,12 +121,18 @@ export class ColorSettingsPopoverComponent implements OnDestroy {
 
     resetColorsKeys() {
         return this.isDeltaState()
-            ? ["appSettings.mapColors.positiveDelta", "appSettings.mapColors.negativeDelta", "appSettings.mapColors.selected"]
+            ? [
+                  "appSettings.mapColors.positiveDelta",
+                  "appSettings.mapColors.negativeDelta",
+                  "appSettings.mapColors.selected",
+                  "appSettings.mapColors.areDeltaColorsInverted"
+              ]
             : [
                   "appSettings.mapColors.positive",
                   "appSettings.mapColors.negative",
                   "appSettings.mapColors.neutral",
-                  "appSettings.mapColors.selected"
+                  "appSettings.mapColors.selected",
+                  "appSettings.mapColors.isColorRangeInverted"
               ]
     }
 }
