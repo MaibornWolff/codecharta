@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toObservable, toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
 import { switchMap } from "rxjs"
-import { AttributeTypes, CcState, CodeMapNode, Node, PrimaryMetrics } from "../../../../codeCharta.model"
+import { AttributeTypes, CodeMapNode, Node, PrimaryMetrics } from "../../../../codeCharta.model"
 import { isLeaf } from "../../../../util/codeMapHelper"
-import { createAttributeTypeSelector } from "../../selectors/createAttributeTypeSelector.selector"
+import { AttributeTypesService } from "../../services/attributeTypes.service"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
 
 @Component({
@@ -14,7 +13,7 @@ import { NodeSelectionService } from "../../services/nodeSelection.service"
 })
 export class MetricChooserTypeComponent {
     private readonly nodeSelectionService = inject(NodeSelectionService)
-    private readonly store = inject<Store<CcState>>(Store)
+    private readonly attributeTypesService = inject(AttributeTypesService)
 
     readonly metricFor = input.required<keyof PrimaryMetrics>()
     readonly attributeType = input<keyof AttributeTypes>("nodes")
@@ -36,7 +35,7 @@ export class MetricChooserTypeComponent {
 
     readonly attributeTypeLabel = toSignal(
         toObservable(this.selectorInputs).pipe(
-            switchMap(({ attributeType, metricFor }) => this.store.select(createAttributeTypeSelector(attributeType, metricFor)))
+            switchMap(({ attributeType, metricFor }) => this.attributeTypesService.attributeTypeLabel$(attributeType, metricFor))
         )
     )
 }
