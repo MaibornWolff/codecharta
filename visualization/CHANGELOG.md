@@ -30,11 +30,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Screenshots no longer include an empty strip at the bottom — the bottom bar height is accounted for again in the capture region.
 - Color range diagram no longer renders `NaN` when a saved color range falls outside the current metric's value range.
 - Color range slider thumbs are now keyboard-accessible (arrow keys, Home/End) and expose proper `slider` ARIA roles; the link Color/Height button now has an accessible label.
-- Top metric labels now follow the height-metric **value** ranking instead of the rendered building height, so the highest-value buildings are labeled even when the height metric is rendered inverted (inverted attribute direction or "invert height" enabled).
+- Top metric labels follow the rendered building height again, so the labels always attach to the visually tallest buildings — including with "invert height" or inverted attribute directions.
 - The Color settings `Reset thresholds` button now resets only the color range; it previously also reset the delta map colors as an unintended side effect.
-- Numeric metric settings inputs (margin, height scaling, color-range thresholds) now accept decimal values instead of truncating them to whole numbers.
+- Color-range threshold inputs accept decimal values; integer-only settings (margin, height scaling, edge preview/height, top labels) round fractional input instead of storing it unrounded.
 - Selecting a different building now immediately clears the previously selected building's highlight, instead of leaving it highlighted until the next hover.
 - The hovered/active option in a metric-select dropdown now shows a grey background instead of a primary-colored outline.
+- Typing into the settings number inputs no longer destroys intermediate values: entering "45" into a field with a minimum of 30 works again (the field is normalized when leaving it), and retyping the current value no longer commits a stale intermediate digit.
+- Fractional values restored from a shared URL can no longer crash top-label rendering or disable the edge-preview cutoff.
+- The Invert Colors checkbox now tracks an explicit inversion flag, so it stays meaningful after individual map colors are customized; resetting the colors also resets the flag.
+- The color-range slider measures its actual track width, so the thumbs stay on the track on narrow viewports; arrow-key presses accumulate while commits are debounced; a drag is aborted safely when the popover is light-dismissed mid-drag instead of recoloring the map with a garbage range.
+- A pending color-range adjustment is committed instead of silently discarded when the color settings popover is destroyed within the debounce window.
+- The color ramp under the COLOR axis classifies bins exactly like the 3D map (a bin at the upper threshold is negative) and respects the selected gradient color mode.
+- Blacklist matching is unified behind one shared matcher: selection cleanup, the street layout, metric calculations and the file-explorer counts now always agree with what flatten/exclude rules actually remove, including negated `!`-rules (which apply to files only).
+- The edge metric chooser stays usable while edges are hidden (it is only dimmed), and the hovered edge values show the sum/median aggregation indicator again.
+- Pressing Enter right after opening a metric search popover no longer switches to the first list entry — keyboard navigation starts on the currently selected metric.
+- Settings popovers open next to their metric segment in browsers without CSS anchor positioning (e.g. Firefox) instead of centered in the viewport.
+- Divider lines between the metrics-bar segments render again.
+- A metric whose values are all identical (e.g. `unary`) now shows one full histogram bar instead of looking like "no data".
+- Hovering a folder outside the focused subtree no longer rebuilds the metrics-bar histograms from buildings that are not rendered.
+- The selected building no longer survives a map rebuild as a stale reference: it is remapped onto the new mesh (or deselected when it disappears), preventing wrong recoloring after changing a metric and clicking another building.
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -43,6 +57,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Deduplicated the metrics bar: shared `MetricSegmentBase` for the area/height segments and a shared `cc-settings-popover-shell` container for the four settings popovers. Added Playwright e2e coverage for the metric-select flow.
 - Reworked the metrics bar onto the feature `stores`/`services`/`selectors` architecture (matching `labelSettings`) so it passes the dependency-cruiser architecture lint: components no longer inject the ngrx `Store` directly, and the scenarios feature is accessed through its `facade`.
 - Top metric label selection now uses a single-pass top-N selection instead of sorting every building, reducing work when rendering labels on large maps.
+- Performance: building hovers no longer re-walk the whole map for the metrics-bar histograms (only folder hovers can change them); the layout is no longer re-run on every search keystroke or margin drag for a fallback display value; metric option lists render lazily on popover open; selection clicks update the highlight colors incrementally instead of re-uploading the full color buffer; the color-range diagram computes percentiles with a single sort and pauses entirely while its popover is closed.
+- Removed dead metrics-bar store/service mirror pairs and never-called setters; renamed the duplicate `AreaMetricStore`/`ColorModeStore` singletons to feature-scoped names so auto-imports cannot mix them up; the metric select popover and labels/scenarios segment reuse the shared popover shell.
 
 ## [1.142.0] - 2026-03-16
 
