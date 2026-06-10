@@ -22,14 +22,16 @@
     <ul class="flex flex-col max-h-[440px] overflow-y-auto m-0 p-0 list-none">
         @if (isOpen()) {
             @for (option of metricData() | filterMetricDataBySearchTerm: searchTerm(); track option.name; let i = $index) {
-                <cc-metric-select-option
-                    [option]="option"
-                    [isActive]="i === activeIndex()"
-                    [isSelected]="option.name === selected()"
-                    [descriptor]="attributeDescriptors()[option.name] ?? null"
-                    (selectOption)="handleSelect($event)"
-                    (hovered)="activeIndex.set(i)"
-                ></cc-metric-select-option>
+                <li class="flex">
+                    <cc-metric-select-option
+                        [option]="option"
+                        [isActive]="i === activeIndex()"
+                        [isSelected]="option.name === selected()"
+                        [descriptor]="attributeDescriptors()[option.name] ?? null"
+                        (selectOption)="handleSelect($event)"
+                        (hovered)="activeIndex.set(i)"
+                    ></cc-metric-select-option>
+                </li>
             } @empty {
                 <li class="px-2 py-3 text-xs opacity-60">No metrics found</li>
             }
