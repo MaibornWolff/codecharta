@@ -1,6 +1,9 @@
 import { createSelector } from "@ngrx/store"
 import { CodeMapNode } from "../../../codeCharta.model"
+import { areaMetricSelector } from "../../store/dynamicSettings/areaMetric/areaMetric.selector"
+import { colorMetricSelector } from "../../store/dynamicSettings/colorMetric/colorMetric.selector"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
+import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
 import { accumulatedDataSelector } from "../accumulatedData/accumulatedData.selector"
 import { hoveredNodeSelector } from "../hoveredNode.selector"
 
@@ -8,49 +11,63 @@ export interface VisibleMetricValues {
     values: number[]
     minValue: number
     maxValue: number
-    sum: number
 }
 
 export type VisibleNodeMetricValues = Record<string, VisibleMetricValues>
 
 const EMPTY: VisibleNodeMetricValues = Object.freeze({}) as VisibleNodeMetricValues
 
+// Derive the hovered *folder* path first: hovering a leaf cannot change the histogram,
+// so this memoization barrier keeps building hovers (10-30/s while sweeping the map)
+// from re-walking the whole map on every mousemove.
+const hoveredFolderPathSelector = createSelector(hoveredNodeSelector, hoveredNode =>
+    hoveredNode?.children && hoveredNode.children.length > 0 && hoveredNode.path ? hoveredNode.path : null
+)
+
 export const visibleNodeMetricValuesSelector = createSelector(
     accumulatedDataSelector,
     focusedNodePathSelector,
-    hoveredNodeSelector,
-    (accumulatedData, focusedNodePath, hoveredNode): VisibleNodeMetricValues => {
+    hoveredFolderPathSelector,
+    areaMetricSelector,
+    heightMetricSelector,
+    colorMetricSelector,
+    (accumulatedData, focusedNodePath, hoveredFolderPath, areaMetric, heightMetric, colorMetric): VisibleNodeMetricValues => {
         const root = accumulatedData.unifiedMapNode
         if (!root) {
             return EMPTY
         }
-        const prefix = resolvePathPrefix(hoveredNode, focusedNodePath)
+        // only the metrics actually displayed in the metrics bar are collected
+        const metrics = [...new Set([areaMetric, heightMetric, colorMetric])].filter(Boolean) as string[]
+        if (metrics.length === 0) {
+            return EMPTY
+        }
+        const prefix = resolvePathPrefix(hoveredFolderPath, focusedNodePath)
         const result: Record<string, VisibleMetricValues> = {}
 
-        collectMetrics(root, prefix, result)
+        collectMetrics(root, prefix, metrics, result)
 
         return result
     }
 )
 
-function resolvePathPrefix(hoveredNode: CodeMapNode | undefined, focusedNodePath: string[]): string | null {
+function resolvePathPrefix(hoveredFolderPath: string | null, focusedNodePath: string[]): string | null {
     const focusPrefix = focusedNodePath.length > 0 ? focusedNodePath[0] : null
-    if (hoveredNode?.children && hoveredNode.children.length > 0 && hoveredNode.path) {
+    if (hoveredFolderPath) {
         // a hovered folder narrows the histogram only when it lies inside the focused
         // subtree: the file explorer shows the full tree, but only the focused part is
         // rendered, so hovering outside of it must not widen the histogram
-        if (!focusPrefix || hoveredNode.path === focusPrefix || hoveredNode.path.startsWith(`${focusPrefix}/`)) {
-            return hoveredNode.path
+        if (!focusPrefix || hoveredFolderPath === focusPrefix || hoveredFolderPath.startsWith(`${focusPrefix}/`)) {
+            return hoveredFolderPath
         }
     }
     return focusPrefix
 }
 
-function collectMetrics(node: CodeMapNode, pathPrefix: string | null, result: Record<string, VisibleMetricValues>) {
+function collectMetrics(node: CodeMapNode, pathPrefix: string | null, metrics: string[], result: Record<string, VisibleMetricValues>) {
     const isLeafNode = !node.children || node.children.length === 0
     if (!isLeafNode) {
         for (const child of node.children) {
-            collectMetrics(child, pathPrefix, result)
+            collectMetrics(child, pathPrefix, metrics, result)
         }
         return
     }
@@ -58,7 +75,7 @@ function collectMetrics(node: CodeMapNode, pathPrefix: string | null, result: Re
     if (!isNodeVisibleForHistogram(node, pathPrefix) || !node.attributes) {
         return
     }
-    for (const metric in node.attributes) {
+    for (const metric of metrics) {
         accumulateMetricValue(result, metric, node.attributes[metric])
     }
 }
@@ -70,11 +87,10 @@ function accumulateMetricValue(result: Record<string, VisibleMetricValues>, metr
 
     let entry = result[metric]
     if (!entry) {
-        entry = { values: [], minValue: value, maxValue: value, sum: 0 }
+        entry = { values: [], minValue: value, maxValue: value }
         result[metric] = entry
     }
     entry.values.push(value)
-    entry.sum += value
     if (value < entry.minValue) {
         entry.minValue = value
     }

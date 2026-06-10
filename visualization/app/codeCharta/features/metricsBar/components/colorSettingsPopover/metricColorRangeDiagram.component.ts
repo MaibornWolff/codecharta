@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, inject } from "@angular/core"
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    Input,
+    OnChanges,
+    OnDestroy,
+    SimpleChanges,
+    inject
+} from "@angular/core"
 import * as d3 from "d3"
 
 type SVGElement = d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
@@ -15,7 +25,7 @@ type Scale = d3.ScaleLinear<number, number>
     standalone: true,
     host: { class: "flex justify-center" }
 })
-export class MetricColorRangeDiagramComponent implements OnChanges {
+export class MetricColorRangeDiagramComponent implements OnChanges, AfterViewInit, OnDestroy {
     private readonly elementRef = inject(ElementRef)
 
     @Input() minValue: number
@@ -42,15 +52,104 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
     private xLabelYOffset: number
     private percentileRanks: { x: number; y: number }[]
     private percentileToMetricValueMap: Map<number, number>
+    private ranksAreStale = true
+    private pendingRender: "full" | "areas" | null = null
+    private popoverAncestor: Element | null = null
 
-    ngOnChanges() {
-        if (this.values.length > 0) {
+    private readonly popoverToggleListener = (event: Event) => {
+        if ((event as ToggleEvent).newState === "open" && this.pendingRender !== null) {
+            this.render(this.pendingRender === "full")
+        }
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (this.values.length === 0) {
+            return
+        }
+        const requiresFullRender = Boolean(changes.values || changes.isAttributeDirectionInverted || changes.colorMetric)
+        if (requiresFullRender) {
+            this.ranksAreStale = true
+        }
+        if (this.isHiddenInClosedPopover()) {
+            // defer the (expensive) percentile computation and d3 rebuild until the
+            // popover actually opens; thumb-only changes only need the areas redrawn
+            this.pendingRender = this.pendingRender === "full" || requiresFullRender ? "full" : "areas"
+            return
+        }
+        this.render(requiresFullRender)
+    }
+
+    ngAfterViewInit() {
+        this.popoverAncestor = (this.elementRef.nativeElement as HTMLElement).closest("[popover]")
+        this.popoverAncestor?.addEventListener("toggle", this.popoverToggleListener)
+    }
+
+    ngOnDestroy() {
+        this.popoverAncestor?.removeEventListener("toggle", this.popoverToggleListener)
+    }
+
+    private render(requiresFullRender: boolean) {
+        if (this.ranksAreStale) {
             this.percentileRanks = this.isAttributeDirectionInverted
                 ? this.calculateReversedPercentileRanks(this.values)
                 : this.calculatePercentileRanks(this.values)
             this.updatePercentileToMetricValueMap()
+            this.ranksAreStale = false
+        }
+        if (requiresFullRender || !this.hasRenderedDiagram() || !this.updateAreas()) {
             this.renderDiagram()
         }
+        this.pendingRender = null
+    }
+
+    private isHiddenInClosedPopover(): boolean {
+        const popoverAncestor = this.popoverAncestor ?? (this.elementRef.nativeElement as HTMLElement).closest("[popover]")
+        if (!popoverAncestor) {
+            return false
+        }
+        try {
+            return !popoverAncestor.matches(":popover-open")
+        } catch {
+            return false
+        }
+    }
+
+    private hasRenderedDiagram(): boolean {
+        return !this.rangeDiagramContainer().select("svg").empty()
+    }
+
+    /** Redraws only the three colored area rects; returns false when they do not exist yet. */
+    private updateAreas(): boolean {
+        const group = this.rangeDiagramContainer().select<SVGGElement>("g")
+        if (group.empty() || group.select(".left-area").empty()) {
+            return false
+        }
+        const x = this.createXScale()
+        const leftValue = x(
+            this.isAttributeDirectionInverted
+                ? this.calculateReversedPercentileFromMetricValue(this.currentRightValue)
+                : this.calculatePercentileFromMetricValue(this.currentLeftValue)
+        )
+        const rightValue = x(
+            this.isAttributeDirectionInverted
+                ? this.calculateReversedPercentileFromMetricValue(this.currentLeftValue)
+                : this.calculatePercentileFromMetricValue(this.currentRightValue)
+        )
+        group
+            .select(".left-area")
+            .attr("width", leftValue)
+            .style("fill", this.isAttributeDirectionInverted ? this.rightColor : this.leftColor)
+        group
+            .select(".middle-area")
+            .attr("x", leftValue + this.framePadding)
+            .attr("width", rightValue - leftValue)
+            .style("fill", this.middleColor)
+        group
+            .select(".right-area")
+            .attr("x", rightValue + this.framePadding)
+            .attr("width", this.frameWidth - 2 * this.framePadding - rightValue)
+            .style("fill", this.isAttributeDirectionInverted ? this.leftColor : this.rightColor)
+        return true
     }
 
     private updatePercentileToMetricValueMap() {
@@ -256,31 +355,35 @@ export class MetricColorRangeDiagramComponent implements OnChanges {
             .attr("transform", `translate(${this.framePadding}, ${this.framePadding})`)
     }
 
+    // Sort once and emit a rank at the last occurrence of each unique value: in the
+    // ascending order, "count of values <= v" is exactly that index + 1. This replaces
+    // an O(unique x N) filter-per-unique-value scan.
     private calculatePercentileRanks(array: number[]) {
-        const uniqueSortedNumbers = [...new Set(array)].sort((a, b) => a - b)
+        const sorted = [...array].sort((a, b) => a - b)
+        const totalNumbers = sorted.length
+        const percentileRanks = [{ x: 0, y: sorted[0] }]
 
-        const totalNumbers = array.length
-        const percentileRanks = [{ x: 0, y: uniqueSortedNumbers[0] }]
-
-        for (const value of uniqueSortedNumbers) {
-            const countLessThanOrEqualToUniqueNumber = array.filter(number_ => number_ <= value).length
-            const percentileRank = (countLessThanOrEqualToUniqueNumber / totalNumbers) * 100
-            percentileRanks.push({ x: percentileRank, y: value })
+        for (let index = 0; index < totalNumbers; index++) {
+            if (index + 1 < totalNumbers && sorted[index + 1] === sorted[index]) {
+                continue
+            }
+            percentileRanks.push({ x: ((index + 1) / totalNumbers) * 100, y: sorted[index] })
         }
 
         return percentileRanks
     }
 
+    // Descending order: "count of values >= v" is the index of v's last occurrence + 1.
     private calculateReversedPercentileRanks(array: number[]) {
-        const uniqueSortedNumbers = [...new Set(array)].sort((a, b) => a - b).reverse()
+        const sorted = [...array].sort((a, b) => b - a)
+        const totalNumbers = sorted.length
+        const percentileRanks = [{ x: 0, y: sorted[0] }]
 
-        const totalNumbers = array.length
-        const percentileRanks = [{ x: 0, y: uniqueSortedNumbers[0] }]
-
-        for (const value of uniqueSortedNumbers) {
-            const countGreaterThanOrEqualToUniqueNumber = array.filter(number_ => number_ >= value).length
-            const percentileRank = (countGreaterThanOrEqualToUniqueNumber / totalNumbers) * 100
-            percentileRanks.push({ x: percentileRank, y: value })
+        for (let index = 0; index < totalNumbers; index++) {
+            if (index + 1 < totalNumbers && sorted[index + 1] === sorted[index]) {
+                continue
+            }
+            percentileRanks.push({ x: ((index + 1) / totalNumbers) * 100, y: sorted[index] })
         }
 
         return percentileRanks.sort((a, b) => a.x - b.x)

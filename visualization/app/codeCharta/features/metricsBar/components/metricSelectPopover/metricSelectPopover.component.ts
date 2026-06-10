@@ -44,6 +44,8 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
 
     readonly searchTerm = signal("")
     readonly activeIndex = signal(0)
+    /** The option list (~hundreds of buttons incl. tooltip pipes) is only rendered while open. */
+    readonly isOpen = signal(false)
 
     private readonly metricDataState = toSignal(this.metricDataService.metricData$(), {
         initialValue: { nodeMetricData: [], edgeMetricData: [], nodeEdgeMetricsMap: new Map() }
@@ -57,6 +59,7 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
 
     private readonly toggleListener = (event: Event) => {
         const customEvent = event as ToggleEvent
+        this.isOpen.set(customEvent.newState === "open")
         if (customEvent.newState === "open") {
             this.searchTerm.set("")
             // start keyboard navigation on the currently selected metric, so Enter
@@ -141,6 +144,6 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
     private scrollActiveIntoView(popoverElement: HTMLElement) {
         const items = this.getFilteredItems(popoverElement)
         const active = items[this.activeIndex()]
-        active?.scrollIntoView({ block: "nearest" })
+        active?.scrollIntoView?.({ block: "nearest" })
     }
 }

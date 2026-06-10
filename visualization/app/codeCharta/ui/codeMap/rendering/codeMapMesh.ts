@@ -71,6 +71,7 @@ export class CodeMapMesh {
     private nodes: Node[]
     private dirtyRange: DirtyRange | null = null
     private _prevHighlightedIds: Set<number> | null = null
+    private _prevSelectedId: number | null = null
     private _prevIsPresentationMode: boolean | null = null
 
     constructor(nodes: Node[], state: CcState, isDeltaState: boolean) {
@@ -99,16 +100,12 @@ export class CodeMapMesh {
         building.setColor(color)
         building.setDeltaColor(color)
         this.setInstanceColor(building.id, building.getColorVector(), building.getDeltaColorVector())
-        // Selection changes which building the highlight pass skips, so the incremental
-        // diff cache is stale — force the next highlightBuilding() to do a full recompute.
-        this._prevHighlightedIds = null
         this.updateVertices()
     }
 
     clearSelection(selected: CodeMapBuilding) {
         selected.resetColor()
         this.setInstanceColor(selected.id, selected.getDefaultColorVector(), selected.getDefaultDeltaColorVector())
-        this._prevHighlightedIds = null
         this.updateVertices()
     }
 
@@ -144,8 +141,15 @@ export class CodeMapMesh {
         }
 
         const prev = this._prevHighlightedIds
+        const selectedId = selected ? selected.id : null
 
         if (prev && !isPresentationMode) {
+            // a selection change invalidates one building of the diff cache: the formerly
+            // selected building was skipped by the last pass and must be repainted to its
+            // current highlight state (the newly selected one was painted by selectBuilding)
+            if (this._prevSelectedId !== null && this._prevSelectedId !== selectedId) {
+                this.repaintFormerlySelected(this._prevSelectedId, highlightedBuildingIds, constantHighlight)
+            }
             this.updateDimmedBuildings(prev, highlightedBuildingIds, constantHighlight, selected)
             this.updateHighlightedBuildings(prev, highlightedBuildingIds, selected)
         } else {
@@ -153,12 +157,26 @@ export class CodeMapMesh {
         }
 
         this._prevHighlightedIds = new Set(highlightedBuildingIds)
+        this._prevSelectedId = selectedId
         this._prevIsPresentationMode = isPresentationMode
         this.updateVertices()
     }
 
+    private repaintFormerlySelected(id: number, highlightedBuildingIds: Set<number>, constantHighlight: Map<number, CodeMapBuilding>) {
+        const building = this.mapGeomDesc.buildings[id]
+        if (!building) {
+            return
+        }
+        if (highlightedBuildingIds.has(id) || constantHighlight.has(id)) {
+            this.setInstanceColor(id, building.getHighlightedColorVector(), building.getHighlightedDeltaColorVector())
+        } else {
+            this.setInstanceColor(id, building.getDimmedColorVector(), building.getDimmedDeltaColorVector())
+        }
+    }
+
     clearUnselectedBuildings(selected: CodeMapBuilding) {
         this._prevHighlightedIds = null
+        this._prevSelectedId = null
         this._prevIsPresentationMode = null
         for (const currentBuilding of this.mapGeomDesc.buildings) {
             if (this.isBuildingSelected(selected, currentBuilding)) {

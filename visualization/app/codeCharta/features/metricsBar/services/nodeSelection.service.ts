@@ -28,7 +28,14 @@ export class NodeSelectionService {
     }
 
     private createTopLevelNodeObservable(): Observable<Node | undefined> {
-        return combineLatest([this.nodeSelectionStore.accumulatedData$, this.nodeSelectionStore.dynamicSettings$]).pipe(
+        // only the metrics that change the layout's visible node set matter here;
+        // depending on the whole dynamicSettings slice would re-run the full layout
+        // on every search keystroke or margin drag just for a fallback display value
+        return combineLatest([
+            this.nodeSelectionStore.accumulatedData$,
+            this.nodeSelectionStore.areaMetric$,
+            this.nodeSelectionStore.heightMetric$
+        ]).pipe(
             filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
             map(([accumulatedData]) => this.findTopLevelNode(accumulatedData))
         )

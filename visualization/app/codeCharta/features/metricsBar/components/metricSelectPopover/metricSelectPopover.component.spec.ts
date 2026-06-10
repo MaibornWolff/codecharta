@@ -17,7 +17,7 @@ describe("MetricSelectPopoverComponent", () => {
     const edgeMetricData = [{ name: "pairingRate", maxValue: 10, minValue: 0 }]
 
     async function setup(inputs: Record<string, unknown> = {}) {
-        return render(MetricSelectPopoverComponent, {
+        const renderResult = await render(MetricSelectPopoverComponent, {
             inputs: {
                 popoverId: "metric-select-popover-area",
                 anchorName: "metric-segment-area",
@@ -45,6 +45,13 @@ describe("MetricSelectPopoverComponent", () => {
                 }
             ]
         })
+        // the option list renders lazily, so simulate the popover opening
+        const popoverElement = renderResult.container.querySelector("[popover]") as HTMLElement
+        const toggleEvent = new Event("toggle")
+        Object.assign(toggleEvent, { newState: "open" })
+        popoverElement.dispatchEvent(toggleEvent)
+        renderResult.fixture.detectChanges()
+        return renderResult
     }
 
     it("should render the node metric options by default", async () => {

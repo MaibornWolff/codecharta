@@ -9,8 +9,21 @@ function folder(name: string, path: string, children: CodeMapNode[], options: Pa
     return { name, path, type: NodeType.FOLDER, attributes: {}, children, ...options }
 }
 
-function run(unifiedMapNode: CodeMapNode | undefined, focusedNodePath: string[] = [], hoveredNode?: CodeMapNode) {
-    return visibleNodeMetricValuesSelector.projector({ unifiedMapNode, unifiedFileMeta: undefined }, focusedNodePath, hoveredNode)
+function run(
+    unifiedMapNode: CodeMapNode | undefined,
+    focusedNodePath: string[] = [],
+    hoveredNode?: CodeMapNode,
+    metrics: { area: string; height: string; color: string } = { area: "rloc", height: "rloc", color: "rloc" }
+) {
+    const hoveredFolderPath = hoveredNode?.children && hoveredNode.children.length > 0 && hoveredNode.path ? hoveredNode.path : null
+    return visibleNodeMetricValuesSelector.projector(
+        { unifiedMapNode, unifiedFileMeta: undefined },
+        focusedNodePath,
+        hoveredFolderPath,
+        metrics.area,
+        metrics.height,
+        metrics.color
+    )
 }
 
 describe("visibleNodeMetricValuesSelector", () => {
@@ -33,7 +46,6 @@ describe("visibleNodeMetricValuesSelector", () => {
         expect(result.rloc.values).toEqual([10, 20])
         expect(result.rloc.minValue).toBe(10)
         expect(result.rloc.maxValue).toBe(20)
-        expect(result.rloc.sum).toBe(30)
     })
 
     it("should skip excluded leaf nodes", () => {
@@ -109,6 +121,32 @@ describe("visibleNodeMetricValuesSelector", () => {
 
         // Assert
         expect(result.rloc.values).toEqual([42])
+    })
+
+    it("should keep the focused subtree when hovering a folder outside of it", () => {
+        // Arrange: the file explorer shows the full tree, but only the focused part is rendered
+        const hoveredOutside = folder("other", "/root/other", [leaf("c.ts", "/root/other/c.ts", { rloc: 99 })])
+        const root = folder("root", "/root", [
+            folder("focused", "/root/focused", [leaf("a.ts", "/root/focused/a.ts", { rloc: 5 })]),
+            hoveredOutside
+        ])
+
+        // Act
+        const result = run(root, ["/root/focused"], hoveredOutside)
+
+        // Assert
+        expect(result.rloc.values).toEqual([5])
+    })
+
+    it("should collect only the displayed area, height and color metrics", () => {
+        // Arrange
+        const root = folder("root", "/root", [leaf("a.ts", "/root/a.ts", { rloc: 1, mcc: 2, functions: 3, comment_lines: 9 })])
+
+        // Act
+        const result = run(root, [], undefined, { area: "rloc", height: "mcc", color: "functions" })
+
+        // Assert
+        expect(Object.keys(result).sort()).toEqual(["functions", "mcc", "rloc"])
     })
 
     it("should ignore hovered leaf nodes", () => {

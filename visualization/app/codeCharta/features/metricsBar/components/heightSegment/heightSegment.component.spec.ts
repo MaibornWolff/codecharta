@@ -3,7 +3,10 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { visibleNodeMetricValuesSelector } from "../../../../state/selectors/visibleNodeMetricValues/visibleNodeMetricValues.selector"
+import {
+    VisibleNodeMetricValues,
+    visibleNodeMetricValuesSelector
+} from "../../../../state/selectors/visibleNodeMetricValues/visibleNodeMetricValues.selector"
 import { setHeightMetric } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { heightMetricSelector } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
@@ -11,7 +14,10 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { HeightSegmentComponent } from "./heightSegment.component"
 
 describe("HeightSegmentComponent", () => {
-    async function setup(heightMetric = "mcc", visibleMetricValues = { mcc: { values: [1, 2, 3], minValue: 1, maxValue: 3, sum: 6 } }) {
+    async function setup(
+        heightMetric = "mcc",
+        visibleMetricValues: VisibleNodeMetricValues = { mcc: { values: [1, 2, 3], minValue: 1, maxValue: 3 } }
+    ) {
         const renderResult = await render(HeightSegmentComponent, {
             providers: [
                 provideMockStore({
@@ -56,7 +62,7 @@ describe("HeightSegmentComponent", () => {
 
     it("should compute values, min and max labels from the store metric values", async () => {
         // Arrange & Act
-        const { component } = await setup("mcc", { mcc: { values: [4, 7, 10], minValue: 4, maxValue: 10, sum: 21 } })
+        const { component } = await setup("mcc", { mcc: { values: [4, 7, 10], minValue: 4, maxValue: 10 } })
 
         // Assert
         expect(component.values()).toEqual([4, 7, 10])

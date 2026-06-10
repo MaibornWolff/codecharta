@@ -3,7 +3,10 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { visibleNodeMetricValuesSelector } from "../../../../state/selectors/visibleNodeMetricValues/visibleNodeMetricValues.selector"
+import {
+    VisibleNodeMetricValues,
+    visibleNodeMetricValuesSelector
+} from "../../../../state/selectors/visibleNodeMetricValues/visibleNodeMetricValues.selector"
 import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
@@ -11,7 +14,10 @@ import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.serv
 import { AreaSegmentComponent } from "./areaSegment.component"
 
 describe("AreaSegmentComponent", () => {
-    async function setup(areaMetric = "rloc", visibleMetricValues = { rloc: { values: [1, 2, 3], minValue: 1, maxValue: 3, sum: 6 } }) {
+    async function setup(
+        areaMetric = "rloc",
+        visibleMetricValues: VisibleNodeMetricValues = { rloc: { values: [1, 2, 3], minValue: 1, maxValue: 3 } }
+    ) {
         const renderResult = await render(AreaSegmentComponent, {
             providers: [
                 provideMockStore({
@@ -56,7 +62,7 @@ describe("AreaSegmentComponent", () => {
 
     it("should compute values, min and max labels from the store metric values", async () => {
         // Arrange & Act
-        const { component } = await setup("rloc", { rloc: { values: [4, 7, 10], minValue: 4, maxValue: 10, sum: 21 } })
+        const { component } = await setup("rloc", { rloc: { values: [4, 7, 10], minValue: 4, maxValue: 10 } })
 
         // Assert
         expect(component.values()).toEqual([4, 7, 10])

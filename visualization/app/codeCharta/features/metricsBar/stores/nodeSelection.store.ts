@@ -4,7 +4,8 @@ import { CcState } from "../../../codeCharta.model"
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
-import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
+import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { heightMetricSelector } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 
 @Injectable({
     providedIn: "root"
@@ -15,5 +16,6 @@ export class NodeSelectionStore {
     hoveredNode$ = this.store.select(hoveredNodeSelector)
     selectedNode$ = this.store.select(selectedNodeSelector)
     accumulatedData$ = this.store.select(accumulatedDataSelector)
-    dynamicSettings$ = this.store.select(dynamicSettingsSelector)
+    areaMetric$ = this.store.select(areaMetricSelector)
+    heightMetric$ = this.store.select(heightMetricSelector)
 }

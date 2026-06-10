@@ -23,8 +23,8 @@ describe("MetricsBarComponent", () => {
     } = {}) {
         const metricValues =
             values.length > 0
-                ? { values, minValue: Math.min(...values), maxValue: Math.max(...values), sum: values.reduce((a, b) => a + b, 0) }
-                : { values: [], minValue: 0, maxValue: 0, sum: 0 }
+                ? { values, minValue: Math.min(...values), maxValue: Math.max(...values) }
+                : { values: [], minValue: 0, maxValue: 0 }
         return render(MetricsBarComponent, {
             providers: [
                 provideMockStore({

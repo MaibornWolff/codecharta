@@ -85,8 +85,13 @@ describe("DistributionSegmentComponent", () => {
     })
 
     it("should emit metricSelected with the chosen metric when an option is clicked", async () => {
-        // Arrange
-        const { metricSelected } = await setup()
+        // Arrange — open the select popover first: its option list renders lazily
+        const { metricSelected, container, fixture } = await setup()
+        const popoverElement = container.querySelector('[data-testid="metric-select-popover-metric-segment-area"]') as HTMLElement
+        const toggleEvent = new Event("toggle")
+        Object.assign(toggleEvent, { newState: "open" })
+        popoverElement.dispatchEvent(toggleEvent)
+        fixture.detectChanges()
         const option = screen.getByText("loc")
 
         // Act
