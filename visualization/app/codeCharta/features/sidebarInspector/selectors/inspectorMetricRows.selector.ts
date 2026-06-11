@@ -15,8 +15,10 @@ export type MetricRow = {
     descriptor?: AttributeDescriptor
 }
 
+// a value of 0 deliberately counts as empty: such metrics move to the collapsed
+// "Empty metrics" group (rows with a delta are kept visible via isEmptyMetricRow)
 export const isEmptyMetricValue = (value?: number) => {
-    return !value
+    return value === undefined || value === 0 || Number.isNaN(value)
 }
 
 export const isEmptyMetricRow = (row: Pick<MetricRow, "value" | "delta">) => {

@@ -10,42 +10,15 @@
         <i class="fa fa-times"></i>
     </button>
 </div>
-@if (selectedNode(); as node) {
+@if (selectedNode()) {
     <div class="mt-1 flex items-start justify-between gap-2">
         <div class="min-w-0">
-            @if (parentPath()) {
-                <p class="break-all text-sm leading-snug opacity-60" data-testid="inspector-parent-path">{{ parentPath() }}</p>
-            }
-            <p class="break-all text-lg font-semibold leading-snug text-primary" data-testid="inspector-node-name">
-                {{ nodeName() }}
-                @if (nodeLink(); as link) {
-                    <a
-                        [href]="link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-sm"
-                        [title]="link"
-                        data-testid="inspector-node-link"
-                    >
-                        <i class="fa fa-external-link"></i>
-                    </a>
-                }
-            </p>
-            <div class="mt-1 flex flex-wrap items-center gap-1" data-testid="inspector-node-badges">
-                <span class="badge badge-ghost badge-sm" data-testid="inspector-node-type">{{ isFolder() ? 'folder' : 'file' }}</span>
-                @if (isFolder() && fileCount(); as count) {
-                    <span class="badge badge-ghost badge-sm" data-testid="inspector-file-count">
-                        {{ count.all }} {{ count.all === 1 ? 'file' : 'files' }}
-                    </span>
-                    @if (isDeltaState()) {
-                        <span class="text-xs opacity-60">
-                            <span class="text-success" title="Number of added files">Δ{{ count.added }}</span>
-                            <span class="text-error" title="Number of removed files">Δ{{ count.removed > 0 ? -count.removed : 0 }}</span>
-                            <span title="Number of files with metric changes">Δ{{ count.changed }}</span>
-                        </span>
-                    }
-                }
-            </div>
+            <cc-inspector-node-path [parentPath]="parentPath()" [nodeName]="nodeName()" [link]="nodeLink()"></cc-inspector-node-path>
+            <cc-inspector-node-badges
+                [isFolder]="isFolder()"
+                [fileCount]="fileCount()"
+                [isDeltaState]="isDeltaState()"
+            ></cc-inspector-node-badges>
         </div>
         <button
             type="button"

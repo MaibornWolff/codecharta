@@ -1,0 +1,18 @@
+@if (parentPath()) {
+    <p class="break-all text-sm leading-snug opacity-60" data-testid="inspector-parent-path">{{ parentPath() }}</p>
+}
+<p class="break-all text-lg font-semibold leading-snug text-primary" data-testid="inspector-node-name">
+    {{ nodeName() }}
+    @if (link(); as linkUrl) {
+        <a
+            [href]="linkUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sm"
+            [title]="linkUrl"
+            data-testid="inspector-node-link"
+        >
+            <i class="fa fa-external-link"></i>
+        </a>
+    }
+</p>

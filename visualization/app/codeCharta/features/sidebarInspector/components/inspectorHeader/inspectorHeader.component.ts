@@ -4,11 +4,14 @@ import { NodeType } from "../../../../codeCharta.model"
 import { InspectorHeaderService } from "../../services/inspectorHeader.service"
 import { InspectorVisibilityService } from "../../services/inspectorVisibility.service"
 import { getFileCount } from "../../util/getFileCount"
+import { InspectorNodeBadgesComponent } from "../inspectorNodeBadges/inspectorNodeBadges.component"
+import { InspectorNodePathComponent } from "../inspectorNodePath/inspectorNodePath.component"
 
 @Component({
     selector: "cc-inspector-header",
     templateUrl: "./inspectorHeader.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [InspectorNodePathComponent, InspectorNodeBadgesComponent],
     host: { class: "block shrink-0 px-3 py-2" }
 })
 export class InspectorHeaderComponent {
