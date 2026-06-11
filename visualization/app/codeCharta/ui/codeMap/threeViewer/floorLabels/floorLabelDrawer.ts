@@ -6,21 +6,29 @@ import { FloorLabelHelper } from "./floorLabelHelper"
 import { getFloorLabelPadding } from "../../../../util/algorithm/treeMapLayout/treeMapGenerator"
 
 export class FloorLabelDrawer {
+    // White glyphs on a transparent canvas fade to semi-transparent gray once mipmaps average
+    // them with their transparent neighbors; a dark outline keeps the edges readable at distance.
+    private static readonly LABEL_OUTLINE_COLOR = "rgba(0, 0, 0, 0.5)"
+    private static readonly LABEL_OUTLINE_WIDTH_RATIO = 1 / 16
+    private static readonly MIN_LABEL_OUTLINE_WIDTH = 2
+
     private floorLabelPlanes: Mesh[] = []
     private readonly rootNode: Node
     private readonly mapSize: number
     private readonly scaling: Vector3
+    private readonly maxAnisotropy: number
     readonly folderGeometryHeight: number = 2.01
     private lastScaling: Vector3 = new Vector3(1, 1, 1)
     private floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
 
     private floorLabelsPerLevel = new Map()
 
-    constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3, experimentalFeaturesEnabled: boolean) {
+    constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3, experimentalFeaturesEnabled: boolean, maxAnisotropy = 1) {
         this.collectLabelsPerLevel(nodes)
         this.rootNode = rootNode
         this.mapSize = mapSize
         this.scaling = scaling
+        this.maxAnisotropy = maxAnisotropy
         this.folderGeometryHeight = experimentalFeaturesEnabled
             ? Math.ceil(2 / FloorLabelHelper.getMapResolutionScaling(rootNode.width)) * 2
             : 2.01
@@ -81,6 +89,8 @@ export class FloorLabelDrawer {
         const context = textCanvas.getContext("2d")
 
         context.fillStyle = "white"
+        context.strokeStyle = FloorLabelDrawer.LABEL_OUTLINE_COLOR
+        context.lineJoin = "round"
         context.textAlign = "center"
         context.textBaseline = "middle"
 
@@ -105,11 +115,15 @@ export class FloorLabelDrawer {
 
             const textToFill = FloorLabelDrawer.getLabelAndSetContextFont(floorNode, context, mapResolutionScaling, fontSize)
 
-            context.fillText(
-                textToFill.labelText,
-                (rootNodeHeight - floorNode.y0 - floorNode.length / 2) * mapResolutionScaling,
-                (floorNode.x0 + floorNode.width) * mapResolutionScaling - textToFill.fontSize / 2
+            const labelX = (rootNodeHeight - floorNode.y0 - floorNode.length / 2) * mapResolutionScaling
+            const labelY = (floorNode.x0 + floorNode.width) * mapResolutionScaling - textToFill.fontSize / 2
+
+            context.lineWidth = Math.max(
+                FloorLabelDrawer.MIN_LABEL_OUTLINE_WIDTH,
+                textToFill.fontSize * FloorLabelDrawer.LABEL_OUTLINE_WIDTH_RATIO
             )
+            context.strokeText(textToFill.labelText, labelX, labelY)
+            context.fillText(textToFill.labelText, labelX, labelY)
         }
     }
 
@@ -118,6 +132,9 @@ export class FloorLabelDrawer {
         labelTexture.wrapS = RepeatWrapping
         labelTexture.wrapT = RepeatWrapping
         labelTexture.repeat.x = -1
+        // The label plane is viewed at a glancing angle; without anisotropic filtering the GPU
+        // over-blurs the minified text along the view direction.
+        labelTexture.anisotropy = this.maxAnisotropy
         labelTexture.needsUpdate = true
         labelTexture.rotation = (90 * Math.PI) / 180
 

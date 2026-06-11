@@ -1,6 +1,6 @@
 import { Node } from "../../../../codeCharta.model"
 import { FloorLabelDrawer } from "./floorLabelDrawer"
-import { Vector3 } from "three"
+import { MeshBasicMaterial, Vector3 } from "three"
 
 describe("FloorLabelDrawer", () => {
     let createElementOrigin
@@ -50,7 +50,11 @@ describe("FloorLabelDrawer", () => {
                     : ({ width: 40 } as TextMetrics)
             }),
             fillText: jest.fn(),
+            strokeText: jest.fn(),
             fillStyle: undefined,
+            strokeStyle: undefined,
+            lineWidth: undefined,
+            lineJoin: undefined,
             beginPath: jest.fn(),
             moveTo: jest.fn(),
             arcTo: jest.fn(),
@@ -98,6 +102,47 @@ describe("FloorLabelDrawer", () => {
             expect(canvasContextMock.fillText).toHaveBeenNthCalledWith(5, "text…", expect.any(Number), expect.any(Number))
 
             expect(floorLabelPlanes.length).toBe(3)
+        })
+
+        it("should draw an outline behind each label so it stays readable at distance", () => {
+            // Arrange
+            initMapCanvas()
+
+            const rootNode = createFakeNode("root", 500, 500, false, 0)
+            const nodes = [rootNode, createFakeNode("simpleLabelNode1", 400, 400, false, 1)]
+
+            const canvasContextMock = createCanvasMock()
+
+            // Act
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
+            floorLabelDrawer.draw()
+
+            // Assert
+            expect(canvasContextMock.strokeText).toHaveBeenCalledTimes(2)
+            expect(canvasContextMock.strokeText.mock.calls).toEqual(canvasContextMock.fillText.mock.calls)
+            expect(canvasContextMock.strokeText.mock.invocationCallOrder[0]).toBeLessThan(
+                canvasContextMock.fillText.mock.invocationCallOrder[0]
+            )
+        })
+
+        it("should apply the given anisotropy to the label textures", () => {
+            // Arrange
+            initMapCanvas()
+
+            const rootNode = createFakeNode("root", 500, 500, false, 0)
+            const nodes = [rootNode, createFakeNode("simpleLabelNode1", 400, 400, false, 1)]
+
+            createCanvasMock()
+            const maxAnisotropy = 8
+
+            // Act
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false, maxAnisotropy)
+            const floorLabelPlanes = floorLabelDrawer.draw()
+
+            // Assert
+            for (const plane of floorLabelPlanes) {
+                expect((plane.material as MeshBasicMaterial).map.anisotropy).toBe(maxAnisotropy)
+            }
         })
 
         it("should scale folderGeometryHeight when experimentalFeatures are enabled", () => {
