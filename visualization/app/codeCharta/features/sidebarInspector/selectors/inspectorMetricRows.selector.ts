@@ -14,6 +14,12 @@ export type MetricRow = {
     descriptor?: AttributeDescriptor
 }
 
+export const isEmptyMetricValue = (value?: number) => {
+    return !value
+}
+
+const EMPTY_METRIC_BAR = { fraction: 0, severity: "neutral" as const }
+
 const UNARY_METRIC = "unary"
 
 export const _calculateMetricRows = (
@@ -39,7 +45,9 @@ const createMetricRow = (
     const descriptor = attributeDescriptors?.[metricName]
     const value = selectedNode.attributes[metricName]
     const mapTotal = rootNode?.attributes?.[metricName]
-    const { fraction, severity } = calculateShareOfMapBar(value, mapTotal, descriptor?.direction)
+    const { fraction, severity } = isEmptyMetricValue(value)
+        ? EMPTY_METRIC_BAR
+        : calculateShareOfMapBar(value, mapTotal, descriptor?.direction)
     return {
         name: metricName,
         value,

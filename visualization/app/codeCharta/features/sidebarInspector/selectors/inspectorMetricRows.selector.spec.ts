@@ -1,5 +1,14 @@
 import { AttributeDescriptors, CodeMapNode } from "../../../codeCharta.model"
-import { _calculateMetricRows } from "./inspectorMetricRows.selector"
+import { _calculateMetricRows, isEmptyMetricValue } from "./inspectorMetricRows.selector"
+
+describe("isEmptyMetricValue", () => {
+    it("should treat zero and missing values as empty", () => {
+        // Arrange, Act & Assert
+        expect(isEmptyMetricValue(0)).toBe(true)
+        expect(isEmptyMetricValue(undefined)).toBe(true)
+        expect(isEmptyMetricValue(42)).toBe(false)
+    })
+})
 
 describe("_calculateMetricRows", () => {
     const rootNode = { attributes: { rloc: 1000, coverage: 80, mcc: 90 } } as unknown as CodeMapNode
@@ -91,6 +100,18 @@ describe("_calculateMetricRows", () => {
 
         // Assert
         expect(rows[0].fraction).toBe(1)
+    })
+
+    it("should give empty metrics an empty neutral bar instead of a full one", () => {
+        // Arrange
+        const selectedNode = { attributes: { rloc: 0 } } as unknown as CodeMapNode
+        const rootWithoutRloc = { attributes: { rloc: 0 } } as unknown as CodeMapNode
+
+        // Act
+        const rows = _calculateMetricRows(selectedNode, rootWithoutRloc, attributeDescriptors)
+
+        // Assert
+        expect(rows[0]).toEqual(expect.objectContaining({ name: "rloc", value: 0, fraction: 0, severity: "neutral" }))
     })
 
     it("should render a neutral full bar for metrics the map root does not carry", () => {

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { isEmptyMetricValue } from "../../selectors/inspectorMetricRows.selector"
 import { InspectorMetricsService } from "../../services/inspectorMetrics.service"
 import { InspectorMetricRowComponent } from "../inspectorMetricRow/inspectorMetricRow.component"
 
@@ -15,4 +16,13 @@ export class InspectorMetricsListComponent {
 
     readonly metricRows = toSignal(this.metricsService.metricRows$(), { requireSync: true })
     readonly mapColors = toSignal(this.metricsService.mapColors$(), { requireSync: true })
+
+    readonly metricRowsWithValues = computed(() => this.metricRows().filter(row => !isEmptyMetricValue(row.value)))
+    readonly emptyMetricRows = computed(() => this.metricRows().filter(row => isEmptyMetricValue(row.value)))
+
+    readonly showEmptyMetrics = signal(false)
+
+    toggleEmptyMetrics() {
+        this.showEmptyMetrics.update(value => !value)
+    }
 }

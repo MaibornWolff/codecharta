@@ -218,6 +218,7 @@ Manual (`npm run dev`, sample map):
 1. **METRIC MAPPING values (2026-06-11)**: The mapping blocks initially showed each metric's global min–max range. Revised to show the selected node's value only (buildings: direct value, folders: the decorated aggregate — same data source as the METRICS list).
 2. **Bar semantics (2026-06-11)**: Bars initially normalized against the leaf-level min–max range. Revised to show the value's share of the map total (root aggregate): a building with 100 rloc in a 1,000-rloc map fills 10%; folders show their share of the project. Severity thirds (direction-aware) apply to that share; metrics missing on the root render a neutral full bar.
 3. **Close deselects (2026-06-11)**: The ✕ button now calls `ThreeSceneService.clearSelection()` + re-render, deselecting the building/folder; visibility is purely derived from `selectedNode != null`, so the manual-close flag was removed.
+4. **Empty metrics grouped (2026-06-11)**: Metrics with empty (zero/missing) values previously rendered a full near-black "neutral" bar when the map total was 0. They now render an empty bar, are greyed out, and are grouped in a collapsed "Empty metrics (N)" section below the metrics with values; the neutral fill color for degenerate ranges changed from `bg-neutral` to `bg-base-content/30` (grey).
 
 ## Notes
 

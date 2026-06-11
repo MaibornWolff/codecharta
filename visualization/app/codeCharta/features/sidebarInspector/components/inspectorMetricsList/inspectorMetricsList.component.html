@@ -3,7 +3,7 @@
     <p class="mt-2 text-sm opacity-60" data-testid="inspector-metrics-empty">No metrics available</p>
 } @else {
     <div class="mt-2 flex flex-col gap-2">
-        @for (row of metricRows(); track row.name) {
+        @for (row of metricRowsWithValues(); track row.name) {
             <cc-inspector-metric-row
                 [row]="row"
                 [positiveDeltaColor]="mapColors().positiveDelta"
@@ -11,4 +11,26 @@
             ></cc-inspector-metric-row>
         }
     </div>
+    @if (emptyMetricRows().length > 0) {
+        <button
+            type="button"
+            class="mt-3 flex items-center gap-1.5 text-xs uppercase tracking-widest opacity-60"
+            data-testid="inspector-empty-metrics-toggle"
+            (click)="toggleEmptyMetrics()"
+        >
+            <i class="fa text-[10px]" [class.fa-chevron-right]="!showEmptyMetrics()" [class.fa-chevron-down]="showEmptyMetrics()"></i>
+            Empty metrics ({{ emptyMetricRows().length }})
+        </button>
+        @if (showEmptyMetrics()) {
+            <div class="mt-2 flex flex-col gap-2 opacity-60" data-testid="inspector-empty-metrics">
+                @for (row of emptyMetricRows(); track row.name) {
+                    <cc-inspector-metric-row
+                        [row]="row"
+                        [positiveDeltaColor]="mapColors().positiveDelta"
+                        [negativeDeltaColor]="mapColors().negativeDelta"
+                    ></cc-inspector-metric-row>
+                }
+            </div>
+        }
+    }
 }

@@ -16,7 +16,7 @@ export class InspectorMetricRowComponent {
         success: "bg-success",
         warning: "bg-warning",
         error: "bg-error",
-        neutral: "bg-neutral"
+        neutral: "bg-base-content/30"
     }
 
     readonly row = input.required<MetricRow>()
