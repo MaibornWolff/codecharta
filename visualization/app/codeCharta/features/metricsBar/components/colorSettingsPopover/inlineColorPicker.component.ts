@@ -113,7 +113,8 @@ export class InlineColorPickerComponent implements AfterViewInit, OnDestroy {
     // outside fires its click on a common ancestor, which must not close the panel
     @HostListener("document:pointerdown", ["$event"])
     handleDocumentPointerDown(event: Event) {
-        if (this.isOpen() && !this.elementRef.nativeElement.contains(event.target as Node)) {
+        const isInsidePicker = event.target instanceof Node && this.elementRef.nativeElement.contains(event.target)
+        if (this.isOpen() && !isInsidePicker) {
             this.closePanel()
         }
     }
