@@ -18,7 +18,9 @@ const mappingBlocks: MappingBlock[] = [
     { kind: "area", metricName: "rloc", value: 842 },
     { kind: "height", metricName: "mcc", value: 41 }
 ]
-const metricRows: MetricRow[] = [{ name: "rloc", value: 842, fraction: 0.8, severity: "error" }]
+const metricRows: MetricRow[] = [
+    { name: "rloc", value: 842, mapBar: { fraction: 0.8, severity: "error" }, rangeBar: { fraction: 0.4, severity: "warning" } }
+]
 
 describe("SidebarInspectorComponent", () => {
     const clearSelection = jest.fn()

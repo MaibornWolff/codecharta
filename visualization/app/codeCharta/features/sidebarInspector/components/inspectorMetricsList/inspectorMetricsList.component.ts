@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { isEmptyMetricValue } from "../../selectors/inspectorMetricRows.selector"
+import { InspectorComparisonModeService, MetricComparisonMode } from "../../services/inspectorComparisonMode.service"
 import { InspectorMetricsService } from "../../services/inspectorMetrics.service"
 import { InspectorMetricRowComponent } from "../inspectorMetricRow/inspectorMetricRow.component"
 
@@ -13,14 +14,20 @@ import { InspectorMetricRowComponent } from "../inspectorMetricRow/inspectorMetr
 })
 export class InspectorMetricsListComponent {
     private readonly metricsService = inject(InspectorMetricsService)
+    private readonly comparisonModeService = inject(InspectorComparisonModeService)
 
     readonly metricRows = toSignal(this.metricsService.metricRows$(), { requireSync: true })
     readonly mapColors = toSignal(this.metricsService.mapColors$(), { requireSync: true })
+    readonly comparisonMode = this.comparisonModeService.comparisonMode
 
     readonly metricRowsWithValues = computed(() => this.metricRows().filter(row => !isEmptyMetricValue(row.value)))
     readonly emptyMetricRows = computed(() => this.metricRows().filter(row => isEmptyMetricValue(row.value)))
 
     readonly showEmptyMetrics = signal(false)
+
+    setComparisonMode(mode: MetricComparisonMode) {
+        this.comparisonModeService.setComparisonMode(mode)
+    }
 
     toggleEmptyMetrics() {
         this.showEmptyMetrics.update(value => !value)

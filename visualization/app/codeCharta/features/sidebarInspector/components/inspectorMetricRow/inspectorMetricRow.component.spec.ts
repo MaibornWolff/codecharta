@@ -2,12 +2,17 @@ import { render, screen } from "@testing-library/angular"
 import { MetricRow } from "../../selectors/inspectorMetricRows.selector"
 import { InspectorMetricRowComponent } from "./inspectorMetricRow.component"
 
-const baseInputs = { positiveDeltaColor: "green", negativeDeltaColor: "red" }
+const baseInputs = { comparisonMode: "map" as const, positiveDeltaColor: "green", negativeDeltaColor: "red" }
 
 describe("InspectorMetricRowComponent", () => {
     it("should render the metric value with thousands separators", async () => {
         // Arrange
-        const row: MetricRow = { name: "rloc", value: 4208, fraction: 1, severity: "error" }
+        const row: MetricRow = {
+            name: "rloc",
+            value: 4208,
+            mapBar: { fraction: 1, severity: "error" },
+            rangeBar: { fraction: 1, severity: "error" }
+        }
 
         // Act
         await render(InspectorMetricRowComponent, { inputs: { row, ...baseInputs } })
@@ -16,9 +21,14 @@ describe("InspectorMetricRowComponent", () => {
         expect(screen.getByText("4,208")).not.toBe(null)
     })
 
-    it("should size and color the bar according to the metric severity", async () => {
+    it("should size and color the bar by the map share in map mode", async () => {
         // Arrange
-        const row: MetricRow = { name: "rloc", value: 900, fraction: 0.9, severity: "error" }
+        const row: MetricRow = {
+            name: "rloc",
+            value: 900,
+            mapBar: { fraction: 0.9, severity: "error" },
+            rangeBar: { fraction: 0.45, severity: "warning" }
+        }
 
         // Act
         await render(InspectorMetricRowComponent, { inputs: { row, ...baseInputs } })
@@ -29,9 +39,33 @@ describe("InspectorMetricRowComponent", () => {
         expect(bar.style.width).toBe("90%")
     })
 
+    it("should size and color the bar by the range position in range mode", async () => {
+        // Arrange
+        const row: MetricRow = {
+            name: "rloc",
+            value: 900,
+            mapBar: { fraction: 0.9, severity: "error" },
+            rangeBar: { fraction: 0.45, severity: "warning" }
+        }
+
+        // Act
+        await render(InspectorMetricRowComponent, { inputs: { row, ...baseInputs, comparisonMode: "range" as const } })
+
+        // Assert
+        const bar = screen.getByTestId("metric-row-bar") as HTMLElement
+        expect(bar.className).toContain("bg-warning")
+        expect(bar.style.width).toBe("45%")
+    })
+
     it("should render a positive delta in the positive delta color", async () => {
         // Arrange
-        const row: MetricRow = { name: "rloc", value: 100, delta: 12, fraction: 0.1, severity: "success" }
+        const row: MetricRow = {
+            name: "rloc",
+            value: 100,
+            delta: 12,
+            mapBar: { fraction: 0.1, severity: "success" },
+            rangeBar: { fraction: 0.1, severity: "success" }
+        }
 
         // Act
         await render(InspectorMetricRowComponent, { inputs: { row, ...baseInputs } })
@@ -44,7 +78,13 @@ describe("InspectorMetricRowComponent", () => {
 
     it("should render a negative delta in the negative delta color", async () => {
         // Arrange
-        const row: MetricRow = { name: "rloc", value: 100, delta: -4, fraction: 0.1, severity: "success" }
+        const row: MetricRow = {
+            name: "rloc",
+            value: 100,
+            delta: -4,
+            mapBar: { fraction: 0.1, severity: "success" },
+            rangeBar: { fraction: 0.1, severity: "success" }
+        }
 
         // Act
         await render(InspectorMetricRowComponent, { inputs: { row, ...baseInputs } })
@@ -57,7 +97,12 @@ describe("InspectorMetricRowComponent", () => {
 
     it("should hide the delta when the node has none", async () => {
         // Arrange
-        const row: MetricRow = { name: "rloc", value: 100, fraction: 0.1, severity: "success" }
+        const row: MetricRow = {
+            name: "rloc",
+            value: 100,
+            mapBar: { fraction: 0.1, severity: "success" },
+            rangeBar: { fraction: 0.1, severity: "success" }
+        }
 
         // Act
         await render(InspectorMetricRowComponent, { inputs: { row, ...baseInputs } })
@@ -71,8 +116,8 @@ describe("InspectorMetricRowComponent", () => {
         const row: MetricRow = {
             name: "rloc",
             value: 100,
-            fraction: 0.1,
-            severity: "success",
+            mapBar: { fraction: 0.1, severity: "success" },
+            rangeBar: { fraction: 0.1, severity: "success" },
             descriptor: { title: "", description: "", hintLowValue: "", hintHighValue: "", link: "https://docs.example.com" }
         }
 

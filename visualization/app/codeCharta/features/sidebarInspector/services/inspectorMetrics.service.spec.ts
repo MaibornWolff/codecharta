@@ -27,7 +27,14 @@ describe("InspectorMetricsService", () => {
 
     it("should expose the metric rows", done => {
         // Arrange
-        const rows: MetricRow[] = [{ name: "coverage", value: 62, fraction: 0.62, severity: "warning" }]
+        const rows: MetricRow[] = [
+            {
+                name: "coverage",
+                value: 62,
+                mapBar: { fraction: 0.62, severity: "warning" },
+                rangeBar: { fraction: 0.3, severity: "success" }
+            }
+        ]
         mockStore.overrideSelector(inspectorMetricRowsSelector, rows)
         mockStore.refreshState()
 

@@ -1,4 +1,30 @@
-<span class="text-xs uppercase tracking-widest opacity-60">Metrics</span>
+<div class="flex items-center justify-between">
+    <span class="text-xs uppercase tracking-widest opacity-60">Metrics</span>
+    @if (metricRows().length > 0) {
+        <div class="join" data-testid="inspector-comparison-toggle">
+            <button
+                type="button"
+                class="btn btn-xs join-item"
+                [class.btn-active]="comparisonMode() === 'map'"
+                title="Compare each value against the whole map"
+                data-testid="inspector-comparison-map"
+                (click)="setComparisonMode('map')"
+            >
+                map
+            </button>
+            <button
+                type="button"
+                class="btn btn-xs join-item"
+                [class.btn-active]="comparisonMode() === 'range'"
+                title="Compare each value against the min/max range of all files"
+                data-testid="inspector-comparison-range"
+                (click)="setComparisonMode('range')"
+            >
+                range
+            </button>
+        </div>
+    }
+</div>
 @if (metricRows().length === 0) {
     <p class="mt-2 text-sm opacity-60" data-testid="inspector-metrics-empty">No metrics available</p>
 } @else {
@@ -6,6 +32,7 @@
         @for (row of metricRowsWithValues(); track row.name) {
             <cc-inspector-metric-row
                 [row]="row"
+                [comparisonMode]="comparisonMode()"
                 [positiveDeltaColor]="mapColors().positiveDelta"
                 [negativeDeltaColor]="mapColors().negativeDelta"
             ></cc-inspector-metric-row>
@@ -26,6 +53,7 @@
                 @for (row of emptyMetricRows(); track row.name) {
                     <cc-inspector-metric-row
                         [row]="row"
+                        [comparisonMode]="comparisonMode()"
                         [positiveDeltaColor]="mapColors().positiveDelta"
                         [negativeDeltaColor]="mapColors().negativeDelta"
                     ></cc-inspector-metric-row>

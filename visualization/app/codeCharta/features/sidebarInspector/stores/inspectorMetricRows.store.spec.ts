@@ -18,7 +18,9 @@ describe("InspectorMetricRowsStore", () => {
 
     it("should emit the metric rows from the selector", done => {
         // Arrange
-        const rows: MetricRow[] = [{ name: "rloc", value: 842, fraction: 0.8, severity: "error" }]
+        const rows: MetricRow[] = [
+            { name: "rloc", value: 842, mapBar: { fraction: 0.8, severity: "error" }, rangeBar: { fraction: 0.4, severity: "warning" } }
+        ]
         mockStore.overrideSelector(inspectorMetricRowsSelector, rows)
         mockStore.refreshState()
 
