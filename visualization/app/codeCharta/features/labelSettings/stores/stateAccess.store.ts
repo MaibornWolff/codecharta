@@ -3,6 +3,8 @@ import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
+import { areMultipleMapsVisibleSelector } from "../../../state/selectors/areMultipleMapsVisible.selector"
+import { labelsPerMapActiveSelector } from "../../../state/selectors/labelsPerMapActive.selector"
 import { getPartialDefaultState } from "../../../ui/resetSettingsButton/getPartialDefaultState"
 import { setState } from "../../../state/store/state.actions"
 import { defaultAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.reducer"
@@ -18,9 +20,14 @@ export class StateAccessStore {
 
     mapColors$ = this.store.select(mapColorsSelector)
     isDeltaState$ = this.store.select(isDeltaStateSelector)
+    areMultipleMapsVisible$ = this.store.select(areMultipleMapsVisibleSelector)
 
     getValue(): CcState {
         return this.state.getValue()
+    }
+
+    isLabelsPerMapActive(): boolean {
+        return labelsPerMapActiveSelector(this.state.getValue())
     }
 
     resetSettings(keys: string[]) {

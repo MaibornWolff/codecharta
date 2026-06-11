@@ -62,6 +62,7 @@ import { setIsColorMetricLinkedToHeightMetricAction } from "../../state/store/ap
 import { setEnableFloorLabels } from "../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
 import { setGroupLabelCollisions } from "../../state/store/appSettings/groupLabelCollisions/groupLabelCollisions.actions"
+import { setLabelsPerMap } from "../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
@@ -237,7 +238,7 @@ export class LoadInitialFileService {
         return missingDynamicSettings
     }
 
-    private static readonly optionalAppSettingsKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize"])
+    private static readonly optionalAppSettingsKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
 
     private applyAppSettings(savedAppSettings: AppSettings) {
         const currentAppSettings = (this.state.getValue() as CcState).appSettings
@@ -415,6 +416,9 @@ export class LoadInitialFileService {
                 break
             case "groupLabelCollisions":
                 this.store.dispatch(setGroupLabelCollisions({ value }))
+                break
+            case "labelsPerMap":
+                this.store.dispatch(setLabelsPerMap({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

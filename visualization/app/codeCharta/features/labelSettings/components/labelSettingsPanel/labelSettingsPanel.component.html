@@ -1,4 +1,4 @@
-<div [title]="'Display the labels of the ' + amountOfTopLabels() + ' highest buildings'">
+<div [title]="topLabelsTitle()">
     <span class="text-sm">Top Labels</span>
     <div class="flex items-center gap-2">
         <input type="range" class="range range-primary range-sm flex-1"
@@ -9,6 +9,22 @@
             (input)="handleTopLabelsInput($event)" />
     </div>
 </div>
+
+@if (areMultipleMapsVisible()) {
+    <div class="join w-full" aria-label="Top labels scope"
+        title="Pick the top labels across all maps combined or separately for each map">
+        <input type="radio" name="labelsPerMap"
+            class="join-item btn btn-sm flex-1"
+            aria-label="All maps"
+            [checked]="!labelsPerMap()"
+            (change)="setLabelsPerMap(false)" />
+        <input type="radio" name="labelsPerMap"
+            class="join-item btn btn-sm flex-1"
+            aria-label="Per map"
+            [checked]="labelsPerMap()"
+            (change)="setLabelsPerMap(true)" />
+    </div>
+}
 
 <div title="Scale floating label font size">
     <span class="text-sm">Label Size</span>

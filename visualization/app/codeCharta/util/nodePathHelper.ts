@@ -17,6 +17,15 @@ function isAbsoluteRootPath(path: string) {
     return path.startsWith(`${fileRoot.rootPath}/`)
 }
 
+export function getTopLevelMapName(path: string) {
+    if (!isAbsoluteRootPath(path)) {
+        return path
+    }
+    const start = fileRoot.rootPath.length + 1
+    const end = path.indexOf("/", start)
+    return end === -1 ? path.slice(start) : path.slice(start, end)
+}
+
 export function getParent<T>(hashMap: Map<string, T>, path: string): T {
     do {
         // TODO: Check what happens with Windows paths.

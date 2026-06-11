@@ -1,4 +1,4 @@
-import { selectTopNByValue } from "./selectTopNByValue"
+import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
 
 describe("selectTopNByValue", () => {
     const getValue = (item: { v: number }) => item.v
@@ -90,5 +90,55 @@ describe("selectTopNByValue", () => {
 
         // Assert
         expect(result.map(item => item.id)).toEqual(["a", "b"])
+    })
+})
+
+describe("selectTopNByValuePerGroup", () => {
+    const getValue = (item: { v: number; group: string }) => item.v
+    const getGroup = (item: { v: number; group: string }) => item.group
+
+    it("should select the n highest items of each group", () => {
+        // Arrange
+        const items = [
+            { v: 100, group: "a" },
+            { v: 50, group: "a" },
+            { v: 20, group: "b" },
+            { v: 10, group: "b" }
+        ]
+
+        // Act
+        const result = selectTopNByValuePerGroup(items, getGroup, getValue, 1)
+
+        // Assert
+        expect(result.map(getValue)).toEqual([100, 20])
+    })
+
+    it("should return all items of a group that has fewer items than n", () => {
+        // Arrange
+        const items = [
+            { v: 100, group: "a" },
+            { v: 50, group: "a" },
+            { v: 20, group: "b" }
+        ]
+
+        // Act
+        const result = selectTopNByValuePerGroup(items, getGroup, getValue, 2)
+
+        // Assert
+        expect(result.map(getValue)).toEqual([100, 50, 20])
+    })
+
+    it("should return an empty array when n is 0", () => {
+        // Arrange
+        const items = [
+            { v: 100, group: "a" },
+            { v: 20, group: "b" }
+        ]
+
+        // Act
+        const result = selectTopNByValuePerGroup(items, getGroup, getValue, 0)
+
+        // Assert
+        expect(result).toEqual([])
     })
 })

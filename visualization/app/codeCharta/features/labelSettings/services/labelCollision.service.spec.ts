@@ -12,6 +12,9 @@ import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { StateAccessStore } from "../stores/stateAccess.store"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { setLabelsPerMap } from "../../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
+import { setFiles } from "../../../state/store/files/files.actions"
+import { FILE_STATES_TWO_FILES } from "../../../util/dataMocks"
 
 describe("LabelCollisionService", () => {
     let store: Store<CcState>
@@ -300,6 +303,70 @@ describe("LabelCollisionService", () => {
             const winnerContent = labelCreationService.getLabels()[0].labelElement.getContentElement()
             const badges = winnerContent.querySelectorAll("div")
             expect(badges.length).toBe(1)
+        })
+    })
+
+    describe("per-map collision grouping", () => {
+        beforeEach(() => {
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            store.dispatch(setHeightMetric({ value: "mcc" }))
+        })
+
+        function addOverlappingLabelsForMaps(pathOfFirst: string, pathOfSecond: string) {
+            const firstLeaf = { ...sampleLeaf, name: "first", path: pathOfFirst, attributes: { mcc: 100 } } as undefined as Node
+            const secondLeaf = { ...otherSampleLeaf, name: "second", path: pathOfSecond, attributes: { mcc: 10 } } as undefined as Node
+            labelCreationService.addLeafLabel(firstLeaf, 0)
+            labelCreationService.addLeafLabel(secondLeaf, 0)
+            const sharedRect = makeRect(100, 120, 50, 150)
+            stubRectsForLabels([sharedRect, sharedRect])
+        }
+
+        it("should not group overlapping labels from different maps when labelsPerMap is active", () => {
+            // Arrange
+            store.dispatch(setFiles({ value: FILE_STATES_TWO_FILES }))
+            store.dispatch(setLabelsPerMap({ value: true }))
+            addOverlappingLabelsForMaps("/root/mapA/first", "/root/mapB/second")
+
+            // Act
+            labelCollisionService.updateLabelLayout()
+
+            // Assert — labels of different maps stay visible side by side
+            const contentFirst = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const contentSecond = labelCreationService.getLabels()[1].labelElement.getContentElement()
+            expect(contentFirst.style.opacity).toBe("1")
+            expect(contentSecond.style.opacity).toBe("1")
+        })
+
+        it("should still group overlapping labels of the same map when labelsPerMap is active", () => {
+            // Arrange
+            store.dispatch(setFiles({ value: FILE_STATES_TWO_FILES }))
+            store.dispatch(setLabelsPerMap({ value: true }))
+            addOverlappingLabelsForMaps("/root/mapA/first", "/root/mapA/second")
+
+            // Act
+            labelCollisionService.updateLabelLayout()
+
+            // Assert
+            const contentFirst = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const contentSecond = labelCreationService.getLabels()[1].labelElement.getContentElement()
+            expect(contentFirst.style.opacity).toBe("1")
+            expect(contentSecond.style.opacity).toBe("0")
+        })
+
+        it("should group overlapping labels across maps when labelsPerMap is off", () => {
+            // Arrange
+            store.dispatch(setFiles({ value: FILE_STATES_TWO_FILES }))
+            store.dispatch(setLabelsPerMap({ value: false }))
+            addOverlappingLabelsForMaps("/root/mapA/first", "/root/mapB/second")
+
+            // Act
+            labelCollisionService.updateLabelLayout()
+
+            // Assert
+            const contentFirst = labelCreationService.getLabels()[0].labelElement.getContentElement()
+            const contentSecond = labelCreationService.getLabels()[1].labelElement.getContentElement()
+            expect(contentFirst.style.opacity).toBe("1")
+            expect(contentSecond.style.opacity).toBe("0")
         })
     })
 
