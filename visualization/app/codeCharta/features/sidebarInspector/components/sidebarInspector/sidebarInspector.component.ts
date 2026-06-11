@@ -10,7 +10,7 @@ import { InspectorMetricsListComponent } from "../inspectorMetricsList/inspector
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [InspectorHeaderComponent, InspectorMetricMappingComponent, InspectorMetricsListComponent],
     host: {
-        class: "fixed right-0 z-[60] w-80 bg-base-100 overflow-hidden flex flex-col shadow-[-2px_0_8px_-2px_rgba(0,0,0,0.15)] transition-transform duration-300",
+        class: "fixed right-0 z-[60] w-[var(--cc-inspector-width)] bg-base-100 overflow-hidden flex flex-col shadow-[-2px_0_8px_-2px_rgba(0,0,0,0.15)] transition-transform duration-300",
         "[class.translate-x-full]": "!isVisible()",
         "[class.pointer-events-none]": "!isVisible()",
         "[attr.aria-hidden]": "!isVisible()",

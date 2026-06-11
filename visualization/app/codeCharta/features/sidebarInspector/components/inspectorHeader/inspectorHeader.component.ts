@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { NodeType } from "../../../../codeCharta.model"
 import { InspectorHeaderService } from "../../services/inspectorHeader.service"
@@ -18,6 +18,10 @@ export class InspectorHeaderComponent {
     private readonly visibilityService = inject(InspectorVisibilityService)
 
     private copyFeedbackTimeout?: ReturnType<typeof setTimeout>
+
+    constructor() {
+        inject(DestroyRef).onDestroy(() => clearTimeout(this.copyFeedbackTimeout))
+    }
 
     readonly selectedNode = toSignal(this.headerService.selectedNode$(), { requireSync: true })
     readonly isDeltaState = toSignal(this.headerService.isDeltaState$(), { requireSync: true })

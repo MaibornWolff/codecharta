@@ -17,7 +17,7 @@ $fixedHeight: 35;
         }
 
         &.isAttributeSideBarVisible {
-            right: 286px;
+            right: calc(var(--cc-inspector-width) - 34px);
         }
     }
 
@@ -44,7 +44,7 @@ $fixedHeight: 35;
         transition: right 0.3s ease;
 
         &.isAttributeSideBarVisible {
-            right: 360px;
+            right: calc(var(--cc-inspector-width) + 40px);
         }
 
         &.visible {

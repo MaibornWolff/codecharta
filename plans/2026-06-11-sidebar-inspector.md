@@ -1,10 +1,10 @@
 ---
 name: sidebar-inspector
 issue: ""
-state: progress
+state: complete
 version: 1
 date: 2026-06-11
-branch: main
+branch: feature/sidebar-inspector
 topic: "Migrate the attribute sidebar into features/ as the redesigned Inspector"
 tags: [plan, visualization, sidebar, inspector, daisyui, signals, zoneless]
 ---
@@ -224,6 +224,7 @@ Manual (`npm run dev`, sample map):
 7. **Header badges (2026-06-11)**: The "selected" chip was removed. Below the node name, two badges now show the node type (`file`/`folder`, derived from `NodeType`) and — for folders — the file count; delta file counts (Δ added/removed/changed) render next to the badges in delta mode.
 8. **Pinned sections (2026-06-11)**: The header and METRIC MAPPING sections are pinned at the top of the drawer (`shrink-0`); only the METRICS section scrolls (`min-h-0 flex-1 overflow-y-auto` wrapper in the root template).
 9. **Subagent review cleanup (2026-06-11)**: Deleted the orphaned `primaryMetricsSelector` (+ relocated `Metric`/`Edge` types and spec) — its last consumer was the deleted legacy sidebar, not metricsBar as originally assumed — and the dead `updateAttributeType` action (reducer branch, `fileSettingsActions` entry, spec) whose only dispatcher was the removed Σ/median toggle.
+10. **Review nits (2026-06-11)**: Copy-feedback timeout now cleared via `DestroyRef.onDestroy`. The inspector width is single-sourced as `--cc-inspector-width: 20rem` in `app/tailwind.css` — the drawer host (`w-[var(--cc-inspector-width)]`), legend panel/button, and view cube offsets all derive from it. Plan frontmatter corrected (`state: complete`, `branch: feature/sidebar-inspector`). The delta number format (locale formatting instead of legacy's forced one decimal) is intentional — consistent with every other number in the inspector.
 
 ## Notes
 
