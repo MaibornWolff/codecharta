@@ -9,7 +9,7 @@ export const _collectFolderPaths = (unifiedMapNode: CodeMapNode | undefined): st
     }
     const folderPaths: string[] = []
     for (const { data } of hierarchy(unifiedMapNode)) {
-        if (data.type === NodeType.FOLDER) {
+        if (data.type === NodeType.FOLDER && !data.isExcluded) {
             folderPaths.push(data.path)
         }
     }

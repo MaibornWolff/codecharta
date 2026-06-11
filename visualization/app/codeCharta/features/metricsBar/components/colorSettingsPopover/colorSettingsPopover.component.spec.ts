@@ -7,6 +7,7 @@ import { invertColorRange, invertDeltaColors } from "../../../../state/store/app
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { calculateInitialColorRange } from "../../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 import { defaultState } from "../../../../state/store/state.manager"
 import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
@@ -141,6 +142,19 @@ describe("ColorSettingsPopoverComponent", () => {
 
         // Assert
         expect(component.areDeltaColorsInverted()).toBe(true)
+    })
+
+    it("should dispatch the recalculated initial color range when resetting the thresholds", async () => {
+        // Arrange
+        const { component } = await setup()
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+
+        // Act
+        component.resetColorRange()
+
+        // Assert: the header reset icon must restore the calculated thresholds
+        expect(dispatchSpy).toHaveBeenCalledWith(setColorRange({ value: calculateInitialColorRange({ minValue: 0, maxValue: 0 }) }))
     })
 
     it("should reset the gradient mode together with the colors outside delta mode", async () => {

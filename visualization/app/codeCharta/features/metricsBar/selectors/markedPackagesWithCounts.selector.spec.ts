@@ -45,6 +45,19 @@ describe("markedPackagesWithCountsSelector", () => {
         ])
     })
 
+    it("should not count excluded files", () => {
+        // Arrange
+        const markedPackages = [{ path: "/root/app", color: "#ff0000" }]
+        const excludedFile = { ...file("/root/app/legacy.ts"), isExcluded: true }
+        const nodes = [file("/root/app/main.ts"), excludedFile]
+
+        // Act
+        const result = _calculateMarkedPackagesWithCounts(markedPackages, nodes)
+
+        // Assert
+        expect(result).toEqual([{ path: "/root/app", color: "#ff0000", fileCount: 1 }])
+    })
+
     it("should not count files of sibling folders sharing a path prefix", () => {
         // Arrange
         const markedPackages = [{ path: "/root/app", color: "#ff0000" }]

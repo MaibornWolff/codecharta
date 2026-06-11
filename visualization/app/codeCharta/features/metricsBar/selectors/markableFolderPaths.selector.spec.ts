@@ -10,6 +10,25 @@ describe("markableFolderPathsSelector", () => {
         expect(result).toEqual([])
     })
 
+    it("should not suggest excluded folders", () => {
+        // Arrange
+        const root = {
+            name: "root",
+            path: "/root",
+            type: NodeType.FOLDER,
+            children: [
+                { name: "kept", path: "/root/kept", type: NodeType.FOLDER, children: [] },
+                { name: "gone", path: "/root/gone", type: NodeType.FOLDER, isExcluded: true, children: [] }
+            ]
+        } as CodeMapNode
+
+        // Act
+        const result = _collectFolderPaths(root)
+
+        // Assert
+        expect(result).toEqual(["/root", "/root/kept"])
+    })
+
     it("should collect only folder paths, sorted by path", () => {
         // Arrange
         const root = {

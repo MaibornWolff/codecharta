@@ -5,19 +5,19 @@
     }
 </div>
 
-<p class="m-0 text-xs opacity-60">These folders use a fixed color instead of the metric.</p>
+<p class="m-0 text-xs opacity-60">These folders&#8217; floors are tinted with the pinned color.</p>
 
 @if (overrides().length > 0) {
     <div class="flex max-h-36 flex-col gap-0.5 overflow-y-auto">
         @for (override of overrides(); track override.path) {
-            <div class="flex shrink-0 items-center gap-2 rounded-btn border border-base-300 px-2 py-1" [title]="override.path">
+            <div class="flex shrink-0 items-center gap-2 rounded-md border border-base-300 px-2 py-1" [title]="override.path">
                 <cc-inline-color-picker
                     [hexColor]="override.color"
                     [ariaLabel]="'Recolor ' + override.path"
                     (colorChange)="handleRecolor(override.path, $event)"
                 ></cc-inline-color-picker>
                 <span class="min-w-0 flex-1 truncate text-sm">{{ override.path }}</span>
-                <span class="text-xs opacity-60 tabular-nums">{{ override.fileCount }}</span>
+                <span class="text-xs opacity-60 tabular-nums" [title]="override.fileCount + ' files'">{{ override.fileCount }}</span>
                 <button class="btn btn-ghost btn-xs btn-square" [title]="'Unpin ' + override.path" (click)="handleUnpin(override.path)">
                     <i class="fa fa-times"></i>
                 </button>
@@ -44,15 +44,20 @@
             placeholder="Search folders…"
             [value]="searchTerm()"
             (input)="handleSearchTermChange($any($event.target).value)"
-            (keydown.escape)="stopPinning()"
+            (keydown.escape)="handleSearchEscape($event)"
             (blur)="handleSearchBlur()"
         />
     </label>
-    <!-- mousedown would blur the input and close the empty search before the click can pin -->
-    <ul class="m-0 flex max-h-40 list-none flex-col overflow-y-auto p-0" (mousedown)="$event.preventDefault()">
+    <ul class="m-0 flex max-h-40 list-none flex-col overflow-y-auto p-0">
         @for (path of folderSuggestions(); track path) {
             <li class="flex">
-                <button class="btn btn-ghost btn-xs w-full flex-nowrap justify-start font-normal" [title]="path" (click)="handlePin(path)">
+                <!-- mousedown would blur the input and close the empty search before the click can pin -->
+                <button
+                    class="btn btn-ghost btn-xs w-full flex-nowrap justify-start font-normal"
+                    [title]="path"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="handlePin(path)"
+                >
                     <span class="min-w-0 truncate">{{ path }}</span>
                 </button>
             </li>

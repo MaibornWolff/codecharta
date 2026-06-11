@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core"
+import { MapColors } from "../../../codeCharta.model"
 import { MapColorsStore } from "../stores/mapColors.store"
 
 @Injectable({
@@ -9,6 +10,10 @@ export class MapColorsService {
 
     mapColors$() {
         return this.mapColorsStore.mapColors$
+    }
+
+    setMapColors(value: Partial<MapColors>) {
+        this.mapColorsStore.setMapColors(value)
     }
 
     invertColorRange() {

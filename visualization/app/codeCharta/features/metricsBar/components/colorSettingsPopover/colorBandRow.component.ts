@@ -1,13 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
-import { CcState, MapColors } from "../../../../codeCharta.model"
-import { selectedColorMetricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
-import { setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
-import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
-import { colorMetricSelector } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
-import { colorRangeSelector } from "../../../../state/store/dynamicSettings/colorRange/colorRange.selector"
+import { MapColors } from "../../../../codeCharta.model"
+import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { MapColorLabelPipe } from "../../../../ui/colorPickerForMapColor/mapColorLabel.pipe"
+import { ColorMetricService } from "../../services/colorMetric.service"
+import { ColorRangeService } from "../../services/colorRange.service"
+import { MapColorsService } from "../../services/mapColors.service"
+import { SelectedColorMetricDataService } from "../../services/selectedColorMetricData.service"
 import { InlineColorPickerComponent } from "./inlineColorPicker.component"
 
 export type BandMapColor = keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors" | "isColorRangeInverted" | "areDeltaColorsInverted">
@@ -19,19 +18,26 @@ export type BandMapColor = keyof Omit<MapColors, "labelColorAndAlpha" | "marking
     imports: [InlineColorPickerComponent, MapColorLabelPipe]
 })
 export class ColorBandRowComponent {
-    private readonly store: Store<CcState> = inject(Store)
+    constructor(
+        private readonly colorMetricService: ColorMetricService,
+        private readonly colorRangeService: ColorRangeService,
+        private readonly selectedColorMetricDataService: SelectedColorMetricDataService,
+        private readonly mapColorsService: MapColorsService
+    ) {}
 
     readonly mapColorFor = input.required<BandMapColor>()
     readonly count = input<number | null>(null)
 
-    readonly colorMetric = toSignal(this.store.select(colorMetricSelector), { requireSync: true })
-    readonly colorRange = toSignal(this.store.select(colorRangeSelector), { requireSync: true })
-    readonly nodeMetricRange = toSignal(this.store.select(selectedColorMetricDataSelector), { requireSync: true })
-    private readonly mapColors = toSignal(this.store.select(mapColorsSelector), { requireSync: true })
+    readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
+    readonly colorRange = toSignal(this.colorRangeService.colorRange$(), { initialValue: { from: 0, to: 0 } })
+    readonly nodeMetricRange = toSignal(this.selectedColorMetricDataService.selectedColorMetricData$(), {
+        initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
+    })
+    private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
 
     readonly color = computed(() => this.mapColors()[this.mapColorFor()] as string)
 
     handleColorChange(newHexColor: string) {
-        this.store.dispatch(setMapColors({ value: { [this.mapColorFor()]: newHexColor } }))
+        this.mapColorsService.setMapColors({ [this.mapColorFor()]: newHexColor })
     }
 }

@@ -10,10 +10,10 @@ export const _calculateMarkedPackagesWithCounts = (markedPackages: MarkedPackage
     const fileCounts = new Map<string, number>(markedPackages.map(markedPackage => [markedPackage.path, 0]))
 
     for (const node of nodes) {
-        if (!isLeaf(node)) {
+        if (!isLeaf(node) || node.isExcluded) {
             continue
         }
-        const owningPackagePath = findDeepestMarkedPackagePath(markedPackages, node.path)
+        const owningPackagePath = findClosestMarkedAncestorPath(fileCounts, node.path)
         if (owningPackagePath !== undefined) {
             fileCounts.set(owningPackagePath, fileCounts.get(owningPackagePath) + 1)
         }
@@ -24,16 +24,18 @@ export const _calculateMarkedPackagesWithCounts = (markedPackages: MarkedPackage
         .sort((a, b) => a.path.localeCompare(b.path))
 }
 
-// a file inside nested marked packages is colored by the deepest one (see getMarkingColor),
-// so it must only count toward that package
-function findDeepestMarkedPackagePath(markedPackages: MarkedPackage[], nodePath: string) {
-    let deepestPath: string | undefined
-    for (const { path } of markedPackages) {
-        if ((nodePath === path || nodePath.startsWith(`${path}/`)) && (deepestPath === undefined || path.length > deepestPath.length)) {
-            deepestPath = path
+// walking the path upwards finds the deepest marked package first — nested packages
+// tint their own floor (see getMarkingColor), so a file only counts toward that one
+function findClosestMarkedAncestorPath(markedPackagePaths: ReadonlyMap<string, number>, nodePath: string) {
+    let currentPath = nodePath
+    while (currentPath) {
+        if (markedPackagePaths.has(currentPath)) {
+            return currentPath
         }
+        const parentEndIndex = currentPath.lastIndexOf("/")
+        currentPath = parentEndIndex > 0 ? currentPath.slice(0, parentEndIndex) : ""
     }
-    return deepestPath
+    return undefined
 }
 
 export const markedPackagesWithCountsSelector = createSelector(

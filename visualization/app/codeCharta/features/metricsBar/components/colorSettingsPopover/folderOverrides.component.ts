@@ -1,11 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../../../codeCharta.model"
-import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
-import { markPackages, unmarkPackage } from "../../../../state/store/fileSettings/markedPackages/markedPackages.actions"
-import { markableFolderPathsSelector } from "../../selectors/markableFolderPaths.selector"
-import { markedPackagesWithCountsSelector } from "../../selectors/markedPackagesWithCounts.selector"
+import { MarkedPackageWithCount } from "../../selectors/markedPackagesWithCounts.selector"
+import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { FolderOverridesService } from "../../services/folderOverrides.service"
+import { MapColorsService } from "../../services/mapColors.service"
 import { InlineColorPickerComponent } from "./inlineColorPicker.component"
 
 const MAX_FOLDER_SUGGESTIONS = 8
@@ -18,11 +16,16 @@ const MAX_FOLDER_SUGGESTIONS = 8
     imports: [InlineColorPickerComponent]
 })
 export class FolderOverridesComponent {
-    private readonly store: Store<CcState> = inject(Store)
+    constructor(
+        private readonly folderOverridesService: FolderOverridesService,
+        private readonly mapColorsService: MapColorsService
+    ) {}
 
-    readonly overrides = toSignal(this.store.select(markedPackagesWithCountsSelector), { requireSync: true })
-    private readonly folderPaths = toSignal(this.store.select(markableFolderPathsSelector), { requireSync: true })
-    private readonly mapColors = toSignal(this.store.select(mapColorsSelector), { requireSync: true })
+    readonly overrides = toSignal(this.folderOverridesService.markedPackagesWithCounts$(), {
+        initialValue: [] as MarkedPackageWithCount[]
+    })
+    private readonly folderPaths = toSignal(this.folderOverridesService.markableFolderPaths$(), { initialValue: [] as string[] })
+    private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
 
     readonly isPinning = signal(false)
     readonly searchTerm = signal("")
@@ -64,22 +67,47 @@ export class FolderOverridesComponent {
         }
     }
 
+    handleSearchEscape(event: Event) {
+        // Escape would otherwise also close the surrounding native popover
+        event.preventDefault()
+        this.stopPinning()
+    }
+
     handlePin(path: string) {
-        this.store.dispatch(markPackages({ packages: [{ path, color: this.nextMarkingColor() }] }))
+        this.folderOverridesService.markPackage({ path, color: this.nextMarkingColor(path) })
         this.stopPinning()
     }
 
     handleRecolor(path: string, color: string) {
-        this.store.dispatch(markPackages({ packages: [{ path, color }] }))
+        this.folderOverridesService.markPackage({ path, color })
     }
 
     handleUnpin(path: string) {
-        this.store.dispatch(unmarkPackage({ path }))
+        this.folderOverridesService.unmarkPackage(path)
     }
 
-    private nextMarkingColor() {
+    private nextMarkingColor(path: string) {
         const markingColors = this.mapColors().markingColors
+        // a pin with its marked parent's color is dropped as redundant by the reducer,
+        // so that color must not be handed out for a nested pin
+        const parentColor = this.findMarkedParentColor(path)
+        const candidates = markingColors.filter(color => color !== parentColor)
+        if (candidates.length === 0) {
+            return markingColors[0]
+        }
         const usedColors = new Set(this.overrides().map(override => override.color))
-        return markingColors.find(color => !usedColors.has(color)) ?? markingColors[this.overrides().length % markingColors.length]
+        return candidates.find(color => !usedColors.has(color)) ?? candidates[this.overrides().length % candidates.length]
+    }
+
+    private findMarkedParentColor(path: string) {
+        let deepestParentColor: string | undefined
+        let deepestParentPathLength = 0
+        for (const override of this.overrides()) {
+            if (path.startsWith(`${override.path}/`) && override.path.length > deepestParentPathLength) {
+                deepestParentColor = override.color
+                deepestParentPathLength = override.path.length
+            }
+        }
+        return deepestParentColor
     }
 }

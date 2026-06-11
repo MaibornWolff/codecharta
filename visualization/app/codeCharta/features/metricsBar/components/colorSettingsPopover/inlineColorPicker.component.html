@@ -16,6 +16,7 @@
                 role="colorpicker"
                 [disableAlpha]="true"
                 [color]="hexColor()"
+                (onChange)="handleColorChanging($event.color.hex)"
                 (onChangeComplete)="handleChangeComplete($event.color.hex)"
             ></color-chrome>
         </div>

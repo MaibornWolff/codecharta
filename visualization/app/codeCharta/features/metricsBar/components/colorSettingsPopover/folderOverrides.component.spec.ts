@@ -45,7 +45,7 @@ describe("FolderOverridesComponent", () => {
         await setup()
 
         // Assert
-        expect(screen.queryByText(/pinned/)).toBeNull()
+        expect(screen.queryByText(/\d+ pinned/)).toBeNull()
         expect(screen.getByText(/Pin a folder color/)).not.toBeNull()
     })
 
@@ -73,6 +73,38 @@ describe("FolderOverridesComponent", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(markPackages({ packages: [{ path: "/root/app", color: "#123456" }] }))
+    })
+
+    it("should cancel the folder search on Escape without closing the surrounding popover", async () => {
+        // Arrange
+        await setup([], ["/root"])
+        fireEvent.click(screen.getByText(/Pin a folder color/))
+        const searchInput = screen.getByPlaceholderText("Search folders…")
+
+        // Act
+        const isDefaultNotPrevented = fireEvent.keyDown(searchInput, { key: "Escape" })
+
+        // Assert: preventing the default cancels the native popover's close request
+        expect(screen.queryByPlaceholderText("Search folders…")).toBeNull()
+        expect(isDefaultNotPrevented).toBe(false)
+    })
+
+    it("should not pin a nested folder with its marked parent's color", async () => {
+        // Arrange: all marking colors are taken, the naive fallback would collide with the parent
+        const { markingColors } = defaultState.appSettings.mapColors
+        const overrides = markingColors.map((color, index) => ({ path: `/root/folder${index}`, color, fileCount: 1 }))
+        overrides[0] = { path: "/root", color: markingColors[0], fileCount: 1 }
+        await setup(overrides, ["/root/sub"])
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+
+        // Act
+        fireEvent.click(screen.getByText(/Pin a folder color/))
+        fireEvent.click(screen.getByRole("button", { name: "/root/sub" }))
+
+        // Assert
+        const dispatchedColor = dispatchSpy.mock.calls.at(-1)[0]["packages"][0].color
+        expect(dispatchedColor).not.toBe(markingColors[0])
     })
 
     it("should pin a suggested folder with the first unused marking color", async () => {
