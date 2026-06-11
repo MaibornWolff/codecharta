@@ -220,6 +220,7 @@ Manual (`npm run dev`, sample map):
 3. **Close deselects (2026-06-11)**: The ✕ button now calls `ThreeSceneService.clearSelection()` + re-render, deselecting the building/folder; visibility is purely derived from `selectedNode != null`, so the manual-close flag was removed.
 4. **Empty metrics grouped (2026-06-11)**: Metrics with empty (zero/missing) values previously rendered a full near-black "neutral" bar when the map total was 0. They now render an empty bar, are greyed out, and are grouped in a collapsed "Empty metrics (N)" section below the metrics with values; the neutral fill color for degenerate ranges changed from `bg-neutral` to `bg-base-content/30` (grey).
 5. **Comparison-mode toggle (2026-06-11)**: A segmented `map | range` control in the METRICS header switches the bar denominator between share-of-map (value ÷ root aggregate, default) and position within the file-level min/max range. The selector precomputes both bars per row (`mapBar`/`rangeBar`); the mode is a session-only signal in `InspectorComparisonModeService` (not persisted).
+6. **Legend/view-cube alignment (2026-06-11)**: The legend panel, legend button, and view cube shifted by the legacy sidebar width (350px) when the sidebar opened, leaving a gap next to the 320px (`w-80`) inspector. Offsets in `legendPanel.component.scss` and `viewCube.component.scss` updated to 320px-based values; note the pixel values are coupled to the inspector's `w-80` width.
 
 ## Notes
 
