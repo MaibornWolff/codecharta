@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/angular"
 import { expect } from "@jest/globals"
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
 import { LegendPanelComponent } from "./legendPanel.component"
-import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
+import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { heightMetricSelector } from "../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 import { areaMetricSelector } from "../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
@@ -36,7 +36,12 @@ describe(LegendPanelComponent.name, () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [LegendPanelComponent],
-            providers: [provideMockStore({ selectors }), { provide: State, useValue: {} }, ViewContainerRef]
+            providers: [
+                provideMockStore({ selectors }),
+                { provide: State, useValue: {} },
+                { provide: InspectorVisibilityService, useValue: { isVisible: () => false } },
+                ViewContainerRef
+            ]
         })
     })
 
@@ -121,10 +126,10 @@ describe(LegendPanelComponent.name, () => {
         expect(metricDescriptions.length).toBe(0)
     })
 
-    it("should add class 'isAttributeSideBarVisible' to opening button, when attribute sidebar is open", async () => {
+    it("should add class 'isAttributeSideBarVisible' to opening button, when inspector sidebar is open", async () => {
         const { container } = await render(LegendPanelComponent, {
             excludeComponentDeclaration: true,
-            componentProviders: [{ provide: IsAttributeSideBarVisibleService, useValue: { isOpen: true } }]
+            componentProviders: [{ provide: InspectorVisibilityService, useValue: { isVisible: () => true } }]
         })
         const openingButton = container.querySelector(".panel-button")
         expect(openingButton.classList).toContain("isAttributeSideBarVisible")

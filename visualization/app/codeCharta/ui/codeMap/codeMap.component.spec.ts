@@ -1,6 +1,6 @@
 import { ElementRef } from "@angular/core"
 import { Subject } from "rxjs"
-import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
+import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
 import { GlobalSettingsFacade } from "../../features/globalSettings/facade"
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
@@ -29,7 +29,7 @@ describe("CodeMapComponent", () => {
 
     it("should init threeViewerService and start codeMapMouseService after view init", () => {
         const codeMapComponent = new CodeMapComponent(
-            { isOpen: true } as IsAttributeSideBarVisibleService,
+            { isVisible: () => true } as unknown as InspectorVisibilityService,
             mockedStore,
             mockedThreeViewService,
             mockedCodeMapMouseEventService,
@@ -43,7 +43,7 @@ describe("CodeMapComponent", () => {
 
     it("should restart on sharpnessModeChanges but not on first one as it will get started then", () => {
         new CodeMapComponent(
-            { isOpen: true } as IsAttributeSideBarVisibleService,
+            { isVisible: () => true } as unknown as InspectorVisibilityService,
             mockedStore,
             mockedThreeViewService,
             mockedCodeMapMouseEventService,

@@ -1,0 +1,33 @@
+<div class="flex items-center justify-between">
+    <span class="text-xs uppercase tracking-widest opacity-60">Inspector</span>
+    <button
+        type="button"
+        class="btn btn-ghost btn-xs btn-square"
+        title="Close inspector"
+        data-testid="inspector-close-button"
+        (click)="close()"
+    >
+        <i class="fa fa-times"></i>
+    </button>
+</div>
+@if (selectedNode()) {
+    <div class="mt-1 flex items-start justify-between gap-2">
+        <div class="min-w-0">
+            <cc-inspector-node-path [parentPath]="parentPath()" [nodeName]="nodeName()" [link]="nodeLink()"></cc-inspector-node-path>
+            <cc-inspector-node-badges
+                [isFolder]="isFolder()"
+                [fileCount]="fileCount()"
+                [isDeltaState]="isDeltaState()"
+            ></cc-inspector-node-badges>
+        </div>
+        <button
+            type="button"
+            class="btn btn-ghost btn-sm btn-square shrink-0"
+            [title]="copied() ? 'Copied!' : 'Copy path'"
+            data-testid="inspector-copy-path-button"
+            (click)="copyPath()"
+        >
+            <i class="fa" [class.fa-copy]="!copied()" [class.fa-check]="copied()"></i>
+        </button>
+    </div>
+}

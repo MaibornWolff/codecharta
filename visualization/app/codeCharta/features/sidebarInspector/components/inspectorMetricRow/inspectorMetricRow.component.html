@@ -1,0 +1,19 @@
+<div class="flex items-baseline justify-between gap-2">
+    <span class="min-w-0 truncate text-sm" [title]="row().descriptor | attributeDescriptorTooltip: row().name">
+        {{ row().name }}
+        @if (row().descriptor?.link; as link) {
+            <a [href]="link" target="_blank" rel="noopener noreferrer" class="opacity-70" data-testid="metric-row-link">
+                <i class="fa fa-external-link"></i>
+            </a>
+        }
+    </span>
+    <span class="shrink-0 text-sm tabular-nums">
+        @if (hasDelta()) {
+            <span class="mr-1" [style.color]="deltaColor()" data-testid="metric-row-delta">{{ formattedDelta() }}</span>
+        }
+        {{ formattedValue() }}
+    </span>
+</div>
+<div class="mt-0.5 h-1 overflow-hidden rounded bg-base-300">
+    <div [class]="barClasses()" [style.width.%]="barWidthPercentage()" data-testid="metric-row-bar"></div>
+</div>

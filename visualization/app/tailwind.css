@@ -37,3 +37,8 @@
     --color-error: #f87272;
     --color-error-content: #470000;
 }
+
+/* Layout constants shared between features and legacy SCSS */
+:root {
+    --cc-inspector-width: 20rem;
+}

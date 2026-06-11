@@ -1,5 +1,0 @@
-@if ((selectedNode$ | async)?.deltas?.[metricName]; as deltaValue) {
-    <span [style.color]="(mapColors$ | async)[deltaValue > 0 ? 'positiveDelta' : 'negativeDelta']">
-        &Delta;{{ deltaValue | number: "1.1-2" }}
-    </span>
-}
