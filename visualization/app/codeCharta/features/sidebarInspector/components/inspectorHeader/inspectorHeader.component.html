@@ -1,17 +1,14 @@
 <div class="flex items-center justify-between">
     <span class="text-xs uppercase tracking-widest opacity-60">Inspector</span>
-    <div class="flex items-center gap-1">
-        <span class="badge badge-ghost badge-sm" data-testid="inspector-selected-badge">selected</span>
-        <button
-            type="button"
-            class="btn btn-ghost btn-xs btn-square"
-            title="Close inspector"
-            data-testid="inspector-close-button"
-            (click)="close()"
-        >
-            <i class="fa fa-times"></i>
-        </button>
-    </div>
+    <button
+        type="button"
+        class="btn btn-ghost btn-xs btn-square"
+        title="Close inspector"
+        data-testid="inspector-close-button"
+        (click)="close()"
+    >
+        <i class="fa fa-times"></i>
+    </button>
 </div>
 @if (selectedNode(); as node) {
     <div class="mt-1 flex items-start justify-between gap-2">
@@ -34,16 +31,21 @@
                     </a>
                 }
             </p>
-            @if (isFolder() && fileCount(); as count) {
-                <p class="text-xs opacity-60" data-testid="inspector-file-count">
-                    {{ count.all }} {{ count.all === 1 ? "file" : "files" }}
+            <div class="mt-1 flex flex-wrap items-center gap-1" data-testid="inspector-node-badges">
+                <span class="badge badge-ghost badge-sm" data-testid="inspector-node-type">{{ isFolder() ? 'folder' : 'file' }}</span>
+                @if (isFolder() && fileCount(); as count) {
+                    <span class="badge badge-ghost badge-sm" data-testid="inspector-file-count">
+                        {{ count.all }} {{ count.all === 1 ? 'file' : 'files' }}
+                    </span>
                     @if (isDeltaState()) {
-                        <span class="text-success" title="Number of added files">Δ{{ count.added }}</span>
-                        <span class="text-error" title="Number of removed files">Δ{{ count.removed > 0 ? -count.removed : 0 }}</span>
-                        <span title="Number of files with metric changes">Δ{{ count.changed }}</span>
+                        <span class="text-xs opacity-60">
+                            <span class="text-success" title="Number of added files">Δ{{ count.added }}</span>
+                            <span class="text-error" title="Number of removed files">Δ{{ count.removed > 0 ? -count.removed : 0 }}</span>
+                            <span title="Number of files with metric changes">Δ{{ count.changed }}</span>
+                        </span>
                     }
-                </p>
-            }
+                }
+            </div>
         </div>
         <button
             type="button"

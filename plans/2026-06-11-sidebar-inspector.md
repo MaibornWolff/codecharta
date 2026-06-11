@@ -221,6 +221,8 @@ Manual (`npm run dev`, sample map):
 4. **Empty metrics grouped (2026-06-11)**: Metrics with empty (zero/missing) values previously rendered a full near-black "neutral" bar when the map total was 0. They now render an empty bar, are greyed out, and are grouped in a collapsed "Empty metrics (N)" section below the metrics with values; the neutral fill color for degenerate ranges changed from `bg-neutral` to `bg-base-content/30` (grey).
 5. **Comparison-mode toggle (2026-06-11)**: A segmented `map | range` control in the METRICS header switches the bar denominator between share-of-map (value ÷ root aggregate, default) and position within the file-level min/max range. The selector precomputes both bars per row (`mapBar`/`rangeBar`); the mode is a session-only signal in `InspectorComparisonModeService` (not persisted).
 6. **Legend/view-cube alignment (2026-06-11)**: The legend panel, legend button, and view cube shifted by the legacy sidebar width (350px) when the sidebar opened, leaving a gap next to the 320px (`w-80`) inspector. Offsets in `legendPanel.component.scss` and `viewCube.component.scss` updated to 320px-based values; note the pixel values are coupled to the inspector's `w-80` width.
+7. **Header badges (2026-06-11)**: The "selected" chip was removed. Below the node name, two badges now show the node type (`file`/`folder`, derived from `NodeType`) and — for folders — the file count; delta file counts (Δ added/removed/changed) render next to the badges in delta mode.
+8. **Pinned sections (2026-06-11)**: The header and METRIC MAPPING sections are pinned at the top of the drawer (`shrink-0`); only the METRICS section scrolls (`min-h-0 flex-1 overflow-y-auto` wrapper in the root template).
 
 ## Notes
 

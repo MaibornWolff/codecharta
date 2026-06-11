@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { NodeType } from "../../../../codeCharta.model"
 import { InspectorHeaderService } from "../../services/inspectorHeader.service"
 import { InspectorVisibilityService } from "../../services/inspectorVisibility.service"
 import { getFileCount } from "../../util/getFileCount"
@@ -8,7 +9,7 @@ import { getFileCount } from "../../util/getFileCount"
     selector: "cc-inspector-header",
     templateUrl: "./inspectorHeader.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: "block px-3 py-2" }
+    host: { class: "block shrink-0 px-3 py-2" }
 })
 export class InspectorHeaderComponent {
     private static readonly COPY_FEEDBACK_MS = 1500
@@ -31,7 +32,7 @@ export class InspectorHeaderComponent {
         }
         return node.path.slice(0, node.path.length - node.name.length)
     })
-    readonly isFolder = computed(() => (this.selectedNode()?.children?.length ?? 0) > 0)
+    readonly isFolder = computed(() => this.selectedNode()?.type === NodeType.FOLDER)
     readonly fileCount = computed(() => getFileCount(this.selectedNode()))
 
     close() {

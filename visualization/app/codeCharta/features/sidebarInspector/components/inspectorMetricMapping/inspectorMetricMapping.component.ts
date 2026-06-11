@@ -8,7 +8,7 @@ import { InspectorMappingBlockComponent } from "../inspectorMappingBlock/inspect
     templateUrl: "./inspectorMetricMapping.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [InspectorMappingBlockComponent],
-    host: { class: "block border-t border-base-300 px-3 py-2" }
+    host: { class: "block shrink-0 border-t border-base-300 px-3 py-2" }
 })
 export class InspectorMetricMappingComponent {
     private readonly metricMappingService = inject(InspectorMetricMappingService)
