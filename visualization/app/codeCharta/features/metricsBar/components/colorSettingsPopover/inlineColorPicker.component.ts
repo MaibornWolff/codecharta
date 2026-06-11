@@ -28,7 +28,7 @@ const PANEL_OFFSET = 4
     imports: [ColorChromeModule]
 })
 export class InlineColorPickerComponent implements AfterViewInit, OnDestroy {
-    private readonly elementRef = inject(ElementRef)
+    private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef)
 
     readonly hexColor = input.required<string>()
     readonly ariaLabel = input<string>("Pick color")
@@ -52,7 +52,7 @@ export class InlineColorPickerComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        this.popoverAncestor = (this.elementRef.nativeElement as HTMLElement).closest("[popover]")
+        this.popoverAncestor = this.elementRef.nativeElement.closest("[popover]")
         this.popoverAncestor?.addEventListener("toggle", this.closeOnPopoverToggle)
     }
 

@@ -13,7 +13,6 @@
     @if (isOpen()) {
         <div class="fixed z-50 shadow-lg" [style.left.px]="panelPosition().left" [style.top.px]="panelPosition().top">
             <color-chrome
-                role="colorpicker"
                 [disableAlpha]="true"
                 [color]="hexColor()"
                 (onChange)="handleColorChanging($event.color.hex)"

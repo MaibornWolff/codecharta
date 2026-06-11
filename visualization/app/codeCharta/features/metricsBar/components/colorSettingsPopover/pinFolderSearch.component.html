@@ -7,19 +7,20 @@
         <span>Pin a folder color…</span>
     </button>
 } @else {
-    <label class="input input-sm input-bordered flex items-center gap-2">
+    <div class="input input-sm input-bordered flex items-center gap-2">
         <i class="fa fa-search opacity-60"></i>
         <input
             #pinInput
             type="text"
             class="grow"
             placeholder="Search folders…"
+            aria-label="Search folders"
             [value]="searchTerm()"
             (input)="handleSearchTermChange($any($event.target).value)"
             (keydown.escape)="handleSearchEscape($event)"
             (blur)="handleSearchBlur()"
         />
-    </label>
+    </div>
     <ul class="m-0 flex max-h-40 list-none flex-col overflow-y-auto p-0">
         @for (path of folderSuggestions(); track path) {
             <li class="flex">
