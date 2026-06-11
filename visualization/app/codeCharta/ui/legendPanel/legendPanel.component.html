@@ -2,7 +2,7 @@
     id="legend-panel"
     class="block-wrapper"
     [class.visible]="isLegendVisible"
-    [class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
+    [class.isAttributeSideBarVisible]="inspectorVisibilityService.isVisible()"
 >
     @if (!(isDeltaState$ | async)) {
         <div>
@@ -41,7 +41,7 @@
     id="legend-panel-button"
     class="panel-button"
     (click)="toggleIsLegendVisible()"
-    [class.isAttributeSideBarVisible]="isAttributeSideBarVisibleService.isOpen"
+    [class.isAttributeSideBarVisible]="inspectorVisibilityService.isVisible()"
     title="{{ isLegendVisible ? 'Hide panel' : 'Show panel' }}"
 >
     LEGEND

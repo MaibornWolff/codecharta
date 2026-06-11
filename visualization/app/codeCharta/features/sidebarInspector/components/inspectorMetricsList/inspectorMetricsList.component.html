@@ -1,0 +1,14 @@
+<span class="text-xs uppercase tracking-widest opacity-60">Metrics</span>
+@if (metricRows().length === 0) {
+    <p class="mt-2 text-sm opacity-60" data-testid="inspector-metrics-empty">No metrics available</p>
+} @else {
+    <div class="mt-2 flex flex-col gap-2">
+        @for (row of metricRows(); track row.name) {
+            <cc-inspector-metric-row
+                [row]="row"
+                [positiveDeltaColor]="mapColors().positiveDelta"
+                [negativeDeltaColor]="mapColors().negativeDelta"
+            ></cc-inspector-metric-row>
+        }
+    </div>
+}

@@ -1,0 +1,58 @@
+<div class="flex items-center justify-between">
+    <span class="text-xs uppercase tracking-widest opacity-60">Inspector</span>
+    <div class="flex items-center gap-1">
+        <span class="badge badge-ghost badge-sm" data-testid="inspector-selected-badge">selected</span>
+        <button
+            type="button"
+            class="btn btn-ghost btn-xs btn-square"
+            title="Close inspector"
+            data-testid="inspector-close-button"
+            (click)="close()"
+        >
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+</div>
+@if (selectedNode(); as node) {
+    <div class="mt-1 flex items-start justify-between gap-2">
+        <div class="min-w-0">
+            @if (parentPath()) {
+                <p class="break-all text-sm leading-snug opacity-60" data-testid="inspector-parent-path">{{ parentPath() }}</p>
+            }
+            <p class="break-all text-lg font-semibold leading-snug text-primary" data-testid="inspector-node-name">
+                {{ nodeName() }}
+                @if (nodeLink(); as link) {
+                    <a
+                        [href]="link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-sm"
+                        [title]="link"
+                        data-testid="inspector-node-link"
+                    >
+                        <i class="fa fa-external-link"></i>
+                    </a>
+                }
+            </p>
+            @if (isFolder() && fileCount(); as count) {
+                <p class="text-xs opacity-60" data-testid="inspector-file-count">
+                    {{ count.all }} {{ count.all === 1 ? "file" : "files" }}
+                    @if (isDeltaState()) {
+                        <span class="text-success" title="Number of added files">Δ{{ count.added }}</span>
+                        <span class="text-error" title="Number of removed files">Δ{{ count.removed > 0 ? -count.removed : 0 }}</span>
+                        <span title="Number of files with metric changes">Δ{{ count.changed }}</span>
+                    }
+                </p>
+            }
+        </div>
+        <button
+            type="button"
+            class="btn btn-ghost btn-sm btn-square shrink-0"
+            [title]="copied() ? 'Copied!' : 'Copy path'"
+            data-testid="inspector-copy-path-button"
+            (click)="copyPath()"
+        >
+            <i class="fa" [class.fa-copy]="!copied()" [class.fa-check]="copied()"></i>
+        </button>
+    </div>
+}

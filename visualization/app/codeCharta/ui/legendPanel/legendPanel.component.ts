@@ -1,5 +1,5 @@
 import { isDeltaStateSelector } from "../../state/selectors/isDeltaState.selector"
-import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
+import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { heightMetricSelector } from "../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
@@ -31,7 +31,7 @@ export class LegendPanelComponent implements OnInit, OnDestroy {
 
     constructor(
         private store: Store<CcState>,
-        public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
+        public inspectorVisibilityService: InspectorVisibilityService,
         private readonly viewReference: ViewContainerRef
     ) {}
 

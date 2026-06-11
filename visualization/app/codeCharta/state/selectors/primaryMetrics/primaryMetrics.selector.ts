@@ -1,7 +1,7 @@
 import { selectedNodeSelector } from "../selectedNode.selector"
-import { Metric } from "../../../ui/attributeSideBar/util/metric"
+import { Metric } from "./metric"
 import { primaryMetricNamesSelector } from "./primaryMetricNames.selector"
-import { Edge } from "app/codeCharta/ui/attributeSideBar/util/edge"
+import { Edge } from "./edge"
 import { CodeMapNode } from "app/codeCharta/codeCharta.model"
 import { createSelector } from "@ngrx/store"
 
