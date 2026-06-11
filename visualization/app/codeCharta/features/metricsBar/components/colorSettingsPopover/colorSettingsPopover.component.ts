@@ -1,25 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, input, OnDestroy } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { combineLatest, map } from "rxjs"
-import { ColorMode, ColorRange } from "../../../../codeCharta.model"
-import { debounce } from "../../../../util/debounce"
-import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
-import { calculateInitialColorRange } from "../../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
-import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
-import { AttributeDescriptorsService } from "../../services/attributeDescriptors.service"
 import { ColorMetricService } from "../../services/colorMetric.service"
-import { ColorModeService } from "../../services/colorMode.service"
-import { ColorRangeService } from "../../services/colorRange.service"
 import { IsDeltaStateService } from "../../services/isDeltaState.service"
-import { MapColorsService } from "../../services/mapColors.service"
-import { SelectedColorMetricDataService } from "../../services/selectedColorMetricData.service"
-import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
-import { ColorBandRowComponent } from "./colorBandRow.component"
+import { ColorBandsSectionComponent } from "./colorBandsSection.component"
+import { ColorRangeSectionComponent } from "./colorRangeSection.component"
+import { ColorSettingsHeaderComponent } from "./colorSettingsHeader.component"
 import { FolderOverridesComponent } from "./folderOverrides.component"
-import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
-import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
+import { GradientModePickerComponent } from "./gradientModePicker.component"
+import { InvertResetRowComponent } from "./invertResetRow.component"
 
 @Component({
     selector: "cc-color-settings-popover",
@@ -27,126 +16,26 @@ import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColo
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
     imports: [
-        MetricColorRangeSliderComponent,
-        MetricColorRangeDiagramComponent,
-        ColorBandRowComponent,
-        FolderOverridesComponent,
-        ResetSettingsButtonComponent,
-        SettingsPopoverShellComponent
+        SettingsPopoverShellComponent,
+        ColorSettingsHeaderComponent,
+        ColorRangeSectionComponent,
+        GradientModePickerComponent,
+        ColorBandsSectionComponent,
+        InvertResetRowComponent,
+        FolderOverridesComponent
     ]
 })
-export class ColorSettingsPopoverComponent implements OnDestroy {
+export class ColorSettingsPopoverComponent {
     constructor(
-        private readonly colorModeService: ColorModeService,
         private readonly colorMetricService: ColorMetricService,
-        private readonly isDeltaStateService: IsDeltaStateService,
-        private readonly colorRangeService: ColorRangeService,
-        private readonly attributeDescriptorsService: AttributeDescriptorsService,
-        private readonly mapColorsService: MapColorsService,
-        private readonly selectedColorMetricDataService: SelectedColorMetricDataService,
-        private readonly codeMapRenderService: CodeMapRenderService
+        private readonly isDeltaStateService: IsDeltaStateService
     ) {}
 
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
 
-    readonly colorMode = toSignal(this.colorModeService.colorMode$(), { initialValue: "absolute" as ColorMode })
-    readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
-    readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
-    readonly sliderValues = toSignal(this.colorRangeService.metricColorRangeValues$(), {
-        initialValue: { values: [], min: 0, max: 0, from: 0, to: 0 }
-    })
-    readonly sliderColors = toSignal(this.colorRangeService.metricColorRangeColors$(), {
-        initialValue: { leftColor: "#000", middleColor: "#000", rightColor: "#000" }
-    })
-    readonly isAttributeDirectionInversed = toSignal(
-        combineLatest([this.colorMetricService.colorMetric$(), this.attributeDescriptorsService.attributeDescriptors$()]).pipe(
-            map(([colorMetric, attributeDescriptors]) => attributeDescriptors[colorMetric]?.direction === 1)
-        ),
-        { initialValue: false }
-    )
-
-    readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
-
-    private readonly selectedColorMetricData = toSignal(this.selectedColorMetricDataService.selectedColorMetricData$(), {
-        initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
-    })
-
-    readonly colorCategoryCounts = toSignal(this.codeMapRenderService.colorCategoryCounts$, {
-        initialValue: { positive: 0, neutral: 0, negative: 0 }
-    })
-
-    readonly isColorRangeInverted = computed(() => this.mapColors().isColorRangeInverted ?? false)
-    readonly areDeltaColorsInverted = computed(() => this.mapColors().areDeltaColorsInverted ?? false)
+    private readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
+    private readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
 
     readonly hasRangeSection = computed(() => !this.isDeltaState() && this.colorMetric() !== "unary")
-
-    readonly headerSwatchGradient = computed(() => {
-        const colors = this.mapColors()
-        return this.isDeltaState()
-            ? `linear-gradient(90deg, ${colors.positiveDelta}, ${colors.negativeDelta})`
-            : `linear-gradient(90deg, ${colors.positive}, ${colors.neutral}, ${colors.negative})`
-    })
-
-    private pendingLeftValue: null | number = null
-    private pendingRightValue: null | number = null
-
-    private readonly commitColorRange = debounce(() => {
-        const newColorRange: Partial<ColorRange> = {}
-        if (this.pendingLeftValue !== null) {
-            newColorRange.from = this.pendingLeftValue
-        }
-        if (this.pendingRightValue !== null) {
-            newColorRange.to = this.pendingRightValue
-        }
-        this.pendingLeftValue = null
-        this.pendingRightValue = null
-        this.colorRangeService.setColorRange(newColorRange)
-    }, SETTINGS_INPUT_DEBOUNCE_MS)
-
-    handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {
-        this.pendingLeftValue = newLeftValue ?? this.pendingLeftValue
-        this.pendingRightValue = newRightValue ?? this.pendingRightValue
-        this.commitColorRange()
-    }
-
-    ngOnDestroy(): void {
-        // commit instead of discarding: a pending threshold adjustment must not be
-        // silently dropped when the popover is destroyed within the debounce window
-        this.commitColorRange.flush()
-    }
-
-    handleColorModeChange(value: string) {
-        this.colorModeService.setColorMode(value as ColorMode)
-    }
-
-    handleIsColorRangeInvertedChange() {
-        this.mapColorsService.invertColorRange()
-    }
-
-    handleAreDeltaColorsInvertedChange() {
-        this.mapColorsService.invertDeltaColors()
-    }
-
-    resetColorRange = () => {
-        this.colorRangeService.setColorRange(calculateInitialColorRange(this.selectedColorMetricData()))
-    }
-
-    resetColorsKeys() {
-        return this.isDeltaState()
-            ? [
-                  "appSettings.mapColors.positiveDelta",
-                  "appSettings.mapColors.negativeDelta",
-                  "appSettings.mapColors.selected",
-                  "appSettings.mapColors.areDeltaColorsInverted"
-              ]
-            : [
-                  "appSettings.mapColors.positive",
-                  "appSettings.mapColors.negative",
-                  "appSettings.mapColors.neutral",
-                  "appSettings.mapColors.selected",
-                  "appSettings.mapColors.isColorRangeInverted",
-                  "dynamicSettings.colorMode"
-              ]
-    }
 }

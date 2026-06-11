@@ -1,0 +1,32 @@
+<cc-metric-color-range-slider
+    class="block"
+    [minValue]="sliderValues().min"
+    [maxValue]="sliderValues().max"
+    [currentLeftValue]="sliderValues().from"
+    [currentRightValue]="sliderValues().to"
+    [leftColor]="sliderColors().leftColor"
+    [middleColor]="sliderColors().middleColor"
+    [rightColor]="sliderColors().rightColor"
+    [handleValueChange]="handleValueChange"
+    [sliderWidth]="220"
+></cc-metric-color-range-slider>
+
+<div class="flex items-center justify-between gap-2">
+    <span class="text-xs uppercase tracking-wider opacity-60">Distribution</span>
+    <span class="truncate text-xs opacity-60">{{ colorMetric() }} × quantile %</span>
+</div>
+<cc-metric-color-range-diagram
+    [minValue]="sliderValues().min"
+    [maxValue]="sliderValues().max"
+    [currentLeftValue]="sliderValues().from"
+    [currentRightValue]="sliderValues().to"
+    [leftColor]="sliderColors().leftColor"
+    [middleColor]="sliderColors().middleColor"
+    [rightColor]="sliderColors().rightColor"
+    [colorMetric]="colorMetric()"
+    [values]="sliderValues().values"
+    [isAttributeDirectionInverted]="isAttributeDirectionInversed()"
+    [diagramWidth]="380"
+    [diagramHeight]="190"
+    [showAxisLabels]="false"
+></cc-metric-color-range-diagram>

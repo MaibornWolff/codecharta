@@ -1,0 +1,16 @@
+<div class="flex items-center justify-between gap-2">
+    <div class="flex min-w-0 items-center gap-2">
+        <span class="inline-block h-3.5 w-3.5 shrink-0 rounded-full" [style.background]="swatchGradient()"></span>
+        <span class="truncate text-sm">Color by <span class="font-semibold text-primary">{{ colorMetric() }}</span></span>
+    </div>
+    @if (canResetThresholds()) {
+        <button
+            class="btn btn-ghost btn-xs btn-square"
+            title="Reset slider thresholds to default"
+            aria-label="Reset thresholds"
+            (click)="resetThresholds()"
+        >
+            <i class="fa fa-undo"></i>
+        </button>
+    }
+</div>

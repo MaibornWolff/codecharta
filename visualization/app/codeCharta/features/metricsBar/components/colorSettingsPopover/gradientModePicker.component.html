@@ -1,0 +1,37 @@
+<div class="flex flex-col gap-1">
+    <span class="text-xs uppercase tracking-wider opacity-60">Gradient Mode</span>
+    <div class="join w-full" role="radiogroup" aria-label="Gradient mode">
+        <input
+            type="radio"
+            [name]="groupName()"
+            class="join-item btn btn-sm flex-1"
+            aria-label="Absolute"
+            [checked]="colorMode() === 'absolute'"
+            (change)="handleColorModeChange('absolute')"
+        />
+        <input
+            type="radio"
+            [name]="groupName()"
+            class="join-item btn btn-sm flex-1"
+            aria-label="Focused"
+            [checked]="colorMode() === 'focusedGradient'"
+            (change)="handleColorModeChange('focusedGradient')"
+        />
+        <input
+            type="radio"
+            [name]="groupName()"
+            class="join-item btn btn-sm flex-1"
+            aria-label="Weighted"
+            [checked]="colorMode() === 'weightedGradient'"
+            (change)="handleColorModeChange('weightedGradient')"
+        />
+        <input
+            type="radio"
+            [name]="groupName()"
+            class="join-item btn btn-sm flex-1"
+            aria-label="Relative"
+            [checked]="colorMode() === 'trueGradient'"
+            (change)="handleColorModeChange('trueGradient')"
+        />
+    </div>
+</div>

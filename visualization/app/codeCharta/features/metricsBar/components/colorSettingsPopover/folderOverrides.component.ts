@@ -1,19 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { MarkedPackageWithCount } from "../../selectors/markedPackagesWithCounts.selector"
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { FolderOverridesService } from "../../services/folderOverrides.service"
 import { MapColorsService } from "../../services/mapColors.service"
-import { InlineColorPickerComponent } from "./inlineColorPicker.component"
-
-const MAX_FOLDER_SUGGESTIONS = 8
+import { FolderOverrideRowComponent } from "./folderOverrideRow.component"
+import { PinFolderSearchComponent } from "./pinFolderSearch.component"
 
 @Component({
     selector: "cc-folder-overrides",
     templateUrl: "./folderOverrides.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [InlineColorPickerComponent]
+    imports: [FolderOverrideRowComponent, PinFolderSearchComponent]
 })
 export class FolderOverridesComponent {
     constructor(
@@ -24,58 +23,10 @@ export class FolderOverridesComponent {
     readonly overrides = toSignal(this.folderOverridesService.markedPackagesWithCounts$(), {
         initialValue: [] as MarkedPackageWithCount[]
     })
-    private readonly folderPaths = toSignal(this.folderOverridesService.markableFolderPaths$(), { initialValue: [] as string[] })
     private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
-
-    readonly isPinning = signal(false)
-    readonly searchTerm = signal("")
-    private readonly pinInput = viewChild<ElementRef<HTMLInputElement>>("pinInput")
-
-    readonly folderSuggestions = computed(() => {
-        const term = this.searchTerm().toLowerCase()
-        const markedPaths = new Set(this.overrides().map(override => override.path))
-        const suggestions: string[] = []
-        for (const path of this.folderPaths()) {
-            if (markedPaths.has(path) || !path.toLowerCase().includes(term)) {
-                continue
-            }
-            suggestions.push(path)
-            if (suggestions.length >= MAX_FOLDER_SUGGESTIONS) {
-                break
-            }
-        }
-        return suggestions
-    })
-
-    startPinning() {
-        this.isPinning.set(true)
-        setTimeout(() => this.pinInput()?.nativeElement.focus())
-    }
-
-    stopPinning() {
-        this.isPinning.set(false)
-        this.searchTerm.set("")
-    }
-
-    handleSearchTermChange(searchTerm: string) {
-        this.searchTerm.set(searchTerm)
-    }
-
-    handleSearchBlur() {
-        if (this.searchTerm().trim() === "") {
-            this.stopPinning()
-        }
-    }
-
-    handleSearchEscape(event: Event) {
-        // Escape would otherwise also close the surrounding native popover
-        event.preventDefault()
-        this.stopPinning()
-    }
 
     handlePin(path: string) {
         this.folderOverridesService.markPackage({ path, color: this.nextMarkingColor(path) })
-        this.stopPinning()
     }
 
     handleRecolor(path: string, color: string) {

@@ -1,0 +1,29 @@
+<div class="flex items-center justify-between gap-2">
+    @if (!isDeltaState()) {
+        <label class="flex cursor-pointer items-center gap-2">
+            <input
+                type="checkbox"
+                class="toggle toggle-sm toggle-primary"
+                [checked]="isColorRangeInverted()"
+                (change)="handleIsColorRangeInvertedChange()"
+            />
+            <span class="text-sm">Invert colors</span>
+        </label>
+    } @else {
+        <label class="flex cursor-pointer items-center gap-2">
+            <input
+                type="checkbox"
+                class="toggle toggle-sm toggle-primary"
+                [checked]="areDeltaColorsInverted()"
+                (change)="handleAreDeltaColorsInvertedChange()"
+            />
+            <span class="text-sm">Invert colors</span>
+        </label>
+    }
+    <cc-reset-settings-button
+        [settingsKeys]="resetColorsKeys()"
+        [tooltip]="isDeltaState() ? 'Reset color values to default' : 'Reset color values and gradient mode to default'"
+        label="Reset colors"
+        [small]="true"
+    ></cc-reset-settings-button>
+</div>

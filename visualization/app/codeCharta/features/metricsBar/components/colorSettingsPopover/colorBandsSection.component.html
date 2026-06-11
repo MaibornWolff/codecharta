@@ -1,0 +1,12 @@
+<div class="flex flex-col gap-1">
+    <span class="text-xs uppercase tracking-wider opacity-60">Bands</span>
+    @if (!isDeltaState()) {
+        <cc-color-band-row mapColorFor="positive" [count]="colorCategoryCounts().positive"></cc-color-band-row>
+        <cc-color-band-row mapColorFor="neutral" [count]="colorCategoryCounts().neutral"></cc-color-band-row>
+        <cc-color-band-row mapColorFor="negative" [count]="colorCategoryCounts().negative"></cc-color-band-row>
+    } @else {
+        <cc-color-band-row mapColorFor="positiveDelta"></cc-color-band-row>
+        <cc-color-band-row mapColorFor="negativeDelta"></cc-color-band-row>
+    }
+    <cc-color-band-row mapColorFor="selected"></cc-color-band-row>
+</div>

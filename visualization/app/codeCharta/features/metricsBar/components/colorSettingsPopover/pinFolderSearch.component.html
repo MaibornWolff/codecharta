@@ -1,0 +1,40 @@
+@if (!isPinning()) {
+    <button
+        class="btn btn-ghost btn-sm w-full justify-start gap-2 border border-dashed border-base-300 font-normal"
+        (click)="startPinning()"
+    >
+        <i class="fa fa-plus"></i>
+        <span>Pin a folder color…</span>
+    </button>
+} @else {
+    <label class="input input-sm input-bordered flex items-center gap-2">
+        <i class="fa fa-search opacity-60"></i>
+        <input
+            #pinInput
+            type="text"
+            class="grow"
+            placeholder="Search folders…"
+            [value]="searchTerm()"
+            (input)="handleSearchTermChange($any($event.target).value)"
+            (keydown.escape)="handleSearchEscape($event)"
+            (blur)="handleSearchBlur()"
+        />
+    </label>
+    <ul class="m-0 flex max-h-40 list-none flex-col overflow-y-auto p-0">
+        @for (path of folderSuggestions(); track path) {
+            <li class="flex">
+                <!-- mousedown would blur the input and close the empty search before the click can pin -->
+                <button
+                    class="btn btn-ghost btn-xs w-full flex-nowrap justify-start font-normal"
+                    [title]="path"
+                    (mousedown)="$event.preventDefault()"
+                    (click)="handlePin(path)"
+                >
+                    <span class="min-w-0 truncate">{{ path }}</span>
+                </button>
+            </li>
+        } @empty {
+            <li class="px-2 py-1 text-xs opacity-60">No folders found</li>
+        }
+    </ul>
+}
