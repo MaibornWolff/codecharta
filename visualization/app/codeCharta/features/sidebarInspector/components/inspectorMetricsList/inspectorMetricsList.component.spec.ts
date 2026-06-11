@@ -101,6 +101,29 @@ describe("InspectorMetricsListComponent", () => {
         expect(screen.queryByTestId("inspector-empty-metrics")).toBe(null)
     })
 
+    it("should keep zero-value metrics with deltas in the main list", async () => {
+        // Arrange
+        const { container, detectChanges } = await render(InspectorMetricsListComponent)
+        const rowsWithZeroDelta: MetricRow[] = [
+            ...metricRowsWithEmpty,
+            {
+                name: "mcc",
+                value: 0,
+                delta: -20,
+                mapBar: { fraction: 0, severity: "neutral" },
+                rangeBar: { fraction: 0, severity: "neutral" }
+            }
+        ]
+
+        // Act
+        showRows(rowsWithZeroDelta, detectChanges)
+
+        // Assert
+        expect(container.querySelectorAll("cc-inspector-metric-row").length).toBe(3)
+        expect(screen.getByText("mcc")).not.toBe(null)
+        expect(screen.getByTestId("inspector-empty-metrics-toggle").textContent).toContain("Empty metrics (2)")
+    })
+
     it("should reveal the empty metrics when expanding the collapsible", async () => {
         // Arrange
         const { container, detectChanges } = await render(InspectorMetricsListComponent)

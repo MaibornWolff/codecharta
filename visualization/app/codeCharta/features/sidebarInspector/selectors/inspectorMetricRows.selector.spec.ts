@@ -1,5 +1,5 @@
 import { AttributeDescriptors, CodeMapNode } from "../../../codeCharta.model"
-import { _calculateMetricRows, isEmptyMetricValue } from "./inspectorMetricRows.selector"
+import { _calculateMetricRows, isEmptyMetricRow, isEmptyMetricValue } from "./inspectorMetricRows.selector"
 
 describe("isEmptyMetricValue", () => {
     it("should treat zero and missing values as empty", () => {
@@ -7,6 +7,20 @@ describe("isEmptyMetricValue", () => {
         expect(isEmptyMetricValue(0)).toBe(true)
         expect(isEmptyMetricValue(undefined)).toBe(true)
         expect(isEmptyMetricValue(42)).toBe(false)
+    })
+})
+
+describe("isEmptyMetricRow", () => {
+    it("should treat zero-value rows without a delta as empty", () => {
+        // Arrange, Act & Assert
+        expect(isEmptyMetricRow({ value: 0 })).toBe(true)
+        expect(isEmptyMetricRow({ value: 0, delta: 0 })).toBe(true)
+        expect(isEmptyMetricRow({ value: 42 })).toBe(false)
+    })
+
+    it("should keep zero-value rows with a delta out of the empty group", () => {
+        // Arrange, Act & Assert
+        expect(isEmptyMetricRow({ value: 0, delta: -20 })).toBe(false)
     })
 })
 

@@ -19,6 +19,10 @@ export const isEmptyMetricValue = (value?: number) => {
     return !value
 }
 
+export const isEmptyMetricRow = (row: Pick<MetricRow, "value" | "delta">) => {
+    return isEmptyMetricValue(row.value) && !row.delta
+}
+
 const EMPTY_METRIC_BAR: MetricBar = { fraction: 0, severity: "neutral" }
 
 const UNARY_METRIC = "unary"
