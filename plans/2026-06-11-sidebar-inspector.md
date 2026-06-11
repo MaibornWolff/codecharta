@@ -223,6 +223,7 @@ Manual (`npm run dev`, sample map):
 6. **Legend/view-cube alignment (2026-06-11)**: The legend panel, legend button, and view cube shifted by the legacy sidebar width (350px) when the sidebar opened, leaving a gap next to the 320px (`w-80`) inspector. Offsets in `legendPanel.component.scss` and `viewCube.component.scss` updated to 320px-based values; note the pixel values are coupled to the inspector's `w-80` width.
 7. **Header badges (2026-06-11)**: The "selected" chip was removed. Below the node name, two badges now show the node type (`file`/`folder`, derived from `NodeType`) and — for folders — the file count; delta file counts (Δ added/removed/changed) render next to the badges in delta mode.
 8. **Pinned sections (2026-06-11)**: The header and METRIC MAPPING sections are pinned at the top of the drawer (`shrink-0`); only the METRICS section scrolls (`min-h-0 flex-1 overflow-y-auto` wrapper in the root template).
+9. **Subagent review cleanup (2026-06-11)**: Deleted the orphaned `primaryMetricsSelector` (+ relocated `Metric`/`Edge` types and spec) — its last consumer was the deleted legacy sidebar, not metricsBar as originally assumed — and the dead `updateAttributeType` action (reducer branch, `fileSettingsActions` entry, spec) whose only dispatcher was the removed Σ/median toggle.
 
 ## Notes
 
@@ -230,7 +231,7 @@ Manual (`npm run dev`, sample map):
 - Severity thresholds (thirds) are a starting point; the pure `metricSeverity` function makes tuning trivial.
 - Folder metric values are aggregates and can exceed the leaf-derived global max → fraction clamped to 1 (full bar).
 - Delta value colors reuse `mapColors.positiveDelta`/`negativeDelta` (inline style) for parity with the legacy `metricDeltaSelected` and consistency with the 3D map; everything else uses DaisyUI tokens.
-- `state/selectors/primaryMetrics/` stays — `features/metricsBar` consumes it; only the `Metric`/`Edge` type files move there.
+- `state/selectors/primaryMetrics/` keeps only `primaryMetricNames.selector.ts` (consumed by `features/metricsBar` and the inspector). The value-based `primaryMetricsSelector` (+ `Metric`/`Edge` types) turned out to have no consumer after the legacy sidebar deletion and was removed in the post-review cleanup.
 
 ## References
 
