@@ -5,8 +5,8 @@ import { ColorMode, ColorRange } from "../../../../codeCharta.model"
 import { debounce } from "../../../../util/debounce"
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { calculateInitialColorRange } from "../../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
-import { ColorPickerForMapColorComponent } from "../../../../ui/colorPickerForMapColor/colorPickerForMapColor.component"
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
+import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
 import { AttributeDescriptorsService } from "../../services/attributeDescriptors.service"
 import { ColorMetricService } from "../../services/colorMetric.service"
 import { ColorModeService } from "../../services/colorMode.service"
@@ -16,6 +16,8 @@ import { MapColorsService } from "../../services/mapColors.service"
 import { SelectedColorMetricDataService } from "../../services/selectedColorMetricData.service"
 import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
+import { ColorBandRowComponent } from "./colorBandRow.component"
+import { FolderOverridesComponent } from "./folderOverrides.component"
 import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
 import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
 
@@ -27,7 +29,8 @@ import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColo
     imports: [
         MetricColorRangeSliderComponent,
         MetricColorRangeDiagramComponent,
-        ColorPickerForMapColorComponent,
+        ColorBandRowComponent,
+        FolderOverridesComponent,
         ResetSettingsButtonComponent,
         SettingsPopoverShellComponent
     ]
@@ -40,7 +43,8 @@ export class ColorSettingsPopoverComponent implements OnDestroy {
         private readonly colorRangeService: ColorRangeService,
         private readonly attributeDescriptorsService: AttributeDescriptorsService,
         private readonly mapColorsService: MapColorsService,
-        private readonly selectedColorMetricDataService: SelectedColorMetricDataService
+        private readonly selectedColorMetricDataService: SelectedColorMetricDataService,
+        private readonly codeMapRenderService: CodeMapRenderService
     ) {}
 
     readonly popoverId = input.required<string>()
@@ -68,12 +72,21 @@ export class ColorSettingsPopoverComponent implements OnDestroy {
         initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
     })
 
+    readonly colorCategoryCounts = toSignal(this.codeMapRenderService.colorCategoryCounts$, {
+        initialValue: { positive: 0, neutral: 0, negative: 0 }
+    })
+
     readonly isColorRangeInverted = computed(() => this.mapColors().isColorRangeInverted ?? false)
     readonly areDeltaColorsInverted = computed(() => this.mapColors().areDeltaColorsInverted ?? false)
 
-    readonly isWidePopover = computed(() => !this.isDeltaState() && this.colorMetric() !== "unary")
+    readonly hasRangeSection = computed(() => !this.isDeltaState() && this.colorMetric() !== "unary")
 
-    readonly resetThresholdsKeys = ["dynamicSettings.colorRange"]
+    readonly headerSwatchGradient = computed(() => {
+        const colors = this.mapColors()
+        return this.isDeltaState()
+            ? `linear-gradient(90deg, ${colors.positiveDelta}, ${colors.negativeDelta})`
+            : `linear-gradient(90deg, ${colors.positive}, ${colors.neutral}, ${colors.negative})`
+    })
 
     private pendingLeftValue: null | number = null
     private pendingRightValue: null | number = null
@@ -132,7 +145,8 @@ export class ColorSettingsPopoverComponent implements OnDestroy {
                   "appSettings.mapColors.negative",
                   "appSettings.mapColors.neutral",
                   "appSettings.mapColors.selected",
-                  "appSettings.mapColors.isColorRangeInverted"
+                  "appSettings.mapColors.isColorRangeInverted",
+                  "dynamicSettings.colorMode"
               ]
     }
 }

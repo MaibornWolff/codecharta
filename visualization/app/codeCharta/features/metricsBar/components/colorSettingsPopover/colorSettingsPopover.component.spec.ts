@@ -7,6 +7,7 @@ import { invertColorRange, invertDeltaColors } from "../../../../state/store/app
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
 import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 import { defaultState } from "../../../../state/store/state.manager"
 import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
 import { ColorSettingsPopoverComponent } from "./colorSettingsPopover.component"
@@ -16,7 +17,7 @@ describe("ColorSettingsPopoverComponent", () => {
         jest.useRealTimers()
     })
 
-    async function setup(mapColors = defaultMapColors) {
+    async function setup(mapColors = defaultMapColors, isDeltaState = false) {
         const renderResult = await render(ColorSettingsPopoverComponent, {
             inputs: {
                 popoverId: "metric-settings-popover-color",
@@ -25,7 +26,10 @@ describe("ColorSettingsPopoverComponent", () => {
             providers: [
                 provideMockStore({
                     initialState: defaultState,
-                    selectors: [{ selector: mapColorsSelector, value: mapColors }]
+                    selectors: [
+                        { selector: mapColorsSelector, value: mapColors },
+                        { selector: isDeltaStateSelector, value: isDeltaState }
+                    ]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 {
@@ -137,6 +141,22 @@ describe("ColorSettingsPopoverComponent", () => {
 
         // Assert
         expect(component.areDeltaColorsInverted()).toBe(true)
+    })
+
+    it("should reset the gradient mode together with the colors outside delta mode", async () => {
+        // Arrange & Act
+        const { component } = await setup()
+
+        // Assert
+        expect(component.resetColorsKeys()).toContain("dynamicSettings.colorMode")
+    })
+
+    it("should not reset the gradient mode in delta mode where it is not configurable", async () => {
+        // Arrange & Act
+        const { component } = await setup(defaultMapColors, true)
+
+        // Assert
+        expect(component.resetColorsKeys()).not.toContain("dynamicSettings.colorMode")
     })
 
     it("should dispatch invertColorRange and invertDeltaColors from the toggle handlers", async () => {

@@ -1,7 +1,7 @@
 ---
 name: redesign-color-settings-popover
 issue: ""
-state: progress
+state: complete
 version: <next>
 date: 2026-05-13
 git_commit: 7708617904d4310f0896fc9b9f666235d6eab2f6
@@ -11,6 +11,8 @@ tags: [plan, visualization, metricsBar, colorSettingsPopover, daisyui, restyle]
 ---
 
 # Redesign the Color settings popover
+
+> **Superseded** by `plans/color_metric_popover/2026-06-11-restyle-color-metric-popover.md` — the popover is being migrated to a new mockup-based layout. Phases 1–2 of this plan were implemented and remain in place until the new plan lands.
 
 ## Goal
 

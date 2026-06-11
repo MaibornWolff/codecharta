@@ -1,4 +1,4 @@
-<button class="btn btn-outline btn-error gap-2" (click)="applyDefaultSettings()" [title]="tooltip">
+<button class="btn btn-outline btn-error gap-2" [class.btn-sm]="small" (click)="applyDefaultSettings()" [title]="tooltip">
     <i class="fa fa-undo"></i>
     @if (label) {
         <span>{{ label }}</span>

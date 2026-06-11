@@ -1,27 +1,42 @@
 <cc-settings-popover-shell
     [popoverId]="popoverId()"
     [anchorName]="anchorName()"
-    [widthClass]="'max-w-[95vw] ' + (isWidePopover() ? 'w-[640px]' : 'w-80')"
+    [widthClass]="'max-w-[95vw] ' + (hasRangeSection() ? 'w-[420px]' : 'w-80')"
 >
-    @if (!isDeltaState() && colorMetric() !== "unary") {
-        <div class="flex items-center gap-2">
-            <cc-metric-color-range-slider
-                class="block flex-1"
-                [minValue]="sliderValues().min"
-                [maxValue]="sliderValues().max"
-                [currentLeftValue]="sliderValues().from"
-                [currentRightValue]="sliderValues().to"
-                [leftColor]="sliderColors().leftColor"
-                [middleColor]="sliderColors().middleColor"
-                [rightColor]="sliderColors().rightColor"
-                [handleValueChange]="handleValueChange"
-                [sliderWidth]="395"
-            ></cc-metric-color-range-slider>
-            <cc-reset-settings-button
-                [settingsKeys]="resetThresholdsKeys"
-                [callback]="resetColorRange"
-                tooltip="Reset slider thresholds to default"
-            ></cc-reset-settings-button>
+    <div class="flex items-center justify-between gap-2">
+        <div class="flex min-w-0 items-center gap-2">
+            <span class="inline-block h-3.5 w-3.5 shrink-0 rounded-full" [style.background]="headerSwatchGradient()"></span>
+            <span class="truncate text-sm">Color by <span class="font-semibold text-primary">{{ colorMetric() }}</span></span>
+        </div>
+        @if (hasRangeSection()) {
+            <button
+                class="btn btn-ghost btn-xs btn-square"
+                title="Reset slider thresholds to default"
+                aria-label="Reset thresholds"
+                (click)="resetColorRange()"
+            >
+                <i class="fa fa-undo"></i>
+            </button>
+        }
+    </div>
+
+    @if (hasRangeSection()) {
+        <cc-metric-color-range-slider
+            class="block"
+            [minValue]="sliderValues().min"
+            [maxValue]="sliderValues().max"
+            [currentLeftValue]="sliderValues().from"
+            [currentRightValue]="sliderValues().to"
+            [leftColor]="sliderColors().leftColor"
+            [middleColor]="sliderColors().middleColor"
+            [rightColor]="sliderColors().rightColor"
+            [handleValueChange]="handleValueChange"
+            [sliderWidth]="220"
+        ></cc-metric-color-range-slider>
+
+        <div class="flex items-center justify-between gap-2">
+            <span class="text-xs uppercase tracking-wider opacity-60">Distribution</span>
+            <span class="truncate text-xs opacity-60">{{ colorMetric() }} × quantile %</span>
         </div>
         <cc-metric-color-range-diagram
             [minValue]="sliderValues().min"
@@ -34,60 +49,92 @@
             [colorMetric]="colorMetric()"
             [values]="sliderValues().values"
             [isAttributeDirectionInverted]="isAttributeDirectionInversed()"
+            [diagramWidth]="380"
+            [diagramHeight]="190"
+            [showAxisLabels]="false"
         ></cc-metric-color-range-diagram>
-        <label class="form-control">
-            <div class="label py-1">
-                <span class="label-text">Gradient Mode</span>
+
+        <div class="flex flex-col gap-1">
+            <span class="text-xs uppercase tracking-wider opacity-60">Gradient Mode</span>
+            <div class="join w-full" aria-label="Gradient mode">
+                <input
+                    type="radio"
+                    name="gradientMode"
+                    class="join-item btn btn-sm flex-1"
+                    aria-label="Absolute"
+                    [checked]="colorMode() === 'absolute'"
+                    (change)="handleColorModeChange('absolute')"
+                />
+                <input
+                    type="radio"
+                    name="gradientMode"
+                    class="join-item btn btn-sm flex-1"
+                    aria-label="Focused"
+                    [checked]="colorMode() === 'focusedGradient'"
+                    (change)="handleColorModeChange('focusedGradient')"
+                />
+                <input
+                    type="radio"
+                    name="gradientMode"
+                    class="join-item btn btn-sm flex-1"
+                    aria-label="Weighted"
+                    [checked]="colorMode() === 'weightedGradient'"
+                    (change)="handleColorModeChange('weightedGradient')"
+                />
+                <input
+                    type="radio"
+                    name="gradientMode"
+                    class="join-item btn btn-sm flex-1"
+                    aria-label="Relative"
+                    [checked]="colorMode() === 'trueGradient'"
+                    (change)="handleColorModeChange('trueGradient')"
+                />
             </div>
-            <select
-                class="select select-sm select-bordered w-full"
-                [value]="colorMode()"
-                (change)="handleColorModeChange($any($event.target).value)"
-            >
-                <option value="absolute">Absolute</option>
-                <option value="focusedGradient">Focused Gradient</option>
-                <option value="weightedGradient">Weighted Gradient</option>
-                <option value="trueGradient">True Gradient</option>
-            </select>
-        </label>
+        </div>
     }
 
-    @if (!isDeltaState()) {
-        <cc-color-picker-for-map-color [mapColorFor]="'positive'"></cc-color-picker-for-map-color>
-        <cc-color-picker-for-map-color [mapColorFor]="'neutral'"></cc-color-picker-for-map-color>
-        <cc-color-picker-for-map-color [mapColorFor]="'negative'"></cc-color-picker-for-map-color>
-    } @else {
-        <cc-color-picker-for-map-color [mapColorFor]="'positiveDelta'"></cc-color-picker-for-map-color>
-        <cc-color-picker-for-map-color [mapColorFor]="'negativeDelta'"></cc-color-picker-for-map-color>
-    }
-    <cc-color-picker-for-map-color [mapColorFor]="'selected'"></cc-color-picker-for-map-color>
+    <div class="flex flex-col gap-1">
+        <span class="text-xs uppercase tracking-wider opacity-60">Bands</span>
+        @if (!isDeltaState()) {
+            <cc-color-band-row mapColorFor="positive" [count]="colorCategoryCounts().positive"></cc-color-band-row>
+            <cc-color-band-row mapColorFor="neutral" [count]="colorCategoryCounts().neutral"></cc-color-band-row>
+            <cc-color-band-row mapColorFor="negative" [count]="colorCategoryCounts().negative"></cc-color-band-row>
+        } @else {
+            <cc-color-band-row mapColorFor="positiveDelta"></cc-color-band-row>
+            <cc-color-band-row mapColorFor="negativeDelta"></cc-color-band-row>
+        }
+        <cc-color-band-row mapColorFor="selected"></cc-color-band-row>
+    </div>
 
     <div class="flex items-center justify-between gap-2">
         @if (!isDeltaState()) {
-            <label class="flex items-center gap-2 cursor-pointer">
+            <label class="flex cursor-pointer items-center gap-2">
                 <input
                     type="checkbox"
-                    class="checkbox checkbox-sm checkbox-primary"
+                    class="toggle toggle-sm toggle-primary"
                     [checked]="isColorRangeInverted()"
                     (change)="handleIsColorRangeInvertedChange()"
                 />
-                <span>Invert Colors</span>
+                <span class="text-sm">Invert colors</span>
             </label>
         } @else {
-            <label class="flex items-center gap-2 cursor-pointer">
+            <label class="flex cursor-pointer items-center gap-2">
                 <input
                     type="checkbox"
-                    class="checkbox checkbox-sm checkbox-primary"
+                    class="toggle toggle-sm toggle-primary"
                     [checked]="areDeltaColorsInverted()"
                     (change)="handleAreDeltaColorsInvertedChange()"
                 />
-                <span>Invert Colors</span>
+                <span class="text-sm">Invert colors</span>
             </label>
         }
         <cc-reset-settings-button
             [settingsKeys]="resetColorsKeys()"
-            tooltip="Reset color values to default"
+            tooltip="Reset color values and gradient mode to default"
             label="Reset colors"
+            [small]="true"
         ></cc-reset-settings-button>
     </div>
+
+    <cc-folder-overrides></cc-folder-overrides>
 </cc-settings-popover-shell>
