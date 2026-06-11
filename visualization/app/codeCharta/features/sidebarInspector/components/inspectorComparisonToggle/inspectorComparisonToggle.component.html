@@ -1,0 +1,22 @@
+<div class="join" data-testid="inspector-comparison-toggle">
+    <button
+        type="button"
+        class="btn btn-xs join-item"
+        [class.btn-active]="comparisonMode() === 'map'"
+        title="Compare each value against the whole map"
+        data-testid="inspector-comparison-map"
+        (click)="setComparisonMode('map')"
+    >
+        map
+    </button>
+    <button
+        type="button"
+        class="btn btn-xs join-item"
+        [class.btn-active]="comparisonMode() === 'range'"
+        title="Compare each value against the min/max range of all files"
+        data-testid="inspector-comparison-range"
+        (click)="setComparisonMode('range')"
+    >
+        range
+    </button>
+</div>

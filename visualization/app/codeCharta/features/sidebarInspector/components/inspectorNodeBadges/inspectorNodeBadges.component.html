@@ -1,0 +1,13 @@
+<span class="badge badge-ghost badge-sm" data-testid="inspector-node-type">{{ isFolder() ? 'folder' : 'file' }}</span>
+@if (isFolder() && fileCount(); as count) {
+    <span class="badge badge-ghost badge-sm" data-testid="inspector-file-count">
+        {{ count.all }} {{ count.all === 1 ? 'file' : 'files' }}
+    </span>
+    @if (isDeltaState()) {
+        <span class="text-xs opacity-60">
+            <span class="text-success" title="Number of added files">Δ{{ count.added }}</span>
+            <span class="text-error" title="Number of removed files">Δ{{ count.removed > 0 ? -count.removed : 0 }}</span>
+            <span title="Number of files with metric changes">Δ{{ count.changed }}</span>
+        </span>
+    }
+}

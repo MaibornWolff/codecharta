@@ -1,0 +1,6 @@
+<span class="text-xs uppercase tracking-widest opacity-60">Metric Mapping</span>
+<div class="mt-1 divide-y divide-base-200">
+    @for (block of mappingBlocks(); track block.kind) {
+        <cc-inspector-mapping-block [block]="block"></cc-inspector-mapping-block>
+    }
+</div>

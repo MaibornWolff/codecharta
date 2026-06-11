@@ -5,6 +5,7 @@ import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoad
 import { NavBarComponent } from "./features/navBar/facade"
 import { BottomBarComponent } from "./features/bottomBar/facade"
 import { SidebarExplorerComponent } from "./features/sidebarExplorer/facade"
+import { SidebarInspectorComponent } from "./features/sidebarInspector/facade"
 import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBar.component"
 import { MetricsBarComponent } from "./features/metricsBar/facade"
 import { CodeMapComponent } from "./ui/codeMap/codeMap.component"
@@ -21,6 +22,7 @@ import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.compo
         FileExtensionBarComponent,
         MetricsBarComponent,
         SidebarExplorerComponent,
+        SidebarInspectorComponent,
         CodeMapComponent,
         LegendPanelComponent,
         LoadingFileProgressSpinnerComponent,

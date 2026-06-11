@@ -4,18 +4,17 @@ import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { GlobalSettingsFacade } from "../../features/globalSettings/facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { skip, tap } from "rxjs"
-import { IsAttributeSideBarVisibleService } from "../../services/isAttributeSideBarVisible.service"
+import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { ViewCubeComponent } from "../viewCube/viewCube.component"
-import { AttributeSideBarComponent } from "../attributeSideBar/attributeSideBar.component"
 import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-code-map",
     templateUrl: "./codeMap.component.html",
     styleUrls: ["./codeMap.component.scss"],
-    imports: [ViewCubeComponent, AttributeSideBarComponent, AsyncPipe]
+    imports: [ViewCubeComponent, AsyncPipe]
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
     isLoadingFile$ = this.store.select(isLoadingFileSelector)
@@ -33,7 +32,7 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
     private barsResizeObserver?: ResizeObserver
 
     constructor(
-        public isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
+        public inspectorVisibilityService: InspectorVisibilityService,
         private readonly store: Store<CcState>,
         private readonly threeViewerService: ThreeViewerService,
         private readonly codeMapMouseEventService: CodeMapMouseEventService,

@@ -78,7 +78,7 @@ export class ScreenshotService {
             "cc-view-cube",
             "cc-metrics-bar",
             "cc-file-extension-bar",
-            "cc-attribute-side-bar",
+            "cc-sidebar-inspector",
             "cc-loading-file-progess-spinner",
             "cc-bottom-bar",
             "cc-sidebar-explorer"

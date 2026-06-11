@@ -1,0 +1,32 @@
+<div class="flex items-center gap-2">
+    <span class="text-xs uppercase tracking-widest opacity-60">{{ block().kind }}</span>
+    <i [class]="iconClasses()" aria-hidden="true"></i>
+</div>
+<p
+    class="break-all leading-snug"
+    [title]="block().descriptor | attributeDescriptorTooltip: block().metricName"
+    [attr.data-testid]="'mapping-block-name-' + block().kind"
+>
+    {{ block().metricName }}
+    @if (block().descriptor?.link; as link) {
+        <a
+            [href]="link"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sm opacity-70"
+            [attr.data-testid]="'mapping-block-link-' + block().kind"
+        >
+            <i class="fa fa-external-link"></i>
+        </a>
+    }
+</p>
+<p class="text-base font-semibold tabular-nums leading-snug" [attr.data-testid]="'mapping-block-value-' + block().kind">
+    @if (block().kind === 'edge') {
+        {{ edgeCountText() }} <span class="text-sm font-normal opacity-70">(in/out)</span>
+    } @else {
+        {{ formattedValue() }}
+    }
+    @if (block().inverted) {
+        <span class="text-sm font-normal opacity-60" data-testid="mapping-block-inverted">· inverted</span>
+    }
+</p>
