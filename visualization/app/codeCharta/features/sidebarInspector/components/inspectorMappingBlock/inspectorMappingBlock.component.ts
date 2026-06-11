@@ -21,6 +21,6 @@ export class InspectorMappingBlockComponent {
     readonly block = input.required<MappingBlock>()
 
     readonly iconClasses = computed(() => `${InspectorMappingBlockComponent.ICONS[this.block().kind]} text-xs text-primary`)
-    readonly rangeText = computed(() => `${formatMetricNumber(this.block().min)} – ${formatMetricNumber(this.block().max)}`)
+    readonly formattedValue = computed(() => formatMetricNumber(this.block().value))
     readonly edgeCountText = computed(() => `${formatMetricNumber(this.block().incoming)}/${formatMetricNumber(this.block().outgoing)}`)
 }

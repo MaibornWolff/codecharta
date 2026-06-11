@@ -3,7 +3,6 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
-import { selectedBuildingIdSelector } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector"
 import { InspectorHeaderService } from "./inspectorHeader.service"
 
 describe("InspectorHeaderService", () => {
@@ -16,7 +15,6 @@ describe("InspectorHeaderService", () => {
                 provideMockStore({
                     selectors: [
                         { selector: selectedNodeSelector, value: undefined },
-                        { selector: selectedBuildingIdSelector, value: null },
                         { selector: isDeltaStateSelector, value: false }
                     ]
                 })

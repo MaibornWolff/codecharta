@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MetricData } from "../../../codeCharta.model"
-import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { AttributeDescriptor, AttributeDescriptors, CodeMapNode } from "../../../codeCharta.model"
+import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { calculateMetricBar, MetricSeverity } from "../util/metricSeverity"
@@ -18,7 +18,7 @@ const UNARY_METRIC = "unary"
 
 export const _calculateMetricRows = (
     selectedNode: CodeMapNode | undefined,
-    metricData: Pick<MetricData, "nodeMetricData">,
+    rootNode: CodeMapNode | undefined,
     attributeDescriptors: AttributeDescriptors
 ): MetricRow[] => {
     if (!selectedNode?.attributes) {
@@ -27,19 +27,19 @@ export const _calculateMetricRows = (
     return Object.keys(selectedNode.attributes)
         .filter(metricName => metricName !== UNARY_METRIC)
         .sort((metricNameA, metricNameB) => metricNameA.localeCompare(metricNameB))
-        .map(metricName => createMetricRow(metricName, selectedNode, metricData, attributeDescriptors))
+        .map(metricName => createMetricRow(metricName, selectedNode, rootNode, attributeDescriptors))
 }
 
 const createMetricRow = (
     metricName: string,
     selectedNode: CodeMapNode,
-    metricData: Pick<MetricData, "nodeMetricData">,
+    rootNode: CodeMapNode | undefined,
     attributeDescriptors: AttributeDescriptors
 ): MetricRow => {
     const descriptor = attributeDescriptors?.[metricName]
-    const range = metricData.nodeMetricData.find(metric => metric.name === metricName)
     const value = selectedNode.attributes[metricName]
-    const { fraction, severity } = calculateMetricBar(value, range?.minValue, range?.maxValue, descriptor?.direction)
+    const mapTotal = rootNode?.attributes?.[metricName]
+    const { fraction, severity } = calculateShareOfMapBar(value, mapTotal, descriptor?.direction)
     return {
         name: metricName,
         value,
@@ -50,9 +50,14 @@ const createMetricRow = (
     }
 }
 
+const calculateShareOfMapBar = (value: number, mapTotal: number | undefined, direction?: number) => {
+    return calculateMetricBar(value, 0, mapTotal, direction)
+}
+
 export const inspectorMetricRowsSelector = createSelector(
     selectedNodeSelector,
-    metricDataSelector,
+    accumulatedDataSelector,
     attributeDescriptorsSelector,
-    _calculateMetricRows
+    (selectedNode, accumulatedData, attributeDescriptors) =>
+        _calculateMetricRows(selectedNode, accumulatedData.unifiedMapNode, attributeDescriptors)
 )

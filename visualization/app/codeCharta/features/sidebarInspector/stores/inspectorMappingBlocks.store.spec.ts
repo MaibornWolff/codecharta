@@ -21,7 +21,7 @@ describe("InspectorMappingBlocksStore", () => {
 
     it("should emit the mapping blocks from the selector", done => {
         // Arrange
-        const blocks: MappingBlock[] = [{ kind: "area", metricName: "rloc", min: 12, max: 4208 }]
+        const blocks: MappingBlock[] = [{ kind: "area", metricName: "rloc", value: 842 }]
         mockStore.overrideSelector(inspectorMappingBlocksSelector, blocks)
         mockStore.refreshState()
 

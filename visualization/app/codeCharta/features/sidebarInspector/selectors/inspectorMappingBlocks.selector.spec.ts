@@ -2,28 +2,37 @@ import { AttributeDescriptors, CodeMapNode, MapColors, NodeType } from "../../..
 import { _calculateMappingBlocks } from "./inspectorMappingBlocks.selector"
 
 describe("_calculateMappingBlocks", () => {
-    const metricData = {
-        nodeMetricData: [
-            { name: "rloc", minValue: 12, maxValue: 4208, values: [] },
-            { name: "mcc", minValue: 1, maxValue: 62, values: [] },
-            { name: "coverage", minValue: 0, maxValue: 100, values: [] }
-        ],
-        edgeMetricData: [{ name: "pairingRate", minValue: 0, maxValue: 90, values: [] }]
-    }
     const primaryMetricNames = { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "coverage", edgeMetric: null }
     const attributeDescriptors: AttributeDescriptors = {}
     const mapColors = { isColorRangeInverted: false } as MapColors
+    const selectedNode = { attributes: { rloc: 842, mcc: 41, coverage: 62 } } as unknown as CodeMapNode
 
-    it("should create area, height and color blocks with their global ranges", () => {
+    it("should create area, height and color blocks with the selected node's values", () => {
         // Arrange & Act
-        const blocks = _calculateMappingBlocks(primaryMetricNames, metricData, attributeDescriptors, mapColors, false, undefined)
+        const blocks = _calculateMappingBlocks(primaryMetricNames, attributeDescriptors, mapColors, false, selectedNode)
 
         // Assert
         expect(blocks).toEqual([
-            { kind: "area", metricName: "rloc", min: 12, max: 4208, descriptor: undefined },
-            { kind: "height", metricName: "mcc", min: 1, max: 62, descriptor: undefined },
-            { kind: "color", metricName: "coverage", min: 0, max: 100, descriptor: undefined, inverted: false }
+            { kind: "area", metricName: "rloc", value: 842, descriptor: undefined },
+            { kind: "height", metricName: "mcc", value: 41, descriptor: undefined },
+            { kind: "color", metricName: "coverage", value: 62, descriptor: undefined, inverted: false }
         ])
+    })
+
+    it("should show the aggregated value of a selected folder", () => {
+        // Arrange
+        const folderNode = {
+            type: NodeType.FOLDER,
+            children: [{}],
+            attributes: { rloc: 12_400, mcc: 200, coverage: 70 }
+        } as unknown as CodeMapNode
+
+        // Act
+        const blocks = _calculateMappingBlocks(primaryMetricNames, attributeDescriptors, mapColors, false, folderNode)
+
+        // Assert
+        const areaBlock = blocks.find(block => block.kind === "area")
+        expect(areaBlock.value).toBe(12_400)
     })
 
     it("should mark the color block as inverted when the color range is inverted", () => {
@@ -31,7 +40,7 @@ describe("_calculateMappingBlocks", () => {
         const invertedMapColors = { isColorRangeInverted: true } as MapColors
 
         // Act
-        const blocks = _calculateMappingBlocks(primaryMetricNames, metricData, attributeDescriptors, invertedMapColors, false, undefined)
+        const blocks = _calculateMappingBlocks(primaryMetricNames, attributeDescriptors, invertedMapColors, false, selectedNode)
 
         // Assert
         const colorBlock = blocks.find(block => block.kind === "color")
@@ -40,7 +49,7 @@ describe("_calculateMappingBlocks", () => {
 
     it("should omit the color block in delta mode", () => {
         // Arrange & Act
-        const blocks = _calculateMappingBlocks(primaryMetricNames, metricData, attributeDescriptors, mapColors, true, undefined)
+        const blocks = _calculateMappingBlocks(primaryMetricNames, attributeDescriptors, mapColors, true, selectedNode)
 
         // Assert
         expect(blocks.map(block => block.kind)).toEqual(["area", "height"])
@@ -48,10 +57,10 @@ describe("_calculateMappingBlocks", () => {
 
     it("should omit the edge block when no edge metric is selected", () => {
         // Arrange
-        const selectedNode = { edgeAttributes: { pairingRate: { incoming: 5, outgoing: 3 } } } as unknown as CodeMapNode
+        const nodeWithEdges = { ...selectedNode, edgeAttributes: { pairingRate: { incoming: 5, outgoing: 3 } } } as unknown as CodeMapNode
 
         // Act
-        const blocks = _calculateMappingBlocks(primaryMetricNames, metricData, attributeDescriptors, mapColors, false, selectedNode)
+        const blocks = _calculateMappingBlocks(primaryMetricNames, attributeDescriptors, mapColors, false, nodeWithEdges)
 
         // Assert
         expect(blocks.some(block => block.kind === "edge")).toBe(false)
@@ -60,18 +69,16 @@ describe("_calculateMappingBlocks", () => {
     it("should add an edge block with the node's in and out counts when an edge metric is selected", () => {
         // Arrange
         const namesWithEdge = { ...primaryMetricNames, edgeMetric: "pairingRate" }
-        const selectedNode = { edgeAttributes: { pairingRate: { incoming: 5, outgoing: 3 } } } as unknown as CodeMapNode
+        const nodeWithEdges = { ...selectedNode, edgeAttributes: { pairingRate: { incoming: 5, outgoing: 3 } } } as unknown as CodeMapNode
 
         // Act
-        const blocks = _calculateMappingBlocks(namesWithEdge, metricData, attributeDescriptors, mapColors, false, selectedNode)
+        const blocks = _calculateMappingBlocks(namesWithEdge, attributeDescriptors, mapColors, false, nodeWithEdges)
 
         // Assert
         const edgeBlock = blocks.find(block => block.kind === "edge")
         expect(edgeBlock).toEqual({
             kind: "edge",
             metricName: "pairingRate",
-            min: 0,
-            max: 90,
             incoming: 5,
             outgoing: 3,
             descriptor: undefined
@@ -81,26 +88,25 @@ describe("_calculateMappingBlocks", () => {
     it("should omit the edge block when the selected node has no matching edge attributes", () => {
         // Arrange
         const namesWithEdge = { ...primaryMetricNames, edgeMetric: "pairingRate" }
-        const selectedNode = { name: "a", type: NodeType.FILE, edgeAttributes: {} } as unknown as CodeMapNode
+        const nodeWithoutEdges = { ...selectedNode, edgeAttributes: {} } as unknown as CodeMapNode
 
         // Act
-        const blocks = _calculateMappingBlocks(namesWithEdge, metricData, attributeDescriptors, mapColors, false, selectedNode)
+        const blocks = _calculateMappingBlocks(namesWithEdge, attributeDescriptors, mapColors, false, nodeWithoutEdges)
 
         // Assert
         expect(blocks.some(block => block.kind === "edge")).toBe(false)
     })
 
-    it("should fall back to a zero range when a mapped metric has no metric data", () => {
+    it("should leave the value undefined when the node does not carry the mapped metric", () => {
         // Arrange
         const namesWithUnknownMetric = { ...primaryMetricNames, areaMetric: "unknown" }
 
         // Act
-        const blocks = _calculateMappingBlocks(namesWithUnknownMetric, metricData, attributeDescriptors, mapColors, false, undefined)
+        const blocks = _calculateMappingBlocks(namesWithUnknownMetric, attributeDescriptors, mapColors, false, selectedNode)
 
         // Assert
         const areaBlock = blocks.find(block => block.kind === "area")
-        expect(areaBlock.min).toBe(0)
-        expect(areaBlock.max).toBe(0)
+        expect(areaBlock.value).toBeUndefined()
     })
 
     it("should attach the attribute descriptor of the mapped metric", () => {
@@ -110,7 +116,7 @@ describe("_calculateMappingBlocks", () => {
         }
 
         // Act
-        const blocks = _calculateMappingBlocks(primaryMetricNames, metricData, descriptors, mapColors, false, undefined)
+        const blocks = _calculateMappingBlocks(primaryMetricNames, descriptors, mapColors, false, selectedNode)
 
         // Assert
         const areaBlock = blocks.find(block => block.kind === "area")

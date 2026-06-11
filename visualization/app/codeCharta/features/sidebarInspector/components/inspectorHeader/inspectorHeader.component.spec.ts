@@ -5,7 +5,8 @@ import userEvent from "@testing-library/user-event"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.selector"
-import { selectedBuildingIdSelector } from "../../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector"
+import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { InspectorVisibilityService } from "../../services/inspectorVisibility.service"
 import { InspectorHeaderComponent } from "./inspectorHeader.component"
 
@@ -38,10 +39,11 @@ describe("InspectorHeaderComponent", () => {
                 provideMockStore({
                     selectors: [
                         { selector: selectedNodeSelector, value: fileNode },
-                        { selector: selectedBuildingIdSelector, value: 1 },
                         { selector: isDeltaStateSelector, value: false }
                     ]
-                })
+                }),
+                { provide: ThreeSceneService, useValue: { clearSelection: jest.fn() } },
+                { provide: ThreeRendererService, useValue: { render: jest.fn() } }
             ]
         })
     })

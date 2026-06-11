@@ -18,7 +18,7 @@ describe("InspectorMetricMappingService", () => {
 
     it("should expose the mapping blocks", done => {
         // Arrange
-        const blocks: MappingBlock[] = [{ kind: "height", metricName: "mcc", min: 1, max: 62 }]
+        const blocks: MappingBlock[] = [{ kind: "height", metricName: "mcc", value: 41 }]
         mockStore.overrideSelector(inspectorMappingBlocksSelector, blocks)
         mockStore.refreshState()
 

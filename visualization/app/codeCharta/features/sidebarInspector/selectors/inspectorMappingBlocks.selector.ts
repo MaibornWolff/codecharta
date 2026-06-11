@@ -1,6 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MapColors, MetricData, PrimaryMetrics } from "../../../codeCharta.model"
-import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MapColors, PrimaryMetrics } from "../../../codeCharta.model"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
@@ -12,8 +11,7 @@ export type MappingBlockKind = "area" | "height" | "color" | "edge"
 export type MappingBlock = {
     kind: MappingBlockKind
     metricName: string
-    min: number
-    max: number
+    value?: number
     inverted?: boolean
     incoming?: number
     outgoing?: number
@@ -22,7 +20,6 @@ export type MappingBlock = {
 
 export const _calculateMappingBlocks = (
     primaryMetricNames: PrimaryMetrics,
-    metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">,
     attributeDescriptors: AttributeDescriptors,
     mapColors: MapColors,
     isDeltaState: boolean,
@@ -30,22 +27,22 @@ export const _calculateMappingBlocks = (
 ): MappingBlock[] => {
     const blocks: MappingBlock[] = []
 
-    const areaBlock = createNodeMetricBlock("area", primaryMetricNames.areaMetric, metricData, attributeDescriptors)
+    const areaBlock = createNodeMetricBlock("area", primaryMetricNames.areaMetric, attributeDescriptors, selectedNode)
     if (areaBlock) {
         blocks.push(areaBlock)
     }
 
-    const heightBlock = createNodeMetricBlock("height", primaryMetricNames.heightMetric, metricData, attributeDescriptors)
+    const heightBlock = createNodeMetricBlock("height", primaryMetricNames.heightMetric, attributeDescriptors, selectedNode)
     if (heightBlock) {
         blocks.push(heightBlock)
     }
 
-    const colorBlock = createNodeMetricBlock("color", primaryMetricNames.colorMetric, metricData, attributeDescriptors)
+    const colorBlock = createNodeMetricBlock("color", primaryMetricNames.colorMetric, attributeDescriptors, selectedNode)
     if (colorBlock && !isDeltaState) {
         blocks.push({ ...colorBlock, inverted: mapColors.isColorRangeInverted === true })
     }
 
-    const edgeBlock = createEdgeMetricBlock(primaryMetricNames.edgeMetric, metricData, attributeDescriptors, selectedNode)
+    const edgeBlock = createEdgeMetricBlock(primaryMetricNames.edgeMetric, attributeDescriptors, selectedNode)
     if (edgeBlock) {
         blocks.push(edgeBlock)
     }
@@ -56,25 +53,22 @@ export const _calculateMappingBlocks = (
 const createNodeMetricBlock = (
     kind: MappingBlockKind,
     metricName: string | null,
-    metricData: Pick<MetricData, "nodeMetricData">,
-    attributeDescriptors: AttributeDescriptors
+    attributeDescriptors: AttributeDescriptors,
+    selectedNode?: CodeMapNode
 ): MappingBlock | undefined => {
     if (!metricName) {
         return undefined
     }
-    const range = metricData.nodeMetricData.find(metric => metric.name === metricName)
     return {
         kind,
         metricName,
-        min: range?.minValue ?? 0,
-        max: range?.maxValue ?? 0,
+        value: selectedNode?.attributes?.[metricName],
         descriptor: attributeDescriptors?.[metricName]
     }
 }
 
 const createEdgeMetricBlock = (
     edgeMetricName: string | null,
-    metricData: Pick<MetricData, "edgeMetricData">,
     attributeDescriptors: AttributeDescriptors,
     selectedNode?: CodeMapNode
 ): MappingBlock | undefined => {
@@ -85,12 +79,9 @@ const createEdgeMetricBlock = (
     if (!edgeCount) {
         return undefined
     }
-    const range = metricData.edgeMetricData.find(metric => metric.name === edgeMetricName)
     return {
         kind: "edge",
         metricName: edgeMetricName,
-        min: range?.minValue ?? 0,
-        max: range?.maxValue ?? 0,
         incoming: edgeCount.incoming ?? 0,
         outgoing: edgeCount.outgoing ?? 0,
         descriptor: attributeDescriptors?.[edgeMetricName]
@@ -99,7 +90,6 @@ const createEdgeMetricBlock = (
 
 export const inspectorMappingBlocksSelector = createSelector(
     primaryMetricNamesSelector,
-    metricDataSelector,
     attributeDescriptorsSelector,
     mapColorsSelector,
     isDeltaStateSelector,

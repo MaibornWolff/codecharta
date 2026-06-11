@@ -19,7 +19,7 @@ Replace the legacy right-side attribute sidebar (`ui/attributeSideBar/`) with a 
 
 - **Keep from legacy**: delta mode support, edge metric section, external links (node + attribute descriptor links).
 - **Drop**: Σ/median attribute type toggle (`attributeTypeSelector`) and the `.cc.json` file-name line in the header.
-- **Visibility**: auto open on building selection, auto close on deselection, manual close via ✕ (parity with legacy).
+- **Visibility**: auto open on building selection, auto close on deselection; the ✕ button deselects the building/folder in the scene (revised per review feedback, was: visual-only close).
 - **Metric bars**: severity-coded (DaisyUI `success`/`warning`/`error`) by position in the metric's global range, respecting `AttributeDescriptor.direction === 1` (higher = better, e.g. coverage).
 - **Legacy cleanup**: delete `ui/attributeSideBar/**` in the final phase of this migration.
 
@@ -33,17 +33,17 @@ Replace the legacy right-side attribute sidebar (`ui/attributeSideBar/`) with a 
 ├──────────────────────────────┤
 │ METRIC MAPPING               │
 │ AREA  ▪  real_lines_of_code  │  ← metric name + descriptor tooltip/link
-│          12 – 4,208          │  ← global min–max range
+│          842                 │  ← selected node's value (folders: aggregate)
 │ HEIGHT ▲ mcc                 │
-│          1 – 62              │
+│          41                  │
 │ COLOR ●  coverage            │  (hidden in delta mode, like metricsBar)
-│          0 – 100 · inverted  │  ← "inverted" when mapColors.isColorRangeInverted
-│ EDGE ⇄   pairingRate · 5/3   │  (only when an edge metric is set; in/out of node)
-│          0 – 90              │
+│          62 · inverted       │  ← "inverted" when mapColors.isColorRangeInverted
+│ EDGE ⇄   pairingRate         │  (only when an edge metric is set)
+│          5/3 (in/out)        │
 ├──────────────────────────────┤
 │ METRICS                      │  ← all node attributes except "unary", alphabetical
 │ lines_of_code         842    │     value formatted with thousands separators
-│ ████████░░░░░░░░░░░░░░░░     │  ← bar: value within global range, severity color
+│ ████████░░░░░░░░░░░░░░░░     │  ← bar: value ÷ map total (share of map), severity color
 │ coverage           62  Δ-4   │  ← delta value in delta mode (mapColors delta colors)
 │ ██████████████░░░░░░░░░░     │
 └──────────────────────────────┘
@@ -69,7 +69,6 @@ Folder nodes additionally show the file count after the path ("42 files") and, i
 
 - Not flipping the app to zoneless (`provideZoneChangeDetection()` stays); components are written zoneless-compatible.
 - Not keeping the Σ/median toggle. The `attributeTypes` state slice and `updateAttributeType` action stay (used by accumulation logic), but no UI dispatches it anymore — accepted regression per decision.
-- Not deselecting the 3D building when the ✕ closes the panel (legacy parity: close is purely visual until the next selection).
 - Not showing units ("loc", "%") in ranges — attribute descriptors carry no unit information; mockup units are illustrative.
 - Not adding collapse/resize/always-visible modes.
 - Not changing selection/hover behavior in the 3D scene.
@@ -213,6 +212,12 @@ Manual (`npm run dev`, sample map):
 - [ ] METRICS lists all attributes alphabetically with formatted values; bar lengths proportional to global range; coverage-like (direction=1) metrics show green when high; legend/view-cube shift while the inspector is open; no overlap with the metrics bar or legend.
 - [ ] Delta mode: COLOR block hidden, Δ values colored, folder header shows Δ+/Δ−/Δ≈ counts.
 - [ ] No console errors/warnings (popover, change detection, destroyed signals).
+
+## Review Feedback Addressed
+
+1. **METRIC MAPPING values (2026-06-11)**: The mapping blocks initially showed each metric's global min–max range. Revised to show the selected node's value only (buildings: direct value, folders: the decorated aggregate — same data source as the METRICS list).
+2. **Bar semantics (2026-06-11)**: Bars initially normalized against the leaf-level min–max range. Revised to show the value's share of the map total (root aggregate): a building with 100 rloc in a 1,000-rloc map fills 10%; folders show their share of the project. Severity thirds (direction-aware) apply to that share; metrics missing on the root render a neutral full bar.
+3. **Close deselects (2026-06-11)**: The ✕ button now calls `ThreeSceneService.clearSelection()` + re-render, deselecting the building/folder; visibility is purely derived from `selectedNode != null`, so the manual-close flag was removed.
 
 ## Notes
 

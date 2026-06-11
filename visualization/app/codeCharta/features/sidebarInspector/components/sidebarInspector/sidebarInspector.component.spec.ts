@@ -7,32 +7,37 @@ import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.s
 import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.selector"
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
-import { selectedBuildingIdSelector } from "../../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector"
+import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { inspectorMappingBlocksSelector, MappingBlock } from "../../selectors/inspectorMappingBlocks.selector"
 import { inspectorMetricRowsSelector, MetricRow } from "../../selectors/inspectorMetricRows.selector"
 import { SidebarInspectorComponent } from "./sidebarInspector.component"
 
 const node = { name: "invoice.ts", path: "/root/services/billing/invoice.ts", attributes: { unary: 1 } } as unknown as CodeMapNode
 const mappingBlocks: MappingBlock[] = [
-    { kind: "area", metricName: "rloc", min: 12, max: 4208 },
-    { kind: "height", metricName: "mcc", min: 1, max: 62 }
+    { kind: "area", metricName: "rloc", value: 842 },
+    { kind: "height", metricName: "mcc", value: 41 }
 ]
 const metricRows: MetricRow[] = [{ name: "rloc", value: 842, fraction: 0.8, severity: "error" }]
 
 describe("SidebarInspectorComponent", () => {
+    const clearSelection = jest.fn()
+
     beforeEach(() => {
+        clearSelection.mockClear()
         TestBed.configureTestingModule({
             providers: [
                 provideMockStore({
                     selectors: [
                         { selector: selectedNodeSelector, value: undefined },
-                        { selector: selectedBuildingIdSelector, value: null },
                         { selector: isDeltaStateSelector, value: false },
                         { selector: mapColorsSelector, value: defaultMapColors },
                         { selector: inspectorMappingBlocksSelector, value: mappingBlocks },
                         { selector: inspectorMetricRowsSelector, value: metricRows }
                     ]
-                })
+                }),
+                { provide: ThreeSceneService, useValue: { clearSelection } },
+                { provide: ThreeRendererService, useValue: { render: jest.fn() } }
             ]
         })
     })
@@ -40,7 +45,12 @@ describe("SidebarInspectorComponent", () => {
     function selectBuilding() {
         const mockStore = TestBed.inject(MockStore)
         mockStore.overrideSelector(selectedNodeSelector, node)
-        mockStore.overrideSelector(selectedBuildingIdSelector, 1)
+        mockStore.refreshState()
+    }
+
+    function deselectBuilding() {
+        const mockStore = TestBed.inject(MockStore)
+        mockStore.overrideSelector(selectedNodeSelector, undefined)
         mockStore.refreshState()
     }
 
@@ -68,7 +78,7 @@ describe("SidebarInspectorComponent", () => {
         expect(screen.getByTestId("inspector-node-name").textContent).toContain("invoice.ts")
     })
 
-    it("should slide out after clicking the close button", async () => {
+    it("should deselect the building and slide out when clicking the close button", async () => {
         // Arrange
         const { fixture, detectChanges } = await render(SidebarInspectorComponent)
         selectBuilding()
@@ -76,8 +86,11 @@ describe("SidebarInspectorComponent", () => {
 
         // Act
         await userEvent.click(screen.getByTestId("inspector-close-button"))
+        deselectBuilding()
+        detectChanges()
 
         // Assert
+        expect(clearSelection).toHaveBeenCalled()
         await waitFor(() => expect((fixture.nativeElement as HTMLElement).className).toContain("translate-x-full"))
     })
 })

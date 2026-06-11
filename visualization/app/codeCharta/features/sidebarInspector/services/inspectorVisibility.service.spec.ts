@@ -2,24 +2,27 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
-import { selectedBuildingIdSelector } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector"
+import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
 import { InspectorVisibilityService } from "./inspectorVisibility.service"
 
 describe("InspectorVisibilityService", () => {
     let service: InspectorVisibilityService
     let mockStore: MockStore
+    let threeSceneService: ThreeSceneService
+    let threeRendererService: ThreeRendererService
 
     const node = { name: "invoice.ts", path: "/root/invoice.ts" } as CodeMapNode
 
     beforeEach(() => {
+        threeSceneService = { clearSelection: jest.fn() } as unknown as ThreeSceneService
+        threeRendererService = { render: jest.fn() } as unknown as ThreeRendererService
+
         TestBed.configureTestingModule({
             providers: [
-                provideMockStore({
-                    selectors: [
-                        { selector: selectedNodeSelector, value: undefined },
-                        { selector: selectedBuildingIdSelector, value: null }
-                    ]
-                })
+                provideMockStore({ selectors: [{ selector: selectedNodeSelector, value: undefined }] }),
+                { provide: ThreeSceneService, useValue: threeSceneService },
+                { provide: ThreeRendererService, useValue: threeRendererService }
             ]
         })
 
@@ -27,15 +30,13 @@ describe("InspectorVisibilityService", () => {
         service = TestBed.inject(InspectorVisibilityService)
     })
 
-    function selectBuilding(id: number) {
+    function selectBuilding() {
         mockStore.overrideSelector(selectedNodeSelector, node)
-        mockStore.overrideSelector(selectedBuildingIdSelector, id)
         mockStore.refreshState()
     }
 
     function deselectBuilding() {
         mockStore.overrideSelector(selectedNodeSelector, undefined)
-        mockStore.overrideSelector(selectedBuildingIdSelector, null)
         mockStore.refreshState()
     }
 
@@ -46,7 +47,7 @@ describe("InspectorVisibilityService", () => {
 
     it("should become visible when a building is selected", () => {
         // Act
-        selectBuilding(1)
+        selectBuilding()
 
         // Assert
         expect(service.isVisible()).toBe(true)
@@ -54,7 +55,7 @@ describe("InspectorVisibilityService", () => {
 
     it("should hide when the building is deselected", () => {
         // Arrange
-        selectBuilding(1)
+        selectBuilding()
 
         // Act
         deselectBuilding()
@@ -63,26 +64,15 @@ describe("InspectorVisibilityService", () => {
         expect(service.isVisible()).toBe(false)
     })
 
-    it("should hide when closed manually while a building stays selected", () => {
+    it("should deselect the building in the scene and re-render when closing", () => {
         // Arrange
-        selectBuilding(1)
+        selectBuilding()
 
         // Act
         service.close()
 
         // Assert
-        expect(service.isVisible()).toBe(false)
-    })
-
-    it("should become visible again when a new building is selected after closing manually", () => {
-        // Arrange
-        selectBuilding(1)
-        service.close()
-
-        // Act
-        selectBuilding(2)
-
-        // Assert
-        expect(service.isVisible()).toBe(true)
+        expect(threeSceneService.clearSelection).toHaveBeenCalled()
+        expect(threeRendererService.render).toHaveBeenCalled()
     })
 })
