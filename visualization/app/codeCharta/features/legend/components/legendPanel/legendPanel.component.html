@@ -1,0 +1,26 @@
+@if (isOpen()) {
+    <div
+        id="legend-panel"
+        data-testid="legend-panel"
+        class="rounded-box border-base-300 bg-base-100 fixed z-[60] flex w-72 max-w-[30vw] flex-col border shadow-lg transition-[right] duration-300"
+        [style.right]="panelRight()"
+        [style.bottom]="panelBottom"
+    >
+        <div class="flex flex-col gap-3 p-3">
+            @if (isDeltaState()) {
+                <cc-legend-delta-colors-section></cc-legend-delta-colors-section>
+            } @else {
+                <cc-legend-metrics-section></cc-legend-metrics-section>
+                <cc-legend-color-scale-section></cc-legend-color-scale-section>
+            }
+
+            <div class="border-base-300 border-t pt-2">
+                <cc-legend-color-row mapColorFor="selected"></cc-legend-color-row>
+            </div>
+
+            <cc-legend-edge-colors-section></cc-legend-edge-colors-section>
+        </div>
+    </div>
+}
+
+<cc-legend-toggle-button [isOpen]="isOpen()" (togglePanel)="toggleIsOpen()"></cc-legend-toggle-button>

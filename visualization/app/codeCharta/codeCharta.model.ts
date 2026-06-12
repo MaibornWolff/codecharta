@@ -187,6 +187,8 @@ export interface MapColors {
     areDeltaColorsInverted?: boolean
 }
 
+export type HexMapColor = keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors" | "isColorRangeInverted" | "areDeltaColorsInverted">
+
 export interface ColorRange {
     /** null means to be reset */
     from: number | null

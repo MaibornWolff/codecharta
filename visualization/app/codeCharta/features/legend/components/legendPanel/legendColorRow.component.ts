@@ -3,28 +3,26 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { HexMapColor } from "../../../../codeCharta.model"
 import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
 import { MapColorLabelPipe } from "../../../../util/pipes/mapColorLabel.pipe"
-import { ColorMetricService } from "../../services/colorMetric.service"
-import { ColorRangeService } from "../../services/colorRange.service"
-import { MapColorsService } from "../../services/mapColors.service"
-import { SelectedColorMetricDataService } from "../../services/selectedColorMetricData.service"
-import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
+import { LegendColorMetricService } from "../../services/colorMetric.service"
+import { LegendColorRangeService } from "../../services/colorRange.service"
+import { LegendMapColorsService } from "../../services/mapColors.service"
+import { LegendSelectedColorMetricDataService } from "../../services/selectedColorMetricData.service"
 
 @Component({
-    selector: "cc-color-band-row",
-    templateUrl: "./colorBandRow.component.html",
+    selector: "cc-legend-color-row",
+    templateUrl: "./legendColorRow.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [InlineColorPickerComponent, MapColorLabelPipe]
+    imports: [MapColorLabelPipe]
 })
-export class ColorBandRowComponent {
+export class LegendColorRowComponent {
     constructor(
-        private readonly colorMetricService: ColorMetricService,
-        private readonly colorRangeService: ColorRangeService,
-        private readonly selectedColorMetricDataService: SelectedColorMetricDataService,
-        private readonly mapColorsService: MapColorsService
+        private readonly colorMetricService: LegendColorMetricService,
+        private readonly colorRangeService: LegendColorRangeService,
+        private readonly selectedColorMetricDataService: LegendSelectedColorMetricDataService,
+        private readonly mapColorsService: LegendMapColorsService
     ) {}
 
     readonly mapColorFor = input.required<HexMapColor>()
-    readonly count = input<number | null>(null)
 
     readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
     readonly colorRange = toSignal(this.colorRangeService.colorRange$(), { initialValue: { from: 0, to: 0 } })
@@ -34,8 +32,4 @@ export class ColorBandRowComponent {
     private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
 
     readonly color = computed(() => this.mapColors()[this.mapColorFor()] as string)
-
-    handleColorChange(newHexColor: string) {
-        this.mapColorsService.setMapColors({ [this.mapColorFor()]: newHexColor })
-    }
 }
