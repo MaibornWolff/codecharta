@@ -12,6 +12,7 @@ import * as RightClickedNodeDataSelector from "../../../../state/store/appStatus
 import * as AreaMetricSelector from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
 import { CodeMapMouseEventService } from "../../../../ui/codeMap/codeMap.mouseEvent.service"
+import { CodeMapTooltipService } from "../../../../ui/codeMap/codeMap.tooltip.service"
 import { CodeMapBuilding } from "../../../../ui/codeMap/rendering/codeMapBuilding"
 import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
@@ -68,6 +69,13 @@ describe("ExplorerTreeLevelComponent", () => {
                         drawLabelSelectedBuilding: jest.fn(),
                         hoverNode: jest.fn(),
                         unhoverNode: jest.fn()
+                    }
+                },
+                {
+                    provide: CodeMapTooltipService,
+                    useValue: {
+                        show: jest.fn(),
+                        hide: jest.fn()
                     }
                 }
             ]
@@ -219,5 +227,30 @@ describe("ExplorerTreeLevelComponent", () => {
             expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledTimes(1)
             expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: null }))
         })
+    })
+
+    it("should show the tooltip for the hovered row and hide it on unhover", async () => {
+        // Arrange
+        const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
+        const tooltipService = TestBed.inject(CodeMapTooltipService)
+        const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+
+        // Act
+        await userEvent.hover(firstLevelFolder)
+
+        // Assert
+        await waitFor(() => {
+            expect(tooltipService.show).toHaveBeenCalledWith(
+                expect.objectContaining({ name: "ParentLeaf" }),
+                expect.any(Number),
+                expect.any(Number)
+            )
+        })
+
+        // Act
+        await userEvent.unhover(firstLevelFolder)
+
+        // Assert
+        await waitFor(() => expect(tooltipService.hide).toHaveBeenCalled())
     })
 })

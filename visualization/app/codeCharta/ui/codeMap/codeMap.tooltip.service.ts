@@ -1,6 +1,12 @@
 import { Injectable } from "@angular/core"
-import { Node, CcState } from "../../codeCharta.model"
+import { CcState, KeyValuePair } from "../../codeCharta.model"
 import { State } from "@ngrx/store"
+
+export interface TooltipNode {
+    name: string
+    id?: number
+    attributes?: KeyValuePair
+}
 
 @Injectable({ providedIn: "root" })
 export class CodeMapTooltipService {
@@ -34,7 +40,7 @@ export class CodeMapTooltipService {
 
     constructor(private readonly state: State<CcState>) {}
 
-    show(node: Node, clientX: number, clientY: number) {
+    show(node: TooltipNode, clientX: number, clientY: number) {
         if (!this.tooltipElement) {
             this.createTooltipElement()
         }
@@ -43,7 +49,7 @@ export class CodeMapTooltipService {
         this.positionTooltip(clientX, clientY)
         this.tooltipElement.style.opacity = "1"
         this.visible = true
-        this.currentNodeId = node.id
+        this.currentNodeId = node.id ?? null
     }
 
     updatePosition(clientX: number, clientY: number) {
@@ -89,14 +95,14 @@ export class CodeMapTooltipService {
         document.body.appendChild(this.tooltipElement)
     }
 
-    private populateTooltip(node: Node) {
+    private populateTooltip(node: TooltipNode) {
         const { dynamicSettings } = this.state.getValue()
         const { areaMetric, heightMetric, colorMetric } = dynamicSettings
 
         const metrics = [
-            { label: areaMetric, value: node.attributes[areaMetric] },
-            { label: heightMetric, value: node.attributes[heightMetric] },
-            { label: colorMetric, value: node.attributes[colorMetric] }
+            { label: areaMetric, value: node.attributes?.[areaMetric] },
+            { label: heightMetric, value: node.attributes?.[heightMetric] },
+            { label: colorMetric, value: node.attributes?.[colorMetric] }
         ]
 
         this.tooltipElement.textContent = ""

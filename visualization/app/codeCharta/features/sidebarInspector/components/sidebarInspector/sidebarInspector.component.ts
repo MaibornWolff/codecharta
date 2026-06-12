@@ -14,8 +14,9 @@ import { InspectorMetricsListComponent } from "../inspectorMetricsList/inspector
         "[class.translate-x-full]": "!isVisible()",
         "[class.pointer-events-none]": "!isVisible()",
         "[attr.aria-hidden]": "!isVisible()",
-        "[style.top]": "'var(--cc-bars-height, 98px)'",
-        "[style.height]": "'calc(100vh - var(--cc-bars-height, 98px) - var(--cc-bottom-bar-height, 32px))'"
+        "[style.top]": "'var(--cc-bars-height, 49px)'",
+        "[style.height]":
+            "'calc(100vh - var(--cc-bars-height, 49px) - var(--cc-file-extension-bar-height, 17px) - var(--cc-bottom-bar-height, 32px))'"
     }
 })
 export class SidebarInspectorComponent {

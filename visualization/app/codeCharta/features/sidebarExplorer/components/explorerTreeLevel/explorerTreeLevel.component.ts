@@ -4,6 +4,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
 import { CodeMapMouseEventService } from "../../../../ui/codeMap/codeMap.mouseEvent.service"
+import { CodeMapTooltipService } from "../../../../ui/codeMap/codeMap.tooltip.service"
 import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
@@ -28,6 +29,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
     private readonly idToBuildingService = inject(IdToBuildingService)
     private readonly threeRendererService = inject(ThreeRendererService)
     private readonly codeMapMouseEventService = inject(CodeMapMouseEventService)
+    private readonly codeMapTooltipService = inject(CodeMapTooltipService)
     private readonly destroyRef = inject(DestroyRef)
 
     private isScrollListenerRegistered = false
@@ -66,14 +68,17 @@ export class ExplorerTreeLevelComponent implements OnInit {
         this.destroyRef.onDestroy(() => this.removeScrollListener())
     }
 
-    onMouseEnter() {
+    onMouseEnter($event: MouseEvent) {
         this.codeMapMouseEventService.hoverNode(this.node().id)
         this.appStatusStore.setHoveredNodeId(this.node().id)
+        const rowRect = ($event.currentTarget as HTMLElement).getBoundingClientRect()
+        this.codeMapTooltipService.show(this.node(), rowRect.right, rowRect.top)
     }
 
     onMouseLeave() {
         this.codeMapMouseEventService.unhoverNode()
         this.appStatusStore.setHoveredNodeId(null)
+        this.codeMapTooltipService.hide()
     }
 
     onClick() {
