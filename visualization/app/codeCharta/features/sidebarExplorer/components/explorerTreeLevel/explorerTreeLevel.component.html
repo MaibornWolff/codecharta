@@ -11,7 +11,7 @@
             [class.ring-2]="isMarked()"
             [class.ring-primary]="isMarked()"
             [ngClass]="{ 'bg-error/20': isSelected() }"
-            (mouseenter)="onMouseEnter()"
+            (mouseenter)="onMouseEnter($event)"
             (mouseleave)="onMouseLeave()"
             (click)="onClick()"
             (contextmenu)="openNodeContextMenu($event)"

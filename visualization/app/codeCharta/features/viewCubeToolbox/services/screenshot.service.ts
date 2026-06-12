@@ -93,13 +93,13 @@ export class ScreenshotService {
         // so measure the inner footer like bottomBar.component does
         const bottomBarElement = document.querySelector("cc-bottom-bar") as HTMLElement | null
         const bottomBarHeight = (bottomBarElement?.querySelector("footer") ?? bottomBarElement)?.offsetHeight ?? 0
-        const topBarsHeight = navBarHeight + fileExtensionBarHeight
+        const bottomBarsHeight = fileExtensionBarHeight + bottomBarHeight
 
         const canvas = await html2canvas(document.querySelector("body"), {
             removeContainer: true,
             backgroundColor: null,
-            scrollY: -topBarsHeight,
-            height: Math.max(0, bodyHeight - topBarsHeight - bottomBarHeight),
+            scrollY: -navBarHeight,
+            height: Math.max(0, bodyHeight - navBarHeight - bottomBarsHeight),
             ignoreElements(element) {
                 return (
                     tagsNamesToIgnore.has(element.tagName.toLowerCase()) ||

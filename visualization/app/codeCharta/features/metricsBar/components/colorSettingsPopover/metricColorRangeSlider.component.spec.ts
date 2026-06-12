@@ -184,4 +184,31 @@ describe("MetricColorRangeSliderComponent", () => {
         // Assert
         expect(handleValueChange).not.toHaveBeenCalled()
     })
+
+    it("should derive non-negative segment widths summing to the slider width when the range position is crossed", async () => {
+        // Arrange: rightStart below leftEnd, as a subpixel clamp slip could produce mid-drag
+        const { fixture } = await setup()
+        fixture.componentInstance.actualSliderWidth = 220
+        fixture.componentInstance.sliderRangePosition = { leftEnd: 100, rightStart: 90 }
+
+        // Act
+        const segmentWidths = fixture.componentInstance.segmentWidths
+
+        // Assert: a negative middle width would be dropped by the browser and let the
+        // segments overflow the track, so the widths must stay clamped and sum to 220
+        expect(segmentWidths).toEqual({ left: 100, middle: 0, right: 120 })
+    })
+
+    it("should cap segment widths at the measured slider width when positions exceed it", async () => {
+        // Arrange: stale positions wider than the freshly measured track
+        const { fixture } = await setup()
+        fixture.componentInstance.actualSliderWidth = 220
+        fixture.componentInstance.sliderRangePosition = { leftEnd: 300, rightStart: 320 }
+
+        // Act
+        const segmentWidths = fixture.componentInstance.segmentWidths
+
+        // Assert
+        expect(segmentWidths).toEqual({ left: 220, middle: 0, right: 0 })
+    })
 })
