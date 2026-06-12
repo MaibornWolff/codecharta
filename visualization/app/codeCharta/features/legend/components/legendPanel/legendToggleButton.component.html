@@ -1,0 +1,13 @@
+<button
+    id="legend-panel-button"
+    data-testid="legend-panel-button"
+    class="btn btn-primary btn-sm fixed z-[60] w-[88px] rotate-90 rounded-t-none transition-[right] duration-300"
+    [style.right]="buttonRight()"
+    [style.bottom]="buttonBottom"
+    [title]="isOpen() ? 'Hide panel' : 'Show panel'"
+    [attr.aria-expanded]="isOpen()"
+    aria-controls="legend-panel"
+    (click)="togglePanel.emit()"
+>
+    LEGEND
+</button>

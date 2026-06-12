@@ -1,0 +1,8 @@
+<div class="flex flex-col gap-2">
+    <cc-legend-metric-row label="Area" [metricName]="areaMetric() ?? ''"></cc-legend-metric-row>
+    <cc-legend-metric-row label="Height" [metricName]="heightMetric() ?? ''"></cc-legend-metric-row>
+    <cc-legend-metric-row label="Color" [metricName]="colorMetric() ?? ''"></cc-legend-metric-row>
+    @if (edgeMetric(); as edgeMetric) {
+        <cc-legend-metric-row label="Edge" [metricName]="edgeMetric"></cc-legend-metric-row>
+    }
+</div>
