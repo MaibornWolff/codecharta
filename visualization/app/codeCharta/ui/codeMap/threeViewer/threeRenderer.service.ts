@@ -31,7 +31,7 @@ export class ThreeRendererService {
 
     private renderScheduled = false
 
-    constructor(private globalSettingsFacade: GlobalSettingsFacade) {}
+    constructor(private readonly globalSettingsFacade: GlobalSettingsFacade) {}
 
     init(containerWidth: number, containerHeight: number, scene: Scene, camera: Camera) {
         this.scene = scene
