@@ -15,6 +15,7 @@ export class ResetSettingsButtonComponent {
     @Input() tooltip?: string
     @Input() label?: string
     @Input() callback?: () => void
+    @Input() small = false
 
     constructor(
         private store: Store<CcState>,

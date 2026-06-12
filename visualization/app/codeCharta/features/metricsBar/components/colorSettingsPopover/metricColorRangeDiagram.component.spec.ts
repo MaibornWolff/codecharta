@@ -153,4 +153,34 @@ describe("MetricColorRangeDiagramComponent", () => {
             expect(Number.isFinite(map.get(percentile))).toBe(true)
         }
     })
+
+    it("should size the svg according to diagramWidth and diagramHeight", async () => {
+        // Arrange & Act
+        const component = await setup({ diagramWidth: 380, diagramHeight: 190 })
+
+        // Assert
+        const svg = component["elementRef"].nativeElement.querySelector("#cc-range-diagram-container svg")
+        expect(svg.getAttribute("width")).toBe("380")
+        expect(svg.getAttribute("height")).toBe("190")
+    })
+
+    it("should render the axis labels by default", async () => {
+        // Arrange & Act
+        const component = await setup()
+
+        // Assert
+        const container = component["elementRef"].nativeElement
+        expect(container.querySelector("#y-label")).not.toBeNull()
+        expect(container.querySelector("#x-label")).not.toBeNull()
+    })
+
+    it("should hide the axis labels when showAxisLabels is false", async () => {
+        // Arrange & Act
+        const component = await setup({ showAxisLabels: false })
+
+        // Assert
+        const container = component["elementRef"].nativeElement
+        expect(container.querySelector("#y-label")).toBeNull()
+        expect(container.querySelector("#x-label")).toBeNull()
+    })
 })

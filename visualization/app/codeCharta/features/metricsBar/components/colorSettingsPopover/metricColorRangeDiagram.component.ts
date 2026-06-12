@@ -38,6 +38,9 @@ export class MetricColorRangeDiagramComponent implements OnChanges, AfterViewIni
     @Input() middleColor: string
     @Input() rightColor: string
     @Input() isAttributeDirectionInverted: boolean
+    @Input() diagramWidth = 550
+    @Input() diagramHeight = 250
+    @Input() showAxisLabels = true
 
     private svgWidth: number
     private framePadding: number
@@ -66,7 +69,14 @@ export class MetricColorRangeDiagramComponent implements OnChanges, AfterViewIni
         if (this.values.length === 0) {
             return
         }
-        const requiresFullRender = Boolean(changes.values || changes.isAttributeDirectionInverted || changes.colorMetric)
+        const requiresFullRender = Boolean(
+            changes.values ||
+                changes.isAttributeDirectionInverted ||
+                changes.colorMetric ||
+                changes.diagramWidth ||
+                changes.diagramHeight ||
+                changes.showAxisLabels
+        )
         if (requiresFullRender) {
             this.ranksAreStale = true
         }
@@ -177,19 +187,21 @@ export class MetricColorRangeDiagramComponent implements OnChanges, AfterViewIni
         const y = this.createYScale()
         this.drawAxes(group, x, y)
         this.drawFrame(group)
-        this.drawLabels(group)
+        if (this.showAxisLabels) {
+            this.drawLabels(group)
+        }
         this.drawAreas(group, x)
         this.drawLine(group)
         this.addCrossHair(group, x, y)
     }
 
     private initializeDiagramDimesions() {
-        this.svgWidth = 550
-        this.svgHeight = 250
+        this.svgWidth = this.diagramWidth
+        this.svgHeight = this.diagramHeight
 
         this.frameMarginTop = 10
-        this.frameMarginBottom = 50
-        this.frameMarginLeft = 50
+        this.frameMarginBottom = this.showAxisLabels ? 50 : 30
+        this.frameMarginLeft = this.showAxisLabels ? 50 : 40
         this.frameMarginRight = 10
         this.framePadding = 5
 

@@ -1,0 +1,12 @@
+<div class="flex shrink-0 items-center gap-2 rounded-md border border-base-300 px-2 py-1" [title]="override().path">
+    <cc-inline-color-picker
+        [hexColor]="override().color"
+        [ariaLabel]="'Recolor ' + override().path"
+        (colorChange)="recolorOverride.emit($event)"
+    ></cc-inline-color-picker>
+    <span class="min-w-0 flex-1 truncate text-sm">{{ override().path }}</span>
+    <span class="text-xs opacity-60 tabular-nums" [title]="override().fileCount + ' files'">{{ override().fileCount }}</span>
+    <button class="btn btn-ghost btn-xs btn-square" [title]="'Unpin ' + override().path" (click)="unpinOverride.emit()">
+        <i class="fa fa-times"></i>
+    </button>
+</div>

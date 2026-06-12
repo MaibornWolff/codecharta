@@ -1,0 +1,13 @@
+<div class="flex items-center gap-2">
+    <cc-inline-color-picker
+        [hexColor]="color()"
+        [ariaLabel]="'Recolor ' + mapColorFor()"
+        (colorChange)="handleColorChange($event)"
+    ></cc-inline-color-picker>
+    <span class="min-w-0 flex-1 truncate text-sm">
+        {{ mapColorFor() | mapColorLabel: colorRange() : nodeMetricRange() : colorMetric() }}
+    </span>
+    @if (count() !== null) {
+        <span class="text-xs opacity-60 tabular-nums">{{ count() }}</span>
+    }
+</div>

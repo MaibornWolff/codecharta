@@ -1,0 +1,23 @@
+<div class="flex">
+    <button
+        #swatch
+        type="button"
+        class="block h-4 w-4 cursor-pointer rounded-sm border border-base-300 p-0 hover:ring-2 hover:ring-primary"
+        [class.ring-2]="isOpen()"
+        [class.ring-primary]="isOpen()"
+        [style.background-color]="hexColor()"
+        title="Click to recolor"
+        [attr.aria-label]="ariaLabel()"
+        (click)="toggleOpen(swatch)"
+    ></button>
+    @if (isOpen()) {
+        <div class="fixed z-50 shadow-lg" [style.left.px]="panelPosition().left" [style.top.px]="panelPosition().top">
+            <color-chrome
+                [disableAlpha]="true"
+                [color]="hexColor()"
+                (onChange)="handleColorChanging($event.color.hex)"
+                (onChangeComplete)="handleChangeComplete($event.color.hex)"
+            ></color-chrome>
+        </div>
+    }
+</div>

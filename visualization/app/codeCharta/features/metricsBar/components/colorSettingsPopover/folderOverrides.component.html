@@ -1,0 +1,22 @@
+<div class="flex items-center justify-between gap-2">
+    <span class="text-xs uppercase tracking-wider opacity-60">Folder Overrides</span>
+    @if (overrides().length > 0) {
+        <span class="text-xs opacity-60">{{ overrides().length }} pinned</span>
+    }
+</div>
+
+<p class="m-0 text-xs opacity-60">These folders&#8217; floors are tinted with the pinned color.</p>
+
+@if (overrides().length > 0) {
+    <div class="flex max-h-36 flex-col gap-0.5 overflow-y-auto">
+        @for (override of overrides(); track override.path) {
+            <cc-folder-override-row
+                [override]="override"
+                (recolorOverride)="handleRecolor(override.path, $event)"
+                (unpinOverride)="handleUnpin(override.path)"
+            ></cc-folder-override-row>
+        }
+    </div>
+}
+
+<cc-pin-folder-search (pinFolder)="handlePin($event)"></cc-pin-folder-search>
