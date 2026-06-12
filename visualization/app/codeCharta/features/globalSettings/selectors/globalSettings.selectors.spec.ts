@@ -1,4 +1,4 @@
-import { CcState, LayoutAlgorithm, SharpnessMode } from "../../../codeCharta.model"
+import { CcState, LayoutAlgorithm } from "../../../codeCharta.model"
 import { defaultState } from "../../../state/store/state.manager"
 import {
     screenshotToClipboardEnabledSelector,
@@ -7,8 +7,7 @@ import {
     hideFlatBuildingsSelector,
     resetCameraIfNewFileIsLoadedSelector,
     layoutAlgorithmSelector,
-    maxTreeMapFilesSelector,
-    sharpnessModeSelector
+    maxTreeMapFilesSelector
 } from "./globalSettings.selectors"
 
 describe("globalSettings.selectors", () => {
@@ -205,41 +204,6 @@ describe("globalSettings.selectors", () => {
 
             // Assert
             expect(result).toBe(1000)
-        })
-    })
-
-    describe("sharpnessModeSelector", () => {
-        it("should select sharpnessMode from appSettings", () => {
-            // Arrange
-            mockState.appSettings.sharpnessMode = SharpnessMode.PixelRatioFXAA
-
-            // Act
-            const result = sharpnessModeSelector.projector(mockState.appSettings)
-
-            // Assert
-            expect(result).toBe(SharpnessMode.PixelRatioFXAA)
-        })
-
-        it("should return Standard when sharpnessMode is Standard", () => {
-            // Arrange
-            mockState.appSettings.sharpnessMode = SharpnessMode.Standard
-
-            // Act
-            const result = sharpnessModeSelector.projector(mockState.appSettings)
-
-            // Assert
-            expect(result).toBe(SharpnessMode.Standard)
-        })
-
-        it("should return PixelRatioAA when sharpnessMode is PixelRatioAA", () => {
-            // Arrange
-            mockState.appSettings.sharpnessMode = SharpnessMode.PixelRatioAA
-
-            // Act
-            const result = sharpnessModeSelector.projector(mockState.appSettings)
-
-            // Assert
-            expect(result).toBe(SharpnessMode.PixelRatioAA)
         })
     })
 

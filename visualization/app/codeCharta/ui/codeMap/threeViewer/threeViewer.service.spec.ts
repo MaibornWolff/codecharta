@@ -8,7 +8,6 @@ import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeViewerService } from "./threeViewer.service"
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
 import { ThreeStatsService } from "./threeStats.service"
-import { CustomComposer } from "../rendering/postprocessor/customComposer"
 import { MapControls } from "three/addons/controls/MapControls.js"
 
 describe("ThreeViewerService", () => {
@@ -58,9 +57,6 @@ describe("ThreeViewerService", () => {
                 domElement: document.createElement("div"),
                 setSize: jest.fn()
             },
-            composer: {
-                dispose: jest.fn()
-            } as unknown as CustomComposer,
             init: jest.fn()
         } as unknown as ThreeRendererService
 

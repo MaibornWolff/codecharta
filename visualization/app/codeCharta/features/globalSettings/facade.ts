@@ -5,7 +5,6 @@ import { BackgroundThemeService } from "./services/backgroundTheme.service"
 import { FlatBuildingVisibilityService } from "./services/flatBuildingVisibility.service"
 import { AutomaticCameraResetService } from "./services/automaticCameraReset.service"
 import { MapLayoutService } from "./services/mapLayout.service"
-import { DisplayQualityService } from "./services/displayQuality.service"
 
 export {
     layoutAlgorithmSelector,
@@ -23,8 +22,7 @@ export class GlobalSettingsFacade {
         private readonly backgroundThemeService: BackgroundThemeService,
         private readonly flatBuildingVisibilityService: FlatBuildingVisibilityService,
         private readonly automaticCameraResetService: AutomaticCameraResetService,
-        private readonly mapLayoutService: MapLayoutService,
-        private readonly displayQualityService: DisplayQualityService
+        private readonly mapLayoutService: MapLayoutService
     ) {}
 
     screenshotToClipboardEnabled$() {
@@ -53,9 +51,5 @@ export class GlobalSettingsFacade {
 
     maxTreeMapFiles$() {
         return this.mapLayoutService.maxTreeMapFiles$()
-    }
-
-    sharpnessMode$() {
-        return this.displayQualityService.sharpnessMode$()
     }
 }

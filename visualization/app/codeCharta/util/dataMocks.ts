@@ -16,7 +16,6 @@ import {
     Node,
     NodeMetricData,
     NodeType,
-    SharpnessMode,
     SortingOption,
     CcState
 } from "../codeCharta.model"
@@ -2213,7 +2212,6 @@ export const STATE: CcState = {
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        sharpnessMode: SharpnessMode.Standard,
         maxTreeMapFiles: 200,
         labelMode: LabelMode.Height,
         groupLabelCollisions: false,
@@ -2274,7 +2272,6 @@ export const DEFAULT_STATE: CcState = {
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        sharpnessMode: SharpnessMode.Standard,
         maxTreeMapFiles: 100,
         labelMode: LabelMode.Height,
         groupLabelCollisions: false,

@@ -39,13 +39,6 @@ export class ThreeViewerService {
         this.animateStats()
     }
 
-    restart(target: Element) {
-        this.stopAnimate()
-        this.destroy()
-        this.init(target)
-        this.autoFitTo()
-    }
-
     onWindowResize = () => {
         this.threeSceneService.scene.updateMatrixWorld(false)
         this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight)
@@ -102,7 +95,6 @@ export class ThreeViewerService {
     }
 
     dispose() {
-        this.threeRendererService?.composer?.dispose()
         this.threeRendererService?.renderer?.dispose()
     }
 

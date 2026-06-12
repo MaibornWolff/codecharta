@@ -54,7 +54,6 @@ import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showM
 import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setLayoutAlgorithm } from "../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMaxTreeMapFiles } from "../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
-import { setSharpnessMode } from "../../state/store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { setExperimentalFeaturesEnabled } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { setScreenshotToClipboardEnabled } from "../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
@@ -392,9 +391,6 @@ export class LoadInitialFileService {
                 break
             case "maxTreeMapFiles":
                 this.store.dispatch(setMaxTreeMapFiles({ value }))
-                break
-            case "sharpnessMode":
-                this.store.dispatch(setSharpnessMode({ value }))
                 break
             case "experimentalFeaturesEnabled":
                 this.store.dispatch(setExperimentalFeaturesEnabled({ value }))

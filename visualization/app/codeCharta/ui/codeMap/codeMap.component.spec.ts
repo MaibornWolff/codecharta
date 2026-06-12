@@ -1,7 +1,5 @@
 import { ElementRef } from "@angular/core"
-import { Subject } from "rxjs"
 import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
-import { GlobalSettingsFacade } from "../../features/globalSettings/facade"
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
@@ -12,50 +10,31 @@ describe("CodeMapComponent", () => {
     let mockedThreeViewService: ThreeViewerService
     let mockedCodeMapMouseEventService: CodeMapMouseEventService
     let mockedElementReference: ElementRef
-    let mockedSharpnessModeSelector$: Subject<string>
     const mockedStore = {
         select: jest.fn()
     } as unknown as Store<CcState>
-    const mockedGlobalSettingsFacade = {
-        sharpnessMode$: () => mockedSharpnessModeSelector$
-    } as unknown as GlobalSettingsFacade
 
     beforeEach(() => {
-        mockedThreeViewService = { init: jest.fn(), restart: jest.fn() } as unknown as ThreeViewerService
+        mockedThreeViewService = { init: jest.fn() } as unknown as ThreeViewerService
         mockedCodeMapMouseEventService = { start: jest.fn() } as unknown as CodeMapMouseEventService
         mockedElementReference = { nativeElement: { querySelector: jest.fn() } }
-        mockedSharpnessModeSelector$ = new Subject()
     })
 
     it("should init threeViewerService and start codeMapMouseService after view init", () => {
+        // Arrange
         const codeMapComponent = new CodeMapComponent(
             { isVisible: () => true } as unknown as InspectorVisibilityService,
             mockedStore,
             mockedThreeViewService,
             mockedCodeMapMouseEventService,
-            mockedElementReference,
-            mockedGlobalSettingsFacade
+            mockedElementReference
         )
+
+        // Act
         codeMapComponent.ngAfterViewInit()
+
+        // Assert
         expect(mockedThreeViewService.init).toHaveBeenCalled()
-        expect(mockedCodeMapMouseEventService.start).toHaveBeenCalled()
-    })
-
-    it("should restart on sharpnessModeChanges but not on first one as it will get started then", () => {
-        new CodeMapComponent(
-            { isVisible: () => true } as unknown as InspectorVisibilityService,
-            mockedStore,
-            mockedThreeViewService,
-            mockedCodeMapMouseEventService,
-            mockedElementReference,
-            mockedGlobalSettingsFacade
-        )
-        mockedSharpnessModeSelector$.next("High")
-        expect(mockedThreeViewService.restart).not.toHaveBeenCalled()
-        expect(mockedCodeMapMouseEventService.start).not.toHaveBeenCalled()
-
-        mockedSharpnessModeSelector$.next("Low")
-        expect(mockedThreeViewService.restart).toHaveBeenCalled()
         expect(mockedCodeMapMouseEventService.start).toHaveBeenCalled()
     })
 })

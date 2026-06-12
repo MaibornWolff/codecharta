@@ -28,7 +28,6 @@ import {
 } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
 import { defaultLayoutAlgorithm, layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
 import { defaultMaxTreeMapFiles, maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
-import { defaultSharpnessMode, sharpnessMode } from "./sharpnessMode/sharpnessMode.reducer"
 import { defaultScreenshotToClipboardEnabled, screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 import { defaultInvertArea, invertArea } from "./invertArea/invertArea.reducer"
 import { defaultIsEdgeMetricVisible, isEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.reducer"
@@ -71,7 +70,6 @@ export const appSettings = combineReducers({
     screenshotToClipboardEnabled,
     layoutAlgorithm,
     maxTreeMapFiles,
-    sharpnessMode,
     isColorMetricLinkedToHeightMetric,
     enableFloorLabels,
     labelMode,
@@ -106,7 +104,6 @@ export const defaultAppSettings = {
     screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,
     layoutAlgorithm: defaultLayoutAlgorithm,
     maxTreeMapFiles: defaultMaxTreeMapFiles,
-    sharpnessMode: defaultSharpnessMode,
     isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
     enableFloorLabels: defaultEnableFloorLabels,
     labelMode: defaultLabelMode,
