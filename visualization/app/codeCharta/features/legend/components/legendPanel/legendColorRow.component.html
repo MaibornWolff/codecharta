@@ -1,0 +1,10 @@
+@let label = mapColorFor() | mapColorLabel: colorRange() : nodeMetricRange() : colorMetric();
+<div class="flex items-center gap-2">
+    <span
+        role="img"
+        class="inline-block h-4 w-4 shrink-0 rounded-sm border border-base-300"
+        [style.background-color]="color()"
+        [attr.aria-label]="'Color for ' + label"
+    ></span>
+    <span class="min-w-0 flex-1 truncate text-sm">{{ label }}</span>
+</div>

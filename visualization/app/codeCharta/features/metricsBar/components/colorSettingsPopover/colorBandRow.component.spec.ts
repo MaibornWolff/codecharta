@@ -4,10 +4,11 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
 import { defaultState } from "../../../../state/store/state.manager"
+import { HexMapColor } from "../../../../codeCharta.model"
 import { ColorBandRowComponent } from "./colorBandRow.component"
 
 describe("ColorBandRowComponent", () => {
-    async function setup(inputs: { mapColorFor: string; count?: number | null }) {
+    async function setup(inputs: { mapColorFor: HexMapColor; count?: number | null }) {
         const renderResult = await render(ColorBandRowComponent, {
             inputs,
             providers: [provideMockStore({ initialState: defaultState }), { provide: State, useValue: { getValue: () => defaultState } }]
