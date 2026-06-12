@@ -12,7 +12,7 @@ export class LegendToggleButtonComponent {
     constructor(private readonly inspectorVisibilityService: InspectorVisibilityService) {}
 
     readonly isOpen = input.required<boolean>()
-    readonly toggle = output<void>()
+    readonly togglePanel = output<void>()
 
     readonly buttonBottom = `calc(${LEGEND_BARS_OFFSET} + 32px)`
     readonly buttonRight = computed(() =>

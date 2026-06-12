@@ -7,7 +7,7 @@
     [title]="isOpen() ? 'Hide panel' : 'Show panel'"
     [attr.aria-expanded]="isOpen()"
     aria-controls="legend-panel"
-    (click)="toggle.emit()"
+    (click)="togglePanel.emit()"
 >
     LEGEND
 </button>
