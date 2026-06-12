@@ -11,6 +11,10 @@ export type CalculateSliderRangePositionArgument = {
     sliderWidth: number
 }
 
+export const clampToRange = (value: number, lowerBound: number, upperBound: number) => {
+    return Math.min(Math.max(value, lowerBound), upperBound)
+}
+
 export const calculateSliderRangePosition = ({
     minValue,
     maxValue,
@@ -25,9 +29,9 @@ export const calculateSliderRangePosition = ({
 
     const leftFraction = (currentLeftValue - minValue) / totalFraction
     const rightFraction = (currentRightValue - minValue) / totalFraction
-    const leftThumbPosition = leftFraction * sliderWidth
-    const rightThumbPosition = rightFraction * sliderWidth
-    return { leftEnd: leftThumbPosition, rightStart: rightThumbPosition }
+    const leftEnd = clampToRange(leftFraction * sliderWidth, 0, sliderWidth)
+    const rightStart = clampToRange(rightFraction * sliderWidth, leftEnd, sliderWidth)
+    return { leftEnd, rightStart }
 }
 
 type ThumbPosition2ValueArgument = {
@@ -47,88 +51,35 @@ type UpdateThumbXArgument = {
     deltaX: number
     thumbScreenX: number
     thumbRadius: number
-    otherThumbScreenX: number
+    /** Logical position of the other thumb within the track, NOT a screen coordinate. */
+    otherThumbX: number
     sliderBoundingClientRectX: number
     sliderWidth: number
     minValue: number
     maxValue: number
 }
 
-export const updateRightThumb = ({
-    deltaX,
-    thumbScreenX,
-    thumbRadius,
-    otherThumbScreenX,
-    sliderBoundingClientRectX,
-    sliderWidth,
-    minValue,
-    maxValue
-}: UpdateThumbXArgument) => {
-    let newRightThumbScreenX = thumbScreenX + deltaX
-
-    if (newRightThumbScreenX > sliderBoundingClientRectX + sliderWidth - thumbRadius) {
-        newRightThumbScreenX = sliderBoundingClientRectX + sliderWidth - thumbRadius
-    }
-    if (newRightThumbScreenX < otherThumbScreenX) {
-        newRightThumbScreenX = otherThumbScreenX
-    }
-
-    return calculateUpdate({
-        newThumbScreenX: newRightThumbScreenX,
-        sliderBoundingClientRectX,
-        thumbRadius,
-        sliderWidth,
-        minValue,
-        maxValue
-    })
+export const updateLeftThumb = (argument: UpdateThumbXArgument) => {
+    return updateThumb(argument, { lowerBound: 0, upperBound: argument.otherThumbX })
 }
 
-export const updateLeftThumb = ({
-    deltaX,
-    thumbScreenX,
-    thumbRadius,
-    otherThumbScreenX,
-    sliderBoundingClientRectX,
-    sliderWidth,
-    minValue,
-    maxValue
-}: UpdateThumbXArgument) => {
-    let newLeftThumbScreenX = thumbScreenX + deltaX
-
-    if (newLeftThumbScreenX < sliderBoundingClientRectX - thumbRadius) {
-        newLeftThumbScreenX = sliderBoundingClientRectX - thumbRadius
-    }
-    if (newLeftThumbScreenX > otherThumbScreenX) {
-        newLeftThumbScreenX = otherThumbScreenX
-    }
-
-    return calculateUpdate({
-        newThumbScreenX: newLeftThumbScreenX,
-        sliderBoundingClientRectX,
-        thumbRadius,
-        sliderWidth,
-        minValue,
-        maxValue
-    })
+export const updateRightThumb = (argument: UpdateThumbXArgument) => {
+    return updateThumb(argument, { lowerBound: argument.otherThumbX, upperBound: argument.sliderWidth })
 }
 
-type CalculateUpdateArgument = {
-    newThumbScreenX: number
-    sliderBoundingClientRectX: number
-    thumbRadius: number
-    sliderWidth: number
-    minValue: number
-    maxValue: number
+type ThumbBounds = {
+    lowerBound: number
+    upperBound: number
 }
-const calculateUpdate = ({
-    newThumbScreenX,
-    sliderBoundingClientRectX,
-    thumbRadius,
-    sliderWidth,
-    minValue,
-    maxValue
-}: CalculateUpdateArgument) => {
-    const updatedThumbX = newThumbScreenX - sliderBoundingClientRectX + thumbRadius
+
+const updateThumb = (
+    { deltaX, thumbScreenX, thumbRadius, sliderBoundingClientRectX, sliderWidth, minValue, maxValue }: UpdateThumbXArgument,
+    { lowerBound, upperBound }: ThumbBounds
+) => {
+    const movedThumbX = thumbScreenX + deltaX - sliderBoundingClientRectX + thumbRadius
+    // Clamping happens in logical track pixels: screen rects can disagree with the logical
+    // position by subpixel amounts (zoom, scale animations), which must never cross the thumbs.
+    const updatedThumbX = clampToRange(movedThumbX, lowerBound, upperBound)
     return {
         updatedThumbX,
         upcomingValue: thumbPosition2Value({

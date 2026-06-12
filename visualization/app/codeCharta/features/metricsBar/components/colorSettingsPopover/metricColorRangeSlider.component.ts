@@ -10,7 +10,13 @@ import {
     SimpleChanges,
     ViewChild
 } from "@angular/core"
-import { calculateSliderRangePosition, SliderRangePosition, updateLeftThumb, updateRightThumb } from "./utils/SliderRangePosition"
+import {
+    calculateSliderRangePosition,
+    clampToRange,
+    SliderRangePosition,
+    updateLeftThumb,
+    updateRightThumb
+} from "./utils/SliderRangePosition"
 import { RangeSliderLabelsComponent } from "./rangeSliderLabels.component"
 import { parseChangedNumberInput } from "../../util/settingsInput"
 
@@ -44,6 +50,22 @@ export class MetricColorRangeSliderComponent implements OnChanges, AfterViewInit
     actualSliderWidth = this.sliderWidth
     upcomingLeftValue: number
     upcomingRightValue: number
+
+    /**
+     * Track segment widths, clamped to be non-negative and to sum exactly to the measured
+     * slider width. A negative width binding would be dropped by the browser, letting the
+     * segments overflow the flex track, which the ResizeObserver would then feed back into
+     * actualSliderWidth — growing the slider without bound.
+     */
+    get segmentWidths(): { left: number; middle: number; right: number } {
+        const leftEnd = clampToRange(this.sliderRangePosition.leftEnd, 0, this.actualSliderWidth)
+        const rightStart = clampToRange(this.sliderRangePosition.rightStart, leftEnd, this.actualSliderWidth)
+        return {
+            left: leftEnd,
+            middle: rightStart - leftEnd,
+            right: this.actualSliderWidth - rightStart
+        }
+    }
 
     private currentlySliding: CurrentlySliding = undefined
     private activeMouseMoveHandler: ((event: MouseEvent) => void) | null = null
@@ -134,7 +156,7 @@ export class MetricColorRangeSliderComponent implements OnChanges, AfterViewInit
             deltaX: event.movementX,
             thumbScreenX: this.leftThumb.nativeElement.getBoundingClientRect().x,
             thumbRadius: this.thumbRadius,
-            otherThumbScreenX: this.rightThumb.nativeElement.getBoundingClientRect().x,
+            otherThumbX: this.sliderRangePosition.rightStart,
             sliderBoundingClientRectX: this.sliderContainer.nativeElement.getBoundingClientRect().x,
             sliderWidth: this.actualSliderWidth,
             minValue: this.minValue,
@@ -157,7 +179,7 @@ export class MetricColorRangeSliderComponent implements OnChanges, AfterViewInit
             deltaX: event.movementX,
             thumbScreenX: this.rightThumb.nativeElement.getBoundingClientRect().x,
             thumbRadius: this.thumbRadius,
-            otherThumbScreenX: this.leftThumb.nativeElement.getBoundingClientRect().x,
+            otherThumbX: this.sliderRangePosition.leftEnd,
             sliderBoundingClientRectX: this.sliderContainer.nativeElement.getBoundingClientRect().x,
             sliderWidth: this.actualSliderWidth,
             minValue: this.minValue,
