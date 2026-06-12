@@ -2216,7 +2216,8 @@ export const STATE: CcState = {
         sharpnessMode: SharpnessMode.Standard,
         maxTreeMapFiles: 200,
         labelMode: LabelMode.Height,
-        groupLabelCollisions: false
+        groupLabelCollisions: false,
+        labelsPerMap: false
     },
     files: [],
     appStatus: {
@@ -2276,7 +2277,8 @@ export const DEFAULT_STATE: CcState = {
         sharpnessMode: SharpnessMode.Standard,
         maxTreeMapFiles: 100,
         labelMode: LabelMode.Height,
-        groupLabelCollisions: false
+        groupLabelCollisions: false,
+        labelsPerMap: false
     },
     dynamicSettings: {
         areaMetric: null,

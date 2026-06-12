@@ -171,6 +171,7 @@ export interface AppSettings {
     colorLabels: ColorLabelOptions
     labelMode: LabelMode
     groupLabelCollisions: boolean
+    labelsPerMap: boolean
     isColorMetricLinkedToHeightMetric: boolean
     enableFloorLabels: boolean
 }

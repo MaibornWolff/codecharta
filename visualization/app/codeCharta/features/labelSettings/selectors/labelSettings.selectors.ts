@@ -14,3 +14,5 @@ export const showMetricLabelNameValueSelector = createSelector(appSettingsSelect
 export const colorLabelsSelector = createSelector(appSettingsSelector, appSettings => appSettings.colorLabels)
 
 export const groupLabelCollisionsSelector = createSelector(appSettingsSelector, appSettings => appSettings.groupLabelCollisions)
+
+export const labelsPerMapSelector = createSelector(appSettingsSelector, appSettings => appSettings.labelsPerMap)

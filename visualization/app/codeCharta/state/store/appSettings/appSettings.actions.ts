@@ -8,6 +8,7 @@ import { setExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/exp
 import { setEnableFloorLabels } from "./enableFloorLabels/enableFloorLabels.actions"
 import { setLabelMode } from "./labelMode/labelMode.actions"
 import { setGroupLabelCollisions } from "./groupLabelCollisions/groupLabelCollisions.actions"
+import { setLabelsPerMap } from "./labelsPerMap/labelsPerMap.actions"
 import { setHideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.actions"
 import { setInvertArea } from "./invertArea/invertArea.actions"
 import { setInvertHeight } from "./invertHeight/invertHeight.actions"
@@ -61,5 +62,6 @@ export const appSettingsActions = [
     toggleIsColorMetricLinkedToHeightMetric,
     setEnableFloorLabels,
     setLabelMode,
-    setGroupLabelCollisions
+    setGroupLabelCollisions,
+    setLabelsPerMap
 ]

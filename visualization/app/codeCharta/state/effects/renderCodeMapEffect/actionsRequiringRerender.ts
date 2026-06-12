@@ -32,6 +32,7 @@ import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/sear
 import { setMarkedPackages, markPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
 import { setEnableFloorLabels } from "../../store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 import { setGroupLabelCollisions } from "../../store/appSettings/groupLabelCollisions/groupLabelCollisions.actions"
+import { setLabelsPerMap } from "../../store/appSettings/labelsPerMap/labelsPerMap.actions"
 import { setLabelMode } from "../../store/appSettings/labelMode/labelMode.actions"
 import { setState } from "../../store/state.actions"
 import { setShowIncomingEdges } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.actions"
@@ -76,6 +77,7 @@ export const actionsRequiringRerender = [
     unmarkPackage,
     setEnableFloorLabels,
     setGroupLabelCollisions,
+    setLabelsPerMap,
     setLabelMode,
     setState
 ]
