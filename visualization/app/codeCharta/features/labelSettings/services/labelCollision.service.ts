@@ -6,6 +6,7 @@ import { LabelMode } from "../../../codeCharta.model"
 import { StateAccessStore } from "../stores/stateAccess.store"
 import { ConnectorDrawingService, LabelLayoutInfo } from "./connectorDrawing.service"
 import { LABEL_GAP_PX, MAX_DISPLACEMENT_PX, TOOLTIP_COLLISION_PADDING_PX } from "./label.constants"
+import { getTopLevelMapName } from "../../../util/nodePathHelper"
 
 @Injectable({ providedIn: "root" })
 export class LabelCollisionService {
@@ -94,7 +95,7 @@ export class LabelCollisionService {
             return
         }
 
-        const groups = this.buildCollisionGroups(activeInfos)
+        const groups = this.buildCollisionGroups(activeInfos, this.stateAccessStore.isLabelsPerMapActive())
         const { dynamicSettings } = this.stateAccessStore.getValue()
         const metric = appSettings.labelMode === LabelMode.Color ? dynamicSettings.colorMetric : dynamicSettings.heightMetric
 
@@ -115,9 +116,10 @@ export class LabelCollisionService {
         }
     }
 
-    private buildCollisionGroups(infos: LabelLayoutInfo[]): LabelLayoutInfo[][] {
+    private buildCollisionGroups(infos: LabelLayoutInfo[], groupPerMap: boolean): LabelLayoutInfo[][] {
         const n = infos.length
         const parent = Array.from({ length: n }, (_, i) => i)
+        const mapNames = groupPerMap ? infos.map(info => getTopLevelMapName(info.label.node.path)) : undefined
 
         const find = (x: number): number => {
             while (parent[x] !== x) {
@@ -137,6 +139,9 @@ export class LabelCollisionService {
 
         for (let i = 0; i < n; i++) {
             for (let j = i + 1; j < n; j++) {
+                if (mapNames !== undefined && mapNames[i] !== mapNames[j]) {
+                    continue
+                }
                 if (this.rectsOverlap(infos[i].rect, infos[j].rect)) {
                     union(i, j)
                 }

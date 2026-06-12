@@ -8,6 +8,7 @@ import { ShowMetricLabelNodeNameService } from "../../services/showMetricLabelNo
 import { ShowMetricLabelNameValueService } from "../../services/showMetricLabelNameValue.service"
 import { ColorLabelsService } from "../../services/colorLabels.service"
 import { GroupLabelCollisionsService } from "../../services/groupLabelCollisions.service"
+import { LabelsPerMapService } from "../../services/labelsPerMap.service"
 import { StateAccessStore } from "../../stores/stateAccess.store"
 import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
 import { debounce } from "../../../../util/debounce"
@@ -31,6 +32,7 @@ export class LabelSettingsPanelComponent {
     private readonly showMetricLabelNameValueService = inject(ShowMetricLabelNameValueService)
     private readonly colorLabelsService = inject(ColorLabelsService)
     private readonly groupLabelCollisionsService = inject(GroupLabelCollisionsService)
+    private readonly labelsPerMapService = inject(LabelsPerMapService)
     private readonly stateAccessStore = inject(StateAccessStore)
     private readonly codeMapRenderService = inject(CodeMapRenderService)
 
@@ -46,7 +48,8 @@ export class LabelSettingsPanelComponent {
         "appSettings.showMetricLabelNameValue",
         "appSettings.colorLabels",
         "appSettings.labelMode",
-        "appSettings.groupLabelCollisions"
+        "appSettings.groupLabelCollisions",
+        "appSettings.labelsPerMap"
     ]
 
     readonly amountOfTopLabels = toSignal(this.amountOfTopLabelsService.amountOfTopLabels$(), { requireSync: true })
@@ -59,8 +62,15 @@ export class LabelSettingsPanelComponent {
     readonly labelMode = toSignal(this.labelModeService.labelMode$(), { requireSync: true })
     readonly colorCategoryCounts = toSignal(this.codeMapRenderService.colorCategoryCounts$, { requireSync: true })
     readonly groupLabelCollisions = toSignal(this.groupLabelCollisionsService.groupLabelCollisions$(), { requireSync: true })
+    readonly labelsPerMap = toSignal(this.labelsPerMapService.labelsPerMap$(), { requireSync: true })
+    readonly areMultipleMapsVisible = toSignal(this.stateAccessStore.areMultipleMapsVisible$, { requireSync: true })
 
     readonly showColorLabels = computed(() => this.labelMode() === LabelMode.Color && !this.isDeltaState())
+
+    readonly topLabelsTitle = computed(() => {
+        const base = `Display the labels of the ${this.amountOfTopLabels()} highest buildings`
+        return this.labelsPerMap() && this.areMultipleMapsVisible() ? `${base} per map` : base
+    })
 
     readonly applyDebouncedTopLabels = debounce((amountOfTopLabels: number) => {
         this.amountOfTopLabelsService.setAmountOfTopLabels(amountOfTopLabels)
@@ -116,6 +126,10 @@ export class LabelSettingsPanelComponent {
 
     setGroupLabelCollisions(event: Event) {
         this.groupLabelCollisionsService.setGroupLabelCollisions((event.target as HTMLInputElement).checked)
+    }
+
+    setLabelsPerMap(value: boolean) {
+        this.labelsPerMapService.setLabelsPerMap(value)
     }
 
     resetSettings() {

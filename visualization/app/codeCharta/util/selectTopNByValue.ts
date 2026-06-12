@@ -1,3 +1,17 @@
+export function selectTopNByValuePerGroup<T>(items: T[], getGroup: (item: T) => string, getValue: (item: T) => number, n: number): T[] {
+    const itemsByGroup = new Map<string, T[]>()
+    for (const item of items) {
+        const group = getGroup(item)
+        const groupItems = itemsByGroup.get(group)
+        if (groupItems) {
+            groupItems.push(item)
+        } else {
+            itemsByGroup.set(group, [item])
+        }
+    }
+    return [...itemsByGroup.values()].flatMap(groupItems => selectTopNByValue(groupItems, getValue, n))
+}
+
 export function selectTopNByValue<T>(items: T[], getValue: (item: T) => number, n: number): T[] {
     const limit = Math.floor(n)
     if (Number.isNaN(limit) || limit <= 0) {

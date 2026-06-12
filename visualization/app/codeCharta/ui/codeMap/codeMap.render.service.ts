@@ -15,7 +15,9 @@ import { metricDataSelector } from "../../state/selectors/accumulatedData/metric
 import { blacklistMatcherSelector } from "../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
 import { State, Store } from "@ngrx/store"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { selectTopNByValue } from "../../util/selectTopNByValue"
+import { selectTopNByValue, selectTopNByValuePerGroup } from "../../util/selectTopNByValue"
+import { getTopLevelMapName } from "../../util/nodePathHelper"
+import { labelsPerMapActiveSelector } from "../../state/selectors/labelsPerMapActive.selector"
 
 export interface ColorCategoryCounts {
     positive: number
@@ -189,39 +191,47 @@ export class CodeMapRenderService implements OnDestroy {
             return
         }
 
+        const state = this.state.getValue() as CcState
         const {
             showMetricLabelNodeName,
             showMetricLabelNameValue,
             colorLabels: colorLabelOptions,
             amountOfTopLabels,
             labelMode
-        } = this.state.getValue().appSettings
+        } = state.appSettings
 
         if (showMetricLabelNodeName || showMetricLabelNameValue) {
             const highestNodeInSet = sortedNodes[0].height
+            const selectTopNodes = this.getTopNodeSelector(state, amountOfTopLabels)
 
             if (labelMode === LabelMode.Color) {
-                const { colorMetric } = this.state.getValue().dynamicSettings
-                const selectedColorNodes = selectTopNByValue(
+                const { colorMetric } = state.dynamicSettings
+                const selectedColorNodes = selectTopNodes(
                     colorLabelTypes
                         .filter(colorType => colorLabelOptions[colorType])
                         .flatMap(colorType => this.nodesByColor[colorType])
                         .filter(node => Number.isFinite(node.attributes[colorMetric])),
-                    node => node.attributes[colorMetric],
-                    amountOfTopLabels
+                    node => node.attributes[colorMetric]
                 )
                 this.setBuildingLabel(selectedColorNodes, highestNodeInSet)
             } else {
                 // rank by rendered height, not the raw metric: with invertHeight or
                 // direction-1 metrics the tallest buildings are not the highest values
-                const nodes = selectTopNByValue(
+                const nodes = selectTopNodes(
                     sortedNodes.filter(node => node.isLeaf),
-                    node => node.height ?? 0,
-                    amountOfTopLabels
+                    node => node.height ?? 0
                 )
                 this.setBuildingLabel(nodes, highestNodeInSet)
             }
         }
+    }
+
+    private getTopNodeSelector(state: CcState, amountOfTopLabels: number) {
+        if (labelsPerMapActiveSelector(state)) {
+            return (nodes: Node[], getValue: (node: Node) => number) =>
+                selectTopNByValuePerGroup(nodes, node => getTopLevelMapName(node.path), getValue, amountOfTopLabels)
+        }
+        return (nodes: Node[], getValue: (node: Node) => number) => selectTopNByValue(nodes, getValue, amountOfTopLabels)
     }
 
     private setArrows(sortedNodes: Node[]) {

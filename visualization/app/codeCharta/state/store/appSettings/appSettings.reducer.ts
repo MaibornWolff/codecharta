@@ -39,6 +39,7 @@ import {
 import { defaultEnableFloorLabels, enableFloorLabels } from "./enableFloorLabels/enableFloorLabels.reducer"
 import { defaultLabelMode, labelMode } from "./labelMode/labelMode.reducer"
 import { defaultGroupLabelCollisions, groupLabelCollisions } from "./groupLabelCollisions/groupLabelCollisions.reducer"
+import { defaultLabelsPerMap, labelsPerMap } from "./labelsPerMap/labelsPerMap.reducer"
 import { combineReducers } from "@ngrx/store"
 import { defaultShowIncomingEdges, showIncomingEdges } from "./showEdges/incoming/showIncomingEdges.reducer"
 import { defaultShowOutgoingEdges, showOutgoingEdges } from "./showEdges/outgoing/showOutgoingEdges.reducer"
@@ -74,7 +75,8 @@ export const appSettings = combineReducers({
     isColorMetricLinkedToHeightMetric,
     enableFloorLabels,
     labelMode,
-    groupLabelCollisions
+    groupLabelCollisions,
+    labelsPerMap
 })
 
 export const defaultAppSettings = {
@@ -108,5 +110,6 @@ export const defaultAppSettings = {
     isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
     enableFloorLabels: defaultEnableFloorLabels,
     labelMode: defaultLabelMode,
-    groupLabelCollisions: defaultGroupLabelCollisions
+    groupLabelCollisions: defaultGroupLabelCollisions,
+    labelsPerMap: defaultLabelsPerMap
 }

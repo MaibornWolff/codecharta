@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- **Per-map top labels**: When more than one map is selected, the Label Settings panel offers a new `All maps | Per map` toggle below the Top Labels slider. In `Per map` mode the top-N labels are picked separately for each map (Height and Color label mode alike), and overlapping labels are only grouped within the same map. The toggle is hidden for a single map and in delta mode.
 - **Label Size slider**: New slider in the Label Settings panel scales floating label text (name, metric value, and "+N more" badge) between 0.75× and 2.5×. The setting is preserved in scenarios.
 - **File Explorer sidebar**: The file tree was redesigned as a dedicated left-side sidebar drawer that overlays the codemap. The drawer adds a Shown/Flattened/Hidden chip row at the top, a sort control, and click-to-edit popovers for the active flatten and exclude rules.
 - **Collapsible File Explorer**: The sidebar can now be collapsed via the `«` button in the header. Collapsed mode shows a small floating search box (with the kebab Flatten/Exclude menu) pinned at the top-left, freeing the full viewport for the codemap. Re-expand with the folder-tree button.

@@ -7,6 +7,7 @@ import { Node, CodeMapNode, CcState, LabelMode } from "../../codeCharta.model"
 import {
     COLOR_TEST_NODES,
     DEFAULT_STATE,
+    FILE_STATES_TWO_FILES,
     INCOMING_NODE,
     METRIC_DATA,
     STATE,
@@ -27,6 +28,8 @@ import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setLabelsPerMap } from "../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
+import { setFiles } from "../../state/store/files/files.actions"
 import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
@@ -424,6 +427,82 @@ describe("codeMapRenderService", () => {
 
             // Assert
             expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(3)
+        })
+
+        describe("per-map top labels", () => {
+            function buildLeaf(name: string, mapName: string, height: number): Node {
+                return { ...TEST_NODE_LEAF, name, path: `/root/${mapName}/${name}`, isLeaf: true, height } as Node
+            }
+
+            let tallestOfMapA: Node
+            let shortestOfMapA: Node
+            let tallestOfMapB: Node
+            let shortestOfMapB: Node
+
+            beforeEach(() => {
+                store.dispatch(setAmountOfTopLabels({ value: 1 }))
+                tallestOfMapA = buildLeaf("tallest-a", "mapA", 100)
+                shortestOfMapA = buildLeaf("shortest-a", "mapA", 50)
+                tallestOfMapB = buildLeaf("tallest-b", "mapB", 20)
+                shortestOfMapB = buildLeaf("shortest-b", "mapB", 10)
+            })
+
+            it("should pick the top labels for each map when labelsPerMap is active", () => {
+                // Arrange
+                store.dispatch(setFiles({ value: FILE_STATES_TWO_FILES }))
+                store.dispatch(setLabelsPerMap({ value: true }))
+
+                // Act
+                codeMapRenderService["setLabels"]([tallestOfMapA, shortestOfMapA, tallestOfMapB, shortestOfMapB])
+
+                // Assert — one label per map instead of one label overall
+                expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
+                expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(tallestOfMapA, expect.anything())
+                expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(tallestOfMapB, expect.anything())
+            })
+
+            it("should pick the top labels across all maps when labelsPerMap is off", () => {
+                // Arrange
+                store.dispatch(setFiles({ value: FILE_STATES_TWO_FILES }))
+                store.dispatch(setLabelsPerMap({ value: false }))
+
+                // Act
+                codeMapRenderService["setLabels"]([tallestOfMapA, shortestOfMapA, tallestOfMapB, shortestOfMapB])
+
+                // Assert
+                expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
+                expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(tallestOfMapA, expect.anything())
+            })
+
+            it("should ignore labelsPerMap when only one map is visible", () => {
+                // Arrange
+                store.dispatch(setLabelsPerMap({ value: true }))
+
+                // Act
+                codeMapRenderService["setLabels"]([tallestOfMapA, shortestOfMapA, tallestOfMapB, shortestOfMapB])
+
+                // Assert
+                expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(1)
+                expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(tallestOfMapA, expect.anything())
+            })
+
+            it("should pick the top color labels for each map when labelsPerMap is active in Color mode", () => {
+                // Arrange
+                store.dispatch(setFiles({ value: FILE_STATES_TWO_FILES }))
+                store.dispatch(setLabelsPerMap({ value: true }))
+                store.dispatch(setLabelMode({ value: LabelMode.Color }))
+                store.dispatch(setColorLabels({ value: { positive: true, negative: true, neutral: true } }))
+                const colorNodesPerMap = [tallestOfMapA, shortestOfMapA, tallestOfMapB, shortestOfMapB].map(
+                    node => ({ ...node, attributes: { mcc: node.height } }) as Node
+                )
+
+                // Act
+                codeMapRenderService["getNodesMatchingColorSelector"](colorNodesPerMap)
+                codeMapRenderService["setLabels"](colorNodesPerMap)
+
+                // Assert — one label per map instead of one label overall
+                expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
+            })
         })
     })
 

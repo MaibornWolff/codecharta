@@ -4,6 +4,9 @@ import userEvent from "@testing-library/user-event"
 import { setColorLabels } from "../../../../state/store/appSettings/colorLabels/colorLabels.actions"
 import { setLabelMode } from "../../../../state/store/appSettings/labelMode/labelMode.actions"
 import { setLabelSize } from "../../../../state/store/appSettings/labelSize/labelSize.actions"
+import { setLabelsPerMap } from "../../../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
+import { setDelta, setFiles } from "../../../../state/store/files/files.actions"
+import { FILE_STATES_TWO_FILES, TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../../util/dataMocks"
 import { fireEvent } from "@testing-library/angular"
 import { LabelSettingsPanelComponent } from "./labelSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"
@@ -152,6 +155,58 @@ describe("LabelSettingsPanelComponent", () => {
 
         const positiveCheckbox = screen.getByRole("checkbox", { name: "positive color label" }) as HTMLInputElement
         expect(positiveCheckbox.disabled).toBe(false)
+    })
+
+    describe("per-map top labels toggle", () => {
+        it("should hide the toggle when only one map is visible", async () => {
+            // Arrange & Act
+            await render(LabelSettingsPanelComponent)
+
+            // Assert
+            expect(screen.queryByRole("radio", { name: "Per map" })).toBe(null)
+        })
+
+        it("should display the toggle when multiple maps are visible in standard mode", async () => {
+            // Arrange
+            const { detectChanges } = await render(LabelSettingsPanelComponent)
+            const store = TestBed.inject(Store)
+
+            // Act
+            store.dispatch(setFiles({ value: FILE_STATES_TWO_FILES }))
+            detectChanges()
+
+            // Assert
+            expect(screen.getByRole("radio", { name: "All maps" })).not.toBe(null)
+            expect(screen.getByRole("radio", { name: "Per map" })).not.toBe(null)
+        })
+
+        it("should hide the toggle in delta mode", async () => {
+            // Arrange
+            const { detectChanges } = await render(LabelSettingsPanelComponent)
+            const store = TestBed.inject(Store)
+
+            // Act
+            store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA, comparisonFile: TEST_FILE_DATA_JAVA }))
+            detectChanges()
+
+            // Assert
+            expect(screen.queryByRole("radio", { name: "Per map" })).toBe(null)
+        })
+
+        it("should dispatch setLabelsPerMap when clicking Per map", async () => {
+            // Arrange
+            const { detectChanges } = await render(LabelSettingsPanelComponent)
+            const store = TestBed.inject(Store)
+            store.dispatch(setFiles({ value: FILE_STATES_TWO_FILES }))
+            detectChanges()
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            await userEvent.click(screen.getByRole("radio", { name: "Per map" }))
+
+            // Assert
+            expect(dispatchSpy).toHaveBeenCalledWith(setLabelsPerMap({ value: true }))
+        })
     })
 
     describe("Label Size slider", () => {
