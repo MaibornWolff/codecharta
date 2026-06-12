@@ -1,0 +1,35 @@
+<div class="flex items-center justify-between px-4 py-3">
+    <div class="flex items-center gap-1.5">
+        @for (markFolderItem of markFolderItems(); track markFolderItem.color) {
+            <button
+                type="button"
+                class="colorButton flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md border border-base-300 hover:ring-2 hover:ring-primary"
+                [style.background-color]="markFolderItem.color"
+                [title]="markFolderItem.isMarked ? 'Remove folder color' : 'Colorize folder'"
+                (click)="onPresetColorClick(markFolderItem)"
+            >
+                @if (markFolderItem.isMarked) {
+                    <i class="fa-solid fa-xmark text-white"></i>
+                }
+            </button>
+        }
+    </div>
+    <div class="flex items-center gap-1.5">
+        @if (hasCustomMarkColor()) {
+            <button
+                type="button"
+                class="btn btn-sm btn-square btn-ghost shrink-0 border border-base-300"
+                title="Remove folder color"
+                (click)="onClearColorClick()"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        }
+        <cc-inline-color-picker
+            [hexColor]="currentMarkColor() ?? '#ff0000'"
+            triggerIcon="fa-solid fa-paintbrush"
+            ariaLabel="Pick custom folder color"
+            (colorChange)="onCustomColorChange($event)"
+        ></cc-inline-color-picker>
+    </div>
+</div>

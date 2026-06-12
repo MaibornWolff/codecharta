@@ -9,7 +9,6 @@ import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
 import { AutoFitCodeMapEffect } from "app/codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
 import { LinkColorMetricToHeightMetricEffect } from "app/codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
-import { OpenNodeContextMenuEffect } from "app/codeCharta/state/effects/openNodeContextMenu/openNodeContextMenu.effect"
 import { RenderCodeMapEffect } from "app/codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { ResetChosenMetricsEffect } from "app/codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "app/codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
@@ -36,7 +35,6 @@ export const appConfig: ApplicationConfig = {
             UnfocusNodesEffect,
             AddBlacklistItemsIfNotResultsInEmptyMapEffect,
             UpdateAmountOfEdgePreviewsEffect,
-            OpenNodeContextMenuEffect,
             BlacklistSearchPatternEffect,
             BlacklistExtensionEffect,
             ResetColorRangeEffect,

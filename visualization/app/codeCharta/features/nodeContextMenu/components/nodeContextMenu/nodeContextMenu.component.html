@@ -1,0 +1,93 @@
+@if (menuNode(); as node) {
+    <div
+        #menu
+        id="codemap-context-menu"
+        class="fixed z-[100] w-64 rounded-box border border-base-300 bg-base-100 py-1 text-base-content shadow-lg"
+        [style.left.px]="clampedPosition()?.left ?? rightClickedNodeData()?.xPositionOfRightClickEvent"
+        [style.top.px]="clampedPosition()?.top ?? rightClickedNodeData()?.yPositionOfRightClickEvent"
+        [style.visibility]="clampedPosition() ? 'visible' : 'hidden'"
+        (contextmenu)="$event.preventDefault()"
+    >
+        <button
+            type="button"
+            class="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-base-200"
+            title="Copy path to clipboard"
+            (click)="copyPath()"
+        >
+            <i class="w-4 text-center {{ wasPathCopied() ? 'fa-solid fa-check text-success' : 'fa-regular fa-copy' }}"></i>
+            <span class="truncate text-sm font-semibold tracking-wide">{{ displayPath() }}</span>
+        </button>
+
+        @if (isShowInExplorerVisible()) {
+            <cc-context-menu-item
+                icon="fa-regular fa-folder-open"
+                hoverHint="Reveal node in the explorer sidebar"
+                (itemClick)="showInExplorer()"
+            >
+                Show in Explorer
+            </cc-context-menu-item>
+        }
+
+        <div class="my-1 border-t border-base-300"></div>
+
+        @if (!isNodeFocused()) {
+            <cc-context-menu-item
+                icon="fa-solid fa-crosshairs"
+                buttonId="focus-button"
+                hoverHint="Only show the selected node and its children"
+                (itemClick)="focusNode()"
+            >
+                Focus
+            </cc-context-menu-item>
+        }
+        @if (isNodeFocused() || isParentFocused()) {
+            <cc-context-menu-item icon="fa-solid fa-crosshairs" hoverHint="Show previous focused node" (itemClick)="unfocusNode()">
+                {{ isParentFocused() ? "Unfocus Parent" : "Unfocus" }}
+            </cc-context-menu-item>
+            @if (hasPreviousFocusedNodePath()) {
+                <cc-context-menu-item icon="fa-solid fa-crosshairs" hoverHint="Show complete map" (itemClick)="unfocusAllNodes()">
+                    Unfocus All
+                </cc-context-menu-item>
+            }
+        }
+
+        @if (!isHighlighted()) {
+            <cc-context-menu-item icon="fa-solid fa-thumbtack" hoverHint="Highlight node constantly" (itemClick)="keepHighlight()">
+                Keep Highlight
+            </cc-context-menu-item>
+        } @else {
+            <cc-context-menu-item icon="fa-solid fa-thumbtack" hoverHint="Remove constant highlight" (itemClick)="removeHighlight()">
+                Remove Highlight
+            </cc-context-menu-item>
+        }
+
+        <div class="my-1 border-t border-base-300"></div>
+
+        @if (!node.isFlattened) {
+            <cc-context-menu-item
+                icon="fa-solid fa-arrows-down-to-line"
+                hoverHint="Flatten node and its children, keeping an empty space"
+                (itemClick)="flattenNode()"
+            >
+                Flatten
+            </cc-context-menu-item>
+        } @else {
+            <cc-context-menu-item
+                icon="fa-solid fa-arrows-down-to-line fa-rotate-180"
+                hoverHint="Show node and its children"
+                (itemClick)="unflattenNode()"
+            >
+                Show
+            </cc-context-menu-item>
+        }
+
+        <cc-context-menu-item icon="fa-solid fa-ban" buttonId="exclude-button" hoverHint="Exclude node from the map" (itemClick)="excludeNode()">
+            Exclude
+        </cc-context-menu-item>
+
+        @if (isFolder()) {
+            <div class="my-1 border-t border-base-300"></div>
+            <cc-mark-folder-row (folderMarked)="close()"></cc-mark-folder-row>
+        }
+    </div>
+}

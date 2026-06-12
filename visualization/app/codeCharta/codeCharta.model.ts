@@ -352,5 +352,6 @@ export interface AppStatus {
         nodeId: number
         xPositionOfRightClickEvent: number
         yPositionOfRightClickEvent: number
+        origin: "codeMap" | "explorer"
     } | null
 }

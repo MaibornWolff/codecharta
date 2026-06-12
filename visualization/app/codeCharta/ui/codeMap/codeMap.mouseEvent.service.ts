@@ -339,7 +339,8 @@ export class CodeMapMouseEventService implements OnDestroy {
                     value: {
                         nodeId: this.intersectedBuilding.node.id,
                         xPositionOfRightClickEvent: this.mouse.x,
-                        yPositionOfRightClickEvent: this.mouse.y
+                        yPositionOfRightClickEvent: this.mouse.y,
+                        origin: "codeMap"
                     }
                 })
             )

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 import { MarkedPackageWithCount } from "../../selectors/markedPackagesWithCounts.selector"
-import { InlineColorPickerComponent } from "./inlineColorPicker.component"
+import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 
 @Component({
     selector: "cc-folder-override-row",

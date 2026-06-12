@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test"
 import { clearIndexedDB, goto } from "../../../../../playwright.helper"
 import { ExplorerTreeLevelPageObject } from "./explorerTreeLevel.po"
-import { NodeContextMenuPageObject } from "../../../../ui/nodeContextMenu/nodeContextMenu.po"
+import { NodeContextMenuPageObject } from "../../../nodeContextMenu/components/nodeContextMenu/nodeContextMenu.po"
 
 test.describe("ExplorerTreeLevel", () => {
     test.beforeEach(async ({ page }) => {
