@@ -7,53 +7,20 @@
         [style.bottom]="panelBottom"
     >
         <div class="flex flex-col gap-3 p-3">
-            @if (!isDeltaState()) {
-                <div class="flex flex-col gap-2">
-                    <cc-legend-metric-row label="Area" [metricName]="areaMetric() ?? ''"></cc-legend-metric-row>
-                    <cc-legend-metric-row label="Height" [metricName]="heightMetric() ?? ''"></cc-legend-metric-row>
-                    <cc-legend-metric-row label="Color" [metricName]="colorMetric() ?? ''"></cc-legend-metric-row>
-                    @if (edgeMetric(); as edgeMetric) {
-                        <cc-legend-metric-row label="Edge" [metricName]="edgeMetric"></cc-legend-metric-row>
-                    }
-                </div>
-                <div class="border-base-300 flex flex-col gap-1 border-t pt-2">
-                    <span class="text-xs uppercase tracking-wider opacity-60">Color scale</span>
-                    <cc-legend-color-row mapColorFor="positive"></cc-legend-color-row>
-                    <cc-legend-color-row mapColorFor="neutral"></cc-legend-color-row>
-                    <cc-legend-color-row mapColorFor="negative"></cc-legend-color-row>
-                </div>
+            @if (isDeltaState()) {
+                <cc-legend-delta-colors-section></cc-legend-delta-colors-section>
             } @else {
-                <div class="flex flex-col gap-1">
-                    <span class="text-xs uppercase tracking-wider opacity-60">Delta colors</span>
-                    <cc-legend-color-row mapColorFor="positiveDelta"></cc-legend-color-row>
-                    <cc-legend-color-row mapColorFor="negativeDelta"></cc-legend-color-row>
-                </div>
+                <cc-legend-metrics-section></cc-legend-metrics-section>
+                <cc-legend-color-scale-section></cc-legend-color-scale-section>
             }
 
             <div class="border-base-300 border-t pt-2">
                 <cc-legend-color-row mapColorFor="selected"></cc-legend-color-row>
             </div>
 
-            @if (edgeMetric()) {
-                <div class="border-base-300 flex flex-col gap-1 border-t pt-2">
-                    <cc-legend-color-row mapColorFor="outgoingEdge"></cc-legend-color-row>
-                    <cc-legend-color-row mapColorFor="incomingEdge"></cc-legend-color-row>
-                </div>
-            }
+            <cc-legend-edge-colors-section></cc-legend-edge-colors-section>
         </div>
     </div>
 }
 
-<button
-    id="legend-panel-button"
-    data-testid="legend-panel-button"
-    class="btn btn-primary btn-sm fixed z-[60] w-[88px] rotate-90 rounded-t-none transition-[right] duration-300"
-    [style.right]="buttonRight()"
-    [style.bottom]="buttonBottom"
-    [title]="isOpen() ? 'Hide panel' : 'Show panel'"
-    [attr.aria-expanded]="isOpen()"
-    aria-controls="legend-panel"
-    (click)="toggleIsOpen()"
->
-    LEGEND
-</button>
+<cc-legend-toggle-button [isOpen]="isOpen()" (toggle)="toggleIsOpen()"></cc-legend-toggle-button>
