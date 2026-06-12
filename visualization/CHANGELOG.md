@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **File Explorer sidebar**: The file tree was redesigned as a dedicated left-side sidebar drawer that overlays the codemap. The drawer adds a Shown/Flattened/Hidden chip row at the top, a sort control, and click-to-edit popovers for the active flatten and exclude rules.
 - **Collapsible File Explorer**: The sidebar can now be collapsed via the `«` button in the header. Collapsed mode shows a small floating search box (with the kebab Flatten/Exclude menu) pinned at the top-left, freeing the full viewport for the codemap. Re-expand with the folder-tree button.
 - **Folder overrides in the Color settings popover**: Marked packages can now be managed directly from the Color popover. A new "Folder Overrides" section lists each pinned folder with its file count, lets you recolor it via a swatch click (any color, no longer limited to the five marking colors), unpin it, and pin new folders through an inline folder search.
+- **Explorer hover tooltip**: Hovering a file or folder in the File Explorer shows the same tooltip as hovering a building on the map — the node name plus its current area, height, and color metric values (folders show aggregated values) — anchored to the right of the hovered row. The native browser tooltip on row names was removed as redundant.
 
 ### Changed
 
