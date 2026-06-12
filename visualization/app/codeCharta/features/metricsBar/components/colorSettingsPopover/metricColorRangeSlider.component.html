@@ -9,19 +9,15 @@
     />
 
     <div #rangeSliderContainer class="flex flex-1 mx-2 relative leading-[48px]">
+        <span class="inline-block border-b-4 border-solid" [style.width.px]="segmentWidths.left" [style.border-bottom-color]="leftColor"></span>
         <span
             class="inline-block border-b-4 border-solid"
-            [style.width.px]="sliderRangePosition.leftEnd"
-            [style.border-bottom-color]="leftColor"
-        ></span>
-        <span
-            class="inline-block border-b-4 border-solid"
-            [style.width.px]="sliderRangePosition.rightStart - sliderRangePosition.leftEnd"
+            [style.width.px]="segmentWidths.middle"
             [style.border-bottom-color]="middleColor"
         ></span>
         <span
             class="inline-block border-b-4 border-solid"
-            [style.width.px]="actualSliderWidth - sliderRangePosition.rightStart"
+            [style.width.px]="segmentWidths.right"
             [style.border-bottom-color]="rightColor"
         ></span>
 

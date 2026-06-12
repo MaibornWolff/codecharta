@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- The threshold slider in the Color settings popover no longer grows endlessly to the right when one thumb is dragged against the other. Subpixel differences between rendered thumb rects and the stored slider positions could let the thumbs cross, producing a negative segment width that the browser dropped — the overflowing segments widened the track, and the slider's resize observer fed the bigger width back into the segments in an unbounded loop. Thumb clamping now happens in logical track pixels and segment widths are clamped to always sum to the measured track width.
 - Folder (floor) labels stay sharp when the camera moves away: their texture now uses anisotropic filtering (the flat viewing angle previously over-blurred the text) and the white glyphs get a subtle dark outline so they no longer fade into the floor when minified.
 - Treemap maps are packed substantially denser: margins and floor-label strips now scale with the folder they belong to instead of being fixed pixel amounts (or sized from the whole map). Small files in crowded folders are no longer squeezed invisible, and files with the same metric value are drawn at comparable sizes across different folders.
 - Fix `amountOfEdgePreviews` being silently overwritten when restoring saved state — it incorrectly dispatched the top-labels action instead.
