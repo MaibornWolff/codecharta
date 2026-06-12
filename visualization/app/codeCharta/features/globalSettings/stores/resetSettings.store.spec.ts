@@ -123,22 +123,5 @@ describe("ResetSettingsStore", () => {
                 }
             })
         })
-
-        it("should reset sharpness mode setting", async () => {
-            // Arrange
-            const settingsKeys = ["appSettings.sharpnessMode"]
-
-            // Act
-            store.resetSettings(settingsKeys)
-
-            // Assert
-            const action: any = await getLastAction(mockStore)
-            expect(action.type).toBe(setState.type)
-            expect(action.value).toEqual({
-                appSettings: {
-                    sharpnessMode: defaultState.appSettings.sharpnessMode
-                }
-            })
-        })
     })
 })

@@ -63,17 +63,6 @@ describe("ResetSettingsService", () => {
             expect(mockStore.resetSettings).toHaveBeenCalledWith(settingsKeys)
         })
 
-        it("should delegate to store with sharpness mode key", () => {
-            // Arrange
-            const settingsKeys = ["appSettings.sharpnessMode"]
-
-            // Act
-            service.resetSettings(settingsKeys)
-
-            // Assert
-            expect(mockStore.resetSettings).toHaveBeenCalledWith(settingsKeys)
-        })
-
         it("should delegate to store with all globalSettings keys", () => {
             // Arrange
             const settingsKeys = [
@@ -83,8 +72,7 @@ describe("ResetSettingsService", () => {
                 "appSettings.hideFlatBuildings",
                 "appSettings.resetCameraIfNewFileIsLoaded",
                 "appSettings.layoutAlgorithm",
-                "appSettings.maxTreeMapFiles",
-                "appSettings.sharpnessMode"
+                "appSettings.maxTreeMapFiles"
             ]
 
             // Act

@@ -11,7 +11,6 @@ import { setLayoutAlgorithm } from "../../store/appSettings/layoutAlgorithm/layo
 import { setMapColors, invertColorRange, invertDeltaColors } from "../../store/appSettings/mapColors/mapColors.actions"
 import { setMaxTreeMapFiles } from "../../store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setScaling } from "../../store/appSettings/scaling/scaling.actions"
-import { setSharpnessMode } from "../../store/appSettings/sharpnessMode/sharpnessMode.actions"
 import { setShowMetricLabelNameValue } from "../../store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "../../store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowOnlyBuildingsWithEdges } from "../../store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
@@ -58,7 +57,6 @@ export const actionsRequiringRerender = [
     setLabelSize,
     setLayoutAlgorithm,
     setMaxTreeMapFiles,
-    setSharpnessMode,
     setColorMode,
     setEdgeMetric,
     setColorRange,

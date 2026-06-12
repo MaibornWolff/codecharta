@@ -135,14 +135,6 @@ describe("GlobalConfigurationDialogComponent", () => {
             expect(mapLayoutComponent).toBeTruthy()
         })
 
-        it("should render DisplayQualitySelection component", () => {
-            // Arrange & Act
-            const displayQualityComponent = fixture.nativeElement.querySelector("cc-display-quality-selection")
-
-            // Assert
-            expect(displayQualityComponent).toBeTruthy()
-        })
-
         it("should render ResetSettingsButton component", () => {
             // Arrange & Act
             const resetButtonComponent = fixture.nativeElement.querySelector("cc-reset-settings-button")

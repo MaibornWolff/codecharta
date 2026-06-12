@@ -24,7 +24,6 @@ import { setMapColors, invertColorRange, invertDeltaColors } from "./mapColors/m
 import { setMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { setScaling } from "./scaling/scaling.actions"
-import { setSharpnessMode } from "./sharpnessMode/sharpnessMode.actions"
 import { setShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { setShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
@@ -57,7 +56,6 @@ export const appSettingsActions = [
     setScreenshotToClipboardEnabled,
     setLayoutAlgorithm,
     setMaxTreeMapFiles,
-    setSharpnessMode,
     setIsColorMetricLinkedToHeightMetricAction,
     toggleIsColorMetricLinkedToHeightMetric,
     setEnableFloorLabels,

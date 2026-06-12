@@ -23,5 +23,3 @@ export const resetCameraIfNewFileIsLoadedSelector = createSelector(
 export const layoutAlgorithmSelector = createSelector(appSettingsSelector, appSettings => appSettings.layoutAlgorithm)
 
 export const maxTreeMapFilesSelector = createSelector(appSettingsSelector, appSettings => appSettings.maxTreeMapFiles)
-
-export const sharpnessModeSelector = createSelector(appSettingsSelector, appSettings => appSettings.sharpnessMode)

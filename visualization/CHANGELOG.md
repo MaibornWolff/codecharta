@@ -53,6 +53,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Settings popovers open next to their metric segment in browsers without CSS anchor positioning (e.g. Firefox) instead of centered in the viewport.
 - The selected building no longer survives a map rebuild as a stale reference: it is remapped onto the new mesh (or deselected when it disappears), preventing wrong recoloring after changing a metric and clicking another building.
 
+### Removed
+
+- **Display Quality setting**: The Low/Medium/High/Best selection in the Global Configuration dialog was removed. The map is now always rendered at the former "Best" quality (antialiasing plus native device pixel ratio); the FXAA post-processing pipeline that only served the Medium mode was removed along with it.
+
 ### Chore 👨‍💻 👩‍💻
 
 - npm no longer executes dependency install scripts (`ignore-scripts=true` in `.npmrc`) — the main npm supply-chain attack vector. All native dependencies ship prebuilt platform packages; electron's binary download now happens on demand via `script/ensureElectron.js` when running `npm run start`/`npm run package`, and git hooks are set up via `npm run prepare` (done automatically by `mise run install`).

@@ -21,13 +21,6 @@ export enum LayoutAlgorithm {
     TreeMapStreet = "TreeMapStreet"
 }
 
-export enum SharpnessMode {
-    Standard = "High",
-    PixelRatioNoAA = "Low",
-    PixelRatioFXAA = "Medium",
-    PixelRatioAA = "Best"
-}
-
 export interface CCFile {
     map: CodeMapNode
     settings: {
@@ -165,7 +158,6 @@ export interface AppSettings {
     showMetricLabelNodeName: boolean
     layoutAlgorithm: LayoutAlgorithm
     maxTreeMapFiles: number
-    sharpnessMode: SharpnessMode
     experimentalFeaturesEnabled: boolean
     screenshotToClipboardEnabled: boolean
     colorLabels: ColorLabelOptions

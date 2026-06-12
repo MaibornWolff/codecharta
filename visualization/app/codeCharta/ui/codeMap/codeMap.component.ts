@@ -1,9 +1,7 @@
 import { Component, AfterViewInit, ElementRef, OnDestroy } from "@angular/core"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
-import { GlobalSettingsFacade } from "../../features/globalSettings/facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { skip, tap } from "rxjs"
 import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
@@ -18,16 +16,6 @@ import { AsyncPipe } from "@angular/common"
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
     isLoadingFile$ = this.store.select(isLoadingFileSelector)
-    restartOnSharpnessModeChangesSubscription = this.globalSettingsFacade
-        .sharpnessMode$()
-        .pipe(
-            skip(1),
-            tap(() => {
-                this.threeViewerService.restart(this.elementReference.nativeElement.querySelector("#codeMap"))
-                this.codeMapMouseEventService.start()
-            })
-        )
-        .subscribe()
 
     private barsResizeObserver?: ResizeObserver
 
@@ -36,8 +24,7 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
         private readonly store: Store<CcState>,
         private readonly threeViewerService: ThreeViewerService,
         private readonly codeMapMouseEventService: CodeMapMouseEventService,
-        private readonly elementReference: ElementRef,
-        private readonly globalSettingsFacade: GlobalSettingsFacade
+        private readonly elementReference: ElementRef
     ) {}
 
     ngAfterViewInit(): void {
@@ -47,7 +34,6 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.restartOnSharpnessModeChangesSubscription.unsubscribe()
         this.threeViewerService.stopAnimate()
         this.threeViewerService.destroy()
         this.barsResizeObserver?.disconnect()
