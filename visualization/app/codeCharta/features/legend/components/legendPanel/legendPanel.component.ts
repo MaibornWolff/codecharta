@@ -49,7 +49,7 @@ export class LegendPanelComponent implements OnInit, OnDestroy {
     }
 
     private closeOnOutsideClick(event: MouseEvent) {
-        if (this.isOpen() && !this.elementReference.nativeElement.contains(event.target as Node)) {
+        if (this.isOpen() && event.target instanceof Node && !this.elementReference.nativeElement.contains(event.target)) {
             this.isOpen.set(false)
         }
     }
