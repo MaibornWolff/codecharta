@@ -7,7 +7,7 @@ import { ColorMetricService } from "../../services/colorMetric.service"
 import { ColorRangeService } from "../../services/colorRange.service"
 import { MapColorsService } from "../../services/mapColors.service"
 import { SelectedColorMetricDataService } from "../../services/selectedColorMetricData.service"
-import { InlineColorPickerComponent } from "./inlineColorPicker.component"
+import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 
 @Component({
     selector: "cc-color-band-row",

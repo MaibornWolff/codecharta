@@ -16,6 +16,7 @@ import { CodeMapTooltipService } from "../../../../ui/codeMap/codeMap.tooltip.se
 import { CodeMapBuilding } from "../../../../ui/codeMap/rendering/codeMapBuilding"
 import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { ExplorerTreeLevelComponent } from "./explorerTreeLevel.component"
 import { rootNode } from "./mocks"
 
@@ -189,7 +190,9 @@ describe("ExplorerTreeLevelComponent", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(
-            setRightClickedNodeData({ value: { nodeId: rootNodeId, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20 } })
+            setRightClickedNodeData({
+                value: { nodeId: rootNodeId, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "explorer" }
+            })
         )
 
         // Act
@@ -252,5 +255,49 @@ describe("ExplorerTreeLevelComponent", () => {
 
         // Assert
         await waitFor(() => expect(tooltipService.hide).toHaveBeenCalled())
+    })
+
+    describe("reveal from show-in-explorer", () => {
+        beforeEach(() => {
+            Element.prototype.scrollIntoView = jest.fn()
+        })
+
+        it("should open the ancestor levels of a revealed node", async () => {
+            // Arrange
+            const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
+            expect(container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")).toBeFalsy()
+
+            // Act
+            TestBed.inject(ExplorerRevealService).revealNode("/root/ParentLeaf/smallLeaf")
+
+            // Assert
+            await waitFor(() => expect(container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")).toBeTruthy())
+        })
+
+        it("should not open a folder whose path is only a prefix of the revealed path", async () => {
+            // Arrange
+            const { container, detectChanges } = await render(ExplorerTreeLevelComponent, {
+                inputs: componentInputs,
+                excludeComponentDeclaration: true
+            })
+
+            // Act
+            TestBed.inject(ExplorerRevealService).revealNode("/root/ParentLeafSibling/file")
+            detectChanges()
+
+            // Assert
+            expect(container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")).toBeFalsy()
+        })
+
+        it("should flash the revealed row", async () => {
+            // Arrange
+            const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
+
+            // Act
+            TestBed.inject(ExplorerRevealService).revealNode("/root/bigLeaf")
+
+            // Assert
+            await waitFor(() => expect(container.querySelector("#\\/root\\/bigLeaf").classList.contains("bg-primary/20")).toBe(true))
+        })
     })
 })

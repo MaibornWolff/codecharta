@@ -47,7 +47,7 @@ describe("AppStatusStore", () => {
     describe("rightClickedNodeData$", () => {
         it("should emit value from selector", done => {
             // Arrange
-            const data = { nodeId: 7, xPositionOfRightClickEvent: 1, yPositionOfRightClickEvent: 2 }
+            const data = { nodeId: 7, xPositionOfRightClickEvent: 1, yPositionOfRightClickEvent: 2, origin: "explorer" as const }
             mockStore.overrideSelector(rightClickedNodeDataSelector, data)
             mockStore.refreshState()
 
@@ -86,7 +86,7 @@ describe("AppStatusStore", () => {
     describe("setRightClickedNodeData", () => {
         it("should dispatch setRightClickedNodeData action with value", async () => {
             // Arrange
-            const data = { nodeId: 5, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20 }
+            const data = { nodeId: 5, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "explorer" as const }
 
             // Act
             store.setRightClickedNodeData(data)

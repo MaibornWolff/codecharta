@@ -1,5 +1,5 @@
 import { NgClass } from "@angular/common"
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, OnInit, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, OnInit, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
@@ -9,6 +9,7 @@ import { ThreeRendererService } from "../../../../ui/codeMap/threeViewer/threeRe
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 import { isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
 import { formatCompactNumber } from "../../../../util/formatCompactNumber"
+import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { AppStatusStore } from "../../stores/appStatus.store"
 import { ExplorerAreaMetricStore } from "../../stores/areaMetric.store"
 import { RootUnaryStore } from "../../stores/rootUnary.store"
@@ -30,6 +31,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
     private readonly threeRendererService = inject(ThreeRendererService)
     private readonly codeMapMouseEventService = inject(CodeMapMouseEventService)
     private readonly codeMapTooltipService = inject(CodeMapTooltipService)
+    private readonly revealService = inject(ExplorerRevealService)
     private readonly destroyRef = inject(DestroyRef)
 
     private isScrollListenerRegistered = false
@@ -48,6 +50,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
 
     readonly isHovered = computed(() => this.hoveredNodeId() === this.node().id)
     readonly isMarked = computed(() => this.rightClickedNodeData()?.nodeId === this.node().id)
+    readonly isRevealed = computed(() => this.revealService.revealedNodePath() === this.node().path)
     readonly isSelected = computed(() => this.selectedBuildingId() === this.node().id)
     readonly isAreaMetricValid = computed(() => isAreaValid(this.node(), this.areaMetric()))
     readonly isLeafNode = computed(() => isLeaf(this.node()))
@@ -62,6 +65,22 @@ export class ExplorerTreeLevelComponent implements OnInit {
         return Math.round((100 * unary) / root)
     })
     readonly unaryDisplay = computed(() => formatCompactNumber(this.node().attributes.unary))
+
+    // Opens this level when a node below it gets revealed via "Show in Explorer";
+    // the target level itself scrolls into view once its row exists in the DOM.
+    private readonly revealEffect = effect(() => {
+        const revealedNodePath = this.revealService.revealedNodePath()
+        if (!revealedNodePath) {
+            return
+        }
+        const path = this.node().path
+        if (revealedNodePath.startsWith(`${path}/`)) {
+            this.isOpen.set(true)
+        }
+        if (revealedNodePath === path) {
+            requestAnimationFrame(() => document.getElementById(path)?.scrollIntoView({ block: "center" }))
+        }
+    })
 
     ngOnInit(): void {
         this.isOpen.set(this.depth() === 0)
@@ -109,7 +128,8 @@ export class ExplorerTreeLevelComponent implements OnInit {
         this.appStatusStore.setRightClickedNodeData({
             nodeId: this.node().id,
             xPositionOfRightClickEvent: $event.clientX,
-            yPositionOfRightClickEvent: $event.clientY
+            yPositionOfRightClickEvent: $event.clientY,
+            origin: "explorer"
         })
 
         this.addScrollListener()

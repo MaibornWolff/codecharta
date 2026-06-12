@@ -548,7 +548,8 @@ describe("codeMapMouseEventService", () => {
                         value: {
                             nodeId: 1,
                             xPositionOfRightClickEvent: 0,
-                            yPositionOfRightClickEvent: 1
+                            yPositionOfRightClickEvent: 1,
+                            origin: "codeMap"
                         }
                     })
                 )

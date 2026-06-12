@@ -7,4 +7,8 @@ export class ExplorerCollapseService {
     toggle() {
         this.isCollapsed.update(value => !value)
     }
+
+    expand() {
+        this.isCollapsed.set(false)
+    }
 }
