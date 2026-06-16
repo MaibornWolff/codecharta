@@ -54,9 +54,9 @@ export class SidebarExplorerComponent implements OnDestroy {
         event.preventDefault()
         this.isResizing = true
         document.body.style.userSelect = "none"
-        window.addEventListener("pointermove", this.onPointerMove)
-        window.addEventListener("pointerup", this.onPointerUp)
-        window.addEventListener("pointercancel", this.onPointerUp)
+        globalThis.addEventListener("pointermove", this.onPointerMove)
+        globalThis.addEventListener("pointerup", this.onPointerUp)
+        globalThis.addEventListener("pointercancel", this.onPointerUp)
     }
 
     resetWidth() {
@@ -81,8 +81,8 @@ export class SidebarExplorerComponent implements OnDestroy {
         }
         this.isResizing = false
         document.body.style.userSelect = ""
-        window.removeEventListener("pointermove", this.onPointerMove)
-        window.removeEventListener("pointerup", this.onPointerUp)
-        window.removeEventListener("pointercancel", this.onPointerUp)
+        globalThis.removeEventListener("pointermove", this.onPointerMove)
+        globalThis.removeEventListener("pointerup", this.onPointerUp)
+        globalThis.removeEventListener("pointercancel", this.onPointerUp)
     }
 }
