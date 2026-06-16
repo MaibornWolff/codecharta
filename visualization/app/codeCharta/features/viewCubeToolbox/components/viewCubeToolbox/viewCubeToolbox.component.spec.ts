@@ -1,11 +1,8 @@
-import { HttpClient } from "@angular/common/http"
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { of } from "rxjs"
-import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
-import { LoadInitialFileService } from "../../../../services/loadInitialFile/loadInitialFile.service"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { defaultState } from "../../../../state/store/state.manager"
 import { ThreeMapControlsService } from "../../../../ui/codeMap/threeViewer/threeMapControls.service"
@@ -30,13 +27,7 @@ describe("ViewCubeToolboxComponent", () => {
                         makeScreenshotToClipboard: jest.fn(),
                         isWriteToClipboardAllowed: true
                     }
-                },
-                {
-                    provide: LoadInitialFileService,
-                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
-                },
-                { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
-                { provide: HttpClient, useValue: {} }
+                }
             ]
         })
     })
@@ -49,6 +40,5 @@ describe("ViewCubeToolboxComponent", () => {
         expect(container.querySelectorAll("cc-toolbox-center-map-button").length).toBe(1)
         expect(container.querySelectorAll("cc-toolbox-screenshot-button").length).toBe(1)
         expect(container.querySelectorAll("cc-toolbox-presentation-mode-button").length).toBe(1)
-        expect(container.querySelectorAll("cc-toolbox-reset-map-button").length).toBe(1)
     })
 })

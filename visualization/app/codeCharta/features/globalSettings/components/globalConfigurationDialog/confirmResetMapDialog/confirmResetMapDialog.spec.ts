@@ -5,21 +5,21 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import "fake-indexeddb/auto"
-import { getNameDataPair } from "../../../../services/loadFile/fileParser"
-import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
-import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../services/loadInitialFile/loadInitialFile.service"
-import { UrlExtractor } from "../../../../services/loadInitialFile/urlExtractor"
-import * as resetChosenMetricsEffect from "../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
-import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { setState } from "../../../../state/store/state.actions"
-import { defaultState } from "../../../../state/store/state.manager"
-import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../util/dataMocks"
-import * as indexedDBWriter from "../../../../util/indexedDB/indexedDBWriter"
+import { getNameDataPair } from "../../../../../services/loadFile/fileParser"
+import { LoadFileService } from "../../../../../services/loadFile/loadFile.service"
+import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../services/loadInitialFile/loadInitialFile.service"
+import { UrlExtractor } from "../../../../../services/loadInitialFile/urlExtractor"
+import * as resetChosenMetricsEffect from "../../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
+import { metricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { setState } from "../../../../../state/store/state.actions"
+import { defaultState } from "../../../../../state/store/state.manager"
+import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../../util/dataMocks"
+import * as indexedDBWriter from "../../../../../util/indexedDB/indexedDBWriter"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 
-jest.mock("../../../../util/indexedDB/indexedDBWriter")
-jest.mock("../../../../services/loadInitialFile/urlExtractor")
-jest.mock("../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect")
+jest.mock("../../../../../util/indexedDB/indexedDBWriter")
+jest.mock("../../../../../services/loadInitialFile/urlExtractor")
+jest.mock("../../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect")
 
 describe("ConfirmResetMapDialogComponent", () => {
     beforeEach(() => {

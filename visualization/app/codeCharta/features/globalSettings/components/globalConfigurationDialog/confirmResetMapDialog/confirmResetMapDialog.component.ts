@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http"
 import { Component, ElementRef, viewChild } from "@angular/core"
-import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
-import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../services/loadInitialFile/loadInitialFile.service"
-import { UrlExtractor } from "../../../../services/loadInitialFile/urlExtractor"
-import { deleteCcState } from "../../../../util/indexedDB/indexedDBWriter"
-import { MapResetStore } from "../../stores/mapReset.store"
+import { LoadFileService } from "../../../../../services/loadFile/loadFile.service"
+import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../services/loadInitialFile/loadInitialFile.service"
+import { UrlExtractor } from "../../../../../services/loadInitialFile/urlExtractor"
+import { deleteCcState } from "../../../../../util/indexedDB/indexedDBWriter"
+import { MapResetStore } from "../../../stores/mapReset.store"
 
 @Component({
     selector: "cc-confirm-reset-map-dialog",

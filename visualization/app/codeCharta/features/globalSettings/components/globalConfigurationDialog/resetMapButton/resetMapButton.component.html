@@ -1,10 +1,11 @@
 <button
     type="button"
-    class="join-item btn btn-sm btn-square"
-    title="Reset map to default"
+    class="btn btn-outline btn-error gap-2"
+    title="Reset uploaded maps, selected metrics and settings to their defaults"
     aria-label="Reset map"
     (click)="handleClick()"
 >
     <i class="fa fa-refresh"></i>
+    <span>Reset map to default</span>
 </button>
 <cc-confirm-reset-map-dialog #confirmDialog />

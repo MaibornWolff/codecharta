@@ -1,16 +1,26 @@
-import { Component, computed, HostBinding, input, OnDestroy, OnInit, output, signal } from "@angular/core"
+import {
+    Component,
+    computed,
+    ElementRef,
+    HostBinding,
+    HostListener,
+    input,
+    OnDestroy,
+    OnInit,
+    output,
+    signal,
+    viewChild
+} from "@angular/core"
 import { MetricDistribution } from "../selectors/fileExtensionCalculator"
-import { CdkContextMenuTrigger, CdkMenu } from "@angular/cdk/menu"
-import { MatCard } from "@angular/material/card"
-import { MatMenuItem } from "@angular/material/menu"
 import { BlackListExtensionService } from "../blackListExtension.service"
-import { NgOptimizedImage } from "@angular/common"
 import { HighlightBuildingsByFileExtensionService } from "../highlightBuildingsByFileExtension.service"
 import { Subscription } from "rxjs"
 
+const MENU_WIDTH_PX = 192
+const VIEWPORT_MARGIN_PX = 4
+
 @Component({
     selector: "cc-file-extension-bar-segment",
-    imports: [CdkContextMenuTrigger, MatCard, CdkMenu, MatMenuItem, NgOptimizedImage],
     templateUrl: "./fileExtensionBarSegment.component.html",
     styleUrl: "./fileExtensionBarSegment.component.scss"
 })
@@ -20,6 +30,9 @@ export class FileExtensionBarSegmentComponent implements OnInit, OnDestroy {
     toggleShowAbsoluteValues = output<void>()
 
     readonly isFlattened = signal<boolean>(false)
+    readonly menuPosition = signal<{ left: number; bottom: number } | null>(null)
+
+    private readonly menuRef = viewChild<ElementRef<HTMLElement>>("menu")
 
     readonly fileExtension = computed<string>(() => this.item().fileExtension)
     readonly hasFileExtension = computed(() => this.fileExtension() !== "None")
@@ -44,16 +57,53 @@ export class FileExtensionBarSegmentComponent implements OnInit, OnDestroy {
         this.flattenSubscription?.unsubscribe()
     }
 
+    openContextMenu(event: MouseEvent) {
+        event.preventDefault()
+        if (!this.hasFileExtension()) {
+            return
+        }
+        const left = Math.max(VIEWPORT_MARGIN_PX, Math.min(event.clientX, window.innerWidth - MENU_WIDTH_PX - VIEWPORT_MARGIN_PX))
+        const bottom = Math.max(VIEWPORT_MARGIN_PX, window.innerHeight - event.clientY)
+        this.menuPosition.set({ left, bottom })
+    }
+
+    closeContextMenu() {
+        this.menuPosition.set(null)
+    }
+
+    @HostListener("document:pointerdown", ["$event"])
+    onDocumentPointerDown(event: Event) {
+        if (!this.menuPosition()) {
+            return
+        }
+        const menuElement = this.menuRef()?.nativeElement
+        if (menuElement && event.target instanceof Node && menuElement.contains(event.target)) {
+            return
+        }
+        this.closeContextMenu()
+    }
+
+    @HostListener("document:wheel")
+    @HostListener("window:resize")
+    closeContextMenuOnViewportChange() {
+        if (this.menuPosition()) {
+            this.closeContextMenu()
+        }
+    }
+
     flatten(fileExtension: string) {
         this.blackListExtensionService.flatten(fileExtension)
+        this.closeContextMenu()
     }
 
     exclude(fileExtension: string) {
         this.blackListExtensionService.exclude(fileExtension)
+        this.closeContextMenu()
     }
 
     show(fileExtension: string) {
         this.blackListExtensionService.show(fileExtension)
+        this.closeContextMenu()
     }
 
     onHoverFileExtensionBar(hoveredExtension: string) {
