@@ -1,8 +1,11 @@
+import { HttpClient } from "@angular/common/http"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
+import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
+import { LoadInitialFileService } from "../../../../services/loadInitialFile/loadInitialFile.service"
 import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
 import { GlobalConfigurationDialogComponent } from "../../../globalSettings/components/globalConfigurationDialog/globalConfigurationDialog.component"
 import { SettingsButtonComponent } from "./settingsButton.component"
@@ -21,7 +24,13 @@ describe("SettingsButtonComponent", () => {
             imports: [SettingsButtonComponent],
             providers: [
                 provideMockStore({ initialState: { appSettings: defaultAppSettings } }),
-                { provide: State, useValue: { getValue: () => ({ appSettings: defaultAppSettings }) } }
+                { provide: State, useValue: { getValue: () => ({ appSettings: defaultAppSettings }) } },
+                {
+                    provide: LoadInitialFileService,
+                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
+                },
+                { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
+                { provide: HttpClient, useValue: {} }
             ]
         })
 

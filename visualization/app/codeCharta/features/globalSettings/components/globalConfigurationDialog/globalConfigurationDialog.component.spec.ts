@@ -1,3 +1,4 @@
+import { HttpClient } from "@angular/common/http"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
 import { provideMockStore } from "@ngrx/store/testing"
@@ -8,6 +9,8 @@ import { ExperimentalFeaturesService } from "../../services/experimentalFeatures
 import { BackgroundThemeService } from "../../services/backgroundTheme.service"
 import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibility.service"
 import { AutomaticCameraResetService } from "../../services/automaticCameraReset.service"
+import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
+import { LoadInitialFileService } from "../../../../services/loadInitialFile/loadInitialFile.service"
 import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
 
 describe("GlobalConfigurationDialogComponent", () => {
@@ -61,7 +64,13 @@ describe("GlobalConfigurationDialogComponent", () => {
                 { provide: ExperimentalFeaturesService, useValue: mockExperimentalFeaturesService },
                 { provide: BackgroundThemeService, useValue: mockBackgroundThemeService },
                 { provide: FlatBuildingVisibilityService, useValue: mockFlatBuildingVisibilityService },
-                { provide: AutomaticCameraResetService, useValue: mockAutomaticCameraResetService }
+                { provide: AutomaticCameraResetService, useValue: mockAutomaticCameraResetService },
+                {
+                    provide: LoadInitialFileService,
+                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
+                },
+                { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
+                { provide: HttpClient, useValue: {} }
             ]
         })
 
@@ -141,6 +150,14 @@ describe("GlobalConfigurationDialogComponent", () => {
 
             // Assert
             expect(resetButtonComponent).toBeTruthy()
+        })
+
+        it("should render ResetMapButton component", () => {
+            // Arrange & Act
+            const resetMapButtonComponent = fixture.nativeElement.querySelector("cc-reset-map-button")
+
+            // Assert
+            expect(resetMapButtonComponent).toBeTruthy()
         })
 
         it("should render SettingToggle components for all settings", () => {

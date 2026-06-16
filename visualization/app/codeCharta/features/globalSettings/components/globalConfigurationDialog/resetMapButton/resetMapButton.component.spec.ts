@@ -4,14 +4,14 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
-import { LoadInitialFileService } from "../../../../services/loadInitialFile/loadInitialFile.service"
-import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { defaultState } from "../../../../state/store/state.manager"
-import { METRIC_DATA } from "../../../../util/dataMocks"
+import { LoadFileService } from "../../../../../services/loadFile/loadFile.service"
+import { LoadInitialFileService } from "../../../../../services/loadInitialFile/loadInitialFile.service"
+import { metricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { defaultState } from "../../../../../state/store/state.manager"
+import { METRIC_DATA } from "../../../../../util/dataMocks"
 import { ResetMapButtonComponent } from "./resetMapButton.component"
 
-describe("ResetMapButtonComponent (toolbox)", () => {
+describe("ResetMapButtonComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [ResetMapButtonComponent],

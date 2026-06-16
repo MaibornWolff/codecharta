@@ -35,17 +35,21 @@
                 (checkedChange)="handleScreenshotToClipboardEnabledChanged($event)"
             />
 
-            <cc-reset-settings-button
-                [settingsKeys]="[
-                    'appSettings.hideFlatBuildings',
-                    'appSettings.isWhiteBackground',
-                    'appSettings.resetCameraIfNewFileIsLoaded',
-                    'appSettings.layoutAlgorithm',
-                    'appSettings.maxTreeMapFiles'
-                ]"
-                tooltip="Reset global settings to their defaults"
-                label="Reset global settings"
-            />
+            <div class="flex flex-wrap gap-3">
+                <cc-reset-settings-button
+                    [settingsKeys]="[
+                        'appSettings.hideFlatBuildings',
+                        'appSettings.isWhiteBackground',
+                        'appSettings.resetCameraIfNewFileIsLoaded',
+                        'appSettings.layoutAlgorithm',
+                        'appSettings.maxTreeMapFiles'
+                    ]"
+                    tooltip="Reset global settings to their defaults"
+                    label="Reset global settings"
+                />
+
+                <cc-reset-map-button />
+            </div>
         </div>
 
         <div class="modal-action justify-between items-center">

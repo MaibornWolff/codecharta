@@ -6,6 +6,7 @@ import { BackgroundThemeService } from "../../services/backgroundTheme.service"
 import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibility.service"
 import { AutomaticCameraResetService } from "../../services/automaticCameraReset.service"
 import { MapLayoutSelectionComponent } from "./mapLayoutSelection/mapLayoutSelection.component"
+import { ResetMapButtonComponent } from "./resetMapButton/resetMapButton.component"
 import { ResetSettingsButtonComponent } from "./resetSettingsButton/resetSettingsButton.component"
 import { SettingToggleComponent } from "./settingToggle/settingToggle.component"
 import { ExternalLinksComponent } from "./externalLinks/externalLinks.component"
@@ -13,7 +14,13 @@ import { ExternalLinksComponent } from "./externalLinks/externalLinks.component"
 @Component({
     selector: "cc-global-configuration-dialog",
     templateUrl: "./globalConfigurationDialog.component.html",
-    imports: [MapLayoutSelectionComponent, ResetSettingsButtonComponent, SettingToggleComponent, ExternalLinksComponent]
+    imports: [
+        MapLayoutSelectionComponent,
+        ResetMapButtonComponent,
+        ResetSettingsButtonComponent,
+        SettingToggleComponent,
+        ExternalLinksComponent
+    ]
 })
 export class GlobalConfigurationDialogComponent {
     dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
