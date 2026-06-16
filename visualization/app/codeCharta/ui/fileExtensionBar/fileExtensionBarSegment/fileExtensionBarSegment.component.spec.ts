@@ -77,10 +77,13 @@ describe("FileExtensionBarSegment", () => {
 
         fixture.componentRef.setInput("item", mockItem)
         fixture.componentRef.setInput("showAbsoluteValues", false)
+        document.body.appendChild(fixture.nativeElement)
         fixture.autoDetectChanges()
     })
 
     afterEach(() => {
+        fixture.destroy()
+        fixture.nativeElement.remove()
         store.resetSelectors()
         jest.restoreAllMocks()
     })
@@ -198,12 +201,20 @@ describe("FileExtensionBarSegment", () => {
             updateStoreWithBlacklistedItems(store, itemToFlatten)
             openContextMenu()
 
-            const flattenButton = fixture.debugElement.query(By.css('[data-test-id="showBuilding"]'))
-            flattenButton.nativeElement.click()
-
             expect(screen.queryByText("Exclude")).toBeTruthy()
             expect(screen.queryByText("Show")).toBeTruthy()
             expect(screen.queryByText("Flatten")).toBeFalsy()
+        })
+
+        it("should close the context menu after clicking an action", () => {
+            openContextMenu()
+            expect(screen.queryByText("Exclude")).toBeTruthy()
+
+            const excludeButton = fixture.debugElement.query(By.css('[data-test-id="excludeBuilding"]'))
+            excludeButton.nativeElement.click()
+            fixture.detectChanges()
+
+            expect(screen.queryByText("Exclude")).toBeFalsy()
         })
 
         it("should update store and show extension when clicking on show", () => {

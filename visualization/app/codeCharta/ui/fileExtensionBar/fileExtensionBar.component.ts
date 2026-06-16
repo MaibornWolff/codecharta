@@ -10,7 +10,7 @@ import { MetricDistributionService } from "./metricDistribution.service"
     styleUrls: ["./fileExtensionBar.component.scss"],
     imports: [DistributionMetricComponent, FileExtensionBarSegmentComponent],
     host: {
-        class: "fixed left-0 right-0 z-10 block bg-base-100",
+        class: "fixed left-0 right-0 z-[70] block bg-base-100",
         "[style.bottom]": "'var(--cc-bottom-bar-height, 32px)'"
     }
 })

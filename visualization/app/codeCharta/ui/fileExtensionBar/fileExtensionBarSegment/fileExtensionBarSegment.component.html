@@ -1,6 +1,6 @@
 <span class="cc-bar-section"
       (click)="toggleShowAbsoluteValues.emit()"
-      [cdkContextMenuTriggerFor]="contextMenu">
+      (contextmenu)="openContextMenu($event)">
 
       <div class="cc-bar-section-text"
            data-test-id="formattedTitle"
@@ -11,25 +11,37 @@
       </div>
 </span>
 
-<ng-template #contextMenu>
-    @if (hasFileExtension()) {
-        <mat-card cdkMenu>
-            @if (isFlattened()) {
-                <button mat-menu-item data-test-id="showBuilding" (click)="show(fileExtension())">
-                    <i class="fa fa-eye menu-icon"></i>
-                    <span>Show</span>
-                </button>
-            } @else {
-                <button mat-menu-item data-test-id="flattenBuilding" (click)="flatten(fileExtension())">
-                    <img alt="flattenIcon" class="png-icon menu-icon" ngSrc="codeCharta/assets/flatten.png" [width]="17" [height]="17"/>
-                    <span>Flatten</span>
-                </button>
-            }
+@if (menuPosition(); as position) {
+    <div #menu
+         class="fixed z-[100] w-48 rounded-box border border-base-300 bg-base-100 py-1 text-base-content shadow-lg"
+         [style.left.px]="position.left"
+         [style.bottom.px]="position.bottom"
+         (contextmenu)="$event.preventDefault()">
 
-            <button mat-menu-item data-test-id="excludeBuilding" (click)="exclude(fileExtension())">
-                <i class="fa fa-ban menu-icon"></i>
-                <span>Exclude</span>
+        @if (isFlattened()) {
+            <button type="button"
+                    data-test-id="showBuilding"
+                    class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium hover:bg-base-200"
+                    (click)="show(fileExtension())">
+                <i class="w-4 text-center fa-solid fa-eye"></i>
+                <span class="truncate">Show</span>
             </button>
-        </mat-card>
-    }
-</ng-template>
+        } @else {
+            <button type="button"
+                    data-test-id="flattenBuilding"
+                    class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium hover:bg-base-200"
+                    (click)="flatten(fileExtension())">
+                <i class="w-4 text-center fa-solid fa-arrows-down-to-line"></i>
+                <span class="truncate">Flatten</span>
+            </button>
+        }
+
+        <button type="button"
+                data-test-id="excludeBuilding"
+                class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium hover:bg-base-200"
+                (click)="exclude(fileExtension())">
+            <i class="w-4 text-center fa-solid fa-ban"></i>
+            <span class="truncate">Exclude</span>
+        </button>
+    </div>
+}
