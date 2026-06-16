@@ -3,12 +3,13 @@ $base-color: rgb(115, 115, 115);
 
 .zoom-slider {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 10px;
-    width: 150px;
+    height: 150px;
     position: absolute;
-    top: 190px;
-    right: 26px;
+    top: 10px;
+    right: 5px;
     margin: 10px;
 
     .zoom-button,
@@ -25,13 +26,20 @@ $base-color: rgb(115, 115, 115);
             margin: 0;
         }
     }
+
+    #zoomValue {
+        width: 30px;
+        text-align: center;
+    }
 }
 
 input[type="range"] {
     -webkit-appearance: none;
+    writing-mode: vertical-lr;
+    direction: rtl;
     color: $base-color;
-    width: 100px;
-    height: 3px;
+    width: 3px;
+    height: 100px;
     background: $base-color;
     outline: none;
     opacity: 0.7;
@@ -40,15 +48,15 @@ input[type="range"] {
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        width: 3px;
-        height: 10px;
+        width: 10px;
+        height: 3px;
         background: $base-color;
         cursor: pointer;
     }
 
     &::-moz-range-thumb {
-        width: 3px;
-        height: 10px;
+        width: 10px;
+        height: 3px;
         background: $base-color;
         cursor: pointer;
     }
