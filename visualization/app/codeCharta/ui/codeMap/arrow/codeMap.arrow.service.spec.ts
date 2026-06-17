@@ -173,6 +173,22 @@ describe("CodeMapArrowService", () => {
         })
     })
 
+    describe("addArrow", () => {
+        it("should still draw the edge when an endpoint's height-metric value is zero", () => {
+            // Arrange
+            withMockedThreeSceneService()
+            const heightMetric = state.getValue().dynamicSettings.heightMetric
+            const originNode: Node = { ...OUTGOING_NODE, attributes: { ...OUTGOING_NODE.attributes, [heightMetric]: 0 } }
+            const targetNode: Node = { ...INCOMING_NODE, attributes: { ...INCOMING_NODE.attributes, [heightMetric]: 0 } }
+
+            // Act
+            codeMapArrowService.addArrow(originNode, targetNode, true)
+
+            // Assert
+            expect(codeMapArrowService["arrows"].length).toBe(1)
+        })
+    })
+
     describe("SelectionMethods", () => {
         beforeEach(() => {
             codeMapArrowService.clearArrows = jest.fn()
