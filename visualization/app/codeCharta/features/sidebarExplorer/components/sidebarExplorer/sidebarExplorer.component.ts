@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { EXPLORER_COLLAPSED_WIDTH, ExplorerWidthService } from "../../services/explorerWidth.service"
 import { ExplorerHeaderComponent } from "../explorerHeader/explorerHeader.component"
@@ -35,13 +35,6 @@ export class SidebarExplorerComponent implements OnDestroy {
     readonly width = this.widthService.width
     readonly collapsedWidth = EXPLORER_COLLAPSED_WIDTH
 
-    // Publish the width the expanded explorer occupies so bottom-centered overlays (e.g. the metrics bar)
-    // can offset and avoid being covered by it. Collapsed it is a short top widget, so it occupies nothing here.
-    private readonly publishOccupiedWidth = effect(() => {
-        const occupiedWidth = this.isCollapsed() ? 0 : this.width()
-        document.documentElement.style.setProperty("--cc-explorer-width", `${occupiedWidth}px`)
-    })
-
     private isResizing = false
     private readonly onPointerMove = (event: PointerEvent) => this.resize(event)
     private readonly onPointerUp = () => this.stopResize()
@@ -65,7 +58,6 @@ export class SidebarExplorerComponent implements OnDestroy {
 
     ngOnDestroy() {
         this.stopResize()
-        document.documentElement.style.removeProperty("--cc-explorer-width")
     }
 
     private resize(event: PointerEvent) {

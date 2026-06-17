@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { InspectorVisibilityService } from "../../services/inspectorVisibility.service"
 import { InspectorHeaderComponent } from "../inspectorHeader/inspectorHeader.component"
 import { InspectorMetricMappingComponent } from "../inspectorMetricMapping/inspectorMetricMapping.component"
@@ -19,18 +19,8 @@ import { InspectorMetricsListComponent } from "../inspectorMetricsList/inspector
             "'calc(100vh - var(--cc-bars-height, 49px) - var(--cc-file-extension-bar-height, 17px) - var(--cc-bottom-bar-height, 32px))'"
     }
 })
-export class SidebarInspectorComponent implements OnDestroy {
+export class SidebarInspectorComponent {
     private readonly visibilityService = inject(InspectorVisibilityService)
 
     readonly isVisible = this.visibilityService.isVisible
-
-    // Publish the width the inspector occupies (its width when visible, nothing when slid off-screen)
-    // so bottom-centered overlays (e.g. the metrics bar) can offset and avoid being covered by it.
-    private readonly publishOccupiedWidth = effect(() => {
-        document.documentElement.style.setProperty("--cc-inspector-occupied-width", this.isVisible() ? "var(--cc-inspector-width)" : "0px")
-    })
-
-    ngOnDestroy() {
-        document.documentElement.style.removeProperty("--cc-inspector-occupied-width")
-    }
 }
