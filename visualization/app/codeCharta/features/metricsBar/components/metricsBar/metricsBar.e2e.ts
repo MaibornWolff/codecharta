@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test"
-import { clearIndexedDB, goto } from "../../../../../playwright.helper"
+import { clearIndexedDB, collapseExplorer, goto } from "../../../../../playwright.helper"
 import { MetricsBarPageObject } from "./metricsBar.po"
 import { NavBarFolderButtonPageObject } from "../../../navBar/components/navBarFolderButton/navBarFolderButton.po"
 
@@ -8,6 +8,9 @@ test.describe("MetricsBar", () => {
         await goto(page)
         const uploadFilesButton = new NavBarFolderButtonPageObject(page)
         await uploadFilesButton.openFiles(["./app/codeCharta/resources/sample1_with_different_edges.cc.json"])
+        // The metrics bar is centered on the viewport and intentionally sits behind the open explorer,
+        // so collapse the explorer to expose its left-most (area) segment for interaction.
+        await collapseExplorer(page)
     })
 
     test.afterEach(async ({ page }) => {

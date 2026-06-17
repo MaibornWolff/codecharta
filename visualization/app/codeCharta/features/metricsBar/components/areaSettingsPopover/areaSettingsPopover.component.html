@@ -1,7 +1,13 @@
 <cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()">
     <div title="Amount of space between buildings in percent">
         <span class="text-sm">Margin</span>
-        <cc-slider-number-input [min]="1" [max]="100" [value]="margin()" (valueChange)="setMargin($event)"></cc-slider-number-input>
+        <cc-slider-number-input
+            ariaLabel="Margin"
+            [min]="1"
+            [max]="100"
+            [value]="margin()"
+            (valueChange)="setMargin($event)"
+        ></cc-slider-number-input>
     </div>
 
     <label class="flex items-center gap-2 cursor-pointer">

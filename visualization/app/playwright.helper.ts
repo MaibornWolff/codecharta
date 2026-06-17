@@ -14,6 +14,10 @@ export async function clickButtonOnPageElement(page: Page, selector: string, opt
     await page.locator(selector).click({ button: options?.button ?? "left" })
 }
 
+export async function collapseExplorer(page: Page) {
+    await page.getByTestId("explorer-collapse-button").click()
+}
+
 export async function clearIndexedDB(page: Page) {
     const client = await page.context().newCDPSession(page)
     await client.send("Storage.clearDataForOrigin", {

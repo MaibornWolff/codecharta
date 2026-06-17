@@ -6,6 +6,7 @@
         (input)="handleCurrentLeftInputChanged($event)"
         [min]="minValue"
         [max]="upcomingRightValue"
+        aria-label="Lower color range value input"
     />
 
     <div #rangeSliderContainer class="flex flex-1 mx-2 relative leading-[48px]">
@@ -73,5 +74,6 @@
         (input)="handleCurrentRightInputChanged($event)"
         [min]="upcomingLeftValue"
         [max]="maxValue"
+        aria-label="Upper color range value input"
     />
 </div>

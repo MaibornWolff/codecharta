@@ -13,13 +13,13 @@ import { MapResetStore } from "../../../stores/mapReset.store"
 export class ConfirmResetMapDialogComponent {
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
 
-    private urlUtils = new UrlExtractor(this.httpClient)
+    private readonly urlUtils = new UrlExtractor(this.httpClient)
 
     constructor(
-        private mapResetStore: MapResetStore,
-        private httpClient: HttpClient,
-        private loadFileService: LoadFileService,
-        private loadInitialFileService: LoadInitialFileService
+        private readonly mapResetStore: MapResetStore,
+        private readonly httpClient: HttpClient,
+        private readonly loadFileService: LoadFileService,
+        private readonly loadInitialFileService: LoadInitialFileService
     ) {}
 
     open() {

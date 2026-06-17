@@ -17,6 +17,7 @@ import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
     host: { class: "contents" }
 })
 export class SliderNumberInputComponent implements OnDestroy {
+    readonly ariaLabel = input.required<string>()
     readonly min = input.required<number>()
     readonly max = input.required<number>()
     readonly step = input(1)

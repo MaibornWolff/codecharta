@@ -2,6 +2,7 @@
     <input
         type="range"
         class="range range-primary range-sm flex-1"
+        [attr.aria-label]="ariaLabel()"
         [min]="min()"
         [max]="max()"
         [step]="step()"
@@ -12,6 +13,7 @@
     <input
         type="number"
         class="input input-sm input-bordered w-16 text-center"
+        [attr.aria-label]="ariaLabel()"
         [min]="min()"
         [max]="max()"
         [step]="step()"

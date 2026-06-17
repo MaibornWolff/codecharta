@@ -10,7 +10,7 @@ describe("SliderNumberInputComponent", () => {
     async function setup(options: { min?: number; max?: number; step?: number; value?: number; disabled?: boolean } = {}) {
         const { min = 0, max = 100, step = 1, value = 50, disabled = false } = options
         const renderResult = await render(SliderNumberInputComponent, {
-            inputs: { min, max, step, value, disabled }
+            inputs: { ariaLabel: "Test value", min, max, step, value, disabled }
         })
         const valueChange = jest.fn()
         renderResult.fixture.componentInstance.valueChange.subscribe(valueChange)

@@ -8,7 +8,7 @@ import { FilesSelectionStore } from "../stores/filesSelection.store"
 export class FileSelectionModeService implements OnDestroy {
     lastSetFilesOfPreviousMode: FileState[] = []
 
-    private subscription = this.filesSelectionStore.files$
+    private readonly subscription = this.filesSelectionStore.files$
         .pipe(
             pairwise(),
             filter(([oldFiles, newFiles]) => isDeltaState(oldFiles) !== isDeltaState(newFiles) || newFiles.length === 0),

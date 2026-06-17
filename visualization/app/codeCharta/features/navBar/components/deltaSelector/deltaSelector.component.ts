@@ -51,7 +51,7 @@ export class DeltaSelectorComponent {
         if (this.openDropdown() === "none") {
             return
         }
-        if (!this.elementRef.nativeElement.contains(event.target as Node)) {
+        if (event.target instanceof Node && !this.elementRef.nativeElement.contains(event.target)) {
             this.openDropdown.set("none")
         }
     }
