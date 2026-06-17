@@ -2,6 +2,7 @@
     <div [title]="edgePreviewLabel()">
         <span class="text-sm">Preview</span>
         <cc-slider-number-input
+            ariaLabel="Edge preview amount"
             [min]="0"
             [max]="amountOfBuildingsWithSelectedEdgeMetric()"
             [value]="amountOfEdgePreviews()"
@@ -13,6 +14,7 @@
     <div title="Adjust the curve height">
         <span class="text-sm">Height</span>
         <cc-slider-number-input
+            ariaLabel="Edge height"
             [min]="1"
             [max]="9"
             [value]="edgeHeight()"
