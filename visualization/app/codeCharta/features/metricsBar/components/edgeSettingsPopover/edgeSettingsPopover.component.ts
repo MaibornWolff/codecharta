@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
-import { ColorPickerForMapColorComponent } from "../../../../ui/colorPickerForMapColor/colorPickerForMapColor.component"
+import { HexMapColor } from "../../../../codeCharta.model"
+import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
 import { AmountOfBuildingsWithSelectedEdgeMetricService } from "../../services/amountOfBuildingsWithSelectedEdgeMetric.service"
 import { AmountOfEdgePreviewsService } from "../../services/amountOfEdgePreviews.service"
 import { EdgeHeightService } from "../../services/edgeHeight.service"
+import { MapColorsService } from "../../services/mapColors.service"
 import { ShowIncomingEdgesService } from "../../services/showIncomingEdges.service"
 import { ShowOnlyBuildingsWithEdgesService } from "../../services/showOnlyBuildingsWithEdges.service"
 import { ShowOutgoingEdgesService } from "../../services/showOutgoingEdges.service"
@@ -19,7 +22,7 @@ import { SliderNumberInputComponent } from "../sliderNumberInput/sliderNumberInp
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
     imports: [
-        ColorPickerForMapColorComponent,
+        InlineColorPickerComponent,
         ResetSettingsButtonComponent,
         EdgeMetricToggleComponent,
         SettingsPopoverShellComponent,
@@ -33,6 +36,7 @@ export class EdgeSettingsPopoverComponent {
     private readonly showOutgoingEdgesService = inject(ShowOutgoingEdgesService)
     private readonly showIncomingEdgesService = inject(ShowIncomingEdgesService)
     private readonly showOnlyBuildingsWithEdgesService = inject(ShowOnlyBuildingsWithEdgesService)
+    private readonly mapColorsService = inject(MapColorsService)
 
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
@@ -56,6 +60,10 @@ export class EdgeSettingsPopoverComponent {
     readonly showOnlyBuildingsWithEdges = toSignal(this.showOnlyBuildingsWithEdgesService.showOnlyBuildingsWithEdges$(), {
         initialValue: false
     })
+
+    private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
+    readonly outgoingEdgeColor = computed(() => this.mapColors().outgoingEdge as string)
+    readonly incomingEdgeColor = computed(() => this.mapColors().incomingEdge as string)
 
     readonly resetKeys = [
         "appSettings.amountOfEdgePreviews",
@@ -89,5 +97,9 @@ export class EdgeSettingsPopoverComponent {
     setShowOnlyBuildingsWithEdges(event: Event) {
         const checked = (event.target as HTMLInputElement).checked
         this.showOnlyBuildingsWithEdgesService.setShowOnlyBuildingsWithEdges(checked)
+    }
+
+    setMapColor(mapColorFor: HexMapColor, newHexColor: string) {
+        this.mapColorsService.setMapColors({ [mapColorFor]: newHexColor })
     }
 }

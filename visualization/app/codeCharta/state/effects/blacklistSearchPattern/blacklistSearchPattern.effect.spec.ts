@@ -1,5 +1,4 @@
 import { TestBed } from "@angular/core/testing"
-import { MatDialog } from "@angular/material/dialog"
 import { first, Subject } from "rxjs"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { blacklistSearchPattern, BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
@@ -23,7 +22,6 @@ describe("BlacklistSearchPatternEffect", () => {
         TestBed.configureTestingModule({
             providers: [
                 BlacklistSearchPatternEffect,
-                { provide: MatDialog, useValue: { open: jest.fn() } },
                 { provide: AddBlacklistItemsIfNotResultsInEmptyMapEffect, useValue: { doBlacklistItemsResultInEmptyMap$ } },
                 provideMockStore({ selectors: [{ selector: searchPatternSelector, value: "" }] }),
                 provideMockActions(() => actions$)

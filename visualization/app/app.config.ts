@@ -6,7 +6,6 @@ import { appReducers, setStateMiddleware } from "app/codeCharta/state/store/stat
 import { UnfocusNodesEffect } from "app/codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "app/codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async"
 import { AutoFitCodeMapEffect } from "app/codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
 import { LinkColorMetricToHeightMetricEffect } from "app/codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
 import { RenderCodeMapEffect } from "app/codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
@@ -26,7 +25,6 @@ import { BlacklistExtensionEffect } from "./codeCharta/state/effects/blacklistEx
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideAnimationsAsync(),
         provideHttpClient(withInterceptorsFromDi()),
 
         provideStore(appReducers, { metaReducers: [setStateMiddleware] }),

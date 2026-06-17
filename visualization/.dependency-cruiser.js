@@ -78,15 +78,15 @@ module.exports = {
             }
         },
         {
-            name: "features-no-angular-material",
+            name: "no-angular-material",
             severity: "error",
-            comment: "Angular Material is not allowed in features/ directory, use DaisyUI instead",
+            comment: "Angular Material has been fully removed from the app, use DaisyUI instead",
             from: {
-                path: "^app/codeCharta/features/",
+                path: "^app/codeCharta/",
                 pathNot: "\\.spec\\.ts$"
             },
             to: {
-                path: "@angular/material"
+                path: "@angular/(material|cdk)"
             }
         },
         {

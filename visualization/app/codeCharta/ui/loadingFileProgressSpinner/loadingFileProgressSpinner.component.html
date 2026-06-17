@@ -1,3 +1,7 @@
-<div id="loading-gif-file" [style.visibility]="(isLoading$ | async) ? 'visible' : 'hidden'">
-    <mat-progress-spinner mode="indeterminate" diameter="96"></mat-progress-spinner>
+<div
+    id="loading-gif-file"
+    class="fixed inset-0 z-40 bg-white/80 text-center"
+    [style.visibility]="(isLoading$ | async) ? 'visible' : 'hidden'"
+>
+    <div class="mt-[22%] inline-block h-24 w-24 animate-spin rounded-full border-4 border-base-300 [border-top-color:var(--color-primary)]"></div>
 </div>

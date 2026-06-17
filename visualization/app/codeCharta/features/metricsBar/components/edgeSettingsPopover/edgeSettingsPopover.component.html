@@ -25,7 +25,12 @@
 
     <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
-            <cc-color-picker-for-map-color [mapColorFor]="'outgoingEdge'" class="flex-1"></cc-color-picker-for-map-color>
+            <cc-inline-color-picker
+                [hexColor]="outgoingEdgeColor()"
+                ariaLabel="Outgoing edge color"
+                (colorChange)="setMapColor('outgoingEdge', $event)"
+            ></cc-inline-color-picker>
+            <span class="min-w-0 flex-1 truncate text-sm">Outgoing Edge</span>
             <label class="flex items-center gap-2 cursor-pointer">
                 <input
                     type="checkbox"
@@ -37,7 +42,12 @@
             </label>
         </div>
         <div class="flex items-center gap-2">
-            <cc-color-picker-for-map-color [mapColorFor]="'incomingEdge'" class="flex-1"></cc-color-picker-for-map-color>
+            <cc-inline-color-picker
+                [hexColor]="incomingEdgeColor()"
+                ariaLabel="Incoming edge color"
+                (colorChange)="setMapColor('incomingEdge', $event)"
+            ></cc-inline-color-picker>
+            <span class="min-w-0 flex-1 truncate text-sm">Incoming Edge</span>
             <label class="flex items-center gap-2 cursor-pointer">
                 <input
                     type="checkbox"

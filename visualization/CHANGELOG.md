@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Legend panel**: Migrated to the new feature architecture (`features/legend/`) and restyled with DaisyUI to match the metric settings popovers. The legend is now purely informational: it shows the current Area/Height/Color (and Edge) metric mapping plus the color-scale, selected, and edge colors as read-only swatches with their value ranges, and it renders above the floating metrics bar. Map colors are no longer editable from the legend (recolor them via the Color settings popover) and marked folders are no longer listed there (managed as Folder Overrides in the Color popover); metric titles no longer link to external documentation.
 - **Faster blacklist operations**: Adding or removing flatten and exclude patterns is significantly faster on large codebases — the matching engines are now cached and only rebuilt when the blacklist itself changes.
 
+### Removed
+
+- **Angular Material fully removed**: the last `@angular/material` usages are gone. The edge and logo colour pickers now reuse the existing DaisyUI inline color picker (the old `colorPicker`/`labelledColorPicker`/`colorPickerForMapColor` family was deleted), and the loading spinner is a DaisyUI/Tailwind spinner whose rotation is GPU-composited so it no longer stutters while the codemap re-renders. The `app/material/` theme layer, the Material build wiring, and the `@angular/material` + `@angular/cdk` dependencies were dropped.
+
 ### Fixed 🐞
 
 - **File extension bar context menu**: Right-clicking a file-extension segment opens its Flatten/Show/Exclude menu again. The menu still relied on `@angular/material`/CDK overlay primitives that the migration removed, so it stopped appearing; it is now a DaisyUI menu (matching the node context menu) that opens upward above the bar and closes on outside click, scroll, resize, or after an action.

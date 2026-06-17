@@ -1,10 +1,10 @@
 import { Component, ElementRef, input, output, viewChild } from "@angular/core"
-import { LabelledColorPickerComponent } from "../../../../../ui/labelledColorPicker/labelledColorPicker.component"
+import { InlineColorPickerComponent } from "../../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 
 @Component({
     selector: "cc-logo-upload",
     templateUrl: "./logoUpload.component.html",
-    imports: [LabelledColorPickerComponent]
+    imports: [InlineColorPickerComponent]
 })
 export class LogoUploadComponent {
     fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput")
