@@ -61,11 +61,9 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "@angular/animations": "^21.1.2",
-    "@angular/cdk": "^21.1.2",
     "@angular/common": "^21.1.2",
     "@angular/core": "^21.1.2",
     "@angular/forms": "^21.2.8",
-    "@angular/material": "^21.2.6",
     "@angular/platform-browser": "^21.1.2",
     "@angular/platform-browser-dynamic": "^21.2.8",
     "@angular/router": "^21.2.8",
