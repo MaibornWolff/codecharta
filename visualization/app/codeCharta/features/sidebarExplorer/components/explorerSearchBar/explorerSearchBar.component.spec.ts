@@ -3,7 +3,6 @@ import { EffectsModule } from "@ngrx/effects"
 import { Store, StoreModule } from "@ngrx/store"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { MatDialog } from "@angular/material/dialog"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { resultsInEmptyMap } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
 import { BlacklistSearchPatternEffect } from "../../../../state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
@@ -22,8 +21,7 @@ describe("ExplorerSearchBarComponent", () => {
                 ExplorerSearchBarComponent,
                 StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
                 EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect])
-            ],
-            providers: [{ provide: MatDialog, useValue: { open: jest.fn() } }]
+            ]
         })
     })
 

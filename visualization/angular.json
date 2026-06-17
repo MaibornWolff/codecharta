@@ -26,9 +26,6 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "stylePreprocessorOptions": {
-              "includePaths": ["app/material"]
-            },
             "loader": {
               ".md": "text",
               ".glsl": "text"

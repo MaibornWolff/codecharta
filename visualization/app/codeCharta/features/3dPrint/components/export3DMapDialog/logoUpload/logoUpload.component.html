@@ -20,11 +20,14 @@
                     <i class="fa fa-arrows-h"></i> Flip
                 </button>
             </div>
-            <cc-labelled-color-picker
-                [hexColor]="logoColor()"
-                (colorChange)="handleColorChange($event)"
-                [labels]="['Color']"
-            />
+            <div class="flex items-center gap-2 mt-2">
+                <cc-inline-color-picker
+                    [hexColor]="logoColor()"
+                    ariaLabel="Logo color"
+                    (colorChange)="handleColorChange($event)"
+                ></cc-inline-color-picker>
+                <span class="text-sm">Color</span>
+            </div>
         }
     </div>
 </div>

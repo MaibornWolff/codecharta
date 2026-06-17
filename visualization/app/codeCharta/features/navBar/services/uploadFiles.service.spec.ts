@@ -9,7 +9,6 @@ import stringify from "safe-stable-stringify"
 import { EffectsModule } from "@ngrx/effects"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
-import { MatDialog } from "@angular/material/dialog"
 import { CcState } from "../../../codeCharta.model"
 import { RenderCodeMapEffect } from "../../../state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { setFiles, setStandardByNames } from "../../../state/store/files/files.actions"
@@ -48,7 +47,7 @@ describe("UploadFilesService", () => {
                 StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
                 EffectsModule.forRoot([RenderCodeMapEffect, UnfocusNodesEffect])
             ],
-            providers: [UploadFilesService, LoadFileService, MatDialog]
+            providers: [UploadFilesService, LoadFileService]
         })
         store = TestBed.inject(Store)
     }

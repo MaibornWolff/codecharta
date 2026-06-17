@@ -4,14 +4,12 @@ import { combineLatest, map, Observable } from "rxjs"
 import { CcState } from "../../codeCharta.model"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { isPendingHeavyDispatch$ } from "../../util/dispatchAfterPaint"
-import { MatProgressSpinner } from "@angular/material/progress-spinner"
 import { AsyncPipe } from "@angular/common"
 
 @Component({
     selector: "cc-loading-file-progress-spinner",
     templateUrl: "./loadingFileProgressSpinner.component.html",
-    styleUrls: ["./loadingFileProgressSpinner.component.scss"],
-    imports: [MatProgressSpinner, AsyncPipe]
+    imports: [AsyncPipe]
 })
 export class LoadingFileProgressSpinnerComponent {
     isLoading$: Observable<boolean>
