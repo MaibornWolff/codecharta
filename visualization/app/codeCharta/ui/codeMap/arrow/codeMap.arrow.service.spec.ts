@@ -267,6 +267,36 @@ describe("CodeMapArrowService", () => {
             expect(threeSceneService.clearHighlight).toHaveBeenCalledTimes(0)
             expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledTimes(0)
         })
+
+        it("should cancel a pending debounced edge reset when a building is unhovered", async () => {
+            // Arrange — a hover schedules a debounced reset that would otherwise blank the restored preview
+            const resetEdgesOfBuildingsMock = jest.fn()
+            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingsMock
+            codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
+
+            // Act
+            codeMapArrowService.onBuildingUnhovered()
+            await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 5)
+
+            // Assert — the stale reset must not fire after the preview was restored
+            expect(resetEdgesOfBuildingsMock).not.toHaveBeenCalled()
+            expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalled()
+        })
+
+        it("should cancel a pending debounced edge reset when a building is deselected", async () => {
+            // Arrange
+            const resetEdgesOfBuildingsMock = jest.fn()
+            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingsMock
+            codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
+
+            // Act
+            codeMapArrowService.onBuildingDeselected()
+            await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 5)
+
+            // Assert
+            expect(resetEdgesOfBuildingsMock).not.toHaveBeenCalled()
+            expect(codeMapArrowService.addEdgePreview).toHaveBeenCalled()
+        })
     })
 
     describe("clearArrows", () => {

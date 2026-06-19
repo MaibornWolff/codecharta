@@ -17,7 +17,7 @@ export class CodeMapArrowService implements OnDestroy {
     private readonly VERTICES_PER_LINE = 5
     private arrows: Object3D[] = new Array<Object3D>()
     private readonly HIGHLIGHT_BUILDING_DELAY = 1
-    private readonly debounceCalculation: (hoveredBuilding: CodeMapBuilding) => void = debounce(
+    private readonly debounceCalculation = debounce(
         (hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
         this.HIGHLIGHT_BUILDING_DELAY
     )
@@ -66,6 +66,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     onBuildingDeselected = () => {
+        this.debounceCalculation.cancel()
         this.clearArrows()
         this.addEdgePreview()
     }
@@ -75,6 +76,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     onBuildingUnhovered() {
+        this.debounceCalculation.cancel()
         const { isEdgeMetricVisible } = this.state.getValue().appSettings
 
         if (isEdgeMetricVisible) {
