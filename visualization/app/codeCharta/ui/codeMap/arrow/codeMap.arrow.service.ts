@@ -103,7 +103,10 @@ export class CodeMapArrowService implements OnDestroy {
         const { appSettings, dynamicSettings } = this.state.getValue()
         const curveScale = 100 * appSettings.edgeHeight
 
-        if (arrowTargetNode.attributes?.[dynamicSettings.heightMetric] && arrowOriginNode.attributes?.[dynamicSettings.heightMetric]) {
+        if (
+            arrowTargetNode.attributes?.[dynamicSettings.heightMetric] != null &&
+            arrowOriginNode.attributes?.[dynamicSettings.heightMetric] != null
+        ) {
             const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
             const color = ColorConverter.getNumber(appSettings.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
             this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)

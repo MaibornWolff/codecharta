@@ -82,6 +82,36 @@ describe("CodeMapArrowService", () => {
         })
     })
 
+    describe("addArrow", () => {
+        it("should add an arrow even when the height-metric value of both nodes is 0", () => {
+            // Arrange — a height value of 0 is valid, the edge must still be drawn
+            withMockedThreeSceneService()
+            store.dispatch(setHeightMetric({ value: "mcc" }))
+            const originNode: Node = { ...OUTGOING_NODE, attributes: { ...OUTGOING_NODE.attributes, mcc: 0 } }
+            const targetNode: Node = { ...INCOMING_NODE, attributes: { ...INCOMING_NODE.attributes, mcc: 0 } }
+
+            // Act
+            codeMapArrowService.addArrow(originNode, targetNode, true)
+
+            // Assert
+            expect(threeSceneService.edgeArrows.add).toHaveBeenCalled()
+        })
+
+        it("should not add an arrow when a node is missing the height metric", () => {
+            // Arrange
+            withMockedThreeSceneService()
+            store.dispatch(setHeightMetric({ value: "mcc" }))
+            const originNode: Node = { ...OUTGOING_NODE, attributes: {} }
+            const targetNode: Node = { ...INCOMING_NODE, attributes: {} }
+
+            // Act
+            codeMapArrowService.addArrow(originNode, targetNode, true)
+
+            // Assert
+            expect(threeSceneService.edgeArrows.add).not.toHaveBeenCalled()
+        })
+    })
+
     describe("Arrow Behaviour when selecting and hovering a building", () => {
         it("should only highlight small leaf when big leaf is selected", async () => {
             store.dispatch(setEdges({ value: VALID_EDGES_DECORATED }))
