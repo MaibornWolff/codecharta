@@ -36,6 +36,8 @@ const objectWithDynamicKeysInStore = new Set([
     "fileSettings.edges",
     "fileSettings.markedPackages",
     "dynamicSettings.focusedNodePath",
+    // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
+    "appSettings.mapColors.markingColors",
     "files" // ToDo; this should be a Map with an unique id
 ])
 

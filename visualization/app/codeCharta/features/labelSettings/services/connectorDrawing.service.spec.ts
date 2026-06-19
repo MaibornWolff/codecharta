@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { ConnectorDrawingService, LabelLayoutInfo } from "./connectorDrawing.service"
 import { LabelCreationService } from "./labelCreation.service"
 import { Node } from "../../../codeCharta.model"
-import { Group, BoxGeometry, Mesh, Scene } from "three"
+import { Group, BoxGeometry, Mesh, Scene, PerspectiveCamera } from "three"
 import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
 import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
 import { setShowMetricLabelNodeName } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
@@ -165,6 +165,31 @@ describe("ConnectorDrawingService", () => {
             // Assert — geometry should be initialized
             expect(connectorDrawingService["connectorSegments"]).not.toBeNull()
             expect(connectorDrawingService["connectorPositions"]).not.toBeNull()
+        })
+
+        it("should stop drawing a connector and request a re-render when its label is suppressed", () => {
+            // Arrange — a label far enough above its building to get a connector
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            threeRendererService.camera = new PerspectiveCamera()
+            labelCreationService.addLeafLabel(sampleLeaf, 100)
+            const labels = labelCreationService.getLabels()
+            const infos: LabelLayoutInfo[] = labels.map(label => ({
+                label,
+                rect: { top: 0, bottom: 20, left: 0, right: 100, width: 100, height: 20, x: 0, y: 0, toJSON: () => {} } as DOMRect,
+                offset: 0,
+                hidden: false
+            }))
+            connectorDrawingService.drawConnectors(infos, null)
+            const drawnCount = connectorDrawingService["connectorSegments"].geometry.drawRange.count
+            connectorDrawingService.markClean()
+
+            // Act — suppress the hovered label
+            connectorDrawingService.drawConnectors(infos, labels[0])
+
+            // Assert — the connector is removed and a re-render is requested so the line actually disappears
+            expect(drawnCount).toBeGreaterThan(0)
+            expect(connectorDrawingService["connectorSegments"].geometry.drawRange.count).toBe(0)
+            expect(connectorDrawingService.isDirty()).toBe(true)
         })
     })
 

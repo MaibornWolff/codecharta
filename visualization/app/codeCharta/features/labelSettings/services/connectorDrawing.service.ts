@@ -17,6 +17,7 @@ export class ConnectorDrawingService {
     private connectorSegments: LineSegments | null = null
     private connectorPositions: Float32Array | null = null
     private connectorsDirty = true
+    private lastDrawnVertexCount = 0
     private readonly projectionVec = new Vector3()
 
     constructor(
@@ -84,6 +85,14 @@ export class ConnectorDrawingService {
 
         this.connectorSegments.geometry.setDrawRange(0, vertexIndex)
         ;(this.connectorSegments.geometry.attributes.position as BufferAttribute).needsUpdate = true
+
+        // A change in the number of drawn connectors (e.g. a label suppressed on hover) updates the
+        // geometry but is only shown on the next render. Flag it dirty so the layout pass renders once
+        // more — otherwise the connector line lingers on screen even though its label is already hidden.
+        if (vertexIndex !== this.lastDrawnVertexCount) {
+            this.connectorsDirty = true
+        }
+        this.lastDrawnVertexCount = vertexIndex
     }
 
     clearConnectors() {
@@ -91,6 +100,7 @@ export class ConnectorDrawingService {
             this.connectorSegments.geometry.setDrawRange(0, 0)
         }
         this.connectorsDirty = true
+        this.lastDrawnVertexCount = 0
     }
 
     isDirty(): boolean {

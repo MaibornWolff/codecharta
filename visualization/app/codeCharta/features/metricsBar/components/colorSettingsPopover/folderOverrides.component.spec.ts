@@ -9,17 +9,27 @@ import { MarkedPackageWithCount, markedPackagesWithCountsSelector } from "../../
 import { FolderOverridesComponent } from "./folderOverrides.component"
 
 describe("FolderOverridesComponent", () => {
-    async function setup(overrides: MarkedPackageWithCount[] = [], folderPaths: string[] = []) {
+    async function setup(overrides: MarkedPackageWithCount[] = [], folderPaths: string[] = [], markingColors?: unknown) {
+        const initialState =
+            markingColors === undefined
+                ? defaultState
+                : {
+                      ...defaultState,
+                      appSettings: {
+                          ...defaultState.appSettings,
+                          mapColors: { ...defaultState.appSettings.mapColors, markingColors: markingColors as string[] }
+                      }
+                  }
         const renderResult = await render(FolderOverridesComponent, {
             providers: [
                 provideMockStore({
-                    initialState: defaultState,
+                    initialState,
                     selectors: [
                         { selector: markedPackagesWithCountsSelector, value: overrides },
                         { selector: markableFolderPathsSelector, value: folderPaths }
                     ]
                 }),
-                { provide: State, useValue: { getValue: () => defaultState } }
+                { provide: State, useValue: { getValue: () => initialState } }
             ]
         })
         return { component: renderResult.fixture.componentInstance }
@@ -111,6 +121,22 @@ describe("FolderOverridesComponent", () => {
         // Arrange
         const [firstMarkingColor, secondMarkingColor] = defaultState.appSettings.mapColors.markingColors
         await setup([{ path: "/root/app", color: firstMarkingColor, fileCount: 51 }], ["/root", "/root/ui"])
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+
+        // Act
+        fireEvent.click(screen.getByText(/Pin a folder color/))
+        fireEvent.click(screen.getByText("/root/ui"))
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(markPackages({ packages: [{ path: "/root/ui", color: secondMarkingColor }] }))
+    })
+
+    it("should pin a folder when markingColors was persisted as an object with numeric keys", async () => {
+        // Arrange: some browsers restore the persisted markingColors array as a plain object
+        const [firstMarkingColor, secondMarkingColor] = defaultState.appSettings.mapColors.markingColors
+        const markingColorsAsObject = { ...defaultState.appSettings.mapColors.markingColors }
+        await setup([{ path: "/root/app", color: firstMarkingColor, fileCount: 51 }], ["/root", "/root/ui"], markingColorsAsObject)
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
 

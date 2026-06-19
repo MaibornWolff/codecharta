@@ -56,4 +56,19 @@ describe("_applyPartialState", () => {
             }
         ])
     })
+
+    it("should keep markingColors as an array instead of deep-merging it into an object", () => {
+        const partialState = {
+            appSettings: {
+                mapColors: {
+                    markingColors: ["#aaaaaa", "#bbbbbb"]
+                }
+            }
+        }
+
+        const newState = _applyPartialState(clone(defaultState), partialState)
+
+        expect(Array.isArray(newState.appSettings.mapColors.markingColors)).toBe(true)
+        expect(newState.appSettings.mapColors.markingColors).toEqual(["#aaaaaa", "#bbbbbb"])
+    })
 })

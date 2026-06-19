@@ -17,7 +17,7 @@ export class CodeMapArrowService implements OnDestroy {
     private readonly VERTICES_PER_LINE = 5
     private arrows: Object3D[] = new Array<Object3D>()
     private readonly HIGHLIGHT_BUILDING_DELAY = 1
-    private readonly debounceCalculation: (hoveredBuilding: CodeMapBuilding) => void = debounce(
+    private readonly debounceCalculation = debounce(
         (hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
         this.HIGHLIGHT_BUILDING_DELAY
     )
@@ -66,6 +66,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     onBuildingDeselected = () => {
+        this.debounceCalculation.cancel()
         this.clearArrows()
         this.addEdgePreview()
     }
@@ -75,6 +76,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     onBuildingUnhovered() {
+        this.debounceCalculation.cancel()
         const { isEdgeMetricVisible } = this.state.getValue().appSettings
 
         if (isEdgeMetricVisible) {
@@ -100,15 +102,15 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     addArrow(arrowOriginNode: Node, arrowTargetNode: Node, buildingIsOriginNode: boolean) {
-        const { appSettings, dynamicSettings } = this.state.getValue()
+        const { appSettings } = this.state.getValue()
         const curveScale = 100 * appSettings.edgeHeight
 
-        if (arrowTargetNode.attributes?.[dynamicSettings.heightMetric] && arrowOriginNode.attributes?.[dynamicSettings.heightMetric]) {
-            const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
-            const color = ColorConverter.getNumber(appSettings.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
-            this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)
-            this.setCurveColor(curve, color)
-        }
+        // An edge is a relationship between two files; it is drawn from the layout geometry
+        // (edge points + building height) and does not depend on the selected height metric.
+        const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
+        const color = ColorConverter.getNumber(appSettings.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
+        this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)
+        this.setCurveColor(curve, color)
     }
 
     addEdgePreview() {

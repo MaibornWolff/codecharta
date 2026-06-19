@@ -426,6 +426,27 @@ describe("codeMapMouseEventService", () => {
 
             expect(threeSceneService.highlightSingleBuilding).not.toHaveBeenCalled()
         })
+
+        it("should force an unhover over empty area when the highlight was cleared but the store still hovers a building", () => {
+            // Arrange — the highlight was nulled out-of-band (e.g. by a click or a scroll that never re-raycasts)
+            // while the store still points at a building, and the cursor is now over empty map area
+            jest.spyOn(codeMapMouseEventService["state"], "getValue").mockReturnValue({
+                ...defaultState,
+                appStatus: { ...defaultState.appStatus, hoveredNodeId: codeMapBuilding.node.id }
+            } as CcState)
+            threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+            threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+                checkMouseRayMeshIntersection: jest.fn().mockReturnValue(undefined)
+            })
+            codeMapMouseEventService["oldMouse"] = { x: 0, y: 0 }
+            Object.defineProperty(codeMapMouseEventService, "mouse", { value: { x: 5, y: 5 }, writable: true })
+
+            // Act
+            codeMapMouseEventService.updateHovering()
+
+            // Assert — an unhover is forced so the edge preview is restored instead of staying blank
+            expect(threeSceneService.clearHighlight).toHaveBeenCalled()
+        })
     })
 
     describe("onDocumentMouseUp", () => {

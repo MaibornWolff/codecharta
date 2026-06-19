@@ -99,7 +99,7 @@ describe("LegendPanelComponent", () => {
 
         // Assert
         expect(screen.getByTestId("legend-panel").style.right).toBe("calc(var(--cc-inspector-width) + 40px)")
-        expect(screen.getByTestId("legend-panel-button").style.right).toBe("calc(var(--cc-inspector-width) - 35px)")
+        expect(screen.getByTestId("legend-panel-button").style.right).toBe("calc(var(--cc-inspector-width) - 28px)")
     })
 
     it("should show edge color rows when an edge metric is selected", async () => {

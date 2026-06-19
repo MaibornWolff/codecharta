@@ -16,6 +16,6 @@ export class LegendToggleButtonComponent {
 
     readonly buttonBottom = `calc(${LEGEND_BARS_OFFSET} + 32px)`
     readonly buttonRight = computed(() =>
-        this.inspectorVisibilityService.isVisible() ? "calc(var(--cc-inspector-width) - 35px)" : "-35px"
+        this.inspectorVisibilityService.isVisible() ? "calc(var(--cc-inspector-width) - 28px)" : "-28px"
     )
 }

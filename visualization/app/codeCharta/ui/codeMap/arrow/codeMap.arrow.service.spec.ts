@@ -82,6 +82,36 @@ describe("CodeMapArrowService", () => {
         })
     })
 
+    describe("addArrow", () => {
+        it("should add an arrow even when the height-metric value of both nodes is 0", () => {
+            // Arrange — a height value of 0 is valid, the edge must still be drawn
+            withMockedThreeSceneService()
+            store.dispatch(setHeightMetric({ value: "mcc" }))
+            const originNode: Node = { ...OUTGOING_NODE, attributes: { ...OUTGOING_NODE.attributes, mcc: 0 } }
+            const targetNode: Node = { ...INCOMING_NODE, attributes: { ...INCOMING_NODE.attributes, mcc: 0 } }
+
+            // Act
+            codeMapArrowService.addArrow(originNode, targetNode, true)
+
+            // Assert
+            expect(threeSceneService.edgeArrows.add).toHaveBeenCalled()
+        })
+
+        it("should add an arrow even when a node lacks the selected height metric", () => {
+            // Arrange — an edge is a file relationship; it does not depend on the height metric being present
+            withMockedThreeSceneService()
+            store.dispatch(setHeightMetric({ value: "mcc" }))
+            const originNode: Node = { ...OUTGOING_NODE, attributes: {} }
+            const targetNode: Node = { ...INCOMING_NODE, attributes: {} }
+
+            // Act
+            codeMapArrowService.addArrow(originNode, targetNode, true)
+
+            // Assert
+            expect(threeSceneService.edgeArrows.add).toHaveBeenCalled()
+        })
+    })
+
     describe("Arrow Behaviour when selecting and hovering a building", () => {
         it("should only highlight small leaf when big leaf is selected", async () => {
             store.dispatch(setEdges({ value: VALID_EDGES_DECORATED }))
@@ -236,6 +266,36 @@ describe("CodeMapArrowService", () => {
             expect(codeMapArrowService.addArrow).toHaveBeenCalledTimes(0)
             expect(threeSceneService.clearHighlight).toHaveBeenCalledTimes(0)
             expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledTimes(0)
+        })
+
+        it("should cancel a pending debounced edge reset when a building is unhovered", async () => {
+            // Arrange — a hover schedules a debounced reset that would otherwise blank the restored preview
+            const resetEdgesOfBuildingsMock = jest.fn()
+            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingsMock
+            codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
+
+            // Act
+            codeMapArrowService.onBuildingUnhovered()
+            await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 5)
+
+            // Assert — the stale reset must not fire after the preview was restored
+            expect(resetEdgesOfBuildingsMock).not.toHaveBeenCalled()
+            expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalled()
+        })
+
+        it("should cancel a pending debounced edge reset when a building is deselected", async () => {
+            // Arrange
+            const resetEdgesOfBuildingsMock = jest.fn()
+            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingsMock
+            codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
+
+            // Act
+            codeMapArrowService.onBuildingDeselected()
+            await wait(codeMapArrowService["HIGHLIGHT_BUILDING_DELAY"] + 5)
+
+            // Assert
+            expect(resetEdgesOfBuildingsMock).not.toHaveBeenCalled()
+            expect(codeMapArrowService.addEdgePreview).toHaveBeenCalled()
         })
     })
 
