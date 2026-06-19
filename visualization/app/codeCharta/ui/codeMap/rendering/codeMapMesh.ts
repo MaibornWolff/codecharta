@@ -339,9 +339,12 @@ export class CodeMapMesh {
             const startElement = this.dirtyRange.min * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
             const countElements = (this.dirtyRange.max - this.dirtyRange.min) * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
 
-            colorAttribute.clearUpdateRanges()
+            // Accumulate ranges across every updateVertices() in this frame. Renders are debounced to one
+            // animation frame, so selecting a building runs several updateVertices() (clear old, select new,
+            // highlight pass) before a single upload. Clearing here would drop an earlier call's range — e.g.
+            // the freshly selected building's color — so it would not reach the GPU until a later render.
+            // three.js clears the ranges itself after each upload, so they never persist across frames.
             colorAttribute.addUpdateRange(startElement, countElements)
-            deltaAttribute.clearUpdateRanges()
             deltaAttribute.addUpdateRange(startElement, countElements)
         }
 

@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **Building selection color**: Clicking a building now turns it orange immediately instead of only after the next mouse move. The mesh queued partial GPU colour uploads but cleared the queue on every update, and since renders are debounced to one animation frame the several updates a selection triggers overwrote each other — dropping the selected building's colour from the upload.
 - **Folder color pinning crash**: Pinning a folder in the Color settings popover no longer throws `markingColors.filter is not a function`. Applying a scenario or resetting settings deep-merged the `markingColors` array through `SET_STATE` and turned it into an object with numeric keys, which then persisted to IndexedDB and survived reloads. The array is now preserved at the `SET_STATE` boundary and normalized when read from the store, healing already-corrupted persisted state.
 - **Loading spinner stacking**: The full-screen loading overlay now appears above open dialogs again. Its `z-index` sat below the modal layer, so any open dialog covered the spinner while a file was loading.
 - **Legend toggle button alignment**: The rotated `LEGEND` tab now sits flush against the inspector sidebar's edge when the inspector is open (and against the viewport edge when closed). Its offset still assumed the pre-migration button size, leaving a small gap once the inspector slid in.

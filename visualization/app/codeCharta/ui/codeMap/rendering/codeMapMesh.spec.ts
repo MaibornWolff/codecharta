@@ -1,7 +1,7 @@
 import { Node, CcState } from "../../../codeCharta.model"
 import { CodeMapMesh } from "./codeMapMesh"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { STATE, TEST_NODE_ROOT } from "../../../util/dataMocks"
+import { STATE, TEST_NODE_ROOT, TEST_NODES } from "../../../util/dataMocks"
 import { InstancedBufferAttribute, InstancedMesh } from "three"
 
 describe("codeMapMesh", () => {
@@ -204,6 +204,28 @@ describe("codeMapMesh", () => {
 
             // Assert
             expect(mesh["_prevHighlightedIds"]).not.toBeNull()
+        })
+
+        it("should keep the freshly selected building queued for upload after the same-frame highlight pass", () => {
+            // Arrange — multi-building mesh; renders are debounced, so a whole selection runs before one upload
+            const mesh = new CodeMapMesh(TEST_NODES, STATE, false)
+            const buildings = mesh.getMeshDescription().buildings
+            const selected = buildings[0]
+            const other = buildings[buildings.length - 1]
+            const colorAttribute = mesh.getThreeMesh().geometry.getAttribute("color") as InstancedBufferAttribute
+            const NUMBER_OF_COLOR_FIELDS = 3
+            // three.js clears updateRanges only after a real GPU upload (none here), so the array reflects
+            // everything accumulated during this frame.
+            colorAttribute.clearUpdateRanges()
+
+            // Act — the ThreeSceneService.selectBuilding sequence within one debounced frame
+            mesh.selectBuilding(selected, "#ff8b27")
+            mesh.highlightBuilding(new Set([other.id]), other, selected, STATE, new Map())
+
+            // Assert — the selected building's color element is still inside a pending update range
+            const start = selected.id * NUMBER_OF_COLOR_FIELDS
+            const isCovered = colorAttribute.updateRanges.some(range => start >= range.start && start < range.start + range.count)
+            expect(isCovered).toBe(true)
         })
 
         it("should repaint the formerly selected building on the next highlight pass after the selection changes", () => {
