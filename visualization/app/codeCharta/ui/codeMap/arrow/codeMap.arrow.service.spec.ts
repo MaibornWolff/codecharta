@@ -97,8 +97,8 @@ describe("CodeMapArrowService", () => {
             expect(threeSceneService.edgeArrows.add).toHaveBeenCalled()
         })
 
-        it("should not add an arrow when a node is missing the height metric", () => {
-            // Arrange
+        it("should add an arrow even when a node lacks the selected height metric", () => {
+            // Arrange — an edge is a file relationship; it does not depend on the height metric being present
             withMockedThreeSceneService()
             store.dispatch(setHeightMetric({ value: "mcc" }))
             const originNode: Node = { ...OUTGOING_NODE, attributes: {} }
@@ -108,7 +108,7 @@ describe("CodeMapArrowService", () => {
             codeMapArrowService.addArrow(originNode, targetNode, true)
 
             // Assert
-            expect(threeSceneService.edgeArrows.add).not.toHaveBeenCalled()
+            expect(threeSceneService.edgeArrows.add).toHaveBeenCalled()
         })
     })
 

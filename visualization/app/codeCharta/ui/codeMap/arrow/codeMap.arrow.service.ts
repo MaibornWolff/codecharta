@@ -102,18 +102,15 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     addArrow(arrowOriginNode: Node, arrowTargetNode: Node, buildingIsOriginNode: boolean) {
-        const { appSettings, dynamicSettings } = this.state.getValue()
+        const { appSettings } = this.state.getValue()
         const curveScale = 100 * appSettings.edgeHeight
 
-        if (
-            arrowTargetNode.attributes?.[dynamicSettings.heightMetric] != null &&
-            arrowOriginNode.attributes?.[dynamicSettings.heightMetric] != null
-        ) {
-            const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
-            const color = ColorConverter.getNumber(appSettings.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
-            this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)
-            this.setCurveColor(curve, color)
-        }
+        // An edge is a relationship between two files; it is drawn from the layout geometry
+        // (edge points + building height) and does not depend on the selected height metric.
+        const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
+        const color = ColorConverter.getNumber(appSettings.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
+        this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)
+        this.setCurveColor(curve, color)
     }
 
     addEdgePreview() {
