@@ -1,49 +1,46 @@
-# Starlight Starter Kit: Basics
+# CodeCharta Documentation Site
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+Source for the CodeCharta user documentation published at **[codecharta.com](https://codecharta.com)**, built with [Astro](https://astro.build) and [Starlight](https://starlight.astro.build). This replaces the former Jekyll (Minimal Mistakes) site.
+
+## Requirements
+
+- Node **>= 22.12** (Astro 6)
+
+## Commands
+
+Run from this `gh-pages/` directory:
+
+| Command           | Action                                              |
+| :---------------- | :-------------------------------------------------- |
+| `npm install`     | Install dependencies                                |
+| `npm run dev`     | Start the local dev server at `localhost:4321`      |
+| `npm run build`   | Build the production site to `./dist/`              |
+| `npm run preview` | Preview the production build locally                |
+
+## Project structure
 
 ```
-npm create astro@latest -- --template starlight
-```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
-├── public/
+gh-pages/
+├── public/                 # static assets served as-is
+│   ├── assets/             # images and showcase .cc.json files
+│   ├── CNAME               # custom domain (codecharta.com)
+│   └── .nojekyll           # stops GitHub Pages from running Jekyll on the output
 ├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
+│   ├── assets/             # images processed/optimized by Astro (logo, hero)
+│   ├── components/         # custom Astro components (hero, feature/showcase grids, overrides)
+│   ├── content/docs/       # the documentation pages (.md / .mdx)
 │   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+└── astro.config.mjs        # site config: sidebar, redirects, integrations
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+## Editing the docs
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+- Pages live under `src/content/docs/`. Each `.md`/`.mdx` file is a route based on its path (e.g. `docs/overview/introduction.md` → `/docs/overview/introduction`).
+- The sidebar, URL redirects, and site settings are configured in `astro.config.mjs`.
+- Full-text search is provided by [Pagefind](https://pagefind.app/) and is generated automatically at build time.
 
-Static assets, like favicons, can be placed in the `public/` directory.
+## Deployment
 
-## 🧞 Commands
+Deployment is automated by [`.github/workflows/deploy-github-pages.yml`](../.github/workflows/deploy-github-pages.yml): on a push to `main` that touches `gh-pages/**`, the site is built and the contents of `dist/` are published to the **`gh-pages` branch**, which GitHub Pages serves at codecharta.com.
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+The Web Studio app (`/visualization/app`) and the staging site (`/stg`) are deployed to the same branch by other workflows and are preserved during this deploy (`clean-exclude`).
