@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [1.143.0] - 2026-06-23
+
 ### Added 🚀
 
 - **Per-map top labels**: When more than one map is selected, the Label Settings panel offers a new `All maps | Per map` toggle below the Top Labels slider. In `Per map` mode the top-N labels are picked separately for each map (Height and Color label mode alike), and overlapping labels are only grouped within the same map. The toggle is hidden for a single map and in delta mode.
