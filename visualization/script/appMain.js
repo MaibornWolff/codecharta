@@ -27,8 +27,21 @@ async function main() {
     await prepareZips()
 }
 
+let finished = false
+
+// Guard against a silent failure: if a packaging step leaves an unsettled promise (e.g. a stalled
+// stream that never emits 'end'), the event loop drains and Node would otherwise exit 0 without
+// producing any package. Turn that into a loud, non-zero exit so CI fails on the producing step.
+process.on("beforeExit", () => {
+    if (!finished) {
+        console.error("Error: packaging exited before completing — event loop drained with work still pending.")
+        process.exit(1)
+    }
+})
+
 main()
     .then(() => {
+        finished = true
         console.log("Done!")
         process.exit(0)
     })
