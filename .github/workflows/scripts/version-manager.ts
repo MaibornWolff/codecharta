@@ -21,10 +21,8 @@ class VersionManager {
 
             const normalizedRepo = this.getNormalizedRepository(repository)
             const date = new Date().toISOString().split("T")[0]
-            const prefix = normalizedRepo === "visualization" ? "vis" : "ana"
 
             let newVersion: string
-            let unreleasedChangelogSection: string
 
             // 1. Update version using npm
             try {
@@ -67,9 +65,6 @@ class VersionManager {
                 const changelogPath = `${normalizedRepo}/CHANGELOG.md`
                 const changelog = fs.readFileSync(changelogPath, "utf8")
 
-                // Store changelog entries before modifying the file
-                unreleasedChangelogSection = this.extractChangelogSection(changelog, "unreleased")
-
                 const updatedChangelog = changelog.replace(
                     "## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)",
                     `## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)\n\n## [${newVersion}] - ${date}`
@@ -77,33 +72,6 @@ class VersionManager {
                 fs.writeFileSync(changelogPath, updatedChangelog)
             } catch (error) {
                 throw new Error(`Failed to update changelog: ${error}`)
-            }
-
-            // 5. Create release post
-            try {
-                const displayName = repository.charAt(0).toUpperCase() + repository.slice(1).toLowerCase()
-                const postContent = `---
-categories:
-  - Release
-  - Release-${displayName}
-tags:
-  - gh-pages
-  - release
-  - ${normalizedRepo}
-
-title: ${displayName} version ${newVersion}
----
-
-{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/${prefix}-${newVersion}).
-This version brings the following:
-
-${unreleasedChangelogSection}`
-
-                const postsDir = "gh-pages/_posts/release"
-                this.ensureDirectoryExists(postsDir)
-                fs.writeFileSync(`${postsDir}/${date}-${prefix}_${newVersion}.md`, postContent)
-            } catch (error) {
-                throw new Error(`Failed to create release post: ${error}`)
             }
 
             return newVersion

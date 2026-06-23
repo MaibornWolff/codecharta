@@ -10,21 +10,40 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to GitHub Pages
+    name: Build & Deploy Docs (Astro) to GitHub Pages
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    defaults:
+      run:
+        working-directory: gh-pages
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      # Publishes the built static site (gh-pages/dist) to the gh-pages branch.
+      # The Web Studio app (visualization/) and staging (stg/) are deployed to the same
+      # branch by other workflows, so they are preserved via clean-exclude.
+      # dist/ already contains CNAME and .nojekyll (from public/), the latter stops
+      # GitHub Pages from running Jekyll over the _astro/ asset directory.
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.8.0
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
-          folder: gh-pages
+          folder: gh-pages/dist
           clean-exclude: |
             stg/**
             visualization/**

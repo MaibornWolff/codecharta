@@ -1,0 +1,99 @@
+---
+---
+
+<div class="feature-row">
+    <div class="feature-item">
+        <a class="image-container" href="/docs/visualization/web-studio">
+            <img src="/assets/images/features/visualize.png" alt="Interactive Visualization" />
+        </a>
+        <h3>Interactive Visualization</h3>
+        <p>
+            Turn your codebase into a dynamic, city-like map. Navigate through your code with ease and uncover insights you’ve never seen
+            before.
+        </p>
+    </div>
+    <div class="feature-item">
+        <a class="image-container" href="/docs/visualization/user-controls/3d-print">
+            <img src="/assets/images/features/tangible.png" alt="Tangible Models" />
+        </a>
+        <h3>Tangible Models</h3>
+        <p>Bring your code to life! Print your codebase as a 3D model! Perfect for presentations.</p>
+    </div>
+    <div class="feature-item">
+        <a class="image-container" href="/docs/visualization/web-studio">
+            <img src="/assets/images/features/hotspots.png" alt="Hotspots" />
+        </a>
+        <h3>Find Hotspots</h3>
+        <p>See hotspots at a glance and see what is important to you.</p>
+    </div>
+    <div class="feature-item">
+        <a class="image-container" href="/docs/visualization/user-controls/compare">
+            <img src="/assets/images/features/history.png" alt="Track your changes" />
+        </a>
+        <h3>Track your changes</h3>
+        <p>See how your codebase has grown over time. Compare older maps to understand the impact your decisions had!</p>
+    </div>
+    <div class="feature-item">
+        <a class="image-container" href="/docs/analysis/codecharta-shell">
+            <img src="/assets/images/features/imports.png" alt="Seamless Import" />
+        </a>
+        <h3>Seamless Import</h3>
+        <p>You can get metrics from a lot of different parsers and importers.</p>
+    </div>
+    <div class="feature-item">
+        <a class="image-container" href="/docs/overview/data-privacy">
+            <img src="/assets/images/features/privacy.svg" alt="Your Data Stays Local" />
+        </a>
+        <h3>Your Data Stays Local</h3>
+        <p>
+            All analysis and visualization happens on your machine. No data is ever uploaded or shared without your explicit intent. Your
+            code stays private.
+        </p>
+    </div>
+</div>
+
+<style>
+    .feature-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        justify-content: center;
+        gap: 30px;
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 1100px) {
+        .feature-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 700px) {
+        .feature-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .feature-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .feature-item h3 {
+        margin-top: 15px;
+    }
+
+    .feature-item p {
+        margin-top: 10px;
+        color: #555;
+    }
+
+    .image-container {
+        height: 300px;
+    }
+
+    .image-container img {
+        height: 300px;
+    }
+</style>

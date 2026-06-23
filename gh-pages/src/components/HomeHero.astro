@@ -1,0 +1,111 @@
+---
+const webStudioLink =
+    'https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=avgCommits&currentFilesAreSampleFiles=true';
+---
+
+<section class="home-hero">
+    <div class="home-hero__inner">
+        <h1>CodeCharta</h1>
+        <p class="home-hero__tagline">Find the hotspots in your codebase and make them tangible.</p>
+        <div class="home-hero__actions">
+            <a class="btn btn--primary" href="/docs/overview/getting-started">Quick Start</a>
+            <a class="btn btn--ghost" href={webStudioLink} target="_blank" rel="noopener noreferrer">Open Web Studio</a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .home-hero {
+        /* Full-bleed: break out of the centered content container */
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+        min-height: clamp(360px, 60vh, 620px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: clamp(2rem, 6vw, 4rem) 1.5rem;
+        box-sizing: border-box;
+        /* Dark overlay layered over the screenshot for readable white text */
+        background:
+            linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+            url('/assets/images/cc_home.png') center / cover no-repeat;
+        color: #fff;
+    }
+
+    .home-hero__inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+        max-width: 50rem;
+    }
+
+    .home-hero h1 {
+        margin: 0;
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        line-height: 1.05;
+        color: #fff;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+    }
+
+    .home-hero__tagline {
+        margin: 0;
+        font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+        max-width: 40rem;
+        color: #fff;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+    }
+
+    .home-hero__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.7rem 1.6rem;
+        border-radius: 0.5rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+        text-decoration: none;
+        line-height: 1;
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            transform 0.15s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .btn--primary {
+        background-color: var(--sl-color-accent, #2563eb);
+        /* literal white: the hero sits on a dark overlay in both themes, and
+           Starlight's --sl-color-white flips to black in light mode */
+        color: #fff;
+        border: 2px solid var(--sl-color-accent, #2563eb);
+    }
+
+    .btn--primary:hover {
+        background-color: var(--sl-color-accent-high, #1d4ed8);
+        border-color: var(--sl-color-accent-high, #1d4ed8);
+    }
+
+    .btn--ghost {
+        background-color: transparent;
+        color: #fff;
+        border: 2px solid rgba(255, 255, 255, 0.85);
+    }
+
+    .btn--ghost:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: #fff;
+    }
+</style>

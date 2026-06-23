@@ -1,0 +1,103 @@
+---
+// One card per showcase project.
+const projects = [
+    {
+        name: 'aoo',
+        title: 'Apache OpenOffice',
+        excerpt: '6 145 332 RLoC',
+        teaser: '/assets/images/showcase/aoo/aoo_2019-08-02_search_i18npool_rloc_rloc_rloc_more_than_1000.png',
+    },
+    {
+        name: 'httpd',
+        title: 'httpd',
+        excerpt: '403 788 RLoC',
+        teaser: '/assets/images/showcase/httpd/httpd_2016-10-24vs2019-10-27_rloc_abs_code_churn.png',
+    },
+    {
+        name: 'junit4',
+        title: 'JUnit 4',
+        excerpt: '30 909 RLoC',
+        teaser: '/assets/images/showcase/junit4/junit4_2019-10-26_rloc_mcc_mcc.png',
+    },
+    {
+        name: 'junit5',
+        title: 'JUnit 5',
+        excerpt: '73 626 RLoC',
+        teaser: '/assets/images/showcase/junit5/junit5_2019-10-26_rloc_mcc_mcc-white.png',
+    },
+    {
+        name: 'netbeans',
+        title: 'NetBeans',
+        excerpt: '5 034 211 RLoC',
+        teaser: '/assets/images/showcase/netbeans/netbeans_2019-10-19_Spotlight_rloc_mcc_mcc.png',
+    },
+];
+---
+
+<div class="showcase-row">
+    {
+        projects.map((project) => (
+            <a class="showcase-item" href={`/examples/${project.name}`}>
+                <div class="image-container">
+                    <img src={project.teaser} alt={project.title} />
+                </div>
+                <h3>{project.title}</h3>
+                <p>{project.excerpt}</p>
+            </a>
+        ))
+    }
+</div>
+
+<style>
+    .showcase-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        justify-content: center;
+        gap: 30px;
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 1100px) {
+        .showcase-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 700px) {
+        .showcase-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .showcase-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .showcase-item h3 {
+        margin-top: 15px;
+    }
+
+    .showcase-item p {
+        margin-top: 10px;
+        color: #555;
+    }
+
+    .image-container {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        border-radius: 6px;
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+</style>
