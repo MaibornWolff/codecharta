@@ -1,0 +1,19 @@
+/* Uniform sizing for example detail-page galleries.
+   CodeCharta map screenshots vary wildly in aspect ratio, so every image is
+   placed in an identically sized box and shown with object-fit: contain
+   (never cropped) on a subtle background. */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 1.5rem 0;
+}
+
+.gallery img {
+    width: 100%;
+    height: 260px;
+    object-fit: contain;
+    background: var(--sl-color-gray-6);
+    border-radius: 6px;
+    display: block;
+}

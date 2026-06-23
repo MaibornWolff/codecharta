@@ -41,8 +41,7 @@
       "!**/resources/**",
       "!**/assets/**",
       "!**/binScripts/**",
-      "!**/gh-pages/vendor",
-      "!**/gh-pages/visualization",
+      "!**/gh-pages/**",
       "!**/*.gradle.kts",
       "!**/*.toml"
     ]

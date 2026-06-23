@@ -1,0 +1,9 @@
+# Binary assets — prevent the repo-wide `* text eol=lf` rule from applying
+# EOL normalization, which would corrupt these files.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.gz binary

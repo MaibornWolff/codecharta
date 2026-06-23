@@ -1,0 +1,50 @@
+---
+// Override of Starlight's SocialIcons (right side of the header).
+// Renders custom top-nav links before the default social icons.
+// The default SocialIcons component has no slots, so we render <Default /> directly.
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+
+const navLinks = [
+	{ label: 'Docs', href: '/docs/overview/introduction' },
+	{ label: 'Examples', href: '/examples' },
+	{ label: 'Service Offerings', href: '/docs/overview/service-offerings' },
+];
+---
+
+<nav class="header-nav" aria-label="Main">
+	{navLinks.map(({ label, href }) => (
+		<a href={href}>{label}</a>
+	))}
+</nav>
+<Default />
+
+<style>
+	.header-nav {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-inline-end: 0.5rem;
+	}
+
+	.header-nav a {
+		color: var(--sl-color-text-accent);
+		font-size: var(--sl-text-sm);
+		font-weight: 600;
+		text-decoration: none;
+		white-space: nowrap;
+		line-height: 1;
+	}
+
+	.header-nav a:hover {
+		color: var(--sl-color-white);
+	}
+
+	/* Hide the text links on narrow screens so the mobile header doesn't
+	   overflow; the sidebar hamburger still provides navigation. Social
+	   icons (rendered by <Default />) remain visible at all sizes. */
+	@media (max-width: 800px) {
+		.header-nav {
+			display: none;
+		}
+	}
+</style>
