@@ -9,7 +9,7 @@ import {
     FileSettings,
     NodeType
 } from "../codeCharta.model"
-import { LoadFileService } from "../services/loadFile/loadFile.service"
+import { CC_FILE_EXTENSION } from "../model/files/files"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
@@ -26,7 +26,7 @@ export class FileDownloader {
         fileName: string
     ) {
         const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettings)
-        const newFileNameWithExtension = fileName + LoadFileService.CC_FILE_EXTENSION
+        const newFileNameWithExtension = fileName + CC_FILE_EXTENSION
         this.downloadData(JSON.stringify(exportCCFile), newFileNameWithExtension)
     }
 

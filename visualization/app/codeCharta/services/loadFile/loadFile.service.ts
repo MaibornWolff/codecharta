@@ -8,8 +8,8 @@ import { NameDataPair, CcState } from "../../codeCharta.model"
 import { referenceFileSelector } from "../../state/selectors/referenceFile/referenceFile.selector"
 import { ErrorDialogService } from "../../features/shared/components/errorDialog/errorDialog.service"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
-import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParser"
-import { fileRoot } from "./fileRoot"
+import { enrichFileStatesAndRecentFilesWithValidationResults } from "../../util/fileParser"
+import { fileRoot } from "../../util/fileRoot"
 import { Store, State } from "@ngrx/store"
 import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
@@ -18,8 +18,6 @@ export const FILES_ALREADY_LOADED_ERROR_MESSAGE = "File(s) are already loaded"
 
 @Injectable({ providedIn: "root" })
 export class LoadFileService implements OnDestroy {
-    static readonly CC_FILE_EXTENSION = ".cc.json"
-
     referenceFileSubscription = this.store
         .select(referenceFileSelector)
         .pipe(

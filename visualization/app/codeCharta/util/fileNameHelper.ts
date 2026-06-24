@@ -1,4 +1,4 @@
-import { LoadFileService } from "../services/loadFile/loadFile.service"
+import { CC_FILE_EXTENSION } from "../model/files/files"
 
 const dateRegex = /_\d{4}(?:-\d{1,2}){2}_\d{1,2}-\d{1,2}\./
 
@@ -24,8 +24,8 @@ export class FileNameHelper {
             if (dateMatch) {
                 return fileName.slice(0, dateMatch.index)
             }
-            if (fileName.endsWith(LoadFileService.CC_FILE_EXTENSION)) {
-                return fileName.slice(0, -LoadFileService.CC_FILE_EXTENSION.length)
+            if (fileName.endsWith(CC_FILE_EXTENSION)) {
+                return fileName.slice(0, -CC_FILE_EXTENSION.length)
             }
             if (fileName.endsWith(FileNameHelper.JSON_EXTENSION)) {
                 return fileName.slice(0, -FileNameHelper.JSON_EXTENSION.length)

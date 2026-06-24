@@ -1,14 +1,9 @@
-import { ExportBlacklistItem, ExportCCFile } from "../../codeCharta.api.model"
-import { CCFile, NameDataPair } from "../../codeCharta.model"
-import { FileSelectionState, FileState } from "../../model/files/files"
-import { getCCFile } from "../../util/fileHelper"
-import {
-    CCFileValidationResult as FileValidationResult,
-    checkErrors,
-    checkWarnings,
-    removeAuthorsAttributes
-} from "../../util/fileValidator"
-import { NodeDecorator } from "../../util/nodeDecorator"
+import { ExportBlacklistItem, ExportCCFile } from "../codeCharta.api.model"
+import { CCFile, NameDataPair } from "../codeCharta.model"
+import { FileSelectionState, FileState } from "../model/files/files"
+import { getCCFile } from "./fileHelper"
+import { CCFileValidationResult as FileValidationResult, checkErrors, checkWarnings, removeAuthorsAttributes } from "./fileValidator"
+import { NodeDecorator } from "./nodeDecorator"
 
 export function getNameDataPair(ccFile: CCFile): NameDataPair {
     return {

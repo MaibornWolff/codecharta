@@ -7,7 +7,7 @@ import stringify from "safe-stable-stringify"
 import { AppSettings, CcState, DynamicSettings, FileSettings } from "../../codeCharta.model"
 import { FileSelectionState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
-import { MetricQueryParemter } from "../../state/effects/updateQueryParameters/updateQueryParameters.effect"
+import { MetricQueryParemter } from "../../state/effects/updateQueryParameters/metricQueryParameter"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultAppSettings } from "../../state/store/appSettings/appSettings.reducer"
@@ -23,13 +23,13 @@ import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELT
 import { readCcState } from "../../util/indexedDB/indexedDBWriter"
 import { getLastAction } from "../../util/testUtils/store.utils"
 import { ErrorDialogService } from "../../features/shared/components/errorDialog/errorDialog.service"
-import { getNameDataPair } from "../loadFile/fileParser"
+import { getNameDataPair } from "../../util/fileParser"
 import { LoadFileService } from "../loadFile/loadFile.service"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "./loadInitialFile.service"
-import { UrlExtractor } from "./urlExtractor"
+import { UrlExtractor } from "../../util/urlExtractor"
 import { setCurrentFilesAreSampleFiles } from "../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
-jest.mock("./urlExtractor")
+jest.mock("../../util/urlExtractor")
 jest.mock("../../model/files/files.helper")
 jest.mock("../../util/indexedDB/indexedDBWriter")
 

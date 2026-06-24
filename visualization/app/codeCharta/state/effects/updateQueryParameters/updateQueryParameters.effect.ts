@@ -6,14 +6,7 @@ import { CcState } from "../../../codeCharta.model"
 import { LoadInitialFileService } from "../../../services/loadInitialFile/loadInitialFile.service"
 import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
 import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
-
-export enum MetricQueryParemter {
-    areaMetric = "area",
-    heightMetric = "height",
-    colorMetric = "color",
-    edgeMetric = "edge",
-    currentFilesAreSampleFiles = "currentFilesAreSampleFiles"
-}
+import { MetricQueryParemter } from "./metricQueryParameter"
 
 @Injectable()
 export class UpdateQueryParametersEffect {
