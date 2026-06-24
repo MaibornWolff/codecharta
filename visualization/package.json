@@ -69,9 +69,7 @@
     "@angular/router": "^21.2.8",
     "@fortawesome/fontawesome-free": "^7.0.0",
     "@ngrx/effects": "^21.1.0",
-    "@ngrx/operators": "^21.1.0",
     "@ngrx/store": "^21.0.1",
-    "@ngrx/store-devtools": "^21.1.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/d3": "^7.4.3",
     "ajv": "^8.17.1",
@@ -92,7 +90,6 @@
     "md5": "^2.3.0",
     "ngx-color": "^10.1.0",
     "pako": "^2.1.0",
-    "percent-round": "^2.3.1",
     "qrcode": "^1.5.4",
     "rxjs": "^7.5.1",
     "safe-stable-stringify": "^2.5.0",
@@ -106,7 +103,6 @@
     "@angular/cli": "^21.2.7",
     "@angular/compiler": "^21.1.2",
     "@angular/compiler-cli": "^21.2.8",
-    "@babel/plugin-transform-class-static-block": "^7.28.6",
     "@cyclonedx/cyclonedx-npm": "^4.2.1",
     "@electron/get": "^4.0.3",
     "@electron/packager": "^19.1.0",
@@ -116,12 +112,10 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.12.2",
     "@types/three": "^0.182.0",
-    "autoprefixer": "^10.5.0",
     "bestzip": "^2.2.3",
     "daisyui": "^5.5.19",
     "dependency-cruiser": "^17.3.10",
     "fast-xml-parser": "^5.5.12",
-    "html-loader": "^5.1.0",
     "jest": "^30.3.0",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^30.3.0",
@@ -129,8 +123,7 @@
     "marked": "^17.0.6",
     "postcss": "^8.5.9",
     "ts-jest": "^29.4.9",
-    "typescript": "5.9.3",
-    "webpack-glsl-loader": "^1.0.1"
+    "typescript": "5.9.3"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.24.2"

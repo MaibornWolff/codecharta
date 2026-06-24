@@ -98,8 +98,7 @@ module.exports = {
                 pathNot: ["^app/codeCharta/features/[^/]+/(stores|selectors)/", "\\.spec\\.ts$"]
             },
             to: {
-                path: "@ngrx/store",
-                pathNot: "@ngrx/store-devtools"
+                path: "@ngrx/store"
             }
         }
     ],
