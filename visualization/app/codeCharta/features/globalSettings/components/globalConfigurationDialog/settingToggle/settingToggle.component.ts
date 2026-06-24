@@ -1,9 +1,10 @@
-import { Component, input, output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 
 @Component({
     selector: "cc-setting-toggle",
     templateUrl: "./settingToggle.component.html",
-    imports: []
+    imports: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingToggleComponent {
     checked = input.required<boolean>()

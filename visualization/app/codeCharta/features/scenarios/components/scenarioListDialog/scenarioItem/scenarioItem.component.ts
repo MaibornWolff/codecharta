@@ -1,4 +1,4 @@
-import { Component, input, output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 import { ScenarioView } from "../scenarioView.model"
 import { ScenarioItemBadgesComponent } from "./scenarioItemBadges/scenarioItemBadges.component"
 import { ScenarioItemActionsComponent } from "./scenarioItemActions/scenarioItemActions.component"
@@ -6,7 +6,8 @@ import { ScenarioItemActionsComponent } from "./scenarioItemActions/scenarioItem
 @Component({
     selector: "cc-scenario-item",
     templateUrl: "./scenarioItem.component.html",
-    imports: [ScenarioItemBadgesComponent, ScenarioItemActionsComponent]
+    imports: [ScenarioItemBadgesComponent, ScenarioItemActionsComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScenarioItemComponent {
     readonly view = input.required<ScenarioView>()

@@ -1,10 +1,11 @@
-import { Component, ElementRef, input, output, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, input, output, viewChild } from "@angular/core"
 import { InlineColorPickerComponent } from "../../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 
 @Component({
     selector: "cc-logo-upload",
     templateUrl: "./logoUpload.component.html",
-    imports: [InlineColorPickerComponent]
+    imports: [InlineColorPickerComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LogoUploadComponent {
     fileInput = viewChild.required<ElementRef<HTMLInputElement>>("fileInput")

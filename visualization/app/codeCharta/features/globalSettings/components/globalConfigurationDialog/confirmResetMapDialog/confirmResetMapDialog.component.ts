@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http"
-import { Component, ElementRef, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from "@angular/core"
 import { LoadFileService } from "../../../../../services/loadFile/loadFile.service"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../services/loadInitialFile/loadInitialFile.service"
 import { UrlExtractor } from "../../../../../services/loadInitialFile/urlExtractor"
@@ -8,7 +8,8 @@ import { MapResetStore } from "../../../stores/mapReset.store"
 
 @Component({
     selector: "cc-confirm-reset-map-dialog",
-    templateUrl: "./confirmResetMapDialog.component.html"
+    templateUrl: "./confirmResetMapDialog.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfirmResetMapDialogComponent {
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")

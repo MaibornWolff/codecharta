@@ -1,8 +1,9 @@
-import { Component, ElementRef, input, output, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, input, output, viewChild } from "@angular/core"
 
 @Component({
     selector: "cc-delete-confirm-dialog",
-    templateUrl: "./deleteConfirmDialog.component.html"
+    templateUrl: "./deleteConfirmDialog.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DeleteConfirmDialogComponent {
     readonly scenarioName = input.required<string>()

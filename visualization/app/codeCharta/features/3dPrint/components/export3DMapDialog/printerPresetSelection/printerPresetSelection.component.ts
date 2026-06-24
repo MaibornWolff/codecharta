@@ -1,4 +1,4 @@
-import { Component, input, output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 
 export interface Printer {
     name: string
@@ -16,7 +16,8 @@ export const PRINTER_PRESETS: Printer[] = [
 
 @Component({
     selector: "cc-printer-preset-selection",
-    templateUrl: "./printerPresetSelection.component.html"
+    templateUrl: "./printerPresetSelection.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PrinterPresetSelectionComponent {
     selectedPrinter = input.required<Printer>()

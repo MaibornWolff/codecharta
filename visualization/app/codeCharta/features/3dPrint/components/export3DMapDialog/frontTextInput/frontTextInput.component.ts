@@ -1,8 +1,9 @@
-import { Component, input, output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 
 @Component({
     selector: "cc-front-text-input",
-    templateUrl: "./frontTextInput.component.html"
+    templateUrl: "./frontTextInput.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FrontTextInputComponent {
     frontText = input<string>("")

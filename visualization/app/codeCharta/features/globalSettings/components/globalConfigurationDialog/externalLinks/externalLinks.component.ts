@@ -1,9 +1,10 @@
-import { Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component } from "@angular/core"
 
 @Component({
     selector: "cc-external-links",
     templateUrl: "./externalLinks.component.html",
-    imports: []
+    imports: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExternalLinksComponent {
     links = [

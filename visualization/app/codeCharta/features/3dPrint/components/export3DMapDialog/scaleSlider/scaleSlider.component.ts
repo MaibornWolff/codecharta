@@ -1,10 +1,11 @@
-import { Component, input, output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 import { Vector3 } from "three"
 import { Printer } from "../printerPresetSelection/printerPresetSelection.component"
 
 @Component({
     selector: "cc-scale-slider",
-    templateUrl: "./scaleSlider.component.html"
+    templateUrl: "./scaleSlider.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScaleSliderComponent {
     currentSize = input.required<Vector3>()

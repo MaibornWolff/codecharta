@@ -1,4 +1,4 @@
-import { Component, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, signal, viewChild } from "@angular/core"
 import { take } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
 import { ActionIconComponent } from "../../../../ui/actionIcon/actionIcon.component"
@@ -9,7 +9,8 @@ import { Export3DMapDialogComponent } from "../export3DMapDialog/export3DMapDial
 @Component({
     selector: "cc-export-3d-map-button",
     templateUrl: "./export3DMapButton.component.html",
-    imports: [ActionIconComponent, Export3DMapDialogComponent, ErrorDialogComponent]
+    imports: [ActionIconComponent, Export3DMapDialogComponent, ErrorDialogComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Export3DMapButtonComponent {
     showDialog = signal(false)

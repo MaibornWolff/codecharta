@@ -1,4 +1,16 @@
-import { Component, AfterViewInit, DestroyRef, computed, ElementRef, inject, input, output, signal, viewChild } from "@angular/core"
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    computed,
+    DestroyRef,
+    ElementRef,
+    inject,
+    input,
+    output,
+    signal,
+    viewChild
+} from "@angular/core"
 import { FormsModule } from "@angular/forms"
 import { MetricData } from "../../../../codeCharta.model"
 import {
@@ -13,7 +25,8 @@ import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 @Component({
     selector: "cc-apply-scenario-dialog",
     templateUrl: "./applyScenarioDialog.component.html",
-    imports: [FormsModule]
+    imports: [FormsModule],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplyScenarioDialogComponent implements AfterViewInit {
     readonly scenario = input.required<Scenario>()

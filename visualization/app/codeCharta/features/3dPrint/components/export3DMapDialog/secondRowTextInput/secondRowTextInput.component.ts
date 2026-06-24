@@ -1,8 +1,9 @@
-import { Component, input, output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 
 @Component({
     selector: "cc-second-row-text-input",
-    templateUrl: "./secondRowTextInput.component.html"
+    templateUrl: "./secondRowTextInput.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SecondRowTextInputComponent {
     isVisible = input.required<boolean>()

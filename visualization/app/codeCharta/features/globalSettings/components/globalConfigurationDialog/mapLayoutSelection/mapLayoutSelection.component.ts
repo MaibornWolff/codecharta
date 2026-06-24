@@ -1,4 +1,4 @@
-import { Component, computed } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { LayoutAlgorithm } from "../../../../../codeCharta.model"
 import { debounce } from "../../../../../util/debounce"
@@ -7,7 +7,8 @@ import { MapLayoutService } from "../../../services/mapLayout.service"
 @Component({
     selector: "cc-map-layout-selection",
     templateUrl: "./mapLayoutSelection.component.html",
-    imports: []
+    imports: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapLayoutSelectionComponent {
     layoutAlgorithms = Object.values(LayoutAlgorithm)
