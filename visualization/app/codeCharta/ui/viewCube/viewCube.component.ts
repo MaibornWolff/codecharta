@@ -14,7 +14,7 @@ import {
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
 import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
-import { Component, ElementRef, OnInit } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from "@angular/core"
 import { ViewCubeToolboxComponent } from "../../features/viewCubeToolbox/facade"
 import { ZoomSliderComponent } from "./zoomSlider/zoomSlider.component"
 
@@ -22,7 +22,8 @@ import { ZoomSliderComponent } from "./zoomSlider/zoomSlider.component"
     selector: "cc-view-cube",
     templateUrl: "./viewCube.component.html",
     styleUrls: ["./viewCube.component.scss"],
-    imports: [ViewCubeToolboxComponent, ZoomSliderComponent]
+    imports: [ViewCubeToolboxComponent, ZoomSliderComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewCubeComponent implements OnInit {
     private lights: Group

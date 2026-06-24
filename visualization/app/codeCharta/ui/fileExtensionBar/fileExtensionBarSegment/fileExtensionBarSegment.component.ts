@@ -1,4 +1,5 @@
 import {
+    ChangeDetectionStrategy,
     Component,
     computed,
     ElementRef,
@@ -22,7 +23,8 @@ const VIEWPORT_MARGIN_PX = 4
 @Component({
     selector: "cc-file-extension-bar-segment",
     templateUrl: "./fileExtensionBarSegment.component.html",
-    styleUrl: "./fileExtensionBarSegment.component.scss"
+    styleUrl: "./fileExtensionBarSegment.component.scss",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileExtensionBarSegmentComponent implements OnInit, OnDestroy {
     item = input.required<MetricDistribution>()

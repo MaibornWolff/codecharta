@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, OnInit, signal } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -31,7 +31,8 @@ import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.compo
         ChangelogDialogComponent,
         ErrorDialogComponent,
         BottomBarComponent
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeChartaComponent implements OnInit {
     isInitialized = signal(false)

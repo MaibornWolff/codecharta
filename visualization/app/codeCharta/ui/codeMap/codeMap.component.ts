@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, OnDestroy } from "@angular/core"
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy } from "@angular/core"
 import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
@@ -12,7 +12,8 @@ import { AsyncPipe } from "@angular/common"
     selector: "cc-code-map",
     templateUrl: "./codeMap.component.html",
     styleUrls: ["./codeMap.component.scss"],
-    imports: [ViewCubeComponent, AsyncPipe]
+    imports: [ViewCubeComponent, AsyncPipe],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
     isLoadingFile$ = this.store.select(isLoadingFileSelector)

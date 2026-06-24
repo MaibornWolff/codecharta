@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, OnInit, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, inject, OnInit, signal, viewChild } from "@angular/core"
 import { ErrorDialogService } from "./errorDialog.service"
 
 export interface ErrorDialogData {
@@ -9,7 +9,8 @@ export interface ErrorDialogData {
 
 @Component({
     selector: "cc-error-dialog",
-    templateUrl: "./errorDialog.component.html"
+    templateUrl: "./errorDialog.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ErrorDialogComponent implements OnInit {
     private readonly errorDialogService = inject(ErrorDialogService)

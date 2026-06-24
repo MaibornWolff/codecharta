@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core"
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { getPartialDefaultState } from "./getPartialDefaultState"
@@ -8,7 +8,8 @@ import { setState } from "../../state/store/state.actions"
     selector: "cc-reset-settings-button",
     templateUrl: "./resetSettingsButton.component.html",
     standalone: true,
-    host: { class: "contents" }
+    host: { class: "contents" },
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResetSettingsButtonComponent {
     @Input() settingsKeys: string[]
