@@ -99,8 +99,7 @@
     "shelljs": "^0.10.0",
     "tailwindcss": "^4.1.15",
     "three": "^0.182.0",
-    "typescript-json-schema": "0.67.1",
-    "zone.js": "^0.16.1"
+    "typescript-json-schema": "0.67.1"
   },
   "devDependencies": {
     "@angular/build": "^21.2.7",

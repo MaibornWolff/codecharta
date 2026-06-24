@@ -23,7 +23,7 @@
             "outputPath": "dist/bundler",
             "index": "app/index.html",
             "browser": "app/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "loader": {
