@@ -21,7 +21,7 @@ import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetr
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { toggleEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { wait } from "../../../util/testUtils/wait"
-import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
+import { IdToBuildingService } from "../idToBuilding.service"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { clone } from "../../../util/clone"
 import { setShowOutgoingEdges } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"

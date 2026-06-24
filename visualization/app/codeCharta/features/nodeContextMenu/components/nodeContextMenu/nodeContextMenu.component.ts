@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, HostListener, inject, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../codeCharta.model"
-import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
+import { IdToBuildingService } from "../../../../features/codeMap/facade"
 import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { ContextMenuBlacklistStore } from "../../stores/contextMenuBlacklist.store"

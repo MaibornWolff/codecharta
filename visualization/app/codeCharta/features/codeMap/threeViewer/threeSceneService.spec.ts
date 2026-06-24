@@ -20,7 +20,7 @@ import { setLayoutAlgorithm } from "../../../state/store/appSettings/layoutAlgor
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { TestBed } from "@angular/core/testing"
-import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
+import { IdToBuildingService } from "../idToBuilding.service"
 import { setEnableFloorLabels } from "../../../state/store/appSettings/enableFloorLabels/enableFloorLabels.actions"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
