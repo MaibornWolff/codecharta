@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { CcState, KeyValuePair } from "../../codeCharta.model"
-import { State } from "@ngrx/store"
+import { KeyValuePair } from "../../codeCharta.model"
+import { CodeMapTooltipStore } from "./stores/codeMapTooltip.store"
 
 export interface TooltipNode {
     name: string
@@ -38,7 +38,7 @@ export class CodeMapTooltipService {
     private visible = false
     private currentNodeId: number | null = null
 
-    constructor(private readonly state: State<CcState>) {}
+    constructor(private readonly codeMapTooltipStore: CodeMapTooltipStore) {}
 
     show(node: TooltipNode, clientX: number, clientY: number) {
         if (!this.tooltipElement) {
@@ -96,8 +96,7 @@ export class CodeMapTooltipService {
     }
 
     private populateTooltip(node: TooltipNode) {
-        const { dynamicSettings } = this.state.getValue()
-        const { areaMetric, heightMetric, colorMetric } = dynamicSettings
+        const { areaMetric, heightMetric, colorMetric } = this.codeMapTooltipStore.getDynamicSettings()
 
         const metrics = [
             { label: areaMetric, value: node.attributes?.[areaMetric] },

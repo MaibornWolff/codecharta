@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
+import { ThreeSceneService } from "../../../features/codeMap/facade"
 import { HighlightBuildingsByFileExtensionService } from "./highlightBuildingsByFileExtension.service"
 import { provideMockStore } from "@ngrx/store/testing"
 import { metricDistributionSelector } from "../selectors/metricDistribution.selector"

@@ -1,19 +1,16 @@
 import { AmbientLight, DirectionalLight, Group, Material, Scene, Vector3 } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { CcState, CodeMapNode, LayoutAlgorithm, Node } from "../../../codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node } from "../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
-import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
-import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { IdToBuildingService } from "../../../services/idToBuilding/idToBuilding.service"
-import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { Injectable, OnDestroy } from "@angular/core"
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 import { EventEmitter } from "../../../util/EventEmitter"
-import { State, Store } from "@ngrx/store"
+import { ThreeSceneStore } from "../stores/threeScene.store"
 import { FileExtensionCalculator, NO_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 
 type BuildingSelectedEvents = {
@@ -48,14 +45,13 @@ export class ThreeSceneService implements OnDestroy {
     private folderLabelColorSelected: string
     private numberSelectionColor: number
 
-    private subscription = this.store.select(mapColorsSelector).subscribe(mapColors => {
+    private subscription = this.threeSceneStore.mapColors$.subscribe(mapColors => {
         this.folderLabelColorSelected = mapColors.selected
         this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
     })
 
     constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>,
+        private threeSceneStore: ThreeSceneStore,
         private idToBuilding: IdToBuildingService,
         private threeRendererService: ThreeRendererService
     ) {
@@ -95,7 +91,7 @@ export class ThreeSceneService implements OnDestroy {
         }
         this.floorLabelPlanes.clear()
 
-        const { layoutAlgorithm, enableFloorLabels } = this.state.getValue().appSettings
+        const { layoutAlgorithm, enableFloorLabels } = this.threeSceneStore.getAppSettings()
         if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap || !enableFloorLabels) {
             return
         }
@@ -104,8 +100,8 @@ export class ThreeSceneService implements OnDestroy {
         if (!rootNode) {
             return
         }
-        const scaling = this.state.getValue().appSettings.scaling
-        const experimentalFeaturesEnabled = this.state.getValue().appSettings.experimentalFeaturesEnabled
+        const scaling = this.threeSceneStore.getAppSettings().scaling
+        const experimentalFeaturesEnabled = this.threeSceneStore.getAppSettings().experimentalFeaturesEnabled
         const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
 
         const maxAnisotropy = this.threeRendererService.renderer?.capabilities.getMaxAnisotropy() ?? 1
@@ -144,7 +140,7 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     applyHighlights() {
-        const state = this.state.getValue() as CcState
+        const state = this.threeSceneStore.getState()
         this.getMapMesh().highlightBuilding(
             this.highlightedBuildingIds,
             this.primaryHighlightedBuilding,
@@ -181,7 +177,7 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     scaleHeight() {
-        const scale = this.state.getValue().appSettings.scaling
+        const scale = this.threeSceneStore.getAppSettings().scaling
 
         this.floorLabelDrawer?.translatePlaneCanvases(scale)
         this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
@@ -254,7 +250,7 @@ export class ThreeSceneService implements OnDestroy {
             if (this.selected) {
                 this.getMapMesh().clearSelection(this.selected)
             }
-            this.store.dispatch(setSelectedBuildingId({ value: building.node.id }))
+            this.threeSceneStore.setSelectedBuildingId(building.node.id)
         }
 
         this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
@@ -269,7 +265,7 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     addNodeAndChildrenToConstantHighlight(codeMapNode: Pick<CodeMapNode, "id">) {
-        const idToNode = idToNodeSelector(this.state.getValue())
+        const idToNode = this.threeSceneStore.getIdToNode()
         const codeMapBuilding = idToNode.get(codeMapNode.id)
         for (const { data } of hierarchy(codeMapBuilding)) {
             const building = this.idToBuilding.get(data.id)
@@ -280,7 +276,7 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     removeNodeAndChildrenFromConstantHighlight(codeMapNode: Pick<CodeMapNode, "id">) {
-        const idToNode = idToNodeSelector(this.state.getValue())
+        const idToNode = this.threeSceneStore.getIdToNode()
         const codeMapBuilding = idToNode.get(codeMapNode.id)
         for (const { data } of hierarchy(codeMapBuilding)) {
             const building = this.idToBuilding.get(data.id)
@@ -299,7 +295,7 @@ export class ThreeSceneService implements OnDestroy {
     clearSelection() {
         if (this.selected) {
             this.getMapMesh().clearSelection(this.selected)
-            this.store.dispatch(setSelectedBuildingId({ value: null }))
+            this.threeSceneStore.setSelectedBuildingId(null)
             this.eventEmitter.emit("onBuildingDeselected")
         }
         // null before repainting: the highlight pass must not treat the
@@ -358,7 +354,7 @@ export class ThreeSceneService implements OnDestroy {
             this.mapMesh.selectBuilding(buildingOnNewMesh, this.folderLabelColorSelected)
         } else {
             this.selected = null
-            this.store.dispatch(setSelectedBuildingId({ value: null }))
+            this.threeSceneStore.setSelectedBuildingId(null)
             this.eventEmitter.emit("onBuildingDeselected")
         }
     }

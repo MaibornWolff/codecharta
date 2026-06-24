@@ -1,16 +1,17 @@
 import { CodeMapTooltipService } from "./codeMap.tooltip.service"
-import { CcState, Node } from "../../codeCharta.model"
-import { State } from "@ngrx/store"
+import { Node } from "../../codeCharta.model"
+import { CodeMapTooltipStore } from "./stores/codeMapTooltip.store"
 import { defaultState } from "../../state/store/state.manager"
 
 describe("CodeMapTooltipService", () => {
     let tooltipService: CodeMapTooltipService
-    let state: State<CcState>
     let sampleNode: Node
 
     beforeEach(() => {
-        state = { getValue: () => defaultState } as unknown as State<CcState>
-        tooltipService = new CodeMapTooltipService(state)
+        const codeMapTooltipStore = {
+            getDynamicSettings: () => defaultState.dynamicSettings
+        } as unknown as CodeMapTooltipStore
+        tooltipService = new CodeMapTooltipService(codeMapTooltipStore)
 
         sampleNode = {
             name: "sample.ts",

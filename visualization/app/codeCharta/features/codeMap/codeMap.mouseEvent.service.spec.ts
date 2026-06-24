@@ -3,7 +3,7 @@ import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouse
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
-import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
+import { ViewCubeMouseEventsService } from "../../ui/viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { BlacklistItem, CcState, CodeMapNode, Node } from "../../codeCharta.model"
 import { NodeDecorator } from "../../util/nodeDecorator"
@@ -16,6 +16,7 @@ import { IdToBuildingService } from "../../services/idToBuilding/idToBuilding.se
 import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { State, Store } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { CodeMapMouseEventStore } from "./stores/codeMapMouseEvent.store"
 import { defaultState } from "../../state/store/state.manager"
 import { Box3 } from "three"
 import {
@@ -37,7 +38,7 @@ describe("codeMapMouseEventService", () => {
     let threeRendererService: ThreeRendererService
     let threeSceneService: ThreeSceneService
     let store: Store<CcState>
-    let state: State<CcState>
+    let codeMapMouseEventStore: CodeMapMouseEventStore
     let labelSettingsFacade: LabelSettingsFacade
     let tooltipService: CodeMapTooltipService
     let viewCubeMouseEventsService: ViewCubeMouseEventsService
@@ -87,7 +88,7 @@ describe("codeMapMouseEventService", () => {
         threeSceneService.getConstantHighlight = jest.fn().mockReturnValue(new Map())
 
         store = TestBed.inject(MockStore)
-        state = TestBed.inject(State)
+        codeMapMouseEventStore = TestBed.inject(CodeMapMouseEventStore)
         threeViewerService = TestBed.inject(ThreeViewerService)
         viewCubeMouseEventsService = {
             subscribe: jest.fn(),
@@ -117,8 +118,7 @@ describe("codeMapMouseEventService", () => {
             threeCameraService,
             threeRendererService,
             threeSceneService,
-            store,
-            state,
+            codeMapMouseEventStore,
             labelSettingsFacade,
             tooltipService,
             viewCubeMouseEventsService,
@@ -430,10 +430,7 @@ describe("codeMapMouseEventService", () => {
         it("should force an unhover over empty area when the highlight was cleared but the store still hovers a building", () => {
             // Arrange — the highlight was nulled out-of-band (e.g. by a click or a scroll that never re-raycasts)
             // while the store still points at a building, and the cursor is now over empty map area
-            jest.spyOn(codeMapMouseEventService["state"], "getValue").mockReturnValue({
-                ...defaultState,
-                appStatus: { ...defaultState.appStatus, hoveredNodeId: codeMapBuilding.node.id }
-            } as CcState)
+            jest.spyOn(codeMapMouseEventService["codeMapMouseEventStore"], "getHoveredNodeId").mockReturnValue(codeMapBuilding.node.id)
             threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
             threeSceneService.getMapMesh = jest.fn().mockReturnValue({
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(undefined)

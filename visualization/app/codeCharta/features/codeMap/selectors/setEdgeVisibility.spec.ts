@@ -1,4 +1,4 @@
-import { Edge, EdgeVisibility } from "../../../../codeCharta.model"
+import { Edge, EdgeVisibility } from "../../../codeCharta.model"
 import { setEdgeVisibility } from "./setEdgeVisibility"
 
 describe("setEdgeVisibility", () => {

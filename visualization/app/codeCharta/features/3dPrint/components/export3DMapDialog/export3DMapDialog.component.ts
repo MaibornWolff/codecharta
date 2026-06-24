@@ -11,7 +11,7 @@ import {
     Preview3DPrintMesh
 } from "../../../../services/3DExports/3DPreview/preview3DPrintMesh"
 import { calculateNodeMetricData } from "../../../../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { createBlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
 import { FileDownloader } from "../../../../util/fileDownloader"
 import { FileNameHelper } from "../../../../util/fileNameHelper"

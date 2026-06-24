@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Vector3 } from "three"
 import { CcState, MetricData, RecursivePartial } from "../../../codeCharta.model"
-import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
-import { ThreeMapControlsService } from "../../../ui/codeMap/threeViewer/threeMapControls.service"
-import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
+import { ThreeCameraService } from "../../../features/codeMap/facade"
+import { ThreeMapControlsService } from "../../../features/codeMap/facade"
+import { ThreeRendererService } from "../../../features/codeMap/facade"
 import {
     ColorsSection,
     FiltersSection,

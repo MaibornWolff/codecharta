@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core"
-import { ThreeMapControlsService } from "../../codeMap/threeViewer/threeMapControls.service"
+import { ThreeMapControlsService } from "../../../features/codeMap/facade"
 
 @Component({
     selector: "cc-zoom-slider",

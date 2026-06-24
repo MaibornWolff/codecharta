@@ -3,7 +3,7 @@ import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment.comp
 import { addPrefixWildcard, BlackListExtensionService } from "../../services/blackListExtension.service"
 import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
 import { BlacklistItem, BlacklistType, CcState, ColorMode, SortingOption } from "../../../../codeCharta.model"

@@ -10,7 +10,7 @@ import { currentFocusedNodePathSelector } from "../../../../state/store/dynamicS
 import { focusNode, unfocusAllNodes } from "../../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { focusedNodePathSelector } from "../../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { addBlacklistItem, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"
 import { NodeContextMenuComponent } from "./nodeContextMenu.component"

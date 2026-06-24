@@ -6,7 +6,7 @@ import { of } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
 import { toggleEdgeMetricVisible } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { isEdgeMetricVisibleSelector } from "../../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 
 describe("EdgeMetricToggleComponent", () => {

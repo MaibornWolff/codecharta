@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/angular"
 import { BehaviorSubject, of } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { Scenario, ScenariosService } from "../../../scenarios/facade"
 import { LabelsScenariosSegmentComponent } from "./labelsScenariosSegment.component"
 

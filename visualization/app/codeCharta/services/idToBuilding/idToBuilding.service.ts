@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { BehaviorSubject } from "rxjs"
-import { CodeMapBuilding } from "../../ui/codeMap/rendering/codeMapBuilding"
+import { CodeMapBuilding } from "../../features/codeMap/facade"
 
 @Injectable({ providedIn: "root" })
 export class IdToBuildingService {

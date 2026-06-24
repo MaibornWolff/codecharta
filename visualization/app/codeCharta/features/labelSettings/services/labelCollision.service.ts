@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
-import { CodeMapTooltipService } from "../../../ui/codeMap/codeMap.tooltip.service"
+import { ThreeRendererService } from "../../../features/codeMap/facade"
+import { CodeMapTooltipService } from "../../../features/codeMap/facade"
 import { LabelCreationService, InternalLabel } from "./labelCreation.service"
 import { LabelMode } from "../../../codeCharta.model"
 import { StateAccessStore } from "../stores/stateAccess.store"

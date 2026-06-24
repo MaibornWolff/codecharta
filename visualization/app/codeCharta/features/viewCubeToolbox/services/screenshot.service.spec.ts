@@ -3,9 +3,9 @@ import { State } from "@ngrx/store"
 import { waitFor } from "@testing-library/angular"
 import { checkWriteToClipboardAllowed, setToClipboard } from "../../../util/clipboard/clipboardWriter"
 import { defaultState } from "../../../state/store/state.manager"
-import { ThreeCameraService } from "../../../ui/codeMap/threeViewer/threeCamera.service"
-import { ThreeRendererService } from "../../../ui/codeMap/threeViewer/threeRenderer.service"
-import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
+import { ThreeCameraService } from "../../../features/codeMap/facade"
+import { ThreeRendererService } from "../../../features/codeMap/facade"
+import { ThreeSceneService } from "../../../features/codeMap/facade"
 import { ScreenshotService } from "./screenshot.service"
 
 jest.mock("../../../util/clipboard/clipboardWriter", () => {

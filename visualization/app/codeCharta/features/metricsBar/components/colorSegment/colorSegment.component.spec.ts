@@ -7,7 +7,7 @@ import { isColorMetricLinkedToHeightMetricSelector } from "../../../../state/sto
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { colorMetricSelector } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { ColorSegmentComponent } from "./colorSegment.component"
 
 describe("ColorSegmentComponent", () => {

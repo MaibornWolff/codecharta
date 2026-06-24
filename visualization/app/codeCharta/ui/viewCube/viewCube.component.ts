@@ -12,7 +12,7 @@ import {
     WebGLRenderer
 } from "three"
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
-import { ThreeMapControlsService } from "../codeMap/threeViewer/threeMapControls.service"
+import { ThreeMapControlsService } from "../../features/codeMap/facade"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from "@angular/core"
 import { ViewCubeToolboxComponent } from "../../features/viewCubeToolbox/facade"

@@ -1,4 +1,4 @@
-import { EdgeMetricCount } from "../../../../codeCharta.model"
+import { EdgeMetricCount } from "../../../codeCharta.model"
 import { _getNodesWithHighestValue } from "./edgePreviewNodes.selector"
 
 describe("edgePreviewNodesSelector", () => {

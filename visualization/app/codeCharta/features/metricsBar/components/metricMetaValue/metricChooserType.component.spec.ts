@@ -5,7 +5,7 @@ import { Observable, of } from "rxjs"
 import { AttributeTypeValue, CodeMapNode, Node } from "../../../../codeCharta.model"
 import { clone } from "../../../../util/clone"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
 import { MetricChooserTypeComponent } from "./metricChooserType.component"
 

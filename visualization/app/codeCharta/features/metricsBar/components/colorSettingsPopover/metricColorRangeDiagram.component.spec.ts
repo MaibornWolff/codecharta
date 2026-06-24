@@ -3,7 +3,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { of } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
 
 describe("MetricColorRangeDiagramComponent", () => {

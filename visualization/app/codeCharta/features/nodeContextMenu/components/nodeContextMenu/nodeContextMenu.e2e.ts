@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test"
 import { clearIndexedDB, goto } from "../../../../../playwright.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
 import { ExplorerTreeLevelPageObject } from "../../../sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
-import { CodeMapPageObject } from "../../../../ui/codeMap/codeMap.po"
+import { CodeMapPageObject } from "../../../../features/codeMap/facade"
 
 test.describe("NodeContextMenu", () => {
     test.beforeEach(async ({ page }) => {

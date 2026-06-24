@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { StoreModule, Store, State } from "@ngrx/store"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
+import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
 import { ThreeSceneService } from "../threeViewer/threeSceneService"
 import { Object3D, Vector3 } from "three"
 import {
@@ -41,7 +42,8 @@ describe("CodeMapArrowService", () => {
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
         idToBuildingService = TestBed.inject(IdToBuildingService)
-        codeMapArrowService = new CodeMapArrowService(store, state, threeSceneService, idToBuildingService)
+        const codeMapArrowStore = TestBed.inject(CodeMapArrowStore)
+        codeMapArrowService = new CodeMapArrowService(codeMapArrowStore, threeSceneService, idToBuildingService)
     })
 
     function withMockedThreeSceneService() {

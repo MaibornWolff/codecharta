@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, HostL
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { IdToBuildingService } from "../../../../services/idToBuilding/idToBuilding.service"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { ContextMenuBlacklistStore } from "../../stores/contextMenuBlacklist.store"
 import { FocusedNodeStore } from "../../stores/focusedNode.store"

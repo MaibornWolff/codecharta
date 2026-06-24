@@ -6,7 +6,7 @@ import { of } from "rxjs"
 import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { AreaSegmentComponent } from "./areaSegment.component"
 
 describe("AreaSegmentComponent", () => {

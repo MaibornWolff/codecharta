@@ -9,7 +9,7 @@ import { invertHeightSelector } from "../../../../state/store/appSettings/invert
 import { setScaling } from "../../../../state/store/appSettings/scaling/scaling.actions"
 import { scalingSelector } from "../../../../state/store/appSettings/scaling/scaling.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { HeightSettingsPopoverComponent } from "./heightSettingsPopover.component"
 
 describe("HeightSettingsPopoverComponent", () => {

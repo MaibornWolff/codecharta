@@ -9,12 +9,10 @@ import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { isLoadingFileSelector } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
 import { BehaviorSubject, Subscription, tap } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { blacklistMatcherSelector } from "../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
-import { State, Store } from "@ngrx/store"
-import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
+import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { selectTopNByValue, selectTopNByValuePerGroup } from "../../util/selectTopNByValue"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
 import { labelsPerMapActiveSelector } from "../../state/selectors/labelsPerMapActive.selector"
@@ -40,15 +38,14 @@ export class CodeMapRenderService implements OnDestroy {
     readonly colorCategoryCounts$ = this._colorCategoryCounts$.asObservable()
 
     constructor(
-        private readonly store: Store<CcState>,
-        private readonly state: State<CcState>,
+        private readonly codeMapRenderStore: CodeMapRenderStore,
         private threeSceneService: ThreeSceneService,
         private readonly labelSettingsFacade: LabelSettingsFacade,
         private codeMapArrowService: CodeMapArrowService,
         private threeStatsService: ThreeStatsService,
         private codeMapMouseEventService: CodeMapMouseEventService
     ) {
-        this.subscription = this.store.select(isLoadingFileSelector).pipe(tap(this.onIsLoadingFileChanged)).subscribe()
+        this.subscription = this.codeMapRenderStore.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()
     }
 
     ngOnDestroy(): void {
@@ -75,7 +72,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
-        const state = this.state.getValue() as CcState
+        const state = this.codeMapRenderStore.getState() as CcState
         const mapMesh = new CodeMapMesh(visibleSortedNodes, state, isDeltaState(state.files))
         this.threeSceneService.setMapMesh(allMeshNodes, mapMesh)
     }
@@ -89,7 +86,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     getNodes(map: CodeMapNode) {
-        const state = this.state.getValue() as CcState
+        const state = this.codeMapRenderStore.getState() as CcState
         const nodeMetricData = metricDataSelector(state).nodeMetricData
         const {
             appSettings: { layoutAlgorithm },
@@ -114,7 +111,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     sortVisibleNodesByHeightDescending(nodes: Node[]) {
-        const experimentalFeaturesEnabled = this.state.getValue().appSettings.experimentalFeaturesEnabled
+        const experimentalFeaturesEnabled = this.codeMapRenderStore.getState().appSettings.experimentalFeaturesEnabled
         if (experimentalFeaturesEnabled) {
             this.setMinBuildingLength(nodes)
             return nodes.filter(node => node.visible && node.width > 0).sort((a, b) => b.height - a.height)
@@ -131,7 +128,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
-        const dynamicSettings = this.state.getValue().dynamicSettings
+        const dynamicSettings = this.codeMapRenderStore.getState().dynamicSettings
 
         this.nodesByColor = {
             positive: [],
@@ -166,7 +163,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private uncheckEmptyColorLabels() {
-        const colorLabels = this.state.getValue().appSettings.colorLabels
+        const colorLabels = this.codeMapRenderStore.getState().appSettings.colorLabels
         const unchecks: Partial<ColorLabelOptions> = {}
         for (const category of colorLabelTypes) {
             if (colorLabels[category] && this.nodesByColor[category].length === 0) {
@@ -174,7 +171,7 @@ export class CodeMapRenderService implements OnDestroy {
             }
         }
         if (Object.keys(unchecks).length > 0) {
-            this.store.dispatch(setColorLabels({ value: unchecks }))
+            this.codeMapRenderStore.setColorLabels(unchecks)
         }
     }
 
@@ -191,7 +188,7 @@ export class CodeMapRenderService implements OnDestroy {
             return
         }
 
-        const state = this.state.getValue() as CcState
+        const state = this.codeMapRenderStore.getState() as CcState
         const {
             showMetricLabelNodeName,
             showMetricLabelNameValue,

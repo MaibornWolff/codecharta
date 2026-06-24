@@ -35,6 +35,7 @@ import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
+import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
@@ -45,6 +46,7 @@ jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector"
 describe("codeMapRenderService", () => {
     let store: Store<CcState>
     let state: State<CcState>
+    let codeMapRenderStore: CodeMapRenderStore
     let codeMapRenderService: CodeMapRenderService
     let threeSceneService: ThreeSceneService
     let labelSettingsFacade: LabelSettingsFacade
@@ -70,6 +72,7 @@ describe("codeMapRenderService", () => {
         })
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
+        codeMapRenderStore = TestBed.inject(CodeMapRenderStore)
         labelSettingsFacade = TestBed.inject(LabelSettingsFacade)
         codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
         threeStatsService = TestBed.inject(ThreeStatsService)
@@ -89,8 +92,7 @@ describe("codeMapRenderService", () => {
 
     function rebuildService() {
         codeMapRenderService = new CodeMapRenderService(
-            store,
-            state,
+            codeMapRenderStore,
             threeSceneService,
             labelSettingsFacade,
             codeMapArrowService,

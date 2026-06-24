@@ -7,7 +7,7 @@ import { metricDataSelector } from "../../../../state/selectors/accumulatedData/
 import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { heightMetricSelector } from "../../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { MetricsBarComponent } from "./metricsBar.component"
 
 describe("MetricsBarComponent", () => {

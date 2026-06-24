@@ -3,16 +3,16 @@ import { InspectorVisibilityService } from "../../features/sidebarInspector/faca
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../codeCharta.model"
+import { CodeMapStore } from "./stores/codeMap.store"
+import { EMPTY } from "rxjs"
 
 describe("CodeMapComponent", () => {
     let mockedThreeViewService: ThreeViewerService
     let mockedCodeMapMouseEventService: CodeMapMouseEventService
     let mockedElementReference: ElementRef
-    const mockedStore = {
-        select: jest.fn()
-    } as unknown as Store<CcState>
+    const mockedCodeMapStore = {
+        isLoadingFile$: EMPTY
+    } as unknown as CodeMapStore
 
     beforeEach(() => {
         mockedThreeViewService = { init: jest.fn() } as unknown as ThreeViewerService
@@ -24,7 +24,7 @@ describe("CodeMapComponent", () => {
         // Arrange
         const codeMapComponent = new CodeMapComponent(
             { isVisible: () => true } as unknown as InspectorVisibilityService,
-            mockedStore,
+            mockedCodeMapStore,
             mockedThreeViewService,
             mockedCodeMapMouseEventService,
             mockedElementReference
