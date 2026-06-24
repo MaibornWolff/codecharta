@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject } from "rxjs"
 
-import { ErrorDialogService } from "../../../ui/dialogs/errorDialog/errorDialog.service"
+import { ErrorDialogService } from "../../../features/shared/components/errorDialog/errorDialog.service"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { EffectsModule } from "@ngrx/effects"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"

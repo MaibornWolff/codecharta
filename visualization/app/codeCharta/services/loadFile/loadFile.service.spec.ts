@@ -9,7 +9,7 @@ import { CCFileValidationResult, ERROR_MESSAGES } from "../../util/fileValidator
 import packageJson from "../../../../package.json"
 import { clone } from "../../util/clone"
 import { klona } from "klona"
-import { ErrorDialogService } from "../../ui/dialogs/errorDialog/errorDialog.service"
+import { ErrorDialogService } from "../../features/shared/components/errorDialog/errorDialog.service"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
 import { fileRoot } from "./fileRoot"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"

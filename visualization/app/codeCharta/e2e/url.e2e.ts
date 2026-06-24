@@ -5,7 +5,7 @@ import sample1 from "../assets/sample1.cc.json"
 import sample3 from "../assets/sample3.cc.json"
 import sample2 from "../assets/sample2.cc.json"
 import { gzip } from "pako"
-import { DialogErrorPageObject } from "../ui/dialogs/errorDialog/errorDialog.component.po"
+import { DialogErrorPageObject } from "../features/shared/components/errorDialog/errorDialog.component.po"
 
 test.describe("codecharta", () => {
     test.beforeEach(async ({ page }) => {

@@ -1,11 +1,15 @@
 import { Injectable } from "@angular/core"
-import { ErrorDialogComponent, ErrorDialogData } from "./errorDialog.component"
+import { ErrorDialogData } from "./errorDialog.model"
+
+interface ErrorDialogHost {
+    open(data: ErrorDialogData): void
+}
 
 @Injectable({ providedIn: "root" })
 export class ErrorDialogService {
-    private dialog: ErrorDialogComponent | null = null
+    private dialog: ErrorDialogHost | null = null
 
-    register(dialog: ErrorDialogComponent): void {
+    register(dialog: ErrorDialogHost): void {
         this.dialog = dialog
     }
 

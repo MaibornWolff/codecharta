@@ -11,9 +11,9 @@ import { FileExtensionBarComponent } from "./ui/fileExtensionBar/fileExtensionBa
 import { MetricsBarComponent } from "./features/metricsBar/facade"
 import { CodeMapComponent } from "./ui/codeMap/codeMap.component"
 import { LegendPanelComponent } from "./features/legend/facade"
-import { LoadingFileProgressSpinnerComponent } from "./ui/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
+import { LoadingFileProgressSpinnerComponent } from "./features/shared/components/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { ChangelogDialogComponent } from "./features/changelog/components/changelogDialog/changelogDialog.component"
-import { ErrorDialogComponent } from "./ui/dialogs/errorDialog/errorDialog.component"
+import { ErrorDialogComponent } from "./features/shared/components/errorDialog/errorDialog.component"
 
 @Component({
     selector: "cc-code-charta",

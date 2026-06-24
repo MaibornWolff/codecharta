@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test"
-import { clickButtonOnPageElement } from "../../../../playwright.helper"
+import { clickButtonOnPageElement } from "../../../../../playwright.helper"
 
 export class DialogErrorPageObject {
     constructor(private page: Page) {}

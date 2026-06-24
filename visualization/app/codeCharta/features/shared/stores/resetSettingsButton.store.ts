@@ -7,7 +7,7 @@ import { getPartialDefaultState } from "../../../state/store/util/getPartialDefa
 @Injectable({
     providedIn: "root"
 })
-export class ResetSettingsStore {
+export class ResetSettingsButtonStore {
     constructor(
         private readonly store: Store<CcState>,
         private readonly state: State<CcState>

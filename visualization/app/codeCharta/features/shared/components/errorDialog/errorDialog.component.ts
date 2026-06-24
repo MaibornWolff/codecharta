@@ -1,11 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, OnInit, signal, viewChild } from "@angular/core"
 import { ErrorDialogService } from "./errorDialog.service"
-
-export interface ErrorDialogData {
-    title: string
-    message: string
-    resolveErrorData?: { buttonText: string; onResolveErrorClick: () => void }
-}
+import { ErrorDialogData } from "./errorDialog.model"
 
 @Component({
     selector: "cc-error-dialog",

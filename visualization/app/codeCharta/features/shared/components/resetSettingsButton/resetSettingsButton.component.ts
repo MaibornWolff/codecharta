@@ -1,8 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core"
-import { State, Store } from "@ngrx/store"
-import { CcState } from "../../codeCharta.model"
-import { getPartialDefaultState } from "./getPartialDefaultState"
-import { setState } from "../../state/store/state.actions"
+import { ResetSettingsButtonService } from "../../services/resetSettingsButton.service"
 
 @Component({
     selector: "cc-reset-settings-button",
@@ -18,14 +15,10 @@ export class ResetSettingsButtonComponent {
     @Input() callback?: () => void
     @Input() small = false
 
-    constructor(
-        private store: Store<CcState>,
-        private state: State<CcState>
-    ) {}
+    constructor(private readonly resetSettingsButtonService: ResetSettingsButtonService) {}
 
     applyDefaultSettings() {
-        const partialDefaultState = getPartialDefaultState(this.settingsKeys, this.state.getValue())
-        this.store.dispatch(setState({ value: partialDefaultState }))
+        this.resetSettingsButtonService.resetSettings(this.settingsKeys)
 
         if (this.callback) {
             this.callback()

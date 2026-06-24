@@ -22,7 +22,7 @@ import { appReducers, defaultState, setStateMiddleware } from "../../state/store
 import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { readCcState } from "../../util/indexedDB/indexedDBWriter"
 import { getLastAction } from "../../util/testUtils/store.utils"
-import { ErrorDialogService } from "../../ui/dialogs/errorDialog/errorDialog.service"
+import { ErrorDialogService } from "../../features/shared/components/errorDialog/errorDialog.service"
 import { getNameDataPair } from "../loadFile/fileParser"
 import { LoadFileService } from "../loadFile/loadFile.service"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "./loadInitialFile.service"

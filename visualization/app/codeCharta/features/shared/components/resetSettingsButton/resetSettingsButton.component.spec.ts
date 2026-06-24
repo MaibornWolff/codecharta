@@ -2,10 +2,10 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
-import { setState } from "../../state/store/state.actions"
+import { setState } from "../../../../state/store/state.actions"
 import { ResetSettingsButtonComponent } from "./resetSettingsButton.component"
 import { State, Store } from "@ngrx/store"
-import { defaultState } from "../../state/store/state.manager"
+import { defaultState } from "../../../../state/store/state.manager"
 
 describe("resetSettingsButtonComponent", () => {
     const mockedStore = { dispatch: jest.fn() }

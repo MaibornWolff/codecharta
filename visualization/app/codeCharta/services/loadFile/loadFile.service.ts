@@ -6,7 +6,7 @@ import { setFiles, setStandardByNames } from "../../state/store/files/files.acti
 import { FileState } from "../../model/files/files"
 import { NameDataPair, CcState } from "../../codeCharta.model"
 import { referenceFileSelector } from "../../state/selectors/referenceFile/referenceFile.selector"
-import { ErrorDialogService } from "../../ui/dialogs/errorDialog/errorDialog.service"
+import { ErrorDialogService } from "../../features/shared/components/errorDialog/errorDialog.service"
 import { loadFilesValidationToErrorDialog } from "../../util/loadFilesValidationToErrorDialog"
 import { enrichFileStatesAndRecentFilesWithValidationResults } from "./fileParser"
 import { fileRoot } from "./fileRoot"
