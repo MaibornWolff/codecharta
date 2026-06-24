@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core"
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { ViewCubeMouseEventsService } from "../../ui/viewCube/viewCube.mouseEvents.service"
+import { ViewCubeMouseEventsService } from "../viewCube/facade"
 import { BlacklistItem, Node } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"

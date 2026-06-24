@@ -1,0 +1,28 @@
+<div class="absolute right-[5px] top-[10px] m-2.5 flex h-[150px] flex-col items-center gap-2.5">
+    <button
+        class="m-0 cursor-pointer border-none bg-transparent p-0 text-base text-neutral-500"
+        data-testid="zoomIn"
+        (click)="zoomIn()"
+    >
+        +
+    </button>
+    <input
+        type="range"
+        id="zoomRange"
+        data-testid="zoomRange"
+        aria-label="Zoom level"
+        class="h-[100px] w-[3px] appearance-none bg-neutral-500 text-neutral-500 opacity-70 outline-none transition-opacity duration-200 [-webkit-appearance:none] [direction:rtl] [writing-mode:vertical-lr] [&::-moz-range-thumb]:h-[3px] [&::-moz-range-thumb]:w-[10px] [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:bg-neutral-500 [&::-webkit-slider-thumb]:h-[3px] [&::-webkit-slider-thumb]:w-[10px] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-neutral-500 [&::-webkit-slider-thumb]:[-webkit-appearance:none]"
+        [min]="minZoom"
+        [max]="maxZoom"
+        [value]="zoomPercentage"
+        (input)="onInput($event)"
+    />
+    <button
+        class="m-0 cursor-pointer border-none bg-transparent p-0 text-base text-neutral-500"
+        data-testid="zoomOut"
+        (click)="zoomOut()"
+    >
+        -
+    </button>
+    <span class="w-[30px] text-center text-[10px] text-neutral-500" id="zoomValue">{{ zoomPercentage?.toFixed(0) }}%</span>
+</div>

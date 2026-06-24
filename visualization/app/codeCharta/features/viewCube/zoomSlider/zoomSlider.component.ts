@@ -4,7 +4,6 @@ import { ThreeMapControlsService } from "../../../features/codeMap/facade"
 @Component({
     selector: "cc-zoom-slider",
     templateUrl: "./zoomSlider.component.html",
-    styleUrls: ["./zoomSlider.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
 })

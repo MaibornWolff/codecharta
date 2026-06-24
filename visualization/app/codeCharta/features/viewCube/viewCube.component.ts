@@ -21,7 +21,9 @@ import { ZoomSliderComponent } from "./zoomSlider/zoomSlider.component"
 @Component({
     selector: "cc-view-cube",
     templateUrl: "./viewCube.component.html",
-    styleUrls: ["./viewCube.component.scss"],
+    host: {
+        class: "absolute right-0 top-[10px] z-[11] [transition:right_0.3s_ease] [&.sideBarVisible]:right-[var(--cc-inspector-width)]"
+    },
     imports: [ViewCubeToolboxComponent, ZoomSliderComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })

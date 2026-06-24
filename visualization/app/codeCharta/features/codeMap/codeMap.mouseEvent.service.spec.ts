@@ -3,7 +3,7 @@ import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouse
 import { ThreeCameraService } from "./threeViewer/threeCamera.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
-import { ViewCubeMouseEventsService } from "../../ui/viewCube/viewCube.mouseEvents.service"
+import { ViewCubeMouseEventsService } from "../viewCube/facade"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { BlacklistItem, CcState, CodeMapNode, Node } from "../../codeCharta.model"
 import { NodeDecorator } from "../../util/nodeDecorator"

@@ -3,7 +3,7 @@ import { ThreeViewerService } from "./threeViewer/threeViewer.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
 import { CodeMapStore } from "./stores/codeMap.store"
-import { ViewCubeComponent } from "../../ui/viewCube/viewCube.component"
+import { ViewCubeComponent } from "../viewCube/facade"
 import { AsyncPipe } from "@angular/common"
 
 @Component({

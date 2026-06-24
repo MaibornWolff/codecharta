@@ -36,9 +36,10 @@ module.exports = {
             name: "feature-cross-feature-only-via-public-api",
             severity: "error",
             comment:
-                "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden.",
+                "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden. (e2e/page-object test files are exempt: they compose features and must not pull page objects through the runtime facade, which would bundle test/node deps.)",
             from: {
-                path: "^app/codeCharta/features/([^/]+)/"
+                path: "^app/codeCharta/features/([^/]+)/",
+                pathNot: ["\\.e2e\\.ts$", "\\.po\\.ts$"]
             },
             to: {
                 path: "^app/codeCharta/features/([^/]+)/",
