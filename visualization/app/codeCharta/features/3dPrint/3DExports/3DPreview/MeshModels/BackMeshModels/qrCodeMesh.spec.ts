@@ -1,6 +1,6 @@
 import { GeometryOptions } from "../../preview3DPrintMesh"
 import { BufferGeometry, Mesh, ShaderMaterial } from "three"
-import { ColorRange, NodeMetricData } from "../../../../../codeCharta.model"
+import { ColorRange, NodeMetricData } from "../../../../../../codeCharta.model"
 import { QrCodeMesh } from "./qrCodeMesh"
 
 jest.mock("three/addons/utils/BufferGeometryUtils.js", () => ({

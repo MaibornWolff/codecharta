@@ -17,7 +17,7 @@ import { XMLParser, XMLValidator } from "fast-xml-parser"
 
 describe("serialize3mf service", () => {
     describe("serialize3mf", () => {
-        const minimalExamplePath = resolve(__dirname, "../../resources/minimalScene.json")
+        const minimalExamplePath = resolve(__dirname, "../../../resources/minimalScene.json")
 
         it("should produce a valid set of xml files", async () => {
             // NOTE:
@@ -39,7 +39,7 @@ describe("serialize3mf service", () => {
             const stringDataContentTypes = strFromU8(unzipOutput["[Content_Types].xml"])
 
             // Debug export, write parsed test data to file, to slice it
-            // writeFileSync(resolve(__dirname, "../../resources/minimalSceneOutputBufferAttribute.zip"), new Uint8Array(output as unknown as ArrayBufferLike))
+            // writeFileSync(resolve(__dirname, "../../../resources/minimalSceneOutputBufferAttribute.zip"), new Uint8Array(output as unknown as ArrayBufferLike))
 
             expect(XMLValidator.validate(stringDataRels)).toBe(true)
             expect(XMLValidator.validate(stringDataContentTypes)).toBe(true)
@@ -113,7 +113,7 @@ describe("serialize3mf service", () => {
             const result = await serialize3mf(rootMesh)
 
             // Debug export, write fake model data, to slice it
-            // writeFileSync(resolve(__dirname, "../../resources/fakeData.3mf"), new Uint8Array(result as unknown as ArrayBufferLike))
+            // writeFileSync(resolve(__dirname, "../../../resources/fakeData.3mf"), new Uint8Array(result as unknown as ArrayBufferLike))
 
             const unzipOutput = unzipSync(new Uint8Array(result as unknown as ArrayBufferLike))
             const xmlData3D = xmlParser.parse(strFromU8(unzipOutput["3D/3dmodel.model"]))

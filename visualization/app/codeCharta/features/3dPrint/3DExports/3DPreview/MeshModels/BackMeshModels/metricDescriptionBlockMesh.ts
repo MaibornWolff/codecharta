@@ -5,7 +5,7 @@ import { BufferGeometry } from "three"
 import { Font } from "three/addons/loaders/FontLoader.js"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
-import { NodeMetricData } from "../../../../../codeCharta.model"
+import { NodeMetricData } from "../../../../../../codeCharta.model"
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 
 export interface MetricDescriptionBlockOptions {

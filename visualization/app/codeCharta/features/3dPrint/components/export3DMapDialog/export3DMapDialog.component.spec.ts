@@ -6,7 +6,7 @@ import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../..
 import { CodeMapMesh } from "../../../../features/codeMap/facade"
 import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
-import { QrCodeMesh } from "../../../../services/3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
+import { QrCodeMesh } from "../../3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../../codeCharta.model"
 import { Export3DMapButtonComponent } from "../export3DMapButton/export3DMapButton.component"

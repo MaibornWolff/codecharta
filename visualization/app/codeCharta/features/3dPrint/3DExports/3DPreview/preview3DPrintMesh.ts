@@ -1,6 +1,6 @@
 import { Mesh, ShaderMaterial, Vector3 } from "three"
 import { Font } from "three/addons/loaders/FontLoader.js"
-import { ColorRange, NodeMetricData } from "../../../codeCharta.model"
+import { ColorRange, NodeMetricData } from "../../../../codeCharta.model"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 import { GeneralMesh } from "./MeshModels/generalMesh"
 import { MapMesh } from "./MeshModels/mapMesh"
