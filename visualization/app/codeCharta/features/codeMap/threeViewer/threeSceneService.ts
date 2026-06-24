@@ -45,13 +45,13 @@ export class ThreeSceneService implements OnDestroy {
     private folderLabelColorSelected: string
     private numberSelectionColor: number
 
-    private subscription = this.threeSceneStore.mapColors$.subscribe(mapColors => {
+    private readonly subscription = this.threeSceneStore.mapColors$.subscribe(mapColors => {
         this.folderLabelColorSelected = mapColors.selected
         this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
     })
 
     constructor(
-        private threeSceneStore: ThreeSceneStore,
+        private readonly threeSceneStore: ThreeSceneStore,
         private idToBuilding: IdToBuildingService,
         private threeRendererService: ThreeRendererService
     ) {

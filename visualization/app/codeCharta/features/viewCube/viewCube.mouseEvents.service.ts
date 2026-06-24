@@ -1,9 +1,8 @@
 import { hierarchy } from "d3-hierarchy"
-import { CodeMapMouseEventService, CursorType } from "../../features/codeMap/facade"
+import { CodeMapMouseEventService, CursorType, ThreeMapControlsService } from "../../features/codeMap/facade"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
 import { isLeaf } from "../../util/codeMapHelper"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
-import { ThreeMapControlsService } from "../../features/codeMap/facade"
 import { Injectable } from "@angular/core"
 import { EventEmitter } from "../../util/EventEmitter"
 

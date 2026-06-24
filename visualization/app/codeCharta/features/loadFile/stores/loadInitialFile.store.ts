@@ -77,14 +77,14 @@ export class LoadInitialFileStore {
         const currentFileSettings = (this.state.getValue() as CcState).fileSettings
         const missingFileSettings = []
         for (const [key, value] of Object.entries(currentFileSettings)) {
-            if (!(key in savedFileSettings)) {
-                missingFileSettings.push(key)
-            } else {
+            if (key in savedFileSettings) {
                 const currentValue = stringify(value)
                 const loadedValue = stringify(savedFileSettings[key])
                 if (currentValue !== loadedValue) {
                     this.mapFileSettingToAction(key as keyof FileSettings, savedFileSettings[key])
                 }
+            } else {
+                missingFileSettings.push(key)
             }
         }
         return missingFileSettings
@@ -94,14 +94,14 @@ export class LoadInitialFileStore {
         const currentDynamicSettings = (this.state.getValue() as CcState).dynamicSettings
         const missingDynamicSettings = []
         for (const [key, value] of Object.entries(currentDynamicSettings)) {
-            if (!(key in savedDynamicSettings)) {
-                missingDynamicSettings.push(key)
-            } else {
+            if (key in savedDynamicSettings) {
                 const currentValue = stringify(value)
                 const loadedValue = stringify(savedDynamicSettings[key])
                 if (currentValue !== loadedValue) {
                     this.mapDynamicSettingToAction(key as keyof DynamicSettings, savedDynamicSettings[key])
                 }
+            } else {
+                missingDynamicSettings.push(key)
             }
         }
         return missingDynamicSettings
@@ -111,16 +111,14 @@ export class LoadInitialFileStore {
         const currentAppSettings = (this.state.getValue() as CcState).appSettings
         const missingAppSettings = []
         for (const [key, value] of Object.entries(currentAppSettings)) {
-            if (!(key in savedAppSettings)) {
-                if (!LoadInitialFileStore.optionalAppSettingsKeys.has(key)) {
-                    missingAppSettings.push(key)
-                }
-            } else {
+            if (key in savedAppSettings) {
                 const currentValue = stringify(value)
                 const loadedValue = stringify(savedAppSettings[key])
                 if (currentValue !== loadedValue) {
                     this.mapAppSettingToAction(key as keyof AppSettings, savedAppSettings[key])
                 }
+            } else if (!LoadInitialFileStore.optionalAppSettingsKeys.has(key)) {
+                missingAppSettings.push(key)
             }
         }
         return missingAppSettings

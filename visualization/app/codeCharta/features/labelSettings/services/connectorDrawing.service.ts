@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core"
 import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments, Vector3 } from "three"
-import { ThreeRendererService } from "../../../features/codeMap/facade"
-import { ThreeSceneService } from "../../../features/codeMap/facade"
+import { ThreeRendererService, ThreeSceneService } from "../../../features/codeMap/facade"
 import { InternalLabel } from "./labelCreation.service"
 import { BASE_OFFSET_PX, MAX_CONNECTORS, MAX_DISPLACEMENT_PX, MIN_CONNECTOR_DISTANCE } from "./label.constants"
 
