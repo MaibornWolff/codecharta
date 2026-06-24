@@ -9,8 +9,8 @@ import { ExperimentalFeaturesService } from "../../services/experimentalFeatures
 import { BackgroundThemeService } from "../../services/backgroundTheme.service"
 import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibility.service"
 import { AutomaticCameraResetService } from "../../services/automaticCameraReset.service"
-import { LoadFileService } from "../../../../services/loadFile/loadFile.service"
-import { LoadInitialFileService } from "../../../../services/loadInitialFile/loadInitialFile.service"
+import { LoadFileService } from "../../../../features/loadFile/facade"
+import { LoadInitialFileService } from "../../../../features/loadFile/facade"
 import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
 
 describe("GlobalConfigurationDialogComponent", () => {

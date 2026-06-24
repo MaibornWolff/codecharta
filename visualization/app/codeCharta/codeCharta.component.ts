@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
+import { LoadInitialFileService } from "./features/loadFile/facade"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { NavBarComponent } from "./features/navBar/facade"
 import { BottomBarComponent } from "./features/bottomBar/facade"

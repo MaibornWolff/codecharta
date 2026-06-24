@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { LoadInitialFileService } from "./services/loadInitialFile/loadInitialFile.service"
+import { LoadInitialFileService } from "./features/loadFile/facade"
 import { CodeChartaComponent } from "./codeCharta.component"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { Store } from "@ngrx/store"
