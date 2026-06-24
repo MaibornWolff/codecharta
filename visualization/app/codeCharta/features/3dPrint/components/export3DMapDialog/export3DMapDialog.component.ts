@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, output, signal, viewChild } from "@angular/core"
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, output, signal, viewChild } from "@angular/core"
 import { Color, Mesh, PerspectiveCamera, Scene, ShaderMaterial, Vector3, WebGLRenderer } from "three"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { STLExporter } from "three/addons/exporters/STLExporter.js"
@@ -36,7 +36,8 @@ import { SecondRowTextInputComponent } from "./secondRowTextInput/secondRowTextI
         QrCodeSettingsComponent,
         LogoUploadComponent,
         ExportActionsComponent
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Export3DMapDialogComponent implements AfterViewInit {
     dialog = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")

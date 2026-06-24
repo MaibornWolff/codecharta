@@ -1,10 +1,11 @@
-import { Component, input, output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 import { ResetSettingsService } from "../../../services/resetSettings.service"
 
 @Component({
     selector: "cc-reset-settings-button",
     templateUrl: "./resetSettingsButton.component.html",
-    imports: []
+    imports: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResetSettingsButtonComponent {
     settingsKeys = input.required<string[]>()

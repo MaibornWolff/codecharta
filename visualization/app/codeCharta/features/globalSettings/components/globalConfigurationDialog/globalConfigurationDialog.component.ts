@@ -1,4 +1,4 @@
-import { Component, ElementRef, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { ScreenshotDestinationService } from "../../services/screenshotDestination.service"
 import { ExperimentalFeaturesService } from "../../services/experimentalFeatures.service"
@@ -20,7 +20,8 @@ import { ExternalLinksComponent } from "./externalLinks/externalLinks.component"
         ResetSettingsButtonComponent,
         SettingToggleComponent,
         ExternalLinksComponent
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalConfigurationDialogComponent {
     dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")

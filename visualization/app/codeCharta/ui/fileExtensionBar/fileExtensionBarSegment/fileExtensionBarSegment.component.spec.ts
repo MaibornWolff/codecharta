@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing"
+import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment.component"
 import { addPrefixWildcard, BlackListExtensionService } from "../blackListExtension.service"
 import { HighlightBuildingsByFileExtensionService } from "../highlightBuildingsByFileExtension.service"
@@ -52,7 +52,7 @@ describe("FileExtensionBarSegment", () => {
         color: "#ffffff"
     }
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [FileExtensionBarSegmentComponent],
             providers: [
@@ -68,7 +68,7 @@ describe("FileExtensionBarSegment", () => {
                 provideMockStore({ initialState })
             ]
         })
-    }))
+    })
 
     beforeEach(() => {
         fixture = TestBed.createComponent(FileExtensionBarSegmentComponent)

@@ -1,11 +1,12 @@
-import { Component, input } from "@angular/core"
+import { ChangeDetectionStrategy, Component, input } from "@angular/core"
 import { SCENARIO_SECTION_ICONS, SCENARIO_SECTION_LABELS } from "../../../../model/scenario.model"
 import { ScenarioView } from "../../scenarioView.model"
 
 @Component({
     selector: "cc-scenario-item-badges",
     templateUrl: "./scenarioItemBadges.component.html",
-    host: { class: "block overflow-hidden" }
+    host: { class: "block overflow-hidden" },
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScenarioItemBadgesComponent {
     readonly view = input.required<ScenarioView>()

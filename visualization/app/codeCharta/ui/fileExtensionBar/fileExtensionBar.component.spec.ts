@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing"
+import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
@@ -22,7 +22,7 @@ describe("FileExtensionBarComponent", () => {
     const relativeValue = "ts 100.00%"
     const absoluteValue = "ts 1,120"
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [FileExtensionBarComponent],
             providers: [
@@ -74,7 +74,7 @@ describe("FileExtensionBarComponent", () => {
                 }
             ]
         })
-    }))
+    })
 
     beforeEach(() => {
         fixture = TestBed.createComponent(FileExtensionBarComponent)

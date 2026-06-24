@@ -1,4 +1,4 @@
-import { Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { combineLatest, map, Observable } from "rxjs"
 import { CcState } from "../../codeCharta.model"
@@ -9,7 +9,8 @@ import { AsyncPipe } from "@angular/common"
 @Component({
     selector: "cc-loading-file-progress-spinner",
     templateUrl: "./loadingFileProgressSpinner.component.html",
-    imports: [AsyncPipe]
+    imports: [AsyncPipe],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingFileProgressSpinnerComponent {
     isLoading$: Observable<boolean>

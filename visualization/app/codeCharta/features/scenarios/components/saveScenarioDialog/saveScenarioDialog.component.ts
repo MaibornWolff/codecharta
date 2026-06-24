@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { FormsModule } from "@angular/forms"
 import { map } from "rxjs"
@@ -9,7 +9,8 @@ import { ScenarioDialogStore } from "../../stores/scenarioDialog.store"
 @Component({
     selector: "cc-save-scenario-dialog",
     templateUrl: "./saveScenarioDialog.component.html",
-    imports: [FormsModule]
+    imports: [FormsModule],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SaveScenarioDialogComponent {
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")

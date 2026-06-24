@@ -1,10 +1,22 @@
+import { Component, output } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { State, Store } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
 import { setColorMode } from "../../../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { ActionIconComponent } from "../../../../ui/actionIcon/actionIcon.component"
+import { ErrorDialogComponent } from "../../../../ui/dialogs/errorDialog/errorDialog.component"
 import { Export3DMapButtonComponent } from "./export3DMapButton.component"
+
+// The real export dialog needs a fully initialized Three.js scene in its constructor.
+// This button test only cares about the showDialog signal, so the dialog is stubbed.
+@Component({ selector: "cc-export-3D-map-dialog", template: "", standalone: true })
+class StubExport3DMapDialogComponent {
+    readonly closed = output<void>()
+}
+
+const componentImports = [ActionIconComponent, ErrorDialogComponent, StubExport3DMapDialogComponent]
 
 describe("Export3DMapButtonComponent", () => {
     beforeEach(() => {
@@ -21,7 +33,7 @@ describe("Export3DMapButtonComponent", () => {
     })
 
     it("should render the button", async function () {
-        await render(Export3DMapButtonComponent)
+        await render(Export3DMapButtonComponent, { componentImports })
         const exportButton = screen.getByRole("button")
         expect(exportButton).not.toBe(null)
     })
@@ -32,6 +44,7 @@ describe("Export3DMapButtonComponent", () => {
 
         const { fixture } = await render(Export3DMapButtonComponent, {
             excludeComponentDeclaration: true,
+            componentImports,
             providers: [
                 { provide: State, useValue: state },
                 { provide: Store, useValue: store }
@@ -54,6 +67,7 @@ describe("Export3DMapButtonComponent", () => {
 
         const { fixture } = await render(Export3DMapButtonComponent, {
             excludeComponentDeclaration: true,
+            componentImports,
             providers: [
                 { provide: State, useValue: state },
                 { provide: Store, useValue: store }
@@ -78,6 +92,7 @@ describe("Export3DMapButtonComponent", () => {
 
         const { fixture } = await render(Export3DMapButtonComponent, {
             excludeComponentDeclaration: true,
+            componentImports,
             providers: [
                 { provide: State, useValue: state },
                 { provide: Store, useValue: store }

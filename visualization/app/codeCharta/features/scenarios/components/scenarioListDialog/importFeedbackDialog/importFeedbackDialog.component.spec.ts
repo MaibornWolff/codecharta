@@ -22,7 +22,7 @@ describe("ImportFeedbackDialogComponent", () => {
         component.open(result)
 
         // Assert
-        expect(component.feedback.invalid).toEqual(["bad.json"])
+        expect(component.feedback().invalid).toEqual(["bad.json"])
         expect(component.dialogElement().nativeElement.showModal).toHaveBeenCalled()
     })
 
@@ -47,7 +47,7 @@ describe("ImportFeedbackDialogComponent", () => {
         component.close()
 
         // Assert
-        expect(component.feedback).toEqual({ duplicates: [], invalid: [], parseErrors: [] })
+        expect(component.feedback()).toEqual({ duplicates: [], invalid: [], parseErrors: [] })
         expect(component.dialogElement().nativeElement.close).toHaveBeenCalled()
         expect(closeSpy).toHaveBeenCalled()
     })
@@ -60,7 +60,7 @@ describe("ImportFeedbackDialogComponent", () => {
         component.open(result)
 
         // Assert
-        expect(component.feedback.duplicates).toEqual(["My Scenario"])
+        expect(component.feedback().duplicates).toEqual(["My Scenario"])
     })
 
     it("should show parse errors", () => {
@@ -71,6 +71,6 @@ describe("ImportFeedbackDialogComponent", () => {
         component.open(result)
 
         // Assert
-        expect(component.feedback.parseErrors).toEqual(["broken.json"])
+        expect(component.feedback().parseErrors).toEqual(["broken.json"])
     })
 })

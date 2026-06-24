@@ -1,8 +1,9 @@
-import { Component, input, output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 
 @Component({
     selector: "cc-qr-code-settings",
-    templateUrl: "./qrCodeSettings.component.html"
+    templateUrl: "./qrCodeSettings.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QrCodeSettingsComponent {
     isVisible = input.required<boolean>()

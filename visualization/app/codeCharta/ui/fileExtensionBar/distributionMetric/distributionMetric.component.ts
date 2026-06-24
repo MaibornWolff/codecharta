@@ -1,4 +1,4 @@
-import { Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { AsyncPipe } from "@angular/common"
@@ -9,7 +9,8 @@ import { distributionMetric } from "../../../state/store/dynamicSettings/distrib
     selector: "cc-distribution-metric",
     templateUrl: "./distributionMetric.component.html",
     styleUrls: ["./distributionMetric.component.scss"],
-    imports: [AsyncPipe]
+    imports: [AsyncPipe],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DistributionMetricComponent {
     areaMetric$ = this.store.select(areaMetricSelector)

@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, viewChild } from "@angular/core"
 import { NgClass } from "@angular/common"
 import { ChangelogFacade } from "../../facade"
 import { ChangelogCategory } from "../../services/changelogParser.service"
@@ -42,7 +42,8 @@ const CATEGORY_STYLES: Record<string, { header: string; icon: string; count: str
 @Component({
     selector: "cc-changelog-dialog",
     templateUrl: "./changelogDialog.component.html",
-    imports: [NgClass]
+    imports: [NgClass],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangelogDialogComponent {
     dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")

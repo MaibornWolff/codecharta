@@ -1,6 +1,6 @@
-import { setupZoneTestEnv } from "jest-preset-angular/setup-env/zone"
+import { setupZonelessTestEnv } from "jest-preset-angular/setup-env/zoneless"
 
-setupZoneTestEnv()
+setupZonelessTestEnv()
 
 const numberToLocaleString = Number.prototype.toLocaleString
 Number.prototype.toLocaleString = function (locale = "en-US") {
@@ -26,4 +26,26 @@ if (typeof globalThis.fetch === "undefined") {
             text: () => Promise.resolve("")
         })
     ) as any
+}
+
+// JSDOM (nwsapi) does not implement the native Popover API or the :popover-open selector.
+// Without zone.js swallowing the thrown error, components calling popover.matches(":popover-open")
+// would fail tests. Make the selector match nothing and stub the popover methods.
+const originalElementMatches = Element.prototype.matches
+Element.prototype.matches = function (selectors: string): boolean {
+    if (selectors === ":popover-open") {
+        return false
+    }
+    return originalElementMatches.call(this, selectors)
+}
+if (typeof HTMLElement.prototype.showPopover === "undefined") {
+    HTMLElement.prototype.showPopover = function () {}
+}
+if (typeof HTMLElement.prototype.hidePopover === "undefined") {
+    HTMLElement.prototype.hidePopover = function () {}
+}
+if (typeof HTMLElement.prototype.togglePopover === "undefined") {
+    HTMLElement.prototype.togglePopover = function () {
+        return false
+    }
 }

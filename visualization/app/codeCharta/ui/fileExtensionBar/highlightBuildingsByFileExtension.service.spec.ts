@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from "@angular/core/testing"
+import { TestBed } from "@angular/core/testing"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { HighlightBuildingsByFileExtensionService } from "./highlightBuildingsByFileExtension.service"
 import { provideMockStore } from "@ngrx/store/testing"
@@ -52,7 +52,7 @@ describe("HighlightBuildingsByFileExtensionService", () => {
             }
         ]
     }
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 HighlightBuildingsByFileExtensionService,
@@ -74,7 +74,7 @@ describe("HighlightBuildingsByFileExtensionService", () => {
                 })
             ]
         })
-    }))
+    })
 
     beforeEach(() => {
         fixture = TestBed.inject(HighlightBuildingsByFileExtensionService)
