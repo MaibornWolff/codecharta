@@ -71,12 +71,13 @@ module.exports = {
             }
         },
         {
-            name: "features-no-scss-files",
+            name: "no-component-scss-files",
             severity: "error",
-            comment: "SCSS files are not allowed in features/ directory, use daisyui instead",
+            comment:
+                "Component SCSS is not allowed under app/codeCharta/ (the ui/ -> features/ migration is complete); use daisyUI/Tailwind. Global styles live in app/app.scss + app/mixins.scss.",
             from: {},
             to: {
-                path: "^app/codeCharta/features/.*\\.scss$"
+                path: "^app/codeCharta/.*\\.scss$"
             }
         },
         {
