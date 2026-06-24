@@ -12,9 +12,9 @@ import {
     signal,
     viewChild
 } from "@angular/core"
-import { MetricDistribution } from "../selectors/fileExtensionCalculator"
-import { BlackListExtensionService } from "../blackListExtension.service"
-import { HighlightBuildingsByFileExtensionService } from "../highlightBuildingsByFileExtension.service"
+import { MetricDistribution } from "../../../../util/fileExtension/fileExtensionCalculator"
+import { BlackListExtensionService } from "../../services/blackListExtension.service"
+import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
 import { Subscription } from "rxjs"
 
 const MENU_WIDTH_PX = 192
@@ -23,7 +23,7 @@ const VIEWPORT_MARGIN_PX = 4
 @Component({
     selector: "cc-file-extension-bar-segment",
     templateUrl: "./fileExtensionBarSegment.component.html",
-    styleUrl: "./fileExtensionBarSegment.component.scss",
+    host: { class: "min-w-max cursor-pointer overflow-hidden text-center text-white" },
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileExtensionBarSegmentComponent implements OnInit, OnDestroy {

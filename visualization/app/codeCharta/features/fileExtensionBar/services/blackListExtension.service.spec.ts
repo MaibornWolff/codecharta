@@ -2,12 +2,12 @@ import { TestBed } from "@angular/core/testing"
 
 import { addPrefixWildcard, BlackListExtensionService, buildGlobPatterns, expandExtensions } from "./blackListExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { CategorizedMetricDistribution, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
-import { BlacklistItem, BlacklistType, CcState, CodeMapNode, ColorMode, NodeType, SortingOption } from "../../codeCharta.model"
-import { hoveredNodeMetricDistributionSelector } from "./selectors/hoveredNodeMetricDistribution.selector"
-import { BlacklistExtensionAction } from "../../state/effects/blacklistExtension/blacklistExtension.effect"
-import { hoveredNodeSelector } from "../../state/selectors/hoveredNode.selector"
-import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
+import { CategorizedMetricDistribution, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
+import { BlacklistItem, BlacklistType, CcState, CodeMapNode, ColorMode, NodeType, SortingOption } from "../../../codeCharta.model"
+import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
+import { BlacklistExtensionAction } from "../../../state/effects/blacklistExtension/blacklistExtension.effect"
+import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
+import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 
 class BlackListItemBuilder {
     private path = ""

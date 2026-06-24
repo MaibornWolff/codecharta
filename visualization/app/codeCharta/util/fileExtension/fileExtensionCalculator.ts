@@ -1,7 +1,7 @@
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
-import { HSL } from "../../../util/color/hsl"
-import { isLeaf } from "../../../util/codeMapHelper"
+import { HSL } from "../color/hsl"
+import { isLeaf } from "../codeMapHelper"
 
 export const OTHER_EXTENSION = "other"
 export const NO_EXTENSION = "None"

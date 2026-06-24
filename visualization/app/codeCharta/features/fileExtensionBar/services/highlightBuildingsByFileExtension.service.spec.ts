@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
 import { HighlightBuildingsByFileExtensionService } from "./highlightBuildingsByFileExtension.service"
 import { provideMockStore } from "@ngrx/store/testing"
-import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
-import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
+import { metricDistributionSelector } from "../selectors/metricDistribution.selector"
+import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 
 describe("HighlightBuildingsByFileExtensionService", () => {
     let fixture: HighlightBuildingsByFileExtensionService

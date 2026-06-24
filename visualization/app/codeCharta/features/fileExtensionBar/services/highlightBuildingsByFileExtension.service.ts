@@ -1,22 +1,20 @@
 import { Injectable } from "@angular/core"
-import { NO_EXTENSION, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { metricDistributionSelector } from "./selectors/metricDistribution.selector"
-import { CcState } from "../../codeCharta.model"
-import { Store } from "@ngrx/store"
+import { NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
+import { ThreeSceneService } from "../../../ui/codeMap/threeViewer/threeSceneService"
+import { MetricDistributionStore } from "../stores/metricDistribution.store"
 import { distinct, filter } from "rxjs"
 
 @Injectable({
     providedIn: "root"
 })
 export class HighlightBuildingsByFileExtensionService {
-    private readonly metricDistribution$ = this.store.select(metricDistributionSelector)
+    private readonly metricDistribution$ = this.metricDistributionStore.metricDistribution$
     private readonly fileExtensionsOfOthers = new Set<string>()
     private readonly fileExtensionsOfNone = new Set<string>()
 
     constructor(
         private readonly threeSceneService: ThreeSceneService,
-        private readonly store: Store<CcState>
+        private readonly metricDistributionStore: MetricDistributionStore
     ) {
         this.metricDistribution$
             .pipe(

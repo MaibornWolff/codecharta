@@ -1,7 +1,7 @@
 import { CategorizedMetricDistribution, FileExtensionCalculator } from "./fileExtensionCalculator"
-import { CodeMapNode, NodeType } from "../../../codeCharta.model"
-import { setIsBlacklisted, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "../../../util/dataMocks"
-import { clone } from "../../../util/clone"
+import { CodeMapNode, NodeType } from "../../codeCharta.model"
+import { setIsBlacklisted, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "../dataMocks"
+import { clone } from "../clone"
 
 describe("FileExtensionCalculator", () => {
     let map: CodeMapNode

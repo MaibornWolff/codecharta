@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment.component"
-import { addPrefixWildcard, BlackListExtensionService } from "../blackListExtension.service"
-import { HighlightBuildingsByFileExtensionService } from "../highlightBuildingsByFileExtension.service"
+import { addPrefixWildcard, BlackListExtensionService } from "../../services/blackListExtension.service"
+import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { ThreeSceneService } from "../../codeMap/threeViewer/threeSceneService"
-import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../selectors/fileExtensionCalculator"
-import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { BlacklistItem, BlacklistType, CcState, ColorMode, SortingOption } from "../../../codeCharta.model"
+import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
+import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
+import { BlacklistItem, BlacklistType, CcState, ColorMode, SortingOption } from "../../../../codeCharta.model"
 import { By } from "@angular/platform-browser"
 import { screen } from "@testing-library/angular"
-import { metricDistributionSelector } from "../selectors/metricDistribution.selector"
-import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
+import { metricDistributionSelector } from "../../selectors/metricDistribution.selector"
+import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNodeMetricDistribution.selector"
 
 describe("FileExtensionBarSegment", () => {
     let fixture: ComponentFixture<FileExtensionBarSegmentComponent>
@@ -321,7 +321,7 @@ describe("FileExtensionBarSegment", () => {
         })
 
         it("should highlight extension when segment is hovered", () => {
-            const barSegment = fixture.debugElement.query(By.css('[class="cc-bar-section-text"]'))
+            const barSegment = fixture.debugElement.query(By.css(".cc-bar-section-text"))
 
             barSegment.triggerEventHandler("mouseover", null)
 
@@ -330,7 +330,7 @@ describe("FileExtensionBarSegment", () => {
         })
 
         it("should clear highlighting when segment is unhovered", () => {
-            const barSegment = fixture.debugElement.query(By.css('[class="cc-bar-section-text"]'))
+            const barSegment = fixture.debugElement.query(By.css(".cc-bar-section-text"))
 
             barSegment.triggerEventHandler("mouseleave", null)
 

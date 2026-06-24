@@ -1,13 +1,12 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { DistributionMetricComponent } from "./distributionMetric/distributionMetric.component"
-import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment/fileExtensionBarSegment.component"
-import { MetricDistributionService } from "./metricDistribution.service"
+import { DistributionMetricComponent } from "../distributionMetric/distributionMetric.component"
+import { FileExtensionBarSegmentComponent } from "../fileExtensionBarSegment/fileExtensionBarSegment.component"
+import { MetricDistributionService } from "../../services/metricDistribution.service"
 
 @Component({
     selector: "cc-file-extension-bar",
     templateUrl: "./fileExtensionBar.component.html",
-    styleUrls: ["./fileExtensionBar.component.scss"],
     imports: [DistributionMetricComponent, FileExtensionBarSegmentComponent],
     host: {
         class: "fixed left-0 right-0 z-[70] block bg-base-100",

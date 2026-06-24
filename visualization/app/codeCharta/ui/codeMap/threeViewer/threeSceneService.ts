@@ -14,7 +14,7 @@ import { Injectable, OnDestroy } from "@angular/core"
 import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
 import { EventEmitter } from "../../../util/EventEmitter"
 import { State, Store } from "@ngrx/store"
-import { FileExtensionCalculator, NO_EXTENSION } from "../../fileExtensionBar/selectors/fileExtensionCalculator"
+import { FileExtensionCalculator, NO_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 
 type BuildingSelectedEvents = {
     onBuildingSelected: (data: { building: CodeMapBuilding }) => void

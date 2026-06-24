@@ -1,15 +1,10 @@
 import { Injectable } from "@angular/core"
-import { Store } from "@ngrx/store"
-import { BlacklistItem, CcState, CodeMapNode, NodeType } from "../../codeCharta.model"
-import { createBlacklistItemSelector } from "../../state/store/fileSettings/blacklist/blacklistByType.selector"
-import { blacklistExtensionsPattern } from "../../state/effects/blacklistExtension/blacklistExtension.effect"
-import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "./selectors/fileExtensionCalculator"
-import { hoveredNodeMetricDistributionSelector } from "./selectors/hoveredNodeMetricDistribution.selector"
-import { removeBlacklistItems } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { BlacklistItem, CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { blacklistExtensionsPattern } from "../../../state/effects/blacklistExtension/blacklistExtension.effect"
+import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
+import { removeBlacklistItems } from "../../../state/store/fileSettings/blacklist/blacklist.actions"
 import { combineLatest, map, Observable, take } from "rxjs"
-import { hoveredNodeSelector } from "../../state/selectors/hoveredNode.selector"
-import { selectedNodeSelector } from "../../state/selectors/selectedNode.selector"
-import { dispatchAfterPaint } from "../../util/dispatchAfterPaint"
+import { BlackListExtensionStore } from "../stores/blackListExtension.store"
 
 export function addPrefixWildcard(extension: string) {
     return `*.${extension}`
@@ -48,10 +43,10 @@ interface MetricDistributionNodeContext {
 })
 export class BlackListExtensionService {
     private readonly operationContext$: Observable<MetricDistributionNodeContext> = combineLatest([
-        this.store.select(hoveredNodeMetricDistributionSelector),
-        this.store.select(hoveredNodeSelector),
-        this.store.select(selectedNodeSelector),
-        this.store.select(createBlacklistItemSelector("flatten"))
+        this.blackListExtensionStore.hoveredNodeMetricDistribution$,
+        this.blackListExtensionStore.hoveredNode$,
+        this.blackListExtensionStore.selectedNode$,
+        this.blackListExtensionStore.flattenedItems$
     ]).pipe(
         map(([distribution, hoveredNode, selectedNode, flattenedItems]) => ({
             distribution,
@@ -60,7 +55,7 @@ export class BlackListExtensionService {
         }))
     )
 
-    constructor(private readonly store: Store<CcState>) {}
+    constructor(private readonly blackListExtensionStore: BlackListExtensionStore) {}
 
     show(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
@@ -68,21 +63,21 @@ export class BlackListExtensionService {
             const flattenedItemsMap = this.createFlattenedItemsMap(ctx.flattenedItems)
             const itemsToRemove = extensionPatterns.map(pattern => flattenedItemsMap.get(pattern))
 
-            dispatchAfterPaint(this.store, removeBlacklistItems({ items: itemsToRemove }))
+            this.blackListExtensionStore.dispatchAfterPaint(removeBlacklistItems({ items: itemsToRemove }))
         })
     }
 
     exclude(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
             const extensionPatterns = buildGlobPatterns(fileExtension, ctx.distribution, ctx.node)
-            dispatchAfterPaint(this.store, blacklistExtensionsPattern("exclude", ...extensionPatterns))
+            this.blackListExtensionStore.dispatchAfterPaint(blacklistExtensionsPattern("exclude", ...extensionPatterns))
         })
     }
 
     flatten(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
             const extensionPatterns = buildGlobPatterns(fileExtension, ctx.distribution, ctx.node)
-            dispatchAfterPaint(this.store, blacklistExtensionsPattern("flatten", ...extensionPatterns))
+            this.blackListExtensionStore.dispatchAfterPaint(blacklistExtensionsPattern("flatten", ...extensionPatterns))
         })
     }
 
