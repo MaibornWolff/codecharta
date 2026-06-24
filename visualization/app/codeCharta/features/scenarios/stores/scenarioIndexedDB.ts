@@ -13,21 +13,20 @@ export class ScenarioIndexedDBService {
     async add(scenario: Scenario): Promise<void> {
         const database = await openCodeChartaDB()
         const tx = database.transaction(SCENARIOS_STORE_NAME, "readwrite")
-        await tx.store.add(scenario)
-        await tx.done
+        // Await both together so the transaction's done promise is always handled,
+        // even when the request rejects (e.g. duplicate id) and aborts the transaction.
+        await Promise.all([tx.store.add(scenario), tx.done])
     }
 
     async update(scenario: Scenario): Promise<void> {
         const database = await openCodeChartaDB()
         const tx = database.transaction(SCENARIOS_STORE_NAME, "readwrite")
-        await tx.store.put(scenario)
-        await tx.done
+        await Promise.all([tx.store.put(scenario), tx.done])
     }
 
     async delete(id: string): Promise<void> {
         const database = await openCodeChartaDB()
         const tx = database.transaction(SCENARIOS_STORE_NAME, "readwrite")
-        await tx.store.delete(id)
-        await tx.done
+        await Promise.all([tx.store.delete(id), tx.done])
     }
 }

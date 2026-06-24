@@ -1,4 +1,4 @@
-import { TestBed, waitForAsync } from "@angular/core/testing"
+import { TestBed } from "@angular/core/testing"
 
 import { addPrefixWildcard, BlackListExtensionService, buildGlobPatterns, expandExtensions } from "./blackListExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
@@ -100,7 +100,7 @@ describe("BlackListExtensionService", () => {
         }
     }
 
-    beforeEach(waitForAsync(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 BlackListExtensionService,
@@ -109,7 +109,7 @@ describe("BlackListExtensionService", () => {
                 })
             ]
         })
-    }))
+    })
 
     beforeEach(() => {
         fixture = TestBed.inject(BlackListExtensionService)
