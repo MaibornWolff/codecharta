@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core"
 
-import { FileNameHelper } from "../fileNameHelper"
+import { FileNameHelper } from "../../util/fileNameHelper"
 
 @Pipe({
     name: "removeExtension",

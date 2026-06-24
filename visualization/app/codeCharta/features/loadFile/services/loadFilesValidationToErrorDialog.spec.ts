@@ -1,5 +1,5 @@
-import { CCFileValidationResult } from "../fileValidator"
-import { loadFilesValidationToErrorDialog } from "../loadFilesValidationToErrorDialog"
+import { CCFileValidationResult } from "../../../util/fileValidator"
+import { loadFilesValidationToErrorDialog } from "./loadFilesValidationToErrorDialog"
 
 describe("loadFilesValidationToErrorDialog", () => {
     it("should parse file validation result to error dialog data", () => {

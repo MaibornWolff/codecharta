@@ -4,7 +4,7 @@ import { Color, WebGLRenderer } from "three"
 import { FileState } from "../../../model/files/files"
 import { createPNGFileName } from "../../../model/files/files.helper"
 import { ThreeCameraService, ThreeRendererService, ThreeSceneService } from "../../../features/codeMap/facade"
-import { checkWriteToClipboardAllowed, setToClipboard } from "../../../util/clipboard/clipboardWriter"
+import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
 import { StateAccessStore } from "../stores/stateAccess.store"
 
 @Injectable({ providedIn: "root" })

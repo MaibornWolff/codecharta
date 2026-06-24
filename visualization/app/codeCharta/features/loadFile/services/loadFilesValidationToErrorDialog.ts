@@ -1,4 +1,4 @@
-import { CCFileValidationResult } from "./fileValidator"
+import { CCFileValidationResult } from "../../../util/fileValidator"
 
 export function loadFilesValidationToErrorDialog(fileValidationResults: CCFileValidationResult[]) {
     const htmlMessages = [...buildErrorMessages(fileValidationResults), ...buildWarningsMessages(fileValidationResults)]

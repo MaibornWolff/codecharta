@@ -10,7 +10,7 @@ import {
     ThreeSceneService
 } from "../../../../features/codeMap/facade"
 import { isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
-import { formatCompactNumber } from "../../../../util/formatCompactNumber"
+import { formatCompactNumber } from "../../formatCompactNumber"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { AppStatusStore } from "../../stores/appStatus.store"
 import { ExplorerAreaMetricStore } from "../../stores/areaMetric.store"

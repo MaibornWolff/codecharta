@@ -1,14 +1,14 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { waitFor } from "@testing-library/angular"
-import { checkWriteToClipboardAllowed, setToClipboard } from "../../../util/clipboard/clipboardWriter"
+import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
 import { defaultState } from "../../../state/store/state.manager"
 import { ThreeCameraService } from "../../../features/codeMap/facade"
 import { ThreeRendererService } from "../../../features/codeMap/facade"
 import { ThreeSceneService } from "../../../features/codeMap/facade"
 import { ScreenshotService } from "./screenshot.service"
 
-jest.mock("../../../util/clipboard/clipboardWriter", () => {
+jest.mock("./clipboardWriter", () => {
     return {
         setToClipboard: jest.fn(),
         checkWriteToClipboardAllowed: jest.fn(() => false)

@@ -13,7 +13,7 @@ import { BehaviorSubject, Subscription, tap } from "rxjs"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { blacklistMatcherSelector } from "../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
-import { selectTopNByValue, selectTopNByValuePerGroup } from "../../util/selectTopNByValue"
+import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
 import { labelsPerMapActiveSelector } from "../../state/selectors/labelsPerMapActive.selector"
 
