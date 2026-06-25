@@ -35,9 +35,13 @@ class Project(
         private const val API_VERSION_MINOR = "5"
         const val API_VERSION = "$API_VERSION_MAJOR.$API_VERSION_MINOR"
 
+        // The 1.5 (legacy) and 2.0 (lens) formats are both readable, so a 2.0 producer can be piped
+        // into a filter without tripping the merge compatibility gate.
+        private val SUPPORTED_API_VERSION_MAJORS = setOf("1", "2")
+
         fun isAPIVersionCompatible(apiVersion: String): Boolean {
             val apiVersionMajor = apiVersion.split('.')[0]
-            return apiVersionMajor == API_VERSION_MAJOR
+            return apiVersionMajor in SUPPORTED_API_VERSION_MAJORS
         }
     }
 }

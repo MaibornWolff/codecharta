@@ -36,15 +36,26 @@ class ProjectMergerTest {
     }
 
     @Test
-    fun `should throw an exception on major version differences`() {
+    fun `should throw an exception on unsupported major versions`() {
         val projects =
             listOf(
                 Project("test", apiVersion = "1.0"),
-                Project("test", apiVersion = "2.0")
+                Project("test", apiVersion = "3.0")
             )
         assertFailsWith(MergeException::class) {
             ProjectMerger(projects, nodeMergerStrategy).merge()
         }
+    }
+
+    @Test
+    fun `should merge the 1_5 and 2_0 formats since both are supported`() {
+        val projects =
+            listOf(
+                Project("test", apiVersion = "1.5"),
+                Project("test", apiVersion = "2.0")
+            )
+
+        ProjectMerger(projects, nodeMergerStrategy).merge()
     }
 
     @Test

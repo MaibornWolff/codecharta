@@ -26,15 +26,24 @@ object ProjectSerializer {
             .create()
 
     /**
+     * The format that `ccsh` emits by default. Stays 1.5 through Stages A/B and is flipped to 2.0 in
+     * Task 7 once all fixtures are green. Tests pin a specific version via the explicit parameter.
+     */
+    @JvmField
+    var defaultApiVersion: ApiVersion = ApiVersion.ONE_FIVE
+
+    /**
      * This method serializes a Project-Object to json and writes using given writer
      *
      * @param project the Project-Object to be serialized
      * @param out writer to write serialized object
      */
     @Throws(IOException::class)
-    fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false) {
-        val wrappedProject = getWrappedProject(project)
-        GSON.toJson(wrappedProject, out)
+    fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false, apiVersion: ApiVersion = defaultApiVersion) {
+        when (apiVersion) {
+            ApiVersion.ONE_FIVE -> GSON.toJson(getWrappedProject(project), out)
+            ApiVersion.TWO_ZERO -> CcJsonV2Gson.gson.toJson(ProjectToCcJsonV2Mapper.toDto(project), out)
+        }
         out.flush()
         if (writeToFile) {
             out.close()
@@ -50,10 +59,16 @@ object ProjectSerializer {
      * @param compress whether the output should be GZIP compressed
      */
     @Throws(IOException::class)
-    fun serializeProject(project: Project, out: OutputStream, compress: Boolean, isOutputFileSpecified: Boolean = false) {
+    fun serializeProject(
+        project: Project,
+        out: OutputStream,
+        compress: Boolean,
+        isOutputFileSpecified: Boolean = false,
+        apiVersion: ApiVersion = defaultApiVersion
+    ) {
         val wrappedOut = if (compress && isOutputFileSpecified) GZIPOutputStream(out) else out
         val writer = wrappedOut.bufferedWriter(UTF_8)
-        serializeProject(project, writer, isOutputFileSpecified)
+        serializeProject(project, writer, isOutputFileSpecified, apiVersion)
     }
 
     /**
@@ -66,10 +81,16 @@ object ProjectSerializer {
      * @param compress whether the output should be GZIP compressed (only respected if written to file)
      */
     @Throws(IOException::class)
-    fun serializeToFileOrStream(project: Project, outputFilePath: String?, fallbackOutputStream: OutputStream, compress: Boolean) {
+    fun serializeToFileOrStream(
+        project: Project,
+        outputFilePath: String?,
+        fallbackOutputStream: OutputStream,
+        compress: Boolean,
+        apiVersion: ApiVersion = defaultApiVersion
+    ) {
         val isOutputFileSpecified = !outputFilePath.isNullOrEmpty()
         val stream = OutputFileHandler.stream(outputFilePath, fallbackOutputStream, compress)
-        serializeProject(project, stream, compress, isOutputFileSpecified)
+        serializeProject(project, stream, compress, isOutputFileSpecified, apiVersion)
         if (!outputFilePath.isNullOrEmpty()) {
             val absoluteFilePath =
                 OutputFileHandler.checkAndFixFileExtension(
@@ -88,9 +109,9 @@ object ProjectSerializer {
      *
      * @param project the Project-Object to be serialized
      */
-    fun serializeToString(project: Project): String {
-        val wrappedProject = getWrappedProject(project)
-        return GSON.toJson(wrappedProject)
+    fun serializeToString(project: Project, apiVersion: ApiVersion = defaultApiVersion): String = when (apiVersion) {
+        ApiVersion.ONE_FIVE -> GSON.toJson(getWrappedProject(project))
+        ApiVersion.TWO_ZERO -> CcJsonV2Gson.gson.toJson(ProjectToCcJsonV2Mapper.toDto(project))
     }
 
     private fun getWrappedProject(project: Project): ProjectWrapper {
