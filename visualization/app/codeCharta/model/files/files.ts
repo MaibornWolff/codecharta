@@ -1,3 +1,3 @@
-export { FileState, FileSelectionState } from "../../codeCharta.model"
+export { FileState, FileSelectionState } from "../state.model"
 
 export const CC_FILE_EXTENSION = ".cc.json"
