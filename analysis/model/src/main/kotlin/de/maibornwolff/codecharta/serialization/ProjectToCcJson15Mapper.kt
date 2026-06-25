@@ -23,7 +23,7 @@ object ProjectToCcJson15Mapper {
                 blacklist = project.blacklist
             )
         val dataJson = CcJson15Gson.gson.toJson(data)
-        return CcJson15Wrapper(md5(dataJson), data)
+        return CcJson15Wrapper(data, md5(dataJson))
     }
 
     private fun md5(input: String): String {

@@ -13,7 +13,14 @@ class EveritValidator(private var schemaPath: String) : Validator {
     private fun loadSchema(): Schema {
         val input = this.javaClass.classLoader.getResourceAsStream(schemaPath)
         val rawJson = JSONObject(JSONTokener(input))
-        return SchemaLoader.load(rawJson)
+        // Draft-07 support so the schema's if/then (e.g. a File node may not have children) is enforced.
+        return SchemaLoader
+            .builder()
+            .draftV7Support()
+            .schemaJson(rawJson)
+            .build()
+            .load()
+            .build()
     }
 
     override fun validate(input: InputStream) {

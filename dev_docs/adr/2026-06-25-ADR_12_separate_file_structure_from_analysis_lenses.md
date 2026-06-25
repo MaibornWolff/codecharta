@@ -40,7 +40,7 @@ Introduce `.cc.json` **2.0** with the shape `{ meta, files, lenses }`, on the **
   so a newer tool's lens survives an older tool.
 - **Identity is decoupled from matching.** `id = sha-256(canonical path)` (truncated), computed by a
   single owner so every suite tool reproduces it; a canonicalization pass removes *spurious* divergence
-  (separators, the synthetic root name, `.`/`..`, Unicode form, case). `contentHash` (the existing
+  (separators, the synthetic root name, `.`/`..`, Unicode form) while preserving case. `contentHash` (the existing
   per-file checksum) is a *matching signal*, never the identity, so duplicated files stay distinct.
 - **Merge becomes a resolver**, not positional name-walking: exact `id` → unique content hash → longest
   path-suffix → otherwise keep and warn. *Semantic* divergence (tools that genuinely root differently)

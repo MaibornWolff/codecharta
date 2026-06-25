@@ -26,6 +26,37 @@ class LensTest {
     }
 
     @Test
+    fun `should not mutate input descriptors when merging metrics lenses`() {
+        val shared = AttributeDescriptor(title = "rloc", analyzers = setOf("a"))
+        val first = MetricsLens(attributeDescriptors = mapOf("rloc" to shared))
+        val second = MetricsLens(attributeDescriptors = mapOf("rloc" to AttributeDescriptor(title = "rloc", analyzers = setOf("b"))))
+
+        val merged = first.merge(second)
+
+        assertEquals(setOf("a"), shared.analyzers) // the shared input descriptor is untouched
+        assertEquals(setOf("a", "b"), merged.attributeDescriptors["rloc"]!!.analyzers)
+    }
+
+    @Test
+    fun `should route edge-type descriptors into the dependency lens and node descriptors into metrics`() {
+        val lenses =
+            LensSet.fromLegacy(
+                edges = emptyList(),
+                attributeTypes = mapOf(
+                    "edges" to mapOf("pairingRate" to AttributeType.RELATIVE),
+                    "nodes" to mapOf("rloc" to AttributeType.ABSOLUTE)
+                ),
+                attributeDescriptors = mapOf(
+                    "pairingRate" to AttributeDescriptor(title = "pairingRate"),
+                    "rloc" to AttributeDescriptor(title = "rloc")
+                )
+            )
+
+        assertEquals(setOf("pairingRate"), lenses.dependency.attributeDescriptors.keys)
+        assertEquals(setOf("rloc"), lenses.metrics.attributeDescriptors.keys)
+    }
+
+    @Test
     fun `should default missing analyzers to Unknown when merging descriptors`() {
         val first = MetricsLens(attributeDescriptors = mapOf("rloc" to AttributeDescriptor(title = "rloc")))
         val second = MetricsLens()

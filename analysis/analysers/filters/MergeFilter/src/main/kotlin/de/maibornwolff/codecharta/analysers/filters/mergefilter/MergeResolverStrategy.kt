@@ -100,7 +100,9 @@ class MergeResolverStrategy private constructor(
 
         return placedIncoming.plus(untouchedReference).mapValues { (path, incomingNode) ->
             val referenceNode = referenceLeaves[path]
-            if (referenceNode == null) {
+            if (referenceNode == null || incomingNode === referenceNode) {
+                // A newly placed incoming leaf, or an untouched reference leaf: pass it through
+                // unchanged. Only a genuine incoming-onto-reference match is a merge.
                 incomingNode
             } else {
                 nodesMerged++

@@ -123,6 +123,38 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
+    fun `should preserve meta commitHash through a 2_0 round-trip`() {
+        val project =
+            Project("p", listOf(Node("root", NodeType.Folder)), "2.0", de.maibornwolff.codecharta.model.LensSet(), commitHash = "a1b2c3d")
+
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO))
+
+        assertEquals("a1b2c3d", roundTripped.commitHash)
+    }
+
+    @Test
+    fun `should not throw an opaque ClassCastException when meta is not an object`() {
+        // Malformed input still fails, but format detection no longer casts a non-object meta and
+        // throws a ClassCastException; it degrades to a clearer parse error.
+        val malformed = """{"meta":"oops","files":[{"id":"x","name":"root","type":"Folder"}],"lenses":{}}"""
+
+        val thrown = runCatching { ProjectDeserializer.deserializeProject(malformed) }.exceptionOrNull()
+
+        assertTrue(thrown !is ClassCastException)
+    }
+
+    @Test
+    fun `should route edge attribute descriptors into the dependency lens of 2_0 output`() {
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+
+        // sampleProject has a node descriptor (rloc); ensure node descriptors stay in the metrics lens
+        // and the dependency lens descriptor map exists (empty here, since rloc is a node metric).
+        val lenses = json.getAsJsonObject("lenses")
+        assertTrue(lenses.getAsJsonObject("metrics").getAsJsonObject("attributeDescriptors").has("rloc"))
+        assertFalse(lenses.getAsJsonObject("dependency").getAsJsonObject("attributeDescriptors").has("rloc"))
+    }
+
+    @Test
     fun `should round-trip 2_0 idempotently`() {
         val onceThrough = ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)
         val twiceThrough = ProjectSerializer.serializeToString(ProjectDeserializer.deserializeProject(onceThrough), ApiVersion.TWO_ZERO)

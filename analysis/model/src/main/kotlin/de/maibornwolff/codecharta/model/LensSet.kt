@@ -37,9 +37,17 @@ class LensSet(
             edges: List<Edge>,
             attributeTypes: Map<String, Map<String, AttributeType>>,
             attributeDescriptors: Map<String, AttributeDescriptor>
-        ): LensSet = LensSet(
-            metrics = MetricsLens(attributeTypes[NODES_KEY] ?: emptyMap(), attributeDescriptors),
-            dependency = DependencyLens(edges, attributeTypes[EDGES_KEY] ?: emptyMap())
-        )
+        ): LensSet {
+            val nodeTypes = attributeTypes[NODES_KEY] ?: emptyMap()
+            val edgeTypes = attributeTypes[EDGES_KEY] ?: emptyMap()
+            // 1.5 shares one flat descriptor namespace; route a descriptor to the dependency lens
+            // when its metric is an edge type, otherwise to the metrics lens.
+            val edgeDescriptors = attributeDescriptors.filterKeys { it in edgeTypes.keys }
+            val metricDescriptors = attributeDescriptors.filterKeys { it !in edgeTypes.keys }
+            return LensSet(
+                metrics = MetricsLens(nodeTypes, metricDescriptors),
+                dependency = DependencyLens(edges, edgeTypes, edgeDescriptors)
+            )
+        }
     }
 }

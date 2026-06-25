@@ -8,7 +8,6 @@ import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.util.Logger
 
 object DcJsonParser {
-    private const val ROOT_PREFIX = "/" + NodeId.ROOT_SEGMENT
     private const val DEPENDENCIES = "dependencies"
     const val OUTGOING_DEPENDENCIES = "outgoing_dependencies"
     const val INCOMING_DEPENDENCIES = "incoming_dependencies"
@@ -70,5 +69,5 @@ object DcJsonParser {
     private fun canonicalSegments(physicalPath: String): List<String> =
         if (physicalPath.isBlank()) emptyList() else NodeId.canonicalSegments(physicalPath.split('/', '\\'))
 
-    private fun endpoint(segments: List<String>): String = ROOT_PREFIX + NodeId.canonicalPath(segments)
+    private fun endpoint(segments: List<String>): String = NodeId.endpointFromSegments(segments)
 }

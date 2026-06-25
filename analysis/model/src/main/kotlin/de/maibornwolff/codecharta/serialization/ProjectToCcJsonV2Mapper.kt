@@ -22,7 +22,7 @@ import java.security.MessageDigest
  * lens-native domain (Stage B) makes this mapping near-trivial.
  */
 object ProjectToCcJsonV2Mapper {
-    fun toDto(project: Project, commitHash: String? = null): CcJsonV2 {
+    fun toDto(project: Project, commitHash: String? = project.commitHash): CcJsonV2 {
         val metricsByNodeId = LinkedHashMap<String, Map<String, Any>>()
         val files = listOf(toFileDto(project.rootNode, emptyList(), metricsByNodeId))
 

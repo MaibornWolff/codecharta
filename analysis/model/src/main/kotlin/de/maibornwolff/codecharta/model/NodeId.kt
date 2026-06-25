@@ -55,17 +55,24 @@ object NodeId {
 
     /**
      * id of the node referenced by an edge endpoint string such as `"/root/src/App.kt"`.
-     * The leading synthetic `root` segment is stripped before the regular canonicalization runs,
-     * so an edge endpoint and the FileTree node it points at always resolve to the same id.
+     * The endpoint is canonicalized first, then a leading synthetic `root` segment is stripped, so an
+     * edge endpoint and the FileTree node it points at always resolve to the same id even when the
+     * endpoint carries `.`/`..`/empty cruft before the root.
      */
     fun fromEndpoint(endpoint: String): String = fromSegments(segmentsFromEndpoint(endpoint))
 
     /** The canonical path for an edge endpoint string (the [fromEndpoint] counterpart before hashing). */
     fun canonicalPathFromEndpoint(endpoint: String): String = canonicalPath(segmentsFromEndpoint(endpoint))
 
+    /** The `"/root/…"` edge-endpoint string for a node at the given canonical [segments] (inverse of [fromEndpoint]). */
+    fun endpointFromSegments(segments: List<String>): String {
+        val canonicalString = canonicalPath(segments)
+        return if (canonicalString == SEPARATOR) SEPARATOR + ROOT_SEGMENT else SEPARATOR + ROOT_SEGMENT + canonicalString
+    }
+
     private fun segmentsFromEndpoint(endpoint: String): List<String> {
-        val rawSegments = endpoint.split(SEPARATOR).filter { it.isNotEmpty() }
-        return if (rawSegments.firstOrNull() == ROOT_SEGMENT) rawSegments.drop(1) else rawSegments
+        val canonical = canonicalize(endpoint.split(SEPARATOR))
+        return if (canonical.firstOrNull() == ROOT_SEGMENT) canonical.drop(1) else canonical
     }
 
     private fun canonicalize(segments: List<String>): List<String> {

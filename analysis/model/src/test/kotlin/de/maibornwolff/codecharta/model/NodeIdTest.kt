@@ -74,6 +74,23 @@ class NodeIdTest {
     }
 
     @Test
+    fun `should strip the synthetic root even when the endpoint carries leading dot or dot-dot cruft`() {
+        val nodeId = NodeId.fromSegments(listOf("src", "App.kt"))
+
+        assertEquals(nodeId, NodeId.fromEndpoint("/./root/src/App.kt"))
+        assertEquals(nodeId, NodeId.fromEndpoint("/../root/src/App.kt"))
+    }
+
+    @Test
+    fun `should round-trip a node position through endpointFromSegments and back`() {
+        val segments = listOf("src", "App.kt")
+
+        assertEquals("/root/src/App.kt", NodeId.endpointFromSegments(segments))
+        assertEquals(NodeId.fromSegments(segments), NodeId.fromEndpoint(NodeId.endpointFromSegments(segments)))
+        assertEquals("/root", NodeId.endpointFromSegments(emptyList()))
+    }
+
+    @Test
     fun `should keep a real folder named root that is nested under the synthetic root`() {
         assertEquals(NodeId.fromSegments(listOf("root", "App.kt")), NodeId.fromEndpoint("/root/root/App.kt"))
     }

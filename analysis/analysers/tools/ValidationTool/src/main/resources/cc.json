@@ -305,7 +305,9 @@
         "link": { "type": "string" }
       },
       "required": ["id", "name", "type"],
-      "type": "object"
+      "type": "object",
+      "if": { "properties": { "type": { "const": "File" } } },
+      "then": { "not": { "required": ["children"] } }
     },
     "AttributeDescriptor": {
       "properties": {

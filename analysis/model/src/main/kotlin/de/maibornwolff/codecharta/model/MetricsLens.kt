@@ -40,16 +40,15 @@ internal fun mergeAttributeDescriptors(
             merged[metric] = normalized
         } else {
             warnIfDescriptorsDiffer(existing, metric, normalized)
-            existing.analyzers = existing.analyzers union normalized.analyzers
+            merged[metric] = existing.copy(analyzers = existing.analyzers union normalized.analyzers)
         }
     }
     return merged
 }
 
-private fun AttributeDescriptor.withAnalyzersOrUnknown(): AttributeDescriptor {
-    if (analyzers.isEmpty()) analyzers = setOf("Unknown")
-    return this
-}
+// Pure: never mutates the input descriptor, so a descriptor shared across projects is not corrupted.
+private fun AttributeDescriptor.withAnalyzersOrUnknown(): AttributeDescriptor =
+    if (analyzers.isEmpty()) copy(analyzers = setOf("Unknown")) else this
 
 private fun warnIfDescriptorsDiffer(existing: AttributeDescriptor, metric: String, incoming: AttributeDescriptor) {
     if (existing.title != incoming.title) Logger.info { "Title of '$metric' metric differs between files! Using value of first file..." }

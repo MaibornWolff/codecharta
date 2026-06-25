@@ -17,8 +17,6 @@ import de.maibornwolff.codecharta.serialization.dto.FileDto
  * rebuilt from ids by walking the file tree (the inverse of [ProjectToCcJsonV2Mapper]).
  */
 object CcJsonV2ToProjectMapper {
-    private const val ROOT_ENDPOINT_PREFIX = "/" + NodeId.ROOT_SEGMENT
-
     fun toProject(dto: CcJsonV2): Project {
         val metricsByNodeId = dto.lenses.metrics.attributes
         val rootFileDto = dto.files.single()
@@ -54,7 +52,8 @@ object CcJsonV2ToProjectMapper {
             projectName = dto.meta.projectName,
             nodes = listOf(rootNode),
             apiVersion = dto.meta.apiVersion,
-            lenses = lenses
+            lenses = lenses,
+            commitHash = dto.meta.commitHash
         )
     }
 
@@ -71,7 +70,7 @@ object CcJsonV2ToProjectMapper {
     }
 
     private fun collectEndpoints(fileDto: FileDto, segments: List<String>, idToEndpoint: MutableMap<String, String>) {
-        idToEndpoint[fileDto.id] = ROOT_ENDPOINT_PREFIX + NodeId.canonicalPath(segments)
+        idToEndpoint[fileDto.id] = NodeId.endpointFromSegments(segments)
         fileDto.children?.forEach { child -> collectEndpoints(child, segments + child.name, idToEndpoint) }
     }
 }

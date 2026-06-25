@@ -68,6 +68,18 @@ class EveritValidatorTest {
     }
 
     @Test
+    fun `should reject a 2_0 file node that has children`() {
+        val fileWithChildren =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"r","name":"root","type":"Folder","children":[""" +
+                """{"id":"f","name":"a.kt","type":"File","children":[{"id":"c","name":"impossible.kt","type":"File"}]}]}],"lenses":{}}"""
+
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(fileWithChildren.toByteArray()))
+        }
+    }
+
+    @Test
     fun `should throw exception on a 2_0 file missing its files array`() {
         val invalid2 = """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},"lenses":{}}"""
 

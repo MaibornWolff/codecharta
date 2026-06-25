@@ -11,9 +11,10 @@ import de.maibornwolff.codecharta.model.Node
  * pre-2.0 domain `Project` exactly, so the serialized `data` (and therefore its checksum) is
  * byte-identical to what the old GSON-reflected domain produced. Mapping the lens-native domain
  * through this DTO is what lets the domain stop doubling as the wire format without changing 1.5
- * output.
+ * output. The `(data, checksum)` field order matches the historical wrapper so the envelope stays
+ * byte-identical too.
  */
-class CcJson15Wrapper(val checksum: String, val data: CcJson15Project)
+class CcJson15Wrapper(val data: CcJson15Project, val checksum: String)
 
 class CcJson15Project(
     val projectName: String,

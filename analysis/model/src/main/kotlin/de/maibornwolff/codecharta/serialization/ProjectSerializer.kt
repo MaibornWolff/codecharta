@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
+import com.google.gson.Gson
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
@@ -20,6 +21,12 @@ object ProjectSerializer {
     @JvmField
     var defaultApiVersion: ApiVersion = ApiVersion.TWO_ZERO
 
+    /** The wire object + its GSON for the given format — the single place format dispatch happens. */
+    private fun wire(project: Project, apiVersion: ApiVersion): Pair<Gson, Any> = when (apiVersion) {
+        ApiVersion.ONE_FIVE -> CcJson15Gson.gson to ProjectToCcJson15Mapper.toWrapper(project)
+        ApiVersion.TWO_ZERO -> CcJsonV2Gson.gson to ProjectToCcJsonV2Mapper.toDto(project)
+    }
+
     /**
      * This method serializes a Project-Object to json and writes using given writer
      *
@@ -28,10 +35,8 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false, apiVersion: ApiVersion = defaultApiVersion) {
-        when (apiVersion) {
-            ApiVersion.ONE_FIVE -> CcJson15Gson.gson.toJson(ProjectToCcJson15Mapper.toWrapper(project), out)
-            ApiVersion.TWO_ZERO -> CcJsonV2Gson.gson.toJson(ProjectToCcJsonV2Mapper.toDto(project), out)
-        }
+        val (gson, wireObject) = wire(project, apiVersion)
+        gson.toJson(wireObject, out)
         out.flush()
         if (writeToFile) {
             out.close()
@@ -97,8 +102,8 @@ object ProjectSerializer {
      *
      * @param project the Project-Object to be serialized
      */
-    fun serializeToString(project: Project, apiVersion: ApiVersion = defaultApiVersion): String = when (apiVersion) {
-        ApiVersion.ONE_FIVE -> CcJson15Gson.gson.toJson(ProjectToCcJson15Mapper.toWrapper(project))
-        ApiVersion.TWO_ZERO -> CcJsonV2Gson.gson.toJson(ProjectToCcJsonV2Mapper.toDto(project))
+    fun serializeToString(project: Project, apiVersion: ApiVersion = defaultApiVersion): String {
+        val (gson, wireObject) = wire(project, apiVersion)
+        return gson.toJson(wireObject)
     }
 }

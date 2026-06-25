@@ -62,7 +62,9 @@ object ProjectDeserializer {
     }
 
     private fun isVersionTwo(jsonObject: JsonObject): Boolean {
-        val metaApiVersion = jsonObject.getAsJsonObject("meta")?.get("apiVersion")?.asString
+        // getAsJsonObject throws if "meta" is present but not an object, so check the type first.
+        val meta = jsonObject.get("meta")?.takeIf { it.isJsonObject }?.asJsonObject
+        val metaApiVersion = meta?.get("apiVersion")?.takeIf { it.isJsonPrimitive }?.asString
         if (metaApiVersion != null) return metaApiVersion.substringBefore('.') == "2"
         return jsonObject.has("lenses")
     }
