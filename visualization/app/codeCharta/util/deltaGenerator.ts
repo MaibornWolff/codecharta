@@ -3,7 +3,7 @@ import { FileNameHelper } from "./fileNameHelper"
 import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"
 import { getParent } from "./nodePathHelper"
-import { fileRoot } from "../services/loadFile/fileRoot"
+import { fileRoot } from "./fileRoot"
 
 export class DeltaGenerator {
     static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {

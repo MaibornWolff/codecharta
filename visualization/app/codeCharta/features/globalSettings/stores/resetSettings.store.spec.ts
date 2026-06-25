@@ -6,7 +6,7 @@ import { setState } from "../../../state/store/state.actions"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { defaultState } from "../../../state/store/state.manager"
 
-jest.mock("../../../ui/resetSettingsButton/getPartialDefaultState", () => ({
+jest.mock("../../../state/store/util/getPartialDefaultState", () => ({
     getPartialDefaultState: jest.fn((settingsKeys: string[], _state) => {
         const partialState = {}
         for (const key of settingsKeys) {

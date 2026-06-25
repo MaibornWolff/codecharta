@@ -5,8 +5,8 @@ import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
 import { setColorMode } from "../../../../state/store/dynamicSettings/colorMode/colorMode.actions"
-import { ActionIconComponent } from "../../../../ui/actionIcon/actionIcon.component"
-import { ErrorDialogComponent } from "../../../../ui/dialogs/errorDialog/errorDialog.component"
+import { ActionIconComponent } from "../../../../features/shared/components/actionIcon/actionIcon.component"
+import { ErrorDialogComponent } from "../../../../features/shared/components/errorDialog/errorDialog.component"
 import { Export3DMapButtonComponent } from "./export3DMapButton.component"
 
 // The real export dialog needs a fully initialized Three.js scene in its constructor.

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
-import { formatCompactNumber } from "../../../../util/formatCompactNumber"
+import { formatCompactNumber } from "../../formatCompactNumber"
 
 @Component({
     selector: "cc-explorer-count-chip",

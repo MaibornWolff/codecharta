@@ -5,7 +5,7 @@ import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/ma
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { areMultipleMapsVisibleSelector } from "../../../state/selectors/areMultipleMapsVisible.selector"
 import { labelsPerMapActiveSelector } from "../../../state/selectors/labelsPerMapActive.selector"
-import { getPartialDefaultState } from "../../../ui/resetSettingsButton/getPartialDefaultState"
+import { getPartialDefaultState } from "../../../state/store/util/getPartialDefaultState"
 import { setState } from "../../../state/store/state.actions"
 import { defaultAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.reducer"
 

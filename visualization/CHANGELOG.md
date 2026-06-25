@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+- **Feature architecture migration**: Moved the remaining `app/codeCharta/ui/` components into the feature-slice architecture — `features/shared` (actionIcon, errorDialog, loadingFileProgressSpinner, resetSettingsButton), `features/fileExtensionBar`, `features/codeMap`, and `features/viewCube`. Each slice is reached through a `facade.ts`, contains no SCSS (daisyUI/Tailwind only), and accesses `@ngrx/store` only from `stores/`/`selectors/`. The `ui/` directory is gone and the dependency-cruiser SCSS rule now covers all of `app/codeCharta/`. No user-facing behavior change.
+
 ## [1.143.0] - 2026-06-23
 
 ### Added 🚀

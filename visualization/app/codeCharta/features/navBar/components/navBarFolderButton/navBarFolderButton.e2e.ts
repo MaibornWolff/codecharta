@@ -3,7 +3,7 @@ import { clearIndexedDB, goto } from "../../../../../playwright.helper"
 import { NavBarFolderButtonPageObject } from "./navBarFolderButton.po"
 import { MapSelectorPageObject } from "../mapSelector/mapSelector.po"
 import { ERROR_MESSAGES } from "../../../../util/fileValidator"
-import { DialogErrorPageObject } from "../../../../ui/dialogs/errorDialog/errorDialog.component.po"
+import { DialogErrorPageObject } from "../../../../features/shared/components/errorDialog/errorDialog.component.po"
 
 test.describe("NavBarFolderButton", () => {
     test.beforeEach(async ({ page }) => {

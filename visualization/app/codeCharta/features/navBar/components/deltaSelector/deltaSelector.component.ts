@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener,
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CCFile } from "../../../../codeCharta.model"
 import { FileSelectionState } from "../../../../model/files/files"
-import { RemoveExtensionPipe } from "../../../../util/pipes/removeExtension.pipe"
+import { RemoveExtensionPipe } from "../../removeExtension.pipe"
 import { FilesSelectionStore } from "../../stores/filesSelection.store"
 
 type OpenDropdown = "none" | "reference" | "comparison"

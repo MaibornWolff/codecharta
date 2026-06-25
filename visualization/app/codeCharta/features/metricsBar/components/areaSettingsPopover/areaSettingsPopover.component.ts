@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
+import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
 import { EnableFloorLabelsService } from "../../services/enableFloorLabels.service"
 import { InvertAreaService } from "../../services/invertArea.service"
 import { MarginService } from "../../services/margin.service"

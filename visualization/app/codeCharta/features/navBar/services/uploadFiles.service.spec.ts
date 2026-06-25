@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { UploadFilesService } from "./uploadFiles.service"
-import { LoadFileService } from "../../../services/loadFile/loadFile.service"
+import { LoadFileService } from "../../../features/loadFile/facade"
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { createCCFileInput } from "../../../util/uploadFiles/createCCFileInput"
+import { createCCFileInput } from "./createCCFileInput"
 import { TEST_FILE_CONTENT } from "../../../util/dataMocks"
 import stringify from "safe-stable-stringify"
 import { EffectsModule } from "@ngrx/effects"
@@ -14,7 +14,7 @@ import { RenderCodeMapEffect } from "../../../state/effects/renderCodeMapEffect/
 import { setFiles, setStandardByNames } from "../../../state/store/files/files.actions"
 import { UnfocusNodesEffect } from "../../../state/effects/unfocusNodes/unfocusNodes.effect"
 
-jest.mock("../../../util/uploadFiles/createCCFileInput")
+jest.mock("./createCCFileInput")
 
 describe("UploadFilesService", () => {
     let loadFileService: LoadFileService

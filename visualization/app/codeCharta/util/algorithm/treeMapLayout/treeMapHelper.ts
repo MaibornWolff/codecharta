@@ -1,7 +1,7 @@
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
 import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
 import { Vector3 } from "three"
-import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
+import { CodeMapBuilding } from "../../../features/codeMap/facade"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 import { getColorByMetricValue } from "../../color/gradientCalculator"

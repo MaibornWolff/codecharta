@@ -5,7 +5,7 @@ import { of } from "rxjs"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 import { colorMetricSelector } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { ColorSettingsPopoverComponent } from "./colorSettingsPopover.component"
 
 describe("ColorSettingsPopoverComponent", () => {

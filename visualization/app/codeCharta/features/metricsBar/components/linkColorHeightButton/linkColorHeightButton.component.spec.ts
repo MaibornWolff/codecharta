@@ -6,7 +6,7 @@ import { of } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
 import { toggleIsColorMetricLinkedToHeightMetric } from "../../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { LinkColorHeightButtonComponent } from "./linkColorHeightButton.component"
 
 describe("LinkColorHeightButtonComponent", () => {

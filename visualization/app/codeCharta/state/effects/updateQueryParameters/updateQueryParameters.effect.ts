@@ -3,17 +3,10 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { State, Store } from "@ngrx/store"
 import { debounceTime, map, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
-import { LoadInitialFileService } from "../../../services/loadInitialFile/loadInitialFile.service"
+import { LoadInitialFileService } from "../../../features/loadFile/facade"
 import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
 import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
-
-export enum MetricQueryParemter {
-    areaMetric = "area",
-    heightMetric = "height",
-    colorMetric = "color",
-    edgeMetric = "edge",
-    currentFilesAreSampleFiles = "currentFilesAreSampleFiles"
-}
+import { MetricQueryParemter } from "./metricQueryParameter"
 
 @Injectable()
 export class UpdateQueryParametersEffect {

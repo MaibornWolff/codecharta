@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { setState } from "../../../state/store/state.actions"
-import { getPartialDefaultState } from "../../../ui/resetSettingsButton/getPartialDefaultState"
+import { getPartialDefaultState } from "../../../state/store/util/getPartialDefaultState"
 
 @Injectable({
     providedIn: "root"

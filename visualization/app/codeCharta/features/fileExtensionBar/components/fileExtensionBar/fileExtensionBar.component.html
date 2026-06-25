@@ -1,0 +1,11 @@
+<div class="flex h-[17px] w-full">
+    <cc-distribution-metric title="Distribution metric"></cc-distribution-metric>
+    <div class="flex w-full gap-px">
+        @for (item of metricDistribution().visible; track item.fileExtension) {
+            <cc-file-extension-bar-segment [item]="item"
+                                           [showAbsoluteValues]="showAbsoluteValues()"
+                                           (toggleShowAbsoluteValues)="toggleShowAbsoluteValues()">
+            </cc-file-extension-bar-segment>
+        }
+    </div>
+</div>

@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { ColorBandsSectionComponent } from "./colorBandsSection.component"
 
 describe("ColorBandsSectionComponent", () => {

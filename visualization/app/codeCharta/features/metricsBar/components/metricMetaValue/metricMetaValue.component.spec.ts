@@ -5,7 +5,7 @@ import { Observable, of } from "rxjs"
 import { CodeMapNode, Node } from "../../../../codeCharta.model"
 import { primaryMetricNamesSelector } from "../../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
 import { MetricMetaValueComponent } from "./metricMetaValue.component"
 

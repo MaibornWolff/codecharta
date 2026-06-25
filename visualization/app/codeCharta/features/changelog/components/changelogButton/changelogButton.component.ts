@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, viewChild } from "@angular/core"
 import { ChangelogDialogComponent } from "../changelogDialog/changelogDialog.component"
-import { ActionIconComponent } from "../../../../ui/actionIcon/actionIcon.component"
+import { ActionIconComponent } from "../../../../features/shared/components/actionIcon/actionIcon.component"
 
 @Component({
     selector: "cc-changelog-button",

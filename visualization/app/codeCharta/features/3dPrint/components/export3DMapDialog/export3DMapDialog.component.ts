@@ -4,14 +4,14 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { STLExporter } from "three/addons/exporters/STLExporter.js"
 import { NodeMetricData } from "../../../../codeCharta.model"
 import { getVisibleFileStates, isDeltaState } from "../../../../model/files/files.helper"
-import { serialize3mf } from "../../../../services/3DExports/serialize3mf.service"
+import { serialize3mf } from "../../3DExports/serialize3mf.service"
 import {
     calculateMaxPossibleWidthForPreview3DPrintMesh,
     GeometryOptions,
     Preview3DPrintMesh
-} from "../../../../services/3DExports/3DPreview/preview3DPrintMesh"
+} from "../../3DExports/3DPreview/preview3DPrintMesh"
 import { calculateNodeMetricData } from "../../../../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
-import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { createBlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
 import { FileDownloader } from "../../../../util/fileDownloader"
 import { FileNameHelper } from "../../../../util/fileNameHelper"

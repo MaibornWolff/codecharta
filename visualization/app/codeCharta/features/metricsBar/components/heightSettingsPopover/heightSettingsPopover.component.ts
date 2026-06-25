@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ResetSettingsButtonComponent } from "../../../../ui/resetSettingsButton/resetSettingsButton.component"
+import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
 import { InvertHeightService } from "../../services/invertHeight.service"
 import { IsDeltaStateService } from "../../services/isDeltaState.service"
 import { ScalingService } from "../../services/scaling.service"

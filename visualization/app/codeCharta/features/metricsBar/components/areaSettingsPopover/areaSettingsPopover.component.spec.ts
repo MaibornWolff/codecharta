@@ -8,7 +8,7 @@ import { setInvertArea } from "../../../../state/store/appSettings/invertArea/in
 import { setMargin } from "../../../../state/store/dynamicSettings/margin/margin.actions"
 import { marginSelector } from "../../../../state/store/dynamicSettings/margin/margin.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { AreaSettingsPopoverComponent } from "./areaSettingsPopover.component"
 
 describe("AreaSettingsPopoverComponent", () => {

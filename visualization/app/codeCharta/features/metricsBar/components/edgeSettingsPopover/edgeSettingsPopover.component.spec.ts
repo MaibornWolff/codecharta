@@ -15,7 +15,7 @@ import { setShowOutgoingEdges } from "../../../../state/store/appSettings/showEd
 import { showOutgoingEdgesSelector } from "../../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
 import { setShowOnlyBuildingsWithEdges } from "../../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 import { showOnlyBuildingsWithEdgesSelector } from "../../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.selector"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { EdgeSettingsPopoverComponent } from "./edgeSettingsPopover.component"
 
 describe("EdgeSettingsPopoverComponent", () => {

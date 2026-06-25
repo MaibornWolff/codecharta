@@ -5,7 +5,7 @@ import { of } from "rxjs"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { MetricSelectPopoverComponent } from "./metricSelectPopover.component"
 
 describe("MetricSelectPopoverComponent", () => {

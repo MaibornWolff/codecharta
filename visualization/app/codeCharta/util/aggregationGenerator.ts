@@ -2,7 +2,7 @@ import { CodeMapNode, CCFile, NodeType } from "../codeCharta.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { getUpdatedPath } from "./nodePathHelper"
 import packageJson from "../../../package.json"
-import { fileRoot } from "../services/loadFile/fileRoot"
+import { fileRoot } from "./fileRoot"
 import { FileState } from "../model/files/files"
 import { clone } from "./clone"
 

@@ -19,7 +19,7 @@ import {
     SortingOption,
     CcState
 } from "../codeCharta.model"
-import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
+import { CodeMapBuilding } from "../features/codeMap/facade"
 import { Box3, Vector3 } from "three"
 import { hierarchy } from "d3-hierarchy"
 import { FileSelectionState, FileState } from "../model/files/files"

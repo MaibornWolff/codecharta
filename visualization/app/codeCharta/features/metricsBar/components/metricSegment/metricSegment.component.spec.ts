@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { MetricSegmentComponent } from "./metricSegment.component"
 
 describe("MetricSegmentComponent", () => {

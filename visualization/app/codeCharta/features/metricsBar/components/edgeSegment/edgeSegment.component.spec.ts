@@ -8,7 +8,7 @@ import { isEdgeMetricVisibleSelector } from "../../../../state/store/appSettings
 import { setEdgeMetric } from "../../../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { edgeMetricSelector } from "../../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../ui/codeMap/codeMap.render.service"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
 import { EdgeSegmentComponent } from "./edgeSegment.component"
 
