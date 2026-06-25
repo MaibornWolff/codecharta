@@ -29,18 +29,27 @@ object ProjectToCcJsonV2Mapper {
         val metricsLens =
             MetricsLensDto(
                 attributes = metricsByNodeId,
-                attributeDescriptors = project.attributeDescriptors,
-                attributeTypes = project.attributeTypes["nodes"] ?: emptyMap()
+                attributeDescriptors = project.lenses.metrics.attributeDescriptors,
+                attributeTypes = project.lenses.metrics.attributeTypes,
+                clusters = project.lenses.metrics.clusters
             )
         val dependencyLens =
             DependencyLensDto(
                 edges =
-                    project.edges.map {
+                    project.lenses.dependency.edges.map {
                         EdgeDto(NodeId.fromEndpoint(it.fromNodeName), NodeId.fromEndpoint(it.toNodeName), it.attributes)
                     },
-                attributeTypes = project.attributeTypes["edges"] ?: emptyMap()
+                attributeTypes = project.lenses.dependency.attributeTypes,
+                attributeDescriptors = project.lenses.dependency.attributeDescriptors
             )
-        val lenses = LensesDto(metricsLens, dependencyLens)
+        val lenses =
+            LensesDto(
+                metrics = metricsLens,
+                dependency = dependencyLens,
+                domain = project.lenses.domain,
+                security = project.lenses.security,
+                additionalLenses = project.lenses.additionalLenses
+            )
 
         val meta =
             MetaDto(

@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.serialization
 
-import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LensSet
+import de.maibornwolff.codecharta.model.MetricsLens
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
@@ -22,16 +24,6 @@ object CcJsonV2ToProjectMapper {
         val rootFileDto = dto.files.single()
         val rootNode = toNode(rootFileDto, metricsByNodeId)
 
-        val attributeTypes = mutableMapOf<String, MutableMap<String, AttributeType>>()
-        if (dto.lenses.metrics.attributeTypes.isNotEmpty()) {
-            attributeTypes["nodes"] = dto.lenses.metrics.attributeTypes.toMutableMap()
-        }
-        if (dto.lenses.dependency.attributeTypes.isNotEmpty()) {
-            attributeTypes["edges"] = dto.lenses.dependency.attributeTypes.toMutableMap()
-        }
-
-        val attributeDescriptors = dto.lenses.metrics.attributeDescriptors + dto.lenses.dependency.attributeDescriptors
-
         val idToEndpoint = HashMap<String, String>()
         collectEndpoints(rootFileDto, emptyList(), idToEndpoint)
         val edges =
@@ -39,13 +31,30 @@ object CcJsonV2ToProjectMapper {
                 Edge(idToEndpoint[it.fromId] ?: it.fromId, idToEndpoint[it.toId] ?: it.toId, it.attributes)
             }
 
+        val lenses =
+            LensSet(
+                metrics =
+                    MetricsLens(
+                        attributeTypes = dto.lenses.metrics.attributeTypes,
+                        attributeDescriptors = dto.lenses.metrics.attributeDescriptors,
+                        clusters = dto.lenses.metrics.clusters
+                    ),
+                dependency =
+                    DependencyLens(
+                        edges = edges,
+                        attributeTypes = dto.lenses.dependency.attributeTypes,
+                        attributeDescriptors = dto.lenses.dependency.attributeDescriptors
+                    ),
+                domain = dto.lenses.domain,
+                security = dto.lenses.security,
+                additionalLenses = dto.lenses.additionalLenses
+            )
+
         return Project(
             projectName = dto.meta.projectName,
             nodes = listOf(rootNode),
             apiVersion = dto.meta.apiVersion,
-            edges = edges,
-            attributeTypes = attributeTypes,
-            attributeDescriptors = attributeDescriptors
+            lenses = lenses
         )
     }
 

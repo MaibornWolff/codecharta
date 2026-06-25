@@ -31,7 +31,7 @@ import kotlin.test.assertTrue
 class ProjectSerializerTest {
     private val tempDir = createTempDirectory()
     private val filename = tempDir.absolute().toString() + "test.cc.json"
-    private val project = mockk<Project>()
+    private val project = Project("test")
     private val lambdaSlot = mutableListOf<() -> String>()
 
     companion object {

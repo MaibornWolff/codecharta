@@ -158,6 +158,17 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
+    fun `should preserve unknown lenses verbatim through a full domain round-trip`() {
+        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+        with20.getAsJsonObject("lenses").add("experimental", JsonParser.parseString("""{"foo":"bar"}"""))
+
+        val domain = ProjectDeserializer.deserializeProject(with20.toString())
+        val reSerialized = JsonParser.parseString(ProjectSerializer.serializeToString(domain, ApiVersion.TWO_ZERO)).asJsonObject
+
+        assertEquals("bar", reSerialized.getAsJsonObject("lenses").getAsJsonObject("experimental").get("foo").asString)
+    }
+
+    @Test
     fun `should preserve unknown lenses verbatim through a DTO round-trip`() {
         val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
         with20.getAsJsonObject("lenses").add("experimental", JsonParser.parseString("""{"foo":"bar"}"""))

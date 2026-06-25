@@ -1,12 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
-import com.google.gson.GsonBuilder
-import de.maibornwolff.codecharta.model.AttributeType
-import de.maibornwolff.codecharta.model.AttributeTypeSerializer
-import de.maibornwolff.codecharta.model.BlacklistType
-import de.maibornwolff.codecharta.model.BlacklistTypeSerializer
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectWrapper
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.io.IOException
@@ -19,12 +13,6 @@ import java.util.zip.GZIPOutputStream
  * This class provides static methods and functions to convert a Project-Object to json
  */
 object ProjectSerializer {
-    private val GSON =
-        GsonBuilder()
-            .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
-            .registerTypeAdapter(BlacklistType::class.java, BlacklistTypeSerializer())
-            .create()
-
     /**
      * The format that `ccsh` emits by default. Stays 1.5 through Stages A/B and is flipped to 2.0 in
      * Task 7 once all fixtures are green. Tests pin a specific version via the explicit parameter.
@@ -41,7 +29,7 @@ object ProjectSerializer {
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false, apiVersion: ApiVersion = defaultApiVersion) {
         when (apiVersion) {
-            ApiVersion.ONE_FIVE -> GSON.toJson(getWrappedProject(project), out)
+            ApiVersion.ONE_FIVE -> CcJson15Gson.gson.toJson(ProjectToCcJson15Mapper.toWrapper(project), out)
             ApiVersion.TWO_ZERO -> CcJsonV2Gson.gson.toJson(ProjectToCcJsonV2Mapper.toDto(project), out)
         }
         out.flush()
@@ -110,12 +98,7 @@ object ProjectSerializer {
      * @param project the Project-Object to be serialized
      */
     fun serializeToString(project: Project, apiVersion: ApiVersion = defaultApiVersion): String = when (apiVersion) {
-        ApiVersion.ONE_FIVE -> GSON.toJson(getWrappedProject(project))
+        ApiVersion.ONE_FIVE -> CcJson15Gson.gson.toJson(ProjectToCcJson15Mapper.toWrapper(project))
         ApiVersion.TWO_ZERO -> CcJsonV2Gson.gson.toJson(ProjectToCcJsonV2Mapper.toDto(project))
-    }
-
-    private fun getWrappedProject(project: Project): ProjectWrapper {
-        val projectJsonString = GSON.toJson(project, Project::class.java)
-        return ProjectWrapper(project, projectJsonString)
     }
 }
