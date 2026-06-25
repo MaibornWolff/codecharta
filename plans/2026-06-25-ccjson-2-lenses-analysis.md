@@ -1,7 +1,7 @@
 ---
 name: cc.json 2.0 {meta, files, lenses} — analysis side
 issue:
-state: todo
+state: complete
 version: 3
 ---
 
@@ -161,14 +161,14 @@ tree yields different-but-deterministic ids.
 
 ## Steps
 
-- [ ] Complete Task 1: Identity & path canonicalization foundation
-- [ ] Complete Task 2: DTO seam + serialization realities (Stage A)
-- [ ] Complete Task 3: Lens-native domain + attribute-type/descriptor rehoming (Stage B)
-- [ ] Complete Task 4: Migrate every node-attribute producer/consumer (Stage B)
-- [ ] Complete Task 5: Unified merge resolver (Stage C)
-- [ ] Complete Task 6: blacklist rehoming
-- [ ] Complete Task 7: Converter command + default flip (hard-gated)
-- [ ] Complete Task 8: Schema + fixtures + docs
+- [x] Complete Task 1: Identity & path canonicalization foundation
+- [x] Complete Task 2: DTO seam + serialization realities (Stage A)
+- [x] Complete Task 3: Lens-native domain + attribute-type/descriptor rehoming (Stage B)
+- [x] Complete Task 4: Migrate every node-attribute producer/consumer (Stage B)
+- [x] Complete Task 5: Unified merge resolver (Stage C)
+- [x] Complete Task 6: blacklist rehoming
+- [x] Complete Task 7: Converter command + default flip (hard-gated)
+- [x] Complete Task 8: Schema + fixtures + docs
 
 ## Review Feedback Addressed
 

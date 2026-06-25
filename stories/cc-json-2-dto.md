@@ -81,18 +81,18 @@ Unknown top-level lenses are preserved verbatim on round-trip (forward-compat).
 - **`clusters` / `domain` / `security`** shapes are reserved here and defined in their own stories.
 
 ## Acceptance Criteria (analysis only)
-- [ ] The everit JSON schema (analysis `ValidationTool` resource) is rewritten for 2.0; `ValidationTool`
+- [x] The everit JSON schema (analysis `ValidationTool` resource) is rewritten for 2.0; `ValidationTool`
       validates 2.0.
-- [ ] `ccsh` serializes `.cc.json` in the 2.0 format by default; the reader auto-detects and reads 1.5
+- [x] `ccsh` serializes `.cc.json` in the 2.0 format by default; the reader auto-detects and reads 1.5
       and 2.0.
-- [ ] A `ccsh` **1.5 → 2.0** converter exists so existing files migrate into the suite.
-- [ ] `meta`, `files` (nested folders/files with reproducible `id` + `contentHash`), and
+- [x] A `ccsh` **1.5 → 2.0** converter exists so existing files migrate into the suite.
+- [x] `meta`, `files` (nested folders/files with reproducible `id` + `contentHash`), and
       `lenses.metrics` round-trip correctly; `dependency.edges` (by `fromId`/`toId`) round-trip correctly.
-- [ ] `id` is reproducible across tools for the same tree position; the merge resolver joins by
+- [x] `id` is reproducible across tools for the same tree position; the merge resolver joins by
       id/content/suffix and warns (never silently mis-merges) on unmatched/ambiguous input.
-- [ ] `domain`, `security`, and `clusters` are scaffolded (reserved keys); unknown lenses survive
+- [x] `domain`, `security`, and `clusters` are scaffolded (reserved keys); unknown lenses survive
       round-trip.
-- [ ] Analysis unit + integration/golden suites pass against the new format (fixtures migrated).
+- [x] Analysis unit + integration/golden suites pass against the new format (fixtures migrated).
 
 ## Out of scope (deferred)
 - Visualization reading/rendering 2.0 (separate story); `2.0 → 1.5` downconversion.

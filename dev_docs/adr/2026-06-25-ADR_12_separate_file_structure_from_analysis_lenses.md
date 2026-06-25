@@ -23,7 +23,9 @@ place for additive overlays.
 
 # Status
 
-proposed
+accepted — implemented on the analysis side (`ccsh` writes 2.0 by default and reads both 1.5 and
+2.0; the visualization migrates in its own story). See
+[the 2.0 format reference](../cc-json-2.0-format.md).
 
 # Decision
 
