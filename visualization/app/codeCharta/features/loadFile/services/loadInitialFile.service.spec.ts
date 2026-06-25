@@ -19,7 +19,7 @@ import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetr
 import { defaultFileSettings } from "../../../state/store/fileSettings/fileSettings.reducer"
 import { setDelta, setFiles } from "../../../state/store/files/files.actions"
 import { appReducers, defaultState, setStateMiddleware } from "../../../state/store/state.manager"
-import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
+import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../mocks/dataMocks"
 import { readCcState } from "../../../util/indexedDB/indexedDBWriter"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { ErrorDialogService } from "../../../features/shared/components/errorDialog/errorDialog.service"

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { FILES_ALREADY_LOADED_ERROR_MESSAGE, LoadFileService } from "./loadFile.service"
 import { LoadFileStore } from "../stores/loadFile.store"
-import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_WITH_AUTHORS, TEST_FILE_CONTENT_WITHOUT_AUTHORS } from "../../../util/dataMocks"
+import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_WITH_AUTHORS, TEST_FILE_CONTENT_WITHOUT_AUTHORS } from "../../../mocks/dataMocks"
 import { CCFile, CcState, NodeMetricData, NodeType } from "../../../codeCharta.model"
 import { removeFiles, setDeltaReference, setStandard } from "../../../state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "../../../codeCharta.api.model"

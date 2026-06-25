@@ -1,4 +1,4 @@
-import { FILE_STATES, FILE_STATES_WITHOUT_EDGES } from "../../../../util/dataMocks"
+import { FILE_STATES, FILE_STATES_WITHOUT_EDGES } from "../../../../mocks/dataMocks"
 import { sortedNodeEdgeMetricsMapSelector } from "./sortedNodeEdgeMetricsMap.selector"
 import { Store, StoreModule } from "@ngrx/store"
 import { CcState } from "../../../../codeCharta.model"

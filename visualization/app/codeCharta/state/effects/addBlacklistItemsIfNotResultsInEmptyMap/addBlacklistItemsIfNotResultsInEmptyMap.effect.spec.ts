@@ -11,7 +11,7 @@ import { getLastAction } from "../../../util/testUtils/store.utils"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.selector"
 import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../store/fileSettings/blacklist/blacklist.actions"
-import { FILE_STATES_JAVA } from "../../../util/dataMocks"
+import { FILE_STATES_JAVA } from "../../../mocks/dataMocks"
 
 describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
     const mockedErrorDialogService = { open: jest.fn() }

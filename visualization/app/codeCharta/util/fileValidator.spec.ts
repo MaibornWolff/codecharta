@@ -4,7 +4,7 @@ import {
     TEST_FILE_CONTENT_INVALID_MAJOR_API,
     TEST_FILE_CONTENT_INVALID_MINOR_API,
     TEST_FILE_CONTENT_NO_API
-} from "./dataMocks"
+} from "../mocks/dataMocks"
 import { CodeMapNode, NameDataPair, NodeType } from "../codeCharta.model"
 import packageJson from "../../../package.json"
 import { checkErrors, checkWarnings, ERROR_MESSAGES } from "./fileValidator"

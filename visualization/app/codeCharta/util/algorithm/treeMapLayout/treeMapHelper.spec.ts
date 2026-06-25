@@ -1,6 +1,6 @@
 import { TreeMapHelper } from "./treeMapHelper"
 import { CcState, CodeMapNode, ColorMode, EdgeVisibility, NodeType } from "../../../codeCharta.model"
-import { STATE } from "../../dataMocks"
+import { STATE } from "../../../mocks/dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { clone } from "../../clone"
 

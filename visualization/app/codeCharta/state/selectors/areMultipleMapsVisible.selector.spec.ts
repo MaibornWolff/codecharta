@@ -1,6 +1,6 @@
 import { areMultipleMapsVisibleSelector } from "./areMultipleMapsVisible.selector"
 import { FileSelectionState, FileState } from "../../model/files/files"
-import { FILE_STATES, FILE_STATES_TWO_FILES, TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../util/dataMocks"
+import { FILE_STATES, FILE_STATES_TWO_FILES, TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../mocks/dataMocks"
 
 describe("areMultipleMapsVisibleSelector", () => {
     it("should be true when more than one map is selected in standard mode", () => {

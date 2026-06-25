@@ -9,7 +9,7 @@ import {
     FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE,
     VALID_NODE_WITH_PATH_AND_DELTAS,
     VALID_BIG_NODE_WITH_DELTAS
-} from "../../dataMocks"
+} from "../../../mocks/dataMocks"
 import { klona } from "klona"
 import { NodeDecorator } from "../../nodeDecorator"
 import { fileWithFixedFolders } from "../../../resources/fixed-folders/fixed-folders-example"

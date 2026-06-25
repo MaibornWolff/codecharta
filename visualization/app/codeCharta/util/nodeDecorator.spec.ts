@@ -1,4 +1,4 @@
-import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "../mocks/dataMocks"
 import {
     CCFile,
     CodeMapNode,

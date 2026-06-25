@@ -1,5 +1,12 @@
 import { DeltaGenerator } from "./deltaGenerator"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_DELTA_MAP_C, TEST_DELTA_MAP_D, TEST_DELTA_MAP_E, TEST_DELTA_MAP_F } from "./dataMocks"
+import {
+    TEST_DELTA_MAP_A,
+    TEST_DELTA_MAP_B,
+    TEST_DELTA_MAP_C,
+    TEST_DELTA_MAP_D,
+    TEST_DELTA_MAP_E,
+    TEST_DELTA_MAP_F
+} from "../mocks/dataMocks"
 import { CCFile, FileCount, NodeType } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { clone } from "./clone"

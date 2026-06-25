@@ -3,7 +3,7 @@ import { Store, StoreModule } from "@ngrx/store"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { addFile, removeFiles, setStandard } from "../../../../state/store/files/files.actions"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
-import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../../util/dataMocks"
+import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../../mocks/dataMocks"
 import { MapSelectorComponent } from "./mapSelector.component"
 
 describe("MapSelectorComponent", () => {

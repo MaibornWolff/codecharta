@@ -1,5 +1,5 @@
 import { Box3 } from "three"
-import { DEFAULT_STATE, INCOMING_NODE, OUTGOING_NODE, TEST_NODE_LEAF, TEST_NODE_ROOT } from "../../../util/dataMocks"
+import { DEFAULT_STATE, INCOMING_NODE, OUTGOING_NODE, TEST_NODE_LEAF, TEST_NODE_ROOT } from "../../../mocks/dataMocks"
 import { CodeMapBuilding } from "./codeMapBuilding"
 
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(

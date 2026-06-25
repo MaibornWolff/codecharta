@@ -24,7 +24,7 @@ import { hierarchy } from "d3-hierarchy"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import packageJson from "../../../package.json"
-import { isLeaf } from "./codeMapHelper"
+import { isLeaf } from "../util/codeMapHelper"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 
 const DEFAULT_FILE_META = {

@@ -4,7 +4,7 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
 import { ThreeSceneService } from "../threeViewer/threeSceneService"
 import { Object3D, Vector3 } from "three"
-import { OUTGOING_NODE, DIFFERENT_NODE, INCOMING_NODE, VALID_EDGES_DECORATED } from "../../../util/dataMocks"
+import { OUTGOING_NODE, DIFFERENT_NODE, INCOMING_NODE, VALID_EDGES_DECORATED } from "../../../mocks/dataMocks"
 import {
     CODE_MAP_BUILDING,
     CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE,

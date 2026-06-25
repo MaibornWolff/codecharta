@@ -9,7 +9,7 @@ import {
     switchReferenceAndComparison
 } from "../../../../state/store/files/files.actions"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
-import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../../util/dataMocks"
+import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../../mocks/dataMocks"
 import { DeltaSelectorComponent } from "./deltaSelector.component"
 
 describe("DeltaSelectorComponent", () => {

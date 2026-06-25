@@ -13,7 +13,7 @@ import * as resetChosenMetricsEffect from "../../../../../state/effects/resetCho
 import { metricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { setState } from "../../../../../state/store/state.actions"
 import { defaultState } from "../../../../../state/store/state.manager"
-import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../../util/dataMocks"
+import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../../mocks/dataMocks"
 import * as indexedDBWriter from "../../../../../util/indexedDB/indexedDBWriter"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 

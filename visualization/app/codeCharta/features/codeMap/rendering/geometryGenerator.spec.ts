@@ -1,6 +1,6 @@
 import { Node } from "../../../codeCharta.model"
 import { clone } from "../../../util/clone"
-import { STATE, TEST_NODE_ROOT } from "../../../util/dataMocks"
+import { STATE, TEST_NODE_ROOT } from "../../../mocks/dataMocks"
 import { BuildResult, GeometryGenerator } from "./geometryGenerator"
 import { InstancedBufferAttribute, InstancedMesh, Matrix4 } from "three"
 

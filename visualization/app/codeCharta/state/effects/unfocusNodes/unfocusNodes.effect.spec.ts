@@ -3,7 +3,7 @@ import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/vis
 import { unfocusAllNodes } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { UnfocusNodesEffect } from "./unfocusNodes.effect"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { FILE_STATES } from "../../../util/dataMocks"
+import { FILE_STATES } from "../../../mocks/dataMocks"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { EffectsModule } from "@ngrx/effects"
 

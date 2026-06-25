@@ -1,5 +1,5 @@
 import { getPartialDefaultState } from "./getPartialDefaultState"
-import { DEFAULT_STATE } from "../../../util/dataMocks"
+import { DEFAULT_STATE } from "../../../mocks/dataMocks"
 
 jest.mock("../../../state/selectors/accumulatedData/codeMapNodes.selector", () => ({
     codeMapNodesSelector: jest.fn(() => Array.from({ length: 500 }).fill({}))
