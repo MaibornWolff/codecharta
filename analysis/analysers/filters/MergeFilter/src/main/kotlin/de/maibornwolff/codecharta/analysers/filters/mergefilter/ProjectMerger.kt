@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -21,6 +22,17 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
             ).build()
 
         else -> throw MergeException("API versions not supported.")
+    }
+
+    // Each lens owns how its attribute types and descriptors combine; the merger only delegates.
+    private val mergedMetricsLens by lazy { projects.map { it.lenses.metrics }.reduce { acc, lens -> acc.merge(lens) } }
+    private val mergedDependencyLens by lazy {
+        projects.map { it.lenses.dependency }.reduce {
+            acc,
+            lens
+            ->
+            acc.merge(lens, mergeEdges = false)
+        }
     }
 
     private fun areAllAPIVersionsCompatible(): Boolean {
@@ -46,7 +58,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return mergedNodes
     }
 
-    private fun mergeEdges(): MutableList<Edge> = if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
+    private fun mergeEdges(): MutableList<Edge> = if (nodeMerger.mergesEdges) {
         getMergedEdges()
     } else {
         getEdgesOfMainAndWarnIfDiscards()
@@ -78,61 +90,17 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private fun mergeAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
         val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-
-        projects.forEach {
-            it.attributeTypes.forEach { attributeTypes ->
-                val key: String = attributeTypes.key
-                val mergedAttributeType = mergedAttributeTypes[key]
-                if (mergedAttributeType != null) {
-                    attributeTypes.value.forEach { attribute ->
-                        if (!mergedAttributeType.containsKey(attribute.key)) {
-                            mergedAttributeType[attribute.key] = attribute.value
-                        }
-                    }
-                } else {
-                    mergedAttributeTypes[key] = attributeTypes.value
-                }
-            }
+        if (mergedMetricsLens.attributeTypes.isNotEmpty()) {
+            mergedAttributeTypes[LensSet.NODES_KEY] = mergedMetricsLens.attributeTypes.toMutableMap()
+        }
+        if (mergedDependencyLens.attributeTypes.isNotEmpty()) {
+            mergedAttributeTypes[LensSet.EDGES_KEY] = mergedDependencyLens.attributeTypes.toMutableMap()
         }
         return mergedAttributeTypes
     }
 
-    private fun mergeAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
-        val mergedAttributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
-        projects.forEach { project ->
-            project.attributeDescriptors.forEach {
-                val existingAttributeDescriptor = mergedAttributeDescriptors[it.key]
-                if (it.value.analyzers.isEmpty()) it.value.analyzers = setOf("Unknown")
-
-                if (existingAttributeDescriptor == null) {
-                    mergedAttributeDescriptors[it.key] = it.value
-                } else {
-                    showWarningIfAttributeDescriptorsDiffer(existingAttributeDescriptor, it.key, it.value)
-                    existingAttributeDescriptor.analyzers = existingAttributeDescriptor.analyzers union it.value.analyzers
-                }
-            }
-        }
-        return mergedAttributeDescriptors
-    }
-
-    private fun showWarningIfAttributeDescriptorsDiffer(
-        existingAttributeDescriptor: AttributeDescriptor,
-        metric: String,
-        newAttributeDescriptor: AttributeDescriptor
-    ) {
-        if (existingAttributeDescriptor.title != newAttributeDescriptor.title) {
-            Logger.info { "Title of '$metric' metric differs between files! Using value of first file..." }
-        }
-        if (existingAttributeDescriptor.description != newAttributeDescriptor.description) {
-            Logger.info { "Description of '$metric' metric differs between files! Using value of first file..." }
-        }
-        if (existingAttributeDescriptor.link != newAttributeDescriptor.link) {
-            Logger.info { "Link of '$metric' metric differs between files! Using value of first file..." }
-        }
-        if (existingAttributeDescriptor.direction != newAttributeDescriptor.direction) {
-            Logger.info { "Direction of '$metric' metric differs between files! Using value of first file..." }
-        }
-    }
+    private fun mergeAttributeDescriptors(): MutableMap<String, AttributeDescriptor> =
+        (mergedMetricsLens.attributeDescriptors + mergedDependencyLens.attributeDescriptors).toMutableMap()
 
     private fun mergeBlacklist(): MutableList<BlacklistItem> {
         val mergedBlacklist = mutableListOf<BlacklistItem>()

@@ -13,7 +13,7 @@ import kotlin.test.assertFailsWith
 const val TEST_JSON_FILE = "test.json"
 
 class ProjectMergerTest {
-    private val nodeMergerStrategy = RecursiveNodeMergerStrategy()
+    private val nodeMergerStrategy = MergeResolverStrategy.recursive()
 
     @Test
     fun `should throw an exception for unsupported api version`() {
@@ -130,7 +130,7 @@ class ProjectMergerTest {
                 )
             )
         val projectList = listOf(originalProject1, originalProject2)
-        val nodeMergerStrategy: NodeMergerStrategy = LeafNodeMergerStrategy(false)
+        val nodeMergerStrategy: NodeMergerStrategy = MergeResolverStrategy.leaf(false)
         val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
 
         assertNotEquals(project, originalProject1)

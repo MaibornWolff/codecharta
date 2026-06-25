@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class RecursiveNodeMergerTest {
-    private val merger = RecursiveNodeMergerStrategy()
+    private val merger = MergeResolverStrategy.recursive()
 
     @Test
     fun `should merge nodes`() {

@@ -73,7 +73,7 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
 
         fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project = ProjectMerger(
             listOf(pipedProject, currentProject),
-            RecursiveNodeMergerStrategy(false)
+            MergeResolverStrategy.recursive(false)
         ).merge()
 
         @JvmStatic
@@ -85,8 +85,8 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
 
     override fun call(): Unit? {
         val nodeMergerStrategy = when {
-            leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
-            recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
+            leafStrategySet -> MergeResolverStrategy.leaf(addMissingNodes, ignoreCase)
+            recursiveStrategySet && !leafStrategySet -> MergeResolverStrategy.recursive(ignoreCase)
             else -> throw IllegalArgumentException("At least one merging strategy must be set")
         }
 
