@@ -113,7 +113,10 @@ module.exports = {
             dependencyTypes: ["npm", "npm-dev", "npm-optional", "npm-peer", "npm-bundled", "npm-no-pkg"]
         },
         exclude: {
-            path: "(^|/)node_modules/(?!@(ngrx|angular)/)"
+            // Test fixtures are not production architecture: keep the mocks/ folder and
+            // any *.mocks.ts file out of the dependency graph and the boundary rules so
+            // they don't obscure real structure (they are only ever imported by tests).
+            path: ["(^|/)node_modules/(?!@(ngrx|angular)/)", "^app/codeCharta/mocks/", "\\.mocks\\.ts$"]
         },
         tsPreCompilationDeps: true,
         tsConfig: {
