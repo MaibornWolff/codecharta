@@ -1,5 +1,5 @@
 import { validateGameObjects } from "./gameObjectsValidator"
-import { clone } from "../clone"
+import { clone } from "../../../../util/clone"
 import { TEST_GAMEOBJECTS_FILE } from "./gameObjectsMocks"
 
 describe("GameObjectsValidator", () => {
