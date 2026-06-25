@@ -1,5 +1,11 @@
 import { AttributeDescriptors, AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage } from "./codeCharta.model"
 
+export interface NameDataPair {
+    fileName: string
+    fileSize: number
+    content: ExportCCFile
+}
+
 export interface ExportCCFile {
     projectName: string
     apiVersion: string

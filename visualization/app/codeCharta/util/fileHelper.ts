@@ -1,5 +1,6 @@
 import { ExportBlacklistType, ExportCCFile, ExportWrappedCCFile, OldAttributeTypes } from "../codeCharta.api.model"
-import { AttributeDescriptors, AttributeTypes, BlacklistItem, CCFile, NameDataPair } from "../codeCharta.model"
+import { AttributeDescriptors, AttributeTypes, BlacklistItem, CCFile } from "../codeCharta.model"
+import { NameDataPair } from "../codeCharta.api.model"
 import { FileSelectionState, FileState } from "../model/files/files"
 import md5 from "md5"
 import { clone } from "./clone"

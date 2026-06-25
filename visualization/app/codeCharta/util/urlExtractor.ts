@@ -1,6 +1,6 @@
 import { HttpClient, HttpResponse } from "@angular/common/http"
 import { firstValueFrom } from "rxjs"
-import { NameDataPair } from "../codeCharta.model"
+import { NameDataPair } from "../codeCharta.api.model"
 import { getCCFileAndDecorateFileChecksum } from "./fileHelper"
 import { ExportCCFile, ExportWrappedCCFile } from "../codeCharta.api.model"
 import { ungzip } from "pako"

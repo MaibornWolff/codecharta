@@ -1,5 +1,6 @@
 import { ExportBlacklistType, ExportCCFile } from "../codeCharta.api.model"
-import { AttributeTypeValue, CCFile, NameDataPair } from "../codeCharta.model"
+import { AttributeTypeValue, CCFile } from "../codeCharta.model"
+import { NameDataPair } from "../codeCharta.api.model"
 import { getCCFile, getCCFileAndDecorateFileChecksum, getSelectedFilesSize } from "./fileHelper"
 import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "../mocks/dataMocks"
 import { clone } from "./clone"

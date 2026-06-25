@@ -1,4 +1,5 @@
-import { NodeMetricData, CcState, CodeMapNode, Node, NameDataPair } from "../../../codeCharta.model"
+import { NodeMetricData, CcState, CodeMapNode, Node } from "../../../codeCharta.model"
+import { NameDataPair } from "../../../codeCharta.api.model"
 import {
     METRIC_DATA,
     TEST_FILE_WITH_PATHS,

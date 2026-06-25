@@ -1,6 +1,4 @@
 import { Vector3 } from "three"
-import { ExportCCFile } from "./codeCharta.api.model"
-import { FileState } from "./model/files/files"
 import Rectangle from "./util/algorithm/streetLayout/rectangle"
 
 export type Scaling = {
@@ -9,10 +7,16 @@ export type Scaling = {
     z: number
 }
 
-export interface NameDataPair {
-    fileName: string
-    fileSize: number
-    content: ExportCCFile
+export interface FileState {
+    file: CCFile
+    selectedAs: FileSelectionState
+}
+
+export enum FileSelectionState {
+    Reference = "Reference",
+    Comparison = "Comparison",
+    Partial = "Partial",
+    None = "None"
 }
 
 export enum LayoutAlgorithm {
