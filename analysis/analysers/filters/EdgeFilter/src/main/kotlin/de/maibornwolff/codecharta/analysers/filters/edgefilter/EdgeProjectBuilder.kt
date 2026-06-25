@@ -166,8 +166,5 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         return aggregatedAttributes
     }
 
-    private fun getAttributeTypeByKey(key: String): AttributeType {
-        val edgeAttributeTypes: Map<String, AttributeType> = project.attributeTypes["edges"] ?: return AttributeType.ABSOLUTE
-        return edgeAttributeTypes[key] ?: AttributeType.ABSOLUTE
-    }
+    private fun getAttributeTypeByKey(key: String): AttributeType = project.lenses.dependency.attributeTypes[key] ?: AttributeType.ABSOLUTE
 }

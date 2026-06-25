@@ -84,6 +84,29 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
+    fun `should lift non-numeric and folder-aggregated metrics into the metrics lens by id`() {
+        // Arrange: a file with a non-numeric authors list (GitLog/SVN) and a folder carrying
+        // aggregated metrics (NodeMaxAttributeMerger / EdgeFilter write onto folders).
+        val appNode =
+            Node("App.kt", NodeType.File, mapOf("commits" to 5.0, "authors" to listOf("alice", "bob")), "", setOf(), checksum = "h1")
+        val srcNode = Node("src", NodeType.Folder, mapOf("commits" to 5.0), "", setOf(appNode))
+        val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(srcNode))
+        val project = Project("p", listOf(root), Project.API_VERSION, lenses = de.maibornwolff.codecharta.model.LensSet())
+
+        // Act
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)).asJsonObject
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO))
+
+        // Assert: both the leaf authors list and the folder metric are keyed by their node id.
+        val attributes = json.getAsJsonObject("lenses").getAsJsonObject("metrics").getAsJsonObject("attributes")
+        val appId = NodeId.fromSegments(listOf("src", "App.kt"))
+        val srcId = NodeId.fromSegments(listOf("src"))
+        assertTrue(attributes.getAsJsonObject(appId).getAsJsonArray("authors").size() == 2)
+        assertTrue(attributes.getAsJsonObject(srcId).has("commits"))
+        assertEquals(semantic15(project), semantic15(roundTripped))
+    }
+
+    @Test
     fun `should round-trip 2_0 idempotently`() {
         val onceThrough = ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)
         val twiceThrough = ProjectSerializer.serializeToString(ProjectDeserializer.deserializeProject(onceThrough), ApiVersion.TWO_ZERO)
