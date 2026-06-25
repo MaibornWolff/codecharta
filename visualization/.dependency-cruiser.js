@@ -105,6 +105,27 @@ module.exports = {
             to: {
                 path: "@ngrx/store"
             }
+        },
+        {
+            name: "wire-dto-only-in-serialization-boundary",
+            severity: "error",
+            comment:
+                "codeCharta.api.model is the cc.json wire DTO — the data contract with the CLI. Only the serialization/ingestion boundary may depend on it: the loadFile feature (load/parse/validate), the navBar gameObjects importer, and util/fileDownloader (export). Keeping it out of rendering/state/UI means a future cc.json format change (2.0) stays contained to the converter. Test/mocks/fixtures are exempt.",
+            from: {
+                pathNot: [
+                    "^app/codeCharta/features/loadFile/",
+                    "^app/codeCharta/features/navBar/util/gameObjectsParser/",
+                    "^app/codeCharta/util/fileDownloader\\.ts$",
+                    "^app/codeCharta/mocks/",
+                    "^app/codeCharta/resources/",
+                    "\\.spec\\.ts$",
+                    "\\.e2e\\.ts$",
+                    "\\.mocks\\.ts$"
+                ]
+            },
+            to: {
+                path: "^app/codeCharta/codeCharta\\.api\\.model\\.ts$"
+            }
         }
     ],
     options: {

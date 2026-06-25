@@ -17,7 +17,7 @@ import { metricDataSelector } from "../../../state/selectors/accumulatedData/met
 import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { setCurrentFilesAreSampleFiles } from "../../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
-import { getCCFileAndDecorateFileChecksum } from "../../../util/fileHelper"
+import { getCCFileAndDecorateFileChecksum } from "../util/ccFileHelper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock

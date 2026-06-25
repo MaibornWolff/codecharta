@@ -13,7 +13,7 @@ import { ErrorDialogService } from "../../../features/shared/components/errorDia
 import { buildHtmlMessage } from "./loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../util/fileParser"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "./loadFile.service"
-import { UrlExtractor } from "../../../util/urlExtractor"
+import { UrlExtractor } from "../util/urlExtractor"
 import { LoadInitialFileStore } from "../stores/loadInitialFile.store"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
