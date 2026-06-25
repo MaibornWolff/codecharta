@@ -1,9 +1,47 @@
 package de.maibornwolff.codecharta.analysers.importers.dependacharta
 
+import de.maibornwolff.codecharta.model.Path
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class DcJsonParserTest {
+    @Test
+    fun `should produce one file node for paths that canonicalize to the same position`() {
+        val leaves = mapOf(
+            "a" to DcLeaf(id = "a", name = "A", physicalPath = "src/./Foo.ts"),
+            "b" to DcLeaf(id = "b", name = "B", physicalPath = "src/Foo.ts")
+        )
+
+        val nodes = DcJsonParser.parseFileNodes(DcProject(leaves = leaves))
+
+        assertThat(nodes).hasSize(1)
+        assertThat(nodes[0].first).isEqualTo(Path(listOf("src")))
+        assertThat(nodes[0].second.name).isEqualTo("Foo.ts")
+    }
+
+    @Test
+    fun `should split backslash separated physical paths into folders`() {
+        val leaves = mapOf("a" to DcLeaf(id = "a", name = "A", physicalPath = "src\\sub\\Foo.ts"))
+
+        val nodes = DcJsonParser.parseFileNodes(DcProject(leaves = leaves))
+
+        assertThat(nodes).hasSize(1)
+        assertThat(nodes[0].first).isEqualTo(Path(listOf("src", "sub")))
+        assertThat(nodes[0].second.name).isEqualTo("Foo.ts")
+    }
+
+    @Test
+    fun `should treat dot-normalized paths as the same file when filtering self edges`() {
+        val leaves = mapOf(
+            "a" to DcLeaf(id = "a", name = "A", physicalPath = "src/./Foo.ts", dependencies = mapOf("b" to DcDependency())),
+            "b" to DcLeaf(id = "b", name = "B", physicalPath = "src/Foo.ts")
+        )
+
+        val edges = DcJsonParser.parseEdges(DcProject(leaves = leaves))
+
+        assertThat(edges).isEmpty()
+    }
+
     @Test
     fun `should create single edge for simple dependency`() {
         // Arrange

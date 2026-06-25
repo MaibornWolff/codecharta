@@ -27,10 +27,18 @@ object NodeId {
     const val SEPARATOR = "/"
 
     /**
+     * The canonicalized segment list of a tree position (root excluded): empty segments dropped, `.`
+     * removed, `..` collapsed, each segment NFC-normalized, case preserved. Producers that build a
+     * node tree from raw paths should derive their positions through this so the tree position and
+     * the [id] always agree.
+     */
+    fun canonicalSegments(segments: List<String>): List<String> = canonicalize(segments)
+
+    /**
      * The canonical path string for the node reached by following [segments] from the root's
      * children down. The root is excluded, so the root node itself canonicalizes to `"/"`.
      */
-    fun canonicalPath(segments: List<String>): String = SEPARATOR + canonicalize(segments).joinToString(SEPARATOR)
+    fun canonicalPath(segments: List<String>): String = SEPARATOR + canonicalSegments(segments).joinToString(SEPARATOR)
 
     /** id of the node at [segments] = the first [ID_LENGTH] hex chars of `sha-256(canonicalPath)`. */
     fun fromSegments(segments: List<String>): String = idFromCanonicalPath(canonicalPath(segments))
