@@ -26,7 +26,8 @@ include(
 include("analysers:exporters:CSVExporter")
 include(
     "analysers:tools:ValidationTool",
-    "analysers:tools:InspectionTool"
+    "analysers:tools:InspectionTool",
+    "analysers:tools:ConvertTool"
 )
 
 rootProject.name = "codecharta"

@@ -27,6 +27,7 @@ dependencies {
             ":analysers:parsers:GitLogParser",
             ":analysers:parsers:RawTextParser",
             ":analysers:tools:InspectionTool",
+            ":analysers:tools:ConvertTool",
             ":analysers:AnalyserInterface",
             ":analysers:parsers:UnifiedParser",
             ":dialogProvider",
