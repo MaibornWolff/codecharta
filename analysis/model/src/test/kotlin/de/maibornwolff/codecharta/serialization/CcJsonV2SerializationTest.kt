@@ -107,6 +107,22 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
+    fun `should drop the blacklist from the 2_0 wire but keep it in 1_5`() {
+        val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(Node("App.kt", NodeType.File)))
+        val blacklist =
+            listOf(de.maibornwolff.codecharta.model.BlacklistItem("/root/App.kt", de.maibornwolff.codecharta.model.BlacklistType.EXCLUDE))
+        val project = Project("p", listOf(root), Project.API_VERSION, listOf(), mapOf(), mapOf(), blacklist)
+
+        val v2 = ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)
+        val v1 = ProjectSerializer.serializeToString(project, ApiVersion.ONE_FIVE)
+
+        assertFalse(v2.contains("blacklist"))
+        assertTrue(v1.contains("blacklist"))
+        // A project read back from 2.0 carries an empty blacklist, so analysis consumers never choke.
+        assertTrue(ProjectDeserializer.deserializeProject(v2).blacklist.isEmpty())
+    }
+
+    @Test
     fun `should round-trip 2_0 idempotently`() {
         val onceThrough = ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)
         val twiceThrough = ProjectSerializer.serializeToString(ProjectDeserializer.deserializeProject(onceThrough), ApiVersion.TWO_ZERO)

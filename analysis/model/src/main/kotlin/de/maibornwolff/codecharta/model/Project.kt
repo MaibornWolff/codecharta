@@ -11,6 +11,9 @@ class Project(
     private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
     val apiVersion: String = API_VERSION,
     val lenses: LensSet,
+    // blacklist is visualization view state: it is dropped from the 2.0 wire format but kept on the
+    // domain as a 1.5/filter-time concept for its analysis consumers (MergeFilter dedup,
+    // StructureModifier and LargeMerge path rewrites). A project read from 2.0 carries an empty list.
     var blacklist: List<BlacklistItem> = listOf()
 ) {
     init {
