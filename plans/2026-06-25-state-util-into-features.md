@@ -1,8 +1,39 @@
 ---
 title: Moving state/ and util/ into features/
 date: 2026-06-25
-state: todo
+state: complete
 source: ultracode fan-out (109 agents) classifying all state/ + util/ modules by consuming feature
+---
+
+## ⚠️ Implementation outcome (2026-06-25) — read this first
+
+The fan-out report below **substantially over-predicted** what can move. Every candidate
+was re-verified against the real import graph with `npm run lint:architecture`
+(dependency-cruiser) + targeted jest. Root cause of the over-prediction: the per-module
+classifiers grepped the path fragment `util/<name>/` and the `app/codeCharta/` tree only,
+so they missed (a) intra-`util/` relative imports like `../../color/...`, (b) state-core
+consumers reached via non-fragment paths, and (c) `app/app.config.ts` (outside
+`app/codeCharta/`) where every effect is registered.
+
+**Applied (committed, dependency-cruiser 0 errors):**
+- ✅ `util/gameObjectsParser/` → `features/navBar/util/gameObjectsParser/` (sole consumer `readFiles.ts`).
+- ✅ Deleted dead `util/pipes/truncateText.pipe.ts` (no template/class references).
+
+**Reclassified to KEEP_SHARED after verification:**
+- `util/color/` — `gradientCalculator` is used by shared `util/algorithm/treeMapLayout/treeMapHelper.ts`; `hsl` by shared `util/fileExtension/`; `colorConverter` is pulled in by `gradientCalculator`. Moving it inverts util→feature.
+- `util/fileHelper.ts` — imported by shared `util/codeMapHelper.ts`, `util/urlExtractor.ts`, `util/fileParser.ts`.
+- `util/fileParser.ts` + `util/fileValidator.ts` — mutually coupled; `getNameDataPair` is a real loadFile fn also used as a **cross-feature test fixture** (globalSettings spec). Moving needs logic duplication or a fragile spec rewrite, for files that still depend on shared util anyway.
+- selector `amountOfBuildingsWithSelectedEdgeMetric` — also consumed by the state-core `updateAmountOfEdgePreviews` effect, not just metricsBar.
+
+**Valid but DECLINED by maintainer (left global):**
+- The 4 single-owner effects (`blacklistExtension`→fileExtensionBar, `resetChosenMetrics`→globalSettings, `updateQueryParameters`→loadFile, `blacklistSearchPattern`→sidebarExplorer). They are genuinely single-feature, but relocating requires a new pattern (effect under `features/<x>/stores/`, re-exported via `facade.ts`, registered from `app.config.ts`). Maintainer chose to keep effects global until that pattern is settled.
+- The 4 "DELETE candidate" effects (`unfocusNodes`, `linkColorMetricToHeightMetric`, `resetSelectedEdgeMetricWhenItDoesntExistAnymore`, `updateMapColors`) are **NOT dead** — all are registered in `app/app.config.ts` `provideEffects([...])`. Do not delete.
+- `util/state-core/` grouping — declined (import churn not worth it).
+
+**Net:** state/util are far more interconnected than the report implied. The real lever for
+both pains remains structural, not relocation: consolidate the divergent per-slice store
+wrappers (state traceability) and, if desired, organize util/ via subfolders later.
+
 ---
 
 ## TL;DR
