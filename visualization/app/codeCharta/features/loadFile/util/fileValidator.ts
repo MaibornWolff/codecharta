@@ -1,9 +1,9 @@
-import { CodeMapNode, FixedPosition } from "../codeCharta.model"
+import { CodeMapNode, FixedPosition } from "../../../codeCharta.model"
 import Ajv, { ErrorObject } from "ajv"
-import packageJson from "../../../package.json"
-import { ExportCCFile } from "../codeCharta.api.model"
-import jsonSchema from "./generatedSchema.json"
-import { isLeaf } from "./codeMapHelper"
+import packageJson from "../../../../../package.json"
+import { ExportCCFile } from "../../../codeCharta.api.model"
+import jsonSchema from "../../../util/generatedSchema.json"
+import { isLeaf } from "../../../util/codeMapHelper"
 
 const latestApiVersion = packageJson.codecharta.apiVersion
 

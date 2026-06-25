@@ -23,7 +23,7 @@ import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELT
 import { readCcState } from "../../../util/indexedDB/indexedDBWriter"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { ErrorDialogService } from "../../../features/shared/components/errorDialog/errorDialog.service"
-import { getNameDataPair } from "../../../util/fileParser"
+import { getNameDataPair } from "../util/fileParser"
 import { LoadFileService } from "./loadFile.service"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "./loadInitialFile.service"
 import { UrlExtractor } from "../../../util/urlExtractor"

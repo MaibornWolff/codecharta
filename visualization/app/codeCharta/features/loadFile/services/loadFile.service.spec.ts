@@ -6,7 +6,7 @@ import { CCFile, CcState, NodeMetricData, NodeType } from "../../../codeCharta.m
 import { removeFiles, setDeltaReference, setStandard } from "../../../state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "../../../codeCharta.api.model"
 import { getCCFiles, isPartialState } from "../../../model/files/files.helper"
-import { CCFileValidationResult, ERROR_MESSAGES } from "../../../util/fileValidator"
+import { CCFileValidationResult, ERROR_MESSAGES } from "../util/fileValidator"
 import packageJson from "../../../../../package.json"
 import { clone } from "../../../util/clone"
 import { klona } from "klona"
