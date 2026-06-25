@@ -4,15 +4,12 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
 import { ThreeSceneService } from "../threeViewer/threeSceneService"
 import { Object3D, Vector3 } from "three"
+import { OUTGOING_NODE, DIFFERENT_NODE, INCOMING_NODE, VALID_EDGES_DECORATED } from "../../../util/dataMocks"
 import {
     CODE_MAP_BUILDING,
-    OUTGOING_NODE,
-    DIFFERENT_NODE,
-    INCOMING_NODE,
-    VALID_EDGES_DECORATED,
     CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE,
     CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE
-} from "../../../util/dataMocks"
+} from "../rendering/codeMapBuilding.mocks"
 import { CcState, Node } from "../../../codeCharta.model"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"

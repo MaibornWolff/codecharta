@@ -19,13 +19,8 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CodeMapMouseEventStore } from "./stores/codeMapMouseEvent.store"
 import { defaultState } from "../../state/store/state.manager"
 import { Box3 } from "three"
-import {
-    CODE_MAP_BUILDING,
-    CODE_MAP_BUILDING_TS_NODE,
-    CONSTANT_HIGHLIGHT,
-    TEST_FILE_WITH_PATHS,
-    TEST_NODE_ROOT
-} from "../../util/dataMocks"
+import { TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "./rendering/codeMapBuilding.mocks"
 
 jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
