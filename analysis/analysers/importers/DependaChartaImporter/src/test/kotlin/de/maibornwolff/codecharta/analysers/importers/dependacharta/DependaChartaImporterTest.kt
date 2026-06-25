@@ -83,6 +83,9 @@ class DependaChartaImporterTest {
             assertThat(project.edges.single().attributes).containsKey("dependencies")
             assertThat(setOf(project.edges.single().fromNodeName, project.edges.single().toNodeName))
                 .containsExactlyInAnyOrder("/root/src/FileA.ts", "/root/src/FileB.ts")
+            // Each file node carries its aggregated in/out dependency weight as a default node metric.
+            val fileA = project.rootNode.leafObjects.first { leaf -> leaf.name == "FileA.ts" }
+            assertThat(fileA.attributes[DcJsonParser.OUTGOING_DEPENDENCIES]).isEqualTo(3.0)
             assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
         }
     }

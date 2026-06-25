@@ -14,6 +14,26 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
                 link = "",
                 direction = -1,
                 analyzers = analyzerName
+            ),
+        DcJsonParser.OUTGOING_DEPENDENCIES to
+            AttributeDescriptor(
+                title = "Outgoing Dependencies",
+                description = "Number of code-level dependency links from this file to other files",
+                hintLowValue = "This file depends on little other code",
+                hintHighValue = "This file depends on much other code",
+                link = "",
+                direction = -1,
+                analyzers = analyzerName
+            ),
+        DcJsonParser.INCOMING_DEPENDENCIES to
+            AttributeDescriptor(
+                title = "Incoming Dependencies",
+                description = "Number of code-level dependency links from other files to this file",
+                hintLowValue = "Few files depend on this file",
+                hintHighValue = "Many files depend on this file",
+                link = "",
+                direction = -1,
+                analyzers = analyzerName
             )
     )
 }

@@ -31,6 +31,36 @@ class DcJsonParserTest {
     }
 
     @Test
+    fun `should aggregate outgoing and incoming dependency weights onto file nodes`() {
+        val leaves = mapOf(
+            "a.ClassA" to DcLeaf(
+                id = "a.ClassA",
+                name = "ClassA",
+                physicalPath = "src/FileA.ts",
+                dependencies = mapOf("b.ClassB" to DcDependency(), "b.ClassC" to DcDependency())
+            ),
+            "a.FuncD" to DcLeaf(
+                id = "a.FuncD",
+                name = "FuncD",
+                physicalPath = "src/FileA.ts",
+                dependencies = mapOf("b.ClassB" to DcDependency())
+            ),
+            "b.ClassB" to DcLeaf(id = "b.ClassB", name = "ClassB", physicalPath = "src/FileB.ts"),
+            "b.ClassC" to DcLeaf(id = "b.ClassC", name = "ClassC", physicalPath = "src/FileB.ts")
+        )
+        val project = DcProject(leaves = leaves)
+
+        val nodes = DcJsonParser.parseFileNodes(project, DcJsonParser.parseEdges(project))
+
+        val fileA = nodes.first { it.second.name == "FileA.ts" }.second
+        val fileB = nodes.first { it.second.name == "FileB.ts" }.second
+        assertThat(fileA.attributes[DcJsonParser.OUTGOING_DEPENDENCIES]).isEqualTo(3)
+        assertThat(fileA.attributes[DcJsonParser.INCOMING_DEPENDENCIES]).isEqualTo(0)
+        assertThat(fileB.attributes[DcJsonParser.INCOMING_DEPENDENCIES]).isEqualTo(3)
+        assertThat(fileB.attributes[DcJsonParser.OUTGOING_DEPENDENCIES]).isEqualTo(0)
+    }
+
+    @Test
     fun `should treat dot-normalized paths as the same file when filtering self edges`() {
         val leaves = mapOf(
             "a" to DcLeaf(id = "a", name = "A", physicalPath = "src/./Foo.ts", dependencies = mapOf("b" to DcDependency())),

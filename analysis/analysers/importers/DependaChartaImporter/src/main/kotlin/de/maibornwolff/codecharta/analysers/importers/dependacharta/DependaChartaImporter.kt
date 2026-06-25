@@ -56,11 +56,13 @@ class DependaChartaImporter(private val output: PrintStream = System.out) :
         }
 
         val dcProject = Gson().fromJson(inputFile!!.reader(), DcProject::class.java)
+        val edges = DcJsonParser.parseEdges(dcProject)
 
         val projectBuilder = ProjectBuilder()
-        DcJsonParser.parseFileNodes(dcProject).forEach { (parentPath, node) -> projectBuilder.insertByPath(parentPath, node) }
-        DcJsonParser.parseEdges(dcProject).forEach { projectBuilder.insertEdge(it) }
-        projectBuilder.addAttributeTypes(attributeTypes)
+        DcJsonParser.parseFileNodes(dcProject, edges).forEach { (parentPath, node) -> projectBuilder.insertByPath(parentPath, node) }
+        edges.forEach { projectBuilder.insertEdge(it) }
+        projectBuilder.addAttributeTypes(edgeAttributeTypes)
+        projectBuilder.addAttributeTypes(nodeAttributeTypes)
         projectBuilder.addAttributeDescriptions(getAttributeDescriptorMaps())
 
         val project = projectBuilder.build()
@@ -69,11 +71,19 @@ class DependaChartaImporter(private val output: PrintStream = System.out) :
         return null
     }
 
-    private val attributeTypes: AttributeTypes
+    private val edgeAttributeTypes: AttributeTypes
         get() {
             val types = mutableMapOf<String, AttributeType>()
             types["dependencies"] = AttributeType.ABSOLUTE
             return AttributeTypes(types, "edges")
+        }
+
+    private val nodeAttributeTypes: AttributeTypes
+        get() {
+            val types = mutableMapOf<String, AttributeType>()
+            types[DcJsonParser.OUTGOING_DEPENDENCIES] = AttributeType.ABSOLUTE
+            types[DcJsonParser.INCOMING_DEPENDENCIES] = AttributeType.ABSOLUTE
+            return AttributeTypes(types, "nodes")
         }
 
     override fun getDialog(): AnalyserDialogInterface = Dialog

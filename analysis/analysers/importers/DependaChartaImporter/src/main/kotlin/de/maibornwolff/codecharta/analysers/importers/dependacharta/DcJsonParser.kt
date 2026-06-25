@@ -9,6 +9,9 @@ import de.maibornwolff.codecharta.util.Logger
 
 object DcJsonParser {
     private const val ROOT_PREFIX = "/" + NodeId.ROOT_SEGMENT
+    private const val DEPENDENCIES = "dependencies"
+    const val OUTGOING_DEPENDENCIES = "outgoing_dependencies"
+    const val INCOMING_DEPENDENCIES = "incoming_dependencies"
 
     /**
      * One [MutableNode] per unique leaf `physicalPath`, paired with the folder [Path] to insert it
@@ -16,18 +19,36 @@ object DcJsonParser {
      * several symbols can share one file, so paths are de-duplicated. Building these nodes lets the
      * dependency edges reference real file nodes — the edge endpoints and the nodes are derived from
      * the same canonical path, so they resolve to the same id.
+     *
+     * Each file node carries its aggregated [OUTGOING_DEPENDENCIES]/[INCOMING_DEPENDENCIES] weight
+     * (summed from [edges]) so a DependaCharta map has a default node metric to size buildings by,
+     * instead of only the edge metric.
      */
-    fun parseFileNodes(dcProject: DcProject): List<Pair<Path, MutableNode>> = dcProject.leaves.values
-        .map { canonicalSegments(it.physicalPath) }
-        .filter { it.isNotEmpty() }
-        .distinct()
-        .map { segments -> Path(segments.dropLast(1)) to MutableNode(segments.last(), NodeType.File) }
+    fun parseFileNodes(dcProject: DcProject, edges: List<Edge> = emptyList()): List<Pair<Path, MutableNode>> {
+        val outgoing = edges.groupBy { it.fromNodeName }.mapValues { (_, group) -> group.sumOf { dependencyCount(it) } }
+        val incoming = edges.groupBy { it.toNodeName }.mapValues { (_, group) -> group.sumOf { dependencyCount(it) } }
+
+        return dcProject.leaves.values
+            .map { canonicalSegments(it.physicalPath) }
+            .filter { it.isNotEmpty() }
+            .distinct()
+            .map { segments ->
+                val endpoint = endpoint(segments)
+                val attributes = mapOf<String, Any>(
+                    OUTGOING_DEPENDENCIES to (outgoing[endpoint] ?: 0),
+                    INCOMING_DEPENDENCIES to (incoming[endpoint] ?: 0)
+                )
+                Path(segments.dropLast(1)) to MutableNode(segments.last(), NodeType.File, attributes)
+            }
+    }
+
+    private fun dependencyCount(edge: Edge): Int = (edge.attributes[DEPENDENCIES] as? Number)?.toInt() ?: 0
 
     fun parseEdges(dcProject: DcProject): List<Edge> = dcProject.leaves.values
         .flatMap { leaf -> resolveDependencies(leaf, dcProject.leaves) }
         .groupingBy { it }
         .eachCount()
-        .map { (endpoints, count) -> Edge(endpoints.first, endpoints.second, mapOf("dependencies" to count)) }
+        .map { (endpoints, count) -> Edge(endpoints.first, endpoints.second, mapOf(DEPENDENCIES to count)) }
 
     private fun resolveDependencies(leaf: DcLeaf, leaves: Map<String, DcLeaf>): List<Pair<String, String>> {
         val fromSegments = canonicalSegments(leaf.physicalPath)
