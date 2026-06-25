@@ -1,7 +1,13 @@
 {
-  "$ref": "#/definitions/ExportCCFile",
+  "$ref": "#/definitions/ExportCCFileAny",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "ExportCCFileAny": {
+      "anyOf": [
+        { "$ref": "#/definitions/ExportCCFile" },
+        { "$ref": "#/definitions/ExportCCFile2" }
+      ]
+    },
     "AttributeTypes": {
       "properties": {
         "edges": {
@@ -63,6 +69,9 @@
           "type": "string"
         },
         "path": {
+          "type": "string"
+        },
+        "checksum": {
           "type": "string"
         },
         "type": {
@@ -271,6 +280,117 @@
           "type": "array"
         }
       },
+      "type": "object"
+    },
+    "Meta": {
+      "properties": {
+        "projectName": { "type": "string" },
+        "apiVersion": { "type": "string" },
+        "checksum": { "type": "string" },
+        "commitHash": { "type": "string" }
+      },
+      "required": ["projectName", "apiVersion", "checksum"],
+      "type": "object"
+    },
+    "FileNode": {
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "$ref": "#/definitions/NodeType" },
+        "children": {
+          "items": { "$ref": "#/definitions/FileNode" },
+          "type": "array"
+        },
+        "contentHash": { "type": "string" },
+        "link": { "type": "string" }
+      },
+      "required": ["id", "name", "type"],
+      "type": "object"
+    },
+    "AttributeDescriptor": {
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "hintLowValue": { "type": "string" },
+        "hintHighValue": { "type": "string" },
+        "link": { "type": "string" },
+        "direction": { "type": "number" },
+        "analyzers": {
+          "items": { "type": "string" },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "Edge2": {
+      "properties": {
+        "fromId": { "type": "string" },
+        "toId": { "type": "string" },
+        "attributes": { "type": "object" }
+      },
+      "required": ["fromId", "toId"],
+      "type": "object"
+    },
+    "MetricsLens": {
+      "properties": {
+        "attributes": {
+          "additionalProperties": { "type": "object" },
+          "type": "object"
+        },
+        "attributeDescriptors": {
+          "additionalProperties": { "$ref": "#/definitions/AttributeDescriptor" },
+          "type": "object"
+        },
+        "attributeTypes": {
+          "additionalProperties": {
+            "enum": ["absolute", "relative"],
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "clusters": { "type": "array" }
+      },
+      "type": "object"
+    },
+    "DependencyLens": {
+      "properties": {
+        "edges": {
+          "items": { "$ref": "#/definitions/Edge2" },
+          "type": "array"
+        },
+        "attributeDescriptors": {
+          "additionalProperties": { "$ref": "#/definitions/AttributeDescriptor" },
+          "type": "object"
+        },
+        "attributeTypes": {
+          "additionalProperties": {
+            "enum": ["absolute", "relative"],
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "Lenses": {
+      "properties": {
+        "metrics": { "$ref": "#/definitions/MetricsLens" },
+        "dependency": { "$ref": "#/definitions/DependencyLens" },
+        "domain": { "type": "object" },
+        "security": { "type": "object" }
+      },
+      "type": "object"
+    },
+    "ExportCCFile2": {
+      "properties": {
+        "meta": { "$ref": "#/definitions/Meta" },
+        "files": {
+          "items": { "$ref": "#/definitions/FileNode" },
+          "type": "array"
+        },
+        "lenses": { "$ref": "#/definitions/Lenses" }
+      },
+      "required": ["meta", "files", "lenses"],
       "type": "object"
     }
   }

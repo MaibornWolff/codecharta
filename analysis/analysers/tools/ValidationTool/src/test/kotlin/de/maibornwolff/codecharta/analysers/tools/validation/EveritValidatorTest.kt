@@ -1,5 +1,8 @@
 package de.maibornwolff.codecharta.analysers.tools.validation
 
+import de.maibornwolff.codecharta.serialization.ApiVersion
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every
 import io.mockk.mockkObject
@@ -11,6 +14,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import picocli.CommandLine
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import kotlin.test.assertFailsWith
@@ -49,6 +53,27 @@ class EveritValidatorTest {
     @Test
     fun `should validate valid File`() {
         validator.validate(this.javaClass.classLoader.getResourceAsStream("validFile.cc.json")!!)
+    }
+
+    @Test
+    fun `should validate a 2_0 lens-format file`() {
+        val validFile = this.javaClass.classLoader
+            .getResourceAsStream("validFile.cc.json")!!
+            .bufferedReader()
+            .readText()
+        val project = ProjectDeserializer.deserializeProject(validFile)
+        val v2 = ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)
+
+        validator.validate(ByteArrayInputStream(v2.toByteArray()))
+    }
+
+    @Test
+    fun `should throw exception on a 2_0 file missing its files array`() {
+        val invalid2 = """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},"lenses":{}}"""
+
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(invalid2.toByteArray()))
+        }
     }
 
     @Test
