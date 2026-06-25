@@ -1,6 +1,6 @@
 import { TreeMapHelper } from "./treeMapHelper"
 import { CcState, CodeMapNode, ColorMode, EdgeVisibility, NodeType } from "../../../codeCharta.model"
-import { CODE_MAP_BUILDING, STATE } from "../../dataMocks"
+import { STATE } from "../../dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { clone } from "../../clone"
 
@@ -489,14 +489,6 @@ describe("TreeMapHelper", () => {
 
             expect(resultHeightZero).toBe(0)
             expect(resultHeightPositive).toBe(10)
-        })
-    })
-
-    describe("buildingArrayToMap", () => {
-        it("should convert a array of buildings to a map", () => {
-            const result = TreeMapHelper.buildingArrayToMap([CODE_MAP_BUILDING])
-
-            expect(result.get(CODE_MAP_BUILDING.id)).toEqual(CODE_MAP_BUILDING)
         })
     })
 })
