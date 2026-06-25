@@ -34,6 +34,23 @@ consumers reached via non-fragment paths, and (c) `app/app.config.ts` (outside
 both pains remains structural, not relocation: consolidate the divergent per-slice store
 wrappers (state traceability) and, if desired, organize util/ via subfolders later.
 
+## Follow-up: dependency inversions surfaced by maintainer's own analysis (CodeMapBuilding)
+
+Maintainer flagged 6 "wrongly located" dependencies (1 in algorithm, 5 in dataMocks). All 6
+were `util/ → features/codeMap` inversions caused by one thing: **`CodeMapBuilding`** (a
+codeMap rendering class, correctly located in the feature) being reached *up into* from shared
+`util/`. Fixed by moving the misplaced **consumers** down, not the class:
+
+- ✅ Deleted dead `TreeMapHelper.buildingArrayToMap` (no production callers; only reason
+  `util/algorithm/treeMapHelper` imported `CodeMapBuilding`). Broke the `treeMapHelper ↔ codeMap`
+  cycle → **`no-circular` warnings 126 → 96**.
+- ✅ Moved the 5 `CodeMapBuilding` test fixtures (`CODE_MAP_BUILDING*`, `CONSTANT_HIGHLIGHT`) out
+  of the shared `util/dataMocks` god-file into `features/codeMap/rendering/codeMapBuilding.mocks.ts`
+  (consumed only by 3 codeMap specs). Removed the last `dataMocks → codeMap` inversion.
+
+Both verified: dependency-cruiser 0 errors, jest green. `CodeMapBuilding` stays in codeMap.
+Remaining `util → state` edges (e.g. dataMocks → state selectors) are a separate, milder concern.
+
 ---
 
 ## TL;DR
