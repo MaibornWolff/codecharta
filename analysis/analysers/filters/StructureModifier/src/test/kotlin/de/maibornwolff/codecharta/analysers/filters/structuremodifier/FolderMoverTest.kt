@@ -92,11 +92,11 @@ class FolderMoverTest {
     @Test
     fun `should copy unaffected edges`() {
         val folderMover = FolderMover(sampleProject)
-        val unaffectedEdge = sampleProject.edges[3]
+        val unaffectedEdge = sampleProject.lenses.dependency.edges[3]
 
         val result = folderMover.move("/root/foo/", "/root/bar")
 
-        Assertions.assertThat(result!!.edges).contains(unaffectedEdge)
+        Assertions.assertThat(result!!.lenses.dependency.edges).contains(unaffectedEdge)
     }
 
     @Test
@@ -105,9 +105,9 @@ class FolderMoverTest {
 
         val result = folderMover.move("/root/foo", "root/bar/")!!
 
-        val firstEdge = result.edges[0]
-        val secondEdge = result.edges[1]
-        val thirdEdge = result.edges[2]
+        val firstEdge = result.lenses.dependency.edges[0]
+        val secondEdge = result.lenses.dependency.edges[1]
+        val thirdEdge = result.lenses.dependency.edges[2]
         Assertions.assertThat(firstEdge.toNodeName).isEqualTo("/root/bar/file2")
         Assertions.assertThat(secondEdge.fromNodeName).isEqualTo("/root/bar/file1")
         Assertions.assertThat(thirdEdge.toNodeName).isEqualTo("/root/bar/file3")
@@ -120,8 +120,8 @@ class FolderMoverTest {
 
         val result = folderMover.move("/root/foo", "/root/bar")!!
 
-        val firstEdge = result.edges[0]
-        val secondEdge = result.edges[1]
+        val firstEdge = result.lenses.dependency.edges[0]
+        val secondEdge = result.lenses.dependency.edges[1]
         Assertions.assertThat(firstEdge.fromNodeName).isEqualTo("/root/file1")
         Assertions.assertThat(secondEdge.toNodeName).isEqualTo("/root/file2")
     }

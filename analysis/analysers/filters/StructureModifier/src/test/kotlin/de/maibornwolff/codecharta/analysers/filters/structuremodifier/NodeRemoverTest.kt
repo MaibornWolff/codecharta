@@ -93,17 +93,21 @@ class NodeRemoverTest {
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
         // then
-        Assertions.assertThat(result.edges.size).isEqualTo(1)
-        Assertions.assertThat(result.edges.first()).usingRecursiveComparison().isEqualTo(sampleProject.edges.last())
+        Assertions.assertThat(result.lenses.dependency.edges.size).isEqualTo(1)
         Assertions
             .assertThat(
-                result.edges.map {
+                result.lenses.dependency.edges.first()
+            ).usingRecursiveComparison()
+            .isEqualTo(sampleProject.lenses.dependency.edges.last())
+        Assertions
+            .assertThat(
+                result.lenses.dependency.edges.map {
                     it.fromNodeName
                 }
             ).doesNotContain("/root/foo")
         Assertions
             .assertThat(
-                result.edges.map {
+                result.lenses.dependency.edges.map {
                     it.toNodeName
                 }
             ).doesNotContain("/root/foo")
@@ -120,16 +124,16 @@ class NodeRemoverTest {
         val result = subProjectExtractor.remove(toExclude)
 
         // then
-        Assertions.assertThat(result.edges.size).isEqualTo(2)
+        Assertions.assertThat(result.lenses.dependency.edges.size).isEqualTo(2)
         Assertions
             .assertThat(
-                result.edges.map {
+                result.lenses.dependency.edges.map {
                     it.fromNodeName
                 }
             ).doesNotContainAnyElementsOf(shouldBeExcluded)
         Assertions
             .assertThat(
-                result.edges.map {
+                result.lenses.dependency.edges.map {
                     it.toNodeName
                 }
             ).doesNotContainAnyElementsOf(shouldBeExcluded)
@@ -160,7 +164,7 @@ class NodeRemoverTest {
         val resultProject = NodeRemover(attributeProject).remove(arrayOf("/root/bigLeaf.ts"))
 
         // then
-        assertEquals(attributeProject.attributeDescriptors.size, resultProject.attributeDescriptors.size)
+        assertEquals(attributeProject.lenses.allAttributeDescriptors().size, resultProject.lenses.allAttributeDescriptors().size)
     }
 
     @Test
@@ -173,9 +177,9 @@ class NodeRemoverTest {
         val resultProject = NodeRemover(attributeProject).remove(arrayOf("/root/AnotherParentLeaf"))
 
         // then
-        assertEquals(resultProject.attributeDescriptors.size, 3)
-        assertEquals(resultProject.attributeDescriptors["rloc"]!!.description, "1")
-        assertEquals(resultProject.attributeDescriptors["yrloc"], null)
+        assertEquals(resultProject.lenses.allAttributeDescriptors().size, 3)
+        assertEquals(resultProject.lenses.allAttributeDescriptors()["rloc"]!!.description, "1")
+        assertEquals(resultProject.lenses.allAttributeDescriptors()["yrloc"], null)
     }
 
     @Test

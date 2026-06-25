@@ -9,16 +9,16 @@ import de.maibornwolff.codecharta.model.Project
 class LargeMerge {
     companion object {
         fun wrapProjectInFolder(project: Project, prefix: String): Project {
-            val modifiedProject = Project(
-                project.projectName,
-                moveNodesIntoFolder(project.rootNode, prefix),
-                project.apiVersion,
-                addFolderToEdgePaths(project.edges, prefix),
-                project.attributeTypes,
-                project.attributeDescriptors,
-                addFolderToBlackListPaths(project.blacklist, prefix)
+            // Only the dependency edges are re-pathed; metrics and all other lens data are preserved.
+            val rePathedDependency = project.lenses.dependency.copy(edges = addFolderToEdgePaths(project.lenses.dependency.edges, prefix))
+            return Project(
+                projectName = project.projectName,
+                nodes = moveNodesIntoFolder(project.rootNode, prefix),
+                apiVersion = project.apiVersion,
+                lenses = project.lenses.copy(dependency = rePathedDependency),
+                blacklist = addFolderToBlackListPaths(project.blacklist, prefix),
+                commitHash = project.commitHash
             )
-            return modifiedProject
         }
 
         private fun moveNodesIntoFolder(root: Node, folderName: String): List<Node> {

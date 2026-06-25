@@ -66,19 +66,22 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private fun getEdgesOfMainAndWarnIfDiscards(): MutableList<Edge> {
         projects.forEachIndexed { i, project ->
-            if (project.edges.isNotEmpty() && i > 0) {
+            if (project.lenses.dependency.edges.isNotEmpty() && i > 0) {
                 Logger.warn {
                     "Edges were not merged. Use recursive strategy to merge edges."
                 }
             }
         }
-        return projects.first().edges.toMutableList()
+        return projects
+            .first()
+            .lenses.dependency.edges
+            .toMutableList()
     }
 
     private fun getMergedEdges(): MutableList<Edge> {
         val mergedEdges = mutableListOf<Edge>()
         projects.forEach {
-            it.edges.forEach {
+            it.lenses.dependency.edges.forEach {
                 mergedEdges.add(it)
             }
         }

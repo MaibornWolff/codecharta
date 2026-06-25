@@ -56,7 +56,7 @@ class SubProjectExtractorTest {
 
         val result = subProjectExtractor.extract("/root/foo")
 
-        val edges = result.edges
+        val edges = result.lenses.dependency.edges
         Assertions.assertThat(edges.size).isEqualTo(1)
     }
 
@@ -66,7 +66,7 @@ class SubProjectExtractorTest {
 
         val result = subProjectExtractor.extract("/root/foo")
 
-        val firstEdge = result.edges.first()
+        val firstEdge = result.lenses.dependency.edges.first()
         Assertions.assertThat(firstEdge.toNodeName).isEqualTo("/root/file3")
         Assertions.assertThat(firstEdge.fromNodeName).isEqualTo("/root/file2")
         Assertions.assertThat(firstEdge.attributes["pairingRate"]).isEqualTo(42.0)
@@ -78,7 +78,7 @@ class SubProjectExtractorTest {
 
         val result = subProjectExtractor.extract("/root/something")
 
-        val edges = result.edges
+        val edges = result.lenses.dependency.edges
         Assertions.assertThat(edges).isEmpty()
     }
 
@@ -88,8 +88,8 @@ class SubProjectExtractorTest {
         val input = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(path)!!)
         val attributeProject = ProjectDeserializer.deserializeProject(input)
         val resultProject = SubProjectExtractor(attributeProject).extract("/root/AnotherParentLeaf")
-        assertEquals(resultProject.attributeDescriptors.size, 3)
-        assertEquals(resultProject.attributeDescriptors["yrloc"]!!.description, "a")
-        assertEquals(resultProject.attributeDescriptors["rloc"], null)
+        assertEquals(resultProject.lenses.allAttributeDescriptors().size, 3)
+        assertEquals(resultProject.lenses.allAttributeDescriptors()["yrloc"]!!.description, "a")
+        assertEquals(resultProject.lenses.allAttributeDescriptors()["rloc"], null)
     }
 }

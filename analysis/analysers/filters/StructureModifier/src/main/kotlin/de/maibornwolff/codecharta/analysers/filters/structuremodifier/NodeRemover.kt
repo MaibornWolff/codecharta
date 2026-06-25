@@ -74,7 +74,7 @@ class NodeRemover(private val project: Project) {
     }
 
     private fun removeEdges(removePatterns: Array<String>): MutableList<Edge> {
-        var edges = project.edges
+        var edges = project.lenses.dependency.edges
         removePatterns.forEach { path ->
             edges =
                 edges.filter {
@@ -86,13 +86,14 @@ class NodeRemover(private val project: Project) {
 
     private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
         val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.attributeTypes.forEach {
+        project.lenses.legacyAttributeTypes().forEach {
             mergedAttributeTypes[it.key] = it.value
         }
         return mergedAttributeTypes.toMutableMap()
     }
 
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> = project.attributeDescriptors.toMutableMap()
+    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> =
+        project.lenses.allAttributeDescriptors().toMutableMap()
 
     private fun removeBlacklistItems(paths: Array<String>): MutableList<BlacklistItem> {
         var blacklist = project.blacklist

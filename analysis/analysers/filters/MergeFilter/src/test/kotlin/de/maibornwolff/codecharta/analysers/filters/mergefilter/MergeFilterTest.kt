@@ -568,7 +568,9 @@ class MergeFilterTest {
             assertThat(project.sizeOfEdges()).isEqualTo(2)
             // blacklist is view state and is dropped from the 2.0 format, so it is empty on read-back.
             assertThat(project.sizeOfBlacklist()).isEqualTo(0)
-            assertThat(project.edges.toString()).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3")
+            assertThat(
+                project.lenses.dependency.edges.toString()
+            ).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3")
             assertThat(project.rootNode.children.size).isEqualTo(2)
             val outputProject1 = project.rootNode.children.first { it.name == "testEdges1" }
             val outputProject2 = project.rootNode.children.first { it.name == "testProject" }

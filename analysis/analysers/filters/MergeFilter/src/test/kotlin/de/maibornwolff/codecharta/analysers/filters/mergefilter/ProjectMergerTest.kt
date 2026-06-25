@@ -105,8 +105,8 @@ class ProjectMergerTest {
         assertEquals(3, project.sizeOfEdges())
         assertEquals(4, project.sizeOfBlacklist())
         assertEquals(4, project.size)
-        assertEquals(2, project.attributeTypes["edges"]!!.size)
-        assertEquals(4, project.attributeTypes["nodes"]!!.size)
+        assertEquals(2, project.lenses.legacyAttributeTypes()["edges"]!!.size)
+        assertEquals(4, project.lenses.legacyAttributeTypes()["nodes"]!!.size)
         assertEquals(
             11,
             project.rootNode.children
@@ -179,7 +179,7 @@ class ProjectMergerTest {
                     ),
                 "somethingElse" to AttributeDescriptor(analyzers = setOf("Unknown"))
             )
-        assertEquals(project.attributeDescriptors, expectedResult)
+        assertEquals(project.lenses.allAttributeDescriptors(), expectedResult)
     }
 
     private fun compareProjectStrings(project: Project, equalProject: Project, except: List<String> = listOf()): Boolean {

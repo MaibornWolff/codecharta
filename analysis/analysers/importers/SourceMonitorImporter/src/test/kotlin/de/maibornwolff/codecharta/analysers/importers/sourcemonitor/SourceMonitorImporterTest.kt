@@ -64,7 +64,7 @@ class SourceMonitorImporterTest {
         val project = ProjectDeserializer.deserializeProject(inputStream)
         inputStream.close()
         file.deleteOnExit()
-        assertEquals(project.attributeDescriptors, getAttributeDescriptors())
+        assertEquals(project.lenses.allAttributeDescriptors(), getAttributeDescriptors())
     }
 
     @Test

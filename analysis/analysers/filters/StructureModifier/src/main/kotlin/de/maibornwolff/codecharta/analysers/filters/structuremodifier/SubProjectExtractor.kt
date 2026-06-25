@@ -64,7 +64,7 @@ class SubProjectExtractor(private val project: Project) {
         return extractRenamedEdgesForPattern(trimmedExtractionPattern).toMutableList()
     }
 
-    private fun extractRenamedEdgesForPattern(pattern: String): List<Edge> = project.edges
+    private fun extractRenamedEdgesForPattern(pattern: String): List<Edge> = project.lenses.dependency.edges
         .filter {
             it.fromNodeName.startsWith(pattern) && it.toNodeName.startsWith(pattern)
         }.map { edge ->
@@ -75,13 +75,14 @@ class SubProjectExtractor(private val project: Project) {
 
     private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
         val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.attributeTypes.forEach {
+        project.lenses.legacyAttributeTypes().forEach {
             mergedAttributeTypes[it.key] = it.value
         }
         return mergedAttributeTypes.toMutableMap()
     }
 
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> = project.attributeDescriptors.toMutableMap()
+    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> =
+        project.lenses.allAttributeDescriptors().toMutableMap()
 
     private fun copyBlacklist(): MutableList<BlacklistItem> = project.blacklist.toMutableList()
 }

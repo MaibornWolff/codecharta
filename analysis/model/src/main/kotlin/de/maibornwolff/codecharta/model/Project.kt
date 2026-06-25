@@ -1,16 +1,16 @@
 package de.maibornwolff.codecharta.model
 
 /**
- * The analysis domain project. Its canonical analysis-signal store is the lens-native [lenses]
- * ([LensSet]); the file tree ([nodes]) is the identity layer. A legacy constructor and the
- * `edges`/`attributeTypes`/`attributeDescriptors` accessors keep 1.5-era producers and consumers
- * working while the storage is lens-native.
+ * The lens-native analysis domain project. Analysis signals live in [lenses] (a [LensSet]); the file
+ * tree ([nodes]) is the identity layer. The legacy 1.5 split/flat shapes (`edges`, the
+ * `attributeTypes` node/edge map, the flat `attributeDescriptors`) exist only at the wire boundary
+ * and inside [ProjectBuilder] — converted explicitly via [LensSet], never exposed on the domain.
  */
 class Project(
     val projectName: String,
     private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
     val apiVersion: String = API_VERSION,
-    val lenses: LensSet,
+    val lenses: LensSet = LensSet(),
     // blacklist is visualization view state: it is dropped from the 2.0 wire format but kept on the
     // domain as a 1.5/filter-time concept for its analysis consumers (MergeFilter dedup,
     // StructureModifier and LargeMerge path rewrites). A project read from 2.0 carries an empty list.
@@ -22,41 +22,19 @@ class Project(
         check(nodes.size == 1) { "no root node present in project" }
     }
 
-    /** Legacy 1.5-shaped constructor: folds the flat edges/attributeTypes/descriptors into [LensSet]. */
-    constructor(
-        projectName: String,
-        nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
-        apiVersion: String = API_VERSION,
-        edges: List<Edge> = listOf(),
-        attributeTypes: Map<String, MutableMap<String, AttributeType>> = mapOf(),
-        attributeDescriptors: Map<String, AttributeDescriptor> = mapOf(),
-        blacklist: List<BlacklistItem> = listOf()
-    ) : this(projectName, nodes, apiVersion, LensSet.fromLegacy(edges, attributeTypes, attributeDescriptors), blacklist)
-
     val rootNode: Node
         get() = nodes[0]
-
-    val edges: List<Edge>
-        get() = lenses.dependency.edges
-
-    val attributeTypes: Map<String, MutableMap<String, AttributeType>>
-        get() = lenses.legacyAttributeTypes()
-
-    val attributeDescriptors: Map<String, AttributeDescriptor>
-        get() = lenses.allAttributeDescriptors()
 
     val size: Int
         get() = rootNode.size
 
-    fun sizeOfEdges(): Int = edges.size
+    fun sizeOfEdges(): Int = lenses.dependency.edges.size
 
     fun sizeOfBlacklist(): Int = blacklist.size
 
     override fun toString(): String = "Project{projectName=$projectName," +
         " apiVersion=$apiVersion," +
-        " nodes=$nodes, edges=$edges," +
-        " attributeTypes=$attributeTypes," +
-        " attributeDescriptors=$attributeDescriptors," +
+        " nodes=$nodes, lenses=$lenses," +
         " blacklist=$blacklist}"
 
     companion object {

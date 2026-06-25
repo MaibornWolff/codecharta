@@ -110,7 +110,7 @@ class FolderMover(private val project: Project) {
     private fun extractEdges(from: String, to: String): MutableList<Edge> {
         val sanitizedFrom = "/" + from.removeSuffix("/").removePrefix("/")
         val sanitizedTo = "/" + to.removeSuffix("/").removePrefix("/")
-        return project.edges
+        return project.lenses.dependency.edges
             .map { edge ->
                 edge.fromNodeName = edge.fromNodeName.replace(sanitizedFrom, sanitizedTo)
                 edge.toNodeName = edge.toNodeName.replace(sanitizedFrom, sanitizedTo)
@@ -120,13 +120,14 @@ class FolderMover(private val project: Project) {
 
     private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
         val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.attributeTypes.forEach {
+        project.lenses.legacyAttributeTypes().forEach {
             mergedAttributeTypes[it.key] = it.value
         }
         return mergedAttributeTypes.toMutableMap()
     }
 
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> = project.attributeDescriptors.toMutableMap()
+    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> =
+        project.lenses.allAttributeDescriptors().toMutableMap()
 
     private fun copyBlacklist(from: String, to: String): MutableList<BlacklistItem> = project.blacklist
         .map { blacklistItem ->

@@ -32,7 +32,9 @@ class CcJsonV2SerializationTest {
                 "edges" to mutableMapOf("pairingRate" to AttributeType.RELATIVE)
             )
         val attributeDescriptors = mapOf("rloc" to AttributeDescriptor(title = "Real Lines of Code", direction = 1))
-        return Project("my-project", listOf(root), Project.API_VERSION, edges, attributeTypes, attributeDescriptors)
+        val lenses = de.maibornwolff.codecharta.model.LensSet
+            .fromLegacy(edges, attributeTypes, attributeDescriptors)
+        return Project("my-project", listOf(root), Project.API_VERSION, lenses)
     }
 
     /**
@@ -111,7 +113,7 @@ class CcJsonV2SerializationTest {
         val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(Node("App.kt", NodeType.File)))
         val blacklist =
             listOf(de.maibornwolff.codecharta.model.BlacklistItem("/root/App.kt", de.maibornwolff.codecharta.model.BlacklistType.EXCLUDE))
-        val project = Project("p", listOf(root), Project.API_VERSION, listOf(), mapOf(), mapOf(), blacklist)
+        val project = Project("p", listOf(root), Project.API_VERSION, blacklist = blacklist)
 
         val v2 = ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)
         val v1 = ProjectSerializer.serializeToString(project, ApiVersion.ONE_FIVE)

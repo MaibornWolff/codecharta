@@ -147,7 +147,7 @@ class SonarComponentProjectBuilderTest {
 
         val project = projectBuilder.build()
 
-        assertEquals(project.attributeDescriptors, getAttributeDescriptors())
+        assertEquals(project.lenses.allAttributeDescriptors(), getAttributeDescriptors())
     }
 
     @Test

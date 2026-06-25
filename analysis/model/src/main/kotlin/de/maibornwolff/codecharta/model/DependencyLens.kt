@@ -5,7 +5,7 @@ package de.maibornwolff.codecharta.model
  * memory) plus the edge `attributeTypes`/`attributeDescriptors` that used to sit under
  * `attributeTypes["edges"]`.
  */
-class DependencyLens(
+data class DependencyLens(
     val edges: List<Edge> = emptyList(),
     val attributeTypes: Map<String, AttributeType> = emptyMap(),
     val attributeDescriptors: Map<String, AttributeDescriptor> = emptyMap()

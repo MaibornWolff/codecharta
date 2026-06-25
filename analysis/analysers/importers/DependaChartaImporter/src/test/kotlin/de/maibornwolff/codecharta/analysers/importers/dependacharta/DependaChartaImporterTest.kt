@@ -79,14 +79,26 @@ class DependaChartaImporterTest {
             // The four symbols collapse to two file nodes under src.
             assertThat(project.rootNode.leafObjects.map { leaf -> leaf.name }).containsExactlyInAnyOrder("FileA.ts", "FileB.ts")
             // The single dependency edge connects those two file nodes (endpoints resolve from the tree by id).
-            assertThat(project.edges).hasSize(1)
-            assertThat(project.edges.single().attributes).containsKey("dependencies")
-            assertThat(setOf(project.edges.single().fromNodeName, project.edges.single().toNodeName))
-                .containsExactlyInAnyOrder("/root/src/FileA.ts", "/root/src/FileB.ts")
+            assertThat(project.lenses.dependency.edges).hasSize(1)
+            assertThat(
+                project.lenses.dependency.edges
+                    .single()
+                    .attributes
+            ).containsKey("dependencies")
+            assertThat(
+                setOf(
+                    project.lenses.dependency.edges
+                        .single()
+                        .fromNodeName,
+                    project.lenses.dependency.edges
+                        .single()
+                        .toNodeName
+                )
+            ).containsExactlyInAnyOrder("/root/src/FileA.ts", "/root/src/FileB.ts")
             // Each file node carries its aggregated in/out dependency weight as a default node metric.
             val fileA = project.rootNode.leafObjects.first { leaf -> leaf.name == "FileA.ts" }
             assertThat(fileA.attributes[DcJsonParser.OUTGOING_DEPENDENCIES]).isEqualTo(3.0)
-            assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
+            assertThat(project.lenses.allAttributeDescriptors()).isEqualTo(getAttributeDescriptors())
         }
     }
 
@@ -104,7 +116,7 @@ class DependaChartaImporterTest {
         // Assert: two symbols share one physical file, so exactly one leaf node is produced.
         file.reader().use {
             val project = ProjectDeserializer.deserializeProject(it)
-            assertThat(project.edges).isEmpty()
+            assertThat(project.lenses.dependency.edges).isEmpty()
             assertThat(project.rootNode.leafObjects.map { leaf -> leaf.name }).containsExactly("File.ts")
         }
     }
@@ -123,7 +135,7 @@ class DependaChartaImporterTest {
         // Assert
         file.reader().use {
             val project = ProjectDeserializer.deserializeProject(it)
-            assertThat(project.edges).isEmpty()
+            assertThat(project.lenses.dependency.edges).isEmpty()
         }
     }
 
@@ -141,7 +153,7 @@ class DependaChartaImporterTest {
         // Assert
         file.reader().use {
             val project = ProjectDeserializer.deserializeProject(it)
-            assertThat(project.edges).isEmpty()
+            assertThat(project.lenses.dependency.edges).isEmpty()
             assertThat(project.rootNode).isNotNull()
         }
     }

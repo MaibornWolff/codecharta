@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.util.Logger
  * reserved `clusters` slot. The old `attributeTypes` node/edge split lives here for nodes; edge
  * types moved to the [DependencyLens].
  */
-class MetricsLens(
+data class MetricsLens(
     val attributeTypes: Map<String, AttributeType> = emptyMap(),
     val attributeDescriptors: Map<String, AttributeDescriptor> = emptyMap(),
     val clusters: List<Any> = emptyList()

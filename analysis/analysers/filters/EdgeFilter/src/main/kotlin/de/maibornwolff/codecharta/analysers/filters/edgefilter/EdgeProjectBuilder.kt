@@ -24,7 +24,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
 
     private fun getAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
         val newAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.attributeTypes.forEach {
+        project.lenses.legacyAttributeTypes().forEach {
             newAttributeTypes[it.key] = it.value
         }
         return newAttributeTypes
@@ -32,7 +32,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
 
     private fun getAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
         val newAttributeDescriptor = mutableMapOf<String, AttributeDescriptor>()
-        newAttributeDescriptor.putAll(project.attributeDescriptors)
+        newAttributeDescriptor.putAll(project.lenses.allAttributeDescriptors())
         return newAttributeDescriptor
     }
 
@@ -51,13 +51,13 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     }
 
     private fun insertEdges() {
-        project.edges.forEach {
+        project.lenses.dependency.edges.forEach {
             projectBuilder.insertEdge(it)
         }
     }
 
     private fun insertEmptyNodesFromEdges() {
-        project.edges.forEach {
+        project.lenses.dependency.edges.forEach {
             insertEdgeAsNode(it.fromNodeName)
             insertEdgeAsNode(it.toNodeName)
         }
@@ -121,7 +121,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun getAggregatedEdgeAttributes(node: Node, parentPath: List<String>): MutableMap<String, Any> {
         val nodePath: String = getNodePathAsString(parentPath, node.name)
         val filteredEdges: List<Edge> =
-            project.edges.filter { edge ->
+            project.lenses.dependency.edges.filter { edge ->
                 edge.fromNodeName == nodePath || edge.toNodeName == nodePath
             }
         val attributeKeys: List<String> = getAttributeKeys(filteredEdges)

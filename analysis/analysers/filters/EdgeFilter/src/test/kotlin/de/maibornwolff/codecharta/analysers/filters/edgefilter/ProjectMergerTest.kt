@@ -95,7 +95,7 @@ class ProjectMergerTest {
                         direction = -1
                     )
             )
-        assertEquals(project.attributeDescriptors, expectedDescriptors)
+        assertEquals(project.lenses.allAttributeDescriptors(), expectedDescriptors)
     }
 }
 

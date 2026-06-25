@@ -17,9 +17,9 @@ object ProjectToCcJson15Mapper {
                 projectName = project.projectName,
                 nodes = listOf(project.rootNode),
                 apiVersion = project.apiVersion,
-                edges = project.edges,
-                attributeTypes = project.attributeTypes,
-                attributeDescriptors = project.attributeDescriptors,
+                edges = project.lenses.dependency.edges,
+                attributeTypes = project.lenses.legacyAttributeTypes(),
+                attributeDescriptors = project.lenses.allAttributeDescriptors(),
                 blacklist = project.blacklist
             )
         val dataJson = CcJson15Gson.gson.toJson(data)

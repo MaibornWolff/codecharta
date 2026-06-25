@@ -137,8 +137,8 @@ class StructureModifierTest {
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
         // then
-        assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
-        assertThat(resultProject.attributeDescriptors["rloc"]).isNull()
+        assertThat(resultProject.lenses.allAttributeDescriptors().size).isEqualTo(3)
+        assertThat(resultProject.lenses.allAttributeDescriptors()["rloc"]).isNull()
     }
 
     @Test
@@ -152,8 +152,8 @@ class StructureModifierTest {
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
         // then
-        assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
-        assertThat(resultProject.attributeDescriptors["yrloc"]).isNull()
+        assertThat(resultProject.lenses.allAttributeDescriptors().size).isEqualTo(3)
+        assertThat(resultProject.lenses.allAttributeDescriptors()["yrloc"]).isNull()
     }
 
     @Test

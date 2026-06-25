@@ -89,7 +89,7 @@ class ProjectConverterTest {
         val vcfList = VersionControlledFilesList(metricsFactory)
         val project = projectConverter.convert(vcfList, MetricsFactory(), listOf())
 
-        assertThat(project.attributeTypes).containsKeys("edges", "nodes")
+        assertThat(project.lenses.legacyAttributeTypes()).containsKeys("edges", "nodes")
     }
 
     @Test
@@ -101,7 +101,7 @@ class ProjectConverterTest {
         val projectConverterWithAuthors = ProjectConverter(true)
         val project2 = projectConverterWithAuthors.convert(vcfList, MetricsFactory(), listOf())
 
-        assertThat(project.attributeDescriptors).isEqualTo(project2.attributeDescriptors)
-        assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
+        assertThat(project.lenses.allAttributeDescriptors()).isEqualTo(project2.lenses.allAttributeDescriptors())
+        assertThat(project.lenses.allAttributeDescriptors()).isEqualTo(getAttributeDescriptors())
     }
 }

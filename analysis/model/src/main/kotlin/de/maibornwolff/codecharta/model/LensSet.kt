@@ -7,11 +7,13 @@ import com.google.gson.JsonElement
  * `security` are reserved for their own suite stories; `additionalLenses` preserves any unknown
  * top-level lens verbatim so a newer tool's lens survives a round-trip through an older tool.
  *
- * [fromLegacy] and [legacyAttributeTypes]/[allAttributeDescriptors] bridge the 1.5-era flat
- * `attributeTypes`/`attributeDescriptors`/`edges` triple, so existing producers and consumers keep
- * working while the canonical store is lens-native.
+ * [fromLegacy] (legacy → lenses) and [legacyAttributeTypes]/[allAttributeDescriptors] (lenses →
+ * legacy) are explicit converters between the lens model and the 1.5-era flat
+ * `attributeTypes`/`attributeDescriptors`/`edges` triple. They exist only where the legacy shape is
+ * genuinely needed — the 1.5 wire mapper and the [ProjectBuilder] accumulation API — and are not
+ * exposed on the lens-native domain [Project].
  */
-class LensSet(
+data class LensSet(
     val metrics: MetricsLens = MetricsLens(),
     val dependency: DependencyLens = DependencyLens(),
     val domain: Map<String, Any> = emptyMap(),

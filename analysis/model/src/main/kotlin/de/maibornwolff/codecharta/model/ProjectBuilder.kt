@@ -74,12 +74,10 @@ open class ProjectBuilder(
         }
         val project =
             Project(
-                edges = edges.toList(),
-                blacklist = blacklist.toList(),
                 projectName = DUMMY_PROJECT_NAME,
-                attributeTypes = attributeTypes.toMap(),
                 nodes = nodes.map { it.toNode() }.toList(),
-                attributeDescriptors = attributeDescriptors.toMap()
+                lenses = LensSet.fromLegacy(edges.toList(), attributeTypes.toMap(), attributeDescriptors.toMap()),
+                blacklist = blacklist.toList()
             )
 
         System.err.println()

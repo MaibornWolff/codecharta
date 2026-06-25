@@ -130,7 +130,7 @@ class SonarMeasuresAPIImporterTest {
         val project = sonar.getProjectFromMeasureAPI("testProject", metrics)
 
         // then
-        assertEquals(project.attributeDescriptors.size, 0)
+        assertEquals(project.lenses.allAttributeDescriptors().size, 0)
     }
 
     @Test
@@ -152,8 +152,8 @@ class SonarMeasuresAPIImporterTest {
         val project = sonar.getProjectFromMeasureAPI("testProject", actualMetricKeys)
 
         // then translation from bugs -> sonar_bugs ; ncloc -> rloc
-        assertEquals(project.attributeDescriptors.size, 2)
-        assertEquals(project.attributeDescriptors["sonar_bugs"], getAttributeDescriptors()["bugs"])
-        assertEquals(project.attributeDescriptors["rloc"], getAttributeDescriptors()["ncloc"])
+        assertEquals(project.lenses.allAttributeDescriptors().size, 2)
+        assertEquals(project.lenses.allAttributeDescriptors()["sonar_bugs"], getAttributeDescriptors()["bugs"])
+        assertEquals(project.lenses.allAttributeDescriptors()["rloc"], getAttributeDescriptors()["ncloc"])
     }
 }

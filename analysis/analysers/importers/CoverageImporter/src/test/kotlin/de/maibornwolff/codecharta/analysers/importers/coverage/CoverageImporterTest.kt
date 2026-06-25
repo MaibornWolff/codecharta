@@ -179,8 +179,8 @@ class CoverageImporterTest {
         )
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        assertThat(project.attributeTypes).containsKey("nodes")
-        assertThat(project.attributeTypes["nodes"]).isEqualTo(
+        assertThat(project.lenses.legacyAttributeTypes()).containsKey("nodes")
+        assertThat(project.lenses.legacyAttributeTypes()["nodes"]).isEqualTo(
             mapOf(
                 "line_coverage" to AttributeType.RELATIVE,
                 "branch_coverage" to AttributeType.RELATIVE,
@@ -200,13 +200,13 @@ class CoverageImporterTest {
         )
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        assertThat(project.attributeDescriptors.size).isEqualTo(3)
-        assertThat(project.attributeDescriptors).containsKey("line_coverage")
-        assertThat(project.attributeDescriptors["line_coverage"]?.title).isEqualTo("Line Coverage")
-        assertThat(project.attributeDescriptors).containsKey("branch_coverage")
-        assertThat(project.attributeDescriptors["branch_coverage"]?.title).isEqualTo("Branch Coverage")
-        assertThat(project.attributeDescriptors).containsKey("statement_coverage")
-        assertThat(project.attributeDescriptors["statement_coverage"]?.title).isEqualTo("Statement Coverage")
+        assertThat(project.lenses.allAttributeDescriptors().size).isEqualTo(3)
+        assertThat(project.lenses.allAttributeDescriptors()).containsKey("line_coverage")
+        assertThat(project.lenses.allAttributeDescriptors()["line_coverage"]?.title).isEqualTo("Line Coverage")
+        assertThat(project.lenses.allAttributeDescriptors()).containsKey("branch_coverage")
+        assertThat(project.lenses.allAttributeDescriptors()["branch_coverage"]?.title).isEqualTo("Branch Coverage")
+        assertThat(project.lenses.allAttributeDescriptors()).containsKey("statement_coverage")
+        assertThat(project.lenses.allAttributeDescriptors()["statement_coverage"]?.title).isEqualTo("Statement Coverage")
     }
 
     @Test

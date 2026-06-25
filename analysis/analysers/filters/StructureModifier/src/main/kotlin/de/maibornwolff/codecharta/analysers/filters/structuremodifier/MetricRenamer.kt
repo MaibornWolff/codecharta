@@ -17,8 +17,8 @@ class MetricRenamer(private val project: Project, private val newName: String = 
         }
 
         val updatedRoot = renameMCCRecursivelyInNodes(project.rootNode.toMutableNode())
-        val updatedAttributeTypes = updatedAttributeTypes(project.attributeTypes)
-        val updatedAttributesDescriptors = updatedAttributeDescriptors(project.attributeDescriptors)
+        val updatedAttributeTypes = updatedAttributeTypes(project.lenses.legacyAttributeTypes())
+        val updatedAttributesDescriptors = updatedAttributeDescriptors(project.lenses.allAttributeDescriptors())
 
         return ProjectBuilder(
             listOf(updatedRoot),
@@ -80,13 +80,13 @@ class MetricRenamer(private val project: Project, private val newName: String = 
         return updatedAttributeDescriptors
     }
 
-    private fun copyEdges(): MutableList<Edge> = project.edges.toMutableList()
+    private fun copyEdges(): MutableList<Edge> = project.lenses.dependency.edges.toMutableList()
 
     private fun copyBlacklist(): MutableList<BlacklistItem> = project.blacklist.toMutableList()
 
     private fun doesProjectContainMCC(project: Project): Boolean = doesMccExistInNodes(project.rootNode) ||
-        doesMccExistInAttributeTypes(project.attributeTypes) ||
-        doesMccExistInAttributeDescriptors(project.attributeDescriptors)
+        doesMccExistInAttributeTypes(project.lenses.legacyAttributeTypes()) ||
+        doesMccExistInAttributeDescriptors(project.lenses.allAttributeDescriptors())
 
     private fun doesMccExistInNodes(node: Node): Boolean {
         if (node.attributes.containsKey("mcc")) return true

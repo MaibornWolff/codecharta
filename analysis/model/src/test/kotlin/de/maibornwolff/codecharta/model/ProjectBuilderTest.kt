@@ -128,7 +128,7 @@ class ProjectBuilderTest {
         val project = projectBuilder.build()
 
         // then
-        assertThat(project.attributeDescriptors).isEqualTo(attributeDescriptors)
+        assertThat(project.lenses.allAttributeDescriptors()).isEqualTo(attributeDescriptors)
         val attributeNames =
             project.rootNode.children.toList().flatMap {
                 it.attributes.keys
@@ -209,7 +209,7 @@ class ProjectBuilderTest {
         val project = projectBuilder.build()
 
         // then
-        project.attributeDescriptors.forEach {
+        project.lenses.allAttributeDescriptors().forEach {
             assertThat(it.value.direction).isEqualTo(1)
         }
     }
@@ -287,7 +287,7 @@ class ProjectBuilderTest {
         val project = projectBuilder.build()
 
         // then
-        project.attributeDescriptors.forEach {
+        project.lenses.allAttributeDescriptors().forEach {
             assertThat(it.value.direction).isEqualTo(-1)
         }
     }

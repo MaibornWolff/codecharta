@@ -84,7 +84,7 @@ class CodeMaatImporterTest {
         assertThat(file.readText()).contains("\"avgCommits\":5")
         assertThat(file.readText()).contains(listOf("attributeDescriptors", "\"description\":\"Average"))
         file.reader().use {
-            assertEquals(ProjectDeserializer.deserializeProject(it).attributeDescriptors, getAttributeDescriptors())
+            assertEquals(ProjectDeserializer.deserializeProject(it).lenses.allAttributeDescriptors(), getAttributeDescriptors())
         }
     }
 

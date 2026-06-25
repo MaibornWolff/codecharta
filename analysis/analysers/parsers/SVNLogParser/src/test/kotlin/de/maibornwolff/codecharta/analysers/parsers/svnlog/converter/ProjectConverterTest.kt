@@ -83,9 +83,9 @@ class ProjectConverterTest {
         val project = projectConverter.convert(listOf(file1), MetricsFactory())
 
         // then
-        assertThat(project.edges.size).isEqualTo(1)
-        assertThat(project.edges[0].toNodeName).isEqualTo("/root/File 2")
-        assertThat(project.edges[0].fromNodeName).isEqualTo("/root/File 1")
+        assertThat(project.lenses.dependency.edges.size).isEqualTo(1)
+        assertThat(project.lenses.dependency.edges[0].toNodeName).isEqualTo("/root/File 2")
+        assertThat(project.lenses.dependency.edges[0].fromNodeName).isEqualTo("/root/File 1")
     }
 
     @Test
@@ -93,6 +93,6 @@ class ProjectConverterTest {
         val projectConverter = ProjectConverter(false)
         val project = projectConverter.convert(listOf(), MetricsFactory())
 
-        assertThat(project.attributeTypes).containsKeys("edges", "nodes")
+        assertThat(project.lenses.legacyAttributeTypes()).containsKeys("edges", "nodes")
     }
 }
