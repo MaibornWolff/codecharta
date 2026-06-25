@@ -33,7 +33,7 @@ class CoverageImporterTest {
             )
         )
 
-        assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\""))
+        assertThat(cliResult).contains(listOf("meta", "files", "lenses", "\"projectName\":\"\""))
     }
 
     @Test
@@ -99,7 +99,7 @@ class CoverageImporterTest {
             )
         )
 
-        assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\"", "app.config.ts"))
+        assertThat(cliResult).contains(listOf("meta", "files", "lenses", "\"projectName\":\"\"", "app.config.ts"))
     }
 
     @Test
@@ -162,7 +162,9 @@ class CoverageImporterTest {
             .joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf(reportFilePath, "-f=lcov", "--keep-leading-paths"))
 
-        assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\"", "app.config.ts", "codeCharta.api.model.ts"))
+        assertThat(
+            cliResult
+        ).contains(listOf("meta", "files", "lenses", "\"projectName\":\"\"", "app.config.ts", "codeCharta.api.model.ts"))
         assertThat(JSONParser.parseJSON(cliResult)).usingRecursiveComparison().isEqualTo(JSONParser.parseJSON(expectedOutput))
     }
 
@@ -217,7 +219,7 @@ class CoverageImporterTest {
             )
         )
 
-        assertThat(cliResult).contains(listOf("checksum", "data", "\"projectName\":\"\""))
+        assertThat(cliResult).contains(listOf("meta", "files", "lenses", "\"projectName\":\"\""))
     }
 
     @Test

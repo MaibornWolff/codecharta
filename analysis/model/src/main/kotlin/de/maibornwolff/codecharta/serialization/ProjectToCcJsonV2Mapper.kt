@@ -73,7 +73,8 @@ object ProjectToCcJsonV2Mapper {
             type = (node.type ?: NodeType.File).name,
             children = children.ifEmpty { null },
             contentHash = node.checksum,
-            link = node.link?.ifBlank { null }
+            // Pass link through verbatim for exact 1.5 parity: GSON omits null and emits "" as is.
+            link = node.link
         )
     }
 

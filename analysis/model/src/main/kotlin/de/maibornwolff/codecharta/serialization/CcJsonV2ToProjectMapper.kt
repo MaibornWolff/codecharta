@@ -64,7 +64,7 @@ object CcJsonV2ToProjectMapper {
             name = fileDto.name,
             type = NodeType.valueOf(fileDto.type),
             attributes = metricsByNodeId[fileDto.id] ?: emptyMap(),
-            link = fileDto.link ?: "",
+            link = fileDto.link,
             children = children.toSet(),
             checksum = fileDto.contentHash
         )

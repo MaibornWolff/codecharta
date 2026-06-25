@@ -43,9 +43,10 @@ class MergeResolverStrategy private constructor(
     }
 
     override fun logMergeStats() {
+        val added = nodesProcessed - nodesMerged
         Logger.info {
             when (mode) {
-                Mode.UNION -> "$nodesProcessed nodes were processed, ${nodesProcessed - nodesMerged} were added and $nodesMerged were merged"
+                Mode.UNION -> "$nodesProcessed nodes were processed, $added were added and $nodesMerged were merged"
                 Mode.OVERLAY -> "$nodesProcessed nodes were processed and $nodesMerged were merged ($nodesUnmatched could not be matched)"
             }
         }

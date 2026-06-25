@@ -70,12 +70,13 @@ class DependaChartaImporterTest {
         // Assert
         val content = file.readText()
         assertThat(content).contains("\"dependencies\":")
-        assertThat(content).contains("/root/src/FileA.ts")
-        assertThat(content).contains("/root/src/FileB.ts")
         assertThat(content).contains("attributeDescriptors")
+        // DependaCharta emits an edge-only lens; 2.0 references endpoints by id, so the single
+        // dependency edge and its descriptors are verified through the deserialized project.
         file.reader().use {
             val project = ProjectDeserializer.deserializeProject(it)
             assertThat(project.edges).hasSize(1)
+            assertThat(project.edges.single().attributes).containsKey("dependencies")
             assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
         }
     }

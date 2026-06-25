@@ -72,14 +72,14 @@ class TokeiImporterTest {
     fun `should not crash on empty file with given tokei json`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_12_empty.json"))
 
-        assertThat(cliResult).contains(listOf("\"name\":\"root\"", "\"children\":[]"))
+        assertThat(cliResult).contains(listOf("\"name\":\"root\"", "\"type\":\"Folder\""))
     }
 
     @Test
     fun `should not crash on empty file with given tokei 12 json`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_pre12_empty.json"))
 
-        assertThat(cliResult).contains(listOf("\"name\":\"root\"", "\"children\":[]"))
+        assertThat(cliResult).contains(listOf("\"name\":\"root\"", "\"type\":\"Folder\""))
     }
 
     @Test

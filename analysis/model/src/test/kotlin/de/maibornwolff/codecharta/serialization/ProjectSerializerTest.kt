@@ -62,7 +62,7 @@ class ProjectSerializerTest {
         val testProject = ProjectDeserializer.deserializeProject(jsonReader)
 
         // when
-        ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false)
+        ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false, apiVersion = ApiVersion.ONE_FIVE)
         val testJsonString = File(filename).readText()
 
         // then
@@ -160,7 +160,7 @@ class ProjectSerializerTest {
         ProjectSerializer.serializeProject(testProject, stream, false)
         val serializedJson = stream.toString("UTF-8")
 
-        // then
-        Assertions.assertThat(serializedJson).contains("\"checksum\":\"$sampleChecksum\"")
+        // then the per-file checksum is carried as contentHash on the 2.0 file node
+        Assertions.assertThat(serializedJson).contains("\"contentHash\":\"$sampleChecksum\"")
     }
 }

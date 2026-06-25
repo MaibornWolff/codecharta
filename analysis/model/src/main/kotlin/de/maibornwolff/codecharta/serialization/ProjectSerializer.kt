@@ -14,11 +14,11 @@ import java.util.zip.GZIPOutputStream
  */
 object ProjectSerializer {
     /**
-     * The format that `ccsh` emits by default. Stays 1.5 through Stages A/B and is flipped to 2.0 in
-     * Task 7 once all fixtures are green. Tests pin a specific version via the explicit parameter.
+     * The format that `ccsh` emits by default: the 2.0 lens format. Tests that need the legacy 1.5
+     * output pin it via the explicit `apiVersion` parameter.
      */
     @JvmField
-    var defaultApiVersion: ApiVersion = ApiVersion.ONE_FIVE
+    var defaultApiVersion: ApiVersion = ApiVersion.TWO_ZERO
 
     /**
      * This method serializes a Project-Object to json and writes using given writer
