@@ -56,10 +56,10 @@ class DependaChartaImporter(private val output: PrintStream = System.out) :
         }
 
         val dcProject = Gson().fromJson(inputFile!!.reader(), DcProject::class.java)
-        val edges = DcJsonParser.parseEdges(dcProject)
 
         val projectBuilder = ProjectBuilder()
-        edges.forEach { projectBuilder.insertEdge(it) }
+        DcJsonParser.parseFileNodes(dcProject).forEach { (parentPath, node) -> projectBuilder.insertByPath(parentPath, node) }
+        DcJsonParser.parseEdges(dcProject).forEach { projectBuilder.insertEdge(it) }
         projectBuilder.addAttributeTypes(attributeTypes)
         projectBuilder.addAttributeDescriptions(getAttributeDescriptorMaps())
 

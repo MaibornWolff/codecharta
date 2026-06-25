@@ -71,13 +71,38 @@ class DependaChartaImporterTest {
         val content = file.readText()
         assertThat(content).contains("\"dependencies\":")
         assertThat(content).contains("attributeDescriptors")
-        // DependaCharta emits an edge-only lens; 2.0 references endpoints by id, so the single
-        // dependency edge and its descriptors are verified through the deserialized project.
+        // The physical files are now real nodes in the files tree, so their names appear by name.
+        assertThat(content).contains("FileA.ts")
+        assertThat(content).contains("FileB.ts")
         file.reader().use {
             val project = ProjectDeserializer.deserializeProject(it)
+            // The four symbols collapse to two file nodes under src.
+            assertThat(project.rootNode.leafObjects.map { leaf -> leaf.name }).containsExactlyInAnyOrder("FileA.ts", "FileB.ts")
+            // The single dependency edge connects those two file nodes (endpoints resolve from the tree by id).
             assertThat(project.edges).hasSize(1)
             assertThat(project.edges.single().attributes).containsKey("dependencies")
+            assertThat(setOf(project.edges.single().fromNodeName, project.edges.single().toNodeName))
+                .containsExactlyInAnyOrder("/root/src/FileA.ts", "/root/src/FileB.ts")
             assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
+        }
+    }
+
+    @Test
+    fun `should build a file node for each unique physical path even without dependencies`() {
+        // Arrange
+        val inputFilePath = "${testResourceBaseFolder}self-referencing.dc.json"
+        val outputFilePath = "${testResourceBaseFolder}self-ref-nodes-output.cc.json"
+        val file = File(outputFilePath)
+        file.deleteOnExit()
+
+        // Act
+        main(arrayOf(inputFilePath, "-nc", "-o=$outputFilePath"))
+
+        // Assert: two symbols share one physical file, so exactly one leaf node is produced.
+        file.reader().use {
+            val project = ProjectDeserializer.deserializeProject(it)
+            assertThat(project.edges).isEmpty()
+            assertThat(project.rootNode.leafObjects.map { leaf -> leaf.name }).containsExactly("File.ts")
         }
     }
 

@@ -1,10 +1,34 @@
 package de.maibornwolff.codecharta.analysers.importers.dependacharta
 
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.util.Logger
 
 object DcJsonParser {
     private const val ROOT_PREFIX = "/root/"
+    private const val PATH_SEPARATOR = "/"
+
+    /**
+     * One [MutableNode] per unique leaf `physicalPath`, paired with the folder [Path] to insert it
+     * under. DependaCharta describes symbols (classes/functions) but the code map is file-level, and
+     * several symbols can share one file, so paths are de-duplicated. Building these nodes lets the
+     * dependency edges reference real file nodes (the edge endpoints and the nodes resolve to the
+     * same id), instead of pointing at files that are absent from the tree.
+     */
+    fun parseFileNodes(dcProject: DcProject): List<Pair<Path, MutableNode>> = dcProject.leaves.values
+        .map { it.physicalPath }
+        .filter { it.isNotBlank() }
+        .distinct()
+        .mapNotNull { physicalPath ->
+            val segments = physicalPath.split(PATH_SEPARATOR).filter { it.isNotBlank() }
+            if (segments.isEmpty()) {
+                null
+            } else {
+                Path(segments.dropLast(1)) to MutableNode(segments.last(), NodeType.File)
+            }
+        }
 
     fun parseEdges(dcProject: DcProject): List<Edge> = dcProject.leaves.values
         .filter { it.physicalPath.isNotBlank() }
