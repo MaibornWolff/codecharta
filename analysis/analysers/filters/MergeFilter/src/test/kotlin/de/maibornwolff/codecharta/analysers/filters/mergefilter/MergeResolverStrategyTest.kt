@@ -39,7 +39,7 @@ class MergeResolverStrategyTest {
         val merged = merge(MergeResolverStrategy.leaf(false), reference, incoming)
 
         val app = merged.leafByName("App.kt")!!
-        assertTrue(app.attributes.containsKey("a") && app.attributes.containsKey("b"))
+        assertThat(app.attributes).containsKeys("a", "b")
     }
 
     @Test
@@ -50,7 +50,7 @@ class MergeResolverStrategyTest {
         val merged = merge(MergeResolverStrategy.leaf(false), reference, incoming)
 
         val mergedLeaf = merged.leaves.values.single()
-        assertTrue(mergedLeaf.attributes.containsKey("a") && mergedLeaf.attributes.containsKey("b"))
+        assertThat(mergedLeaf.attributes).containsKeys("a", "b")
     }
 
     @Test
@@ -61,7 +61,7 @@ class MergeResolverStrategyTest {
         val merged = merge(MergeResolverStrategy.leaf(false), reference, incoming)
 
         val app = merged.leafByName("App.kt")!!
-        assertTrue(app.attributes.containsKey("a") && app.attributes.containsKey("b"))
+        assertThat(app.attributes).containsKeys("a", "b")
     }
 
     @Test
@@ -108,31 +108,28 @@ class MergeResolverStrategyTest {
 
     @Test
     fun `should match by exact position case-insensitively when ignoreCase is set`() {
+        // Arrange
         val reference = tree(leaf("/App.kt", mapOf("a" to 1.0)))
         val incoming = tree(leaf("/APP.KT", mapOf("b" to 2.0)))
 
-        val caseInsensitive = merge(MergeResolverStrategy.leaf(false, ignoreCase = true), reference, incoming)
-        val caseSensitive =
-            merge(
-                MergeResolverStrategy.leaf(false, ignoreCase = false),
-                tree(leaf("/App.kt", mapOf("a" to 1.0))),
-                tree(
-                    leaf(
-                        "/APP.KT",
-                        mapOf(
-                            "b" to 2.0
-                        )
-                    )
-                )
-            )
+        // Act
+        val merged = merge(MergeResolverStrategy.leaf(false, ignoreCase = true), reference, incoming)
 
-        assertTrue(
-            caseInsensitive.leaves.values
-                .single()
-                .attributes.keys
-                .containsAll(setOf("a", "b"))
-        )
-        assertEquals(1, caseSensitive.leaves.size) // APP.KT is unmatched and dropped, only App.kt remains
+        // Assert
+        assertThat(merged.leaves.values.single().attributes).containsKeys("a", "b")
+    }
+
+    @Test
+    fun `should drop a case-differing node when ignoreCase is not set`() {
+        // Arrange
+        val reference = tree(leaf("/App.kt", mapOf("a" to 1.0)))
+        val incoming = tree(leaf("/APP.KT", mapOf("b" to 2.0)))
+
+        // Act
+        val merged = merge(MergeResolverStrategy.leaf(false, ignoreCase = false), reference, incoming)
+
+        // Assert: APP.KT is unmatched and dropped, only App.kt remains.
+        assertThat(merged.leaves).hasSize(1)
     }
 
     @Test
