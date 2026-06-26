@@ -71,12 +71,17 @@ class LensTest {
         val first = DependencyLens(edges = listOf(Edge("/root/a", "/root/b", mapOf("x" to 1))))
         val second =
             DependencyLens(
-                edges = listOf(Edge("/root/a", "/root/b", mapOf("x" to 1)), Edge("/root/b", "/root/c", mapOf("x" to 2)))
+                edges = listOf(Edge("/root/a", "/root/b", mapOf("x" to 9)), Edge("/root/b", "/root/c", mapOf("x" to 2)))
             )
 
         val merged = first.merge(second, mergeEdges = true)
 
         assertEquals(2, merged.edges.size)
+        // The duplicate a->b keeps the first lens's attributes (x=1, not 9); the unique b->c survives.
+        val ab = merged.edges.single { it.fromNodeName == "/root/a" && it.toNodeName == "/root/b" }
+        val bc = merged.edges.single { it.fromNodeName == "/root/b" && it.toNodeName == "/root/c" }
+        assertEquals(1, ab.attributes["x"])
+        assertEquals(2, bc.attributes["x"])
     }
 
     @Test
