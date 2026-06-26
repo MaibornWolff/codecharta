@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.model
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class NodeIdTest {
     @Test
@@ -27,7 +28,23 @@ class NodeIdTest {
 
     @Test
     fun `should preserve case in the canonical path`() {
+        assertEquals("/src/App.kt", NodeId.canonicalPath(listOf("src", "App.kt")))
+        assertNotEquals("/src/app.kt", NodeId.canonicalPath(listOf("src", "App.kt")))
+    }
+
+    @Test
+    fun `should give distinct ids to names differing only in case`() {
         assertNotEquals(NodeId.fromSegments(listOf("src", "App.kt")), NodeId.fromSegments(listOf("src", "app.kt")))
+    }
+
+    @Test
+    fun `should reject a segment that still contains a forward-slash separator`() {
+        assertThrows<IllegalArgumentException> { NodeId.fromSegments(listOf("src/App.kt")) }
+    }
+
+    @Test
+    fun `should treat a backslash as a literal filename character`() {
+        assertEquals("/weird\\name", NodeId.canonicalPath(listOf("weird\\name")))
     }
 
     @Test

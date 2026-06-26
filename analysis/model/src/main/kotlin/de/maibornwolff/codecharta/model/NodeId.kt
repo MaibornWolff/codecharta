@@ -85,6 +85,9 @@ object NodeId {
     private fun canonicalize(segments: List<String>): List<String> {
         val result = ArrayDeque<String>()
         segments.forEach { rawSegment ->
+            require(SEPARATOR !in rawSegment) {
+                "NodeId segments must be pre-split; got a segment containing a '$SEPARATOR' separator: '$rawSegment'"
+            }
             when (val segment = Normalizer.normalize(rawSegment, Normalizer.Form.NFC)) {
                 "", "." -> Unit
                 ".." -> if (result.isNotEmpty()) result.removeLast()

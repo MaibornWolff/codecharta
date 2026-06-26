@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -146,6 +147,18 @@ class CcJsonV2SerializationTest {
         assertTrue(attributes.getAsJsonObject(appId).getAsJsonArray("authors").size() == 2)
         assertTrue(attributes.getAsJsonObject(srcId).has("commits"))
         assertEquals(semantic15(project), semantic15(roundTripped))
+    }
+
+    @Test
+    fun `should throw when two tree positions collide on the same node id`() {
+        // Arrange: a folder and a synthetic '.' child both carry attributes and canonicalize to "/src".
+        val dotChild = Node(".", NodeType.File, mapOf("x" to 1.0), "", setOf(), checksum = "c1")
+        val srcNode = Node("src", NodeType.Folder, mapOf("y" to 2.0), "", setOf(dotChild))
+        val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(srcNode))
+        val project = Project("p", listOf(root), Project.API_VERSION, LensSet())
+
+        // Act + Assert: the colliding ids fail loud instead of silently overwriting metrics.
+        assertThrows<IllegalArgumentException> { ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO) }
     }
 
     @Test

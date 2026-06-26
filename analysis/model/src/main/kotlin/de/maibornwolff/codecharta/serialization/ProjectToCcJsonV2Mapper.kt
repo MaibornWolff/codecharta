@@ -61,6 +61,9 @@ object ProjectToCcJsonV2Mapper {
     private fun toFileDto(node: Node, segments: List<String>, metricsByNodeId: MutableMap<String, Map<String, Any>>): FileDto {
         val id = NodeId.fromSegments(segments)
         if (node.attributes.isNotEmpty()) {
+            require(id !in metricsByNodeId) {
+                "Duplicate node id '$id' for ${NodeId.canonicalPath(segments)}; two tree positions collide in the metrics lens"
+            }
             metricsByNodeId[id] = node.attributes
         }
         val children = node.children.map { child -> toFileDto(child, segments + child.name, metricsByNodeId) }
