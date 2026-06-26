@@ -110,15 +110,16 @@ class FolderMover(private val project: Project) {
         val sanitizedTo = "/" + to.removeSuffix("/").removePrefix("/")
         return project.lenses.dependency.edges
             .map { edge ->
-                edge.fromNodeName = edge.fromNodeName.replace(sanitizedFrom, sanitizedTo)
-                edge.toNodeName = edge.toNodeName.replace(sanitizedFrom, sanitizedTo)
-                edge
+                Edge(
+                    edge.fromNodeName.replace(sanitizedFrom, sanitizedTo),
+                    edge.toNodeName.replace(sanitizedFrom, sanitizedTo),
+                    edge.attributes
+                )
             }.toMutableList()
     }
 
     private fun copyBlacklist(from: String, to: String): MutableList<BlacklistItem> = project.blacklist
         .map { blacklistItem ->
-            blacklistItem.path = blacklistItem.path.replace(from, to)
-            blacklistItem
+            BlacklistItem(blacklistItem.path.replace(from, to), blacklistItem.type)
         }.toMutableList()
 }

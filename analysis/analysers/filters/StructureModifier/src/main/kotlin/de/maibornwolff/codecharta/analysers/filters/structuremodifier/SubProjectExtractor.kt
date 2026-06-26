@@ -66,9 +66,11 @@ class SubProjectExtractor(private val project: Project) {
         .filter {
             it.fromNodeName.startsWith(pattern) && it.toNodeName.startsWith(pattern)
         }.map { edge ->
-            edge.fromNodeName = "/root" + edge.fromNodeName.removePrefix(pattern)
-            edge.toNodeName = "/root" + edge.toNodeName.removePrefix(pattern)
-            edge
+            Edge(
+                "/root" + edge.fromNodeName.removePrefix(pattern),
+                "/root" + edge.toNodeName.removePrefix(pattern),
+                edge.attributes
+            )
         }
 
     private fun copyBlacklist(): MutableList<BlacklistItem> = project.blacklist.toMutableList()

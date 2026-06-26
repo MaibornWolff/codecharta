@@ -127,6 +127,25 @@ class FolderMoverTest {
     }
 
     @Test
+    fun `should not mutate source project edges or blacklist when moving`() {
+        // Arrange: snapshot an affected source edge and blacklist entry before the move.
+        val folderMover = FolderMover(sampleProject)
+        val sourceEdge = sampleProject.lenses.dependency.edges.first()
+        val originalFrom = sourceEdge.fromNodeName
+        val originalTo = sourceEdge.toNodeName
+        val sourceBlacklistItem = sampleProject.blacklist.first()
+        val originalPath = sourceBlacklistItem.path
+
+        // Act
+        folderMover.move("/root/foo", "/root/bar")
+
+        // Assert: the input project's edge endpoints and blacklist paths are untouched.
+        Assertions.assertThat(sourceEdge.fromNodeName).isEqualTo(originalFrom)
+        Assertions.assertThat(sourceEdge.toNodeName).isEqualTo(originalTo)
+        Assertions.assertThat(sourceBlacklistItem.path).isEqualTo(originalPath)
+    }
+
+    @Test
     fun `should change path of relevant blacklist items`() {
         val folderMover = FolderMover(sampleProject)
 
