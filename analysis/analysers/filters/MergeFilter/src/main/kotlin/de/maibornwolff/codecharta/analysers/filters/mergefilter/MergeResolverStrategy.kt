@@ -130,10 +130,16 @@ class MergeResolverStrategy private constructor(
     }
 
     private fun unambiguousSuffixMatch(incomingPath: Path, referencePaths: Set<Path>): Path? {
-        val candidates = referencePaths.filter { !it.isTrivial }
-        val bestFit = candidates.maxOfOrNull { suffixFit(incomingPath, it) } ?: 0
-        if (bestFit == 0) return null
-        return candidates.filter { suffixFit(incomingPath, it) == bestFit }.singleOrNull()
+        val incomingEdges = normalizedEdges(incomingPath)
+        val scored =
+            referencePaths
+                .asSequence()
+                .filter { !it.isTrivial }
+                .map { it to suffixFit(incomingEdges, normalizedEdges(it)) }
+                .filter { it.second > 0 }
+                .toList()
+        val bestFit = scored.maxOfOrNull { it.second } ?: return null
+        return scored.filter { it.second == bestFit }.map { it.first }.singleOrNull()
     }
 
     private fun keepOrDrop(incomingPath: Path): Path {
@@ -148,11 +154,12 @@ class MergeResolverStrategy private constructor(
     private fun pathsEqual(first: Path, second: Path): Boolean = first.edgesList.size == second.edgesList.size &&
         first.edgesList.indices.all { namesMatch(first.edgesList[it], second.edgesList[it]) }
 
-    private fun suffixFit(first: Path, second: Path): Int = if (ignoreCase) {
-        Path(first.edgesList.map { it.lowercase() }).fittingEdgesFromTailWith(Path(second.edgesList.map { it.lowercase() }))
-    } else {
-        first.fittingEdgesFromTailWith(second)
-    }
+    // Lowercase the edge list once per path (when ignoreCase) instead of re-allocating it on every
+    // suffix comparison.
+    private fun normalizedEdges(path: Path): List<String> = if (ignoreCase) path.edgesList.map { it.lowercase() } else path.edgesList
+
+    private fun suffixFit(firstEdges: List<String>, secondEdges: List<String>): Int =
+        Path(firstEdges).fittingEdgesFromTailWith(Path(secondEdges))
 
     companion object {
         fun recursive(ignoreCase: Boolean = false): MergeResolverStrategy =
