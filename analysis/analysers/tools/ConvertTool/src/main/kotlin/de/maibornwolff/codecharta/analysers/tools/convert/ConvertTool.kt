@@ -52,18 +52,16 @@ class ConvertTool(private val input: InputStream = System.`in`, private val outp
     }
 
     private fun readProject(): Project? {
-        if (source == null) {
-            return ProjectDeserializer.deserializeProject(input)
-        }
+        val file = source ?: return ProjectDeserializer.deserializeProject(input)
 
-        require(InputHelper.isInputValid(arrayOf(source!!), canInputContainFolders = false)) {
+        require(InputHelper.isInputValid(arrayOf(file), canInputContainFolders = false)) {
             "Input invalid file for ConvertTool, stopping execution..."
         }
 
         return try {
-            ProjectDeserializer.deserializeProject(source!!.inputStream())
+            ProjectDeserializer.deserializeProject(file.inputStream())
         } catch (e: Exception) {
-            Logger.error { "${source!!.name} is not a valid project file and is therefore skipped." }
+            Logger.error { "${file.name} is not a valid project file and is therefore skipped." }
             null
         }
     }
