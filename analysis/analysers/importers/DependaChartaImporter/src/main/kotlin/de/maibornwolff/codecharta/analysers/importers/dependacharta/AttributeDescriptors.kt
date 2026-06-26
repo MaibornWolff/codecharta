@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val analyzerName = setOf("dependaChartaImporter")
     return mapOf(
-        "dependencies" to
+        DcJsonParser.DEPENDENCIES to
             AttributeDescriptor(
                 title = "Dependencies",
                 description = "Number of code-level dependency links between two files",
