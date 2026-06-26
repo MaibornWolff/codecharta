@@ -46,7 +46,8 @@ class ConvertTool(private val input: InputStream = System.`in`, private val outp
     }
 
     override fun call(): Unit? {
-        val project = readProject() ?: return null
+        val project = readProject()
+        require(project != null) { "No convertible project could be read, nothing was written." }
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress, ApiVersion.TWO_ZERO)
         return null
     }
