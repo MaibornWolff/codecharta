@@ -32,16 +32,21 @@ object CcJsonV2Gson {
             .registerTypeAdapter(LensesDto::class.java, LensesDtoDeserializer())
             .create()
 
-    private val KNOWN_LENSES = setOf("metrics", "dependency", "domain", "security")
+    const val METRICS_KEY = "metrics"
+    const val DEPENDENCY_KEY = "dependency"
+    const val DOMAIN_KEY = "domain"
+    const val SECURITY_KEY = "security"
+
+    private val KNOWN_LENSES = setOf(METRICS_KEY, DEPENDENCY_KEY, DOMAIN_KEY, SECURITY_KEY)
 
     /** Serializes the known lenses and re-emits every unknown lens verbatim as a sibling key. */
     private class LensesDtoSerializer : JsonSerializer<LensesDto> {
         override fun serialize(src: LensesDto, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
             val result = JsonObject()
-            result.add("metrics", context.serialize(src.metrics))
-            result.add("dependency", context.serialize(src.dependency))
-            result.add("domain", context.serialize(src.domain))
-            result.add("security", context.serialize(src.security))
+            result.add(METRICS_KEY, context.serialize(src.metrics))
+            result.add(DEPENDENCY_KEY, context.serialize(src.dependency))
+            result.add(DOMAIN_KEY, context.serialize(src.domain))
+            result.add(SECURITY_KEY, context.serialize(src.security))
             src.additionalLenses.forEach { (lensName, lensValue) -> result.add(lensName, lensValue) }
             return result
         }
@@ -52,13 +57,13 @@ object CcJsonV2Gson {
         override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): LensesDto {
             val jsonObject = json.asJsonObject
             val metrics =
-                jsonObject.get("metrics")?.let { context.deserialize<MetricsLensDto>(it, MetricsLensDto::class.java) }
+                jsonObject.get(METRICS_KEY)?.let { context.deserialize<MetricsLensDto>(it, MetricsLensDto::class.java) }
                     ?: MetricsLensDto()
             val dependency =
-                jsonObject.get("dependency")?.let { context.deserialize<DependencyLensDto>(it, DependencyLensDto::class.java) }
+                jsonObject.get(DEPENDENCY_KEY)?.let { context.deserialize<DependencyLensDto>(it, DependencyLensDto::class.java) }
                     ?: DependencyLensDto()
-            val domain = jsonObject.get("domain")?.let { context.deserialize<Map<String, Any>>(it, anyMapType) } ?: emptyMap()
-            val security = jsonObject.get("security")?.let { context.deserialize<Map<String, Any>>(it, anyMapType) } ?: emptyMap()
+            val domain = jsonObject.get(DOMAIN_KEY)?.let { context.deserialize<Map<String, Any>>(it, anyMapType) } ?: emptyMap()
+            val security = jsonObject.get(SECURITY_KEY)?.let { context.deserialize<Map<String, Any>>(it, anyMapType) } ?: emptyMap()
             val additionalLenses =
                 jsonObject
                     .entrySet()
