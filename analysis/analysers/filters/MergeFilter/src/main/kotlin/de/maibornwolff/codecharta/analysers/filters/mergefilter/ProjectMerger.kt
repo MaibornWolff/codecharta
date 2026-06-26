@@ -27,12 +27,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
     // Each lens owns how its attribute types and descriptors combine; the merger only delegates.
     private val mergedMetricsLens by lazy { projects.map { it.lenses.metrics }.reduce { acc, lens -> acc.merge(lens) } }
     private val mergedDependencyLens by lazy {
-        projects.map { it.lenses.dependency }.reduce {
-            acc,
-            lens
-            ->
-            acc.merge(lens, mergeEdges = false)
-        }
+        projects.map { it.lenses.dependency }.reduce { acc, lens -> acc.merge(lens, mergeEdges = nodeMerger.mergesEdges) }
     }
 
     private fun areAllAPIVersionsCompatible(): Boolean {
@@ -58,37 +53,21 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return mergedNodes
     }
 
-    private fun mergeEdges(): MutableList<Edge> = if (nodeMerger.mergesEdges) {
-        getMergedEdges()
-    } else {
-        getEdgesOfMainAndWarnIfDiscards()
+    // The dependency lens already merges/dedupes (or keeps) edges per the strategy, so read its
+    // result instead of re-deriving the dedup here.
+    private fun mergeEdges(): MutableList<Edge> {
+        if (!nodeMerger.mergesEdges) warnIfEdgesDiscarded()
+        return mergedDependencyLens.edges.toMutableList()
     }
 
-    private fun getEdgesOfMainAndWarnIfDiscards(): MutableList<Edge> {
+    private fun warnIfEdgesDiscarded() {
         projects.forEachIndexed { i, project ->
-            if (project.lenses.dependency.edges.isNotEmpty() && i > 0) {
+            if (i > 0 && project.lenses.dependency.edges.isNotEmpty()) {
                 Logger.warn {
                     "Edges were not merged. Use recursive strategy to merge edges."
                 }
             }
         }
-        return projects
-            .first()
-            .lenses.dependency.edges
-            .toMutableList()
-    }
-
-    private fun getMergedEdges(): MutableList<Edge> {
-        val mergedEdges = mutableListOf<Edge>()
-        projects.forEach {
-            it.lenses.dependency.edges.forEach {
-                mergedEdges.add(it)
-            }
-        }
-        return mergedEdges
-            .distinctBy {
-                listOf(it.fromNodeName, it.toNodeName)
-            }.toMutableList()
     }
 
     private fun mergeAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
