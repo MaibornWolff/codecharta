@@ -8,7 +8,6 @@ import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.util.Logger
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
     fun merge(): Project = when {
@@ -26,8 +25,11 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     // Each lens owns how its attribute types and descriptors combine; the merger only delegates.
     private val mergedMetricsLens by lazy { projects.map { it.lenses.metrics }.reduce { acc, lens -> acc.merge(lens) } }
+
+    // Edges from every input are unioned and de-duplicated by endpoint pair, regardless of merge
+    // strategy, so overlaying a dependency-bearing project never silently drops its edges.
     private val mergedDependencyLens by lazy {
-        projects.map { it.lenses.dependency }.reduce { acc, lens -> acc.merge(lens, mergeEdges = nodeMerger.mergesEdges) }
+        projects.map { it.lenses.dependency }.reduce { acc, lens -> acc.merge(lens, mergeEdges = true) }
     }
 
     private fun areAllAPIVersionsCompatible(): Boolean {
@@ -53,22 +55,9 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return mergedNodes
     }
 
-    // The dependency lens already merges/dedupes (or keeps) edges per the strategy, so read its
-    // result instead of re-deriving the dedup here.
-    private fun mergeEdges(): MutableList<Edge> {
-        if (!nodeMerger.mergesEdges) warnIfEdgesDiscarded()
-        return mergedDependencyLens.edges.toMutableList()
-    }
-
-    private fun warnIfEdgesDiscarded() {
-        projects.forEachIndexed { i, project ->
-            if (i > 0 && project.lenses.dependency.edges.isNotEmpty()) {
-                Logger.warn {
-                    "Edges were not merged. Use recursive strategy to merge edges."
-                }
-            }
-        }
-    }
+    // The dependency lens already unions and dedupes edges, so read its result instead of
+    // re-deriving the dedup here.
+    private fun mergeEdges(): MutableList<Edge> = mergedDependencyLens.edges.toMutableList()
 
     private fun mergeAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
         val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()

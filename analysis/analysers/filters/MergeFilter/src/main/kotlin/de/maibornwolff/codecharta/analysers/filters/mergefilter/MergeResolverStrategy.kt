@@ -22,9 +22,6 @@ class MergeResolverStrategy private constructor(
 ) : NodeMergerStrategy {
     enum class Mode { UNION, OVERLAY }
 
-    override val mergesEdges: Boolean
-        get() = mode == Mode.UNION
-
     private var nodesProcessed = 0
     private var nodesMerged = 0
     private var nodesUnmatched = 0

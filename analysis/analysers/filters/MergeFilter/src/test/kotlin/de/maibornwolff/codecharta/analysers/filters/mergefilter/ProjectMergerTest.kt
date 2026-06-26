@@ -135,7 +135,9 @@ class ProjectMergerTest {
 
         assertNotEquals(project, originalProject1)
         assertNotEquals(project, originalProject2)
-        assertEquals(project.sizeOfEdges(), 2)
+        // Overlay now unions incoming edges too (deduped), so it keeps the same 3 edges as recursive
+        // instead of dropping the second project's edges.
+        assertEquals(project.sizeOfEdges(), 3)
         assertEquals(project.size, 4)
         assertEquals(
             project.rootNode.children

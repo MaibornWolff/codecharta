@@ -133,12 +133,6 @@ class MergeResolverStrategyTest {
     }
 
     @Test
-    fun `should report union mode merges edges and overlay mode does not`() {
-        assertTrue(MergeResolverStrategy.recursive().mergesEdges)
-        assertTrue(!MergeResolverStrategy.leaf(false).mergesEdges)
-    }
-
-    @Test
     fun `should not merge by suffix when two reference paths tie on the best suffix fit`() {
         // Arrange: two references share the same App.kt tail, so the suffix match is ambiguous.
         val reference =
