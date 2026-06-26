@@ -59,7 +59,7 @@ object CcJsonV2ToProjectMapper {
         val children = fileDto.children?.map { toNode(it, metricsByNodeId) } ?: emptyList()
         return Node(
             name = fileDto.name,
-            type = NodeType.valueOf(fileDto.type),
+            type = NodeType.parse(fileDto.type),
             attributes = metricsByNodeId[fileDto.id] ?: emptyMap(),
             link = fileDto.link,
             children = children.toSet(),

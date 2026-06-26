@@ -28,14 +28,7 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
 
     private fun deserializeNodeType(jsonNode: JsonObject): NodeType {
         val typeElement = jsonNode["type"] ?: throw JsonParseException("Type element is missing.")
-        val nodeType: NodeType
-        try {
-            nodeType = NodeType.valueOf(typeElement.asString)
-        } catch (e: IllegalArgumentException) {
-            throw JsonParseException("Type " + typeElement.asString + " not supported.", e)
-        }
-
-        return nodeType
+        return NodeType.parse(typeElement.asString)
     }
 
     private fun deserializeName(jsonNode: JsonObject): String {
