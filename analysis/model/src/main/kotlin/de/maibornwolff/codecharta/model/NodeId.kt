@@ -17,9 +17,16 @@ import java.text.Normalizer
  *   hashes identically across operating systems.
  * - case is preserved (filesystems are treated as case-sensitive).
  *
- * The canonicalizer only removes *spurious* divergence (separators, the synthetic root name,
- * `.`/`..`, Unicode form, trailing slash). It deliberately does not reconcile *semantic* divergence
- * (a tool that genuinely roots the tree at a different depth): that is the merge resolver's job.
+ * Precondition — producers must PRE-SEGMENT paths. [canonicalSegments]/[fromSegments]/[canonicalPath]
+ * take an already-split segment list; they never split on a path separator (and [canonicalize]
+ * `require`s a segment to contain no `/`). A backslash `\` is a valid filename character on Linux, so
+ * NodeId treats it as a literal: a producer holding a raw OS path must split it itself (on `/`, and on
+ * Windows also on `\`) before handing the segments in. Edge endpoints are the one exception — the wire
+ * format roots them with `/`, so [fromEndpoint] splits the endpoint string on `/` only.
+ *
+ * The canonicalizer only removes *spurious* divergence (the synthetic root name, `.`/`..`, Unicode
+ * form, trailing slash). It deliberately does not reconcile *semantic* divergence (a tool that
+ * genuinely roots the tree at a different depth): that is the merge resolver's job.
  */
 object NodeId {
     const val ID_LENGTH = 16
@@ -30,7 +37,7 @@ object NodeId {
      * The canonicalized segment list of a tree position (root excluded): empty segments dropped, `.`
      * removed, `..` collapsed, each segment NFC-normalized, case preserved. Producers that build a
      * node tree from raw paths should derive their positions through this so the tree position and
-     * the [id] always agree.
+     * the [id] always agree. The input must already be split into segments (see the class precondition).
      */
     fun canonicalSegments(segments: List<String>): List<String> = canonicalize(segments)
 

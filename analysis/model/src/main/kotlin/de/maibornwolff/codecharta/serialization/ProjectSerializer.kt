@@ -19,7 +19,7 @@ object ProjectSerializer {
      * output pin it via the explicit `apiVersion` parameter.
      */
     @JvmField
-    var defaultApiVersion: ApiVersion = ApiVersion.TWO_ZERO
+    val defaultApiVersion: ApiVersion = ApiVersion.TWO_ZERO
 
     /** The wire object + its GSON for the given format — the single place format dispatch happens. */
     private fun wire(project: Project, apiVersion: ApiVersion): Pair<Gson, Any> = when (apiVersion) {
