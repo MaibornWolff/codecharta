@@ -15,7 +15,7 @@ object ProjectToCcJson15Mapper {
             CcJson15Project(
                 projectName = project.projectName,
                 nodes = listOf(project.rootNode),
-                apiVersion = project.apiVersion,
+                apiVersion = ApiVersion.ONE_FIVE.versionString,
                 edges = project.lenses.dependency.edges,
                 attributeTypes = project.lenses.legacyAttributeTypes(),
                 attributeDescriptors = project.lenses.allAttributeDescriptors(),

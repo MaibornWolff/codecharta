@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypeDeserializer
@@ -53,19 +54,24 @@ object ProjectDeserializer {
 
     /** Auto-detects the format by apiVersion major and routes to the matching reader (1.5 or 2.0). */
     private fun parseProject(projectString: String): Project {
-        val jsonObject = JsonParser.parseString(projectString).asJsonObject
-        return if (isVersionTwo(jsonObject)) {
-            CcJsonV2ToProjectMapper.toProject(CcJsonV2Gson.gson.fromJson(jsonObject, CcJsonV2::class.java))
-        } else {
-            GSON.fromJson(jsonObject, ProjectWrapper::class.java).data
+        val parsed = JsonParser.parseString(projectString)
+        if (!parsed.isJsonObject) {
+            throw JsonParseException("not a valid cc.json document: expected a JSON object at the top level")
+        }
+        val jsonObject = parsed.asJsonObject
+        return when (detectApiVersion(jsonObject)) {
+            ApiVersion.TWO_ZERO -> CcJsonV2ToProjectMapper.toProject(CcJsonV2Gson.gson.fromJson(jsonObject, CcJsonV2::class.java))
+            ApiVersion.ONE_FIVE -> GSON.fromJson(jsonObject, ProjectWrapper::class.java).data
         }
     }
 
-    private fun isVersionTwo(jsonObject: JsonObject): Boolean {
+    private fun detectApiVersion(jsonObject: JsonObject): ApiVersion {
         // getAsJsonObject throws if "meta" is present but not an object, so check the type first.
         val meta = jsonObject.get("meta")?.takeIf { it.isJsonObject }?.asJsonObject
         val metaApiVersion = meta?.get("apiVersion")?.takeIf { it.isJsonPrimitive }?.asString
-        if (metaApiVersion != null) return metaApiVersion.substringBefore('.') == "2"
-        return jsonObject.has("lenses")
+        // No meta.apiVersion: a 2.0 file still has "lenses", a legacy 1.5 file has neither.
+        val major = metaApiVersion?.substringBefore('.') ?: if (jsonObject.has("lenses")) "2" else "1"
+        return ApiVersion.entries.firstOrNull { it.major.toString() == major }
+            ?: throw JsonParseException("unsupported cc.json version $major (supported: 1.x, 2.x)")
     }
 }

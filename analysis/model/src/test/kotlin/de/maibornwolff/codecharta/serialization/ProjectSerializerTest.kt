@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
+import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
@@ -58,15 +59,24 @@ class ProjectSerializerTest {
     fun `should correctly serialize the specified project when provided as input`() {
         // given
         val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3)!!.reader()
-        val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json")!!.readText()
+        // The 1.5 wire mapper stamps the version it actually emits, so a 1.3-origin project is
+        // re-serialized as 1.5 (review finding #7, FAIL-15VER). Compare the meaningful `data` payload
+        // with apiVersion restamped to 1.5; the wrapper checksum is just MD5(data) and is covered by
+        // the dedicated checksum tests.
+        val expectedData =
+            JsonParser
+                .parseString(this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json")!!.readText())
+                .asJsonObject
+                .getAsJsonObject("data")
+        expectedData.addProperty("apiVersion", "1.5")
         val testProject = ProjectDeserializer.deserializeProject(jsonReader)
 
         // when
         ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false, apiVersion = ApiVersion.ONE_FIVE)
-        val testJsonString = File(filename).readText()
+        val actualData = JsonParser.parseString(File(filename).readText()).asJsonObject.getAsJsonObject("data")
 
         // then
-        JSONAssert.assertEquals(expectedJsonString, testJsonString, JSONCompareMode.NON_EXTENSIBLE)
+        JSONAssert.assertEquals(expectedData.toString(), actualData.toString(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test

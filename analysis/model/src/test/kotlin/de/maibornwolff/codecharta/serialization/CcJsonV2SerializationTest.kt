@@ -16,6 +16,7 @@ import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -64,6 +65,18 @@ class CcJsonV2SerializationTest {
         assertTrue(json.has("data"))
         assertEquals("1.5", json.getAsJsonObject("data").get("apiVersion").asString)
         assertTrue(json.getAsJsonObject("data").has("nodes"))
+    }
+
+    @Test
+    fun `should stamp the 1_5 wire version even when the domain project reports 2_0`() {
+        // Arrange: a project that reports apiVersion 2.0 (e.g. read back from a 2.0 file).
+        val project = Project("p", listOf(Node("root", NodeType.Folder)), "2.0", LensSet())
+
+        // Act
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project, ApiVersion.ONE_FIVE)).asJsonObject
+
+        // Assert: the 1.5 envelope stamps the version it actually emits, not the domain's 2.0.
+        assertEquals("1.5", json.getAsJsonObject("data").get("apiVersion").asString)
     }
 
     @Test
@@ -195,7 +208,25 @@ class CcJsonV2SerializationTest {
 
         val thrown = runCatching { ProjectDeserializer.deserializeProject(malformed) }.exceptionOrNull()
 
+        assertNotNull(thrown)
         assertTrue(thrown !is ClassCastException)
+    }
+
+    @Test
+    fun `should throw a clear error for an unsupported future cc_json major`() {
+        val future = """{"meta":{"apiVersion":"3.0"},"files":[],"lenses":{}}"""
+
+        val thrown = assertThrows<Exception> { ProjectDeserializer.deserializeProject(future) }
+
+        assertTrue(thrown.message!!.contains("unsupported cc.json version 3"))
+    }
+
+    @Test
+    fun `should throw a clear error when the top-level json is not an object`() {
+        listOf(""""hello"""", "[1,2,3]").forEach { malformed ->
+            val thrown = assertThrows<Exception> { ProjectDeserializer.deserializeProject(malformed) }
+            assertTrue(thrown.message!!.contains("not a valid cc.json document"))
+        }
     }
 
     @Test
