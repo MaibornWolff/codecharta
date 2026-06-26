@@ -56,10 +56,13 @@ class DependaChartaImporter(private val output: PrintStream = System.out) :
         }
 
         val dcProject = Gson().fromJson(inputFile!!.reader(), DcProject::class.java)
-        val edges = DcJsonParser.parseEdges(dcProject)
+        val segmentsByLeafId = DcJsonParser.canonicalSegmentsByLeafId(dcProject)
+        val edges = DcJsonParser.parseEdges(dcProject, segmentsByLeafId)
 
         val projectBuilder = ProjectBuilder()
-        DcJsonParser.parseFileNodes(dcProject, edges).forEach { (parentPath, node) -> projectBuilder.insertByPath(parentPath, node) }
+        DcJsonParser
+            .parseFileNodes(dcProject, edges, segmentsByLeafId)
+            .forEach { (parentPath, node) -> projectBuilder.insertByPath(parentPath, node) }
         edges.forEach { projectBuilder.insertEdge(it) }
         projectBuilder.addAttributeTypes(edgeAttributeTypes)
         projectBuilder.addAttributeTypes(nodeAttributeTypes)
@@ -72,19 +75,16 @@ class DependaChartaImporter(private val output: PrintStream = System.out) :
     }
 
     private val edgeAttributeTypes: AttributeTypes
-        get() {
-            val types = mutableMapOf<String, AttributeType>()
-            types["dependencies"] = AttributeType.ABSOLUTE
-            return AttributeTypes(types, "edges")
-        }
+        get() = AttributeTypes(mutableMapOf(DcJsonParser.DEPENDENCIES to AttributeType.ABSOLUTE), "edges")
 
     private val nodeAttributeTypes: AttributeTypes
-        get() {
-            val types = mutableMapOf<String, AttributeType>()
-            types[DcJsonParser.OUTGOING_DEPENDENCIES] = AttributeType.ABSOLUTE
-            types[DcJsonParser.INCOMING_DEPENDENCIES] = AttributeType.ABSOLUTE
-            return AttributeTypes(types, "nodes")
-        }
+        get() = AttributeTypes(
+            mutableMapOf(
+                DcJsonParser.OUTGOING_DEPENDENCIES to AttributeType.ABSOLUTE,
+                DcJsonParser.INCOMING_DEPENDENCIES to AttributeType.ABSOLUTE
+            ),
+            "nodes"
+        )
 
     override fun getDialog(): AnalyserDialogInterface = Dialog
 

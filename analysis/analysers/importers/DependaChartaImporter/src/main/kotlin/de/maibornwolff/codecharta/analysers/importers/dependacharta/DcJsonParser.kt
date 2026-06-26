@@ -8,9 +8,17 @@ import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.util.Logger
 
 object DcJsonParser {
-    private const val DEPENDENCIES = "dependencies"
+    const val DEPENDENCIES = "dependencies"
     const val OUTGOING_DEPENDENCIES = "outgoing_dependencies"
     const val INCOMING_DEPENDENCIES = "incoming_dependencies"
+
+    /**
+     * The canonical tree-position segments of every leaf, keyed by leaf id and computed once. Both
+     * the edge and the file-node building derive from this, so a physical path is canonicalized a
+     * single time instead of once per leaf and again per referencing edge.
+     */
+    fun canonicalSegmentsByLeafId(dcProject: DcProject): Map<String, List<String>> =
+        dcProject.leaves.mapValues { (_, leaf) -> canonicalSegments(leaf.physicalPath) }
 
     /**
      * One [MutableNode] per unique leaf `physicalPath`, paired with the folder [Path] to insert it
@@ -23,12 +31,15 @@ object DcJsonParser {
      * (summed from [edges]) so a DependaCharta map has a default node metric to size buildings by,
      * instead of only the edge metric.
      */
-    fun parseFileNodes(dcProject: DcProject, edges: List<Edge> = emptyList()): List<Pair<Path, MutableNode>> {
+    fun parseFileNodes(
+        dcProject: DcProject,
+        edges: List<Edge> = emptyList(),
+        segmentsByLeafId: Map<String, List<String>> = canonicalSegmentsByLeafId(dcProject)
+    ): List<Pair<Path, MutableNode>> {
         val outgoing = edges.groupBy { it.fromNodeName }.mapValues { (_, group) -> group.sumOf { dependencyCount(it) } }
         val incoming = edges.groupBy { it.toNodeName }.mapValues { (_, group) -> group.sumOf { dependencyCount(it) } }
 
-        return dcProject.leaves.values
-            .map { canonicalSegments(it.physicalPath) }
+        return segmentsByLeafId.values
             .filter { it.isNotEmpty() }
             .distinct()
             .map { segments ->
@@ -43,23 +54,23 @@ object DcJsonParser {
 
     private fun dependencyCount(edge: Edge): Int = (edge.attributes[DEPENDENCIES] as? Number)?.toInt() ?: 0
 
-    fun parseEdges(dcProject: DcProject): List<Edge> = dcProject.leaves.values
-        .flatMap { leaf -> resolveDependencies(leaf, dcProject.leaves) }
-        .groupingBy { it }
-        .eachCount()
-        .map { (endpoints, count) -> Edge(endpoints.first, endpoints.second, mapOf(DEPENDENCIES to count)) }
+    fun parseEdges(dcProject: DcProject, segmentsByLeafId: Map<String, List<String>> = canonicalSegmentsByLeafId(dcProject)): List<Edge> =
+        dcProject.leaves.entries
+            .flatMap { (leafId, leaf) -> resolveDependencies(leafId, leaf, segmentsByLeafId) }
+            .groupingBy { it }
+            .eachCount()
+            .map { (endpoints, count) -> Edge(endpoints.first, endpoints.second, mapOf(DEPENDENCIES to count)) }
 
-    private fun resolveDependencies(leaf: DcLeaf, leaves: Map<String, DcLeaf>): List<Pair<String, String>> {
-        val fromSegments = canonicalSegments(leaf.physicalPath)
+    private fun resolveDependencies(leafId: String, leaf: DcLeaf, segmentsByLeafId: Map<String, List<String>>): List<Pair<String, String>> {
+        val fromSegments = segmentsByLeafId.getValue(leafId)
         if (fromSegments.isEmpty()) return emptyList()
 
         return leaf.dependencies.keys.mapNotNull { targetId ->
-            val target = leaves[targetId]
-            if (target == null) {
+            val toSegments = segmentsByLeafId[targetId]
+            if (toSegments == null) {
                 Logger.warn { "Target leaf '$targetId' not found, skipping dependency" }
                 return@mapNotNull null
             }
-            val toSegments = canonicalSegments(target.physicalPath)
             if (toSegments.isEmpty() || fromSegments == toSegments) return@mapNotNull null
             endpoint(fromSegments) to endpoint(toSegments)
         }
