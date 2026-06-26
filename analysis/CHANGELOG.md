@@ -11,6 +11,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Add JSX support to UnifiedParser
 - Add TSX support to UnifiedParser
+- Add `convert` command that upgrades a 1.5 `.cc.json` file to the 2.0 format
+
+### Changed
+
+- **BREAKING: `ccsh` now emits the new cc.json 2.0 `{ meta, files, lenses }` format by default.**
+  Node metrics move off the file tree into a `metrics` lens keyed by a stable, content-independent
+  node `id` (`sha-256(canonicalPath)`), dependency edges move into a `dependency` lens referenced by
+  id, and reserved/unknown lenses round-trip verbatim. The deserializer auto-detects and still reads
+  both 1.5 and 2.0 input. See ADR 12 and `dev_docs/cc-json-2.0-format.md`.
+  - **Interop note:** the visualization still consumes 1.5 only — a 2.0 file produced by `ccsh` cannot
+    be opened in the current visualization yet (2.0 is analysis-first; the visualization migrates in a
+    later story). There is currently no CLI flag to emit 1.5; track this if you feed the viz directly.
+- The 2.0 wire format drops `blacklist` and `markedPackages`; a project read from 2.0 carries an empty
+  blacklist. Converting a 1.5 file with a non-empty blacklist to 2.0 is therefore not round-trippable.
+
+### Fixed 🐞
+
+- Merging projects no longer drops each merged node's content hash, so a merged 2.0 file stays usable
+  as a `--base-file` and for content-match re-merge.
+- The leaf/overlay merge strategy now unions incoming dependency edges instead of silently keeping only
+  the reference project's edges.
 
 ## [1.143.0] - 2026-04-28
 

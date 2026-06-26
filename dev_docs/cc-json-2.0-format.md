@@ -94,6 +94,21 @@ combine consistently regardless of which tool produced them.
 remains on the analysis domain as a filter-time concept (MergeFilter dedup, StructureModifier and
 LargeMerge path rewrites); a project read from 2.0 carries an empty blacklist.
 
+## Known limitations (analysis-first staging)
+
+These are deliberate gaps while 2.0 is analysis-only — see `plans/2026-06-26-ccjson-2-deferred-gaps.md`:
+
+- **No 1.5 output / the visualization can't read 2.0 yet.** `ccsh` emits 2.0 by default and there is
+  no CLI flag to emit 1.5. The shipped visualization still parses 1.5 only, so a 2.0 file produced by
+  `ccsh` cannot be opened in the current visualization. The visualization migrates in its own story.
+- **Cross-tool / cross-repo joins need `--leaf`.** The *default* merge is recursive/union, which
+  matches purely by tree position and name — differently-rooted trees (e.g. a Sonar import vs a parser
+  scan, or two repos) are placed side-by-side, not joined. The content-hash / longest-suffix
+  reconciliation that aligns differently-rooted files lives only in the `--leaf` (overlay) strategy,
+  and the content-hash bridge requires content-reading producers (UnifiedParser / RawTextParser).
+- **`blacklist` does not survive 1.5 → 2.0 conversion.** Converting a 1.5 file with a non-empty
+  blacklist to 2.0 silently drops it (it is not on the 2.0 wire), with no path back.
+
 ## Where the wire shape lives (single source of truth)
 
 All wire/identity/merge logic lives once in `model`/`serialization`; every parser/importer/filter
