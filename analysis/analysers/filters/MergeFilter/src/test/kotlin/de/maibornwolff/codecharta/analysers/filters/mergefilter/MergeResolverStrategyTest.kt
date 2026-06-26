@@ -169,28 +169,36 @@ class MergeResolverStrategyTest {
     }
 
     @Test
-    fun `should report stats per merge run and not accumulate across runs with a fresh strategy`() {
-        // Arrange: capture the stats logged by logMergeStats.
+    fun `should accumulate stats when a strategy is reused but not when a fresh one is used per run`() {
+        // Arrange: capture the processed-node count logged by logMergeStats.
         mockkObject(Logger)
         val stats = mutableListOf<String>()
         every { Logger.info(any()) } answers { stats.add(firstArg<() -> String>().invoke()) }
         try {
-            // Act: two independent runs, each with a fresh strategy (as MergeFilter does per group).
-            val firstStrategy = MergeResolverStrategy.recursive()
-            merge(firstStrategy, tree(leaf("/src/App.kt", mapOf("a" to 1.0))), tree(leaf("/src/App.kt", mapOf("b" to 2.0))))
-            firstStrategy.logMergeStats()
-            val firstStats = stats.last()
-
+            // Act: reuse ONE strategy across two merges (the cross-MIMO-group bug the factory avoids).
+            val reused = MergeResolverStrategy.recursive()
+            merge(reused, tree(leaf("/src/App.kt", mapOf("a" to 1.0))), tree(leaf("/src/App.kt", mapOf("b" to 2.0))))
+            reused.logMergeStats()
+            val firstRun = processedCount(stats.last())
             stats.clear()
-            val secondStrategy = MergeResolverStrategy.recursive()
-            merge(secondStrategy, tree(leaf("/src/App.kt", mapOf("a" to 1.0))), tree(leaf("/src/App.kt", mapOf("b" to 2.0))))
-            secondStrategy.logMergeStats()
-            val secondStats = stats.last()
+            merge(reused, tree(leaf("/src/App.kt", mapOf("a" to 1.0))), tree(leaf("/src/App.kt", mapOf("b" to 2.0))))
+            reused.logMergeStats()
+            val reusedSecondRun = processedCount(stats.last())
 
-            // Assert: a fresh strategy reports its own run's counts; they do not accumulate.
-            assertEquals(firstStats, secondStats)
+            // A fresh strategy (as MergeFilter now builds per group) reports only its own run's count.
+            stats.clear()
+            val fresh = MergeResolverStrategy.recursive()
+            merge(fresh, tree(leaf("/src/App.kt", mapOf("a" to 1.0))), tree(leaf("/src/App.kt", mapOf("b" to 2.0))))
+            fresh.logMergeStats()
+            val freshRun = processedCount(stats.last())
+
+            // Assert: a reused instance accumulates across runs; a fresh one does not.
+            assertTrue(reusedSecondRun > firstRun)
+            assertEquals(firstRun, freshRun)
         } finally {
             unmockkAll()
         }
     }
+
+    private fun processedCount(stats: String): Int = Regex("""(\d+) nodes were processed""").find(stats)!!.groupValues[1].toInt()
 }
