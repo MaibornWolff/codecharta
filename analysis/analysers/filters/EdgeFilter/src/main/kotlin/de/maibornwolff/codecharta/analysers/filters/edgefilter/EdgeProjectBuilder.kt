@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.filters.edgefilter
 
-import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
@@ -14,27 +13,12 @@ import de.maibornwolff.codecharta.util.Logger
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
     private val projectBuilder =
-        ProjectBuilder(
+        ProjectBuilder.fromLenses(
             listOf(MutableNode("root", NodeType.Folder)),
-            mutableListOf(),
-            getAttributeTypes(),
-            getAttributeDescriptors(),
+            project.lenses.metrics,
+            project.lenses.dependency.copy(edges = emptyList()),
             getBlacklist()
         )
-
-    private fun getAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val newAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.lenses.legacyAttributeTypes().forEach {
-            newAttributeTypes[it.key] = it.value
-        }
-        return newAttributeTypes
-    }
-
-    private fun getAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
-        val newAttributeDescriptor = mutableMapOf<String, AttributeDescriptor>()
-        newAttributeDescriptor.putAll(project.lenses.allAttributeDescriptors())
-        return newAttributeDescriptor
-    }
 
     private fun getBlacklist(): MutableList<BlacklistItem> {
         val newList = mutableListOf<BlacklistItem>()

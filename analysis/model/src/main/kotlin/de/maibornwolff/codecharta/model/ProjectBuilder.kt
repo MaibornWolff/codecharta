@@ -269,5 +269,27 @@ open class ProjectBuilder(
 
     companion object {
         const val DUMMY_PROJECT_NAME = ""
+
+        /**
+         * Builds a [ProjectBuilder] straight from typed lenses, so lens-native callers (the filters)
+         * never have to hand-assemble the legacy `attributeTypes`/`attributeDescriptors` maps. The
+         * edges come from [dependency]; the produced project is byte-identical to passing the legacy
+         * projection of these lenses into the primary constructor.
+         */
+        fun fromLenses(
+            nodes: List<MutableNode>,
+            metrics: MetricsLens,
+            dependency: DependencyLens,
+            blacklist: MutableList<BlacklistItem> = mutableListOf()
+        ): ProjectBuilder {
+            val lenses = LensSet(metrics = metrics, dependency = dependency)
+            return ProjectBuilder(
+                nodes,
+                dependency.edges.toMutableList(),
+                lenses.legacyAttributeTypes().toMutableMap(),
+                lenses.allAttributeDescriptors().toMutableMap(),
+                blacklist
+            )
+        }
     }
 }

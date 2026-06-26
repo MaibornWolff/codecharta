@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.filters.structuremodifier
 
-import de.maibornwolff.codecharta.model.AttributeDescriptor
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
@@ -18,13 +16,13 @@ class SubProjectExtractor(private val project: Project) {
             path.removePrefix("/").split("/").filter {
                 it.isNotEmpty()
             }
-        return ProjectBuilder(
-            addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
-            extractEdges(path),
-            copyAttributeTypes(),
-            copyAttributeDescriptors(),
-            copyBlacklist()
-        ).build(cleanAttributeDescriptors = true)
+        return ProjectBuilder
+            .fromLenses(
+                addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
+                project.lenses.metrics,
+                project.lenses.dependency.copy(edges = extractEdges(path)),
+                copyBlacklist()
+            ).build(cleanAttributeDescriptors = true)
     }
 
     private fun extractNodes(extractionPattern: List<String>, node: MutableNode): MutableList<MutableNode> {
@@ -72,17 +70,6 @@ class SubProjectExtractor(private val project: Project) {
             edge.toNodeName = "/root" + edge.toNodeName.removePrefix(pattern)
             edge
         }
-
-    private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.lenses.legacyAttributeTypes().forEach {
-            mergedAttributeTypes[it.key] = it.value
-        }
-        return mergedAttributeTypes.toMutableMap()
-    }
-
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> =
-        project.lenses.allAttributeDescriptors().toMutableMap()
 
     private fun copyBlacklist(): MutableList<BlacklistItem> = project.blacklist.toMutableList()
 }

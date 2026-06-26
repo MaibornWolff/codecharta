@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.analysers.filters.structuremodifier
 
-import de.maibornwolff.codecharta.model.AttributeDescriptor
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
-import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.MetricsLens
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
@@ -17,16 +15,14 @@ class MetricRenamer(private val project: Project, private val newName: String = 
         }
 
         val updatedRoot = renameMCCRecursivelyInNodes(project.rootNode.toMutableNode())
-        val updatedAttributeTypes = updatedAttributeTypes(project.lenses.legacyAttributeTypes())
-        val updatedAttributesDescriptors = updatedAttributeDescriptors(project.lenses.allAttributeDescriptors())
 
-        return ProjectBuilder(
-            listOf(updatedRoot),
-            copyEdges(),
-            updatedAttributeTypes.toMutableMap(),
-            updatedAttributesDescriptors.toMutableMap(),
-            copyBlacklist()
-        ).build()
+        return ProjectBuilder
+            .fromLenses(
+                listOf(updatedRoot),
+                renameMccInMetricsLens(project.lenses.metrics),
+                project.lenses.dependency,
+                copyBlacklist()
+            ).build()
     }
 
     private fun renameMCCRecursivelyInNodes(node: MutableNode): MutableNode {
@@ -51,42 +47,28 @@ class MetricRenamer(private val project: Project, private val newName: String = 
         return node
     }
 
-    private fun updatedAttributeTypes(
-        attributeTypes: Map<String, MutableMap<String, AttributeType>>
-    ): Map<String, MutableMap<String, AttributeType>> {
-        val nodeAttributes = attributeTypes["nodes"] ?: return attributeTypes
+    private fun renameMccInMetricsLens(metrics: MetricsLens): MetricsLens = metrics.copy(
+        attributeTypes = renamedMcc(metrics.attributeTypes),
+        attributeDescriptors = renamedMcc(metrics.attributeDescriptors)
+    )
 
-        if (nodeAttributes.containsKey("mcc")) {
-            val mccType = nodeAttributes.remove("mcc")
-                ?: throw NullPointerException(
-                    "Input file contains null value for an attribute type! Please ensure the input is a valid cc.json file."
-                )
-            nodeAttributes[newName] = mccType
-        }
+    private fun <T> renamedMcc(map: Map<String, T>): Map<String, T> {
+        if (!map.containsKey("mcc")) return map
 
-        return attributeTypes
-    }
-
-    private fun updatedAttributeDescriptors(attributeDescriptors: Map<String, AttributeDescriptor>): Map<String, AttributeDescriptor> {
-        if (!attributeDescriptors.containsKey("mcc")) return attributeDescriptors
-
-        val updatedAttributeDescriptors = attributeDescriptors.toMutableMap()
-        val mccDescriptor = updatedAttributeDescriptors.remove("mcc")
+        val renamed = map.toMutableMap()
+        val mccValue = renamed.remove("mcc")
             ?: throw NullPointerException(
-                "Input file contains null value for an attribute descriptor! Please ensure the input is a valid cc.json file."
+                "Input file contains null value for an mcc metric! Please ensure the input is a valid cc.json file."
             )
-
-        updatedAttributeDescriptors[newName] = mccDescriptor
-        return updatedAttributeDescriptors
+        renamed[newName] = mccValue
+        return renamed
     }
-
-    private fun copyEdges(): MutableList<Edge> = project.lenses.dependency.edges.toMutableList()
 
     private fun copyBlacklist(): MutableList<BlacklistItem> = project.blacklist.toMutableList()
 
     private fun doesProjectContainMCC(project: Project): Boolean = doesMccExistInNodes(project.rootNode) ||
-        doesMccExistInAttributeTypes(project.lenses.legacyAttributeTypes()) ||
-        doesMccExistInAttributeDescriptors(project.lenses.allAttributeDescriptors())
+        project.lenses.metrics.attributeTypes.containsKey("mcc") ||
+        project.lenses.metrics.attributeDescriptors.containsKey("mcc")
 
     private fun doesMccExistInNodes(node: Node): Boolean {
         if (node.attributes.containsKey("mcc")) return true
@@ -96,12 +78,4 @@ class MetricRenamer(private val project: Project, private val newName: String = 
         val resultOfChildNodes = node.children.any { doesMccExistInNodes(it) }
         return resultOfChildNodes
     }
-
-    private fun doesMccExistInAttributeTypes(attributeTypes: Map<String, Map<String, AttributeType>>): Boolean {
-        val nodeAttributeTypes = attributeTypes["nodes"] ?: return false
-        return nodeAttributeTypes.containsKey("mcc")
-    }
-
-    private fun doesMccExistInAttributeDescriptors(attributeDescriptors: Map<String, AttributeDescriptor>): Boolean =
-        attributeDescriptors.containsKey("mcc")
 }

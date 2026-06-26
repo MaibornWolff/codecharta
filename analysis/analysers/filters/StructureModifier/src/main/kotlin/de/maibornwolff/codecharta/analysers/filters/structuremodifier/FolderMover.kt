@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.filters.structuremodifier
 
-import de.maibornwolff.codecharta.model.AttributeDescriptor
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
@@ -21,13 +19,13 @@ class FolderMover(private val project: Project) {
             return null
         }
 
-        return ProjectBuilder(
-            moveNodes(moveFrom, moveTo),
-            extractEdges(moveFrom, moveTo),
-            copyAttributeTypes(),
-            copyAttributeDescriptors(),
-            copyBlacklist(moveFrom, moveTo)
-        ).build()
+        return ProjectBuilder
+            .fromLenses(
+                moveNodes(moveFrom, moveTo),
+                project.lenses.metrics,
+                project.lenses.dependency.copy(edges = extractEdges(moveFrom, moveTo)),
+                copyBlacklist(moveFrom, moveTo)
+            ).build()
     }
 
     private fun getPathSegments(path: String): List<String> = path.removePrefix("/").split("/").filter {
@@ -117,17 +115,6 @@ class FolderMover(private val project: Project) {
                 edge
             }.toMutableList()
     }
-
-    private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.lenses.legacyAttributeTypes().forEach {
-            mergedAttributeTypes[it.key] = it.value
-        }
-        return mergedAttributeTypes.toMutableMap()
-    }
-
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> =
-        project.lenses.allAttributeDescriptors().toMutableMap()
 
     private fun copyBlacklist(from: String, to: String): MutableList<BlacklistItem> = project.blacklist
         .map { blacklistItem ->

@@ -9,9 +9,11 @@ import com.google.gson.JsonElement
  *
  * [fromLegacy] (legacy → lenses) and [legacyAttributeTypes]/[allAttributeDescriptors] (lenses →
  * legacy) are explicit converters between the lens model and the 1.5-era flat
- * `attributeTypes`/`attributeDescriptors`/`edges` triple. They exist only where the legacy shape is
- * genuinely needed — the 1.5 wire mapper and the [ProjectBuilder] accumulation API — and are not
- * exposed on the lens-native domain [Project].
+ * `attributeTypes`/`attributeDescriptors`/`edges` triple. They are consumed only where the legacy
+ * shape is genuinely needed — the 1.5 wire mapper, the 1.5 reader, and the [ProjectBuilder]
+ * accumulation API (whose [ProjectBuilder.fromLenses] factory rebuilds the flat maps for lens-native
+ * callers). The filters operate on the typed [MetricsLens]/[DependencyLens] and never reach for the
+ * legacy projection.
  */
 data class LensSet(
     val metrics: MetricsLens = MetricsLens(),
