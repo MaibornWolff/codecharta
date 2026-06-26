@@ -10,6 +10,7 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
 import de.maibornwolff.codecharta.serialization.dto.FileDto
+import de.maibornwolff.codecharta.util.Logger
 
 /**
  * Maps the 2.0 wire DTO back onto the domain [Project]. Metrics are re-attached to nodes from the
@@ -25,8 +26,14 @@ object CcJsonV2ToProjectMapper {
         val idToEndpoint = HashMap<String, String>()
         collectEndpoints(rootFileDto, emptyList(), idToEndpoint)
         val edges =
-            dto.lenses.dependency.edges.map {
-                Edge(idToEndpoint[it.fromId] ?: it.fromId, idToEndpoint[it.toId] ?: it.toId, it.attributes)
+            dto.lenses.dependency.edges.mapNotNull { edge ->
+                val from = idToEndpoint[edge.fromId]
+                val to = idToEndpoint[edge.toId]
+                if (from == null || to == null) {
+                    Logger.warn { "Dropping edge with unresolved endpoint(s): fromId=${edge.fromId}, toId=${edge.toId}" }
+                    return@mapNotNull null
+                }
+                Edge(from, to, edge.attributes)
             }
 
         val lenses =

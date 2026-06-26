@@ -242,6 +242,26 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
+    fun `should drop edges whose endpoints do not resolve to a node`() {
+        // Arrange: a valid 2.0 document whose single edge references ids absent from the file tree.
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+        val edge = json
+            .getAsJsonObject("lenses")
+            .getAsJsonObject("dependency")
+            .getAsJsonArray("edges")
+            .first()
+            .asJsonObject
+        edge.addProperty("fromId", "deadbeefdeadbeef")
+        edge.addProperty("toId", "feedfacefeedface")
+
+        // Act
+        val project = ProjectDeserializer.deserializeProject(json.toString())
+
+        // Assert: the unresolved edge is dropped instead of leaking a raw hash as a node name.
+        assertTrue(project.lenses.dependency.edges.isEmpty())
+    }
+
+    @Test
     fun `should auto-detect and read both 1_5 and 2_0 input`() {
         val original = sampleProject()
 
