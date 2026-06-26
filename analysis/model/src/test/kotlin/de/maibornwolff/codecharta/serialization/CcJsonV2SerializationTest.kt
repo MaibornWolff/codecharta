@@ -3,12 +3,16 @@ package de.maibornwolff.codecharta.serialization
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.BlacklistItem
+import de.maibornwolff.codecharta.model.BlacklistType
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
+import de.maibornwolff.codecharta.util.CodeChartaConstants
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -32,8 +36,7 @@ class CcJsonV2SerializationTest {
                 "edges" to mutableMapOf("pairingRate" to AttributeType.RELATIVE)
             )
         val attributeDescriptors = mapOf("rloc" to AttributeDescriptor(title = "Real Lines of Code", direction = 1))
-        val lenses = de.maibornwolff.codecharta.model.LensSet
-            .fromLegacy(edges, attributeTypes, attributeDescriptors)
+        val lenses = LensSet.fromLegacy(edges, attributeTypes, attributeDescriptors)
         return Project("my-project", listOf(root), Project.API_VERSION, lenses)
     }
 
@@ -93,7 +96,7 @@ class CcJsonV2SerializationTest {
             Node("App.kt", NodeType.File, mapOf("commits" to 5.0, "authors" to listOf("alice", "bob")), "", setOf(), checksum = "h1")
         val srcNode = Node("src", NodeType.Folder, mapOf("commits" to 5.0), "", setOf(appNode))
         val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(srcNode))
-        val project = Project("p", listOf(root), Project.API_VERSION, lenses = de.maibornwolff.codecharta.model.LensSet())
+        val project = Project("p", listOf(root), Project.API_VERSION, lenses = LensSet())
 
         // Act
         val json = JsonParser.parseString(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)).asJsonObject
@@ -112,7 +115,7 @@ class CcJsonV2SerializationTest {
     fun `should drop the blacklist from the 2_0 wire but keep it in 1_5`() {
         val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(Node("App.kt", NodeType.File)))
         val blacklist =
-            listOf(de.maibornwolff.codecharta.model.BlacklistItem("/root/App.kt", de.maibornwolff.codecharta.model.BlacklistType.EXCLUDE))
+            listOf(BlacklistItem("/root/App.kt", BlacklistType.EXCLUDE))
         val project = Project("p", listOf(root), Project.API_VERSION, blacklist = blacklist)
 
         val v2 = ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)
@@ -127,7 +130,7 @@ class CcJsonV2SerializationTest {
     @Test
     fun `should preserve meta commitHash through a 2_0 round-trip`() {
         val project =
-            Project("p", listOf(Node("root", NodeType.Folder)), "2.0", de.maibornwolff.codecharta.model.LensSet(), commitHash = "a1b2c3d")
+            Project("p", listOf(Node("root", NodeType.Folder)), "2.0", LensSet(), commitHash = "a1b2c3d")
 
         val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO))
 
@@ -222,7 +225,7 @@ class CcJsonV2SerializationTest {
 
     @Test
     fun `should extract a piped 2_0 project from a noisy stream`() {
-        val syncFlag = de.maibornwolff.codecharta.util.CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG
+        val syncFlag = CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG
         val pipedPayload = syncFlag + "someConsoleNoise\n" + ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)
 
         val readBack = ProjectDeserializer.deserializeProject(ByteArrayInputStream(pipedPayload.toByteArray()))
