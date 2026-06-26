@@ -43,9 +43,7 @@ object CcJsonV2ToProjectMapper {
                         attributeTypes = dto.lenses.dependency.attributeTypes,
                         attributeDescriptors = dto.lenses.dependency.attributeDescriptors
                     ),
-                domain = dto.lenses.domain,
-                security = dto.lenses.security,
-                additionalLenses = dto.lenses.additionalLenses
+                opaqueLenses = dto.lenses.opaqueLenses
             )
 
         return Project(

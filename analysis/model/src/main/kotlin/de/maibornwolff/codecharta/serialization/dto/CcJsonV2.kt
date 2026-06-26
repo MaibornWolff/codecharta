@@ -12,8 +12,8 @@ import de.maibornwolff.codecharta.model.AttributeType
  * [de.maibornwolff.codecharta.serialization.CcJsonV2ToProjectMapper] are the only bridges between
  * this DTO and the domain `Project`.
  *
- * [LensesDto.additionalLenses] carries any unknown top-level lens verbatim so a newer tool's lens
- * survives a round-trip through an older tool.
+ * [LensesDto.opaqueLenses] carries the reserved `domain`/`security` slots and any unknown top-level
+ * lens verbatim so a newer tool's lens survives a round-trip through an older tool.
  */
 class CcJsonV2(val meta: MetaDto, val files: List<FileDto>, val lenses: LensesDto)
 
@@ -31,16 +31,14 @@ class FileDto(
 class LensesDto(
     val metrics: MetricsLensDto = MetricsLensDto(),
     val dependency: DependencyLensDto = DependencyLensDto(),
-    val domain: Map<String, Any> = emptyMap(),
-    val security: Map<String, Any> = emptyMap(),
-    val additionalLenses: Map<String, JsonElement> = emptyMap()
+    val opaqueLenses: Map<String, JsonElement> = emptyMap()
 )
 
 class MetricsLensDto(
     val attributes: Map<String, Map<String, Any>> = emptyMap(),
     val attributeDescriptors: Map<String, AttributeDescriptor> = emptyMap(),
     val attributeTypes: Map<String, AttributeType> = emptyMap(),
-    val clusters: List<Any> = emptyList()
+    val clusters: List<JsonElement> = emptyList()
 )
 
 class DependencyLensDto(

@@ -45,9 +45,7 @@ object ProjectToCcJsonV2Mapper {
             LensesDto(
                 metrics = metricsLens,
                 dependency = dependencyLens,
-                domain = project.lenses.domain,
-                security = project.lenses.security,
-                additionalLenses = project.lenses.additionalLenses
+                opaqueLenses = project.lenses.opaqueLenses
             )
 
         val meta =

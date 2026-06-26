@@ -3,9 +3,10 @@ package de.maibornwolff.codecharta.model
 import com.google.gson.JsonElement
 
 /**
- * The set of lenses a [Project] carries. `metrics` and `dependency` are concrete; `domain` and
- * `security` are reserved for their own suite stories; `additionalLenses` preserves any unknown
- * top-level lens verbatim so a newer tool's lens survives a round-trip through an older tool.
+ * The set of lenses a [Project] carries. [metrics] and [dependency] are concrete, typed lenses;
+ * every other top-level lens — the reserved `domain`/`security` slots and any unknown lens a newer
+ * tool emits — is preserved verbatim in [opaqueLenses] as raw JSON, so it survives a round-trip
+ * through an older tool. [domain]/[security] are typed accessors over that bag.
  *
  * [fromLegacy] (legacy → lenses) and [legacyAttributeTypes]/[allAttributeDescriptors] (lenses →
  * legacy) are explicit converters between the lens model and the 1.5-era flat
@@ -18,10 +19,14 @@ import com.google.gson.JsonElement
 data class LensSet(
     val metrics: MetricsLens = MetricsLens(),
     val dependency: DependencyLens = DependencyLens(),
-    val domain: Map<String, Any> = emptyMap(),
-    val security: Map<String, Any> = emptyMap(),
-    val additionalLenses: Map<String, JsonElement> = emptyMap()
+    val opaqueLenses: Map<String, JsonElement> = emptyMap()
 ) {
+    /** The reserved `domain` lens, carried verbatim and present only if the source supplied one. */
+    val domain: JsonElement? get() = opaqueLenses[DOMAIN_KEY]
+
+    /** The reserved `security` lens, carried verbatim and present only if the source supplied one. */
+    val security: JsonElement? get() = opaqueLenses[SECURITY_KEY]
+
     /** The edge-only `attributeTypes["nodes"]`/`["edges"]` split, rebuilt for legacy consumers. */
     fun legacyAttributeTypes(): Map<String, MutableMap<String, AttributeType>> {
         val result = mutableMapOf<String, MutableMap<String, AttributeType>>()
@@ -36,6 +41,8 @@ data class LensSet(
     companion object {
         const val NODES_KEY = "nodes"
         const val EDGES_KEY = "edges"
+        const val DOMAIN_KEY = "domain"
+        const val SECURITY_KEY = "security"
 
         fun fromLegacy(
             edges: List<Edge>,

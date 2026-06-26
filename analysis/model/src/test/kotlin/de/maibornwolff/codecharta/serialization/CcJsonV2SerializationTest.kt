@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.BlacklistType
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
+import de.maibornwolff.codecharta.model.MetricsLens
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
@@ -74,8 +75,44 @@ class CcJsonV2SerializationTest {
         assertTrue(json.has("files"))
         assertTrue(json.getAsJsonObject("lenses").has("metrics"))
         assertTrue(json.getAsJsonObject("lenses").has("dependency"))
-        assertTrue(json.getAsJsonObject("lenses").has("domain"))
-        assertTrue(json.getAsJsonObject("lenses").has("security"))
+        // Empty reserved lenses are no longer emitted; they appear only when the source carries them.
+        assertFalse(json.getAsJsonObject("lenses").has("domain"))
+        assertFalse(json.getAsJsonObject("lenses").has("security"))
+    }
+
+    @Test
+    fun `should preserve a reserved domain lens verbatim through a 2_0 round-trip`() {
+        // Arrange: a project carrying a non-empty domain lens.
+        val domainLens = JsonParser.parseString("""{"team":"core","score":7}""")
+        val project =
+            Project("p", listOf(Node("root", NodeType.Folder)), Project.API_VERSION, LensSet(opaqueLenses = mapOf("domain" to domainLens)))
+
+        // Act
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)).asJsonObject
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO))
+
+        // Assert: the domain lens is emitted verbatim and survives the round-trip with value equality.
+        assertEquals("core", json.getAsJsonObject("lenses").getAsJsonObject("domain").get("team").asString)
+        assertEquals(domainLens, roundTripped.lenses.domain)
+    }
+
+    @Test
+    fun `should round-trip non-numeric clusters json verbatim`() {
+        // Arrange: a metrics lens carrying a raw-JSON clusters entry.
+        val cluster = JsonParser.parseString("""{"id":1,"label":"core"}""")
+        val project =
+            Project(
+                "p",
+                listOf(Node("root", NodeType.Folder)),
+                Project.API_VERSION,
+                LensSet(metrics = MetricsLens(clusters = listOf(cluster)))
+            )
+
+        // Act
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO))
+
+        // Assert: the cluster JSON survives verbatim with well-defined equality.
+        assertEquals(listOf(cluster), roundTripped.lenses.metrics.clusters)
     }
 
     @Test
