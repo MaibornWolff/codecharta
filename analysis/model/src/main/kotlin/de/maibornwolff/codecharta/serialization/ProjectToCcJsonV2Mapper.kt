@@ -12,8 +12,7 @@ import de.maibornwolff.codecharta.serialization.dto.FileDto
 import de.maibornwolff.codecharta.serialization.dto.LensesDto
 import de.maibornwolff.codecharta.serialization.dto.MetaDto
 import de.maibornwolff.codecharta.serialization.dto.MetricsLensDto
-import java.math.BigInteger
-import java.security.MessageDigest
+import de.maibornwolff.codecharta.util.Checksum
 
 /**
  * Maps the domain [Project] onto the 2.0 wire DTO. This is the only place where metrics are lifted
@@ -82,7 +81,8 @@ object ProjectToCcJsonV2Mapper {
         val payload = JsonObject()
         payload.add("files", CcJsonV2Gson.gson.toJsonTree(files))
         payload.add("lenses", CcJsonV2Gson.gson.toJsonTree(lenses))
-        val md5 = MessageDigest.getInstance("MD5").digest(CcJsonV2Gson.gson.toJson(payload).toByteArray())
-        return BigInteger(1, md5).toString(16).padStart(32, '0')
+        // Intentional second serialization: the checksum lives in `meta`, which is written before the
+        // body, so files+lenses are serialized here for hashing and again by the outer writer.
+        return Checksum.md5(CcJsonV2Gson.gson.toJson(payload))
     }
 }

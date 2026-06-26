@@ -1,22 +1,12 @@
 package de.maibornwolff.codecharta.model
 
-import java.math.BigInteger
-import java.security.MessageDigest
+import de.maibornwolff.codecharta.util.Checksum
 
 class ProjectWrapper(
     val data: Project,
     @Transient val projectJson: String
 ) {
-    private val checksum: String
-
-    init {
-        checksum = md5(projectJson)
-    }
-
-    private fun md5(input: String): String {
-        val md5Algorithm = MessageDigest.getInstance("MD5")
-        return BigInteger(1, md5Algorithm.digest(input.toByteArray())).toString(16).padStart(32, '0')
-    }
+    private val checksum: String = Checksum.md5(projectJson)
 
     override fun toString(): String = "ProjectWrapper{checksum=$checksum, data=$data}"
 }
