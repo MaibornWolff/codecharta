@@ -1,7 +1,7 @@
 ---
 name: Address cc.json 2.0 roasting-review findings
 issue:
-state: todo
+state: complete
 version: 1
 ---
 
@@ -101,12 +101,32 @@ All 34 findings, by batch. Severity is the verified (corrected) severity.
 
 ## Steps
 
-- [ ] Complete Task 1: Honesty & docs (DOC-LENS, DOC-NODEID)
-- [ ] Complete Task 2: DRY extractions (DRY-MD5, DRY-LENSKEYS, DRY-MERGEHELP, DRY-COPYATTR, DRY-DCBOILER, DRY-DCCANON, CLEAN-SRCBANG, DRY-FQN)
-- [ ] Complete Task 3: Domain model coherence (COMPAT-RELOCATE, LENS-UNIFORM, LENS-TYPING, NODEID-INVARIANT)
-- [ ] Complete Task 4: Fail-loud & correctness (FAIL-VERDISPATCH, FAIL-EDGEFALLBACK, FAIL-15VER, FAIL-CONVEXIT, FAIL-JSONERR, FAIL-NODETYPE, CLEAN-DEFVER, BUG-MUTATE, DRY-EDGEDUP, CLEAN-STATS, PERF-SUFFIX, PERF-CHKSUM2X)
-- [ ] Complete Task 5: Test hardening (TEST-CLASSCAST, TEST-DEDUP, TEST-CANONPATH, TEST-CONVERT, TEST-KEYS, TEST-SPLIT, TEST-AAA)
-- [ ] Run `./gradlew ktlintFormat test` from `analysis/`; all green
+- [x] Complete Task 1: Honesty & docs (DOC-LENS, DOC-NODEID)
+- [x] Complete Task 2: DRY extractions (DRY-MD5, DRY-LENSKEYS, DRY-MERGEHELP, DRY-COPYATTR, DRY-DCBOILER, DRY-DCCANON, CLEAN-SRCBANG, DRY-FQN)
+- [x] Complete Task 3: Domain model coherence (COMPAT-RELOCATE, LENS-UNIFORM, LENS-TYPING, NODEID-INVARIANT)
+- [x] Complete Task 4: Fail-loud & correctness (FAIL-VERDISPATCH, FAIL-EDGEFALLBACK, FAIL-15VER, FAIL-CONVEXIT, FAIL-JSONERR, FAIL-NODETYPE, CLEAN-DEFVER, BUG-MUTATE, DRY-EDGEDUP, CLEAN-STATS, PERF-SUFFIX, PERF-CHKSUM2X)
+- [x] Complete Task 5: Test hardening (TEST-CLASSCAST, TEST-DEDUP, TEST-CANONPATH, TEST-CONVERT, TEST-KEYS, TEST-SPLIT, TEST-AAA)
+- [x] Run `./gradlew ktlintFormat test` from `analysis/`; all green
+
+## Implementation notes (deviations from plan, decided during execution)
+
+- **COMPAT-RELOCATE (#4)** — scope-limited from the literal "relocate converters out of LensSet"
+  to: migrate the 5 production filters onto a new `ProjectBuilder.fromLenses` (so they no longer use
+  the legacy projection), keep `legacyAttributeTypes`/`allAttributeDescriptors`/`fromLegacy` on
+  `LensSet`, and make the KDoc honest. Reason: ~40 cross-module **tests** use those accessors as the
+  legacy view; a physical relocation would ripple a minor finding into 15 modules. Substance (filters
+  lens-native, DRY-COPYATTR dissolved, DOC honest) is achieved.
+- **NODEID-INVARIANT (#3)** — guard rejects `/` only, **not** `\`. `fromEndpoint` splits on `/` only,
+  so `\` is already a literal in both `fromSegments` and `fromEndpoint` (they already agree on it);
+  guarding `\` would crash legitimate Windows CodeMaat/Tokei endpoints. The `\` pre-split contract is
+  documented (DOC-NODEID) instead.
+- **LENS-UNIFORM/LENS-TYPING (#1/#6)** — applied fully per maintainer decision; 43 parser/importer 2.0
+  golden fixtures regenerated (dropped always-empty `domain`/`security`, recomputed checksums).
+- **FAIL-CONVEXIT (#20)** — fixed ConvertTool-locally; the repo-wide null→exit-0 convention untouched.
+- **Bonus fix** — `LargeMerge` now detects a non-`root` base from the root node directly. The old
+  strict-root check fired only as a side effect of unresolved edges surfacing as raw hashes, which
+  FAIL-EDGEFALLBACK (#12) correctly removed.
+- **#16** deferred as planned (no change).
 
 ## Notes
 
