@@ -19,7 +19,6 @@ include(
 include(
     "analysers:parsers:RawTextParser",
     "analysers:parsers:GitLogParser",
-    "analysers:parsers:SourceCodeParser",
     "analysers:parsers:SVNLogParser",
     "analysers:parsers:UnifiedParser"
 )

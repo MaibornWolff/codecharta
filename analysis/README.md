@@ -16,7 +16,7 @@ Components that generate metrics from a given source, e.g. source code or log fi
 | ------------------ | ----------------------------------------------------- |
 | Git log            | [GitLogParser](import/GitLogParser/README.md)         |
 | Source Code / Text | [RawTextParser](parser/RawTextParser/README.md)       |
-| Source Code (Java) | [SourceCodeParser](import/SourceCodeParser/README.md) |
+| Source Code        | [UnifiedParser](parser/UnifiedParser/README.md)       |
 | SVN log            | [SVNLogParser](import/SVNLogParser/README.md)         |
 
 ### Importer
@@ -160,8 +160,3 @@ Via gradle:
 ## Code Style
 
 Please check out the [DEV_START_GUIDE](../DEV_START_GUIDE.md).
-
-## License
-
-Some parts of CodeCharta's SourceCodeParser use the [SonarJava library](https://github.com/SonarSource/sonar-java/), which is licensed
-under the GNU Lesser General Public Library, version 3.

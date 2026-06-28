@@ -18,7 +18,6 @@ dependencies {
             ":analysers:filters:StructureModifier",
             ":analysers:parsers:SVNLogParser",
             ":analysers:importers:SonarImporter",
-            ":analysers:parsers:SourceCodeParser",
             ":analysers:importers:TokeiImporter",
             ":analysers:filters:MergeFilter",
             ":analysers:filters:EdgeFilter",
