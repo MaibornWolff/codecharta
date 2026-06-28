@@ -25,6 +25,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     later story). There is currently no CLI flag to emit 1.5; track this if you feed the viz directly.
 - The 2.0 wire format drops `blacklist` and `markedPackages`; a project read from 2.0 carries an empty
   blacklist. Converting a 1.5 file with a non-empty blacklist to 2.0 is therefore not round-trippable.
+- `ccsh check` validates the 2.0 format more strictly: `meta.apiVersion` must be `"2.0"`, `files` must
+  contain exactly one root, and unknown properties on `meta`, file nodes, and edges are rejected.
+
+### Removed
+
+- Remove the long-deprecated `sourcecodeparser` command and its module. Use `unifiedparser` instead.
+- Remove the 1.5 **writer**: `ccsh` no longer emits the legacy 1.5 `{ checksum, data }` format from any
+  code path (the `ProjectToCcJson15Mapper`, its DTO and GSON are gone, and `ProjectSerializer` no longer
+  takes an `apiVersion`). The 1.5 format is still **read** — every reader auto-detects and accepts 1.5 or
+  2.0 input — but it is never produced.
 
 ### Fixed 🐞
 
@@ -32,6 +42,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   as a `--base-file` and for content-match re-merge.
 - The leaf/overlay merge strategy now unions incoming dependency edges instead of silently keeping only
   the reference project's edges.
+- Filters (`merge`, `edgefilter`, `modify`) no longer drop the reserved `domain`/`security`/unknown
+  lenses, the metrics `clusters`, or `meta.commitHash` when rebuilding a project. On `merge` the opaque
+  lenses are unioned (the first file wins on a same-name collision), the metrics `clusters` are unioned
+  with exact duplicates dropped, and the first non-null commit hash is kept.
+- The `edgefilter` no longer drops each node's `contentHash` while aggregating edge metrics onto nodes,
+  so its 2.0 output stays usable as a `--base-file` / content-match reference.
 
 ## [1.143.0] - 2026-04-28
 
