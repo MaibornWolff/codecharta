@@ -17,7 +17,9 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             listOf(MutableNode("root", NodeType.Folder)),
             project.lenses.metrics,
             project.lenses.dependency.copy(edges = emptyList()),
-            getBlacklist()
+            getBlacklist(),
+            opaqueLenses = project.lenses.opaqueLenses,
+            commitHash = project.commitHash
         )
 
     private fun getBlacklist(): MutableList<BlacklistItem> {
@@ -76,7 +78,9 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
 
     private fun insertEdgeAttributesIntoNodes(nodes: Set<Node>, parentPath: List<String> = listOf()) {
         nodes.forEach {
-            val node = Node(it.name, it.type, getAttributes(it, parentPath), it.link)
+            // Carry the per-file contentHash through the rebuild so it stays usable as a --base-file /
+            // content-match signal; it is the node's identity-independent checksum, not its id.
+            val node = Node(it.name, it.type, getAttributes(it, parentPath), it.link, checksum = it.checksum)
             insertNodeInProjectBuilder(node, parentPath.toList())
             if (it.children.isNotEmpty()) {
                 val newParentPath = parentPath.toMutableList() // clone object

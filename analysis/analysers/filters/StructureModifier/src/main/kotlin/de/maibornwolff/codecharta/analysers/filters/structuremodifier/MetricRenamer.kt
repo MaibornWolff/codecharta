@@ -21,7 +21,9 @@ class MetricRenamer(private val project: Project, private val newName: String = 
                 listOf(updatedRoot),
                 renameMccInMetricsLens(project.lenses.metrics),
                 project.lenses.dependency,
-                copyBlacklist()
+                copyBlacklist(),
+                opaqueLenses = project.lenses.opaqueLenses,
+                commitHash = project.commitHash
             ).build()
     }
 

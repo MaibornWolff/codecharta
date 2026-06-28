@@ -13,10 +13,13 @@ data class MetricsLens(
     val attributeDescriptors: Map<String, AttributeDescriptor> = emptyMap(),
     val clusters: List<JsonElement> = emptyList()
 ) : Lens {
-    /** Merges [other] in, keeping the first occurrence of each attribute type and unioning descriptors. */
+    /**
+     * Merges [other] in, keeping the first occurrence of each attribute type, unioning descriptors, and
+     * unioning clusters with exact duplicates dropped (so overlapping merges don't double the reserved slot).
+     */
     fun merge(other: MetricsLens): MetricsLens = MetricsLens(
         attributeTypes = mergeAttributeTypes(attributeTypes, other.attributeTypes),
         attributeDescriptors = mergeAttributeDescriptors(attributeDescriptors, other.attributeDescriptors),
-        clusters = clusters + other.clusters
+        clusters = (clusters + other.clusters).distinct()
     )
 }

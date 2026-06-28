@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
+import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -182,6 +184,34 @@ class ProjectMergerTest {
                 "somethingElse" to AttributeDescriptor(analyzers = setOf("Unknown"))
             )
         assertEquals(project.lenses.allAttributeDescriptors(), expectedResult)
+    }
+
+    @Test
+    fun `should union opaque lenses across inputs and keep the first non-null commit hash`() {
+        val domain = JsonParser.parseString("""{"layer":"backend"}""")
+        val security = JsonParser.parseString("""{"cves":2}""")
+        val projectA =
+            Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to domain)), commitHash = "aaa111")
+        val projectB =
+            Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to security)), commitHash = "bbb222")
+
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        assertTrue(merged.lenses.opaqueLenses.containsKey("domain"))
+        assertTrue(merged.lenses.opaqueLenses.containsKey("security"))
+        assertEquals("aaa111", merged.commitHash)
+    }
+
+    @Test
+    fun `should keep the first file's opaque lens on a same-name collision`() {
+        val firstDomain = JsonParser.parseString("""{"layer":"first"}""")
+        val secondDomain = JsonParser.parseString("""{"layer":"second"}""")
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to firstDomain)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to secondDomain)))
+
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        assertEquals(firstDomain, merged.lenses.opaqueLenses["domain"])
     }
 
     private fun compareProjectStrings(project: Project, equalProject: Project, except: List<String> = listOf()): Boolean {

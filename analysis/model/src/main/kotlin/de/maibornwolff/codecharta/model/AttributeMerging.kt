@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.model
 
+import com.google.gson.JsonElement
 import de.maibornwolff.codecharta.util.Logger
 
 /**
@@ -27,6 +28,25 @@ internal fun mergeAttributeDescriptors(
         } else {
             warnIfDescriptorsDiffer(existing, metric, normalized)
             merged[metric] = existing.copy(analyzers = existing.analyzers union normalized.analyzers)
+        }
+    }
+    return merged
+}
+
+/**
+ * Unions two opaque-lens bags (the reserved `domain`/`security` slots and any unknown lens). Lens
+ * payloads are opaque JSON, so they cannot be merged structurally: the first (reference) file wins on
+ * a same-name collision and a warning is logged. Public because the merge resolver lives in a
+ * separate module and this is the single owner of opaque-lens combination.
+ */
+fun mergeOpaqueLenses(first: Map<String, JsonElement>, second: Map<String, JsonElement>): Map<String, JsonElement> {
+    val merged = LinkedHashMap(first)
+    second.forEach { (lensName, payload) ->
+        val existing = merged[lensName]
+        when {
+            existing == null -> merged[lensName] = payload
+            existing != payload ->
+                Logger.warn { "Opaque lens '$lensName' differs between files! Using value of first file..." }
         }
     }
     return merged

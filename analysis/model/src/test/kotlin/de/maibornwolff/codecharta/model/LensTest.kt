@@ -1,9 +1,22 @@
 package de.maibornwolff.codecharta.model
 
+import com.google.gson.JsonParser
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class LensTest {
+    @Test
+    fun `should union clusters and drop exact duplicates when merging metrics lenses`() {
+        val clusterA = JsonParser.parseString("""{"id":1}""")
+        val clusterB = JsonParser.parseString("""{"id":2}""")
+        val first = MetricsLens(clusters = listOf(clusterA))
+        val second = MetricsLens(clusters = listOf(clusterA, clusterB))
+
+        val merged = first.merge(second)
+
+        assertEquals(listOf(clusterA, clusterB), merged.clusters)
+    }
+
     @Test
     fun `should keep the first occurrence of an attribute type when merging metrics lenses`() {
         val first = MetricsLens(attributeTypes = mapOf("rloc" to AttributeType.ABSOLUTE))

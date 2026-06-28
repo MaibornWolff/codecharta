@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
+import com.google.gson.JsonElement
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
@@ -8,6 +9,7 @@ import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.mergeOpaqueLenses
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
     fun merge(): Project = when {
@@ -18,10 +20,20 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                 mergeAttributeTypes(),
                 mergeAttributeDescriptors(),
                 mergeBlacklist()
-            ).build()
+            ).withClusters(mergedMetricsLens.clusters)
+                .withOpaqueLenses(mergedOpaqueLenses)
+                .withCommitHash(mergedCommitHash)
+                .build()
 
         else -> throw MergeException("API versions not supported.")
     }
+
+    // Opaque lenses are unioned (keep-first on a name collision); the first non-null commit hash wins.
+    private val mergedOpaqueLenses: Map<String, JsonElement> by lazy {
+        projects.map { it.lenses.opaqueLenses }.reduce { acc, next -> mergeOpaqueLenses(acc, next) }
+    }
+
+    private val mergedCommitHash: String? by lazy { projects.firstNotNullOfOrNull { it.commitHash } }
 
     // Each lens owns how its attribute types and descriptors combine; the merger only delegates.
     private val mergedMetricsLens by lazy { projects.map { it.lenses.metrics }.reduce { acc, lens -> acc.merge(lens) } }
