@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.tools.validation
 
-import de.maibornwolff.codecharta.serialization.ApiVersion
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.InputHelper
@@ -62,7 +61,7 @@ class EveritValidatorTest {
             .bufferedReader()
             .readText()
         val project = ProjectDeserializer.deserializeProject(validFile)
-        val v2 = ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)
+        val v2 = ProjectSerializer.serializeToString(project)
 
         validator.validate(ByteArrayInputStream(v2.toByteArray()))
     }
@@ -85,6 +84,48 @@ class EveritValidatorTest {
 
         assertFailsWith(ValidationException::class) {
             validator.validate(ByteArrayInputStream(invalid2.toByteArray()))
+        }
+    }
+
+    @Test
+    fun `should reject a 2_0-shaped file mislabeled with a 1_5 apiVersion`() {
+        val mislabeled =
+            """{"meta":{"projectName":"p","apiVersion":"1.5","checksum":"x"},""" +
+                """"files":[{"id":"r","name":"root","type":"Folder"}],"lenses":{}}"""
+
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(mislabeled.toByteArray()))
+        }
+    }
+
+    @Test
+    fun `should reject a 2_0 file with an unknown property`() {
+        val strayKey =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"r","name":"root","type":"Folder","childrenn":[]}],"lenses":{}}"""
+
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(strayKey.toByteArray()))
+        }
+    }
+
+    @Test
+    fun `should reject a 2_0 file with an empty files array`() {
+        val emptyFiles = """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},"files":[],"lenses":{}}"""
+
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(emptyFiles.toByteArray()))
+        }
+    }
+
+    @Test
+    fun `should reject a 2_0 file with more than one root`() {
+        val twoRoots =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"r1","name":"root","type":"Folder"},{"id":"r2","name":"root2","type":"Folder"}],"lenses":{}}"""
+
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(twoRoots.toByteArray()))
         }
     }
 

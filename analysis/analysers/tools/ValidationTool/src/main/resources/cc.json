@@ -283,9 +283,10 @@
       "type": "object"
     },
     "Meta": {
+      "additionalProperties": false,
       "properties": {
         "projectName": { "type": "string" },
-        "apiVersion": { "type": "string" },
+        "apiVersion": { "const": "2.0", "type": "string" },
         "checksum": { "type": "string" },
         "commitHash": { "type": "string" }
       },
@@ -293,6 +294,7 @@
       "type": "object"
     },
     "FileNode": {
+      "additionalProperties": false,
       "properties": {
         "id": { "type": "string" },
         "name": { "type": "string" },
@@ -310,6 +312,7 @@
       "then": { "not": { "required": ["children"] } }
     },
     "AttributeDescriptor": {
+      "additionalProperties": false,
       "properties": {
         "title": { "type": "string" },
         "description": { "type": "string" },
@@ -325,6 +328,7 @@
       "type": "object"
     },
     "Edge2": {
+      "additionalProperties": false,
       "properties": {
         "fromId": { "type": "string" },
         "toId": { "type": "string" },
@@ -334,6 +338,7 @@
       "type": "object"
     },
     "MetricsLens": {
+      "additionalProperties": false,
       "properties": {
         "attributes": {
           "additionalProperties": { "type": "object" },
@@ -355,6 +360,7 @@
       "type": "object"
     },
     "DependencyLens": {
+      "additionalProperties": false,
       "properties": {
         "edges": {
           "items": { "$ref": "#/definitions/Edge2" },
@@ -384,10 +390,13 @@
       "type": "object"
     },
     "ExportCCFile2": {
+      "additionalProperties": false,
       "properties": {
         "meta": { "$ref": "#/definitions/Meta" },
         "files": {
           "items": { "$ref": "#/definitions/FileNode" },
+          "minItems": 1,
+          "maxItems": 1,
           "type": "array"
         },
         "lenses": { "$ref": "#/definitions/Lenses" }
