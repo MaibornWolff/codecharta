@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://maibornwolff.github.io/codecharta/schemas/cc-json-2.0.schema.json",
+  "title": "CodeCharta cc.json 2.0",
+  "description": "The cc.json 2.0 wire format: { meta, files, lenses }. `files` is the identity layer (one root folder, nested children, each node carrying a stable id); `lenses` are additive analysis overlays joined to files by id. This is the analysis-side format `ccsh` emits and `ccsh check` validates. See dev_docs/cc-json-2.0-format.md for the prose spec.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "files", "lenses"],
+  "properties": {
+    "meta": { "$ref": "#/definitions/Meta" },
+    "files": {
+      "description": "Exactly one root folder; the identity layer (no metrics on the node).",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": { "$ref": "#/definitions/FileNode" }
+    },
+    "lenses": { "$ref": "#/definitions/Lenses" }
+  },
+  "definitions": {
+    "Meta": {
+      "description": "Project metadata. `checksum` is an MD5 over the serialized files+lenses; `commitHash` is an optional short git SHA.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectName", "apiVersion", "checksum"],
+      "properties": {
+        "projectName": { "type": "string" },
+        "apiVersion": { "const": "2.0", "type": "string" },
+        "checksum": { "type": "string" },
+        "commitHash": { "type": "string" }
+      }
+    },
+    "FileNode": {
+      "description": "A file or folder. `id` = first 16 hex of sha-256(canonical tree path). A File may not have children. `contentHash` is the optional per-file xxhash64.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "$ref": "#/definitions/NodeType" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/FileNode" }
+        },
+        "contentHash": { "type": "string" },
+        "link": { "type": "string" }
+      },
+      "if": { "properties": { "type": { "const": "File" } } },
+      "then": { "not": { "required": ["children"] } }
+    },
+    "NodeType": {
+      "enum": ["File", "Folder"],
+      "type": "string"
+    },
+    "Lenses": {
+      "description": "Additive overlays joined to `files` by id. `metrics` and `dependency` are concrete; `domain`/`security` are reserved; any unknown top-level lens is preserved verbatim on round-trip (hence no additionalProperties:false here).",
+      "type": "object",
+      "properties": {
+        "metrics": { "$ref": "#/definitions/MetricsLens" },
+        "dependency": { "$ref": "#/definitions/DependencyLens" },
+        "domain": { "type": "object" },
+        "security": { "type": "object" }
+      }
+    },
+    "MetricsLens": {
+      "description": "Per-node metrics, keyed by node id, plus their descriptors, types and the reserved clusters slot.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attributes": {
+          "description": "Map of node id -> metric map (numeric or, for e.g. authors, list values).",
+          "type": "object",
+          "additionalProperties": { "type": "object" }
+        },
+        "attributeDescriptors": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/AttributeDescriptor" }
+        },
+        "attributeTypes": {
+          "type": "object",
+          "additionalProperties": { "enum": ["absolute", "relative"], "type": "string" }
+        },
+        "clusters": { "type": "array" }
+      }
+    },
+    "DependencyLens": {
+      "description": "Edges between nodes (by id) plus the edge attribute types and descriptors.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "edges": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Edge" }
+        },
+        "attributeDescriptors": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/AttributeDescriptor" }
+        },
+        "attributeTypes": {
+          "type": "object",
+          "additionalProperties": { "enum": ["absolute", "relative"], "type": "string" }
+        }
+      }
+    },
+    "Edge": {
+      "description": "A dependency edge referencing its endpoints by node id.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fromId", "toId"],
+      "properties": {
+        "fromId": { "type": "string" },
+        "toId": { "type": "string" },
+        "attributes": { "type": "object" }
+      }
+    },
+    "AttributeDescriptor": {
+      "description": "Human-facing metadata for a metric/edge attribute.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "hintLowValue": { "type": "string" },
+        "hintHighValue": { "type": "string" },
+        "link": { "type": "string" },
+        "direction": { "type": "number" },
+        "analyzers": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

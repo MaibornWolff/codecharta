@@ -1,8 +1,12 @@
 # cc.json 2.0 — `{ meta, files, lenses }`
 
-> Status: **implemented on the analysis (`ccsh`) side.** `ccsh` writes 2.0 by default and reads both
-> 1.5 and 2.0. The visualization still consumes 1.5 and migrates in its own story. See
+> Status: **implemented on the analysis (`ccsh`) side.** `ccsh` emits 2.0 only; the whole pipeline reads
+> 2.0 only, and the legacy 1.x format is read solely by `ccsh convert` (which upgrades it). The
+> visualization still consumes 1.5 and migrates in its own story. See
 > [ADR 12](adr/2026-06-25-ADR_12_separate_file_structure_from_analysis_lenses.md).
+>
+> **Machine-readable schema:** [`cc-json-2.0.schema.json`](cc-json-2.0.schema.json) (JSON Schema draft-07).
+> `ccsh check` validates against the bundled copy in `ValidationTool`; a drift-guard test keeps the two in sync.
 
 ## Why
 
@@ -83,10 +87,12 @@ combine consistently regardless of which tool produced them.
 
 ## Converting and reading
 
-- `ccsh` writes 2.0 by default; pass any 1.5 or 2.0 file to any reader — the deserializer
-  auto-detects the `apiVersion` major.
-- `ccsh convert <file> [-o out]` upgrades a 1.5 (or 2.0) file to 2.0.
-- `ccsh check <file>` validates either format (the everit schema accepts both via `anyOf`).
+- `ccsh` emits 2.0 only — there is no 1.5 writer.
+- Every command reads 2.0 only. Feeding a legacy 1.x file to `merge`/`modify`/`edgefilter`/`inspect`/an
+  importer reports that the file is legacy and points at `ccsh convert`. Only `ccsh convert` reads 1.x.
+- `ccsh convert <file> [-o out]` upgrades a 1.x (or 2.0) file to 2.0 — the one on-ramp for legacy files.
+- `ccsh check <file>` validates either format (the everit schema still accepts both via `anyOf`; the 2.0
+  branch is strict — `apiVersion` pinned, exactly one root, no unknown keys).
 
 ## What left the format
 
