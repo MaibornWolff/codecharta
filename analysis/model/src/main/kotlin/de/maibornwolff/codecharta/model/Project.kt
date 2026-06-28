@@ -38,13 +38,13 @@ class Project(
         " blacklist=$blacklist}"
 
     companion object {
-        private const val API_VERSION_MAJOR = "1"
-        private const val API_VERSION_MINOR = "5"
+        private const val API_VERSION_MAJOR = "2"
+        private const val API_VERSION_MINOR = "0"
         const val API_VERSION = "$API_VERSION_MAJOR.$API_VERSION_MINOR"
 
-        // The 1.5 (legacy) and 2.0 (lens) formats are both readable, so a 2.0 producer can be piped
-        // into a filter without tripping the merge compatibility gate.
-        private val SUPPORTED_API_VERSION_MAJORS = setOf("1", "2")
+        // 2.0 is the only format the analysis pipeline works with: ccsh emits 2.0 and every command but
+        // `convert` reads 2.0 only (1.x must be upgraded first), so the merge gate accepts major 2 only.
+        private val SUPPORTED_API_VERSION_MAJORS = setOf("2")
 
         fun isAPIVersionCompatible(apiVersion: String): Boolean {
             val apiVersionMajor = apiVersion.split('.')[0]

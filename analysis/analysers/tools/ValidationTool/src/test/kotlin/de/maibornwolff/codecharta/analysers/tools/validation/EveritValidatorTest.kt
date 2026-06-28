@@ -60,7 +60,8 @@ class EveritValidatorTest {
             .getResourceAsStream("validFile.cc.json")!!
             .bufferedReader()
             .readText()
-        val project = ProjectDeserializer.deserializeProject(validFile)
+        // validFile is a legacy 1.x fixture, so this exercises the convert-style legacy read.
+        val project = ProjectDeserializer.deserializeProject(validFile, allowLegacy = true)
         val v2 = ProjectSerializer.serializeToString(project)
 
         validator.validate(ByteArrayInputStream(v2.toByteArray()))

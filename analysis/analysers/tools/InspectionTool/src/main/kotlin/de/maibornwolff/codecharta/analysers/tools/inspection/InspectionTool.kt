@@ -68,7 +68,7 @@ class InspectionTool(private val input: InputStream = System.`in`, private val o
         } catch (e: Exception) {
             val sourceName = source!!.name
             Logger.error {
-                "$sourceName is not a valid project file and is therefore skipped."
+                "$sourceName could not be read and is therefore skipped: ${e.message}"
             }
             null
         }

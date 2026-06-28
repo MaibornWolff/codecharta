@@ -52,14 +52,15 @@ class ConvertTool(private val input: InputStream = System.`in`, private val outp
     }
 
     private fun readProject(): Project? {
-        val file = source ?: return ProjectDeserializer.deserializeProject(input)
+        // `convert` is the only command that reads legacy 1.x input — that is its whole purpose.
+        val file = source ?: return ProjectDeserializer.deserializeProject(input, allowLegacy = true)
 
         require(InputHelper.isInputValid(arrayOf(file), canInputContainFolders = false)) {
             "Input invalid file for ConvertTool, stopping execution..."
         }
 
         return try {
-            ProjectDeserializer.deserializeProject(file.inputStream())
+            ProjectDeserializer.deserializeProject(file.inputStream(), allowLegacy = true)
         } catch (e: Exception) {
             Logger.error { "${file.name} is not a valid project file and is therefore skipped." }
             null

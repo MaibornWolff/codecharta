@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   blacklist. Converting a 1.5 file with a non-empty blacklist to 2.0 is therefore not round-trippable.
 - `ccsh check` validates the 2.0 format more strictly: `meta.apiVersion` must be `"2.0"`, `files` must
   contain exactly one root, and unknown properties on `meta`, file nodes, and edges are rejected.
+- **BREAKING: only `ccsh convert` reads the legacy 1.x format now.** Every other command works with 2.0
+  only — feeding a 1.x file to `merge`, `modify`, `edgefilter`, `inspect` or an importer reports that the
+  file is legacy and points at `ccsh convert <file>` to upgrade it first. The merge compatibility gate and
+  the in-memory default version are now 2.0-only.
 
 ### Removed
 

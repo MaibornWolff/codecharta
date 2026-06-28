@@ -30,8 +30,8 @@ class ProjectMergerTest {
         val projectName = "test"
         val projects =
             listOf(
-                Project(projectName, apiVersion = "1.0"),
-                Project(projectName, apiVersion = "1.2")
+                Project(projectName, apiVersion = "2.0"),
+                Project(projectName, apiVersion = "2.0")
             )
         val project = ProjectMerger(projects, nodeMergerStrategy).merge()
         assertEquals(project.projectName, "")
@@ -41,7 +41,7 @@ class ProjectMergerTest {
     fun `should throw an exception on unsupported major versions`() {
         val projects =
             listOf(
-                Project("test", apiVersion = "1.0"),
+                Project("test", apiVersion = "2.0"),
                 Project("test", apiVersion = "3.0")
             )
         assertFailsWith(MergeException::class) {
@@ -50,14 +50,16 @@ class ProjectMergerTest {
     }
 
     @Test
-    fun `should merge the 1_5 and 2_0 formats since both are supported`() {
+    fun `should reject a legacy 1_x project since only 2_0 is supported`() {
         val projects =
             listOf(
-                Project("test", apiVersion = "1.5"),
-                Project("test", apiVersion = "2.0")
+                Project("test", apiVersion = "2.0"),
+                Project("test", apiVersion = "1.5")
             )
 
-        ProjectMerger(projects, nodeMergerStrategy).merge()
+        assertFailsWith(MergeException::class) {
+            ProjectMerger(projects, nodeMergerStrategy).merge()
+        }
     }
 
     @Test
@@ -105,7 +107,8 @@ class ProjectMergerTest {
         assertNotEquals(originalProject1, project)
         assertNotEquals(originalProject2, project)
         assertEquals(3, project.sizeOfEdges())
-        assertEquals(4, project.sizeOfBlacklist())
+        // blacklist is view state dropped from the 2.0 wire, so merged inputs carry no blacklist.
+        assertEquals(0, project.sizeOfBlacklist())
         assertEquals(4, project.size)
         assertEquals(2, project.lenses.legacyAttributeTypes()["edges"]!!.size)
         assertEquals(4, project.lenses.legacyAttributeTypes()["nodes"]!!.size)

@@ -261,16 +261,20 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
-    fun `should auto-detect and read both a legacy 1_x file and a 2_0 file`() {
-        // Arrange: a real legacy 1.3 file on disk; 2.0 is never written, so the legacy input is a fixture.
+    fun `should read a legacy 1_x file only when legacy reading is allowed`() {
+        // Arrange: a real legacy 1.3 file on disk (only `ccsh convert` reads 1.x).
         val legacy = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json")!!.readText()
 
-        // Act: read the 1.x file, then read it back after a 2.0 serialization.
-        val from1x = ProjectDeserializer.deserializeProject(legacy)
+        // Assert: a normal read rejects it and points at convert; the convert path (allowLegacy) reads it.
+        val rejected = assertThrows<Exception> { ProjectDeserializer.deserializeProject(legacy) }
+        assertTrue(rejected.message!!.contains("convert"))
+
+        // Act: read via the legacy-allowed path, then read it back after a 2.0 serialization.
+        val from1x = ProjectDeserializer.deserializeProject(legacy, allowLegacy = true)
         val from20 = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(from1x))
 
-        // Assert: the legacy file is read (reporting its own 1.x version), the 2.0 re-read reports 2.0,
-        // and the data is identical once both render as 2.0 (lossless 1.x read + convert).
+        // Assert: the legacy file reports its own 1.x version, the 2.0 re-read reports 2.0, and the data
+        // is identical once both render as 2.0 (lossless 1.x read + convert).
         assertEquals("1.3", from1x.apiVersion)
         assertEquals("2.0", from20.apiVersion)
         assertEquals(serialized(from1x), serialized(from20))

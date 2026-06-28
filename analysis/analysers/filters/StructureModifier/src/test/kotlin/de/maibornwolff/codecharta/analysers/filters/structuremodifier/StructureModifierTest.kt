@@ -60,7 +60,7 @@ class StructureModifierTest {
         executeForOutput("", arrayOf("src/test/resources/invalid_project.cc.json", "-p=2"))
 
         // then
-        assertThat(errContent.toString()).contains("invalid_project.cc.json is not a valid project")
+        assertThat(errContent.toString()).contains("invalid_project.cc.json could not be read")
 
         // clean up
         System.setErr(originalErr)

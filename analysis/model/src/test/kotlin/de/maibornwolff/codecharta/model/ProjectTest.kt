@@ -10,8 +10,8 @@ class ProjectTest {
     }
 
     @Test
-    fun `should be compatible with same major Version`() {
-        assertThat(Project.isAPIVersionCompatible("1.2")).isTrue
+    fun `should not be compatible with a legacy 1_x version`() {
+        assertThat(Project.isAPIVersionCompatible("1.2")).isFalse
     }
 
     @Test

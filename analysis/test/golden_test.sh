@@ -215,9 +215,9 @@ check_dependacharta() {
 }
 
 check_convert() {
-  echo " -- expect convert to upgrade a 1.x file to a valid 2.0 cc.json file"
+  echo " -- expect convert to upgrade a legacy 1.x file to a valid 2.0 cc.json file"
   ACTUAL_CONVERT_JSON="${TEMP_DIR}/actual_convert.cc.json"
-  "${CCSH}" convert "${DATA}/mergefilter_a.cc.json" -o "${ACTUAL_CONVERT_JSON}" -nc
+  "${CCSH}" convert "${DATA}/legacy_1_5.cc.json" -o "${ACTUAL_CONVERT_JSON}" -nc
   validate "${ACTUAL_CONVERT_JSON}"
 }
 

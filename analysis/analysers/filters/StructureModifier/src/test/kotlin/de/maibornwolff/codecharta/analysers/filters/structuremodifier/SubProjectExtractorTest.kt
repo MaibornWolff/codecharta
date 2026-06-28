@@ -22,7 +22,7 @@ class SubProjectExtractorTest {
     fun `Non existent path leads to empty project`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 
-        val result = subProjectExtractor.extract("/root/something")
+        val result = subProjectExtractor.extract("/root/nonexistent")
 
         Assertions.assertThat(result.rootNode.children.size).isEqualTo(0)
     }
