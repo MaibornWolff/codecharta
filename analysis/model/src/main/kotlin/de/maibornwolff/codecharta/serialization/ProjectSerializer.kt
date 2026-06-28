@@ -11,21 +11,13 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.util.zip.GZIPOutputStream
 
 /**
- * This class provides static methods and functions to convert a Project-Object to json
+ * Converts a [Project] to json. `ccsh` only ever emits the cc.json 2.0 `{ meta, files, lenses }`
+ * format — there is no 1.5 writer. The 1.5 format is still *readable* (see [ProjectDeserializer]),
+ * but it is never produced.
  */
 object ProjectSerializer {
-    /**
-     * The format that `ccsh` emits by default: the 2.0 lens format. Tests that need the legacy 1.5
-     * output pin it via the explicit `apiVersion` parameter.
-     */
-    @JvmField
-    val defaultApiVersion: ApiVersion = ApiVersion.TWO_ZERO
-
-    /** The wire object + its GSON for the given format — the single place format dispatch happens. */
-    private fun wire(project: Project, apiVersion: ApiVersion): Pair<Gson, Any> = when (apiVersion) {
-        ApiVersion.ONE_FIVE -> CcJson15Gson.gson to ProjectToCcJson15Mapper.toWrapper(project)
-        ApiVersion.TWO_ZERO -> CcJsonV2Gson.gson to ProjectToCcJsonV2Mapper.toDto(project)
-    }
+    /** The wire object + its GSON. Only the 2.0 format is emitted — this is the single dispatch point. */
+    private fun wire(project: Project): Pair<Gson, Any> = CcJsonV2Gson.gson to ProjectToCcJsonV2Mapper.toDto(project)
 
     /**
      * This method serializes a Project-Object to json and writes using given writer
@@ -34,8 +26,8 @@ object ProjectSerializer {
      * @param out writer to write serialized object
      */
     @Throws(IOException::class)
-    fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false, apiVersion: ApiVersion = defaultApiVersion) {
-        val (gson, wireObject) = wire(project, apiVersion)
+    fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false) {
+        val (gson, wireObject) = wire(project)
         gson.toJson(wireObject, out)
         out.flush()
         if (writeToFile) {
@@ -52,16 +44,10 @@ object ProjectSerializer {
      * @param compress whether the output should be GZIP compressed
      */
     @Throws(IOException::class)
-    fun serializeProject(
-        project: Project,
-        out: OutputStream,
-        compress: Boolean,
-        isOutputFileSpecified: Boolean = false,
-        apiVersion: ApiVersion = defaultApiVersion
-    ) {
+    fun serializeProject(project: Project, out: OutputStream, compress: Boolean, isOutputFileSpecified: Boolean = false) {
         val wrappedOut = if (compress && isOutputFileSpecified) GZIPOutputStream(out) else out
         val writer = wrappedOut.bufferedWriter(UTF_8)
-        serializeProject(project, writer, isOutputFileSpecified, apiVersion)
+        serializeProject(project, writer, isOutputFileSpecified)
     }
 
     /**
@@ -74,16 +60,10 @@ object ProjectSerializer {
      * @param compress whether the output should be GZIP compressed (only respected if written to file)
      */
     @Throws(IOException::class)
-    fun serializeToFileOrStream(
-        project: Project,
-        outputFilePath: String?,
-        fallbackOutputStream: OutputStream,
-        compress: Boolean,
-        apiVersion: ApiVersion = defaultApiVersion
-    ) {
+    fun serializeToFileOrStream(project: Project, outputFilePath: String?, fallbackOutputStream: OutputStream, compress: Boolean) {
         val isOutputFileSpecified = !outputFilePath.isNullOrEmpty()
         val stream = OutputFileHandler.stream(outputFilePath, fallbackOutputStream, compress)
-        serializeProject(project, stream, compress, isOutputFileSpecified, apiVersion)
+        serializeProject(project, stream, compress, isOutputFileSpecified)
         if (!outputFilePath.isNullOrEmpty()) {
             val absoluteFilePath =
                 OutputFileHandler.checkAndFixFileExtension(
@@ -102,8 +82,8 @@ object ProjectSerializer {
      *
      * @param project the Project-Object to be serialized
      */
-    fun serializeToString(project: Project, apiVersion: ApiVersion = defaultApiVersion): String {
-        val (gson, wireObject) = wire(project, apiVersion)
+    fun serializeToString(project: Project): String {
+        val (gson, wireObject) = wire(project)
         return gson.toJson(wireObject)
     }
 }

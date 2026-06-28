@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.tools.convert
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.serialization.ApiVersion
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -48,7 +47,7 @@ class ConvertTool(private val input: InputStream = System.`in`, private val outp
     override fun call(): Unit? {
         val project = readProject()
         require(project != null) { "No convertible project could be read, nothing was written." }
-        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress, ApiVersion.TWO_ZERO)
+        ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
         return null
     }
 

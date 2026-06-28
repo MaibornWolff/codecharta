@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.serialization
 
-import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
@@ -18,11 +17,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.skyscreamer.jsonassert.JSONAssert
-import org.skyscreamer.jsonassert.JSONCompareMode
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.OutputStream
 import kotlin.io.path.absolute
 import kotlin.io.path.createTempDirectory
@@ -34,10 +30,6 @@ class ProjectSerializerTest {
     private val filename = tempDir.absolute().toString() + "test.cc.json"
     private val project = Project("test")
     private val lambdaSlot = mutableListOf<() -> String>()
-
-    companion object {
-        private const val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
-    }
 
     @BeforeAll
     fun beforeTests() {
@@ -53,30 +45,6 @@ class ProjectSerializerTest {
     @AfterAll
     fun afterTests() {
         unmockkAll()
-    }
-
-    @Test
-    fun `should correctly serialize the specified project when provided as input`() {
-        // given
-        val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3)!!.reader()
-        // The 1.5 wire mapper stamps the version it actually emits, so a 1.3-origin project is
-        // re-serialized as 1.5 (review finding #7, FAIL-15VER). Compare the meaningful `data` payload
-        // with apiVersion restamped to 1.5; the wrapper checksum is just MD5(data) and is covered by
-        // the dedicated checksum tests.
-        val expectedData =
-            JsonParser
-                .parseString(this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json")!!.readText())
-                .asJsonObject
-                .getAsJsonObject("data")
-        expectedData.addProperty("apiVersion", "1.5")
-        val testProject = ProjectDeserializer.deserializeProject(jsonReader)
-
-        // when
-        ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false, apiVersion = ApiVersion.ONE_FIVE)
-        val actualData = JsonParser.parseString(File(filename).readText()).asJsonObject.getAsJsonObject("data")
-
-        // then
-        JSONAssert.assertEquals(expectedData.toString(), actualData.toString(), JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test

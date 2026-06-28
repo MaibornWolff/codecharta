@@ -44,44 +44,15 @@ class CcJsonV2SerializationTest {
     }
 
     /**
-     * The 1.5 `data` payload (nodes, edges, types, descriptors, blacklist) with the format tag
-     * removed, so structural equality ignores the version and the derived wrapper checksum.
+     * The canonical 2.0 serialization, used as a structural oracle: two projects with the same data
+     * serialize to byte-identical 2.0 (the meta checksum is derived and the version is constant), so
+     * equality here means "same project data" regardless of which format it was read from.
      */
-    private fun semantic15(project: Project): String {
-        val data = JsonParser
-            .parseString(
-                ProjectSerializer.serializeToString(project, ApiVersion.ONE_FIVE)
-            ).asJsonObject
-            .getAsJsonObject("data")
-        data.remove("apiVersion")
-        return data.toString()
-    }
-
-    @Test
-    fun `should keep 1_5 output wrapped with checksum and data envelope`() {
-        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.ONE_FIVE)).asJsonObject
-
-        assertTrue(json.has("checksum"))
-        assertTrue(json.has("data"))
-        assertEquals("1.5", json.getAsJsonObject("data").get("apiVersion").asString)
-        assertTrue(json.getAsJsonObject("data").has("nodes"))
-    }
-
-    @Test
-    fun `should stamp the 1_5 wire version even when the domain project reports 2_0`() {
-        // Arrange: a project that reports apiVersion 2.0 (e.g. read back from a 2.0 file).
-        val project = Project("p", listOf(Node("root", NodeType.Folder)), "2.0", LensSet())
-
-        // Act
-        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project, ApiVersion.ONE_FIVE)).asJsonObject
-
-        // Assert: the 1.5 envelope stamps the version it actually emits, not the domain's 2.0.
-        assertEquals("1.5", json.getAsJsonObject("data").get("apiVersion").asString)
-    }
+    private fun serialized(project: Project): String = ProjectSerializer.serializeToString(project)
 
     @Test
     fun `should emit 2_0 with meta files and lenses and no outer wrapper`() {
-        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
 
         assertFalse(json.has("data"))
         assertEquals("2.0", json.getAsJsonObject("meta").get("apiVersion").asString)
@@ -102,8 +73,8 @@ class CcJsonV2SerializationTest {
             Project("p", listOf(Node("root", NodeType.Folder)), Project.API_VERSION, LensSet(opaqueLenses = mapOf("domain" to domainLens)))
 
         // Act
-        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)).asJsonObject
-        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO))
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
 
         // Assert: the domain lens is emitted verbatim and survives the round-trip with value equality.
         assertEquals("core", json.getAsJsonObject("lenses").getAsJsonObject("domain").get("team").asString)
@@ -123,7 +94,7 @@ class CcJsonV2SerializationTest {
             )
 
         // Act
-        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO))
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
 
         // Assert: the cluster JSON survives verbatim with well-defined equality.
         assertEquals(listOf(cluster), roundTripped.lenses.metrics.clusters)
@@ -133,10 +104,10 @@ class CcJsonV2SerializationTest {
     fun `should be semantically unchanged after a 2_0 round-trip`() {
         val original = sampleProject()
 
-        val viaV2 = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(original, ApiVersion.TWO_ZERO))
+        val viaV2 = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(original))
 
-        // Equal as 1.5 except for the format tag (a project read from 2.0 legitimately reports 2.0).
-        assertEquals(semantic15(original), semantic15(viaV2))
+        // The data is identical after a 2.0 round-trip.
+        assertEquals(serialized(original), serialized(viaV2))
     }
 
     @Test
@@ -150,8 +121,8 @@ class CcJsonV2SerializationTest {
         val project = Project("p", listOf(root), Project.API_VERSION, lenses = LensSet())
 
         // Act
-        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)).asJsonObject
-        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO))
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
 
         // Assert: both the leaf authors list and the folder metric are keyed by their node id.
         val attributes = json.getAsJsonObject("lenses").getAsJsonObject("metrics").getAsJsonObject("attributes")
@@ -159,7 +130,7 @@ class CcJsonV2SerializationTest {
         val srcId = NodeId.fromSegments(listOf("src"))
         assertTrue(attributes.getAsJsonObject(appId).getAsJsonArray("authors").size() == 2)
         assertTrue(attributes.getAsJsonObject(srcId).has("commits"))
-        assertEquals(semantic15(project), semantic15(roundTripped))
+        assertEquals(serialized(project), serialized(roundTripped))
     }
 
     @Test
@@ -171,21 +142,18 @@ class CcJsonV2SerializationTest {
         val project = Project("p", listOf(root), Project.API_VERSION, LensSet())
 
         // Act + Assert: the colliding ids fail loud instead of silently overwriting metrics.
-        assertThrows<IllegalArgumentException> { ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO) }
+        assertThrows<IllegalArgumentException> { ProjectSerializer.serializeToString(project) }
     }
 
     @Test
-    fun `should drop the blacklist from the 2_0 wire but keep it in 1_5`() {
+    fun `should drop the blacklist from the 2_0 wire`() {
         val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(Node("App.kt", NodeType.File)))
-        val blacklist =
-            listOf(BlacklistItem("/root/App.kt", BlacklistType.EXCLUDE))
+        val blacklist = listOf(BlacklistItem("/root/App.kt", BlacklistType.EXCLUDE))
         val project = Project("p", listOf(root), Project.API_VERSION, blacklist = blacklist)
 
-        val v2 = ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO)
-        val v1 = ProjectSerializer.serializeToString(project, ApiVersion.ONE_FIVE)
+        val v2 = ProjectSerializer.serializeToString(project)
 
         assertFalse(v2.contains("blacklist"))
-        assertTrue(v1.contains("blacklist"))
         // A project read back from 2.0 carries an empty blacklist, so analysis consumers never choke.
         assertTrue(ProjectDeserializer.deserializeProject(v2).blacklist.isEmpty())
     }
@@ -195,7 +163,7 @@ class CcJsonV2SerializationTest {
         val project =
             Project("p", listOf(Node("root", NodeType.Folder)), "2.0", LensSet(), commitHash = "a1b2c3d")
 
-        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project, ApiVersion.TWO_ZERO))
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
 
         assertEquals("a1b2c3d", roundTripped.commitHash)
     }
@@ -231,7 +199,7 @@ class CcJsonV2SerializationTest {
 
     @Test
     fun `should route edge attribute descriptors into the dependency lens of 2_0 output`() {
-        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
 
         // sampleProject has a node descriptor (rloc); ensure node descriptors stay in the metrics lens
         // and the dependency lens descriptor map exists (empty here, since rloc is a node metric).
@@ -242,15 +210,15 @@ class CcJsonV2SerializationTest {
 
     @Test
     fun `should round-trip 2_0 idempotently`() {
-        val onceThrough = ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)
-        val twiceThrough = ProjectSerializer.serializeToString(ProjectDeserializer.deserializeProject(onceThrough), ApiVersion.TWO_ZERO)
+        val onceThrough = ProjectSerializer.serializeToString(sampleProject())
+        val twiceThrough = ProjectSerializer.serializeToString(ProjectDeserializer.deserializeProject(onceThrough))
 
         assertEquals(onceThrough, twiceThrough)
     }
 
     @Test
     fun `should key metrics by the same id the file node carries`() {
-        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
 
         val appId = NodeId.fromSegments(listOf("src", "App.kt"))
         val attributes = json.getAsJsonObject("lenses").getAsJsonObject("metrics").getAsJsonObject("attributes")
@@ -260,7 +228,7 @@ class CcJsonV2SerializationTest {
 
     @Test
     fun `should reference edge endpoints by node id`() {
-        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
 
         val edge = json
             .getAsJsonObject("lenses")
@@ -275,7 +243,7 @@ class CcJsonV2SerializationTest {
     @Test
     fun `should drop edges whose endpoints do not resolve to a node`() {
         // Arrange: a valid 2.0 document whose single edge references ids absent from the file tree.
-        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
         val edge = json
             .getAsJsonObject("lenses")
             .getAsJsonObject("dependency")
@@ -293,15 +261,19 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
-    fun `should auto-detect and read both 1_5 and 2_0 input`() {
-        val original = sampleProject()
+    fun `should auto-detect and read both a legacy 1_x file and a 2_0 file`() {
+        // Arrange: a real legacy 1.3 file on disk; 2.0 is never written, so the legacy input is a fixture.
+        val legacy = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json")!!.readText()
 
-        val from15 = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(original, ApiVersion.ONE_FIVE))
-        val from20 = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(original, ApiVersion.TWO_ZERO))
+        // Act: read the 1.x file, then read it back after a 2.0 serialization.
+        val from1x = ProjectDeserializer.deserializeProject(legacy)
+        val from20 = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(from1x))
 
-        assertEquals("1.5", from15.apiVersion)
+        // Assert: the legacy file is read (reporting its own 1.x version), the 2.0 re-read reports 2.0,
+        // and the data is identical once both render as 2.0 (lossless 1.x read + convert).
+        assertEquals("1.3", from1x.apiVersion)
         assertEquals("2.0", from20.apiVersion)
-        assertEquals(semantic15(from15), semantic15(from20))
+        assertEquals(serialized(from1x), serialized(from20))
     }
 
     @Test
@@ -313,21 +285,20 @@ class CcJsonV2SerializationTest {
                 sampleProject(),
                 out,
                 compress = true,
-                isOutputFileSpecified = true,
-                apiVersion = ApiVersion.TWO_ZERO
+                isOutputFileSpecified = true
             )
         }
 
         val readBack = FileInputStream(tempFile).use { ProjectDeserializer.deserializeProject(it) }
 
         assertEquals("2.0", readBack.apiVersion)
-        assertEquals(semantic15(sampleProject()), semantic15(readBack))
+        assertEquals(serialized(sampleProject()), serialized(readBack))
     }
 
     @Test
     fun `should extract a piped 2_0 project from a noisy stream`() {
         val syncFlag = CodeChartaConstants.EXECUTION_STARTED_SYNC_FLAG
-        val pipedPayload = syncFlag + "someConsoleNoise\n" + ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)
+        val pipedPayload = syncFlag + "someConsoleNoise\n" + ProjectSerializer.serializeToString(sampleProject())
 
         val readBack = ProjectDeserializer.deserializeProject(ByteArrayInputStream(pipedPayload.toByteArray()))
 
@@ -336,18 +307,18 @@ class CcJsonV2SerializationTest {
 
     @Test
     fun `should preserve unknown lenses verbatim through a full domain round-trip`() {
-        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
         with20.getAsJsonObject("lenses").add("experimental", JsonParser.parseString("""{"foo":"bar"}"""))
 
         val domain = ProjectDeserializer.deserializeProject(with20.toString())
-        val reSerialized = JsonParser.parseString(ProjectSerializer.serializeToString(domain, ApiVersion.TWO_ZERO)).asJsonObject
+        val reSerialized = JsonParser.parseString(ProjectSerializer.serializeToString(domain)).asJsonObject
 
         assertEquals("bar", reSerialized.getAsJsonObject("lenses").getAsJsonObject("experimental").get("foo").asString)
     }
 
     @Test
     fun `should preserve unknown lenses verbatim through a DTO round-trip`() {
-        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject(), ApiVersion.TWO_ZERO)).asJsonObject
+        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
         with20.getAsJsonObject("lenses").add("experimental", JsonParser.parseString("""{"foo":"bar"}"""))
 
         val dto = CcJsonV2Gson.gson.fromJson(with20, CcJsonV2::class.java)
@@ -358,13 +329,11 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
-    fun `should round-trip serialize via output stream for both versions`() {
-        listOf(ApiVersion.ONE_FIVE, ApiVersion.TWO_ZERO).forEach { version ->
-            val out = ByteArrayOutputStream()
-            ProjectSerializer.serializeProject(sampleProject(), out, compress = false, isOutputFileSpecified = false, apiVersion = version)
+    fun `should round-trip serialize via an output stream`() {
+        val out = ByteArrayOutputStream()
+        ProjectSerializer.serializeProject(sampleProject(), out, compress = false, isOutputFileSpecified = false)
 
-            val readBack = ProjectDeserializer.deserializeProject(out.toString())
-            assertEquals(version.versionString, readBack.apiVersion)
-        }
+        val readBack = ProjectDeserializer.deserializeProject(out.toString())
+        assertEquals("2.0", readBack.apiVersion)
     }
 }
