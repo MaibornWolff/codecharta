@@ -31,5 +31,6 @@ enum class FileExtension(
     SWIFT(".swift"),
     BASH(".sh"),
     VUE(".vue"),
-    DELPHI(".pas", setOf(".dpr"))
+    DELPHI(".pas", setOf(".dpr")),
+    RUST(".rs")
 }

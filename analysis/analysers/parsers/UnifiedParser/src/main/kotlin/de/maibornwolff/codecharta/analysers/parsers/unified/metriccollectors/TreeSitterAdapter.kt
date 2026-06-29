@@ -65,6 +65,7 @@ object TreeSitterAdapter {
         FileExtension.OBJECTIVE_C -> Language.OBJECTIVE_C
         FileExtension.VUE -> Language.VUE
         FileExtension.DELPHI -> Language.DELPHI
+        FileExtension.RUST -> Language.RUST
         else -> null
     }
 
