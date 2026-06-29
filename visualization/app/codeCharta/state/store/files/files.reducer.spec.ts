@@ -9,7 +9,7 @@ import {
     setStandardByNames,
     switchReferenceAndComparison
 } from "./files.actions"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_FILE_DATA } from "../../../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, TEST_FILE_DATA } from "../../../mocks/dataMocks"
 import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { clone } from "../../../util/clone"

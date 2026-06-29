@@ -1,7 +1,6 @@
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
 import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
 import { Vector3 } from "three"
-import { CodeMapBuilding } from "../../../features/codeMap/facade"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { searchedNodePathsSelector } from "../../../state/selectors/searchedNodes/searchedNodePaths.selector"
 import { getColorByMetricValue } from "../../color/gradientCalculator"
@@ -36,16 +35,6 @@ function calculateSize(node: CodeMapNode, metricName: string) {
         }
     }
     return totalSize
-}
-
-function buildingArrayToMap(highlighted: CodeMapBuilding[]) {
-    const geomMap: Map<number, CodeMapBuilding> = new Map()
-
-    for (const building of highlighted) {
-        geomMap.set(building.id, building)
-    }
-
-    return geomMap
 }
 
 function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, state: CcState, isDeltaState: boolean) {
@@ -246,7 +235,6 @@ export function getBuildingColor(
 
 export const TreeMapHelper = {
     countNodes,
-    buildingArrayToMap,
     buildRootFolderForFixedFolders,
     calculateSize,
     buildNodeFrom,

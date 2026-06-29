@@ -1,6 +1,6 @@
 import { attributeTypes } from "./attributeTypes.reducer"
 import { setAttributeTypes } from "./attributeTypes.actions"
-import { STATE } from "../../../../util/dataMocks"
+import { STATE } from "../../../../mocks/dataMocks"
 import { AttributeTypes } from "../../../../codeCharta.model"
 
 describe("attributeTypes", () => {

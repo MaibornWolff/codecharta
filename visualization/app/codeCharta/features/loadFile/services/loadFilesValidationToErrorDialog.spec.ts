@@ -1,4 +1,4 @@
-import { CCFileValidationResult } from "../../../util/fileValidator"
+import { CCFileValidationResult } from "../util/fileValidator"
 import { loadFilesValidationToErrorDialog } from "./loadFilesValidationToErrorDialog"
 
 describe("loadFilesValidationToErrorDialog", () => {

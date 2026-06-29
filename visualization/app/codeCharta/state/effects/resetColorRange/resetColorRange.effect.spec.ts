@@ -9,7 +9,7 @@ import { Action } from "@ngrx/store"
 import { setStandard } from "../../store/files/files.actions"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
-import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
+import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../mocks/dataMocks"
 import { FileSelectionState } from "../../../model/files/files"
 
 describe("ResetColorRangeEffect", () => {

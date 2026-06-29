@@ -1,6 +1,6 @@
 import { CodeMapNode } from "../../../codeCharta.model"
 import { klona } from "klona"
-import { VALID_NODE_WITH_PATH } from "../../dataMocks"
+import { VALID_NODE_WITH_PATH } from "../../../mocks/dataMocks"
 import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
 import BoundingBox from "./boundingBox"
 import House from "./house"

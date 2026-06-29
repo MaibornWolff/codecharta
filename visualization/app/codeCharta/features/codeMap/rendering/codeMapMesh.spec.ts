@@ -1,7 +1,7 @@
 import { Node, CcState } from "../../../codeCharta.model"
 import { CodeMapMesh } from "./codeMapMesh"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { STATE, TEST_NODE_ROOT, TEST_NODES } from "../../../util/dataMocks"
+import { STATE, TEST_NODE_ROOT, TEST_NODES } from "../../../mocks/dataMocks"
 import { InstancedBufferAttribute, InstancedMesh } from "three"
 
 describe("codeMapMesh", () => {

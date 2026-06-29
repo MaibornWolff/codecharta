@@ -1,6 +1,6 @@
 import { CodeMapNode } from "../../../codeCharta.model"
 import { klona } from "klona"
-import { VALID_NODE_WITH_PATH } from "../../dataMocks"
+import { VALID_NODE_WITH_PATH } from "../../../mocks/dataMocks"
 import House from "./house"
 import { Vector2 } from "three"
 

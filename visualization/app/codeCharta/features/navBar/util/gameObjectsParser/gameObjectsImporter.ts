@@ -1,6 +1,6 @@
 import md5 from "md5"
-import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, FixedPosition, NodeType } from "../../codeCharta.model"
-import { ExportWrappedCCFile } from "../../codeCharta.api.model"
+import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, FixedPosition, NodeType } from "../../../../codeCharta.model"
+import { ExportWrappedCCFile } from "../../../../codeCharta.api.model"
 
 export interface GameObject {
     name: string

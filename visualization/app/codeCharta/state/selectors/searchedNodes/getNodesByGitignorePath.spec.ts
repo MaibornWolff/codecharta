@@ -1,4 +1,4 @@
-import { TEST_FILE_WITH_PATHS } from "../../../util/dataMocks"
+import { TEST_FILE_WITH_PATHS } from "../../../mocks/dataMocks"
 import { getNodesByGitignorePath } from "./getNodesByGitignorePath"
 
 describe("getNodesByGitignorePath", () => {

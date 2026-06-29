@@ -17,7 +17,7 @@ import {
     TEST_NODE_ROOT,
     TEST_NODES,
     VALID_EDGES
-} from "../../util/dataMocks"
+} from "../../mocks/dataMocks"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
 import { setState } from "../../state/store/state.actions"

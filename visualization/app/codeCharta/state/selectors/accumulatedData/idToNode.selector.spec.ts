@@ -1,4 +1,4 @@
-import { VALID_NODES_WITH_ID } from "../../../util/dataMocks"
+import { VALID_NODES_WITH_ID } from "../../../mocks/dataMocks"
 import { _calculateIdToNode } from "./idToNode.selector"
 
 describe("idToNodeSelector", () => {

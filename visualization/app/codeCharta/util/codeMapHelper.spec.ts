@@ -2,7 +2,7 @@ import { CCFile, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.mode
 import packageJson from "../../../package.json"
 import { getAllNodes, getMapResolutionScaleFactor, getMarkingColor, MAP_RESOLUTION_SCALE } from "./codeMapHelper"
 import { FileSelectionState, FileState } from "../model/files/files"
-import { VALID_NODE_WITH_PATH } from "./dataMocks"
+import { VALID_NODE_WITH_PATH } from "../mocks/dataMocks"
 
 describe("CodeMapHelper", () => {
     describe("getMarkingColor", () => {

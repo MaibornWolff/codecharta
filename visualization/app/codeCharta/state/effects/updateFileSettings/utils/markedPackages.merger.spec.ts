@@ -1,4 +1,4 @@
-import { TEST_FILE_DATA } from "../../../../util/dataMocks"
+import { TEST_FILE_DATA } from "../../../../mocks/dataMocks"
 import { getMergedMarkedPackages } from "./markedPackages.merger"
 import { CCFile, MarkedPackage } from "../../../../codeCharta.model"
 import { clone } from "../../../../util/clone"

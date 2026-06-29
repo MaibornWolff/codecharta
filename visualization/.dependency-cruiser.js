@@ -105,6 +105,27 @@ module.exports = {
             to: {
                 path: "@ngrx/store"
             }
+        },
+        {
+            name: "wire-dto-only-in-serialization-boundary",
+            severity: "error",
+            comment:
+                "codeCharta.api.model is the cc.json wire DTO — the data contract with the CLI. Only the serialization/ingestion boundary may depend on it: the loadFile feature (load/parse/validate), the navBar gameObjects importer, and util/fileDownloader (export). Keeping it out of rendering/state/UI means a future cc.json format change (2.0) stays contained to the converter. Test/mocks/fixtures are exempt.",
+            from: {
+                pathNot: [
+                    "^app/codeCharta/features/loadFile/",
+                    "^app/codeCharta/features/navBar/util/gameObjectsParser/",
+                    "^app/codeCharta/util/fileDownloader\\.ts$",
+                    "^app/codeCharta/mocks/",
+                    "^app/codeCharta/resources/",
+                    "\\.spec\\.ts$",
+                    "\\.e2e\\.ts$",
+                    "\\.mocks\\.ts$"
+                ]
+            },
+            to: {
+                path: "^app/codeCharta/codeCharta\\.api\\.model\\.ts$"
+            }
         }
     ],
     options: {
@@ -113,7 +134,10 @@ module.exports = {
             dependencyTypes: ["npm", "npm-dev", "npm-optional", "npm-peer", "npm-bundled", "npm-no-pkg"]
         },
         exclude: {
-            path: "(^|/)node_modules/(?!@(ngrx|angular)/)"
+            // Test fixtures are not production architecture: keep the mocks/ folder and
+            // any *.mocks.ts file out of the dependency graph and the boundary rules so
+            // they don't obscure real structure (they are only ever imported by tests).
+            path: ["(^|/)node_modules/(?!@(ngrx|angular)/)", "^app/codeCharta/mocks/", "\\.mocks\\.ts$"]
         },
         tsPreCompilationDeps: true,
         tsConfig: {

@@ -1,6 +1,6 @@
 import { edges } from "./edges.reducer"
 import { addEdge, removeEdge, setEdges } from "./edges.actions"
-import { VALID_EDGE } from "../../../../util/dataMocks"
+import { VALID_EDGE } from "../../../../mocks/dataMocks"
 
 describe("edges", () => {
     describe("Action: SET_EDGES", () => {

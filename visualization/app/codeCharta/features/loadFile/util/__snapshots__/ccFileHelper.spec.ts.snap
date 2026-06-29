@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`FileHelper getCCFile should build a CCFile 1`] = `
+exports[`ccFileHelper getCCFile should build a CCFile 1`] = `
 {
   "fileMeta": {
     "apiVersion": "1.5",
