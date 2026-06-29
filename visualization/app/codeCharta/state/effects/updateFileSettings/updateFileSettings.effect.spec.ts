@@ -5,7 +5,7 @@ import { provideMockStore, MockStore } from "@ngrx/store/testing"
 import { setState } from "../../store/state.actions"
 import { UpdateFileSettingsEffect } from "./updateFileSettings.effect"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
+import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../mocks/dataMocks"
 import { FileSelectionState } from "../../../model/files/files"
 import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
 

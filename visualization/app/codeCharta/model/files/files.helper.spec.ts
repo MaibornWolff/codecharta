@@ -1,4 +1,4 @@
-import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../mocks/dataMocks"
 import {
     createPNGFileName,
     fileStatesAvailable,

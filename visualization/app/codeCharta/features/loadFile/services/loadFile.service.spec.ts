@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { FILES_ALREADY_LOADED_ERROR_MESSAGE, LoadFileService } from "./loadFile.service"
 import { LoadFileStore } from "../stores/loadFile.store"
-import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_WITH_AUTHORS, TEST_FILE_CONTENT_WITHOUT_AUTHORS } from "../../../util/dataMocks"
+import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_WITH_AUTHORS, TEST_FILE_CONTENT_WITHOUT_AUTHORS } from "../../../mocks/dataMocks"
 import { CCFile, CcState, NodeMetricData, NodeType } from "../../../codeCharta.model"
 import { removeFiles, setDeltaReference, setStandard } from "../../../state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "../../../codeCharta.api.model"
 import { getCCFiles, isPartialState } from "../../../model/files/files.helper"
-import { CCFileValidationResult, ERROR_MESSAGES } from "../../../util/fileValidator"
+import { CCFileValidationResult, ERROR_MESSAGES } from "../util/fileValidator"
 import packageJson from "../../../../../package.json"
 import { clone } from "../../../util/clone"
 import { klona } from "klona"
@@ -17,7 +17,7 @@ import { metricDataSelector } from "../../../state/selectors/accumulatedData/met
 import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { setCurrentFilesAreSampleFiles } from "../../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
-import { getCCFileAndDecorateFileChecksum } from "../../../util/fileHelper"
+import { getCCFileAndDecorateFileChecksum } from "../util/ccFileHelper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock

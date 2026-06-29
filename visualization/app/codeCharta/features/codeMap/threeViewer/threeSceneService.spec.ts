@@ -1,15 +1,13 @@
 import { State, Store, StoreModule } from "@ngrx/store"
 import {
-    CODE_MAP_BUILDING,
-    CODE_MAP_BUILDING_TS_NODE,
-    CONSTANT_HIGHLIGHT,
     TEST_LEAF_NODE_WITHOUT_EXTENSION,
     TEST_NODE_LEAF,
     TEST_NODE_LEAF_0_LENGTH,
     TEST_NODES,
     VALID_FILE_NODE_WITH_ID,
     VALID_NODES_WITH_ID
-} from "../../../util/dataMocks"
+} from "../../../mocks/dataMocks"
+import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "../rendering/codeMapBuilding.mocks"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
 import { CodeMapMesh } from "../rendering/codeMapMesh"

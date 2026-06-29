@@ -19,13 +19,12 @@ import {
     SortingOption,
     CcState
 } from "../codeCharta.model"
-import { CodeMapBuilding } from "../features/codeMap/facade"
-import { Box3, Vector3 } from "three"
+import { Vector3 } from "three"
 import { hierarchy } from "d3-hierarchy"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import packageJson from "../../../package.json"
-import { isLeaf } from "./codeMapHelper"
+import { isLeaf } from "../util/codeMapHelper"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
 
 const DEFAULT_FILE_META = {
@@ -2519,34 +2518,6 @@ export const DIFFERENT_NODE: Node = {
     outgoingEdgePoint: new Vector3(1, 2, 3)
 }
 
-export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
-    0,
-    new Box3(),
-    TEST_NODE_ROOT,
-    DEFAULT_STATE.appSettings.mapColors.neutral
-)
-
-export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
-    1,
-    new Box3(),
-    TEST_NODE_LEAF,
-    DEFAULT_STATE.appSettings.mapColors.neutral
-)
-
-export const CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE: CodeMapBuilding = new CodeMapBuilding(
-    1,
-    new Box3(),
-    OUTGOING_NODE,
-    DEFAULT_STATE.appSettings.mapColors.neutral
-)
-
-export const CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE: CodeMapBuilding = new CodeMapBuilding(
-    2,
-    new Box3(),
-    INCOMING_NODE,
-    DEFAULT_STATE.appSettings.mapColors.neutral
-)
-
 export const BLACKLIST: BlacklistItem[] = [
     {
         path: "/my/path",
@@ -2580,11 +2551,6 @@ export const MARKED_PACKAGES: MarkedPackage[] = [
         color: "#345678"
     }
 ]
-
-export const CONSTANT_HIGHLIGHT: Map<number, CodeMapBuilding> = new Map([
-    [CODE_MAP_BUILDING.id, CODE_MAP_BUILDING],
-    [CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE]
-])
 
 export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: BlacklistType) {
     const pathsSet = new Set(paths)

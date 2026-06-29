@@ -6,7 +6,7 @@ import { accumulatedDataSelector } from "../../../state/selectors/accumulatedDat
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { defaultState } from "../../../state/store/state.manager"
-import { TEST_DELTA_MAP_A, TEST_NODE_LEAF_0_LENGTH, TEST_NODES, VALID_NODE_WITH_MCC } from "../../../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_NODE_LEAF_0_LENGTH, TEST_NODES, VALID_NODE_WITH_MCC } from "../../../mocks/dataMocks"
 import { CodeMapRenderService } from "../../../features/codeMap/facade"
 import { NodeSelectionService } from "./nodeSelection.service"
 

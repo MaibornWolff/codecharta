@@ -19,17 +19,17 @@ import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetr
 import { defaultFileSettings } from "../../../state/store/fileSettings/fileSettings.reducer"
 import { setDelta, setFiles } from "../../../state/store/files/files.actions"
 import { appReducers, defaultState, setStateMiddleware } from "../../../state/store/state.manager"
-import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
+import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../mocks/dataMocks"
 import { readCcState } from "../../../util/indexedDB/indexedDBWriter"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { ErrorDialogService } from "../../../features/shared/components/errorDialog/errorDialog.service"
-import { getNameDataPair } from "../../../util/fileParser"
+import { getNameDataPair } from "../util/fileParser"
 import { LoadFileService } from "./loadFile.service"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "./loadInitialFile.service"
-import { UrlExtractor } from "../../../util/urlExtractor"
+import { UrlExtractor } from "../util/urlExtractor"
 import { setCurrentFilesAreSampleFiles } from "../../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
-jest.mock("../../../util/urlExtractor")
+jest.mock("../util/urlExtractor")
 jest.mock("../../../model/files/files.helper")
 jest.mock("../../../util/indexedDB/indexedDBWriter")
 

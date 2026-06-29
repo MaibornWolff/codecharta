@@ -8,7 +8,7 @@ import {
     TEST_FILE_DATA_DOWNLOADED,
     VALID_EDGES_DECORATED,
     VALID_NODE_DECORATED
-} from "./dataMocks"
+} from "../mocks/dataMocks"
 import { klona } from "klona"
 
 describe("fileDownloader", () => {

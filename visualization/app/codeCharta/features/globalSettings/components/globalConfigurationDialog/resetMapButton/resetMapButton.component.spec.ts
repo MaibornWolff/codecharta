@@ -8,7 +8,7 @@ import { LoadFileService } from "../../../../../features/loadFile/facade"
 import { LoadInitialFileService } from "../../../../../features/loadFile/facade"
 import { metricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { defaultState } from "../../../../../state/store/state.manager"
-import { METRIC_DATA } from "../../../../../util/dataMocks"
+import { METRIC_DATA } from "../../../../../mocks/dataMocks"
 import { ResetMapButtonComponent } from "./resetMapButton.component"
 
 describe("ResetMapButtonComponent", () => {

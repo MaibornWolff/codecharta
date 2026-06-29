@@ -1,4 +1,5 @@
-import { NodeMetricData, CcState, CodeMapNode, Node, NameDataPair } from "../../../codeCharta.model"
+import { NodeMetricData, CcState, CodeMapNode, Node } from "../../../codeCharta.model"
+import { NameDataPair } from "../../../codeCharta.api.model"
 import {
     METRIC_DATA,
     TEST_FILE_WITH_PATHS,
@@ -9,11 +10,11 @@ import {
     FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE,
     VALID_NODE_WITH_PATH_AND_DELTAS,
     VALID_BIG_NODE_WITH_DELTAS
-} from "../../dataMocks"
+} from "../../../mocks/dataMocks"
 import { klona } from "klona"
 import { NodeDecorator } from "../../nodeDecorator"
 import { fileWithFixedFolders } from "../../../resources/fixed-folders/fixed-folders-example"
-import { getCCFile } from "../../fileHelper"
+import { getCCFile } from "../../../features/loadFile/facade"
 import * as SquarifiedLayoutGenerator from "./treeMapGenerator"
 
 describe("treeMapGenerator", () => {

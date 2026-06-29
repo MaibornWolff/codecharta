@@ -1,5 +1,5 @@
 import { FileSelectionState, FileState } from "../../../model/files/files"
-import { FILE_META, TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../util/dataMocks"
+import { FILE_META, TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../mocks/dataMocks"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TestBed } from "@angular/core/testing"
 import { _onlyVisibleFilesMatterComparer, visibleFileStatesSelector } from "./visibleFileStates.selector"
