@@ -107,10 +107,10 @@ module.exports = {
             }
         },
         {
-            name: "wire-dto-only-in-serialization-boundary",
+            name: "wire-dto-only-in-filestore-boundary",
             severity: "error",
             comment:
-                "codeCharta.api.model is the cc.json wire DTO — the data contract with the CLI. Only the serialization/ingestion boundary may depend on it: the loadFile feature (load/parse/validate), the navBar gameObjects importer, and util/fileDownloader (export). Keeping it out of rendering/state/UI means a future cc.json format change (2.0) stays contained to the converter. Test/mocks/fixtures are exempt.",
+                "codeCharta.api.model is the cc.json wire DTO — the data contract with the CLI. Only the fileStore ingestion boundary may depend on it: the moved load pipeline (fileStore/loaders), the navBar gameObjects importer, and util/fileDownloader (export). Keeping it out of rendering/state/UI/lenses means a cc.json format change (2.0) stays contained to the ingestion seam. The 2.0 domain types live in model/ccjson2.model.ts, which must NOT import api.model (so model/ is not allow-listed). Test/mocks/fixtures are exempt.",
             from: {
                 pathNot: [
                     "^app/codeCharta/fileStore/",
@@ -134,14 +134,14 @@ module.exports = {
          * at `warn` (documented temporary bridges). See migration-2-0-plans/rpi-plan/step-1-skeleton-and-model.md. */
         {
             name: "lens-no-ui-dependency",
-            severity: "warn",
+            severity: "error",
             comment: "A lens is data. It must not import renderers or shell. (It may read interaction/appearance/fileStore facades.)",
             from: { path: "^app/codeCharta/lenses/" },
             to: { path: ["^app/codeCharta/renderers/", "^app/codeCharta/shell/"] }
         },
         {
             name: "lens-cross-lens-only-via-facade",
-            severity: "warn",
+            severity: "error",
             comment: "One lens may not reach into another lens's internals — only its lens facade (lenses/<other>/<other>.facade.ts).",
             from: { path: "^app/codeCharta/lenses/([^/]+)/" },
             to: {
@@ -151,7 +151,7 @@ module.exports = {
         },
         {
             name: "lens-external-access-only-via-public-surface",
-            severity: "warn",
+            severity: "error",
             comment:
                 "Outside code (pages, shell, legacy features) may touch a lens only through its public surface: the lens facade (for data) or a feature's components/ (to mount a panel). Never services, repos, stores, models.",
             from: { pathNot: "^app/codeCharta/lenses/" },
@@ -165,7 +165,7 @@ module.exports = {
         },
         {
             name: "lens-feature-cross-only-via-public-api",
-            severity: "warn",
+            severity: "error",
             comment: "Within a lens, a feature may reach another feature only via its facade.ts or components/ (not its services/stores/models).",
             from: { path: "^app/codeCharta/lenses/[^/]+/features/([^/]+)/", pathNot: ["\\.e2e\\.ts$", "\\.po\\.ts$"] },
             to: {
@@ -178,21 +178,21 @@ module.exports = {
         },
         {
             name: "feature-components-go-through-services",
-            severity: "warn",
+            severity: "error",
             comment: "Components take their data from services. A lens feature component may not import a repo or store directly — go via the feature's services.",
             from: { path: "^app/codeCharta/lenses/[^/]+/features/[^/]+/components/" },
             to: { path: ["^app/codeCharta/lenses/[^/]+/repos/", "^app/codeCharta/lenses/[^/]+/store/"] }
         },
         {
             name: "feature-services-read-repos-not-store",
-            severity: "warn",
+            severity: "error",
             comment: "Services hold logic and read the repo. They must not reach the raw store directly — the repo is the data-access seam.",
             from: { path: "^app/codeCharta/lenses/[^/]+/features/[^/]+/services/" },
             to: { path: "^app/codeCharta/lenses/[^/]+/store/" }
         },
         {
             name: "filestore-has-no-upward-deps",
-            severity: "warn",
+            severity: "error",
             comment: "FileStore is the source. It must not import lenses, renderers, shell, interaction or appearance.",
             from: { path: "^app/codeCharta/fileStore/" },
             to: {
@@ -260,7 +260,7 @@ module.exports = {
                 }
             },
             archi: {
-                collapsePattern: "^app/codeCharta/features/([^/]+)",
+                collapsePattern: "^app/codeCharta/(features/[^/]+|lenses/[^/]+|fileStore)",
                 theme: {
                     graph: {
                         splines: "ortho"

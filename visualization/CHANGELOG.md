@@ -7,8 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **cc.json 2.0 support**: The app now loads cc.json **2.0** files (`{ meta, files, lenses }`) in addition to the 1.x format. The 2.0 envelope is auto-detected at the load boundary, validated against the published 2.0 JSON Schema, and mapped into the internal model so the map renders identically to today (node metrics keyed by the stable node `id`; dependency edges read from `lenses.dependency`). Legacy 1.x files are unchanged.
+
+### Changed
+
+- **Metrics lens architecture (Visualization 2.0, Slice 1)**: Node-metric data now flows through a dedicated `lenses/metrics` module — a store + repos behind a single `MetricsLens` facade — that the codeMap render pipeline, the floating metrics bar, and the Inspector read from. The files slice and the load pipeline moved into a new `fileStore/` module, and the **Legend** now lives inside the metrics lens (`lenses/metrics/features/legend`) with its per-concern services collapsed onto one view-model. No user-facing behavior change (render and metric values are identical).
+
 ### Chore 👨‍💻 👩‍💻
 
+- **Metrics-lens boundary enforcement**: dependency-cruiser now enforces (at `error`) the `lenses/` and `fileStore/` boundaries — outside code reaches a lens only through its public facade or a feature's `components/`, components go through services, services read repos, and the cc.json wire DTO stays confined to the `fileStore` ingestion seam.
 - **Feature architecture migration**: Moved the remaining `app/codeCharta/ui/` components into the feature-slice architecture — `features/shared` (actionIcon, errorDialog, loadingFileProgressSpinner, resetSettingsButton), `features/fileExtensionBar`, `features/codeMap`, and `features/viewCube`. Each slice is reached through a `facade.ts`, contains no SCSS (daisyUI/Tailwind only), and accesses `@ngrx/store` only from `stores/`/`selectors/`. The `ui/` directory is gone and the dependency-cruiser SCSS rule now covers all of `app/codeCharta/`. No user-facing behavior change.
 
 ## [1.143.0] - 2026-06-23

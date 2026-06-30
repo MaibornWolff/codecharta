@@ -14,6 +14,24 @@ This chart shows the data flow in our architecture when a new cc.json is opened.
 
 ![new-file-imported](../gh-pages/assets/images/docs/reference/loading-a-new-file-flow.png)
 
+### Architecture boundaries
+
+The code under `app/codeCharta/` is organised into modules whose boundaries are enforced by
+**dependency-cruiser** (`npm run lint:architecture`, config in `.dependency-cruiser.js`):
+
+- `features/*` — feature slices reached only through their `facade.ts` or `components/`; `@ngrx/store`
+  is touched only from a feature's `stores/`/`selectors/`.
+- `fileStore/` — the source of truth: the files state slice plus the cc.json load pipeline
+  (`loaders/ccJson`, the only place the cc.json wire DTO `codeCharta.api.model` may be imported).
+- `lenses/*` — data modules that overlay the file tree. A lens is reached **only** through its public
+  surface: the lens facade (`lenses/<lens>/<lens>.facade.ts`) for data, or a feature's `components/` to
+  mount a panel. Internally a lens is `components → services → repos → store`. The first lens is
+  `lenses/metrics` (node metrics + the Legend).
+- `model/` + `util/` — the shared kernel both worlds import.
+
+These boundaries are the first slice of the **Visualization 2.0** migration toward a
+lenses × renderers architecture; see `Ideas/codecharta-2.0-implementation-map.html` for the target map.
+
 ### Other Technologies
 
 - Typescript
