@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { LegendEdgeMetricService } from "../../services/edgeMetric.service"
+import { LegendService } from "../../services/legend.service"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 
 @Component({
@@ -11,7 +11,7 @@ import { LegendColorRowComponent } from "./legendColorRow.component"
     imports: [LegendColorRowComponent]
 })
 export class LegendEdgeColorsSectionComponent {
-    constructor(private readonly edgeMetricService: LegendEdgeMetricService) {}
+    constructor(private readonly legendService: LegendService) {}
 
-    readonly edgeMetric = toSignal(this.edgeMetricService.edgeMetric$(), { initialValue: null })
+    readonly edgeMetric = toSignal(this.legendService.edgeMetric$(), { initialValue: null })
 }

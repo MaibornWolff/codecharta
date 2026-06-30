@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, computed, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { InspectorVisibilityService } from "../../../../../../features/sidebarInspector/facade"
-import { LegendIsDeltaStateService } from "../../services/isDeltaState.service"
+import { LegendService } from "../../services/legend.service"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 import { LegendColorScaleSectionComponent } from "./legendColorScaleSection.component"
 import { LegendDeltaColorsSectionComponent } from "./legendDeltaColorsSection.component"
@@ -26,10 +26,10 @@ import { LegendToggleButtonComponent } from "./legendToggleButton.component"
 export class LegendPanelComponent implements OnInit, OnDestroy {
     private readonly elementReference = inject(ElementRef<HTMLElement>)
     private readonly inspectorVisibilityService = inject(InspectorVisibilityService)
-    private readonly isDeltaStateService = inject(LegendIsDeltaStateService)
+    private readonly legendService = inject(LegendService)
 
     readonly isOpen = signal(false)
-    readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
+    readonly isDeltaState = toSignal(this.legendService.isDeltaState$(), { initialValue: false })
 
     readonly panelBottom = `calc(${LEGEND_BARS_OFFSET} + 12px)`
     readonly panelRight = computed(() => (this.inspectorVisibilityService.isVisible() ? "calc(var(--cc-inspector-width) + 40px)" : "40px"))

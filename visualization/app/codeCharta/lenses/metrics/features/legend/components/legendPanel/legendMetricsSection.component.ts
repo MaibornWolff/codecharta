@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { LegendAreaMetricService } from "../../services/areaMetric.service"
-import { LegendColorMetricService } from "../../services/colorMetric.service"
-import { LegendEdgeMetricService } from "../../services/edgeMetric.service"
-import { LegendHeightMetricService } from "../../services/heightMetric.service"
+import { LegendService } from "../../services/legend.service"
 import { LegendMetricRowComponent } from "./legendMetricRow.component"
 
 @Component({
@@ -14,15 +11,10 @@ import { LegendMetricRowComponent } from "./legendMetricRow.component"
     imports: [LegendMetricRowComponent]
 })
 export class LegendMetricsSectionComponent {
-    constructor(
-        private readonly areaMetricService: LegendAreaMetricService,
-        private readonly heightMetricService: LegendHeightMetricService,
-        private readonly colorMetricService: LegendColorMetricService,
-        private readonly edgeMetricService: LegendEdgeMetricService
-    ) {}
+    constructor(private readonly legendService: LegendService) {}
 
-    readonly areaMetric = toSignal(this.areaMetricService.areaMetric$(), { initialValue: "" })
-    readonly heightMetric = toSignal(this.heightMetricService.heightMetric$(), { initialValue: "" })
-    readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
-    readonly edgeMetric = toSignal(this.edgeMetricService.edgeMetric$(), { initialValue: null })
+    readonly areaMetric = toSignal(this.legendService.areaMetric$(), { initialValue: "" })
+    readonly heightMetric = toSignal(this.legendService.heightMetric$(), { initialValue: "" })
+    readonly colorMetric = toSignal(this.legendService.colorMetric$(), { initialValue: "" })
+    readonly edgeMetric = toSignal(this.legendService.edgeMetric$(), { initialValue: null })
 }
