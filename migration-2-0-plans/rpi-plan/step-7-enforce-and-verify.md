@@ -1,7 +1,7 @@
 ---
 name: enforce-and-verify
 issue:
-state: todo
+state: complete
 version: 1
 ---
 
@@ -54,9 +54,9 @@ Edit the single live config `visualization/.dependency-cruiser.js` (run by `npm 
 
 ## Steps
 
-- [ ] Complete Task 1: Promote the metrics-lens / fileStore boundaries to `error` in `.dependency-cruiser.js` (scoped to existing dirs; wire-DTO rule swapped + allow-list reconciled)
-- [ ] Complete Task 2: Run `npm run lint:architecture`, `npm test`, `npm run e2e` (+ `e2e:ci`); confirm render snapshots unchanged and manual 2.0/converted load is pixel-identical
-- [ ] Complete Task 3: Update `visualization/CHANGELOG.md` + architecture docs; record rollback
+- [x] Complete Task 1: Promote the metrics-lens / fileStore boundaries to `error` in `.dependency-cruiser.js` (scoped to existing dirs; wire-DTO rule swapped + allow-list reconciled)
+- [x] Complete Task 2: Run `npm run lint:architecture`, `npm test`, `npm run e2e` (+ `e2e:ci`); confirm render snapshots unchanged and manual 2.0/converted load is pixel-identical
+- [x] Complete Task 3: Update `visualization/CHANGELOG.md` + architecture docs; record rollback
 
 ## Review Feedback Addressed
 
