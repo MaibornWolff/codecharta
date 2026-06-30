@@ -126,6 +126,107 @@ module.exports = {
             to: {
                 path: "^app/codeCharta/codeCharta\\.api\\.model\\.ts$"
             }
+        },
+
+        /* ───────────── Visualization 2.0 — Slice 1 lens/fileStore boundary (staged at warn) ─────────────
+         * Scoped to the dirs that exist this slice (lenses/metrics, fileStore). Step 7 flips the 7
+         * lens-internal rules to `error` and keeps `metrics-lens-ngrx-guard` + `new-must-not-import-legacy`
+         * at `warn` (documented temporary bridges). See migration-2-0-plans/rpi-plan/step-1-skeleton-and-model.md. */
+        {
+            name: "lens-no-ui-dependency",
+            severity: "warn",
+            comment: "A lens is data. It must not import renderers or shell. (It may read interaction/appearance/fileStore facades.)",
+            from: { path: "^app/codeCharta/lenses/" },
+            to: { path: ["^app/codeCharta/renderers/", "^app/codeCharta/shell/"] }
+        },
+        {
+            name: "lens-cross-lens-only-via-facade",
+            severity: "warn",
+            comment: "One lens may not reach into another lens's internals — only its lens facade (lenses/<other>/<other>.facade.ts).",
+            from: { path: "^app/codeCharta/lenses/([^/]+)/" },
+            to: {
+                path: "^app/codeCharta/lenses/([^/]+)/",
+                pathNot: ["^app/codeCharta/lenses/$1/", "^app/codeCharta/lenses/[^/]+/[^/]+\\.facade\\.ts$"]
+            }
+        },
+        {
+            name: "lens-external-access-only-via-public-surface",
+            severity: "warn",
+            comment:
+                "Outside code (pages, shell, legacy features) may touch a lens only through its public surface: the lens facade (for data) or a feature's components/ (to mount a panel). Never services, repos, stores, models.",
+            from: { pathNot: "^app/codeCharta/lenses/" },
+            to: {
+                path: "^app/codeCharta/lenses/",
+                pathNot: [
+                    "^app/codeCharta/lenses/[^/]+/[^/]+\\.facade\\.ts$",
+                    "^app/codeCharta/lenses/[^/]+/features/[^/]+/components/"
+                ]
+            }
+        },
+        {
+            name: "lens-feature-cross-only-via-public-api",
+            severity: "warn",
+            comment: "Within a lens, a feature may reach another feature only via its facade.ts or components/ (not its services/stores/models).",
+            from: { path: "^app/codeCharta/lenses/[^/]+/features/([^/]+)/", pathNot: ["\\.e2e\\.ts$", "\\.po\\.ts$"] },
+            to: {
+                path: "^app/codeCharta/lenses/[^/]+/features/([^/]+)/",
+                pathNot: [
+                    "^app/codeCharta/lenses/[^/]+/features/$1/",
+                    "^app/codeCharta/lenses/[^/]+/features/[^/]+/(components/|facade\\.ts$)"
+                ]
+            }
+        },
+        {
+            name: "feature-components-go-through-services",
+            severity: "warn",
+            comment: "Components take their data from services. A lens feature component may not import a repo or store directly — go via the feature's services.",
+            from: { path: "^app/codeCharta/lenses/[^/]+/features/[^/]+/components/" },
+            to: { path: ["^app/codeCharta/lenses/[^/]+/repos/", "^app/codeCharta/lenses/[^/]+/store/"] }
+        },
+        {
+            name: "feature-services-read-repos-not-store",
+            severity: "warn",
+            comment: "Services hold logic and read the repo. They must not reach the raw store directly — the repo is the data-access seam.",
+            from: { path: "^app/codeCharta/lenses/[^/]+/features/[^/]+/services/" },
+            to: { path: "^app/codeCharta/lenses/[^/]+/store/" }
+        },
+        {
+            name: "filestore-has-no-upward-deps",
+            severity: "warn",
+            comment: "FileStore is the source. It must not import lenses, renderers, shell, interaction or appearance.",
+            from: { path: "^app/codeCharta/fileStore/" },
+            to: {
+                path: [
+                    "^app/codeCharta/lenses/",
+                    "^app/codeCharta/renderers/",
+                    "^app/codeCharta/shell/",
+                    "^app/codeCharta/interaction/",
+                    "^app/codeCharta/appearance/"
+                ]
+            }
+        },
+        {
+            name: "metrics-lens-ngrx-guard",
+            severity: "warn",
+            comment:
+                "Lens code may import @ngrx/store only from a lens's repos/store (or a lens feature's stores/selectors). Staged at warn now so step 7 only flips it; stays warn until viewState/appearance land.",
+            from: {
+                path: "^app/codeCharta/lenses/",
+                pathNot: [
+                    "^app/codeCharta/lenses/[^/]+/(repos|store)/",
+                    "^app/codeCharta/lenses/[^/]+/features/[^/]+/(stores|selectors)/",
+                    "\\.spec\\.ts$"
+                ]
+            },
+            to: { path: "@ngrx/store" }
+        },
+        {
+            name: "new-must-not-import-legacy",
+            severity: "warn",
+            comment:
+                "Migration boundary: the new structure (lenses/, fileStore/) must not import the legacy features/ or state/. Kept at warn this slice because real transitional edges exist; util/ + model/ are the shared kernel and exempt. The reverse (legacy → new lens facade) is the allowed migration flow. Flips to error once state/ becomes interaction/appearance.",
+            from: { path: "^app/codeCharta/(lenses|fileStore)/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: { path: ["^app/codeCharta/features/", "^app/codeCharta/state/"] }
         }
     ],
     options: {
