@@ -34,6 +34,7 @@ import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { MetricsLensFacade } from "../../lenses/metrics/metricsLens.facade"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
@@ -97,7 +98,8 @@ describe("codeMapRenderService", () => {
             labelSettingsFacade,
             codeMapArrowService,
             threeStatsService,
-            codeMapMouseEventService
+            codeMapMouseEventService,
+            { getNodeMetricData: () => METRIC_DATA } as unknown as MetricsLensFacade
         )
         codeMapRenderService["showCouplingArrows"] = jest.fn()
     }

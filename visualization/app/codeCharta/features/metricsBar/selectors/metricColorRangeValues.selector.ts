@@ -1,9 +1,9 @@
 import { createSelector } from "@ngrx/store"
-import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { metricRangeSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { colorRangeSelector } from "../../../state/store/dynamicSettings/colorRange/colorRange.selector"
 
 export const metricColorRangeValuesSelector = createSelector(
-    selectedColorMetricDataSelector,
+    metricRangeSelector,
     colorRangeSelector,
     (colorMetricData, colorRange) => ({
         values: colorMetricData.values,

@@ -1,9 +1,8 @@
 import { createSelector } from "@ngrx/store"
 import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MetricData } from "../../../codeCharta.model"
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { attributeDescriptorsSelector, nodeMetricDataSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
-import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
 import { calculateMetricBar, MetricBar } from "../util/metricSeverity"
 
 export type MetricRow = {
@@ -92,8 +91,8 @@ const calculateRangeBar = (
 export const inspectorMetricRowsSelector = createSelector(
     selectedNodeSelector,
     accumulatedDataSelector,
-    metricDataSelector,
+    nodeMetricDataSelector,
     attributeDescriptorsSelector,
-    (selectedNode, accumulatedData, metricData, attributeDescriptors) =>
-        _calculateMetricRows(selectedNode, accumulatedData.unifiedMapNode, metricData, attributeDescriptors)
+    (selectedNode, accumulatedData, nodeMetricData, attributeDescriptors) =>
+        _calculateMetricRows(selectedNode, accumulatedData.unifiedMapNode, { nodeMetricData }, attributeDescriptors)
 )

@@ -3,7 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { combineLatest, map } from "rxjs"
 import { ColorRange } from "../../../../codeCharta.model"
 import { debounce } from "../../../../util/debounce"
-import { AttributeDescriptorsService } from "../../services/attributeDescriptors.service"
+import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
 import { ColorMetricService } from "../../services/colorMetric.service"
 import { ColorRangeService } from "../../services/colorRange.service"
 import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
@@ -21,7 +21,7 @@ export class ColorRangeSectionComponent implements OnDestroy {
     constructor(
         private readonly colorRangeService: ColorRangeService,
         private readonly colorMetricService: ColorMetricService,
-        private readonly attributeDescriptorsService: AttributeDescriptorsService
+        private readonly metricsLensFacade: MetricsLensFacade
     ) {}
 
     readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
@@ -32,7 +32,7 @@ export class ColorRangeSectionComponent implements OnDestroy {
         initialValue: { leftColor: "#000", middleColor: "#000", rightColor: "#000" }
     })
     readonly isAttributeDirectionInversed = toSignal(
-        combineLatest([this.colorMetricService.colorMetric$(), this.attributeDescriptorsService.attributeDescriptors$()]).pipe(
+        combineLatest([this.colorMetricService.colorMetric$(), this.metricsLensFacade.descriptors$]).pipe(
             map(([colorMetric, attributeDescriptors]) => attributeDescriptors[colorMetric]?.direction === 1)
         ),
         { initialValue: false }
