@@ -1,7 +1,7 @@
 ---
 name: metrics-lens-core-store-repos-facade
 issue:
-state: todo
+state: complete
 version: 2
 ---
 
@@ -76,12 +76,12 @@ The facade is the **only** import outsiders use (dep-cruiser `lens-external-acce
 
 ## Steps
 
-- [ ] Complete Task 1: `store/` (`nodeMetricDataSelector`, `metricRangeSelector`) + `MetricsLensStore`
-- [ ] Complete Task 2: `repos/attributes.repo.ts` (sync + reactive `rangeOf`, `getNodeMetricData`)
-- [ ] Complete Task 3: `repos/descriptors.repo.ts` (optional `attributeTypes.nodes` handled)
-- [ ] Complete Task 4: `metricsLens.facade.ts` — injectable service **+** re-exported public selectors
-- [ ] Complete Task 5: parity unit tests green against the current selectors
-- [ ] Verify: `npx tsc --noEmit`; `npm test` (new specs + untouched `metricData`/`selectedColorMetricData` specs); `npm run lint:architecture` (lens rules at `warn`, no new violations)
+- [x] Complete Task 1: `store/` (`nodeMetricDataSelector`, `metricRangeSelector`) + `MetricsLensStore`
+- [x] Complete Task 2: `repos/attributes.repo.ts` (sync + reactive `rangeOf`, `getNodeMetricData`)
+- [x] Complete Task 3: `repos/descriptors.repo.ts` (optional `attributeTypes.nodes` handled)
+- [x] Complete Task 4: `metricsLens.facade.ts` — injectable service **+** re-exported public selectors
+- [x] Complete Task 5: parity unit tests green against the current selectors
+- [x] Verify: `npx tsc --noEmit`; `npm test` (new specs + untouched `metricData`/`selectedColorMetricData` specs); `npm run lint:architecture` (lens rules at `warn`, no new violations)
 
 ## Review Feedback Addressed
 
