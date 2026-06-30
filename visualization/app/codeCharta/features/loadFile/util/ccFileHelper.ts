@@ -1,10 +1,20 @@
 import { ExportBlacklistType, ExportCCFile, ExportWrappedCCFile, OldAttributeTypes, NameDataPair } from "../../../codeCharta.api.model"
 import { AttributeDescriptors, AttributeTypes, BlacklistItem, CCFile } from "../../../codeCharta.model"
+import { CcJson2 } from "../../../model/ccjson2.model"
 import md5 from "md5"
 import { clone } from "../../../util/clone"
+import { isCcJson2 } from "./fileValidator"
+import { mapCcJson2ToCCFile } from "./ccJson2/ccJson2ToCCFile"
+
+export function getContentChecksum(content: ExportCCFile | CcJson2): string {
+    return isCcJson2(content) ? (content as CcJson2).meta.checksum : (content as ExportCCFile).fileChecksum
+}
 
 export function getCCFile(file: NameDataPair): CCFile {
-    const fileContent = file.content
+    if (isCcJson2(file.content)) {
+        return mapCcJson2ToCCFile(file.content as CcJson2, file)
+    }
+    const fileContent = file.content as ExportCCFile
     return {
         fileMeta: {
             fileName: file.fileName,
@@ -54,25 +64,37 @@ function potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
     return blacklist
 }
 
-export function getCCFileAndDecorateFileChecksum(jsonInput: string | ExportWrappedCCFile | ExportCCFile): ExportCCFile | null {
+export function getCCFileAndDecorateFileChecksum(
+    jsonInput: string | ExportWrappedCCFile | ExportCCFile | CcJson2
+): ExportCCFile | CcJson2 | null {
     let mappedFile: ExportCCFile = null
 
     try {
-        const fileContent: ExportCCFile | ExportWrappedCCFile =
-            typeof jsonInput === "string" ? (JSON.parse(jsonInput) as ExportWrappedCCFile | ExportCCFile) : jsonInput
+        const fileContent: ExportCCFile | ExportWrappedCCFile | CcJson2 =
+            typeof jsonInput === "string" ? (JSON.parse(jsonInput) as ExportWrappedCCFile | ExportCCFile | CcJson2) : jsonInput
 
-        if ("data" in fileContent && "checksum" in fileContent) {
-            mappedFile = fileContent.data
-            mappedFile.fileChecksum = fileContent.checksum || md5(JSON.stringify(fileContent.data))
+        if (isCcJson2(fileContent as ExportCCFile | CcJson2)) {
+            const ccJson2 = fileContent as CcJson2
+            if (!ccJson2.meta.checksum) {
+                const jsonInputString = typeof jsonInput === "string" ? jsonInput : JSON.stringify(jsonInput)
+                ccJson2.meta.checksum = md5(jsonInputString)
+            }
+            return ccJson2
+        }
+
+        const legacyContent = fileContent as ExportCCFile | ExportWrappedCCFile
+        if ("data" in legacyContent && "checksum" in legacyContent) {
+            mappedFile = legacyContent.data
+            mappedFile.fileChecksum = legacyContent.checksum || md5(JSON.stringify(legacyContent.data))
 
             return mappedFile
         }
 
-        if (!fileContent.fileChecksum) {
+        if (!legacyContent.fileChecksum) {
             const jsonInputString = typeof jsonInput === "string" ? jsonInput : JSON.stringify(jsonInput)
-            fileContent.fileChecksum = md5(jsonInputString)
+            legacyContent.fileChecksum = md5(jsonInputString)
         }
-        return fileContent
+        return legacyContent
     } catch {
         // Explicitly ignored
     }

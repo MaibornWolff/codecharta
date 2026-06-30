@@ -1,5 +1,6 @@
 import {
     TEST_FILE_CONTENT,
+    TEST_FILE_CONTENT_CC_JSON_2,
     TEST_FILE_CONTENT_INVALID_API,
     TEST_FILE_CONTENT_INVALID_MAJOR_API,
     TEST_FILE_CONTENT_INVALID_MINOR_API,
@@ -7,8 +8,9 @@ import {
 } from "../../../mocks/dataMocks"
 import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { NameDataPair } from "../../../codeCharta.api.model"
+import { CcJson2 } from "../../../model/ccjson2.model"
 import packageJson from "../../../../../package.json"
-import { checkErrors, checkWarnings, ERROR_MESSAGES } from "./fileValidator"
+import { checkErrors, checkWarnings, detectApiVersionMajor, isCcJson2, removeAuthorsAttributes, ERROR_MESSAGES } from "./fileValidator"
 import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../../../resources/fixed-folders/fixed-folders-example"
 import { APIVersions, ExportCCFile } from "../../../codeCharta.api.model"
 import { clone } from "../../../util/clone"
@@ -47,7 +49,7 @@ describe("FileValidator", () => {
             fileSize: 30,
             content: TEST_FILE_CONTENT_INVALID_MINOR_API
         }
-        const expectedWarnings = [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${nameDataPair.content.apiVersion}`]
+        const expectedWarnings = [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${(nameDataPair.content as ExportCCFile).apiVersion}`]
 
         expect(checkWarnings(nameDataPair.content)).toEqual(expectedWarnings)
     })
@@ -303,6 +305,46 @@ describe("FileValidator", () => {
             const expectedErrors = [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 1.1`]
 
             expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
+        })
+    })
+
+    describe("cc.json 2.0", () => {
+        let file2_0: CcJson2
+
+        beforeEach(() => {
+            file2_0 = clone(TEST_FILE_CONTENT_CC_JSON_2)
+        })
+
+        it("should detect a 2.0 envelope by its meta but not a legacy file claiming apiVersion 2.0", () => {
+            expect(isCcJson2(file2_0)).toBe(true)
+            expect(detectApiVersionMajor(file2_0)).toBe(2)
+            expect(isCcJson2(TEST_FILE_CONTENT_INVALID_MAJOR_API)).toBe(false)
+        })
+
+        it("should return no errors for a valid 2.0 file", () => {
+            expect(checkErrors(file2_0)).toEqual([])
+        })
+
+        it("should not strip authors or emit minor-version warnings for 2.0 files", () => {
+            expect(removeAuthorsAttributes(file2_0)).toEqual([])
+            expect(checkWarnings(file2_0)).toEqual([])
+        })
+
+        it("should report schema errors for a malformed 2.0 file", () => {
+            delete file2_0.meta.checksum
+
+            const errors = checkErrors(file2_0)
+
+            expect(errors.length).toBeGreaterThan(0)
+            expect(errors.some(error => error.includes("checksum"))).toBe(true)
+        })
+
+        it("should report duplicate node ids", () => {
+            file2_0.files[0].children[0].id = file2_0.files[0].id
+
+            const errors = checkErrors(file2_0)
+
+            expect(errors).toContain(`${ERROR_MESSAGES.nodeIdsNotUnique} Found duplicate id: ${file2_0.files[0].id}`)
         })
     })
 })

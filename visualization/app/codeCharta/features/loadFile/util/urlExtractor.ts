@@ -2,8 +2,14 @@ import { HttpClient, HttpResponse } from "@angular/common/http"
 import { firstValueFrom } from "rxjs"
 import { NameDataPair } from "../../../codeCharta.api.model"
 import { getCCFileAndDecorateFileChecksum } from "./ccFileHelper"
+import { isCcJson2 } from "./fileValidator"
 import { ExportCCFile, ExportWrappedCCFile } from "../../../codeCharta.api.model"
+import { CcJson2 } from "../../../model/ccjson2.model"
 import { ungzip } from "pako"
+
+function getProjectName(content: ExportCCFile | CcJson2): string {
+    return isCcJson2(content) ? (content as CcJson2).meta.projectName : (content as ExportCCFile).projectName
+}
 
 export class UrlExtractor {
     constructor(private readonly httpClient: HttpClient) {}
@@ -55,7 +61,7 @@ export class UrlExtractor {
             const data = response.body
             const responseData: string | ExportCCFile | ExportWrappedCCFile = ungzip(data, { to: "string" })
             const content = getCCFileAndDecorateFileChecksum(responseData)
-            const parsedFileName = this.getFileName(fileName, content.projectName)
+            const parsedFileName = this.getFileName(fileName, getProjectName(content))
             // see #3111 and PR #3110 for reason of hard coded file size
             return { fileName: parsedFileName, fileSize: 13, content }
         }
@@ -67,8 +73,8 @@ export class UrlExtractor {
 
         if (response.status >= 200 && response.status < 300) {
             const responseData = response.body as string | ExportCCFile | ExportWrappedCCFile
-            const content: ExportCCFile = getCCFileAndDecorateFileChecksum(responseData)
-            fileName = this.getFileName(fileName, content.projectName)
+            const content: ExportCCFile | CcJson2 = getCCFileAndDecorateFileChecksum(responseData)
+            fileName = this.getFileName(fileName, getProjectName(content))
             // see #3111 and PR #3110 for reason of hard coded file size
             return { fileName, fileSize: 15, content }
         }

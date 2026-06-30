@@ -23,6 +23,7 @@ import { Vector3 } from "three"
 import { hierarchy } from "d3-hierarchy"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
+import { CcJson2 } from "../model/ccjson2.model"
 import packageJson from "../../../package.json"
 import { isLeaf } from "../util/codeMapHelper"
 import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
@@ -2574,4 +2575,39 @@ export function setupFiles(): FileState[] {
         { file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.None },
         { file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.None }
     ]
+}
+
+export const TEST_FILE_CONTENT_CC_JSON_2: CcJson2 = {
+    meta: { projectName: "Sample 2.0 Map", apiVersion: "2.0", checksum: "valid-md5-sample-cc2" },
+    files: [
+        {
+            id: "/root",
+            name: "root",
+            type: NodeType.FOLDER,
+            children: [
+                { id: "/root/big.ts", name: "big.ts", type: NodeType.FILE, link: "http://example.com" },
+                {
+                    id: "/root/Parent",
+                    name: "Parent",
+                    type: NodeType.FOLDER,
+                    children: [{ id: "/root/Parent/small.ts", name: "small.ts", type: NodeType.FILE }]
+                }
+            ]
+        }
+    ],
+    lenses: {
+        metrics: {
+            attributes: {
+                "/root/big.ts": { rloc: 100, authors: [1, 2] },
+                "/root/Parent/small.ts": { rloc: 30 }
+            },
+            attributeDescriptors: {},
+            attributeTypes: { rloc: AttributeTypeValue.absolute }
+        },
+        dependency: {
+            edges: [{ fromId: "/root/big.ts", toId: "/root/Parent/small.ts", attributes: { pairingRate: 42 } }],
+            attributeTypes: { pairingRate: AttributeTypeValue.relative },
+            attributeDescriptors: {}
+        }
+    }
 }

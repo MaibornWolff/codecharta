@@ -2,7 +2,9 @@ import { CodeMapNode, FixedPosition } from "../../../codeCharta.model"
 import Ajv, { ErrorObject } from "ajv"
 import packageJson from "../../../../../package.json"
 import { ExportCCFile } from "../../../codeCharta.api.model"
+import { CcJson2, FileNode } from "../../../model/ccjson2.model"
 import jsonSchema from "../../../util/generatedSchema.json"
+import ccJson2Schema from "../../../util/ccJson2Schema.json"
 import { isLeaf } from "../../../util/codeMapHelper"
 
 const latestApiVersion = packageJson.codecharta.apiVersion
@@ -24,6 +26,7 @@ export const ERROR_MESSAGES = {
     majorApiVersionIsOutdated: "API Version Outdated: Update CodeCharta API Version to match cc.json.",
     minorApiVersionOutdated: "Minor API Version Outdated.",
     nodesNotUnique: "Node names in combination with node types are not unique.",
+    nodeIdsNotUnique: "Node ids are not unique.",
     nodesEmpty: "The nodes array is empty. At least one node is required.",
     notAllFoldersAreFixed: "If at least one direct sub-folder of root is marked as fixed, all direct sub-folders of root must be fixed.",
     fixedFoldersOutOfBounds: "Coordinates of fixed folders must be within a range of 0 and 100.",
@@ -35,41 +38,97 @@ export const ERROR_MESSAGES = {
         "File contains unsupported 'authors' attribute. This attribute will be ignored. Node containing the attribute: "
 }
 
-export function removeAuthorsAttributes(file: ExportCCFile): string[] {
-    if (!file || !file.nodes) {
-        return []
+export function detectApiVersionMajor(content: ExportCCFile | CcJson2 | null | undefined): number {
+    const metaApiVersion = (content as CcJson2)?.meta?.apiVersion
+    if (typeof metaApiVersion === "string") {
+        return getAsApiVersion(metaApiVersion).major
     }
-    return removeAuthorsAttributeFromNodes(file.nodes)
+    const apiVersion = (content as ExportCCFile)?.apiVersion
+    if (typeof apiVersion === "string") {
+        return getAsApiVersion(apiVersion).major
+    }
+    return Number.NaN
 }
 
-export function checkWarnings(file: ExportCCFile) {
+/**
+ * A cc.json 2.0 file is identified by its `{ meta, files, lenses }` envelope, not by a bare major
+ * number — a legacy `{ apiVersion: "2.0", nodes }` file (no `meta`) must still travel the 1.x path.
+ */
+export function isCcJson2(content: ExportCCFile | CcJson2 | null | undefined): boolean {
+    return (content as CcJson2)?.meta !== undefined && detectApiVersionMajor(content) === 2
+}
+
+export function removeAuthorsAttributes(file: ExportCCFile | CcJson2): string[] {
+    if (isCcJson2(file)) {
+        // In 2.0 authors are regular metric attributes (out of scope for Slice 1); nothing to strip here.
+        return []
+    }
+    const file1 = file as ExportCCFile
+    if (!file1 || !file1.nodes) {
+        return []
+    }
+    return removeAuthorsAttributeFromNodes(file1.nodes)
+}
+
+export function checkWarnings(file: ExportCCFile | CcJson2) {
     const warnings: string[] = []
-    if (!file) {
+    if (!file || isCcJson2(file)) {
         return warnings
     }
-    if (fileHasHigherMinorVersion(file)) {
-        warnings.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`)
+    const file1 = file as ExportCCFile
+    if (fileHasHigherMinorVersion(file1)) {
+        warnings.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file1.apiVersion}`)
     }
     return warnings
 }
 
-export function checkErrors(file: ExportCCFile) {
+export function checkErrors(file: ExportCCFile | CcJson2) {
+    if (isCcJson2(file)) {
+        return checkErrors2_0(file as CcJson2)
+    }
+    const file1 = file as ExportCCFile
     const errors: string[] = []
     switch (true) {
-        case !file:
+        case !file1:
             errors.push(ERROR_MESSAGES.fileIsInvalid)
             break
-        case !isValidApiVersion(file):
+        case !isValidApiVersion(file1):
             errors.push(ERROR_MESSAGES.apiVersionIsInvalid)
             break
-        case fileHasHigherMajorVersion(file):
+        case fileHasHigherMajorVersion(file1):
             errors.push(ERROR_MESSAGES.majorApiVersionIsOutdated)
             break
     }
     if (errors.length === 0) {
-        errors.push(...checkJsonSchema(file))
+        errors.push(...checkJsonSchema(file1))
     }
     return errors
+}
+
+function checkErrors2_0(file: CcJson2): string[] {
+    const ajv = new Ajv({ allErrors: true, strict: false })
+    const validate = ajv.compile(ccJson2Schema)
+    if (!validate(file)) {
+        return validate.errors.map((error: ErrorObject) => getValidationMessage(error))
+    }
+    return validateAllFileNodeIdsAreUnique(file.files[0])
+}
+
+function validateAllFileNodeIdsAreUnique(root: FileNode): string[] {
+    const errors: string[] = []
+    collectDuplicateFileNodeIds(root, new Set<string>(), errors)
+    return errors
+}
+
+function collectDuplicateFileNodeIds(node: FileNode, seenIds: Set<string>, errors: string[]) {
+    if (seenIds.has(node.id)) {
+        errors.push(`${ERROR_MESSAGES.nodeIdsNotUnique} Found duplicate id: ${node.id}`)
+    } else {
+        seenIds.add(node.id)
+    }
+    for (const child of node.children ?? []) {
+        collectDuplicateFileNodeIds(child, seenIds, errors)
+    }
 }
 
 function checkJsonSchema(file: ExportCCFile) {

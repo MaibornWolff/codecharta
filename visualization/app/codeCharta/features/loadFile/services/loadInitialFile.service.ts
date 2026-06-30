@@ -12,6 +12,7 @@ import { MetricQueryParemter } from "../../../state/effects/updateQueryParameter
 import { ErrorDialogService } from "../../../features/shared/components/errorDialog/errorDialog.service"
 import { buildHtmlMessage } from "./loadFilesValidationToErrorDialog"
 import { getNameDataPair } from "../util/fileParser"
+import { getContentChecksum } from "../util/ccFileHelper"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "./loadFile.service"
 import { UrlExtractor } from "../util/urlExtractor"
 import { LoadInitialFileStore } from "../stores/loadInitialFile.store"
@@ -51,8 +52,8 @@ export class LoadInitialFileService {
 
             const savedFileStates = savedCcState.files
             const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
-            const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => urlNameDataPair.content.fileChecksum)
-            const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => savedNameDataPair.content.fileChecksum)
+            const urlNameDataPairCheckSums = urlNameDataPairs.map(urlNameDataPair => getContentChecksum(urlNameDataPair.content))
+            const savedNameDataPairCheckSums = savedNameDataPairs.map(savedNameDataPair => getContentChecksum(savedNameDataPair.content))
             if (stringify(urlNameDataPairCheckSums) === stringify(savedNameDataPairCheckSums)) {
                 this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs)
             } else {
