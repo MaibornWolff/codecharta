@@ -1,8 +1,8 @@
-import { ExportBlacklistType, ExportCCFile, ExportWrappedCCFile, OldAttributeTypes, NameDataPair } from "../../../codeCharta.api.model"
-import { AttributeDescriptors, AttributeTypes, BlacklistItem, CCFile } from "../../../codeCharta.model"
-import { CcJson2 } from "../../../model/ccjson2.model"
+import { ExportBlacklistType, ExportCCFile, ExportWrappedCCFile, OldAttributeTypes, NameDataPair } from "../../../../codeCharta.api.model"
+import { AttributeDescriptors, AttributeTypes, BlacklistItem, CCFile } from "../../../../codeCharta.model"
+import { CcJson2 } from "../../../../model/ccjson2.model"
 import md5 from "md5"
-import { clone } from "../../../util/clone"
+import { clone } from "../../../../util/clone"
 import { isCcJson2 } from "./fileValidator"
 import { mapCcJson2ToCCFile } from "./ccJson2/ccJson2ToCCFile"
 

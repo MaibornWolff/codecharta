@@ -13,7 +13,7 @@ import { appReducers, setStateMiddleware } from "../../../state/store/state.mana
 import { StateAccessStore } from "../stores/stateAccess.store"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setLabelsPerMap } from "../../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
-import { setFiles } from "../../../state/store/files/files.actions"
+import { setFiles } from "../../../fileStore/store/files.actions"
 import { FILE_STATES_TWO_FILES } from "../../../mocks/dataMocks"
 
 describe("LabelCollisionService", () => {

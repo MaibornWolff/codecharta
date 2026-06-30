@@ -6,8 +6,8 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
 import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton.component"
 import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
-import { LoadFileService } from "../../../../features/loadFile/facade"
-import { LoadInitialFileService } from "../../../../features/loadFile/facade"
+import { LoadFileService } from "../../../../fileStore/fileStore.facade"
+import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
 import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
 
 describe("GlobalConfigurationButtonComponent", () => {

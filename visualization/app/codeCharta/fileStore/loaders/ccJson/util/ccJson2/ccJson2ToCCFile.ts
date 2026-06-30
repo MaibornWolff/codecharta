@@ -1,4 +1,4 @@
-import { NameDataPair } from "../../../../codeCharta.api.model"
+import { NameDataPair } from "../../../../../codeCharta.api.model"
 import {
     AttributeDescriptor,
     AttributeDescriptors,
@@ -7,8 +7,8 @@ import {
     CodeMapNode,
     Edge,
     KeyValuePair
-} from "../../../../codeCharta.model"
-import { CcJson2, FileNode } from "../../../../model/ccjson2.model"
+} from "../../../../../codeCharta.model"
+import { CcJson2, FileNode } from "../../../../../model/ccjson2.model"
 
 /**
  * Maps a parsed cc.json 2.0 (`{ meta, files, lenses }`) into today's internal `CCFile`, so the map

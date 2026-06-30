@@ -5,7 +5,7 @@ import { setColorLabels } from "../../../../state/store/appSettings/colorLabels/
 import { setLabelMode } from "../../../../state/store/appSettings/labelMode/labelMode.actions"
 import { setLabelSize } from "../../../../state/store/appSettings/labelSize/labelSize.actions"
 import { setLabelsPerMap } from "../../../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
-import { setDelta, setFiles } from "../../../../state/store/files/files.actions"
+import { setDelta, setFiles } from "../../../../fileStore/store/files.actions"
 import { FILE_STATES_TWO_FILES, TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../../mocks/dataMocks"
 import { fireEvent } from "@testing-library/angular"
 import { LabelSettingsPanelComponent } from "./labelSettingsPanel.component"

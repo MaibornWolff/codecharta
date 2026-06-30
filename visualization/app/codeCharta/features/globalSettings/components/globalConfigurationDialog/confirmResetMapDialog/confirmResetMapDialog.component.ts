@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http"
 import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from "@angular/core"
-import { LoadFileService, LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../features/loadFile/facade"
-import { UrlExtractor } from "../../../../loadFile/facade"
+import { LoadFileService, LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../fileStore/fileStore.facade"
+import { UrlExtractor } from "../../../../../fileStore/fileStore.facade"
 import { deleteCcState } from "../../../../../util/indexedDB/indexedDBWriter"
 import { MapResetStore } from "../../../stores/mapReset.store"
 

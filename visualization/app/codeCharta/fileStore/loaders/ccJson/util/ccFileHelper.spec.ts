@@ -1,9 +1,9 @@
-import { ExportBlacklistType, ExportCCFile } from "../../../codeCharta.api.model"
-import { AttributeTypeValue } from "../../../codeCharta.model"
-import { NameDataPair } from "../../../codeCharta.api.model"
+import { ExportBlacklistType, ExportCCFile } from "../../../../codeCharta.api.model"
+import { AttributeTypeValue } from "../../../../codeCharta.model"
+import { NameDataPair } from "../../../../codeCharta.api.model"
 import { getCCFile, getCCFileAndDecorateFileChecksum } from "./ccFileHelper"
-import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "../../../mocks/dataMocks"
-import { clone } from "../../../util/clone"
+import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "../../../../mocks/dataMocks"
+import { clone } from "../../../../util/clone"
 import md5 from "md5"
 
 describe("ccFileHelper", () => {

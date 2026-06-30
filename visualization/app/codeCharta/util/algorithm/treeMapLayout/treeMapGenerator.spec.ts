@@ -14,7 +14,7 @@ import {
 import { klona } from "klona"
 import { NodeDecorator } from "../../nodeDecorator"
 import { fileWithFixedFolders } from "../../../resources/fixed-folders/fixed-folders-example"
-import { getCCFile } from "../../../features/loadFile/facade"
+import { getCCFile } from "../../../fileStore/fileStore.facade"
 import * as SquarifiedLayoutGenerator from "./treeMapGenerator"
 
 describe("treeMapGenerator", () => {

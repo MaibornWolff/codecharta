@@ -9,9 +9,9 @@ import {
     setStandardByNames,
     switchReferenceAndComparison
 } from "./files.actions"
-import { CCFile } from "../../../codeCharta.model"
-import { FileSelectionState, FileState } from "../../../model/files/files"
-import { isEqual } from "../../../model/files/files.helper"
+import { CCFile } from "../../codeCharta.model"
+import { FileSelectionState, FileState } from "../../model/files/files"
+import { isEqual } from "../../model/files/files.helper"
 import { createReducer, on } from "@ngrx/store"
 
 export const defaultFiles: FileState[] = []

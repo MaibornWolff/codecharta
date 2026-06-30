@@ -1,6 +1,6 @@
 import { searchPattern } from "./searchPattern.reducer"
 import { setSearchPattern } from "./searchPattern.actions"
-import { setStandard } from "../../files/files.actions"
+import { setStandard } from "../../../../fileStore/store/files.actions"
 
 describe("searchPattern", () => {
     it("should set new searchPattern", () => {

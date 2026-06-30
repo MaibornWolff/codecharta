@@ -5,9 +5,9 @@ import { map, skip, switchMap, take, withLatestFrom } from "rxjs"
 import { selectedColorMetricDataSelector } from "../../selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { calculateInitialColorRange } from "../../store/dynamicSettings/colorRange/calculateInitialColorRange"
 import { setColorRange } from "../../store/dynamicSettings/colorRange/colorRange.actions"
-import { fileActions } from "../../store/files/files.actions"
+import { fileActions } from "../../../fileStore/store/files.actions"
 import { CcState } from "../../../codeCharta.model"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
 
 @Injectable()

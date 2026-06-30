@@ -1,12 +1,12 @@
-import { NameDataPair } from "../../../../codeCharta.api.model"
-import { CcJson2 } from "../../../../model/ccjson2.model"
-import { clone } from "../../../../util/clone"
-import { TEST_FILE_CONTENT_CC_JSON_2 } from "../../../../mocks/dataMocks"
+import { NameDataPair } from "../../../../../codeCharta.api.model"
+import { CcJson2 } from "../../../../../model/ccjson2.model"
+import { clone } from "../../../../../util/clone"
+import { TEST_FILE_CONTENT_CC_JSON_2 } from "../../../../../mocks/dataMocks"
 import { getCCFile } from "../ccFileHelper"
 import { mapCcJson2ToCCFile } from "./ccJson2ToCCFile"
-import sample1 from "../../../../assets/sample1.cc.json"
-import sample1Cc2 from "../../../../assets/sample1.cc2.json"
-import { ExportCCFile } from "../../../../codeCharta.api.model"
+import sample1 from "../../../../../assets/sample1.cc.json"
+import sample1Cc2 from "../../../../../assets/sample1.cc2.json"
+import { ExportCCFile } from "../../../../../codeCharta.api.model"
 
 function nameDataPair(content: CcJson2): NameDataPair {
     return { fileName: "fileName", fileSize: 42, content }

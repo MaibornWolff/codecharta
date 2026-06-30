@@ -5,15 +5,15 @@ import {
     TEST_FILE_CONTENT_INVALID_MAJOR_API,
     TEST_FILE_CONTENT_INVALID_MINOR_API,
     TEST_FILE_CONTENT_NO_API
-} from "../../../mocks/dataMocks"
-import { CodeMapNode, NodeType } from "../../../codeCharta.model"
-import { NameDataPair } from "../../../codeCharta.api.model"
-import { CcJson2 } from "../../../model/ccjson2.model"
-import packageJson from "../../../../../package.json"
+} from "../../../../mocks/dataMocks"
+import { CodeMapNode, NodeType } from "../../../../codeCharta.model"
+import { NameDataPair } from "../../../../codeCharta.api.model"
+import { CcJson2 } from "../../../../model/ccjson2.model"
+import packageJson from "../../../../../../package.json"
 import { checkErrors, checkWarnings, detectApiVersionMajor, isCcJson2, removeAuthorsAttributes, ERROR_MESSAGES } from "./fileValidator"
-import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../../../resources/fixed-folders/fixed-folders-example"
-import { APIVersions, ExportCCFile } from "../../../codeCharta.api.model"
-import { clone } from "../../../util/clone"
+import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../../../../resources/fixed-folders/fixed-folders-example"
+import { APIVersions, ExportCCFile } from "../../../../codeCharta.api.model"
+import { clone } from "../../../../util/clone"
 
 describe("FileValidator", () => {
     let file: ExportCCFile

@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { UploadFilesService } from "./uploadFiles.service"
-import { LoadFileService } from "../../../features/loadFile/facade"
+import { LoadFileService } from "../../../fileStore/fileStore.facade"
 import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { createCCFileInput } from "./createCCFileInput"
@@ -11,7 +11,7 @@ import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { CcState } from "../../../codeCharta.model"
 import { RenderCodeMapEffect } from "../../../state/effects/renderCodeMapEffect/renderCodeMap.effect"
-import { setFiles, setStandardByNames } from "../../../state/store/files/files.actions"
+import { setFiles, setStandardByNames } from "../../../fileStore/store/files.actions"
 import { UnfocusNodesEffect } from "../../../state/effects/unfocusNodes/unfocusNodes.effect"
 
 jest.mock("./createCCFileInput")

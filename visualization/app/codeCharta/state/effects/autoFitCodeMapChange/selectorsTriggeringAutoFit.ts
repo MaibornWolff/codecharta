@@ -1,4 +1,4 @@
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { layoutAlgorithmSelector } from "../../../features/globalSettings/facade"
 import { invertAreaSelector } from "../../store/appSettings/invertArea/invertArea.selector"

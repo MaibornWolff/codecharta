@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { visibleFileStatesSelector } from "../../../state/selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
 import { hoveredNodeIdSelector } from "../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"

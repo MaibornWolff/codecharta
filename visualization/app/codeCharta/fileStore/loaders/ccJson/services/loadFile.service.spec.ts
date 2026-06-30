@@ -1,27 +1,27 @@
 import { TestBed } from "@angular/core/testing"
 import { FILES_ALREADY_LOADED_ERROR_MESSAGE, LoadFileService } from "./loadFile.service"
-import { LoadFileStore } from "../stores/loadFile.store"
-import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_WITH_AUTHORS, TEST_FILE_CONTENT_WITHOUT_AUTHORS } from "../../../mocks/dataMocks"
-import { CCFile, CcState, NodeMetricData, NodeType } from "../../../codeCharta.model"
-import { removeFiles, setDeltaReference, setStandard } from "../../../state/store/files/files.actions"
-import { ExportBlacklistType, ExportCCFile } from "../../../codeCharta.api.model"
-import { getCCFiles, isPartialState } from "../../../model/files/files.helper"
+import { FilesRepo } from "../../../repos/files.repo"
+import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_WITH_AUTHORS, TEST_FILE_CONTENT_WITHOUT_AUTHORS } from "../../../../mocks/dataMocks"
+import { CCFile, CcState, NodeMetricData, NodeType } from "../../../../codeCharta.model"
+import { removeFiles, setDeltaReference, setStandard } from "../../../store/files.actions"
+import { ExportBlacklistType, ExportCCFile } from "../../../../codeCharta.api.model"
+import { getCCFiles, isPartialState } from "../../../../model/files/files.helper"
 import { CCFileValidationResult, ERROR_MESSAGES } from "../util/fileValidator"
-import packageJson from "../../../../../package.json"
-import { clone } from "../../../util/clone"
+import packageJson from "../../../../../../package.json"
+import { clone } from "../../../../util/clone"
 import { klona } from "klona"
-import { ErrorDialogService } from "../../../features/shared/components/errorDialog/errorDialog.service"
+import { ErrorDialogService } from "../../../../features/shared/components/errorDialog/errorDialog.service"
 import { loadFilesValidationToErrorDialog } from "./loadFilesValidationToErrorDialog"
-import { fileRoot } from "../../../util/fileRoot"
-import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { fileRoot } from "../../../../util/fileRoot"
+import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
-import { setCurrentFilesAreSampleFiles } from "../../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
+import { setCurrentFilesAreSampleFiles } from "../../../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import { getCCFileAndDecorateFileChecksum } from "../util/ccFileHelper"
-import { FileSelectionState, FileState } from "../../../model/files/files"
+import { FileSelectionState, FileState } from "../../../../model/files/files"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
-jest.mock("../../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
+jest.mock("../../../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
     metricDataSelector: jest.fn()
 }))
 
@@ -63,8 +63,8 @@ describe("loadFileService", () => {
     }
 
     function rebuildService() {
-        const loadFileStore = TestBed.inject(LoadFileStore)
-        codeChartaService = new LoadFileService(loadFileStore, errorDialogService)
+        const filesRepo = TestBed.inject(FilesRepo)
+        codeChartaService = new LoadFileService(filesRepo, errorDialogService)
     }
 
     describe("loadFiles", () => {

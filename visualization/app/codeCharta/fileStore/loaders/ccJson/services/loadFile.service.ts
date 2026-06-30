@@ -1,21 +1,21 @@
 import { Injectable, OnDestroy } from "@angular/core"
 import { tap } from "rxjs"
-import { clone } from "../../../util/clone"
+import { clone } from "../../../../util/clone"
 import { CCFileValidationResult } from "../util/fileValidator"
-import { FileState } from "../../../model/files/files"
-import { NameDataPair } from "../../../codeCharta.api.model"
-import { ErrorDialogService } from "../../../features/shared/components/errorDialog/errorDialog.service"
+import { FileState } from "../../../../model/files/files"
+import { NameDataPair } from "../../../../codeCharta.api.model"
+import { ErrorDialogService } from "../../../../features/shared/components/errorDialog/errorDialog.service"
 import { loadFilesValidationToErrorDialog } from "./loadFilesValidationToErrorDialog"
 import { enrichFileStatesAndRecentFilesWithValidationResults } from "../util/fileParser"
-import { fileRoot } from "../../../util/fileRoot"
-import { LoadFileStore } from "../stores/loadFile.store"
+import { fileRoot } from "../../../../util/fileRoot"
+import { FilesRepo } from "../../../repos/files.repo"
 
 export const NO_FILES_LOADED_ERROR_MESSAGE = "File(s) could not be loaded"
 export const FILES_ALREADY_LOADED_ERROR_MESSAGE = "File(s) are already loaded"
 
 @Injectable({ providedIn: "root" })
 export class LoadFileService implements OnDestroy {
-    referenceFileSubscription = this.loadFileStore.referenceFile$
+    referenceFileSubscription = this.filesRepo.referenceFile$
         .pipe(
             tap(newReferenceFile => {
                 if (newReferenceFile) {
@@ -26,7 +26,7 @@ export class LoadFileService implements OnDestroy {
         .subscribe()
 
     constructor(
-        private readonly loadFileStore: LoadFileStore,
+        private readonly filesRepo: FilesRepo,
         private readonly errorDialogService: ErrorDialogService
     ) {}
 
@@ -35,7 +35,7 @@ export class LoadFileService implements OnDestroy {
     }
 
     loadFiles(nameDataPairs: NameDataPair[]) {
-        const fileStates: FileState[] = clone(this.loadFileStore.getFiles())
+        const fileStates: FileState[] = clone(this.filesRepo.getFiles())
         const recentFiles: string[] = []
         const fileValidationResults: CCFileValidationResult[] = []
 
@@ -44,8 +44,8 @@ export class LoadFileService implements OnDestroy {
             recentFiles,
             nameDataPairs,
             fileValidationResults,
-            () => this.loadFileStore.getCurrentFilesAreSampleFiles(),
-            () => this.loadFileStore.setCurrentFilesAreSampleFiles(false)
+            () => this.filesRepo.getCurrentFilesAreSampleFiles(),
+            () => this.filesRepo.setCurrentFilesAreSampleFiles(false)
         )
 
         if (fileValidationResults.length > 0) {
@@ -56,11 +56,11 @@ export class LoadFileService implements OnDestroy {
             throw new Error(NO_FILES_LOADED_ERROR_MESSAGE)
         }
 
-        this.loadFileStore.setFiles(fileStates)
+        this.filesRepo.setFiles(fileStates)
 
         const recentFile = recentFiles[0]
-        const rootName = this.loadFileStore.getFiles().find(f => f.file.fileMeta.fileName === recentFile).file.map.name
-        this.loadFileStore.setStandardByNames(recentFiles)
+        const rootName = this.filesRepo.getFiles().find(f => f.file.fileMeta.fileName === recentFile).file.map.name
+        this.filesRepo.setStandardByNames(recentFiles)
         fileRoot.updateRoot(rootName)
 
         if (!hasAddedAtLeastOneFile) {

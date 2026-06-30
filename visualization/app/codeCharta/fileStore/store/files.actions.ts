@@ -1,6 +1,6 @@
 import { createAction, props } from "@ngrx/store"
-import { CCFile } from "../../../codeCharta.model"
-import { FileState } from "../../../model/files/files"
+import { CCFile } from "../../codeCharta.model"
+import { FileState } from "../../model/files/files"
 
 export const setFiles = createAction("SET_FILES", props<{ value: FileState[] }>())
 export const addFile = createAction("ADD_FILE", props<{ file: CCFile }>())

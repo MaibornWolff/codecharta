@@ -6,7 +6,7 @@ import { actionsRequiringRerender } from "../renderCodeMapEffect/actionsRequirin
 import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { CcState } from "../../../codeCharta.model"
 import { Store } from "@ngrx/store"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 
 @Injectable()
 export class SetLoadingIndicatorEffect {

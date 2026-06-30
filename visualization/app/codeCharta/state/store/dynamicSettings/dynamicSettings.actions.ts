@@ -1,4 +1,4 @@
-import { setStandard } from "../files/files.actions"
+import { setStandard } from "../../../fileStore/store/files.actions"
 import { setAreaMetric } from "./areaMetric/areaMetric.actions"
 import { setColorMetric } from "./colorMetric/colorMetric.actions"
 import { setColorMode } from "./colorMode/colorMode.actions"

@@ -7,7 +7,7 @@ import { UpdateFileSettingsEffect } from "./updateFileSettings.effect"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../mocks/dataMocks"
 import { FileSelectionState } from "../../../model/files/files"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 
 describe("UpdateFileSettingsEffect", () => {
     const modifiedDefaultState = {
