@@ -1,7 +1,7 @@
 ---
 name: repoint-metric-consumers-to-the-metricslens-facade
 issue:
-state: todo
+state: complete
 version: 2
 ---
 
@@ -64,10 +64,10 @@ that fronted **node-metric** data. Pure data-source swap, no move, no behavior c
 
 ## Steps
 
-- [ ] Complete Task 1: codeMap `getNodes()` → facade `getNodeMetricData()` snapshot (accumulatedData untouched) — behavioral commit, green
-- [ ] Complete Task 2: repoint metricsBar node-metric consumers (incl. `colorRangeSection`); delete `SelectedColorMetricDataStore` + `AttributeDescriptorsStore` (+services); KEEP `MetricDataStore` (edge)
-- [ ] Complete Task 3: repoint `inspectorMetricRows.selector.ts` node range + descriptors at the facade selectors
-- [ ] Complete Task 4: `npm test` (parity: metricsBar/inspector specs, `accumulatedData.selector.spec`, codeMap render spec), `npm run e2e`; render-pipeline snapshots **unchanged**; structural delete commit after green
+- [x] Complete Task 1: codeMap `getNodes()` → facade `getNodeMetricData()` snapshot (accumulatedData untouched) — behavioral commit, green
+- [x] Complete Task 2: repoint metricsBar node-metric consumers (incl. `colorRangeSection`); delete `SelectedColorMetricDataStore` + `AttributeDescriptorsStore` (+services); KEEP `MetricDataStore` (edge)
+- [x] Complete Task 3: repoint `inspectorMetricRows.selector.ts` node range + descriptors at the facade selectors
+- [x] Complete Task 4: `npm test` (parity: metricsBar/inspector specs, `accumulatedData.selector.spec`, codeMap render spec), `npm run e2e`; render-pipeline snapshots **unchanged**; structural delete commit after green
 
 ## Review Feedback Addressed
 
