@@ -1,7 +1,7 @@
 ---
 name: ccjson-2-0-ingestion-reader-and-validator
 issue:
-state: todo
+state: complete
 version: 2
 ---
 
@@ -97,12 +97,12 @@ Key shape facts (from the real files):
 
 ## Steps
 
-- [ ] Complete Task 1: `"2.0"` in `APIVersions`, widen `NameDataPair.content` (reuse `CcJson2`), `detectApiVersionMajor`
-- [ ] Complete Task 2: vendor `ccJson2Schema.json` + drift-guard spec
-- [ ] Complete Task 3: branch `fileValidator.ts` for 2.0 (schema + id-uniqueness); 1.5 untouched
-- [ ] Complete Task 4: `mapCcJson2ToCCFile` + wire detection into `ccFileHelper`/`urlExtractor` (+ 2.0 projectName) and `getCCFile`
-- [ ] Complete Task 5: 2.0 fixture/mock, unit specs, parity check, **e2e 2.0 render spec**, 1.5 specs green
-- [ ] Verify: `npm test` (unit), `npm run e2e` (2.0 upload renders), `npx tsc --noEmit` / `npm run build`
+- [x] Complete Task 1: `"2.0"` in `APIVersions`, widen `NameDataPair.content` (reuse `CcJson2`), `detectApiVersionMajor`
+- [x] Complete Task 2: vendor `ccJson2Schema.json` + drift-guard spec
+- [x] Complete Task 3: branch `fileValidator.ts` for 2.0 (schema + id-uniqueness); 1.5 untouched
+- [x] Complete Task 4: `mapCcJson2ToCCFile` + wire detection into `ccFileHelper`/`urlExtractor` (+ 2.0 projectName) and `getCCFile`
+- [x] Complete Task 5: 2.0 fixture/mock, unit specs, parity check, **e2e 2.0 render spec**, 1.5 specs green
+- [x] Verify: `npm test` (unit), `npm run e2e` (2.0 upload renders), `npx tsc --noEmit` / `npm run build`
 
 ## Review Feedback Addressed
 
