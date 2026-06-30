@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CodeCharta 2.0 — Implementation Map (current → target)</title>
+<style>
+  :root{--lens:#2563eb;--render:#059669;--page:#7c3aed;--inter:#d97706;--feat:#4f46e5;--infra:#64748b;--ink:#1f2430;--muted:#5b6472;--line:#e2e8f0}
+  body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fbfcfe;margin:0;padding:0 20px 70px}
+  .wrap{max-width:1180px;margin:0 auto}
+  header{padding:34px 0 10px;border-bottom:1px solid var(--line);margin-bottom:22px}
+  h1{font-size:26px;margin:0 0 6px}
+  h2{font-size:20px;margin:40px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .lead{font-size:17px;color:var(--muted);margin:0}
+  .pill{display:inline-block;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px;margin-top:10px}
+  .legend{display:flex;gap:15px;flex-wrap:wrap;font-size:13px;margin:14px 0 0}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  pre{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:16px 18px;overflow:auto;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  pre .c{color:#7c8aa0}
+  pre .k{color:#7dd3fc}
+  pre .g{color:#86efac}
+  pre .p{color:#c4b5fd}
+  pre .o{color:#fdba74}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  th{background:#f8fafc;position:sticky}
+  code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:12px}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:1px 7px;border-radius:20px;color:#fff;white-space:nowrap}
+  .t-lens{background:var(--lens)}.t-render{background:var(--render)}.t-page{background:var(--page)}.t-inter{background:var(--inter)}.t-infra{background:var(--infra)}.t-feat{background:var(--feat)}
+  .callout{border-left:5px solid var(--inter);background:#fff8ef;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:14px}
+  .callout b{display:block;margin-bottom:3px}
+  .note{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>CodeCharta 2.0 — Implementation Map</h1>
+  <p class="lead">The target architecture populated with the <b>current</b> visualization code: a full target folder tree, plus a current → target mapping for every one of the 18 features and the ngrx state.</p>
+  <span class="pill">DRAFT · grounded in a live repo inventory · not final</span>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--lens)"></i> Lens</span>
+    <span><i class="dot" style="background:var(--feat)"></i> Feature (in a lens)</span>
+    <span><i class="dot" style="background:var(--render)"></i> Renderer engine</span>
+    <span><i class="dot" style="background:var(--page)"></i> Page</span>
+    <span><i class="dot" style="background:var(--inter)"></i> Interaction / view / appearance state</span>
+    <span><i class="dot" style="background:var(--infra)"></i> Shell / FileStore / Components</span>
+  </div>
+</header>
+
+<h2>1 · Target folder structure</h2>
+<p>The full tree we want under <code>visualization/app/codeCharta/</code>. Each feature keeps the project's current <code>facade · components · services</code> shape; lenses add <code>repos</code> + <code>store</code>; renderers split into a dumb <code>engine</code> and a wiring <code>page</code>.</p>
+<pre><span class="k">app/codeCharta/</span>
+├── app.config.ts · app.component.ts            <span class="c"># bootstrap + Workbench host</span>
+
+├── <span class="k">fileStore/</span>                                  <span class="c"># raw {meta,files,lenses} + load pipeline (was: loadFile, files slice)</span>
+│   ├── fileStore.facade.ts
+│   ├── loaders/ccJson/ { upload.service · ccJsonParser · ccJsonValidator }
+│   ├── repos/ { files.repo.ts }                 <span class="c"># FileState[] + visible/merged selection</span>
+│   └── store/ { files.store.ts }
+
+├── <span class="k">lenses/</span>
+│   ├── <span class="k">structure/</span>                            <span class="c"># the file tree</span>
+│   │   ├── <span class="p">structureLens.facade.ts</span>           <span class="c"># public API: tree() · nodeById() · pathOf()</span>
+│   │   ├── features/
+│   │   │   ├── <span class="g">explorer/</span>      { facade · models · components/ · services/ }   <span class="c"># was sidebarExplorer</span>
+│   │   │   ├── <span class="g">search/</span>        { … }
+│   │   │   ├── <span class="g">fileExtensionBar/</span> { … }
+│   │   │   └── <span class="g">contextMenu/</span>   { … }                              <span class="c"># was nodeContextMenu</span>
+│   │   ├── repos/ { tree.repo.ts · nodeId.repo.ts }
+│   │   └── store/ { structureLens.store.ts }
+│   ├── <span class="k">metrics/</span>                              <span class="c"># numbers by node id</span>
+│   │   ├── <span class="p">metricsLens.facade.ts</span>             <span class="c"># rangeOf() · valueOf() · descriptors()</span>
+│   │   ├── features/
+│   │   │   ├── <span class="g">legend/</span>        { facade · models · components/ · services/ }
+│   │   │   └── <span class="g">colorSettings/</span> { … }
+│   │   ├── repos/ { attributes.repo.ts · descriptors.repo.ts }
+│   │   └── store/ { metricsLens.store.ts }
+│   ├── <span class="k">dependency/</span>                           <span class="c"># edges</span>
+│   │   ├── <span class="p">dependencyLens.facade.ts</span>          <span class="c"># edgesOf() · edgeMetrics()</span>
+│   │   ├── features/ { <span class="g">edgeSettings/</span> { … } }
+│   │   ├── repos/ { edges.repo.ts }
+│   │   └── store/ { dependencyLens.store.ts }
+│   └── <span class="k">terms/</span>  <span class="c"># PLANNED — needs a new analysis output (WordCloud)</span>
+
+├── <span class="k">renderers/</span>
+│   └── codeMap/
+│       ├── <span class="g">engine/</span>                            <span class="c"># DUMB — Three.js only, no cc.json</span>
+│       │   ├── codeMap.engine.ts                <span class="c"># load(model)·highlight(id)·settings() ▸ onSelect/onHover</span>
+│       │   ├── three/ { scene · renderer · camera · controls · viewer · stats }
+│       │   ├── geometry/ { codeMapMesh · codeMapBuilding · geometryGenerator · shaders }
+│       │   └── viewCube/                         <span class="c"># camera-orientation sub-engine</span>
+│       ├── <span class="p">page/</span>                              <span class="c"># THE WIRE</span>
+│       │   ├── codeMap.page.ts                  <span class="c"># lens facades + viewState ▸ render-model ▸ engine</span>
+│       │   ├── renderModel/ { layout(squarified·street) · nodeDecorator · toRenderModel.ts }
+│       │   ├── interactions/ { mouseEvents · tooltip · arrows · idToBuilding }
+│       │   └── ui/                              <span class="c"># renderer-scoped panels mounted here (Legend lives in metrics lens)</span>
+│       └── <span class="o">viewState/</span>                         <span class="c"># PER-RENDERER state</span>
+│           └── { area·height·color·edge·distribution metric · colorRange · colorMode · margin · layout · scaling · camera }
+│   <span class="c"># graph/ · wordCloud/ · report/  — PLANNED</span>
+
+├── <span class="o">interaction/</span>                              <span class="c"># SHARED state (survives renderer switch)</span>
+│   └── { selection · focusedNode · hovered · contextMenu · search · filters(blacklist) }
+├── <span class="o">appearance/</span>                               <span class="c"># cross-renderer visual state</span>
+│   └── { mapColors · labels/* · theme · edges · filters · axisInversion · markedPackages }
+
+├── <span class="k">shell/</span>                                    <span class="c"># app skeleton + features owned by no single lens</span>
+│   ├── layout/ { workbench · sidebars · regions }
+│   ├── navBar/ · bottomBar/ · viewCubeToolbox/
+│   └── features/ { metricsBar · inspector · scenarios · 3dPrint · changelog · globalSettings }
+
+├── <span class="infra">components/</span>                               <span class="c"># shared dumb UI primitives (was features/shared)</span>
+│   └── { modal · popover · tooltip · dialog · colorPicker · spinner · errorDialog }
+├── <span class="k">model/</span>                                    <span class="c"># cc.json 2.0 domain types (meta·files·lenses · NodeId)</span>
+└── <span class="k">util/</span>                                     <span class="c"># pure helpers</span>
+</pre>
+
+<h2>2 · Current → target — the 18 features</h2>
+<table>
+  <tr><th>Current</th><th>Target layer</th><th>Target path</th><th>Note</th></tr>
+  <tr><td><code>features/codeMap</code> (threeViewer, rendering)</td><td><span class="tag t-render">renderer engine</span></td><td><code>renderers/codeMap/engine</code></td><td>Dumb Three.js: viewer/scene/renderer/camera/controls + geometry/mesh/shaders.</td></tr>
+  <tr><td><code>features/codeMap</code> (renderService, mouseEvent, tooltip, arrow, idToBuilding)</td><td><span class="tag t-page">page</span></td><td><code>renderers/codeMap/page</code></td><td>The wire: layout + decorate → render-model; interactions route events to interaction state.</td></tr>
+  <tr><td><code>features/viewCube</code></td><td><span class="tag t-render">renderer engine</span></td><td><code>renderers/codeMap/engine/viewCube</code></td><td>Camera-orientation widget; resolves the current codeMap↔viewCube cycle by living inside the engine.</td></tr>
+  <tr><td><code>features/legend</code></td><td><span class="tag t-feat">lens feature</span></td><td><code>lenses/metrics/features/legend</code></td><td>Pure metrics feature; its 9 passthrough <code>*Service</code>/<code>*Store</code> collapse onto the metrics repo.</td></tr>
+  <tr><td><code>features/fileExtensionBar</code></td><td><span class="tag t-feat">lens feature</span></td><td><code>lenses/structure/features/fileExtensionBar</code></td><td>File-type distribution + extension filtering over the tree.</td></tr>
+  <tr><td><code>features/sidebarExplorer</code></td><td><span class="tag t-feat">lens feature</span></td><td><code>lenses/structure/features/explorer</code></td><td>Tree view; writes search/marks to interaction state.</td></tr>
+  <tr><td><code>features/nodeContextMenu</code></td><td><span class="tag t-feat">lens feature</span></td><td><code>lenses/structure/features/contextMenu</code></td><td>Focus / mark / exclude — structure ops; writes focus to interaction.</td></tr>
+  <tr><td><code>features/metricsBar</code></td><td><span class="tag t-infra">shell (cross-lens)</span></td><td><code>shell/features/metricsBar</code></td><td>Composes metrics + dependency + appearance facades. ~28 stores → split across those facades. Biggest dedup win.</td></tr>
+  <tr><td><code>features/sidebarInspector</code></td><td><span class="tag t-infra">shell (cross-lens)</span></td><td><code>shell/features/inspector</code></td><td>Shows a node's metrics + edges + structure → reads 3 lens facades + interaction (selectedNode).</td></tr>
+  <tr><td><code>features/labelSettings</code></td><td><span class="tag t-inter">appearance + page</span></td><td><code>appearance/labels</code> + <code>renderers/codeMap/page</code></td><td>Label <i>state</i> → appearance; label <i>rendering</i> (creation/collision/connectors) → the codeMap page.</td></tr>
+  <tr><td><code>features/globalSettings</code></td><td><span class="tag t-infra">shell → appearance</span></td><td><code>shell/features/globalSettings</code></td><td>Background/camera/layout toggles; writes appearance + viewState.</td></tr>
+  <tr><td><code>features/scenarios</code></td><td><span class="tag t-infra">shell</span></td><td><code>shell/features/scenarios</code></td><td>Save/load snapshots of all state (IndexedDB).</td></tr>
+  <tr><td><code>features/3dPrint</code></td><td><span class="tag t-infra">shell</span></td><td><code>shell/features/3dPrint</code></td><td>Export dialog (STL/3MF).</td></tr>
+  <tr><td><code>features/changelog</code></td><td><span class="tag t-infra">shell</span></td><td><code>shell/features/changelog</code></td><td>Version modal.</td></tr>
+  <tr><td><code>features/navBar</code></td><td><span class="tag t-infra">shell</span></td><td><code>shell/navBar</code></td><td>Header + upload entry → FileStore pipeline.</td></tr>
+  <tr><td><code>features/bottomBar</code></td><td><span class="tag t-infra">shell</span></td><td><code>shell/bottomBar</code></td><td>Status bar (hovered path).</td></tr>
+  <tr><td><code>features/viewCubeToolbox</code></td><td><span class="tag t-infra">shell</span></td><td><code>shell/viewCubeToolbox</code></td><td>Presentation mode + cube toggle.</td></tr>
+  <tr><td><code>features/loadFile</code></td><td><span class="tag t-infra">FileStore</span></td><td><code>fileStore/loaders/ccJson</code></td><td>Upload/parse/validate; the only place the cc.json wire DTO is allowed.</td></tr>
+  <tr><td><code>features/shared</code></td><td><span class="tag t-infra">components</span></td><td><code>components/</code></td><td>Dumb primitives: modal, popover, spinner, errorDialog, colorPicker.</td></tr>
+</table>
+
+<h2>3 · Current → target — the ngrx state</h2>
+<table>
+  <tr><th>Current slices</th><th>Target layer</th><th>Target path</th></tr>
+  <tr><td><code>dynamicSettings.focusedNodePath · searchPattern</code> · <code>appStatus.{hoveredNodeId, selectedBuildingId, rightClickedNodeData}</code> · <code>fileSettings.blacklist</code></td><td><span class="tag t-inter">interaction</span></td><td><code>interaction/{focusedNode,search,hovered,selection,contextMenu,filters}</code></td></tr>
+  <tr><td><code>dynamicSettings.{area,height,color,edge,distribution}Metric · colorMode · colorRange · margin</code> · <code>appSettings.{layoutAlgorithm, scaling, isHeightAndColorMetricLinked}</code></td><td><span class="tag t-inter">view state</span></td><td><code>renderers/codeMap/viewState/*</code></td></tr>
+  <tr><td><code>appSettings.{mapColors, colorLabels, label*, enableFloorLabels, isWhiteBackground, showEdges*, isEdgeMetricVisible, amountOfEdgePreviews, edgeHeight, showOnlyBuildingsWithEdges, hideFlatBuildings, invertArea, invertHeight}</code></td><td><span class="tag t-inter">appearance</span></td><td><code>appearance/{mapColors,labels,theme,edges,filters,axisInversion}</code></td></tr>
+  <tr><td><code>files</code> · <code>appStatus.currentFilesAreSampleFiles</code></td><td><span class="tag t-infra">FileStore</span></td><td><code>fileStore/{files,fileProvenance}</code></td></tr>
+  <tr><td><code>fileSettings.attributeTypes · attributeDescriptors</code></td><td><span class="tag t-lens">→ metrics / dependency lens</span></td><td><code>lenses/{metrics,dependency}/store</code> (split node vs edge)</td></tr>
+  <tr><td><code>fileSettings.edges</code></td><td><span class="tag t-lens">→ dependency lens</span></td><td><code>lenses/dependency/store</code></td></tr>
+  <tr><td><code>fileSettings.markedPackages</code></td><td><span class="tag t-inter">appearance</span></td><td><code>appearance/markedPackages</code></td></tr>
+  <tr><td><code>appSettings.{isLoadingFile, isLoadingMap, isPresentationMode, enableClipboard, enableExperimentalFeatures, resetCameraIfNewFileIsLoaded, sortingOrderAscending, maxTreeMapFiles}</code></td><td><span class="tag t-infra">shell</span></td><td><code>shell/{loading,uiChrome,featureFlags,…}</code></td></tr>
+</table>
+
+<div class="callout">
+  <b>Judgment calls baked in (flag if you disagree)</b>
+  <b>1.</b> Single-lens panels go <i>inside</i> the lens (legend→metrics; explorer/fileExt/contextMenu→structure). <b>2.</b> Genuinely cross-lens panels (<code>metricsBar</code>, <code>inspector</code>) stay in the <b>shell</b> and compose multiple lens facades — forcing them into one lens would re-create coupling. <b>3.</b> <code>viewCube</code> folds into the codeMap <b>engine</b>, which dissolves the grandfathered codeMap↔viewCube cycle. <b>4.</b> <code>labelSettings</code> splits: state→appearance, rendering→page. <b>5.</b> <code>attributeTypes/Descriptors</code> split node→metrics, edge→dependency.
+</div>
+
+<h2>4 · The boundaries that pin this</h2>
+<p>Encoded as dependency-cruiser rules in the companion file <code>Ideas/dependency-cruiser.2.0.cjs</code> (drop-in replacement for <code>visualization/.dependency-cruiser.js</code> once the folders exist). The new rules, in plain words:</p>
+<ul style="font-size:14px">
+  <li><b>Renderer engine stays dumb</b> — <code>renderers/*/engine/</code> may not import lenses, pages, shell, interaction, appearance, or the cc.json model.</li>
+  <li><b>Lenses don't depend on UI</b> — <code>lenses/</code> may not import <code>renderers/</code> or <code>shell/</code>.</li>
+  <li><b>Cross-lens only via the lens facade</b> — a lens may not reach another lens's internals; external code uses <code>&lt;lens&gt;.facade.ts</code> only.</li>
+  <li><b>Only the page composes</b> — pages import lens facades + the engine's public API; the engine never imports a page.</li>
+  <li><b>components → services → repos</b> — feature components may not import repos/stores directly (the project already enforces the analogous rule today).</li>
+  <li><b>Only state-holders import @ngrx/store</b> — <code>lenses/*/repos|store</code>, <code>interaction/</code>, <code>appearance/</code>, <code>renderers/*/viewState/</code>, <code>fileStore/</code>.</li>
+  <li><b>FileStore is the source</b> — it imports nothing upward; the wire DTO (<code>codeCharta.api.model</code>) is allowed only inside <code>fileStore/</code>.</li>
+</ul>
+
+<p class="note">Companion artifacts: <code>image.png</code> (original sketch), <code>codecharta-2.0-structure.html</code>, <code>…-goal-architecture.html</code>, <code>…-lens-anatomy.html</code>, <code>…-architecture.mermaid.md</code>, and the rules in <code>dependency-cruiser.2.0.cjs</code>. Not final — for team discussion.</p>
+</div>
+</body>
+</html>

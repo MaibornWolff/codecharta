@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CodeCharta 2.0 — Anatomy of a Lens</title>
+<style>
+  body{font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1f2430;background:#fbfcfe;margin:0;padding:18px}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-size:23px;margin:4px 0 2px}
+  p.lead{color:#5b6472;margin:0 0 6px}
+  .pill{display:inline-block;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px;margin-bottom:8px}
+  svg{width:100%;height:auto;display:block;border:1px solid #e2e8f0;border-radius:12px;background:#fff;margin-top:8px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin:8px 0}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+  th,td{border:1px solid #e2e8f0;padding:7px 10px;text-align:left}
+  th{background:#f8fafc}
+  code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .note{color:#5b6472;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Anatomy of a Lens — features inside</h1>
+  <p class="lead">A lens is a module: <b>Lens Facade</b> + several <b>Features</b> + lens-level <b>Repos</b> + a <b>Store</b>. Each feature = <b>facade · models · components · services</b>. Components get data from services; services hold logic and read the repo.</p>
+  <span class="pill">DRAFT · confirm this matches your model</span>
+  <div class="legend">
+    <span><i class="dot" style="background:#4f46e5"></i> Lens / Feature module</span>
+    <span><i class="dot" style="background:#059669"></i> components (UI)</span>
+    <span><i class="dot" style="background:#d97706"></i> services (logic)</span>
+    <span><i class="dot" style="background:#2563eb"></i> repos (data access)</span>
+    <span><i class="dot" style="background:#64748b"></i> store / file store / facade</span>
+  </div>
+
+<svg viewBox="0 0 1040 880" role="img" aria-label="Anatomy of a lens">
+  <defs>
+    <marker id="g"  markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#059669"/></marker>
+    <marker id="a"  markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#d97706"/></marker>
+    <marker id="b"  markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#2563eb"/></marker>
+    <marker id="s"  markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#64748b"/></marker>
+    <style>
+      .t{font:700 13px -apple-system,Segoe UI,Roboto,sans-serif}
+      .s{font:11px -apple-system,Segoe UI,Roboto,sans-serif;fill:#1f2430}
+      .m{font:10.5px ui-monospace,Menlo,Consolas,monospace;fill:#5b6472}
+      .ar{font:10.5px -apple-system,Segoe UI,Roboto,sans-serif}
+      .cap{font:700 12px -apple-system,Segoe UI,Roboto,sans-serif}
+    </style>
+  </defs>
+
+  <!-- consumer (page/renderer) above the lens -->
+  <rect x="360" y="20" width="320" height="44" rx="9" fill="#f1f5f9" stroke="#64748b"/>
+  <text class="t" x="520" y="40" text-anchor="middle" fill="#334155">Page → drives Renderer (Map)</text>
+  <text class="m" x="520" y="56" text-anchor="middle">consumes the lens facade for data</text>
+  <line x1="520" y1="110" x2="520" y2="66" stroke="#64748b" stroke-width="1.6" marker-end="url(#s)"/>
+  <text class="ar" x="528" y="92" fill="#64748b">▲ lens facade = public API</text>
+
+  <!-- ===================== LENS CONTAINER ===================== -->
+  <rect x="24" y="110" width="992" height="600" rx="14" fill="#fff" stroke="#4f46e5" stroke-width="2"/>
+  <rect x="24" y="110" width="240" height="26" rx="13" fill="#4f46e5"/>
+  <text class="t" x="40" y="128" fill="#fff">Metrics Lens — a module</text>
+
+  <!-- lens facade -->
+  <rect x="44" y="146" width="952" height="40" rx="8" fill="#eef2ff" stroke="#4f46e5"/>
+  <text class="t" x="520" y="165" text-anchor="middle" fill="#3730a3">Lens Facade</text>
+  <text class="m" x="520" y="179" text-anchor="middle">public API · rangeOf(metric) · valueOf(id,m) · descriptors() · exposes feature panels</text>
+
+  <!-- ===================== FEATURE A: Legend ===================== -->
+  <rect x="44" y="208" width="460" height="300" rx="11" fill="#fbfbff" stroke="#4f46e5" stroke-dasharray="3 3"/>
+  <text class="cap" x="60" y="230" fill="#4f46e5">Feature · Legend</text>
+  <!-- facade + models -->
+  <rect x="60" y="240" width="210" height="34" rx="7" fill="#fff" stroke="#94a3b8"/><text class="s" x="165" y="261" text-anchor="middle">facade <tspan class="m">(feature API)</tspan></text>
+  <rect x="278" y="240" width="210" height="34" rx="7" fill="#fff" stroke="#94a3b8"/><text class="s" x="383" y="261" text-anchor="middle">models <tspan class="m">(types/VMs)</tspan></text>
+  <!-- components -->
+  <rect x="60" y="288" width="428" height="56" rx="8" fill="#effaf4" stroke="#059669"/>
+  <text class="t" x="274" y="311" text-anchor="middle" fill="#065f46">components (UI)</text>
+  <text class="m" x="274" y="328" text-anchor="middle">LegendColorRow · LegendMetricRow … · use shared Components</text>
+  <!-- services -->
+  <rect x="60" y="406" width="428" height="56" rx="8" fill="#fff8ef" stroke="#d97706"/>
+  <text class="t" x="274" y="429" text-anchor="middle" fill="#92400e">services (logic)</text>
+  <text class="m" x="274" y="446" text-anchor="middle">build view-model · pick range for colorMetric · read repo</text>
+  <!-- data arrow services -> components -->
+  <line x1="120" y1="406" x2="120" y2="346" stroke="#059669" stroke-width="2" marker-end="url(#g)"/>
+  <text class="ar" x="128" y="380" fill="#059669">data ▲ (components take data from services)</text>
+
+  <!-- ===================== FEATURE B: MetricsBar ===================== -->
+  <rect x="536" y="208" width="460" height="300" rx="11" fill="#fbfbff" stroke="#4f46e5" stroke-dasharray="3 3"/>
+  <text class="cap" x="552" y="230" fill="#4f46e5">Feature · MetricsBar</text>
+  <rect x="552" y="240" width="210" height="34" rx="7" fill="#fff" stroke="#94a3b8"/><text class="s" x="657" y="261" text-anchor="middle">facade</text>
+  <rect x="770" y="240" width="210" height="34" rx="7" fill="#fff" stroke="#94a3b8"/><text class="s" x="875" y="261" text-anchor="middle">models</text>
+  <rect x="552" y="288" width="428" height="56" rx="8" fill="#effaf4" stroke="#059669"/>
+  <text class="t" x="766" y="311" text-anchor="middle" fill="#065f46">components (UI)</text>
+  <text class="m" x="766" y="328" text-anchor="middle">metric pickers · color/scaling popovers</text>
+  <rect x="552" y="406" width="428" height="56" rx="8" fill="#fff8ef" stroke="#d97706"/>
+  <text class="t" x="766" y="429" text-anchor="middle" fill="#92400e">services (logic)</text>
+  <text class="m" x="766" y="446" text-anchor="middle">list metrics from repo · set channel mapping</text>
+  <line x1="612" y1="406" x2="612" y2="346" stroke="#059669" stroke-width="2" marker-end="url(#g)"/>
+  <text class="ar" x="620" y="380" fill="#059669">data ▲</text>
+
+  <!-- ===================== REPOS (lens-level) ===================== -->
+  <rect x="44" y="536" width="952" height="48" rx="9" fill="#eaf1fe" stroke="#2563eb"/>
+  <text class="t" x="520" y="557" text-anchor="middle" fill="#1e3a8a">Repos — data access (lens-level, shared by features)</text>
+  <text class="m" x="520" y="573" text-anchor="middle">attributes by node id · min/max · descriptors</text>
+  <!-- services -> repos (both features) -->
+  <line x1="200" y1="462" x2="200" y2="534" stroke="#d97706" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="692" y1="462" x2="692" y2="534" stroke="#d97706" stroke-width="2" marker-end="url(#a)"/>
+  <text class="ar" x="208" y="500" fill="#d97706">reads + logic ▼ (services talk to repo)</text>
+
+  <!-- ===================== STORE ===================== -->
+  <rect x="420" y="606" width="200" height="78" rx="8" fill="#e2e8f0" stroke="#64748b" stroke-width="1.6"/>
+  <ellipse cx="520" cy="606" rx="100" ry="9" fill="#eef2f7" stroke="#64748b"/>
+  <text class="t" x="520" y="640" text-anchor="middle" fill="#334155">Store</text>
+  <text class="m" x="520" y="657" text-anchor="middle">projected + merged for visible files</text>
+  <!-- repos -> store -->
+  <line x1="520" y1="584" x2="520" y2="600" stroke="#2563eb" stroke-width="2" marker-end="url(#b)"/>
+  <text class="ar" x="528" y="596" fill="#2563eb">reads ▼</text>
+
+  <!-- ===================== FILESTORE (outside) ===================== -->
+  <rect x="430" y="760" width="180" height="78" rx="8" fill="#e2e8f0" stroke="#64748b" stroke-width="1.6"/>
+  <ellipse cx="520" cy="760" rx="90" ry="9" fill="#eef2f7" stroke="#64748b"/>
+  <text class="t" x="520" y="792" text-anchor="middle" fill="#334155">FileStore</text>
+  <text class="m" x="520" y="809" text-anchor="middle">raw meta + files + lenses</text>
+  <line x1="520" y1="760" x2="520" y2="690" stroke="#64748b" stroke-width="1.8" marker-end="url(#s)"/>
+  <text class="ar" x="528" y="726" fill="#64748b">feeds ▲ (project + merge)</text>
+</svg>
+
+  <h3 style="margin:18px 0 6px">The vertical pipeline, one line</h3>
+  <p><code>FileStore → Store → Repos → service (logic) → component (UI)</code> &nbsp;·&nbsp; the <b>Lens Facade</b> is the outward boundary the page/renderer calls.</p>
+
+  <h3 style="margin:18px 0 6px">Mapped to real code (Metrics lens)</h3>
+  <table>
+    <tr><th>Layer</th><th>Job</th><th>Example today</th></tr>
+    <tr><td>Lens Facade</td><td>public API of the lens</td><td>(new) <code>MetricsLens</code> — what pages/renderers call</td></tr>
+    <tr><td>Feature · facade</td><td>the feature's public surface</td><td>(new) per-feature entry, e.g. <code>legend/facade.ts</code></td></tr>
+    <tr><td>Feature · components</td><td>UI; take data from services</td><td><code>LegendColorRowComponent</code>, <code>LegendMetricRowComponent</code></td></tr>
+    <tr><td>Feature · services</td><td>logic; read repo, build view-model</td><td>the <code>Legend*Service</code> classes (now with real logic, not passthrough)</td></tr>
+    <tr><td>Feature · models</td><td>types / view-models</td><td><code>MetricMinMax</code>, descriptor types…</td></tr>
+    <tr><td>Repos (lens-level)</td><td>data access only</td><td>(new) <code>attributes.repo</code>, <code>min/max</code> — replaces the metric-data selectors</td></tr>
+    <tr><td>Store</td><td>projected + merged lens data</td><td>(new) metrics slice of the merged map</td></tr>
+  </table>
+
+  <p class="note"><b>Two "components" to keep apart:</b> a <b>feature's components</b> (its own UI, e.g. LegendColorRow) live inside the feature; the <b>shared Components</b> band (Modal, PopOver, Tooltip primitives) are reusable dumbs that those feature components <i>use</i>. <b>Open question:</b> repo at the lens level (drawn here) vs one repo per feature — tell me which you want and I'll adjust.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CodeCharta 2.0 — Lenses × Renderers (draft)</title>
+<style>
+  :root{
+    --lens:#2563eb;        /* data / lenses        */
+    --render:#059669;      /* output / renderers   */
+    --inter:#d97706;       /* shared interaction   */
+    --infra:#64748b;       /* file store / shell   */
+    --ink:#1f2430; --muted:#5b6472; --line:#e2e8f0; --bg:#ffffff;
+    --code-bg:#f6f8fa;
+  }
+  *{box-sizing:border-box}
+  body{font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg);margin:0;padding:0 20px 80px}
+  .wrap{max-width:1040px;margin:0 auto}
+  header{padding:40px 0 8px;border-bottom:1px solid var(--line);margin-bottom:28px}
+  h1{font-size:30px;margin:0 0 6px}
+  h2{font-size:22px;margin:46px 0 14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  h3{font-size:17px;margin:24px 0 8px}
+  p{margin:10px 0}
+  .lead{font-size:18px;color:var(--muted)}
+  .tag{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    padding:2px 8px;border-radius:20px;color:#fff;vertical-align:middle}
+  .t-lens{background:var(--lens)} .t-render{background:var(--render)}
+  .t-inter{background:var(--inter)} .t-infra{background:var(--infra)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 0;font-size:14px}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .dot{width:13px;height:13px;border-radius:3px;display:inline-block}
+
+  /* vertical pipeline */
+  .pipe{margin:18px 0}
+  .band{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff}
+  .band .bt{font-weight:700;margin-bottom:10px;font-size:14px;letter-spacing:.02em}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .chip{flex:1 1 0;min-width:120px;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;text-align:center}
+  .chip small{display:block;color:var(--muted);font-size:12px;margin-top:3px;font-weight:400}
+  .chip.active{border-color:var(--render);box-shadow:0 0 0 3px rgba(5,150,105,.12)}
+  .chip.planned{opacity:.55;border-style:dashed}
+  .arrow{ text-align:center;color:var(--infra);font-size:22px;line-height:1;margin:6px 0}
+  .b-render{border-color:var(--render)} .b-render .bt{color:var(--render)}
+  .b-inter{border-color:var(--inter);background:#fffaf2} .b-inter .bt{color:var(--inter)}
+  .b-lens{border-color:var(--lens)} .b-lens .bt{color:var(--lens)}
+  .b-infra{border-color:var(--infra)} .b-infra .bt{color:var(--infra)}
+  .cyl{font-weight:600}
+  /* lens internal anatomy */
+  .lensbox{border:1.5px solid var(--lens);border-radius:10px;overflow:hidden;flex:1 1 0;min-width:150px}
+  .lensbox .lp{padding:7px 10px;font-size:13px;text-align:center;border-bottom:1px solid #dbe4f3}
+  .lensbox .lp.facade{background:#eaf1fe;font-weight:700;color:var(--lens)}
+  .lensbox .lp.repos{background:#f5f8ff}
+  .lensbox .lp.store{background:#fff;color:var(--muted)}
+  .lensbox .lp:last-child{border-bottom:none}
+
+  /* axis cards */
+  .axes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+  .axis{border:1px solid var(--line);border-top:5px solid;border-radius:10px;padding:14px}
+  .axis.a-lens{border-top-color:var(--lens)} .axis.a-render{border-top-color:var(--render)} .axis.a-inter{border-top-color:var(--inter)}
+  .axis h3{margin-top:0} .axis ul{margin:8px 0 0;padding-left:18px;font-size:14px}
+  .axis li{margin:4px 0}
+  @media(max-width:820px){.axes{grid-template-columns:1fr}}
+
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+  th{background:#f8fafc}
+  td.l{text-align:left;font-weight:600}
+  .yes{color:var(--render);font-weight:700}
+  .pri{color:var(--render);font-weight:700}
+  .gap{color:var(--inter);font-weight:700}
+  .no{color:#cbd2dc}
+
+  pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow:auto;
+    font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin:10px 0}
+  .cmt{color:#6a737d}
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:820px){.ba{grid-template-columns:1fr}}
+  .ba h3{margin:0 0 4px}
+
+  .callout{border-left:5px solid;border-radius:8px;padding:12px 16px;margin:16px 0;background:#fafbfc}
+  .callout.lens{border-color:var(--lens);background:#f4f8ff}
+  .callout.inter{border-color:var(--inter);background:#fff8ef}
+  .callout.gap{border-color:#dc2626;background:#fef5f5}
+  .callout b{display:block;margin-bottom:3px}
+
+  ol.steps{counter-reset:s;list-style:none;padding-left:0}
+  ol.steps li{position:relative;padding:8px 0 8px 42px;border-bottom:1px dashed var(--line)}
+  ol.steps li:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:8px;width:28px;height:28px;
+    background:var(--inter);color:#fff;border-radius:50%;text-align:center;line-height:28px;font-weight:700;font-size:14px}
+  ol.steps code{background:var(--code-bg);padding:1px 5px;border-radius:4px}
+
+  .road{display:flex;gap:0;flex-wrap:wrap;margin-top:10px}
+  .step{flex:1 1 0;min-width:200px;border:1px solid var(--line);border-left:5px solid var(--render);border-radius:8px;padding:12px 14px;margin:6px}
+  .step .n{font-size:12px;font-weight:700;color:var(--render);letter-spacing:.05em}
+  .step.blocked{border-left-color:var(--inter)}
+  .step.blocked .n{color:var(--inter)}
+  .q{font-weight:600}
+  footer{margin-top:50px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+  .pill{display:inline-block;background:#fef3c7;color:#92400e;font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>CodeCharta 2.0 — <span style="color:var(--lens)">Lenses</span> × <span style="color:var(--render)">Renderers</span></h1>
+  <p class="lead">One mental model: the app is a small set of <b>data lenses</b> (signals from cc.json), shown through interchangeable <b>renderers</b>, glued by a thin layer of <b>shared interaction state</b> — all keyed by the stable node <code>id</code>.</p>
+  <span class="pill">DRAFT · not final · for discussion</span>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--lens)"></i> Data — lenses</span>
+    <span><i class="dot" style="background:var(--render)"></i> Output — renderers</span>
+    <span><i class="dot" style="background:var(--inter)"></i> Interaction — shared view-state</span>
+    <span><i class="dot" style="background:var(--infra)"></i> Infra — file store / shell</span>
+  </div>
+</header>
+
+<h2>1 · The big picture</h2>
+<p>Read it bottom-up: a file is uploaded once into a raw <b>FileStore</b>; each <b>lens</b> is a module that projects its slice of that data and exposes it through one facade (and contains its own features); a <b>page</b> composes the lens facades it needs into a render-model and drives a <b>dumb renderer</b> in the Workbench; a <b>shared interaction</b> layer carries what must survive a renderer switch (selection, focused node).</p>
+
+<div class="pipe">
+  <div class="band b-render">
+    <div class="bt">▟ LAYOUT SHELL — renderers live in the Workbench</div>
+    <div class="row">
+      <div class="chip">NavBar</div>
+      <div class="chip">Sidebar&nbsp;Explorer</div>
+      <div class="chip active">Workbench<small>hosts the <b>active renderer</b></small></div>
+      <div class="chip">Sidebar&nbsp;Inspector</div>
+      <div class="chip">StatusBar</div>
+    </div>
+  </div>
+  <div class="arrow">▼ active renderer</div>
+
+  <div class="band b-render">
+    <div class="bt">① RENDERERS — dumb engines (load · highlight · settings ▸ events); a page wires each one</div>
+    <div class="row">
+      <div class="chip planned">WordCloud<small>identifiers → cloud</small></div>
+      <div class="chip active">CodeMap<small>3D treemap (today)</small></div>
+      <div class="chip planned">Graph<small>dependencies + jump</small></div>
+      <div class="chip planned">Report<small>audit page</small></div>
+    </div>
+  </div>
+  <div class="arrow">▲ read data &nbsp;·&nbsp; ▲ read focus/selection</div>
+
+  <div class="band b-inter">
+    <div class="bt">② SHARED INTERACTION STATE — survives renderer switches (keyed by node <code>id</code>)</div>
+    <div class="row">
+      <div class="chip">focusedNodeId</div>
+      <div class="chip">file selection</div>
+      <div class="chip">delta mode</div>
+      <div class="chip">hovered node</div>
+    </div>
+  </div>
+  <div class="arrow">▲ lens facades</div>
+
+  <div class="band b-lens">
+    <div class="bt">③ LENSES — data signals from cc.json, one facade each</div>
+    <div class="row">
+      <div class="lensbox"><div class="lp facade">Structure&nbsp;Lens</div><div class="lp repos">repos</div><div class="lp store">store ▢</div></div>
+      <div class="lensbox"><div class="lp facade">Metrics&nbsp;Lens</div><div class="lp repos">repos</div><div class="lp store">store ▢</div></div>
+      <div class="lensbox"><div class="lp facade">Dependency&nbsp;Lens</div><div class="lp repos">repos</div><div class="lp store">store ▢</div></div>
+      <div class="lensbox" style="opacity:.6;border-style:dashed"><div class="lp facade">Terms&nbsp;Lens</div><div class="lp repos">repos</div><div class="lp store">planned</div></div>
+    </div>
+  </div>
+  <div class="arrow">▲ project / merge per visible selection</div>
+
+  <div class="band b-infra" style="text-align:center">
+    <div class="bt" style="text-align:left">④ FILESTORE — raw uploaded <code>{ meta, files, lenses }</code> (all loaded files)</div>
+    <div class="cyl">▢▢▢ FileStore</div>
+  </div>
+  <div class="arrow">▲ FileData</div>
+
+  <div class="band b-infra" style="text-align:center"><b>⬆ Upload File</b></div>
+</div>
+
+<h2>2 · The three axes (keep them separate)</h2>
+<p>The single most important rule. Today's pain comes from mixing these; the architecture works only if each stays distinct.</p>
+<div class="axes">
+  <div class="axis a-lens">
+    <h3><span class="tag t-lens">Data</span> Lenses</h3>
+    <p style="font-size:14px;color:var(--muted)">Read-only signals from the file. Changes when you <b>load a different file</b>.</p>
+    <ul>
+      <li>structure (the file tree)</li>
+      <li>metrics (numbers by node id)</li>
+      <li>dependency (edges)</li>
+      <li>domain / security (reserved)</li>
+      <li>terms (new — for WordCloud)</li>
+    </ul>
+  </div>
+  <div class="axis a-render">
+    <h3><span class="tag t-render">Output</span> Renderers</h3>
+    <p style="font-size:14px;color:var(--muted)">How data is shown. Each <b>composes several lens facades</b> + owns its own config.</p>
+    <ul>
+      <li>CodeMap, Graph, WordCloud, Report</li>
+      <li>one active in the Workbench</li>
+      <li><b>per-renderer view config</b>: camera, channel mapping, layout — resets with the renderer</li>
+    </ul>
+  </div>
+  <div class="axis a-inter">
+    <h3><span class="tag t-inter">Interaction</span> Shared state</h3>
+    <p style="font-size:14px;color:var(--muted)">User choices that must <b>survive a renderer switch</b>. The missing box on the first sketch.</p>
+    <ul>
+      <li>focusedNodeId (the jump target)</li>
+      <li>file selection + delta mode</li>
+      <li>hovered node</li>
+    </ul>
+  </div>
+</div>
+<div class="callout inter">
+  <b>Why interaction splits in two</b>
+  The <b>shared</b> part (selection, focused node) lives once and every renderer honors it — that's what makes the Graph→CodeMap jump possible. The <b>per-renderer</b> part (CodeMap's colorMetric/camera, Graph's layout) is owned by the renderer and resets when you leave it. Never let per-renderer config leak into the shared layer.
+</div>
+
+<h2>3 · Anatomy of one lens module</h2>
+<p>A lens is a self-contained module = a <b>Lens Facade</b> + several <b>Features</b> + lens-level <b>Repos</b> + a <b>Store</b>. Each feature = <code>facade · models · components · services</code>: <b>components take data from services</b>, and <b>services hold logic and read the repo</b>. This is what replaces today's 99 scattered store-facades — one facade per lens, and the feature's <code>*Service</code> classes become real logic instead of passthroughs.</p>
+<pre>features/lenses/metrics/
+├── <b>metricsLens.facade.ts</b>          <span class="cmt">// the lens's public API — pages/renderers call this</span>
+├── features/
+│   ├── legend/                      <span class="cmt">// a feature = facade · models · components · services</span>
+│   │   ├── legend.facade.ts
+│   │   ├── legend.models.ts
+│   │   ├── components/              <span class="cmt">// UI — take their data from the services</span>
+│   │   └── services/               <span class="cmt">// logic — read the repo, build the view-model</span>
+│   └── metricsBar/  …               <span class="cmt">// same shape (facade · models · components · services)</span>
+├── repos/                           <span class="cmt">// lens-level data access, shared by the features</span>
+│   ├── attributes.repo.ts          <span class="cmt">// rangeOf(metric) -> {values,min,max}, byId(id,metric)</span>
+│   └── descriptors.repo.ts         <span class="cmt">// title/description for a metric</span>
+└── store/
+    └── metricsLens.store.ts         <span class="cmt">// projects lenses.metrics from FileStore, merged for visible files</span></pre>
+<div class="callout lens">
+  <b>The store is selection-aware</b>
+  FileStore holds <i>all</i> loaded files; the lens store projects + merges only the <i>visible</i> selection. So the old <code>accumulatedDataSelector</code> + <code>NodeDecorator</code> + min/max logic becomes "the lens merges its visible files" — and the analysis side already models that merge (<code>MetricsLens.merge()</code> / <code>DependencyLens.merge()</code>).
+</div>
+
+<h2>4 · Anatomy of a renderer + its page</h2>
+<p>The renderer is a <b>dumb engine</b>; the <b>page</b> is the wire that composes lens facades + view-state into a render-model and drives it. The Legend is <i>not</i> the renderer's panel — it's a feature inside the Metrics lens that the page mounts.</p>
+<pre>features/renderers/codeMap/
+├── engine/
+│   └── <b>codeMap.renderer.ts</b>      <span class="cmt">// DUMB engine — load(model) · highlight(id) · settings() ▸ onSelect/onHover</span>
+│                                <span class="cmt">//   (≈ today's CodeMapRenderService + ThreeScene/Three* services)</span>
+└── page/
+    ├── <b>codeMap.page.ts</b>          <span class="cmt">// THE WIRE — composes lens facades + view-state ▸ render-model ▸ engine</span>
+    ├── codeMapViewState.store.ts   <span class="cmt">// PER-RENDERER view state: metric mapping, colorRange, camera</span>
+    ├── reads →  Structure / Metrics / Dependency lens facades   <span class="cmt">// data</span>
+    ├── reads →  SharedInteraction                               <span class="cmt">// focusedNodeId, selection</span>
+    └── mounts → renderer-scoped feature panels                  <span class="cmt">// e.g. Legend (it lives in the Metrics lens)</span></pre>
+
+<h2>5 · Which renderer needs which lens</h2>
+<p>Read the <b>columns</b>: a lens is reused across renderers — that reuse is the whole reason lenses are worth it.</p>
+<table>
+  <tr><th>Renderer ↓ / Lens →</th><th>structure</th><th>metrics</th><th>dependency</th><th>terms <span style="font-weight:400">(new)</span></th></tr>
+  <tr><td class="l">CodeMap <small>(today)</small></td><td class="yes">tree</td><td class="pri">primary</td><td class="yes">edges</td><td class="no">—</td></tr>
+  <tr><td class="l">Graph</td><td class="yes">nodes</td><td>size?</td><td class="pri">primary</td><td class="no">—</td></tr>
+  <tr><td class="l">WordCloud</td><td class="yes">files</td><td class="no">—</td><td class="no">—</td><td class="gap">primary ⚠</td></tr>
+  <tr><td class="l">Report <small>(page)</small></td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td>maybe</td></tr>
+</table>
+<div class="callout gap">
+  <b>⚠ WordCloud needs a lens that doesn't exist yet</b>
+  cc.json carries structure + metrics + edges + <code>contentHash</code> — <b>no source text, no identifiers</b>, and analysis emits nothing token-like today. So WordCloud is gated on a new <b>terms lens</b> produced by the analysis UnifiedParser (TreeSitter). This is the architecture working as intended: the answer to "I need data X" is <i>"add a lens,"</i> not "hack the renderer."
+</div>
+
+<h2>6 · The key that ties it all together: the node <code>id</code></h2>
+<div class="callout lens">
+  <b>The cc.json 2.0 <code>id</code> = sha-256(canonical path), 16 hex</b>
+  The same id keys the structure tree, the metrics-by-id, and the edge endpoints. That single fact makes two things possible: (1) lenses <b>join</b> to the same tree without path guessing, and (2) "<code>focus a1b2c3…</code>" <b>resolves in any renderer</b>. The analysis 2.0 work is precisely what enables this viz architecture — the two halves are coherent.
+</div>
+
+<h2>7 · Worked example — the Legend (a CodeMap panel)</h2>
+<p>The legend reads metrics-lens <i>data</i> + CodeMap's <i>view choices</i>. Watch the three passthrough layers and the bespoke <code>selectedColorMetricData</code> disappear.</p>
+<div class="ba">
+  <div>
+    <h3 style="color:var(--infra)">Today</h3>
+    <pre><span class="cmt">// selector → Legend*Store → Legend*Service → component</span>
+<span class="cmt">// 9 stores + 9 services in the legend alone</span>
+class LegendColorRowComponent {
+  constructor(
+    colorMetricService,            <span class="cmt">// ⟶ store ⟶ selector</span>
+    colorRangeService,
+    selectedColorMetricDataService,
+    mapColorsService,
+  ){}
+  colorMetric = toSignal(colorMetricService.colorMetric$())
+  colorRange  = toSignal(colorRangeService.colorRange$())
+  nodeRange   = toSignal(
+    selectedColorMetricDataService
+      .selectedColorMetricData$())   <span class="cmt">// bespoke per-channel</span>
+  color = computed(...)
+}</pre>
+  </div>
+  <div>
+    <h3 style="color:var(--render)">Lenses × Renderers</h3>
+    <pre><span class="cmt">// data from a lens facade; choices from this renderer</span>
+<span class="cmt">// legend-specific state classes: 18 → 0</span>
+class LegendColorRow {
+  metrics = inject(<span style="color:var(--lens)">MetricsLens</span>)        <span class="cmt">// shared facade</span>
+  codeMap = inject(<span style="color:var(--render)">CodeMapViewState</span>)  <span class="cmt">// per-renderer</span>
+
+  mapColorFor = input.required()
+  colorMetric = codeMap.colorMetric
+  colorRange  = codeMap.colorRange
+  nodeRange   = computed(() =>
+    metrics.<b>rangeOf</b>(colorMetric()))  <span class="cmt">// generic!</span>
+  color = computed(() =>
+    codeMap.mapColors()[mapColorFor()])
+}</pre>
+  </div>
+</div>
+<p style="font-size:14px;color:var(--muted)"><code>selectedColorMetricData</code> was never state — it's just <code>metrics.rangeOf(colorMetric())</code>. The same generic <code>rangeOf</code> serves area, height, and color, so a whole family of per-channel selectors collapses.</p>
+
+<h2>8 · The cross-renderer jump (Graph → CodeMap)</h2>
+<p>This feature is the proof that the shared interaction layer must exist.</p>
+<ol class="steps">
+  <li>User right-clicks a node in <b>Graph</b> → “Open in CodeMap”.</li>
+  <li>Graph calls <code>SharedInteraction.focusNode(id)</code> — <code>id</code> is the 2.0 node id.</li>
+  <li>Workbench switches the active renderer to <b>CodeMap</b> (Graph's camera/layout is dropped; the shared focus is kept).</li>
+  <li>CodeMap mounts, reads <code>focusedNodeId</code>, asks <code>StructureLens</code> to locate it, zooms/focuses.</li>
+  <li>Its legend reads <code>MetricsLens.rangeOf(codeMap.colorMetric())</code> — same data, new presentation.</li>
+</ol>
+
+<h2>9 · Suggested sequencing</h2>
+<p>You have <b>one</b> renderer today. One renderer can't validate a <i>renderer abstraction</i> — two can. Build the seam on what exists, then prove it with something different.</p>
+<div class="road">
+  <div class="step"><div class="n">STEP 1 · PROVE THE LENS SEAM</div><b>CodeMap as a renderer module</b><br><small>Carve out structure/metrics/dependency lens facades + SharedInteraction + CodeMapViewState. Legend is the first slice; delete its 18 classes.</small></div>
+  <div class="step"><div class="n">STEP 2 · PROVE THE RENDERER SEAM</div><b>Graph (dependency lens)</b><br><small>Data largely exists (DependaCharta). Build the Graph→CodeMap jump → exercises the shared layer with a very different renderer.</small></div>
+  <div class="step"><div class="n">STEP 3 · COMPOSITE</div><b>Report page</b><br><small>Own route, composes lens facades read-only. Must stay a consumer, never re-derive.</small></div>
+  <div class="step blocked"><div class="n">STEP 4 · BLOCKED ON ANALYSIS</div><b>WordCloud</b><br><small>Needs a new <i>terms</i> lens emitted by analysis. Last, gated on that story.</small></div>
+</div>
+
+<h2>10 · Open questions</h2>
+<ul>
+  <li><span class="q">View-state register:</span> for every current setting, decide <b>shared</b> vs <b>per-renderer</b> (selection/focus = shared; camera/channel-mapping = per-renderer). Draft the full list.</li>
+  <li><span class="q">Terms lens:</span> who owns the analysis story, and when? WordCloud can't ship before it.</li>
+  <li><span class="q">Report scope:</span> what audits/aggregations — and confirm it only <i>composes</i> lenses.</li>
+  <li><span class="q">Renderer switching:</span> exactly what persists (selection, focus) vs resets (camera, layout).</li>
+  <li><span class="q">Migration path:</span> the in-flight 99-facade rollout (≈55 added this month) — stop &amp; redirect to lenses now, or finish first? Recommended: let Step 1 (CodeMap) be the redirect.</li>
+</ul>
+
+<footer>
+  CodeCharta 2.0 architecture — working draft. Companion to <code>Ideas/image.png</code>.<br>
+  Colour key: <span class="tag t-lens">data/lens</span> <span class="tag t-render">renderer</span> <span class="tag t-inter">shared interaction</span> <span class="tag t-infra">infra</span>. Not final — for team discussion.
+</footer>
+
+</div>
+</body>
+</html>
