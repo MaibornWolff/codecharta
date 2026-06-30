@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
+import { CcState } from "../../../../../codeCharta.model"
+import { edgeMetricSelector } from "../../../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 
 @Injectable({
     providedIn: "root"

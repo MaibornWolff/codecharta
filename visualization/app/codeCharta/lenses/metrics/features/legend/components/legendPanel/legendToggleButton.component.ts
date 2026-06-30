@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from "@angular/core"
-import { InspectorVisibilityService } from "../../../sidebarInspector/facade"
-import { LEGEND_BARS_OFFSET } from "./legendPosition"
+import { InspectorVisibilityService } from "../../../../../../features/sidebarInspector/facade"
+import { LEGEND_BARS_OFFSET } from "../../models/legendPosition"
 
 @Component({
     selector: "cc-legend-toggle-button",
