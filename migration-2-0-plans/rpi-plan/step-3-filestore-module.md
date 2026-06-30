@@ -1,7 +1,7 @@
 ---
 name: step-3-filestore-module
 issue:
-state: todo
+state: complete
 version: 1
 ---
 
@@ -109,12 +109,12 @@ app/codeCharta/fileStore/
 
 ## Steps
 
-- [ ] Complete Task 1: Move the files slice (+ visibleFileStates) into `fileStore/store/` and repoint consumers
-- [ ] Complete Task 2: Add `repos/files.repo.ts` absorbing `LoadFileStore`
-- [ ] Complete Task 3: Move the load pipeline into `fileStore/loaders/ccJson/`
-- [ ] Complete Task 4: Add `fileStore.facade.ts` and repoint the 4 outsiders; delete old dirs
-- [ ] Complete Task 5: Extend the legacy dep-cruiser wire-DTO `pathNot` with `fileStore/`
-- [ ] Complete Task 6: Verify (tsc, unit, e2e, lint:architecture; render snapshots unchanged); commit on green
+- [x] Complete Task 1: Move the files slice (+ visibleFileStates) into `fileStore/store/` and repoint consumers
+- [x] Complete Task 2: Add `repos/files.repo.ts` absorbing `LoadFileStore`
+- [x] Complete Task 3: Move the load pipeline into `fileStore/loaders/ccJson/`
+- [x] Complete Task 4: Add `fileStore.facade.ts` and repoint the 4 outsiders; delete old dirs
+- [x] Complete Task 5: Extend the legacy dep-cruiser wire-DTO `pathNot` with `fileStore/`
+- [x] Complete Task 6: Verify (tsc, unit, e2e, lint:architecture; render snapshots unchanged); commit on green
 
 ## Review Feedback Addressed
 
