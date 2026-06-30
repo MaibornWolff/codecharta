@@ -1,7 +1,7 @@
 ---
 name: migrate-legend-into-metrics-lens
 issue:
-state: todo
+state: complete
 version: 2
 ---
 
@@ -78,11 +78,11 @@ passthroughs), `stores/*` (9 one-line `store.select(...)` wrappers). Only extern
 
 ## Steps
 
-- [ ] Complete Task 1: move folder + fix all relative imports incl. specs + the 6-`../` inspector path (structural commit)
-- [ ] Complete Task 2: facade/models/components/services shape; move `legendPosition.ts` into `models/`
-- [ ] Complete Task 3: one `LegendService` reading the facade's observable forms; delete the 9+9 passthroughs
-- [ ] Complete Task 4: repoint components; snapshots green (contingent on step-4 parity)
-- [ ] Complete Task 5: dependency-cruiser + `npm test`/format green (behavioral commit)
+- [x] Complete Task 1: move folder + fix all relative imports incl. specs + the 6-`../` inspector path (structural commit)
+- [x] Complete Task 2: facade/models/components/services shape; move `legendPosition.ts` into `models/`
+- [x] Complete Task 3: one `LegendService` reading the facade's observable forms; delete the 9+9 passthroughs
+- [x] Complete Task 4: repoint components; snapshots green (contingent on step-4 parity)
+- [x] Complete Task 5: dependency-cruiser + `npm test`/format green (behavioral commit)
 
 ## Review Feedback Addressed
 
