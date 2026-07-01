@@ -26,10 +26,16 @@ The code under `app/codeCharta/` is organised into modules whose boundaries are 
 - `lenses/*` — data modules that overlay the file tree. A lens is reached **only** through its public
   surface: the lens facade (`lenses/<lens>/<lens>.facade.ts`) for data, or a feature's `components/` to
   mount a panel. Internally a lens is `components → services → repos → store`. The first lens is
-  `lenses/metrics` (node metrics + the Legend).
-- `model/` + `util/` — the shared kernel both worlds import.
+  `lenses/metrics`, which **owns** the node-metric domain: `nodeMetricData.calculator`, the
+  color-range selector, and the node-side attribute maps all live under `lenses/metrics/store`. The
+  legacy `metricDataSelector` is now a shrinking aggregator that reads the lens's node selector via the
+  facade and keeps composing the (still-legacy) edge side for the future dependency lens. The lens also
+  hosts the Legend.
+- `model/` + `util/` — the shared kernel both worlds import (e.g. `util/metric/sortByMetricName`, shared by
+  the node and edge calculators, and `util/metric/unaryMetric`, shared by the node calculator and the
+  decoration/export kernel).
 
-These boundaries are the first slice of the **Visualization 2.0** migration toward a
+These boundaries are the first slices of the **Visualization 2.0** migration toward a
 lenses × renderers architecture; see `Ideas/codecharta-2.0-implementation-map.html` for the target map.
 
 ### Other Technologies
