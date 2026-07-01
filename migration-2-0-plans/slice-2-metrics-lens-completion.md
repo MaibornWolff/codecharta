@@ -119,9 +119,11 @@ Commits (Tidy First — structural before behavioral):
 Decisions / corrections to the roadmap text:
 - **`metricNames.selector` is EDGE data** (`metricData.edgeMetricData.map(...)`), not node — despite
   step 1's wording. It was **left in `state/`** for the dependency lens; moving it would have been wrong.
-- **`sortByMetricName` and `UNARY_METRIC` are shared** by the node (lens) AND edge (`state/`)
-  calculators, so they moved to the **`util/metric` shared kernel**, not into the lens — otherwise the
-  edge calculator (staying in `state/`) would have had to reach into lens internals.
+- **`sortByMetricName` is shared** by the node (lens) AND edge (`state/`) calculators, and
+  **`UNARY_METRIC` is shared** by the node calculator AND the decoration/export kernel
+  (`util/nodeDecorator`, `util/fileDownloader`). Both moved to the **`util/metric` shared kernel**, not
+  into the lens — otherwise the edge calculator (staying in `state/`), or the shared kernel itself, would
+  have had to reach into lens internals.
 - **Step 5** needed no separate work: `export3DMapDialog` (the only direct node-only calculator
   consumer) was repointed in commit 2, and no other node-only consumer of `metricDataSelector` exists —
   the rest (`loadInitialFile`, `mapReset`, `scenarioDialog`, `updateQueryParameters`, `accumulatedData`,
