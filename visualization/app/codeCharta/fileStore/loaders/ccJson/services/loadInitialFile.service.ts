@@ -15,7 +15,7 @@ import { getNameDataPair } from "../util/fileParser"
 import { getContentChecksum } from "../util/ccFileHelper"
 import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "./loadFile.service"
 import { UrlExtractor } from "../util/urlExtractor"
-import { LoadInitialFileStore } from "../stores/loadInitialFile.store"
+import { LoadInitialFileStore } from "../../../../state/loadInitialFile/loadInitialFile.store"
 
 export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
 export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
