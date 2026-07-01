@@ -47,7 +47,6 @@ export class MetricsLensFacade {
     }
 }
 
-// (b) Public ngrx selector surface for the createSelector graphs repointed in step 6.
+// (b) Public ngrx selector surface for the createSelector graphs that consume the lens.
 export { nodeMetricDataSelector, metricRangeSelector } from "./store/metricsLens.selectors"
-export { attributeDescriptorsSelector } from "../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
-export { attributeTypesSelector } from "../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
+export { nodeAttributeDescriptorsSelector as attributeDescriptorsSelector } from "./store/attributes.selectors"

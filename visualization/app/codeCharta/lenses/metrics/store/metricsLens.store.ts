@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
-import { attributeTypesSelector } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
+import { nodeAttributeDescriptorsSelector, nodeAttributeTypesSelector } from "./attributes.selectors"
 import { metricRangeSelector, nodeMetricDataSelector } from "./metricsLens.selectors"
 
 /**
@@ -20,8 +19,8 @@ export class MetricsLensStore {
 
     readonly nodeMetricData$ = this.store.select(nodeMetricDataSelector)
     readonly colorMetricRange$ = this.store.select(metricRangeSelector)
-    readonly attributeDescriptors$ = this.store.select(attributeDescriptorsSelector)
-    readonly attributeTypes$ = this.store.select(attributeTypesSelector)
+    readonly attributeDescriptors$ = this.store.select(nodeAttributeDescriptorsSelector)
+    readonly attributeTypes$ = this.store.select(nodeAttributeTypesSelector)
 
     getNodeMetricData() {
         return nodeMetricDataSelector(this.state.getValue())
@@ -32,10 +31,10 @@ export class MetricsLensStore {
     }
 
     getAttributeDescriptors() {
-        return attributeDescriptorsSelector(this.state.getValue())
+        return nodeAttributeDescriptorsSelector(this.state.getValue())
     }
 
     getAttributeTypes() {
-        return attributeTypesSelector(this.state.getValue())
+        return nodeAttributeTypesSelector(this.state.getValue())
     }
 }

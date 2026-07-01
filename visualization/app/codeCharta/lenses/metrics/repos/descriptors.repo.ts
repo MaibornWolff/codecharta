@@ -1,21 +1,20 @@
 import { Injectable } from "@angular/core"
-import { map } from "rxjs"
 import { AttributeDescriptors, AttributeTypeValue } from "../../../codeCharta.model"
 import { MetricsLensStore } from "../store/metricsLens.store"
 
-/** Metric metadata access for the metrics lens (node-side descriptors + types; `AttributeTypes.nodes` defaults to `{}`). */
+/** Metric metadata access for the metrics lens (node-side descriptors + types; the store owns the node projection). */
 @Injectable({ providedIn: "root" })
 export class DescriptorsRepo {
     constructor(private readonly store: MetricsLensStore) {}
 
     readonly descriptors$ = this.store.attributeDescriptors$
-    readonly attributeTypes$ = this.store.attributeTypes$.pipe(map(attributeTypes => attributeTypes.nodes ?? {}))
+    readonly attributeTypes$ = this.store.attributeTypes$
 
     descriptors(): AttributeDescriptors {
         return this.store.getAttributeDescriptors()
     }
 
     attributeTypes(): Record<string, AttributeTypeValue> {
-        return this.store.getAttributeTypes().nodes ?? {}
+        return this.store.getAttributeTypes()
     }
 }
