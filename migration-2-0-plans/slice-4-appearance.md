@@ -1,7 +1,7 @@
 ---
 name: viz-2.0-slice-4-appearance
 issue:
-state: todo
+state: complete
 version: 1
 ---
 
@@ -141,12 +141,12 @@ the cheap `metrics-lens-ngrx-guard` → verify + docs. The load-seeding inversio
   #3 for viewState, #2a deferred; note #5 partially advanced).
 
 ## Steps (tracked)
-- [ ] Complete Task 1: invert the file-load settings-seeding out of `fileStore`
-- [ ] Complete Task 2: `appearance/` skeleton + `shared-state-is-leaf` (warn) + ngrx-owner allow-list
-- [ ] Complete Task 3: `git mv` the visual/label/edge-appearance settings + repoint importers (zero-diff)
-- [ ] Complete Task 4: repoint the dependency-lens `showEdges` + legend `mapColors` reads to the facade
-- [ ] Complete Task 5: (optional) flip `metrics-lens-ngrx-guard` to error via the legend.service fix
-- [ ] Complete Task 6: verify (tsc / test / lint:architecture / e2e) + docs
+- [x] Complete Task 1: invert the file-load settings-seeding out of `fileStore`
+- [x] Complete Task 2: `appearance/` skeleton + `shared-state-is-leaf` (warn); no ngrx allow-list change needed
+- [x] Complete Task 3: `git mv` the visual/label/edge-appearance settings + repoint importers (zero snapshot diff)
+- [x] Complete Task 4: repoint the dependency-lens `showEdges` + legend `mapColors` reads to the facade
+- [ ] ~~Task 5: (optional) flip `metrics-lens-ngrx-guard` to error~~ — **DEFERRED** to the viewState slice (pre-empts it; see Outcome)
+- [x] Complete Task 6: verify (tsc / test / lint:architecture) + docs
 
 ## Notes
 - **Why not `viewState` first** — the *only* new-world code reading metric selection from `state/` is the
@@ -168,7 +168,39 @@ the cheap `metrics-lens-ngrx-guard` → verify + docs. The load-seeding inversio
   intent, the item-#2b edge-consumer map, and the dep-cruiser flip analysis) + `CARRIED-FORWARD.md`
   items #2b, #3, #5.
 
-## Outcome (executed <date>)
+## Outcome (executed 2026-07-01)
 
-_To be filled after execution (commits, test/lint results, decisions/corrections, deferrals) — following
-the Slice 2 & 3 precedent._
+**Done.** 3 commits (Tidy First), full suite green at each:
+- `b9a4dd508` refactor: move load-settings applier out of fileStore (Step 1).
+- `413e05548` build: declare appearance `shared-state-is-leaf` boundary (Step 2).
+- `b68c90b0d` refactor: move visual settings into appearance module (Steps 3 + 4).
+
+**Key decisions / corrections vs the draft:**
+- **Step 1 realized as a byte-identical *relocation*, not the effect/event inversion.** A wire-DTO constraint
+  reframed it: `LoadInitialFileService` reads `ExportCCFile`/`NameDataPair` and `wire-dto-only-in-filestore-boundary`
+  (error) pins it inside `fileStore`, so the *service* can't leave. Only the *applier* `LoadInitialFileStore` (no
+  wire-DTO dep, single runtime importer) moved — to `state/loadInitialFile/`. It now dispatches appearance actions as
+  `state → appearance` (legacy→new, allowed) and can dispatch into any future module, which is the same reusable
+  groundwork slices 5/6 need — without the async-ordering / missing-props-dialog risk the effect path carried. The
+  full "fileStore emits an event, a shell effect restores settings" split is deferred to the shell slice (its true home).
+- **Store-key decision ratified as (a) code-boundary.** Settings kept the `appSettings` combineReducers key; the
+  `appSettings.reducer.ts`/`appSettings.actions.ts` wiring and the relocated applier import the moved code through the
+  facade. Every `state.appSettings.*` reader (incl. `_applyPartialState` dotted paths, `treeMapHelper`) is untouched.
+- **Facade = one `export *` barrel** (61 files: selector + actions + reducer/default per setting), no name collisions.
+  ~85 consumers + wiring repointed through it; duplicate facade imports consolidated to one statement per file.
+- **Steps 3 & 4 landed in one commit** — the `git mv` breaks the lens imports, so the two lens-bridge repoints had to
+  ship with the move to keep the build green (can't commit red).
+- **Step 5 DEFERRED (not the ngrx-guard flip).** `legend.service` injects `Store` for 6 *dynamicSettings/viewState*
+  reads besides `mapColors`; relocating that injection into a legend `stores/` now pre-empts the viewState slice, so
+  the flip waits (item #5 in CARRIED-FORWARD). No ngrx allow-list change was needed either — the existing ngrx guards
+  are scoped to `features/`+`lenses/`, so `appearance/` store files import `@ngrx/store` freely.
+
+**Gates:** `tsc --noEmit` clean; unit suite **2266 passed / 45 render snapshots byte-identical** (never `-u`);
+`format:check` clean (biome 2.4.4); dep-cruiser **0 errors**, `new-must-not-import-legacy` **69 → 20**
+(Step 1 dropped 45 fileStore→state edges; Steps 3–4 retired the 4 mapColors/showEdges lens→state bridges),
+no `shared-state-is-leaf` violations, no new cycles (`no-circular` stayed 94). Moved files verified byte-identical
+apart from import lines. Reviewed by a 4-dimension + adversarial-verify agent workflow.
+
+**Deferred (in CARRIED-FORWARD):** edge *selection* + the 3 edge effects and metric selection (→ viewState, items
+#2b-selection + #3); the `metrics-lens-ngrx-guard` flip (item #5); the store-key reshape (`state.appearance.*`); the
+edge `attributeTypes` + injectable `DependencyLensStore` (item #2a); `markedPackages` (interaction/fileSettings).
