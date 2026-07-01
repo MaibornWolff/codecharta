@@ -3,10 +3,8 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { of } from "rxjs"
-import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { defaultState } from "../../../../state/store/state.manager"
 import { ThreeMapControlsService } from "../../../../features/codeMap/facade"
-import { METRIC_DATA } from "../../../../mocks/dataMocks"
 import { GlobalSettingsFacade } from "../../../globalSettings/facade"
 import { ScreenshotService } from "../../services/screenshot.service"
 import { ViewCubeToolboxComponent } from "./viewCubeToolbox.component"
@@ -16,7 +14,7 @@ describe("ViewCubeToolboxComponent", () => {
         TestBed.configureTestingModule({
             imports: [ViewCubeToolboxComponent],
             providers: [
-                provideMockStore({ initialState: defaultState, selectors: [{ selector: metricDataSelector, value: METRIC_DATA }] }),
+                provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeMapControlsService, useValue: { autoFitTo: jest.fn() } },
                 { provide: GlobalSettingsFacade, useValue: { screenshotToClipboardEnabled$: () => of(false) } },
