@@ -125,7 +125,10 @@ describe("ccFileHelper", () => {
         })
 
         it("should resolve a json object in version 1.3 and higher and does not decorate checksum", () => {
-            const ccFile = getCCFileAndDecorateFileChecksum({ checksum: "fake-checksum", data: { apiVersion: "1.3" } as ExportCCFile }) as ExportCCFile
+            const ccFile = getCCFileAndDecorateFileChecksum({
+                checksum: "fake-checksum",
+                data: { apiVersion: "1.3" } as ExportCCFile
+            }) as ExportCCFile
 
             expect(ccFile.apiVersion).toBe("1.3")
             expect(ccFile.fileChecksum).toBe("fake-checksum")
@@ -140,7 +143,10 @@ describe("ccFileHelper", () => {
         })
 
         it("should resolve a json object in version less than 1.2 and does not decorate checksum", () => {
-            const ccFile = getCCFileAndDecorateFileChecksum({ fileChecksum: "fake-checksum", apiVersion: "1.2" } as ExportCCFile) as ExportCCFile
+            const ccFile = getCCFileAndDecorateFileChecksum({
+                fileChecksum: "fake-checksum",
+                apiVersion: "1.2"
+            } as ExportCCFile) as ExportCCFile
 
             expect(ccFile.apiVersion).toBe("1.2")
             expect(ccFile.fileChecksum).toBe("fake-checksum")

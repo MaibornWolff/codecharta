@@ -157,10 +157,7 @@ module.exports = {
             from: { pathNot: "^app/codeCharta/lenses/" },
             to: {
                 path: "^app/codeCharta/lenses/",
-                pathNot: [
-                    "^app/codeCharta/lenses/[^/]+/[^/]+\\.facade\\.ts$",
-                    "^app/codeCharta/lenses/[^/]+/features/[^/]+/components/"
-                ]
+                pathNot: ["^app/codeCharta/lenses/[^/]+/[^/]+\\.facade\\.ts$", "^app/codeCharta/lenses/[^/]+/features/[^/]+/components/"]
             }
         },
         {
@@ -177,7 +174,8 @@ module.exports = {
         {
             name: "lens-feature-cross-only-via-public-api",
             severity: "error",
-            comment: "Within a lens, a feature may reach another feature only via its facade.ts or components/ (not its services/stores/models).",
+            comment:
+                "Within a lens, a feature may reach another feature only via its facade.ts or components/ (not its services/stores/models).",
             from: { path: "^app/codeCharta/lenses/[^/]+/features/([^/]+)/", pathNot: ["\\.e2e\\.ts$", "\\.po\\.ts$"] },
             to: {
                 path: "^app/codeCharta/lenses/[^/]+/features/([^/]+)/",
@@ -190,14 +188,16 @@ module.exports = {
         {
             name: "feature-components-go-through-services",
             severity: "error",
-            comment: "Components take their data from services. A lens feature component may not import a repo or store directly — go via the feature's services.",
+            comment:
+                "Components take their data from services. A lens feature component may not import a repo or store directly — go via the feature's services.",
             from: { path: "^app/codeCharta/lenses/[^/]+/features/[^/]+/components/" },
             to: { path: ["^app/codeCharta/lenses/[^/]+/repos/", "^app/codeCharta/lenses/[^/]+/store/"] }
         },
         {
             name: "feature-services-read-repos-not-store",
             severity: "error",
-            comment: "Services hold logic and read the repo. They must not reach the raw store directly — the repo is the data-access seam.",
+            comment:
+                "Services hold logic and read the repo. They must not reach the raw store directly — the repo is the data-access seam.",
             from: { path: "^app/codeCharta/lenses/[^/]+/features/[^/]+/services/" },
             to: { path: "^app/codeCharta/lenses/[^/]+/store/" }
         },
