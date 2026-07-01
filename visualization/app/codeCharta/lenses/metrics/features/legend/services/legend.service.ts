@@ -8,18 +8,21 @@ import { colorMetricSelector } from "../../../../../state/store/dynamicSettings/
 import { colorRangeSelector } from "../../../../../state/store/dynamicSettings/colorRange/colorRange.selector"
 import { edgeMetricSelector } from "../../../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { heightMetricSelector } from "../../../../../state/store/dynamicSettings/heightMetric/heightMetric.selector"
-import { MetricsLensFacade } from "../../../metricsLens.facade"
+import { AttributesRepo } from "../../../repos/attributes.repo"
+import { DescriptorsRepo } from "../../../repos/descriptors.repo"
 
 /**
- * The single seam every legend component injects. Metric data comes from the metrics-lens facade;
- * the remaining seven reads are view/appearance settings with no 2.0 home this slice and stay as
- * documented temporary direct selector reads (this keeps `@ngrx`-in-service, allowed at `warn` via
- * `metrics-lens-ngrx-guard` until viewState/appearance land).
+ * The single seam every legend component injects. Metric data comes from the metrics-lens repos
+ * (a feature inside the lens reads the repos, not the lens facade — that facade is the lens's outward
+ * boundary); the remaining seven reads are view/appearance settings with no 2.0 home this slice and
+ * stay as documented temporary direct selector reads (this keeps `@ngrx`-in-service, allowed at `warn`
+ * via `metrics-lens-ngrx-guard` until viewState/appearance land).
  */
 @Injectable({ providedIn: "root" })
 export class LegendService {
     constructor(
-        private readonly metricsLensFacade: MetricsLensFacade,
+        private readonly attributesRepo: AttributesRepo,
+        private readonly descriptorsRepo: DescriptorsRepo,
         private readonly store: Store<CcState>
     ) {}
 
@@ -32,11 +35,11 @@ export class LegendService {
     private readonly isDeltaState = this.store.select(isDeltaStateSelector)
 
     selectedColorMetricData$() {
-        return this.metricsLensFacade.selectedColorMetricData$
+        return this.attributesRepo.colorMetricRange$
     }
 
     attributeDescriptors$() {
-        return this.metricsLensFacade.descriptors$
+        return this.descriptorsRepo.descriptors$
     }
 
     areaMetric$() {
