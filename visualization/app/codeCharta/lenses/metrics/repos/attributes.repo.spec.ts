@@ -20,13 +20,13 @@ describe("AttributesRepo", () => {
         const fileState: FileState = { file, selectedAs: FileSelectionState.Partial }
         nodeMetricData = calculateNodeMetricData([fileState], createBlacklistMatcher([]))
 
-        const fakeStore = {
+        const fakeStore: Pick<MetricsLensStore, "nodeMetricData$" | "colorMetricRange$" | "getNodeMetricData" | "getColorMetricRange"> = {
             nodeMetricData$: of(nodeMetricData),
             colorMetricRange$: of(rangeOfMetric(nodeMetricData, "rloc")),
             getNodeMetricData: () => nodeMetricData,
             getColorMetricRange: () => rangeOfMetric(nodeMetricData, "rloc")
-        } as unknown as MetricsLensStore
-        repo = new AttributesRepo(fakeStore)
+        }
+        repo = new AttributesRepo(fakeStore as MetricsLensStore)
     })
 
     it("should value-equal selectedColorMetricDataSelector for rangeOf(colorMetric)", () => {

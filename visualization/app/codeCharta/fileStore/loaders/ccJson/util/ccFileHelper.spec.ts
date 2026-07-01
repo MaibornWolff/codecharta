@@ -1,10 +1,19 @@
 import { ExportBlacklistType, ExportCCFile } from "../../../../codeCharta.api.model"
 import { AttributeTypeValue } from "../../../../codeCharta.model"
 import { NameDataPair } from "../../../../codeCharta.api.model"
+import { CcJson2 } from "../../../../model/ccjson2.model"
 import { getCCFile, getCCFileAndDecorateFileChecksum } from "./ccFileHelper"
+import { isCcJson2 } from "./fileValidator"
 import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "../../../../mocks/dataMocks"
 import { clone } from "../../../../util/clone"
 import md5 from "md5"
+
+function asExportCCFile(content: ExportCCFile | CcJson2 | null): ExportCCFile {
+    if (content === null || isCcJson2(content)) {
+        throw new Error("expected a resolved 1.x ExportCCFile")
+    }
+    return content
+}
 
 describe("ccFileHelper", () => {
     let fileContent: ExportCCFile
@@ -88,14 +97,14 @@ describe("ccFileHelper", () => {
     describe("getCCFileAndDecorateFileChecksum", () => {
         it("should resolve a json string in version 1.3 and higher and decorate checksum", () => {
             const expectedMD5 = md5('{"apiVersion":"1.3"}')
-            const ccFile = getCCFileAndDecorateFileChecksum('{"checksum":"","data":{"apiVersion":"1.3"}}') as ExportCCFile
+            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum('{"checksum":"","data":{"apiVersion":"1.3"}}'))
 
             expect(ccFile.apiVersion).toBe("1.3")
             expect(ccFile.fileChecksum).toBe(expectedMD5)
         })
 
         it("should resolve a json string in version 1.3 and higher and does not decorate checksum", () => {
-            const ccFile = getCCFileAndDecorateFileChecksum('{"checksum":"fake-checksum","data":{"apiVersion":"1.3"}}') as ExportCCFile
+            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum('{"checksum":"fake-checksum","data":{"apiVersion":"1.3"}}'))
 
             expect(ccFile.apiVersion).toBe("1.3")
             expect(ccFile.fileChecksum).toBe("fake-checksum")
@@ -103,14 +112,14 @@ describe("ccFileHelper", () => {
 
         it("should resolve a json string in version less than 1.3 and decorate checksum", () => {
             const expectedMD5 = md5('{"apiVersion":"1.2"}')
-            const ccFile = getCCFileAndDecorateFileChecksum('{"apiVersion":"1.2"}') as ExportCCFile
+            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum('{"apiVersion":"1.2"}'))
 
             expect(ccFile.apiVersion).toBe("1.2")
             expect(ccFile.fileChecksum).toBe(expectedMD5)
         })
 
         it("should resolve a json string in version less than 1.3 and does not decorate checksum", () => {
-            const ccFile = getCCFileAndDecorateFileChecksum('{"fileChecksum":"fake-checksum","apiVersion":"1.2"}') as ExportCCFile
+            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum('{"fileChecksum":"fake-checksum","apiVersion":"1.2"}'))
 
             expect(ccFile.apiVersion).toBe("1.2")
             expect(ccFile.fileChecksum).toBe("fake-checksum")
@@ -118,17 +127,19 @@ describe("ccFileHelper", () => {
 
         it("should resolve a json object in version 1.3 and higher and decorate checksum", () => {
             const expectedMD5 = md5('{"apiVersion":"1.3"}')
-            const ccFile = getCCFileAndDecorateFileChecksum({ checksum: "", data: { apiVersion: "1.3" } as ExportCCFile }) as ExportCCFile
+            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum({ checksum: "", data: { apiVersion: "1.3" } as ExportCCFile }))
 
             expect(ccFile.apiVersion).toBe("1.3")
             expect(ccFile.fileChecksum).toBe(expectedMD5)
         })
 
         it("should resolve a json object in version 1.3 and higher and does not decorate checksum", () => {
-            const ccFile = getCCFileAndDecorateFileChecksum({
-                checksum: "fake-checksum",
-                data: { apiVersion: "1.3" } as ExportCCFile
-            }) as ExportCCFile
+            const ccFile = asExportCCFile(
+                getCCFileAndDecorateFileChecksum({
+                    checksum: "fake-checksum",
+                    data: { apiVersion: "1.3" } as ExportCCFile
+                })
+            )
 
             expect(ccFile.apiVersion).toBe("1.3")
             expect(ccFile.fileChecksum).toBe("fake-checksum")
@@ -136,24 +147,26 @@ describe("ccFileHelper", () => {
 
         it("should resolve a json object in version less than 1.3 and decorate checksum", () => {
             const expectedMD5 = md5('{"apiVersion":"1.2"}')
-            const ccFile = getCCFileAndDecorateFileChecksum({ apiVersion: "1.2" } as ExportCCFile) as ExportCCFile
+            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum({ apiVersion: "1.2" } as ExportCCFile))
 
             expect(ccFile.apiVersion).toBe("1.2")
             expect(ccFile.fileChecksum).toBe(expectedMD5)
         })
 
         it("should resolve a json object in version less than 1.2 and does not decorate checksum", () => {
-            const ccFile = getCCFileAndDecorateFileChecksum({
-                fileChecksum: "fake-checksum",
-                apiVersion: "1.2"
-            } as ExportCCFile) as ExportCCFile
+            const ccFile = asExportCCFile(
+                getCCFileAndDecorateFileChecksum({
+                    fileChecksum: "fake-checksum",
+                    apiVersion: "1.2"
+                } as ExportCCFile)
+            )
 
             expect(ccFile.apiVersion).toBe("1.2")
             expect(ccFile.fileChecksum).toBe("fake-checksum")
         })
 
         it("should return null on invalid input data", () => {
-            const ccFile = getCCFileAndDecorateFileChecksum("broken json") as ExportCCFile
+            const ccFile = getCCFileAndDecorateFileChecksum("broken json")
 
             expect(ccFile).toBeNull()
         })

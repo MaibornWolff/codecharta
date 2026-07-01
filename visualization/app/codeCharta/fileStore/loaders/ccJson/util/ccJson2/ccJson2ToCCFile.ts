@@ -35,8 +35,9 @@ export function mapCcJson2ToCCFile(file: CcJson2, nameDataPair: NameDataPair): C
                 edges: mapEdges(file, idToPath),
                 attributeTypes: getAttributeTypes(file),
                 attributeDescriptors: getAttributeDescriptors(file),
-                blacklist: [],
-                markedPackages: []
+                // 2.0 files carry neither; both are populated only when a 1.x file is normalized (deprecated).
+                blacklist: file.blacklist ?? [],
+                markedPackages: file.markedPackages ?? []
             }
         },
         map
@@ -62,6 +63,10 @@ function mapFileNode(
     }
     if (node.children !== undefined) {
         mappedNode.children = node.children.map(child => mapFileNode(child, path, attributesByNodeId, idToPath))
+    }
+    // fixedPosition only exists on a normalized 1.x node (deprecated); the treemap layout pins fixed folders by it.
+    if (node.fixedPosition !== undefined) {
+        mappedNode.fixedPosition = node.fixedPosition
     }
     return mappedNode
 }

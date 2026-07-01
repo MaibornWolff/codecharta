@@ -49,7 +49,7 @@ describe("FileValidator", () => {
             fileSize: 30,
             content: TEST_FILE_CONTENT_INVALID_MINOR_API
         }
-        const expectedWarnings = [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${(nameDataPair.content as ExportCCFile).apiVersion}`]
+        const expectedWarnings = [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${TEST_FILE_CONTENT_INVALID_MINOR_API.apiVersion}`]
 
         expect(checkWarnings(nameDataPair.content)).toEqual(expectedWarnings)
     })

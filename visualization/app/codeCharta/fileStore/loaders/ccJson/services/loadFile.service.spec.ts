@@ -81,17 +81,13 @@ describe("loadFileService", () => {
             },
             map: {
                 attributes: {},
-                isExcluded: false,
-                isFlattened: false,
                 children: [
                     {
                         attributes: { functions: 10, mcc: 1, rloc: 100 },
                         link: "https://www.google.de",
                         name: "big leaf",
                         path: "/root/big leaf",
-                        type: NodeType.FILE,
-                        isExcluded: false,
-                        isFlattened: false
+                        type: NodeType.FILE
                     },
                     {
                         attributes: {},
@@ -100,24 +96,18 @@ describe("loadFileService", () => {
                                 attributes: { functions: 100, mcc: 100, rloc: 30 },
                                 name: "small leaf",
                                 path: "/root/Parent Leaf/small leaf",
-                                type: NodeType.FILE,
-                                isExcluded: false,
-                                isFlattened: false
+                                type: NodeType.FILE
                             },
                             {
                                 attributes: { functions: 1000, mcc: 10, rloc: 70 },
                                 name: "other small leaf",
                                 path: "/root/Parent Leaf/other small leaf",
-                                type: NodeType.FILE,
-                                isExcluded: false,
-                                isFlattened: false
+                                type: NodeType.FILE
                             }
                         ],
                         name: "Parent Leaf",
                         path: "/root/Parent Leaf",
-                        type: NodeType.FOLDER,
-                        isExcluded: false,
-                        isFlattened: false
+                        type: NodeType.FOLDER
                     }
                 ],
                 name: "root",

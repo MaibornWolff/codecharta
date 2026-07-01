@@ -38,69 +38,67 @@ export const ERROR_MESSAGES = {
         "File contains unsupported 'authors' attribute. This attribute will be ignored. Node containing the attribute: "
 }
 
-export function detectApiVersionMajor(content: ExportCCFile | CcJson2 | null | undefined): number {
-    const metaApiVersion = (content as CcJson2)?.meta?.apiVersion
-    if (typeof metaApiVersion === "string") {
-        return getAsApiVersion(metaApiVersion).major
-    }
-    const apiVersion = (content as ExportCCFile)?.apiVersion
-    if (typeof apiVersion === "string") {
-        return getAsApiVersion(apiVersion).major
-    }
-    return Number.NaN
-}
+/** The raw parsed file content at the load boundary — a 1.x export, a 2.0 file, or nothing. */
+export type CcFileContent = ExportCCFile | CcJson2 | null | undefined
 
 /**
  * A cc.json 2.0 file is identified by its `{ meta, files, lenses }` envelope, not by a bare major
  * number — a legacy `{ apiVersion: "2.0", nodes }` file (no `meta`) must still travel the 1.x path.
+ * A type guard, so every caller narrows `CcFileContent` without casting.
  */
-export function isCcJson2(content: ExportCCFile | CcJson2 | null | undefined): boolean {
-    return (content as CcJson2)?.meta !== undefined && detectApiVersionMajor(content) === 2
+export function isCcJson2(content: CcFileContent): content is CcJson2 {
+    if (content == null || typeof content !== "object" || !("meta" in content)) {
+        return false
+    }
+    return typeof content.meta.apiVersion === "string" && getAsApiVersion(content.meta.apiVersion).major === 2
 }
 
-export function removeAuthorsAttributes(file: ExportCCFile | CcJson2): string[] {
-    if (isCcJson2(file)) {
-        // In 2.0 authors are regular metric attributes (out of scope for Slice 1); nothing to strip here.
+export function detectApiVersionMajor(content: CcFileContent): number {
+    if (isCcJson2(content)) {
+        return getAsApiVersion(content.meta.apiVersion).major
+    }
+    if (content != null && typeof content.apiVersion === "string") {
+        return getAsApiVersion(content.apiVersion).major
+    }
+    return Number.NaN
+}
+
+export function removeAuthorsAttributes(file: CcFileContent): string[] {
+    // 2.0 authors are regular metric attributes (out of scope); nothing to strip for 2.0/empty files.
+    if (isCcJson2(file) || file == null || !file.nodes) {
         return []
     }
-    const file1 = file as ExportCCFile
-    if (!file1 || !file1.nodes) {
+    return removeAuthorsAttributeFromNodes(file.nodes)
+}
+
+export function checkWarnings(file: CcFileContent): string[] {
+    if (file == null || isCcJson2(file)) {
         return []
     }
-    return removeAuthorsAttributeFromNodes(file1.nodes)
+    if (fileHasHigherMinorVersion(file)) {
+        return [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`]
+    }
+    return []
 }
 
-export function checkWarnings(file: ExportCCFile | CcJson2) {
-    const warnings: string[] = []
-    if (!file || isCcJson2(file)) {
-        return warnings
-    }
-    const file1 = file as ExportCCFile
-    if (fileHasHigherMinorVersion(file1)) {
-        warnings.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file1.apiVersion}`)
-    }
-    return warnings
-}
-
-export function checkErrors(file: ExportCCFile | CcJson2) {
+export function checkErrors(file: CcFileContent): string[] {
     if (isCcJson2(file)) {
-        return checkErrors2_0(file as CcJson2)
+        return checkErrors2_0(file)
     }
-    const file1 = file as ExportCCFile
+    if (file == null) {
+        return [ERROR_MESSAGES.fileIsInvalid]
+    }
     const errors: string[] = []
     switch (true) {
-        case !file1:
-            errors.push(ERROR_MESSAGES.fileIsInvalid)
-            break
-        case !isValidApiVersion(file1):
+        case !isValidApiVersion(file):
             errors.push(ERROR_MESSAGES.apiVersionIsInvalid)
             break
-        case fileHasHigherMajorVersion(file1):
+        case fileHasHigherMajorVersion(file):
             errors.push(ERROR_MESSAGES.majorApiVersionIsOutdated)
             break
     }
     if (errors.length === 0) {
-        errors.push(...checkJsonSchema(file1))
+        errors.push(...checkJsonSchema(file))
     }
     return errors
 }

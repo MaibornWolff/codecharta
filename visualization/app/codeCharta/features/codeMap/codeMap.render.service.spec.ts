@@ -40,6 +40,7 @@ import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
+const metricsLensFacadeDouble: Pick<MetricsLensFacade, "getNodeMetricData"> = { getNodeMetricData: () => METRIC_DATA }
 jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
     metricDataSelector: jest.fn()
 }))
@@ -99,7 +100,7 @@ describe("codeMapRenderService", () => {
             codeMapArrowService,
             threeStatsService,
             codeMapMouseEventService,
-            { getNodeMetricData: () => METRIC_DATA } as unknown as MetricsLensFacade
+            metricsLensFacadeDouble as MetricsLensFacade
         )
         codeMapRenderService["showCouplingArrows"] = jest.fn()
     }

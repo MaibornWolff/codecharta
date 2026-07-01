@@ -8,7 +8,7 @@ import { CcJson2 } from "../../../../model/ccjson2.model"
 import { ungzip } from "pako"
 
 function getProjectName(content: ExportCCFile | CcJson2): string {
-    return isCcJson2(content) ? (content as CcJson2).meta.projectName : (content as ExportCCFile).projectName
+    return isCcJson2(content) ? content.meta.projectName : content.projectName
 }
 
 export class UrlExtractor {

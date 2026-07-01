@@ -1,4 +1,4 @@
-import { AttributeDescriptors, AttributeTypeValue, NodeType } from "./domain.model"
+import { AttributeDescriptors, AttributeTypeValue, BlacklistItem, FixedPosition, MarkedPackage, NodeType } from "./domain.model"
 
 /**
  * cc.json 2.0 domain types: the `{ meta, files, lenses }` shape.
@@ -21,6 +21,17 @@ export interface CcJson2 {
     /** Exactly one root folder. */
     files: FileNode[]
     lenses: Lenses
+    /**
+     * @deprecated 1.x-normalization carryover — NOT part of cc.json 2.0. Legacy 1.x files embed
+     * exclude/flatten rules; the normalizer copies them here so they survive. Remove when 1.x
+     * ingestion is dropped. 2.0 files never set this.
+     */
+    blacklist?: BlacklistItem[]
+    /**
+     * @deprecated 1.x-normalization carryover — NOT part of cc.json 2.0. Legacy 1.x files embed
+     * marked-folder colors; the normalizer copies them here. Remove when 1.x ingestion is dropped.
+     */
+    markedPackages?: MarkedPackage[]
 }
 
 export interface Meta2 {
@@ -38,6 +49,12 @@ export interface FileNode {
     children?: FileNode[]
     contentHash?: string
     link?: string
+    /**
+     * @deprecated 1.x-normalization carryover — NOT part of cc.json 2.0. Legacy 1.x files embed
+     * fixed-folder placement on nodes; the normalizer copies it so the treemap layout still pins
+     * fixed folders. Remove when 1.x ingestion is dropped. 2.0 files never set this.
+     */
+    fixedPosition?: FixedPosition
 }
 
 export interface Lenses {

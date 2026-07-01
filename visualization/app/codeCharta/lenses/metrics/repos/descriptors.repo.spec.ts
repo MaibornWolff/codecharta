@@ -5,13 +5,14 @@ import { MetricsLensStore } from "../store/metricsLens.store"
 import { DescriptorsRepo } from "./descriptors.repo"
 
 function repoFor(attributeTypes: AttributeTypes): DescriptorsRepo {
-    const fakeStore = {
-        attributeDescriptors$: of(TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED),
-        attributeTypes$: of(attributeTypes),
-        getAttributeDescriptors: () => TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED,
-        getAttributeTypes: () => attributeTypes
-    } as unknown as MetricsLensStore
-    return new DescriptorsRepo(fakeStore)
+    const fakeStore: Pick<MetricsLensStore, "attributeDescriptors$" | "attributeTypes$" | "getAttributeDescriptors" | "getAttributeTypes"> =
+        {
+            attributeDescriptors$: of(TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED),
+            attributeTypes$: of(attributeTypes),
+            getAttributeDescriptors: () => TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED,
+            getAttributeTypes: () => attributeTypes
+        }
+    return new DescriptorsRepo(fakeStore as MetricsLensStore)
 }
 
 describe("DescriptorsRepo", () => {
