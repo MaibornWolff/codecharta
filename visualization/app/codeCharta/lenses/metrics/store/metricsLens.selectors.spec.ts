@@ -5,7 +5,6 @@ import { TEST_DELTA_MAP_A } from "../../../mocks/dataMocks"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
 import { calculateNodeMetricData } from "./nodeMetricData.calculator"
-import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { metricRangeSelector, nodeMetricDataSelector, rangeOfMetric } from "./metricsLens.selectors"
 
 describe("metricsLens selectors", () => {
@@ -40,7 +39,7 @@ describe("metricsLens selectors", () => {
     })
 
     describe("metricRangeSelector / rangeOfMetric", () => {
-        it("should value-equal selectedColorMetricDataSelector for the color metric", () => {
+        it("should return the values, min and max of the color metric", () => {
             // Arrange
             const nodeMetricData = calculateNodeMetricData([fileState], createBlacklistMatcher([]))
             const colorMetric = "rloc"
@@ -49,8 +48,8 @@ describe("metricsLens selectors", () => {
             const result = metricRangeSelector.projector(nodeMetricData, colorMetric)
 
             // Assert
-            const metricData = { nodeMetricData, edgeMetricData: [], nodeEdgeMetricsMap: new Map() }
-            expect(result).toEqual(selectedColorMetricDataSelector.projector(metricData, colorMetric))
+            const rloc = nodeMetricData.find(metric => metric.name === colorMetric)
+            expect(result).toEqual({ values: rloc.values, minValue: rloc.minValue, maxValue: rloc.maxValue })
         })
 
         it("should fall back to the empty range for a missing metric", () => {

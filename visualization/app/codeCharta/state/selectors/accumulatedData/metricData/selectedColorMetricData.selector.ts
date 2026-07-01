@@ -1,17 +1,13 @@
-import { createSelector } from "@ngrx/store"
-import { colorMetricSelector } from "../../../store/dynamicSettings/colorMetric/colorMetric.selector"
-import { metricDataSelector } from "./metricData.selector"
+import { metricRangeSelector } from "../../../../lenses/metrics/metricsLens.facade"
 
 export type MetricMinMax = {
     minValue: number
     maxValue: number
 }
 
-export const selectedColorMetricDataSelector = createSelector(metricDataSelector, colorMetricSelector, (metricData, colorMetric) => {
-    const data = metricData.nodeMetricData.find(x => x.name === colorMetric)
-    return {
-        values: data?.values ?? [],
-        minValue: data?.minValue ?? 0,
-        maxValue: data?.maxValue ?? 0
-    }
-})
+/**
+ * The color-metric range is OWNED by the metrics lens (`metricRangeSelector`). This historical name is
+ * kept as a thin re-export so the render/effect consumers stay drop-in until a later slice points them
+ * at the facade directly. Collapsing onto the lens selector removes the Slice-1 duplicate implementation.
+ */
+export const selectedColorMetricDataSelector = metricRangeSelector

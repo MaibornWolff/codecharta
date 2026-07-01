@@ -5,7 +5,6 @@ import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher
 import { TEST_DELTA_MAP_A } from "../../../mocks/dataMocks"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { calculateNodeMetricData } from "../store/nodeMetricData.calculator"
-import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
 import { rangeOfMetric } from "../store/metricsLens.selectors"
 import { MetricsLensStore } from "../store/metricsLens.store"
 import { AttributesRepo } from "./attributes.repo"
@@ -29,11 +28,10 @@ describe("AttributesRepo", () => {
         repo = new AttributesRepo(fakeStore as MetricsLensStore)
     })
 
-    it("should value-equal selectedColorMetricDataSelector for rangeOf(colorMetric)", () => {
-        const metricData = { nodeMetricData, edgeMetricData: [], nodeEdgeMetricsMap: new Map() }
-        const expected = selectedColorMetricDataSelector.projector(metricData, "rloc")
+    it("should expose the values, min and max of the color metric via rangeOf", () => {
+        const rloc = nodeMetricData.find(metric => metric.name === "rloc")
 
-        expect(repo.rangeOf("rloc")).toEqual(expected)
+        expect(repo.rangeOf("rloc")).toEqual({ values: rloc.values, minValue: rloc.minValue, maxValue: rloc.maxValue })
     })
 
     it("should fall back to the empty range for a missing metric", () => {
