@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from "@an
 import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
 import { HexMapColor } from "../../../../codeCharta.model"
-import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { defaultMapColors } from "../../../../appearance/appearance.facade"
 import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
 import { AmountOfBuildingsWithSelectedEdgeMetricService } from "../../services/amountOfBuildingsWithSelectedEdgeMetric.service"

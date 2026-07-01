@@ -1,10 +1,9 @@
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { layoutAlgorithmSelector } from "../../../features/globalSettings/facade"
-import { invertAreaSelector } from "../../store/appSettings/invertArea/invertArea.selector"
+import { enableFloorLabelsSelector, invertAreaSelector } from "../../../appearance/appearance.facade"
 import { marginSelector } from "../../store/dynamicSettings/margin/margin.selector"
 import { DefaultProjectorFn, MemoizedSelector } from "@ngrx/store"
-import { enableFloorLabelsSelector } from "../../store/appSettings/enableFloorLabels/enableFloorLabels.selector"
 import { areaMetricSelector } from "../../store/dynamicSettings/areaMetric/areaMetric.selector"
 import { isDeltaStateSelector } from "../../selectors/isDeltaState.selector"
 

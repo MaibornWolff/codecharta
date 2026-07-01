@@ -7,8 +7,29 @@ import { getCCFiles } from "../../model/files/files.helper"
 import { metricDataSelector } from "../selectors/accumulatedData/metricData/metricData.selector"
 import { setDelta, setFiles } from "../../fileStore/store/files.actions"
 import { setCurrentFilesAreSampleFiles } from "../store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
-import { setShowOutgoingEdges } from "../store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
-import { setShowIncomingEdges } from "../store/appSettings/showEdges/incoming/showIncomingEdges.actions"
+import {
+    setAmountOfEdgePreviews,
+    setAmountOfTopLabels,
+    setColorLabels,
+    setEdgeHeight,
+    setEnableFloorLabels,
+    setGroupLabelCollisions,
+    setHideFlatBuildings,
+    setInvertArea,
+    setInvertHeight,
+    setIsEdgeMetricVisible,
+    setIsWhiteBackground,
+    setLabelMode,
+    setLabelSize,
+    setLabelsPerMap,
+    setMapColors,
+    setScaling,
+    setShowIncomingEdges,
+    setShowMetricLabelNameValue,
+    setShowMetricLabelNodeName,
+    setShowOnlyBuildingsWithEdges,
+    setShowOutgoingEdges
+} from "../../appearance/appearance.facade"
 import { setAttributeTypes } from "../store/fileSettings/attributeTypes/attributeTypes.actions"
 import { setAttributeDescriptors } from "../store/fileSettings/attributeDescriptors/attributeDescriptors.action"
 import { setBlacklist } from "../store/fileSettings/blacklist/blacklist.actions"
@@ -25,32 +46,13 @@ import { setDistributionMetric } from "../store/dynamicSettings/distributionMetr
 import { setAllFocusedNodes } from "../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setSearchPattern } from "../store/dynamicSettings/searchPattern/searchPattern.actions"
 import { setMargin } from "../store/dynamicSettings/margin/margin.actions"
-import { setAmountOfTopLabels } from "../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { setAmountOfEdgePreviews } from "../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
-import { setLabelSize } from "../store/appSettings/labelSize/labelSize.actions"
-import { setEdgeHeight } from "../store/appSettings/edgeHeight/edgeHeight.actions"
-import { setScaling } from "../store/appSettings/scaling/scaling.actions"
-import { setHideFlatBuildings } from "../store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
-import { setInvertHeight } from "../store/appSettings/invertHeight/invertHeight.actions"
-import { setInvertArea } from "../store/appSettings/invertArea/invertArea.actions"
-import { setIsWhiteBackground } from "../store/appSettings/isWhiteBackground/isWhiteBackground.actions"
-import { setMapColors } from "../store/appSettings/mapColors/mapColors.actions"
 import { setPresentationMode } from "../store/appSettings/isPresentationMode/isPresentationMode.actions"
-import { setShowOnlyBuildingsWithEdges } from "../store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
-import { setIsEdgeMetricVisible } from "../store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { setResetCameraIfNewFileIsLoaded } from "../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setShowMetricLabelNameValue } from "../store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { setShowMetricLabelNodeName } from "../store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { setLayoutAlgorithm } from "../store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMaxTreeMapFiles } from "../store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setExperimentalFeaturesEnabled } from "../store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { setScreenshotToClipboardEnabled } from "../store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
-import { setColorLabels } from "../store/appSettings/colorLabels/colorLabels.actions"
 import { setIsColorMetricLinkedToHeightMetricAction } from "../store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
-import { setEnableFloorLabels } from "../store/appSettings/enableFloorLabels/enableFloorLabels.actions"
-import { setLabelMode } from "../store/appSettings/labelMode/labelMode.actions"
-import { setGroupLabelCollisions } from "../store/appSettings/groupLabelCollisions/groupLabelCollisions.actions"
-import { setLabelsPerMap } from "../store/appSettings/labelsPerMap/labelsPerMap.actions"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {

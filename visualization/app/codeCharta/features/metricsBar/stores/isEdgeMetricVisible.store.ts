@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { isEdgeMetricVisibleSelector } from "../selectors/edgeAndColors.selectors"
-import { toggleEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { toggleEdgeMetricVisible } from "../../../appearance/appearance.facade"
 
 @Injectable({
     providedIn: "root"

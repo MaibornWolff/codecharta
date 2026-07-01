@@ -1,13 +1,12 @@
 import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
+import { defaultAmountOfTopLabels, mapColorsSelector } from "../../../appearance/appearance.facade"
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { areMultipleMapsVisibleSelector } from "../../../state/selectors/areMultipleMapsVisible.selector"
 import { labelsPerMapActiveSelector } from "../../../state/selectors/labelsPerMapActive.selector"
 import { getPartialDefaultState } from "../../../state/store/util/getPartialDefaultState"
 import { setState } from "../../../state/store/state.actions"
-import { defaultAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.reducer"
 
 @Injectable({
     providedIn: "root"

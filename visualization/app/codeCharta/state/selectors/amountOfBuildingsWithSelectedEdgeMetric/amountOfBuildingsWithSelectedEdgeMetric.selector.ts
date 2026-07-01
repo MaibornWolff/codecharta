@@ -1,8 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { nodeEdgeMetricsMapSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeMetric.selector"
-import { showIncomingEdgesSelector } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.selector"
-import { showOutgoingEdgesSelector } from "../../store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
+import { showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../appearance/appearance.facade"
 import { EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../codeCharta.model"
 
 export const amountOfBuildingsWithSelectedEdgeMetricSelector = createSelector(

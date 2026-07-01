@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { showOutgoingEdgesSelector } from "../selectors/edgeAndColors.selectors"
-import { setShowOutgoingEdges } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
+import { setShowOutgoingEdges } from "../../../appearance/appearance.facade"
 
 @Injectable({
     providedIn: "root"

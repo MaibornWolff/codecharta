@@ -1,8 +1,10 @@
-export { amountOfEdgePreviewsSelector } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
-export { edgeHeightSelector } from "../../../state/store/appSettings/edgeHeight/edgeHeight.selector"
-export { isEdgeMetricVisibleSelector } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
-export { showIncomingEdgesSelector } from "../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.selector"
-export { showOutgoingEdgesSelector } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
-export { showOnlyBuildingsWithEdgesSelector } from "../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.selector"
-export { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
+export {
+    amountOfEdgePreviewsSelector,
+    edgeHeightSelector,
+    isEdgeMetricVisibleSelector,
+    mapColorsSelector,
+    showIncomingEdgesSelector,
+    showOnlyBuildingsWithEdgesSelector,
+    showOutgoingEdgesSelector
+} from "../../../appearance/appearance.facade"
 export { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../state/selectors/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"

@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { AmountOfTopLabelsStore } from "./amountOfTopLabels.store"
 import { amountOfTopLabelsSelector } from "../selectors/labelSettings.selectors"
-import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setAmountOfTopLabels } from "../../../appearance/appearance.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("AmountOfTopLabelsStore", () => {

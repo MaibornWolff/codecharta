@@ -5,16 +5,18 @@ import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
 import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../state/selectors/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
-import { setAmountOfEdgePreviews } from "../../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
-import { amountOfEdgePreviewsSelector } from "../../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
-import { setEdgeHeight } from "../../../../state/store/appSettings/edgeHeight/edgeHeight.actions"
-import { edgeHeightSelector } from "../../../../state/store/appSettings/edgeHeight/edgeHeight.selector"
-import { setShowIncomingEdges } from "../../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.actions"
-import { showIncomingEdgesSelector } from "../../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.selector"
-import { setShowOutgoingEdges } from "../../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
-import { showOutgoingEdgesSelector } from "../../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
-import { setShowOnlyBuildingsWithEdges } from "../../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
-import { showOnlyBuildingsWithEdgesSelector } from "../../../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.selector"
+import {
+    amountOfEdgePreviewsSelector,
+    edgeHeightSelector,
+    setAmountOfEdgePreviews,
+    setEdgeHeight,
+    setShowIncomingEdges,
+    setShowOnlyBuildingsWithEdges,
+    setShowOutgoingEdges,
+    showIncomingEdgesSelector,
+    showOnlyBuildingsWithEdgesSelector,
+    showOutgoingEdgesSelector
+} from "../../../../appearance/appearance.facade"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { EdgeSettingsPopoverComponent } from "./edgeSettingsPopover.component"
 

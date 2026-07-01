@@ -1,32 +1,37 @@
-import { setAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
-import { setAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
-import { setLabelSize } from "./labelSize/labelSize.actions"
-import { setColorLabels } from "./colorLabels/colorLabels.actions"
-import { setEdgeHeight } from "./edgeHeight/edgeHeight.actions"
+import {
+    invertColorRange,
+    invertDeltaColors,
+    setAmountOfEdgePreviews,
+    setAmountOfTopLabels,
+    setColorLabels,
+    setEdgeHeight,
+    setEnableFloorLabels,
+    setGroupLabelCollisions,
+    setHideFlatBuildings,
+    setInvertArea,
+    setInvertHeight,
+    setIsEdgeMetricVisible,
+    setIsWhiteBackground,
+    setLabelMode,
+    setLabelSize,
+    setLabelsPerMap,
+    setMapColors,
+    setScaling,
+    setShowMetricLabelNameValue,
+    setShowMetricLabelNodeName,
+    setShowOnlyBuildingsWithEdges,
+    toggleEdgeMetricVisible
+} from "../../../appearance/appearance.facade"
 import { setScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
 import { setExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
-import { setEnableFloorLabels } from "./enableFloorLabels/enableFloorLabels.actions"
-import { setLabelMode } from "./labelMode/labelMode.actions"
-import { setGroupLabelCollisions } from "./groupLabelCollisions/groupLabelCollisions.actions"
-import { setLabelsPerMap } from "./labelsPerMap/labelsPerMap.actions"
-import { setHideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.actions"
-import { setInvertArea } from "./invertArea/invertArea.actions"
-import { setInvertHeight } from "./invertHeight/invertHeight.actions"
-import { setIsEdgeMetricVisible, toggleEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import {
     setIsColorMetricLinkedToHeightMetricAction,
     toggleIsColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
-import { setIsWhiteBackground } from "./isWhiteBackground/isWhiteBackground.actions"
 import { setLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
-import { setMapColors, invertColorRange, invertDeltaColors } from "./mapColors/mapColors.actions"
 import { setMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setScaling } from "./scaling/scaling.actions"
-import { setShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { setShowMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { setShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 import { setSortingOrderAscending, toggleSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
 
 export const appSettingsActions = [

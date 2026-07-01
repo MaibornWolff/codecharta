@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
+import { mapColorsSelector } from "../../../appearance/appearance.facade"
 
 export const metricColorRangeColorsSelector = createSelector(mapColorsSelector, mapColors => ({
     leftColor: mapColors.positive,

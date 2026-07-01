@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { amountOfTopLabelsSelector } from "../selectors/labelSettings.selectors"
-import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setAmountOfTopLabels } from "../../../appearance/appearance.facade"
 
 @Injectable({
     providedIn: "root"

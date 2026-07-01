@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { invertHeightSelector } from "../../../state/store/appSettings/invertHeight/invertHeight.selector"
-import { setInvertHeight } from "../../../state/store/appSettings/invertHeight/invertHeight.actions"
+import { invertHeightSelector, setInvertHeight } from "../../../appearance/appearance.facade"
 
 @Injectable({
     providedIn: "root"

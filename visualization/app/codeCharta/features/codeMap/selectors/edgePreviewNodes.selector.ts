@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { NodeEdgeMetricsMap } from "../../../codeCharta.model"
-import { amountOfEdgePreviewsSelector } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
+import { amountOfEdgePreviewsSelector } from "../../../appearance/appearance.facade"
 import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { sortedNodeEdgeMetricsMapSelector } from "../../../lenses/dependency/dependencyLens.facade"
 

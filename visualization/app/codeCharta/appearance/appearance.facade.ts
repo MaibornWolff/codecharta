@@ -1,0 +1,75 @@
+/**
+ * Public surface of the Appearance shared-state module — the ONLY thing outsiders import.
+ *
+ * Appearance owns the purely-visual leaf settings (map colors, labels, scaling, axis inversion,
+ * hide-flat, white background, and edge *visibility/appearance*). Slice 4 moved these settings'
+ * code out of `state/store/appSettings/*` into `appearance/store/*` while keeping the existing
+ * `appSettings` combineReducers key (a code-boundary move, not a store-key reshape), so every
+ * `state.appSettings.*` path and the URL/scenario/IndexedDB persistence stay byte-identical.
+ *
+ * This barrel re-exports each setting's selectors (read), action creators (write), reducer +
+ * `default*` (store wiring). Consumers — legacy features/state and the metrics/dependency lenses —
+ * read appearance only through here; the `store/` internals stay private by convention (the
+ * `shared-state-is-leaf` dep-cruiser rule locks the leaf direction).
+ */
+export * from "./store/amountOfEdgePreviews/amountOfEdgePreviews.actions"
+export * from "./store/amountOfEdgePreviews/amountOfEdgePreviews.reducer"
+export * from "./store/amountOfEdgePreviews/amountOfEdgePreviews.selector"
+export * from "./store/amountOfTopLabels/amountOfTopLabels.actions"
+export * from "./store/amountOfTopLabels/amountOfTopLabels.reducer"
+export * from "./store/amountOfTopLabels/amountOfTopLabels.selector"
+export * from "./store/colorLabels/colorLabels.actions"
+export * from "./store/colorLabels/colorLabels.reducer"
+export * from "./store/colorLabels/colorLabels.selector"
+export * from "./store/edgeHeight/edgeHeight.actions"
+export * from "./store/edgeHeight/edgeHeight.reducer"
+export * from "./store/edgeHeight/edgeHeight.selector"
+export * from "./store/enableFloorLabels/enableFloorLabels.actions"
+export * from "./store/enableFloorLabels/enableFloorLabels.reducer"
+export * from "./store/enableFloorLabels/enableFloorLabels.selector"
+export * from "./store/groupLabelCollisions/groupLabelCollisions.actions"
+export * from "./store/groupLabelCollisions/groupLabelCollisions.reducer"
+export * from "./store/groupLabelCollisions/groupLabelCollisions.selector"
+export * from "./store/hideFlatBuildings/hideFlatBuildings.actions"
+export * from "./store/hideFlatBuildings/hideFlatBuildings.reducer"
+export * from "./store/invertArea/invertArea.actions"
+export * from "./store/invertArea/invertArea.reducer"
+export * from "./store/invertArea/invertArea.selector"
+export * from "./store/invertHeight/invertHeight.actions"
+export * from "./store/invertHeight/invertHeight.reducer"
+export * from "./store/invertHeight/invertHeight.selector"
+export * from "./store/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+export * from "./store/isEdgeMetricVisible/isEdgeMetricVisible.reducer"
+export * from "./store/isEdgeMetricVisible/isEdgeMetricVisible.selector"
+export * from "./store/isWhiteBackground/isWhiteBackground.actions"
+export * from "./store/isWhiteBackground/isWhiteBackground.reducer"
+export * from "./store/labelMode/labelMode.actions"
+export * from "./store/labelMode/labelMode.reducer"
+export * from "./store/labelMode/labelMode.selector"
+export * from "./store/labelSize/labelSize.actions"
+export * from "./store/labelSize/labelSize.reducer"
+export * from "./store/labelSize/labelSize.selector"
+export * from "./store/labelsPerMap/labelsPerMap.actions"
+export * from "./store/labelsPerMap/labelsPerMap.reducer"
+export * from "./store/labelsPerMap/labelsPerMap.selector"
+export * from "./store/mapColors/mapColors.actions"
+export * from "./store/mapColors/mapColors.reducer"
+export * from "./store/mapColors/mapColors.selector"
+export * from "./store/scaling/scaling.actions"
+export * from "./store/scaling/scaling.reducer"
+export * from "./store/scaling/scaling.selector"
+export * from "./store/showEdges/incoming/showIncomingEdges.actions"
+export * from "./store/showEdges/incoming/showIncomingEdges.reducer"
+export * from "./store/showEdges/incoming/showIncomingEdges.selector"
+export * from "./store/showEdges/outgoing/showOutgoingEdges.actions"
+export * from "./store/showEdges/outgoing/showOutgoingEdges.reducer"
+export * from "./store/showEdges/outgoing/showOutgoingEdges.selector"
+export * from "./store/showMetricLabelNameValue/showMetricLabelNameValue.actions"
+export * from "./store/showMetricLabelNameValue/showMetricLabelNameValue.reducer"
+export * from "./store/showMetricLabelNameValue/showMetricLabelNameValue.selector"
+export * from "./store/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+export * from "./store/showMetricLabelNodeName/showMetricLabelNodeName.reducer"
+export * from "./store/showMetricLabelNodeName/showMetricLabelNodeName.selector"
+export * from "./store/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
+export * from "./store/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
+export * from "./store/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.selector"

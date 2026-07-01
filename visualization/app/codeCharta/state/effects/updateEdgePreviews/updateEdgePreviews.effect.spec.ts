@@ -4,10 +4,9 @@ import { provideMockActions } from "@ngrx/effects/testing"
 import { Subject } from "rxjs"
 import { Action } from "@ngrx/store"
 import { provideMockStore, MockStore } from "@ngrx/store/testing"
-import { toggleEdgeMetricVisible } from "../../store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
+import { isEdgeMetricVisibleSelector, toggleEdgeMetricVisible } from "../../../appearance/appearance.facade"
 import { UpdateEdgePreviewsEffect } from "./updateEdgePreviews.effect"
 import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeMetric.selector"
-import { isEdgeMetricVisibleSelector } from "../../store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("updateEdgePreviewsEffect", () => {

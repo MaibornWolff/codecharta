@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { MarkedPackage } from "../../../codeCharta.model"
 import { rightClickedCodeMapNodeSelector } from "../../../state/selectors/rightClickedCodeMapNode.selector"
-import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
+import { mapColorsSelector } from "../../../appearance/appearance.facade"
 import { markedPackagesSelector } from "../../../state/store/fileSettings/markedPackages/markedPackages.selector"
 import { findIndexOfMarkedPackageOrParent } from "../../../state/store/fileSettings/markedPackages/util/findIndexOfMarkedPackageOrParent"
 

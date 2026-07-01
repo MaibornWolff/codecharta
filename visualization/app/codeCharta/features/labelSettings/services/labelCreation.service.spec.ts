@@ -4,11 +4,13 @@ import { CcState, Node } from "../../../codeCharta.model"
 import { Group, BoxGeometry, Mesh } from "three"
 import { ThreeSceneService } from "../../../features/codeMap/facade"
 import { StateAccessStore } from "../stores/stateAccess.store"
-import { setAmountOfTopLabels } from "../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { setLabelSize } from "../../../state/store/appSettings/labelSize/labelSize.actions"
+import {
+    setAmountOfTopLabels,
+    setLabelSize,
+    setShowMetricLabelNameValue,
+    setShowMetricLabelNodeName
+} from "../../../appearance/appearance.facade"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { setShowMetricLabelNameValue } from "../../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { setShowMetricLabelNodeName } from "../../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 

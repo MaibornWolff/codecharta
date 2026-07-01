@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { labelSizeSelector } from "../selectors/labelSettings.selectors"
-import { setLabelSize } from "../../../state/store/appSettings/labelSize/labelSize.actions"
+import { setLabelSize } from "../../../appearance/appearance.facade"
 
 @Injectable({
     providedIn: "root"

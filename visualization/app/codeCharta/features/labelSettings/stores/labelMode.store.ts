@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState, LabelMode } from "../../../codeCharta.model"
 import { labelModeSelector } from "../selectors/labelSettings.selectors"
-import { setLabelMode } from "../../../state/store/appSettings/labelMode/labelMode.actions"
+import { setLabelMode } from "../../../appearance/appearance.facade"
 
 @Injectable({
     providedIn: "root"

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { defaultMapColors } from "../../../../appearance/appearance.facade"
 import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
 import { IsDeltaStateService } from "../../services/isDeltaState.service"
 import { MapColorsService } from "../../services/mapColors.service"

@@ -12,17 +12,14 @@ import {
 } from "../rendering/codeMapBuilding.mocks"
 import { CcState, Node } from "../../../codeCharta.model"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
+import { setScaling, setShowIncomingEdges, setShowOutgoingEdges, toggleEdgeMetricVisible } from "../../../appearance/appearance.facade"
 import { setEdges } from "../../../state/store/fileSettings/edges/edges.actions"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
-import { toggleEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { wait } from "../../../util/testUtils/wait"
 import { IdToBuildingService } from "../idToBuilding.service"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { clone } from "../../../util/clone"
-import { setShowOutgoingEdges } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
-import { setShowIncomingEdges } from "../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.actions"
 
 describe("CodeMapArrowService", () => {
     let codeMapArrowService: CodeMapArrowService

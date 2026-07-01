@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
+import { mapColorsSelector } from "../../../appearance/appearance.facade"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
 import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
 

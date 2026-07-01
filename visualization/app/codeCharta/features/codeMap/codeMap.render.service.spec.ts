@@ -22,15 +22,17 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
+import {
+    setAmountOfTopLabels,
+    setColorLabels,
+    setLabelMode,
+    setLabelsPerMap,
+    setShowMetricLabelNameValue,
+    setShowMetricLabelNodeName
+} from "../../appearance/appearance.facade"
 import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
-import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { setLabelsPerMap } from "../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
 import { setFiles } from "../../fileStore/store/files.actions"
-import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"

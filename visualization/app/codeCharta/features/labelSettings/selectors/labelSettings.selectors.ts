@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
 
-export { labelSizeSelector } from "../../../state/store/appSettings/labelSize/labelSize.selector"
+export { labelSizeSelector } from "../../../appearance/appearance.facade"
 
 export const labelModeSelector = createSelector(appSettingsSelector, appSettings => appSettings.labelMode)
 

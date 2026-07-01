@@ -8,8 +8,7 @@ import { DEFAULT_STATE, FILE_STATES } from "../../../mocks/dataMocks"
 import { CcState } from "../../../codeCharta.model"
 import { setState } from "../../store/state.actions"
 import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric.actions"
-import { setShowOutgoingEdges } from "../../store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
-import { setShowIncomingEdges } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.actions"
+import { setShowIncomingEdges, setShowOutgoingEdges } from "../../../appearance/appearance.facade"
 
 describe("countBuildingsWithEdgeMetric", () => {
     let store: Store<CcState>

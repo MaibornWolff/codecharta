@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { Scene, Vector2, WebGLRenderer, WebGLInfo, Camera } from "three"
 import { Store, StoreModule } from "@ngrx/store"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { setIsWhiteBackground } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import { setIsWhiteBackground } from "../../../appearance/appearance.facade"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
 jest.mock("three", () => {

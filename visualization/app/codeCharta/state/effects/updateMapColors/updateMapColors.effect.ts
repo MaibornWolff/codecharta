@@ -4,8 +4,7 @@ import { State, Store } from "@ngrx/store"
 import { map } from "rxjs"
 import stringify from "safe-stable-stringify"
 import { CcState, MapColors } from "../../../codeCharta.model"
-import { setMapColors } from "../../store/appSettings/mapColors/mapColors.actions"
-import { defaultMapColors } from "../../store/appSettings/mapColors/mapColors.reducer"
+import { defaultMapColors, setMapColors } from "../../../appearance/appearance.facade"
 import { colorMetricSelector } from "../../store/dynamicSettings/colorMetric/colorMetric.selector"
 
 @Injectable()

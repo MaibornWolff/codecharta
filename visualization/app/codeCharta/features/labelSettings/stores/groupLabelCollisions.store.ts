@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { groupLabelCollisionsSelector } from "../selectors/labelSettings.selectors"
-import { setGroupLabelCollisions } from "../../../state/store/appSettings/groupLabelCollisions/groupLabelCollisions.actions"
+import { setGroupLabelCollisions } from "../../../appearance/appearance.facade"
 
 @Injectable({
     providedIn: "root"

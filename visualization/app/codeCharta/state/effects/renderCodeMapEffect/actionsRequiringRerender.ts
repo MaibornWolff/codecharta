@@ -1,19 +1,29 @@
-import { setAmountOfEdgePreviews } from "../../store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
-import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { setLabelSize } from "../../store/appSettings/labelSize/labelSize.actions"
-import { setColorLabels } from "../../store/appSettings/colorLabels/colorLabels.actions"
-import { setEdgeHeight } from "../../store/appSettings/edgeHeight/edgeHeight.actions"
-import { setHideFlatBuildings } from "../../store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
-import { setInvertArea } from "../../store/appSettings/invertArea/invertArea.actions"
-import { setInvertHeight } from "../../store/appSettings/invertHeight/invertHeight.actions"
-import { setIsWhiteBackground } from "../../store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import {
+    invertColorRange,
+    invertDeltaColors,
+    setAmountOfEdgePreviews,
+    setAmountOfTopLabels,
+    setColorLabels,
+    setEdgeHeight,
+    setEnableFloorLabels,
+    setGroupLabelCollisions,
+    setHideFlatBuildings,
+    setInvertArea,
+    setInvertHeight,
+    setIsWhiteBackground,
+    setLabelMode,
+    setLabelSize,
+    setLabelsPerMap,
+    setMapColors,
+    setScaling,
+    setShowIncomingEdges,
+    setShowMetricLabelNameValue,
+    setShowMetricLabelNodeName,
+    setShowOnlyBuildingsWithEdges,
+    setShowOutgoingEdges
+} from "../../../appearance/appearance.facade"
 import { setLayoutAlgorithm } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
-import { setMapColors, invertColorRange, invertDeltaColors } from "../../store/appSettings/mapColors/mapColors.actions"
 import { setMaxTreeMapFiles } from "../../store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
-import { setScaling } from "../../store/appSettings/scaling/scaling.actions"
-import { setShowMetricLabelNameValue } from "../../store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { setShowMetricLabelNodeName } from "../../store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { setShowOnlyBuildingsWithEdges } from "../../store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 import { setAreaMetric } from "../../store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorMode } from "../../store/dynamicSettings/colorMode/colorMode.actions"
@@ -29,13 +39,7 @@ import { setHeightMetric } from "../../store/dynamicSettings/heightMetric/height
 import { setMargin } from "../../store/dynamicSettings/margin/margin.actions"
 import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
 import { setMarkedPackages, markPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
-import { setEnableFloorLabels } from "../../store/appSettings/enableFloorLabels/enableFloorLabels.actions"
-import { setGroupLabelCollisions } from "../../store/appSettings/groupLabelCollisions/groupLabelCollisions.actions"
-import { setLabelsPerMap } from "../../store/appSettings/labelsPerMap/labelsPerMap.actions"
-import { setLabelMode } from "../../store/appSettings/labelMode/labelMode.actions"
 import { setState } from "../../store/state.actions"
-import { setShowIncomingEdges } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.actions"
-import { setShowOutgoingEdges } from "../../store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
 
 export const actionsRequiringRerender = [
     setColorLabels,

@@ -9,7 +9,6 @@ import { FileSelectionState } from "../../../../model/files/files"
 import { getCCFiles } from "../../../../model/files/files.helper"
 import { MetricQueryParemter } from "../../../../state/effects/updateQueryParameters/metricQueryParameter"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { setAmountOfTopLabels } from "../../../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
 import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setColorMetric } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
@@ -166,7 +165,9 @@ describe("LoadInitialFileService", () => {
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
-            expect(await getLastAction(store)).toEqual(setAmountOfTopLabels({ value: AMOUNT_OF_TOP_LABELS }))
+            // asserted as a plain action literal (not the setAmountOfTopLabels creator): amountOfTopLabels
+            // now lives in the appearance module, which fileStore must not import (filestore-has-no-upward-deps)
+            expect(await getLastAction(store)).toEqual({ type: "SET_AMOUNT_OF_TOP_LABELS", value: AMOUNT_OF_TOP_LABELS })
         })
 
         it("should apply settings and then set files when files in query params differ from files in indexeddb", async () => {

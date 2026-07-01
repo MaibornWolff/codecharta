@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { LabelModeStore } from "./labelMode.store"
 import { labelModeSelector } from "../selectors/labelSettings.selectors"
-import { setLabelMode } from "../../../state/store/appSettings/labelMode/labelMode.actions"
+import { setLabelMode } from "../../../appearance/appearance.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { LabelMode } from "../../../codeCharta.model"
 
