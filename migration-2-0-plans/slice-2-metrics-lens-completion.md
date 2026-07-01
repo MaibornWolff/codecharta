@@ -127,7 +127,7 @@ Decisions / corrections to the roadmap text:
   the rest (`loadInitialFile`, `mapReset`, `scenarioDialog`, `updateQueryParameters`, `accumulatedData`,
   the reset effects, metricsBar/inspector) are edge or cross-cutting and stay on the aggregator by design.
 
-Deferred (with reason):
+Deferred (with reason) — **all tracked forward in `CARRIED-FORWARD.md` so the unblocking slice picks them up:**
 - **Step 3 — `valueOf(id, metric)`: DEFERRED (architectural blocker).** `valueOf` needs a node-by-id
   lookup, but the numeric node `id` is assigned only in `NodeDecorator.decorateMapWithMetricData`, which
   runs inside `accumulatedDataSelector` — *downstream* of `metricDataSelector`. Since Step 1 made

@@ -7,6 +7,9 @@ version: 1
 
 # Roadmap — Visualization 2.0, Slice 1: cc.json 2.0 ingestion + Metrics lens
 
+> 📌 **Planning a new slice? Read `../CARRIED-FORWARD.md` first** — the canonical backlog of work
+> earlier slices deferred (e.g. `valueOf`, the dependency lens, the `warn`→`error` bridge flip).
+>
 > First milestone only. Scope is deliberately small: make the visualization read **cc.json 2.0**
 > and stand up the **Metrics lens** containing everything metric-related that already exists in the
 > code. No other lenses, no renderer/page split, no new renderers. Those come in later slices.
