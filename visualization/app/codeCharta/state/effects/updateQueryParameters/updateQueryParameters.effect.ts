@@ -4,7 +4,7 @@ import { State, Store } from "@ngrx/store"
 import { debounceTime, map, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 import { LoadInitialFileService } from "../../../fileStore/fileStore.facade"
-import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
+import { edgeMetricDataSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
 import { MetricQueryParemter } from "./metricQueryParameter"
 
@@ -21,8 +21,8 @@ export class UpdateQueryParametersEffect {
         () =>
             this.actions$.pipe(
                 ofType(...actionsRequiringUpdateQueryParameters),
-                withLatestFrom(this.store.select(metricDataSelector)),
-                map(metricData => metricData[1].edgeMetricData && metricData[1].edgeMetricData.length > 0),
+                withLatestFrom(this.store.select(edgeMetricDataSelector)),
+                map(([, edgeMetricData]) => edgeMetricData && edgeMetricData.length > 0),
                 debounceTime(100),
                 tap(isEdgeMetricDefined => {
                     this.updateMetricQueryParameters(isEdgeMetricDefined)
