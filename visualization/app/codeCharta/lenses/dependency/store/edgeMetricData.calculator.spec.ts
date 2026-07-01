@@ -1,8 +1,8 @@
 import { calculateEdgeMetricData, calculateNodePath } from "./edgeMetricData.calculator"
-import { FILE_STATES, FILE_STATES_TWO_FILES, VALID_NODE_WITH_PATH } from "../../../../mocks/dataMocks"
-import { FileState } from "../../../../model/files/files"
-import { clone } from "../../../../util/clone"
-import { createBlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
+import { FILE_STATES, FILE_STATES_TWO_FILES, VALID_NODE_WITH_PATH } from "../../../mocks/dataMocks"
+import { FileState } from "../../../model/files/files"
+import { clone } from "../../../util/clone"
+import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 
 const emptyMatcher = createBlacklistMatcher([])
 

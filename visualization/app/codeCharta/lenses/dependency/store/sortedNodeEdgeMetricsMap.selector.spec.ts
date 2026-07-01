@@ -1,14 +1,14 @@
-import { FILE_STATES, FILE_STATES_WITHOUT_EDGES } from "../../../../mocks/dataMocks"
+import { FILE_STATES, FILE_STATES_WITHOUT_EDGES } from "../../../mocks/dataMocks"
 import { sortedNodeEdgeMetricsMapSelector } from "./sortedNodeEdgeMetricsMap.selector"
 import { Store, StoreModule } from "@ngrx/store"
-import { CcState } from "../../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { TestBed } from "@angular/core/testing"
-import { appReducers } from "../../../store/state.manager"
-import { setFiles } from "../../../../fileStore/store/files.actions"
-import { NodeEdgeMetricsMap } from "../../../../codeCharta.model"
+import { appReducers } from "../../../state/store/state.manager"
+import { setFiles } from "../../../fileStore/store/files.actions"
+import { NodeEdgeMetricsMap } from "../../../codeCharta.model"
 import { firstValueFrom } from "rxjs"
-import { setShowOutgoingEdges } from "../../../store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
-import { setShowIncomingEdges } from "../../../store/appSettings/showEdges/incoming/showIncomingEdges.actions"
+import { setShowOutgoingEdges } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
+import { setShowIncomingEdges } from "../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.actions"
 
 describe("sortedNodeEdgeMetricsMapSelector", () => {
     let store: Store<CcState>
