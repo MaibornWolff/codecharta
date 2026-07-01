@@ -1,7 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode, NodeEdgeMetricsMap } from "../../../../codeCharta.model"
 import { isLeaf } from "../../../../util/codeMapHelper"
-import { NodeEdgeMetricsMap } from "../metricData/edgeMetricData.calculator"
 import { getMetricValuesForNode } from "./getMetricValuesForNode"
 
 export const addEdgeMetricsForLeaves = (nodeEdgeMetricsMap: NodeEdgeMetricsMap, map: CodeMapNode, metricNames: string[]) => {

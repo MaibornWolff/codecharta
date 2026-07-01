@@ -3,7 +3,7 @@ import { metricDataSelector } from "../accumulatedData/metricData/metricData.sel
 import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeMetric.selector"
 import { showIncomingEdgesSelector } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.selector"
 import { showOutgoingEdgesSelector } from "../../store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
-import { EdgeMetricCountMap } from "../accumulatedData/metricData/edgeMetricData.calculator"
+import { EdgeMetricCountMap } from "../../../codeCharta.model"
 
 export const amountOfBuildingsWithSelectedEdgeMetricSelector = createSelector(
     metricDataSelector,

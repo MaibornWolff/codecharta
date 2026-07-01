@@ -187,6 +187,9 @@ export interface EdgeMetricCount {
     outgoing: number
 }
 
+export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
+export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
+
 export interface BlacklistItem {
     path: string
     type: BlacklistType
