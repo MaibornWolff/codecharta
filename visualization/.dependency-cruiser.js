@@ -164,6 +164,17 @@ module.exports = {
             }
         },
         {
+            name: "lens-internals-do-not-use-own-lens-facade",
+            severity: "error",
+            comment:
+                "A lens's own code (its features/services/store/repos) reads the repos/store — never its own lens facade. That facade is the OUTWARD public API for code outside the lens; an inside consumer must not route back through it. Cross-lens access to ANOTHER lens's facade stays allowed (governed by lens-cross-lens-only-via-facade). The lens facade file itself and specs are exempt.",
+            from: {
+                path: "^app/codeCharta/lenses/([^/]+)/",
+                pathNot: ["^app/codeCharta/lenses/[^/]+/[^/]+\\.facade\\.ts$", "\\.spec\\.ts$", "\\.e2e\\.ts$"]
+            },
+            to: { path: "^app/codeCharta/lenses/$1/[^/]+\\.facade\\.ts$" }
+        },
+        {
             name: "lens-feature-cross-only-via-public-api",
             severity: "error",
             comment: "Within a lens, a feature may reach another feature only via its facade.ts or components/ (not its services/stores/models).",
