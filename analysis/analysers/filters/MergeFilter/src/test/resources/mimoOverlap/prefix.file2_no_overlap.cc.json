@@ -1,1 +1,36 @@
-{"meta":{"projectName":"SourceMonitorImporter","apiVersion":"2.0","checksum":"1d8eed5abd3bf92ed513ff15e92b6637"},"files":[{"id":"8a5edab282632443","name":"root","type":"Folder","children":[{"id":"53003f8123c04a50","name":"JavaParser.java","type":"File"}]}],"lenses":{"metrics":{"attributes":{},"attributeDescriptors":{},"attributeTypes":{},"clusters":[]},"dependency":{"edges":[],"attributeTypes":{},"attributeDescriptors":{}},"domain":{},"security":{}}}
+{
+  "meta": {
+    "projectName": "SourceMonitorImporter",
+    "apiVersion": "2.0",
+    "checksum": "1d8eed5abd3bf92ed513ff15e92b6637"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "53003f8123c04a50",
+          "name": "JavaParser.java",
+          "type": "File"
+        }
+      ]
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {},
+      "attributeDescriptors": {},
+      "attributeTypes": {},
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    },
+    "domain": {},
+    "security": {}
+  }
+}

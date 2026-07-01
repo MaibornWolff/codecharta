@@ -1,1 +1,340 @@
-{"meta":{"projectName":"","apiVersion":"2.0","checksum":"df2452f9d086ade8f5061278eda55057"},"files":[{"id":"8a5edab282632443","name":"root","type":"Folder","children":[{"id":"56c9e1c4b5360a5b","name":"src","type":"Folder","children":[{"id":"e1584b1fb8bf5d36","name":"main","type":"Folder","children":[{"id":"6f3ade7fb2214ca1","name":"java","type":"Folder","children":[{"id":"276b18117fc0b936","name":"com","type":"Folder","children":[{"id":"1fce03e5caad2150","name":"mindflow","type":"Folder","children":[{"id":"a6c0b87aefcb73e7","name":"py4j","type":"Folder","children":[{"id":"7af69c751c90209c","name":"Converter.java","type":"File","link":""},{"id":"5c874bb7529f628e","name":"exception","type":"Folder","children":[{"id":"dae9e63ca815d2a0","name":"IllegalPinyinException.java","type":"File","link":""}],"link":""},{"id":"a7a25b9a35578364","name":"PinyinConverter.java","type":"File","link":""},{"id":"d30603ca42c60a02","name":"util","type":"Folder","children":[{"id":"5c000ec6109e1534","name":"ArrayUtils.java","type":"File","link":""},{"id":"bfd79b25493bf17b","name":"IoUtils.java","type":"File","link":""},{"id":"c5303c0a9e21c373","name":"StringUtils.java","type":"File","link":""}],"link":""},{"id":"688f8f1272df6906","name":"voc","type":"Folder","children":[{"id":"4d6237fcce1cf4c1","name":"Py4jDictionary.java","type":"File","link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"link":""},{"id":"7b132a5d2c95af90","name":"test","type":"Folder","children":[{"id":"cf3c05697873b94c","name":"java","type":"Folder","children":[{"id":"8e314e85ff30c231","name":"com","type":"Folder","children":[{"id":"4038743b3ca9aa84","name":"mindflow","type":"Folder","children":[{"id":"d8599296ab76be3c","name":"py4j","type":"Folder","children":[{"id":"356b45b326562a1f","name":"PinyinConverterTest.java","type":"File","link":""},{"id":"87bbd8184d5ba1f1","name":"ThreadSafeTest.java","type":"File","link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"lenses":{"metrics":{"attributes":{"7af69c751c90209c":{"rloc":6.0,"classes":1.0,"functions":2.0,"statements":0.0,"comment_lines":1.0,"mcc":0.0,"cognitive_complexity":0.0,"commented_out_code_blocks":0.0,"max_nesting_level":0.0,"code_smell":0.0,"security_hotspot":0.0,"vulnerability":0.0,"bug":0.0,"sonar_issue_other":0.0},"dae9e63ca815d2a0":{"rloc":15.0,"classes":1.0,"functions":4.0,"statements":3.0,"comment_lines":1.0,"mcc":4.0,"cognitive_complexity":0.0,"commented_out_code_blocks":0.0,"max_nesting_level":0.0,"code_smell":0.0,"security_hotspot":0.0,"vulnerability":0.0,"bug":0.0,"sonar_issue_other":0.0},"a7a25b9a35578364":{"rloc":115.0,"classes":1.0,"functions":4.0,"statements":68.0,"comment_lines":8.0,"mcc":38.0,"cognitive_complexity":84.0,"commented_out_code_blocks":0.0,"max_nesting_level":6.0,"code_smell":6.0,"security_hotspot":0.0,"vulnerability":0.0,"bug":0.0,"sonar_issue_other":0.0},"5c000ec6109e1534":{"rloc":15.0,"classes":1.0,"functions":2.0,"statements":7.0,"comment_lines":1.0,"mcc":5.0,"cognitive_complexity":3.0,"commented_out_code_blocks":0.0,"max_nesting_level":1.0,"code_smell":1.0,"security_hotspot":0.0,"vulnerability":0.0,"bug":0.0},"bfd79b25493bf17b":{"rloc":44.0,"classes":1.0,"functions":7.0,"statements":19.0,"comment_lines":1.0,"mcc":10.0,"cognitive_complexity":4.0,"commented_out_code_blocks":0.0,"max_nesting_level":2.0,"code_smell":1.0,"security_hotspot":1.0,"vulnerability":0.0,"bug":0.0,"sonar_issue_other":0.0},"c5303c0a9e21c373":{"rloc":57.0,"classes":1.0,"functions":8.0,"statements":30.0,"comment_lines":10.0,"mcc":22.0,"cognitive_complexity":16.0,"commented_out_code_blocks":0.0,"max_nesting_level":2.0,"code_smell":2.0,"security_hotspot":0.0,"vulnerability":0.0,"bug":0.0,"sonar_issue_other":0.0},"4d6237fcce1cf4c1":{"rloc":100.0,"classes":2.0,"functions":9.0,"statements":45.0,"comment_lines":1.0,"mcc":18.0,"cognitive_complexity":18.0,"commented_out_code_blocks":0.0,"max_nesting_level":5.0,"code_smell":6.0,"security_hotspot":0.0,"vulnerability":0.0,"sonar_issue_other":0.0,"bug":0.0},"356b45b326562a1f":{"rloc":31.0,"classes":1.0,"functions":4.0,"statements":12.0,"comment_lines":1.0,"mcc":6.0,"cognitive_complexity":2.0,"commented_out_code_blocks":0.0,"max_nesting_level":1.0,"code_smell":3.0,"security_hotspot":0.0,"vulnerability":0.0,"bug":0.0,"sonar_issue_other":0.0},"87bbd8184d5ba1f1":{"rloc":26.0,"classes":1.0,"functions":1.0,"statements":12.0,"comment_lines":3.0,"mcc":4.0,"cognitive_complexity":4.0,"commented_out_code_blocks":0.0,"max_nesting_level":1.0,"code_smell":3.0,"security_hotspot":0.0,"vulnerability":0.0,"bug":0.0,"sonar_issue_other":0.0}},"attributeDescriptors":{},"attributeTypes":{},"clusters":[]},"dependency":{"edges":[],"attributeTypes":{},"attributeDescriptors":{}}}}
+{
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.0",
+    "checksum": "df2452f9d086ade8f5061278eda55057"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "56c9e1c4b5360a5b",
+          "name": "src",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "e1584b1fb8bf5d36",
+              "name": "main",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "6f3ade7fb2214ca1",
+                  "name": "java",
+                  "type": "Folder",
+                  "children": [
+                    {
+                      "id": "276b18117fc0b936",
+                      "name": "com",
+                      "type": "Folder",
+                      "children": [
+                        {
+                          "id": "1fce03e5caad2150",
+                          "name": "mindflow",
+                          "type": "Folder",
+                          "children": [
+                            {
+                              "id": "a6c0b87aefcb73e7",
+                              "name": "py4j",
+                              "type": "Folder",
+                              "children": [
+                                {
+                                  "id": "7af69c751c90209c",
+                                  "name": "Converter.java",
+                                  "type": "File",
+                                  "link": ""
+                                },
+                                {
+                                  "id": "5c874bb7529f628e",
+                                  "name": "exception",
+                                  "type": "Folder",
+                                  "children": [
+                                    {
+                                      "id": "dae9e63ca815d2a0",
+                                      "name": "IllegalPinyinException.java",
+                                      "type": "File",
+                                      "link": ""
+                                    }
+                                  ],
+                                  "link": ""
+                                },
+                                {
+                                  "id": "a7a25b9a35578364",
+                                  "name": "PinyinConverter.java",
+                                  "type": "File",
+                                  "link": ""
+                                },
+                                {
+                                  "id": "d30603ca42c60a02",
+                                  "name": "util",
+                                  "type": "Folder",
+                                  "children": [
+                                    {
+                                      "id": "5c000ec6109e1534",
+                                      "name": "ArrayUtils.java",
+                                      "type": "File",
+                                      "link": ""
+                                    },
+                                    {
+                                      "id": "bfd79b25493bf17b",
+                                      "name": "IoUtils.java",
+                                      "type": "File",
+                                      "link": ""
+                                    },
+                                    {
+                                      "id": "c5303c0a9e21c373",
+                                      "name": "StringUtils.java",
+                                      "type": "File",
+                                      "link": ""
+                                    }
+                                  ],
+                                  "link": ""
+                                },
+                                {
+                                  "id": "688f8f1272df6906",
+                                  "name": "voc",
+                                  "type": "Folder",
+                                  "children": [
+                                    {
+                                      "id": "4d6237fcce1cf4c1",
+                                      "name": "Py4jDictionary.java",
+                                      "type": "File",
+                                      "link": ""
+                                    }
+                                  ],
+                                  "link": ""
+                                }
+                              ],
+                              "link": ""
+                            }
+                          ],
+                          "link": ""
+                        }
+                      ],
+                      "link": ""
+                    }
+                  ],
+                  "link": ""
+                }
+              ],
+              "link": ""
+            },
+            {
+              "id": "7b132a5d2c95af90",
+              "name": "test",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "cf3c05697873b94c",
+                  "name": "java",
+                  "type": "Folder",
+                  "children": [
+                    {
+                      "id": "8e314e85ff30c231",
+                      "name": "com",
+                      "type": "Folder",
+                      "children": [
+                        {
+                          "id": "4038743b3ca9aa84",
+                          "name": "mindflow",
+                          "type": "Folder",
+                          "children": [
+                            {
+                              "id": "d8599296ab76be3c",
+                              "name": "py4j",
+                              "type": "Folder",
+                              "children": [
+                                {
+                                  "id": "356b45b326562a1f",
+                                  "name": "PinyinConverterTest.java",
+                                  "type": "File",
+                                  "link": ""
+                                },
+                                {
+                                  "id": "87bbd8184d5ba1f1",
+                                  "name": "ThreadSafeTest.java",
+                                  "type": "File",
+                                  "link": ""
+                                }
+                              ],
+                              "link": ""
+                            }
+                          ],
+                          "link": ""
+                        }
+                      ],
+                      "link": ""
+                    }
+                  ],
+                  "link": ""
+                }
+              ],
+              "link": ""
+            }
+          ],
+          "link": ""
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "7af69c751c90209c": {
+          "rloc": 6.0,
+          "classes": 1.0,
+          "functions": 2.0,
+          "statements": 0.0,
+          "comment_lines": 1.0,
+          "mcc": 0.0,
+          "cognitive_complexity": 0.0,
+          "commented_out_code_blocks": 0.0,
+          "max_nesting_level": 0.0,
+          "code_smell": 0.0,
+          "security_hotspot": 0.0,
+          "vulnerability": 0.0,
+          "bug": 0.0,
+          "sonar_issue_other": 0.0
+        },
+        "dae9e63ca815d2a0": {
+          "rloc": 15.0,
+          "classes": 1.0,
+          "functions": 4.0,
+          "statements": 3.0,
+          "comment_lines": 1.0,
+          "mcc": 4.0,
+          "cognitive_complexity": 0.0,
+          "commented_out_code_blocks": 0.0,
+          "max_nesting_level": 0.0,
+          "code_smell": 0.0,
+          "security_hotspot": 0.0,
+          "vulnerability": 0.0,
+          "bug": 0.0,
+          "sonar_issue_other": 0.0
+        },
+        "a7a25b9a35578364": {
+          "rloc": 115.0,
+          "classes": 1.0,
+          "functions": 4.0,
+          "statements": 68.0,
+          "comment_lines": 8.0,
+          "mcc": 38.0,
+          "cognitive_complexity": 84.0,
+          "commented_out_code_blocks": 0.0,
+          "max_nesting_level": 6.0,
+          "code_smell": 6.0,
+          "security_hotspot": 0.0,
+          "vulnerability": 0.0,
+          "bug": 0.0,
+          "sonar_issue_other": 0.0
+        },
+        "5c000ec6109e1534": {
+          "rloc": 15.0,
+          "classes": 1.0,
+          "functions": 2.0,
+          "statements": 7.0,
+          "comment_lines": 1.0,
+          "mcc": 5.0,
+          "cognitive_complexity": 3.0,
+          "commented_out_code_blocks": 0.0,
+          "max_nesting_level": 1.0,
+          "code_smell": 1.0,
+          "security_hotspot": 0.0,
+          "vulnerability": 0.0,
+          "bug": 0.0
+        },
+        "bfd79b25493bf17b": {
+          "rloc": 44.0,
+          "classes": 1.0,
+          "functions": 7.0,
+          "statements": 19.0,
+          "comment_lines": 1.0,
+          "mcc": 10.0,
+          "cognitive_complexity": 4.0,
+          "commented_out_code_blocks": 0.0,
+          "max_nesting_level": 2.0,
+          "code_smell": 1.0,
+          "security_hotspot": 1.0,
+          "vulnerability": 0.0,
+          "bug": 0.0,
+          "sonar_issue_other": 0.0
+        },
+        "c5303c0a9e21c373": {
+          "rloc": 57.0,
+          "classes": 1.0,
+          "functions": 8.0,
+          "statements": 30.0,
+          "comment_lines": 10.0,
+          "mcc": 22.0,
+          "cognitive_complexity": 16.0,
+          "commented_out_code_blocks": 0.0,
+          "max_nesting_level": 2.0,
+          "code_smell": 2.0,
+          "security_hotspot": 0.0,
+          "vulnerability": 0.0,
+          "bug": 0.0,
+          "sonar_issue_other": 0.0
+        },
+        "4d6237fcce1cf4c1": {
+          "rloc": 100.0,
+          "classes": 2.0,
+          "functions": 9.0,
+          "statements": 45.0,
+          "comment_lines": 1.0,
+          "mcc": 18.0,
+          "cognitive_complexity": 18.0,
+          "commented_out_code_blocks": 0.0,
+          "max_nesting_level": 5.0,
+          "code_smell": 6.0,
+          "security_hotspot": 0.0,
+          "vulnerability": 0.0,
+          "sonar_issue_other": 0.0,
+          "bug": 0.0
+        },
+        "356b45b326562a1f": {
+          "rloc": 31.0,
+          "classes": 1.0,
+          "functions": 4.0,
+          "statements": 12.0,
+          "comment_lines": 1.0,
+          "mcc": 6.0,
+          "cognitive_complexity": 2.0,
+          "commented_out_code_blocks": 0.0,
+          "max_nesting_level": 1.0,
+          "code_smell": 3.0,
+          "security_hotspot": 0.0,
+          "vulnerability": 0.0,
+          "bug": 0.0,
+          "sonar_issue_other": 0.0
+        },
+        "87bbd8184d5ba1f1": {
+          "rloc": 26.0,
+          "classes": 1.0,
+          "functions": 1.0,
+          "statements": 12.0,
+          "comment_lines": 3.0,
+          "mcc": 4.0,
+          "cognitive_complexity": 4.0,
+          "commented_out_code_blocks": 0.0,
+          "max_nesting_level": 1.0,
+          "code_smell": 3.0,
+          "security_hotspot": 0.0,
+          "vulnerability": 0.0,
+          "bug": 0.0,
+          "sonar_issue_other": 0.0
+        }
+      },
+      "attributeDescriptors": {},
+      "attributeTypes": {},
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
+  }
+}

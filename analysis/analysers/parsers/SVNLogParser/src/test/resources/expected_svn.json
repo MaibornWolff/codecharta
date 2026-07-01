@@ -1,1 +1,170 @@
-{"meta":{"projectName":"","apiVersion":"2.0","checksum":"839101e5acf26aa809dec60fb8e9d102"},"files":[{"id":"8a5edab282632443","name":"root","type":"Folder","children":[{"id":"56c9e1c4b5360a5b","name":"src","type":"Folder","children":[{"id":"f537b131e60e059f","name":"innerFolder","type":"Folder","children":[{"id":"17334816e50f3f93","name":"BestClassEver.java","type":"File","link":""},{"id":"877245ae4d360af8","name":"Main.java","type":"File","link":""}],"link":""},{"id":"b3442dcb0abc7334","name":"srcFolderTest.txt","type":"File","link":""}],"link":""}],"link":""}],"lenses":{"metrics":{"attributes":{"17334816e50f3f93":{"number_of_authors":2.0,"number_of_commits":5.0,"range_of_weeks_with_commits":1.0,"successive_weeks_with_commits":1.0,"weeks_with_commits":1.0,"authors":["MartinSc","AlexH"]},"877245ae4d360af8":{"number_of_authors":1.0,"number_of_commits":2.0,"range_of_weeks_with_commits":1.0,"successive_weeks_with_commits":1.0,"weeks_with_commits":1.0,"authors":["MartinSc"]},"b3442dcb0abc7334":{"number_of_authors":2.0,"number_of_commits":4.0,"range_of_weeks_with_commits":1.0,"successive_weeks_with_commits":1.0,"weeks_with_commits":1.0,"authors":["MartinSc","AlexH"]}},"attributeDescriptors":{"number_of_commits":{"title":"Number of Commits","description":"Number of commits","hintLowValue":"","hintHighValue":"","link":"https://codecharta.com/docs/parser/svn-log","direction":-1,"analyzers":["svnLogParser"]},"weeks_with_commits":{"title":"Weeks with Commits","description":"Number of weeks in which commits occurred","hintLowValue":"","hintHighValue":"","link":"https://codecharta.com/docs/parser/svn-log","direction":-1,"analyzers":["svnLogParser"]},"number_of_authors":{"title":"Number of Authors","description":"Number of authors","hintLowValue":"","hintHighValue":"","link":"https://codecharta.com/docs/parser/svn-log","direction":-1,"analyzers":["svnLogParser"]},"successive_weeks_with_commits":{"title":"Successive Weeks with Commits","description":"Number of successive weeks in which the file was included in a commit","hintLowValue":"","hintHighValue":"","link":"https://codecharta.com/docs/parser/svn-log","direction":-1,"analyzers":["svnLogParser"]},"range_of_weeks_with_commits":{"title":"Week Range of Commits","description":"Average number of weeks between commits","hintLowValue":"","hintHighValue":"","link":"https://codecharta.com/docs/parser/svn-log","direction":-1,"analyzers":["svnLogParser"]},"authors":{"title":"Authors","description":"The authors that have worked on a file","hintLowValue":"","hintHighValue":"","link":"https://codecharta.com/docs/parser/svn-log","direction":-1,"analyzers":["svnLogParser"]}},"attributeTypes":{"number_of_authors":"relative","number_of_commits":"absolute","range_of_weeks_with_commits":"relative","successive_weeks_with_commits":"relative","weeks_with_commits":"relative"},"clusters":[]},"dependency":{"edges":[],"attributeTypes":{},"attributeDescriptors":{}}}}
+{
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.0",
+    "checksum": "839101e5acf26aa809dec60fb8e9d102"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "56c9e1c4b5360a5b",
+          "name": "src",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "f537b131e60e059f",
+              "name": "innerFolder",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "17334816e50f3f93",
+                  "name": "BestClassEver.java",
+                  "type": "File",
+                  "link": ""
+                },
+                {
+                  "id": "877245ae4d360af8",
+                  "name": "Main.java",
+                  "type": "File",
+                  "link": ""
+                }
+              ],
+              "link": ""
+            },
+            {
+              "id": "b3442dcb0abc7334",
+              "name": "srcFolderTest.txt",
+              "type": "File",
+              "link": ""
+            }
+          ],
+          "link": ""
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "17334816e50f3f93": {
+          "number_of_authors": 2.0,
+          "number_of_commits": 5.0,
+          "range_of_weeks_with_commits": 1.0,
+          "successive_weeks_with_commits": 1.0,
+          "weeks_with_commits": 1.0,
+          "authors": [
+            "MartinSc",
+            "AlexH"
+          ]
+        },
+        "877245ae4d360af8": {
+          "number_of_authors": 1.0,
+          "number_of_commits": 2.0,
+          "range_of_weeks_with_commits": 1.0,
+          "successive_weeks_with_commits": 1.0,
+          "weeks_with_commits": 1.0,
+          "authors": [
+            "MartinSc"
+          ]
+        },
+        "b3442dcb0abc7334": {
+          "number_of_authors": 2.0,
+          "number_of_commits": 4.0,
+          "range_of_weeks_with_commits": 1.0,
+          "successive_weeks_with_commits": 1.0,
+          "weeks_with_commits": 1.0,
+          "authors": [
+            "MartinSc",
+            "AlexH"
+          ]
+        }
+      },
+      "attributeDescriptors": {
+        "number_of_commits": {
+          "title": "Number of Commits",
+          "description": "Number of commits",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/svn-log",
+          "direction": -1,
+          "analyzers": [
+            "svnLogParser"
+          ]
+        },
+        "weeks_with_commits": {
+          "title": "Weeks with Commits",
+          "description": "Number of weeks in which commits occurred",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/svn-log",
+          "direction": -1,
+          "analyzers": [
+            "svnLogParser"
+          ]
+        },
+        "number_of_authors": {
+          "title": "Number of Authors",
+          "description": "Number of authors",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/svn-log",
+          "direction": -1,
+          "analyzers": [
+            "svnLogParser"
+          ]
+        },
+        "successive_weeks_with_commits": {
+          "title": "Successive Weeks with Commits",
+          "description": "Number of successive weeks in which the file was included in a commit",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/svn-log",
+          "direction": -1,
+          "analyzers": [
+            "svnLogParser"
+          ]
+        },
+        "range_of_weeks_with_commits": {
+          "title": "Week Range of Commits",
+          "description": "Average number of weeks between commits",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/svn-log",
+          "direction": -1,
+          "analyzers": [
+            "svnLogParser"
+          ]
+        },
+        "authors": {
+          "title": "Authors",
+          "description": "The authors that have worked on a file",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/svn-log",
+          "direction": -1,
+          "analyzers": [
+            "svnLogParser"
+          ]
+        }
+      },
+      "attributeTypes": {
+        "number_of_authors": "relative",
+        "number_of_commits": "absolute",
+        "range_of_weeks_with_commits": "relative",
+        "successive_weeks_with_commits": "relative",
+        "weeks_with_commits": "relative"
+      },
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
+  }
+}

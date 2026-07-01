@@ -1,1 +1,105 @@
-{"meta":{"projectName":"","apiVersion":"2.0","checksum":"1ac4b4cf40e20b7b4a49c3b99cc5ce41"},"files":[{"id":"8a5edab282632443","name":"root","type":"Folder","children":[{"id":"f53b52ad6d21cceb","name":"app","type":"Folder","children":[{"id":"c8577dad2f91fd74","name":"codeCharta","type":"Folder","children":[{"id":"c62758ea6ae4adf4","name":"codeCharta.api.model.ts","type":"File","link":""}],"link":""},{"id":"7c555de11c8cd179","name":"app.config.ts","type":"File","link":""}]}]}],"lenses":{"metrics":{"attributes":{"c62758ea6ae4adf4":{"line_coverage":100.0,"branch_coverage":100.0,"statement_coverage":100.0},"7c555de11c8cd179":{"line_coverage":0.0,"branch_coverage":100.0,"statement_coverage":0.0}},"attributeDescriptors":{"line_coverage":{"title":"Line Coverage","description":"Percentage of lines covered by tests","hintLowValue":"","hintHighValue":"","link":"","direction":1,"analyzers":["coverageImporter"]},"branch_coverage":{"title":"Branch Coverage","description":"Percentage of branches covered by tests","hintLowValue":"","hintHighValue":"","link":"","direction":1,"analyzers":["coverageImporter"]},"statement_coverage":{"title":"Statement Coverage","description":"Percentage of statements covered by tests","hintLowValue":"","hintHighValue":"","link":"","direction":1,"analyzers":["coverageImporter"]}},"attributeTypes":{"line_coverage":"relative","branch_coverage":"relative","statement_coverage":"relative"},"clusters":[]},"dependency":{"edges":[],"attributeTypes":{},"attributeDescriptors":{}}}}
+{
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.0",
+    "checksum": "1ac4b4cf40e20b7b4a49c3b99cc5ce41"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "f53b52ad6d21cceb",
+          "name": "app",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "c8577dad2f91fd74",
+              "name": "codeCharta",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "c62758ea6ae4adf4",
+                  "name": "codeCharta.api.model.ts",
+                  "type": "File",
+                  "link": ""
+                }
+              ],
+              "link": ""
+            },
+            {
+              "id": "7c555de11c8cd179",
+              "name": "app.config.ts",
+              "type": "File",
+              "link": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "c62758ea6ae4adf4": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "statement_coverage": 100.0
+        },
+        "7c555de11c8cd179": {
+          "line_coverage": 0.0,
+          "branch_coverage": 100.0,
+          "statement_coverage": 0.0
+        }
+      },
+      "attributeDescriptors": {
+        "line_coverage": {
+          "title": "Line Coverage",
+          "description": "Percentage of lines covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": [
+            "coverageImporter"
+          ]
+        },
+        "branch_coverage": {
+          "title": "Branch Coverage",
+          "description": "Percentage of branches covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": [
+            "coverageImporter"
+          ]
+        },
+        "statement_coverage": {
+          "title": "Statement Coverage",
+          "description": "Percentage of statements covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": [
+            "coverageImporter"
+          ]
+        }
+      },
+      "attributeTypes": {
+        "line_coverage": "relative",
+        "branch_coverage": "relative",
+        "statement_coverage": "relative"
+      },
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
+  }
+}

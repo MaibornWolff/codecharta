@@ -1,1 +1,104 @@
-{"meta":{"projectName":"Sample Project","apiVersion":"2.0","checksum":"bb288c6004082504bf2dfdb6b98dd003"},"files":[{"id":"8a5edab282632443","name":"root","type":"Folder","children":[{"id":"e714d3f11a02817e","name":"bigLeaf.ts","type":"File","link":"http://www.google.de"},{"id":"0ada18e939a6cc0d","name":"ParentLeaf","type":"Folder","children":[{"id":"6c88e7a1d5523811","name":"smallLeaf.html","type":"File"},{"id":"b1c972333725efeb","name":"otherSmallLeaf.ts","type":"File"},{"id":"91bf3e69f21d7da7","name":"sample2LeafMergedIn.kt","type":"File","link":"http://www.google.de"}]}]}],"lenses":{"metrics":{"attributes":{"e714d3f11a02817e":{"rloc":120.0,"functions":10.0,"mcc":1.0},"6c88e7a1d5523811":{"rloc":30.0,"functions":101.0,"mcc":80.0},"b1c972333725efeb":{"rloc":70.0,"functions":10.0,"mcc":100.0},"91bf3e69f21d7da7":{"rloc":600.0,"functions":10.0,"mcc":1.0}},"attributeDescriptors":{"single":{"title":"","description":"a","hintLowValue":"b","hintHighValue":"c","link":"d","direction":-1,"analyzers":["e"]},"merge":{"title":"","description":"w","hintLowValue":"x","hintHighValue":"y","link":"z","direction":-1,"analyzers":[]}},"attributeTypes":{"rloc":"absolute","functions":"absolute","mcc":"absolute"},"clusters":[]},"dependency":{"edges":[],"attributeTypes":{},"attributeDescriptors":{}}}}
+{
+  "meta": {
+    "projectName": "Sample Project",
+    "apiVersion": "2.0",
+    "checksum": "bb288c6004082504bf2dfdb6b98dd003"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "e714d3f11a02817e",
+          "name": "bigLeaf.ts",
+          "type": "File",
+          "link": "http://www.google.de"
+        },
+        {
+          "id": "0ada18e939a6cc0d",
+          "name": "ParentLeaf",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "6c88e7a1d5523811",
+              "name": "smallLeaf.html",
+              "type": "File"
+            },
+            {
+              "id": "b1c972333725efeb",
+              "name": "otherSmallLeaf.ts",
+              "type": "File"
+            },
+            {
+              "id": "91bf3e69f21d7da7",
+              "name": "sample2LeafMergedIn.kt",
+              "type": "File",
+              "link": "http://www.google.de"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "e714d3f11a02817e": {
+          "rloc": 120.0,
+          "functions": 10.0,
+          "mcc": 1.0
+        },
+        "6c88e7a1d5523811": {
+          "rloc": 30.0,
+          "functions": 101.0,
+          "mcc": 80.0
+        },
+        "b1c972333725efeb": {
+          "rloc": 70.0,
+          "functions": 10.0,
+          "mcc": 100.0
+        },
+        "91bf3e69f21d7da7": {
+          "rloc": 600.0,
+          "functions": 10.0,
+          "mcc": 1.0
+        }
+      },
+      "attributeDescriptors": {
+        "single": {
+          "title": "",
+          "description": "a",
+          "hintLowValue": "b",
+          "hintHighValue": "c",
+          "link": "d",
+          "direction": -1,
+          "analyzers": [
+            "e"
+          ]
+        },
+        "merge": {
+          "title": "",
+          "description": "w",
+          "hintLowValue": "x",
+          "hintHighValue": "y",
+          "link": "z",
+          "direction": -1,
+          "analyzers": []
+        }
+      },
+      "attributeTypes": {
+        "rloc": "absolute",
+        "functions": "absolute",
+        "mcc": "absolute"
+      },
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
+  }
+}

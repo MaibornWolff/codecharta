@@ -1,1 +1,171 @@
-{"meta":{"projectName":"","apiVersion":"2.0","checksum":"657be30e1b07ec00ac82ef03743d79a1"},"files":[{"id":"8a5edab282632443","name":"root","type":"Folder","children":[{"id":"167fe7c13026b3b2","name":"AnotherParentLeaf","type":"Folder","children":[{"id":"86317cf4c3b4b7b0","name":"smallLeafies.html","type":"File"},{"id":"821f8c86e6c445c6","name":"otherSmallLeafies.ts","type":"File"}]},{"id":"e714d3f11a02817e","name":"bigLeaf.ts","type":"File","link":"http://www.google.de"},{"id":"0ada18e939a6cc0d","name":"ParentLeaf","type":"Folder","children":[{"id":"6c88e7a1d5523811","name":"smallLeaf.html","type":"File"},{"id":"b1c972333725efeb","name":"otherSmallLeaf.ts","type":"File"},{"id":"91bf3e69f21d7da7","name":"sample2LeafMergedIn.kt","type":"File","link":"http://www.google.de"}]}]}],"lenses":{"metrics":{"attributes":{"86317cf4c3b4b7b0":{"yrloc":30.0,"yfunctions":100.0,"ymcc":100.0,"ypairingRate":60.0,"yavgCommits":51.0},"821f8c86e6c445c6":{"yrloc":70.0,"yfunctions":1000.0,"ymcc":10.0,"ypairingRate":65.0,"yavgCommits":22.0},"e714d3f11a02817e":{"rloc":120.0,"functions":10.0,"mcc":1.0},"6c88e7a1d5523811":{"rloc":30.0,"functions":101.0,"mcc":80.0},"b1c972333725efeb":{"rloc":70.0,"functions":10.0,"mcc":100.0},"91bf3e69f21d7da7":{"rloc":600.0,"functions":10.0,"mcc":1.0}},"attributeDescriptors":{"yrloc":{"title":"","description":"a","hintLowValue":"aa","hintHighValue":"aaa","link":"aaaa","direction":-1,"analyzers":[]},"yfunctions":{"title":"","description":"b","hintLowValue":"bb","hintHighValue":"bbb","link":"bbbb","direction":-1,"analyzers":[]},"ymcc":{"title":"","description":"c","hintLowValue":"cc","hintHighValue":"ccc","link":"cccc","direction":-1,"analyzers":[]},"rloc":{"title":"","description":"1","hintLowValue":"1","hintHighValue":"1","link":"1","direction":-1,"analyzers":[]},"functions":{"title":"","description":"2","hintLowValue":"2","hintHighValue":"2","link":"2","direction":-1,"analyzers":[]},"mcc":{"title":"","description":"3","hintLowValue":"3","hintHighValue":"3","link":"3","direction":-1,"analyzers":[]}},"attributeTypes":{"rloc":"absolute","functions":"absolute","mcc":"absolute","pairingRate":"relative","ymcc":"absolute"},"clusters":[]},"dependency":{"edges":[],"attributeTypes":{},"attributeDescriptors":{}}}}
+{
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.0",
+    "checksum": "657be30e1b07ec00ac82ef03743d79a1"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "167fe7c13026b3b2",
+          "name": "AnotherParentLeaf",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "86317cf4c3b4b7b0",
+              "name": "smallLeafies.html",
+              "type": "File"
+            },
+            {
+              "id": "821f8c86e6c445c6",
+              "name": "otherSmallLeafies.ts",
+              "type": "File"
+            }
+          ]
+        },
+        {
+          "id": "e714d3f11a02817e",
+          "name": "bigLeaf.ts",
+          "type": "File",
+          "link": "http://www.google.de"
+        },
+        {
+          "id": "0ada18e939a6cc0d",
+          "name": "ParentLeaf",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "6c88e7a1d5523811",
+              "name": "smallLeaf.html",
+              "type": "File"
+            },
+            {
+              "id": "b1c972333725efeb",
+              "name": "otherSmallLeaf.ts",
+              "type": "File"
+            },
+            {
+              "id": "91bf3e69f21d7da7",
+              "name": "sample2LeafMergedIn.kt",
+              "type": "File",
+              "link": "http://www.google.de"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "86317cf4c3b4b7b0": {
+          "yrloc": 30.0,
+          "yfunctions": 100.0,
+          "ymcc": 100.0,
+          "ypairingRate": 60.0,
+          "yavgCommits": 51.0
+        },
+        "821f8c86e6c445c6": {
+          "yrloc": 70.0,
+          "yfunctions": 1000.0,
+          "ymcc": 10.0,
+          "ypairingRate": 65.0,
+          "yavgCommits": 22.0
+        },
+        "e714d3f11a02817e": {
+          "rloc": 120.0,
+          "functions": 10.0,
+          "mcc": 1.0
+        },
+        "6c88e7a1d5523811": {
+          "rloc": 30.0,
+          "functions": 101.0,
+          "mcc": 80.0
+        },
+        "b1c972333725efeb": {
+          "rloc": 70.0,
+          "functions": 10.0,
+          "mcc": 100.0
+        },
+        "91bf3e69f21d7da7": {
+          "rloc": 600.0,
+          "functions": 10.0,
+          "mcc": 1.0
+        }
+      },
+      "attributeDescriptors": {
+        "yrloc": {
+          "title": "",
+          "description": "a",
+          "hintLowValue": "aa",
+          "hintHighValue": "aaa",
+          "link": "aaaa",
+          "direction": -1,
+          "analyzers": []
+        },
+        "yfunctions": {
+          "title": "",
+          "description": "b",
+          "hintLowValue": "bb",
+          "hintHighValue": "bbb",
+          "link": "bbbb",
+          "direction": -1,
+          "analyzers": []
+        },
+        "ymcc": {
+          "title": "",
+          "description": "c",
+          "hintLowValue": "cc",
+          "hintHighValue": "ccc",
+          "link": "cccc",
+          "direction": -1,
+          "analyzers": []
+        },
+        "rloc": {
+          "title": "",
+          "description": "1",
+          "hintLowValue": "1",
+          "hintHighValue": "1",
+          "link": "1",
+          "direction": -1,
+          "analyzers": []
+        },
+        "functions": {
+          "title": "",
+          "description": "2",
+          "hintLowValue": "2",
+          "hintHighValue": "2",
+          "link": "2",
+          "direction": -1,
+          "analyzers": []
+        },
+        "mcc": {
+          "title": "",
+          "description": "3",
+          "hintLowValue": "3",
+          "hintHighValue": "3",
+          "link": "3",
+          "direction": -1,
+          "analyzers": []
+        }
+      },
+      "attributeTypes": {
+        "rloc": "absolute",
+        "functions": "absolute",
+        "mcc": "absolute",
+        "pairingRate": "relative",
+        "ymcc": "absolute"
+      },
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
+  }
+}

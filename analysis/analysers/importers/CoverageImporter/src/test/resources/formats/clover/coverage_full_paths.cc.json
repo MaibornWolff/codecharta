@@ -1,1 +1,230 @@
-{"meta":{"projectName":"","apiVersion":"2.0","checksum":"701590cdefb0d797c1a0ed0ad7d47d05"},"files":[{"id":"8a5edab282632443","name":"root","type":"Folder","children":[{"id":"a2a0ee2c717462fe","name":"Users","type":"Folder","children":[{"id":"419ce2bca4741fc5","name":"testuser","type":"Folder","children":[{"id":"3f4839f0f5b054e9","name":"path","type":"Folder","children":[{"id":"243ec9728bf86638","name":"to","type":"Folder","children":[{"id":"4a97e18d1c6dc3df","name":"sample-project","type":"Folder","children":[{"id":"77cee22346a46d6a","name":"src","type":"Folder","children":[{"id":"ee5dd63d4ee7dfea","name":"Api","type":"Folder","children":[{"id":"1c8be08cba7d910f","name":"Controllers","type":"Folder","children":[{"id":"b69878271797bd76","name":"UserController.php","type":"File","link":""}],"link":""}],"link":""},{"id":"faac3d324a4a4a64","name":"Core","type":"Folder","children":[{"id":"0e74c89fa49d3559","name":"Models","type":"Folder","children":[{"id":"b6e75f7f3bf25658","name":"User.php","type":"File","link":""}],"link":""},{"id":"9914ea55020b499f","name":"Services","type":"Folder","children":[{"id":"d45c224bef70809f","name":"Database","type":"Folder","children":[{"id":"a7ac9cd3354fcc82","name":"Connection.php","type":"File","link":""}],"link":""}],"link":""}],"link":""},{"id":"162415d0697799fa","name":"Utils","type":"Folder","children":[{"id":"d2b8dba209b45e13","name":"Formatters","type":"Folder","children":[{"id":"27e21c797739fe09","name":"DateFormatter.php","type":"File","link":""}],"link":""},{"id":"59ec6936c903412f","name":"StringUtils.php","type":"File","link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"link":""}],"lenses":{"metrics":{"attributes":{"b69878271797bd76":{"line_coverage":100.0,"branch_coverage":100.0,"method_coverage":100.0},"b6e75f7f3bf25658":{"line_coverage":100.0,"branch_coverage":100.0,"method_coverage":100.0},"a7ac9cd3354fcc82":{"line_coverage":100.0,"branch_coverage":100.0,"method_coverage":100.0},"27e21c797739fe09":{"line_coverage":86.67,"branch_coverage":100.0,"method_coverage":66.67},"59ec6936c903412f":{"line_coverage":100.0,"branch_coverage":100.0,"method_coverage":100.0}},"attributeDescriptors":{"line_coverage":{"title":"Line Coverage","description":"Percentage of lines covered by tests","hintLowValue":"","hintHighValue":"","link":"","direction":1,"analyzers":[]},"branch_coverage":{"title":"Branch Coverage","description":"Percentage of branches covered by tests","hintLowValue":"","hintHighValue":"","link":"","direction":1,"analyzers":[]},"method_coverage":{"title":"Method Coverage","description":"Percentage of methods covered by tests","hintLowValue":"","hintHighValue":"","link":"","direction":1,"analyzers":[]}},"attributeTypes":{"line_coverage":"relative","branch_coverage":"relative","method_coverage":"relative"},"clusters":[]},"dependency":{"edges":[],"attributeTypes":{},"attributeDescriptors":{}}}}
+{
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.0",
+    "checksum": "701590cdefb0d797c1a0ed0ad7d47d05"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "a2a0ee2c717462fe",
+          "name": "Users",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "419ce2bca4741fc5",
+              "name": "testuser",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "3f4839f0f5b054e9",
+                  "name": "path",
+                  "type": "Folder",
+                  "children": [
+                    {
+                      "id": "243ec9728bf86638",
+                      "name": "to",
+                      "type": "Folder",
+                      "children": [
+                        {
+                          "id": "4a97e18d1c6dc3df",
+                          "name": "sample-project",
+                          "type": "Folder",
+                          "children": [
+                            {
+                              "id": "77cee22346a46d6a",
+                              "name": "src",
+                              "type": "Folder",
+                              "children": [
+                                {
+                                  "id": "ee5dd63d4ee7dfea",
+                                  "name": "Api",
+                                  "type": "Folder",
+                                  "children": [
+                                    {
+                                      "id": "1c8be08cba7d910f",
+                                      "name": "Controllers",
+                                      "type": "Folder",
+                                      "children": [
+                                        {
+                                          "id": "b69878271797bd76",
+                                          "name": "UserController.php",
+                                          "type": "File",
+                                          "link": ""
+                                        }
+                                      ],
+                                      "link": ""
+                                    }
+                                  ],
+                                  "link": ""
+                                },
+                                {
+                                  "id": "faac3d324a4a4a64",
+                                  "name": "Core",
+                                  "type": "Folder",
+                                  "children": [
+                                    {
+                                      "id": "0e74c89fa49d3559",
+                                      "name": "Models",
+                                      "type": "Folder",
+                                      "children": [
+                                        {
+                                          "id": "b6e75f7f3bf25658",
+                                          "name": "User.php",
+                                          "type": "File",
+                                          "link": ""
+                                        }
+                                      ],
+                                      "link": ""
+                                    },
+                                    {
+                                      "id": "9914ea55020b499f",
+                                      "name": "Services",
+                                      "type": "Folder",
+                                      "children": [
+                                        {
+                                          "id": "d45c224bef70809f",
+                                          "name": "Database",
+                                          "type": "Folder",
+                                          "children": [
+                                            {
+                                              "id": "a7ac9cd3354fcc82",
+                                              "name": "Connection.php",
+                                              "type": "File",
+                                              "link": ""
+                                            }
+                                          ],
+                                          "link": ""
+                                        }
+                                      ],
+                                      "link": ""
+                                    }
+                                  ],
+                                  "link": ""
+                                },
+                                {
+                                  "id": "162415d0697799fa",
+                                  "name": "Utils",
+                                  "type": "Folder",
+                                  "children": [
+                                    {
+                                      "id": "d2b8dba209b45e13",
+                                      "name": "Formatters",
+                                      "type": "Folder",
+                                      "children": [
+                                        {
+                                          "id": "27e21c797739fe09",
+                                          "name": "DateFormatter.php",
+                                          "type": "File",
+                                          "link": ""
+                                        }
+                                      ],
+                                      "link": ""
+                                    },
+                                    {
+                                      "id": "59ec6936c903412f",
+                                      "name": "StringUtils.php",
+                                      "type": "File",
+                                      "link": ""
+                                    }
+                                  ],
+                                  "link": ""
+                                }
+                              ],
+                              "link": ""
+                            }
+                          ],
+                          "link": ""
+                        }
+                      ],
+                      "link": ""
+                    }
+                  ],
+                  "link": ""
+                }
+              ],
+              "link": ""
+            }
+          ],
+          "link": ""
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "b69878271797bd76": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "method_coverage": 100.0
+        },
+        "b6e75f7f3bf25658": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "method_coverage": 100.0
+        },
+        "a7ac9cd3354fcc82": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "method_coverage": 100.0
+        },
+        "27e21c797739fe09": {
+          "line_coverage": 86.67,
+          "branch_coverage": 100.0,
+          "method_coverage": 66.67
+        },
+        "59ec6936c903412f": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "method_coverage": 100.0
+        }
+      },
+      "attributeDescriptors": {
+        "line_coverage": {
+          "title": "Line Coverage",
+          "description": "Percentage of lines covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        },
+        "branch_coverage": {
+          "title": "Branch Coverage",
+          "description": "Percentage of branches covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        },
+        "method_coverage": {
+          "title": "Method Coverage",
+          "description": "Percentage of methods covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        }
+      },
+      "attributeTypes": {
+        "line_coverage": "relative",
+        "branch_coverage": "relative",
+        "method_coverage": "relative"
+      },
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
+  }
+}
