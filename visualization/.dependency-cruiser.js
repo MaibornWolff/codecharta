@@ -217,6 +217,16 @@ module.exports = {
             }
         },
         {
+            name: "shared-state-is-leaf",
+            severity: "warn",
+            comment:
+                "Shared state modules — appearance is the purely-visual leaf state (colors, labels, scaling, axis inversion, edge visibility) — are a leaf. They must not import lenses, renderers or shell; a lens/renderer/page reads the appearance facade, never the reverse. Appearance reads only the model/util kernel + its own store (legacy state/ stays a transitional read until the store-key reshape). Staged at warn as the appearance module stands up (Slice 4); flips to error once the state/ split completes.",
+            from: { path: "^app/codeCharta/appearance/" },
+            to: {
+                path: ["^app/codeCharta/lenses/", "^app/codeCharta/renderers/", "^app/codeCharta/shell/"]
+            }
+        },
+        {
             name: "metrics-lens-ngrx-guard",
             severity: "warn",
             comment:
