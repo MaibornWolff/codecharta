@@ -4,7 +4,7 @@ import { NodeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { BlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
 import { isLeaf } from "../../../../util/codeMapHelper"
-import { sortByMetricName } from "./sortByMetricName"
+import { sortByMetricName } from "../../../../util/metric/sortByMetricName"
 
 export const UNARY_METRIC = "unary"
 
