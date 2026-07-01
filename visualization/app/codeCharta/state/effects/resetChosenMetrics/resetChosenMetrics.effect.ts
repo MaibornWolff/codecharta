@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { createEffect } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
-import { filter, map, tap, withLatestFrom } from "rxjs"
+import { filter, tap, withLatestFrom } from "rxjs"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
-import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
+import { nodeMetricDataSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { areChosenMetricsAvailableSelector } from "../../selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
 import { setAreaMetric } from "../../store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
@@ -18,8 +18,7 @@ export class ResetChosenMetricsEffect {
 
     resetChosenDistributionMetric$ = createEffect(
         () =>
-            this.store.select(metricDataSelector).pipe(
-                map(metricData => metricData.nodeMetricData),
+            this.store.select(nodeMetricDataSelector).pipe(
                 filter(isAnyMetricAvailable),
                 withLatestFrom(this.store.select(areChosenMetricsAvailableSelector)),
                 filter(([, areChosenMetricsAvailable]) => !areChosenMetricsAvailable),

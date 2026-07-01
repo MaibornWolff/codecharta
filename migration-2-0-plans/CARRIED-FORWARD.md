@@ -24,11 +24,14 @@ version: 1
 | 4 | **Single-lens metric UI** — re-evaluate moving `metricSelectPopover` (node+edge metric picker) and `metricColorRangeDiagram` (distribution chart) out of the cross-lens `metricsBar` shell into `lenses/metrics/features/`. | Slice 2 step 6 (optional) | Both currently span multiple lenses / live in a shell panel. | when metricsBar/inspector **shell** is split | They become genuinely single-lens. |
 | 5 | **Flip the two `warn` dep-cruiser bridges to `error`**: `metrics-lens-ngrx-guard` and `new-must-not-import-legacy`. | Slices 1 & 2 (kept at `warn`) | The lens still reads `state/` selectors (blacklist, colorMetric, fileSettings attributes) as documented temporary bridges. | when `state/` becomes **`interaction`/`appearance`/`viewState`** | Those modules exist and the lens no longer imports `state/`. |
 | 6 | **Structure lens · Terms lens · Renderer/Page split · viewCube move · multi-renderer** | Slice 1 scope guards | Larger future milestones. | their own slices | — |
-| 7 | **Node-only consumers still on the `metricDataSelector` aggregator** — `resetChosenMetrics.effect`, `areAllNecessaryRenderDataAvailable.selector`, `mapReset.store` each read ONLY `metricData.nodeMetricData`; they should follow `export3DMapDialog`/inspector onto the metrics-lens `nodeMetricDataSelector`. | Slice 3 (found while verifying the slice-2 consumer note, which was inaccurate) | Metrics-lens cleanup, not edge work — left out to keep Slice 3 edge-scoped. | **metrics-lens follow-up** (any slice) | — (do anytime; shrinks the aggregator toward deletion). |
 
 ## Notes
-- Items 1–5 and 7 are concrete, near-term follow-ups; item 6 is the broad remaining roadmap.
+- Items 1–5 are concrete, near-term follow-ups; item 6 is the broad remaining roadmap.
+- **Done (2026-07-01):** ~~item 7~~ — the three node-only consumers (`resetChosenMetrics.effect`,
+  `areAllNecessaryRenderDataAvailable.selector`, `mapReset.store`) now read the metrics-lens
+  `nodeMetricDataSelector` directly instead of the `metricDataSelector` aggregator. Value-identical
+  swap; the aggregator keeps only its genuinely cross-cutting (node+edge) consumers.
 - Item 5 now also covers the **dependency lens's** `new-must-not-import-legacy` bridges (it reads
   `state/` blacklist + showEdges selectors, exactly like the metrics lens reads blacklist + colorMetric).
 - Sources: `slice-2-metrics-lens-completion.md` (items 1, 3, 4, 5), `rpi-plan/00-roadmap.md` scope guards
-  (items 2, 5, 6), `slice-3-dependency-lens.md` (items 2, 2b, 7).
+  (items 2, 5, 6), `slice-3-dependency-lens.md` (items 2, 2b).

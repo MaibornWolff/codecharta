@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+- **Metrics-lens aggregator shrink**: The three node-only consumers that still read the shrinking `metricDataSelector` aggregator — the reset-chosen-metrics effect, the render-availability selector, and the map-reset store — now read the metrics lens's `nodeMetricData` selector directly through its facade. The value is identical (the aggregator's node slot already *is* that selector), moving the aggregator one step closer to deletion. No user-facing behavior change.
 - **Metrics-lens boundary enforcement**: dependency-cruiser now enforces (at `error`) the `lenses/` and `fileStore/` boundaries — outside code reaches a lens only through its public facade or a feature's `components/`, components go through services, services read repos, and the cc.json wire DTO stays confined to the `fileStore` ingestion seam.
 - **Feature architecture migration**: Moved the remaining `app/codeCharta/ui/` components into the feature-slice architecture — `features/shared` (actionIcon, errorDialog, loadingFileProgressSpinner, resetSettingsButton), `features/fileExtensionBar`, `features/codeMap`, and `features/viewCube`. Each slice is reached through a `facade.ts`, contains no SCSS (daisyUI/Tailwind only), and accesses `@ngrx/store` only from `stores/`/`selectors/`. The `ui/` directory is gone and the dependency-cruiser SCSS rule now covers all of `app/codeCharta/`. No user-facing behavior change.
 

@@ -10,7 +10,7 @@ import { LoadFileService } from "../../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../fileStore/fileStore.facade"
 import { UrlExtractor } from "../../../../../fileStore/fileStore.facade"
 import * as resetChosenMetricsEffect from "../../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
-import { metricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { nodeMetricDataSelector } from "../../../../../lenses/metrics/metricsLens.facade"
 import { setState } from "../../../../../state/store/state.actions"
 import { defaultState } from "../../../../../state/store/state.manager"
 import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../../mocks/dataMocks"
@@ -36,7 +36,7 @@ describe("ConfirmResetMapDialogComponent", () => {
                 provideMockStore({
                     selectors: [
                         {
-                            selector: metricDataSelector,
+                            selector: nodeMetricDataSelector,
                             value: METRIC_DATA
                         }
                     ]

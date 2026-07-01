@@ -6,7 +6,7 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { LoadFileService } from "../../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../../fileStore/fileStore.facade"
-import { metricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { nodeMetricDataSelector } from "../../../../../lenses/metrics/metricsLens.facade"
 import { defaultState } from "../../../../../state/store/state.manager"
 import { METRIC_DATA } from "../../../../../mocks/dataMocks"
 import { ResetMapButtonComponent } from "./resetMapButton.component"
@@ -24,7 +24,7 @@ describe("ResetMapButtonComponent", () => {
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: HttpClient, useValue: {} },
                 provideMockStore({
-                    selectors: [{ selector: metricDataSelector, value: METRIC_DATA }]
+                    selectors: [{ selector: nodeMetricDataSelector, value: METRIC_DATA }]
                 })
             ]
         })
