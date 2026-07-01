@@ -3,16 +3,15 @@ import { Color, Mesh, PerspectiveCamera, Scene, ShaderMaterial, Vector3, WebGLRe
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { STLExporter } from "three/addons/exporters/STLExporter.js"
 import { NodeMetricData } from "../../../../codeCharta.model"
-import { getVisibleFileStates, isDeltaState } from "../../../../model/files/files.helper"
+import { isDeltaState } from "../../../../model/files/files.helper"
 import { serialize3mf } from "../../3DExports/serialize3mf.service"
 import {
     calculateMaxPossibleWidthForPreview3DPrintMesh,
     GeometryOptions,
     Preview3DPrintMesh
 } from "../../3DExports/3DPreview/preview3DPrintMesh"
-import { calculateNodeMetricData } from "../../../../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
+import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
 import { ThreeSceneService } from "../../../../features/codeMap/facade"
-import { createBlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
 import { FileDownloader } from "../../../../util/fileDownloader"
 import { FileNameHelper } from "../../../../util/fileNameHelper"
 import { metricTitles } from "../../../../util/metric/metricTitles"
@@ -82,7 +81,8 @@ export class Export3DMapDialogComponent implements AfterViewInit {
 
     constructor(
         private readonly stateAccessStore: Print3DStateAccessStore,
-        private readonly threeSceneService: ThreeSceneService
+        private readonly threeSceneService: ThreeSceneService,
+        private readonly metricsLensFacade: MetricsLensFacade
     ) {
         this.exportMesh = this.threeSceneService.getMapMesh().toExportMesh()
         const initialMaxWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
@@ -104,9 +104,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
         this.heightMetric = this.stateAccessStore.getHeightMetric()
         this.colorMetric = this.stateAccessStore.getColorMetric()
 
-        const visibleFileStates = getVisibleFileStates(this.stateAccessStore.getFiles())
-        const blacklist = this.stateAccessStore.getBlacklist()
-        const nodeMetricData = calculateNodeMetricData(visibleFileStates, createBlacklistMatcher(blacklist))
+        const nodeMetricData = this.metricsLensFacade.getNodeMetricData()
         this.nodeMetricData = nodeMetricData.filter(
             metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
         )

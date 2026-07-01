@@ -1,12 +1,11 @@
 import { hierarchy } from "d3-hierarchy"
 
-import { NodeMetricData } from "../../../../codeCharta.model"
-import { FileState } from "../../../../model/files/files"
-import { BlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
-import { isLeaf } from "../../../../util/codeMapHelper"
-import { sortByMetricName } from "../../../../util/metric/sortByMetricName"
-
-export const UNARY_METRIC = "unary"
+import { NodeMetricData } from "../../../codeCharta.model"
+import { FileState } from "../../../model/files/files"
+import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
+import { isLeaf } from "../../../util/codeMapHelper"
+import { sortByMetricName } from "../../../util/metric/sortByMetricName"
+import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
 
 export const calculateNodeMetricData = (visibleFileStates: FileState[], matcher: BlacklistMatcher) => {
     if (visibleFileStates.length === 0) {

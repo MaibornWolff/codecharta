@@ -26,7 +26,7 @@ import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { CcJson2 } from "../model/ccjson2.model"
 import packageJson from "../../../package.json"
 import { isLeaf } from "../util/codeMapHelper"
-import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
+import { UNARY_METRIC } from "../util/metric/unaryMetric"
 
 const DEFAULT_FILE_META = {
     projectName: "Sample Project",

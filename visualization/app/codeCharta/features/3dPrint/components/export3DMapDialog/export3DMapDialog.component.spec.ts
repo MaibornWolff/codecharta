@@ -1,4 +1,5 @@
 import { State } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, WebGLRenderer } from "three"
@@ -147,6 +148,7 @@ describe("Export3DMapDialogComponent", () => {
         const renderObject = await render(Export3DMapDialogComponent, {
             imports: [Export3DMapButtonComponent],
             providers: [
+                provideMockStore({ initialState: TestState }),
                 { provide: State, useValue: { getValue: () => TestState } },
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock }
             ]
