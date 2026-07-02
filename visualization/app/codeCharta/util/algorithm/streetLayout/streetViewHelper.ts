@@ -70,7 +70,7 @@ function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: 
         visible: isVisible(layoutNode, isNodeLeaf, state, flattened),
         path: layoutNode.path,
         link: layoutNode.link,
-        markingColor: getMarkingColor(layoutNode, state.fileSettings.markedPackages),
+        markingColor: getMarkingColor(layoutNode, state.sharedView.markedPackages),
         flat: flattened,
         color: getBuildingColor(layoutNode, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
         incomingEdgePoint: getIncomingEdgePoint(layoutNode.rect.width, height, length, new Vector3(x0, z0, y0), treeMapSize),

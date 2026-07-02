@@ -84,8 +84,7 @@ describe("BlackListExtensionService", () => {
             edgeMetric: ""
         },
         fileSettings: {
-            edges: [],
-            markedPackages: []
+            edges: []
         },
         metricsLensSource: {
             attributeTypes: null,
@@ -98,7 +97,8 @@ describe("BlackListExtensionService", () => {
         sharedView: {
             focusedNodePath: [],
             searchPattern: "",
-            blacklist: mockBlacklist
+            blacklist: mockBlacklist,
+            markedPackages: []
         }
     }
 

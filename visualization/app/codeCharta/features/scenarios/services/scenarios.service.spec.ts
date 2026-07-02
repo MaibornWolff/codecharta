@@ -170,7 +170,7 @@ describe("ScenariosService", () => {
             expect(sections.labelsAndFolders.labelSize).toBe(defaultState.mapState.labelSize)
             expect(sections.labelsAndFolders.labelMode).toBe(defaultState.mapState.labelMode)
             expect(sections.labelsAndFolders.groupLabelCollisions).toBe(defaultState.mapState.groupLabelCollisions)
-            expect(sections.labelsAndFolders.markedPackages).toEqual(defaultState.fileSettings.markedPackages)
+            expect(sections.labelsAndFolders.markedPackages).toEqual(defaultState.sharedView.markedPackages)
         })
     })
 

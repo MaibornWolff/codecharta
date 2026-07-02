@@ -2137,8 +2137,7 @@ export const EDGE_METRIC_DATA: EdgeMetricData[] = [
 
 export const STATE: CcState = {
     fileSettings: {
-        edges: VALID_EDGES,
-        markedPackages: []
+        edges: VALID_EDGES
     },
     metricsLensSource: {
         attributeTypes: {
@@ -2158,7 +2157,8 @@ export const STATE: CcState = {
     sharedView: {
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
-        blacklist: []
+        blacklist: [],
+        markedPackages: []
     },
     appSettings: {
         isColorMetricLinkedToHeightMetric: false,
@@ -2305,11 +2305,11 @@ export const DEFAULT_STATE: CcState = {
     sharedView: {
         focusedNodePath: [],
         searchPattern: "",
-        blacklist: []
+        blacklist: [],
+        markedPackages: []
     },
     fileSettings: {
-        edges: [],
-        markedPackages: []
+        edges: []
     },
     metricsLensSource: {
         attributeTypes: { nodes: {}, edges: {} },

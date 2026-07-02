@@ -209,9 +209,6 @@ export class LoadInitialFileStore {
             case "edges":
                 this.store.dispatch(setEdges({ value }))
                 break
-            case "markedPackages":
-                this.store.dispatch(setMarkedPackages({ value }))
-                break
             default: {
                 throw new Error(`Unhandled key: ${key}`)
             }
@@ -253,6 +250,9 @@ export class LoadInitialFileStore {
                 break
             case "blacklist":
                 this.store.dispatch(setBlacklist({ value }))
+                break
+            case "markedPackages":
+                this.store.dispatch(setMarkedPackages({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

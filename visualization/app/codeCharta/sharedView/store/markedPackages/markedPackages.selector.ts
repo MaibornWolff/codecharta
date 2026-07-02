@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { fileSettingsSelector } from "../../../state/store/fileSettings/fileSettings.selector"
+import { sharedViewSelector } from "../sharedView.selector"
 
-export const markedPackagesSelector = createSelector(fileSettingsSelector, fileSettings => fileSettings.markedPackages)
+export const markedPackagesSelector = createSelector(sharedViewSelector, sharedView => sharedView.markedPackages)

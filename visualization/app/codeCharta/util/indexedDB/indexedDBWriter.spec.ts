@@ -19,6 +19,7 @@ import {
     migrateCcStateRecordToV6,
     migrateCcStateRecordToV7,
     migrateCcStateRecordToV8,
+    migrateCcStateRecordToV9,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -298,7 +299,50 @@ describe("migrateCcStateRecordToV8 (Slice 9b re-home transform)", () => {
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 transforms)", () => {
+describe("migrateCcStateRecordToV9 (Slice 9c re-home transform)", () => {
+    const v8ShapeState = () => ({
+        fileSettings: {
+            edges: [],
+            markedPackages: [{ path: "/root/src", color: "#FF0000" }]
+        },
+        sharedView: {
+            focusedNodePath: ["/root/ParentLeaf"],
+            searchPattern: "needle",
+            blacklist: [{ path: "/root/excluded", type: "exclude" }]
+        }
+    })
+
+    it("should move markedPackages from fileSettings into the EXISTING sharedView root, preserving its other keys", () => {
+        const migrated = migrateCcStateRecordToV9(v8ShapeState()) as unknown as { sharedView: Record<string, unknown> }
+
+        expect(migrated.sharedView.markedPackages).toEqual([{ path: "/root/src", color: "#FF0000" }])
+        expect(migrated.sharedView.blacklist).toEqual([{ path: "/root/excluded", type: "exclude" }])
+        expect(migrated.sharedView.focusedNodePath).toEqual(["/root/ParentLeaf"])
+        expect(migrated.sharedView.searchPattern).toBe("needle")
+    })
+
+    it("should drop markedPackages from fileSettings and keep the staying ones", () => {
+        const migrated = migrateCcStateRecordToV9(v8ShapeState()) as unknown as { fileSettings: Record<string, unknown> }
+
+        expect("markedPackages" in migrated.fileSettings).toBe(false)
+        expect(migrated.fileSettings.edges).toEqual([])
+    })
+
+    it("should fill sharedView markedPackages with its default when absent from the old blob", () => {
+        const migrated = migrateCcStateRecordToV9({ fileSettings: {} }) as unknown as { sharedView: Record<string, unknown> }
+
+        expect(migrated.sharedView.markedPackages).toEqual(defaultSharedView.markedPackages)
+    })
+
+    it("should return the record untouched when it is null, and build a default sharedView markedPackages when there is no fileSettings", () => {
+        expect(migrateCcStateRecordToV9(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV9({ files: [] }) as unknown as { files: unknown[]; sharedView: Record<string, unknown> }
+        expect(migrated.files).toEqual([])
+        expect(migrated.sharedView.markedPackages).toEqual(defaultSharedView.markedPackages)
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -327,6 +371,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
             fileSettings: {
                 ...defaultState.fileSettings,
                 blacklist: [{ path: "/root/excluded", type: "exclude" }],
+                markedPackages: [{ path: "/root/src", color: "#FF0000" }],
                 attributeTypes: { nodes: { rloc: AttributeTypeValue.absolute }, edges: {} },
                 attributeDescriptors: { rloc: { title: "Lines of Code" } }
             },
@@ -338,7 +383,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v8, invoked by readCcState) chains the v3, v4, v5, v6, v7 then v8 upgrade transforms.
+        // openCodeChartaDB (v9, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8 then v9 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings: Record<string, unknown>
             dynamicSettings: Record<string, unknown>
@@ -376,6 +421,9 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         // v8 re-home (blacklist out of fileSettings into the existing sharedView root)
         expect(migratedState.sharedView.blacklist).toEqual([{ path: "/root/excluded", type: "exclude" }])
         expect("blacklist" in migratedState.fileSettings).toBe(false)
+        // v9 re-home (markedPackages out of fileSettings into the existing sharedView root)
+        expect(migratedState.sharedView.markedPackages).toEqual([{ path: "/root/src", color: "#FF0000" }])
+        expect("markedPackages" in migratedState.fileSettings).toBe(false)
     })
 })
 

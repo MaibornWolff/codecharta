@@ -30,8 +30,7 @@ describe("FileExtensionBarSegment", () => {
             edgeMetric: ""
         },
         fileSettings: {
-            edges: [],
-            markedPackages: []
+            edges: []
         },
         metricsLensSource: {
             attributeTypes: null,
@@ -44,7 +43,8 @@ describe("FileExtensionBarSegment", () => {
         sharedView: {
             focusedNodePath: [],
             searchPattern: "",
-            blacklist: []
+            blacklist: [],
+            markedPackages: []
         }
     }
     const mockItem: MetricDistribution = {

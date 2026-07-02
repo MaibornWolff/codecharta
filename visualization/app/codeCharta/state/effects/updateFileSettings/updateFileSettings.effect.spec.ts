@@ -45,13 +45,14 @@ describe("UpdateFileSettingsEffect", () => {
         store.overrideSelector(visibleFileStatesSelector, [{ selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA_TWO }])
         store.refreshState()
 
-        const { attributeTypes, attributeDescriptors, blacklist, ...fileSettings } = TEST_FILE_DATA_TWO.settings.fileSettings
+        const { attributeTypes, attributeDescriptors, blacklist, markedPackages, ...fileSettings } =
+            TEST_FILE_DATA_TWO.settings.fileSettings
         expect(await getLastAction(store)).toEqual(
             setState({
                 value: {
                     fileSettings,
-                    // Slice 9b: the merged blacklist is co-emitted under sharedView (not fileSettings).
-                    sharedView: { blacklist },
+                    // Slice 9b+9c: the merged blacklist + markedPackages are co-emitted under sharedView (not fileSettings).
+                    sharedView: { blacklist, markedPackages },
                     metricsLensSource: { attributeTypes, attributeDescriptors }
                 }
             })

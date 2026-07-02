@@ -115,7 +115,7 @@ describe("TreeMapHelper", () => {
 
         it("should set markingColor according to markedPackages", () => {
             const color = "#FF0000"
-            state.fileSettings.markedPackages = [
+            state.sharedView.markedPackages = [
                 {
                     path: "/root/Anode",
                     color
@@ -126,7 +126,7 @@ describe("TreeMapHelper", () => {
 
         it("should set no markingColor according to markedPackages", () => {
             const color = "#FF0000"
-            state.fileSettings.markedPackages = [
+            state.sharedView.markedPackages = [
                 {
                     path: "/root/AnotherNode",
                     color

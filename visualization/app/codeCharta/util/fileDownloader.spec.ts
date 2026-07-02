@@ -1,6 +1,6 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { DownloadableSetting, FileDownloader } from "./fileDownloader"
-import { BlacklistItem, CodeMapNode, FileMeta, FileSettings, MetricsLensSource } from "../codeCharta.model"
+import { BlacklistItem, CodeMapNode, FileMeta, FileSettings, MarkedPackage, MetricsLensSource } from "../codeCharta.model"
 import {
     TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED,
     TEST_ATTRIBUTE_TYPES,
@@ -14,7 +14,7 @@ import { klona } from "klona"
 describe("fileDownloader", () => {
     let map: CodeMapNode
     let fileMeta: FileMeta
-    let filesettings: FileSettings & MetricsLensSource & { blacklist: BlacklistItem[] }
+    let filesettings: FileSettings & MetricsLensSource & { blacklist: BlacklistItem[]; markedPackages: MarkedPackage[] }
     let fileName: string
     let fileNameWithExtension: string
     let downloadSettings: DownloadableSetting[]

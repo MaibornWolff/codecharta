@@ -16,11 +16,11 @@ export enum LayoutAlgorithm {
 export interface CCFile {
     map: CodeMapNode
     settings: {
-        // The on-disk .cc.json file settings carry all groups. Two of them were split out of the STATE
+        // The on-disk .cc.json file settings carry all groups. Three of them were split out of the STATE
         // `fileSettings` root but stay bundled per-file (hence the intersection): the cc.json SOURCE the
         // metrics lens owns (attributeTypes + attributeDescriptors, `MetricsLensSource`, Slice 9a) and the
-        // `blacklist` the sharedView home now owns (Slice 9b).
-        fileSettings: FileSettings & MetricsLensSource & { blacklist: Array<BlacklistItem> }
+        // `blacklist` (Slice 9b) + `markedPackages` (Slice 9c) the sharedView home now owns.
+        fileSettings: FileSettings & MetricsLensSource & { blacklist: Array<BlacklistItem>; markedPackages: Array<MarkedPackage> }
     }
     fileMeta: FileMeta
 }
@@ -100,12 +100,12 @@ export interface FileMeta {
 }
 
 // The STATE fileSettings root (shrinking as the grab-bag dissolves): Slice 9a moved attributeTypes +
-// attributeDescriptors to state.metricsLensSource, Slice 9b moved blacklist to state.sharedView. The
-// on-disk .cc.json file still carries all of them per-file — see the intersection on
-// CCFile.settings.fileSettings. edges + markedPackages remain here until later slices re-home them.
+// attributeDescriptors to state.metricsLensSource, Slice 9b moved blacklist and Slice 9c markedPackages
+// to state.sharedView. The on-disk .cc.json file still carries all of them per-file — see the
+// intersection on CCFile.settings.fileSettings. Only edges remains here (DEFERRED — a merged render-model
+// array); it is re-homed by a later edge-UI / render-model slice, which then deletes this reducer.
 export interface FileSettings {
     edges: Edge[]
-    markedPackages: MarkedPackage[]
 }
 
 // The cc.json SOURCE owned by the metrics lens (Slice 9a): the node+edge attribute-type map and the

@@ -7,6 +7,7 @@ import {
     Edge,
     FileMeta,
     FileSettings,
+    MarkedPackage,
     MetricsLensSource,
     NodeType
 } from "../codeCharta.model"
@@ -22,7 +23,7 @@ export class FileDownloader {
     static downloadCurrentMap(
         map: CodeMapNode,
         fileMeta: FileMeta,
-        fileSettings: FileSettings & MetricsLensSource & { blacklist: BlacklistItem[] },
+        fileSettings: FileSettings & MetricsLensSource & { blacklist: BlacklistItem[]; markedPackages: MarkedPackage[] },
         downloadSettings: DownloadableSetting[],
         fileName: string
     ) {
@@ -34,7 +35,7 @@ export class FileDownloader {
     private static getProjectDataAsCCJsonFormat(
         map: CodeMapNode,
         fileMeta: FileMeta,
-        fileSettings: FileSettings & MetricsLensSource & { blacklist: BlacklistItem[] },
+        fileSettings: FileSettings & MetricsLensSource & { blacklist: BlacklistItem[]; markedPackages: MarkedPackage[] },
         downloadSettings: DownloadableSetting[]
     ): ExportCCFile {
         return {

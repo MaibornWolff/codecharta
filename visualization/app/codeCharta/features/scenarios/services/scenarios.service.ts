@@ -191,7 +191,7 @@ export class ScenariosService {
                 colorLabels: { ...state.mapState.colorLabels },
                 labelMode: state.mapState.labelMode,
                 groupLabelCollisions: state.mapState.groupLabelCollisions,
-                markedPackages: [...state.fileSettings.markedPackages]
+                markedPackages: [...state.sharedView.markedPackages]
             }
         }
     }

@@ -8,9 +8,6 @@
  * combineReducers into the `sharedView` combineReducers — all now persist under `state.sharedView.*`.
  * (The .cc.json file still carries blacklist + markedPackages per-file, so `CCFile.settings.fileSettings`
  * keeps them via an intersection; only the merged STATE root moved here.)
- * (Slice 9c structural step: the markedPackages store folder was `git mv`d here and re-exported, but is
- * still registered transitionally under `fileSettings.reducer` so `state.fileSettings.markedPackages` is
- * unchanged; the behavioral step re-homes it under the `sharedView` root.)
  *
  * This barrel re-exports each slice's selectors (read), action creators (write), reducer +
  * `default*` (store wiring), plus — added in the behavioral reshape — the combined `sharedView`

@@ -72,9 +72,6 @@ function mergePatches(patches: RecursivePartial<CcState>[]): RecursivePartial<Cc
         if (patch.mapState) {
             merged.mapState = { ...merged.mapState, ...patch.mapState }
         }
-        if (patch.fileSettings) {
-            merged.fileSettings = { ...merged.fileSettings, ...patch.fileSettings }
-        }
     }
     return merged
 }
@@ -162,7 +159,7 @@ describe("ScenarioApplierService", () => {
             expect(patches[2].mapState?.amountOfTopLabels).toBe(5)
             expect(patches[2].mapState?.labelMode).toBe(LabelMode.Color)
             expect(patches[2].mapState?.groupLabelCollisions).toBe(true)
-            expect(patches[2].fileSettings?.markedPackages).toEqual(testSections.labelsAndFolders.markedPackages)
+            expect(patches[2].sharedView?.markedPackages).toEqual(testSections.labelsAndFolders.markedPackages)
         })
 
         it("should apply all sections correctly when merged", () => {

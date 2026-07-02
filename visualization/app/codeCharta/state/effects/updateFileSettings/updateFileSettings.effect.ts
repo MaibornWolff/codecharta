@@ -33,13 +33,14 @@ export class UpdateFileSettingsEffect {
                 return setState({
                     value: {
                         fileSettings: {
-                            edges: getMergedEdges(visibleFiles, withUpdatedPath),
-                            markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath)
+                            edges: getMergedEdges(visibleFiles, withUpdatedPath)
                         },
-                        // Slice 9b: the merged blacklist is co-emitted under the sharedView home (not
-                        // fileSettings) in the SAME setState, so a single dynamic-key replace re-homes it.
+                        // Slice 9b+9c: the merged blacklist and markedPackages are co-emitted under the
+                        // sharedView home (not fileSettings) in the SAME setState, so a single dynamic-key
+                        // replace re-homes each array.
                         sharedView: {
-                            blacklist: getMergedBlacklist(visibleFiles, withUpdatedPath)
+                            blacklist: getMergedBlacklist(visibleFiles, withUpdatedPath),
+                            markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath)
                         },
                         metricsLensSource: {
                             attributeTypes: getMergedAttributeTypes(allAttributeTypes),

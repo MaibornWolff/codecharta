@@ -200,7 +200,8 @@ export class ScenarioApplierService {
                 labelMode: labelsAndFolders.labelMode,
                 groupLabelCollisions: labelsAndFolders.groupLabelCollisions
             },
-            fileSettings: { markedPackages: [...labelsAndFolders.markedPackages] }
+            // Slice 9c: markedPackages now lives under the sharedView home (was fileSettings).
+            sharedView: { markedPackages: [...labelsAndFolders.markedPackages] }
         }
     }
 
@@ -210,8 +211,7 @@ export class ScenarioApplierService {
             ...b,
             ...(a.appSettings || b.appSettings ? { appSettings: { ...a.appSettings, ...b.appSettings } } : {}),
             ...(a.mapState || b.mapState ? { mapState: { ...a.mapState, ...b.mapState } } : {}),
-            ...(a.sharedView || b.sharedView ? { sharedView: { ...a.sharedView, ...b.sharedView } } : {}),
-            ...(a.fileSettings || b.fileSettings ? { fileSettings: { ...a.fileSettings, ...b.fileSettings } } : {})
+            ...(a.sharedView || b.sharedView ? { sharedView: { ...a.sharedView, ...b.sharedView } } : {})
         }
     }
 
