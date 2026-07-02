@@ -97,7 +97,7 @@ describe("UpdateQueryParametersEffect", () => {
     it("should save currentFilesAreSampleFiles in query parameters when currentFilesAreSampleFiles is true", async () => {
         mockGetState.mockReturnValue({
             ...mockState,
-            appStatus: { ...mockState.appStatus, currentFilesAreSampleFiles: true }
+            currentFilesAreSampleFiles: true
         })
 
         actions$.next(setEdgeMetric({ value: "pairingRate" }))

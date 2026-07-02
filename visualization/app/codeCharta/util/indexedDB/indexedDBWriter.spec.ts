@@ -20,6 +20,7 @@ import {
     migrateCcStateRecordToV7,
     migrateCcStateRecordToV8,
     migrateCcStateRecordToV9,
+    migrateCcStateRecordToV10,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -342,7 +343,42 @@ describe("migrateCcStateRecordToV9 (Slice 9c re-home transform)", () => {
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 transforms)", () => {
+describe("migrateCcStateRecordToV10 (Slice 10a re-home transform)", () => {
+    const v9ShapeState = () => ({
+        appSettings: { maxTreeMapFiles: 100, isLoadingFile: false },
+        appStatus: { currentFilesAreSampleFiles: true }
+    })
+
+    it("should promote isLoadingFile + currentFilesAreSampleFiles to their own top-level roots", () => {
+        const migrated = migrateCcStateRecordToV10(v9ShapeState()) as unknown as {
+            isLoadingFile: boolean
+            currentFilesAreSampleFiles: boolean
+        }
+
+        expect(migrated.isLoadingFile).toBe(false)
+        expect(migrated.currentFilesAreSampleFiles).toBe(true)
+    })
+
+    it("should drop isLoadingFile from appSettings and delete the now-empty appStatus grab-bag", () => {
+        const migrated = migrateCcStateRecordToV10(v9ShapeState()) as unknown as {
+            appSettings: Record<string, unknown>
+            appStatus?: Record<string, unknown>
+        }
+
+        expect("isLoadingFile" in migrated.appSettings).toBe(false)
+        expect(migrated.appSettings.maxTreeMapFiles).toBe(100)
+        expect(migrated.appStatus).toBeUndefined()
+    })
+
+    it("should return the record untouched when it is null, and just drop appStatus when the flags are absent", () => {
+        expect(migrateCcStateRecordToV10(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV10({ files: [] }) as unknown as { files: unknown[] }
+        expect(migrated.files).toEqual([])
+        expect("appStatus" in (migrated as object)).toBe(false)
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -359,7 +395,13 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         // color/margin stragglers under dynamicSettings, and the interaction ids under appStatus.
         const v2ShapeState = {
             ...defaultState,
-            appSettings: { ...defaultAppSettings, invertHeight: true, amountOfTopLabels: 7, layoutAlgorithm: LayoutAlgorithm.StreetMap },
+            appSettings: {
+                ...defaultAppSettings,
+                isLoadingFile: false,
+                invertHeight: true,
+                amountOfTopLabels: 7,
+                layoutAlgorithm: LayoutAlgorithm.StreetMap
+            },
             dynamicSettings: {
                 ...defaultState.dynamicSettings,
                 colorMode: ColorMode.absolute,
@@ -375,23 +417,29 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
                 attributeTypes: { nodes: { rloc: AttributeTypeValue.absolute }, edges: {} },
                 attributeDescriptors: { rloc: { title: "Lines of Code" } }
             },
-            appStatus: { ...defaultState.appStatus, hoveredNodeId: 5 }
+            appStatus: { currentFilesAreSampleFiles: true, hoveredNodeId: 5 }
         }
         delete (v2ShapeState as { mapState?: unknown }).mapState
         delete (v2ShapeState as { sharedView?: unknown }).sharedView
         delete (v2ShapeState as { metricsLensSource?: unknown }).metricsLensSource
+        // A pre-Slice-10 v2 blob had no top-level fileStore flag roots — they lived nested under
+        // appSettings.isLoadingFile / appStatus.currentFilesAreSampleFiles (which defaultState no longer spreads).
+        delete (v2ShapeState as { isLoadingFile?: unknown }).isLoadingFile
+        delete (v2ShapeState as { currentFilesAreSampleFiles?: unknown }).currentFilesAreSampleFiles
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v9, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8 then v9 upgrade transforms.
+        // openCodeChartaDB (v10, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9 then v10 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings: Record<string, unknown>
             dynamicSettings: Record<string, unknown>
-            appStatus: Record<string, unknown>
+            appStatus?: Record<string, unknown>
             mapState: Record<string, unknown>
             sharedView: Record<string, unknown>
             fileSettings: Record<string, unknown>
             metricsLensSource: Record<string, unknown>
+            isLoadingFile: boolean
+            currentFilesAreSampleFiles: boolean
         }
 
         // v3 re-home (appearance keys + layoutAlgorithm out of appSettings)
@@ -404,7 +452,6 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         expect(migratedState.mapState.margin).toBe(42)
         expect(migratedState.mapState.hoveredNodeId).toBe(5)
         expect("colorMode" in migratedState.dynamicSettings).toBe(false)
-        expect("hoveredNodeId" in migratedState.appStatus).toBe(false)
         // v5 re-home (metric selection out of dynamicSettings)
         expect(migratedState.mapState.areaMetric).toBe("rloc")
         expect("areaMetric" in migratedState.dynamicSettings).toBe(false)
@@ -424,6 +471,11 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         // v9 re-home (markedPackages out of fileSettings into the existing sharedView root)
         expect(migratedState.sharedView.markedPackages).toEqual([{ path: "/root/src", color: "#FF0000" }])
         expect("markedPackages" in migratedState.fileSettings).toBe(false)
+        // v10 re-home (file-provenance flags out of appSettings/appStatus into their own top-level roots; appStatus deleted)
+        expect(migratedState.isLoadingFile).toBe(false)
+        expect(migratedState.currentFilesAreSampleFiles).toBe(true)
+        expect(migratedState.appStatus).toBeUndefined()
+        expect("isLoadingFile" in migratedState.appSettings).toBe(false)
     })
 })
 

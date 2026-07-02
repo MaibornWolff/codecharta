@@ -27,7 +27,7 @@ export class FilesRepo {
     }
 
     getCurrentFilesAreSampleFiles(): boolean {
-        return this.state.getValue().appStatus.currentFilesAreSampleFiles
+        return this.state.getValue().currentFilesAreSampleFiles
     }
 
     setFiles(value: FileState[]) {

@@ -102,7 +102,6 @@ export interface MapState extends PrimaryMetrics {
 export interface AppSettings {
     isPresentationMode: boolean
     resetCameraIfNewFileIsLoaded: boolean
-    isLoadingFile: boolean
     sortingOrderAscending: boolean
     maxTreeMapFiles: number
     experimentalFeaturesEnabled: boolean
@@ -118,7 +117,11 @@ export interface CcState {
     mapState: MapState
     sharedView: SharedView
     files: FileState[]
-    appStatus: AppStatus
+    // fileStore-owned provenance/status flags (Slice 10a): the file-load spinner flag and whether
+    // the currently loaded files are the bundled samples. Pulled out of the appSettings/appStatus
+    // grab-bags into their own top-level roots, owned by the fileStore that sets them.
+    isLoadingFile: boolean
+    currentFilesAreSampleFiles: boolean
 }
 
 export function stateObjectReplacer(_, valueToReplace) {
@@ -146,8 +149,4 @@ export function stateObjectReviver(_, valueToRevive) {
     }
 
     return valueToRevive
-}
-
-export interface AppStatus {
-    currentFilesAreSampleFiles: boolean
 }

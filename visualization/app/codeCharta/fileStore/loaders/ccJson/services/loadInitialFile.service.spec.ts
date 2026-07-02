@@ -393,7 +393,7 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.sharedView, defaultSharedView))
         })
 
-        it("should set all differing except sortingOrderAscending, isLoadingFile", async () => {
+        it("should set all differing except sortingOrderAscending", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
             jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
             jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
@@ -409,7 +409,8 @@ describe("LoadInitialFileService", () => {
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
-            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.appSettings, defaultAppSettings) - 2)
+            // appSettings applier ignores only sortingOrderAscending now (isLoadingFile left appSettings in Slice 10a)
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.appSettings, defaultAppSettings) - 1)
         })
     })
 })

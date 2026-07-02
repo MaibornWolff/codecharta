@@ -72,9 +72,7 @@ describe("BlackListExtensionService", () => {
     const mockBlacklist: BlacklistItem[] = [mockFlattenedTypescriptItem, ...mockFlattenedOtherItems]
 
     const initialState: Partial<CcState> = {
-        appStatus: {
-            currentFilesAreSampleFiles: false
-        },
+        currentFilesAreSampleFiles: false,
         mapState: {
             ...defaultMapState,
             areaMetric: "rloc",

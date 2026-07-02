@@ -1,4 +1,3 @@
-import { createSelector } from "@ngrx/store"
-import { appStatusSelector } from "../../../state/store/appStatus/appStatus.selector"
+import { CcState } from "../../../codeCharta.model"
 
-export const currentFilesAreSampleFilesSelector = createSelector(appStatusSelector, appStatus => appStatus.currentFilesAreSampleFiles)
+export const currentFilesAreSampleFilesSelector = (state: CcState) => state.currentFilesAreSampleFiles

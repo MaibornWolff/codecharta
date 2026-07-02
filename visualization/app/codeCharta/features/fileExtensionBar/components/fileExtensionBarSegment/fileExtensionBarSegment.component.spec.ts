@@ -18,9 +18,7 @@ describe("FileExtensionBarSegment", () => {
     let component: FileExtensionBarSegmentComponent
     let store: MockStore
     const initialState: Partial<CcState> = {
-        appStatus: {
-            currentFilesAreSampleFiles: false
-        },
+        currentFilesAreSampleFiles: false,
         mapState: {
             ...defaultMapState,
             areaMetric: "rloc",

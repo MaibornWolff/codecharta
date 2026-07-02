@@ -5,7 +5,7 @@ import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 9
+export const DB_VERSION = 10
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -239,6 +239,39 @@ export function migrateCcStateRecordToV9<T>(state: T): T {
     return next as T
 }
 
+// v10 (Slice 10a): the file-provenance flags moved out of the appSettings/appStatus grab-bags into
+// their own top-level roots owned by the fileStore — appSettings.isLoadingFile → isLoadingFile,
+// appStatus.currentFilesAreSampleFiles → currentFilesAreSampleFiles — and the now-empty appStatus
+// grab-bag is dropped. Unlike v3–v9 (which merged into an existing/new nested root), this promotes two
+// scalar flags to top-level roots and deletes a whole grab-bag. The rehydrate appliers never restored
+// these runtime flags, but keeping the persisted record shape-valid mirrors the v3–v9 transforms and
+// defends any full-blob apply against the same silent-data-loss landmine.
+export function migrateCcStateRecordToV10<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const next: Record<string, unknown> = { ...record }
+
+    const appSettings = record["appSettings"]
+    if (appSettings && typeof appSettings === "object") {
+        const trimmed = { ...(appSettings as Record<string, unknown>) }
+        if ("isLoadingFile" in trimmed) {
+            next["isLoadingFile"] = trimmed["isLoadingFile"]
+            delete trimmed["isLoadingFile"]
+        }
+        next["appSettings"] = trimmed
+    }
+
+    const appStatus = record["appStatus"]
+    if (appStatus && typeof appStatus === "object" && "currentFilesAreSampleFiles" in (appStatus as Record<string, unknown>)) {
+        next["currentFilesAreSampleFiles"] = (appStatus as Record<string, unknown>)["currentFilesAreSampleFiles"]
+    }
+    delete next["appStatus"]
+
+    return next as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -273,9 +306,10 @@ export async function openCodeChartaDB() {
             }
             // Existing DBs (oldVersion >= 1) may hold an older-shaped CcState blob; re-home its
             // map-view settings into mapState, its focus/search/blacklist/markedPackages into sharedView,
-            // and its attributeTypes/attributeDescriptors into metricsLensSource. Migrations chain:
-            // v2 blobs run v3→v4→v5→v6→v7→v8→v9; a v8 blob runs only v9. A brand-new DB (oldVersion 0) has
-            // no record to migrate.
+            // its attributeTypes/attributeDescriptors into metricsLensSource, and its file-provenance
+            // flags (isLoadingFile/currentFilesAreSampleFiles) into their own top-level fileStore roots.
+            // Migrations chain: v2 blobs run v3→…→v10; a v9 blob runs only v10. A brand-new DB
+            // (oldVersion 0) has no record to migrate.
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
@@ -301,6 +335,9 @@ export async function openCodeChartaDB() {
                     }
                     if (oldVersion < 9) {
                         migrated = migrateCcStateRecordToV9(migrated)
+                    }
+                    if (oldVersion < 10) {
+                        migrated = migrateCcStateRecordToV10(migrated)
                     }
                     await store.put({ ...record, state: migrated })
                 }

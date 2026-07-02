@@ -2164,7 +2164,6 @@ export const STATE: CcState = {
         isColorMetricLinkedToHeightMetric: false,
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
-        isLoadingFile: true,
         sortingOrderAscending: false,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
@@ -2227,9 +2226,8 @@ export const STATE: CcState = {
         rightClickedNodeData: null
     },
     files: [],
-    appStatus: {
-        currentFilesAreSampleFiles: false
-    }
+    isLoadingFile: true,
+    currentFilesAreSampleFiles: false
 }
 
 export const DEFAULT_STATE: CcState = {
@@ -2237,7 +2235,6 @@ export const DEFAULT_STATE: CcState = {
         isColorMetricLinkedToHeightMetric: false,
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
-        isLoadingFile: true,
         sortingOrderAscending: true,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
@@ -2316,9 +2313,8 @@ export const DEFAULT_STATE: CcState = {
         attributeDescriptors: {}
     },
     files: [],
-    appStatus: {
-        currentFilesAreSampleFiles: false
-    }
+    isLoadingFile: true,
+    currentFilesAreSampleFiles: false
 }
 
 export const TEST_NODE_ROOT: Node = {

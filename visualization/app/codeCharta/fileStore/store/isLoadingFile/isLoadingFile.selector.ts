@@ -1,4 +1,3 @@
-import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { CcState } from "../../../codeCharta.model"
 
-export const isLoadingFileSelector = createSelector(appSettingsSelector, appSettings => appSettings.isLoadingFile)
+export const isLoadingFileSelector = (state: CcState) => state.isLoadingFile

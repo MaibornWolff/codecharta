@@ -48,7 +48,7 @@ export class UpdateQueryParametersEffect {
             this.deleteQueryParameterIfExists(MetricQueryParemter.edgeMetric)
         }
 
-        if (state.appStatus.currentFilesAreSampleFiles) {
+        if (state.currentFilesAreSampleFiles) {
             this.addOrUpdateQueryParameter(MetricQueryParemter.currentFilesAreSampleFiles, true)
         } else {
             this.deleteQueryParameterIfExists(MetricQueryParemter.currentFilesAreSampleFiles)

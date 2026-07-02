@@ -2,7 +2,11 @@ import { appSettings, defaultAppSettings } from "./appSettings/appSettings.reduc
 import { defaultFileSettings, fileSettings } from "./fileSettings/fileSettings.reducer"
 import { defaultDynamicSettings, dynamicSettings } from "./dynamicSettings/dynamicSettings.reducer"
 import { defaultFiles, files } from "../../fileStore/store/files.reducer"
-import { appStatus, defaultAppStatus } from "./appStatus/appStatus.reducer"
+import { defaultIsLoadingFile, isLoadingFile } from "../../fileStore/store/isLoadingFile/isLoadingFile.reducer"
+import {
+    currentFilesAreSampleFiles,
+    defaultCurrentFilesAreSampleFiles
+} from "../../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
 import { defaultMapState, mapState } from "../../mapState/mapState.facade"
 import { defaultSharedView, sharedView } from "../../sharedView/sharedView.facade"
 import { defaultMetricsLensSource, metricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
@@ -18,7 +22,8 @@ export const appReducers = {
     sharedView,
     dynamicSettings,
     files,
-    appStatus
+    isLoadingFile,
+    currentFilesAreSampleFiles
 }
 export const defaultState: CcState = {
     fileSettings: defaultFileSettings,
@@ -28,7 +33,8 @@ export const defaultState: CcState = {
     sharedView: defaultSharedView,
     dynamicSettings: defaultDynamicSettings,
     files: defaultFiles,
-    appStatus: defaultAppStatus
+    isLoadingFile: defaultIsLoadingFile,
+    currentFilesAreSampleFiles: defaultCurrentFilesAreSampleFiles
 }
 
 export const setStateMiddleware =

@@ -1,5 +1,4 @@
 import { defaultSortingOrderAscending, sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
-import { defaultIsLoadingFile, isLoadingFile } from "../../../fileStore/store/isLoadingFile/isLoadingFile.reducer"
 import {
     defaultResetCameraIfNewFileIsLoaded,
     resetCameraIfNewFileIsLoaded
@@ -19,7 +18,6 @@ import { combineReducers } from "@ngrx/store"
 
 export const appSettings = combineReducers({
     sortingOrderAscending,
-    isLoadingFile,
     resetCameraIfNewFileIsLoaded,
     isPresentationMode,
     experimentalFeaturesEnabled,
@@ -30,7 +28,6 @@ export const appSettings = combineReducers({
 
 export const defaultAppSettings = {
     sortingOrderAscending: defaultSortingOrderAscending,
-    isLoadingFile: defaultIsLoadingFile,
     resetCameraIfNewFileIsLoaded: defaultResetCameraIfNewFileIsLoaded,
     isPresentationMode: defaultIsPresentationMode,
     experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
