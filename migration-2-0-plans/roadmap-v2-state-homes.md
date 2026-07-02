@@ -16,10 +16,14 @@ version: 1
 
 ## Where we are vs where we're going
 
-**Today (runtime):** Slices 5–**8** landed. **Slice 8** stood up the first brand-new home from scratch, **`state.sharedView`**,
-and moved `focusedNodePath` + `searchPattern` out of `dynamicSettings` into it — so `dynamicSettings` now holds **only**
-`sortingOption`. `sharedView` is `state-home-is-leaf` + `state-home-only-stores-import-ngrx` **error**. IndexedDB is at **v6**
-(the first migration that CREATES a new root). Below reflects the state after Slice 7; append Slice 8's `sharedView` root to it.
+**Today (runtime):** Slices 5–**9a** landed. **Slice 9a** stood up the first **lens-owned** store root,
+**`state.metricsLensSource`**, moving `attributeTypes` + `attributeDescriptors` out of `fileSettings` into the metrics
+lens (`fileSettings` now holds `blacklist`/`edges`/`markedPackages`; per-file `CCFile` still bundles all via the
+`FileSettings & MetricsLensSource` intersection). **`edges` stays in `fileSettings` (DEFERRED** → dependency lens: it is a
+merged render-model array). `lens-owns-ccjson-source` is **warn**. IndexedDB is at **v7**. **Slice 8** stood up the first
+brand-new *home* from scratch, **`state.sharedView`** (`focusedNodePath` + `searchPattern`; `dynamicSettings` now holds
+**only** `sortingOption`; `state-home-is-leaf` + `state-home-only-stores-import-ngrx` **error**). Below reflects the state
+after Slice 7; append Slice 8's `sharedView` root and Slice 9a's `metricsLensSource` root to it.
 
 **After Slice 7 (runtime):** Slices 5–**7** landed. The ex-`appearance/` module is now `mapState/`, and after Slice 7 its **34**
 slices register under a real **`state.mapState`** root — the map-view leaf settings, the presentation stragglers
@@ -64,7 +68,7 @@ deleted** — "state has a home" is finally true at runtime.
 6   mapState presentation stragglers                          ── needs 5             ✅ DONE
 7   mapState metric SELECTION + parameterize metrics lens     ── needs 5; lens drops colorMetric + blacklist reads   ✅ DONE
 8   sharedView stood up (focus + search only)                 ── needs 5; MUST precede 9b/9c   ✅ DONE
-9a  cc.json source (edges/attributeTypes/descriptors) → lenses── needs 5
+9a  cc.json source (attributeTypes/descriptors) → metrics lens── needs 5; edges DEFERRED   ✅ DONE
 9b  blacklist → sharedView + parameterize BOTH lenses' blacklist read ── needs 8; unblocks lens-no-view-state flip
 9c  markedPackages → sharedView                               ── needs 8
 10  preferences (appSettings purge) + fileStore flags; DELETE grab-bags ── needs 5–9 · FLIP new-must-not-import-legacy, shared-state-is-leaf → error
@@ -193,12 +197,22 @@ each **once** so later slices only *add a key*:
 - **dep-cruiser:** extended `state-home-is-leaf` **and** `state-home-only-stores-import-ngrx` to `sharedView` — both **error**.
   **Precedes 9b/9c.** **Risk was:** LOW-MED/SMALL-MED.
 
-### Slice 9a — cc.json source → lenses
-- **Goal:** `edges` → dependency lens, `attributeTypes`/`attributeDescriptors` → metrics lens (finishes CF **#2a**).
-- **Moves:** the reducers → `lenses/{dependency,metrics}/store`, exposed via each lens's read facade (its load-time write
-  facade seeds them on file load). Migrate their dynamic-key paths, scenario keys, IndexedDB transform.
-- **DoD:** those three under the lenses; snapshots byte-identical; e2e edge/attribute flows green.
-- **dep-cruiser:** add `lens-owns-ccjson-source`. **Risk:** MED/MED.
+### Slice 9a — cc.json source → lenses — ✅ DONE
+- **Outcome (2026-07-02, 3 commits):** `attributeTypes`/`attributeDescriptors` moved out of the `fileSettings` state
+  slice into a lens-owned **`state.metricsLensSource`** root (`lenses/metrics/store/`), behind a read facade (raw
+  `{nodes,edges}` `attributeTypesSelector` + `attributeDescriptorsSelector`) and a new write/wiring **load facade**
+  (`metricsLens.load.facade`). Per-file `CCFile.settings.fileSettings` still bundles them via the intersection
+  `FileSettings & MetricsLensSource` (the .cc.json contract). `state.manager` root registration + the two
+  `objectWithDynamicKeysInStore` paths repointed; applier `applyMetricsLensSource`/`mapMetricsLensSourceToAction`;
+  `updateFileSettings.effect` co-emits both roots in ONE setState; ~9 dotted/selector readers repointed; IndexedDB
+  `v6→v7` (`migrateCcStateRecordToV7`, new-root, +5 tests). `tsc` clean, `npm test` **45/45 snapshots zero diff
+  (no -u)**, 2291 passing, `lint:architecture` 0 errors (109 warns, net-neutral). Adversarial 7-landmine review: 0
+  findings. Details: `slice-9a-ccjson-source-lens.md`.
+- **Goal:** `attributeTypes`/`attributeDescriptors` → metrics lens (finishes CF **#2a source**). **`edges` DEFERRED**
+  → dependency lens (it is a merged render-model array consumed by codeMap rendering + view-state, not by the lens;
+  needs the injectable `DependencyLensStore`/`EdgesRepo` + a render-model home first — CF **#2b**).
+- **dep-cruiser:** added `lens-owns-ccjson-source` at **warn** (0 violations; flips to error once edges also move).
+  **Risk was:** MED/MED.
 
 ### Slice 9b — `blacklist` → sharedView + parameterize both lenses' blacklist read
 - **Goal:** move `blacklist` (31 import sites) to `sharedView`, and finish lifting blacklist out of **both** lenses.
@@ -267,7 +281,7 @@ each **once** so later slices only *add a key*:
 | `lens-no-renderer-or-page` | a lens never depends on UI | already error (inert-safe) |
 | `lens-cross-lens-only-via-read-facade` · `lens-internals-do-not-use-own-facade` | lenses compose only via read facades | already error |
 | `lens-external-access-only-via-public-surface` | a lens is reached only via its facade | already error; drop the `features/…/components/` exemption in **11** |
-| `lens-owns-ccjson-source` | edges/attributeTypes/descriptors live only under lenses | **9a** |
+| `lens-owns-ccjson-source` | edges/attributeTypes/descriptors live only under lenses | **9a ✅ (warn)** — added at warn; flips to error once edges also move to a dependency-lens store |
 | `lens-only-repos-store-import-ngrx` (evolved `metrics-lens-ngrx-guard`) | only lens repos/store touch ngrx | **11** |
 | `lens-no-view-state` | **a lens never reads mutable view state** (selection/blacklist/edge-visibility are parameters) — kills the `valueOf` coupling | **13** *(gated on 7 + 9b lifting all view-state reads out of both lenses)* |
 | `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6 ✅**, sharedView **8 ✅**, preferences **10** |
