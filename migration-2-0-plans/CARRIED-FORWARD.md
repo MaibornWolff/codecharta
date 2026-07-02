@@ -27,6 +27,15 @@ version: 1
 
 ## Notes
 - Items 1–5 are concrete, near-term follow-ups; item 6 is the broad remaining roadmap.
+- **Done (2026-07-02):** ~~Slice 5~~ — the keystone `state.mapState` root (`slice-5-mapstate-root.md`). The 21 ex-appearance
+  slices moved from the `appSettings` combineReducers into their own `state.mapState` root; the reshape machinery
+  (state.manager dynamic-keys + `_applyPartialState` paths, the load applier's `applyMapState`, scenario patch keys, IndexedDB
+  v2→v3 record transform) is built and reused by Slices 6–10. **Two facts verified in code that reshape the remaining slices'
+  scope:** (a) the **URL round-trip only serializes metric/mode/file params** — no home-state value is URL-persisted, so URL
+  work belongs to the *metric-selection* slice (7), not every reshape; (b) **scenarios persist section-shaped**
+  (`ScenarioSections`), not store-shaped — the store-key mapping lives only in `scenarioApplier`, so each reshape updates that
+  applier but the scenarios IndexedDB store needs **no** record transform (only the `ccstate` record does). Apply both when
+  scoping Slices 6–10.
 - **Done (2026-07-01):** ~~Slice 4~~ — the `appearance` leaf module is stood up (`slice-4-appearance.md`).
   The ~20 purely-visual settings (mapColors whole, labels, scaling, invert*, hideFlat, whiteBackground, and the
   **edge-appearance** group #2b) moved into `appearance/store/*` behind `appearance.facade`, keeping the

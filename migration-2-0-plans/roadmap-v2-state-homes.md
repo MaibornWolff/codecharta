@@ -11,15 +11,17 @@ version: 1
 > **Safety model (unchanged):** `migration-2-0-plans/CONVENTIONS.md` — snapshots ARE the behavior contract (never `-u`),
 > Tidy First (structural vs behavioral commits separate), **code-boundary move THEN store-key reshape**, each boundary
 > backed by a dep-cruiser rule staged `warn → error`.
-> **Status:** proposal, corrected against an adversarial critique (see the last section). Slices 1–4 are done; this plan
+> **Status:** proposal, corrected against an adversarial critique (see the last section). Slices 1–**5** are done; this plan
 > goes from **today's runtime reality** to the ratified goal. Companion rule draft: `Ideas/dependency-cruiser.2.0.refined.cjs`.
 
 ## Where we are vs where we're going
 
-**Today (runtime):** Slice 4's `appearance/` move was **folder-only** — at runtime its ~21 slices still combine under
-`state.appSettings` (`state/store/appSettings/appSettings.reducer.ts` imports them from the appearance facade). Metric
-selection + `colorMode`/`colorRange`/`margin`/`layoutAlgorithm` live in `dynamicSettings`; hover/rightClick/selectedBuilding
-in `appStatus`; blacklist/markedPackages/edges/attributeTypes in `fileSettings`. **State does not yet have a home at runtime.**
+**Today (runtime):** Slice 5 landed the keystone — the ex-`appearance/` module is now `mapState/`, and its 21 slices
+register under a real **`state.mapState`** root (no longer combined into `appSettings`); the reshape machinery
+(state.manager dynamic-keys, the load applier's `applyMapState`, scenario patch keys, IndexedDB v2→v3 record transform) is
+built and reused by Slices 6–10. Still to move: metric selection + `colorMode`/`colorRange`/`margin`/`layoutAlgorithm` live in
+`dynamicSettings`; hover/rightClick/selectedBuilding in `appStatus`; blacklist/markedPackages/edges/attributeTypes in
+`fileSettings`. **State now has its first real home at runtime; the grab-bag reducers are next (Slices 6–10).**
 
 **Goal:** `mapState` · `sharedView` · `preferences` are real store roots; lenses own the cc.json source, read-only +
 parameterized; `fileStore` owns raw files; features are one flat top-level layer (no "shell", legend re-homed); CQRS
@@ -84,7 +86,16 @@ each **once** so later slices only *add a key*:
 
 ## Slices
 
-### Slice 5 — Keystone: the real `state.mapState` root
+### Slice 5 — Keystone: the real `state.mapState` root — ✅ DONE
+- **Outcome:** landed in two commits — (1) structural `git mv appearance → mapState` + facade rename + 87-importer repoint +
+  dep-cruiser `shared-state-is-leaf → state-home-is-leaf` (zero snapshot diff); (2) the store-key reshape: `MapState` split out
+  of `AppSettings`, `mapState` root registered in `state.manager`, all ~67 dotted readers + ~46 string reset-keys + selectors
+  repointed, applier `applyMapState`/`mapMapStateToAction` added, scenario patches re-keyed to `mapState`, IndexedDB `DB_VERSION
+  2→3` with `migrateCcStateRecordToV3` (+5 tests). `tsc` clean, `npm test` green with **zero snapshot diff (45/45, no -u)**,
+  `lint:architecture` 0 errors. **Scope narrowed from the plan** (both verified in code): the **URL round-trip needed no change**
+  (only metric/mode/file params are URL-serialized — appearance settings never were) and the **scenarios IndexedDB store needed
+  no transform** (scenarios persist section-shaped, not store-shaped; only the `ccstate` record re-homes). `state-home-is-leaf`
+  stays **warn** (flips to error for mapState in Slice 6).
 - **Goal:** stop combining the appearance slices under `appSettings`; give them a real `state.mapState.*` root. First time
   "state has a home" is true at runtime.
 - **Keystone cost:** generalize the whole reshape machinery (1–6) on the **safest payload** — Slice 4's byte-identical
