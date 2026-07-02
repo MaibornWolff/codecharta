@@ -45,9 +45,13 @@ describe("UpdateFileSettingsEffect", () => {
         store.overrideSelector(visibleFileStatesSelector, [{ selectedAs: FileSelectionState.Reference, file: TEST_FILE_DATA_TWO }])
         store.refreshState()
 
+        const { attributeTypes, attributeDescriptors, ...fileSettings } = TEST_FILE_DATA_TWO.settings.fileSettings
         expect(await getLastAction(store)).toEqual(
             setState({
-                value: TEST_FILE_DATA_TWO.settings
+                value: {
+                    fileSettings,
+                    metricsLensSource: { attributeTypes, attributeDescriptors }
+                }
             })
         )
     })

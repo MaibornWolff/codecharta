@@ -127,7 +127,7 @@ export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeig
     heightValue *= mapSizeResolutionScaling
 
     const heightMetric = state.mapState.heightMetric
-    const attributeDescriptors = state.fileSettings.attributeDescriptors
+    const attributeDescriptors = state.metricsLensSource.attributeDescriptors
     const isAttributeDirectionInversed = attributeDescriptors[heightMetric]?.direction === 1
 
     if (isAttributeDirectionInversed) {

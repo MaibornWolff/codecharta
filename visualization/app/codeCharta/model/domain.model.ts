@@ -16,7 +16,10 @@ export enum LayoutAlgorithm {
 export interface CCFile {
     map: CodeMapNode
     settings: {
-        fileSettings: FileSettings
+        // The on-disk .cc.json file settings carry all five groups. The cc.json SOURCE the metrics lens
+        // owns (attributeTypes + attributeDescriptors, `MetricsLensSource`) was split out of the STATE
+        // `fileSettings` root in Slice 9a, but per-file settings still bundle them — hence the intersection.
+        fileSettings: FileSettings & MetricsLensSource
     }
     fileMeta: FileMeta
 }
@@ -96,11 +99,19 @@ export interface FileMeta {
 }
 
 export interface FileSettings {
-    attributeTypes: AttributeTypes
-    attributeDescriptors: AttributeDescriptors
     blacklist: Array<BlacklistItem>
     edges: Edge[]
     markedPackages: MarkedPackage[]
+}
+
+// The cc.json SOURCE owned by the metrics lens (Slice 9a): the node+edge attribute-type map and the
+// flat attribute-descriptor map. Split out of `FileSettings` into its own `state.metricsLensSource`
+// root; still bundled into per-file `CCFile.settings.fileSettings` (an intersection) since the .cc.json
+// file carries them. The lens transiently owns the edge side of `attributeTypes` until a dependency-lens
+// store lands.
+export interface MetricsLensSource {
+    attributeTypes: AttributeTypes
+    attributeDescriptors: AttributeDescriptors
 }
 
 export interface PrimaryMetrics {

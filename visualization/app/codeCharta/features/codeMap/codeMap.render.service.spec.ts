@@ -86,7 +86,7 @@ describe("codeMapRenderService", () => {
 
         map = klona(TEST_FILE_WITH_PATHS.map)
         NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
-        NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
+        NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.metricsLensSource.attributeTypes)
         store.dispatch(setState({ value: STATE }))
         mockedMetricDataSelector.mockImplementation(() => ({
             nodeMetricData: METRIC_DATA,

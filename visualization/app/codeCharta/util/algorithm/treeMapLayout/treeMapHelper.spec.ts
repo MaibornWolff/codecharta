@@ -72,7 +72,7 @@ describe("TreeMapHelper", () => {
 
         it("should invert height when heightmetric indicates a positive direction", () => {
             state.mapState.heightMetric = "branch_coverage"
-            state.fileSettings.attributeDescriptors = {
+            state.metricsLensSource.attributeDescriptors = {
                 branch_coverage: {
                     title: "Branch Coverage",
                     description: "",

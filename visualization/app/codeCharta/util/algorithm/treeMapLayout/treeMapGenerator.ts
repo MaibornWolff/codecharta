@@ -269,7 +269,7 @@ function isOnlyVisibleInComparisonMap(node: CodeMapNode, mapState: MapState) {
 // Only exported for testing.
 export function calculateAreaValue(
     node: CodeMapNode,
-    { mapState, fileSettings }: CcState,
+    { mapState, metricsLensSource }: CcState,
     maxWidth: number,
     experimentalFeaturesEnabled: boolean
 ) {
@@ -283,7 +283,7 @@ export function calculateAreaValue(
 
     if (isLeaf(node) && node.attributes?.[mapState.areaMetric]) {
         const areaMetric = mapState.areaMetric
-        const attributeDescriptors = fileSettings.attributeDescriptors
+        const attributeDescriptors = metricsLensSource.attributeDescriptors
         const isAttributeDirectionInversed = attributeDescriptors[areaMetric]?.direction === 1
 
         if (isAttributeDirectionInversed) {

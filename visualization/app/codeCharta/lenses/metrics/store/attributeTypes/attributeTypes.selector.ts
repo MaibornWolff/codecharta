@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { fileSettingsSelector } from "../../../../state/store/fileSettings/fileSettings.selector"
+import { metricsLensSourceSelector } from "../metricsLensSource.selector"
 
-export const attributeTypesSelector = createSelector(fileSettingsSelector, fileSettings => fileSettings.attributeTypes)
+export const attributeTypesSelector = createSelector(metricsLensSourceSelector, source => source.attributeTypes)

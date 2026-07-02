@@ -2137,6 +2137,11 @@ export const EDGE_METRIC_DATA: EdgeMetricData[] = [
 
 export const STATE: CcState = {
     fileSettings: {
+        blacklist: [],
+        edges: VALID_EDGES,
+        markedPackages: []
+    },
+    metricsLensSource: {
         attributeTypes: {
             nodes: {
                 rloc: AttributeTypeValue.absolute,
@@ -2146,10 +2151,7 @@ export const STATE: CcState = {
             },
             edges: {}
         },
-        attributeDescriptors: {},
-        blacklist: [],
-        edges: VALID_EDGES,
-        markedPackages: []
+        attributeDescriptors: {}
     },
     dynamicSettings: {
         sortingOption: SortingOption.NAME
@@ -2305,11 +2307,13 @@ export const DEFAULT_STATE: CcState = {
         searchPattern: ""
     },
     fileSettings: {
-        attributeTypes: { nodes: {}, edges: {} },
-        attributeDescriptors: {},
         blacklist: [],
         edges: [],
         markedPackages: []
+    },
+    metricsLensSource: {
+        attributeTypes: { nodes: {}, edges: {} },
+        attributeDescriptors: {}
     },
     files: [],
     appStatus: {

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { AppSettings, CcState, DynamicSettings, FileSettings, MapState, SharedView } from "../../codeCharta.model"
+import { AppSettings, CcState, DynamicSettings, FileSettings, MapState, MetricsLensSource, SharedView } from "../../codeCharta.model"
 import { FileState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
 import { metricDataSelector } from "../selectors/accumulatedData/metricData/metricData.selector"
@@ -104,6 +104,23 @@ export class LoadInitialFileStore {
         return missingDynamicSettings
     }
 
+    applyMetricsLensSource(savedMetricsLensSource: MetricsLensSource) {
+        const currentMetricsLensSource = (this.state.getValue() as CcState).metricsLensSource
+        const missingMetricsLensSource = []
+        for (const [key, value] of Object.entries(currentMetricsLensSource)) {
+            if (key in savedMetricsLensSource) {
+                const currentValue = stringify(value)
+                const loadedValue = stringify(savedMetricsLensSource[key])
+                if (currentValue !== loadedValue) {
+                    this.mapMetricsLensSourceToAction(key as keyof MetricsLensSource, savedMetricsLensSource[key])
+                }
+            } else {
+                missingMetricsLensSource.push(key)
+            }
+        }
+        return missingMetricsLensSource
+    }
+
     applySharedView(savedSharedView: SharedView) {
         const currentSharedView = (this.state.getValue() as CcState).sharedView
         const missingSharedView = []
@@ -189,12 +206,6 @@ export class LoadInitialFileStore {
 
     private mapFileSettingToAction(key: keyof FileSettings, value: any) {
         switch (key) {
-            case "attributeTypes":
-                this.store.dispatch(setAttributeTypes({ value }))
-                break
-            case "attributeDescriptors":
-                this.store.dispatch(setAttributeDescriptors({ value }))
-                break
             case "blacklist":
                 this.store.dispatch(setBlacklist({ value }))
                 break
@@ -203,6 +214,20 @@ export class LoadInitialFileStore {
                 break
             case "markedPackages":
                 this.store.dispatch(setMarkedPackages({ value }))
+                break
+            default: {
+                throw new Error(`Unhandled key: ${key}`)
+            }
+        }
+    }
+
+    private mapMetricsLensSourceToAction(key: keyof MetricsLensSource, value: any) {
+        switch (key) {
+            case "attributeTypes":
+                this.store.dispatch(setAttributeTypes({ value }))
+                break
+            case "attributeDescriptors":
+                this.store.dispatch(setAttributeDescriptors({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

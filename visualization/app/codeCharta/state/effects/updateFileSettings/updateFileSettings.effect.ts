@@ -35,7 +35,9 @@ export class UpdateFileSettingsEffect {
                         fileSettings: {
                             edges: getMergedEdges(visibleFiles, withUpdatedPath),
                             markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath),
-                            blacklist: getMergedBlacklist(visibleFiles, withUpdatedPath),
+                            blacklist: getMergedBlacklist(visibleFiles, withUpdatedPath)
+                        },
+                        metricsLensSource: {
                             attributeTypes: getMergedAttributeTypes(allAttributeTypes),
                             attributeDescriptors: getMergedAttributeDescriptors(allAttributeDescriptors)
                         }

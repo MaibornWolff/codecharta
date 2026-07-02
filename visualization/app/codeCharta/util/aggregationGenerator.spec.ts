@@ -1,4 +1,4 @@
-import { NodeType, Settings } from "../codeCharta.model"
+import { CCFile, NodeType } from "../codeCharta.model"
 import { AggregationGenerator } from "./aggregationGenerator"
 import packageJson from "../../../package.json"
 import { FileState } from "../model/files/files"
@@ -47,7 +47,7 @@ describe("AggregationGenerator", () => {
                         }
                     ]
                 },
-                settings: {} as Settings
+                settings: {} as CCFile["settings"]
             }
         }
 
@@ -89,7 +89,7 @@ describe("AggregationGenerator", () => {
                         }
                     ]
                 },
-                settings: {} as Settings
+                settings: {} as CCFile["settings"]
             }
         }
     })

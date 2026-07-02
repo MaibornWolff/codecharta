@@ -1,10 +1,11 @@
 import { CcState } from "app/codeCharta/codeCharta.model"
 import { defaultMapState } from "../../mapState/mapState.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.facade"
+import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 6
+export const DB_VERSION = 7
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -134,6 +135,43 @@ export function migrateCcStateRecordToV6<T>(state: T): T {
     return next as T
 }
 
+// v7 (Slice 9a): attributeTypes + attributeDescriptors moved out of fileSettings into a brand-new
+// metricsLensSource root (owned by the metrics lens). Like v6, this CREATES a new root: an old
+// (v6-shaped) blob has NO metricsLensSource. Build it fresh from defaultMetricsLensSource + the two
+// moved keys pulled out of fileSettings, so the rehydrate applier finds them under metricsLensSource
+// instead of silently reverting them to defaults — same silent-data-loss landmine the v3–v6 transforms close.
+const V7_MOVES: Record<string, string[]> = {
+    fileSettings: ["attributeTypes", "attributeDescriptors"]
+}
+
+export function migrateCcStateRecordToV7<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const metricsLensSource: Record<string, unknown> = {
+        ...defaultMetricsLensSource,
+        ...((record["metricsLensSource"] as Record<string, unknown>) ?? {})
+    }
+    const next: Record<string, unknown> = { ...record }
+    for (const [home, keys] of Object.entries(V7_MOVES)) {
+        const source = record[home]
+        if (!source || typeof source !== "object") {
+            continue
+        }
+        const trimmed = { ...(source as Record<string, unknown>) }
+        for (const key of keys) {
+            if (key in trimmed) {
+                metricsLensSource[key] = trimmed[key]
+                delete trimmed[key]
+            }
+        }
+        next[home] = trimmed
+    }
+    next["metricsLensSource"] = metricsLensSource
+    return next as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -167,9 +205,10 @@ export async function openCodeChartaDB() {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
             // Existing DBs (oldVersion >= 1) may hold an older-shaped CcState blob; re-home its
-            // map-view settings into mapState and its focus/search into sharedView. Migrations chain:
-            // v2 blobs run v3→v4→v5→v6; a v5 blob runs only v6. A brand-new DB (oldVersion 0) has no
-            // record to migrate.
+            // map-view settings into mapState, its focus/search into sharedView, and its
+            // attributeTypes/attributeDescriptors into metricsLensSource. Migrations chain:
+            // v2 blobs run v3→v4→v5→v6→v7; a v6 blob runs only v7. A brand-new DB (oldVersion 0) has
+            // no record to migrate.
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
@@ -186,6 +225,9 @@ export async function openCodeChartaDB() {
                     }
                     if (oldVersion < 6) {
                         migrated = migrateCcStateRecordToV6(migrated)
+                    }
+                    if (oldVersion < 7) {
+                        migrated = migrateCcStateRecordToV7(migrated)
                     }
                     await store.put({ ...record, state: migrated })
                 }

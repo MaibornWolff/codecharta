@@ -30,11 +30,13 @@ describe("FileExtensionBarSegment", () => {
             edgeMetric: ""
         },
         fileSettings: {
-            attributeTypes: null,
-            attributeDescriptors: null,
             blacklist: [],
             edges: [],
             markedPackages: []
+        },
+        metricsLensSource: {
+            attributeTypes: null,
+            attributeDescriptors: null
         },
         files: [],
         dynamicSettings: {

@@ -84,7 +84,7 @@ describe("3dPrint.selectors", () => {
     })
 
     describe("attributeDescriptorsSelector", () => {
-        it("should select attributeDescriptors from fileSettings", () => {
+        it("should select attributeDescriptors from metricsLensSource", () => {
             // Arrange
             const descriptors = {
                 rloc: {
@@ -95,10 +95,10 @@ describe("3dPrint.selectors", () => {
                     link: ""
                 }
             }
-            mockState.fileSettings.attributeDescriptors = descriptors
+            mockState.metricsLensSource.attributeDescriptors = descriptors
 
             // Act
-            const result = attributeDescriptorsSelector.projector(mockState.fileSettings)
+            const result = attributeDescriptorsSelector.projector(mockState.metricsLensSource)
 
             // Assert
             expect(result).toEqual(descriptors)

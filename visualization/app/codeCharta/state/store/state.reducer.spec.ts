@@ -31,12 +31,14 @@ describe("_applyPartialState", () => {
 
     it("should update partial state with objects that have dynamic keys ", () => {
         const partialState = {
-            fileSettings: {
+            metricsLensSource: {
                 attributeTypes: {
                     nodes: {
                         rloc: AttributeTypeValue.absolute
                     }
-                },
+                }
+            },
+            fileSettings: {
                 blacklist: [
                     {
                         path: "excludedNode",
@@ -48,7 +50,7 @@ describe("_applyPartialState", () => {
 
         const newState = _applyPartialState(clone(defaultState), partialState)
 
-        expect(newState.fileSettings.attributeTypes.nodes["rloc"]).toBe("absolute")
+        expect(newState.metricsLensSource.attributeTypes.nodes["rloc"]).toBe("absolute")
         expect(newState.fileSettings.blacklist).toEqual([
             {
                 path: "excludedNode",

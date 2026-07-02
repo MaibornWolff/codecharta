@@ -5,12 +5,14 @@ import { defaultFiles, files } from "../../fileStore/store/files.reducer"
 import { appStatus, defaultAppStatus } from "./appStatus/appStatus.reducer"
 import { defaultMapState, mapState } from "../../mapState/mapState.facade"
 import { defaultSharedView, sharedView } from "../../sharedView/sharedView.facade"
+import { defaultMetricsLensSource, metricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
 import { ActionReducer } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { isSetStateAction } from "./state.actions"
 
 export const appReducers = {
     fileSettings,
+    metricsLensSource,
     appSettings,
     mapState,
     sharedView,
@@ -20,6 +22,7 @@ export const appReducers = {
 }
 export const defaultState: CcState = {
     fileSettings: defaultFileSettings,
+    metricsLensSource: defaultMetricsLensSource,
     appSettings: defaultAppSettings,
     mapState: defaultMapState,
     sharedView: defaultSharedView,
@@ -36,8 +39,8 @@ export const setStateMiddleware =
     }
 
 const objectWithDynamicKeysInStore = new Set([
-    "fileSettings.attributeTypes",
-    "fileSettings.attributeDescriptors",
+    "metricsLensSource.attributeTypes",
+    "metricsLensSource.attributeDescriptors",
     "fileSettings.blacklist",
     "fileSettings.edges",
     "fileSettings.markedPackages",

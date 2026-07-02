@@ -7,6 +7,7 @@ import {
     LabelMode,
     LayoutAlgorithm,
     MapColors,
+    MetricsLensSource,
     PrimaryMetrics,
     Scaling,
     SortingOption
@@ -103,6 +104,7 @@ export interface AppSettings {
 
 export interface CcState {
     fileSettings: FileSettings
+    metricsLensSource: MetricsLensSource
     dynamicSettings: DynamicSettings
     appSettings: AppSettings
     mapState: MapState

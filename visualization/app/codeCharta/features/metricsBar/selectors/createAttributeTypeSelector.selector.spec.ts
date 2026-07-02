@@ -11,7 +11,7 @@ describe("createAttributeTypeSelector", () => {
 
     it("should read nodes", () => {
         const state = clone(defaultState)
-        state.fileSettings.attributeTypes = { nodes: { rloc: AttributeTypeValue.relative } }
+        state.metricsLensSource.attributeTypes = { nodes: { rloc: AttributeTypeValue.relative } }
         state.mapState.areaMetric = "rloc"
         const attributeTypeSelector = createAttributeTypeSelector("nodes", "areaMetric")
         expect(attributeTypeSelector(state)).toBe("x͂")
@@ -19,7 +19,7 @@ describe("createAttributeTypeSelector", () => {
 
     it("should read edges", () => {
         const state = clone(defaultState)
-        state.fileSettings.attributeTypes = { edges: { avgCommit: AttributeTypeValue.relative } }
+        state.metricsLensSource.attributeTypes = { edges: { avgCommit: AttributeTypeValue.relative } }
         state.mapState.edgeMetric = "avgCommit"
         const attributeTypeSelector = createAttributeTypeSelector("edges", "edgeMetric")
         expect(attributeTypeSelector(state)).toBe("x͂")

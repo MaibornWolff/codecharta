@@ -1,4 +1,5 @@
 import { combineReducers } from "@ngrx/store"
+import { MetricsLensSource } from "../../../codeCharta.model"
 import { attributeTypes, defaultAttributeTypes } from "./attributeTypes/attributeTypes.reducer"
 import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors/attributeDescriptors.reducer"
 
@@ -11,7 +12,7 @@ export const metricsLensSource = combineReducers({
     attributeDescriptors
 })
 
-export const defaultMetricsLensSource = {
+export const defaultMetricsLensSource: MetricsLensSource = {
     attributeTypes: defaultAttributeTypes,
     attributeDescriptors: defaultAttributeDescriptors
 }

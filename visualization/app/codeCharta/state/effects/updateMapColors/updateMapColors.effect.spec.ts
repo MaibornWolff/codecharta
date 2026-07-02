@@ -13,8 +13,8 @@ import { UpdateMapColorsEffect } from "./updateMapColors.effect"
 describe("UpdateMapColorsEffect", () => {
     const modifiedDefaultState = {
         ...defaultState,
-        fileSettings: {
-            ...defaultState.fileSettings,
+        metricsLensSource: {
+            ...defaultState.metricsLensSource,
             attributeDescriptors: {
                 comment_lines: {
                     title: "Comment Lines",

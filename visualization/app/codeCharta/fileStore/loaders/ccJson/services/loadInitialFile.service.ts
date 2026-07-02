@@ -84,6 +84,8 @@ export class LoadInitialFileService {
 
         const missingFileSettings = this.loadInitialFileStore.applyFileSettings(savedCcState.fileSettings)
         missingPropertiesInSavedCcState.push(...missingFileSettings)
+        const missingMetricsLensSource = this.loadInitialFileStore.applyMetricsLensSource(savedCcState.metricsLensSource)
+        missingPropertiesInSavedCcState.push(...missingMetricsLensSource)
         const missingDynamicSettings = this.loadInitialFileStore.applyDynamicSettings(savedCcState.dynamicSettings)
         missingPropertiesInSavedCcState.push(...missingDynamicSettings)
         const missingSharedView = this.loadInitialFileStore.applySharedView(savedCcState.sharedView)
@@ -140,6 +142,7 @@ export class LoadInitialFileService {
 
     private applyAllSettings(savedCcState: CcState) {
         const savedFileSettings = savedCcState.fileSettings
+        const savedMetricsLensSource = savedCcState.metricsLensSource
         const savedDynamicSettings = savedCcState.dynamicSettings
         const savedSharedView = savedCcState.sharedView
         const savedAppSettings = savedCcState.appSettings
@@ -148,6 +151,10 @@ export class LoadInitialFileService {
         if (savedFileSettings) {
             const missingFileSettings = this.loadInitialFileStore.applyFileSettings(savedFileSettings)
             missingPropertiesInSavedCcState.push(...missingFileSettings)
+        }
+        if (savedMetricsLensSource) {
+            const missingMetricsLensSource = this.loadInitialFileStore.applyMetricsLensSource(savedMetricsLensSource)
+            missingPropertiesInSavedCcState.push(...missingMetricsLensSource)
         }
         if (savedDynamicSettings) {
             const missingDynamicSettings = this.loadInitialFileStore.applyDynamicSettings(savedDynamicSettings)

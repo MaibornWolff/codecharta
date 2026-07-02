@@ -14,6 +14,4 @@
  */
 export { setAttributeTypes } from "./store/attributeTypes/attributeTypes.actions"
 export { setAttributeDescriptors } from "./store/attributeDescriptors/attributeDescriptors.action"
-export { attributeTypes, defaultAttributeTypes } from "./store/attributeTypes/attributeTypes.reducer"
-export { attributeDescriptors, defaultAttributeDescriptors } from "./store/attributeDescriptors/attributeDescriptors.reducer"
 export { metricsLensSource, defaultMetricsLensSource } from "./store/metricsLensSource.reducer"

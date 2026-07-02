@@ -7,6 +7,7 @@ import {
     Edge,
     FileMeta,
     FileSettings,
+    MetricsLensSource,
     NodeType
 } from "../codeCharta.model"
 import { CC_FILE_EXTENSION } from "../model/files/files"
@@ -21,7 +22,7 @@ export class FileDownloader {
     static downloadCurrentMap(
         map: CodeMapNode,
         fileMeta: FileMeta,
-        fileSettings: FileSettings,
+        fileSettings: FileSettings & MetricsLensSource,
         downloadSettings: DownloadableSetting[],
         fileName: string
     ) {
@@ -33,7 +34,7 @@ export class FileDownloader {
     private static getProjectDataAsCCJsonFormat(
         map: CodeMapNode,
         fileMeta: FileMeta,
-        fileSettings: FileSettings,
+        fileSettings: FileSettings & MetricsLensSource,
         downloadSettings: DownloadableSetting[]
     ): ExportCCFile {
         return {

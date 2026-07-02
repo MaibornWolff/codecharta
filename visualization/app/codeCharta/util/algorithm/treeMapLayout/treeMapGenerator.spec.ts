@@ -221,7 +221,7 @@ describe("treeMapGenerator", () => {
 
         it("should invert area when areametric indicates a positive direction", () => {
             state.mapState.areaMetric = "branch_coverage"
-            state.fileSettings.attributeDescriptors = {
+            state.metricsLensSource.attributeDescriptors = {
                 branch_coverage: {
                     title: "Branch Coverage",
                     description: "",

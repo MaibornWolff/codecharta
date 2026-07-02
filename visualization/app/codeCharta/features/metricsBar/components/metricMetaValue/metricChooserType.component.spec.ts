@@ -98,7 +98,7 @@ describe("MetricChooserTypeComponent", () => {
     it("should show the relative indicator 'x͂' when the attribute type is relative", async () => {
         // Arrange
         const state = clone(defaultState)
-        state.fileSettings.attributeTypes = { nodes: { rloc: AttributeTypeValue.relative } }
+        state.metricsLensSource.attributeTypes = { nodes: { rloc: AttributeTypeValue.relative } }
         state.mapState.areaMetric = "rloc"
 
         // Act

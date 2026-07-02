@@ -11,9 +11,9 @@ describe("attributeTypes", () => {
 
     describe("Action: SET_ATTRIBUTE_TYPES", () => {
         it("should set new attributeTypes", () => {
-            const result = attributeTypes(defaultValue, setAttributeTypes({ value: STATE.fileSettings.attributeTypes }))
+            const result = attributeTypes(defaultValue, setAttributeTypes({ value: STATE.metricsLensSource.attributeTypes }))
 
-            expect(result).toEqual(STATE.fileSettings.attributeTypes)
+            expect(result).toEqual(STATE.metricsLensSource.attributeTypes)
         })
     })
 })

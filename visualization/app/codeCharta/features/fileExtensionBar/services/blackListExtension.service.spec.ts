@@ -84,11 +84,13 @@ describe("BlackListExtensionService", () => {
             edgeMetric: ""
         },
         fileSettings: {
-            attributeTypes: null,
-            attributeDescriptors: null,
             blacklist: mockBlacklist,
             edges: [],
             markedPackages: []
+        },
+        metricsLensSource: {
+            attributeTypes: null,
+            attributeDescriptors: null
         },
         files: [],
         dynamicSettings: {

@@ -25,7 +25,7 @@ export class Print3DStateAccessStore {
     }
 
     getAttributeDescriptors(): AttributeDescriptors {
-        return this.state.getValue().fileSettings.attributeDescriptors
+        return this.state.getValue().metricsLensSource.attributeDescriptors
     }
 
     getBlacklist(): BlacklistItem[] {

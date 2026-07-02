@@ -4,7 +4,8 @@ import { defaultState } from "../../state/store/state.manager"
 import { defaultAppSettings } from "../../state/store/appSettings/appSettings.reducer"
 import { defaultMapState } from "../../mapState/mapState.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.facade"
-import { ColorMode, LayoutAlgorithm } from "../../codeCharta.model"
+import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
+import { AttributeTypeValue, ColorMode, LayoutAlgorithm } from "../../codeCharta.model"
 import {
     CCSTATE_PRIMARY_KEY,
     CCSTATE_STATE_ID,
@@ -16,6 +17,7 @@ import {
     migrateCcStateRecordToV4,
     migrateCcStateRecordToV5,
     migrateCcStateRecordToV6,
+    migrateCcStateRecordToV7,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -209,7 +211,50 @@ describe("migrateCcStateRecordToV6 (Slice 8 re-home transform)", () => {
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 transforms)", () => {
+describe("migrateCcStateRecordToV7 (Slice 9a re-home transform)", () => {
+    const v6ShapeState = () => ({
+        fileSettings: {
+            blacklist: [],
+            edges: [],
+            markedPackages: [],
+            attributeTypes: { nodes: { rloc: AttributeTypeValue.absolute }, edges: {} },
+            attributeDescriptors: { rloc: { title: "Lines of Code" } }
+        }
+    })
+
+    it("should move attributeTypes + attributeDescriptors from fileSettings into a brand-new metricsLensSource root", () => {
+        const migrated = migrateCcStateRecordToV7(v6ShapeState()) as unknown as { metricsLensSource: Record<string, unknown> }
+
+        expect(migrated.metricsLensSource.attributeTypes).toEqual({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} })
+        expect(migrated.metricsLensSource.attributeDescriptors).toEqual({ rloc: { title: "Lines of Code" } })
+    })
+
+    it("should drop the moved keys from fileSettings and keep the staying ones", () => {
+        const migrated = migrateCcStateRecordToV7(v6ShapeState()) as unknown as { fileSettings: Record<string, unknown> }
+
+        expect("attributeTypes" in migrated.fileSettings).toBe(false)
+        expect("attributeDescriptors" in migrated.fileSettings).toBe(false)
+        expect(migrated.fileSettings.blacklist).toEqual([])
+        expect(migrated.fileSettings.edges).toEqual([])
+        expect(migrated.fileSettings.markedPackages).toEqual([])
+    })
+
+    it("should fill metricsLensSource keys absent from the old blob with their defaults", () => {
+        const migrated = migrateCcStateRecordToV7({ fileSettings: {} }) as unknown as { metricsLensSource: Record<string, unknown> }
+
+        expect(migrated.metricsLensSource.attributeTypes).toEqual(defaultMetricsLensSource.attributeTypes)
+        expect(migrated.metricsLensSource.attributeDescriptors).toEqual(defaultMetricsLensSource.attributeDescriptors)
+    })
+
+    it("should return the record untouched when it is null, and build a default metricsLensSource when there is no fileSettings", () => {
+        expect(migrateCcStateRecordToV7(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV7({ files: [] }) as unknown as { files: unknown[]; metricsLensSource: Record<string, unknown> }
+        expect(migrated.files).toEqual([])
+        expect(migrated.metricsLensSource.attributeTypes).toEqual(defaultMetricsLensSource.attributeTypes)
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -235,20 +280,28 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 transf
                 focusedNodePath: ["/root/ParentLeaf"],
                 searchPattern: "needle"
             },
+            fileSettings: {
+                ...defaultState.fileSettings,
+                attributeTypes: { nodes: { rloc: AttributeTypeValue.absolute }, edges: {} },
+                attributeDescriptors: { rloc: { title: "Lines of Code" } }
+            },
             appStatus: { ...defaultState.appStatus, hoveredNodeId: 5 }
         }
         delete (v2ShapeState as { mapState?: unknown }).mapState
         delete (v2ShapeState as { sharedView?: unknown }).sharedView
+        delete (v2ShapeState as { metricsLensSource?: unknown }).metricsLensSource
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v6, invoked by readCcState) chains the v3, v4, v5 then v6 upgrade transforms.
+        // openCodeChartaDB (v7, invoked by readCcState) chains the v3, v4, v5, v6 then v7 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings: Record<string, unknown>
             dynamicSettings: Record<string, unknown>
             appStatus: Record<string, unknown>
             mapState: Record<string, unknown>
             sharedView: Record<string, unknown>
+            fileSettings: Record<string, unknown>
+            metricsLensSource: Record<string, unknown>
         }
 
         // v3 re-home (appearance keys + layoutAlgorithm out of appSettings)
@@ -270,6 +323,11 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 transf
         expect(migratedState.sharedView.searchPattern).toBe("needle")
         expect("focusedNodePath" in migratedState.dynamicSettings).toBe(false)
         expect("searchPattern" in migratedState.dynamicSettings).toBe(false)
+        // v7 re-home (attributeTypes/descriptors out of fileSettings into a brand-new metricsLensSource root)
+        expect(migratedState.metricsLensSource.attributeTypes).toEqual({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} })
+        expect(migratedState.metricsLensSource.attributeDescriptors).toEqual({ rloc: { title: "Lines of Code" } })
+        expect("attributeTypes" in migratedState.fileSettings).toBe(false)
+        expect("attributeDescriptors" in migratedState.fileSettings).toBe(false)
     })
 })
 
