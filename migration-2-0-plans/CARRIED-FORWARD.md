@@ -25,6 +25,15 @@ version: 1
 
 ## Notes
 - Items 1, 2/2a, 4, 5 are concrete, near-term follow-ups; item 6 is the broad remaining roadmap.
+- **Done (2026-07-02):** ~~Slice 8~~ — the first brand-new state home, `state.sharedView`
+  (`slice-8-sharedview.md`). `focusedNodePath` + `searchPattern` moved out of `dynamicSettings` into it;
+  `dynamicSettings` now holds only `sortingOption`. Reused the reshape machinery (state.manager root +
+  dynamic-key rename, applier `applySharedView`/`mapSharedViewToAction`, scenario `focusedNodePath` patch
+  re-key, IndexedDB `v5→v6`). **New-root first:** `migrateCcStateRecordToV6` builds `sharedView` fresh from
+  defaults + the two moved keys (prior migrations merged into the pre-existing mapState). `state-home-is-leaf`
+  + `state-home-only-stores-import-ngrx` are **error** for sharedView. **This unblocks 9b (`blacklist`) and 9c
+  (`markedPackages`)**, which move into `sharedView` — the home now exists. No lens/fileStore imports focus/
+  search, so `new-must-not-import-legacy` did NOT shrink (unlike Slice 7); its flip still waits on 9a + 9b/9c.
 - **Done (2026-07-02):** ~~Slice 7~~ — metric SELECTION → mapState + metrics-lens parameterization
   (`slice-7-mapstate-metrics.md`). Resolves ~~item #3~~ (metric selection: owner decided = mapState,
   NOT the metrics lens — selection is per-view config, the lens owns only DATA) and ~~item #2b~~ (edge

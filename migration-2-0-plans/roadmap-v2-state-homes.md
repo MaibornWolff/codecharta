@@ -16,7 +16,12 @@ version: 1
 
 ## Where we are vs where we're going
 
-**Today (runtime):** Slices 5–**7** landed. The ex-`appearance/` module is now `mapState/`, and after Slice 7 its **34**
+**Today (runtime):** Slices 5–**8** landed. **Slice 8** stood up the first brand-new home from scratch, **`state.sharedView`**,
+and moved `focusedNodePath` + `searchPattern` out of `dynamicSettings` into it — so `dynamicSettings` now holds **only**
+`sortingOption`. `sharedView` is `state-home-is-leaf` + `state-home-only-stores-import-ngrx` **error**. IndexedDB is at **v6**
+(the first migration that CREATES a new root). Below reflects the state after Slice 7; append Slice 8's `sharedView` root to it.
+
+**After Slice 7 (runtime):** Slices 5–**7** landed. The ex-`appearance/` module is now `mapState/`, and after Slice 7 its **34**
 slices register under a real **`state.mapState`** root — the map-view leaf settings, the presentation stragglers
 (`colorMode`/`colorRange`/`margin`/`layoutAlgorithm`/`isLoadingMap`), the transient interaction ids
 (`hoveredNodeId`/`rightClickedNodeData`/`selectedBuildingId`), **and the metric selection**
@@ -58,7 +63,7 @@ deleted** — "state has a home" is finally true at runtime.
 5   mapState ROOT (keystone — builds the reshape machinery)   ── MUST precede 6–10   ✅ DONE
 6   mapState presentation stragglers                          ── needs 5             ✅ DONE
 7   mapState metric SELECTION + parameterize metrics lens     ── needs 5; lens drops colorMetric + blacklist reads   ✅ DONE
-8   sharedView stood up (focus + search only)                 ── needs 5; MUST precede 9b/9c
+8   sharedView stood up (focus + search only)                 ── needs 5; MUST precede 9b/9c   ✅ DONE
 9a  cc.json source (edges/attributeTypes/descriptors) → lenses── needs 5
 9b  blacklist → sharedView + parameterize BOTH lenses' blacklist read ── needs 8; unblocks lens-no-view-state flip
 9c  markedPackages → sharedView                               ── needs 8
@@ -167,14 +172,26 @@ each **once** so later slices only *add a key*:
   e2e metric-picker + URL metric params green.
 - **dep-cruiser:** `new-must-not-import-legacy` edge count drops; no flip yet. **Precedes 11** (lens off ngrx-selection first). **Risk:** MED-HIGH/LARGE.
 
-### Slice 8 — Stand up `sharedView` (focus + search only)
+### Slice 8 — Stand up `sharedView` (focus + search only) — ✅ DONE
+- **Outcome (2026-07-02, 3 commits):** (1) structural `git mv` of the two leaf folders
+  `dynamicSettings/{focusedNodePath,searchPattern}` → `sharedView/store/*` (+ `sharedView.facade`; ~18 importers
+  repointed; `dynamicSettings` combineReducers keeps both alive via cross-import → zero snapshot diff); (2) store-key
+  reshape — model split (`DynamicSettings = { sortingOption }`; new `SharedView` on `Settings` + `CcState`), `sharedView`
+  root registered in `state.manager`, the 2 leaf selectors read `sharedViewSelector`, applier `applySharedView`/
+  `mapSharedViewToAction` (wired into both load paths), scenario `buildFiltersPatch` re-keyed `dynamicSettings → sharedView`
+  (+ `mergePatches`), the `treeMapHelper`/`scenarios.service` dotted readers repointed to `state.sharedView.*`,
+  `objectWithDynamicKeysInStore` entry renamed to `sharedView.focusedNodePath`, IndexedDB `v5→v6` (`migrateCcStateRecordToV6`
+  — the **first** migration that CREATES a new root, +6 tests); (3) dep-cruiser flip. `tsc` clean, `npm test` **45/45
+  snapshots zero diff (no -u)**, 2287 passing, `lint:architecture` 0 errors. All three landmines held (#1 array-corruption
+  guard renamed; #2 new-root migration builds from defaults; #3 URL untouched; #4 no availability fold-back). No
+  `new-must-not-import-legacy` edge drop (landmine #5) — focus/search have no lens/fileStore importers. Details:
+  `slice-8-sharedview.md`.
 - **Goal:** create the `sharedView` home; move the two cleanest cross-renderer values: `focusedNodePath`, `searchPattern`.
   (The renderer-agnostic **selected-node id is NOT here** — it needs the Slice-13 `idToNode` untangle; keep this slice small.)
-- **Moves:** code-boundary `git mv dynamicSettings/{focusedNodePath,searchPattern} → sharedView/store/*`; reshape into a new
-  `state.sharedView` root (machinery reused); repoint `unfocusNodes`/`blacklistSearchPattern`/`searchedNodes`.
-- **DoD:** `state.sharedView.{focusedNodePath,searchPattern}` real; `dynamicSettings` holds only `sortingOption`; snapshots
-  byte-identical; e2e focus/unfocus + search green.
-- **dep-cruiser:** extend `state-home-is-leaf` to `sharedView` (warn→**error** once moved). **Precedes 9b/9c.** **Risk:** LOW-MED/SMALL-MED.
+- **DoD:** `state.sharedView.{focusedNodePath,searchPattern}` real ✅; `dynamicSettings` holds only `sortingOption` ✅;
+  snapshots byte-identical ✅ (e2e focus/unfocus + search: CI/manual, not run in this env).
+- **dep-cruiser:** extended `state-home-is-leaf` **and** `state-home-only-stores-import-ngrx` to `sharedView` — both **error**.
+  **Precedes 9b/9c.** **Risk was:** LOW-MED/SMALL-MED.
 
 ### Slice 9a — cc.json source → lenses
 - **Goal:** `edges` → dependency lens, `attributeTypes`/`attributeDescriptors` → metrics lens (finishes CF **#2a**).
@@ -253,10 +270,10 @@ each **once** so later slices only *add a key*:
 | `lens-owns-ccjson-source` | edges/attributeTypes/descriptors live only under lenses | **9a** |
 | `lens-only-repos-store-import-ngrx` (evolved `metrics-lens-ngrx-guard`) | only lens repos/store touch ngrx | **11** |
 | `lens-no-view-state` | **a lens never reads mutable view state** (selection/blacklist/edge-visibility are parameters) — kills the `valueOf` coupling | **13** *(gated on 7 + 9b lifting all view-state reads out of both lenses)* |
-| `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6 ✅**, sharedView **8**, preferences **10** |
-| `state-home-only-stores-import-ngrx` | only a home's store touches ngrx | mapState **6 ✅** / sharedView **8** / preferences **10** |
+| `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6 ✅**, sharedView **8 ✅**, preferences **10** |
+| `state-home-only-stores-import-ngrx` | only a home's store touches ngrx | mapState **6 ✅** / sharedView **8 ✅** / preferences **10** |
 | `state-home-read-facade-has-no-dispatch` · `…-write-facade-is-sole-dispatch-surface` · `display-components-cannot-dispatch` | CQRS: read facade can't dispatch | **12** |
-| `feature-reaches-state-home-only-via-facade` | features mutate state only via a home facade | mapState **7 (deferred — no rule added; consumers already use the facade in practice, enforcement folds into the Slice-12 CQRS split)**, sharedView **8**, prefs **10** |
+| `feature-reaches-state-home-only-via-facade` | features mutate state only via a home facade | mapState **7** / sharedView **8** (both deferred — no rule added; the ~18 sharedView consumers already reach it via `sharedView.facade`, enforcement folds into the Slice-12 CQRS split), prefs **10** |
 | `feature-services-reach-a-lens-only-via-its-facade` (+ retire the 5 lens-internal-feature rules) | features reach a lens only via its facade | **11** |
 | `filestore-external-access-only-via-facade` | fileStore reached only via its facade | **9a/10** |
 | `filestore-has-no-upward-deps` · `wire-dto-only-in-filestore-boundary` | fileStore is the source; wire DTO confined | already error (names evolved) |

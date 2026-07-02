@@ -1,11 +1,39 @@
 ---
 name: viz-2.0-slice-8-sharedview
 issue:
-state: todo
+state: complete
 version: 1
 ---
 
 # Slice 8 — Stand up `sharedView` (focus + search)
+
+## Outcome (2026-07-02, 3 commits)
+
+- **(1) structural** `git mv` of the two leaf folders `state/store/dynamicSettings/{focusedNodePath,searchPattern}`
+  → `sharedView/store/` (+ `sharedView.facade` barrel; ~18 external importers repointed to the facade;
+  `dynamicSettings.reducer`/`.actions` cross-import the moved slices so `state.dynamicSettings.{focusedNodePath,
+  searchPattern}` stays alive → zero runtime change). Zero snapshot diff.
+- **(2) behavioral reshape** — model split (`DynamicSettings = { sortingOption }`; new `SharedView`; added to
+  `Settings` + `CcState`); `sharedView` combineReducers + `defaultSharedView` + `sharedViewSelector`; registered
+  `sharedView`/`defaultSharedView` in `state.manager`; the two leaf selectors now read `sharedViewSelector`;
+  `dynamicSettings.reducer` trimmed; applier `applySharedView` + `mapSharedViewToAction` (wired into BOTH load
+  paths) with the focus/search cases removed from `mapDynamicSettingToAction`; scenario `buildFiltersPatch`
+  focusedNodePath re-keyed `dynamicSettings → sharedView` (+ `mergePatches`); the dotted readers in
+  `treeMapHelper` (`isVisible`/`isNodeFlat`) and `scenarios.service` read `state.sharedView.*`;
+  `objectWithDynamicKeysInStore` entry renamed `dynamicSettings.focusedNodePath → sharedView.focusedNodePath`;
+  IndexedDB `DB_VERSION 5→6` + `migrateCcStateRecordToV6` (the **first** migration that CREATES a new root —
+  builds `sharedView` fresh from `defaultSharedView` + the two moved keys) chained after v5, +6 tests.
+- **(3) dep-cruiser flip** — `state-home-is-leaf` + `state-home-only-stores-import-ngrx` extended to
+  `^app/codeCharta/sharedView/` (ngrx rule `pathNot` gains `^app/codeCharta/sharedView/store/`). Both **error**.
+
+`tsc` clean, `npm test` **45/45 snapshots zero diff (no -u)**, 2287 passing, `lint:architecture` 0 errors
+(109 warns, unchanged — no lens/fileStore imports focus/search, so no `new-must-not-import-legacy` edge drop,
+as landmine #5 predicted). All three landmines held: (#1) the array-corruption guard renamed; (#2) the new-root
+migration builds `sharedView` from defaults; (#3) URL round-trip untouched; (#4) no availability-gate fold-back.
+After the slice `dynamicSettings` holds only `sortingOption`. **Precedes 9b/9c** (blacklist/markedPackages →
+sharedView).
+
+## Plan (as executed)
 
 > Full plan: `roadmap-v2-state-homes.md` → "Slice 8". Safety model: `CONVENTIONS.md`
 > (snapshots ARE the contract, never `-u`; structural vs behavioral commits separate;
