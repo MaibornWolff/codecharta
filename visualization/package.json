@@ -103,7 +103,7 @@
     "@angular/cli": "^21.2.7",
     "@angular/compiler": "^21.1.2",
     "@angular/compiler-cli": "^21.2.8",
-    "@cyclonedx/cyclonedx-npm": "^4.2.1",
+    "@cyclonedx/cyclonedx-npm": "^5.0.0",
     "@electron/get": "^4.0.3",
     "@electron/packager": "^19.1.0",
     "@playwright/test": "^1.59.1",
