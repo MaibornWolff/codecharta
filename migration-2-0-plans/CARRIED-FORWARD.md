@@ -27,6 +27,15 @@ version: 1
 
 ## Notes
 - Items 1–5 are concrete, near-term follow-ups; item 6 is the broad remaining roadmap.
+- **Done (2026-07-02):** ~~Slice 6~~ — the mapState presentation stragglers (`slice-6-mapstate-stragglers.md`).
+  `colorMode`/`colorRange`/`margin` (from `dynamicSettings`), `layoutAlgorithm`/`isLoadingMap` (from `appSettings`), and the
+  transient `hoveredNodeId`/`rightClickedNodeData`/`selectedBuildingId` (from `appStatus`) moved into `state.mapState`;
+  `appStatus` now holds only `currentFilesAreSampleFiles`. IndexedDB migration reused (v3→v4). `state-home-is-leaf` +
+  `state-home-only-stores-import-ngrx` are **error** for mapState. **Two subtle behaviors preserved:** the transient ids +
+  isLoadingMap are no-ops in the mapState applier (appStatus was never applied on load), and `colorRange`'s first-render
+  null-gate is kept by folding `mapState.colorRange` into `areDynamicSettingsAvailable`. Item **#5**'s `metrics-lens-ngrx-guard`
+  note now points at `mapState` (was "viewState"): `legend.service` still injects `Store` for areaMetric/heightMetric/
+  colorMetric/edgeMetric (dynamicSettings, Slice 7) + isDeltaState — colorRange is now a mapState read, no longer a bridge.
 - **Done (2026-07-02):** ~~Slice 5~~ — the keystone `state.mapState` root (`slice-5-mapstate-root.md`). The 21 ex-appearance
   slices moved from the `appSettings` combineReducers into their own `state.mapState` root; the reshape machinery
   (state.manager dynamic-keys + `_applyPartialState` paths, the load applier's `applyMapState`, scenario patch keys, IndexedDB

@@ -16,12 +16,16 @@ version: 1
 
 ## Where we are vs where we're going
 
-**Today (runtime):** Slice 5 landed the keystone — the ex-`appearance/` module is now `mapState/`, and its 21 slices
-register under a real **`state.mapState`** root (no longer combined into `appSettings`); the reshape machinery
-(state.manager dynamic-keys, the load applier's `applyMapState`, scenario patch keys, IndexedDB v2→v3 record transform) is
-built and reused by Slices 6–10. Still to move: metric selection + `colorMode`/`colorRange`/`margin`/`layoutAlgorithm` live in
-`dynamicSettings`; hover/rightClick/selectedBuilding in `appStatus`; blacklist/markedPackages/edges/attributeTypes in
-`fileSettings`. **State now has its first real home at runtime; the grab-bag reducers are next (Slices 6–10).**
+**Today (runtime):** Slices 5–6 landed. The ex-`appearance/` module is now `mapState/`, and after Slice 6 its **29** slices
+register under a real **`state.mapState`** root — the map-view leaf settings *plus* the presentation stragglers
+(`colorMode`/`colorRange`/`margin`/`layoutAlgorithm`/`isLoadingMap`) and the transient interaction ids
+(`hoveredNodeId`/`rightClickedNodeData`/`selectedBuildingId`). `appStatus` is down to just `currentFilesAreSampleFiles`, and
+`state-home-is-leaf` + `state-home-only-stores-import-ngrx` are **error** for mapState. The reshape machinery (state.manager
+dynamic-keys, the load applier's `applyMapState`/`mapMapStateToAction`, scenario patch keys, IndexedDB record transform now at
+v4) is proven across two reshapes and reused by Slices 7–10. Still to move: metric selection (`areaMetric`/`heightMetric`/
+`colorMetric`/`distributionMetric`/`edgeMetric`) → mapState; focus/search → sharedView; blacklist/markedPackages/edges/
+attributeTypes(/descriptors) out of `fileSettings`. **Two grab-bags (`dynamicSettings`, `fileSettings`) remain; `appStatus`
+is nearly empty (Slices 7–10).**
 
 **Goal:** `mapState` · `sharedView` · `preferences` are real store roots; lenses own the cc.json source, read-only +
 parameterized; `fileStore` owns raw files; features are one flat top-level layer (no "shell", legend re-homed); CQRS
@@ -111,14 +115,23 @@ each **once** so later slices only *add a key*:
   the rename leaves no unguarded window. Stays **warn**.
 - **Risk / size:** **HIGH / MED-LARGE** — the only slice that first-touches every persistence path. **Precedes 6–10.**
 
-### Slice 6 — Absorb mapState presentation stragglers
+### Slice 6 — Absorb mapState presentation stragglers — ✅ DONE
+- **Outcome (2026-07-02, 3 commits):** structural `git mv` of the 8 slice folders into `mapState/store/` (49 importers +
+  3 parent reducers/barrels repointed, facade exports added, zero snapshot diff); behavioral store-key reshape (model split;
+  `mapState` combineReducers gains the 8 keys; 8 leaf selectors + `globalSettings.layoutAlgorithm` + `3dPrint.colorRange/colorMode`
+  read `mapStateSelector`; applier dispatches colorMode/colorRange/margin/layoutAlgorithm from `mapMapStateToAction` and no-ops
+  isLoadingMap + the 3 interaction ids; scenario colors patch → `mapState`; IndexedDB `DB_VERSION 3→4` + `migrateCcStateRecordToV4`
+  chained after v3, +5 tests); dep-cruiser flip. `tsc` clean, `npm test` **zero snapshot diff (45/45, no -u)**, 2275 tests,
+  `lint:architecture` 0 errors. Details: `slice-6-mapstate-stragglers.md`.
+- **Two behavior landmines handled** (not deferred): (a) **appStatus was never applied on load**, so the 3 interaction ids +
+  isLoadingMap are **no-ops** in the mapState applier; (b) **`colorRange`'s first-render null-gate** in `areDynamicSettingsAvailable`
+  is preserved by folding `mapState.colorRange` back into the availability selector.
 - **Goal:** `colorMode`, `colorRange`, `margin`, `layoutAlgorithm`, `isLoadingMap`, and transient `hoveredNodeId` /
   `rightClickedNodeData` / `selectedBuildingId` → `mapState`.
-- **Moves:** per group Tidy First — code-boundary `git mv` from `dynamicSettings`/`appSettings`/`appStatus` → `mapState/store/*`,
-  then register under the `mapState` root. `selectedBuildingId` stays a Three.js id here (renderer-agnostic id → Slice 13).
-- **DoD:** these eight under `state.mapState`; `appStatus` holds only `currentFilesAreSampleFiles`; snapshots byte-identical;
-  e2e select/hover/context-menu/color-range green.
-- **dep-cruiser:** flip `state-home-is-leaf` + `state-home-only-stores-import-ngrx` → **error** for `mapState`. **Risk:** MED/MED.
+- **DoD:** these eight under `state.mapState`; `appStatus` holds only `currentFilesAreSampleFiles`; snapshots byte-identical ✅
+  (e2e select/hover/context-menu/color-range: CI/manual, not run in this env).
+- **dep-cruiser:** flipped `state-home-is-leaf` → **error** for `mapState` and added `state-home-only-stores-import-ngrx` →
+  **error**. `selectedBuildingId` stays a Three.js id here (renderer-agnostic id → Slice 13). **Risk was:** MED/MED.
 
 ### Slice 7 — Map metric SELECTION + parameterize the metrics lens
 - **Goal:** `areaMetric`/`heightMetric`/`colorMetric`/`distributionMetric`/`edgeMetric` → `mapState` (resolves CF **#3** +
@@ -222,8 +235,8 @@ each **once** so later slices only *add a key*:
 | `lens-owns-ccjson-source` | edges/attributeTypes/descriptors live only under lenses | **9a** |
 | `lens-only-repos-store-import-ngrx` (evolved `metrics-lens-ngrx-guard`) | only lens repos/store touch ngrx | **11** |
 | `lens-no-view-state` | **a lens never reads mutable view state** (selection/blacklist/edge-visibility are parameters) — kills the `valueOf` coupling | **13** *(gated on 7 + 9b lifting all view-state reads out of both lenses)* |
-| `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6**, sharedView **8**, preferences **10** |
-| `state-home-only-stores-import-ngrx` | only a home's store touches ngrx | **6 / 8 / 10** |
+| `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6 ✅**, sharedView **8**, preferences **10** |
+| `state-home-only-stores-import-ngrx` | only a home's store touches ngrx | mapState **6 ✅** / sharedView **8** / preferences **10** |
 | `state-home-read-facade-has-no-dispatch` · `…-write-facade-is-sole-dispatch-surface` · `display-components-cannot-dispatch` | CQRS: read facade can't dispatch | **12** |
 | `feature-reaches-state-home-only-via-facade` | features mutate state only via a home facade | mapState **7**, sharedView **8**, prefs **10** |
 | `feature-services-reach-a-lens-only-via-its-facade` (+ retire the 5 lens-internal-feature rules) | features reach a lens only via its facade | **11** |
