@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { blacklistMatcherSelector } from "../../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
+import { blacklistMatcherSelector } from "../../../sharedView/sharedView.facade"
 import { calculateEdgeMetricData } from "./edgeMetricData.calculator"
 import { FileState } from "../../../model/files/files"
 import { EdgeMetricCount, EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../codeCharta.model"

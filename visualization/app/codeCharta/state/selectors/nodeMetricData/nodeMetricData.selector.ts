@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { calculateNodeMetricData } from "../../../util/metric/nodeMetricData.calculator"
 import { rangeOfMetric } from "../../../util/metric/metricRange"
-import { blacklistMatcherSelector } from "../../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
+import { blacklistMatcherSelector } from "../../../sharedView/sharedView.facade"
 import { colorMetricSelector } from "../../../mapState/mapState.facade"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 

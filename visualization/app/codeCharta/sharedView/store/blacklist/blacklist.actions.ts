@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store"
-import { BlacklistItem } from "../../../../codeCharta.model"
+import { BlacklistItem } from "../../../codeCharta.model"
 
 export const setBlacklist = createAction("SET_BLACKLIST", props<{ value: BlacklistItem[] }>())
 export const addBlacklistItem = createAction("ADD_BLACKLIST_ITEM", props<{ item: BlacklistItem }>())

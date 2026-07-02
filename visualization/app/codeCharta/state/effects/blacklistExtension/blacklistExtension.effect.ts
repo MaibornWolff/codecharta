@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { filter, map, share, tap } from "rxjs"
 import { BlacklistType, CcState } from "../../../codeCharta.model"
-import { addBlacklistItems } from "../../store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItems } from "../../../sharedView/sharedView.facade"
 import { parseBlacklistItems } from "../../../util/blacklist/parseBlacklistItems"
 
 const ACTION_IDENTIFIER = "BlacklistExtensionAction"

@@ -4,7 +4,7 @@ import { BlacklistItem, BlacklistType, CodeMapNode } from "../../../codeCharta.m
 import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/codeMapNodes.selector"
 import { searchedNodesSelector } from "../../../state/selectors/searchedNodes/searchedNodes.selector"
 import { areaMetricSelector } from "../../../mapState/mapState.facade"
-import { blacklistSelector } from "../../../state/store/fileSettings/blacklist/blacklist.selector"
+import { blacklistSelector } from "../../../sharedView/sharedView.facade"
 import { addRulePatternsToEngine, returnIgnore, transformPath } from "../../../util/blacklist/blacklistMatcher"
 import { isAreaValid, isLeaf } from "../../../util/codeMapHelper"
 import { isPatternRule } from "./isPattern"

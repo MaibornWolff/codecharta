@@ -7,7 +7,7 @@ import { rightClickedCodeMapNodeSelector } from "../../../../state/selectors/rig
 import { setRightClickedNodeData } from "../../../../mapState/store/rightClickedNodeData/rightClickedNodeData.actions"
 import { rightClickedNodeDataSelector } from "../../../../mapState/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { currentFocusedNodePathSelector, focusNode, unfocusAllNodes, focusedNodePathSelector } from "../../../../sharedView/sharedView.facade"
-import { addBlacklistItem, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItem, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../sharedView/sharedView.facade"
 import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"

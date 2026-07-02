@@ -5,7 +5,7 @@ import { HighlightBuildingsByFileExtensionService } from "../../services/highlig
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
-import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
+import { blacklistSelector } from "../../../../sharedView/sharedView.facade"
 import { defaultMapState } from "../../../../mapState/mapState.facade"
 import { BlacklistItem, BlacklistType, CcState, SortingOption } from "../../../../codeCharta.model"
 import { By } from "@angular/platform-browser"

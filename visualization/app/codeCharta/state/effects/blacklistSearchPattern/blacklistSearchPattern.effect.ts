@@ -5,7 +5,7 @@ import { map, filter, withLatestFrom, tap, take, share } from "rxjs"
 import { BlacklistType, CcState } from "../../../codeCharta.model"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { setSearchPattern, searchPatternSelector } from "../../../sharedView/sharedView.facade"
-import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../sharedView/sharedView.facade"
 import { parseBlacklistItems } from "../../../util/blacklist/parseBlacklistItems"
 
 type BlacklistSearchPatternAction = {

@@ -6,7 +6,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { searchPatternSelector } from "../../../sharedView/sharedView.facade"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
-import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../sharedView/sharedView.facade"
 import { setSearchPattern } from "../../../sharedView/sharedView.facade"
 
 describe("BlacklistSearchPatternEffect", () => {

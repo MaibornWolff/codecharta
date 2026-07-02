@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
+import { BlacklistItem, BlacklistType } from "../../../codeCharta.model"
 import { blacklistSelector } from "./blacklist.selector"
 
 export const createBlacklistItemSelector = (type: BlacklistType) =>

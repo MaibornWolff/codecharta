@@ -35,7 +35,7 @@ import {
     setShowOutgoingEdges
 } from "../../mapState/mapState.facade"
 import { setAttributeTypes, setAttributeDescriptors } from "../../lenses/metrics/metricsLens.load.facade"
-import { setBlacklist } from "../store/fileSettings/blacklist/blacklist.actions"
+import { setBlacklist } from "../../sharedView/sharedView.facade"
 import { setEdges } from "../store/fileSettings/edges/edges.actions"
 import { setMarkedPackages } from "../store/fileSettings/markedPackages/markedPackages.actions"
 import { setAreaMetric, setHeightMetric, setEdgeMetric, setColorMetric, setDistributionMetric } from "../../mapState/mapState.facade"
