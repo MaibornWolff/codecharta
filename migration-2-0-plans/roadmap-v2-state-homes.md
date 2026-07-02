@@ -16,16 +16,20 @@ version: 1
 
 ## Where we are vs where we're going
 
-**Today (runtime):** Slices 5–6 landed. The ex-`appearance/` module is now `mapState/`, and after Slice 6 its **29** slices
-register under a real **`state.mapState`** root — the map-view leaf settings *plus* the presentation stragglers
-(`colorMode`/`colorRange`/`margin`/`layoutAlgorithm`/`isLoadingMap`) and the transient interaction ids
-(`hoveredNodeId`/`rightClickedNodeData`/`selectedBuildingId`). `appStatus` is down to just `currentFilesAreSampleFiles`, and
-`state-home-is-leaf` + `state-home-only-stores-import-ngrx` are **error** for mapState. The reshape machinery (state.manager
-dynamic-keys, the load applier's `applyMapState`/`mapMapStateToAction`, scenario patch keys, IndexedDB record transform now at
-v4) is proven across two reshapes and reused by Slices 7–10. Still to move: metric selection (`areaMetric`/`heightMetric`/
-`colorMetric`/`distributionMetric`/`edgeMetric`) → mapState; focus/search → sharedView; blacklist/markedPackages/edges/
-attributeTypes(/descriptors) out of `fileSettings`. **Two grab-bags (`dynamicSettings`, `fileSettings`) remain; `appStatus`
-is nearly empty (Slices 7–10).**
+**Today (runtime):** Slices 5–**7** landed. The ex-`appearance/` module is now `mapState/`, and after Slice 7 its **34**
+slices register under a real **`state.mapState`** root — the map-view leaf settings, the presentation stragglers
+(`colorMode`/`colorRange`/`margin`/`layoutAlgorithm`/`isLoadingMap`), the transient interaction ids
+(`hoveredNodeId`/`rightClickedNodeData`/`selectedBuildingId`), **and the metric selection**
+(`areaMetric`/`heightMetric`/`colorMetric`/`distributionMetric`/`edgeMetric`). `dynamicSettings` is down to
+`sortingOption`/`focusedNodePath`/`searchPattern`; `appStatus` to just `currentFilesAreSampleFiles`;
+`state-home-is-leaf` + `state-home-only-stores-import-ngrx` are **error** for mapState. The metrics lens is now
+**parameterized off view state** — it imports no blacklist/dynamicSettings selectors; the blacklist-aware
+`nodeMetricDataSelector`/`metricRangeSelector` live in `state/selectors/nodeMetricData/`, and the pure calc +
+`rangeOfMetric` moved to `util/metric`. The reshape machinery (state.manager dynamic-keys, the load applier's
+`applyMapState`/`mapMapStateToAction`, scenario patch keys, IndexedDB record transform now at v5, and — new in Slice 7 —
+the metric URL round-trip) is proven across three reshapes and reused by Slices 8–10. Still to move: focus/search →
+sharedView; blacklist/markedPackages/edges/attributeTypes(/descriptors) out of `fileSettings`. **Two grab-bags
+(`dynamicSettings`, `fileSettings`) remain; `appStatus` is nearly empty (Slices 8–10).**
 
 **Goal:** `mapState` · `sharedView` · `preferences` are real store roots; lenses own the cc.json source, read-only +
 parameterized; `fileStore` owns raw files; features are one flat top-level layer (no "shell", legend re-homed); CQRS
@@ -51,9 +55,9 @@ deleted** — "state has a home" is finally true at runtime.
 ## Ordering spine (canonical)
 
 ```
-5   mapState ROOT (keystone — builds the reshape machinery)   ── MUST precede 6–10
-6   mapState presentation stragglers                          ── needs 5
-7   mapState metric SELECTION + parameterize metrics lens     ── needs 5; lens drops colorMetric + blacklist reads
+5   mapState ROOT (keystone — builds the reshape machinery)   ── MUST precede 6–10   ✅ DONE
+6   mapState presentation stragglers                          ── needs 5             ✅ DONE
+7   mapState metric SELECTION + parameterize metrics lens     ── needs 5; lens drops colorMetric + blacklist reads   ✅ DONE
 8   sharedView stood up (focus + search only)                 ── needs 5; MUST precede 9b/9c
 9a  cc.json source (edges/attributeTypes/descriptors) → lenses── needs 5
 9b  blacklist → sharedView + parameterize BOTH lenses' blacklist read ── needs 8; unblocks lens-no-view-state flip
@@ -133,7 +137,21 @@ each **once** so later slices only *add a key*:
 - **dep-cruiser:** flipped `state-home-is-leaf` → **error** for `mapState` and added `state-home-only-stores-import-ngrx` →
   **error**. `selectedBuildingId` stays a Three.js id here (renderer-agnostic id → Slice 13). **Risk was:** MED/MED.
 
-### Slice 7 — Map metric SELECTION + parameterize the metrics lens
+### Slice 7 — Map metric SELECTION + parameterize the metrics lens — ✅ DONE
+- **Outcome (2026-07-02, 4 commits):** (1) structural `git mv` of the 5 metric folders into
+  `mapState/store/` (53 importers → `mapState.facade`, +15 re-exports; `.spec/.e2e` exempted from
+  `filestore-has-no-upward-deps`, no severity flip); (2) store-key reshape — `MapState extends
+  PrimaryMetrics` + `distributionMetric`, `DynamicSettings` down to sortingOption/focusedNodePath/
+  searchPattern, applier + scenarios + URL round-trip (`updateQueryParameters` now reads
+  `state.mapState`) + IndexedDB `v4→v5` (`migrateCcStateRecordToV5`, +4 tests) + the availability gate
+  folds the 5 metrics back in from mapState so first-render stays value-identical; (3) structural move
+  of the pure `calculateNodeMetricData` + `rangeOfMetric`/`MetricRange` into `util/metric` (breaks the
+  derived-selector cycle); (4) lens parameterization — the blacklist/colorMetric-reading
+  `nodeMetricDataSelector`/`metricRangeSelector` moved OUT of the lens into
+  `state/selectors/nodeMetricData/`, the lens store re-reads them from there, +parity test. `tsc`
+  clean, `npm test` **45/45 snapshots zero diff (no -u)**, 2281 passing, `lint:architecture` 0 errors
+  (114→109 warn bridges). Metrics lens imports **no** blacklist and **no** dynamicSettings selectors
+  (grep-verified). Details: `slice-7-mapstate-metrics.md`.
 - **Goal:** `areaMetric`/`heightMetric`/`colorMetric`/`distributionMetric`/`edgeMetric` → `mapState` (resolves CF **#3** +
   **#2b-selection**), and **parameterize the metrics lens off view state**.
 - **Lens parameterization (P0-1, half 1):** the metrics lens today reads **two** view-state inputs, not one —
@@ -238,7 +256,7 @@ each **once** so later slices only *add a key*:
 | `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6 ✅**, sharedView **8**, preferences **10** |
 | `state-home-only-stores-import-ngrx` | only a home's store touches ngrx | mapState **6 ✅** / sharedView **8** / preferences **10** |
 | `state-home-read-facade-has-no-dispatch` · `…-write-facade-is-sole-dispatch-surface` · `display-components-cannot-dispatch` | CQRS: read facade can't dispatch | **12** |
-| `feature-reaches-state-home-only-via-facade` | features mutate state only via a home facade | mapState **7**, sharedView **8**, prefs **10** |
+| `feature-reaches-state-home-only-via-facade` | features mutate state only via a home facade | mapState **7 (deferred — no rule added; consumers already use the facade in practice, enforcement folds into the Slice-12 CQRS split)**, sharedView **8**, prefs **10** |
 | `feature-services-reach-a-lens-only-via-its-facade` (+ retire the 5 lens-internal-feature rules) | features reach a lens only via its facade | **11** |
 | `filestore-external-access-only-via-facade` | fileStore reached only via its facade | **9a/10** |
 | `filestore-has-no-upward-deps` · `wire-dto-only-in-filestore-boundary` | fileStore is the source; wire DTO confined | already error (names evolved) |
