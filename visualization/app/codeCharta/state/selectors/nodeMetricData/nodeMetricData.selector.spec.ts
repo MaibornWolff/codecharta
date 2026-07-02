@@ -6,9 +6,9 @@ import { NodeDecorator } from "../../../util/nodeDecorator"
 import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
 import { calculateNodeMetricData } from "../../../util/metric/nodeMetricData.calculator"
 import { rangeOfMetric } from "../../../util/metric/metricRange"
-import { metricRangeSelector, nodeMetricDataSelector } from "./metricsLens.selectors"
+import { metricRangeSelector, nodeMetricDataSelector } from "./nodeMetricData.selector"
 
-describe("metricsLens selectors", () => {
+describe("derived nodeMetricData selectors", () => {
     let fileState: FileState
 
     beforeEach(() => {
@@ -57,6 +57,28 @@ describe("metricsLens selectors", () => {
             const nodeMetricData = calculateNodeMetricData([fileState], createBlacklistMatcher([]))
 
             expect(rangeOfMetric(nodeMetricData, "does_not_exist")).toEqual({ values: [], minValue: 0, maxValue: 0 })
+        })
+    })
+
+    // Slice 7 P0-1 parity: after lifting the blacklist filter into these derived selectors, the
+    // parameterized rangeOf path must value-equal the composed metricRangeSelector — and both must
+    // equal calculateNodeMetricData ∘ rangeOfMetric with the SAME blacklist matcher (so the filter
+    // lift changed WHERE the blacklist is read, not WHAT range is emitted). Guards the deletion of
+    // the old lens-side read.
+    describe("rangeOf parity (blacklist lift)", () => {
+        it.each([[[]], [["/root/BigLeaf"]]])("should equal calculateNodeMetricData ∘ rangeOfMetric for blacklist %j", blacklist => {
+            // Arrange
+            const matcher = createBlacklistMatcher(blacklist.map(path => ({ path, type: "flatten" as const })))
+            const colorMetric = "rloc"
+
+            // Act
+            const derivedNodeMetricData = nodeMetricDataSelector.projector([fileState], matcher)
+            const derivedRange = metricRangeSelector.projector(derivedNodeMetricData, colorMetric)
+
+            // Assert — value-equal to the pure-primitive composition over the same matcher
+            const expectedNodeMetricData = calculateNodeMetricData([fileState], matcher)
+            expect(derivedNodeMetricData).toEqual(expectedNodeMetricData)
+            expect(derivedRange).toEqual(rangeOfMetric(expectedNodeMetricData, colorMetric))
         })
     })
 })

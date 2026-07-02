@@ -1,4 +1,4 @@
-import { metricRangeSelector } from "../../../../lenses/metrics/metricsLens.facade"
+import { metricRangeSelector } from "../../nodeMetricData/nodeMetricData.selector"
 
 export type MetricMinMax = {
     minValue: number

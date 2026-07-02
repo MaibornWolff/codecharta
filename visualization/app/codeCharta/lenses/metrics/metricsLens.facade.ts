@@ -48,5 +48,8 @@ export class MetricsLensFacade {
 }
 
 // (b) Public ngrx selector surface for the createSelector graphs that consume the lens.
-export { nodeMetricDataSelector, metricRangeSelector } from "./store/metricsLens.selectors"
+// `nodeMetricDataSelector`/`metricRangeSelector` were lifted OUT of the lens in Slice 7 (they read
+// blacklist + colorMetric view state); consumers import them from
+// `state/selectors/nodeMetricData/nodeMetricData.selector` directly. The lens surface stays read-only
+// over cc.json-derived attribute descriptors.
 export { nodeAttributeDescriptorsSelector as attributeDescriptorsSelector } from "./store/attributes.selectors"

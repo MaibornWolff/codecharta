@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { nodeAttributeDescriptorsSelector, nodeAttributeTypesSelector } from "./attributes.selectors"
-import { metricRangeSelector, nodeMetricDataSelector } from "./metricsLens.selectors"
+import { metricRangeSelector, nodeMetricDataSelector } from "../../../state/selectors/nodeMetricData/nodeMetricData.selector"
 
 /**
  * State-holder for the metrics lens. Projects node-metric data (and the color-metric range) plus the

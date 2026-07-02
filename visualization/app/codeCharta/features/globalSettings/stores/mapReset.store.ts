@@ -3,7 +3,7 @@ import { Store } from "@ngrx/store"
 import { first, tap } from "rxjs"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { setDefaultMetrics } from "../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
-import { nodeMetricDataSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { nodeMetricDataSelector } from "../../../state/selectors/nodeMetricData/nodeMetricData.selector"
 import { setState } from "../../../state/store/state.actions"
 import { defaultState } from "../../../state/store/state.manager"
 

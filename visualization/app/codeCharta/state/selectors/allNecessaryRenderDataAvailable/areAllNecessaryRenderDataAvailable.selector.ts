@@ -2,7 +2,7 @@ import { createSelector } from "@ngrx/store"
 import { fileStatesAvailable } from "../../../model/files/files.helper"
 import { dynamicSettingsSelector } from "../../store/dynamicSettings/dynamicSettings.selector"
 import { filesSelector } from "../../../fileStore/store/files.selector"
-import { nodeMetricDataSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { nodeMetricDataSelector } from "../nodeMetricData/nodeMetricData.selector"
 import {
     colorRangeSelector,
     areaMetricSelector,

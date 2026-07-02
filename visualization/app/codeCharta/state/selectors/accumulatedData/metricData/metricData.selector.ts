@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { nodeMetricDataSelector } from "../../../../lenses/metrics/metricsLens.facade"
+import { nodeMetricDataSelector } from "../../nodeMetricData/nodeMetricData.selector"
 import { edgeMetricDataSelector, nodeEdgeMetricsMapSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 
 /**

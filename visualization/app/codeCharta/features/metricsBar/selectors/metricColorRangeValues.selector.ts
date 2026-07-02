@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { metricRangeSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { metricRangeSelector } from "../../../state/selectors/nodeMetricData/nodeMetricData.selector"
 import { colorRangeSelector } from "../../../mapState/store/colorRange/colorRange.selector"
 
 export const metricColorRangeValuesSelector = createSelector(metricRangeSelector, colorRangeSelector, (colorMetricData, colorRange) => ({

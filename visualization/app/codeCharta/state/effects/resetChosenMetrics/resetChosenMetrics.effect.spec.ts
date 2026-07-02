@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { nodeMetricDataSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { nodeMetricDataSelector } from "../../selectors/nodeMetricData/nodeMetricData.selector"
 import { areChosenMetricsAvailableSelector } from "../../selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
 import { setAreaMetric, setColorMetric, setDistributionMetric, setHeightMetric } from "../../../mapState/mapState.facade"
 import { ResetChosenMetricsEffect } from "./resetChosenMetrics.effect"
