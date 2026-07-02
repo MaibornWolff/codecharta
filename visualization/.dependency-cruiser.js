@@ -218,13 +218,24 @@ module.exports = {
         },
         {
             name: "state-home-is-leaf",
-            severity: "warn",
+            severity: "error",
             comment:
-                "State-home modules — mapState is the map-view state home (colors, labels, scaling, axis inversion, edge visibility; renamed from the Slice-4 appearance leaf) — are a leaf. They must not import lenses, renderers or shell; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store (legacy state/ stays a transitional read while the state/ split completes). Targets both (appearance|mapState) across the Slice-5 rename so no window is left unguarded; stays warn until Slice 6 flips mapState to error.",
-            from: { path: "^app/codeCharta/(appearance|mapState)/" },
+                "State-home modules — mapState is the map-view state home (colors, labels, scaling, axis inversion, edge visibility, plus the Slice-6 presentation stragglers colorMode/colorRange/margin/layoutAlgorithm and the transient interaction ids) — are a leaf. They must not import lenses, renderers or shell; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store (legacy state/ stays a transitional read while the state/ split completes). Flipped to error for mapState in Slice 6; extends to sharedView/preferences as those homes land (Slices 8/10).",
+            from: { path: "^app/codeCharta/mapState/" },
             to: {
                 path: ["^app/codeCharta/lenses/", "^app/codeCharta/renderers/", "^app/codeCharta/shell/"]
             }
+        },
+        {
+            name: "state-home-only-stores-import-ngrx",
+            severity: "error",
+            comment:
+                "Only a state-home's store/ folder may import @ngrx/store — the home's public facade is a barrel of re-exports and its consumers reach it through selectors/actions, never by importing ngrx from home code outside store/. Flipped to error for mapState in Slice 6; extends to sharedView/preferences as those homes land.",
+            from: {
+                path: "^app/codeCharta/mapState/",
+                pathNot: ["^app/codeCharta/mapState/store/", "\\.spec\\.ts$"]
+            },
+            to: { path: "@ngrx/store" }
         },
         {
             name: "metrics-lens-ngrx-guard",
