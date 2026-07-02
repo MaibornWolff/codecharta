@@ -21,7 +21,7 @@ describe("ResetSettingsButtonComponent", () => {
 
         fixture = TestBed.createComponent(ResetSettingsButtonComponent)
         component = fixture.componentInstance
-        fixture.componentRef.setInput("settingsKeys", ["appSettings.isWhiteBackground"])
+        fixture.componentRef.setInput("settingsKeys", ["mapState.isWhiteBackground"])
         fixture.detectChanges()
     })
 
@@ -36,7 +36,7 @@ describe("ResetSettingsButtonComponent", () => {
             const settingsKeys = component.settingsKeys()
 
             // Assert
-            expect(settingsKeys).toEqual(["appSettings.isWhiteBackground"])
+            expect(settingsKeys).toEqual(["mapState.isWhiteBackground"])
         })
 
         it("should accept optional tooltip input", () => {
@@ -115,7 +115,7 @@ describe("ResetSettingsButtonComponent", () => {
             await userEvent.click(button)
 
             // Assert
-            expect(mockResetSettingsService.resetSettings).toHaveBeenCalledWith(["appSettings.isWhiteBackground"])
+            expect(mockResetSettingsService.resetSettings).toHaveBeenCalledWith(["mapState.isWhiteBackground"])
         })
 
         it("should emit callback event when button is clicked", async () => {
@@ -135,7 +135,7 @@ describe("ResetSettingsButtonComponent", () => {
 
         it("should reset multiple settings keys", async () => {
             // Arrange
-            fixture.componentRef.setInput("settingsKeys", ["appSettings.isWhiteBackground", "appSettings.hideFlatBuildings"])
+            fixture.componentRef.setInput("settingsKeys", ["mapState.isWhiteBackground", "mapState.hideFlatBuildings"])
             fixture.detectChanges()
             const button = screen.getByRole("button")
 
@@ -144,8 +144,8 @@ describe("ResetSettingsButtonComponent", () => {
 
             // Assert
             expect(mockResetSettingsService.resetSettings).toHaveBeenCalledWith([
-                "appSettings.isWhiteBackground",
-                "appSettings.hideFlatBuildings"
+                "mapState.isWhiteBackground",
+                "mapState.hideFlatBuildings"
             ])
         })
 
@@ -176,7 +176,7 @@ describe("ResetSettingsButtonComponent", () => {
             component.applyDefaultSettings()
 
             // Assert
-            expect(mockResetSettingsService.resetSettings).toHaveBeenCalledWith(["appSettings.isWhiteBackground"])
+            expect(mockResetSettingsService.resetSettings).toHaveBeenCalledWith(["mapState.isWhiteBackground"])
         })
 
         it("should emit callback when applyDefaultSettings is called directly", () => {

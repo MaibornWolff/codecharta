@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.model
 
+import com.google.gson.JsonElement
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import org.apache.commons.text.similarity.JaccardSimilarity
@@ -38,6 +39,30 @@ open class ProjectBuilder(
         true
     }
 
+    // 2.0 lens data with no legacy flat-map projection: the reserved metrics `clusters`, the opaque
+    // (domain/security/unknown) lenses, and the meta `commitHash`. They are carried verbatim through
+    // build() so a filter rebuild does not silently drop them.
+    private var clusters: List<JsonElement> = emptyList()
+
+    private var opaqueLenses: Map<String, JsonElement> = emptyMap()
+
+    private var commitHash: String? = null
+
+    fun withClusters(clusters: List<JsonElement>): ProjectBuilder {
+        this.clusters = clusters
+        return this
+    }
+
+    fun withOpaqueLenses(opaqueLenses: Map<String, JsonElement>): ProjectBuilder {
+        this.opaqueLenses = opaqueLenses
+        return this
+    }
+
+    fun withCommitHash(commitHash: String?): ProjectBuilder {
+        this.commitHash = commitHash
+        return this
+    }
+
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
         return this
@@ -72,14 +97,18 @@ open class ProjectBuilder(
         if (cleanAttributeDescriptors) {
             removeUnusedAttributeDescriptors()
         }
+        val baseLenses = LensSet.fromLegacy(edges.toList(), attributeTypes.toMap(), attributeDescriptors.toMap())
         val project =
             Project(
-                edges = edges.toList(),
-                blacklist = blacklist.toList(),
                 projectName = DUMMY_PROJECT_NAME,
-                attributeTypes = attributeTypes.toMap(),
                 nodes = nodes.map { it.toNode() }.toList(),
-                attributeDescriptors = attributeDescriptors.toMap()
+                lenses =
+                    baseLenses.copy(
+                        metrics = baseLenses.metrics.copy(clusters = clusters),
+                        opaqueLenses = opaqueLenses
+                    ),
+                blacklist = blacklist.toList(),
+                commitHash = commitHash
             )
 
         System.err.println()
@@ -271,5 +300,31 @@ open class ProjectBuilder(
 
     companion object {
         const val DUMMY_PROJECT_NAME = ""
+
+        /**
+         * Builds a [ProjectBuilder] straight from typed lenses, so lens-native callers (the filters)
+         * never have to hand-assemble the legacy `attributeTypes`/`attributeDescriptors` maps. The
+         * edges come from [dependency]; the produced project is byte-identical to passing the legacy
+         * projection of these lenses into the primary constructor.
+         */
+        fun fromLenses(
+            nodes: List<MutableNode>,
+            metrics: MetricsLens,
+            dependency: DependencyLens,
+            blacklist: MutableList<BlacklistItem> = mutableListOf(),
+            opaqueLenses: Map<String, JsonElement> = emptyMap(),
+            commitHash: String? = null
+        ): ProjectBuilder {
+            val lenses = LensSet(metrics = metrics, dependency = dependency)
+            return ProjectBuilder(
+                nodes,
+                dependency.edges.toMutableList(),
+                lenses.legacyAttributeTypes().toMutableMap(),
+                lenses.allAttributeDescriptors().toMutableMap(),
+                blacklist
+            ).withClusters(metrics.clusters)
+                .withOpaqueLenses(opaqueLenses)
+                .withCommitHash(commitHash)
+        }
     }
 }

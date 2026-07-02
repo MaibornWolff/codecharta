@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.filters.structuremodifier
 
-import de.maibornwolff.codecharta.model.AttributeDescriptor
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
@@ -26,13 +24,15 @@ class NodeRemover(private val project: Project) {
                 }
         }
 
-        return ProjectBuilder(
-            removeNodes(pathSegments),
-            removeEdges(paths),
-            copyAttributeTypes(),
-            copyAttributeDescriptors(),
-            removeBlacklistItems(paths)
-        ).build(cleanAttributeDescriptors = true)
+        return ProjectBuilder
+            .fromLenses(
+                removeNodes(pathSegments),
+                project.lenses.metrics,
+                project.lenses.dependency.copy(edges = removeEdges(paths)),
+                removeBlacklistItems(paths),
+                opaqueLenses = project.lenses.opaqueLenses,
+                commitHash = project.commitHash
+            ).build(cleanAttributeDescriptors = true)
     }
 
     private fun removeNodes(paths: List<List<String>>): List<MutableNode> {
@@ -74,7 +74,7 @@ class NodeRemover(private val project: Project) {
     }
 
     private fun removeEdges(removePatterns: Array<String>): MutableList<Edge> {
-        var edges = project.edges
+        var edges = project.lenses.dependency.edges
         removePatterns.forEach { path ->
             edges =
                 edges.filter {
@@ -83,16 +83,6 @@ class NodeRemover(private val project: Project) {
         }
         return edges.toMutableList()
     }
-
-    private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.attributeTypes.forEach {
-            mergedAttributeTypes[it.key] = it.value
-        }
-        return mergedAttributeTypes.toMutableMap()
-    }
-
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> = project.attributeDescriptors.toMutableMap()
 
     private fun removeBlacklistItems(paths: Array<String>): MutableList<BlacklistItem> {
         var blacklist = project.blacklist

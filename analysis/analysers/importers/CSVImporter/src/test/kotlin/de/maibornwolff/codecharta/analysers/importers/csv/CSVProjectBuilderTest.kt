@@ -134,9 +134,9 @@ class CSVProjectBuilderTest {
         val project = csvProjectBuilder.build()
 
         // then
-        assertThat(project.attributeDescriptors.size).isEqualTo(3)
-        assertThat(project.attributeDescriptors["path"]).isNotNull()
-        assertThat(project.attributeDescriptors["head4"]).isNotNull()
-        assertThat(project.attributeDescriptors["Test"]?.description).isEqualTo("123")
+        assertThat(project.lenses.allAttributeDescriptors().size).isEqualTo(3)
+        assertThat(project.lenses.allAttributeDescriptors()["path"]).isNotNull()
+        assertThat(project.lenses.allAttributeDescriptors()["head4"]).isNotNull()
+        assertThat(project.lenses.allAttributeDescriptors()["Test"]?.description).isEqualTo("123")
     }
 }

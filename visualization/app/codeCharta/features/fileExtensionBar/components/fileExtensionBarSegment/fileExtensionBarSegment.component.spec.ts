@@ -5,8 +5,9 @@ import { HighlightBuildingsByFileExtensionService } from "../../services/highlig
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
-import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { BlacklistItem, BlacklistType, CcState, ColorMode, SortingOption } from "../../../../codeCharta.model"
+import { blacklistSelector } from "../../../../sharedView/sharedView.facade"
+import { defaultMapState } from "../../../../mapState/mapState.facade"
+import { BlacklistItem, BlacklistType, CcState, SortingOption } from "../../../../codeCharta.model"
 import { By } from "@angular/platform-browser"
 import { screen } from "@testing-library/angular"
 import { metricDistributionSelector } from "../../selectors/metricDistribution.selector"
@@ -18,31 +19,32 @@ describe("FileExtensionBarSegment", () => {
     let store: MockStore
     const initialState: Partial<CcState> = {
         appStatus: {
-            currentFilesAreSampleFiles: false,
-            hoveredNodeId: null,
-            selectedBuildingId: null,
-            rightClickedNodeData: null
+            currentFilesAreSampleFiles: false
+        },
+        mapState: {
+            ...defaultMapState,
+            areaMetric: "rloc",
+            heightMetric: "rloc",
+            colorMetric: "rloc",
+            distributionMetric: "rloc",
+            edgeMetric: ""
         },
         fileSettings: {
+            edges: []
+        },
+        metricsLensSource: {
             attributeTypes: null,
-            attributeDescriptors: null,
-            blacklist: [],
-            edges: [],
-            markedPackages: []
+            attributeDescriptors: null
         },
         files: [],
         dynamicSettings: {
-            areaMetric: "rloc",
-            colorMode: ColorMode.absolute,
-            sortingOption: SortingOption.NAME,
-            colorRange: { from: null, to: null },
-            distributionMetric: "rloc",
+            sortingOption: SortingOption.NAME
+        },
+        sharedView: {
             focusedNodePath: [],
             searchPattern: "",
-            margin: 0,
-            heightMetric: "rloc",
-            edgeMetric: "",
-            colorMetric: "rloc"
+            blacklist: [],
+            markedPackages: []
         }
     }
     const mockItem: MetricDistribution = {

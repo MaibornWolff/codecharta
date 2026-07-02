@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { labelsPerMapSelector } from "../store/appSettings/labelsPerMap/labelsPerMap.selector"
+import { labelsPerMapSelector } from "../../mapState/mapState.facade"
 import { areMultipleMapsVisibleSelector } from "./areMultipleMapsVisible.selector"
 
 export const labelsPerMapActiveSelector = createSelector(

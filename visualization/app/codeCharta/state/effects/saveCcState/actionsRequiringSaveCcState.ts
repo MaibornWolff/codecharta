@@ -1,7 +1,7 @@
 import { appSettingsActions } from "../../store/appSettings/appSettings.actions"
 import { dynamicSettingsActions } from "../../store/dynamicSettings/dynamicSettings.actions"
 import { fileSettingsActions } from "../../store/fileSettings/fileSettings.actions"
-import { fileActions } from "../../store/files/files.actions"
+import { fileActions } from "../../../fileStore/store/files.actions"
 import { setState } from "../../store/state.actions"
 
 export const actionsRequiringSaveCcState = [

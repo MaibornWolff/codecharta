@@ -3,7 +3,7 @@ import { State, Store } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
-import { setColorMode } from "../../../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { setColorMode } from "../../../../mapState/store/colorMode/colorMode.actions"
 import { Print3DButtonComponent } from "./print3DButton.component"
 
 describe("Print3DButtonComponent", () => {
@@ -11,7 +11,7 @@ describe("Print3DButtonComponent", () => {
         TestBed.configureTestingModule({
             imports: [Print3DButtonComponent],
             providers: [
-                { provide: State, useValue: { getValue: () => ({ dynamicSettings: { colorMode: ColorMode.absolute } }) } },
+                { provide: State, useValue: { getValue: () => ({ mapState: { colorMode: ColorMode.absolute } }) } },
                 { provide: Store, useValue: { select: jest.fn(() => of(ColorMode.absolute)), dispatch: jest.fn() } }
             ]
         })
@@ -31,7 +31,7 @@ describe("Print3DButtonComponent", () => {
 
     it("should set showDialog to true when color mode is absolute", async () => {
         // Arrange
-        const state = { getValue: () => ({ dynamicSettings: { colorMode: ColorMode.absolute } }) }
+        const state = { getValue: () => ({ mapState: { colorMode: ColorMode.absolute } }) }
         const store = { select: jest.fn(() => of(ColorMode.absolute)), dispatch: jest.fn() }
 
         const { fixture } = await render(Print3DButtonComponent, {
@@ -53,7 +53,7 @@ describe("Print3DButtonComponent", () => {
 
     it("should open error dialog when color mode is not absolute", async () => {
         // Arrange
-        const state = { getValue: () => ({ dynamicSettings: { colorMode: ColorMode.weightedGradient } }) }
+        const state = { getValue: () => ({ mapState: { colorMode: ColorMode.weightedGradient } }) }
         const store = { select: jest.fn(() => of(ColorMode.weightedGradient)), dispatch: jest.fn() }
 
         const { fixture } = await render(Print3DButtonComponent, {
@@ -75,7 +75,7 @@ describe("Print3DButtonComponent", () => {
 
     it("should switch to absolute color mode and open dialog when resolveErrorCallback runs", async () => {
         // Arrange
-        const state = { getValue: () => ({ dynamicSettings: { colorMode: ColorMode.weightedGradient } }) }
+        const state = { getValue: () => ({ mapState: { colorMode: ColorMode.weightedGradient } }) }
         const store = { dispatch: jest.fn(), select: jest.fn(() => of(ColorMode.absolute)) }
 
         const { fixture } = await render(Print3DButtonComponent, {

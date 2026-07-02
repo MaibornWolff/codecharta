@@ -1,22 +1,14 @@
-import { defaultMarkedPackages, markedPackages } from "./markedPackages/markedPackages.reducer"
 import { defaultEdges, edges } from "./edges/edges.reducer"
-import { attributeTypes, defaultAttributeTypes } from "./attributeTypes/attributeTypes.reducer"
-import { blacklist, defaultBlacklist } from "./blacklist/blacklist.reducer"
-import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors/attributeDescriptors.reducer"
 import { combineReducers } from "@ngrx/store"
+import { FileSettings } from "../../../codeCharta.model"
 
+// Slice 9b moved blacklist and Slice 9c moved markedPackages out of this combineReducers into the
+// sharedView home (sharedView.reducer). What remains here is edges (DEFERRED — a merged render-model
+// array re-homed by a later edge-UI / render-model slice, which then deletes this reducer).
 export const fileSettings = combineReducers({
-    markedPackages,
-    edges,
-    attributeTypes,
-    attributeDescriptors,
-    blacklist
+    edges
 })
 
-export const defaultFileSettings = {
-    markedPackages: defaultMarkedPackages,
-    edges: defaultEdges,
-    attributeTypes: defaultAttributeTypes,
-    attributeDescriptors: defaultAttributeDescriptors,
-    blacklist: defaultBlacklist
+export const defaultFileSettings: FileSettings = {
+    edges: defaultEdges
 }

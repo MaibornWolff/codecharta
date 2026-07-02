@@ -12,6 +12,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Add Rust support to UnifiedParser (.rs)
 - Add JSX support to UnifiedParser
 - Add TSX support to UnifiedParser
+- Add `convert` command that upgrades a 1.5 `.cc.json` file to the 2.0 format
+
+### Changed
+
+- **BREAKING: `ccsh` now emits the new cc.json 2.0 `{ meta, files, lenses }` format by default.**
+  Node metrics move off the file tree into a `metrics` lens keyed by a stable, content-independent
+  node `id` (`sha-256(canonicalPath)`), dependency edges move into a `dependency` lens referenced by
+  id, and reserved/unknown lenses round-trip verbatim. The deserializer auto-detects and still reads
+  both 1.5 and 2.0 input. See ADR 12 and `dev_docs/cc-json-2.0-format.md`.
+  - **Interop note:** the visualization still consumes 1.5 only — a 2.0 file produced by `ccsh` cannot
+    be opened in the current visualization yet (2.0 is analysis-first; the visualization migrates in a
+    later story). There is currently no CLI flag to emit 1.5; track this if you feed the viz directly.
+- The 2.0 wire format drops `blacklist` and `markedPackages`; a project read from 2.0 carries an empty
+  blacklist. Converting a 1.5 file with a non-empty blacklist to 2.0 is therefore not round-trippable.
+- `ccsh check` validates the 2.0 format more strictly: `meta.apiVersion` must be `"2.0"`, `files` must
+  contain exactly one root, and unknown properties on `meta`, file nodes, and edges are rejected.
+- **BREAKING: only `ccsh convert` reads the legacy 1.x format now.** Every other command works with 2.0
+  only — feeding a 1.x file to `merge`, `modify`, `edgefilter`, `inspect` or an importer reports that the
+  file is legacy and points at `ccsh convert <file>` to upgrade it first. The merge compatibility gate and
+  the in-memory default version are now 2.0-only.
+
+### Removed
+
+- Remove the long-deprecated `sourcecodeparser` command and its module. Use `unifiedparser` instead.
+- Remove the 1.5 **writer**: `ccsh` no longer emits the legacy 1.5 `{ checksum, data }` format from any
+  code path (the `ProjectToCcJson15Mapper`, its DTO and GSON are gone, and `ProjectSerializer` no longer
+  takes an `apiVersion`). The 1.5 format is still **read** — every reader auto-detects and accepts 1.5 or
+  2.0 input — but it is never produced.
+
+### Fixed 🐞
+
+- Merging projects no longer drops each merged node's content hash, so a merged 2.0 file stays usable
+  as a `--base-file` and for content-match re-merge.
+- The leaf/overlay merge strategy now unions incoming dependency edges instead of silently keeping only
+  the reference project's edges.
+- Filters (`merge`, `edgefilter`, `modify`) no longer drop the reserved `domain`/`security`/unknown
+  lenses, the metrics `clusters`, or `meta.commitHash` when rebuilding a project. On `merge` the opaque
+  lenses are unioned (the first file wins on a same-name collision), the metrics `clusters` are unioned
+  with exact duplicates dropped, and the first non-null commit hash is kept.
+- The `edgefilter` no longer drops each node's `contentHash` while aggregating edge metrics onto nodes,
+  so its 2.0 output stays usable as a `--base-file` / content-match reference.
 
 ## [1.143.0] - 2026-04-28
 

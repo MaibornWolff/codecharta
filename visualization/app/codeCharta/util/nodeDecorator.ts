@@ -2,7 +2,7 @@ import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { createBlacklistMatcher } from "./blacklist/blacklistMatcher"
 import { isLeaf } from "./codeMapHelper"
-import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
+import { UNARY_METRIC } from "./metric/unaryMetric"
 
 const enum MedianSelectors {
     MEDIAN = "MEDIAN",

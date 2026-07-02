@@ -8,11 +8,11 @@ import { metricDistributionSelector } from "../../selectors/metricDistribution.s
 import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNodeMetricDistribution.selector"
 import { CategorizedMetricDistribution } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { BlacklistItem } from "../../../../codeCharta.model"
-import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
+import { blacklistSelector } from "../../../../sharedView/sharedView.facade"
 import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
-import { hoveredNodeIdSelector } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import { selectedBuildingIdSelector } from "../../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector"
+import { areaMetricSelector } from "../../../../mapState/mapState.facade"
+import { hoveredNodeIdSelector } from "../../../../mapState/store/hoveredNodeId/hoveredNodeId.selector"
+import { selectedBuildingIdSelector } from "../../../../mapState/store/selectedBuildingId/selectedBuildingId.selector"
 
 describe("FileExtensionBarComponent", () => {
     let fixture: ComponentFixture<FileExtensionBarComponent>

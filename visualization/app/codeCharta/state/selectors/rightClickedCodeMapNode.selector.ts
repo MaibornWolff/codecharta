@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { idToNodeSelector } from "./accumulatedData/idToNode.selector"
-import { rightClickedNodeDataSelector } from "../store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
+import { rightClickedNodeDataSelector } from "../../mapState/store/rightClickedNodeData/rightClickedNodeData.selector"
 
 export const rightClickedCodeMapNodeSelector = createSelector(
     rightClickedNodeDataSelector,

@@ -91,7 +91,7 @@ export class ThreeSceneService implements OnDestroy {
         }
         this.floorLabelPlanes.clear()
 
-        const { layoutAlgorithm, enableFloorLabels } = this.threeSceneStore.getAppSettings()
+        const { layoutAlgorithm, enableFloorLabels } = this.threeSceneStore.getMapState()
         if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap || !enableFloorLabels) {
             return
         }
@@ -100,7 +100,7 @@ export class ThreeSceneService implements OnDestroy {
         if (!rootNode) {
             return
         }
-        const scaling = this.threeSceneStore.getAppSettings().scaling
+        const scaling = this.threeSceneStore.getMapState().scaling
         const experimentalFeaturesEnabled = this.threeSceneStore.getAppSettings().experimentalFeaturesEnabled
         const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
 
@@ -177,7 +177,7 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     scaleHeight() {
-        const scale = this.threeSceneStore.getAppSettings().scaling
+        const scale = this.threeSceneStore.getMapState().scaling
 
         this.floorLabelDrawer?.translatePlaneCanvases(scale)
         this.mapGeometry.scale.set(scale.x, scale.y, scale.z)

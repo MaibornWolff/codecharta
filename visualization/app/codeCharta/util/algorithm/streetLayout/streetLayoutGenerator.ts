@@ -22,15 +22,15 @@ export class StreetLayoutGenerator {
         isDeltaState: boolean
     ): Node[] {
         const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-        const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
+        const maxHeight = metricData.find(x => x.name === state.mapState.heightMetric).maxValue * mapSizeResolutionScaling
 
-        const metricName = state.dynamicSettings.areaMetric
+        const metricName = state.mapState.areaMetric
         const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
         const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
         const childBoxes = this.createBoxes(mergedMap, metricName, state, matcher, StreetOrientation.Vertical, 1, maxTreeMapFiles)
         const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
         rootStreet.calculateDimension(metricName)
-        const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
+        const margin = state.mapState.margin * MARGIN_SCALING_FACTOR
         const layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
 
         return layoutNodes.map(streetLayoutNode => {
@@ -54,7 +54,7 @@ export class StreetLayoutGenerator {
         maxTreeMapFiles: number
     ): BoundingBox[] {
         const children: BoundingBox[] = []
-        const areaMetric = state.dynamicSettings.areaMetric
+        const areaMetric = state.mapState.areaMetric
         for (let child of node.children) {
             if (isLeaf(child)) {
                 children.push(new House(child))
@@ -64,7 +64,7 @@ export class StreetLayoutGenerator {
                 continue
             }
 
-            const layoutAlgorithm = state.appSettings.layoutAlgorithm
+            const layoutAlgorithm = state.mapState.layoutAlgorithm
             const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
             if (layoutAlgorithm === LayoutAlgorithm.TreeMapStreet && fileDescendants <= maxTreeMapFiles) {
                 const treeMap = StreetLayoutGenerator.createTreeMap(child)

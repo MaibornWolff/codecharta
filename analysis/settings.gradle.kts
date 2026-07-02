@@ -19,14 +19,14 @@ include(
 include(
     "analysers:parsers:RawTextParser",
     "analysers:parsers:GitLogParser",
-    "analysers:parsers:SourceCodeParser",
     "analysers:parsers:SVNLogParser",
     "analysers:parsers:UnifiedParser"
 )
 include("analysers:exporters:CSVExporter")
 include(
     "analysers:tools:ValidationTool",
-    "analysers:tools:InspectionTool"
+    "analysers:tools:InspectionTool",
+    "analysers:tools:ConvertTool"
 )
 
 rootProject.name = "codecharta"

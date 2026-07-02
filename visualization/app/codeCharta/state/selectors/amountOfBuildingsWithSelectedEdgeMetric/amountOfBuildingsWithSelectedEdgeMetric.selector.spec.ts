@@ -3,13 +3,11 @@ import { Store, StoreModule } from "@ngrx/store"
 import { appReducers } from "../../store/state.manager"
 import { firstValueFrom } from "rxjs"
 import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./amountOfBuildingsWithSelectedEdgeMetric.selector"
-import { setFiles } from "../../store/files/files.actions"
+import { setFiles } from "../../../fileStore/store/files.actions"
 import { DEFAULT_STATE, FILE_STATES } from "../../../mocks/dataMocks"
 import { CcState } from "../../../codeCharta.model"
 import { setState } from "../../store/state.actions"
-import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric.actions"
-import { setShowOutgoingEdges } from "../../store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
-import { setShowIncomingEdges } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.actions"
+import { setShowIncomingEdges, setShowOutgoingEdges, setEdgeMetric } from "../../../mapState/mapState.facade"
 
 describe("countBuildingsWithEdgeMetric", () => {
     let store: Store<CcState>

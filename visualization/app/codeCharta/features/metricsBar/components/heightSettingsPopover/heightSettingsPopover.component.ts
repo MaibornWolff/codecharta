@@ -26,7 +26,7 @@ export class HeightSettingsPopoverComponent {
     readonly invertHeight = toSignal(this.invertHeightService.invertHeight$(), { initialValue: false })
     readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
 
-    readonly resetKeys = ["appSettings.scaling.y", "appSettings.invertHeight"]
+    readonly resetKeys = ["mapState.scaling.y", "mapState.invertHeight"]
 
     setScalingY(y: number) {
         this.scalingService.setScaling({ y })

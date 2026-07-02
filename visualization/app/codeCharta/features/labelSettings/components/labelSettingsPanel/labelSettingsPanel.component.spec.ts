@@ -1,11 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { setColorLabels } from "../../../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { setLabelMode } from "../../../../state/store/appSettings/labelMode/labelMode.actions"
-import { setLabelSize } from "../../../../state/store/appSettings/labelSize/labelSize.actions"
-import { setLabelsPerMap } from "../../../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
-import { setDelta, setFiles } from "../../../../state/store/files/files.actions"
+import { setColorLabels, setLabelMode, setLabelSize, setLabelsPerMap } from "../../../../mapState/mapState.facade"
+import { setDelta, setFiles } from "../../../../fileStore/store/files.actions"
 import { FILE_STATES_TWO_FILES, TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../../mocks/dataMocks"
 import { fireEvent } from "@testing-library/angular"
 import { LabelSettingsPanelComponent } from "./labelSettingsPanel.component"
@@ -266,8 +263,8 @@ describe("LabelSettingsPanelComponent", () => {
             screen.getByText("Reset label settings").click()
 
             // Assert
-            const lastCall = dispatchSpy.mock.calls.at(-1)?.[0] as { value?: { appSettings?: { labelSize?: number } } }
-            expect(lastCall?.value?.appSettings?.labelSize).toBe(1)
+            const lastCall = dispatchSpy.mock.calls.at(-1)?.[0] as { value?: { mapState?: { labelSize?: number } } }
+            expect(lastCall?.value?.mapState?.labelSize).toBe(1)
         })
     })
 })

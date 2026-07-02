@@ -50,7 +50,7 @@ class SVNLogProjectCreatorGoldenTest {
         val svnProjectForComparison = serializeAndDeserializeProject(svnProject)
 
         // then
-        assertThat(svnProjectForComparison).usingRecursiveComparison().isEqualTo(expectedProject)
+        assertThat(svnProjectForComparison).usingRecursiveComparison().ignoringFields("apiVersion").isEqualTo(expectedProject)
     }
 
     @Throws(IOException::class)

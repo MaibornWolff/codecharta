@@ -1,88 +1,102 @@
 {
-  "projectName": "Sample Project with Edges",
-  "apiVersion": "1.0",
-  "nodes": [
-    {
-      "name": "root",
-      "type": "Folder",
-      "attributes": {},
-      "children": []
-    }
-  ],
-  "edges": [
-    {
-      "fromNodeName": "/root/leaf 1",
-      "toNodeName": "/root/Parent 1/leaf 3",
-      "attributes": {
-        "pairingRate": 90,
-        "avgCommits": 30
-      }
-    },
-    {
-      "fromNodeName": "/root/leaf 1",
-      "toNodeName": "/root/leaf 2",
-      "attributes": {
-        "pairingRate": 30,
-        "avgCommits": 10
-      }
-    },
-    {
-      "fromNodeName": "/root/Parent 1/Parent 2/leaf 4",
-      "toNodeName": "/root/leaf 2",
-      "attributes": {
-        "pairingRate": 60,
-        "avgCommits": 20
-      }
-    },
-    {
-      "fromNodeName": "/root/Parent 1/Parent 2/leaf 5",
-      "toNodeName": "/root/Parent 1/Parent 2/leaf 4",
-      "attributes": {
-        "pairingRate": 80,
-        "avgCommits": 30
-      }
-    },
-    {
-      "fromNodeName": "/root/Parent 1/Parent 2/leaf 4",
-      "toNodeName": "/root/Parent 1/leaf 3",
-      "attributes": {
-        "pairingRate": 60,
-        "avgCommits": 40
-      }
-    },
-    {
-      "fromNodeName": "/root/Parent 1/leaf 3",
-      "toNodeName": "/root/leaf 1",
-      "attributes": {
-        "pairingRate": 70,
-        "avgCommits": 30
-      }
-    }
-  ],
-  "attributeTypes": {
-    "nodes": {
-      "rloc": "absolute",
-      "functions": "absolute",
-      "mcc": "absolute"
-    },
-    "edges": {
-      "pairingRate": "relative",
-      "avgCommits": "absolute"
-    }
+  "meta": {
+    "projectName": "Sample Project with Edges",
+    "apiVersion": "2.0",
+    "checksum": "abb28aa10901dd4e66c6ab0cb1218a8e"
   },
-  "attributeDescriptors": {
-    "Test": {
-      "description": "a",
-      "hintLowValue": "b",
-      "hintHighValue": "c",
-      "link": "d"
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder"
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {},
+      "attributeDescriptors": {
+        "Test": {
+          "title": "",
+          "description": "a",
+          "hintLowValue": "b",
+          "hintHighValue": "c",
+          "link": "d",
+          "direction": -1,
+          "analyzers": []
+        },
+        "Test2": {
+          "title": "a1",
+          "description": "b2",
+          "hintLowValue": "c3",
+          "hintHighValue": "d4",
+          "link": "e5",
+          "direction": -1,
+          "analyzers": []
+        }
+      },
+      "attributeTypes": {
+        "rloc": "absolute",
+        "functions": "absolute",
+        "mcc": "absolute"
+      },
+      "clusters": []
     },
-    "Test2": {
-      "title": "a1",
-      "description": "b2",
-      "hintLowValue": "c3",
-      "hintHighValue": "d4",
-      "link": "e5"
+    "dependency": {
+      "edges": [
+        {
+          "fromId": "1721ab92754eff43",
+          "toId": "4a01e363c1bd119b",
+          "attributes": {
+            "pairingRate": 90.0,
+            "avgCommits": 30.0
+          }
+        },
+        {
+          "fromId": "1721ab92754eff43",
+          "toId": "7dd9758fb421bf07",
+          "attributes": {
+            "pairingRate": 30.0,
+            "avgCommits": 10.0
+          }
+        },
+        {
+          "fromId": "9b469087ddff8406",
+          "toId": "7dd9758fb421bf07",
+          "attributes": {
+            "pairingRate": 60.0,
+            "avgCommits": 20.0
+          }
+        },
+        {
+          "fromId": "e6e86bc1f78336bb",
+          "toId": "9b469087ddff8406",
+          "attributes": {
+            "pairingRate": 80.0,
+            "avgCommits": 30.0
+          }
+        },
+        {
+          "fromId": "9b469087ddff8406",
+          "toId": "4a01e363c1bd119b",
+          "attributes": {
+            "pairingRate": 60.0,
+            "avgCommits": 40.0
+          }
+        },
+        {
+          "fromId": "4a01e363c1bd119b",
+          "toId": "1721ab92754eff43",
+          "attributes": {
+            "pairingRate": 70.0,
+            "avgCommits": 30.0
+          }
+        }
+      ],
+      "attributeTypes": {
+        "pairingRate": "relative",
+        "avgCommits": "absolute"
+      },
+      "attributeDescriptors": {}
     }
   }
 }

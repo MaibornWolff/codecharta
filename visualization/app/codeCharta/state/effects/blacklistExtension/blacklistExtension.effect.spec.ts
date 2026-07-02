@@ -5,7 +5,7 @@ import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
 import { BlacklistExtensionEffect, blacklistExtensionsPattern } from "./blacklistExtension.effect"
 import { BlacklistItem, BlacklistType, CcState } from "../../../codeCharta.model"
-import { addBlacklistItems } from "../../store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItems } from "../../../sharedView/sharedView.facade"
 
 describe("BlackListExtensionEffect", () => {
     let effect: BlacklistExtensionEffect

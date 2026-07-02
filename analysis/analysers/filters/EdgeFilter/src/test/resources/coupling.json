@@ -1,72 +1,51 @@
 {
-  "projectName": "Sample Project with Edges",
-  "apiVersion": "1.0",
-  "nodes": [
+  "meta": {
+    "projectName": "Sample Project with Edges",
+    "apiVersion": "2.0",
+    "checksum": "a1d413d295f7fecb1c72f86f4f36286d"
+  },
+  "files": [
     {
+      "id": "8a5edab282632443",
       "name": "root",
       "type": "Folder",
-      "attributes": {},
       "children": [
         {
+          "id": "1721ab92754eff43",
           "name": "leaf 1",
           "type": "File",
-          "attributes": {
-            "rloc": 400,
-            "functions": 10,
-            "mcc": 100
-          },
           "link": "http://www.google.de"
         },
         {
+          "id": "7dd9758fb421bf07",
           "name": "leaf 2",
           "type": "File",
-          "attributes": {
-            "rloc": 100,
-            "functions": 10,
-            "mcc": 1
-          },
           "link": "http://www.google.de"
         },
         {
+          "id": "a2537c7167f46d4f",
           "name": "Parent 1",
           "type": "Folder",
-          "attributes": {},
           "children": [
             {
+              "id": "4a01e363c1bd119b",
               "name": "leaf 3",
-              "type": "File",
-              "attributes": {
-                "rloc": 30,
-                "functions": 100,
-                "mcc": 100
-              }
+              "type": "File"
             },
             {
+              "id": "c6c27ddc21e10eb1",
               "name": "Parent 2",
               "type": "Folder",
-              "attributes": {
-                "rloc": 70,
-                "functions": 1000,
-                "mcc": 10
-              },
               "children": [
                 {
+                  "id": "9b469087ddff8406",
                   "name": "leaf 4",
-                  "type": "File",
-                  "attributes": {
-                    "rloc": 30,
-                    "functions": 100,
-                    "mcc": 100
-                  }
+                  "type": "File"
                 },
                 {
+                  "id": "e6e86bc1f78336bb",
                   "name": "leaf 5",
-                  "type": "File",
-                  "attributes": {
-                    "rloc": 70,
-                    "functions": 1000,
-                    "mcc": 10
-                  }
+                  "type": "File"
                 }
               ]
             }
@@ -75,65 +54,104 @@
       ]
     }
   ],
-  "edges": [
-    {
-      "fromNodeName": "/root/leaf 1",
-      "toNodeName": "/root/Parent 1/leaf 3",
+  "lenses": {
+    "metrics": {
       "attributes": {
-        "pairingRate": 90,
-        "avgCommits": 30
-      }
+        "1721ab92754eff43": {
+          "rloc": 400.0,
+          "functions": 10.0,
+          "mcc": 100.0
+        },
+        "7dd9758fb421bf07": {
+          "rloc": 100.0,
+          "functions": 10.0,
+          "mcc": 1.0
+        },
+        "4a01e363c1bd119b": {
+          "rloc": 30.0,
+          "functions": 100.0,
+          "mcc": 100.0
+        },
+        "c6c27ddc21e10eb1": {
+          "rloc": 70.0,
+          "functions": 1000.0,
+          "mcc": 10.0
+        },
+        "9b469087ddff8406": {
+          "rloc": 30.0,
+          "functions": 100.0,
+          "mcc": 100.0
+        },
+        "e6e86bc1f78336bb": {
+          "rloc": 70.0,
+          "functions": 1000.0,
+          "mcc": 10.0
+        }
+      },
+      "attributeDescriptors": {},
+      "attributeTypes": {
+        "rloc": "absolute",
+        "functions": "absolute",
+        "mcc": "absolute"
+      },
+      "clusters": []
     },
-    {
-      "fromNodeName": "/root/leaf 1",
-      "toNodeName": "/root/leaf 2",
-      "attributes": {
-        "pairingRate": 30,
-        "avgCommits": 10
-      }
-    },
-    {
-      "fromNodeName": "/root/Parent 1/Parent 2/leaf 4",
-      "toNodeName": "/root/leaf 2",
-      "attributes": {
-        "pairingRate": 60,
-        "avgCommits": 20
-      }
-    },
-    {
-      "fromNodeName": "/root/Parent 1/Parent 2/leaf 5",
-      "toNodeName": "/root/Parent 1/Parent 2/leaf 4",
-      "attributes": {
-        "pairingRate": 80,
-        "avgCommits": 30
-      }
-    },
-    {
-      "fromNodeName": "/root/Parent 1/Parent 2/leaf 4",
-      "toNodeName": "/root/Parent 1/leaf 3",
-      "attributes": {
-        "pairingRate": 60,
-        "avgCommits": 40
-      }
-    },
-    {
-      "fromNodeName": "/root/Parent 1/leaf 3",
-      "toNodeName": "/root/leaf 1",
-      "attributes": {
-        "pairingRate": 70,
-        "avgCommits": 30
-      }
-    }
-  ],
-  "attributeTypes": {
-    "nodes": {
-      "rloc": "absolute",
-      "functions": "absolute",
-      "mcc": "absolute"
-    },
-    "edges": {
-      "pairingRate": "relative",
-      "avgCommits": "absolute"
+    "dependency": {
+      "edges": [
+        {
+          "fromId": "1721ab92754eff43",
+          "toId": "4a01e363c1bd119b",
+          "attributes": {
+            "pairingRate": 90.0,
+            "avgCommits": 30.0
+          }
+        },
+        {
+          "fromId": "1721ab92754eff43",
+          "toId": "7dd9758fb421bf07",
+          "attributes": {
+            "pairingRate": 30.0,
+            "avgCommits": 10.0
+          }
+        },
+        {
+          "fromId": "9b469087ddff8406",
+          "toId": "7dd9758fb421bf07",
+          "attributes": {
+            "pairingRate": 60.0,
+            "avgCommits": 20.0
+          }
+        },
+        {
+          "fromId": "e6e86bc1f78336bb",
+          "toId": "9b469087ddff8406",
+          "attributes": {
+            "pairingRate": 80.0,
+            "avgCommits": 30.0
+          }
+        },
+        {
+          "fromId": "9b469087ddff8406",
+          "toId": "4a01e363c1bd119b",
+          "attributes": {
+            "pairingRate": 60.0,
+            "avgCommits": 40.0
+          }
+        },
+        {
+          "fromId": "4a01e363c1bd119b",
+          "toId": "1721ab92754eff43",
+          "attributes": {
+            "pairingRate": 70.0,
+            "avgCommits": 30.0
+          }
+        }
+      ],
+      "attributeTypes": {
+        "pairingRate": "relative",
+        "avgCommits": "absolute"
+      },
+      "attributeDescriptors": {}
     }
   }
 }

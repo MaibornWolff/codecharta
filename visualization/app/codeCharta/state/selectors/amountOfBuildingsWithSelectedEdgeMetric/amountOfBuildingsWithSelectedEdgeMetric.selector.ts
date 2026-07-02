@@ -1,12 +1,10 @@
 import { createSelector } from "@ngrx/store"
-import { metricDataSelector } from "../accumulatedData/metricData/metricData.selector"
-import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeMetric.selector"
-import { showIncomingEdgesSelector } from "../../store/appSettings/showEdges/incoming/showIncomingEdges.selector"
-import { showOutgoingEdgesSelector } from "../../store/appSettings/showEdges/outgoing/showOutgoingEdges.selector"
-import { EdgeMetricCountMap } from "../accumulatedData/metricData/edgeMetricData.calculator"
+import { nodeEdgeMetricsMapSelector } from "../edgeMetricData/edgeMetricData.selector"
+import { showIncomingEdgesSelector, showOutgoingEdgesSelector, edgeMetricSelector } from "../../../mapState/mapState.facade"
+import { EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../codeCharta.model"
 
 export const amountOfBuildingsWithSelectedEdgeMetricSelector = createSelector(
-    metricDataSelector,
+    nodeEdgeMetricsMapSelector,
     edgeMetricSelector,
     showIncomingEdgesSelector,
     showOutgoingEdgesSelector,
@@ -14,7 +12,7 @@ export const amountOfBuildingsWithSelectedEdgeMetricSelector = createSelector(
 )
 
 function countBuildingsWithEdgeMetric(
-    { edgeMetricData: _edgeMetricData, nodeEdgeMetricsMap, nodeMetricData: _nodeMetricData },
+    nodeEdgeMetricsMap: NodeEdgeMetricsMap,
     edgeMetric: string,
     showIncomingEdges: boolean,
     showOutgoingEdges: boolean

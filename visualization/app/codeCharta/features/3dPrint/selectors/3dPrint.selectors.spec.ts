@@ -21,10 +21,10 @@ describe("3dPrint.selectors", () => {
     describe("areaMetricSelector", () => {
         it("should select areaMetric from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.areaMetric = "rloc"
+            mockState.mapState.areaMetric = "rloc"
 
             // Act
-            const result = areaMetricSelector.projector(mockState.dynamicSettings)
+            const result = areaMetricSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe("rloc")
@@ -34,10 +34,10 @@ describe("3dPrint.selectors", () => {
     describe("heightMetricSelector", () => {
         it("should select heightMetric from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.heightMetric = "mcc"
+            mockState.mapState.heightMetric = "mcc"
 
             // Act
-            const result = heightMetricSelector.projector(mockState.dynamicSettings)
+            const result = heightMetricSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe("mcc")
@@ -47,10 +47,10 @@ describe("3dPrint.selectors", () => {
     describe("colorMetricSelector", () => {
         it("should select colorMetric from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.colorMetric = "complexity"
+            mockState.mapState.colorMetric = "complexity"
 
             // Act
-            const result = colorMetricSelector.projector(mockState.dynamicSettings)
+            const result = colorMetricSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe("complexity")
@@ -60,10 +60,10 @@ describe("3dPrint.selectors", () => {
     describe("colorRangeSelector", () => {
         it("should select colorRange from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.colorRange = { from: 10, to: 50 }
+            mockState.mapState.colorRange = { from: 10, to: 50 }
 
             // Act
-            const result = colorRangeSelector.projector(mockState.dynamicSettings)
+            const result = colorRangeSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toEqual({ from: 10, to: 50 })
@@ -73,10 +73,10 @@ describe("3dPrint.selectors", () => {
     describe("colorModeSelector", () => {
         it("should select colorMode from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.colorMode = ColorMode.absolute
+            mockState.mapState.colorMode = ColorMode.absolute
 
             // Act
-            const result = colorModeSelector.projector(mockState.dynamicSettings)
+            const result = colorModeSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(ColorMode.absolute)
@@ -84,7 +84,7 @@ describe("3dPrint.selectors", () => {
     })
 
     describe("attributeDescriptorsSelector", () => {
-        it("should select attributeDescriptors from fileSettings", () => {
+        it("should select attributeDescriptors from metricsLensSource", () => {
             // Arrange
             const descriptors = {
                 rloc: {
@@ -95,10 +95,10 @@ describe("3dPrint.selectors", () => {
                     link: ""
                 }
             }
-            mockState.fileSettings.attributeDescriptors = descriptors
+            mockState.metricsLensSource.attributeDescriptors = descriptors
 
             // Act
-            const result = attributeDescriptorsSelector.projector(mockState.fileSettings)
+            const result = attributeDescriptorsSelector.projector(mockState.metricsLensSource)
 
             // Assert
             expect(result).toEqual(descriptors)
@@ -106,13 +106,13 @@ describe("3dPrint.selectors", () => {
     })
 
     describe("blacklistSelector", () => {
-        it("should select blacklist from fileSettings", () => {
+        it("should select blacklist from sharedView", () => {
             // Arrange
             const blacklist = [{ path: "/test", type: "exclude" as const }]
-            mockState.fileSettings.blacklist = blacklist
+            mockState.sharedView.blacklist = blacklist
 
             // Act
-            const result = blacklistSelector.projector(mockState.fileSettings)
+            const result = blacklistSelector.projector(mockState.sharedView)
 
             // Assert
             expect(result).toEqual(blacklist)

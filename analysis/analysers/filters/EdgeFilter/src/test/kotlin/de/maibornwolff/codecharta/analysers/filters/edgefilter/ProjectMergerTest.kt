@@ -1,9 +1,14 @@
 package de.maibornwolff.codecharta.analysers.filters.edgefilter
 
+import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.InputStreamReader
 
@@ -95,7 +100,29 @@ class ProjectMergerTest {
                         direction = -1
                     )
             )
-        assertEquals(project.attributeDescriptors, expectedDescriptors)
+        assertEquals(project.lenses.allAttributeDescriptors(), expectedDescriptors)
+    }
+
+    @Test
+    fun `should preserve a node's contentHash and the opaque lenses through edge filtering`() {
+        // given
+        val leaf = Node("leaf.kt", NodeType.File, attributes = mapOf("rloc" to 1), checksum = "hash-abc")
+        val root = Node("root", NodeType.Folder, children = setOf(leaf))
+        val originalProject =
+            Project(
+                "p",
+                nodes = listOf(root),
+                apiVersion = "2.0",
+                lenses = LensSet(opaqueLenses = mapOf("domain" to JsonParser.parseString("""{"layer":"backend"}""")))
+            )
+
+        // when
+        val project = EdgeProjectBuilder(originalProject, '/').merge()
+
+        // then
+        val resultLeaf = getChildByName(project.rootNode.children.toMutableList(), "leaf.kt")
+        assertEquals("hash-abc", resultLeaf.checksum)
+        assertTrue(project.lenses.opaqueLenses.containsKey("domain"))
     }
 }
 

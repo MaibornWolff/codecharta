@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
-import { setColorRange } from "../../../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { setColorRange } from "../../../../mapState/store/colorRange/colorRange.actions"
 import { defaultState } from "../../../../state/store/state.manager"
 import { ColorRangeSectionComponent } from "./colorRangeSection.component"
 

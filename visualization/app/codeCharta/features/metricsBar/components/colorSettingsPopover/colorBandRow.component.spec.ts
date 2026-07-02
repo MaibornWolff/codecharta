@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
-import { setMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
+import { setMapColors } from "../../../../mapState/mapState.facade"
 import { defaultState } from "../../../../state/store/state.manager"
 import { HexMapColor } from "../../../../codeCharta.model"
 import { ColorBandRowComponent } from "./colorBandRow.component"
@@ -38,7 +38,7 @@ describe("ColorBandRowComponent", () => {
         const { component } = await setup({ mapColorFor: "positive" })
 
         // Assert
-        expect(component.color()).toBe(defaultState.appSettings.mapColors.positive)
+        expect(component.color()).toBe(defaultState.mapState.mapColors.positive)
     })
 
     it("should dispatch setMapColors for its map color when the picker emits", async () => {

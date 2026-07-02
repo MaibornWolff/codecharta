@@ -22,14 +22,14 @@ describe("resetSettingsButtonComponent", () => {
     it("should reset given appSetting", async () => {
         await render(ResetSettingsButtonComponent, {
             componentProperties: {
-                settingsKeys: ["appSettings.mapColors.selected", "appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"]
+                settingsKeys: ["mapState.mapColors.selected", "mapState.scaling.x, mapState.scaling.y, mapState.scaling.z"]
             }
         })
 
         await userEvent.click(screen.getByRole("button"))
 
         expect(mockedStore.dispatch).toHaveBeenCalledWith(
-            setState({ value: { appSettings: { mapColors: { selected: "#EB8319" }, scaling: new Vector3(1, 1, 1) } } })
+            setState({ value: { mapState: { mapColors: { selected: "#EB8319" }, scaling: new Vector3(1, 1, 1) } } })
         )
     })
 
@@ -37,7 +37,7 @@ describe("resetSettingsButtonComponent", () => {
         const callback = jest.fn()
         await render(ResetSettingsButtonComponent, {
             componentProperties: {
-                settingsKeys: ["appSettings.mapColors.selected"],
+                settingsKeys: ["mapState.mapColors.selected"],
                 callback
             }
         })

@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
+import { mapColorsSelector } from "../../../mapState/mapState.facade"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
-import { setSelectedBuildingId } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.actions"
+import { setSelectedBuildingId } from "../../../mapState/store/selectedBuildingId/selectedBuildingId.actions"
 
 @Injectable({ providedIn: "root" })
 export class ThreeSceneStore {
@@ -20,6 +20,10 @@ export class ThreeSceneStore {
 
     getAppSettings() {
         return this.state.getValue().appSettings
+    }
+
+    getMapState() {
+        return this.state.getValue().mapState
     }
 
     getIdToNode() {

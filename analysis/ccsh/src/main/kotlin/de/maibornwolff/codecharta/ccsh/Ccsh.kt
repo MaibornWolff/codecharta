@@ -14,9 +14,9 @@ import de.maibornwolff.codecharta.analysers.importers.sourcemonitor.SourceMonito
 import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
-import de.maibornwolff.codecharta.analysers.parsers.sourcecode.SourceCodeParser
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
+import de.maibornwolff.codecharta.analysers.tools.convert.ConvertTool
 import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
 import de.maibornwolff.codecharta.analysers.tools.validation.ValidationTool
 import de.maibornwolff.codecharta.ccsh.analyser.AnalyserService
@@ -41,6 +41,7 @@ import kotlin.system.exitProcess
     subcommands = [
         ValidationTool::class,
         InspectionTool::class,
+        ConvertTool::class,
         MergeFilter::class,
         EdgeFilter::class,
         StructureModifier::class,
@@ -51,7 +52,6 @@ import kotlin.system.exitProcess
         GitLogParser::class,
         Installer::class,
         CSVExporter::class,
-        SourceCodeParser::class,
         CoverageImporter::class,
         CodeMaatImporter::class,
         TokeiImporter::class,
@@ -266,7 +266,6 @@ class Ccsh : Callable<Unit?> {
             AttributeGeneratorRegistry.registerGenerator(CSVImporter())
             AttributeGeneratorRegistry.registerGenerator(GitLogParser())
             AttributeGeneratorRegistry.registerGenerator(SonarImporter())
-            AttributeGeneratorRegistry.registerGenerator(SourceCodeParser())
             AttributeGeneratorRegistry.registerGenerator(CoverageImporter())
             AttributeGeneratorRegistry.registerGenerator(SVNLogParser())
             AttributeGeneratorRegistry.registerGenerator(TokeiImporter())

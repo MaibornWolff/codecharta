@@ -5,10 +5,10 @@ import { Subject } from "rxjs"
 import { SaveCcStateEffect } from "./saveCcState.effect"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { setFiles } from "../../store/files/files.actions"
+import { setFiles } from "../../../fileStore/store/files.actions"
 import { writeCcState } from "../../../util/indexedDB/indexedDBWriter"
 import { waitFor } from "@testing-library/angular"
-import { setMarkedPackages } from "../../store/fileSettings/markedPackages/markedPackages.actions"
+import { setMarkedPackages } from "../../../sharedView/sharedView.facade"
 import { setEdges } from "../../store/fileSettings/edges/edges.actions"
 
 jest.mock("../../../../../app/codeCharta/util/indexedDB/indexedDBWriter", () => {

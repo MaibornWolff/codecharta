@@ -1,140 +1,152 @@
 {
-  "projectName": "201701poolobject",
-  "apiVersion": "1.0",
-  "nodes": [
+  "meta": {
+    "projectName": "201701poolobject",
+    "apiVersion": "2.0",
+    "checksum": "f910ded4863a1be1abf397b8f2129b9d"
+  },
+  "files": [
     {
+      "id": "8a5edab282632443",
       "name": "root",
       "type": "Folder",
-      "attributes": {},
-      "link": "",
       "children": [
         {
+          "id": "56c9e1c4b5360a5b",
           "name": "src",
           "type": "Folder",
-          "attributes": {},
-          "link": "",
           "children": [
             {
+              "id": "1f4dcf3d502b0c5d",
               "name": "ubu",
               "type": "Folder",
-              "attributes": {},
-              "link": "",
               "children": [
                 {
+                  "id": "43bc21d950b2e003",
                   "name": "gii",
                   "type": "Folder",
-                  "attributes": {},
-                  "link": "",
                   "children": [
                     {
+                      "id": "63981d562d478892",
                       "name": "dass",
                       "type": "Folder",
-                      "attributes": {},
-                      "link": "",
                       "children": [
                         {
+                          "id": "1a491ad7fbca67be",
                           "name": "c01",
                           "type": "Folder",
-                          "attributes": {
-                            "coverage": 0.0,
-                            "ncloc": 71.0
-                          },
-                          "link": "",
                           "children": [
                             {
+                              "id": "55fb375864c3172a",
                               "name": "Client.java",
                               "type": "File",
-                              "attributes": {
-                                "coverage": 0.0,
-                                "ncloc": 18.0
-                              },
-                              "link": "",
-                              "children": []
+                              "link": ""
                             },
                             {
+                              "id": "d7f2e89cb42abf33",
                               "name": "DuplicatedInstanceException.java",
                               "type": "File",
-                              "attributes": {
-                                "coverage": 0.0,
-                                "ncloc": 6.0
-                              },
-                              "link": "",
-                              "children": []
+                              "link": ""
                             },
                             {
+                              "id": "c98526dfa3073d81",
                               "name": "NotFreeInstanceException.java",
                               "type": "File",
-                              "attributes": {
-                                "coverage": 0.0,
-                                "ncloc": 7.0
-                              },
-                              "link": "",
-                              "children": []
+                              "link": ""
                             },
                             {
+                              "id": "ff26ec1fe1ab5086",
                               "name": "Reusable.java",
                               "type": "File",
-                              "attributes": {
-                                "coverage": 0.0,
-                                "ncloc": 6.0
-                              },
-                              "link": "",
-                              "children": []
+                              "link": ""
                             },
                             {
+                              "id": "95d919a368623723",
                               "name": "ReusablePool.java",
                               "type": "File",
-                              "attributes": {
-                                "coverage": 0.0,
-                                "ncloc": 34.0
-                              },
-                              "link": "",
-                              "children": []
+                              "link": ""
                             }
-                          ]
+                          ],
+                          "link": ""
                         },
                         {
+                          "id": "bc4863ed84a956ea",
                           "name": "test",
                           "type": "Folder",
-                          "attributes": {},
-                          "link": "",
                           "children": [
                             {
+                              "id": "97b414993e0625ca",
                               "name": "c01",
                               "type": "Folder",
-                              "attributes": {},
-                              "link": "",
                               "children": [
                                 {
+                                  "id": "f855bf9a1e7dc0a2",
                                   "name": "ReusablePoolTest.java",
                                   "type": "File",
-                                  "attributes": {},
-                                  "link": "",
-                                  "children": []
+                                  "link": ""
                                 }
-                              ]
+                              ],
+                              "link": ""
                             }
-                          ]
+                          ],
+                          "link": ""
                         }
-                      ]
+                      ],
+                      "link": ""
                     }
-                  ]
+                  ],
+                  "link": ""
                 }
-              ]
+              ],
+              "link": ""
             }
-          ]
+          ],
+          "link": ""
         }
-      ]
+      ],
+      "link": ""
     }
   ],
-  "edges": [],
-  "attributeTypes": {
-    "nodes": {
-      "rloc": "absolute",
-      "loc": "absolute",
-      "empty_lines": "absolute",
-      "comment_lines": "absolute"
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "1a491ad7fbca67be": {
+          "coverage": 0.0,
+          "ncloc": 71.0
+        },
+        "55fb375864c3172a": {
+          "coverage": 0.0,
+          "ncloc": 18.0
+        },
+        "d7f2e89cb42abf33": {
+          "coverage": 0.0,
+          "ncloc": 6.0
+        },
+        "c98526dfa3073d81": {
+          "coverage": 0.0,
+          "ncloc": 7.0
+        },
+        "ff26ec1fe1ab5086": {
+          "coverage": 0.0,
+          "ncloc": 6.0
+        },
+        "95d919a368623723": {
+          "coverage": 0.0,
+          "ncloc": 34.0
+        }
+      },
+      "attributeDescriptors": {},
+      "attributeTypes": {
+        "rloc": "absolute",
+        "loc": "absolute",
+        "empty_lines": "absolute",
+        "comment_lines": "absolute"
+      },
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
     }
-  },
-  "blacklist": []
+  }
 }

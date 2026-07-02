@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { LoadFileService } from "../../../features/loadFile/facade"
-import { getCCFileAndDecorateFileChecksum } from "../../../features/loadFile/facade"
+import { LoadFileService } from "../../../fileStore/fileStore.facade"
+import { getCCFileAndDecorateFileChecksum } from "../../../fileStore/fileStore.facade"
 import { createCCFileInput } from "./createCCFileInput"
 import { readFiles } from "./readFiles"
 import { LoadingStateStore } from "../stores/loadingState.store"

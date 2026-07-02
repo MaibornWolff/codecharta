@@ -126,11 +126,11 @@ describe("ScenariosService", () => {
             const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
 
             // Assert
-            expect(sections.metrics.areaMetric).toBe(defaultState.dynamicSettings.areaMetric)
-            expect(sections.metrics.heightMetric).toBe(defaultState.dynamicSettings.heightMetric)
-            expect(sections.metrics.colorMetric).toBe(defaultState.dynamicSettings.colorMetric)
-            expect(sections.metrics.edgeMetric).toBe(defaultState.dynamicSettings.edgeMetric)
-            expect(sections.metrics.distributionMetric).toBe(defaultState.dynamicSettings.distributionMetric)
+            expect(sections.metrics.areaMetric).toBe(defaultState.mapState.areaMetric)
+            expect(sections.metrics.heightMetric).toBe(defaultState.mapState.heightMetric)
+            expect(sections.metrics.colorMetric).toBe(defaultState.mapState.colorMetric)
+            expect(sections.metrics.edgeMetric).toBe(defaultState.mapState.edgeMetric)
+            expect(sections.metrics.distributionMetric).toBe(defaultState.mapState.distributionMetric)
         })
 
         it("should extract colors section from state", () => {
@@ -138,9 +138,9 @@ describe("ScenariosService", () => {
             const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
 
             // Assert
-            expect(sections.colors.colorRange).toEqual(defaultState.dynamicSettings.colorRange)
-            expect(sections.colors.colorMode).toBe(defaultState.dynamicSettings.colorMode)
-            expect(sections.colors.mapColors).toEqual(defaultState.appSettings.mapColors)
+            expect(sections.colors.colorRange).toEqual(defaultState.mapState.colorRange)
+            expect(sections.colors.colorMode).toBe(defaultState.mapState.colorMode)
+            expect(sections.colors.mapColors).toEqual(defaultState.mapState.mapColors)
         })
 
         it("should extract camera section from provided positions", () => {
@@ -157,8 +157,8 @@ describe("ScenariosService", () => {
             const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
 
             // Assert
-            expect(sections.filters.blacklist).toEqual(defaultState.fileSettings.blacklist)
-            expect(sections.filters.focusedNodePath).toEqual(defaultState.dynamicSettings.focusedNodePath)
+            expect(sections.filters.blacklist).toEqual(defaultState.sharedView.blacklist)
+            expect(sections.filters.focusedNodePath).toEqual(defaultState.sharedView.focusedNodePath)
         })
 
         it("should extract labelsAndFolders section from state", () => {
@@ -166,11 +166,11 @@ describe("ScenariosService", () => {
             const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
 
             // Assert
-            expect(sections.labelsAndFolders.amountOfTopLabels).toBe(defaultState.appSettings.amountOfTopLabels)
-            expect(sections.labelsAndFolders.labelSize).toBe(defaultState.appSettings.labelSize)
-            expect(sections.labelsAndFolders.labelMode).toBe(defaultState.appSettings.labelMode)
-            expect(sections.labelsAndFolders.groupLabelCollisions).toBe(defaultState.appSettings.groupLabelCollisions)
-            expect(sections.labelsAndFolders.markedPackages).toEqual(defaultState.fileSettings.markedPackages)
+            expect(sections.labelsAndFolders.amountOfTopLabels).toBe(defaultState.mapState.amountOfTopLabels)
+            expect(sections.labelsAndFolders.labelSize).toBe(defaultState.mapState.labelSize)
+            expect(sections.labelsAndFolders.labelMode).toBe(defaultState.mapState.labelMode)
+            expect(sections.labelsAndFolders.groupLabelCollisions).toBe(defaultState.mapState.groupLabelCollisions)
+            expect(sections.labelsAndFolders.markedPackages).toEqual(defaultState.sharedView.markedPackages)
         })
     })
 

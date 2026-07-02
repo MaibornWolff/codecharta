@@ -1,128 +1,132 @@
 {
-  "projectName": "Sample Project 1",
-  "apiVersion": "1.0",
-  "nodes": [
+  "meta": {
+    "projectName": "Sample Project 1",
+    "apiVersion": "2.0",
+    "checksum": "be78d6e5c0650ef3000ef623351677a8"
+  },
+  "files": [
     {
+      "id": "8a5edab282632443",
       "name": "customRoot",
       "type": "Folder",
-      "attributes": {},
       "children": [
         {
+          "id": "7c9d66ac57c9fa91",
           "name": "file1",
           "type": "File",
-          "attributes": {
-            "number_of_commits": 160.0,
-            "range_of_weeks_with_commits": 68.0,
-            "successive_weeks_with_commits": 10.0,
-            "weeks_with_commits": 51.0,
-            "highly_coupled_files": 0.0,
-            "median_coupled_files": 2.0,
-            "abs_coupled_churn": 33700.0,
-            "avg_code_churn": 3.0
-          },
-          "link": "",
-          "children": []
+          "link": ""
         },
         {
+          "id": "49f014abae232570",
           "name": "file4",
           "type": "File",
-          "attributes": {
-            "number_of_authors": 22.0,
-            "number_of_commits": 130.0,
-            "range_of_weeks_with_commits": 18.0,
-            "successive_weeks_with_commits": 20.0,
-            "weeks_with_commits": 61.0,
-            "highly_coupled_files": 1.0,
-            "median_coupled_files": 4.0,
-            "abs_coupled_churn": 22000.0,
-            "avg_code_churn": 4.0
-          },
-          "link": "",
-          "children": []
+          "link": ""
         },
         {
+          "id": "2ec28c67337dd949",
           "name": "visualization",
           "type": "Folder",
-          "attributes": {},
-          "link": "",
           "children": [
             {
+              "id": "5f31aad61d1430c4",
               "name": "file2",
               "type": "File",
-              "attributes": {
-                "number_of_authors": 12.0,
-                "number_of_commits": 120.0,
-                "range_of_weeks_with_commits": 30.0,
-                "successive_weeks_with_commits": 20.0,
-                "weeks_with_commits": 76.0,
-                "highly_coupled_files": 0.0,
-                "median_coupled_files": 2.0,
-                "abs_coupled_churn": 33700.0,
-                "avg_code_churn": 7.0
-              },
-              "link": "",
-              "children": []
+              "link": ""
             },
             {
+              "id": "80b4ee0b8d7cf358",
               "name": "file3",
               "type": "File",
-              "attributes": {
-                "number_of_authors": 40.0,
-                "number_of_commits": 230.0,
-                "range_of_weeks_with_commits": 50.0,
-                "successive_weeks_with_commits": 80.0,
-                "weeks_with_commits": 10.0,
-                "highly_coupled_files": 5.0,
-                "median_coupled_files": 2.0,
-                "abs_coupled_churn": 44000.0,
-                "avg_code_churn": 4.0
-              },
-              "link": "",
-              "children": []
+              "link": ""
             }
-          ]
+          ],
+          "link": ""
         }
       ]
     }
   ],
-  "edges": [
-    {
-      "fromNodeName": "/customRoot/file1",
-      "toNodeName": "/customRoot/visualization/file2",
+  "lenses": {
+    "metrics": {
       "attributes": {
-        "pairingRate": 90,
-        "avgCommits": 5,
-        "anotherMetric": 25
-      }
+        "7c9d66ac57c9fa91": {
+          "number_of_commits": 160.0,
+          "range_of_weeks_with_commits": 68.0,
+          "successive_weeks_with_commits": 10.0,
+          "weeks_with_commits": 51.0,
+          "highly_coupled_files": 0.0,
+          "median_coupled_files": 2.0,
+          "abs_coupled_churn": 33700.0,
+          "avg_code_churn": 3.0
+        },
+        "49f014abae232570": {
+          "number_of_authors": 22.0,
+          "number_of_commits": 130.0,
+          "range_of_weeks_with_commits": 18.0,
+          "successive_weeks_with_commits": 20.0,
+          "weeks_with_commits": 61.0,
+          "highly_coupled_files": 1.0,
+          "median_coupled_files": 4.0,
+          "abs_coupled_churn": 22000.0,
+          "avg_code_churn": 4.0
+        },
+        "5f31aad61d1430c4": {
+          "number_of_authors": 12.0,
+          "number_of_commits": 120.0,
+          "range_of_weeks_with_commits": 30.0,
+          "successive_weeks_with_commits": 20.0,
+          "weeks_with_commits": 76.0,
+          "highly_coupled_files": 0.0,
+          "median_coupled_files": 2.0,
+          "abs_coupled_churn": 33700.0,
+          "avg_code_churn": 7.0
+        },
+        "80b4ee0b8d7cf358": {
+          "number_of_authors": 40.0,
+          "number_of_commits": 230.0,
+          "range_of_weeks_with_commits": 50.0,
+          "successive_weeks_with_commits": 80.0,
+          "weeks_with_commits": 10.0,
+          "highly_coupled_files": 5.0,
+          "median_coupled_files": 2.0,
+          "abs_coupled_churn": 44000.0,
+          "avg_code_churn": 4.0
+        }
+      },
+      "attributeDescriptors": {},
+      "attributeTypes": {
+        "attributeA": "absolute",
+        "attributeB": "absolute",
+        "attributeZ": "absolute"
+      },
+      "clusters": []
     },
-    {
-      "fromNodeName": "/customRoot/visualization/file2",
-      "toNodeName": "/customRoot/visualization/file3",
-      "attributes": {
-        "pairingRate": 80,
-        "avgCommits": 3
-      }
-    }
-  ],
-  "attributeTypes": {
-    "nodes": {
-      "attributeA": "absolute",
-      "attributeB": "absolute",
-      "attributeZ": "absolute"
+    "dependency": {
+      "edges": [
+        {
+          "fromId": "9f646c6fc267787f",
+          "toId": "6c1cd79381086d58",
+          "attributes": {
+            "pairingRate": 90.0,
+            "avgCommits": 5.0,
+            "anotherMetric": 25.0
+          }
+        },
+        {
+          "fromId": "6c1cd79381086d58",
+          "toId": "3eef4cea24ec0748",
+          "attributes": {
+            "pairingRate": 80.0,
+            "avgCommits": 3.0
+          }
+        }
+      ],
+      "attributeTypes": {
+        "attributeD": "absolute",
+        "attributeE": "relative"
+      },
+      "attributeDescriptors": {}
     },
-    "edges": {
-      "attributeD": "absolute",
-      "attributeE": "relative"
-    }
-  },
-  "blacklist": [
-    {
-      "path": "/customRoot/file1",
-      "type": "hide"
-    },
-    {
-      "path": "/customRoot/visualization/file2",
-      "type": "exclude"
-    }
-  ]
+    "domain": {},
+    "security": {}
+  }
 }

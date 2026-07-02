@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { AppStatusStore } from "./appStatus.store"
-import { hoveredNodeIdSelector } from "../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import { rightClickedNodeDataSelector } from "../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
-import { selectedBuildingIdSelector } from "../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector"
-import { setHoveredNodeId } from "../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
-import { setRightClickedNodeData } from "../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
+import { hoveredNodeIdSelector } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.selector"
+import { rightClickedNodeDataSelector } from "../../../mapState/store/rightClickedNodeData/rightClickedNodeData.selector"
+import { selectedBuildingIdSelector } from "../../../mapState/store/selectedBuildingId/selectedBuildingId.selector"
+import { setHoveredNodeId } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.actions"
+import { setRightClickedNodeData } from "../../../mapState/store/rightClickedNodeData/rightClickedNodeData.actions"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("AppStatusStore", () => {

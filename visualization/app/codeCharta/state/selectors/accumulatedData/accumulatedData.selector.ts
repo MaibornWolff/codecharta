@@ -3,12 +3,12 @@ import { FileState } from "../../../model/files/files"
 import { fileStatesAvailable, isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { AggregationGenerator } from "../../../util/aggregationGenerator"
 import { NodeDecorator } from "../../../util/nodeDecorator"
-import { metricNamesSelector } from "./metricData/metricNames.selector"
+import { edgeMetricNamesSelector } from "../edgeMetricData/edgeMetricData.selector"
 import { getDeltaFile } from "./utils/getDeltaFile"
 import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
-import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.selector"
-import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
-import { visibleFileStatesSelector } from "../visibleFileStates/visibleFileStates.selector"
+import { blacklistSelector } from "../../../sharedView/sharedView.facade"
+import { attributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
 import { createSelector } from "@ngrx/store"
 import { clone } from "../../../util/clone"
@@ -25,8 +25,8 @@ export const accumulatedDataSelector = createSelector(
     visibleFileStatesSelector,
     attributeTypesSelector,
     blacklistSelector,
-    metricNamesSelector,
-    (metricData, fileStates, attributeTypes, blacklist, metricNames) => {
+    edgeMetricNamesSelector,
+    (metricData, fileStates, attributeTypes, blacklist, edgeMetricNames) => {
         if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData) {
             return accumulatedDataFallback
         }
@@ -37,7 +37,7 @@ export const accumulatedDataSelector = createSelector(
         }
 
         NodeDecorator.decorateMap(data.map, metricData, blacklist)
-        addEdgeMetricsForLeaves(metricData.nodeEdgeMetricsMap, data.map, metricNames)
+        addEdgeMetricsForLeaves(metricData.nodeEdgeMetricsMap, data.map, edgeMetricNames)
         NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), attributeTypes)
 
         return {

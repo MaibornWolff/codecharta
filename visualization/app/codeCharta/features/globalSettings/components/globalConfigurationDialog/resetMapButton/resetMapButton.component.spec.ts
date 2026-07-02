@@ -4,9 +4,9 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { LoadFileService } from "../../../../../features/loadFile/facade"
-import { LoadInitialFileService } from "../../../../../features/loadFile/facade"
-import { metricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { LoadFileService } from "../../../../../fileStore/fileStore.facade"
+import { LoadInitialFileService } from "../../../../../fileStore/fileStore.facade"
+import { nodeMetricDataSelector } from "../../../../../state/selectors/nodeMetricData/nodeMetricData.selector"
 import { defaultState } from "../../../../../state/store/state.manager"
 import { METRIC_DATA } from "../../../../../mocks/dataMocks"
 import { ResetMapButtonComponent } from "./resetMapButton.component"
@@ -24,7 +24,7 @@ describe("ResetMapButtonComponent", () => {
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: HttpClient, useValue: {} },
                 provideMockStore({
-                    selectors: [{ selector: metricDataSelector, value: METRIC_DATA }]
+                    selectors: [{ selector: nodeMetricDataSelector, value: METRIC_DATA }]
                 })
             ]
         })

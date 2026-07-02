@@ -1,5 +1,5 @@
 import { getNodesByGitignorePath } from "./getNodesByGitignorePath"
-import { searchPatternSelector } from "../../store/dynamicSettings/searchPattern/searchPattern.selector"
+import { searchPatternSelector } from "../../../sharedView/sharedView.facade"
 import { accumulatedDataSelector } from "../accumulatedData/accumulatedData.selector"
 import { createSelector } from "@ngrx/store"
 

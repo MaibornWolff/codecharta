@@ -1,81 +1,91 @@
 {
-  "checksum": "ec172a04396f5d2d7d7331a692703f8f",
-  "data": {
+  "meta": {
     "projectName": "",
-    "nodes": [
-      {
-        "name": "root",
-        "type": "Folder",
-        "attributes": {},
-        "children": [
-          {
-            "name": "bar",
-            "type": "Folder",
-            "attributes": {},
-            "link": "",
-            "children": [
-              {
-                "name": "FooBar.java",
-                "type": "File",
-                "attributes": {
-                  "foo": 0.0,
-                  "loc": 18.0
-                },
-                "link": "",
-                "children": []
-              }
-            ]
-          },
-          {
-            "name": "foo.java",
-            "type": "File",
-            "attributes": {
-              "barx": 42.0,
-              "loc": 5.0
-            },
-            "children": []
-          }
-        ]
-      }
-    ],
-    "apiVersion": "1.5",
-    "edges": [],
-    "attributeTypes": {},
-    "attributeDescriptors": {
-      "loc": {
-        "title": "Lines of Code",
-        "description": "Lines of code including empty lines and comments",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
+    "apiVersion": "2.0",
+    "checksum": "2d1e79d7b459ff9fb5b96d2b20f5ff10"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "ae30ce2f596a5e6e",
+          "name": "bar",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "e6d855799c6cb9b2",
+              "name": "FooBar.java",
+              "type": "File",
+              "link": ""
+            }
+          ],
+          "link": ""
+        },
+        {
+          "id": "2a926be12909392d",
+          "name": "foo.java",
+          "type": "File"
+        }
+      ]
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "e6d855799c6cb9b2": {
+          "foo": 0.0,
+          "loc": 18.0
+        },
+        "2a926be12909392d": {
+          "barx": 42.0,
+          "loc": 5.0
+        }
       },
-      "foo": {
-        "title": "foo",
-        "description": "",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": -1,
-        "analyzers": [
-          "Unknown"
-        ]
+      "attributeDescriptors": {
+        "loc": {
+          "title": "Lines of Code",
+          "description": "Lines of code including empty lines and comments",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "foo": {
+          "title": "foo",
+          "description": "",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": -1,
+          "analyzers": [
+            "Unknown"
+          ]
+        },
+        "barx": {
+          "title": "barx",
+          "description": "",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": -1,
+          "analyzers": [
+            "Unknown"
+          ]
+        }
       },
-      "barx": {
-        "title": "barx",
-        "description": "",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": -1,
-        "analyzers": [
-          "Unknown"
-        ]
-      }
+      "attributeTypes": {},
+      "clusters": []
     },
-    "blacklist": []
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
   }
 }

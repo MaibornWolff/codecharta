@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { AsyncPipe } from "@angular/common"
-import { distributionMetric } from "../../../../state/store/dynamicSettings/distributionMetric/distributionMetric.reducer"
+import { distributionMetric } from "../../../../mapState/mapState.facade"
 import { DistributionMetricService } from "../../services/distributionMetric.service"
 
 @Component({

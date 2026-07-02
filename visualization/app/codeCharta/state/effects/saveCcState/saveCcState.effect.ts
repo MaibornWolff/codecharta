@@ -5,7 +5,7 @@ import { CcState } from "../../../codeCharta.model"
 import { debounceTime, filter, tap } from "rxjs"
 import { writeCcState } from "../../../util/indexedDB/indexedDBWriter"
 import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
-import { setHoveredNodeId } from "../../store/appStatus/hoveredNodeId/hoveredNodeId.actions"
+import { setHoveredNodeId } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.actions"
 
 @Injectable()
 export class SaveCcStateEffect {

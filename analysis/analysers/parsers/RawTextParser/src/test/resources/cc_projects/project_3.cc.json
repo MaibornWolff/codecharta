@@ -1,175 +1,185 @@
 {
-  "checksum": "7c0d9d9e3cd987aa7b1e78b078b87583",
-  "data": {
+  "meta": {
     "projectName": "",
-    "nodes": [
-      {
-        "name": "root",
-        "type": "Folder",
-        "attributes": {},
-        "link": "",
-        "children": [
-          {
-            "name": "tabs.included",
-            "type": "File",
-            "attributes": {
-              "loc": 7.0,
-              "indentation_level_0+": 6.0,
-              "indentation_level_1+": 3.0,
-              "indentation_level_2+": 1.0,
-              "indentation_level_3+": 1.0,
-              "indentation_level_4+": 0.0,
-              "indentation_level_5+": 0.0,
-              "indentation_level_6+": 0.0,
-              "indentation_level_7+": 0.0,
-              "indentation_level_8+": 0.0,
-              "indentation_level_9+": 0.0,
-              "indentation_level_10+": 0.0
-            },
-            "link": "",
-            "children": [],
-            "checksum": "fa749fc4025fc353"
-          }
-        ]
-      }
-    ],
-    "apiVersion": "1.5",
-    "edges": [],
-    "attributeTypes": {},
-    "attributeDescriptors": {
-      "indentation_level_0+": {
-        "title": "Statements with indentation level greater or equal 0",
-        "description": "Statements with indentation level greater or equal 0",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
+    "apiVersion": "2.0",
+    "checksum": "958b359e64dadb9b8a38d12129ddffb6"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "fb53c9893f45a6ed",
+          "name": "tabs.included",
+          "type": "File",
+          "contentHash": "fa749fc4025fc353",
+          "link": ""
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "fb53c9893f45a6ed": {
+          "loc": 7.0,
+          "indentation_level_0+": 6.0,
+          "indentation_level_1+": 3.0,
+          "indentation_level_2+": 1.0,
+          "indentation_level_3+": 1.0,
+          "indentation_level_4+": 0.0,
+          "indentation_level_5+": 0.0,
+          "indentation_level_6+": 0.0,
+          "indentation_level_7+": 0.0,
+          "indentation_level_8+": 0.0,
+          "indentation_level_9+": 0.0,
+          "indentation_level_10+": 0.0
+        }
       },
-      "indentation_level_1+": {
-        "title": "Statements with indentation level greater or equal 1",
-        "description": "Statements with indentation level greater or equal 1",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
+      "attributeDescriptors": {
+        "indentation_level_0+": {
+          "title": "Statements with indentation level greater or equal 0",
+          "description": "Statements with indentation level greater or equal 0",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_1+": {
+          "title": "Statements with indentation level greater or equal 1",
+          "description": "Statements with indentation level greater or equal 1",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_2+": {
+          "title": "Statements with indentation level greater or equal 2",
+          "description": "Statements with indentation level greater or equal 2",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_3+": {
+          "title": "Statements with indentation level greater or equal 3",
+          "description": "Statements with indentation level greater or equal 3",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_4+": {
+          "title": "Statements with indentation level greater or equal 4",
+          "description": "Statements with indentation level greater or equal 4",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_5+": {
+          "title": "Statements with indentation level greater or equal 5",
+          "description": "Statements with indentation level greater or equal 5",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_6+": {
+          "title": "Statements with indentation level greater or equal 6",
+          "description": "Statements with indentation level greater or equal 6",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_7+": {
+          "title": "Statements with indentation level greater or equal 7",
+          "description": "Statements with indentation level greater or equal 7",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_8+": {
+          "title": "Statements with indentation level greater or equal 8",
+          "description": "Statements with indentation level greater or equal 8",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_9+": {
+          "title": "Statements with indentation level greater or equal 9",
+          "description": "Statements with indentation level greater or equal 9",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_10+": {
+          "title": "Statements with indentation level greater or equal 10",
+          "description": "Statements with indentation level greater or equal 10",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "loc": {
+          "title": "Lines of Code",
+          "description": "Lines of code including empty lines and comments",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        }
       },
-      "indentation_level_2+": {
-        "title": "Statements with indentation level greater or equal 2",
-        "description": "Statements with indentation level greater or equal 2",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "indentation_level_3+": {
-        "title": "Statements with indentation level greater or equal 3",
-        "description": "Statements with indentation level greater or equal 3",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "indentation_level_4+": {
-        "title": "Statements with indentation level greater or equal 4",
-        "description": "Statements with indentation level greater or equal 4",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "indentation_level_5+": {
-        "title": "Statements with indentation level greater or equal 5",
-        "description": "Statements with indentation level greater or equal 5",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "indentation_level_6+": {
-        "title": "Statements with indentation level greater or equal 6",
-        "description": "Statements with indentation level greater or equal 6",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "indentation_level_7+": {
-        "title": "Statements with indentation level greater or equal 7",
-        "description": "Statements with indentation level greater or equal 7",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "indentation_level_8+": {
-        "title": "Statements with indentation level greater or equal 8",
-        "description": "Statements with indentation level greater or equal 8",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "indentation_level_9+": {
-        "title": "Statements with indentation level greater or equal 9",
-        "description": "Statements with indentation level greater or equal 9",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "indentation_level_10+": {
-        "title": "Statements with indentation level greater or equal 10",
-        "description": "Statements with indentation level greater or equal 10",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "loc": {
-        "title": "Lines of Code",
-        "description": "Lines of code including empty lines and comments",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      }
+      "attributeTypes": {},
+      "clusters": []
     },
-    "blacklist": []
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
   }
 }

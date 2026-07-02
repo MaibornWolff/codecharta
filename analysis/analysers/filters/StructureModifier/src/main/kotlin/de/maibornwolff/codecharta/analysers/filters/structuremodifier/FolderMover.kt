@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.filters.structuremodifier
 
-import de.maibornwolff.codecharta.model.AttributeDescriptor
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
@@ -21,13 +19,15 @@ class FolderMover(private val project: Project) {
             return null
         }
 
-        return ProjectBuilder(
-            moveNodes(moveFrom, moveTo),
-            extractEdges(moveFrom, moveTo),
-            copyAttributeTypes(),
-            copyAttributeDescriptors(),
-            copyBlacklist(moveFrom, moveTo)
-        ).build()
+        return ProjectBuilder
+            .fromLenses(
+                moveNodes(moveFrom, moveTo),
+                project.lenses.metrics,
+                project.lenses.dependency.copy(edges = extractEdges(moveFrom, moveTo)),
+                copyBlacklist(moveFrom, moveTo),
+                opaqueLenses = project.lenses.opaqueLenses,
+                commitHash = project.commitHash
+            ).build()
     }
 
     private fun getPathSegments(path: String): List<String> = path.removePrefix("/").split("/").filter {
@@ -110,27 +110,18 @@ class FolderMover(private val project: Project) {
     private fun extractEdges(from: String, to: String): MutableList<Edge> {
         val sanitizedFrom = "/" + from.removeSuffix("/").removePrefix("/")
         val sanitizedTo = "/" + to.removeSuffix("/").removePrefix("/")
-        return project.edges
+        return project.lenses.dependency.edges
             .map { edge ->
-                edge.fromNodeName = edge.fromNodeName.replace(sanitizedFrom, sanitizedTo)
-                edge.toNodeName = edge.toNodeName.replace(sanitizedFrom, sanitizedTo)
-                edge
+                Edge(
+                    edge.fromNodeName.replace(sanitizedFrom, sanitizedTo),
+                    edge.toNodeName.replace(sanitizedFrom, sanitizedTo),
+                    edge.attributes
+                )
             }.toMutableList()
     }
 
-    private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.attributeTypes.forEach {
-            mergedAttributeTypes[it.key] = it.value
-        }
-        return mergedAttributeTypes.toMutableMap()
-    }
-
-    private fun copyAttributeDescriptors(): MutableMap<String, AttributeDescriptor> = project.attributeDescriptors.toMutableMap()
-
     private fun copyBlacklist(from: String, to: String): MutableList<BlacklistItem> = project.blacklist
         .map { blacklistItem ->
-            blacklistItem.path = blacklistItem.path.replace(from, to)
-            blacklistItem
+            BlacklistItem(blacklistItem.path.replace(from, to), blacklistItem.type)
         }.toMutableList()
 }

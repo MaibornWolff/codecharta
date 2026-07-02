@@ -1,19 +1,35 @@
 {
-  "$ref": "#/definitions/ExportCCFile",
+  "$ref": "#/definitions/ExportCCFileAny",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "ExportCCFileAny": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ExportCCFile"
+        },
+        {
+          "$ref": "#/definitions/ExportCCFile2"
+        }
+      ]
+    },
     "AttributeTypes": {
       "properties": {
         "edges": {
           "additionalProperties": {
-            "enum": ["absolute", "relative"],
+            "enum": [
+              "absolute",
+              "relative"
+            ],
             "type": "string"
           },
           "type": "object"
         },
         "nodes": {
           "additionalProperties": {
-            "enum": ["absolute", "relative"],
+            "enum": [
+              "absolute",
+              "relative"
+            ],
             "type": "string"
           },
           "type": "object"
@@ -65,11 +81,17 @@
         "path": {
           "type": "string"
         },
+        "checksum": {
+          "type": "string"
+        },
         "type": {
           "$ref": "#/definitions/NodeType"
         }
       },
-      "required": ["name", "type"],
+      "required": [
+        "name",
+        "type"
+      ],
       "type": "object"
     },
     "Edge": {
@@ -87,7 +109,11 @@
           "$ref": "#/definitions/EdgeVisibility"
         }
       },
-      "required": ["attributes", "fromNodeName", "toNodeName"],
+      "required": [
+        "attributes",
+        "fromNodeName",
+        "toNodeName"
+      ],
       "type": "object"
     },
     "EdgeMetricCount": {
@@ -99,11 +125,19 @@
           "type": "number"
         }
       },
-      "required": ["incoming", "outgoing"],
+      "required": [
+        "incoming",
+        "outgoing"
+      ],
       "type": "object"
     },
     "EdgeVisibility": {
-      "enum": ["both", "from", "none", "to"],
+      "enum": [
+        "both",
+        "from",
+        "none",
+        "to"
+      ],
       "type": "string"
     },
     "ExportBlacklistItem": {
@@ -115,11 +149,17 @@
           "$ref": "#/definitions/ExportBlacklistType"
         }
       },
-      "required": ["path", "type"],
+      "required": [
+        "path",
+        "type"
+      ],
       "type": "object"
     },
     "ExportBlacklistType": {
-      "enum": ["exclude", "hide"],
+      "enum": [
+        "exclude",
+        "hide"
+      ],
       "type": "string"
     },
     "Data": {
@@ -165,7 +205,11 @@
           "type": "string"
         }
       },
-      "required": ["apiVersion", "nodes", "projectName"],
+      "required": [
+        "apiVersion",
+        "nodes",
+        "projectName"
+      ],
       "type": "object"
     },
     "ExportCCFile": {
@@ -177,7 +221,10 @@
           "$ref": "#/definitions/Data"
         }
       },
-      "required": ["checksum", "data"],
+      "required": [
+        "checksum",
+        "data"
+      ],
       "type": "object"
     },
     "FixedPosition": {
@@ -195,7 +242,12 @@
           "type": "number"
         }
       },
-      "required": ["height", "left", "top", "width"],
+      "required": [
+        "height",
+        "left",
+        "top",
+        "width"
+      ],
       "type": "object"
     },
     "KeyValuePair": {
@@ -213,11 +265,17 @@
           "type": "string"
         }
       },
-      "required": ["color", "path"],
+      "required": [
+        "color",
+        "path"
+      ],
       "type": "object"
     },
     "NodeType": {
-      "enum": ["File", "Folder"],
+      "enum": [
+        "File",
+        "Folder"
+      ],
       "type": "string"
     },
     "OldAttributeTypes": {
@@ -227,7 +285,10 @@
             "anyOf": [
               {
                 "additionalProperties": {
-                  "enum": ["absolute", "relative"],
+                  "enum": [
+                    "absolute",
+                    "relative"
+                  ],
                   "type": "string"
                 },
                 "type": "object"
@@ -237,7 +298,10 @@
           "items": [
             {
               "additionalProperties": {
-                "enum": ["absolute", "relative"],
+                "enum": [
+                  "absolute",
+                  "relative"
+                ],
                 "type": "string"
               },
               "type": "object"
@@ -251,7 +315,10 @@
             "anyOf": [
               {
                 "additionalProperties": {
-                  "enum": ["absolute", "relative"],
+                  "enum": [
+                    "absolute",
+                    "relative"
+                  ],
                   "type": "string"
                 },
                 "type": "object"
@@ -261,7 +328,10 @@
           "items": [
             {
               "additionalProperties": {
-                "enum": ["absolute", "relative"],
+                "enum": [
+                  "absolute",
+                  "relative"
+                ],
                 "type": "string"
               },
               "type": "object"
@@ -271,6 +341,226 @@
           "type": "array"
         }
       },
+      "type": "object"
+    },
+    "Meta": {
+      "additionalProperties": false,
+      "properties": {
+        "projectName": {
+          "type": "string"
+        },
+        "apiVersion": {
+          "const": "2.0",
+          "type": "string"
+        },
+        "checksum": {
+          "type": "string"
+        },
+        "commitHash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "projectName",
+        "apiVersion",
+        "checksum"
+      ],
+      "type": "object"
+    },
+    "FileNode": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/NodeType"
+        },
+        "children": {
+          "items": {
+            "$ref": "#/definitions/FileNode"
+          },
+          "type": "array"
+        },
+        "contentHash": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type"
+      ],
+      "type": "object",
+      "if": {
+        "properties": {
+          "type": {
+            "const": "File"
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "required": [
+            "children"
+          ]
+        }
+      }
+    },
+    "AttributeDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "hintLowValue": {
+          "type": "string"
+        },
+        "hintHighValue": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        },
+        "direction": {
+          "type": "number"
+        },
+        "analyzers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "Edge2": {
+      "additionalProperties": false,
+      "properties": {
+        "fromId": {
+          "type": "string"
+        },
+        "toId": {
+          "type": "string"
+        },
+        "attributes": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "fromId",
+        "toId"
+      ],
+      "type": "object"
+    },
+    "MetricsLens": {
+      "additionalProperties": false,
+      "properties": {
+        "attributes": {
+          "additionalProperties": {
+            "type": "object"
+          },
+          "type": "object"
+        },
+        "attributeDescriptors": {
+          "additionalProperties": {
+            "$ref": "#/definitions/AttributeDescriptor"
+          },
+          "type": "object"
+        },
+        "attributeTypes": {
+          "additionalProperties": {
+            "enum": [
+              "absolute",
+              "relative"
+            ],
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "clusters": {
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "DependencyLens": {
+      "additionalProperties": false,
+      "properties": {
+        "edges": {
+          "items": {
+            "$ref": "#/definitions/Edge2"
+          },
+          "type": "array"
+        },
+        "attributeDescriptors": {
+          "additionalProperties": {
+            "$ref": "#/definitions/AttributeDescriptor"
+          },
+          "type": "object"
+        },
+        "attributeTypes": {
+          "additionalProperties": {
+            "enum": [
+              "absolute",
+              "relative"
+            ],
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "Lenses": {
+      "properties": {
+        "metrics": {
+          "$ref": "#/definitions/MetricsLens"
+        },
+        "dependency": {
+          "$ref": "#/definitions/DependencyLens"
+        },
+        "domain": {
+          "type": "object"
+        },
+        "security": {
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ExportCCFile2": {
+      "additionalProperties": false,
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/Meta"
+        },
+        "files": {
+          "items": {
+            "$ref": "#/definitions/FileNode"
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "type": "array"
+        },
+        "lenses": {
+          "$ref": "#/definitions/Lenses"
+        }
+      },
+      "required": [
+        "meta",
+        "files",
+        "lenses"
+      ],
       "type": "object"
     }
   }

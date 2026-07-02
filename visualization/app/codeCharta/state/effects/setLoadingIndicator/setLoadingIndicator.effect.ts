@@ -3,10 +3,10 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { map } from "rxjs"
 import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { actionsRequiringRerender } from "../renderCodeMapEffect/actionsRequiringRerender"
-import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setIsLoadingMap } from "../../../mapState/store/isLoadingMap/isLoadingMap.actions"
 import { CcState } from "../../../codeCharta.model"
 import { Store } from "@ngrx/store"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 
 @Injectable()
 export class SetLoadingIndicatorEffect {

@@ -4,7 +4,7 @@ import { setState } from "../../store/state.actions"
 import { CcState } from "../../../codeCharta.model"
 import { map } from "rxjs"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { getMergedEdges } from "./utils/edges.merger"
 import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
 import { getMergedBlacklist } from "./utils/blacklist.merger"
@@ -33,9 +33,16 @@ export class UpdateFileSettingsEffect {
                 return setState({
                     value: {
                         fileSettings: {
-                            edges: getMergedEdges(visibleFiles, withUpdatedPath),
-                            markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath),
+                            edges: getMergedEdges(visibleFiles, withUpdatedPath)
+                        },
+                        // Slice 9b+9c: the merged blacklist and markedPackages are co-emitted under the
+                        // sharedView home (not fileSettings) in the SAME setState, so a single dynamic-key
+                        // replace re-homes each array.
+                        sharedView: {
                             blacklist: getMergedBlacklist(visibleFiles, withUpdatedPath),
+                            markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath)
+                        },
+                        metricsLensSource: {
                             attributeTypes: getMergedAttributeTypes(allAttributeTypes),
                             attributeDescriptors: getMergedAttributeDescriptors(allAttributeDescriptors)
                         }

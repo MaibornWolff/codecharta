@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 import java.lang.reflect.Type
@@ -39,6 +40,6 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
         val blacklist =
             context.deserialize<List<BlacklistItem>>(jsonNode.get("blacklist"), listOfBlacklistType) ?: listOf()
 
-        return Project(projectName, nodes, apiVersion, edges, attributeTypes, attributeDescriptors, blacklist)
+        return Project(projectName, nodes, apiVersion, LensSet.fromLegacy(edges, attributeTypes, attributeDescriptors), blacklist)
     }
 }

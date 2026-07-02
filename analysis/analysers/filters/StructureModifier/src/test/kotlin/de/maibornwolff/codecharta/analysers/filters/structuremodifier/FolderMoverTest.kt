@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.filters.structuremodifier
 
+import de.maibornwolff.codecharta.model.BlacklistItem
+import de.maibornwolff.codecharta.model.BlacklistType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
@@ -76,27 +78,27 @@ class FolderMoverTest {
     fun `should place content in newly created node, if destination does not exist`() {
         val folderMover = FolderMover(sampleProject)
 
-        val result = folderMover.move("/root/src/folder3", "/root/foo")
+        val result = folderMover.move("/root/src/folder3", "/root/brandnew")
 
         val destinationNode =
             result!!
                 .rootNode.children
                 .filter {
-                    it.name == "foo"
+                    it.name == "brandnew"
                 }.first()
         val destinationNodeChild = destinationNode.children.first()
-        Assertions.assertThat(destinationNode.name).isEqualTo("foo")
+        Assertions.assertThat(destinationNode.name).isEqualTo("brandnew")
         Assertions.assertThat(destinationNodeChild.name).isEqualTo("otherFile2.java")
     }
 
     @Test
     fun `should copy unaffected edges`() {
         val folderMover = FolderMover(sampleProject)
-        val unaffectedEdge = sampleProject.edges[3]
+        val unaffectedEdge = sampleProject.lenses.dependency.edges[3]
 
         val result = folderMover.move("/root/foo/", "/root/bar")
 
-        Assertions.assertThat(result!!.edges).contains(unaffectedEdge)
+        Assertions.assertThat(result!!.lenses.dependency.edges).contains(unaffectedEdge)
     }
 
     @Test
@@ -105,9 +107,9 @@ class FolderMoverTest {
 
         val result = folderMover.move("/root/foo", "root/bar/")!!
 
-        val firstEdge = result.edges[0]
-        val secondEdge = result.edges[1]
-        val thirdEdge = result.edges[2]
+        val firstEdge = result.lenses.dependency.edges[0]
+        val secondEdge = result.lenses.dependency.edges[1]
+        val thirdEdge = result.lenses.dependency.edges[2]
         Assertions.assertThat(firstEdge.toNodeName).isEqualTo("/root/bar/file2")
         Assertions.assertThat(secondEdge.fromNodeName).isEqualTo("/root/bar/file1")
         Assertions.assertThat(thirdEdge.toNodeName).isEqualTo("/root/bar/file3")
@@ -120,14 +122,40 @@ class FolderMoverTest {
 
         val result = folderMover.move("/root/foo", "/root/bar")!!
 
-        val firstEdge = result.edges[0]
-        val secondEdge = result.edges[1]
+        val firstEdge = result.lenses.dependency.edges[0]
+        val secondEdge = result.lenses.dependency.edges[1]
         Assertions.assertThat(firstEdge.fromNodeName).isEqualTo("/root/file1")
         Assertions.assertThat(secondEdge.toNodeName).isEqualTo("/root/file2")
     }
 
     @Test
+    fun `should not mutate source project edges or blacklist when moving`() {
+        // Arrange: blacklist is view state dropped from the 2.0 wire, so set it on the domain here.
+        sampleProject.blacklist = listOf(BlacklistItem("/root/foo/file1", BlacklistType.EXCLUDE))
+        // Arrange: snapshot an affected source edge and blacklist entry before the move.
+        val folderMover = FolderMover(sampleProject)
+        val sourceEdge = sampleProject.lenses.dependency.edges.first()
+        val originalFrom = sourceEdge.fromNodeName
+        val originalTo = sourceEdge.toNodeName
+        val sourceBlacklistItem = sampleProject.blacklist.first()
+        val originalPath = sourceBlacklistItem.path
+
+        // Act
+        folderMover.move("/root/foo", "/root/bar")
+
+        // Assert: the input project's edge endpoints and blacklist paths are untouched.
+        Assertions.assertThat(sourceEdge.fromNodeName).isEqualTo(originalFrom)
+        Assertions.assertThat(sourceEdge.toNodeName).isEqualTo(originalTo)
+        Assertions.assertThat(sourceBlacklistItem.path).isEqualTo(originalPath)
+    }
+
+    @Test
     fun `should change path of relevant blacklist items`() {
+        // blacklist is view state dropped from the 2.0 wire, so set it on the domain here.
+        sampleProject.blacklist = listOf(
+            BlacklistItem("/root/foo/file1", BlacklistType.EXCLUDE),
+            BlacklistItem("/root/whatever/file2", BlacklistType.EXCLUDE)
+        )
         val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root/foo", "/root/bar")!!

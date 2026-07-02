@@ -6,14 +6,14 @@ import { ThreeRendererService } from "../../../features/codeMap/facade"
 import { UploadFilesService } from "../../../features/navBar/facade"
 import { wait } from "../../../util/testUtils/wait"
 import { accumulatedDataSelector } from "../../selectors/accumulatedData/accumulatedData.selector"
-import { setInvertArea } from "../../store/appSettings/invertArea/invertArea.actions"
+import { setInvertArea } from "../../../mapState/mapState.facade"
 import { LOADING_INDICATOR_QUIET_PERIOD_MS, maxFPS, RenderCodeMapEffect } from "./renderCodeMap.effect"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setIsLoadingMap } from "../../../mapState/store/isLoadingMap/isLoadingMap.actions"
 
 describe("renderCodeMapEffect", () => {
     let actions$: Subject<Action>

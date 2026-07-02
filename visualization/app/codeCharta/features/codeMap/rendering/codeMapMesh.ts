@@ -226,8 +226,7 @@ export class CodeMapMesh {
 
     private setNewDeltaColor(building: CodeMapBuilding, state: CcState) {
         const {
-            appSettings: { mapColors },
-            dynamicSettings: { heightMetric }
+            mapState: { mapColors, heightMetric }
         } = state
         const { node } = building
 

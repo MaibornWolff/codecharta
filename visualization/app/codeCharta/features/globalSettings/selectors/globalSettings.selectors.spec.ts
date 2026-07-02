@@ -68,10 +68,10 @@ describe("globalSettings.selectors", () => {
     describe("isWhiteBackgroundSelector", () => {
         it("should select isWhiteBackground from appSettings", () => {
             // Arrange
-            mockState.appSettings.isWhiteBackground = true
+            mockState.mapState.isWhiteBackground = true
 
             // Act
-            const result = isWhiteBackgroundSelector.projector(mockState.appSettings)
+            const result = isWhiteBackgroundSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(true)
@@ -79,10 +79,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return false when isWhiteBackground is false", () => {
             // Arrange
-            mockState.appSettings.isWhiteBackground = false
+            mockState.mapState.isWhiteBackground = false
 
             // Act
-            const result = isWhiteBackgroundSelector.projector(mockState.appSettings)
+            const result = isWhiteBackgroundSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(false)
@@ -92,10 +92,10 @@ describe("globalSettings.selectors", () => {
     describe("hideFlatBuildingsSelector", () => {
         it("should select hideFlatBuildings from appSettings", () => {
             // Arrange
-            mockState.appSettings.hideFlatBuildings = true
+            mockState.mapState.hideFlatBuildings = true
 
             // Act
-            const result = hideFlatBuildingsSelector.projector(mockState.appSettings)
+            const result = hideFlatBuildingsSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(true)
@@ -103,10 +103,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return false when hideFlatBuildings is false", () => {
             // Arrange
-            mockState.appSettings.hideFlatBuildings = false
+            mockState.mapState.hideFlatBuildings = false
 
             // Act
-            const result = hideFlatBuildingsSelector.projector(mockState.appSettings)
+            const result = hideFlatBuildingsSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(false)
@@ -140,10 +140,10 @@ describe("globalSettings.selectors", () => {
     describe("layoutAlgorithmSelector", () => {
         it("should select layoutAlgorithm from appSettings", () => {
             // Arrange
-            mockState.appSettings.layoutAlgorithm = LayoutAlgorithm.StreetMap
+            mockState.mapState.layoutAlgorithm = LayoutAlgorithm.StreetMap
 
             // Act
-            const result = layoutAlgorithmSelector.projector(mockState.appSettings)
+            const result = layoutAlgorithmSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(LayoutAlgorithm.StreetMap)
@@ -151,10 +151,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return SquarifiedTreeMap when set to SquarifiedTreeMap", () => {
             // Arrange
-            mockState.appSettings.layoutAlgorithm = LayoutAlgorithm.SquarifiedTreeMap
+            mockState.mapState.layoutAlgorithm = LayoutAlgorithm.SquarifiedTreeMap
 
             // Act
-            const result = layoutAlgorithmSelector.projector(mockState.appSettings)
+            const result = layoutAlgorithmSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(LayoutAlgorithm.SquarifiedTreeMap)
@@ -162,10 +162,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return TreeMapStreet when set to TreeMapStreet", () => {
             // Arrange
-            mockState.appSettings.layoutAlgorithm = LayoutAlgorithm.TreeMapStreet
+            mockState.mapState.layoutAlgorithm = LayoutAlgorithm.TreeMapStreet
 
             // Act
-            const result = layoutAlgorithmSelector.projector(mockState.appSettings)
+            const result = layoutAlgorithmSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(LayoutAlgorithm.TreeMapStreet)

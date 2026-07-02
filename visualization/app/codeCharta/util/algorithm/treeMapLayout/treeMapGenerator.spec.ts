@@ -14,7 +14,7 @@ import {
 import { klona } from "klona"
 import { NodeDecorator } from "../../nodeDecorator"
 import { fileWithFixedFolders } from "../../../resources/fixed-folders/fixed-folders-example"
-import { getCCFile } from "../../../features/loadFile/facade"
+import { getCCFile } from "../../../fileStore/fileStore.facade"
 import * as SquarifiedLayoutGenerator from "./treeMapGenerator"
 
 describe("treeMapGenerator", () => {
@@ -30,7 +30,7 @@ describe("treeMapGenerator", () => {
         codeMapNode = klona(VALID_NODE_WITH_PATH)
         metricData = klona(METRIC_DATA)
         isDeltaState = false
-        state.dynamicSettings.focusedNodePath = []
+        state.sharedView.focusedNodePath = []
     })
 
     describe("create Treemap nodes", () => {
@@ -129,7 +129,7 @@ describe("treeMapGenerator", () => {
 
         it("should disable floor labels if option is toggled and change size", () => {
             const nodesWithFloorLabels: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
-            state.appSettings.enableFloorLabels = false
+            state.mapState.enableFloorLabels = false
             const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
             for (const [index, nodesWithFloorLabel] of nodesWithFloorLabels.entries()) {
@@ -150,8 +150,8 @@ describe("treeMapGenerator", () => {
             map.children[1].attributes = { myArea: 0, myHeight: 0 }
             map.children[1].deltas = { myArea: -40, myHeight: -80 }
 
-            state.dynamicSettings.areaMetric = "myArea"
-            state.dynamicSettings.heightMetric = "myHeight"
+            state.mapState.areaMetric = "myArea"
+            state.mapState.heightMetric = "myHeight"
             metricData = [
                 { name: "myArea", maxValue: 42, minValue: 1, values: [1, 42] },
                 { name: "myHeight", maxValue: 99, minValue: 1, values: [1, 99] }
@@ -182,8 +182,8 @@ describe("treeMapGenerator", () => {
         })
 
         it("attribute do not exists, multiple children with non existent attributes", () => {
-            state.dynamicSettings.heightMetric = "b"
-            state.dynamicSettings.areaMetric = "b"
+            state.mapState.heightMetric = "b"
+            state.mapState.areaMetric = "b"
             metricData = [
                 { name: "a", maxValue: 42, minValue: 1, values: [1, 42] },
                 { name: "b", maxValue: 99, minValue: 1, values: [1, 99] }
@@ -195,8 +195,8 @@ describe("treeMapGenerator", () => {
         })
 
         it("area should be zero if metric does not exist", () => {
-            state.dynamicSettings.areaMetric = "unknown"
-            state.dynamicSettings.heightMetric = "unknown"
+            state.mapState.areaMetric = "unknown"
+            state.mapState.heightMetric = "unknown"
             state.fileSettings.edges = VALID_EDGES
             metricData = [{ name: "unknown", maxValue: 100, minValue: 1, values: [1, 100] }]
 
@@ -220,8 +220,8 @@ describe("treeMapGenerator", () => {
         })
 
         it("should invert area when areametric indicates a positive direction", () => {
-            state.dynamicSettings.areaMetric = "branch_coverage"
-            state.fileSettings.attributeDescriptors = {
+            state.mapState.areaMetric = "branch_coverage"
+            state.metricsLensSource.attributeDescriptors = {
                 branch_coverage: {
                     title: "Branch Coverage",
                     description: "",

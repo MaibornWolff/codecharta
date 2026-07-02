@@ -6,17 +6,15 @@ import { EffectsModule } from "@ngrx/effects"
 import stringify from "safe-stable-stringify"
 import { MapColors } from "../../../codeCharta.model"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { setMapColors } from "../../store/appSettings/mapColors/mapColors.actions"
-import { defaultMapColors } from "../../store/appSettings/mapColors/mapColors.reducer"
-import { colorMetricSelector } from "../../store/dynamicSettings/colorMetric/colorMetric.selector"
+import { defaultMapColors, setMapColors, colorMetricSelector } from "../../../mapState/mapState.facade"
 import { appReducers, defaultState, setStateMiddleware } from "../../store/state.manager"
 import { UpdateMapColorsEffect } from "./updateMapColors.effect"
 
 describe("UpdateMapColorsEffect", () => {
     const modifiedDefaultState = {
         ...defaultState,
-        fileSettings: {
-            ...defaultState.fileSettings,
+        metricsLensSource: {
+            ...defaultState.metricsLensSource,
             attributeDescriptors: {
                 comment_lines: {
                     title: "Comment Lines",

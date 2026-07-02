@@ -4,7 +4,7 @@ import { State, Store } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
-import { setColorMode } from "../../../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { setColorMode } from "../../../../mapState/store/colorMode/colorMode.actions"
 import { ActionIconComponent } from "../../../../features/shared/components/actionIcon/actionIcon.component"
 import { ErrorDialogComponent } from "../../../../features/shared/components/errorDialog/errorDialog.component"
 import { Export3DMapButtonComponent } from "./export3DMapButton.component"
@@ -23,7 +23,7 @@ describe("Export3DMapButtonComponent", () => {
         TestBed.configureTestingModule({
             imports: [Export3DMapButtonComponent],
             providers: [
-                { provide: State, useValue: { getValue: () => ({ dynamicSettings: { colorMode: ColorMode.absolute } }) } },
+                { provide: State, useValue: { getValue: () => ({ mapState: { colorMode: ColorMode.absolute } }) } },
                 { provide: Store, useValue: { select: jest.fn(() => of(ColorMode.absolute)), dispatch: jest.fn() } }
             ]
         })
@@ -39,7 +39,7 @@ describe("Export3DMapButtonComponent", () => {
     })
 
     it("should set showDialog to true when button is clicked with color mode absolute", async function () {
-        const state = { getValue: () => ({ dynamicSettings: { colorMode: "absolute" } }) }
+        const state = { getValue: () => ({ mapState: { colorMode: "absolute" } }) }
         const store = { select: jest.fn(() => of(ColorMode.absolute)), dispatch: jest.fn() }
 
         const { fixture } = await render(Export3DMapButtonComponent, {
@@ -62,7 +62,7 @@ describe("Export3DMapButtonComponent", () => {
     })
 
     it("should open the error dialog when color mode is not absolute", async function () {
-        const state = { getValue: jest.fn(() => ({ dynamicSettings: { colorMode: "relative" } })) }
+        const state = { getValue: jest.fn(() => ({ mapState: { colorMode: "relative" } })) }
         const store = { select: jest.fn(() => of(ColorMode.weightedGradient)), dispatch: jest.fn() }
 
         const { fixture } = await render(Export3DMapButtonComponent, {
@@ -87,7 +87,7 @@ describe("Export3DMapButtonComponent", () => {
     })
 
     it("should switch to absolute color mode and set showDialog to true when user changes color mode directly", async function () {
-        const state = { getValue: () => ({ dynamicSettings: { colorMode: "relative" } }) }
+        const state = { getValue: () => ({ mapState: { colorMode: "relative" } }) }
         const store = { dispatch: jest.fn(), select: jest.fn(() => of(ColorMode.absolute)) }
 
         const { fixture } = await render(Export3DMapButtonComponent, {

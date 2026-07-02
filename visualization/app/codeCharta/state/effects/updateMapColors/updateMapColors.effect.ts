@@ -4,9 +4,7 @@ import { State, Store } from "@ngrx/store"
 import { map } from "rxjs"
 import stringify from "safe-stable-stringify"
 import { CcState, MapColors } from "../../../codeCharta.model"
-import { setMapColors } from "../../store/appSettings/mapColors/mapColors.actions"
-import { defaultMapColors } from "../../store/appSettings/mapColors/mapColors.reducer"
-import { colorMetricSelector } from "../../store/dynamicSettings/colorMetric/colorMetric.selector"
+import { defaultMapColors, setMapColors, colorMetricSelector } from "../../../mapState/mapState.facade"
 
 @Injectable()
 export class UpdateMapColorsEffect {
@@ -19,8 +17,8 @@ export class UpdateMapColorsEffect {
         this.store.select(colorMetricSelector).pipe(
             map(colorMetric => {
                 const state = this.state.getValue()
-                const attributeDescriptors = state.fileSettings.attributeDescriptors
-                const mapColors = state.appSettings.mapColors
+                const attributeDescriptors = state.metricsLensSource.attributeDescriptors
+                const mapColors = state.mapState.mapColors
                 if (attributeDescriptors[colorMetric]?.direction === 1) {
                     const reversedMapColors: MapColors = JSON.parse(stringify(mapColors))
                     const temporary = reversedMapColors.negative

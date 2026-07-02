@@ -5,7 +5,7 @@ import {
     addBlacklistItem,
     addBlacklistItemsIfNotResultsInEmptyMap,
     removeBlacklistItem
-} from "../../../state/store/fileSettings/blacklist/blacklist.actions"
+} from "../../../sharedView/sharedView.facade"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 
 type BlacklistableNode = Pick<CodeMapNode, "path" | "type">

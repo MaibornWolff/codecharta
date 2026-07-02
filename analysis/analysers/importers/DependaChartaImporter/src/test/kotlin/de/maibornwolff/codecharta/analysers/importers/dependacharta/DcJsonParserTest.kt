@@ -1,9 +1,110 @@
 package de.maibornwolff.codecharta.analysers.importers.dependacharta
 
+import de.maibornwolff.codecharta.model.Path
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class DcJsonParserTest {
+    @Test
+    fun `should produce one file node for paths that canonicalize to the same position`() {
+        // Arrange
+        val leaves = mapOf(
+            "a" to DcLeaf(id = "a", name = "A", physicalPath = "src/./Foo.ts"),
+            "b" to DcLeaf(id = "b", name = "B", physicalPath = "src/Foo.ts")
+        )
+
+        // Act
+        val nodes = DcJsonParser.parseFileNodes(DcProject(leaves = leaves))
+
+        // Assert
+        assertThat(nodes).hasSize(1)
+        assertThat(nodes[0].first).isEqualTo(Path(listOf("src")))
+        assertThat(nodes[0].second.name).isEqualTo("Foo.ts")
+    }
+
+    @Test
+    fun `should merge data from all leaves that canonicalize to the same position into one file node`() {
+        // Arrange: two leaves resolve to src/Foo.ts, each with a distinct outgoing dependency.
+        val leaves = mapOf(
+            "a" to DcLeaf(id = "a", name = "A", physicalPath = "src/./Foo.ts", dependencies = mapOf("c" to DcDependency())),
+            "b" to DcLeaf(id = "b", name = "B", physicalPath = "src/Foo.ts", dependencies = mapOf("d" to DcDependency())),
+            "c" to DcLeaf(id = "c", name = "C", physicalPath = "src/Bar.ts"),
+            "d" to DcLeaf(id = "d", name = "D", physicalPath = "src/Baz.ts")
+        )
+        val project = DcProject(leaves = leaves)
+
+        // Act
+        val nodes = DcJsonParser.parseFileNodes(project, DcJsonParser.parseEdges(project))
+
+        // Assert: the single Foo.ts node aggregates BOTH leaves' outgoing weight, proving neither
+        // leaf was dropped during de-duplication.
+        val foo = nodes.single { it.second.name == "Foo.ts" }
+        assertThat(foo.first).isEqualTo(Path(listOf("src")))
+        assertThat(foo.second.attributes[DcJsonParser.OUTGOING_DEPENDENCIES]).isEqualTo(2)
+    }
+
+    @Test
+    fun `should split backslash separated physical paths into folders`() {
+        // Arrange
+        val leaves = mapOf("a" to DcLeaf(id = "a", name = "A", physicalPath = "src\\sub\\Foo.ts"))
+
+        // Act
+        val nodes = DcJsonParser.parseFileNodes(DcProject(leaves = leaves))
+
+        // Assert
+        assertThat(nodes).hasSize(1)
+        assertThat(nodes[0].first).isEqualTo(Path(listOf("src", "sub")))
+        assertThat(nodes[0].second.name).isEqualTo("Foo.ts")
+    }
+
+    @Test
+    fun `should aggregate outgoing and incoming dependency weights onto file nodes`() {
+        // Arrange
+        val leaves = mapOf(
+            "a.ClassA" to DcLeaf(
+                id = "a.ClassA",
+                name = "ClassA",
+                physicalPath = "src/FileA.ts",
+                dependencies = mapOf("b.ClassB" to DcDependency(), "b.ClassC" to DcDependency())
+            ),
+            "a.FuncD" to DcLeaf(
+                id = "a.FuncD",
+                name = "FuncD",
+                physicalPath = "src/FileA.ts",
+                dependencies = mapOf("b.ClassB" to DcDependency())
+            ),
+            "b.ClassB" to DcLeaf(id = "b.ClassB", name = "ClassB", physicalPath = "src/FileB.ts"),
+            "b.ClassC" to DcLeaf(id = "b.ClassC", name = "ClassC", physicalPath = "src/FileB.ts")
+        )
+        val project = DcProject(leaves = leaves)
+
+        // Act
+        val nodes = DcJsonParser.parseFileNodes(project, DcJsonParser.parseEdges(project))
+
+        // Assert
+        val fileA = nodes.first { it.second.name == "FileA.ts" }.second
+        val fileB = nodes.first { it.second.name == "FileB.ts" }.second
+        assertThat(fileA.attributes[DcJsonParser.OUTGOING_DEPENDENCIES]).isEqualTo(3)
+        assertThat(fileA.attributes[DcJsonParser.INCOMING_DEPENDENCIES]).isEqualTo(0)
+        assertThat(fileB.attributes[DcJsonParser.INCOMING_DEPENDENCIES]).isEqualTo(3)
+        assertThat(fileB.attributes[DcJsonParser.OUTGOING_DEPENDENCIES]).isEqualTo(0)
+    }
+
+    @Test
+    fun `should treat dot-normalized paths as the same file when filtering self edges`() {
+        // Arrange
+        val leaves = mapOf(
+            "a" to DcLeaf(id = "a", name = "A", physicalPath = "src/./Foo.ts", dependencies = mapOf("b" to DcDependency())),
+            "b" to DcLeaf(id = "b", name = "B", physicalPath = "src/Foo.ts")
+        )
+
+        // Act
+        val edges = DcJsonParser.parseEdges(DcProject(leaves = leaves))
+
+        // Assert
+        assertThat(edges).isEmpty()
+    }
+
     @Test
     fun `should create single edge for simple dependency`() {
         // Arrange

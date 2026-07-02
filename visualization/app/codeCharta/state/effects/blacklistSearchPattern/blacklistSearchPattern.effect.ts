@@ -4,9 +4,8 @@ import { Store } from "@ngrx/store"
 import { map, filter, withLatestFrom, tap, take, share } from "rxjs"
 import { BlacklistType, CcState } from "../../../codeCharta.model"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
-import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
-import { searchPatternSelector } from "../../store/dynamicSettings/searchPattern/searchPattern.selector"
-import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../store/fileSettings/blacklist/blacklist.actions"
+import { setSearchPattern, searchPatternSelector } from "../../../sharedView/sharedView.facade"
+import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../sharedView/sharedView.facade"
 import { parseBlacklistItems } from "../../../util/blacklist/parseBlacklistItems"
 
 type BlacklistSearchPatternAction = {

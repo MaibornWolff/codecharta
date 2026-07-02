@@ -73,7 +73,7 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
 
         fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project = ProjectMerger(
             listOf(pipedProject, currentProject),
-            RecursiveNodeMergerStrategy(false)
+            MergeResolverStrategy.recursive(false)
         ).merge()
 
         @JvmStatic
@@ -84,9 +84,11 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
     }
 
     override fun call(): Unit? {
-        val nodeMergerStrategy = when {
-            leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
-            recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
+        // A factory rather than a shared instance, so every merge group gets a strategy with fresh
+        // stat counters (a reused instance accumulated stats across MIMO groups).
+        val makeStrategy: () -> NodeMergerStrategy = when {
+            leafStrategySet -> { -> MergeResolverStrategy.leaf(addMissingNodes, ignoreCase) }
+            recursiveStrategySet && !leafStrategySet -> { -> MergeResolverStrategy.recursive(ignoreCase) }
             else -> throw IllegalArgumentException("At least one merging strategy must be set")
         }
 
@@ -97,15 +99,15 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
         val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
 
         if (mimo) {
-            processMimoMerge(sourceFiles, nodeMergerStrategy)
+            processMimoMerge(sourceFiles, makeStrategy)
         } else if (largeMerge) {
-            processLargeMerge(sourceFiles, nodeMergerStrategy)
+            processLargeMerge(sourceFiles, makeStrategy)
         } else {
             val projects = readInputFiles(sourceFiles)
 
             if (!continueIfIncompatibleProjects(projects)) return null
 
-            val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
+            val mergedProject = ProjectMerger(projects, makeStrategy()).merge()
             ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
         }
 
@@ -146,7 +148,7 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
 
     override fun isApplicable(resourceToBeParsed: String): Boolean = false
 
-    private fun processMimoMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
+    private fun processMimoMerge(sourceFiles: List<File>, makeStrategy: () -> NodeMergerStrategy) {
         val groupedFiles: List<Pair<Boolean, List<File>>> = Mimo.generateProjectGroups(sourceFiles, levenshteinDistance)
 
         groupedFiles.forEach { (exactMatch, files) ->
@@ -169,7 +171,7 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
 
             if (!continueIfIncompatibleProjects(projects)) return@forEach
 
-            val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
+            val mergedProject = ProjectMerger(projects, makeStrategy()).merge()
             val outputFilePrefix = Mimo.retrieveGroupName(projectsFileNamePairs.map { it.first })
             val outputFileName = "$outputFilePrefix.merge.cc.json"
             val outputFilePath = Mimo.assembleOutputFilePath(outputFile, outputFileName)
@@ -181,7 +183,7 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
         }
     }
 
-    private fun processLargeMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
+    private fun processLargeMerge(sourceFiles: List<File>, makeStrategy: () -> NodeMergerStrategy) {
         val projectsFileNamePairs = readInputFilesKeepFileNames(sourceFiles)
         val fileNameList = projectsFileNamePairs.map { it.first }
 
@@ -198,7 +200,7 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
             packagedProjects.add(LargeMerge.wrapProjectInFolder(it.second, it.first.substringBefore(".")))
         }
 
-        val mergedProject = ProjectMerger(packagedProjects, nodeMergerStrategy).merge()
+        val mergedProject = ProjectMerger(packagedProjects, makeStrategy()).merge()
         ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
     }
 

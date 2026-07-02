@@ -1,36 +1,59 @@
 {
-  "projectName": "SourceMonitorImporter",
-  "apiVersion": "1.0",
-  "nodes": [
+  "meta": {
+    "projectName": "SourceMonitorImporter",
+    "apiVersion": "2.0",
+    "checksum": "4c4ea3dcf74c37fa8c7baf24bcda950b"
+  },
+  "files": [
     {
+      "id": "8a5edab282632443",
       "name": "root",
       "type": "Folder",
       "children": [
         {
+          "id": "56c9e1c4b5360a5b",
           "name": "src",
           "type": "Folder",
           "children": [
             {
+              "id": "e1584b1fb8bf5d36",
               "name": "main",
               "type": "Folder",
               "children": [
                 {
+                  "id": "b312a36be5f1359d",
                   "name": "SourceMonCsvConverterTest.java",
-                  "type": "File",
-                  "attributes": {
-                    "nloc*": 80.0
-                  }
+                  "type": "File"
                 }
               ]
             },
             {
+              "id": "7b132a5d2c95af90",
               "name": "test",
-              "type": "Folder",
-              "children": []
+              "type": "Folder"
             }
           ]
         }
       ]
     }
-  ]
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "b312a36be5f1359d": {
+          "nloc*": 80.0
+        }
+      },
+      "attributeDescriptors": {},
+      "attributeTypes": {},
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    },
+    "domain": {},
+    "security": {}
+  }
 }

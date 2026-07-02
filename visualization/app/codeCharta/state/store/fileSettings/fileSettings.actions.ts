@@ -1,8 +1,7 @@
-import { setAttributeDescriptors } from "./attributeDescriptors/attributeDescriptors.action"
-import { setAttributeTypes } from "./attributeTypes/attributeTypes.actions"
-import { setBlacklist, addBlacklistItem, addBlacklistItems, removeBlacklistItem } from "./blacklist/blacklist.actions"
+import { setAttributeTypes, setAttributeDescriptors } from "../../../lenses/metrics/metricsLens.load.facade"
+import { setBlacklist, addBlacklistItem, addBlacklistItems, removeBlacklistItem } from "../../../sharedView/sharedView.facade"
+import { setMarkedPackages, markPackages, unmarkPackage } from "../../../sharedView/sharedView.facade"
 import { setEdges, addEdge, removeEdge } from "./edges/edges.actions"
-import { setMarkedPackages, markPackages, unmarkPackage } from "./markedPackages/markedPackages.actions"
 
 export const fileSettingsActions = [
     setMarkedPackages,

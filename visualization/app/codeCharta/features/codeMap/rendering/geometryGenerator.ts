@@ -95,7 +95,7 @@ export class GeometryGenerator {
 
             let renderDelta = 0
 
-            if (isDeltaState && node.deltas && node.deltas[state.dynamicSettings.heightMetric] && node.heightDelta) {
+            if (isDeltaState && node.deltas && node.deltas[state.mapState.heightMetric] && node.heightDelta) {
                 renderDelta = node.heightDelta
 
                 if (!node.flat && renderDelta < 0) {

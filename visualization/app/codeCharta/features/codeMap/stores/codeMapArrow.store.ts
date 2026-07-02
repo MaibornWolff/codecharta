@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { hoveredNodeIdSelector } from "../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
+import { hoveredNodeIdSelector } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.selector"
 import { edgeVisibilitySelector } from "../selectors/edgeVisibility.selector"
 
 @Injectable({ providedIn: "root" })
@@ -13,8 +13,8 @@ export class CodeMapArrowStore {
 
     readonly hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
 
-    getAppSettings() {
-        return this.state.getValue().appSettings
+    getMapState() {
+        return this.state.getValue().mapState
     }
 
     getEdges() {

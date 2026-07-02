@@ -5,12 +5,12 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import "fake-indexeddb/auto"
-import { getNameDataPair } from "../../../../loadFile/facade"
-import { LoadFileService } from "../../../../../features/loadFile/facade"
-import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../features/loadFile/facade"
-import { UrlExtractor } from "../../../../loadFile/facade"
+import { getNameDataPair } from "../../../../../fileStore/fileStore.facade"
+import { LoadFileService } from "../../../../../fileStore/fileStore.facade"
+import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../fileStore/fileStore.facade"
+import { UrlExtractor } from "../../../../../fileStore/fileStore.facade"
 import * as resetChosenMetricsEffect from "../../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
-import { metricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { nodeMetricDataSelector } from "../../../../../state/selectors/nodeMetricData/nodeMetricData.selector"
 import { setState } from "../../../../../state/store/state.actions"
 import { defaultState } from "../../../../../state/store/state.manager"
 import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../../mocks/dataMocks"
@@ -18,7 +18,7 @@ import * as indexedDBWriter from "../../../../../util/indexedDB/indexedDBWriter"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 
 jest.mock("../../../../../util/indexedDB/indexedDBWriter")
-jest.mock("../../../../loadFile/facade")
+jest.mock("../../../../../fileStore/fileStore.facade")
 jest.mock("../../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect")
 
 describe("ConfirmResetMapDialogComponent", () => {
@@ -36,7 +36,7 @@ describe("ConfirmResetMapDialogComponent", () => {
                 provideMockStore({
                     selectors: [
                         {
-                            selector: metricDataSelector,
+                            selector: nodeMetricDataSelector,
                             value: METRIC_DATA
                         }
                     ]

@@ -1,54 +1,40 @@
 {
-  "projectName": "Sample Project",
-  "apiVersion": "1.2",
-  "fileChecksum": "valid-md5-sample2",
-  "nodes": [
+  "meta": {
+    "projectName": "Sample Project",
+    "apiVersion": "2.0",
+    "checksum": "d8a26e063ee30fba831954a1523c16e2"
+  },
+  "files": [
     {
+      "id": "8a5edab282632443",
       "name": "root",
       "type": "Folder",
-      "attributes": {},
       "children": [
         {
+          "id": "e714d3f11a02817e",
           "name": "bigLeaf.ts",
           "type": "File",
-          "attributes": {
-            "rloc": 120,
-            "functions": 10,
-            "mcc": 1
-          },
           "link": "http://www.google.de"
         },
         {
+          "id": "0ada18e939a6cc0d",
           "name": "ParentLeaf",
           "type": "Folder",
-          "attributes": {},
           "children": [
             {
+              "id": "6c88e7a1d5523811",
               "name": "smallLeaf.html",
-              "type": "File",
-              "attributes": {
-                "rloc": 30,
-                "functions": 101,
-                "mcc": 80
-              }
+              "type": "File"
             },
             {
+              "id": "b1c972333725efeb",
               "name": "otherSmallLeaf.ts",
-              "type": "File",
-              "attributes": {
-                "rloc": 70,
-                "functions": 10,
-                "mcc": 100
-              }
+              "type": "File"
             },
             {
+              "id": "91bf3e69f21d7da7",
               "name": "sample2LeafMergedIn.kt",
               "type": "File",
-              "attributes": {
-                "rloc": 600,
-                "functions": 10,
-                "mcc": 1
-              },
               "link": "http://www.google.de"
             }
           ]
@@ -56,28 +42,63 @@
       ]
     }
   ],
-  "attributeTypes": {
-    "nodes": {
-      "rloc": "absolute",
-      "functions": "absolute",
-      "mcc": "absolute"
-    }
-  },
-  "attributeDescriptors": {
-    "merge": {
-      "description": "1",
-      "hintLowValue": "2",
-      "hintHighValue": "3",
-      "link": "4",
-      "analyzers": [
-        "5"
-      ]
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "e714d3f11a02817e": {
+          "rloc": 120.0,
+          "functions": 10.0,
+          "mcc": 1.0
+        },
+        "6c88e7a1d5523811": {
+          "rloc": 30.0,
+          "functions": 101.0,
+          "mcc": 80.0
+        },
+        "b1c972333725efeb": {
+          "rloc": 70.0,
+          "functions": 10.0,
+          "mcc": 100.0
+        },
+        "91bf3e69f21d7da7": {
+          "rloc": 600.0,
+          "functions": 10.0,
+          "mcc": 1.0
+        }
+      },
+      "attributeDescriptors": {
+        "merge": {
+          "title": "",
+          "description": "1",
+          "hintLowValue": "2",
+          "hintHighValue": "3",
+          "link": "4",
+          "direction": -1,
+          "analyzers": [
+            "5"
+          ]
+        },
+        "somethingElse": {
+          "title": "",
+          "description": "",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": -1,
+          "analyzers": []
+        }
+      },
+      "attributeTypes": {
+        "rloc": "absolute",
+        "functions": "absolute",
+        "mcc": "absolute"
+      },
+      "clusters": []
     },
-    "somethingElse": {
-      "description": "",
-      "hintLowValue": "",
-      "hintHighValue": "",
-      "link": ""
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
     }
   }
 }

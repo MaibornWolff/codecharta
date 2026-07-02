@@ -1,35 +1,51 @@
 {
-  "projectName": "foo",
-  "apiVersion": "1.2",
-  "nodes": [
+  "meta": {
+    "projectName": "foo",
+    "apiVersion": "2.0",
+    "checksum": "25c2fc83c35c418c577adb05732d9fd1"
+  },
+  "files": [
     {
+      "id": "8a5edab282632443",
       "name": "root",
       "type": "Folder",
-      "attributes": {},
-      "link": "",
       "children": [
         {
+          "id": "ae30ce2f596a5e6e",
           "name": "bar",
           "type": "Folder",
-          "attributes": {},
-          "link": "",
           "children": [
             {
+              "id": "e6d855799c6cb9b2",
               "name": "FooBar.java",
               "type": "File",
-              "attributes": {
-                "coverage": 0.0,
-                "ncloc": 18.0
-              },
-              "link": "",
-              "children": []
+              "link": ""
             }
-          ]
+          ],
+          "link": ""
         }
-      ]
+      ],
+      "link": ""
     }
   ],
-  "edges": [],
-  "attributeTypes": {},
-  "blacklist": []
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "e6d855799c6cb9b2": {
+          "coverage": 0.0,
+          "ncloc": 18.0
+        }
+      },
+      "attributeDescriptors": {},
+      "attributeTypes": {},
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    },
+    "domain": {},
+    "security": {}
+  }
 }

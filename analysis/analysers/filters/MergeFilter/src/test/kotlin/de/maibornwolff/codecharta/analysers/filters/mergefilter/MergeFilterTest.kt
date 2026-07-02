@@ -544,9 +544,8 @@ class MergeFilterTest {
             val outputString = outContent.toString()
             assertThat(outputString).contains("testProject", "testEdges1")
             assertThat(outputString).contains("SourceMonCsvConverter", "number_of_commits")
-            assertThat(
-                outputString
-            ).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3", "/root/testEdges1/file1")
+            // 2.0 nests the wrapped projects as folders/files in the files tree (no /root/ path strings).
+            assertThat(outputString).contains("\"name\":\"visualization\"", "\"name\":\"file2\"", "\"name\":\"file1\"")
         }
 
         @Test
@@ -567,8 +566,11 @@ class MergeFilterTest {
             val projectInput1 = ProjectDeserializer.deserializeProject(File(testFilePath1).inputStream())
             val projectInput2 = ProjectDeserializer.deserializeProject(File(testFilePath2).inputStream())
             assertThat(project.sizeOfEdges()).isEqualTo(2)
-            assertThat(project.sizeOfBlacklist()).isEqualTo(2)
-            assertThat(project.edges.toString()).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3")
+            // blacklist is view state and is dropped from the 2.0 format, so it is empty on read-back.
+            assertThat(project.sizeOfBlacklist()).isEqualTo(0)
+            assertThat(
+                project.lenses.dependency.edges.toString()
+            ).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3")
             assertThat(project.rootNode.children.size).isEqualTo(2)
             val outputProject1 = project.rootNode.children.first { it.name == "testEdges1" }
             val outputProject2 = project.rootNode.children.first { it.name == "testProject" }

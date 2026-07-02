@@ -8,7 +8,7 @@ describe("geometryGenerator", () => {
     let geomGen: GeometryGenerator
     let testNodes: Node[]
     const state = clone(STATE)
-    state.dynamicSettings.heightMetric = "a" // set to a, since it is the delta defined in TEST_NODE_ROOT
+    state.mapState.heightMetric = "a" // set to a, since it is the delta defined in TEST_NODE_ROOT
 
     beforeEach(() => {
         initData()

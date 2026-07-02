@@ -72,14 +72,14 @@ class TokeiImporterTest {
     fun `should not crash on empty file with given tokei json`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_12_empty.json"))
 
-        assertThat(cliResult).contains(listOf("\"name\":\"root\"", "\"children\":[]"))
+        assertThat(cliResult).contains(listOf("\"name\":\"root\"", "\"type\":\"Folder\""))
     }
 
     @Test
     fun `should not crash on empty file with given tokei 12 json`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_pre12_empty.json"))
 
-        assertThat(cliResult).contains(listOf("\"name\":\"root\"", "\"children\":[]"))
+        assertThat(cliResult).contains(listOf("\"name\":\"root\"", "\"type\":\"Folder\""))
     }
 
     @Test
@@ -291,8 +291,8 @@ class TokeiImporterTest {
             )
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        assertThat(project.attributeTypes).containsKey("nodes")
-        assertThat(project.attributeTypes["nodes"]).isEqualTo(expected)
+        assertThat(project.lenses.legacyAttributeTypes()).containsKey("nodes")
+        assertThat(project.lenses.legacyAttributeTypes()["nodes"]).isEqualTo(expected)
     }
 
     @Test
@@ -300,7 +300,7 @@ class TokeiImporterTest {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_pre12_unix_root.json", "-r=foo/bar"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
+        assertThat(project.lenses.allAttributeDescriptors()).isEqualTo(getAttributeDescriptors())
     }
 
     @Test

@@ -1,0 +1,119 @@
+{
+    "meta": {
+        "projectName": "Sample Project with Edges",
+        "apiVersion": "2.0",
+        "checksum": "valid-md5-sample1-cc2"
+    },
+    "files": [
+        {
+            "id": "/root",
+            "name": "root",
+            "type": "Folder",
+            "children": [
+                {
+                    "id": "/root/sample1OnlyLeaf.scss",
+                    "name": "sample1OnlyLeaf.scss",
+                    "type": "File",
+                    "link": "http://www.google.de"
+                },
+                {
+                    "id": "/root/bigLeaf.ts",
+                    "name": "bigLeaf.ts",
+                    "type": "File",
+                    "link": "http://www.google.de"
+                },
+                {
+                    "id": "/root/ParentLeaf",
+                    "name": "ParentLeaf",
+                    "type": "Folder",
+                    "children": [
+                        {
+                            "id": "/root/ParentLeaf/smallLeaf.html",
+                            "name": "smallLeaf.html",
+                            "type": "File"
+                        },
+                        {
+                            "id": "/root/ParentLeaf/otherSmallLeaf.ts",
+                            "name": "otherSmallLeaf.ts",
+                            "type": "File"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "lenses": {
+        "metrics": {
+            "attributes": {
+                "/root/sample1OnlyLeaf.scss": {
+                    "rloc": 400,
+                    "functions": 10,
+                    "sonar_complexity": 100,
+                    "pairingRate": 32,
+                    "avgCommits": 17
+                },
+                "/root/bigLeaf.ts": {
+                    "rloc": 100,
+                    "functions": 10,
+                    "sonar_complexity": 1,
+                    "pairingRate": 77,
+                    "avgCommits": 56
+                },
+                "/root/ParentLeaf/smallLeaf.html": {
+                    "rloc": 30,
+                    "functions": 100,
+                    "sonar_complexity": 100,
+                    "pairingRate": 60,
+                    "avgCommits": 51
+                },
+                "/root/ParentLeaf/otherSmallLeaf.ts": {
+                    "rloc": 70,
+                    "functions": 1000,
+                    "sonar_complexity": 10,
+                    "pairingRate": 65,
+                    "avgCommits": 22
+                }
+            },
+            "attributeDescriptors": {},
+            "attributeTypes": {
+                "rloc": "absolute",
+                "functions": "absolute",
+                "sonar_complexity": "absolute",
+                "pairingRate": "relative"
+            }
+        },
+        "dependency": {
+            "edges": [
+                {
+                    "fromId": "/root/bigLeaf.ts",
+                    "toId": "/root/ParentLeaf/smallLeaf.html",
+                    "attributes": {
+                        "pairingRate": 89,
+                        "avgCommits": 34
+                    }
+                },
+                {
+                    "fromId": "/root/sample1OnlyLeaf.scss",
+                    "toId": "/root/ParentLeaf/smallLeaf.html",
+                    "attributes": {
+                        "pairingRate": 32,
+                        "avgCommits": 17
+                    }
+                },
+                {
+                    "fromId": "/root/ParentLeaf/otherSmallLeaf.ts",
+                    "toId": "/root/bigLeaf.ts",
+                    "attributes": {
+                        "pairingRate": 65,
+                        "avgCommits": 22
+                    }
+                }
+            ],
+            "attributeTypes": {
+                "pairingRate": "relative",
+                "avgCommits": "absolute"
+            },
+            "attributeDescriptors": {}
+        }
+    }
+}

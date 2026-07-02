@@ -22,23 +22,27 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
+import {
+    setAmountOfTopLabels,
+    setColorLabels,
+    setLabelMode,
+    setLabelsPerMap,
+    setShowMetricLabelNameValue,
+    setShowMetricLabelNodeName
+} from "../../mapState/mapState.facade"
 import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
-import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { setLabelsPerMap } from "../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
-import { setFiles } from "../../state/store/files/files.actions"
-import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
-import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { setFiles } from "../../fileStore/store/files.actions"
+import { setHeightMetric } from "../../mapState/mapState.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { MetricsLensFacade } from "../../lenses/metrics/metricsLens.facade"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
+const metricsLensFacadeDouble: Pick<MetricsLensFacade, "getNodeMetricData"> = { getNodeMetricData: () => METRIC_DATA }
 jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
     metricDataSelector: jest.fn()
 }))
@@ -82,7 +86,7 @@ describe("codeMapRenderService", () => {
 
         map = klona(TEST_FILE_WITH_PATHS.map)
         NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
-        NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
+        NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.metricsLensSource.attributeTypes)
         store.dispatch(setState({ value: STATE }))
         mockedMetricDataSelector.mockImplementation(() => ({
             nodeMetricData: METRIC_DATA,
@@ -97,7 +101,8 @@ describe("codeMapRenderService", () => {
             labelSettingsFacade,
             codeMapArrowService,
             threeStatsService,
-            codeMapMouseEventService
+            codeMapMouseEventService,
+            metricsLensFacadeDouble as MetricsLensFacade
         )
         codeMapRenderService["showCouplingArrows"] = jest.fn()
     }
@@ -185,7 +190,7 @@ describe("codeMapRenderService", () => {
         })
 
         it("should call getNodesMatchingColorSelector and set all nodes to positive color when metric is unary", () => {
-            store.dispatch(setState({ value: { ...STATE, dynamicSettings: { ...STATE.dynamicSettings, colorMetric: "unary" } } }))
+            store.dispatch(setState({ value: { ...STATE, mapState: { ...STATE.mapState, colorMetric: "unary" } } }))
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
 
             expect(codeMapRenderService["nodesByColor"].positive).toEqual([TEST_NODE_ROOT, TEST_NODE_LEAF, INCOMING_NODE])

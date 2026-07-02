@@ -200,6 +200,27 @@ check_rawtext() {
   validate "${ACTUAL_RAWTEXT_JSON}"
 }
 
+check_unifiedparser() {
+  echo " -- expect UnifiedParser to produce valid cc.json file"
+  ACTUAL_UNIFIED_JSON="${TEMP_DIR}/actual_unifiedparser.cc.json"
+  "${CCSH}" unifiedparser "${DATA}/sourcecode.java" -o "${ACTUAL_UNIFIED_JSON}" -nc
+  validate "${ACTUAL_UNIFIED_JSON}"
+}
+
+check_dependacharta() {
+  echo " -- expect DependaChartaImporter to produce valid cc.json file"
+  ACTUAL_DEPENDACHARTA_JSON="${TEMP_DIR}/actual_dependacharta.cc.json"
+  "${CCSH}" dependachartaimport "${DATA}/dependacharta.dc.json" -o "${ACTUAL_DEPENDACHARTA_JSON}" -nc
+  validate "${ACTUAL_DEPENDACHARTA_JSON}"
+}
+
+check_convert() {
+  echo " -- expect convert to upgrade a legacy 1.x file to a valid 2.0 cc.json file"
+  ACTUAL_CONVERT_JSON="${TEMP_DIR}/actual_convert.cc.json"
+  "${CCSH}" convert "${DATA}/legacy_1_5.cc.json" -o "${ACTUAL_CONVERT_JSON}" -nc
+  validate "${ACTUAL_CONVERT_JSON}"
+}
+
 check_pipe() {
   echo " -- expect pipe chain from tokei, svnlogparser and modify to work"
   sh "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ |
@@ -255,6 +276,9 @@ run_tests() {
   check_svnlog
   check_tokei
   check_rawtext
+  check_unifiedparser
+  check_dependacharta
+  check_convert
 
   check_pipe
 

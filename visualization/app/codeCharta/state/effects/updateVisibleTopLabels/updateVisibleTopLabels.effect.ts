@@ -4,9 +4,9 @@ import { State, Store } from "@ngrx/store"
 import { createEffect } from "@ngrx/effects"
 import { map, pairwise, withLatestFrom } from "rxjs"
 
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
-import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setAmountOfTopLabels } from "../../../mapState/mapState.facade"
 import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
 import { CcState } from "../../../codeCharta.model"
 
@@ -23,7 +23,7 @@ export class UpdateVisibleTopLabelsEffect {
             withLatestFrom(this.store.select(codeMapNodesSelector)),
             map(([[previousVisibleFileStates, currentVisibleFileStates], codeMapNodes]) => {
                 const isUnchanged = stringify(previousVisibleFileStates) === stringify(currentVisibleFileStates)
-                const storedValue = this.state.getValue().appSettings.amountOfTopLabels
+                const storedValue = this.state.getValue().mapState.amountOfTopLabels
                 const amountOfTopLabels = isUnchanged ? storedValue : Math.min(storedValue, getNumberOfTopLabels(codeMapNodes))
 
                 return setAmountOfTopLabels({ value: amountOfTopLabels })

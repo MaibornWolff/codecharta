@@ -162,36 +162,36 @@ export class ScenariosService {
     buildScenarioSections(state: CcState, cameraPosition: PlainPosition, cameraTarget: PlainPosition): ScenarioSections {
         return {
             metrics: {
-                areaMetric: state.dynamicSettings.areaMetric,
-                heightMetric: state.dynamicSettings.heightMetric,
-                colorMetric: state.dynamicSettings.colorMetric,
-                edgeMetric: state.dynamicSettings.edgeMetric,
-                distributionMetric: state.dynamicSettings.distributionMetric,
+                areaMetric: state.mapState.areaMetric,
+                heightMetric: state.mapState.heightMetric,
+                colorMetric: state.mapState.colorMetric,
+                edgeMetric: state.mapState.edgeMetric,
+                distributionMetric: state.mapState.distributionMetric,
                 isColorMetricLinkedToHeightMetric: state.appSettings.isColorMetricLinkedToHeightMetric
             },
             colors: {
-                colorRange: { ...state.dynamicSettings.colorRange },
-                colorMode: state.dynamicSettings.colorMode,
-                mapColors: { ...state.appSettings.mapColors }
+                colorRange: { ...state.mapState.colorRange },
+                colorMode: state.mapState.colorMode,
+                mapColors: { ...state.mapState.mapColors }
             },
             camera: {
                 position: { ...cameraPosition },
                 target: { ...cameraTarget }
             },
             filters: {
-                blacklist: [...state.fileSettings.blacklist],
-                focusedNodePath: [...state.dynamicSettings.focusedNodePath]
+                blacklist: [...state.sharedView.blacklist],
+                focusedNodePath: [...state.sharedView.focusedNodePath]
             },
             labelsAndFolders: {
-                amountOfTopLabels: state.appSettings.amountOfTopLabels,
-                labelSize: state.appSettings.labelSize,
-                showMetricLabelNameValue: state.appSettings.showMetricLabelNameValue,
-                showMetricLabelNodeName: state.appSettings.showMetricLabelNodeName,
-                enableFloorLabels: state.appSettings.enableFloorLabels,
-                colorLabels: { ...state.appSettings.colorLabels },
-                labelMode: state.appSettings.labelMode,
-                groupLabelCollisions: state.appSettings.groupLabelCollisions,
-                markedPackages: [...state.fileSettings.markedPackages]
+                amountOfTopLabels: state.mapState.amountOfTopLabels,
+                labelSize: state.mapState.labelSize,
+                showMetricLabelNameValue: state.mapState.showMetricLabelNameValue,
+                showMetricLabelNodeName: state.mapState.showMetricLabelNodeName,
+                enableFloorLabels: state.mapState.enableFloorLabels,
+                colorLabels: { ...state.mapState.colorLabels },
+                labelMode: state.mapState.labelMode,
+                groupLabelCollisions: state.mapState.groupLabelCollisions,
+                markedPackages: [...state.sharedView.markedPackages]
             }
         }
     }

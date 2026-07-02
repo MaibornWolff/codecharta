@@ -1,17 +1,36 @@
 {
-  "projectName": "SourceMonitorImporter",
-  "apiVersion": "1.0",
-  "nodes": [
+  "meta": {
+    "projectName": "SourceMonitorImporter",
+    "apiVersion": "2.0",
+    "checksum": "c575b9366d38890de47f8d31515ae04b"
+  },
+  "files": [
     {
+      "id": "8a5edab282632443",
       "name": "root",
       "type": "Folder",
       "children": [
         {
+          "id": "c152b431fcea9a3f",
           "name": "JavaParserTest.java",
-          "type": "File",
-          "children": []
+          "type": "File"
         }
       ]
     }
-  ]
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {},
+      "attributeDescriptors": {},
+      "attributeTypes": {},
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    },
+    "domain": {},
+    "security": {}
+  }
 }

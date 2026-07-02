@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { FileSelectionState } from "../../../model/files/files"
 import { referenceFileSelector } from "../../../state/selectors/referenceFile/referenceFile.selector"
-import { addFile, removeFiles, setDelta, setStandard } from "../../../state/store/files/files.actions"
+import { addFile, removeFiles, setDelta, setStandard } from "../../../fileStore/store/files.actions"
 import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../mocks/dataMocks"
 import { FileSelectionModeService } from "./fileSelectionMode.service"
 import { State, Store, StoreModule } from "@ngrx/store"

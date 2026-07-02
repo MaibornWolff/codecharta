@@ -1,4 +1,5 @@
 import { State } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, WebGLRenderer } from "three"
@@ -50,11 +51,11 @@ const TestNodeMap: CodeMapNode = {
 }
 
 const TestState = { ...DEFAULT_STATE }
-TestState.dynamicSettings.areaMetric = "a"
-TestState.dynamicSettings.heightMetric = "b"
-TestState.dynamicSettings.colorMetric = "mcc"
-TestState.dynamicSettings.colorRange = { from: 4, to: 8 }
-TestState.dynamicSettings.colorMode = ColorMode.absolute
+TestState.mapState.areaMetric = "a"
+TestState.mapState.heightMetric = "b"
+TestState.mapState.colorMetric = "mcc"
+TestState.mapState.colorRange = { from: 4, to: 8 }
+TestState.mapState.colorMode = ColorMode.absolute
 const TestFile: CCFile = { fileMeta: FILE_META, map: TestNodeMap, settings: DEFAULT_SETTINGS }
 const TestFileSTate: FileState = { file: TestFile, selectedAs: FileSelectionState.Partial }
 TestState.files = [TestFileSTate]
@@ -147,6 +148,7 @@ describe("Export3DMapDialogComponent", () => {
         const renderObject = await render(Export3DMapDialogComponent, {
             imports: [Export3DMapButtonComponent],
             providers: [
+                provideMockStore({ initialState: TestState }),
                 { provide: State, useValue: { getValue: () => TestState } },
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock }
             ]

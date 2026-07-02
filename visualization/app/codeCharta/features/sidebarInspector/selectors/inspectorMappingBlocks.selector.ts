@@ -3,8 +3,8 @@ import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MapColors, Prim
 import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
-import { mapColorsSelector } from "../../../state/store/appSettings/mapColors/mapColors.selector"
-import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { mapColorsSelector } from "../../../mapState/mapState.facade"
+import { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLens.facade"
 
 export type MappingBlockKind = "area" | "height" | "color" | "edge"
 

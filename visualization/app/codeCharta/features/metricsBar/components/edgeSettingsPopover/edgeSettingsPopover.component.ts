@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from "@an
 import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
 import { HexMapColor } from "../../../../codeCharta.model"
-import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { defaultMapColors } from "../../../../mapState/mapState.facade"
 import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
 import { AmountOfBuildingsWithSelectedEdgeMetricService } from "../../services/amountOfBuildingsWithSelectedEdgeMetric.service"
@@ -66,14 +66,14 @@ export class EdgeSettingsPopoverComponent {
     readonly incomingEdgeColor = computed(() => this.mapColors().incomingEdge as string)
 
     readonly resetKeys = [
-        "appSettings.amountOfEdgePreviews",
-        "appSettings.edgeHeight",
-        "appSettings.mapColors.outgoingEdge",
-        "appSettings.showOutgoingEdges",
-        "appSettings.mapColors.incomingEdge",
-        "appSettings.showIncomingEdges",
-        "appSettings.showOnlyBuildingsWithEdges",
-        "appSettings.isEdgeMetricVisible"
+        "mapState.amountOfEdgePreviews",
+        "mapState.edgeHeight",
+        "mapState.mapColors.outgoingEdge",
+        "mapState.showOutgoingEdges",
+        "mapState.mapColors.incomingEdge",
+        "mapState.showIncomingEdges",
+        "mapState.showOnlyBuildingsWithEdges",
+        "mapState.isEdgeMetricVisible"
     ]
 
     setAmountOfEdgePreviews(value: number) {

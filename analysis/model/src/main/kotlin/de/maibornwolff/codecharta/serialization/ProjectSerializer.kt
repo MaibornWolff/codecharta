@@ -1,12 +1,7 @@
 package de.maibornwolff.codecharta.serialization
 
-import com.google.gson.GsonBuilder
-import de.maibornwolff.codecharta.model.AttributeType
-import de.maibornwolff.codecharta.model.AttributeTypeSerializer
-import de.maibornwolff.codecharta.model.BlacklistType
-import de.maibornwolff.codecharta.model.BlacklistTypeSerializer
+import com.google.gson.Gson
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectWrapper
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.io.IOException
@@ -16,14 +11,13 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.util.zip.GZIPOutputStream
 
 /**
- * This class provides static methods and functions to convert a Project-Object to json
+ * Converts a [Project] to json. `ccsh` only ever emits the cc.json 2.0 `{ meta, files, lenses }`
+ * format — there is no 1.5 writer. The 1.5 format is still *readable* (see [ProjectDeserializer]),
+ * but it is never produced.
  */
 object ProjectSerializer {
-    private val GSON =
-        GsonBuilder()
-            .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
-            .registerTypeAdapter(BlacklistType::class.java, BlacklistTypeSerializer())
-            .create()
+    /** The wire object + its GSON. Only the 2.0 format is emitted — this is the single dispatch point. */
+    private fun wire(project: Project): Pair<Gson, Any> = CcJsonV2Gson.gson to ProjectToCcJsonV2Mapper.toDto(project)
 
     /**
      * This method serializes a Project-Object to json and writes using given writer
@@ -33,8 +27,8 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false) {
-        val wrappedProject = getWrappedProject(project)
-        GSON.toJson(wrappedProject, out)
+        val (gson, wireObject) = wire(project)
+        gson.toJson(wireObject, out)
         out.flush()
         if (writeToFile) {
             out.close()
@@ -89,12 +83,7 @@ object ProjectSerializer {
      * @param project the Project-Object to be serialized
      */
     fun serializeToString(project: Project): String {
-        val wrappedProject = getWrappedProject(project)
-        return GSON.toJson(wrappedProject)
-    }
-
-    private fun getWrappedProject(project: Project): ProjectWrapper {
-        val projectJsonString = GSON.toJson(project, Project::class.java)
-        return ProjectWrapper(project, projectJsonString)
+        val (gson, wireObject) = wire(project)
+        return gson.toJson(wireObject)
     }
 }

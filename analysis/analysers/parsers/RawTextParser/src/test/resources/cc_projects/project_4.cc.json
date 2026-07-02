@@ -1,126 +1,136 @@
 {
-  "checksum": "5185776ce4e86e238c8fec2ff3acff13",
-  "data": {
+  "meta": {
     "projectName": "",
-    "nodes": [
-      {
-        "name": "root",
-        "type": "Folder",
-        "attributes": {},
-        "link": "",
-        "children": [
-          {
-            "name": "spaces",
-            "type": "Folder",
-            "attributes": {},
-            "link": "",
-            "children": [
-              {
-                "name": "spaces_3.included",
-                "type": "File",
-                "attributes": {
-                  "loc": 6.0,
-                  "indentation_level_0+": 5.0,
-                  "indentation_level_1+": 3.0,
-                  "indentation_level_2+": 3.0
-                },
-                "link": "",
-                "children": [],
-                "checksum": "a7714a3a621e7270"
-              },
-              {
-                "name": "spaces_4.included",
-                "type": "File",
-                "attributes": {
-                  "loc": 7.0,
-                  "indentation_level_0+": 7.0,
-                  "indentation_level_1+": 4.0,
-                  "indentation_level_2+": 4.0
-                },
-                "link": "",
-                "children": [],
-                "checksum": "9134b1ebb1e5ba80"
-              },
-              {
-                "name": "spaces_5.includedtoo",
-                "type": "File",
-                "attributes": {
-                  "loc": 6.0,
-                  "indentation_level_0+": 5.0,
-                  "indentation_level_1+": 3.0,
-                  "indentation_level_2+": 3.0
-                },
-                "link": "",
-                "children": [],
-                "checksum": "73d843464a419a54"
-              },
-              {
-                "name": "spaces_x_not_included.excluded",
-                "type": "File",
-                "attributes": {
-                  "loc": 5.0,
-                  "indentation_level_0+": 4.0,
-                  "indentation_level_1+": 3.0,
-                  "indentation_level_2+": 3.0
-                },
-                "link": "",
-                "children": [],
-                "checksum": "58927614af51eb27"
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    "apiVersion": "1.5",
-    "edges": [],
-    "attributeTypes": {},
-    "attributeDescriptors": {
-      "indentation_level_0+": {
-        "title": "Statements with indentation level greater or equal 0",
-        "description": "Statements with indentation level greater or equal 0",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
+    "apiVersion": "2.0",
+    "checksum": "bbf5a967360b9bd8fe3305f65e7f8125"
+  },
+  "files": [
+    {
+      "id": "8a5edab282632443",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "e1f992c8794a864a",
+          "name": "spaces",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "3015dcbc3f1ba56b",
+              "name": "spaces_3.included",
+              "type": "File",
+              "contentHash": "a7714a3a621e7270",
+              "link": ""
+            },
+            {
+              "id": "55dc7b51497f1f17",
+              "name": "spaces_4.included",
+              "type": "File",
+              "contentHash": "9134b1ebb1e5ba80",
+              "link": ""
+            },
+            {
+              "id": "493dca43a86796bc",
+              "name": "spaces_5.includedtoo",
+              "type": "File",
+              "contentHash": "73d843464a419a54",
+              "link": ""
+            },
+            {
+              "id": "46818d650f806ac1",
+              "name": "spaces_x_not_included.excluded",
+              "type": "File",
+              "contentHash": "58927614af51eb27",
+              "link": ""
+            }
+          ],
+          "link": ""
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "3015dcbc3f1ba56b": {
+          "loc": 6.0,
+          "indentation_level_0+": 5.0,
+          "indentation_level_1+": 3.0,
+          "indentation_level_2+": 3.0
+        },
+        "55dc7b51497f1f17": {
+          "loc": 7.0,
+          "indentation_level_0+": 7.0,
+          "indentation_level_1+": 4.0,
+          "indentation_level_2+": 4.0
+        },
+        "493dca43a86796bc": {
+          "loc": 6.0,
+          "indentation_level_0+": 5.0,
+          "indentation_level_1+": 3.0,
+          "indentation_level_2+": 3.0
+        },
+        "46818d650f806ac1": {
+          "loc": 5.0,
+          "indentation_level_0+": 4.0,
+          "indentation_level_1+": 3.0,
+          "indentation_level_2+": 3.0
+        }
       },
-      "indentation_level_1+": {
-        "title": "Statements with indentation level greater or equal 1",
-        "description": "Statements with indentation level greater or equal 1",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
+      "attributeDescriptors": {
+        "indentation_level_0+": {
+          "title": "Statements with indentation level greater or equal 0",
+          "description": "Statements with indentation level greater or equal 0",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_1+": {
+          "title": "Statements with indentation level greater or equal 1",
+          "description": "Statements with indentation level greater or equal 1",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "indentation_level_2+": {
+          "title": "Statements with indentation level greater or equal 2",
+          "description": "Statements with indentation level greater or equal 2",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        },
+        "loc": {
+          "title": "Lines of Code",
+          "description": "Lines of code including empty lines and comments",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/raw-text",
+          "direction": -1,
+          "analyzers": [
+            "rawtextParser"
+          ]
+        }
       },
-      "indentation_level_2+": {
-        "title": "Statements with indentation level greater or equal 2",
-        "description": "Statements with indentation level greater or equal 2",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      },
-      "loc": {
-        "title": "Lines of Code",
-        "description": "Lines of code including empty lines and comments",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "https://codecharta.com/docs/parser/raw-text",
-        "direction": -1,
-        "analyzers": [
-          "rawtextParser"
-        ]
-      }
+      "attributeTypes": {},
+      "clusters": []
     },
-    "blacklist": []
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
   }
 }

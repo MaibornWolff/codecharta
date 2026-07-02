@@ -5,23 +5,22 @@ import { Action, State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import { Subject } from "rxjs"
-import { LoadInitialFileService } from "../../../features/loadFile/facade"
-import { EDGE_METRIC_DATA, METRIC_DATA } from "../../../mocks/dataMocks"
-import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
-import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
-import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { LoadInitialFileService } from "../../../fileStore/fileStore.facade"
+import { EDGE_METRIC_DATA } from "../../../mocks/dataMocks"
+import { edgeMetricDataSelector } from "../../selectors/edgeMetricData/edgeMetricData.selector"
+import { setColorMetric, setEdgeMetric } from "../../../mapState/mapState.facade"
 import { defaultState } from "../../store/state.manager"
 import { UpdateQueryParametersEffect } from "./updateQueryParameters.effect"
 
 describe("UpdateQueryParametersEffect", () => {
-    const mockDynamicSettings = {
-        ...defaultState.dynamicSettings,
+    const mockMapState = {
+        ...defaultState.mapState,
         areaMetric: "rloc",
         heightMetric: "mcc",
         colorMetric: "functions",
         edgeMetric: "pairingRate"
     }
-    const mockState = { ...defaultState, dynamicSettings: mockDynamicSettings }
+    const mockState = { ...defaultState, mapState: mockMapState }
     let mockGetState
 
     let actions$: Subject<Action>
@@ -47,9 +46,7 @@ describe("UpdateQueryParametersEffect", () => {
                     useValue: { getValue: mockGetState }
                 },
                 provideMockStore({
-                    selectors: [
-                        { selector: metricDataSelector, value: { nodeMetricData: [], edgeMetricData: [], nodeEdgeMetricsMap: null } }
-                    ]
+                    selectors: [{ selector: edgeMetricDataSelector, value: [] }]
                 }),
                 provideMockActions(() => actions$)
             ]
@@ -115,11 +112,7 @@ describe("UpdateQueryParametersEffect", () => {
     })
 
     it("should save edge-metric in query parameters when map contains edges", async () => {
-        store.overrideSelector(metricDataSelector, {
-            edgeMetricData: EDGE_METRIC_DATA,
-            nodeEdgeMetricsMap: null,
-            nodeMetricData: METRIC_DATA
-        })
+        store.overrideSelector(edgeMetricDataSelector, EDGE_METRIC_DATA)
         store.refreshState()
 
         actions$.next(setEdgeMetric({ value: "pairingRate" }))

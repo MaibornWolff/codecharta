@@ -1,22 +1,31 @@
 import { appSettings, defaultAppSettings } from "./appSettings/appSettings.reducer"
 import { defaultFileSettings, fileSettings } from "./fileSettings/fileSettings.reducer"
 import { defaultDynamicSettings, dynamicSettings } from "./dynamicSettings/dynamicSettings.reducer"
-import { defaultFiles, files } from "./files/files.reducer"
+import { defaultFiles, files } from "../../fileStore/store/files.reducer"
 import { appStatus, defaultAppStatus } from "./appStatus/appStatus.reducer"
+import { defaultMapState, mapState } from "../../mapState/mapState.facade"
+import { defaultSharedView, sharedView } from "../../sharedView/sharedView.facade"
+import { defaultMetricsLensSource, metricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
 import { ActionReducer } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { isSetStateAction } from "./state.actions"
 
 export const appReducers = {
     fileSettings,
+    metricsLensSource,
     appSettings,
+    mapState,
+    sharedView,
     dynamicSettings,
     files,
     appStatus
 }
 export const defaultState: CcState = {
     fileSettings: defaultFileSettings,
+    metricsLensSource: defaultMetricsLensSource,
     appSettings: defaultAppSettings,
+    mapState: defaultMapState,
+    sharedView: defaultSharedView,
     dynamicSettings: defaultDynamicSettings,
     files: defaultFiles,
     appStatus: defaultAppStatus
@@ -30,14 +39,15 @@ export const setStateMiddleware =
     }
 
 const objectWithDynamicKeysInStore = new Set([
-    "fileSettings.attributeTypes",
-    "fileSettings.attributeDescriptors",
-    "fileSettings.blacklist",
+    "metricsLensSource.attributeTypes",
+    "metricsLensSource.attributeDescriptors",
     "fileSettings.edges",
-    "fileSettings.markedPackages",
-    "dynamicSettings.focusedNodePath",
+    // arrays: must be replaced wholesale, otherwise the deep-merge spread turns them into objects with numeric keys
+    "sharedView.blacklist",
+    "sharedView.markedPackages",
+    "sharedView.focusedNodePath",
     // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
-    "appSettings.mapColors.markingColors",
+    "mapState.mapColors.markingColors",
     "files" // ToDo; this should be a Map with an unique id
 ])
 

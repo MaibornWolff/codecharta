@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject, Subject } from "rxjs"
 import { ThreeMapControlsService } from "../../../features/codeMap/facade"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
 import { layoutAlgorithmSelector, resetCameraIfNewFileIsLoadedSelector } from "../../../features/globalSettings/facade"
-import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
+import { focusedNodePathSelector } from "../../../sharedView/sharedView.facade"
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapEffect } from "./autoFitCodeMap.effect"
 import { EffectsModule } from "@ngrx/effects"
@@ -14,7 +14,7 @@ import { defaultState } from "../../store/state.manager"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { LayoutAlgorithm } from "../../../codeCharta.model"
 import { selectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
-import { colorRangeSelector } from "../../store/dynamicSettings/colorRange/colorRange.selector"
+import { colorRangeSelector } from "../../../mapState/store/colorRange/colorRange.selector"
 
 describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
     let mockedRenderCodeMap$: Subject<unknown>

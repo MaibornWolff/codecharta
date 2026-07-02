@@ -60,7 +60,7 @@ class StructureModifierTest {
         executeForOutput("", arrayOf("src/test/resources/invalid_project.cc.json", "-p=2"))
 
         // then
-        assertThat(errContent.toString()).contains("invalid_project.cc.json is not a valid project")
+        assertThat(errContent.toString()).contains("invalid_project.cc.json could not be read")
 
         // clean up
         System.setErr(originalErr)
@@ -137,8 +137,8 @@ class StructureModifierTest {
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
         // then
-        assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
-        assertThat(resultProject.attributeDescriptors["rloc"]).isNull()
+        assertThat(resultProject.lenses.allAttributeDescriptors().size).isEqualTo(3)
+        assertThat(resultProject.lenses.allAttributeDescriptors()["rloc"]).isNull()
     }
 
     @Test
@@ -152,8 +152,8 @@ class StructureModifierTest {
         val resultProject = ProjectDeserializer.deserializeProject(cliResult)
 
         // then
-        assertThat(resultProject.attributeDescriptors.size).isEqualTo(3)
-        assertThat(resultProject.attributeDescriptors["yrloc"]).isNull()
+        assertThat(resultProject.lenses.allAttributeDescriptors().size).isEqualTo(3)
+        assertThat(resultProject.lenses.allAttributeDescriptors()["yrloc"]).isNull()
     }
 
     @Test

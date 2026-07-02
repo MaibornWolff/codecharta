@@ -12,9 +12,19 @@ class NodeMaxAttributeMerger(var mergeChildrenList: Boolean = false) : NodeMerge
             createAttributes(nodes),
             createLink(nodes),
             createChildrenList(nodes),
-            nodeMergingStrategy = createMergingStrategy(tree)
+            nodeMergingStrategy = createMergingStrategy(tree),
+            checksum = createChecksum(nodes)
         )
     }
+
+    // Carry the content hash through a merge when the merged nodes agree on it (or only one supplies
+    // it), so a merged 2.0 file stays usable as a --base-file and for content-match re-merge. Drop it
+    // (null) only on a genuine conflict between differing checksums.
+    private fun createChecksum(nodes: List<MutableNode>): String? = nodes
+        .mapNotNull { it.checksum }
+        .filter { it.isNotEmpty() }
+        .distinct()
+        .singleOrNull()
 
     private fun createLink(nodes: List<MutableNode>) = nodes
         .map {

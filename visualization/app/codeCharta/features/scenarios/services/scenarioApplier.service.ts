@@ -160,7 +160,8 @@ export class ScenarioApplierService {
 
         const patch: RecursivePartial<CcState> = {}
         if (hasMetricOverrides) {
-            patch.dynamicSettings = { ...metricOverrides }
+            // Slice 7: metric selection now lives under mapState (was dynamicSettings).
+            patch.mapState = { ...metricOverrides }
             if (sections.metrics.isColorMetricLinkedToHeightMetric !== undefined) {
                 patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
             }
@@ -169,27 +170,27 @@ export class ScenarioApplierService {
     }
 
     private buildColorsPatch(colors: ColorsSection): RecursivePartial<CcState> {
-        const dynamicSettings: RecursivePartial<CcState["dynamicSettings"]> = { colorRange: colors.colorRange }
+        const mapState: RecursivePartial<CcState["mapState"]> = { colorRange: colors.colorRange }
         if (colors.colorMode !== undefined) {
-            dynamicSettings.colorMode = colors.colorMode
+            mapState.colorMode = colors.colorMode
         }
-        const patch: RecursivePartial<CcState> = { dynamicSettings }
         if (colors.mapColors !== undefined) {
-            patch.appSettings = { mapColors: colors.mapColors }
+            mapState.mapColors = colors.mapColors
         }
-        return patch
+        return { mapState }
     }
 
     private buildFiltersPatch(filters: FiltersSection): RecursivePartial<CcState> {
         return {
-            fileSettings: { blacklist: [...filters.blacklist] },
-            dynamicSettings: { focusedNodePath: [...filters.focusedNodePath] }
+            // Slice 8: focusedNodePath and Slice 9b: blacklist now both live under the sharedView home
+            // (blacklist was under fileSettings, focusedNodePath under dynamicSettings).
+            sharedView: { blacklist: [...filters.blacklist], focusedNodePath: [...filters.focusedNodePath] }
         }
     }
 
     private buildLabelsAndFoldersPatch(labelsAndFolders: LabelsAndFoldersSection): RecursivePartial<CcState> {
         return {
-            appSettings: {
+            mapState: {
                 amountOfTopLabels: labelsAndFolders.amountOfTopLabels,
                 labelSize: labelsAndFolders.labelSize,
                 showMetricLabelNameValue: labelsAndFolders.showMetricLabelNameValue,
@@ -199,7 +200,8 @@ export class ScenarioApplierService {
                 labelMode: labelsAndFolders.labelMode,
                 groupLabelCollisions: labelsAndFolders.groupLabelCollisions
             },
-            fileSettings: { markedPackages: [...labelsAndFolders.markedPackages] }
+            // Slice 9c: markedPackages now lives under the sharedView home (was fileSettings).
+            sharedView: { markedPackages: [...labelsAndFolders.markedPackages] }
         }
     }
 
@@ -208,8 +210,8 @@ export class ScenarioApplierService {
             ...a,
             ...b,
             ...(a.appSettings || b.appSettings ? { appSettings: { ...a.appSettings, ...b.appSettings } } : {}),
-            ...(a.dynamicSettings || b.dynamicSettings ? { dynamicSettings: { ...a.dynamicSettings, ...b.dynamicSettings } } : {}),
-            ...(a.fileSettings || b.fileSettings ? { fileSettings: { ...a.fileSettings, ...b.fileSettings } } : {})
+            ...(a.mapState || b.mapState ? { mapState: { ...a.mapState, ...b.mapState } } : {}),
+            ...(a.sharedView || b.sharedView ? { sharedView: { ...a.sharedView, ...b.sharedView } } : {})
         }
     }
 

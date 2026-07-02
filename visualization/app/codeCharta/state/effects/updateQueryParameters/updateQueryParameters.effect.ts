@@ -3,8 +3,8 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { State, Store } from "@ngrx/store"
 import { debounceTime, map, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
-import { LoadInitialFileService } from "../../../features/loadFile/facade"
-import { metricDataSelector } from "../../selectors/accumulatedData/metricData/metricData.selector"
+import { LoadInitialFileService } from "../../../fileStore/fileStore.facade"
+import { edgeMetricDataSelector } from "../../selectors/edgeMetricData/edgeMetricData.selector"
 import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
 import { MetricQueryParemter } from "./metricQueryParameter"
 
@@ -21,8 +21,8 @@ export class UpdateQueryParametersEffect {
         () =>
             this.actions$.pipe(
                 ofType(...actionsRequiringUpdateQueryParameters),
-                withLatestFrom(this.store.select(metricDataSelector)),
-                map(metricData => metricData[1].edgeMetricData && metricData[1].edgeMetricData.length > 0),
+                withLatestFrom(this.store.select(edgeMetricDataSelector)),
+                map(([, edgeMetricData]) => edgeMetricData && edgeMetricData.length > 0),
                 debounceTime(100),
                 tap(isEdgeMetricDefined => {
                     this.updateMetricQueryParameters(isEdgeMetricDefined)
@@ -33,7 +33,7 @@ export class UpdateQueryParametersEffect {
 
     private updateMetricQueryParameters(isEdgeMetricDefined: boolean): void {
         const state: CcState = this.state.getValue()
-        const { edgeMetric, heightMetric, colorMetric, areaMetric } = state.dynamicSettings
+        const { edgeMetric, heightMetric, colorMetric, areaMetric } = state.mapState
         const isFileQueryParameterPresent = this.loadInitialFileService.checkFileQueryParameterPresent()
         if (!isFileQueryParameterPresent) {
             return

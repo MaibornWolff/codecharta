@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
+import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -13,7 +15,7 @@ import kotlin.test.assertFailsWith
 const val TEST_JSON_FILE = "test.json"
 
 class ProjectMergerTest {
-    private val nodeMergerStrategy = RecursiveNodeMergerStrategy()
+    private val nodeMergerStrategy = MergeResolverStrategy.recursive()
 
     @Test
     fun `should throw an exception for unsupported api version`() {
@@ -28,20 +30,33 @@ class ProjectMergerTest {
         val projectName = "test"
         val projects =
             listOf(
-                Project(projectName, apiVersion = "1.0"),
-                Project(projectName, apiVersion = "1.2")
+                Project(projectName, apiVersion = "2.0"),
+                Project(projectName, apiVersion = "2.0")
             )
         val project = ProjectMerger(projects, nodeMergerStrategy).merge()
         assertEquals(project.projectName, "")
     }
 
     @Test
-    fun `should throw an exception on major version differences`() {
+    fun `should throw an exception on unsupported major versions`() {
         val projects =
             listOf(
-                Project("test", apiVersion = "1.0"),
-                Project("test", apiVersion = "2.0")
+                Project("test", apiVersion = "2.0"),
+                Project("test", apiVersion = "3.0")
             )
+        assertFailsWith(MergeException::class) {
+            ProjectMerger(projects, nodeMergerStrategy).merge()
+        }
+    }
+
+    @Test
+    fun `should reject a legacy 1_x project since only 2_0 is supported`() {
+        val projects =
+            listOf(
+                Project("test", apiVersion = "2.0"),
+                Project("test", apiVersion = "1.5")
+            )
+
         assertFailsWith(MergeException::class) {
             ProjectMerger(projects, nodeMergerStrategy).merge()
         }
@@ -92,10 +107,11 @@ class ProjectMergerTest {
         assertNotEquals(originalProject1, project)
         assertNotEquals(originalProject2, project)
         assertEquals(3, project.sizeOfEdges())
-        assertEquals(4, project.sizeOfBlacklist())
+        // blacklist is view state dropped from the 2.0 wire, so merged inputs carry no blacklist.
+        assertEquals(0, project.sizeOfBlacklist())
         assertEquals(4, project.size)
-        assertEquals(2, project.attributeTypes["edges"]!!.size)
-        assertEquals(4, project.attributeTypes["nodes"]!!.size)
+        assertEquals(2, project.lenses.legacyAttributeTypes()["edges"]!!.size)
+        assertEquals(4, project.lenses.legacyAttributeTypes()["nodes"]!!.size)
         assertEquals(
             11,
             project.rootNode.children
@@ -119,12 +135,14 @@ class ProjectMergerTest {
                 )
             )
         val projectList = listOf(originalProject1, originalProject2)
-        val nodeMergerStrategy: NodeMergerStrategy = LeafNodeMergerStrategy(false)
+        val nodeMergerStrategy: NodeMergerStrategy = MergeResolverStrategy.leaf(false)
         val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
 
         assertNotEquals(project, originalProject1)
         assertNotEquals(project, originalProject2)
-        assertEquals(project.sizeOfEdges(), 2)
+        // Overlay now unions incoming edges too (deduped), so it keeps the same 3 edges as recursive
+        // instead of dropping the second project's edges.
+        assertEquals(project.sizeOfEdges(), 3)
         assertEquals(project.size, 4)
         assertEquals(
             project.rootNode.children
@@ -168,7 +186,35 @@ class ProjectMergerTest {
                     ),
                 "somethingElse" to AttributeDescriptor(analyzers = setOf("Unknown"))
             )
-        assertEquals(project.attributeDescriptors, expectedResult)
+        assertEquals(project.lenses.allAttributeDescriptors(), expectedResult)
+    }
+
+    @Test
+    fun `should union opaque lenses across inputs and keep the first non-null commit hash`() {
+        val domain = JsonParser.parseString("""{"layer":"backend"}""")
+        val security = JsonParser.parseString("""{"cves":2}""")
+        val projectA =
+            Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to domain)), commitHash = "aaa111")
+        val projectB =
+            Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to security)), commitHash = "bbb222")
+
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        assertTrue(merged.lenses.opaqueLenses.containsKey("domain"))
+        assertTrue(merged.lenses.opaqueLenses.containsKey("security"))
+        assertEquals("aaa111", merged.commitHash)
+    }
+
+    @Test
+    fun `should keep the first file's opaque lens on a same-name collision`() {
+        val firstDomain = JsonParser.parseString("""{"layer":"first"}""")
+        val secondDomain = JsonParser.parseString("""{"layer":"second"}""")
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to firstDomain)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to secondDomain)))
+
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        assertEquals(firstDomain, merged.lenses.opaqueLenses["domain"])
     }
 
     private fun compareProjectStrings(project: Project, equalProject: Project, except: List<String> = listOf()): Boolean {

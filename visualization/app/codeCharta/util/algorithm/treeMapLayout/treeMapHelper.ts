@@ -57,11 +57,11 @@ function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, s
         attributes: map.attributes,
         edgeAttributes: map.edgeAttributes,
         deltas: map.deltas,
-        heightDelta: (map.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale,
+        heightDelta: (map.deltas?.[state.mapState.heightMetric] ?? 0) * heightScale,
         visible: isVisible(map, false, state, flattened),
         path: map.path,
         link: map.link,
-        markingColor: getMarkingColor(map, state.fileSettings.markedPackages),
+        markingColor: getMarkingColor(map, state.sharedView.markedPackages),
         flat: false,
         color: getBuildingColor(map, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
         incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(0, 0, 0), treeMapSize),
@@ -86,7 +86,7 @@ function buildNodeFrom(
     const width = x1 - x0
     const length = y1 - y0
     const z0 = squaredNode.depth * FOLDER_HEIGHT
-    const heightDelta = (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling
+    const heightDelta = (data.deltas?.[state.mapState.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling
     const edgePointHeight = height + (heightDelta < 0 ? Math.abs(heightDelta) : 0)
 
     return {
@@ -108,7 +108,7 @@ function buildNodeFrom(
         visible: isVisible(data, isNodeLeaf, state, flattened),
         path: data.path,
         link: data.link,
-        markingColor: getMarkingColor(data, state.fileSettings.markedPackages),
+        markingColor: getMarkingColor(data, state.sharedView.markedPackages),
         flat: flattened,
         color: getBuildingColor(data, state, selectedColorMetricDataSelector(state), isDeltaState, flattened),
         incomingEdgePoint: getIncomingEdgePoint(width, edgePointHeight, length, new Vector3(x0, z0, y0), treeMapSize),
@@ -123,37 +123,37 @@ export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeig
         return MIN_BUILDING_HEIGHT
     }
 
-    let heightValue = squaredNode.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+    let heightValue = squaredNode.attributes[state.mapState.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
     heightValue *= mapSizeResolutionScaling
 
-    const heightMetric = state.dynamicSettings.heightMetric
-    const attributeDescriptors = state.fileSettings.attributeDescriptors
+    const heightMetric = state.mapState.heightMetric
+    const attributeDescriptors = state.metricsLensSource.attributeDescriptors
     const isAttributeDirectionInversed = attributeDescriptors[heightMetric]?.direction === 1
 
     if (isAttributeDirectionInversed) {
-        if (state.appSettings.invertHeight) {
+        if (state.mapState.invertHeight) {
             return heightValue
         }
         return maxHeight - heightValue
     }
-    if (state.appSettings.invertHeight) {
+    if (state.mapState.invertHeight) {
         return maxHeight - heightValue
     }
     return heightValue
 }
 
 export function resolveHeightValue(heightValue: number, heightScale: number, data: CodeMapNode, state: CcState): number {
-    const minimalHeight = data.deltas?.[state.dynamicSettings.heightMetric] ? 0 : MIN_BUILDING_HEIGHT
+    const minimalHeight = data.deltas?.[state.mapState.heightMetric] ? 0 : MIN_BUILDING_HEIGHT
     return Math.max(Math.abs(heightScale * heightValue), minimalHeight)
 }
 
 export function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: CcState, flattened: boolean) {
-    if (squaredNode.isExcluded || (isNodeLeaf && state.appSettings.hideFlatBuildings && flattened)) {
+    if (squaredNode.isExcluded || (isNodeLeaf && state.mapState.hideFlatBuildings && flattened)) {
         return false
     }
 
-    if (state.dynamicSettings.focusedNodePath.length > 0) {
-        return squaredNode.path.startsWith(state.dynamicSettings.focusedNodePath[0])
+    if (state.sharedView.focusedNodePath.length > 0) {
+        return squaredNode.path.startsWith(state.sharedView.focusedNodePath[0])
     }
 
     return true
@@ -180,11 +180,11 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: CcState) {
 
     const searchedNodePaths = searchedNodePathsSelector(state)
 
-    if (searchedNodePaths && state.dynamicSettings.searchPattern?.length > 0) {
+    if (searchedNodePaths && state.sharedView.searchPattern?.length > 0) {
         return searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
     }
 
-    if (state.appSettings.showOnlyBuildingsWithEdges && state.fileSettings.edges.some(edge => edge.visible)) {
+    if (state.mapState.showOnlyBuildingsWithEdges && state.fileSettings.edges.some(edge => edge.visible)) {
         return nodeHasNoVisibleEdges(codeMapNode, state)
     }
 
@@ -193,7 +193,7 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: CcState) {
 
 function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, state: CcState) {
     return (
-        codeMapNode.edgeAttributes[state.dynamicSettings.edgeMetric] === undefined ||
+        codeMapNode.edgeAttributes[state.mapState.edgeMetric] === undefined ||
         !state.fileSettings.edges.some(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName)
     )
 }
@@ -205,17 +205,17 @@ function isNodeNonSearched(squaredNode: CodeMapNode, state: CcState) {
 
 export function getBuildingColor(
     node: CodeMapNode,
-    { appSettings, dynamicSettings }: CcState,
+    { mapState }: CcState,
     nodeMetricDataRange: MetricMinMax,
     isDeltaState: boolean,
     flattened: boolean
 ) {
-    const { mapColors } = appSettings
+    const { mapColors } = mapState
 
     if (isDeltaState) {
         return mapColors.base
     }
-    const metricValue = node.attributes[dynamicSettings.colorMetric]
+    const metricValue = node.attributes[mapState.colorMetric]
 
     if (metricValue === undefined) {
         return mapColors.base
@@ -224,9 +224,9 @@ export function getBuildingColor(
         return mapColors.flat
     }
 
-    const { colorRange, colorMode } = dynamicSettings
+    const { colorRange, colorMode } = mapState
 
-    if (dynamicSettings["colorMetric"] === "unary") {
+    if (mapState["colorMetric"] === "unary") {
         return mapColors.positive
     }
 

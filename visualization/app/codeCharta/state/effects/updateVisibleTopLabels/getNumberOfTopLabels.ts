@@ -1,4 +1,4 @@
-import { defaultAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.reducer"
+import { defaultAmountOfTopLabels } from "../../../mapState/mapState.facade"
 
 const BUILDINGS_PER_LABEL = 100
 const MAX_NUMBER_OF_LABELS = 50

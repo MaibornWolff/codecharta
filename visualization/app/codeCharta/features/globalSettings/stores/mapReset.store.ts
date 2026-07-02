@@ -3,7 +3,7 @@ import { Store } from "@ngrx/store"
 import { first, tap } from "rxjs"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { setDefaultMetrics } from "../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
-import { metricDataSelector } from "../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { nodeMetricDataSelector } from "../../../state/selectors/nodeMetricData/nodeMetricData.selector"
 import { setState } from "../../../state/store/state.actions"
 import { defaultState } from "../../../state/store/state.manager"
 
@@ -11,7 +11,7 @@ import { defaultState } from "../../../state/store/state.manager"
 export class MapResetStore {
     constructor(private readonly store: Store<CcState>) {}
 
-    metricData$ = this.store.select(metricDataSelector)
+    nodeMetricData$ = this.store.select(nodeMetricDataSelector)
 
     resetState() {
         this.store.dispatch(setState({ value: defaultState }))
@@ -22,10 +22,10 @@ export class MapResetStore {
     }
 
     resetMetricsToDefault() {
-        this.metricData$
+        this.nodeMetricData$
             .pipe(
                 first(),
-                tap(metricData => setDefaultMetrics(this.store, metricData.nodeMetricData))
+                tap(nodeMetricData => setDefaultMetrics(this.store, nodeMetricData))
             )
             .subscribe()
     }

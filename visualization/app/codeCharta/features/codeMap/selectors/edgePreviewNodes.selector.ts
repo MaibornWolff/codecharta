@@ -1,8 +1,7 @@
 import { createSelector } from "@ngrx/store"
-import { NodeEdgeMetricsMap } from "../../../state/selectors/accumulatedData/metricData/edgeMetricData.calculator"
-import { amountOfEdgePreviewsSelector } from "../../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.selector"
-import { edgeMetricSelector } from "../../../state/store/dynamicSettings/edgeMetric/edgeMetric.selector"
-import { sortedNodeEdgeMetricsMapSelector } from "../../../state/selectors/accumulatedData/metricData/sortedNodeEdgeMetricsMap.selector"
+import { NodeEdgeMetricsMap } from "../../../codeCharta.model"
+import { amountOfEdgePreviewsSelector, edgeMetricSelector } from "../../../mapState/mapState.facade"
+import { sortedNodeEdgeMetricsMapSelector } from "../../../state/selectors/edgeMetricData/sortedNodeEdgeMetricsMap.selector"
 
 export const edgePreviewNodesSelector = createSelector(
     sortedNodeEdgeMetricsMapSelector,

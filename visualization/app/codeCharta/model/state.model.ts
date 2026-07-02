@@ -1,4 +1,5 @@
 import {
+    BlacklistItem,
     CCFile,
     ColorLabelOptions,
     ColorMode,
@@ -7,6 +8,8 @@ import {
     LabelMode,
     LayoutAlgorithm,
     MapColors,
+    MarkedPackage,
+    MetricsLensSource,
     PrimaryMetrics,
     Scaling,
     SortingOption
@@ -28,19 +31,38 @@ export interface Settings {
     fileSettings: FileSettings
     dynamicSettings: DynamicSettings
     appSettings: AppSettings
+    mapState: MapState
+    sharedView: SharedView
 }
 
-export interface DynamicSettings extends PrimaryMetrics {
-    colorMode: ColorMode
+export interface DynamicSettings {
     sortingOption: SortingOption
-    colorRange: ColorRange
-    distributionMetric: string
+}
+
+// The cross-renderer view-state home (Slice 8+9b+9c): values that are neither map-specific settings nor
+// cc.json source, and that any renderer (CodeMap, Graph, …) shares — the focus stack, the search
+// pattern, the blacklist and the marked packages. Slice 8 pulled focus/search out of dynamicSettings;
+// Slice 9b pulled the blacklist and Slice 9c the markedPackages out of fileSettings (both scope what
+// every renderer shows/highlights, so they are shared view state, not cc.json source). The .cc.json file
+// still carries blacklist + markedPackages per-file, so CCFile keeps them (see the intersection on
+// CCFile.settings.fileSettings); only the merged STATE root moves here. A later slice grows it further
+// (the renderer-agnostic selected-node id in 13).
+export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string
-    margin: number
+    blacklist: BlacklistItem[]
+    markedPackages: MarkedPackage[]
 }
 
-export interface AppSettings {
+// The map-view state home (Slice 5+6+7): the purely-visual leaf settings that were
+// previously combined under appSettings/dynamicSettings/appStatus now live under
+// their own state.mapState root. Slice 6 absorbed the presentation stragglers
+// (colorMode/colorRange/margin, layoutAlgorithm/isLoadingMap) and the transient
+// interaction ids (hoveredNodeId/rightClickedNodeData/selectedBuildingId). Slice 7
+// absorbed the metric SELECTION (the PrimaryMetrics area/height/color/edge + the
+// distributionMetric) — the map view's choice of which metric drives each channel.
+export interface MapState extends PrimaryMetrics {
+    distributionMetric: string
     amountOfTopLabels: number
     labelSize: number
     amountOfEdgePreviews: number
@@ -51,33 +73,50 @@ export interface AppSettings {
     invertArea: boolean
     isWhiteBackground: boolean
     mapColors: MapColors
-    isPresentationMode: boolean
     showOutgoingEdges: boolean
     showIncomingEdges: boolean
     showOnlyBuildingsWithEdges: boolean
     isEdgeMetricVisible: boolean
-    resetCameraIfNewFileIsLoaded: boolean
-    isLoadingMap: boolean
-    isLoadingFile: boolean
-    sortingOrderAscending: boolean
     showMetricLabelNameValue: boolean
     showMetricLabelNodeName: boolean
-    layoutAlgorithm: LayoutAlgorithm
-    maxTreeMapFiles: number
-    experimentalFeaturesEnabled: boolean
-    screenshotToClipboardEnabled: boolean
     colorLabels: ColorLabelOptions
     labelMode: LabelMode
     groupLabelCollisions: boolean
     labelsPerMap: boolean
-    isColorMetricLinkedToHeightMetric: boolean
     enableFloorLabels: boolean
+    colorMode: ColorMode
+    colorRange: ColorRange
+    margin: number
+    layoutAlgorithm: LayoutAlgorithm
+    isLoadingMap: boolean
+    hoveredNodeId: number | null
+    selectedBuildingId: number | null
+    rightClickedNodeData: {
+        nodeId: number
+        xPositionOfRightClickEvent: number
+        yPositionOfRightClickEvent: number
+        origin: "codeMap" | "explorer"
+    } | null
+}
+
+export interface AppSettings {
+    isPresentationMode: boolean
+    resetCameraIfNewFileIsLoaded: boolean
+    isLoadingFile: boolean
+    sortingOrderAscending: boolean
+    maxTreeMapFiles: number
+    experimentalFeaturesEnabled: boolean
+    screenshotToClipboardEnabled: boolean
+    isColorMetricLinkedToHeightMetric: boolean
 }
 
 export interface CcState {
     fileSettings: FileSettings
+    metricsLensSource: MetricsLensSource
     dynamicSettings: DynamicSettings
     appSettings: AppSettings
+    mapState: MapState
+    sharedView: SharedView
     files: FileState[]
     appStatus: AppStatus
 }
@@ -111,12 +150,4 @@ export function stateObjectReviver(_, valueToRevive) {
 
 export interface AppStatus {
     currentFilesAreSampleFiles: boolean
-    hoveredNodeId: number | null
-    selectedBuildingId: number | null
-    rightClickedNodeData: {
-        nodeId: number
-        xPositionOfRightClickEvent: number
-        yPositionOfRightClickEvent: number
-        origin: "codeMap" | "explorer"
-    } | null
 }

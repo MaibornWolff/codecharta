@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Action, Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { createBlacklistItemSelector } from "../../../state/store/fileSettings/blacklist/blacklistByType.selector"
+import { createBlacklistItemSelector } from "../../../sharedView/sharedView.facade"
 import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"

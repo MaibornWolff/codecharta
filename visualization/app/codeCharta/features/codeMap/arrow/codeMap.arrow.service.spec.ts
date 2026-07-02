@@ -12,17 +12,13 @@ import {
 } from "../rendering/codeMapBuilding.mocks"
 import { CcState, Node } from "../../../codeCharta.model"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
+import { setScaling, setShowIncomingEdges, setShowOutgoingEdges, toggleEdgeMetricVisible, setHeightMetric } from "../../../mapState/mapState.facade"
 import { setEdges } from "../../../state/store/fileSettings/edges/edges.actions"
-import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
-import { toggleEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
 import { wait } from "../../../util/testUtils/wait"
 import { IdToBuildingService } from "../idToBuilding.service"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { clone } from "../../../util/clone"
-import { setShowOutgoingEdges } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
-import { setShowIncomingEdges } from "../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.actions"
 
 describe("CodeMapArrowService", () => {
     let codeMapArrowService: CodeMapArrowService
@@ -368,7 +364,7 @@ describe("CodeMapArrowService", () => {
         it("should create a curve out of the 2 Nodes", () => {
             const originNode: Node = OUTGOING_NODE
             const targetNode: Node = INCOMING_NODE
-            const curveScale = 100 * state.getValue().appSettings.edgeHeight
+            const curveScale = 100 * state.getValue().mapState.edgeHeight
 
             const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
 
@@ -395,9 +391,9 @@ describe("CodeMapArrowService", () => {
         it("should run through the function with mocked subfunctions", () => {
             const originNode: Node = OUTGOING_NODE
             const targetNode: Node = INCOMING_NODE
-            const curveScale = 100 * state.getValue().appSettings.edgeHeight
+            const curveScale = 100 * state.getValue().mapState.edgeHeight
             const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
-            const color = ColorConverter.convertHexToNumber(state.getValue().appSettings.mapColors.outgoingEdge)
+            const color = ColorConverter.convertHexToNumber(state.getValue().mapState.mapColors.outgoingEdge)
 
             codeMapArrowService["setCurveColor"](curve, color)
 

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { markPackages, unmarkPackage } from "../../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { markPackages, unmarkPackage } from "../../../sharedView/sharedView.facade"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../selectors/markFolderItems.selector"
 
 @Injectable({

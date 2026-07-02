@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { BlacklistItem } from "../../../../codeCharta.model"
 import { defaultState } from "../../../../state/store/state.manager"
-import { removeBlacklistItem } from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
+import { removeBlacklistItem } from "../../../../sharedView/sharedView.facade"
 import { Store } from "@ngrx/store"
 import { RuleRowComponent } from "./ruleRow.component"
 

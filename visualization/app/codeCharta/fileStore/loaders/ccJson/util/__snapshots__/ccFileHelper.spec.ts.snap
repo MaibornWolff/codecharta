@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`ccFileHelper getCCFile should build a CCFile 1`] = `
+{
+  "fileMeta": {
+    "apiVersion": "1.5",
+    "exportedFileSize": 30,
+    "fileChecksum": "invalid-md5-sample",
+    "fileName": "fileName",
+    "projectName": "Sample Map",
+    "repoCreationDate": "",
+  },
+  "map": {
+    "attributes": {},
+    "children": [
+      {
+        "attributes": {
+          "functions": 10,
+          "mcc": 1,
+          "rloc": 100,
+        },
+        "link": "https://www.google.de",
+        "name": "big leaf",
+        "type": "File",
+      },
+      {
+        "attributes": {},
+        "children": [
+          {
+            "attributes": {
+              "functions": 100,
+              "mcc": 100,
+              "rloc": 30,
+            },
+            "name": "small leaf",
+            "type": "File",
+          },
+          {
+            "attributes": {
+              "functions": 1000,
+              "mcc": 10,
+              "rloc": 70,
+            },
+            "name": "other small leaf",
+            "type": "File",
+          },
+        ],
+        "name": "Parent Leaf",
+        "type": "Folder",
+      },
+    ],
+    "name": "root",
+    "type": "Folder",
+  },
+  "settings": {
+    "fileSettings": {
+      "attributeDescriptors": {},
+      "attributeTypes": {
+        "edges": {},
+        "nodes": {},
+      },
+      "blacklist": [],
+      "edges": [],
+      "markedPackages": [],
+    },
+  },
+}
+`;

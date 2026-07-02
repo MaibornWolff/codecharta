@@ -48,8 +48,7 @@ class LcovStrategyTest {
             project
         ).usingRecursiveComparison()
             .ignoringFields(
-                "attributeDescriptors",
-                "attributeTypes",
+                "lenses",
                 "blacklist",
                 "apiVersion"
             ).isEqualTo(expectedProject)
@@ -67,7 +66,7 @@ class LcovStrategyTest {
         val project = projectBuilder.build()
         assertThat(
             project
-        ).usingRecursiveComparison().ignoringFields("attributeDescriptors", "attributeTypes", "blacklist").isEqualTo(expectedProject)
+        ).usingRecursiveComparison().ignoringFields("lenses", "blacklist", "apiVersion").isEqualTo(expectedProject)
     }
 
     @Test

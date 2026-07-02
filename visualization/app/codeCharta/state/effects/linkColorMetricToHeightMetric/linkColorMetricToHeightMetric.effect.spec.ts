@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject } from "rxjs"
 import { heightAndLinkedSelector, LinkColorMetricToHeightMetricEffect } from "./linkColorMetricToHeightMetric.effect"
-import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
+import { setColorMetric } from "../../../mapState/mapState.facade"
 import { EffectsModule } from "@ngrx/effects"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { Action } from "@ngrx/store"

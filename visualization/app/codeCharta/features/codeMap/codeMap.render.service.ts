@@ -10,8 +10,8 @@ import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetL
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { BehaviorSubject, Subscription, tap } from "rxjs"
-import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { blacklistMatcherSelector } from "../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
+import { MetricsLensFacade } from "../../lenses/metrics/metricsLens.facade"
+import { blacklistMatcherSelector } from "../../sharedView/sharedView.facade"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
@@ -43,7 +43,8 @@ export class CodeMapRenderService implements OnDestroy {
         private readonly labelSettingsFacade: LabelSettingsFacade,
         private codeMapArrowService: CodeMapArrowService,
         private threeStatsService: ThreeStatsService,
-        private codeMapMouseEventService: CodeMapMouseEventService
+        private codeMapMouseEventService: CodeMapMouseEventService,
+        private readonly metricsLensFacade: MetricsLensFacade
     ) {
         this.subscription = this.codeMapRenderStore.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()
     }
@@ -87,9 +88,9 @@ export class CodeMapRenderService implements OnDestroy {
 
     getNodes(map: CodeMapNode) {
         const state = this.codeMapRenderStore.getState() as CcState
-        const nodeMetricData = metricDataSelector(state).nodeMetricData
+        const nodeMetricData = this.metricsLensFacade.getNodeMetricData()
         const {
-            appSettings: { layoutAlgorithm },
+            mapState: { layoutAlgorithm },
             files
         } = state
         const deltaState = isDeltaState(files)
@@ -128,7 +129,8 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
-        const dynamicSettings = this.codeMapRenderStore.getState().dynamicSettings
+        const state = this.codeMapRenderStore.getState()
+        const colorRange = state.mapState.colorRange
 
         this.nodesByColor = {
             positive: [],
@@ -138,13 +140,13 @@ export class CodeMapRenderService implements OnDestroy {
 
         for (const node of sortedNodes) {
             if (node.isLeaf) {
-                const metric = node.attributes[dynamicSettings.colorMetric]
-                if (dynamicSettings.colorMetric === "unary") {
+                const metric = node.attributes[state.mapState.colorMetric]
+                if (state.mapState.colorMetric === "unary") {
                     this.nodesByColor.positive.push(node)
                 } else if (metric !== null) {
-                    if (metric < dynamicSettings.colorRange.from) {
+                    if (metric < colorRange.from) {
                         this.nodesByColor.positive.push(node)
-                    } else if (metric < dynamicSettings.colorRange.to) {
+                    } else if (metric < colorRange.to) {
                         this.nodesByColor.neutral.push(node)
                     } else {
                         this.nodesByColor.negative.push(node)
@@ -163,7 +165,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private uncheckEmptyColorLabels() {
-        const colorLabels = this.codeMapRenderStore.getState().appSettings.colorLabels
+        const colorLabels = this.codeMapRenderStore.getState().mapState.colorLabels
         const unchecks: Partial<ColorLabelOptions> = {}
         for (const category of colorLabelTypes) {
             if (colorLabels[category] && this.nodesByColor[category].length === 0) {
@@ -195,14 +197,14 @@ export class CodeMapRenderService implements OnDestroy {
             colorLabels: colorLabelOptions,
             amountOfTopLabels,
             labelMode
-        } = state.appSettings
+        } = state.mapState
 
         if (showMetricLabelNodeName || showMetricLabelNameValue) {
             const highestNodeInSet = sortedNodes[0].height
             const selectTopNodes = this.getTopNodeSelector(state, amountOfTopLabels)
 
             if (labelMode === LabelMode.Color) {
-                const { colorMetric } = state.dynamicSettings
+                const { colorMetric } = state.mapState
                 const selectedColorNodes = selectTopNodes(
                     colorLabelTypes
                         .filter(colorType => colorLabelOptions[colorType])

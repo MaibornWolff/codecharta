@@ -21,7 +21,7 @@ const createTestScenario = (): Scenario => ({
         colors: {
             colorRange: { from: 1, to: 10 },
             colorMode: ColorMode.weightedGradient,
-            mapColors: defaultState.appSettings.mapColors
+            mapColors: defaultState.mapState.mapColors
         },
         camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
         filters: { blacklist: [], focusedNodePath: [] },

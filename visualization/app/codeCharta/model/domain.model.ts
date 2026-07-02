@@ -16,7 +16,11 @@ export enum LayoutAlgorithm {
 export interface CCFile {
     map: CodeMapNode
     settings: {
-        fileSettings: FileSettings
+        // The on-disk .cc.json file settings carry all groups. Three of them were split out of the STATE
+        // `fileSettings` root but stay bundled per-file (hence the intersection): the cc.json SOURCE the
+        // metrics lens owns (attributeTypes + attributeDescriptors, `MetricsLensSource`, Slice 9a) and the
+        // `blacklist` (Slice 9b) + `markedPackages` (Slice 9c) the sharedView home now owns.
+        fileSettings: FileSettings & MetricsLensSource & { blacklist: Array<BlacklistItem>; markedPackages: Array<MarkedPackage> }
     }
     fileMeta: FileMeta
 }
@@ -95,12 +99,23 @@ export interface FileMeta {
     repoCreationDate?: string
 }
 
+// The STATE fileSettings root (shrinking as the grab-bag dissolves): Slice 9a moved attributeTypes +
+// attributeDescriptors to state.metricsLensSource, Slice 9b moved blacklist and Slice 9c markedPackages
+// to state.sharedView. The on-disk .cc.json file still carries all of them per-file — see the
+// intersection on CCFile.settings.fileSettings. Only edges remains here (DEFERRED — a merged render-model
+// array); it is re-homed by a later edge-UI / render-model slice, which then deletes this reducer.
 export interface FileSettings {
+    edges: Edge[]
+}
+
+// The cc.json SOURCE owned by the metrics lens (Slice 9a): the node+edge attribute-type map and the
+// flat attribute-descriptor map. Split out of `FileSettings` into its own `state.metricsLensSource`
+// root; still bundled into per-file `CCFile.settings.fileSettings` (an intersection) since the .cc.json
+// file carries them. The lens transiently owns the edge side of `attributeTypes` until a dependency-lens
+// store lands.
+export interface MetricsLensSource {
     attributeTypes: AttributeTypes
     attributeDescriptors: AttributeDescriptors
-    blacklist: Array<BlacklistItem>
-    edges: Edge[]
-    markedPackages: MarkedPackage[]
 }
 
 export interface PrimaryMetrics {
@@ -186,6 +201,9 @@ export interface EdgeMetricCount {
     incoming: number
     outgoing: number
 }
+
+export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
+export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 
 export interface BlacklistItem {
     path: string

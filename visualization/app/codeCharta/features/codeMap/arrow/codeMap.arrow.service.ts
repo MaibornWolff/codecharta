@@ -73,7 +73,7 @@ export class CodeMapArrowService implements OnDestroy {
 
     onBuildingUnhovered() {
         this.debounceCalculation.cancel()
-        const { isEdgeMetricVisible } = this.codeMapArrowStore.getAppSettings()
+        const { isEdgeMetricVisible } = this.codeMapArrowStore.getMapState()
 
         if (isEdgeMetricVisible) {
             this.clearArrows()
@@ -98,13 +98,13 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     addArrow(arrowOriginNode: Node, arrowTargetNode: Node, buildingIsOriginNode: boolean) {
-        const appSettings = this.codeMapArrowStore.getAppSettings()
-        const curveScale = 100 * appSettings.edgeHeight
+        const mapState = this.codeMapArrowStore.getMapState()
+        const curveScale = 100 * mapState.edgeHeight
 
         // An edge is a relationship between two files; it is drawn from the layout geometry
         // (edge points + building height) and does not depend on the selected height metric.
         const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
-        const color = ColorConverter.getNumber(appSettings.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
+        const color = ColorConverter.getNumber(mapState.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
         this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)
         this.setCurveColor(curve, color)
     }
@@ -119,7 +119,7 @@ export class CodeMapArrowService implements OnDestroy {
                 //TODO It seems originNode or targetNode might be undefined here,
                 // I think it results from the method being called multiple times when it might not be available yet
                 // I changed that back to avoid console errors and re-enable the edge-metric, however we should investigate why this is happening
-                const curveScale = 100 * this.codeMapArrowStore.getAppSettings().edgeHeight
+                const curveScale = 100 * this.codeMapArrowStore.getMapState().edgeHeight
                 const curve = this.createCurve(originNode, targetNode, curveScale)
                 this.previewMode(curve, edge.visible)
             }
@@ -131,7 +131,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     scale() {
-        const { scaling } = this.codeMapArrowStore.getAppSettings()
+        const { scaling } = this.codeMapArrowStore.getMapState()
         for (const arrow of this.arrows) {
             arrow.scale.x = scaling.x
             arrow.scale.y = scaling.y
@@ -140,7 +140,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     private isEdgeApplicableForBuilding(codeMapBuilding: CodeMapBuilding) {
-        return this.codeMapArrowStore.getAppSettings().isEdgeMetricVisible && codeMapBuilding && !codeMapBuilding.node.flat
+        return this.codeMapArrowStore.getMapState().isEdgeMetricVisible && codeMapBuilding && !codeMapBuilding.node.flat
     }
 
     private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {
@@ -163,8 +163,8 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     private buildPairingEdges(node: Map<string, Node>) {
-        const showIncomingEdges = this.codeMapArrowStore.getAppSettings().showIncomingEdges
-        const showOutgoingEdges = this.codeMapArrowStore.getAppSettings().showOutgoingEdges
+        const showIncomingEdges = this.codeMapArrowStore.getMapState().showIncomingEdges
+        const showOutgoingEdges = this.codeMapArrowStore.getMapState().showOutgoingEdges
         if (!showIncomingEdges && !showOutgoingEdges) {
             return
         }
@@ -241,7 +241,7 @@ export class CodeMapArrowService implements OnDestroy {
 
     private makeArrowFromBezier(bezier: CubicBezierCurve3, incoming: boolean, bezierPoints = 50) {
         const points = bezier.getPoints(bezierPoints)
-        const { incomingEdge, outgoingEdge } = this.codeMapArrowStore.getAppSettings().mapColors
+        const { incomingEdge, outgoingEdge } = this.codeMapArrowStore.getMapState().mapColors
         const arrowColor = incoming ? incomingEdge : outgoingEdge
         const pointsPreviews = incoming
             ? points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)

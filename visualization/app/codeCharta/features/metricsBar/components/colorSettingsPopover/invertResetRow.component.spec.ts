@@ -2,9 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
-import { invertColorRange, invertDeltaColors } from "../../../../state/store/appSettings/mapColors/mapColors.actions"
-import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
-import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
+import { defaultMapColors, invertColorRange, invertDeltaColors, mapColorsSelector } from "../../../../mapState/mapState.facade"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 import { defaultState } from "../../../../state/store/state.manager"
 import { InvertResetRowComponent } from "./invertResetRow.component"
@@ -93,7 +91,7 @@ describe("InvertResetRowComponent", () => {
         const { component } = await setup()
 
         // Assert
-        expect(component.resetColorsKeys()).toContain("dynamicSettings.colorMode")
+        expect(component.resetColorsKeys()).toContain("mapState.colorMode")
     })
 
     it("should not reset the gradient mode in delta mode where it is not configurable", async () => {
@@ -101,6 +99,6 @@ describe("InvertResetRowComponent", () => {
         const { component } = await setup(defaultMapColors, true)
 
         // Assert
-        expect(component.resetColorsKeys()).not.toContain("dynamicSettings.colorMode")
+        expect(component.resetColorsKeys()).not.toContain("mapState.colorMode")
     })
 })

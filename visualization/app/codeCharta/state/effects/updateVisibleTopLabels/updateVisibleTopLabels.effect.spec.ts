@@ -5,10 +5,10 @@ import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { State, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../store/state.manager"
-import { visibleFileStatesSelector } from "../../selectors/visibleFileStates/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { setAmountOfTopLabels } from "../../store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setAmountOfTopLabels } from "../../../mapState/mapState.facade"
 
 describe("updateVisibleTopLabelsEffect", () => {
     let store: MockStore<CcState>
@@ -42,7 +42,7 @@ describe("updateVisibleTopLabelsEffect", () => {
                 {
                     provide: State,
                     useValue: {
-                        getValue: () => ({ appSettings: { amountOfTopLabels: 5 } })
+                        getValue: () => ({ mapState: { amountOfTopLabels: 5 } })
                     }
                 }
             ]
@@ -112,7 +112,7 @@ describe("updateVisibleTopLabelsEffect when stored value is lower than auto-calc
                 {
                     provide: State,
                     useValue: {
-                        getValue: () => ({ appSettings: { amountOfTopLabels: 1 } })
+                        getValue: () => ({ mapState: { amountOfTopLabels: 1 } })
                     }
                 }
             ]

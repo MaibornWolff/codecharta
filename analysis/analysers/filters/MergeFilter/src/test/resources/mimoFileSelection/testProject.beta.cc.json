@@ -1,235 +1,100 @@
 {
-  "projectName": "SourceMonitorImporter",
-  "apiVersion": "1.0",
-  "nodes": [
+  "meta": {
+    "projectName": "SourceMonitorImporter",
+    "apiVersion": "2.0",
+    "checksum": "71becf67e091a9a5f217f24776f593a9"
+  },
+  "files": [
     {
+      "id": "8a5edab282632443",
       "name": "root",
       "type": "Folder",
       "children": [
         {
+          "id": "56c9e1c4b5360a5b",
           "name": "src",
           "type": "Folder",
           "children": [
             {
+              "id": "e1584b1fb8bf5d36",
               "name": "main",
               "type": "Folder",
               "children": [
                 {
+                  "id": "6f3ade7fb2214ca1",
                   "name": "java",
                   "type": "Folder",
                   "children": [
                     {
+                      "id": "aad3bd08dc785d07",
                       "name": "de",
                       "type": "Folder",
                       "children": [
                         {
+                          "id": "19940c9968006367",
                           "name": "mwea",
                           "type": "Folder",
                           "children": [
                             {
+                              "id": "b69eb64b0c309943",
                               "name": "codecharta",
                               "type": "Folder",
                               "children": [
                                 {
+                                  "id": "dc8f3cc144d61dda",
                                   "name": "importer",
                                   "type": "Folder",
                                   "children": [
                                     {
+                                      "id": "fa2596c99df7bf45",
                                       "name": "sourcemon",
                                       "type": "Folder",
                                       "children": [
                                         {
+                                          "id": "681d1ff2c8ada7ae",
                                           "name": "SourceMonCsvConverter.java",
-                                          "type": "File",
-                                          "attributes": {
-                                            "AdditionalAttributeForTest": 0.0,
-                                            "Classes and Interfaces": 1.0,
-                                            "Statements at block level 9": 0.0,
-                                            "Maximum Block Depth": 4.0,
-                                            "Statements at block level 8": 0.0,
-                                            "Statements at block level 7": 0.0,
-                                            "Percent Lines with Comments": 0.0,
-                                            "Average Complexity*": 2.0,
-                                            "Statements at block level 6": 0.0,
-                                            "Statements at block level 5": 0.0,
-                                            "Statements at block level 4": 1.0,
-                                            "Statements at block level 3": 4.0,
-                                            "Line Number of Most Complex Method*": 81.0,
-                                            "Statements at block level 2": 30.0,
-                                            "Maximum Complexity*": 4.0,
-                                            "Statements at block level 1": 15.0,
-                                            "Statements at block level 0": 14.0,
-                                            "Line Number of Deepest Block": 85.0,
-                                            "Methods per Class": 6.0,
-                                            "Percent Branch Statements": 7.8,
-                                            "Average Statements per Method": 5.83,
-                                            "Statements": 64.0,
-                                            "Average Block Depth": 1.42,
-                                            "Method Call Statements": 38.0
-                                          }
+                                          "type": "File"
                                         },
                                         {
+                                          "id": "a0a6c38f9ac070d4",
                                           "name": "SourcemonCsvImporter.java",
-                                          "type": "File",
-                                          "attributes": {
-                                            "Lines*": 25.0,
-                                            "Classes and Interfaces": 1.0,
-                                            "Statements at block level 9": 0.0,
-                                            "Maximum Block Depth": 4.0,
-                                            "Statements at block level 8": 0.0,
-                                            "Statements at block level 7": 0.0,
-                                            "Percent Lines with Comments": 0.0,
-                                            "Average Complexity*": 3.0,
-                                            "Statements at block level 6": 0.0,
-                                            "Statements at block level 5": 0.0,
-                                            "Statements at block level 4": 1.0,
-                                            "Statements at block level 3": 3.0,
-                                            "Line Number of Most Complex Method*": 18.0,
-                                            "Statements at block level 2": 7.0,
-                                            "Maximum Complexity*": 4.0,
-                                            "Statements at block level 1": 2.0,
-                                            "Statements at block level 0": 6.0,
-                                            "Line Number of Deepest Block": 24.0,
-                                            "Methods per Class": 2.0,
-                                            "Percent Branch Statements": 21.1,
-                                            "Average Statements per Method": 5.5,
-                                            "Statements": 19.0,
-                                            "Average Block Depth": 1.53,
-                                            "Method Call Statements": 9.0
-                                          }
+                                          "type": "File"
                                         }
                                       ]
                                     }
                                   ]
                                 },
                                 {
+                                  "id": "9bd9a877793e7e0a",
                                   "name": "json",
                                   "type": "Folder",
                                   "children": [
                                     {
+                                      "id": "ec769954448cd249",
                                       "name": "JsonAccessor.java",
-                                      "type": "File",
-                                      "attributes": {
-                                        "Lines*": 15.0,
-                                        "Classes and Interfaces": 1.0,
-                                        "Statements at block level 9": 0.0,
-                                        "Maximum Block Depth": 2.0,
-                                        "Statements at block level 8": 0.0,
-                                        "Statements at block level 7": 0.0,
-                                        "Percent Lines with Comments": 0.0,
-                                        "Average Complexity*": 1.0,
-                                        "Statements at block level 6": 0.0,
-                                        "Statements at block level 5": 0.0,
-                                        "Statements at block level 4": 0.0,
-                                        "Statements at block level 3": 0.0,
-                                        "Line Number of Most Complex Method*": 14.0,
-                                        "Statements at block level 2": 2.0,
-                                        "Maximum Complexity*": 1.0,
-                                        "Statements at block level 1": 1.0,
-                                        "Statements at block level 0": 10.0,
-                                        "Line Number of Deepest Block": 15.0,
-                                        "Methods per Class": 1.0,
-                                        "Percent Branch Statements": 0.0,
-                                        "Average Statements per Method": 2.0,
-                                        "Statements": 13.0,
-                                        "Average Block Depth": 0.38,
-                                        "Method Call Statements": 2.0
-                                      }
+                                      "type": "File"
                                     }
                                   ]
                                 },
                                 {
+                                  "id": "507afae7c537d84e",
                                   "name": "model",
                                   "type": "Folder",
                                   "children": [
                                     {
+                                      "id": "0efe9c8778dd966b",
                                       "name": "Node.java",
-                                      "type": "File",
-                                      "attributes": {
-                                        "Lines*": 34.0,
-                                        "Classes and Interfaces": 1.0,
-                                        "Statements at block level 9": 0.0,
-                                        "Maximum Block Depth": 2.0,
-                                        "Statements at block level 8": 0.0,
-                                        "Statements at block level 7": 0.0,
-                                        "Percent Lines with Comments": 0.0,
-                                        "Average Complexity*": 1.0,
-                                        "Statements at block level 6": 0.0,
-                                        "Statements at block level 5": 0.0,
-                                        "Statements at block level 4": 0.0,
-                                        "Statements at block level 3": 0.0,
-                                        "Line Number of Most Complex Method*": 11.0,
-                                        "Statements at block level 2": 10.0,
-                                        "Maximum Complexity*": 1.0,
-                                        "Statements at block level 1": 12.0,
-                                        "Statements at block level 0": 3.0,
-                                        "Line Number of Deepest Block": 12.0,
-                                        "Methods per Class": 8.0,
-                                        "Percent Branch Statements": 0.0,
-                                        "Average Statements per Method": 1.25,
-                                        "Statements": 25.0,
-                                        "Average Block Depth": 1.28,
-                                        "Method Call Statements": 2.0
-                                      }
+                                      "type": "File"
                                     },
                                     {
+                                      "id": "bf674e21367ca2e3",
                                       "name": "NodeType.java",
-                                      "type": "File",
-                                      "attributes": {
-                                        "Lines*": 4.0,
-                                        "Classes and Interfaces": 1.0,
-                                        "Statements at block level 9": 0.0,
-                                        "Maximum Block Depth": 0.0,
-                                        "Statements at block level 8": 0.0,
-                                        "Statements at block level 7": 0.0,
-                                        "Percent Lines with Comments": 0.0,
-                                        "Average Complexity*": 0.0,
-                                        "Statements at block level 6": 0.0,
-                                        "Statements at block level 5": 0.0,
-                                        "Statements at block level 4": 0.0,
-                                        "Statements at block level 3": 0.0,
-                                        "Statements at block level 2": 0.0,
-                                        "Maximum Complexity*": 0.0,
-                                        "Statements at block level 1": 0.0,
-                                        "Statements at block level 0": 2.0,
-                                        "Line Number of Deepest Block": 1.0,
-                                        "Methods per Class": 0.0,
-                                        "Percent Branch Statements": 0.0,
-                                        "Average Statements per Method": 0.0,
-                                        "Statements": 2.0,
-                                        "Average Block Depth": 0.0,
-                                        "Method Call Statements": 0.0
-                                      }
+                                      "type": "File"
                                     },
                                     {
+                                      "id": "6e488cf8c0ae7548",
                                       "name": "Project.java",
-                                      "type": "File",
-                                      "attributes": {
-                                        "Lines*": 17.0,
-                                        "Classes and Interfaces": 1.0,
-                                        "Statements at block level 9": 0.0,
-                                        "Maximum Block Depth": 2.0,
-                                        "Statements at block level 8": 0.0,
-                                        "Statements at block level 7": 0.0,
-                                        "Percent Lines with Comments": 0.0,
-                                        "Average Complexity*": 1.0,
-                                        "Statements at block level 6": 0.0,
-                                        "Statements at block level 5": 0.0,
-                                        "Statements at block level 4": 0.0,
-                                        "Statements at block level 3": 0.0,
-                                        "Line Number of Most Complex Method*": 10.0,
-                                        "Statements at block level 2": 3.0,
-                                        "Maximum Complexity*": 1.0,
-                                        "Statements at block level 1": 6.0,
-                                        "Statements at block level 0": 4.0,
-                                        "Line Number of Deepest Block": 11.0,
-                                        "Methods per Class": 3.0,
-                                        "Percent Branch Statements": 0.0,
-                                        "Average Statements per Method": 1.0,
-                                        "Statements": 13.0,
-                                        "Average Block Depth": 0.92,
-                                        "Method Call Statements": 0.0
-                                      }
+                                      "type": "File"
                                     }
                                   ]
                                 }
@@ -244,62 +109,44 @@
               ]
             },
             {
+              "id": "7b132a5d2c95af90",
               "name": "test",
               "type": "Folder",
               "children": [
                 {
+                  "id": "cf3c05697873b94c",
                   "name": "java",
                   "type": "Folder",
                   "children": [
                     {
+                      "id": "79df878dc2073897",
                       "name": "de",
                       "type": "Folder",
                       "children": [
                         {
+                          "id": "0b5b2f742f75edea",
                           "name": "mwea",
                           "type": "Folder",
                           "children": [
                             {
+                              "id": "879e5e870969c5f6",
                               "name": "codecharta",
                               "type": "Folder",
                               "children": [
                                 {
+                                  "id": "ab7172c1e55b15db",
                                   "name": "importer",
                                   "type": "Folder",
                                   "children": [
                                     {
+                                      "id": "63532e6cea44c256",
                                       "name": "sourcemon",
                                       "type": "Folder",
                                       "children": [
                                         {
+                                          "id": "b5bae204567138f3",
                                           "name": "SourceMonCsvConverterTest.java",
-                                          "type": "File",
-                                          "attributes": {
-                                            "Lines*": 18.0,
-                                            "Classes and Interfaces": 1.0,
-                                            "Statements at block level 9": 0.0,
-                                            "Maximum Block Depth": 2.0,
-                                            "Statements at block level 8": 0.0,
-                                            "Statements at block level 7": 0.0,
-                                            "Percent Lines with Comments": 0.0,
-                                            "Average Complexity*": 1.0,
-                                            "Statements at block level 6": 0.0,
-                                            "Statements at block level 5": 0.0,
-                                            "Statements at block level 4": 0.0,
-                                            "Statements at block level 3": 0.0,
-                                            "Line Number of Most Complex Method*": 13.0,
-                                            "Statements at block level 2": 4.0,
-                                            "Maximum Complexity*": 1.0,
-                                            "Statements at block level 1": 3.0,
-                                            "Statements at block level 0": 7.0,
-                                            "Line Number of Deepest Block": 14.0,
-                                            "Methods per Class": 2.0,
-                                            "Percent Branch Statements": 0.0,
-                                            "Average Statements per Method": 2.0,
-                                            "Statements": 14.0,
-                                            "Average Block Depth": 0.79,
-                                            "Method Call Statements": 5.0
-                                          }
+                                          "type": "File"
                                         }
                                       ]
                                     }
@@ -319,5 +166,202 @@
         }
       ]
     }
-  ]
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "681d1ff2c8ada7ae": {
+          "AdditionalAttributeForTest": 0.0,
+          "Classes and Interfaces": 1.0,
+          "Statements at block level 9": 0.0,
+          "Maximum Block Depth": 4.0,
+          "Statements at block level 8": 0.0,
+          "Statements at block level 7": 0.0,
+          "Percent Lines with Comments": 0.0,
+          "Average Complexity*": 2.0,
+          "Statements at block level 6": 0.0,
+          "Statements at block level 5": 0.0,
+          "Statements at block level 4": 1.0,
+          "Statements at block level 3": 4.0,
+          "Line Number of Most Complex Method*": 81.0,
+          "Statements at block level 2": 30.0,
+          "Maximum Complexity*": 4.0,
+          "Statements at block level 1": 15.0,
+          "Statements at block level 0": 14.0,
+          "Line Number of Deepest Block": 85.0,
+          "Methods per Class": 6.0,
+          "Percent Branch Statements": 7.8,
+          "Average Statements per Method": 5.83,
+          "Statements": 64.0,
+          "Average Block Depth": 1.42,
+          "Method Call Statements": 38.0
+        },
+        "a0a6c38f9ac070d4": {
+          "Lines*": 25.0,
+          "Classes and Interfaces": 1.0,
+          "Statements at block level 9": 0.0,
+          "Maximum Block Depth": 4.0,
+          "Statements at block level 8": 0.0,
+          "Statements at block level 7": 0.0,
+          "Percent Lines with Comments": 0.0,
+          "Average Complexity*": 3.0,
+          "Statements at block level 6": 0.0,
+          "Statements at block level 5": 0.0,
+          "Statements at block level 4": 1.0,
+          "Statements at block level 3": 3.0,
+          "Line Number of Most Complex Method*": 18.0,
+          "Statements at block level 2": 7.0,
+          "Maximum Complexity*": 4.0,
+          "Statements at block level 1": 2.0,
+          "Statements at block level 0": 6.0,
+          "Line Number of Deepest Block": 24.0,
+          "Methods per Class": 2.0,
+          "Percent Branch Statements": 21.1,
+          "Average Statements per Method": 5.5,
+          "Statements": 19.0,
+          "Average Block Depth": 1.53,
+          "Method Call Statements": 9.0
+        },
+        "ec769954448cd249": {
+          "Lines*": 15.0,
+          "Classes and Interfaces": 1.0,
+          "Statements at block level 9": 0.0,
+          "Maximum Block Depth": 2.0,
+          "Statements at block level 8": 0.0,
+          "Statements at block level 7": 0.0,
+          "Percent Lines with Comments": 0.0,
+          "Average Complexity*": 1.0,
+          "Statements at block level 6": 0.0,
+          "Statements at block level 5": 0.0,
+          "Statements at block level 4": 0.0,
+          "Statements at block level 3": 0.0,
+          "Line Number of Most Complex Method*": 14.0,
+          "Statements at block level 2": 2.0,
+          "Maximum Complexity*": 1.0,
+          "Statements at block level 1": 1.0,
+          "Statements at block level 0": 10.0,
+          "Line Number of Deepest Block": 15.0,
+          "Methods per Class": 1.0,
+          "Percent Branch Statements": 0.0,
+          "Average Statements per Method": 2.0,
+          "Statements": 13.0,
+          "Average Block Depth": 0.38,
+          "Method Call Statements": 2.0
+        },
+        "0efe9c8778dd966b": {
+          "Lines*": 34.0,
+          "Classes and Interfaces": 1.0,
+          "Statements at block level 9": 0.0,
+          "Maximum Block Depth": 2.0,
+          "Statements at block level 8": 0.0,
+          "Statements at block level 7": 0.0,
+          "Percent Lines with Comments": 0.0,
+          "Average Complexity*": 1.0,
+          "Statements at block level 6": 0.0,
+          "Statements at block level 5": 0.0,
+          "Statements at block level 4": 0.0,
+          "Statements at block level 3": 0.0,
+          "Line Number of Most Complex Method*": 11.0,
+          "Statements at block level 2": 10.0,
+          "Maximum Complexity*": 1.0,
+          "Statements at block level 1": 12.0,
+          "Statements at block level 0": 3.0,
+          "Line Number of Deepest Block": 12.0,
+          "Methods per Class": 8.0,
+          "Percent Branch Statements": 0.0,
+          "Average Statements per Method": 1.25,
+          "Statements": 25.0,
+          "Average Block Depth": 1.28,
+          "Method Call Statements": 2.0
+        },
+        "bf674e21367ca2e3": {
+          "Lines*": 4.0,
+          "Classes and Interfaces": 1.0,
+          "Statements at block level 9": 0.0,
+          "Maximum Block Depth": 0.0,
+          "Statements at block level 8": 0.0,
+          "Statements at block level 7": 0.0,
+          "Percent Lines with Comments": 0.0,
+          "Average Complexity*": 0.0,
+          "Statements at block level 6": 0.0,
+          "Statements at block level 5": 0.0,
+          "Statements at block level 4": 0.0,
+          "Statements at block level 3": 0.0,
+          "Statements at block level 2": 0.0,
+          "Maximum Complexity*": 0.0,
+          "Statements at block level 1": 0.0,
+          "Statements at block level 0": 2.0,
+          "Line Number of Deepest Block": 1.0,
+          "Methods per Class": 0.0,
+          "Percent Branch Statements": 0.0,
+          "Average Statements per Method": 0.0,
+          "Statements": 2.0,
+          "Average Block Depth": 0.0,
+          "Method Call Statements": 0.0
+        },
+        "6e488cf8c0ae7548": {
+          "Lines*": 17.0,
+          "Classes and Interfaces": 1.0,
+          "Statements at block level 9": 0.0,
+          "Maximum Block Depth": 2.0,
+          "Statements at block level 8": 0.0,
+          "Statements at block level 7": 0.0,
+          "Percent Lines with Comments": 0.0,
+          "Average Complexity*": 1.0,
+          "Statements at block level 6": 0.0,
+          "Statements at block level 5": 0.0,
+          "Statements at block level 4": 0.0,
+          "Statements at block level 3": 0.0,
+          "Line Number of Most Complex Method*": 10.0,
+          "Statements at block level 2": 3.0,
+          "Maximum Complexity*": 1.0,
+          "Statements at block level 1": 6.0,
+          "Statements at block level 0": 4.0,
+          "Line Number of Deepest Block": 11.0,
+          "Methods per Class": 3.0,
+          "Percent Branch Statements": 0.0,
+          "Average Statements per Method": 1.0,
+          "Statements": 13.0,
+          "Average Block Depth": 0.92,
+          "Method Call Statements": 0.0
+        },
+        "b5bae204567138f3": {
+          "Lines*": 18.0,
+          "Classes and Interfaces": 1.0,
+          "Statements at block level 9": 0.0,
+          "Maximum Block Depth": 2.0,
+          "Statements at block level 8": 0.0,
+          "Statements at block level 7": 0.0,
+          "Percent Lines with Comments": 0.0,
+          "Average Complexity*": 1.0,
+          "Statements at block level 6": 0.0,
+          "Statements at block level 5": 0.0,
+          "Statements at block level 4": 0.0,
+          "Statements at block level 3": 0.0,
+          "Line Number of Most Complex Method*": 13.0,
+          "Statements at block level 2": 4.0,
+          "Maximum Complexity*": 1.0,
+          "Statements at block level 1": 3.0,
+          "Statements at block level 0": 7.0,
+          "Line Number of Deepest Block": 14.0,
+          "Methods per Class": 2.0,
+          "Percent Branch Statements": 0.0,
+          "Average Statements per Method": 2.0,
+          "Statements": 14.0,
+          "Average Block Depth": 0.79,
+          "Method Call Statements": 5.0
+        }
+      },
+      "attributeDescriptors": {},
+      "attributeTypes": {},
+      "clusters": []
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    },
+    "domain": {},
+    "security": {}
+  }
 }
