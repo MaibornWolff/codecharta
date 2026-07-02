@@ -6,7 +6,7 @@ import { FileState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
 import { metricDataSelector } from "../selectors/accumulatedData/metricData/metricData.selector"
 import { setDelta, setFiles } from "../../fileStore/store/files.actions"
-import { setCurrentFilesAreSampleFiles } from "../store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { setCurrentFilesAreSampleFiles } from "../../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import {
     setAmountOfEdgePreviews,
     setAmountOfTopLabels,

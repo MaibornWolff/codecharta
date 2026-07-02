@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { UploadFilesService } from "./uploadFiles.service"
 import { LoadFileService } from "../../../fileStore/fileStore.facade"
-import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingFile } from "../../../fileStore/store/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../mapState/store/isLoadingMap/isLoadingMap.actions"
 import { createCCFileInput } from "./createCCFileInput"
 import { TEST_FILE_CONTENT } from "../../../mocks/dataMocks"

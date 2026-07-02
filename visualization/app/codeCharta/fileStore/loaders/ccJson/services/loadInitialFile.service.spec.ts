@@ -24,7 +24,7 @@ import { getNameDataPair } from "../util/fileParser"
 import { LoadFileService } from "./loadFile.service"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "./loadInitialFile.service"
 import { UrlExtractor } from "../util/urlExtractor"
-import { setCurrentFilesAreSampleFiles } from "../../../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { setCurrentFilesAreSampleFiles } from "../../../store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
 jest.mock("../util/urlExtractor")
 jest.mock("../../../../model/files/files.helper")

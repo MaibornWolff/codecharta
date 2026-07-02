@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store"
-import { CcState } from "../../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import { setCurrentFilesAreSampleFiles } from "./currentFilesAreSampleFiles.actions"
 
 export const defaultCurrentFilesAreSampleFiles: CcState["appStatus"]["currentFilesAreSampleFiles"] = false

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { map } from "rxjs"
-import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingFile } from "../../../fileStore/store/isLoadingFile/isLoadingFile.actions"
 import { actionsRequiringRerender } from "../renderCodeMapEffect/actionsRequiringRerender"
 import { setIsLoadingMap } from "../../../mapState/store/isLoadingMap/isLoadingMap.actions"
 import { CcState } from "../../../codeCharta.model"

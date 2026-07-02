@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { isLoadingFileSelector } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.selector"
+import { isLoadingFileSelector } from "../../../fileStore/store/isLoadingFile/isLoadingFile.selector"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapStore {

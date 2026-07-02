@@ -16,7 +16,7 @@ import { fileRoot } from "../../../../util/fileRoot"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
-import { setCurrentFilesAreSampleFiles } from "../../../../state/store/appStatus/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { setCurrentFilesAreSampleFiles } from "../../../store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import { getCCFileAndDecorateFileChecksum } from "../util/ccFileHelper"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 

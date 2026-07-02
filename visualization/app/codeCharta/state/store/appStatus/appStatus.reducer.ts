@@ -2,7 +2,7 @@ import { combineReducers } from "@ngrx/store"
 import {
     defaultCurrentFilesAreSampleFiles,
     currentFilesAreSampleFiles
-} from "./currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
+} from "../../../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
 
 export const appStatus = combineReducers({
     currentFilesAreSampleFiles

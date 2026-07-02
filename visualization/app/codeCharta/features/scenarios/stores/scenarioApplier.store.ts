@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState, RecursivePartial } from "../../../codeCharta.model"
-import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingFile } from "../../../fileStore/store/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../mapState/store/isLoadingMap/isLoadingMap.actions"
 import { setState } from "../../../state/store/state.actions"
 

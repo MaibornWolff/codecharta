@@ -1,5 +1,5 @@
 import { defaultSortingOrderAscending, sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
-import { defaultIsLoadingFile, isLoadingFile } from "./isLoadingFile/isLoadingFile.reducer"
+import { defaultIsLoadingFile, isLoadingFile } from "../../../fileStore/store/isLoadingFile/isLoadingFile.reducer"
 import {
     defaultResetCameraIfNewFileIsLoaded,
     resetCameraIfNewFileIsLoaded
