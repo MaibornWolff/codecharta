@@ -1,12 +1,18 @@
 import { createSelector } from "@ngrx/store"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { blacklistMatcherSelector } from "../../../sharedView/sharedView.facade"
-import { calculateEdgeMetricData } from "./edgeMetricData.calculator"
+import { calculateEdgeMetricData } from "../../../lenses/dependency/dependencyLens.facade"
 import { FileState } from "../../../model/files/files"
 import { EdgeMetricCount, EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../codeCharta.model"
 import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 import { showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../mapState/mapState.facade"
 
+/**
+ * Derived (view-state-aware) edge-visibility selector — Slice 9b P0-1 (half 2). Composes the dependency
+ * lens's RAW edge-metric computation with the `blacklist` matcher (sharedView) AND the edge-visibility
+ * flags `showIncoming/OutgoingEdges` (mapState) to sort + filter the node-edge map. Lifted out of
+ * `lenses/dependency/store/` so the lens reads no mutable view state (the `lens-no-view-state` goal).
+ */
 export const sortedNodeEdgeMetricsMapSelector = createSelector(
     visibleFileStatesSelector,
     blacklistMatcherSelector,

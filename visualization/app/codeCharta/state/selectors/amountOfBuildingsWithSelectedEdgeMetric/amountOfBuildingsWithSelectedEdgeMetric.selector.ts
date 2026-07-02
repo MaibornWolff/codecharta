@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { nodeEdgeMetricsMapSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { nodeEdgeMetricsMapSelector } from "../edgeMetricData/edgeMetricData.selector"
 import { showIncomingEdgesSelector, showOutgoingEdgesSelector, edgeMetricSelector } from "../../../mapState/mapState.facade"
 import { EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../codeCharta.model"
 

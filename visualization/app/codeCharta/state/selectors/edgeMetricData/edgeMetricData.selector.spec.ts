@@ -5,9 +5,9 @@ import { TestBed } from "@angular/core/testing"
 import { appReducers } from "../../../state/store/state.manager"
 import { setFiles } from "../../../fileStore/store/files.actions"
 import { firstValueFrom } from "rxjs"
-import { edgeMetricDataSelector, edgeMetricNamesSelector, nodeEdgeMetricsMapSelector } from "./dependencyLens.selectors"
+import { edgeMetricDataSelector, edgeMetricNamesSelector, nodeEdgeMetricsMapSelector } from "./edgeMetricData.selector"
 
-describe("dependencyLens selectors", () => {
+describe("edgeMetricData selectors", () => {
     let store: Store<CcState>
 
     beforeEach(() => {

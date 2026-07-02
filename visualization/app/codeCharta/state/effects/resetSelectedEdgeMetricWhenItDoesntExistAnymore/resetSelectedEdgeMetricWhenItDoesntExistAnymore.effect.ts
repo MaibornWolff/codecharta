@@ -3,7 +3,7 @@ import { createEffect } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { distinctUntilChanged, filter, map, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
-import { edgeMetricDataSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { edgeMetricDataSelector } from "../../selectors/edgeMetricData/edgeMetricData.selector"
 import { setEdgeMetric, edgeMetricSelector } from "../../../mapState/mapState.facade"
 
 @Injectable()

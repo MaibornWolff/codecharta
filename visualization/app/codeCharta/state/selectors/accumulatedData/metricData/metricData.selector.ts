@@ -1,10 +1,12 @@
 import { createSelector } from "@ngrx/store"
 import { nodeMetricDataSelector } from "../../nodeMetricData/nodeMetricData.selector"
-import { edgeMetricDataSelector, nodeEdgeMetricsMapSelector } from "../../../../lenses/dependency/dependencyLens.facade"
+import { edgeMetricDataSelector, nodeEdgeMetricsMapSelector } from "../../edgeMetricData/edgeMetricData.selector"
 
 /**
- * Shrinking aggregator: node metrics are OWNED by the metrics lens and edge metrics by the dependency
- * lens (both read through their facade selectors). Cross-cutting consumers keep the combined
+ * Shrinking aggregator over the two derived metric-data selectors: `nodeMetricData` composes the metrics
+ * lens's node computation with view state, `edgeMetricData`/`nodeEdgeMetricsMap` compose the dependency
+ * lens's edge computation with the blacklist (Slice 9b lifted both view-state compositions OUT of the
+ * lenses into `state/selectors/{node,edge}MetricData/`). Cross-cutting consumers keep the combined
  * `{ nodeMetricData, edgeMetricData, nodeEdgeMetricsMap }` shape unchanged.
  */
 export const metricDataSelector = createSelector(

@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { edgeMetricDataSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { edgeMetricDataSelector } from "../../selectors/edgeMetricData/edgeMetricData.selector"
 import { edgeMetricSelector, setEdgeMetric } from "../../../mapState/mapState.facade"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { EffectsModule } from "@ngrx/effects"
