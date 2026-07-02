@@ -30,7 +30,7 @@ export class StreetLayoutGenerator {
         const childBoxes = this.createBoxes(mergedMap, metricName, state, matcher, StreetOrientation.Vertical, 1, maxTreeMapFiles)
         const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
         rootStreet.calculateDimension(metricName)
-        const margin = state.dynamicSettings.margin * MARGIN_SCALING_FACTOR
+        const margin = state.mapState.margin * MARGIN_SCALING_FACTOR
         const layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
 
         return layoutNodes.map(streetLayoutNode => {
@@ -64,7 +64,7 @@ export class StreetLayoutGenerator {
                 continue
             }
 
-            const layoutAlgorithm = state.appSettings.layoutAlgorithm
+            const layoutAlgorithm = state.mapState.layoutAlgorithm
             const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
             if (layoutAlgorithm === LayoutAlgorithm.TreeMapStreet && fileDescendants <= maxTreeMapFiles) {
                 const treeMap = StreetLayoutGenerator.createTreeMap(child)

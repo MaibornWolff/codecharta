@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appStatusSelector } from "../../../state/store/appStatus/appStatus.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const hoveredNodeIdSelector = createSelector(appStatusSelector, appStatus => appStatus.hoveredNodeId)
+export const hoveredNodeIdSelector = createSelector(mapStateSelector, mapState => mapState.hoveredNodeId)

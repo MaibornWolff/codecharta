@@ -7,7 +7,7 @@ import { setRightClickedNodeData } from "../../../mapState/store/rightClickedNod
 import { rightClickedNodeDataSelector } from "../../../mapState/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { selectedBuildingIdSelector } from "../../../mapState/store/selectedBuildingId/selectedBuildingId.selector"
 
-type RightClickedNodeData = CcState["appStatus"]["rightClickedNodeData"]
+type RightClickedNodeData = CcState["mapState"]["rightClickedNodeData"]
 
 @Injectable({
     providedIn: "root"

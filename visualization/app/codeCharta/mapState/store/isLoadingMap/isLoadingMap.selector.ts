@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const isLoadingMapSelector = createSelector(appSettingsSelector, appSettings => appSettings.isLoadingMap)
+export const isLoadingMapSelector = createSelector(mapStateSelector, mapState => mapState.isLoadingMap)

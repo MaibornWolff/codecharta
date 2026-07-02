@@ -21,7 +21,7 @@ export class Print3DStateAccessStore {
     }
 
     getColorRange(): ColorRange {
-        return this.state.getValue().dynamicSettings.colorRange
+        return this.state.getValue().mapState.colorRange
     }
 
     getAttributeDescriptors(): AttributeDescriptors {

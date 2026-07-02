@@ -91,7 +91,7 @@ describe("InvertResetRowComponent", () => {
         const { component } = await setup()
 
         // Assert
-        expect(component.resetColorsKeys()).toContain("dynamicSettings.colorMode")
+        expect(component.resetColorsKeys()).toContain("mapState.colorMode")
     })
 
     it("should not reset the gradient mode in delta mode where it is not configurable", async () => {
@@ -99,6 +99,6 @@ describe("InvertResetRowComponent", () => {
         const { component } = await setup(defaultMapColors, true)
 
         // Assert
-        expect(component.resetColorsKeys()).not.toContain("dynamicSettings.colorMode")
+        expect(component.resetColorsKeys()).not.toContain("mapState.colorMode")
     })
 })

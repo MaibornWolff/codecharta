@@ -46,7 +46,7 @@ export class InvertResetRowComponent {
                   "mapState.mapColors.neutral",
                   "mapState.mapColors.selected",
                   "mapState.mapColors.isColorRangeInverted",
-                  "dynamicSettings.colorMode"
+                  "mapState.colorMode"
               ]
     }
 }

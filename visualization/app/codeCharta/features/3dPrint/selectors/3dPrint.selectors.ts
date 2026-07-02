@@ -2,6 +2,7 @@ import { createSelector } from "@ngrx/store"
 import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
 import { fileSettingsSelector } from "../../../state/store/fileSettings/fileSettings.selector"
 import { filesSelector } from "../../../fileStore/store/files.selector"
+import { mapStateSelector } from "../../../mapState/mapState.facade"
 
 export const areaMetricSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.areaMetric)
 
@@ -9,9 +10,9 @@ export const heightMetricSelector = createSelector(dynamicSettingsSelector, dyna
 
 export const colorMetricSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.colorMetric)
 
-export const colorRangeSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.colorRange)
+export const colorRangeSelector = createSelector(mapStateSelector, mapState => mapState.colorRange)
 
-export const colorModeSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.colorMode)
+export const colorModeSelector = createSelector(mapStateSelector, mapState => mapState.colorMode)
 
 export const attributeDescriptorsSelector = createSelector(fileSettingsSelector, fileSettings => fileSettings.attributeDescriptors)
 

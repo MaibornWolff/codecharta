@@ -111,7 +111,7 @@ describe("ResetSettingsStore", () => {
 
         it("should reset layout algorithm setting", async () => {
             // Arrange
-            const settingsKeys = ["appSettings.layoutAlgorithm"]
+            const settingsKeys = ["mapState.layoutAlgorithm"]
 
             // Act
             store.resetSettings(settingsKeys)
@@ -120,8 +120,8 @@ describe("ResetSettingsStore", () => {
             const action: any = await getLastAction(mockStore)
             expect(action.type).toBe(setState.type)
             expect(action.value).toEqual({
-                appSettings: {
-                    layoutAlgorithm: defaultState.appSettings.layoutAlgorithm
+                mapState: {
+                    layoutAlgorithm: defaultState.mapState.layoutAlgorithm
                 }
             })
         })

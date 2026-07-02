@@ -54,7 +54,7 @@ describe("ResetSettingsService", () => {
 
         it("should delegate to store with layout algorithm key", () => {
             // Arrange
-            const settingsKeys = ["appSettings.layoutAlgorithm"]
+            const settingsKeys = ["mapState.layoutAlgorithm"]
 
             // Act
             service.resetSettings(settingsKeys)
@@ -71,7 +71,7 @@ describe("ResetSettingsService", () => {
                 "mapState.isWhiteBackground",
                 "mapState.hideFlatBuildings",
                 "appSettings.resetCameraIfNewFileIsLoaded",
-                "appSettings.layoutAlgorithm",
+                "mapState.layoutAlgorithm",
                 "appSettings.maxTreeMapFiles"
             ]
 

@@ -90,7 +90,7 @@ export class CodeMapRenderService implements OnDestroy {
         const state = this.codeMapRenderStore.getState() as CcState
         const nodeMetricData = this.metricsLensFacade.getNodeMetricData()
         const {
-            appSettings: { layoutAlgorithm },
+            mapState: { layoutAlgorithm },
             files
         } = state
         const deltaState = isDeltaState(files)
@@ -129,7 +129,9 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
-        const dynamicSettings = this.codeMapRenderStore.getState().dynamicSettings
+        const state = this.codeMapRenderStore.getState()
+        const dynamicSettings = state.dynamicSettings
+        const colorRange = state.mapState.colorRange
 
         this.nodesByColor = {
             positive: [],
@@ -143,9 +145,9 @@ export class CodeMapRenderService implements OnDestroy {
                 if (dynamicSettings.colorMetric === "unary") {
                     this.nodesByColor.positive.push(node)
                 } else if (metric !== null) {
-                    if (metric < dynamicSettings.colorRange.from) {
+                    if (metric < colorRange.from) {
                         this.nodesByColor.positive.push(node)
-                    } else if (metric < dynamicSettings.colorRange.to) {
+                    } else if (metric < colorRange.to) {
                         this.nodesByColor.neutral.push(node)
                     } else {
                         this.nodesByColor.negative.push(node)

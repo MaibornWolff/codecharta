@@ -6,7 +6,8 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { BlacklistItem, BlacklistType, CcState, ColorMode, SortingOption } from "../../../../codeCharta.model"
+import { defaultMapState } from "../../../../mapState/mapState.facade"
+import { BlacklistItem, BlacklistType, CcState, SortingOption } from "../../../../codeCharta.model"
 import { By } from "@angular/platform-browser"
 import { screen } from "@testing-library/angular"
 import { metricDistributionSelector } from "../../selectors/metricDistribution.selector"
@@ -18,11 +19,9 @@ describe("FileExtensionBarSegment", () => {
     let store: MockStore
     const initialState: Partial<CcState> = {
         appStatus: {
-            currentFilesAreSampleFiles: false,
-            hoveredNodeId: null,
-            selectedBuildingId: null,
-            rightClickedNodeData: null
+            currentFilesAreSampleFiles: false
         },
+        mapState: defaultMapState,
         fileSettings: {
             attributeTypes: null,
             attributeDescriptors: null,
@@ -33,13 +32,10 @@ describe("FileExtensionBarSegment", () => {
         files: [],
         dynamicSettings: {
             areaMetric: "rloc",
-            colorMode: ColorMode.absolute,
             sortingOption: SortingOption.NAME,
-            colorRange: { from: null, to: null },
             distributionMetric: "rloc",
             focusedNodePath: [],
             searchPattern: "",
-            margin: 0,
             heightMetric: "rloc",
             edgeMetric: "",
             colorMetric: "rloc"

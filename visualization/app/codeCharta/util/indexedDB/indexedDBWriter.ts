@@ -3,7 +3,7 @@ import { defaultMapState } from "../../mapState/mapState.facade"
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 3
+export const DB_VERSION = 4
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -27,6 +27,42 @@ export function migrateCcStateRecordToV3<T>(state: T): T {
         }
     }
     return { ...state, appSettings, mapState }
+}
+
+// v4 (Slice 6): the presentation stragglers (colorMode/colorRange/margin from dynamicSettings,
+// layoutAlgorithm/isLoadingMap from appSettings) and the transient interaction ids (hoveredNodeId/
+// selectedBuildingId/rightClickedNodeData from appStatus) moved into mapState. Re-home them in a
+// persisted blob so the rehydrate applier finds them under mapState instead of silently reverting
+// them to defaults — same silent-data-loss landmine the v3 transform closes.
+const V4_MOVES: Record<string, string[]> = {
+    dynamicSettings: ["colorMode", "colorRange", "margin"],
+    appSettings: ["layoutAlgorithm", "isLoadingMap"],
+    appStatus: ["hoveredNodeId", "selectedBuildingId", "rightClickedNodeData"]
+}
+
+export function migrateCcStateRecordToV4<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const mapState: Record<string, unknown> = { ...defaultMapState, ...((record["mapState"] as Record<string, unknown>) ?? {}) }
+    const next: Record<string, unknown> = { ...record }
+    for (const [home, keys] of Object.entries(V4_MOVES)) {
+        const source = record[home]
+        if (!source || typeof source !== "object") {
+            continue
+        }
+        const trimmed = { ...(source as Record<string, unknown>) }
+        for (const key of keys) {
+            if (key in trimmed) {
+                mapState[key] = trimmed[key]
+                delete trimmed[key]
+            }
+        }
+        next[home] = trimmed
+    }
+    next["mapState"] = mapState
+    return next as T
 }
 
 export async function writeCcState(state: CcState) {
@@ -61,13 +97,21 @@ export async function openCodeChartaDB() {
             if (!database.objectStoreNames.contains(SCENARIOS_STORE_NAME)) {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
-            // Existing DBs (oldVersion >= 1) may hold a v2-shaped CcState blob; re-home its map-view
-            // settings into mapState. A brand-new DB (oldVersion 0) has no record to migrate.
-            if (oldVersion > 0 && oldVersion < 3) {
+            // Existing DBs (oldVersion >= 1) may hold an older-shaped CcState blob; re-home its
+            // map-view settings into mapState. Migrations chain: v2 blobs run v3 then v4; a v3 blob
+            // runs only v4. A brand-new DB (oldVersion 0) has no record to migrate.
+            if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
                 if (record?.state) {
-                    await store.put({ ...record, state: migrateCcStateRecordToV3(record.state) })
+                    let migrated = record.state
+                    if (oldVersion < 3) {
+                        migrated = migrateCcStateRecordToV3(migrated)
+                    }
+                    if (oldVersion < 4) {
+                        migrated = migrateCcStateRecordToV4(migrated)
+                    }
+                    await store.put({ ...record, state: migrated })
                 }
             }
         }

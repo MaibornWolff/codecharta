@@ -169,15 +169,14 @@ export class ScenarioApplierService {
     }
 
     private buildColorsPatch(colors: ColorsSection): RecursivePartial<CcState> {
-        const dynamicSettings: RecursivePartial<CcState["dynamicSettings"]> = { colorRange: colors.colorRange }
+        const mapState: RecursivePartial<CcState["mapState"]> = { colorRange: colors.colorRange }
         if (colors.colorMode !== undefined) {
-            dynamicSettings.colorMode = colors.colorMode
+            mapState.colorMode = colors.colorMode
         }
-        const patch: RecursivePartial<CcState> = { dynamicSettings }
         if (colors.mapColors !== undefined) {
-            patch.mapState = { mapColors: colors.mapColors }
+            mapState.mapColors = colors.mapColors
         }
-        return patch
+        return { mapState }
     }
 
     private buildFiltersPatch(filters: FiltersSection): RecursivePartial<CcState> {

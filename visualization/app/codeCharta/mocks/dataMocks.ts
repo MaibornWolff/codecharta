@@ -2159,24 +2159,16 @@ export const STATE: CcState = {
         edgeMetric: "pairingRate",
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
-        margin: 48,
-        colorRange: {
-            from: 19,
-            to: 67
-        },
-        colorMode: ColorMode.weightedGradient,
         sortingOption: SortingOption.NAME
     },
     appSettings: {
         isColorMetricLinkedToHeightMetric: false,
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
-        isLoadingMap: true,
         isLoadingFile: true,
         sortingOrderAscending: false,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
-        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
         maxTreeMapFiles: 200
     },
     mapState: {
@@ -2217,14 +2209,22 @@ export const STATE: CcState = {
         showMetricLabelNodeName: true,
         labelMode: LabelMode.Height,
         groupLabelCollisions: false,
-        labelsPerMap: false
-    },
-    files: [],
-    appStatus: {
-        currentFilesAreSampleFiles: false,
+        labelsPerMap: false,
+        margin: 48,
+        colorRange: {
+            from: 19,
+            to: 67
+        },
+        colorMode: ColorMode.weightedGradient,
+        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+        isLoadingMap: true,
         hoveredNodeId: null,
         selectedBuildingId: null,
         rightClickedNodeData: null
+    },
+    files: [],
+    appStatus: {
+        currentFilesAreSampleFiles: false
     }
 }
 
@@ -2233,12 +2233,10 @@ export const DEFAULT_STATE: CcState = {
         isColorMetricLinkedToHeightMetric: false,
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
-        isLoadingMap: true,
         isLoadingFile: true,
         sortingOrderAscending: true,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
-        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
         maxTreeMapFiles: 100
     },
     mapState: {
@@ -2279,7 +2277,18 @@ export const DEFAULT_STATE: CcState = {
         showMetricLabelNodeName: true,
         labelMode: LabelMode.Height,
         groupLabelCollisions: false,
-        labelsPerMap: false
+        labelsPerMap: false,
+        margin: 50,
+        colorRange: {
+            from: null,
+            to: null
+        },
+        colorMode: ColorMode.weightedGradient,
+        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+        isLoadingMap: true,
+        hoveredNodeId: null,
+        selectedBuildingId: null,
+        rightClickedNodeData: null
     },
     dynamicSettings: {
         areaMetric: null,
@@ -2288,12 +2297,6 @@ export const DEFAULT_STATE: CcState = {
         heightMetric: null,
         distributionMetric: null,
         edgeMetric: null,
-        margin: 50,
-        colorRange: {
-            from: null,
-            to: null
-        },
-        colorMode: ColorMode.weightedGradient,
         searchPattern: "",
         sortingOption: SortingOption.NAME
     },
@@ -2306,10 +2309,7 @@ export const DEFAULT_STATE: CcState = {
     },
     files: [],
     appStatus: {
-        currentFilesAreSampleFiles: false,
-        hoveredNodeId: null,
-        selectedBuildingId: null,
-        rightClickedNodeData: null
+        currentFilesAreSampleFiles: false
     }
 }
 

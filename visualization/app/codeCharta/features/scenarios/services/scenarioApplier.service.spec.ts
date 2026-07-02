@@ -143,8 +143,8 @@ describe("ScenarioApplierService", () => {
             // Assert — metrics is patch 0, colors is patch 1
             expect(patches).toHaveLength(2)
             expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.colorRange).toBeUndefined()
-            expect(patches[1].dynamicSettings?.colorRange).toEqual({ from: 1, to: 10 })
+            expect(patches[0].mapState?.colorRange).toBeUndefined()
+            expect(patches[1].mapState?.colorRange).toEqual({ from: 1, to: 10 })
             expect(patches[1].mapState?.mapColors).toEqual(testSections.colors.mapColors)
         })
 
@@ -175,7 +175,7 @@ describe("ScenarioApplierService", () => {
 
             // Assert
             expect(merged.dynamicSettings?.areaMetric).toBe("rloc")
-            expect(merged.dynamicSettings?.colorRange).toEqual({ from: 1, to: 10 })
+            expect(merged.mapState?.colorRange).toEqual({ from: 1, to: 10 })
             expect(merged.fileSettings?.blacklist).toHaveLength(1)
             expect(merged.mapState?.amountOfTopLabels).toBe(5)
         })
@@ -240,8 +240,8 @@ describe("ScenarioApplierService", () => {
             expect(patches[0].dynamicSettings?.edgeMetric).toBeUndefined()
             expect(patches[0].dynamicSettings?.distributionMetric).toBeUndefined()
             expect(patches[0].appSettings?.isColorMetricLinkedToHeightMetric).toBeUndefined()
-            expect(patches[1].dynamicSettings?.colorRange).toEqual({ from: 250, to: 500 })
-            expect(patches[1].dynamicSettings?.colorMode).toBeUndefined()
+            expect(patches[1].mapState?.colorRange).toEqual({ from: 250, to: 500 })
+            expect(patches[1].mapState?.colorMode).toBeUndefined()
             expect(patches[1].appSettings).toBeUndefined()
         })
 

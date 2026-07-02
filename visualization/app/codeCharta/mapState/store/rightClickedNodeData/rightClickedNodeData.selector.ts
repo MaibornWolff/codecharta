@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appStatusSelector } from "../../../state/store/appStatus/appStatus.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const rightClickedNodeDataSelector = createSelector(appStatusSelector, appStatus => appStatus.rightClickedNodeData)
+export const rightClickedNodeDataSelector = createSelector(mapStateSelector, mapState => mapState.rightClickedNodeData)

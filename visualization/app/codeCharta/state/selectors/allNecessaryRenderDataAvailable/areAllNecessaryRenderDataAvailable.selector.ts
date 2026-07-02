@@ -6,6 +6,7 @@ import { dynamicSettingsSelector } from "../../store/dynamicSettings/dynamicSett
 import { heightMetricSelector } from "../../store/dynamicSettings/heightMetric/heightMetric.selector"
 import { filesSelector } from "../../../fileStore/store/files.selector"
 import { nodeMetricDataSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { colorRangeSelector } from "../../../mapState/mapState.facade"
 import { areDynamicSettingsAvailable } from "./utils/areDynamicSettingsAvailable"
 import { areMetricsAvailable } from "./utils/areMetricsAvailable"
 
@@ -19,8 +20,10 @@ export const areChosenMetricsAvailableSelector = createSelector(
     (nodeMetricData, areaMetric, colorMetric, heightMetric) => areMetricsAvailable(nodeMetricData, [areaMetric, colorMetric, heightMetric])
 )
 
-const areDynamicSettingsAvailableSelector = createSelector(dynamicSettingsSelector, dynamicSettings =>
-    areDynamicSettingsAvailable(dynamicSettings)
+const areDynamicSettingsAvailableSelector = createSelector(
+    dynamicSettingsSelector,
+    colorRangeSelector,
+    (dynamicSettings, colorRange) => areDynamicSettingsAvailable({ ...dynamicSettings, colorRange })
 )
 
 export const areAllNecessaryRenderDataAvailableSelector = createSelector(

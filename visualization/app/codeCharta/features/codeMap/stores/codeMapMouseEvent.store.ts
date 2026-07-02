@@ -31,7 +31,7 @@ export class CodeMapMouseEventStore {
         this.store.dispatch(setHoveredNodeId({ value }))
     }
 
-    setRightClickedNodeData(value: CcState["appStatus"]["rightClickedNodeData"]) {
+    setRightClickedNodeData(value: CcState["mapState"]["rightClickedNodeData"]) {
         this.store.dispatch(setRightClickedNodeData({ value }))
     }
 }

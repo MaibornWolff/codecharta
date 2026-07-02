@@ -19,7 +19,7 @@ describe("horizontalStreet", () => {
         })
 
         it("should call createTreeMap", () => {
-            STATE.appSettings.layoutAlgorithm = LayoutAlgorithm.TreeMapStreet
+            STATE.mapState.layoutAlgorithm = LayoutAlgorithm.TreeMapStreet
             StreetLayoutGenerator.createStreetLayoutNodes(codeMapNode, STATE, METRIC_DATA, matcher, false)
             expect(StreetLayoutGenerator.createStreetLayoutNodes).toBeTruthy()
         })

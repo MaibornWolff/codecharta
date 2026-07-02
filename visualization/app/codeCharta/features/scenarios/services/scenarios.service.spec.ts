@@ -138,8 +138,8 @@ describe("ScenariosService", () => {
             const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
 
             // Assert
-            expect(sections.colors.colorRange).toEqual(defaultState.dynamicSettings.colorRange)
-            expect(sections.colors.colorMode).toBe(defaultState.dynamicSettings.colorMode)
+            expect(sections.colors.colorRange).toEqual(defaultState.mapState.colorRange)
+            expect(sections.colors.colorMode).toBe(defaultState.mapState.colorMode)
             expect(sections.colors.mapColors).toEqual(defaultState.mapState.mapColors)
         })
 

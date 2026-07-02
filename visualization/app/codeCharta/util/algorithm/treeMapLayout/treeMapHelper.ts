@@ -224,7 +224,7 @@ export function getBuildingColor(
         return mapColors.flat
     }
 
-    const { colorRange, colorMode } = dynamicSettings
+    const { colorRange, colorMode } = mapState
 
     if (dynamicSettings["colorMetric"] === "unary") {
         return mapColors.positive

@@ -3,5 +3,5 @@ import { CcState } from "../../../codeCharta.model"
 import { setHoveredNodeId } from "./hoveredNodeId.actions"
 import { setState } from "../../../state/store/util/setState.reducer.factory"
 
-export const defaultHoveredNodeId: CcState["appStatus"]["hoveredNodeId"] = null
+export const defaultHoveredNodeId: CcState["mapState"]["hoveredNodeId"] = null
 export const hoveredNodeId = createReducer(defaultHoveredNodeId, on(setHoveredNodeId, setState(defaultHoveredNodeId)))

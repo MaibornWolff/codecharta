@@ -170,8 +170,8 @@ export class ScenariosService {
                 isColorMetricLinkedToHeightMetric: state.appSettings.isColorMetricLinkedToHeightMetric
             },
             colors: {
-                colorRange: { ...state.dynamicSettings.colorRange },
-                colorMode: state.dynamicSettings.colorMode,
+                colorRange: { ...state.mapState.colorRange },
+                colorMode: state.mapState.colorMode,
                 mapColors: { ...state.mapState.mapColors }
             },
             camera: {

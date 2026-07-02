@@ -11,6 +11,8 @@ import {
     setAmountOfEdgePreviews,
     setAmountOfTopLabels,
     setColorLabels,
+    setColorMode,
+    setColorRange,
     setEdgeHeight,
     setEnableFloorLabels,
     setGroupLabelCollisions,
@@ -22,7 +24,9 @@ import {
     setLabelMode,
     setLabelSize,
     setLabelsPerMap,
+    setLayoutAlgorithm,
     setMapColors,
+    setMargin,
     setScaling,
     setShowIncomingEdges,
     setShowMetricLabelNameValue,
@@ -39,16 +43,12 @@ import { setAreaMetric } from "../store/dynamicSettings/areaMetric/areaMetric.ac
 import { setHeightMetric } from "../store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setEdgeMetric } from "../store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { setColorMetric } from "../store/dynamicSettings/colorMetric/colorMetric.actions"
-import { setColorMode } from "../../mapState/store/colorMode/colorMode.actions"
 import { setSortingOption } from "../store/dynamicSettings/sortingOption/sortingOption.actions"
-import { setColorRange } from "../../mapState/store/colorRange/colorRange.actions"
 import { setDistributionMetric } from "../store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { setAllFocusedNodes } from "../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setSearchPattern } from "../store/dynamicSettings/searchPattern/searchPattern.actions"
-import { setMargin } from "../../mapState/store/margin/margin.actions"
 import { setPresentationMode } from "../store/appSettings/isPresentationMode/isPresentationMode.actions"
 import { setResetCameraIfNewFileIsLoaded } from "../store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setLayoutAlgorithm } from "../../mapState/store/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMaxTreeMapFiles } from "../store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setExperimentalFeaturesEnabled } from "../store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import { setScreenshotToClipboardEnabled } from "../store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
@@ -212,14 +212,8 @@ export class LoadInitialFileStore {
             case "colorMetric":
                 this.store.dispatch(setColorMetric({ value }))
                 break
-            case "colorMode":
-                this.store.dispatch(setColorMode({ value }))
-                break
             case "sortingOption":
                 this.store.dispatch(setSortingOption({ value }))
-                break
-            case "colorRange":
-                this.store.dispatch(setColorRange({ value }))
                 break
             case "distributionMetric":
                 this.store.dispatch(setDistributionMetric({ value }))
@@ -229,9 +223,6 @@ export class LoadInitialFileStore {
                 break
             case "searchPattern":
                 this.store.dispatch(setSearchPattern({ value }))
-                break
-            case "margin":
-                this.store.dispatch(setMargin({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)
@@ -247,16 +238,12 @@ export class LoadInitialFileStore {
             case "resetCameraIfNewFileIsLoaded":
                 this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
                 break
-            case "isLoadingMap":
             case "isLoadingFile":
-                // runtime-only flags; restoring them from a previous session's persisted state
+                // runtime-only flag; restoring it from a previous session's persisted state
                 // would briefly flash the spinner off mid-boot. Ignore.
                 break
             case "sortingOrderAscending":
                 // ignore settings for the file-explorer
-                break
-            case "layoutAlgorithm":
-                this.store.dispatch(setLayoutAlgorithm({ value }))
                 break
             case "maxTreeMapFiles":
                 this.store.dispatch(setMaxTreeMapFiles({ value }))
@@ -340,6 +327,25 @@ export class LoadInitialFileStore {
                 break
             case "labelsPerMap":
                 this.store.dispatch(setLabelsPerMap({ value }))
+                break
+            case "colorMode":
+                this.store.dispatch(setColorMode({ value }))
+                break
+            case "colorRange":
+                this.store.dispatch(setColorRange({ value }))
+                break
+            case "margin":
+                this.store.dispatch(setMargin({ value }))
+                break
+            case "layoutAlgorithm":
+                this.store.dispatch(setLayoutAlgorithm({ value }))
+                break
+            case "isLoadingMap":
+            case "hoveredNodeId":
+            case "selectedBuildingId":
+            case "rightClickedNodeData":
+                // runtime-only map flag + transient interaction ids; never restored from a
+                // previous session's persisted state (appStatus was never applied on load).
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

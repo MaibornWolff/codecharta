@@ -14,7 +14,7 @@ export class Export3DColorModeStore {
     colorMode$ = this.store.select(colorModeSelector)
 
     getColorMode(): ColorMode {
-        return this.state.getValue().dynamicSettings.colorMode
+        return this.state.getValue().mapState.colorMode
     }
 
     setAbsoluteColorMode() {

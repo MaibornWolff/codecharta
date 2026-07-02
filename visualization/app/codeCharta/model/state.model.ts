@@ -32,17 +32,17 @@ export interface Settings {
 }
 
 export interface DynamicSettings extends PrimaryMetrics {
-    colorMode: ColorMode
     sortingOption: SortingOption
-    colorRange: ColorRange
     distributionMetric: string
     focusedNodePath: string[]
     searchPattern: string
-    margin: number
 }
 
-// The map-view state home (Slice 5): the purely-visual leaf settings that were
-// previously combined under appSettings now live under their own state.mapState root.
+// The map-view state home (Slice 5+6): the purely-visual leaf settings that were
+// previously combined under appSettings/dynamicSettings/appStatus now live under
+// their own state.mapState root. Slice 6 absorbed the presentation stragglers
+// (colorMode/colorRange/margin, layoutAlgorithm/isLoadingMap) and the transient
+// interaction ids (hoveredNodeId/rightClickedNodeData/selectedBuildingId).
 export interface MapState {
     amountOfTopLabels: number
     labelSize: number
@@ -65,15 +65,26 @@ export interface MapState {
     groupLabelCollisions: boolean
     labelsPerMap: boolean
     enableFloorLabels: boolean
+    colorMode: ColorMode
+    colorRange: ColorRange
+    margin: number
+    layoutAlgorithm: LayoutAlgorithm
+    isLoadingMap: boolean
+    hoveredNodeId: number | null
+    selectedBuildingId: number | null
+    rightClickedNodeData: {
+        nodeId: number
+        xPositionOfRightClickEvent: number
+        yPositionOfRightClickEvent: number
+        origin: "codeMap" | "explorer"
+    } | null
 }
 
 export interface AppSettings {
     isPresentationMode: boolean
     resetCameraIfNewFileIsLoaded: boolean
-    isLoadingMap: boolean
     isLoadingFile: boolean
     sortingOrderAscending: boolean
-    layoutAlgorithm: LayoutAlgorithm
     maxTreeMapFiles: number
     experimentalFeaturesEnabled: boolean
     screenshotToClipboardEnabled: boolean
@@ -118,12 +129,4 @@ export function stateObjectReviver(_, valueToRevive) {
 
 export interface AppStatus {
     currentFilesAreSampleFiles: boolean
-    hoveredNodeId: number | null
-    selectedBuildingId: number | null
-    rightClickedNodeData: {
-        nodeId: number
-        xPositionOfRightClickEvent: number
-        yPositionOfRightClickEvent: number
-        origin: "codeMap" | "explorer"
-    } | null
 }

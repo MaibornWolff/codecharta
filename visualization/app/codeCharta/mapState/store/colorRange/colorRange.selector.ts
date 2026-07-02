@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const colorRangeSelector = createSelector(dynamicSettingsSelector, dynamicAppSettings => dynamicAppSettings.colorRange)
+export const colorRangeSelector = createSelector(mapStateSelector, mapState => mapState.colorRange)

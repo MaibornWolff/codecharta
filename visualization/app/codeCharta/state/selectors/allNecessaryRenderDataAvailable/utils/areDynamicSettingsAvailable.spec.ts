@@ -1,4 +1,4 @@
-import { ColorMode, DynamicSettings, SortingOption } from "../../../../codeCharta.model"
+import { ColorRange, DynamicSettings, SortingOption } from "../../../../codeCharta.model"
 import { areDynamicSettingsAvailable, _isDynamicSettingAvailable } from "./areDynamicSettingsAvailable"
 
 describe("areDynamicSettingsAvailable", () => {
@@ -17,8 +17,7 @@ describe("areDynamicSettingsAvailable", () => {
     })
 
     it("should return true when everything is set", () => {
-        const dynamicSettings: DynamicSettings = {
-            colorMode: ColorMode.trueGradient,
+        const dynamicSettings: Partial<DynamicSettings> & { colorRange: ColorRange } = {
             sortingOption: SortingOption.NAME,
             areaMetric: "rloc",
             heightMetric: "loc",
@@ -27,7 +26,6 @@ describe("areDynamicSettingsAvailable", () => {
             edgeMetric: "avgCommits",
             focusedNodePath: [],
             searchPattern: "",
-            margin: 2,
             colorRange: { from: 0, to: 25 }
         }
         expect(areDynamicSettingsAvailable(dynamicSettings)).toBe(true)

@@ -1,5 +1,13 @@
 import { combineReducers } from "@ngrx/store"
 import { MapState } from "../../codeCharta.model"
+import { colorMode, defaultColorMode } from "./colorMode/colorMode.reducer"
+import { colorRange, defaultColorRange } from "./colorRange/colorRange.reducer"
+import { defaultMargin, margin } from "./margin/margin.reducer"
+import { defaultLayoutAlgorithm, layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
+import { defaultIsLoadingMap, isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
+import { defaultHoveredNodeId, hoveredNodeId } from "./hoveredNodeId/hoveredNodeId.reducer"
+import { defaultRightClickedNodeData, rightClickedNodeData } from "./rightClickedNodeData/rightClickedNodeData.reducer"
+import { defaultSelectedBuildingId, selectedBuildingId } from "./selectedBuildingId/selectedBuildingId.reducer"
 import { amountOfEdgePreviews, defaultAmountOfEdgesPreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.reducer"
 import { amountOfTopLabels, defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.reducer"
 import { colorLabels, defaultColorLabelOptions } from "./colorLabels/colorLabels.reducer"
@@ -43,7 +51,15 @@ export const mapState = combineReducers({
     enableFloorLabels,
     labelMode,
     groupLabelCollisions,
-    labelsPerMap
+    labelsPerMap,
+    colorMode,
+    colorRange,
+    margin,
+    layoutAlgorithm,
+    isLoadingMap,
+    hoveredNodeId,
+    selectedBuildingId,
+    rightClickedNodeData
 })
 
 export const defaultMapState: MapState = {
@@ -67,5 +83,13 @@ export const defaultMapState: MapState = {
     enableFloorLabels: defaultEnableFloorLabels,
     labelMode: defaultLabelMode,
     groupLabelCollisions: defaultGroupLabelCollisions,
-    labelsPerMap: defaultLabelsPerMap
+    labelsPerMap: defaultLabelsPerMap,
+    colorMode: defaultColorMode,
+    colorRange: defaultColorRange,
+    margin: defaultMargin,
+    layoutAlgorithm: defaultLayoutAlgorithm,
+    isLoadingMap: defaultIsLoadingMap,
+    hoveredNodeId: defaultHoveredNodeId,
+    selectedBuildingId: defaultSelectedBuildingId,
+    rightClickedNodeData: defaultRightClickedNodeData
 }

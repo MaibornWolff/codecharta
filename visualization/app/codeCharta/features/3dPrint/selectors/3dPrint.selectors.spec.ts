@@ -60,10 +60,10 @@ describe("3dPrint.selectors", () => {
     describe("colorRangeSelector", () => {
         it("should select colorRange from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.colorRange = { from: 10, to: 50 }
+            mockState.mapState.colorRange = { from: 10, to: 50 }
 
             // Act
-            const result = colorRangeSelector.projector(mockState.dynamicSettings)
+            const result = colorRangeSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toEqual({ from: 10, to: 50 })
@@ -73,10 +73,10 @@ describe("3dPrint.selectors", () => {
     describe("colorModeSelector", () => {
         it("should select colorMode from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.colorMode = ColorMode.absolute
+            mockState.mapState.colorMode = ColorMode.absolute
 
             // Act
-            const result = colorModeSelector.projector(mockState.dynamicSettings)
+            const result = colorModeSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(ColorMode.absolute)

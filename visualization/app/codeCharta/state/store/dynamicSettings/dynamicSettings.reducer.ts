@@ -1,8 +1,5 @@
-import { colorMode, defaultColorMode } from "../../../mapState/store/colorMode/colorMode.reducer"
 import { defaultSortingOption, sortingOption } from "./sortingOption/sortingOption.reducer"
 import { defaultEdgeMetric, edgeMetric } from "./edgeMetric/edgeMetric.reducer"
-import { colorRange, defaultColorRange } from "../../../mapState/store/colorRange/colorRange.reducer"
-import { defaultMargin, margin } from "../../../mapState/store/margin/margin.reducer"
 import { defaultSearchPattern, searchPattern } from "./searchPattern/searchPattern.reducer"
 import { defaultFocusedNodePath, focusedNodePath } from "./focusedNodePath/focusedNodePath.reducer"
 import { defaultHeightMetric, heightMetric } from "./heightMetric/heightMetric.reducer"
@@ -12,11 +9,8 @@ import { areaMetric, defaultAreaMetric } from "./areaMetric/areaMetric.reducer"
 import { combineReducers } from "@ngrx/store"
 
 export const dynamicSettings = combineReducers({
-    colorMode,
     sortingOption,
     edgeMetric,
-    colorRange,
-    margin,
     searchPattern,
     focusedNodePath,
     heightMetric,
@@ -26,11 +20,8 @@ export const dynamicSettings = combineReducers({
 })
 
 export const defaultDynamicSettings = {
-    colorMode: defaultColorMode,
     sortingOption: defaultSortingOption,
     edgeMetric: defaultEdgeMetric,
-    colorRange: defaultColorRange,
-    margin: defaultMargin,
     searchPattern: defaultSearchPattern,
     focusedNodePath: defaultFocusedNodePath,
     heightMetric: defaultHeightMetric,

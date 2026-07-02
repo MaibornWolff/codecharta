@@ -39,7 +39,7 @@ export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData:
         // Multiply mapSize of (default) 250px by 2 = 500px and add the total margin.
         // Uses the same margin compensation as getSquarifiedTreeMap so fixed-folder maps
         // are scaled consistently with regular maps.
-        const totalMapSize = treeMapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin
+        const totalMapSize = treeMapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.mapState.margin
 
         // than divide through the root folder width and length to get a scale factor for calculation for all following nodes.
         const scaleLength = totalMapSize / nodes[0].width
@@ -173,8 +173,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutio
     const hierarchyNode = hierarchy(map)
     const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
     const { experimentalFeaturesEnabled } = state.appSettings
-    const { enableFloorLabels } = state.mapState
-    const { margin } = state.dynamicSettings
+    const { enableFloorLabels, margin } = state.mapState
     const padding = margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling
 
     let mapWidth

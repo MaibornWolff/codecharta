@@ -140,10 +140,10 @@ describe("globalSettings.selectors", () => {
     describe("layoutAlgorithmSelector", () => {
         it("should select layoutAlgorithm from appSettings", () => {
             // Arrange
-            mockState.appSettings.layoutAlgorithm = LayoutAlgorithm.StreetMap
+            mockState.mapState.layoutAlgorithm = LayoutAlgorithm.StreetMap
 
             // Act
-            const result = layoutAlgorithmSelector.projector(mockState.appSettings)
+            const result = layoutAlgorithmSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(LayoutAlgorithm.StreetMap)
@@ -151,10 +151,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return SquarifiedTreeMap when set to SquarifiedTreeMap", () => {
             // Arrange
-            mockState.appSettings.layoutAlgorithm = LayoutAlgorithm.SquarifiedTreeMap
+            mockState.mapState.layoutAlgorithm = LayoutAlgorithm.SquarifiedTreeMap
 
             // Act
-            const result = layoutAlgorithmSelector.projector(mockState.appSettings)
+            const result = layoutAlgorithmSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(LayoutAlgorithm.SquarifiedTreeMap)
@@ -162,10 +162,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return TreeMapStreet when set to TreeMapStreet", () => {
             // Arrange
-            mockState.appSettings.layoutAlgorithm = LayoutAlgorithm.TreeMapStreet
+            mockState.mapState.layoutAlgorithm = LayoutAlgorithm.TreeMapStreet
 
             // Act
-            const result = layoutAlgorithmSelector.projector(mockState.appSettings)
+            const result = layoutAlgorithmSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe(LayoutAlgorithm.TreeMapStreet)

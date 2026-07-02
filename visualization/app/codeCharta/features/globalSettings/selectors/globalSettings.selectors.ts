@@ -21,6 +21,6 @@ export const resetCameraIfNewFileIsLoadedSelector = createSelector(
     appSettings => appSettings.resetCameraIfNewFileIsLoaded
 )
 
-export const layoutAlgorithmSelector = createSelector(appSettingsSelector, appSettings => appSettings.layoutAlgorithm)
+export const layoutAlgorithmSelector = createSelector(mapStateSelector, mapState => mapState.layoutAlgorithm)
 
 export const maxTreeMapFilesSelector = createSelector(appSettingsSelector, appSettings => appSettings.maxTreeMapFiles)

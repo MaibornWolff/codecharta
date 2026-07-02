@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const marginSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.margin)
+export const marginSelector = createSelector(mapStateSelector, mapState => mapState.margin)

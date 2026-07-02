@@ -51,7 +51,7 @@ describe("TreeMapHelper", () => {
             } as HierarchyRectangularNode<CodeMapNode>
 
             state = clone(STATE)
-            state.dynamicSettings.margin = 15
+            state.mapState.margin = 15
             state.dynamicSettings.heightMetric = "theHeight"
             state.mapState.invertHeight = false
             state.dynamicSettings.focusedNodePath = []
@@ -170,7 +170,7 @@ describe("TreeMapHelper", () => {
                     y1: 400
                 } as HierarchyRectangularNode<CodeMapNode>
 
-                state.dynamicSettings.margin = 15
+                state.mapState.margin = 15
             })
 
             it("should not be a flat node when no visibleEdges", () => {
@@ -246,8 +246,8 @@ describe("TreeMapHelper", () => {
 
                 node.attributes = { validMetricName: 0 }
 
-                state.dynamicSettings.colorRange.from = 5
-                state.dynamicSettings.colorRange.to = 10
+                state.mapState.colorRange.from = 5
+                state.mapState.colorRange.to = 10
                 state.dynamicSettings.colorMetric = "validMetricName"
             })
 
@@ -267,7 +267,7 @@ describe("TreeMapHelper", () => {
 
             describe("absolute colors", () => {
                 beforeEach(() => {
-                    state.dynamicSettings.colorMode = ColorMode.absolute
+                    state.mapState.colorMode = ColorMode.absolute
                 })
 
                 it("creates green colored building colorMetricValue < colorRangeFrom", () => {
@@ -275,25 +275,25 @@ describe("TreeMapHelper", () => {
                 })
 
                 it("creates neutral colored building colorMetricValue === colorRangeFrom", () => {
-                    node.attributes = { validMetricName: state.dynamicSettings.colorRange.from }
+                    node.attributes = { validMetricName: state.mapState.colorRange.from }
 
                     expect(buildNode().color).toBe(state.mapState.mapColors.neutral)
                 })
 
                 it("creates neutral colored building", () => {
-                    node.attributes = { validMetricName: state.dynamicSettings.colorRange.from + 1 }
+                    node.attributes = { validMetricName: state.mapState.colorRange.from + 1 }
 
                     expect(buildNode().color).toBe(state.mapState.mapColors.neutral)
                 })
 
                 it("creates red colored building colorMetricValue === colorRangeTo", () => {
-                    node.attributes = { validMetricName: state.dynamicSettings.colorRange.to }
+                    node.attributes = { validMetricName: state.mapState.colorRange.to }
 
                     expect(buildNode().color).toBe(state.mapState.mapColors.negative)
                 })
 
                 it("creates red colored building colorMetricValue > colorRangeTo", () => {
-                    node.attributes = { validMetricName: state.dynamicSettings.colorRange.to + 1 }
+                    node.attributes = { validMetricName: state.mapState.colorRange.to + 1 }
 
                     expect(buildNode().color).toBe(state.mapState.mapColors.negative)
                 })
@@ -301,12 +301,12 @@ describe("TreeMapHelper", () => {
 
             describe("weighted gradient", () => {
                 beforeEach(() => {
-                    state.dynamicSettings.colorMode = ColorMode.weightedGradient
+                    state.mapState.colorMode = ColorMode.weightedGradient
                 })
 
                 it("colors green to yellow to red according to weighted gradient", () => {
                     const { positive, neutral, negative } = state.mapState.mapColors
-                    const { from, to } = state.dynamicSettings.colorRange
+                    const { from, to } = state.mapState.colorRange
                     const endPositive = Math.max(from - (to - from) / 2, from / 2)
                     const startNeutral = 2 * from - endPositive
                     const endNeutral = to - (to - from) / 2
@@ -346,11 +346,11 @@ describe("TreeMapHelper", () => {
 
             describe("true gradient", () => {
                 beforeEach(() => {
-                    state.dynamicSettings.colorMode = ColorMode.trueGradient
+                    state.mapState.colorMode = ColorMode.trueGradient
                 })
 
                 it("colors greenish to yellow color according to true gradient", () => {
-                    const { from, to } = state.dynamicSettings.colorRange
+                    const { from, to } = state.mapState.colorRange
                     const middle = (from + to) / 2
 
                     node.attributes = { validMetricName: 0 }
@@ -370,7 +370,7 @@ describe("TreeMapHelper", () => {
                 })
 
                 it("colors a reddish color according to true gradient", () => {
-                    const { to } = state.dynamicSettings.colorRange
+                    const { to } = state.mapState.colorRange
 
                     node.attributes = { validMetricName: to + 1 }
                     expect(buildNode().color).toBe("#dac501")
@@ -385,11 +385,11 @@ describe("TreeMapHelper", () => {
 
             describe("focused gradient", () => {
                 beforeEach(() => {
-                    state.dynamicSettings.colorMode = ColorMode.focusedGradient
+                    state.mapState.colorMode = ColorMode.focusedGradient
                 })
 
                 it("colors green below from threshold, red over to threshold and gradient in between", () => {
-                    const { from, to } = state.dynamicSettings.colorRange
+                    const { from, to } = state.mapState.colorRange
                     const middle = (from + to) / 2
 
                     node.attributes = { validMetricName: from }
