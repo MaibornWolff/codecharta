@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const labelModeSelector = createSelector(appSettingsSelector, appSettings => appSettings.labelMode)
+export const labelModeSelector = createSelector(mapStateSelector, mapState => mapState.labelMode)

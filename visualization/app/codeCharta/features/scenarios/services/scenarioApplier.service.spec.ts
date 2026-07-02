@@ -69,6 +69,9 @@ function mergePatches(patches: RecursivePartial<CcState>[]): RecursivePartial<Cc
         if (patch.appSettings) {
             merged.appSettings = { ...merged.appSettings, ...patch.appSettings }
         }
+        if (patch.mapState) {
+            merged.mapState = { ...merged.mapState, ...patch.mapState }
+        }
         if (patch.fileSettings) {
             merged.fileSettings = { ...merged.fileSettings, ...patch.fileSettings }
         }
@@ -142,7 +145,7 @@ describe("ScenarioApplierService", () => {
             expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
             expect(patches[0].dynamicSettings?.colorRange).toBeUndefined()
             expect(patches[1].dynamicSettings?.colorRange).toEqual({ from: 1, to: 10 })
-            expect(patches[1].appSettings?.mapColors).toEqual(testSections.colors.mapColors)
+            expect(patches[1].mapState?.mapColors).toEqual(testSections.colors.mapColors)
         })
 
         it("should apply filters and labels in a third patch", () => {
@@ -156,9 +159,9 @@ describe("ScenarioApplierService", () => {
             expect(patches).toHaveLength(3)
             expect(patches[2].fileSettings?.blacklist).toEqual(testSections.filters.blacklist)
             expect(patches[2].dynamicSettings?.focusedNodePath).toEqual(["/root/src"])
-            expect(patches[2].appSettings?.amountOfTopLabels).toBe(5)
-            expect(patches[2].appSettings?.labelMode).toBe(LabelMode.Color)
-            expect(patches[2].appSettings?.groupLabelCollisions).toBe(true)
+            expect(patches[2].mapState?.amountOfTopLabels).toBe(5)
+            expect(patches[2].mapState?.labelMode).toBe(LabelMode.Color)
+            expect(patches[2].mapState?.groupLabelCollisions).toBe(true)
             expect(patches[2].fileSettings?.markedPackages).toEqual(testSections.labelsAndFolders.markedPackages)
         })
 
@@ -174,7 +177,7 @@ describe("ScenarioApplierService", () => {
             expect(merged.dynamicSettings?.areaMetric).toBe("rloc")
             expect(merged.dynamicSettings?.colorRange).toEqual({ from: 1, to: 10 })
             expect(merged.fileSettings?.blacklist).toHaveLength(1)
-            expect(merged.appSettings?.amountOfTopLabels).toBe(5)
+            expect(merged.mapState?.amountOfTopLabels).toBe(5)
         })
 
         it("should return empty array when no keys are selected", () => {

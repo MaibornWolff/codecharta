@@ -31,8 +31,8 @@ export class StateAccessStore {
 
     resetSettings(keys: string[]) {
         const partialDefaultState = getPartialDefaultState(keys, this.state.getValue())
-        if (partialDefaultState.appSettings?.amountOfTopLabels !== undefined) {
-            partialDefaultState.appSettings.amountOfTopLabels = defaultAmountOfTopLabels
+        if (partialDefaultState.mapState?.amountOfTopLabels !== undefined) {
+            partialDefaultState.mapState.amountOfTopLabels = defaultAmountOfTopLabels
         }
         this.store.dispatch(setState({ value: partialDefaultState }))
     }

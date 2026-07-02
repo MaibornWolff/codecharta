@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const isEdgeMetricVisibleSelector = createSelector(appSettingsSelector, appSettings => appSettings.isEdgeMetricVisible)
+export const isEdgeMetricVisibleSelector = createSelector(mapStateSelector, mapState => mapState.isEdgeMetricVisible)

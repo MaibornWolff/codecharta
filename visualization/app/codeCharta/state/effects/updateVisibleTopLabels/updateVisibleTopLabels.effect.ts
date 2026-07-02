@@ -23,7 +23,7 @@ export class UpdateVisibleTopLabelsEffect {
             withLatestFrom(this.store.select(codeMapNodesSelector)),
             map(([[previousVisibleFileStates, currentVisibleFileStates], codeMapNodes]) => {
                 const isUnchanged = stringify(previousVisibleFileStates) === stringify(currentVisibleFileStates)
-                const storedValue = this.state.getValue().appSettings.amountOfTopLabels
+                const storedValue = this.state.getValue().mapState.amountOfTopLabels
                 const amountOfTopLabels = isUnchanged ? storedValue : Math.min(storedValue, getNumberOfTopLabels(codeMapNodes))
 
                 return setAmountOfTopLabels({ value: amountOfTopLabels })

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { AppSettings, CcState, DynamicSettings, FileSettings } from "../../codeCharta.model"
+import { AppSettings, CcState, DynamicSettings, FileSettings, MapState } from "../../codeCharta.model"
 import { FileState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
 import { metricDataSelector } from "../selectors/accumulatedData/metricData/metricData.selector"
@@ -56,7 +56,7 @@ import { setIsColorMetricLinkedToHeightMetricAction } from "../store/appSettings
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {
-    private static readonly optionalAppSettingsKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
+    private static readonly optionalMapStateKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
 
     constructor(
         private readonly store: Store,
@@ -119,11 +119,28 @@ export class LoadInitialFileStore {
                 if (currentValue !== loadedValue) {
                     this.mapAppSettingToAction(key as keyof AppSettings, savedAppSettings[key])
                 }
-            } else if (!LoadInitialFileStore.optionalAppSettingsKeys.has(key)) {
+            } else {
                 missingAppSettings.push(key)
             }
         }
         return missingAppSettings
+    }
+
+    applyMapState(savedMapState: MapState) {
+        const currentMapState = (this.state.getValue() as CcState).mapState
+        const missingMapState = []
+        for (const [key, value] of Object.entries(currentMapState)) {
+            if (key in savedMapState) {
+                const currentValue = stringify(value)
+                const loadedValue = stringify(savedMapState[key])
+                if (currentValue !== loadedValue) {
+                    this.mapMapStateToAction(key as keyof MapState, savedMapState[key])
+                }
+            } else if (!LoadInitialFileStore.optionalMapStateKeys.has(key)) {
+                missingMapState.push(key)
+            }
+        }
+        return missingMapState
     }
 
     setMetricsFromUrlValues(areaMetric: string, heightMetric: string, colorMetric: string, edgeMetric: string) {
@@ -224,6 +241,43 @@ export class LoadInitialFileStore {
 
     private mapAppSettingToAction(key: keyof AppSettings, value: any) {
         switch (key) {
+            case "isPresentationMode":
+                this.store.dispatch(setPresentationMode({ value }))
+                break
+            case "resetCameraIfNewFileIsLoaded":
+                this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
+                break
+            case "isLoadingMap":
+            case "isLoadingFile":
+                // runtime-only flags; restoring them from a previous session's persisted state
+                // would briefly flash the spinner off mid-boot. Ignore.
+                break
+            case "sortingOrderAscending":
+                // ignore settings for the file-explorer
+                break
+            case "layoutAlgorithm":
+                this.store.dispatch(setLayoutAlgorithm({ value }))
+                break
+            case "maxTreeMapFiles":
+                this.store.dispatch(setMaxTreeMapFiles({ value }))
+                break
+            case "experimentalFeaturesEnabled":
+                this.store.dispatch(setExperimentalFeaturesEnabled({ value }))
+                break
+            case "screenshotToClipboardEnabled":
+                this.store.dispatch(setScreenshotToClipboardEnabled({ value }))
+                break
+            case "isColorMetricLinkedToHeightMetric":
+                this.store.dispatch(setIsColorMetricLinkedToHeightMetricAction({ value }))
+                break
+            default: {
+                throw new Error(`Unhandled key: ${key}`)
+            }
+        }
+    }
+
+    private mapMapStateToAction(key: keyof MapState, value: any) {
+        switch (key) {
             case "amountOfTopLabels":
                 this.store.dispatch(setAmountOfTopLabels({ value }))
                 break
@@ -254,9 +308,6 @@ export class LoadInitialFileStore {
             case "mapColors":
                 this.store.dispatch(setMapColors({ value }))
                 break
-            case "isPresentationMode":
-                this.store.dispatch(setPresentationMode({ value }))
-                break
             case "showIncomingEdges":
                 this.store.dispatch(setShowIncomingEdges({ value }))
                 break
@@ -269,40 +320,14 @@ export class LoadInitialFileStore {
             case "isEdgeMetricVisible":
                 this.store.dispatch(setIsEdgeMetricVisible({ value }))
                 break
-            case "resetCameraIfNewFileIsLoaded":
-                this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
-                break
-            case "isLoadingMap":
-            case "isLoadingFile":
-                // runtime-only flags; restoring them from a previous session's persisted state
-                // would briefly flash the spinner off mid-boot. Ignore.
-                break
-            case "sortingOrderAscending":
-                // ignore settings for the file-explorer
-                break
             case "showMetricLabelNameValue":
                 this.store.dispatch(setShowMetricLabelNameValue({ value }))
                 break
             case "showMetricLabelNodeName":
                 this.store.dispatch(setShowMetricLabelNodeName({ value }))
                 break
-            case "layoutAlgorithm":
-                this.store.dispatch(setLayoutAlgorithm({ value }))
-                break
-            case "maxTreeMapFiles":
-                this.store.dispatch(setMaxTreeMapFiles({ value }))
-                break
-            case "experimentalFeaturesEnabled":
-                this.store.dispatch(setExperimentalFeaturesEnabled({ value }))
-                break
-            case "screenshotToClipboardEnabled":
-                this.store.dispatch(setScreenshotToClipboardEnabled({ value }))
-                break
             case "colorLabels":
                 this.store.dispatch(setColorLabels({ value }))
-                break
-            case "isColorMetricLinkedToHeightMetric":
-                this.store.dispatch(setIsColorMetricLinkedToHeightMetricAction({ value }))
                 break
             case "enableFloorLabels":
                 this.store.dispatch(setEnableFloorLabels({ value }))

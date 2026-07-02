@@ -76,6 +76,8 @@ export class LoadInitialFileService {
         }
         const missingAppSettings = this.loadInitialFileStore.applyAppSettings(savedCcState.appSettings)
         missingPropertiesInSavedCcState.push(...missingAppSettings)
+        const missingMapState = this.loadInitialFileStore.applyMapState(savedCcState.mapState)
+        missingPropertiesInSavedCcState.push(...missingMapState)
 
         this.loadFileService.loadFiles(savedNameDataPairs)
         this.loadInitialFileStore.setFiles(savedFileStates)
@@ -138,6 +140,7 @@ export class LoadInitialFileService {
         const savedFileSettings = savedCcState.fileSettings
         const savedDynamicSettings = savedCcState.dynamicSettings
         const savedAppSettings = savedCcState.appSettings
+        const savedMapState = savedCcState.mapState
         const missingPropertiesInSavedCcState = []
         if (savedFileSettings) {
             const missingFileSettings = this.loadInitialFileStore.applyFileSettings(savedFileSettings)
@@ -150,6 +153,10 @@ export class LoadInitialFileService {
         if (savedAppSettings) {
             const missingAppSettings = this.loadInitialFileStore.applyAppSettings(savedAppSettings)
             missingPropertiesInSavedCcState.push(...missingAppSettings)
+        }
+        if (savedMapState) {
+            const missingMapState = this.loadInitialFileStore.applyMapState(savedMapState)
+            missingPropertiesInSavedCcState.push(...missingMapState)
         }
         if (missingPropertiesInSavedCcState.length > 0) {
             this.showErrorDialogForMissingProperties(missingPropertiesInSavedCcState)

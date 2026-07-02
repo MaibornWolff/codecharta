@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const enableFloorLabelsSelector = createSelector(appSettingsSelector, appSettings => appSettings.enableFloorLabels)
+export const enableFloorLabelsSelector = createSelector(mapStateSelector, mapState => mapState.enableFloorLabels)

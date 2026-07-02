@@ -9,6 +9,7 @@ import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog
 import { LoadFileService } from "../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
 import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
+import { defaultMapState } from "../../../../mapState/mapState.facade"
 
 describe("GlobalConfigurationButtonComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationButtonComponent>
@@ -22,14 +23,14 @@ describe("GlobalConfigurationButtonComponent", () => {
         }
 
         mockState = {
-            getValue: jest.fn().mockReturnValue({ appSettings: defaultAppSettings })
+            getValue: jest.fn().mockReturnValue({ appSettings: defaultAppSettings, mapState: defaultMapState })
         }
 
         TestBed.configureTestingModule({
             imports: [GlobalConfigurationButtonComponent],
             providers: [
                 provideMockStore({
-                    initialState: { appSettings: defaultAppSettings }
+                    initialState: { appSettings: defaultAppSettings, mapState: defaultMapState }
                 }),
                 { provide: State, useValue: mockState },
                 {

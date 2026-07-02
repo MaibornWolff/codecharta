@@ -157,7 +157,7 @@ describe("LoadInitialFileService", () => {
                     selectedAs: FileSelectionState.Partial
                 }
             ]
-            mockedState.appSettings.amountOfTopLabels = AMOUNT_OF_TOP_LABELS
+            mockedState.mapState.amountOfTopLabels = AMOUNT_OF_TOP_LABELS
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
             jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
 

@@ -13,8 +13,8 @@ export class CodeMapArrowStore {
 
     readonly hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
 
-    getAppSettings() {
-        return this.state.getValue().appSettings
+    getMapState() {
+        return this.state.getValue().mapState
     }
 
     getEdges() {

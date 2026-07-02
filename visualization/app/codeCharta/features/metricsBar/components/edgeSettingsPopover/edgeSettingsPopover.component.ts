@@ -66,14 +66,14 @@ export class EdgeSettingsPopoverComponent {
     readonly incomingEdgeColor = computed(() => this.mapColors().incomingEdge as string)
 
     readonly resetKeys = [
-        "appSettings.amountOfEdgePreviews",
-        "appSettings.edgeHeight",
-        "appSettings.mapColors.outgoingEdge",
-        "appSettings.showOutgoingEdges",
-        "appSettings.mapColors.incomingEdge",
-        "appSettings.showIncomingEdges",
-        "appSettings.showOnlyBuildingsWithEdges",
-        "appSettings.isEdgeMetricVisible"
+        "mapState.amountOfEdgePreviews",
+        "mapState.edgeHeight",
+        "mapState.mapColors.outgoingEdge",
+        "mapState.showOutgoingEdges",
+        "mapState.mapColors.incomingEdge",
+        "mapState.showIncomingEdges",
+        "mapState.showOnlyBuildingsWithEdges",
+        "mapState.isEdgeMetricVisible"
     ]
 
     setAmountOfEdgePreviews(value: number) {

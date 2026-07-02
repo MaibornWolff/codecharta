@@ -42,7 +42,7 @@ describe("updateVisibleTopLabelsEffect", () => {
                 {
                     provide: State,
                     useValue: {
-                        getValue: () => ({ appSettings: { amountOfTopLabels: 5 } })
+                        getValue: () => ({ mapState: { amountOfTopLabels: 5 } })
                     }
                 }
             ]
@@ -112,7 +112,7 @@ describe("updateVisibleTopLabelsEffect when stored value is lower than auto-calc
                 {
                     provide: State,
                     useValue: {
-                        getValue: () => ({ appSettings: { amountOfTopLabels: 1 } })
+                        getValue: () => ({ mapState: { amountOfTopLabels: 1 } })
                     }
                 }
             ]

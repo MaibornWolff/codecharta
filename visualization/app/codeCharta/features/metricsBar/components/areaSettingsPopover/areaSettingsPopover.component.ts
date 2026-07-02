@@ -26,7 +26,7 @@ export class AreaSettingsPopoverComponent {
     readonly enableFloorLabels = toSignal(this.enableFloorLabelsService.enableFloorLabels$(), { initialValue: false })
     readonly isInvertedArea = toSignal(this.invertAreaService.invertArea$(), { initialValue: false })
 
-    readonly resetKeys = ["dynamicSettings.margin", "appSettings.invertArea", "appSettings.enableFloorLabels"]
+    readonly resetKeys = ["dynamicSettings.margin", "mapState.invertArea", "mapState.enableFloorLabels"]
 
     setMargin(margin: number) {
         this.marginService.setMargin(margin)

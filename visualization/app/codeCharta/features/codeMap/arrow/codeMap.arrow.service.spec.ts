@@ -365,7 +365,7 @@ describe("CodeMapArrowService", () => {
         it("should create a curve out of the 2 Nodes", () => {
             const originNode: Node = OUTGOING_NODE
             const targetNode: Node = INCOMING_NODE
-            const curveScale = 100 * state.getValue().appSettings.edgeHeight
+            const curveScale = 100 * state.getValue().mapState.edgeHeight
 
             const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
 
@@ -392,9 +392,9 @@ describe("CodeMapArrowService", () => {
         it("should run through the function with mocked subfunctions", () => {
             const originNode: Node = OUTGOING_NODE
             const targetNode: Node = INCOMING_NODE
-            const curveScale = 100 * state.getValue().appSettings.edgeHeight
+            const curveScale = 100 * state.getValue().mapState.edgeHeight
             const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
-            const color = ColorConverter.convertHexToNumber(state.getValue().appSettings.mapColors.outgoingEdge)
+            const color = ColorConverter.convertHexToNumber(state.getValue().mapState.mapColors.outgoingEdge)
 
             codeMapArrowService["setCurveColor"](curve, color)
 

@@ -140,7 +140,7 @@ describe("ScenariosService", () => {
             // Assert
             expect(sections.colors.colorRange).toEqual(defaultState.dynamicSettings.colorRange)
             expect(sections.colors.colorMode).toBe(defaultState.dynamicSettings.colorMode)
-            expect(sections.colors.mapColors).toEqual(defaultState.appSettings.mapColors)
+            expect(sections.colors.mapColors).toEqual(defaultState.mapState.mapColors)
         })
 
         it("should extract camera section from provided positions", () => {
@@ -166,10 +166,10 @@ describe("ScenariosService", () => {
             const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
 
             // Assert
-            expect(sections.labelsAndFolders.amountOfTopLabels).toBe(defaultState.appSettings.amountOfTopLabels)
-            expect(sections.labelsAndFolders.labelSize).toBe(defaultState.appSettings.labelSize)
-            expect(sections.labelsAndFolders.labelMode).toBe(defaultState.appSettings.labelMode)
-            expect(sections.labelsAndFolders.groupLabelCollisions).toBe(defaultState.appSettings.groupLabelCollisions)
+            expect(sections.labelsAndFolders.amountOfTopLabels).toBe(defaultState.mapState.amountOfTopLabels)
+            expect(sections.labelsAndFolders.labelSize).toBe(defaultState.mapState.labelSize)
+            expect(sections.labelsAndFolders.labelMode).toBe(defaultState.mapState.labelMode)
+            expect(sections.labelsAndFolders.groupLabelCollisions).toBe(defaultState.mapState.groupLabelCollisions)
             expect(sections.labelsAndFolders.markedPackages).toEqual(defaultState.fileSettings.markedPackages)
         })
     })

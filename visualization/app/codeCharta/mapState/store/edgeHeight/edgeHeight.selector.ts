@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const edgeHeightSelector = createSelector(appSettingsSelector, appSettings => appSettings.edgeHeight)
+export const edgeHeightSelector = createSelector(mapStateSelector, mapState => mapState.edgeHeight)

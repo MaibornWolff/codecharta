@@ -1,17 +1,20 @@
 /**
- * Public surface of the Appearance shared-state module — the ONLY thing outsiders import.
+ * Public surface of the mapState state-home — the ONLY thing outsiders import.
  *
- * Appearance owns the purely-visual leaf settings (map colors, labels, scaling, axis inversion,
- * hide-flat, white background, and edge *visibility/appearance*). Slice 4 moved these settings'
- * code out of `state/store/appSettings/*` into `appearance/store/*` while keeping the existing
- * `appSettings` combineReducers key (a code-boundary move, not a store-key reshape), so every
- * `state.appSettings.*` path and the URL/scenario/IndexedDB persistence stay byte-identical.
+ * mapState owns the map-view leaf settings (map colors, labels, scaling, axis inversion,
+ * hide-flat, white background, and edge *visibility/appearance*). Slice 5 pulled these slices
+ * out of the `appSettings` combineReducers into their own `state.mapState` root (the store-key
+ * reshape that Slice 4's folder-only move deferred), so they now persist under `state.mapState.*`.
  *
  * This barrel re-exports each setting's selectors (read), action creators (write), reducer +
- * `default*` (store wiring). Consumers — legacy features/state and the metrics/dependency lenses —
- * read appearance only through here; the `store/` internals stay private by convention (the
- * `shared-state-is-leaf` dep-cruiser rule locks the leaf direction).
+ * `default*` (store wiring), plus the combined `mapState` reducer, `defaultMapState`, and the
+ * `mapStateSelector` root selector used by `state.manager` to register the home. Consumers —
+ * legacy features/state and the metrics/dependency lenses — read mapState only through here; the
+ * `store/` internals stay private by convention (the `state-home-is-leaf` dep-cruiser rule locks
+ * the leaf direction).
  */
+export * from "./store/mapState.reducer"
+export * from "./store/mapState.selector"
 export * from "./store/amountOfEdgePreviews/amountOfEdgePreviews.actions"
 export * from "./store/amountOfEdgePreviews/amountOfEdgePreviews.reducer"
 export * from "./store/amountOfEdgePreviews/amountOfEdgePreviews.selector"

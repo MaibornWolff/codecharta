@@ -22,6 +22,10 @@ export class ThreeSceneStore {
         return this.state.getValue().appSettings
     }
 
+    getMapState() {
+        return this.state.getValue().mapState
+    }
+
     getIdToNode() {
         return idToNodeSelector(this.state.getValue())
     }

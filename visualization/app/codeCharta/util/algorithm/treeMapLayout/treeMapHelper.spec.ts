@@ -53,7 +53,7 @@ describe("TreeMapHelper", () => {
             state = clone(STATE)
             state.dynamicSettings.margin = 15
             state.dynamicSettings.heightMetric = "theHeight"
-            state.appSettings.invertHeight = false
+            state.mapState.invertHeight = false
             state.dynamicSettings.focusedNodePath = []
         })
 
@@ -66,7 +66,7 @@ describe("TreeMapHelper", () => {
         })
 
         it("invertHeight", () => {
-            state.appSettings.invertHeight = true
+            state.mapState.invertHeight = true
             expect(buildNode()).toMatchSnapshot()
         })
 
@@ -179,7 +179,7 @@ describe("TreeMapHelper", () => {
             })
 
             it("should be a flat node when other edges are visible", () => {
-                state.appSettings.showOnlyBuildingsWithEdges = true
+                state.mapState.showOnlyBuildingsWithEdges = true
                 state.fileSettings.edges = [
                     {
                         fromNodeName: "/root/anotherNode",
@@ -254,14 +254,14 @@ describe("TreeMapHelper", () => {
             describe("generics", () => {
                 it("creates grey building for undefined colorMetric", () => {
                     state.dynamicSettings.colorMetric = "invalid"
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.base)
+                    expect(buildNode().color).toBe(state.mapState.mapColors.base)
                 })
 
                 it("creates flat colored building", () => {
                     state.fileSettings.blacklist = [{ path: "*Anode", type: "flatten" }]
                     squaredNode.data.isFlattened = true
 
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.flat)
+                    expect(buildNode().color).toBe(state.mapState.mapColors.flat)
                 })
             })
 
@@ -271,31 +271,31 @@ describe("TreeMapHelper", () => {
                 })
 
                 it("creates green colored building colorMetricValue < colorRangeFrom", () => {
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.positive)
+                    expect(buildNode().color).toBe(state.mapState.mapColors.positive)
                 })
 
                 it("creates neutral colored building colorMetricValue === colorRangeFrom", () => {
                     node.attributes = { validMetricName: state.dynamicSettings.colorRange.from }
 
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+                    expect(buildNode().color).toBe(state.mapState.mapColors.neutral)
                 })
 
                 it("creates neutral colored building", () => {
                     node.attributes = { validMetricName: state.dynamicSettings.colorRange.from + 1 }
 
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+                    expect(buildNode().color).toBe(state.mapState.mapColors.neutral)
                 })
 
                 it("creates red colored building colorMetricValue === colorRangeTo", () => {
                     node.attributes = { validMetricName: state.dynamicSettings.colorRange.to }
 
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
+                    expect(buildNode().color).toBe(state.mapState.mapColors.negative)
                 })
 
                 it("creates red colored building colorMetricValue > colorRangeTo", () => {
                     node.attributes = { validMetricName: state.dynamicSettings.colorRange.to + 1 }
 
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.negative)
+                    expect(buildNode().color).toBe(state.mapState.mapColors.negative)
                 })
             })
 
@@ -305,7 +305,7 @@ describe("TreeMapHelper", () => {
                 })
 
                 it("colors green to yellow to red according to weighted gradient", () => {
-                    const { positive, neutral, negative } = state.appSettings.mapColors
+                    const { positive, neutral, negative } = state.mapState.mapColors
                     const { from, to } = state.dynamicSettings.colorRange
                     const endPositive = Math.max(from - (to - from) / 2, from / 2)
                     const startNeutral = 2 * from - endPositive
@@ -354,7 +354,7 @@ describe("TreeMapHelper", () => {
                     const middle = (from + to) / 2
 
                     node.attributes = { validMetricName: 0 }
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.positive.toLowerCase())
+                    expect(buildNode().color).toBe(state.mapState.mapColors.positive.toLowerCase())
 
                     node.attributes = { validMetricName: 1 }
                     expect(buildNode().color).toBe("#78b237")
@@ -363,7 +363,7 @@ describe("TreeMapHelper", () => {
                     expect(buildNode().color).toBe("#cec809")
 
                     node.attributes = { validMetricName: middle }
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+                    expect(buildNode().color).toBe(state.mapState.mapColors.neutral)
 
                     node.attributes = { validMetricName: middle + 1 }
                     expect(buildNode().color).toBe("#dcca00")
@@ -396,22 +396,22 @@ describe("TreeMapHelper", () => {
                     expect(buildNode().color.toLowerCase()).toBe("#97ba26")
 
                     node.attributes = { validMetricName: from - 1 }
-                    expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.positive.toLowerCase())
+                    expect(buildNode().color.toLowerCase()).toBe(state.mapState.mapColors.positive.toLowerCase())
 
                     node.attributes = { validMetricName: middle - 1 }
                     expect(buildNode().color).toBe("#a5be1f")
 
                     node.attributes = { validMetricName: middle }
-                    expect(buildNode().color).toBe(state.appSettings.mapColors.neutral)
+                    expect(buildNode().color).toBe(state.mapState.mapColors.neutral)
 
                     node.attributes = { validMetricName: middle + 1 }
                     expect(buildNode().color).toBe("#b98006")
 
                     node.attributes = { validMetricName: to }
-                    expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.negative.toLowerCase())
+                    expect(buildNode().color.toLowerCase()).toBe(state.mapState.mapColors.negative.toLowerCase())
 
                     node.attributes = { validMetricName: to + 1 }
-                    expect(buildNode().color.toLowerCase()).toBe(state.appSettings.mapColors.negative.toLowerCase())
+                    expect(buildNode().color.toLowerCase()).toBe(state.mapState.mapColors.negative.toLowerCase())
                 })
             })
         })

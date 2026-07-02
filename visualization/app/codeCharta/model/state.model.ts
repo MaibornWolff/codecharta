@@ -28,6 +28,7 @@ export interface Settings {
     fileSettings: FileSettings
     dynamicSettings: DynamicSettings
     appSettings: AppSettings
+    mapState: MapState
 }
 
 export interface DynamicSettings extends PrimaryMetrics {
@@ -40,7 +41,9 @@ export interface DynamicSettings extends PrimaryMetrics {
     margin: number
 }
 
-export interface AppSettings {
+// The map-view state home (Slice 5): the purely-visual leaf settings that were
+// previously combined under appSettings now live under their own state.mapState root.
+export interface MapState {
     amountOfTopLabels: number
     labelSize: number
     amountOfEdgePreviews: number
@@ -51,33 +54,37 @@ export interface AppSettings {
     invertArea: boolean
     isWhiteBackground: boolean
     mapColors: MapColors
-    isPresentationMode: boolean
     showOutgoingEdges: boolean
     showIncomingEdges: boolean
     showOnlyBuildingsWithEdges: boolean
     isEdgeMetricVisible: boolean
-    resetCameraIfNewFileIsLoaded: boolean
-    isLoadingMap: boolean
-    isLoadingFile: boolean
-    sortingOrderAscending: boolean
     showMetricLabelNameValue: boolean
     showMetricLabelNodeName: boolean
-    layoutAlgorithm: LayoutAlgorithm
-    maxTreeMapFiles: number
-    experimentalFeaturesEnabled: boolean
-    screenshotToClipboardEnabled: boolean
     colorLabels: ColorLabelOptions
     labelMode: LabelMode
     groupLabelCollisions: boolean
     labelsPerMap: boolean
-    isColorMetricLinkedToHeightMetric: boolean
     enableFloorLabels: boolean
+}
+
+export interface AppSettings {
+    isPresentationMode: boolean
+    resetCameraIfNewFileIsLoaded: boolean
+    isLoadingMap: boolean
+    isLoadingFile: boolean
+    sortingOrderAscending: boolean
+    layoutAlgorithm: LayoutAlgorithm
+    maxTreeMapFiles: number
+    experimentalFeaturesEnabled: boolean
+    screenshotToClipboardEnabled: boolean
+    isColorMetricLinkedToHeightMetric: boolean
 }
 
 export interface CcState {
     fileSettings: FileSettings
     dynamicSettings: DynamicSettings
     appSettings: AppSettings
+    mapState: MapState
     files: FileState[]
     appStatus: AppStatus
 }

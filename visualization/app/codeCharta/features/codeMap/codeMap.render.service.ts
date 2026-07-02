@@ -164,7 +164,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private uncheckEmptyColorLabels() {
-        const colorLabels = this.codeMapRenderStore.getState().appSettings.colorLabels
+        const colorLabels = this.codeMapRenderStore.getState().mapState.colorLabels
         const unchecks: Partial<ColorLabelOptions> = {}
         for (const category of colorLabelTypes) {
             if (colorLabels[category] && this.nodesByColor[category].length === 0) {
@@ -196,7 +196,7 @@ export class CodeMapRenderService implements OnDestroy {
             colorLabels: colorLabelOptions,
             amountOfTopLabels,
             labelMode
-        } = state.appSettings
+        } = state.mapState
 
         if (showMetricLabelNodeName || showMetricLabelNameValue) {
             const highestNodeInSet = sortedNodes[0].height

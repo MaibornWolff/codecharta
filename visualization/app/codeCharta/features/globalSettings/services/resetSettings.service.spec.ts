@@ -21,7 +21,7 @@ describe("ResetSettingsService", () => {
     describe("resetSettings", () => {
         it("should delegate to store with single setting key", () => {
             // Arrange
-            const settingsKeys = ["appSettings.isWhiteBackground"]
+            const settingsKeys = ["mapState.isWhiteBackground"]
 
             // Act
             service.resetSettings(settingsKeys)
@@ -32,7 +32,7 @@ describe("ResetSettingsService", () => {
 
         it("should delegate to store with multiple setting keys", () => {
             // Arrange
-            const settingsKeys = ["appSettings.hideFlatBuildings", "appSettings.experimentalFeaturesEnabled"]
+            const settingsKeys = ["mapState.hideFlatBuildings", "appSettings.experimentalFeaturesEnabled"]
 
             // Act
             service.resetSettings(settingsKeys)
@@ -68,8 +68,8 @@ describe("ResetSettingsService", () => {
             const settingsKeys = [
                 "appSettings.screenshotToClipboardEnabled",
                 "appSettings.experimentalFeaturesEnabled",
-                "appSettings.isWhiteBackground",
-                "appSettings.hideFlatBuildings",
+                "mapState.isWhiteBackground",
+                "mapState.hideFlatBuildings",
                 "appSettings.resetCameraIfNewFileIsLoaded",
                 "appSettings.layoutAlgorithm",
                 "appSettings.maxTreeMapFiles"

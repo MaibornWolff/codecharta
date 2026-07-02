@@ -6,14 +6,14 @@ import { clone } from "../../util/clone"
 describe("_applyPartialState", () => {
     it("should update partial state", () => {
         const partialState = {
-            appSettings: {
+            mapState: {
                 invertArea: true
             }
         }
 
         const newState = _applyPartialState(clone(defaultState), partialState)
 
-        expect(newState.appSettings.invertArea).toBe(true)
+        expect(newState.mapState.invertArea).toBe(true)
         expect(newState.appSettings.experimentalFeaturesEnabled).toBe(defaultState.appSettings.experimentalFeaturesEnabled)
     })
 
@@ -59,7 +59,7 @@ describe("_applyPartialState", () => {
 
     it("should keep markingColors as an array instead of deep-merging it into an object", () => {
         const partialState = {
-            appSettings: {
+            mapState: {
                 mapColors: {
                     markingColors: ["#aaaaaa", "#bbbbbb"]
                 }
@@ -68,7 +68,7 @@ describe("_applyPartialState", () => {
 
         const newState = _applyPartialState(clone(defaultState), partialState)
 
-        expect(Array.isArray(newState.appSettings.mapColors.markingColors)).toBe(true)
-        expect(newState.appSettings.mapColors.markingColors).toEqual(["#aaaaaa", "#bbbbbb"])
+        expect(Array.isArray(newState.mapState.mapColors.markingColors)).toBe(true)
+        expect(newState.mapState.mapColors.markingColors).toEqual(["#aaaaaa", "#bbbbbb"])
     })
 })

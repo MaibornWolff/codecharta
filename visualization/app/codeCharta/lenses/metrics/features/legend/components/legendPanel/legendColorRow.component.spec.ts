@@ -27,7 +27,7 @@ describe("LegendColorRowComponent", () => {
         const { component } = await setup({ mapColorFor: "positive" })
 
         // Assert
-        expect(component.color()).toBe(defaultState.appSettings.mapColors.positive)
+        expect(component.color()).toBe(defaultState.mapState.mapColors.positive)
         expect(screen.queryByRole("button")).toBeNull()
     })
 })

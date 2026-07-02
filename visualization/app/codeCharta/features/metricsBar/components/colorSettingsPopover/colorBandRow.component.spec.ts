@@ -38,7 +38,7 @@ describe("ColorBandRowComponent", () => {
         const { component } = await setup({ mapColorFor: "positive" })
 
         // Assert
-        expect(component.color()).toBe(defaultState.appSettings.mapColors.positive)
+        expect(component.color()).toBe(defaultState.mapState.mapColors.positive)
     })
 
     it("should dispatch setMapColors for its map color when the picker emits", async () => {

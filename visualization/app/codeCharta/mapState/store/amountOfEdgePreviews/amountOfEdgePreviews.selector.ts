@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const amountOfEdgePreviewsSelector = createSelector(appSettingsSelector, appSettings => appSettings.amountOfEdgePreviews)
+export const amountOfEdgePreviewsSelector = createSelector(mapStateSelector, mapState => mapState.amountOfEdgePreviews)

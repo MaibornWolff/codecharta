@@ -172,7 +172,8 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutionScaling: number, maxWidth: number): SquarifiedTreeMap {
     const hierarchyNode = hierarchy(map)
     const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
-    const { enableFloorLabels, experimentalFeaturesEnabled } = state.appSettings
+    const { experimentalFeaturesEnabled } = state.appSettings
+    const { enableFloorLabels } = state.mapState
     const { margin } = state.dynamicSettings
     const padding = margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling
 
@@ -269,7 +270,7 @@ function isOnlyVisibleInComparisonMap(node: CodeMapNode, dynamicSettings: Dynami
 // Only exported for testing.
 export function calculateAreaValue(
     node: CodeMapNode,
-    { dynamicSettings, appSettings, fileSettings }: CcState,
+    { dynamicSettings, mapState, fileSettings }: CcState,
     maxWidth: number,
     experimentalFeaturesEnabled: boolean
 ) {
@@ -287,11 +288,11 @@ export function calculateAreaValue(
         const isAttributeDirectionInversed = attributeDescriptors[areaMetric]?.direction === 1
 
         if (isAttributeDirectionInversed) {
-            return appSettings.invertArea
+            return mapState.invertArea
                 ? node.attributes[dynamicSettings.areaMetric]
                 : maxWidth - node.attributes[dynamicSettings.areaMetric]
         }
-        return appSettings.invertArea ? maxWidth - node.attributes[dynamicSettings.areaMetric] : node.attributes[dynamicSettings.areaMetric]
+        return mapState.invertArea ? maxWidth - node.attributes[dynamicSettings.areaMetric] : node.attributes[dynamicSettings.areaMetric]
     }
     return experimentalFeaturesEnabled ? 0.5 : 0
 }

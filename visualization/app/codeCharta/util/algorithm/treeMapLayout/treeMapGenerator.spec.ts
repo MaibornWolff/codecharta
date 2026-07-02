@@ -129,7 +129,7 @@ describe("treeMapGenerator", () => {
 
         it("should disable floor labels if option is toggled and change size", () => {
             const nodesWithFloorLabels: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
-            state.appSettings.enableFloorLabels = false
+            state.mapState.enableFloorLabels = false
             const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
             for (const [index, nodesWithFloorLabel] of nodesWithFloorLabels.entries()) {

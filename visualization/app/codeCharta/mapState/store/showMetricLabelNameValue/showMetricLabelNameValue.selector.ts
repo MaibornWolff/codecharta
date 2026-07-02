@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const showMetricLabelNodeValueSelector = createSelector(appSettingsSelector, appSettings => appSettings.showMetricLabelNameValue)
+export const showMetricLabelNodeValueSelector = createSelector(mapStateSelector, mapState => mapState.showMetricLabelNameValue)

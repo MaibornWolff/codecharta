@@ -263,8 +263,8 @@ describe("LabelSettingsPanelComponent", () => {
             screen.getByText("Reset label settings").click()
 
             // Assert
-            const lastCall = dispatchSpy.mock.calls.at(-1)?.[0] as { value?: { appSettings?: { labelSize?: number } } }
-            expect(lastCall?.value?.appSettings?.labelSize).toBe(1)
+            const lastCall = dispatchSpy.mock.calls.at(-1)?.[0] as { value?: { mapState?: { labelSize?: number } } }
+            expect(lastCall?.value?.mapState?.labelSize).toBe(1)
         })
     })
 })

@@ -2168,6 +2168,18 @@ export const STATE: CcState = {
         sortingOption: SortingOption.NAME
     },
     appSettings: {
+        isColorMetricLinkedToHeightMetric: false,
+        isPresentationMode: false,
+        resetCameraIfNewFileIsLoaded: true,
+        isLoadingMap: true,
+        isLoadingFile: true,
+        sortingOrderAscending: false,
+        experimentalFeaturesEnabled: false,
+        screenshotToClipboardEnabled: false,
+        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+        maxTreeMapFiles: 200
+    },
+    mapState: {
         amountOfTopLabels: 31,
         labelSize: 1,
         amountOfEdgePreviews: 5,
@@ -2183,7 +2195,6 @@ export const STATE: CcState = {
         invertArea: false,
         isEdgeMetricVisible: true,
         isWhiteBackground: false,
-        isColorMetricLinkedToHeightMetric: false,
         enableFloorLabels: true,
         mapColors: {
             positive: "#69AE40",
@@ -2199,20 +2210,11 @@ export const STATE: CcState = {
             outgoingEdge: "#ff00ff",
             labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
         },
-        isPresentationMode: false,
         showIncomingEdges: true,
         showOutgoingEdges: true,
         showOnlyBuildingsWithEdges: false,
-        resetCameraIfNewFileIsLoaded: true,
-        isLoadingMap: true,
-        isLoadingFile: true,
-        sortingOrderAscending: false,
         showMetricLabelNameValue: true,
         showMetricLabelNodeName: true,
-        experimentalFeaturesEnabled: false,
-        screenshotToClipboardEnabled: false,
-        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        maxTreeMapFiles: 200,
         labelMode: LabelMode.Height,
         groupLabelCollisions: false,
         labelsPerMap: false
@@ -2228,6 +2230,18 @@ export const STATE: CcState = {
 
 export const DEFAULT_STATE: CcState = {
     appSettings: {
+        isColorMetricLinkedToHeightMetric: false,
+        isPresentationMode: false,
+        resetCameraIfNewFileIsLoaded: true,
+        isLoadingMap: true,
+        isLoadingFile: true,
+        sortingOrderAscending: true,
+        experimentalFeaturesEnabled: false,
+        screenshotToClipboardEnabled: false,
+        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+        maxTreeMapFiles: 100
+    },
+    mapState: {
         amountOfTopLabels: 1,
         labelSize: 1,
         amountOfEdgePreviews: 1,
@@ -2242,7 +2256,6 @@ export const DEFAULT_STATE: CcState = {
         invertArea: false,
         isEdgeMetricVisible: true,
         isWhiteBackground: false,
-        isColorMetricLinkedToHeightMetric: false,
         enableFloorLabels: true,
         mapColors: {
             base: "#666666",
@@ -2259,20 +2272,11 @@ export const DEFAULT_STATE: CcState = {
             labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
         },
         scaling: new Vector3(1, 1, 1),
-        isPresentationMode: false,
         showIncomingEdges: true,
         showOutgoingEdges: true,
         showOnlyBuildingsWithEdges: false,
-        resetCameraIfNewFileIsLoaded: true,
-        isLoadingMap: true,
-        isLoadingFile: true,
-        sortingOrderAscending: true,
         showMetricLabelNameValue: false,
         showMetricLabelNodeName: true,
-        experimentalFeaturesEnabled: false,
-        screenshotToClipboardEnabled: false,
-        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        maxTreeMapFiles: 100,
         labelMode: LabelMode.Height,
         groupLabelCollisions: false,
         labelsPerMap: false

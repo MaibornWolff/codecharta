@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const groupLabelCollisionsSelector = createSelector(appSettingsSelector, appSettings => appSettings.groupLabelCollisions)
+export const groupLabelCollisionsSelector = createSelector(mapStateSelector, mapState => mapState.groupLabelCollisions)

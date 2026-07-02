@@ -4,7 +4,7 @@ import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/c
 import { getNumberOfTopLabels } from "../../../state/effects/updateVisibleTopLabels/getNumberOfTopLabels"
 import { defaultState } from "../state.manager"
 
-const APP_SETTINGS_AMOUNT_OF_TOP_LABELS = "appSettings.amountOfTopLabels"
+const MAP_STATE_AMOUNT_OF_TOP_LABELS = "mapState.amountOfTopLabels"
 
 export const getPartialDefaultState = (settingKeys: string[], state: CcState) => {
     const updatedSettings: RecursivePartial<Settings> = {}
@@ -35,8 +35,8 @@ export const getPartialDefaultState = (settingKeys: string[], state: CcState) =>
         convertToVectors(updatedSettings)
     }
 
-    if (settingKeys.includes(APP_SETTINGS_AMOUNT_OF_TOP_LABELS)) {
-        updatedSettings.appSettings.amountOfTopLabels = getNumberOfTopLabels(codeMapNodesSelector(state))
+    if (settingKeys.includes(MAP_STATE_AMOUNT_OF_TOP_LABELS)) {
+        updatedSettings.mapState.amountOfTopLabels = getNumberOfTopLabels(codeMapNodesSelector(state))
     }
 
     return updatedSettings

@@ -17,7 +17,7 @@ describe("FolderOverridesComponent", () => {
                       ...defaultState,
                       appSettings: {
                           ...defaultState.appSettings,
-                          mapColors: { ...defaultState.appSettings.mapColors, markingColors: markingColors as string[] }
+                          mapColors: { ...defaultState.mapState.mapColors, markingColors: markingColors as string[] }
                       }
                   }
         const renderResult = await render(FolderOverridesComponent, {
@@ -101,7 +101,7 @@ describe("FolderOverridesComponent", () => {
 
     it("should not pin a nested folder with its marked parent's color", async () => {
         // Arrange: all marking colors are taken, the naive fallback would collide with the parent
-        const { markingColors } = defaultState.appSettings.mapColors
+        const { markingColors } = defaultState.mapState.mapColors
         const overrides = markingColors.map((color, index) => ({ path: `/root/folder${index}`, color, fileCount: 1 }))
         overrides[0] = { path: "/root", color: markingColors[0], fileCount: 1 }
         await setup(overrides, ["/root/sub"])
@@ -119,7 +119,7 @@ describe("FolderOverridesComponent", () => {
 
     it("should pin a suggested folder with the first unused marking color", async () => {
         // Arrange
-        const [firstMarkingColor, secondMarkingColor] = defaultState.appSettings.mapColors.markingColors
+        const [firstMarkingColor, secondMarkingColor] = defaultState.mapState.mapColors.markingColors
         await setup([{ path: "/root/app", color: firstMarkingColor, fileCount: 51 }], ["/root", "/root/ui"])
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -134,8 +134,8 @@ describe("FolderOverridesComponent", () => {
 
     it("should pin a folder when markingColors was persisted as an object with numeric keys", async () => {
         // Arrange: some browsers restore the persisted markingColors array as a plain object
-        const [firstMarkingColor, secondMarkingColor] = defaultState.appSettings.mapColors.markingColors
-        const markingColorsAsObject = { ...defaultState.appSettings.mapColors.markingColors }
+        const [firstMarkingColor, secondMarkingColor] = defaultState.mapState.mapColors.markingColors
+        const markingColorsAsObject = { ...defaultState.mapState.mapColors.markingColors }
         await setup([{ path: "/root/app", color: firstMarkingColor, fileCount: 51 }], ["/root", "/root/ui"], markingColorsAsObject)
         const store = TestBed.inject(MockStore)
         const dispatchSpy = jest.spyOn(store, "dispatch")

@@ -131,12 +131,12 @@ export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeig
     const isAttributeDirectionInversed = attributeDescriptors[heightMetric]?.direction === 1
 
     if (isAttributeDirectionInversed) {
-        if (state.appSettings.invertHeight) {
+        if (state.mapState.invertHeight) {
             return heightValue
         }
         return maxHeight - heightValue
     }
-    if (state.appSettings.invertHeight) {
+    if (state.mapState.invertHeight) {
         return maxHeight - heightValue
     }
     return heightValue
@@ -148,7 +148,7 @@ export function resolveHeightValue(heightValue: number, heightScale: number, dat
 }
 
 export function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: CcState, flattened: boolean) {
-    if (squaredNode.isExcluded || (isNodeLeaf && state.appSettings.hideFlatBuildings && flattened)) {
+    if (squaredNode.isExcluded || (isNodeLeaf && state.mapState.hideFlatBuildings && flattened)) {
         return false
     }
 
@@ -184,7 +184,7 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: CcState) {
         return searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
     }
 
-    if (state.appSettings.showOnlyBuildingsWithEdges && state.fileSettings.edges.some(edge => edge.visible)) {
+    if (state.mapState.showOnlyBuildingsWithEdges && state.fileSettings.edges.some(edge => edge.visible)) {
         return nodeHasNoVisibleEdges(codeMapNode, state)
     }
 
@@ -205,12 +205,12 @@ function isNodeNonSearched(squaredNode: CodeMapNode, state: CcState) {
 
 export function getBuildingColor(
     node: CodeMapNode,
-    { appSettings, dynamicSettings }: CcState,
+    { mapState, dynamicSettings }: CcState,
     nodeMetricDataRange: MetricMinMax,
     isDeltaState: boolean,
     flattened: boolean
 ) {
-    const { mapColors } = appSettings
+    const { mapColors } = mapState
 
     if (isDeltaState) {
         return mapColors.base

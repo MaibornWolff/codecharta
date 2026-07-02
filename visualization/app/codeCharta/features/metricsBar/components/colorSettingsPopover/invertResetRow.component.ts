@@ -35,17 +35,17 @@ export class InvertResetRowComponent {
     resetColorsKeys() {
         return this.isDeltaState()
             ? [
-                  "appSettings.mapColors.positiveDelta",
-                  "appSettings.mapColors.negativeDelta",
-                  "appSettings.mapColors.selected",
-                  "appSettings.mapColors.areDeltaColorsInverted"
+                  "mapState.mapColors.positiveDelta",
+                  "mapState.mapColors.negativeDelta",
+                  "mapState.mapColors.selected",
+                  "mapState.mapColors.areDeltaColorsInverted"
               ]
             : [
-                  "appSettings.mapColors.positive",
-                  "appSettings.mapColors.negative",
-                  "appSettings.mapColors.neutral",
-                  "appSettings.mapColors.selected",
-                  "appSettings.mapColors.isColorRangeInverted",
+                  "mapState.mapColors.positive",
+                  "mapState.mapColors.negative",
+                  "mapState.mapColors.neutral",
+                  "mapState.mapColors.selected",
+                  "mapState.mapColors.isColorRangeInverted",
                   "dynamicSettings.colorMode"
               ]
     }

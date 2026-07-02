@@ -6,7 +6,7 @@ import { mapColorsSelector } from "./mapColors.selector"
 describe("mapColorsSelector", () => {
     const stateWithMarkingColors = (markingColors: unknown): CcState => {
         const state = clone(defaultState)
-        state.appSettings.mapColors.markingColors = markingColors as string[]
+        state.mapState.mapColors.markingColors = markingColors as string[]
         return state
     }
 

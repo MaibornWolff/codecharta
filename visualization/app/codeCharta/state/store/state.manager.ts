@@ -3,6 +3,7 @@ import { defaultFileSettings, fileSettings } from "./fileSettings/fileSettings.r
 import { defaultDynamicSettings, dynamicSettings } from "./dynamicSettings/dynamicSettings.reducer"
 import { defaultFiles, files } from "../../fileStore/store/files.reducer"
 import { appStatus, defaultAppStatus } from "./appStatus/appStatus.reducer"
+import { defaultMapState, mapState } from "../../mapState/mapState.facade"
 import { ActionReducer } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { isSetStateAction } from "./state.actions"
@@ -10,6 +11,7 @@ import { isSetStateAction } from "./state.actions"
 export const appReducers = {
     fileSettings,
     appSettings,
+    mapState,
     dynamicSettings,
     files,
     appStatus
@@ -17,6 +19,7 @@ export const appReducers = {
 export const defaultState: CcState = {
     fileSettings: defaultFileSettings,
     appSettings: defaultAppSettings,
+    mapState: defaultMapState,
     dynamicSettings: defaultDynamicSettings,
     files: defaultFiles,
     appStatus: defaultAppStatus
@@ -37,7 +40,7 @@ const objectWithDynamicKeysInStore = new Set([
     "fileSettings.markedPackages",
     "dynamicSettings.focusedNodePath",
     // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
-    "appSettings.mapColors.markingColors",
+    "mapState.mapColors.markingColors",
     "files" // ToDo; this should be a Map with an unique id
 ])
 

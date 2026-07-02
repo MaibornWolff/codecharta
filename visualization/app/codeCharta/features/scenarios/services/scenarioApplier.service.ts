@@ -175,7 +175,7 @@ export class ScenarioApplierService {
         }
         const patch: RecursivePartial<CcState> = { dynamicSettings }
         if (colors.mapColors !== undefined) {
-            patch.appSettings = { mapColors: colors.mapColors }
+            patch.mapState = { mapColors: colors.mapColors }
         }
         return patch
     }
@@ -189,7 +189,7 @@ export class ScenarioApplierService {
 
     private buildLabelsAndFoldersPatch(labelsAndFolders: LabelsAndFoldersSection): RecursivePartial<CcState> {
         return {
-            appSettings: {
+            mapState: {
                 amountOfTopLabels: labelsAndFolders.amountOfTopLabels,
                 labelSize: labelsAndFolders.labelSize,
                 showMetricLabelNameValue: labelsAndFolders.showMetricLabelNameValue,
@@ -208,6 +208,7 @@ export class ScenarioApplierService {
             ...a,
             ...b,
             ...(a.appSettings || b.appSettings ? { appSettings: { ...a.appSettings, ...b.appSettings } } : {}),
+            ...(a.mapState || b.mapState ? { mapState: { ...a.mapState, ...b.mapState } } : {}),
             ...(a.dynamicSettings || b.dynamicSettings ? { dynamicSettings: { ...a.dynamicSettings, ...b.dynamicSettings } } : {}),
             ...(a.fileSettings || b.fileSettings ? { fileSettings: { ...a.fileSettings, ...b.fileSettings } } : {})
         }

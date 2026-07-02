@@ -6,13 +6,13 @@ describe("SettingsHelper", () => {
     describe("convertToVectors", () => {
         it("should transform object to Vector3 with smaller state", () => {
             const partialState = {
-                appSettings: {
+                mapState: {
                     scaling: { y: 27 }
                 }
             }
 
             const expected: RecursivePartial<CcState> = {
-                appSettings: {
+                mapState: {
                     scaling: new Vector3(1, 27, 1)
                 }
             }
@@ -24,7 +24,7 @@ describe("SettingsHelper", () => {
 
         it("should transform object to Vector3 with larger state", () => {
             const partialState = {
-                appSettings: {
+                mapState: {
                     scaling: { y: 27 },
                     invertHeight: false,
                     amountOfTopLabels: 23,
@@ -33,7 +33,7 @@ describe("SettingsHelper", () => {
             }
 
             const expected: RecursivePartial<CcState> = {
-                appSettings: {
+                mapState: {
                     scaling: new Vector3(1, 27, 1),
                     invertHeight: false,
                     amountOfTopLabels: 23,

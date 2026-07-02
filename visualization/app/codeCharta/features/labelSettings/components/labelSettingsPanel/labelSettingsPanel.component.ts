@@ -42,14 +42,14 @@ export class LabelSettingsPanelComponent {
     readonly LABEL_SIZE_STEP = LABEL_SIZE_STEP
 
     readonly resetSettingsKeys = [
-        "appSettings.amountOfTopLabels",
-        "appSettings.labelSize",
-        "appSettings.showMetricLabelNodeName",
-        "appSettings.showMetricLabelNameValue",
-        "appSettings.colorLabels",
-        "appSettings.labelMode",
-        "appSettings.groupLabelCollisions",
-        "appSettings.labelsPerMap"
+        "mapState.amountOfTopLabels",
+        "mapState.labelSize",
+        "mapState.showMetricLabelNodeName",
+        "mapState.showMetricLabelNameValue",
+        "mapState.colorLabels",
+        "mapState.labelMode",
+        "mapState.groupLabelCollisions",
+        "mapState.labelsPerMap"
     ]
 
     readonly amountOfTopLabels = toSignal(this.amountOfTopLabelsService.amountOfTopLabels$(), { requireSync: true })

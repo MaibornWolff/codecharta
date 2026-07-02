@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const invertAreaSelector = createSelector(appSettingsSelector, appSettings => appSettings.invertArea)
+export const invertAreaSelector = createSelector(mapStateSelector, mapState => mapState.invertArea)

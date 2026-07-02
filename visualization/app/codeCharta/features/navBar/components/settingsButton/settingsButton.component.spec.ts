@@ -7,6 +7,7 @@ import userEvent from "@testing-library/user-event"
 import { LoadFileService } from "../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
 import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
+import { defaultMapState } from "../../../../mapState/mapState.facade"
 import { GlobalConfigurationDialogComponent } from "../../../globalSettings/components/globalConfigurationDialog/globalConfigurationDialog.component"
 import { SettingsButtonComponent } from "./settingsButton.component"
 
@@ -23,8 +24,8 @@ describe("SettingsButtonComponent", () => {
         TestBed.configureTestingModule({
             imports: [SettingsButtonComponent],
             providers: [
-                provideMockStore({ initialState: { appSettings: defaultAppSettings } }),
-                { provide: State, useValue: { getValue: () => ({ appSettings: defaultAppSettings }) } },
+                provideMockStore({ initialState: { appSettings: defaultAppSettings, mapState: defaultMapState } }),
+                { provide: State, useValue: { getValue: () => ({ appSettings: defaultAppSettings, mapState: defaultMapState }) } },
                 {
                     provide: LoadInitialFileService,
                     useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }

@@ -172,7 +172,7 @@ export class ScenariosService {
             colors: {
                 colorRange: { ...state.dynamicSettings.colorRange },
                 colorMode: state.dynamicSettings.colorMode,
-                mapColors: { ...state.appSettings.mapColors }
+                mapColors: { ...state.mapState.mapColors }
             },
             camera: {
                 position: { ...cameraPosition },
@@ -183,14 +183,14 @@ export class ScenariosService {
                 focusedNodePath: [...state.dynamicSettings.focusedNodePath]
             },
             labelsAndFolders: {
-                amountOfTopLabels: state.appSettings.amountOfTopLabels,
-                labelSize: state.appSettings.labelSize,
-                showMetricLabelNameValue: state.appSettings.showMetricLabelNameValue,
-                showMetricLabelNodeName: state.appSettings.showMetricLabelNodeName,
-                enableFloorLabels: state.appSettings.enableFloorLabels,
-                colorLabels: { ...state.appSettings.colorLabels },
-                labelMode: state.appSettings.labelMode,
-                groupLabelCollisions: state.appSettings.groupLabelCollisions,
+                amountOfTopLabels: state.mapState.amountOfTopLabels,
+                labelSize: state.mapState.labelSize,
+                showMetricLabelNameValue: state.mapState.showMetricLabelNameValue,
+                showMetricLabelNodeName: state.mapState.showMetricLabelNodeName,
+                enableFloorLabels: state.mapState.enableFloorLabels,
+                colorLabels: { ...state.mapState.colorLabels },
+                labelMode: state.mapState.labelMode,
+                groupLabelCollisions: state.mapState.groupLabelCollisions,
                 markedPackages: [...state.fileSettings.markedPackages]
             }
         }

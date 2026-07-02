@@ -10,7 +10,7 @@ describe("codeMapMesh", () => {
     describe("setNewDeltaColor", () => {
         let codeMapBuilding: CodeMapBuilding
         const {
-            appSettings: { mapColors }
+            mapState: { mapColors }
         } = STATE
 
         const setFlattened = (isFlat: boolean) => {
