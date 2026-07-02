@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { map } from "rxjs"
 import { NodeMetricData } from "../../../codeCharta.model"
-import { MetricRange, rangeOfMetric } from "../store/metricsLens.selectors"
+import { MetricRange, rangeOfMetric } from "../../../util/metric/metricRange"
 import { MetricsLensStore } from "../store/metricsLens.store"
 
 function toMetricNames(nodeMetricData: NodeMetricData[]): string[] {

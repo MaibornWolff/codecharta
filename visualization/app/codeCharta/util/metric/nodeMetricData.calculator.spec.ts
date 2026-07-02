@@ -1,9 +1,9 @@
-import { FileSelectionState, FileState } from "../../../model/files/files"
-import { clone } from "../../../util/clone"
-import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
-import { TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../../mocks/dataMocks"
-import { NodeDecorator } from "../../../util/nodeDecorator"
-import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
+import { FileSelectionState, FileState } from "../../model/files/files"
+import { clone } from "../clone"
+import { createBlacklistMatcher } from "../blacklist/blacklistMatcher"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../mocks/dataMocks"
+import { NodeDecorator } from "../nodeDecorator"
+import { UNARY_METRIC } from "./unaryMetric"
 import { calculateNodeMetricData } from "./nodeMetricData.calculator"
 
 describe("nodeMetricDataCalculator", () => {

@@ -4,8 +4,9 @@ import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher
 import { TEST_DELTA_MAP_A } from "../../../mocks/dataMocks"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
-import { calculateNodeMetricData } from "./nodeMetricData.calculator"
-import { metricRangeSelector, nodeMetricDataSelector, rangeOfMetric } from "./metricsLens.selectors"
+import { calculateNodeMetricData } from "../../../util/metric/nodeMetricData.calculator"
+import { rangeOfMetric } from "../../../util/metric/metricRange"
+import { metricRangeSelector, nodeMetricDataSelector } from "./metricsLens.selectors"
 
 describe("metricsLens selectors", () => {
     let fileState: FileState
