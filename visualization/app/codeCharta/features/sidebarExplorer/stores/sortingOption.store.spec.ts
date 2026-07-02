@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { SortingOptionStore } from "./sortingOption.store"
-import { sortingOrderSelector } from "../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
-import { setSortingOption } from "../../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
+import { sortingOrderSelector } from "../../../preferences/preferences.facade"
+import { setSortingOption } from "../../../preferences/preferences.facade"
 import { SortingOption } from "../../../codeCharta.model"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 

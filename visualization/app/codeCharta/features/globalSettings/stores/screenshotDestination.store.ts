@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { screenshotToClipboardEnabledSelector } from "../selectors/globalSettings.selectors"
-import { setScreenshotToClipboardEnabled } from "../../../state/store/appSettings/enableClipboard/screenshotToClipboardEnabled.actions"
+import { setScreenshotToClipboardEnabled } from "../../../preferences/preferences.facade"
 
 @Injectable({
     providedIn: "root"

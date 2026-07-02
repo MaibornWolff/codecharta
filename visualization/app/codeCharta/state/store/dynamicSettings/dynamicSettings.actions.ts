@@ -9,7 +9,9 @@ import { setAllFocusedNodes, unfocusAllNodes, focusNode, unfocusNode } from "../
 import { setHeightMetric } from "../../../mapState/store/heightMetric/heightMetric.actions"
 import { setMargin } from "../../../mapState/store/margin/margin.actions"
 import { setSearchPattern } from "../../../sharedView/store/searchPattern/searchPattern.actions"
-import { setSortingOption } from "./sortingOption/sortingOption.actions"
+// Transitional (Slice 10b structural): sortingOption moved to preferences/store/, re-exported by the
+// preferences facade until this grab-bag is deleted in the behavioral commit.
+import { setSortingOption } from "../../../preferences/preferences.facade"
 
 export const dynamicSettingsActions = [
     setColorMode,

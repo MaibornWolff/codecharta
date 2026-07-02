@@ -1,19 +1,23 @@
-import { defaultSortingOrderAscending, sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
+// Transitional (Slice 10b structural): the seven ex-appSettings pref leaves moved to
+// preferences/store/; appSettings.reducer keeps combining them via the preferences facade so the
+// state shape (state.appSettings.*) is unchanged until the behavioral commit stands up the
+// preferences root and deletes this grab-bag.
 import {
+    defaultSortingOrderAscending,
+    sortingOrderAscending,
     defaultResetCameraIfNewFileIsLoaded,
-    resetCameraIfNewFileIsLoaded
-} from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.reducer"
-import { defaultIsPresentationMode, isPresentationMode } from "./isPresentationMode/isPresentationMode.reducer"
-import {
+    resetCameraIfNewFileIsLoaded,
+    defaultIsPresentationMode,
+    isPresentationMode,
     defaultExperimentalFeaturesEnabled,
-    experimentalFeaturesEnabled
-} from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
-import { defaultMaxTreeMapFiles, maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
-import { defaultScreenshotToClipboardEnabled, screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
-import {
+    experimentalFeaturesEnabled,
+    defaultMaxTreeMapFiles,
+    maxTreeMapFiles,
+    defaultScreenshotToClipboardEnabled,
+    screenshotToClipboardEnabled,
     defaultIsColorMetricLinkedToHeightMetric,
     isColorMetricLinkedToHeightMetric
-} from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
+} from "../../../preferences/preferences.facade"
 import { combineReducers } from "@ngrx/store"
 
 export const appSettings = combineReducers({

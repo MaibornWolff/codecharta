@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../appSettings.selector"
+import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
 
 export const isColorMetricLinkedToHeightMetricSelector = createSelector(
     appSettingsSelector,

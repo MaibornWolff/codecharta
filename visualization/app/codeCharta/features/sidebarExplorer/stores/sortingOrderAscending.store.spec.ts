@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { SortingOrderAscendingStore } from "./sortingOrderAscending.store"
-import { sortingOrderAscendingSelector } from "../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
-import { toggleSortingOrderAscending } from "../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { sortingOrderAscendingSelector } from "../../../preferences/preferences.facade"
+import { toggleSortingOrderAscending } from "../../../preferences/preferences.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("SortingOrderAscendingStore", () => {

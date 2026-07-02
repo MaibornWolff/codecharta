@@ -22,17 +22,20 @@ import {
     setShowOnlyBuildingsWithEdges,
     toggleEdgeMetricVisible
 } from "../../../mapState/mapState.facade"
-import { setScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
-import { setExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
+// Transitional (Slice 10b structural): the pref leaf actions moved to preferences/store/ and are
+// re-exported by the preferences facade until this grab-bag is deleted in the behavioral commit.
 import {
+    setScreenshotToClipboardEnabled,
+    setExperimentalFeaturesEnabled,
     setIsColorMetricLinkedToHeightMetricAction,
-    toggleIsColorMetricLinkedToHeightMetric
-} from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
-import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
+    toggleIsColorMetricLinkedToHeightMetric,
+    setPresentationMode,
+    setMaxTreeMapFiles,
+    setResetCameraIfNewFileIsLoaded,
+    setSortingOrderAscending,
+    toggleSortingOrderAscending
+} from "../../../preferences/preferences.facade"
 import { setLayoutAlgorithm } from "../../../mapState/store/layoutAlgorithm/layoutAlgorithm.actions"
-import { setMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
-import { setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setSortingOrderAscending, toggleSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
 
 export const appSettingsActions = [
     setColorLabels,

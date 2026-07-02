@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { setPresentationMode } from "../../../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
-import { isPresentationModeSelector } from "../../../../state/store/appSettings/isPresentationMode/isPresentationMode.selector"
+import { setPresentationMode } from "../../../../preferences/preferences.facade"
+import { isPresentationModeSelector } from "../../../../preferences/preferences.facade"
 import { PresentationModeButtonComponent } from "./presentationModeButton.component"
 
 describe("PresentationModeButtonComponent (toolbox)", () => {

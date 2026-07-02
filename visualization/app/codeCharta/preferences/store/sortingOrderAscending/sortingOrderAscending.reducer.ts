@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store"
 import { setSortingOrderAscending, toggleSortingOrderAscending } from "./sortingOrderAscending.actions"
-import { setState } from "../../../../util/setState.reducer.factory"
+import { setState } from "../../../util/setState.reducer.factory"
 
 export const defaultSortingOrderAscending = true
 export const sortingOrderAscending = createReducer(

@@ -3,7 +3,7 @@ import { Store } from "@ngrx/store"
 import { CcState, LayoutAlgorithm } from "../../../codeCharta.model"
 import { layoutAlgorithmSelector, maxTreeMapFilesSelector } from "../selectors/globalSettings.selectors"
 import { setLayoutAlgorithm } from "../../../mapState/store/layoutAlgorithm/layoutAlgorithm.actions"
-import { setMaxTreeMapFiles } from "../../../state/store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
+import { setMaxTreeMapFiles } from "../../../preferences/preferences.facade"
 
 @Injectable({
     providedIn: "root"
