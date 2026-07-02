@@ -183,7 +183,8 @@ export class ScenarioApplierService {
     private buildFiltersPatch(filters: FiltersSection): RecursivePartial<CcState> {
         return {
             fileSettings: { blacklist: [...filters.blacklist] },
-            dynamicSettings: { focusedNodePath: [...filters.focusedNodePath] }
+            // Slice 8: focusedNodePath now lives under sharedView (was dynamicSettings).
+            sharedView: { focusedNodePath: [...filters.focusedNodePath] }
         }
     }
 
@@ -209,7 +210,7 @@ export class ScenarioApplierService {
             ...b,
             ...(a.appSettings || b.appSettings ? { appSettings: { ...a.appSettings, ...b.appSettings } } : {}),
             ...(a.mapState || b.mapState ? { mapState: { ...a.mapState, ...b.mapState } } : {}),
-            ...(a.dynamicSettings || b.dynamicSettings ? { dynamicSettings: { ...a.dynamicSettings, ...b.dynamicSettings } } : {}),
+            ...(a.sharedView || b.sharedView ? { sharedView: { ...a.sharedView, ...b.sharedView } } : {}),
             ...(a.fileSettings || b.fileSettings ? { fileSettings: { ...a.fileSettings, ...b.fileSettings } } : {})
         }
     }

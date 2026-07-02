@@ -24,8 +24,6 @@ describe("areDynamicSettingsAvailable", () => {
             colorMetric: "mcc",
             distributionMetric: "pairingRate",
             edgeMetric: "avgCommits",
-            focusedNodePath: [],
-            searchPattern: "",
             colorRange: { from: 0, to: 25 }
         }
         expect(areDynamicSettingsAvailable(dynamicSettings)).toBe(true)

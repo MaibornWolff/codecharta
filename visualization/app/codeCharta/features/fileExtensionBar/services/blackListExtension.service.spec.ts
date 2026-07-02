@@ -92,7 +92,9 @@ describe("BlackListExtensionService", () => {
         },
         files: [],
         dynamicSettings: {
-            sortingOption: SortingOption.NAME,
+            sortingOption: SortingOption.NAME
+        },
+        sharedView: {
             focusedNodePath: [],
             searchPattern: ""
         }

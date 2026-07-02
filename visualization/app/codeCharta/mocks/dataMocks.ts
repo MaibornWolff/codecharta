@@ -2152,9 +2152,11 @@ export const STATE: CcState = {
         markedPackages: []
     },
     dynamicSettings: {
-        focusedNodePath: ["/root/ParentLeaf"],
-        searchPattern: "",
         sortingOption: SortingOption.NAME
+    },
+    sharedView: {
+        focusedNodePath: ["/root/ParentLeaf"],
+        searchPattern: ""
     },
     appSettings: {
         isColorMetricLinkedToHeightMetric: false,
@@ -2296,9 +2298,11 @@ export const DEFAULT_STATE: CcState = {
         rightClickedNodeData: null
     },
     dynamicSettings: {
-        focusedNodePath: [],
-        searchPattern: "",
         sortingOption: SortingOption.NAME
+    },
+    sharedView: {
+        focusedNodePath: [],
+        searchPattern: ""
     },
     fileSettings: {
         attributeTypes: { nodes: {}, edges: {} },

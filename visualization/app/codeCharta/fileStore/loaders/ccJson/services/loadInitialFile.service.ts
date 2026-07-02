@@ -86,6 +86,8 @@ export class LoadInitialFileService {
         missingPropertiesInSavedCcState.push(...missingFileSettings)
         const missingDynamicSettings = this.loadInitialFileStore.applyDynamicSettings(savedCcState.dynamicSettings)
         missingPropertiesInSavedCcState.push(...missingDynamicSettings)
+        const missingSharedView = this.loadInitialFileStore.applySharedView(savedCcState.sharedView)
+        missingPropertiesInSavedCcState.push(...missingSharedView)
         if (missingPropertiesInSavedCcState.length > 0) {
             this.showErrorDialogForMissingProperties(missingPropertiesInSavedCcState)
         }
@@ -139,6 +141,7 @@ export class LoadInitialFileService {
     private applyAllSettings(savedCcState: CcState) {
         const savedFileSettings = savedCcState.fileSettings
         const savedDynamicSettings = savedCcState.dynamicSettings
+        const savedSharedView = savedCcState.sharedView
         const savedAppSettings = savedCcState.appSettings
         const savedMapState = savedCcState.mapState
         const missingPropertiesInSavedCcState = []
@@ -149,6 +152,10 @@ export class LoadInitialFileService {
         if (savedDynamicSettings) {
             const missingDynamicSettings = this.loadInitialFileStore.applyDynamicSettings(savedDynamicSettings)
             missingPropertiesInSavedCcState.push(...missingDynamicSettings)
+        }
+        if (savedSharedView) {
+            const missingSharedView = this.loadInitialFileStore.applySharedView(savedSharedView)
+            missingPropertiesInSavedCcState.push(...missingSharedView)
         }
         if (savedAppSettings) {
             const missingAppSettings = this.loadInitialFileStore.applyAppSettings(savedAppSettings)

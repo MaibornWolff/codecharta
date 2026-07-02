@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
+import { sharedViewSelector } from "../sharedView.selector"
 
-export const searchPatternSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.searchPattern)
+export const searchPatternSelector = createSelector(sharedViewSelector, sharedView => sharedView.searchPattern)

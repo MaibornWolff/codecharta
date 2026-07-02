@@ -158,7 +158,7 @@ describe("ScenariosService", () => {
 
             // Assert
             expect(sections.filters.blacklist).toEqual(defaultState.fileSettings.blacklist)
-            expect(sections.filters.focusedNodePath).toEqual(defaultState.dynamicSettings.focusedNodePath)
+            expect(sections.filters.focusedNodePath).toEqual(defaultState.sharedView.focusedNodePath)
         })
 
         it("should extract labelsAndFolders section from state", () => {

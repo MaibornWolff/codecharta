@@ -4,7 +4,7 @@ import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
-import { AppSettings, CcState, DynamicSettings, FileSettings } from "../../../../codeCharta.model"
+import { AppSettings, CcState, DynamicSettings, FileSettings, SharedView } from "../../../../codeCharta.model"
 import { FileSelectionState } from "../../../../model/files/files"
 import { getCCFiles } from "../../../../model/files/files.helper"
 import { MetricQueryParemter } from "../../../../state/effects/updateQueryParameters/metricQueryParameter"
@@ -12,6 +12,7 @@ import { metricDataSelector } from "../../../../state/selectors/accumulatedData/
 import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
 import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../../mapState/mapState.facade"
 import { defaultDynamicSettings } from "../../../../state/store/dynamicSettings/dynamicSettings.reducer"
+import { defaultSharedView } from "../../../../sharedView/sharedView.facade"
 import { defaultFileSettings } from "../../../../state/store/fileSettings/fileSettings.reducer"
 import { setDelta, setFiles } from "../../../store/files.actions"
 import { appReducers, defaultState, setStateMiddleware } from "../../../../state/store/state.manager"
@@ -371,6 +372,25 @@ describe("LoadInitialFileService", () => {
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.dynamicSettings, defaultDynamicSettings))
+        })
+
+        it("should set all differing sharedView", async () => {
+            const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
+            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+                async () => new Promise(resolve => resolve(mockedNameDataPairs))
+            )
+            const mockedState = JSON.parse(stringify(defaultState)) as CcState
+            mockedState.sharedView = nullifyObjectValues(defaultSharedView) as SharedView
+            jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
+            jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.sharedView, defaultSharedView))
         })
 
         it("should set all differing except sortingOrderAscending, isLoadingFile", async () => {

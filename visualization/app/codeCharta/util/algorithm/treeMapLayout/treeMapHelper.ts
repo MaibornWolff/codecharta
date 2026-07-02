@@ -152,8 +152,8 @@ export function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: 
         return false
     }
 
-    if (state.dynamicSettings.focusedNodePath.length > 0) {
-        return squaredNode.path.startsWith(state.dynamicSettings.focusedNodePath[0])
+    if (state.sharedView.focusedNodePath.length > 0) {
+        return squaredNode.path.startsWith(state.sharedView.focusedNodePath[0])
     }
 
     return true
@@ -180,7 +180,7 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: CcState) {
 
     const searchedNodePaths = searchedNodePathsSelector(state)
 
-    if (searchedNodePaths && state.dynamicSettings.searchPattern?.length > 0) {
+    if (searchedNodePaths && state.sharedView.searchPattern?.length > 0) {
         return searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
     }
 

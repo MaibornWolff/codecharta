@@ -29,10 +29,18 @@ export interface Settings {
     dynamicSettings: DynamicSettings
     appSettings: AppSettings
     mapState: MapState
+    sharedView: SharedView
 }
 
 export interface DynamicSettings {
     sortingOption: SortingOption
+}
+
+// The cross-renderer view-state home (Slice 8): values that are neither map-specific settings nor
+// cc.json source, and that any renderer (CodeMap, Graph, …) shares — the focus stack and the search
+// pattern. Slice 8 pulled these two out of dynamicSettings into their own state.sharedView root;
+// later slices grow it (blacklist/markedPackages in 9b/9c, the renderer-agnostic selected-node id in 13).
+export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string
 }
@@ -98,6 +106,7 @@ export interface CcState {
     dynamicSettings: DynamicSettings
     appSettings: AppSettings
     mapState: MapState
+    sharedView: SharedView
     files: FileState[]
     appStatus: AppStatus
 }

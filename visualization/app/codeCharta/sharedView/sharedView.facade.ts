@@ -12,6 +12,8 @@
  * to register the home. Consumers read sharedView only through here; the `store/` internals stay
  * private by convention (the `state-home-is-leaf` dep-cruiser rule locks the leaf direction).
  */
+export * from "./store/sharedView.reducer"
+export * from "./store/sharedView.selector"
 export * from "./store/focusedNodePath/focusedNodePath.actions"
 export * from "./store/focusedNodePath/focusedNodePath.reducer"
 export * from "./store/focusedNodePath/focusedNodePath.selector"

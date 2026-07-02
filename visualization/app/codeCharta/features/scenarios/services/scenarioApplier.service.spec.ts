@@ -63,8 +63,8 @@ const testSections: ScenarioSections = {
 function mergePatches(patches: RecursivePartial<CcState>[]): RecursivePartial<CcState> {
     const merged: RecursivePartial<CcState> = {}
     for (const patch of patches) {
-        if (patch.dynamicSettings) {
-            merged.dynamicSettings = { ...merged.dynamicSettings, ...patch.dynamicSettings }
+        if (patch.sharedView) {
+            merged.sharedView = { ...merged.sharedView, ...patch.sharedView }
         }
         if (patch.appSettings) {
             merged.appSettings = { ...merged.appSettings, ...patch.appSettings }
@@ -158,7 +158,7 @@ describe("ScenarioApplierService", () => {
             // Assert
             expect(patches).toHaveLength(3)
             expect(patches[2].fileSettings?.blacklist).toEqual(testSections.filters.blacklist)
-            expect(patches[2].dynamicSettings?.focusedNodePath).toEqual(["/root/src"])
+            expect(patches[2].sharedView?.focusedNodePath).toEqual(["/root/src"])
             expect(patches[2].mapState?.amountOfTopLabels).toBe(5)
             expect(patches[2].mapState?.labelMode).toBe(LabelMode.Color)
             expect(patches[2].mapState?.groupLabelCollisions).toBe(true)

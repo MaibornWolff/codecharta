@@ -30,7 +30,7 @@ describe("treeMapGenerator", () => {
         codeMapNode = klona(VALID_NODE_WITH_PATH)
         metricData = klona(METRIC_DATA)
         isDeltaState = false
-        state.dynamicSettings.focusedNodePath = []
+        state.sharedView.focusedNodePath = []
     })
 
     describe("create Treemap nodes", () => {

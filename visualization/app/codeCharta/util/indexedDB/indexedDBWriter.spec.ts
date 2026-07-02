@@ -3,6 +3,7 @@ import { openDB } from "idb"
 import { defaultState } from "../../state/store/state.manager"
 import { defaultAppSettings } from "../../state/store/appSettings/appSettings.reducer"
 import { defaultMapState } from "../../mapState/mapState.facade"
+import { defaultSharedView } from "../../sharedView/sharedView.facade"
 import { ColorMode, LayoutAlgorithm } from "../../codeCharta.model"
 import {
     CCSTATE_PRIMARY_KEY,
@@ -14,6 +15,7 @@ import {
     migrateCcStateRecordToV3,
     migrateCcStateRecordToV4,
     migrateCcStateRecordToV5,
+    migrateCcStateRecordToV6,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -168,7 +170,46 @@ describe("migrateCcStateRecordToV5 (Slice 7 re-home transform)", () => {
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 transforms)", () => {
+describe("migrateCcStateRecordToV6 (Slice 8 re-home transform)", () => {
+    const v5ShapeState = () => ({
+        dynamicSettings: {
+            sortingOption: "NAME",
+            focusedNodePath: ["/root/ParentLeaf"],
+            searchPattern: "needle"
+        }
+    })
+
+    it("should move focusedNodePath + searchPattern from dynamicSettings into a brand-new sharedView root", () => {
+        const migrated = migrateCcStateRecordToV6(v5ShapeState()) as unknown as { sharedView: Record<string, unknown> }
+
+        expect(migrated.sharedView.focusedNodePath).toEqual(["/root/ParentLeaf"])
+        expect(migrated.sharedView.searchPattern).toBe("needle")
+    })
+
+    it("should drop the moved keys from dynamicSettings and keep the staying ones", () => {
+        const migrated = migrateCcStateRecordToV6(v5ShapeState()) as unknown as { dynamicSettings: Record<string, unknown> }
+
+        expect("focusedNodePath" in migrated.dynamicSettings).toBe(false)
+        expect("searchPattern" in migrated.dynamicSettings).toBe(false)
+        expect(migrated.dynamicSettings.sortingOption).toBe("NAME")
+    })
+
+    it("should fill sharedView keys absent from the old blob with their defaults", () => {
+        const migrated = migrateCcStateRecordToV6({ dynamicSettings: {} }) as unknown as { sharedView: Record<string, unknown> }
+
+        expect(migrated.sharedView.focusedNodePath).toEqual(defaultSharedView.focusedNodePath)
+        expect(migrated.sharedView.searchPattern).toBe(defaultSharedView.searchPattern)
+    })
+
+    it("should return the record untouched when it is null, and build a default sharedView when there is no dynamicSettings", () => {
+        expect(migrateCcStateRecordToV6(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV6({ files: [] }) as unknown as { files: unknown[]; sharedView: Record<string, unknown> }
+        expect(migrated.files).toEqual([])
+        expect(migrated.sharedView.focusedNodePath).toEqual(defaultSharedView.focusedNodePath)
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -186,19 +227,28 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 transforms)
         const v2ShapeState = {
             ...defaultState,
             appSettings: { ...defaultAppSettings, invertHeight: true, amountOfTopLabels: 7, layoutAlgorithm: LayoutAlgorithm.StreetMap },
-            dynamicSettings: { ...defaultState.dynamicSettings, colorMode: ColorMode.absolute, margin: 42, areaMetric: "rloc" },
+            dynamicSettings: {
+                ...defaultState.dynamicSettings,
+                colorMode: ColorMode.absolute,
+                margin: 42,
+                areaMetric: "rloc",
+                focusedNodePath: ["/root/ParentLeaf"],
+                searchPattern: "needle"
+            },
             appStatus: { ...defaultState.appStatus, hoveredNodeId: 5 }
         }
         delete (v2ShapeState as { mapState?: unknown }).mapState
+        delete (v2ShapeState as { sharedView?: unknown }).sharedView
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v5, invoked by readCcState) chains the v3, v4 then v5 upgrade transforms.
+        // openCodeChartaDB (v6, invoked by readCcState) chains the v3, v4, v5 then v6 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings: Record<string, unknown>
             dynamicSettings: Record<string, unknown>
             appStatus: Record<string, unknown>
             mapState: Record<string, unknown>
+            sharedView: Record<string, unknown>
         }
 
         // v3 re-home (appearance keys + layoutAlgorithm out of appSettings)
@@ -215,6 +265,11 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 transforms)
         // v5 re-home (metric selection out of dynamicSettings)
         expect(migratedState.mapState.areaMetric).toBe("rloc")
         expect("areaMetric" in migratedState.dynamicSettings).toBe(false)
+        // v6 re-home (focus/search out of dynamicSettings into a brand-new sharedView root)
+        expect(migratedState.sharedView.focusedNodePath).toEqual(["/root/ParentLeaf"])
+        expect(migratedState.sharedView.searchPattern).toBe("needle")
+        expect("focusedNodePath" in migratedState.dynamicSettings).toBe(false)
+        expect("searchPattern" in migratedState.dynamicSettings).toBe(false)
     })
 })
 

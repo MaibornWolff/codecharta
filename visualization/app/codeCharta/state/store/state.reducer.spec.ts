@@ -57,6 +57,19 @@ describe("_applyPartialState", () => {
         ])
     })
 
+    it("should keep sharedView.focusedNodePath as an array instead of deep-merging it into an object", () => {
+        const partialState = {
+            sharedView: {
+                focusedNodePath: ["/root/a", "/root/b"]
+            }
+        }
+
+        const newState = _applyPartialState(clone(defaultState), partialState)
+
+        expect(Array.isArray(newState.sharedView.focusedNodePath)).toBe(true)
+        expect(newState.sharedView.focusedNodePath).toEqual(["/root/a", "/root/b"])
+    })
+
     it("should keep markingColors as an array instead of deep-merging it into an object", () => {
         const partialState = {
             mapState: {

@@ -54,7 +54,7 @@ describe("TreeMapHelper", () => {
             state.mapState.margin = 15
             state.mapState.heightMetric = "theHeight"
             state.mapState.invertHeight = false
-            state.dynamicSettings.focusedNodePath = []
+            state.sharedView.focusedNodePath = []
         })
 
         function buildNode() {
@@ -136,7 +136,7 @@ describe("TreeMapHelper", () => {
         })
 
         it("should be visible if it's a children of the focused node path", () => {
-            state.dynamicSettings.focusedNodePath = ["/root"]
+            state.sharedView.focusedNodePath = ["/root"]
             expect(buildNode().visible).toBeTruthy()
         })
 
@@ -203,17 +203,17 @@ describe("TreeMapHelper", () => {
             })
 
             it("should not be a flat node, because its searched for", () => {
-                state.dynamicSettings.searchPattern = "/root/Anode"
+                state.sharedView.searchPattern = "/root/Anode"
                 expect(buildNode().flat).toBeFalsy()
             })
 
             it("should be a flat node, because other nodes are searched for", () => {
-                state.dynamicSettings.searchPattern = "/root/anotherNode2"
+                state.sharedView.searchPattern = "/root/anotherNode2"
                 expect(buildNode().flat).toBeTruthy()
             })
 
             it("should not be a flat node when searchPattern is empty", () => {
-                state.dynamicSettings.searchPattern = ""
+                state.sharedView.searchPattern = ""
                 expect(buildNode().flat).toBeFalsy()
             })
 

@@ -180,7 +180,7 @@ export class ScenariosService {
             },
             filters: {
                 blacklist: [...state.fileSettings.blacklist],
-                focusedNodePath: [...state.dynamicSettings.focusedNodePath]
+                focusedNodePath: [...state.sharedView.focusedNodePath]
             },
             labelsAndFolders: {
                 amountOfTopLabels: state.mapState.amountOfTopLabels,

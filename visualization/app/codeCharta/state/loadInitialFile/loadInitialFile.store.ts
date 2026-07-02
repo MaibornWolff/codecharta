@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { AppSettings, CcState, DynamicSettings, FileSettings, MapState } from "../../codeCharta.model"
+import { AppSettings, CcState, DynamicSettings, FileSettings, MapState, SharedView } from "../../codeCharta.model"
 import { FileState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
 import { metricDataSelector } from "../selectors/accumulatedData/metricData/metricData.selector"
@@ -105,6 +105,23 @@ export class LoadInitialFileStore {
         return missingDynamicSettings
     }
 
+    applySharedView(savedSharedView: SharedView) {
+        const currentSharedView = (this.state.getValue() as CcState).sharedView
+        const missingSharedView = []
+        for (const [key, value] of Object.entries(currentSharedView)) {
+            if (key in savedSharedView) {
+                const currentValue = stringify(value)
+                const loadedValue = stringify(savedSharedView[key])
+                if (currentValue !== loadedValue) {
+                    this.mapSharedViewToAction(key as keyof SharedView, savedSharedView[key])
+                }
+            } else {
+                missingSharedView.push(key)
+            }
+        }
+        return missingSharedView
+    }
+
     applyAppSettings(savedAppSettings: AppSettings) {
         const currentAppSettings = (this.state.getValue() as CcState).appSettings
         const missingAppSettings = []
@@ -199,6 +216,14 @@ export class LoadInitialFileStore {
             case "sortingOption":
                 this.store.dispatch(setSortingOption({ value }))
                 break
+            default: {
+                throw new Error(`Unhandled key: ${key}`)
+            }
+        }
+    }
+
+    private mapSharedViewToAction(key: keyof SharedView, value: any) {
+        switch (key) {
             case "focusedNodePath":
                 this.store.dispatch(setAllFocusedNodes({ value }))
                 break
