@@ -260,6 +260,20 @@ module.exports = {
                 "Migration boundary: the new structure (lenses/, fileStore/) must not import the legacy features/ or state/. Kept at warn this slice because real transitional edges exist; util/ + model/ are the shared kernel and exempt. The reverse (legacy → new lens facade) is the allowed migration flow. Flips to error once state/ becomes interaction/appearance.",
             from: { path: "^app/codeCharta/(lenses|fileStore)/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: { path: ["^app/codeCharta/features/", "^app/codeCharta/state/"] }
+        },
+        {
+            name: "lens-owns-ccjson-source",
+            severity: "warn",
+            comment:
+                "Slice 9a: the cc.json SOURCE the metrics lens now owns — the attributeTypes/attributeDescriptors slices and their combined metricsLensSource root under lenses/metrics/store/ — is reached from outside the lens only through a metrics-lens facade (the read facade for selectors, the load facade for the write actions + store wiring), never its store internals. Locks 'the cc.json source lives only under lenses' as the fileSettings root dissolves. Staged at warn; flips to error once edges also move to a dependency-lens store (roadmap 9a).",
+            from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/lenses/", "\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.mocks\\.ts$"] },
+            to: {
+                path: [
+                    "^app/codeCharta/lenses/metrics/store/attributeTypes/",
+                    "^app/codeCharta/lenses/metrics/store/attributeDescriptors/",
+                    "^app/codeCharta/lenses/metrics/store/metricsLensSource"
+                ]
+            }
         }
     ],
     options: {
