@@ -16,11 +16,13 @@ version: 1
 
 ## Where we are vs where we're going
 
-**Today (runtime):** Slices 5–**9a** landed. **Slice 9a** stood up the first **lens-owned** store root,
+**Today (runtime):** Slices 5–**9c** landed. **Slice 9a** stood up the first **lens-owned** store root,
 **`state.metricsLensSource`**, moving `attributeTypes` + `attributeDescriptors` out of `fileSettings` into the metrics
-lens (`fileSettings` now holds `blacklist`/`edges`/`markedPackages`; per-file `CCFile` still bundles all via the
-`FileSettings & MetricsLensSource` intersection). **`edges` stays in `fileSettings` (DEFERRED** → dependency lens: it is a
-merged render-model array). `lens-owns-ccjson-source` is **warn**. IndexedDB is at **v7**. **Slice 8** stood up the first
+lens. **Slice 9b** then moved `blacklist` and **Slice 9c** moved `markedPackages` out of `fileSettings` into
+`state.sharedView`, so **`state.fileSettings` now holds ONLY `{ edges }`** (per-file `CCFile` still bundles all via the
+`FileSettings & MetricsLensSource & { blacklist } & { markedPackages }` intersection). **`edges` stays in `fileSettings`
+(DEFERRED** → dependency lens: it is a merged render-model array; it is the last member and the slice that re-homes it
+finally deletes the `fileSettings` reducer). `lens-owns-ccjson-source` is **warn**. IndexedDB is at **v7**. **Slice 8** stood up the first
 brand-new *home* from scratch, **`state.sharedView`** (`focusedNodePath` + `searchPattern`; `dynamicSettings` now holds
 **only** `sortingOption`; `state-home-is-leaf` + `state-home-only-stores-import-ngrx` **error**). Below reflects the state
 after Slice 7; append Slice 8's `sharedView` root and Slice 9a's `metricsLensSource` root to it.
@@ -69,8 +71,8 @@ deleted** — "state has a home" is finally true at runtime.
 7   mapState metric SELECTION + parameterize metrics lens     ── needs 5; lens drops colorMetric + blacklist reads   ✅ DONE
 8   sharedView stood up (focus + search only)                 ── needs 5; MUST precede 9b/9c   ✅ DONE
 9a  cc.json source (attributeTypes/descriptors) → metrics lens── needs 5; edges DEFERRED   ✅ DONE
-9b  blacklist → sharedView + parameterize BOTH lenses' blacklist read ── needs 8; unblocks lens-no-view-state flip
-9c  markedPackages → sharedView                               ── needs 8
+9b  blacklist → sharedView + parameterize BOTH lenses' blacklist read ── needs 8; unblocks lens-no-view-state flip   ✅ DONE
+9c  markedPackages → sharedView                               ── needs 8   ✅ DONE
 10  preferences (appSettings purge) + fileStore flags; DELETE grab-bags ── needs 5–9 · FLIP new-must-not-import-legacy, shared-state-is-leaf → error
 11  features OUT of lenses + legend RE-HOME + kill "shell"     ── needs 6/7 · FLIP metrics-lens-ngrx-guard → error
 12  CQRS read/write facade split on the homes + dedupe *Store wrappers ── needs 5–10
@@ -234,7 +236,25 @@ each **once** so later slices only *add a key*:
 - **DoD:** `blacklist` in `sharedView`; both lenses free of `blacklist` + edge-visibility reads (grep-verified); snapshots
   byte-identical; e2e blacklist/exclude/flatten green. **Risk:** MED-HIGH/MED-LARGE. Needs 8.
 
-### Slice 9c — `markedPackages` → sharedView (NARROW `fileSettings` to `{ edges }`)
+### Slice 9c — `markedPackages` → sharedView (NARROW `fileSettings` to `{ edges }`) — ✅ DONE
+- **Outcome (2026-07-02, 2 commits):** `markedPackages` moved out of the `fileSettings` state slice into
+  the existing **`state.sharedView`** root; per-file `CCFile.settings.fileSettings` keeps it via the
+  intersection `FileSettings & MetricsLensSource & { blacklist } & { markedPackages }`. `state.fileSettings`
+  now holds ONLY `{ edges }` (reducer NOT deleted — edges DEFERRED). (1) structural `git mv
+  state/store/fileSettings/markedPackages → sharedView/store/markedPackages` (incl its `util/`), 11
+  importers → `sharedView.facade` (+ re-export of the store + `findIndexOfMarkedPackageOrParent`), combined
+  transitionally under `fileSettings.reducer`, zero snapshot diff; (2) behavioral reshape — model split
+  (`SharedView` gains `markedPackages`, state `FileSettings` → `{ edges }`), `sharedView.reducer` combines
+  it, `markedPackages.selector` reads `sharedViewSelector`, `objectWithDynamicKeysInStore` rename
+  `fileSettings.markedPackages → sharedView.markedPackages`, applier case moves to `mapSharedViewToAction`,
+  `updateFileSettings.effect` co-emits `sharedView:{blacklist,markedPackages}` in ONE setState, scenarios
+  re-key (`buildLabelsAndFoldersPatch → sharedView`, `buildScenarioSections` reads `state.sharedView`,
+  dead `fileSettings` mergePatches branch removed), `treeMapHelper`/`streetViewHelper` readers repointed,
+  `fileDownloader`'s inline per-file intersection grows, IndexedDB `v8→v9` (`migrateCcStateRecordToV9`,
+  merge-into-existing sharedView, +4 tests). `tsc` clean, `npm test` **45/45 snapshots zero diff (no -u)**,
+  **2299 passing**, `lint:architecture` 0 errors / 107 warns (net-neutral, **no rule flip**). **No
+  runtime-only landmine** (verified by grep + full suite) and **no selector-dedup** (unlike 9b's 3dPrint).
+  Adversarial 7-landmine review: 0 findings. Details: `slice-9c-markedpackages.md`.
 - **Goal:** move `markedPackages` (**~13 direct import sites**, not the 37 first estimated) out of the `fileSettings`
   state slice into `state.sharedView`, the mechanical twin of 9b. **NARROW `fileSettings` to `{ edges }` — do NOT
   delete it.** `edges` is DEFERRED (CF #2a: a merged render-model array needing an injectable `DependencyLensStore`/

@@ -25,6 +25,17 @@ version: 1
 
 ## Notes
 - Items 1, 2/2a, 4, 5 are concrete, near-term follow-ups; item 6 is the broad remaining roadmap.
+- **Done (2026-07-02):** ~~Slice 9c~~ (`markedPackages` → sharedView) — `slice-9c-markedpackages.md`. The
+  mechanical twin of 9b, one grab-bag member later: `markedPackages` moved out of the `fileSettings` state
+  slice into the existing `state.sharedView` root (per-file `CCFile` keeps it via
+  `FileSettings & MetricsLensSource & { blacklist } & { markedPackages }`). **`state.fileSettings` now holds
+  ONLY `{ edges }`** — the reducer is NOT deleted (edges is DEFERRED, item #2a). No lens-parameterization and
+  no selector-dedup (no lens reads markedPackages; the only base selector is `markedPackagesSelector`, its two
+  derived composers just repointed their import). IndexedDB `v8→v9` (`migrateCcStateRecordToV9`,
+  merge-into-existing sharedView). **NO `new-must-not-import-legacy` flip in 9c** — the 12 residual edges
+  (0 markedPackages-related) clear in **10** (7 `state/`-survivors) + **11** (5 legend/errorDialog). 2 commits
+  (structural + behavioral), 0 findings from the adversarial review. **This clears the last movable
+  `fileSettings` member; only the DEFERRED `edges` remains until a later edge-UI / render-model slice.**
 - **Done (2026-07-02):** ~~Slice 9b~~ (`blacklist` → sharedView) — `slice-9b-blacklist-sharedview.md`. `blacklist`
   moved out of the `fileSettings` state slice into the existing `state.sharedView` root (per-file `CCFile` keeps it
   via `FileSettings & MetricsLensSource & { blacklist }`). **Resolves P0-1 half 2:** the dependency lens's blacklist +
