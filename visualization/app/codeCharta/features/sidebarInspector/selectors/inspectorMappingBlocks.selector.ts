@@ -4,7 +4,7 @@ import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.sele
 import { primaryMetricNamesSelector } from "../../../state/selectors/primaryMetrics/primaryMetricNames.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { mapColorsSelector } from "../../../mapState/mapState.facade"
-import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLens.facade"
 
 export type MappingBlockKind = "area" | "height" | "color" | "edge"
 

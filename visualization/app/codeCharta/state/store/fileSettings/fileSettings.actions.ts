@@ -1,5 +1,4 @@
-import { setAttributeDescriptors } from "./attributeDescriptors/attributeDescriptors.action"
-import { setAttributeTypes } from "./attributeTypes/attributeTypes.actions"
+import { setAttributeTypes, setAttributeDescriptors } from "../../../lenses/metrics/metricsLens.load.facade"
 import { setBlacklist, addBlacklistItem, addBlacklistItems, removeBlacklistItem } from "./blacklist/blacklist.actions"
 import { setEdges, addEdge, removeEdge } from "./edges/edges.actions"
 import { setMarkedPackages, markPackages, unmarkPackage } from "./markedPackages/markedPackages.actions"

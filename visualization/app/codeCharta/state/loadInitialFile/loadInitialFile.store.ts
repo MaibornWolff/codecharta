@@ -34,8 +34,7 @@ import {
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
 } from "../../mapState/mapState.facade"
-import { setAttributeTypes } from "../store/fileSettings/attributeTypes/attributeTypes.actions"
-import { setAttributeDescriptors } from "../store/fileSettings/attributeDescriptors/attributeDescriptors.action"
+import { setAttributeTypes, setAttributeDescriptors } from "../../lenses/metrics/metricsLens.load.facade"
 import { setBlacklist } from "../store/fileSettings/blacklist/blacklist.actions"
 import { setEdges } from "../store/fileSettings/edges/edges.actions"
 import { setMarkedPackages } from "../store/fileSettings/markedPackages/markedPackages.actions"

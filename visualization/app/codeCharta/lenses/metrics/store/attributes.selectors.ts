@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { AttributeTypeValue } from "../../../codeCharta.model"
-import { attributeDescriptorsSelector } from "../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
-import { attributeTypesSelector } from "../../../state/store/fileSettings/attributeTypes/attributeTypes.selector"
+import { attributeDescriptorsSelector } from "./attributeDescriptors/attributeDescriptors.selector"
+import { attributeTypesSelector } from "./attributeTypes/attributeTypes.selector"
 
 /**
  * Node-side attribute maps OWNED by the metrics lens.

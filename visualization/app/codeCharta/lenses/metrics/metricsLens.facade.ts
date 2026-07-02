@@ -51,5 +51,11 @@ export class MetricsLensFacade {
 // `nodeMetricDataSelector`/`metricRangeSelector` were lifted OUT of the lens in Slice 7 (they read
 // blacklist + colorMetric view state); consumers import them from
 // `state/selectors/nodeMetricData/nodeMetricData.selector` directly. The lens surface stays read-only
-// over cc.json-derived attribute descriptors.
+// over cc.json-derived attribute descriptors + types.
 export { nodeAttributeDescriptorsSelector as attributeDescriptorsSelector } from "./store/attributes.selectors"
+
+// Raw combined `{ nodes, edges }` attribute-type map — the metrics lens transiently owns the edge side
+// too (until a dependency-lens store lands, roadmap 9a). Consumed by the NodeDecorator aggregation
+// (`accumulatedData`) and the metricsBar attribute-type label pipeline, whose signatures need the full
+// map (not just the node projection the lens uses internally).
+export { attributeTypesSelector } from "./store/attributeTypes/attributeTypes.selector"

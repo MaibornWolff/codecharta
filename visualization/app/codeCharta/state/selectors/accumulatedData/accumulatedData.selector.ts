@@ -7,7 +7,7 @@ import { edgeMetricNamesSelector } from "../../../lenses/dependency/dependencyLe
 import { getDeltaFile } from "./utils/getDeltaFile"
 import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
 import { blacklistSelector } from "../../store/fileSettings/blacklist/blacklist.selector"
-import { attributeTypesSelector } from "../../store/fileSettings/attributeTypes/attributeTypes.selector"
+import { attributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
 import { createSelector } from "@ngrx/store"

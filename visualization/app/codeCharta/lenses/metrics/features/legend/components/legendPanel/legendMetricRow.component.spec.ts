@@ -3,7 +3,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { defaultState } from "../../../../../../state/store/state.manager"
-import { attributeDescriptorsSelector } from "../../../../../../state/store/fileSettings/attributeDescriptors/attributeDescriptors.selector"
+import { attributeDescriptorsSelector } from "../../../../metricsLens.facade"
 import { LegendMetricRowComponent } from "./legendMetricRow.component"
 
 describe("LegendMetricRowComponent", () => {
