@@ -1,4 +1,4 @@
-import { setState } from "../../util/setState.reducer.factory"
+import { setState } from "../../../state/store/util/setState.reducer.factory"
 import { setIsLoadingMap } from "./isLoadingMap.actions"
 import { createReducer, on } from "@ngrx/store"
 

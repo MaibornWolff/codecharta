@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { defaultMapColors } from "../../../../mapState/mapState.facade"
-import { calculateInitialColorRange } from "../../../../state/store/dynamicSettings/colorRange/calculateInitialColorRange"
+import { calculateInitialColorRange } from "../../../../mapState/store/colorRange/calculateInitialColorRange"
 import { ColorMetricService } from "../../services/colorMetric.service"
 import { ColorRangeService } from "../../services/colorRange.service"
 import { IsDeltaStateService } from "../../services/isDeltaState.service"

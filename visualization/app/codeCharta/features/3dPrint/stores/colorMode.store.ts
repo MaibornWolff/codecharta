@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState, ColorMode } from "../../../codeCharta.model"
-import { setColorMode } from "../../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { setColorMode } from "../../../mapState/store/colorMode/colorMode.actions"
 import { colorModeSelector } from "../selectors/3dPrint.selectors"
 
 @Injectable({ providedIn: "root" })

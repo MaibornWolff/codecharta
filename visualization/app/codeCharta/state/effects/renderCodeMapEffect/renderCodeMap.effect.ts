@@ -9,7 +9,7 @@ import { UploadFilesService } from "../../../features/navBar/facade"
 import { accumulatedDataSelector } from "../../selectors/accumulatedData/accumulatedData.selector"
 import { actionsRequiringRerender } from "./actionsRequiringRerender"
 import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setIsLoadingMap } from "../../../mapState/store/isLoadingMap/isLoadingMap.actions"
 import { clearPendingHeavyDispatch } from "../../../util/dispatchAfterPaint"
 
 export const maxFPS = 1000 / 60

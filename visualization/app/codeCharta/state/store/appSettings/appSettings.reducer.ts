@@ -1,6 +1,6 @@
 import { defaultSortingOrderAscending, sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
 import { defaultIsLoadingFile, isLoadingFile } from "./isLoadingFile/isLoadingFile.reducer"
-import { defaultIsLoadingMap, isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
+import { defaultIsLoadingMap, isLoadingMap } from "../../../mapState/store/isLoadingMap/isLoadingMap.reducer"
 import {
     defaultResetCameraIfNewFileIsLoaded,
     resetCameraIfNewFileIsLoaded
@@ -10,7 +10,7 @@ import {
     defaultExperimentalFeaturesEnabled,
     experimentalFeaturesEnabled
 } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
-import { defaultLayoutAlgorithm, layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
+import { defaultLayoutAlgorithm, layoutAlgorithm } from "../../../mapState/store/layoutAlgorithm/layoutAlgorithm.reducer"
 import { defaultMaxTreeMapFiles, maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
 import { defaultScreenshotToClipboardEnabled, screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 import {

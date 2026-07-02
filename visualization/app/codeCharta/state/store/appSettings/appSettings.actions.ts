@@ -29,7 +29,7 @@ import {
     toggleIsColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
 import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
-import { setLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
+import { setLayoutAlgorithm } from "../../../mapState/store/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { setSortingOrderAscending, toggleSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"

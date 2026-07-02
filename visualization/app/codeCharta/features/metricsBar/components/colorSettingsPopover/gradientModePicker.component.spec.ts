@@ -3,7 +3,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { ColorMode } from "../../../../codeCharta.model"
-import { setColorMode } from "../../../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { setColorMode } from "../../../../mapState/store/colorMode/colorMode.actions"
 import { defaultState } from "../../../../state/store/state.manager"
 import { GradientModePickerComponent } from "./gradientModePicker.component"
 

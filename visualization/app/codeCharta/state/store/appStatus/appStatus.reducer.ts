@@ -1,7 +1,7 @@
 import { combineReducers } from "@ngrx/store"
-import { defaultHoveredNodeId, hoveredNodeId } from "./hoveredNodeId/hoveredNodeId.reducer"
-import { defaultRightClickedNodeData, rightClickedNodeData } from "./rightClickedNodeData/rightClickedNodeData.reducer"
-import { defaultSelectedBuildingId, selectedBuildingId } from "./selectedBuildingId/selectedBuildingId.reducer"
+import { defaultHoveredNodeId, hoveredNodeId } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.reducer"
+import { defaultRightClickedNodeData, rightClickedNodeData } from "../../../mapState/store/rightClickedNodeData/rightClickedNodeData.reducer"
+import { defaultSelectedBuildingId, selectedBuildingId } from "../../../mapState/store/selectedBuildingId/selectedBuildingId.reducer"
 import {
     defaultCurrentFilesAreSampleFiles,
     currentFilesAreSampleFiles

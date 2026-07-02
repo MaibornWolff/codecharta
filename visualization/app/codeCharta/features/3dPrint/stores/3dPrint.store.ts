@@ -11,7 +11,7 @@ import {
     blacklistSelector,
     print3DFilesSelector
 } from "../selectors/3dPrint.selectors"
-import { setColorMode } from "../../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { setColorMode } from "../../../mapState/store/colorMode/colorMode.actions"
 
 @Injectable({
     providedIn: "root"

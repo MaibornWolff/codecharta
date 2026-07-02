@@ -1,6 +1,6 @@
 import { layoutAlgorithm } from "./layoutAlgorithm.reducer"
 import { setLayoutAlgorithm } from "./layoutAlgorithm.actions"
-import { LayoutAlgorithm } from "../../../../codeCharta.model"
+import { LayoutAlgorithm } from "../../../codeCharta.model"
 
 describe("layoutAlgorithm", () => {
     describe("setLayoutAlgorithm", () => {

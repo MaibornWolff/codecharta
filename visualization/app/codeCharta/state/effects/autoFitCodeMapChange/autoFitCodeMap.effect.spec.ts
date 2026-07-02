@@ -14,7 +14,7 @@ import { defaultState } from "../../store/state.manager"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { LayoutAlgorithm } from "../../../codeCharta.model"
 import { selectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
-import { colorRangeSelector } from "../../store/dynamicSettings/colorRange/colorRange.selector"
+import { colorRangeSelector } from "../../../mapState/store/colorRange/colorRange.selector"
 
 describe("autoFitCodeMapOnFileSelectionChangeEffect", () => {
     let mockedRenderCodeMap$: Subject<unknown>

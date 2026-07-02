@@ -13,7 +13,7 @@ import { Action } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { setIsLoadingFile } from "../../store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setIsLoadingMap } from "../../../mapState/store/isLoadingMap/isLoadingMap.actions"
 
 describe("renderCodeMapEffect", () => {
     let actions$: Subject<Action>

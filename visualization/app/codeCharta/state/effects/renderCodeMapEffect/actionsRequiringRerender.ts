@@ -22,12 +22,12 @@ import {
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
 } from "../../../mapState/mapState.facade"
-import { setLayoutAlgorithm } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
+import { setLayoutAlgorithm } from "../../../mapState/store/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMaxTreeMapFiles } from "../../store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setAreaMetric } from "../../store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
-import { setColorMode } from "../../store/dynamicSettings/colorMode/colorMode.actions"
-import { setColorRange } from "../../store/dynamicSettings/colorRange/colorRange.actions"
+import { setColorMode } from "../../../mapState/store/colorMode/colorMode.actions"
+import { setColorRange } from "../../../mapState/store/colorRange/colorRange.actions"
 import { setEdgeMetric } from "../../store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import {
     setAllFocusedNodes,
@@ -36,7 +36,7 @@ import {
     unfocusNode
 } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setHeightMetric } from "../../store/dynamicSettings/heightMetric/heightMetric.actions"
-import { setMargin } from "../../store/dynamicSettings/margin/margin.actions"
+import { setMargin } from "../../../mapState/store/margin/margin.actions"
 import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
 import { setMarkedPackages, markPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
 import { setState } from "../../store/state.actions"

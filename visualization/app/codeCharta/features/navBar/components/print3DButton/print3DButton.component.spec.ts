@@ -3,7 +3,7 @@ import { State, Store } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { ColorMode } from "../../../../codeCharta.model"
-import { setColorMode } from "../../../../state/store/dynamicSettings/colorMode/colorMode.actions"
+import { setColorMode } from "../../../../mapState/store/colorMode/colorMode.actions"
 import { Print3DButtonComponent } from "./print3DButton.component"
 
 describe("Print3DButtonComponent", () => {
