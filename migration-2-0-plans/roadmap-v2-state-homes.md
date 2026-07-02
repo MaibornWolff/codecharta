@@ -214,7 +214,17 @@ each **once** so later slices only *add a key*:
 - **dep-cruiser:** added `lens-owns-ccjson-source` at **warn** (0 violations; flips to error once edges also move).
   **Risk was:** MED/MED.
 
-### Slice 9b — `blacklist` → sharedView + parameterize both lenses' blacklist read
+### Slice 9b — `blacklist` → sharedView + parameterize both lenses' blacklist read — ✅ DONE
+- **Outcome (2026-07-02, 3 commits):** `blacklist` moved out of the `fileSettings` state slice into the existing
+  **`state.sharedView`** root; per-file `CCFile.settings.fileSettings` still bundles it via the intersection
+  `FileSettings & MetricsLensSource & { blacklist }` (the .cc.json contract). The dependency lens's edge selectors
+  (blacklist + edge-visibility filtering) lifted OUT into **`state/selectors/edgeMetricData/`**; the lens facade now
+  exposes only the RAW `calculateEdgeMetricData`. `state.manager` dynamic-key rename `fileSettings.blacklist →
+  sharedView.blacklist`; applier `mapSharedViewToAction` blacklist case; `updateFileSettings.effect` co-emits
+  `sharedView:{blacklist}` in ONE setState; scenarios re-keyed; IndexedDB `v7→v8` (`migrateCcStateRecordToV8`,
+  merge-into-existing sharedView). `tsc` clean, `npm test` **45/45 snapshots zero diff (no -u)**, 2295 passing (+4
+  v8 tests), `lint:architecture` 0 errors (107 warns, −2 vs 9a). **After this slice neither lens imports any home
+  selector** (grep-verified). Details: `slice-9b-blacklist-sharedview.md`.
 - **Goal:** move `blacklist` (31 import sites) to `sharedView`, and finish lifting blacklist out of **both** lenses.
 - **Lens parameterization (P0-1, half 2):** the dependency lens reads `blacklistMatcherSelector` **and** edge-visibility
   `showIncoming/OutgoingEdges` (`dependencyLens.selectors.ts:3`, `sortedNodeEdgeMetricsMap.selector.ts:3,8`). Lift both the
