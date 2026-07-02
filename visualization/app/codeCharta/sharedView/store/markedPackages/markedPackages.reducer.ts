@@ -4,7 +4,7 @@ import { addMarkedPackage } from "./util/addMarkedPackage"
 import { findIndexOfMarkedPackageOrParent } from "./util/findIndexOfMarkedPackageOrParent"
 import { createReducer, on } from "@ngrx/store"
 import { MarkedPackage } from "../../../codeCharta.model"
-import { setState } from "../../../state/store/util/setState.reducer.factory"
+import { setState } from "../../../util/setState.reducer.factory"
 
 export const defaultMarkedPackages: MarkedPackage[] = []
 export const markedPackages = createReducer(

@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store"
 import { setGroupLabelCollisions } from "./groupLabelCollisions.actions"
-import { setState } from "../../../state/store/util/setState.reducer.factory"
+import { setState } from "../../../util/setState.reducer.factory"
 
 export const defaultGroupLabelCollisions = true
 export const groupLabelCollisions = createReducer(

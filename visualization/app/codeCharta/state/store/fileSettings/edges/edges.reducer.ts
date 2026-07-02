@@ -2,7 +2,7 @@ import { addEdge, removeEdge, setEdges } from "./edges.actions"
 import { addItemToArray, removeItemFromArray } from "../../../../util/arrayHelper"
 import { createReducer, on } from "@ngrx/store"
 import { Edge } from "../../../../codeCharta.model"
-import { setState } from "../../util/setState.reducer.factory"
+import { setState } from "../../../../util/setState.reducer.factory"
 
 export const defaultEdges: Edge[] = []
 export const edges = createReducer(
