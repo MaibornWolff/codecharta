@@ -3,7 +3,7 @@ import { defaultMapState } from "../../mapState/mapState.facade"
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 4
+export const DB_VERSION = 5
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -65,6 +65,39 @@ export function migrateCcStateRecordToV4<T>(state: T): T {
     return next as T
 }
 
+// v5 (Slice 7): the metric SELECTION (areaMetric/heightMetric/colorMetric/edgeMetric/
+// distributionMetric) moved out of dynamicSettings into mapState. Re-home them in a persisted
+// blob so the rehydrate applier finds them under mapState instead of silently reverting them to
+// defaults — same silent-data-loss landmine the v3/v4 transforms close.
+const V5_MOVES: Record<string, string[]> = {
+    dynamicSettings: ["areaMetric", "heightMetric", "colorMetric", "edgeMetric", "distributionMetric"]
+}
+
+export function migrateCcStateRecordToV5<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const mapState: Record<string, unknown> = { ...defaultMapState, ...((record["mapState"] as Record<string, unknown>) ?? {}) }
+    const next: Record<string, unknown> = { ...record }
+    for (const [home, keys] of Object.entries(V5_MOVES)) {
+        const source = record[home]
+        if (!source || typeof source !== "object") {
+            continue
+        }
+        const trimmed = { ...(source as Record<string, unknown>) }
+        for (const key of keys) {
+            if (key in trimmed) {
+                mapState[key] = trimmed[key]
+                delete trimmed[key]
+            }
+        }
+        next[home] = trimmed
+    }
+    next["mapState"] = mapState
+    return next as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -98,8 +131,8 @@ export async function openCodeChartaDB() {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
             // Existing DBs (oldVersion >= 1) may hold an older-shaped CcState blob; re-home its
-            // map-view settings into mapState. Migrations chain: v2 blobs run v3 then v4; a v3 blob
-            // runs only v4. A brand-new DB (oldVersion 0) has no record to migrate.
+            // map-view settings into mapState. Migrations chain: v2 blobs run v3→v4→v5; a v4 blob
+            // runs only v5. A brand-new DB (oldVersion 0) has no record to migrate.
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
@@ -110,6 +143,9 @@ export async function openCodeChartaDB() {
                     }
                     if (oldVersion < 4) {
                         migrated = migrateCcStateRecordToV4(migrated)
+                    }
+                    if (oldVersion < 5) {
+                        migrated = migrateCcStateRecordToV5(migrated)
                     }
                     await store.put({ ...record, state: migrated })
                 }

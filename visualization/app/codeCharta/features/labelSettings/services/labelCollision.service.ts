@@ -95,8 +95,7 @@ export class LabelCollisionService {
         }
 
         const groups = this.buildCollisionGroups(activeInfos, this.stateAccessStore.isLabelsPerMapActive())
-        const { dynamicSettings } = this.stateAccessStore.getValue()
-        const metric = mapState.labelMode === LabelMode.Color ? dynamicSettings.colorMetric : dynamicSettings.heightMetric
+        const metric = mapState.labelMode === LabelMode.Color ? mapState.colorMetric : mapState.heightMetric
 
         for (const group of groups) {
             if (group.length <= 1) {

@@ -29,6 +29,11 @@ import { defaultShowOutgoingEdges, showOutgoingEdges } from "./showEdges/outgoin
 import { defaultShowMetricLabelNameValue, showMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.reducer"
 import { defaultShowMetricLabelNodeName, showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
 import { defaultShowOnlyBuildingsWithEdges, showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
+import { areaMetric, defaultAreaMetric } from "./areaMetric/areaMetric.reducer"
+import { defaultHeightMetric, heightMetric } from "./heightMetric/heightMetric.reducer"
+import { colorMetric, defaultColorMetric } from "./colorMetric/colorMetric.reducer"
+import { defaultDistributionMetric, distributionMetric } from "./distributionMetric/distributionMetric.reducer"
+import { defaultEdgeMetric, edgeMetric } from "./edgeMetric/edgeMetric.reducer"
 
 export const mapState = combineReducers({
     colorLabels,
@@ -59,7 +64,12 @@ export const mapState = combineReducers({
     isLoadingMap,
     hoveredNodeId,
     selectedBuildingId,
-    rightClickedNodeData
+    rightClickedNodeData,
+    areaMetric,
+    heightMetric,
+    colorMetric,
+    distributionMetric,
+    edgeMetric
 })
 
 export const defaultMapState: MapState = {
@@ -91,5 +101,10 @@ export const defaultMapState: MapState = {
     isLoadingMap: defaultIsLoadingMap,
     hoveredNodeId: defaultHoveredNodeId,
     selectedBuildingId: defaultSelectedBuildingId,
-    rightClickedNodeData: defaultRightClickedNodeData
+    rightClickedNodeData: defaultRightClickedNodeData,
+    areaMetric: defaultAreaMetric,
+    heightMetric: defaultHeightMetric,
+    colorMetric: defaultColorMetric,
+    distributionMetric: defaultDistributionMetric,
+    edgeMetric: defaultEdgeMetric
 }

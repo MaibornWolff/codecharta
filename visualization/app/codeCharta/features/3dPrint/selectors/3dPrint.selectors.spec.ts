@@ -21,10 +21,10 @@ describe("3dPrint.selectors", () => {
     describe("areaMetricSelector", () => {
         it("should select areaMetric from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.areaMetric = "rloc"
+            mockState.mapState.areaMetric = "rloc"
 
             // Act
-            const result = areaMetricSelector.projector(mockState.dynamicSettings)
+            const result = areaMetricSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe("rloc")
@@ -34,10 +34,10 @@ describe("3dPrint.selectors", () => {
     describe("heightMetricSelector", () => {
         it("should select heightMetric from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.heightMetric = "mcc"
+            mockState.mapState.heightMetric = "mcc"
 
             // Act
-            const result = heightMetricSelector.projector(mockState.dynamicSettings)
+            const result = heightMetricSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe("mcc")
@@ -47,10 +47,10 @@ describe("3dPrint.selectors", () => {
     describe("colorMetricSelector", () => {
         it("should select colorMetric from dynamicSettings", () => {
             // Arrange
-            mockState.dynamicSettings.colorMetric = "complexity"
+            mockState.mapState.colorMetric = "complexity"
 
             // Act
-            const result = colorMetricSelector.projector(mockState.dynamicSettings)
+            const result = colorMetricSelector.projector(mockState.mapState)
 
             // Assert
             expect(result).toBe("complexity")

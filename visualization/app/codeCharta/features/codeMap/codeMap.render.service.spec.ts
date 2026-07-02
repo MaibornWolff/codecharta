@@ -190,7 +190,7 @@ describe("codeMapRenderService", () => {
         })
 
         it("should call getNodesMatchingColorSelector and set all nodes to positive color when metric is unary", () => {
-            store.dispatch(setState({ value: { ...STATE, dynamicSettings: { ...STATE.dynamicSettings, colorMetric: "unary" } } }))
+            store.dispatch(setState({ value: { ...STATE, mapState: { ...STATE.mapState, colorMetric: "unary" } } }))
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
 
             expect(codeMapRenderService["nodesByColor"].positive).toEqual([TEST_NODE_ROOT, TEST_NODE_LEAF, INCOMING_NODE])

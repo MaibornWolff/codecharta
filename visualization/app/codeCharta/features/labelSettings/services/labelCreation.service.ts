@@ -32,9 +32,9 @@ export class LabelCreationService {
     }
 
     addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
-        const { mapState, dynamicSettings } = this.stateAccessStore.getValue()
+        const { mapState } = this.stateAccessStore.getValue()
         const { scaling, showMetricLabelNodeName, showMetricLabelNameValue, labelMode, labelSize } = mapState
-        const { heightMetric, colorMetric } = dynamicSettings
+        const { heightMetric, colorMetric } = mapState
         const multiplier = new Vector3(scaling.x, scaling.y, scaling.z)
 
         let nameText = ""

@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const edgeMetricSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.edgeMetric)
+export const edgeMetricSelector = createSelector(mapStateSelector, mapState => mapState.edgeMetric)

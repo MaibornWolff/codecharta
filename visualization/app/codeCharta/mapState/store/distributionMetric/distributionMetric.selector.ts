@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
+import { mapStateSelector } from "../mapState.selector"
 
-export const distributionMetricSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.distributionMetric)
+export const distributionMetricSelector = createSelector(mapStateSelector, mapState => mapState.distributionMetric)

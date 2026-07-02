@@ -37,13 +37,13 @@ describe("metricHelper", () => {
 
     describe("areScenarioSettingsApplicable", () => {
         it("should return true when area-, height- and colorMetric is available", () => {
-            const scenario = { dynamicSettings: { areaMetric: "a", heightMetric: "a", colorMetric: "a" } }
+            const scenario = { mapState: { areaMetric: "a", heightMetric: "a", colorMetric: "a" } }
             const metricData = [{ name: "a", maxValue: 3 }]
             expect(areScenarioSettingsApplicable(scenario, metricData)).toBe(true)
         })
 
         it("should return false when there is no colorMetric", () => {
-            const scenario = { dynamicSettings: { areaMetric: "a", heightMetric: "a", colorMetric: "b" } }
+            const scenario = { mapState: { areaMetric: "a", heightMetric: "a", colorMetric: "b" } }
             const metricData = [{ name: "a", maxValue: 3 }]
             expect(areScenarioSettingsApplicable(scenario, metricData)).toBe(false)
         })

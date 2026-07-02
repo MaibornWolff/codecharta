@@ -21,7 +21,14 @@ describe("FileExtensionBarSegment", () => {
         appStatus: {
             currentFilesAreSampleFiles: false
         },
-        mapState: defaultMapState,
+        mapState: {
+            ...defaultMapState,
+            areaMetric: "rloc",
+            heightMetric: "rloc",
+            colorMetric: "rloc",
+            distributionMetric: "rloc",
+            edgeMetric: ""
+        },
         fileSettings: {
             attributeTypes: null,
             attributeDescriptors: null,
@@ -31,14 +38,9 @@ describe("FileExtensionBarSegment", () => {
         },
         files: [],
         dynamicSettings: {
-            areaMetric: "rloc",
             sortingOption: SortingOption.NAME,
-            distributionMetric: "rloc",
             focusedNodePath: [],
-            searchPattern: "",
-            heightMetric: "rloc",
-            edgeMetric: "",
-            colorMetric: "rloc"
+            searchPattern: ""
         }
     }
     const mockItem: MetricDistribution = {

@@ -196,23 +196,8 @@ export class LoadInitialFileStore {
 
     private mapDynamicSettingToAction(key: keyof DynamicSettings, value: any) {
         switch (key) {
-            case "areaMetric":
-                this.store.dispatch(setAreaMetric({ value }))
-                break
-            case "heightMetric":
-                this.store.dispatch(setHeightMetric({ value }))
-                break
-            case "edgeMetric":
-                this.store.dispatch(setEdgeMetric({ value }))
-                break
-            case "colorMetric":
-                this.store.dispatch(setColorMetric({ value }))
-                break
             case "sortingOption":
                 this.store.dispatch(setSortingOption({ value }))
-                break
-            case "distributionMetric":
-                this.store.dispatch(setDistributionMetric({ value }))
                 break
             case "focusedNodePath":
                 this.store.dispatch(setAllFocusedNodes({ value }))
@@ -335,6 +320,21 @@ export class LoadInitialFileStore {
                 break
             case "layoutAlgorithm":
                 this.store.dispatch(setLayoutAlgorithm({ value }))
+                break
+            case "areaMetric":
+                this.store.dispatch(setAreaMetric({ value }))
+                break
+            case "heightMetric":
+                this.store.dispatch(setHeightMetric({ value }))
+                break
+            case "edgeMetric":
+                this.store.dispatch(setEdgeMetric({ value }))
+                break
+            case "colorMetric":
+                this.store.dispatch(setColorMetric({ value }))
+                break
+            case "distributionMetric":
+                this.store.dispatch(setDistributionMetric({ value }))
                 break
             case "isLoadingMap":
             case "hoveredNodeId":

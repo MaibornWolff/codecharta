@@ -126,11 +126,11 @@ describe("ScenariosService", () => {
             const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
 
             // Assert
-            expect(sections.metrics.areaMetric).toBe(defaultState.dynamicSettings.areaMetric)
-            expect(sections.metrics.heightMetric).toBe(defaultState.dynamicSettings.heightMetric)
-            expect(sections.metrics.colorMetric).toBe(defaultState.dynamicSettings.colorMetric)
-            expect(sections.metrics.edgeMetric).toBe(defaultState.dynamicSettings.edgeMetric)
-            expect(sections.metrics.distributionMetric).toBe(defaultState.dynamicSettings.distributionMetric)
+            expect(sections.metrics.areaMetric).toBe(defaultState.mapState.areaMetric)
+            expect(sections.metrics.heightMetric).toBe(defaultState.mapState.heightMetric)
+            expect(sections.metrics.colorMetric).toBe(defaultState.mapState.colorMetric)
+            expect(sections.metrics.edgeMetric).toBe(defaultState.mapState.edgeMetric)
+            expect(sections.metrics.distributionMetric).toBe(defaultState.mapState.distributionMetric)
         })
 
         it("should extract colors section from state", () => {

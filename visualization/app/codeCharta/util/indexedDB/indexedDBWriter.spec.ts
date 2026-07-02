@@ -13,6 +13,7 @@ import {
     deleteCcState,
     migrateCcStateRecordToV3,
     migrateCcStateRecordToV4,
+    migrateCcStateRecordToV5,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -118,7 +119,56 @@ describe("migrateCcStateRecordToV4 (Slice 6 re-home transform)", () => {
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 transforms)", () => {
+describe("migrateCcStateRecordToV5 (Slice 7 re-home transform)", () => {
+    const v4ShapeState = () => ({
+        dynamicSettings: {
+            areaMetric: "rloc",
+            heightMetric: "mcc",
+            colorMetric: "cov",
+            edgeMetric: "pairingRate",
+            distributionMetric: "rloc",
+            sortingOption: "NAME",
+            focusedNodePath: [],
+            searchPattern: ""
+        }
+    })
+
+    it("should move the five metric-selection keys from dynamicSettings into mapState", () => {
+        const migrated = migrateCcStateRecordToV5(v4ShapeState()) as unknown as { mapState: Record<string, unknown> }
+
+        expect(migrated.mapState.areaMetric).toBe("rloc")
+        expect(migrated.mapState.heightMetric).toBe("mcc")
+        expect(migrated.mapState.colorMetric).toBe("cov")
+        expect(migrated.mapState.edgeMetric).toBe("pairingRate")
+        expect(migrated.mapState.distributionMetric).toBe("rloc")
+    })
+
+    it("should drop the moved metrics from dynamicSettings and keep the staying ones", () => {
+        const migrated = migrateCcStateRecordToV5(v4ShapeState()) as unknown as { dynamicSettings: Record<string, unknown> }
+
+        expect("areaMetric" in migrated.dynamicSettings).toBe(false)
+        expect("distributionMetric" in migrated.dynamicSettings).toBe(false)
+        expect(migrated.dynamicSettings.sortingOption).toBe("NAME")
+        expect(migrated.dynamicSettings.searchPattern).toBe("")
+        expect(migrated.dynamicSettings.focusedNodePath).toEqual([])
+    })
+
+    it("should fill mapState metric keys absent from the old blob with their defaults", () => {
+        const migrated = migrateCcStateRecordToV5({ dynamicSettings: {} }) as unknown as { mapState: Record<string, unknown> }
+
+        expect(migrated.mapState.areaMetric).toBe(defaultMapState.areaMetric)
+        expect(migrated.mapState.colorMetric).toBe(defaultMapState.colorMetric)
+    })
+
+    it("should return the record untouched when it is null or has no dynamicSettings", () => {
+        expect(migrateCcStateRecordToV5(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV5({ files: [] }) as unknown as { files: unknown[]; mapState: Record<string, unknown> }
+        expect(migrated.files).toEqual([])
+        expect(migrated.mapState.areaMetric).toBe(defaultMapState.areaMetric)
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -136,14 +186,14 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 transforms)", ()
         const v2ShapeState = {
             ...defaultState,
             appSettings: { ...defaultAppSettings, invertHeight: true, amountOfTopLabels: 7, layoutAlgorithm: LayoutAlgorithm.StreetMap },
-            dynamicSettings: { ...defaultState.dynamicSettings, colorMode: ColorMode.absolute, margin: 42 },
+            dynamicSettings: { ...defaultState.dynamicSettings, colorMode: ColorMode.absolute, margin: 42, areaMetric: "rloc" },
             appStatus: { ...defaultState.appStatus, hoveredNodeId: 5 }
         }
         delete (v2ShapeState as { mapState?: unknown }).mapState
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v4, invoked by readCcState) chains the v3 then v4 upgrade transforms.
+        // openCodeChartaDB (v5, invoked by readCcState) chains the v3, v4 then v5 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings: Record<string, unknown>
             dynamicSettings: Record<string, unknown>
@@ -162,6 +212,9 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 transforms)", ()
         expect(migratedState.mapState.hoveredNodeId).toBe(5)
         expect("colorMode" in migratedState.dynamicSettings).toBe(false)
         expect("hoveredNodeId" in migratedState.appStatus).toBe(false)
+        // v5 re-home (metric selection out of dynamicSettings)
+        expect(migratedState.mapState.areaMetric).toBe("rloc")
+        expect("areaMetric" in migratedState.dynamicSettings).toBe(false)
     })
 })
 

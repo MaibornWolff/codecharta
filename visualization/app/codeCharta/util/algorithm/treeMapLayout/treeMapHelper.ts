@@ -57,7 +57,7 @@ function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, s
         attributes: map.attributes,
         edgeAttributes: map.edgeAttributes,
         deltas: map.deltas,
-        heightDelta: (map.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale,
+        heightDelta: (map.deltas?.[state.mapState.heightMetric] ?? 0) * heightScale,
         visible: isVisible(map, false, state, flattened),
         path: map.path,
         link: map.link,
@@ -86,7 +86,7 @@ function buildNodeFrom(
     const width = x1 - x0
     const length = y1 - y0
     const z0 = squaredNode.depth * FOLDER_HEIGHT
-    const heightDelta = (data.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling
+    const heightDelta = (data.deltas?.[state.mapState.heightMetric] ?? 0) * heightScale * mapSizeResolutionScaling
     const edgePointHeight = height + (heightDelta < 0 ? Math.abs(heightDelta) : 0)
 
     return {
@@ -123,10 +123,10 @@ export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeig
         return MIN_BUILDING_HEIGHT
     }
 
-    let heightValue = squaredNode.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+    let heightValue = squaredNode.attributes[state.mapState.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
     heightValue *= mapSizeResolutionScaling
 
-    const heightMetric = state.dynamicSettings.heightMetric
+    const heightMetric = state.mapState.heightMetric
     const attributeDescriptors = state.fileSettings.attributeDescriptors
     const isAttributeDirectionInversed = attributeDescriptors[heightMetric]?.direction === 1
 
@@ -143,7 +143,7 @@ export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeig
 }
 
 export function resolveHeightValue(heightValue: number, heightScale: number, data: CodeMapNode, state: CcState): number {
-    const minimalHeight = data.deltas?.[state.dynamicSettings.heightMetric] ? 0 : MIN_BUILDING_HEIGHT
+    const minimalHeight = data.deltas?.[state.mapState.heightMetric] ? 0 : MIN_BUILDING_HEIGHT
     return Math.max(Math.abs(heightScale * heightValue), minimalHeight)
 }
 
@@ -193,7 +193,7 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: CcState) {
 
 function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, state: CcState) {
     return (
-        codeMapNode.edgeAttributes[state.dynamicSettings.edgeMetric] === undefined ||
+        codeMapNode.edgeAttributes[state.mapState.edgeMetric] === undefined ||
         !state.fileSettings.edges.some(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName)
     )
 }
@@ -205,7 +205,7 @@ function isNodeNonSearched(squaredNode: CodeMapNode, state: CcState) {
 
 export function getBuildingColor(
     node: CodeMapNode,
-    { mapState, dynamicSettings }: CcState,
+    { mapState }: CcState,
     nodeMetricDataRange: MetricMinMax,
     isDeltaState: boolean,
     flattened: boolean
@@ -215,7 +215,7 @@ export function getBuildingColor(
     if (isDeltaState) {
         return mapColors.base
     }
-    const metricValue = node.attributes[dynamicSettings.colorMetric]
+    const metricValue = node.attributes[mapState.colorMetric]
 
     if (metricValue === undefined) {
         return mapColors.base
@@ -226,7 +226,7 @@ export function getBuildingColor(
 
     const { colorRange, colorMode } = mapState
 
-    if (dynamicSettings["colorMetric"] === "unary") {
+    if (mapState["colorMetric"] === "unary") {
         return mapColors.positive
     }
 

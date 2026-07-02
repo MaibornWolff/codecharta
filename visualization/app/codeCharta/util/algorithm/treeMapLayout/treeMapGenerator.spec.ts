@@ -150,8 +150,8 @@ describe("treeMapGenerator", () => {
             map.children[1].attributes = { myArea: 0, myHeight: 0 }
             map.children[1].deltas = { myArea: -40, myHeight: -80 }
 
-            state.dynamicSettings.areaMetric = "myArea"
-            state.dynamicSettings.heightMetric = "myHeight"
+            state.mapState.areaMetric = "myArea"
+            state.mapState.heightMetric = "myHeight"
             metricData = [
                 { name: "myArea", maxValue: 42, minValue: 1, values: [1, 42] },
                 { name: "myHeight", maxValue: 99, minValue: 1, values: [1, 99] }
@@ -182,8 +182,8 @@ describe("treeMapGenerator", () => {
         })
 
         it("attribute do not exists, multiple children with non existent attributes", () => {
-            state.dynamicSettings.heightMetric = "b"
-            state.dynamicSettings.areaMetric = "b"
+            state.mapState.heightMetric = "b"
+            state.mapState.areaMetric = "b"
             metricData = [
                 { name: "a", maxValue: 42, minValue: 1, values: [1, 42] },
                 { name: "b", maxValue: 99, minValue: 1, values: [1, 99] }
@@ -195,8 +195,8 @@ describe("treeMapGenerator", () => {
         })
 
         it("area should be zero if metric does not exist", () => {
-            state.dynamicSettings.areaMetric = "unknown"
-            state.dynamicSettings.heightMetric = "unknown"
+            state.mapState.areaMetric = "unknown"
+            state.mapState.heightMetric = "unknown"
             state.fileSettings.edges = VALID_EDGES
             metricData = [{ name: "unknown", maxValue: 100, minValue: 1, values: [1, 100] }]
 
@@ -220,7 +220,7 @@ describe("treeMapGenerator", () => {
         })
 
         it("should invert area when areametric indicates a positive direction", () => {
-            state.dynamicSettings.areaMetric = "branch_coverage"
+            state.mapState.areaMetric = "branch_coverage"
             state.fileSettings.attributeDescriptors = {
                 branch_coverage: {
                     title: "Branch Coverage",

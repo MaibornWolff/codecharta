@@ -99,7 +99,7 @@ describe("MetricChooserTypeComponent", () => {
         // Arrange
         const state = clone(defaultState)
         state.fileSettings.attributeTypes = { nodes: { rloc: AttributeTypeValue.relative } }
-        state.dynamicSettings.areaMetric = "rloc"
+        state.mapState.areaMetric = "rloc"
 
         // Act
         await setup({ node$: of(folderNode), state })

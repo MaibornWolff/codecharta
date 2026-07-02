@@ -33,7 +33,7 @@ export class UpdateQueryParametersEffect {
 
     private updateMetricQueryParameters(isEdgeMetricDefined: boolean): void {
         const state: CcState = this.state.getValue()
-        const { edgeMetric, heightMetric, colorMetric, areaMetric } = state.dynamicSettings
+        const { edgeMetric, heightMetric, colorMetric, areaMetric } = state.mapState
         const isFileQueryParameterPresent = this.loadInitialFileService.checkFileQueryParameterPresent()
         if (!isFileQueryParameterPresent) {
             return

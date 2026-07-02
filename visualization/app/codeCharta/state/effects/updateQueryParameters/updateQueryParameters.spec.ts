@@ -13,14 +13,14 @@ import { defaultState } from "../../store/state.manager"
 import { UpdateQueryParametersEffect } from "./updateQueryParameters.effect"
 
 describe("UpdateQueryParametersEffect", () => {
-    const mockDynamicSettings = {
-        ...defaultState.dynamicSettings,
+    const mockMapState = {
+        ...defaultState.mapState,
         areaMetric: "rloc",
         heightMetric: "mcc",
         colorMetric: "functions",
         edgeMetric: "pairingRate"
     }
-    const mockState = { ...defaultState, dynamicSettings: mockDynamicSettings }
+    const mockState = { ...defaultState, mapState: mockMapState }
     let mockGetState
 
     let actions$: Subject<Action>

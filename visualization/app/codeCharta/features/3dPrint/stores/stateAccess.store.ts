@@ -9,15 +9,15 @@ export class Print3DStateAccessStore {
     constructor(private readonly state: State<CcState>) {}
 
     getAreaMetric(): string {
-        return this.state.getValue().dynamicSettings.areaMetric
+        return this.state.getValue().mapState.areaMetric
     }
 
     getHeightMetric(): string {
-        return this.state.getValue().dynamicSettings.heightMetric
+        return this.state.getValue().mapState.heightMetric
     }
 
     getColorMetric(): string {
-        return this.state.getValue().dynamicSettings.colorMetric
+        return this.state.getValue().mapState.colorMetric
     }
 
     getColorRange(): ColorRange {

@@ -52,7 +52,7 @@ describe("TreeMapHelper", () => {
 
             state = clone(STATE)
             state.mapState.margin = 15
-            state.dynamicSettings.heightMetric = "theHeight"
+            state.mapState.heightMetric = "theHeight"
             state.mapState.invertHeight = false
             state.dynamicSettings.focusedNodePath = []
         })
@@ -71,7 +71,7 @@ describe("TreeMapHelper", () => {
         })
 
         it("should invert height when heightmetric indicates a positive direction", () => {
-            state.dynamicSettings.heightMetric = "branch_coverage"
+            state.mapState.heightMetric = "branch_coverage"
             state.fileSettings.attributeDescriptors = {
                 branch_coverage: {
                     title: "Branch Coverage",
@@ -87,14 +87,14 @@ describe("TreeMapHelper", () => {
 
         it("deltas", () => {
             squaredNode.data.deltas = {}
-            state.dynamicSettings.heightMetric = "theHeight"
-            squaredNode.data.deltas[state.dynamicSettings.heightMetric] = 33
+            state.mapState.heightMetric = "theHeight"
+            squaredNode.data.deltas[state.mapState.heightMetric] = 33
             expect(buildNode()).toMatchSnapshot()
         })
 
         it("given negative deltas the resulting heightDelta also should be negative", () => {
             squaredNode.data.deltas = {}
-            squaredNode.data.deltas[state.dynamicSettings.heightMetric] = -33
+            squaredNode.data.deltas[state.mapState.heightMetric] = -33
             expect(buildNode().heightDelta).toBe(-33)
         })
 
@@ -248,12 +248,12 @@ describe("TreeMapHelper", () => {
 
                 state.mapState.colorRange.from = 5
                 state.mapState.colorRange.to = 10
-                state.dynamicSettings.colorMetric = "validMetricName"
+                state.mapState.colorMetric = "validMetricName"
             })
 
             describe("generics", () => {
                 it("creates grey building for undefined colorMetric", () => {
-                    state.dynamicSettings.colorMetric = "invalid"
+                    state.mapState.colorMetric = "invalid"
                     expect(buildNode().color).toBe(state.mapState.mapColors.base)
                 })
 
@@ -456,7 +456,7 @@ describe("TreeMapHelper", () => {
 
     describe("resolve height value", () => {
         const state = STATE
-        state.dynamicSettings.heightMetric = "rloc"
+        state.mapState.heightMetric = "rloc"
         const someNode: CodeMapNode = {
             deltas: {
                 mcc: 42
@@ -473,7 +473,7 @@ describe("TreeMapHelper", () => {
 
         it("should produce positive height value if big enough", () => {
             const stateMCC = clone(state)
-            stateMCC.dynamicSettings.heightMetric = "mcc"
+            stateMCC.mapState.heightMetric = "mcc"
 
             const resultHeightWithDelta = TreeMapHelper.resolveHeightValue(10, 1, someNode, stateMCC)
             const resultHeightWithoutDelta = TreeMapHelper.resolveHeightValue(10, 1, someNode, state)
@@ -483,7 +483,7 @@ describe("TreeMapHelper", () => {
         })
 
         it("should use zero as min height if delta present", () => {
-            state.dynamicSettings.heightMetric = "mcc"
+            state.mapState.heightMetric = "mcc"
             const resultHeightZero = TreeMapHelper.resolveHeightValue(0, 1, someNode, state)
             const resultHeightPositive = TreeMapHelper.resolveHeightValue(10, 1, someNode, state)
 

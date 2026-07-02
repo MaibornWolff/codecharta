@@ -1,6 +1,6 @@
 import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-hierarchy"
 import { TreeMapHelper, treeMapSize } from "./treeMapHelper"
-import { CodeMapNode, DynamicSettings, Node, NodeMetricData, CcState } from "../../../codeCharta.model"
+import { CodeMapNode, MapState, Node, NodeMetricData, CcState } from "../../../codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../codeMapHelper"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
@@ -26,8 +26,8 @@ export function getFloorLabelPadding(folderWidth: number, depth: number) {
 
 export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
     const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-    const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric)?.maxValue * mapSizeResolutionScaling
-    const maxWidth = metricData.find(x => x.name === state.dynamicSettings.areaMetric)?.maxValue * mapSizeResolutionScaling
+    const maxHeight = metricData.find(x => x.name === state.mapState.heightMetric)?.maxValue * mapSizeResolutionScaling
+    const maxWidth = metricData.find(x => x.name === state.mapState.areaMetric)?.maxValue * mapSizeResolutionScaling
     const heightScale = (treeMapSize * 2) / maxHeight
 
     if (hasFixedFolders(map)) {
@@ -262,14 +262,14 @@ function getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {
     return 2 * Math.sqrt(totalNodes - blacklistedNodes)
 }
 
-function isOnlyVisibleInComparisonMap(node: CodeMapNode, dynamicSettings: DynamicSettings) {
-    return node.attributes[dynamicSettings.areaMetric] === 0 && node.deltas[dynamicSettings.heightMetric] < 0
+function isOnlyVisibleInComparisonMap(node: CodeMapNode, mapState: MapState) {
+    return node.attributes[mapState.areaMetric] === 0 && node.deltas[mapState.heightMetric] < 0
 }
 
 // Only exported for testing.
 export function calculateAreaValue(
     node: CodeMapNode,
-    { dynamicSettings, mapState, fileSettings }: CcState,
+    { mapState, fileSettings }: CcState,
     maxWidth: number,
     experimentalFeaturesEnabled: boolean
 ) {
@@ -277,21 +277,21 @@ export function calculateAreaValue(
         return 0
     }
 
-    if (node.deltas && isOnlyVisibleInComparisonMap(node, dynamicSettings)) {
-        return Math.abs(node.deltas[dynamicSettings.areaMetric])
+    if (node.deltas && isOnlyVisibleInComparisonMap(node, mapState)) {
+        return Math.abs(node.deltas[mapState.areaMetric])
     }
 
-    if (isLeaf(node) && node.attributes?.[dynamicSettings.areaMetric]) {
-        const areaMetric = dynamicSettings.areaMetric
+    if (isLeaf(node) && node.attributes?.[mapState.areaMetric]) {
+        const areaMetric = mapState.areaMetric
         const attributeDescriptors = fileSettings.attributeDescriptors
         const isAttributeDirectionInversed = attributeDescriptors[areaMetric]?.direction === 1
 
         if (isAttributeDirectionInversed) {
             return mapState.invertArea
-                ? node.attributes[dynamicSettings.areaMetric]
-                : maxWidth - node.attributes[dynamicSettings.areaMetric]
+                ? node.attributes[mapState.areaMetric]
+                : maxWidth - node.attributes[mapState.areaMetric]
         }
-        return mapState.invertArea ? maxWidth - node.attributes[dynamicSettings.areaMetric] : node.attributes[dynamicSettings.areaMetric]
+        return mapState.invertArea ? maxWidth - node.attributes[mapState.areaMetric] : node.attributes[mapState.areaMetric]
     }
     return experimentalFeaturesEnabled ? 0.5 : 0
 }

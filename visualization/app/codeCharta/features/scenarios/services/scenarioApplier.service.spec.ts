@@ -128,8 +128,8 @@ describe("ScenarioApplierService", () => {
 
             // Assert
             expect(patches).toHaveLength(1)
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.heightMetric).toBe("mcc")
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.heightMetric).toBe("mcc")
             expect(patches[0].appSettings?.isColorMetricLinkedToHeightMetric).toBe(true)
         })
 
@@ -142,7 +142,7 @@ describe("ScenarioApplierService", () => {
 
             // Assert — metrics is patch 0, colors is patch 1
             expect(patches).toHaveLength(2)
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
             expect(patches[0].mapState?.colorRange).toBeUndefined()
             expect(patches[1].mapState?.colorRange).toEqual({ from: 1, to: 10 })
             expect(patches[1].mapState?.mapColors).toEqual(testSections.colors.mapColors)
@@ -174,7 +174,7 @@ describe("ScenarioApplierService", () => {
             const merged = mergePatches(patches)
 
             // Assert
-            expect(merged.dynamicSettings?.areaMetric).toBe("rloc")
+            expect(merged.mapState?.areaMetric).toBe("rloc")
             expect(merged.mapState?.colorRange).toEqual({ from: 1, to: 10 })
             expect(merged.fileSettings?.blacklist).toHaveLength(1)
             expect(merged.mapState?.amountOfTopLabels).toBe(5)
@@ -203,11 +203,11 @@ describe("ScenarioApplierService", () => {
             const patches = service.buildOrderedStatePatches(testSections, keys, metricData)
 
             // Assert — rloc is available, mcc and pairingRate are not
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.distributionMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.heightMetric).toBeUndefined()
-            expect(patches[0].dynamicSettings?.colorMetric).toBeUndefined()
-            expect(patches[0].dynamicSettings?.edgeMetric).toBeUndefined()
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.distributionMetric).toBe("rloc")
+            expect(patches[0].mapState?.heightMetric).toBeUndefined()
+            expect(patches[0].mapState?.colorMetric).toBeUndefined()
+            expect(patches[0].mapState?.edgeMetric).toBeUndefined()
         })
 
         it("should apply all metrics when metricData is not provided", () => {
@@ -218,9 +218,9 @@ describe("ScenarioApplierService", () => {
             const patches = service.buildOrderedStatePatches(testSections, keys)
 
             // Assert
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.heightMetric).toBe("mcc")
-            expect(patches[0].dynamicSettings?.edgeMetric).toBe("pairingRate")
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.heightMetric).toBe("mcc")
+            expect(patches[0].mapState?.edgeMetric).toBe("pairingRate")
         })
 
         it("should handle partial metrics section (built-in scenario)", () => {
@@ -236,9 +236,9 @@ describe("ScenarioApplierService", () => {
 
             // Assert
             expect(patches).toHaveLength(2)
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.edgeMetric).toBeUndefined()
-            expect(patches[0].dynamicSettings?.distributionMetric).toBeUndefined()
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.edgeMetric).toBeUndefined()
+            expect(patches[0].mapState?.distributionMetric).toBeUndefined()
             expect(patches[0].appSettings?.isColorMetricLinkedToHeightMetric).toBeUndefined()
             expect(patches[1].mapState?.colorRange).toEqual({ from: 250, to: 500 })
             expect(patches[1].mapState?.colorMode).toBeUndefined()
@@ -257,7 +257,7 @@ describe("ScenarioApplierService", () => {
 
             // Assert — only metrics patch, no colors/filters/labels
             expect(patches).toHaveLength(1)
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
         })
     })
 
@@ -319,7 +319,7 @@ describe("ScenarioApplierService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(
                 expect.objectContaining({
                     value: expect.objectContaining({
-                        dynamicSettings: expect.objectContaining({
+                        mapState: expect.objectContaining({
                             areaMetric: scenario.sections.metrics.areaMetric
                         })
                     })

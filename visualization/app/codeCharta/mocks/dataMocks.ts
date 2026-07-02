@@ -2152,11 +2152,6 @@ export const STATE: CcState = {
         markedPackages: []
     },
     dynamicSettings: {
-        areaMetric: "rloc",
-        heightMetric: "mcc",
-        colorMetric: "mcc",
-        distributionMetric: "mcc",
-        edgeMetric: "pairingRate",
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
         sortingOption: SortingOption.NAME
@@ -2172,6 +2167,11 @@ export const STATE: CcState = {
         maxTreeMapFiles: 200
     },
     mapState: {
+        areaMetric: "rloc",
+        heightMetric: "mcc",
+        colorMetric: "mcc",
+        distributionMetric: "mcc",
+        edgeMetric: "pairingRate",
         amountOfTopLabels: 31,
         labelSize: 1,
         amountOfEdgePreviews: 5,
@@ -2240,6 +2240,11 @@ export const DEFAULT_STATE: CcState = {
         maxTreeMapFiles: 100
     },
     mapState: {
+        areaMetric: null,
+        heightMetric: null,
+        colorMetric: null,
+        distributionMetric: null,
+        edgeMetric: null,
         amountOfTopLabels: 1,
         labelSize: 1,
         amountOfEdgePreviews: 1,
@@ -2291,12 +2296,7 @@ export const DEFAULT_STATE: CcState = {
         rightClickedNodeData: null
     },
     dynamicSettings: {
-        areaMetric: null,
-        colorMetric: null,
         focusedNodePath: [],
-        heightMetric: null,
-        distributionMetric: null,
-        edgeMetric: null,
         searchPattern: "",
         sortingOption: SortingOption.NAME
     },

@@ -162,11 +162,11 @@ export class ScenariosService {
     buildScenarioSections(state: CcState, cameraPosition: PlainPosition, cameraTarget: PlainPosition): ScenarioSections {
         return {
             metrics: {
-                areaMetric: state.dynamicSettings.areaMetric,
-                heightMetric: state.dynamicSettings.heightMetric,
-                colorMetric: state.dynamicSettings.colorMetric,
-                edgeMetric: state.dynamicSettings.edgeMetric,
-                distributionMetric: state.dynamicSettings.distributionMetric,
+                areaMetric: state.mapState.areaMetric,
+                heightMetric: state.mapState.heightMetric,
+                colorMetric: state.mapState.colorMetric,
+                edgeMetric: state.mapState.edgeMetric,
+                distributionMetric: state.mapState.distributionMetric,
                 isColorMetricLinkedToHeightMetric: state.appSettings.isColorMetricLinkedToHeightMetric
             },
             colors: {

@@ -130,7 +130,6 @@ export class CodeMapRenderService implements OnDestroy {
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
         const state = this.codeMapRenderStore.getState()
-        const dynamicSettings = state.dynamicSettings
         const colorRange = state.mapState.colorRange
 
         this.nodesByColor = {
@@ -141,8 +140,8 @@ export class CodeMapRenderService implements OnDestroy {
 
         for (const node of sortedNodes) {
             if (node.isLeaf) {
-                const metric = node.attributes[dynamicSettings.colorMetric]
-                if (dynamicSettings.colorMetric === "unary") {
+                const metric = node.attributes[state.mapState.colorMetric]
+                if (state.mapState.colorMetric === "unary") {
                     this.nodesByColor.positive.push(node)
                 } else if (metric !== null) {
                     if (metric < colorRange.from) {
@@ -205,7 +204,7 @@ export class CodeMapRenderService implements OnDestroy {
             const selectTopNodes = this.getTopNodeSelector(state, amountOfTopLabels)
 
             if (labelMode === LabelMode.Color) {
-                const { colorMetric } = state.dynamicSettings
+                const { colorMetric } = state.mapState
                 const selectedColorNodes = selectTopNodes(
                     colorLabelTypes
                         .filter(colorType => colorLabelOptions[colorType])

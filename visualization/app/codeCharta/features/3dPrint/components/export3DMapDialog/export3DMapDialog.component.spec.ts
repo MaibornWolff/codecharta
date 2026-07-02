@@ -51,9 +51,9 @@ const TestNodeMap: CodeMapNode = {
 }
 
 const TestState = { ...DEFAULT_STATE }
-TestState.dynamicSettings.areaMetric = "a"
-TestState.dynamicSettings.heightMetric = "b"
-TestState.dynamicSettings.colorMetric = "mcc"
+TestState.mapState.areaMetric = "a"
+TestState.mapState.heightMetric = "b"
+TestState.mapState.colorMetric = "mcc"
 TestState.mapState.colorRange = { from: 4, to: 8 }
 TestState.mapState.colorMode = ColorMode.absolute
 const TestFile: CCFile = { fileMeta: FILE_META, map: TestNodeMap, settings: DEFAULT_SETTINGS }

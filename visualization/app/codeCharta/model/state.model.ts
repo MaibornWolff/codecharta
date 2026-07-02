@@ -31,19 +31,21 @@ export interface Settings {
     mapState: MapState
 }
 
-export interface DynamicSettings extends PrimaryMetrics {
+export interface DynamicSettings {
     sortingOption: SortingOption
-    distributionMetric: string
     focusedNodePath: string[]
     searchPattern: string
 }
 
-// The map-view state home (Slice 5+6): the purely-visual leaf settings that were
+// The map-view state home (Slice 5+6+7): the purely-visual leaf settings that were
 // previously combined under appSettings/dynamicSettings/appStatus now live under
 // their own state.mapState root. Slice 6 absorbed the presentation stragglers
 // (colorMode/colorRange/margin, layoutAlgorithm/isLoadingMap) and the transient
-// interaction ids (hoveredNodeId/rightClickedNodeData/selectedBuildingId).
-export interface MapState {
+// interaction ids (hoveredNodeId/rightClickedNodeData/selectedBuildingId). Slice 7
+// absorbed the metric SELECTION (the PrimaryMetrics area/height/color/edge + the
+// distributionMetric) — the map view's choice of which metric drives each channel.
+export interface MapState extends PrimaryMetrics {
+    distributionMetric: string
     amountOfTopLabels: number
     labelSize: number
     amountOfEdgePreviews: number

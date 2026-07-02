@@ -160,7 +160,8 @@ export class ScenarioApplierService {
 
         const patch: RecursivePartial<CcState> = {}
         if (hasMetricOverrides) {
-            patch.dynamicSettings = { ...metricOverrides }
+            // Slice 7: metric selection now lives under mapState (was dynamicSettings).
+            patch.mapState = { ...metricOverrides }
             if (sections.metrics.isColorMetricLinkedToHeightMetric !== undefined) {
                 patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
             }

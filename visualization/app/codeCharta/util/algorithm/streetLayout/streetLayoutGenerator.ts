@@ -22,9 +22,9 @@ export class StreetLayoutGenerator {
         isDeltaState: boolean
     ): Node[] {
         const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-        const maxHeight = metricData.find(x => x.name === state.dynamicSettings.heightMetric).maxValue * mapSizeResolutionScaling
+        const maxHeight = metricData.find(x => x.name === state.mapState.heightMetric).maxValue * mapSizeResolutionScaling
 
-        const metricName = state.dynamicSettings.areaMetric
+        const metricName = state.mapState.areaMetric
         const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
         const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
         const childBoxes = this.createBoxes(mergedMap, metricName, state, matcher, StreetOrientation.Vertical, 1, maxTreeMapFiles)
@@ -54,7 +54,7 @@ export class StreetLayoutGenerator {
         maxTreeMapFiles: number
     ): BoundingBox[] {
         const children: BoundingBox[] = []
-        const areaMetric = state.dynamicSettings.areaMetric
+        const areaMetric = state.mapState.areaMetric
         for (let child of node.children) {
             if (isLeaf(child)) {
                 children.push(new House(child))
