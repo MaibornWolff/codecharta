@@ -10,7 +10,7 @@ import { CategorizedMetricDistribution } from "../../../../util/fileExtension/fi
 import { BlacklistItem } from "../../../../codeCharta.model"
 import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
 import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { areaMetricSelector } from "../../../../mapState/mapState.facade"
 import { hoveredNodeIdSelector } from "../../../../mapState/store/hoveredNodeId/hoveredNodeId.selector"
 import { selectedBuildingIdSelector } from "../../../../mapState/store/selectedBuildingId/selectedBuildingId.selector"
 

@@ -10,7 +10,7 @@ import {
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName
 } from "../../../mapState/mapState.facade"
-import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { setHeightMetric } from "../../../mapState/mapState.facade"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 

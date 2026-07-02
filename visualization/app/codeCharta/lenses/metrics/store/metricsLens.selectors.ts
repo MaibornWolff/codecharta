@@ -2,7 +2,7 @@ import { createSelector } from "@ngrx/store"
 import { NodeMetricData } from "../../../codeCharta.model"
 import { calculateNodeMetricData } from "./nodeMetricData.calculator"
 import { blacklistMatcherSelector } from "../../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
-import { colorMetricSelector } from "../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
+import { colorMetricSelector } from "../../../mapState/mapState.facade"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 
 /**

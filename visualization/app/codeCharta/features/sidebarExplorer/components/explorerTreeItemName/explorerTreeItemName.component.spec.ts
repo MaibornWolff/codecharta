@@ -3,7 +3,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { CodeMapNode, NodeType } from "../../../../codeCharta.model"
 import { searchedNodePathsSelector } from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
-import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { areaMetricSelector } from "../../../../mapState/mapState.facade"
 import { ExplorerTreeItemNameComponent } from "./explorerTreeItemName.component"
 
 describe("ExplorerTreeItemNameComponent", () => {

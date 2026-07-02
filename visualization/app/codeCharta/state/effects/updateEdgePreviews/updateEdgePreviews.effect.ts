@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core"
 import { filter, map, withLatestFrom } from "rxjs"
 import { createEffect } from "@ngrx/effects"
-import { isEdgeMetricVisibleSelector, toggleEdgeMetricVisible } from "../../../mapState/mapState.facade"
-import { edgeMetricSelector } from "../../store/dynamicSettings/edgeMetric/edgeMetric.selector"
+import { isEdgeMetricVisibleSelector, toggleEdgeMetricVisible, edgeMetricSelector } from "../../../mapState/mapState.facade"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 

@@ -9,7 +9,7 @@ import { setHoveredNodeId } from "../../../../mapState/store/hoveredNodeId/hover
 import { setRightClickedNodeData } from "../../../../mapState/store/rightClickedNodeData/rightClickedNodeData.actions"
 import { defaultRightClickedNodeData } from "../../../../mapState/store/rightClickedNodeData/rightClickedNodeData.reducer"
 import * as RightClickedNodeDataSelector from "../../../../mapState/store/rightClickedNodeData/rightClickedNodeData.selector"
-import * as AreaMetricSelector from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import * as AreaMetricSelector from "../../../../mapState/store/areaMetric/areaMetric.selector"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
 import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
 import { CodeMapTooltipService } from "../../../../features/codeMap/facade"

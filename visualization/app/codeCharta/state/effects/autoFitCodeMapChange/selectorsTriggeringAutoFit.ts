@@ -1,10 +1,9 @@
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { focusedNodePathSelector } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
 import { layoutAlgorithmSelector } from "../../../features/globalSettings/facade"
-import { enableFloorLabelsSelector, invertAreaSelector } from "../../../mapState/mapState.facade"
+import { enableFloorLabelsSelector, invertAreaSelector, areaMetricSelector } from "../../../mapState/mapState.facade"
 import { marginSelector } from "../../../mapState/store/margin/margin.selector"
 import { DefaultProjectorFn, MemoizedSelector } from "@ngrx/store"
-import { areaMetricSelector } from "../../store/dynamicSettings/areaMetric/areaMetric.selector"
 import { isDeltaStateSelector } from "../../selectors/isDeltaState.selector"
 
 export const selectorsTriggeringAutoFit: MemoizedSelector<any, any, DefaultProjectorFn<any>>[] = [

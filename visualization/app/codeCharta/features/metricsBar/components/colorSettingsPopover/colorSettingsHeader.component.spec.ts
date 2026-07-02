@@ -5,7 +5,7 @@ import { render, screen } from "@testing-library/angular"
 import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
 import { calculateInitialColorRange } from "../../../../mapState/store/colorRange/calculateInitialColorRange"
 import { setColorRange } from "../../../../mapState/store/colorRange/colorRange.actions"
-import { colorMetricSelector } from "../../../../state/store/dynamicSettings/colorMetric/colorMetric.selector"
+import { colorMetricSelector } from "../../../../mapState/mapState.facade"
 import { defaultState } from "../../../../state/store/state.manager"
 import { ColorSettingsHeaderComponent } from "./colorSettingsHeader.component"
 

@@ -3,7 +3,7 @@ import { klona } from "klona"
 
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { sortingOrderAscendingSelector } from "../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.selector"
-import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { areaMetricSelector } from "../../../mapState/mapState.facade"
 import { sortingOrderSelector } from "../../../state/store/dynamicSettings/sortingOption/sortingOrder.selector"
 import { sortNodesInPlace } from "./sortNodesInPlace"
 

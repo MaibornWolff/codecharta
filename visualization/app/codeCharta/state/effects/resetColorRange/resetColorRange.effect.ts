@@ -8,7 +8,7 @@ import { setColorRange } from "../../../mapState/store/colorRange/colorRange.act
 import { fileActions } from "../../../fileStore/store/files.actions"
 import { CcState } from "../../../codeCharta.model"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
+import { setColorMetric } from "../../../mapState/mapState.facade"
 
 @Injectable()
 export class ResetColorRangeEffect {

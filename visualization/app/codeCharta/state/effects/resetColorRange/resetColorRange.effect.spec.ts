@@ -8,7 +8,7 @@ import { BehaviorSubject } from "rxjs"
 import { Action } from "@ngrx/store"
 import { setStandard } from "../../../fileStore/store/files.actions"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { setColorMetric } from "../../store/dynamicSettings/colorMetric/colorMetric.actions"
+import { setColorMetric } from "../../../mapState/mapState.facade"
 import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../mocks/dataMocks"
 import { FileSelectionState } from "../../../model/files/files"
 

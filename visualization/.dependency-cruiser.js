@@ -204,8 +204,9 @@ module.exports = {
         {
             name: "filestore-has-no-upward-deps",
             severity: "error",
-            comment: "FileStore is the source. It must not import lenses, renderers, shell, interaction or the mapState home.",
-            from: { path: "^app/codeCharta/fileStore/" },
+            comment:
+                "FileStore is the source. It must not import lenses, renderers, shell, interaction or the mapState home. Spec/e2e files are exempt (they may reference a home's action creators for test wiring, mirroring new-must-not-import-legacy) — the runtime source stays clean.",
+            from: { path: "^app/codeCharta/fileStore/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: {
                 path: [
                     "^app/codeCharta/lenses/",

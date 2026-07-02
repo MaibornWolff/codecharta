@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { ExplorerAreaMetricStore } from "./areaMetric.store"
-import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { areaMetricSelector } from "../../../mapState/mapState.facade"
 
 describe("ExplorerAreaMetricStore", () => {
     let store: ExplorerAreaMetricStore
