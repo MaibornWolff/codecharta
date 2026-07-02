@@ -21,7 +21,7 @@ import {
     setShowMetricLabelNodeName,
     setShowOnlyBuildingsWithEdges,
     toggleEdgeMetricVisible
-} from "../../../appearance/appearance.facade"
+} from "../../../mapState/mapState.facade"
 import { setScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
 import { setExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import {

@@ -6,7 +6,7 @@ import { map, pairwise, withLatestFrom } from "rxjs"
 
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
-import { setAmountOfTopLabels } from "../../../appearance/appearance.facade"
+import { setAmountOfTopLabels } from "../../../mapState/mapState.facade"
 import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
 import { CcState } from "../../../codeCharta.model"
 

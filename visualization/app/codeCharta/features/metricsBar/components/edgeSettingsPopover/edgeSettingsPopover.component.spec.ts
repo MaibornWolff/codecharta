@@ -16,7 +16,7 @@ import {
     showIncomingEdgesSelector,
     showOnlyBuildingsWithEdgesSelector,
     showOutgoingEdgesSelector
-} from "../../../../appearance/appearance.facade"
+} from "../../../../mapState/mapState.facade"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { EdgeSettingsPopoverComponent } from "./edgeSettingsPopover.component"
 

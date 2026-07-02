@@ -41,7 +41,7 @@ import {
     showMetricLabelNodeName,
     showOnlyBuildingsWithEdges,
     showOutgoingEdges
-} from "../../../appearance/appearance.facade"
+} from "../../../mapState/mapState.facade"
 import { defaultSortingOrderAscending, sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
 import { defaultIsLoadingFile, isLoadingFile } from "./isLoadingFile/isLoadingFile.reducer"
 import { defaultIsLoadingMap, isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"

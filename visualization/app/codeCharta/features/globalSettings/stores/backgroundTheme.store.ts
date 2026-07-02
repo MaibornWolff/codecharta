@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { isWhiteBackgroundSelector } from "../selectors/globalSettings.selectors"
-import { setIsWhiteBackground } from "../../../appearance/appearance.facade"
+import { setIsWhiteBackground } from "../../../mapState/mapState.facade"
 
 @Injectable({
     providedIn: "root"

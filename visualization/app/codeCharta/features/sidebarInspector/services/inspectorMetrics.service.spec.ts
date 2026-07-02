@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { defaultMapColors, mapColorsSelector } from "../../../appearance/appearance.facade"
+import { defaultMapColors, mapColorsSelector } from "../../../mapState/mapState.facade"
 import { inspectorMetricRowsSelector, MetricRow } from "../selectors/inspectorMetricRows.selector"
 import { InspectorMetricsService } from "./inspectorMetrics.service"
 

@@ -12,7 +12,7 @@ import {
 } from "../rendering/codeMapBuilding.mocks"
 import { CcState, Node } from "../../../codeCharta.model"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { setScaling, setShowIncomingEdges, setShowOutgoingEdges, toggleEdgeMetricVisible } from "../../../appearance/appearance.facade"
+import { setScaling, setShowIncomingEdges, setShowOutgoingEdges, toggleEdgeMetricVisible } from "../../../mapState/mapState.facade"
 import { setEdges } from "../../../state/store/fileSettings/edges/edges.actions"
 import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { CodeMapMesh } from "../rendering/codeMapMesh"

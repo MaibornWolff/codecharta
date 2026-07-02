@@ -29,7 +29,7 @@ import {
     setLabelsPerMap,
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName
-} from "../../appearance/appearance.facade"
+} from "../../mapState/mapState.facade"
 import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setFiles } from "../../fileStore/store/files.actions"

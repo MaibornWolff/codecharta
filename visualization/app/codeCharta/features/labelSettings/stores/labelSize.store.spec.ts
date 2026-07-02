@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { LabelSizeStore } from "./labelSize.store"
 import { labelSizeSelector } from "../selectors/labelSettings.selectors"
-import { setLabelSize } from "../../../appearance/appearance.facade"
+import { setLabelSize } from "../../../mapState/mapState.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("LabelSizeStore", () => {

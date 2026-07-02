@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
-import { isEdgeMetricVisibleSelector, toggleEdgeMetricVisible } from "../../../../appearance/appearance.facade"
+import { isEdgeMetricVisibleSelector, toggleEdgeMetricVisible } from "../../../../mapState/mapState.facade"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 

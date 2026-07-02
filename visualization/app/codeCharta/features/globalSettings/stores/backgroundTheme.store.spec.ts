@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BackgroundThemeStore } from "./backgroundTheme.store"
 import { isWhiteBackgroundSelector } from "../selectors/globalSettings.selectors"
-import { setIsWhiteBackground } from "../../../appearance/appearance.facade"
+import { setIsWhiteBackground } from "../../../mapState/mapState.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("BackgroundThemeStore", () => {

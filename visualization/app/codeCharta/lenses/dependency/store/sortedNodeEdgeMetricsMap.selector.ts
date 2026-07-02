@@ -5,7 +5,7 @@ import { calculateEdgeMetricData } from "./edgeMetricData.calculator"
 import { FileState } from "../../../model/files/files"
 import { EdgeMetricCount, EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../codeCharta.model"
 import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
-import { showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../appearance/appearance.facade"
+import { showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../mapState/mapState.facade"
 
 export const sortedNodeEdgeMetricsMapSelector = createSelector(
     visibleFileStatesSelector,

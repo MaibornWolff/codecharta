@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { setColorLabels, setLabelMode, setLabelSize, setLabelsPerMap } from "../../../../appearance/appearance.facade"
+import { setColorLabels, setLabelMode, setLabelSize, setLabelsPerMap } from "../../../../mapState/mapState.facade"
 import { setDelta, setFiles } from "../../../../fileStore/store/files.actions"
 import { FILE_STATES_TWO_FILES, TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../../mocks/dataMocks"
 import { fireEvent } from "@testing-library/angular"

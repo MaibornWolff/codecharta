@@ -21,7 +21,7 @@ import {
     setShowMetricLabelNodeName,
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
-} from "../../../appearance/appearance.facade"
+} from "../../../mapState/mapState.facade"
 import { setLayoutAlgorithm } from "../../store/appSettings/layoutAlgorithm/layoutAlgorithm.actions"
 import { setMaxTreeMapFiles } from "../../store/appSettings/maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setAreaMetric } from "../../store/dynamicSettings/areaMetric/areaMetric.actions"

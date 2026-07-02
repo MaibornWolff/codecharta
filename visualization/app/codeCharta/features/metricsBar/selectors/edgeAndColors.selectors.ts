@@ -6,5 +6,5 @@ export {
     showIncomingEdgesSelector,
     showOnlyBuildingsWithEdgesSelector,
     showOutgoingEdgesSelector
-} from "../../../appearance/appearance.facade"
+} from "../../../mapState/mapState.facade"
 export { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../state/selectors/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"

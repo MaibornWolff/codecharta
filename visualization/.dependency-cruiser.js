@@ -204,7 +204,7 @@ module.exports = {
         {
             name: "filestore-has-no-upward-deps",
             severity: "error",
-            comment: "FileStore is the source. It must not import lenses, renderers, shell, interaction or appearance.",
+            comment: "FileStore is the source. It must not import lenses, renderers, shell, interaction or the mapState home.",
             from: { path: "^app/codeCharta/fileStore/" },
             to: {
                 path: [
@@ -212,16 +212,16 @@ module.exports = {
                     "^app/codeCharta/renderers/",
                     "^app/codeCharta/shell/",
                     "^app/codeCharta/interaction/",
-                    "^app/codeCharta/appearance/"
+                    "^app/codeCharta/mapState/"
                 ]
             }
         },
         {
-            name: "shared-state-is-leaf",
+            name: "state-home-is-leaf",
             severity: "warn",
             comment:
-                "Shared state modules — appearance is the purely-visual leaf state (colors, labels, scaling, axis inversion, edge visibility) — are a leaf. They must not import lenses, renderers or shell; a lens/renderer/page reads the appearance facade, never the reverse. Appearance reads only the model/util kernel + its own store (legacy state/ stays a transitional read until the store-key reshape). Staged at warn as the appearance module stands up (Slice 4); flips to error once the state/ split completes.",
-            from: { path: "^app/codeCharta/appearance/" },
+                "State-home modules — mapState is the map-view state home (colors, labels, scaling, axis inversion, edge visibility; renamed from the Slice-4 appearance leaf) — are a leaf. They must not import lenses, renderers or shell; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store (legacy state/ stays a transitional read while the state/ split completes). Targets both (appearance|mapState) across the Slice-5 rename so no window is left unguarded; stays warn until Slice 6 flips mapState to error.",
+            from: { path: "^app/codeCharta/(appearance|mapState)/" },
             to: {
                 path: ["^app/codeCharta/lenses/", "^app/codeCharta/renderers/", "^app/codeCharta/shell/"]
             }

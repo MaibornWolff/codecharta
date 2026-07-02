@@ -29,7 +29,7 @@ import {
     setShowMetricLabelNodeName,
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
-} from "../../appearance/appearance.facade"
+} from "../../mapState/mapState.facade"
 import { setAttributeTypes } from "../store/fileSettings/attributeTypes/attributeTypes.actions"
 import { setAttributeDescriptors } from "../store/fileSettings/attributeDescriptors/attributeDescriptors.action"
 import { setBlacklist } from "../store/fileSettings/blacklist/blacklist.actions"

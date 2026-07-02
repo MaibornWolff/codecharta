@@ -7,7 +7,7 @@ import { Action } from "@ngrx/store"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { UpdateAmountOfEdgePreviewsEffect } from "./updateAmountOfEdgePreviews.effect"
 import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../selectors/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
-import { amountOfEdgePreviewsSelector } from "../../../appearance/appearance.facade"
+import { amountOfEdgePreviewsSelector } from "../../../mapState/mapState.facade"
 
 describe("UpdateAmountOfEdgePreviewsEffect", () => {
     let actions$: BehaviorSubject<Action>

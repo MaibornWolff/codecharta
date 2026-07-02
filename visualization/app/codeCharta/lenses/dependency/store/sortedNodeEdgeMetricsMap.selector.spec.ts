@@ -7,7 +7,7 @@ import { appReducers } from "../../../state/store/state.manager"
 import { setFiles } from "../../../fileStore/store/files.actions"
 import { NodeEdgeMetricsMap } from "../../../codeCharta.model"
 import { firstValueFrom } from "rxjs"
-import { setShowIncomingEdges, setShowOutgoingEdges } from "../../../appearance/appearance.facade"
+import { setShowIncomingEdges, setShowOutgoingEdges } from "../../../mapState/mapState.facade"
 
 describe("sortedNodeEdgeMetricsMapSelector", () => {
     let store: Store<CcState>

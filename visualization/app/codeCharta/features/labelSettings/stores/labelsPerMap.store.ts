@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { labelsPerMapSelector } from "../selectors/labelSettings.selectors"
-import { setLabelsPerMap } from "../../../appearance/appearance.facade"
+import { setLabelsPerMap } from "../../../mapState/mapState.facade"
 
 @Injectable({
     providedIn: "root"
