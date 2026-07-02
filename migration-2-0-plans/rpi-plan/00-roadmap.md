@@ -14,8 +14,11 @@ version: 1
 > and stand up the **Metrics lens** containing everything metric-related that already exists in the
 > code. No other lenses, no renderer/page split, no new renderers. Those come in later slices.
 >
-> Companion design: `Ideas/codecharta-2.0-implementation-map.html`,
-> `Ideas/codecharta-2.0-lens-anatomy.html`, rules in `Ideas/dependency-cruiser.2.0.cjs`.
+> Companion design (historical): the `Ideas/codecharta-2.0-implementation-map.html` /
+> `codecharta-2.0-lens-anatomy.html` / `dependency-cruiser.2.0.cjs` artifacts cited across this rpi-plan were
+> **superseded and removed on 2026-07-02** (they encoded the abandoned features-in-lenses + "shell" model). Current
+> source of truth: `Ideas/codecharta-2.0-refined-layers-and-state-homes.html` + `../roadmap-v2-state-homes.md`
+> (+ `Ideas/dependency-cruiser.2.0.refined.cjs`). This rpi-plan is kept as the completed Slice-1 record.
 >
 > **Every step follows `../CONVENTIONS.md`** — the shared definition of "safe": behavior-preservation
 > (snapshots are the contract, never `-u`; structural commit ⇒ zero diff; behavioral swap ⇒ parity
