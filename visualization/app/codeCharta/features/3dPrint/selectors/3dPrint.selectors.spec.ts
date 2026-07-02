@@ -106,13 +106,13 @@ describe("3dPrint.selectors", () => {
     })
 
     describe("blacklistSelector", () => {
-        it("should select blacklist from fileSettings", () => {
+        it("should select blacklist from sharedView", () => {
             // Arrange
             const blacklist = [{ path: "/test", type: "exclude" as const }]
-            mockState.fileSettings.blacklist = blacklist
+            mockState.sharedView.blacklist = blacklist
 
             // Act
-            const result = blacklistSelector.projector(mockState.fileSettings)
+            const result = blacklistSelector.projector(mockState.sharedView)
 
             // Assert
             expect(result).toEqual(blacklist)

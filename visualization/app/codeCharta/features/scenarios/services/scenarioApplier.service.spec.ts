@@ -157,7 +157,7 @@ describe("ScenarioApplierService", () => {
 
             // Assert
             expect(patches).toHaveLength(3)
-            expect(patches[2].fileSettings?.blacklist).toEqual(testSections.filters.blacklist)
+            expect(patches[2].sharedView?.blacklist).toEqual(testSections.filters.blacklist)
             expect(patches[2].sharedView?.focusedNodePath).toEqual(["/root/src"])
             expect(patches[2].mapState?.amountOfTopLabels).toBe(5)
             expect(patches[2].mapState?.labelMode).toBe(LabelMode.Color)
@@ -176,7 +176,7 @@ describe("ScenarioApplierService", () => {
             // Assert
             expect(merged.mapState?.areaMetric).toBe("rloc")
             expect(merged.mapState?.colorRange).toEqual({ from: 1, to: 10 })
-            expect(merged.fileSettings?.blacklist).toHaveLength(1)
+            expect(merged.sharedView?.blacklist).toHaveLength(1)
             expect(merged.mapState?.amountOfTopLabels).toBe(5)
         })
 

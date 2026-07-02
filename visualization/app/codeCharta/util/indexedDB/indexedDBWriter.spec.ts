@@ -18,6 +18,7 @@ import {
     migrateCcStateRecordToV5,
     migrateCcStateRecordToV6,
     migrateCcStateRecordToV7,
+    migrateCcStateRecordToV8,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -254,7 +255,50 @@ describe("migrateCcStateRecordToV7 (Slice 9a re-home transform)", () => {
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 transforms)", () => {
+describe("migrateCcStateRecordToV8 (Slice 9b re-home transform)", () => {
+    const v7ShapeState = () => ({
+        fileSettings: {
+            blacklist: [{ path: "/root/excluded", type: "exclude" }],
+            edges: [],
+            markedPackages: []
+        },
+        sharedView: {
+            focusedNodePath: ["/root/ParentLeaf"],
+            searchPattern: "needle"
+        }
+    })
+
+    it("should move blacklist from fileSettings into the EXISTING sharedView root, preserving its other keys", () => {
+        const migrated = migrateCcStateRecordToV8(v7ShapeState()) as unknown as { sharedView: Record<string, unknown> }
+
+        expect(migrated.sharedView.blacklist).toEqual([{ path: "/root/excluded", type: "exclude" }])
+        expect(migrated.sharedView.focusedNodePath).toEqual(["/root/ParentLeaf"])
+        expect(migrated.sharedView.searchPattern).toBe("needle")
+    })
+
+    it("should drop blacklist from fileSettings and keep the staying ones", () => {
+        const migrated = migrateCcStateRecordToV8(v7ShapeState()) as unknown as { fileSettings: Record<string, unknown> }
+
+        expect("blacklist" in migrated.fileSettings).toBe(false)
+        expect(migrated.fileSettings.edges).toEqual([])
+        expect(migrated.fileSettings.markedPackages).toEqual([])
+    })
+
+    it("should fill sharedView blacklist with its default when absent from the old blob", () => {
+        const migrated = migrateCcStateRecordToV8({ fileSettings: {} }) as unknown as { sharedView: Record<string, unknown> }
+
+        expect(migrated.sharedView.blacklist).toEqual(defaultSharedView.blacklist)
+    })
+
+    it("should return the record untouched when it is null, and build a default sharedView blacklist when there is no fileSettings", () => {
+        expect(migrateCcStateRecordToV8(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV8({ files: [] }) as unknown as { files: unknown[]; sharedView: Record<string, unknown> }
+        expect(migrated.files).toEqual([])
+        expect(migrated.sharedView.blacklist).toEqual(defaultSharedView.blacklist)
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -282,6 +326,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 t
             },
             fileSettings: {
                 ...defaultState.fileSettings,
+                blacklist: [{ path: "/root/excluded", type: "exclude" }],
                 attributeTypes: { nodes: { rloc: AttributeTypeValue.absolute }, edges: {} },
                 attributeDescriptors: { rloc: { title: "Lines of Code" } }
             },
@@ -293,7 +338,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 t
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v7, invoked by readCcState) chains the v3, v4, v5, v6 then v7 upgrade transforms.
+        // openCodeChartaDB (v8, invoked by readCcState) chains the v3, v4, v5, v6, v7 then v8 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings: Record<string, unknown>
             dynamicSettings: Record<string, unknown>
@@ -328,6 +373,9 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 t
         expect(migratedState.metricsLensSource.attributeDescriptors).toEqual({ rloc: { title: "Lines of Code" } })
         expect("attributeTypes" in migratedState.fileSettings).toBe(false)
         expect("attributeDescriptors" in migratedState.fileSettings).toBe(false)
+        // v8 re-home (blacklist out of fileSettings into the existing sharedView root)
+        expect(migratedState.sharedView.blacklist).toEqual([{ path: "/root/excluded", type: "exclude" }])
+        expect("blacklist" in migratedState.fileSettings).toBe(false)
     })
 })
 

@@ -41,9 +41,10 @@ export const setStateMiddleware =
 const objectWithDynamicKeysInStore = new Set([
     "metricsLensSource.attributeTypes",
     "metricsLensSource.attributeDescriptors",
-    "fileSettings.blacklist",
     "fileSettings.edges",
     "fileSettings.markedPackages",
+    // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
+    "sharedView.blacklist",
     "sharedView.focusedNodePath",
     // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
     "mapState.mapColors.markingColors",

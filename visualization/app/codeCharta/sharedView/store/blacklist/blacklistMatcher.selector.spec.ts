@@ -4,8 +4,8 @@ import { blacklistMatcherSelector } from "./blacklistMatcher.selector"
 
 const stateWithBlacklist = (blacklist: BlacklistItem[]): CcState => ({
     ...defaultState,
-    fileSettings: {
-        ...defaultState.fileSettings,
+    sharedView: {
+        ...defaultState.sharedView,
         blacklist
     }
 })

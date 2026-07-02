@@ -4,10 +4,9 @@
  * sharedView owns the cross-renderer view values that are neither map-specific settings nor
  * cc.json source: the focus stack (`focusedNodePath`), the search pattern (`searchPattern`) and the
  * `blacklist`. Slice 8 pulled focus/search out of the `dynamicSettings` combineReducers; Slice 9b
- * moved `blacklist` out of the `fileSettings` combineReducers — all now persist under `state.sharedView.*`.
- * (Slice 9b structural step: the blacklist store folder was `git mv`d here and re-exported, but is still
- * registered transitionally under `fileSettings.reducer` so `state.fileSettings.blacklist` is unchanged;
- * the behavioral step re-homes it under the `sharedView` root.)
+ * moved `blacklist` out of the `fileSettings` combineReducers into the `sharedView` combineReducers —
+ * all now persist under `state.sharedView.*`. (The .cc.json file still carries the blacklist per-file,
+ * so `CCFile.settings.fileSettings` keeps it via an intersection; only the merged STATE root moved here.)
  *
  * This barrel re-exports each slice's selectors (read), action creators (write), reducer +
  * `default*` (store wiring), plus — added in the behavioral reshape — the combined `sharedView`

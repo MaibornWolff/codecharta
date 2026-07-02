@@ -1,4 +1,5 @@
 import {
+    BlacklistItem,
     CCFile,
     ColorLabelOptions,
     ColorMode,
@@ -37,13 +38,17 @@ export interface DynamicSettings {
     sortingOption: SortingOption
 }
 
-// The cross-renderer view-state home (Slice 8): values that are neither map-specific settings nor
-// cc.json source, and that any renderer (CodeMap, Graph, …) shares — the focus stack and the search
-// pattern. Slice 8 pulled these two out of dynamicSettings into their own state.sharedView root;
-// later slices grow it (blacklist/markedPackages in 9b/9c, the renderer-agnostic selected-node id in 13).
+// The cross-renderer view-state home (Slice 8+9b): values that are neither map-specific settings nor
+// cc.json source, and that any renderer (CodeMap, Graph, …) shares — the focus stack, the search
+// pattern and the blacklist. Slice 8 pulled focus/search out of dynamicSettings; Slice 9b pulled the
+// blacklist out of fileSettings (it filters what every renderer shows, so it is shared view state, not
+// cc.json source). The .cc.json file still carries blacklist per-file, so CCFile keeps it (see the
+// intersection on CCFile.settings.fileSettings); only the merged STATE root moves here. Later slices
+// grow it further (markedPackages in 9c, the renderer-agnostic selected-node id in 13).
 export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string
+    blacklist: BlacklistItem[]
 }
 
 // The map-view state home (Slice 5+6+7): the purely-visual leaf settings that were

@@ -22,7 +22,7 @@ export class FileDownloader {
     static downloadCurrentMap(
         map: CodeMapNode,
         fileMeta: FileMeta,
-        fileSettings: FileSettings & MetricsLensSource,
+        fileSettings: FileSettings & MetricsLensSource & { blacklist: BlacklistItem[] },
         downloadSettings: DownloadableSetting[],
         fileName: string
     ) {
@@ -34,7 +34,7 @@ export class FileDownloader {
     private static getProjectDataAsCCJsonFormat(
         map: CodeMapNode,
         fileMeta: FileMeta,
-        fileSettings: FileSettings & MetricsLensSource,
+        fileSettings: FileSettings & MetricsLensSource & { blacklist: BlacklistItem[] },
         downloadSettings: DownloadableSetting[]
     ): ExportCCFile {
         return {

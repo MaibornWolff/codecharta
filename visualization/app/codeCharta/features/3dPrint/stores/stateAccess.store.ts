@@ -29,7 +29,7 @@ export class Print3DStateAccessStore {
     }
 
     getBlacklist(): BlacklistItem[] {
-        return this.state.getValue().fileSettings.blacklist
+        return this.state.getValue().sharedView.blacklist
     }
 
     getFiles(): FileState[] {

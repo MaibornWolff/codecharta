@@ -1,20 +1,16 @@
 import { defaultMarkedPackages, markedPackages } from "./markedPackages/markedPackages.reducer"
 import { defaultEdges, edges } from "./edges/edges.reducer"
-// Slice 9b structural step: the blacklist store folder was git mv'd into the sharedView home, but is
-// still combined here (via the sharedView facade) so state.fileSettings.blacklist is unchanged. The
-// behavioral step drops it from this reducer and registers it under the sharedView combineReducers.
-import { blacklist, defaultBlacklist } from "../../../sharedView/sharedView.facade"
 import { combineReducers } from "@ngrx/store"
 import { FileSettings } from "../../../codeCharta.model"
 
+// Slice 9b: blacklist moved out of this combineReducers into the sharedView home
+// (sharedView.reducer). What remains here is edges + markedPackages.
 export const fileSettings = combineReducers({
     markedPackages,
-    edges,
-    blacklist
+    edges
 })
 
 export const defaultFileSettings: FileSettings = {
     markedPackages: defaultMarkedPackages,
-    edges: defaultEdges,
-    blacklist: defaultBlacklist
+    edges: defaultEdges
 }

@@ -30,7 +30,6 @@ describe("FileExtensionBarSegment", () => {
             edgeMetric: ""
         },
         fileSettings: {
-            blacklist: [],
             edges: [],
             markedPackages: []
         },
@@ -44,7 +43,8 @@ describe("FileExtensionBarSegment", () => {
         },
         sharedView: {
             focusedNodePath: [],
-            searchPattern: ""
+            searchPattern: "",
+            blacklist: []
         }
     }
     const mockItem: MetricDistribution = {

@@ -206,9 +206,6 @@ export class LoadInitialFileStore {
 
     private mapFileSettingToAction(key: keyof FileSettings, value: any) {
         switch (key) {
-            case "blacklist":
-                this.store.dispatch(setBlacklist({ value }))
-                break
             case "edges":
                 this.store.dispatch(setEdges({ value }))
                 break
@@ -253,6 +250,9 @@ export class LoadInitialFileStore {
                 break
             case "searchPattern":
                 this.store.dispatch(setSearchPattern({ value }))
+                break
+            case "blacklist":
+                this.store.dispatch(setBlacklist({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

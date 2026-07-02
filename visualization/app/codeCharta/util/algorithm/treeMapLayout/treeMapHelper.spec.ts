@@ -218,14 +218,14 @@ describe("TreeMapHelper", () => {
             })
 
             it("should be flat if node is flattened in blacklist", () => {
-                state.fileSettings.blacklist = [{ path: "*Anode", type: "flatten" }]
+                state.sharedView.blacklist = [{ path: "*Anode", type: "flatten" }]
                 squaredNode.data.isFlattened = true
 
                 expect(buildNode().flat).toBeTruthy()
             })
 
             it("should not be flat if node is not blacklisted", () => {
-                state.fileSettings.blacklist = []
+                state.sharedView.blacklist = []
 
                 expect(buildNode().flat).toBeFalsy()
             })
@@ -258,7 +258,7 @@ describe("TreeMapHelper", () => {
                 })
 
                 it("creates flat colored building", () => {
-                    state.fileSettings.blacklist = [{ path: "*Anode", type: "flatten" }]
+                    state.sharedView.blacklist = [{ path: "*Anode", type: "flatten" }]
                     squaredNode.data.isFlattened = true
 
                     expect(buildNode().color).toBe(state.mapState.mapColors.flat)

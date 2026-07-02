@@ -5,7 +5,7 @@ import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 7
+export const DB_VERSION = 8
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -172,6 +172,40 @@ export function migrateCcStateRecordToV7<T>(state: T): T {
     return next as T
 }
 
+// v8 (Slice 9b): blacklist moved out of fileSettings into the sharedView root. Unlike v6/v7 — which
+// CREATED new roots — the sharedView root already exists (created at v6), so this MERGES into it,
+// exactly like v3/v4/v5 merged into the pre-existing mapState. Re-home blacklist so the rehydrate applier
+// finds it under sharedView instead of silently reverting it to defaults — same silent-data-loss landmine
+// the v3–v7 transforms close.
+const V8_MOVES: Record<string, string[]> = {
+    fileSettings: ["blacklist"]
+}
+
+export function migrateCcStateRecordToV8<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const sharedView: Record<string, unknown> = { ...defaultSharedView, ...((record["sharedView"] as Record<string, unknown>) ?? {}) }
+    const next: Record<string, unknown> = { ...record }
+    for (const [home, keys] of Object.entries(V8_MOVES)) {
+        const source = record[home]
+        if (!source || typeof source !== "object") {
+            continue
+        }
+        const trimmed = { ...(source as Record<string, unknown>) }
+        for (const key of keys) {
+            if (key in trimmed) {
+                sharedView[key] = trimmed[key]
+                delete trimmed[key]
+            }
+        }
+        next[home] = trimmed
+    }
+    next["sharedView"] = sharedView
+    return next as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -205,9 +239,9 @@ export async function openCodeChartaDB() {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
             // Existing DBs (oldVersion >= 1) may hold an older-shaped CcState blob; re-home its
-            // map-view settings into mapState, its focus/search into sharedView, and its
+            // map-view settings into mapState, its focus/search/blacklist into sharedView, and its
             // attributeTypes/attributeDescriptors into metricsLensSource. Migrations chain:
-            // v2 blobs run v3→v4→v5→v6→v7; a v6 blob runs only v7. A brand-new DB (oldVersion 0) has
+            // v2 blobs run v3→v4→v5→v6→v7→v8; a v7 blob runs only v8. A brand-new DB (oldVersion 0) has
             // no record to migrate.
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
@@ -228,6 +262,9 @@ export async function openCodeChartaDB() {
                     }
                     if (oldVersion < 7) {
                         migrated = migrateCcStateRecordToV7(migrated)
+                    }
+                    if (oldVersion < 8) {
+                        migrated = migrateCcStateRecordToV8(migrated)
                     }
                     await store.put({ ...record, state: migrated })
                 }

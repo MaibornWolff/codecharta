@@ -157,7 +157,7 @@ describe("ScenariosService", () => {
             const sections = service.buildScenarioSections(defaultState, cameraPosition, cameraTarget)
 
             // Assert
-            expect(sections.filters.blacklist).toEqual(defaultState.fileSettings.blacklist)
+            expect(sections.filters.blacklist).toEqual(defaultState.sharedView.blacklist)
             expect(sections.filters.focusedNodePath).toEqual(defaultState.sharedView.focusedNodePath)
         })
 

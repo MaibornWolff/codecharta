@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { fileSettingsSelector } from "../../../state/store/fileSettings/fileSettings.selector"
+import { sharedViewSelector } from "../sharedView.selector"
 
-export const blacklistSelector = createSelector(fileSettingsSelector, fileSettings => fileSettings.blacklist)
+export const blacklistSelector = createSelector(sharedViewSelector, sharedView => sharedView.blacklist)

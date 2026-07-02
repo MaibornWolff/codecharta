@@ -16,10 +16,11 @@ export enum LayoutAlgorithm {
 export interface CCFile {
     map: CodeMapNode
     settings: {
-        // The on-disk .cc.json file settings carry all five groups. The cc.json SOURCE the metrics lens
-        // owns (attributeTypes + attributeDescriptors, `MetricsLensSource`) was split out of the STATE
-        // `fileSettings` root in Slice 9a, but per-file settings still bundle them — hence the intersection.
-        fileSettings: FileSettings & MetricsLensSource
+        // The on-disk .cc.json file settings carry all groups. Two of them were split out of the STATE
+        // `fileSettings` root but stay bundled per-file (hence the intersection): the cc.json SOURCE the
+        // metrics lens owns (attributeTypes + attributeDescriptors, `MetricsLensSource`, Slice 9a) and the
+        // `blacklist` the sharedView home now owns (Slice 9b).
+        fileSettings: FileSettings & MetricsLensSource & { blacklist: Array<BlacklistItem> }
     }
     fileMeta: FileMeta
 }
@@ -98,8 +99,11 @@ export interface FileMeta {
     repoCreationDate?: string
 }
 
+// The STATE fileSettings root (shrinking as the grab-bag dissolves): Slice 9a moved attributeTypes +
+// attributeDescriptors to state.metricsLensSource, Slice 9b moved blacklist to state.sharedView. The
+// on-disk .cc.json file still carries all of them per-file — see the intersection on
+// CCFile.settings.fileSettings. edges + markedPackages remain here until later slices re-home them.
 export interface FileSettings {
-    blacklist: Array<BlacklistItem>
     edges: Edge[]
     markedPackages: MarkedPackage[]
 }

@@ -84,7 +84,6 @@ describe("BlackListExtensionService", () => {
             edgeMetric: ""
         },
         fileSettings: {
-            blacklist: mockBlacklist,
             edges: [],
             markedPackages: []
         },
@@ -98,7 +97,8 @@ describe("BlackListExtensionService", () => {
         },
         sharedView: {
             focusedNodePath: [],
-            searchPattern: ""
+            searchPattern: "",
+            blacklist: mockBlacklist
         }
     }
 
@@ -317,8 +317,8 @@ describe("BlackListExtensionService", () => {
 
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: [scopedItemForFolderA]
                 }
             })
@@ -352,8 +352,8 @@ describe("BlackListExtensionService", () => {
         beforeEach(() => {
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: mockScopedBlacklistItems
                 }
             })
@@ -392,8 +392,8 @@ describe("BlackListExtensionService", () => {
             const globalItem = new BlackListItemBuilder().withPath("*.ts").withType("flatten").build()
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: [...mockScopedBlacklistItems, globalItem]
                 }
             })
@@ -418,8 +418,8 @@ describe("BlackListExtensionService", () => {
 
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: mockScopedOtherItems
                 }
             })
@@ -452,8 +452,8 @@ describe("BlackListExtensionService", () => {
 
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: [hoveredScopedItem, selectedScopedItem]
                 }
             })

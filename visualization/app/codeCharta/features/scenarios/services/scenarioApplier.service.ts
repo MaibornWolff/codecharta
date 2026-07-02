@@ -182,9 +182,9 @@ export class ScenarioApplierService {
 
     private buildFiltersPatch(filters: FiltersSection): RecursivePartial<CcState> {
         return {
-            fileSettings: { blacklist: [...filters.blacklist] },
-            // Slice 8: focusedNodePath now lives under sharedView (was dynamicSettings).
-            sharedView: { focusedNodePath: [...filters.focusedNodePath] }
+            // Slice 8: focusedNodePath and Slice 9b: blacklist now both live under the sharedView home
+            // (blacklist was under fileSettings, focusedNodePath under dynamicSettings).
+            sharedView: { blacklist: [...filters.blacklist], focusedNodePath: [...filters.focusedNodePath] }
         }
     }
 

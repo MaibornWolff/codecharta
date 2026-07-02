@@ -179,7 +179,7 @@ export class ScenariosService {
                 target: { ...cameraTarget }
             },
             filters: {
-                blacklist: [...state.fileSettings.blacklist],
+                blacklist: [...state.sharedView.blacklist],
                 focusedNodePath: [...state.sharedView.focusedNodePath]
             },
             labelsAndFolders: {
