@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { unfocusAllNodes } from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { unfocusAllNodes } from "../../../sharedView/sharedView.facade"
 import { UnfocusNodesEffect } from "./unfocusNodes.effect"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { FILE_STATES } from "../../../mocks/dataMocks"

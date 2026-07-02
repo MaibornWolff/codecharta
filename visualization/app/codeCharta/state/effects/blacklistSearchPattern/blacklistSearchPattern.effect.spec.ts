@@ -3,11 +3,11 @@ import { first, Subject } from "rxjs"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { blacklistSearchPattern, BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { searchPatternSelector } from "../../store/dynamicSettings/searchPattern/searchPattern.selector"
+import { searchPatternSelector } from "../../../sharedView/sharedView.facade"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
 import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../store/fileSettings/blacklist/blacklist.actions"
-import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
+import { setSearchPattern } from "../../../sharedView/sharedView.facade"
 
 describe("BlacklistSearchPatternEffect", () => {
     let effect: BlacklistSearchPatternEffect

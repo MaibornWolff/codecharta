@@ -27,14 +27,8 @@ import { setMaxTreeMapFiles } from "../../store/appSettings/maxTreeMapFiles/maxT
 import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../mapState/mapState.facade"
 import { setColorMode } from "../../../mapState/store/colorMode/colorMode.actions"
 import { setColorRange } from "../../../mapState/store/colorRange/colorRange.actions"
-import {
-    setAllFocusedNodes,
-    focusNode,
-    unfocusAllNodes,
-    unfocusNode
-} from "../../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { setAllFocusedNodes, focusNode, unfocusAllNodes, unfocusNode, setSearchPattern } from "../../../sharedView/sharedView.facade"
 import { setMargin } from "../../../mapState/store/margin/margin.actions"
-import { setSearchPattern } from "../../store/dynamicSettings/searchPattern/searchPattern.actions"
 import { setMarkedPackages, markPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
 import { setState } from "../../store/state.actions"
 
