@@ -234,20 +234,44 @@ each **once** so later slices only *add a key*:
 - **DoD:** `blacklist` in `sharedView`; both lenses free of `blacklist` + edge-visibility reads (grep-verified); snapshots
   byte-identical; e2e blacklist/exclude/flatten green. **Risk:** MED-HIGH/MED-LARGE. Needs 8.
 
-### Slice 9c — `markedPackages` → sharedView
-- **Goal:** move `markedPackages` (37 import sites) to `sharedView`; empty and delete `fileSettings`.
-- **DoD:** `fileSettings` gone; `markedPackages` in `sharedView`; snapshots byte-identical; e2e marked-packages + delta green.
-- **dep-cruiser:** **FLIP `new-must-not-import-legacy` → error** (all lens/fileStore → `state/` edges now gone — verify by
-  grep). **Retires:** the `new-must-not-import-legacy` rule (one rule over its ~remaining edges). **Risk:** MED/MED. Needs 8.
+### Slice 9c — `markedPackages` → sharedView (NARROW `fileSettings` to `{ edges }`)
+- **Goal:** move `markedPackages` (**~13 direct import sites**, not the 37 first estimated) out of the `fileSettings`
+  state slice into `state.sharedView`, the mechanical twin of 9b. **NARROW `fileSettings` to `{ edges }` — do NOT
+  delete it.** `edges` is DEFERRED (CF #2a: a merged render-model array needing an injectable `DependencyLensStore`/
+  `EdgesRepo` + a render-model home first), so `fileSettings` keeps one live member until that later edge-UI slice.
+- **Twin of 9b, lower risk:** same machinery — per-file `CCFile.settings.fileSettings` keeps `markedPackages` via the
+  intersection; `objectWithDynamicKeysInStore` string rename `fileSettings.markedPackages → sharedView.markedPackages`
+  (the one non-tsc-caught spot); applier case moves to `mapSharedViewToAction`; `updateFileSettings.effect` folds
+  `markedPackages` into the SAME `sharedView` block that already carries `blacklist`; scenarios
+  `buildLabelsAndFoldersPatch`/`buildScenarioSections` re-key; IndexedDB **`v8→v9` + `migrateCcStateRecordToV9`**
+  (clone of v8, `MOVED = { fileSettings: ["markedPackages"] }`, merge-into-existing sharedView). **No runtime-only
+  landmines** (verified: no `state.getValue().fileSettings.markedPackages` reads, no untyped `store.setState` seeding)
+  and **no selector-dedup step** (unlike 9b's 3dPrint) — the 4 state-level readers (`markedPackagesSelector`,
+  `treeMapHelper`, `streetViewHelper`, `scenarios.service`) are all tsc-caught typed `CcState` reads.
+- **DoD:** `state.fileSettings` holds only `{ edges }`; `markedPackages` in `sharedView` (blacklist/attributeTypes/
+  descriptors already re-homed in 9a/9b); IndexedDB `v9`; snapshots byte-identical; e2e marked-packages + delta green.
+- **dep-cruiser: NO rule flip in 9c.** (The earlier "FLIP `new-must-not-import-legacy` → error" claim was stale.)
+  There are **12 `new-must-not-import-legacy` warns and 0 are markedPackages-related**, so 9c removes none of them:
+  **7 → Slice 10** (`state/` survivors: `metricsLens.store → state/selectors/nodeMetricData`, both lens reducers →
+  `state/store/util/setState.reducer.factory` shared kernel, fileStore → `currentFilesAreSampleFiles`/`referenceFile`/
+  `loadInitialFile.store`/`metricQueryParameter`) and **5 → Slice 11** (legend still inside `lenses/` reading
+  `isDeltaState`/`sidebarInspector`; fileStore → `features/shared/errorDialog`). Note: the rule's `from` is
+  `lenses|fileStore` only, and the surviving `state/store/fileSettings/edges` has **no** lens/fileStore importer (its
+  consumers are `features/`+`state/`), so keeping `fileSettings: { edges }` does NOT block the flip — the 12 edges
+  above do. Full flip lands **after 10 + 11**. **Risk:** MED/MED. Needs 8.
 
 ### Slice 10 — Purge `appSettings` → `preferences`; finish fileStore; delete the grab-bags
 - **Goal:** durable global prefs → a `preferences` module (**localStorage**, not the IndexedDB `CcState` blob); `isLoadingFile`
   + `currentFilesAreSampleFiles` → `fileStore`; delete the empty `appSettings`/`dynamicSettings`/`appStatus` reducers.
 - **Keystone cost:** `preferences` is localStorage-durable — this slice carves durable-prefs persistence out of
   `saveCcState`/`readCcState` (a real behavior seam). Merge `sortingOrderAscending` + `sortingOption` → one `sorting` pref.
-- **DoD:** `state.preferences` real + localStorage-backed; `fileStore` owns the file-load flag + provenance; the four grab-bags
-  **gone**; `CcState = { mapState, sharedView, preferences, <lens source>, files, <fileStore flags> }`; snapshots byte-identical;
-  e2e presentation-mode / experimental-features / sorting / loading-indicator green.
+- **DoD:** `state.preferences` real + localStorage-backed; `fileStore` owns the file-load flag + provenance; **three** grab-bags
+  (`appSettings`/`dynamicSettings`/`appStatus`) **gone**; `CcState = { mapState, sharedView, preferences, <lens source>, files,
+  fileSettings: { edges }, <fileStore flags> }`; snapshots byte-identical; e2e presentation-mode / experimental-features /
+  sorting / loading-indicator green. **NOTE:** `fileSettings` is NOT deletable here — it still holds the DEFERRED `edges`
+  (CF #2a). It shrinks to `{ edges }` and survives until the later edge-UI / render-model slice re-homes `edges` and deletes
+  the reducer. (Sequence that edges slice before 10 only if you want 10 to fully delete `fileSettings`; otherwise 10 leaves
+  `fileSettings: { edges }` standing.)
 - **dep-cruiser:** add `preferences` to the home rules; **FLIP `state-home-is-leaf` → error** across all three homes (its
   "once the `state/` split completes" condition is now met). **Risk:** MED/MED. The "`state/` is dissolved" milestone.
 
@@ -301,7 +325,7 @@ each **once** so later slices only *add a key*:
 | `feature-services-reach-a-lens-only-via-its-facade` (+ retire the 5 lens-internal-feature rules) | features reach a lens only via its facade | **11** |
 | `filestore-external-access-only-via-facade` | fileStore reached only via its facade | **9a/10** |
 | `filestore-has-no-upward-deps` · `wire-dto-only-in-filestore-boundary` | fileStore is the source; wire DTO confined | already error (names evolved) |
-| `new-must-not-import-legacy` (one rule, ~20 edges today) | new layers stay clean of the dissolving `state/` | **9c/10**, then the rule + `state/` are removed |
+| `new-must-not-import-legacy` (one rule, **12 edges** today, 0 markedPackages-related) | new layers stay clean of the dissolving `state/` | **10 + 11** (7 `state/`-survivor edges clear in 10, 5 legend/errorDialog edges clear in 11 — NOT 9c), then the rule + `state/` are removed |
 | `renderer-engine-stays-dumb` · `page-uses-engine-public-api` | swappable dumb engines | **13** (staged warn until renderer #2) |
 
 ## Reconciliation — keep / move / reverse (Slices 1–4)

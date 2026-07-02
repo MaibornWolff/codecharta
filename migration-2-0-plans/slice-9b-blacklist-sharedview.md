@@ -89,13 +89,15 @@ is now view-state-free) and the **blacklist** half of CF #5.
 
 ## Explicitly DEFERRED (recorded in CARRIED-FORWARD)
 
-- **`markedPackages` → sharedView** (Slice 9c) — the last `fileSettings` member; empties + deletes `fileSettings`.
+- **`markedPackages` → sharedView** (Slice 9c) — moves the last movable `fileSettings` member; **NARROWS `fileSettings`
+  to `{ edges }`, does NOT delete it** (edges is deferred). ~13 direct importers, no runtime-only landmines, no
+  selector-dedup — a smaller/lower-risk twin of 9b. IndexedDB `v8→v9`.
 - **`edges` → dependency lens** — still a merged render-model array in `fileSettings` (CF #2a, needs a render-model
-  home + injectable dependency store first).
+  home + injectable dependency store first). This is the slice that finally deletes the `fileSettings` reducer.
 - **`lens-no-view-state` dep-cruiser rule** — not added yet (stays deferred to Slice 13 per the roadmap); both
   lenses are already clean of view-state reads, so the flip will be inert-safe.
-- **`new-must-not-import-legacy` flip** — still needs 9c (markedPackages) before the last lens/fileStore → `state/`
-  edges are gone.
+- **`new-must-not-import-legacy` flip** — does NOT land in 9c. 12 residual edges (0 markedPackages-related): 7
+  `state/`-survivors clear in Slice 10, 5 legend/errorDialog edges clear in Slice 11. Full flip after **10 + 11**.
 
 ## Rollback
 
