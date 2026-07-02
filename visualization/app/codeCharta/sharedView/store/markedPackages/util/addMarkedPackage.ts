@@ -1,5 +1,5 @@
-import { MarkedPackage } from "../../../../../codeCharta.model"
-import { getParent } from "../../../../../util/nodePathHelper"
+import { MarkedPackage } from "../../../../codeCharta.model"
+import { getParent } from "../../../../util/nodePathHelper"
 
 export const addMarkedPackage = (markedPackagesMap: Map<string, MarkedPackage>, { path, color }: MarkedPackage) => {
     const directMarkedParentPackage = getParent(markedPackagesMap, path)

@@ -1,4 +1,4 @@
-import { MarkedPackage } from "../../../../../codeCharta.model"
+import { MarkedPackage } from "../../../../codeCharta.model"
 
 /** @return index of exact match if there is an exact match. Otherwise return index of parent or -1  */
 export const findIndexOfMarkedPackageOrParent = (markedPackages: MarkedPackage[], nodePath: string) => {

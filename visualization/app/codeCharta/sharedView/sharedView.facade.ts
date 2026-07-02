@@ -2,11 +2,15 @@
  * Public surface of the sharedView state-home — the ONLY thing outsiders import.
  *
  * sharedView owns the cross-renderer view values that are neither map-specific settings nor
- * cc.json source: the focus stack (`focusedNodePath`), the search pattern (`searchPattern`) and the
- * `blacklist`. Slice 8 pulled focus/search out of the `dynamicSettings` combineReducers; Slice 9b
- * moved `blacklist` out of the `fileSettings` combineReducers into the `sharedView` combineReducers —
- * all now persist under `state.sharedView.*`. (The .cc.json file still carries the blacklist per-file,
- * so `CCFile.settings.fileSettings` keeps it via an intersection; only the merged STATE root moved here.)
+ * cc.json source: the focus stack (`focusedNodePath`), the search pattern (`searchPattern`), the
+ * `blacklist` and the `markedPackages`. Slice 8 pulled focus/search out of the `dynamicSettings`
+ * combineReducers; Slice 9b moved `blacklist` and Slice 9c `markedPackages` out of the `fileSettings`
+ * combineReducers into the `sharedView` combineReducers — all now persist under `state.sharedView.*`.
+ * (The .cc.json file still carries blacklist + markedPackages per-file, so `CCFile.settings.fileSettings`
+ * keeps them via an intersection; only the merged STATE root moved here.)
+ * (Slice 9c structural step: the markedPackages store folder was `git mv`d here and re-exported, but is
+ * still registered transitionally under `fileSettings.reducer` so `state.fileSettings.markedPackages` is
+ * unchanged; the behavioral step re-homes it under the `sharedView` root.)
  *
  * This barrel re-exports each slice's selectors (read), action creators (write), reducer +
  * `default*` (store wiring), plus — added in the behavioral reshape — the combined `sharedView`
@@ -28,3 +32,7 @@ export * from "./store/blacklist/blacklist.reducer"
 export * from "./store/blacklist/blacklist.selector"
 export * from "./store/blacklist/blacklistByType.selector"
 export * from "./store/blacklist/blacklistMatcher.selector"
+export * from "./store/markedPackages/markedPackages.actions"
+export * from "./store/markedPackages/markedPackages.reducer"
+export * from "./store/markedPackages/markedPackages.selector"
+export * from "./store/markedPackages/util/findIndexOfMarkedPackageOrParent"

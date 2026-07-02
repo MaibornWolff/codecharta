@@ -1,4 +1,4 @@
-import { MarkedPackage } from "../../../../../codeCharta.model"
+import { MarkedPackage } from "../../../../codeCharta.model"
 import { addMarkedPackage } from "./addMarkedPackage"
 
 describe("addMarkedPackage", () => {

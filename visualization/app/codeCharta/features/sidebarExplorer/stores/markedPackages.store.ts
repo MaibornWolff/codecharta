@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { markedPackagesSelector } from "../../../state/store/fileSettings/markedPackages/markedPackages.selector"
+import { markedPackagesSelector } from "../../../sharedView/sharedView.facade"
 
 @Injectable({
     providedIn: "root"

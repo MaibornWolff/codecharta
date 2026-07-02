@@ -37,7 +37,7 @@ import {
 import { setAttributeTypes, setAttributeDescriptors } from "../../lenses/metrics/metricsLens.load.facade"
 import { setBlacklist } from "../../sharedView/sharedView.facade"
 import { setEdges } from "../store/fileSettings/edges/edges.actions"
-import { setMarkedPackages } from "../store/fileSettings/markedPackages/markedPackages.actions"
+import { setMarkedPackages } from "../../sharedView/sharedView.facade"
 import { setAreaMetric, setHeightMetric, setEdgeMetric, setColorMetric, setDistributionMetric } from "../../mapState/mapState.facade"
 import { setSortingOption } from "../store/dynamicSettings/sortingOption/sortingOption.actions"
 import { setAllFocusedNodes } from "../../sharedView/sharedView.facade"

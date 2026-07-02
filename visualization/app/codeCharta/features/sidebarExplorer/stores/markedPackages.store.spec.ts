@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { MarkedPackagesStore } from "./markedPackages.store"
 import { MarkedPackage } from "../../../codeCharta.model"
-import { markedPackagesSelector } from "../../../state/store/fileSettings/markedPackages/markedPackages.selector"
+import { markedPackagesSelector } from "../../../sharedView/sharedView.facade"
 
 describe("MarkedPackagesStore", () => {
     let store: MarkedPackagesStore

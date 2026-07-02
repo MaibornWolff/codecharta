@@ -29,7 +29,7 @@ import { setColorMode } from "../../../mapState/store/colorMode/colorMode.action
 import { setColorRange } from "../../../mapState/store/colorRange/colorRange.actions"
 import { setAllFocusedNodes, focusNode, unfocusAllNodes, unfocusNode, setSearchPattern } from "../../../sharedView/sharedView.facade"
 import { setMargin } from "../../../mapState/store/margin/margin.actions"
-import { setMarkedPackages, markPackages, unmarkPackage } from "../../store/fileSettings/markedPackages/markedPackages.actions"
+import { setMarkedPackages, markPackages, unmarkPackage } from "../../../sharedView/sharedView.facade"
 import { setState } from "../../store/state.actions"
 
 export const actionsRequiringRerender = [
