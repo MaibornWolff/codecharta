@@ -95,10 +95,10 @@ export class ScenarioApplierService {
             // overwrite our camera position after the render cycle completes.
             const previousResetCamera =
                 applyCamera && patches.length > 0
-                    ? this.scenarioApplierStore.getValue().appSettings.resetCameraIfNewFileIsLoaded
+                    ? this.scenarioApplierStore.getValue().preferences.resetCameraIfNewFileIsLoaded
                     : undefined
             if (previousResetCamera && patches.length > 0) {
-                patches[0].appSettings = { ...patches[0].appSettings, resetCameraIfNewFileIsLoaded: false }
+                patches[0].preferences = { ...patches[0].preferences, resetCameraIfNewFileIsLoaded: false }
             }
 
             // Dispatch patches with macrotask delays so effects triggered by
@@ -120,7 +120,7 @@ export class ScenarioApplierService {
                 // Restore resetCameraIfNewFileIsLoaded after autoFit window has passed.
                 if (previousResetCamera) {
                     setTimeout(() => {
-                        this.scenarioApplierStore.setStatePatch({ appSettings: { resetCameraIfNewFileIsLoaded: true } })
+                        this.scenarioApplierStore.setStatePatch({ preferences: { resetCameraIfNewFileIsLoaded: true } })
                     })
                 }
             }
@@ -163,7 +163,8 @@ export class ScenarioApplierService {
             // Slice 7: metric selection now lives under mapState (was dynamicSettings).
             patch.mapState = { ...metricOverrides }
             if (sections.metrics.isColorMetricLinkedToHeightMetric !== undefined) {
-                patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
+                // Slice 10b: isColorMetricLinkedToHeightMetric now lives under the preferences home (was appSettings).
+                patch.preferences = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
             }
         }
         return patch
@@ -209,7 +210,7 @@ export class ScenarioApplierService {
         return {
             ...a,
             ...b,
-            ...(a.appSettings || b.appSettings ? { appSettings: { ...a.appSettings, ...b.appSettings } } : {}),
+            ...(a.preferences || b.preferences ? { preferences: { ...a.preferences, ...b.preferences } } : {}),
             ...(a.mapState || b.mapState ? { mapState: { ...a.mapState, ...b.mapState } } : {}),
             ...(a.sharedView || b.sharedView ? { sharedView: { ...a.sharedView, ...b.sharedView } } : {})
         }

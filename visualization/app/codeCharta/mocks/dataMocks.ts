@@ -2151,23 +2151,21 @@ export const STATE: CcState = {
         },
         attributeDescriptors: {}
     },
-    dynamicSettings: {
-        sortingOption: SortingOption.NAME
-    },
     sharedView: {
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
         blacklist: [],
         markedPackages: []
     },
-    appSettings: {
+    preferences: {
         isColorMetricLinkedToHeightMetric: false,
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
         sortingOrderAscending: false,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
-        maxTreeMapFiles: 200
+        maxTreeMapFiles: 200,
+        sortingOption: SortingOption.NAME
     },
     mapState: {
         areaMetric: "rloc",
@@ -2231,14 +2229,15 @@ export const STATE: CcState = {
 }
 
 export const DEFAULT_STATE: CcState = {
-    appSettings: {
+    preferences: {
         isColorMetricLinkedToHeightMetric: false,
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
         sortingOrderAscending: true,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
-        maxTreeMapFiles: 100
+        maxTreeMapFiles: 100,
+        sortingOption: SortingOption.NAME
     },
     mapState: {
         areaMetric: null,
@@ -2295,9 +2294,6 @@ export const DEFAULT_STATE: CcState = {
         hoveredNodeId: null,
         selectedBuildingId: null,
         rightClickedNodeData: null
-    },
-    dynamicSettings: {
-        sortingOption: SortingOption.NAME
     },
     sharedView: {
         focusedNodePath: [],

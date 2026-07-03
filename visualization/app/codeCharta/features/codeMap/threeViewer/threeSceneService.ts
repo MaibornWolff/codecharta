@@ -101,7 +101,7 @@ export class ThreeSceneService implements OnDestroy {
             return
         }
         const scaling = this.threeSceneStore.getMapState().scaling
-        const experimentalFeaturesEnabled = this.threeSceneStore.getAppSettings().experimentalFeaturesEnabled
+        const experimentalFeaturesEnabled = this.threeSceneStore.getPreferences().experimentalFeaturesEnabled
         const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
 
         const maxAnisotropy = this.threeRendererService.renderer?.capabilities.getMaxAnisotropy() ?? 1

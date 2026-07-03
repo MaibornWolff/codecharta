@@ -243,8 +243,8 @@ describe("codeMapRenderService", () => {
         it("should return nodes with length of 0 and set min length if experimental features are enabled", () => {
             const newState = {
                 ...state.getValue(),
-                appSettings: {
-                    ...state.getValue().appSettings,
+                preferences: {
+                    ...state.getValue().preferences,
                     experimentalFeaturesEnabled: true
                 }
             }
@@ -262,8 +262,8 @@ describe("codeMapRenderService", () => {
         it("should return nodes with length and width > 0 if experimental features are not enabled", () => {
             const newState = {
                 ...state.getValue(),
-                appSettings: {
-                    ...state.getValue().appSettings,
+                preferences: {
+                    ...state.getValue().preferences,
                     experimentalFeaturesEnabled: false
                 }
             }

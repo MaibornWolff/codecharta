@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { dynamicSettingsSelector } from "../../../state/store/dynamicSettings/dynamicSettings.selector"
+import { preferencesSelector } from "../preferences.selector"
 
-export const sortingOrderSelector = createSelector(dynamicSettingsSelector, dynamicSettings => dynamicSettings.sortingOption)
+export const sortingOrderSelector = createSelector(preferencesSelector, preferences => preferences.sortingOption)

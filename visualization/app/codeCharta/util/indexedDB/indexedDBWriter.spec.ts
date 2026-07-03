@@ -1,7 +1,7 @@
 import "fake-indexeddb/auto"
 import { openDB } from "idb"
 import { defaultState } from "../../state/store/state.manager"
-import { defaultAppSettings } from "../../state/store/appSettings/appSettings.reducer"
+import { defaultPreferences } from "../../preferences/preferences.facade"
 import { defaultMapState } from "../../mapState/mapState.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.facade"
 import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
@@ -21,6 +21,7 @@ import {
     migrateCcStateRecordToV8,
     migrateCcStateRecordToV9,
     migrateCcStateRecordToV10,
+    migrateCcStateRecordToV11,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -30,7 +31,7 @@ describe("migrateCcStateRecordToV3 (Slice 5 re-home transform)", () => {
     it("should move the map-view keys from appSettings into a new mapState root", () => {
         const oldShapeState = {
             appSettings: {
-                ...defaultAppSettings,
+                ...defaultPreferences,
                 invertHeight: true,
                 amountOfTopLabels: 7,
                 mapColors: { ...defaultMapState.mapColors, positive: "#123456" }
@@ -48,17 +49,17 @@ describe("migrateCcStateRecordToV3 (Slice 5 re-home transform)", () => {
     })
 
     it("should keep the settings that stay under appSettings and drop the moved ones", () => {
-        const oldShapeState = { appSettings: { ...defaultAppSettings, invertHeight: true, amountOfTopLabels: 7 } }
+        const oldShapeState = { appSettings: { ...defaultPreferences, invertHeight: true, amountOfTopLabels: 7 } }
 
         const migrated = migrateCcStateRecordToV3(oldShapeState) as { appSettings: Record<string, unknown> }
 
-        expect(migrated.appSettings.maxTreeMapFiles).toBe(defaultAppSettings.maxTreeMapFiles)
+        expect(migrated.appSettings.maxTreeMapFiles).toBe(defaultPreferences.maxTreeMapFiles)
         expect("invertHeight" in migrated.appSettings).toBe(false)
         expect("amountOfTopLabels" in migrated.appSettings).toBe(false)
     })
 
     it("should fill map-view keys absent from the old blob with their defaults", () => {
-        const migrated = migrateCcStateRecordToV3({ appSettings: { ...defaultAppSettings } }) as unknown as { mapState: Record<string, unknown> }
+        const migrated = migrateCcStateRecordToV3({ appSettings: { ...defaultPreferences } }) as unknown as { mapState: Record<string, unknown> }
 
         expect(migrated.mapState.labelSize).toBe(defaultMapState.labelSize)
         expect(migrated.mapState.scaling).toEqual(defaultMapState.scaling)
@@ -378,7 +379,56 @@ describe("migrateCcStateRecordToV10 (Slice 10a re-home transform)", () => {
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 transforms)", () => {
+describe("migrateCcStateRecordToV11 (Slice 10b re-home transform)", () => {
+    const v10ShapeState = () => ({
+        appSettings: {
+            isPresentationMode: true,
+            resetCameraIfNewFileIsLoaded: false,
+            sortingOrderAscending: false,
+            maxTreeMapFiles: 42,
+            experimentalFeaturesEnabled: true,
+            screenshotToClipboardEnabled: true,
+            isColorMetricLinkedToHeightMetric: true
+        },
+        dynamicSettings: { sortingOption: "NUMBER_OF_FILES" }
+    })
+
+    it("should move the seven appSettings prefs + dynamicSettings.sortingOption into a brand-new preferences root", () => {
+        const migrated = migrateCcStateRecordToV11(v10ShapeState()) as unknown as { preferences: Record<string, unknown> }
+
+        expect(migrated.preferences.isPresentationMode).toBe(true)
+        expect(migrated.preferences.maxTreeMapFiles).toBe(42)
+        expect(migrated.preferences.experimentalFeaturesEnabled).toBe(true)
+        expect(migrated.preferences.isColorMetricLinkedToHeightMetric).toBe(true)
+        expect(migrated.preferences.sortingOption).toBe("NUMBER_OF_FILES")
+    })
+
+    it("should delete both the appSettings and dynamicSettings grab-bags", () => {
+        const migrated = migrateCcStateRecordToV11(v10ShapeState()) as unknown as {
+            appSettings?: Record<string, unknown>
+            dynamicSettings?: Record<string, unknown>
+        }
+
+        expect(migrated.appSettings).toBeUndefined()
+        expect(migrated.dynamicSettings).toBeUndefined()
+    })
+
+    it("should fill preferences keys absent from the old blob with their defaults", () => {
+        const migrated = migrateCcStateRecordToV11({ appSettings: {}, dynamicSettings: {} }) as unknown as { preferences: Record<string, unknown> }
+
+        expect(migrated.preferences.maxTreeMapFiles).toBe(defaultPreferences.maxTreeMapFiles)
+        expect(migrated.preferences.sortingOption).toBe(defaultPreferences.sortingOption)
+    })
+
+    it("should return the record untouched when it is null, and build a default preferences when there are no grab-bags", () => {
+        expect(migrateCcStateRecordToV11(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV11({ files: [] }) as unknown as { files: unknown[]; preferences: Record<string, unknown> }
+        expect(migrated.files).toEqual([])
+        expect(migrated.preferences.sortingOption).toBe(defaultPreferences.sortingOption)
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -396,14 +446,15 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         const v2ShapeState = {
             ...defaultState,
             appSettings: {
-                ...defaultAppSettings,
+                ...defaultPreferences,
                 isLoadingFile: false,
+                experimentalFeaturesEnabled: true,
                 invertHeight: true,
                 amountOfTopLabels: 7,
                 layoutAlgorithm: LayoutAlgorithm.StreetMap
             },
             dynamicSettings: {
-                ...defaultState.dynamicSettings,
+                sortingOption: "NAME",
                 colorMode: ColorMode.absolute,
                 margin: 42,
                 areaMetric: "rloc",
@@ -429,11 +480,12 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v10, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9 then v10 upgrade transforms.
+        // openCodeChartaDB (v11, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9, v10 then v11 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
-            appSettings: Record<string, unknown>
-            dynamicSettings: Record<string, unknown>
+            appSettings?: Record<string, unknown>
+            dynamicSettings?: Record<string, unknown>
             appStatus?: Record<string, unknown>
+            preferences: Record<string, unknown>
             mapState: Record<string, unknown>
             sharedView: Record<string, unknown>
             fileSettings: Record<string, unknown>
@@ -446,20 +498,15 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         expect(migratedState.mapState.invertHeight).toBe(true)
         expect(migratedState.mapState.amountOfTopLabels).toBe(7)
         expect(migratedState.mapState.layoutAlgorithm).toBe(LayoutAlgorithm.StreetMap)
-        expect("invertHeight" in migratedState.appSettings).toBe(false)
         // v4 re-home (stragglers out of dynamicSettings + interaction ids out of appStatus)
         expect(migratedState.mapState.colorMode).toBe(ColorMode.absolute)
         expect(migratedState.mapState.margin).toBe(42)
         expect(migratedState.mapState.hoveredNodeId).toBe(5)
-        expect("colorMode" in migratedState.dynamicSettings).toBe(false)
         // v5 re-home (metric selection out of dynamicSettings)
         expect(migratedState.mapState.areaMetric).toBe("rloc")
-        expect("areaMetric" in migratedState.dynamicSettings).toBe(false)
         // v6 re-home (focus/search out of dynamicSettings into a brand-new sharedView root)
         expect(migratedState.sharedView.focusedNodePath).toEqual(["/root/ParentLeaf"])
         expect(migratedState.sharedView.searchPattern).toBe("needle")
-        expect("focusedNodePath" in migratedState.dynamicSettings).toBe(false)
-        expect("searchPattern" in migratedState.dynamicSettings).toBe(false)
         // v7 re-home (attributeTypes/descriptors out of fileSettings into a brand-new metricsLensSource root)
         expect(migratedState.metricsLensSource.attributeTypes).toEqual({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} })
         expect(migratedState.metricsLensSource.attributeDescriptors).toEqual({ rloc: { title: "Lines of Code" } })
@@ -475,7 +522,11 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         expect(migratedState.isLoadingFile).toBe(false)
         expect(migratedState.currentFilesAreSampleFiles).toBe(true)
         expect(migratedState.appStatus).toBeUndefined()
-        expect("isLoadingFile" in migratedState.appSettings).toBe(false)
+        // v11 re-home (durable prefs out of appSettings + dynamicSettings.sortingOption into a new preferences root; both grab-bags deleted)
+        expect(migratedState.preferences.experimentalFeaturesEnabled).toBe(true)
+        expect(migratedState.preferences.sortingOption).toBe("NAME")
+        expect(migratedState.appSettings).toBeUndefined()
+        expect(migratedState.dynamicSettings).toBeUndefined()
     })
 })
 

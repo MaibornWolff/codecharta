@@ -167,7 +167,7 @@ export class ScenariosService {
                 colorMetric: state.mapState.colorMetric,
                 edgeMetric: state.mapState.edgeMetric,
                 distributionMetric: state.mapState.distributionMetric,
-                isColorMetricLinkedToHeightMetric: state.appSettings.isColorMetricLinkedToHeightMetric
+                isColorMetricLinkedToHeightMetric: state.preferences.isColorMetricLinkedToHeightMetric
             },
             colors: {
                 colorRange: { ...state.mapState.colorRange },

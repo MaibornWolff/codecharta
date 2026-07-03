@@ -1,15 +1,15 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { preferencesSelector } from "../../../preferences/preferences.facade"
 import { mapStateSelector } from "../../../mapState/mapState.facade"
 
 export const screenshotToClipboardEnabledSelector = createSelector(
-    appSettingsSelector,
-    appSettings => appSettings.screenshotToClipboardEnabled
+    preferencesSelector,
+    preferences => preferences.screenshotToClipboardEnabled
 )
 
 export const experimentalFeaturesEnabledSelector = createSelector(
-    appSettingsSelector,
-    appSettings => appSettings.experimentalFeaturesEnabled
+    preferencesSelector,
+    preferences => preferences.experimentalFeaturesEnabled
 )
 
 export const isWhiteBackgroundSelector = createSelector(mapStateSelector, mapState => mapState.isWhiteBackground)
@@ -17,10 +17,10 @@ export const isWhiteBackgroundSelector = createSelector(mapStateSelector, mapSta
 export const hideFlatBuildingsSelector = createSelector(mapStateSelector, mapState => mapState.hideFlatBuildings)
 
 export const resetCameraIfNewFileIsLoadedSelector = createSelector(
-    appSettingsSelector,
-    appSettings => appSettings.resetCameraIfNewFileIsLoaded
+    preferencesSelector,
+    preferences => preferences.resetCameraIfNewFileIsLoaded
 )
 
 export const layoutAlgorithmSelector = createSelector(mapStateSelector, mapState => mapState.layoutAlgorithm)
 
-export const maxTreeMapFilesSelector = createSelector(appSettingsSelector, appSettings => appSettings.maxTreeMapFiles)
+export const maxTreeMapFilesSelector = createSelector(preferencesSelector, preferences => preferences.maxTreeMapFiles)

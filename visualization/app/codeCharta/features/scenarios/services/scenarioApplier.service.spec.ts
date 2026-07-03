@@ -66,8 +66,8 @@ function mergePatches(patches: RecursivePartial<CcState>[]): RecursivePartial<Cc
         if (patch.sharedView) {
             merged.sharedView = { ...merged.sharedView, ...patch.sharedView }
         }
-        if (patch.appSettings) {
-            merged.appSettings = { ...merged.appSettings, ...patch.appSettings }
+        if (patch.preferences) {
+            merged.preferences = { ...merged.preferences, ...patch.preferences }
         }
         if (patch.mapState) {
             merged.mapState = { ...merged.mapState, ...patch.mapState }
@@ -127,7 +127,7 @@ describe("ScenarioApplierService", () => {
             expect(patches).toHaveLength(1)
             expect(patches[0].mapState?.areaMetric).toBe("rloc")
             expect(patches[0].mapState?.heightMetric).toBe("mcc")
-            expect(patches[0].appSettings?.isColorMetricLinkedToHeightMetric).toBe(true)
+            expect(patches[0].preferences?.isColorMetricLinkedToHeightMetric).toBe(true)
         })
 
         it("should produce metrics before colors as separate patches", () => {
@@ -236,10 +236,10 @@ describe("ScenarioApplierService", () => {
             expect(patches[0].mapState?.areaMetric).toBe("rloc")
             expect(patches[0].mapState?.edgeMetric).toBeUndefined()
             expect(patches[0].mapState?.distributionMetric).toBeUndefined()
-            expect(patches[0].appSettings?.isColorMetricLinkedToHeightMetric).toBeUndefined()
+            expect(patches[0].preferences?.isColorMetricLinkedToHeightMetric).toBeUndefined()
             expect(patches[1].mapState?.colorRange).toEqual({ from: 250, to: 500 })
             expect(patches[1].mapState?.colorMode).toBeUndefined()
-            expect(patches[1].appSettings).toBeUndefined()
+            expect(patches[1].preferences).toBeUndefined()
         })
 
         it("should skip undefined sections even if selected", () => {

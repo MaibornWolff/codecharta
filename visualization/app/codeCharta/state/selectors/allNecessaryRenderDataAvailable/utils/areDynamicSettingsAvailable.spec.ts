@@ -1,4 +1,4 @@
-import { ColorRange, DynamicSettings, PrimaryMetrics, SortingOption } from "../../../../codeCharta.model"
+import { ColorRange, PrimaryMetrics, SortingOption } from "../../../../codeCharta.model"
 import { areDynamicSettingsAvailable, _isDynamicSettingAvailable } from "./areDynamicSettingsAvailable"
 
 describe("areDynamicSettingsAvailable", () => {
@@ -17,7 +17,7 @@ describe("areDynamicSettingsAvailable", () => {
     })
 
     it("should return true when everything is set", () => {
-        const dynamicSettings: Partial<DynamicSettings> & Partial<PrimaryMetrics> & { distributionMetric?: string; colorRange: ColorRange } = {
+        const dynamicSettings: { sortingOption?: SortingOption } & Partial<PrimaryMetrics> & { distributionMetric?: string; colorRange: ColorRange } = {
             sortingOption: SortingOption.NAME,
             areaMetric: "rloc",
             heightMetric: "loc",

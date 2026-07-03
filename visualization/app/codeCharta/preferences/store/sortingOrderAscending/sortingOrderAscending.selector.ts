@@ -1,4 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../../../state/store/appSettings/appSettings.selector"
+import { preferencesSelector } from "../preferences.selector"
 
-export const sortingOrderAscendingSelector = createSelector(appSettingsSelector, appSettings => appSettings.sortingOrderAscending)
+export const sortingOrderAscendingSelector = createSelector(preferencesSelector, preferences => preferences.sortingOrderAscending)

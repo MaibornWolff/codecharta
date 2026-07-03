@@ -14,6 +14,9 @@
  * the home. Consumers read preferences only through here; the `store/` internals stay private by
  * convention (the `state-home-is-leaf` dep-cruiser rule locks the leaf direction).
  */
+export * from "./store/preferences.reducer"
+export * from "./store/preferences.selector"
+export * from "./store/preferences.actions"
 export * from "./store/enableClipboard/screenshotToClipboardEnabled.actions"
 export * from "./store/enableClipboard/screenshotToClipboardEnabled.reducer"
 export * from "./store/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"

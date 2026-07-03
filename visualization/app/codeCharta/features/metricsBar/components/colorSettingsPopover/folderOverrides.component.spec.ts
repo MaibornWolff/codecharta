@@ -15,8 +15,8 @@ describe("FolderOverridesComponent", () => {
                 ? defaultState
                 : {
                       ...defaultState,
-                      appSettings: {
-                          ...defaultState.appSettings,
+                      mapState: {
+                          ...defaultState.mapState,
                           mapColors: { ...defaultState.mapState.mapColors, markingColors: markingColors as string[] }
                       }
                   }

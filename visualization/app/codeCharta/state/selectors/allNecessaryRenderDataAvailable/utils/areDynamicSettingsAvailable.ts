@@ -1,4 +1,4 @@
-import { ColorRange, DynamicSettings, PrimaryMetrics } from "../../../../codeCharta.model"
+import { ColorRange, PrimaryMetrics, SortingOption } from "../../../../codeCharta.model"
 
 export const _isDynamicSettingAvailable = (name: string, setting: null | string | number | string[] | ColorRange) => {
     if (name === "edgeMetric") {
@@ -17,5 +17,5 @@ export const _isDynamicSettingAvailable = (name: string, setting: null | string 
 // the first-render gate must still wait for the color range to be computed. The caller folds
 // mapState.colorRange back in.
 export const areDynamicSettingsAvailable = (
-    settings: Partial<DynamicSettings> & Partial<PrimaryMetrics> & { distributionMetric?: string; colorRange?: ColorRange | null }
+    settings: { sortingOption?: SortingOption } & Partial<PrimaryMetrics> & { distributionMetric?: string; colorRange?: ColorRange | null }
 ) => Object.entries(settings).every(([name, value]) => _isDynamicSettingAvailable(name, value))

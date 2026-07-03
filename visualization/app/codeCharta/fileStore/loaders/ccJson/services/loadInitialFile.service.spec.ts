@@ -4,14 +4,13 @@ import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
-import { AppSettings, CcState, DynamicSettings, FileSettings, SharedView } from "../../../../codeCharta.model"
+import { CcState, FileSettings, Preferences, SharedView } from "../../../../codeCharta.model"
 import { FileSelectionState } from "../../../../model/files/files"
 import { getCCFiles } from "../../../../model/files/files.helper"
 import { MetricQueryParemter } from "../../../../state/effects/updateQueryParameters/metricQueryParameter"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
+import { defaultPreferences } from "../../../../preferences/preferences.facade"
 import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../../mapState/mapState.facade"
-import { defaultDynamicSettings } from "../../../../state/store/dynamicSettings/dynamicSettings.reducer"
 import { defaultSharedView } from "../../../../sharedView/sharedView.facade"
 import { defaultFileSettings } from "../../../../state/store/fileSettings/fileSettings.reducer"
 import { setDelta, setFiles } from "../../../store/files.actions"
@@ -355,25 +354,6 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.fileSettings, defaultFileSettings))
         })
 
-        it("should set all differing dynamicSettings", async () => {
-            const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
-                async () => new Promise(resolve => resolve(mockedNameDataPairs))
-            )
-            const mockedState = JSON.parse(stringify(defaultState)) as CcState
-            mockedState.dynamicSettings = nullifyObjectValues(defaultDynamicSettings) as DynamicSettings
-            jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
-            jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
-            const dispatchSpy = jest.spyOn(store, "dispatch")
-
-            await loadInitialFileService.loadFilesOrSampleFiles()
-
-            expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
-            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.dynamicSettings, defaultDynamicSettings))
-        })
-
         it("should set all differing sharedView", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
             jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
@@ -393,14 +373,14 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.sharedView, defaultSharedView))
         })
 
-        it("should set all differing except sortingOrderAscending", async () => {
+        it("should set all differing preferences except sortingOrderAscending", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
             jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
             jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
-            mockedState.appSettings = nullifyObjectValues(defaultAppSettings) as AppSettings
+            mockedState.preferences = nullifyObjectValues(defaultPreferences) as Preferences
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
             jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
             const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -409,8 +389,8 @@ describe("LoadInitialFileService", () => {
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
-            // appSettings applier ignores only sortingOrderAscending now (isLoadingFile left appSettings in Slice 10a)
-            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.appSettings, defaultAppSettings) - 1)
+            // the preferences applier dispatches every differing key except sortingOrderAscending (ignored)
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.preferences, defaultPreferences) - 1)
         })
     })
 })

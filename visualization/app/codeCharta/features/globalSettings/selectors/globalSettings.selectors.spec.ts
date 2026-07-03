@@ -18,12 +18,12 @@ describe("globalSettings.selectors", () => {
     })
 
     describe("screenshotToClipboardEnabledSelector", () => {
-        it("should select screenshotToClipboardEnabled from appSettings", () => {
+        it("should select screenshotToClipboardEnabled from preferences", () => {
             // Arrange
-            mockState.appSettings.screenshotToClipboardEnabled = true
+            mockState.preferences.screenshotToClipboardEnabled = true
 
             // Act
-            const result = screenshotToClipboardEnabledSelector.projector(mockState.appSettings)
+            const result = screenshotToClipboardEnabledSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(true)
@@ -31,10 +31,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return false when screenshotToClipboardEnabled is false", () => {
             // Arrange
-            mockState.appSettings.screenshotToClipboardEnabled = false
+            mockState.preferences.screenshotToClipboardEnabled = false
 
             // Act
-            const result = screenshotToClipboardEnabledSelector.projector(mockState.appSettings)
+            const result = screenshotToClipboardEnabledSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(false)
@@ -42,12 +42,12 @@ describe("globalSettings.selectors", () => {
     })
 
     describe("experimentalFeaturesEnabledSelector", () => {
-        it("should select experimentalFeaturesEnabled from appSettings", () => {
+        it("should select experimentalFeaturesEnabled from preferences", () => {
             // Arrange
-            mockState.appSettings.experimentalFeaturesEnabled = true
+            mockState.preferences.experimentalFeaturesEnabled = true
 
             // Act
-            const result = experimentalFeaturesEnabledSelector.projector(mockState.appSettings)
+            const result = experimentalFeaturesEnabledSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(true)
@@ -55,10 +55,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return false when experimentalFeaturesEnabled is false", () => {
             // Arrange
-            mockState.appSettings.experimentalFeaturesEnabled = false
+            mockState.preferences.experimentalFeaturesEnabled = false
 
             // Act
-            const result = experimentalFeaturesEnabledSelector.projector(mockState.appSettings)
+            const result = experimentalFeaturesEnabledSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(false)
@@ -66,7 +66,7 @@ describe("globalSettings.selectors", () => {
     })
 
     describe("isWhiteBackgroundSelector", () => {
-        it("should select isWhiteBackground from appSettings", () => {
+        it("should select isWhiteBackground from preferences", () => {
             // Arrange
             mockState.mapState.isWhiteBackground = true
 
@@ -90,7 +90,7 @@ describe("globalSettings.selectors", () => {
     })
 
     describe("hideFlatBuildingsSelector", () => {
-        it("should select hideFlatBuildings from appSettings", () => {
+        it("should select hideFlatBuildings from preferences", () => {
             // Arrange
             mockState.mapState.hideFlatBuildings = true
 
@@ -114,12 +114,12 @@ describe("globalSettings.selectors", () => {
     })
 
     describe("resetCameraIfNewFileIsLoadedSelector", () => {
-        it("should select resetCameraIfNewFileIsLoaded from appSettings", () => {
+        it("should select resetCameraIfNewFileIsLoaded from preferences", () => {
             // Arrange
-            mockState.appSettings.resetCameraIfNewFileIsLoaded = true
+            mockState.preferences.resetCameraIfNewFileIsLoaded = true
 
             // Act
-            const result = resetCameraIfNewFileIsLoadedSelector.projector(mockState.appSettings)
+            const result = resetCameraIfNewFileIsLoadedSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(true)
@@ -127,10 +127,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return false when resetCameraIfNewFileIsLoaded is false", () => {
             // Arrange
-            mockState.appSettings.resetCameraIfNewFileIsLoaded = false
+            mockState.preferences.resetCameraIfNewFileIsLoaded = false
 
             // Act
-            const result = resetCameraIfNewFileIsLoadedSelector.projector(mockState.appSettings)
+            const result = resetCameraIfNewFileIsLoadedSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(false)
@@ -138,7 +138,7 @@ describe("globalSettings.selectors", () => {
     })
 
     describe("layoutAlgorithmSelector", () => {
-        it("should select layoutAlgorithm from appSettings", () => {
+        it("should select layoutAlgorithm from preferences", () => {
             // Arrange
             mockState.mapState.layoutAlgorithm = LayoutAlgorithm.StreetMap
 
@@ -173,12 +173,12 @@ describe("globalSettings.selectors", () => {
     })
 
     describe("maxTreeMapFilesSelector", () => {
-        it("should select maxTreeMapFiles from appSettings", () => {
+        it("should select maxTreeMapFiles from preferences", () => {
             // Arrange
-            mockState.appSettings.maxTreeMapFiles = 250
+            mockState.preferences.maxTreeMapFiles = 250
 
             // Act
-            const result = maxTreeMapFilesSelector.projector(mockState.appSettings)
+            const result = maxTreeMapFilesSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(250)
@@ -186,10 +186,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return 1 when maxTreeMapFiles is set to minimum", () => {
             // Arrange
-            mockState.appSettings.maxTreeMapFiles = 1
+            mockState.preferences.maxTreeMapFiles = 1
 
             // Act
-            const result = maxTreeMapFilesSelector.projector(mockState.appSettings)
+            const result = maxTreeMapFilesSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(1)
@@ -197,10 +197,10 @@ describe("globalSettings.selectors", () => {
 
         it("should return 1000 when maxTreeMapFiles is set to maximum", () => {
             // Arrange
-            mockState.appSettings.maxTreeMapFiles = 1000
+            mockState.preferences.maxTreeMapFiles = 1000
 
             // Act
-            const result = maxTreeMapFilesSelector.projector(mockState.appSettings)
+            const result = maxTreeMapFilesSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(1000)
@@ -208,14 +208,14 @@ describe("globalSettings.selectors", () => {
     })
 
     describe("Selector memoization", () => {
-        it("should not recompute when appSettings reference is the same", () => {
+        it("should not recompute when preferences reference is the same", () => {
             // Arrange
-            const appSettings = mockState.appSettings
+            const preferences = mockState.preferences
             const spy = jest.spyOn(screenshotToClipboardEnabledSelector, "projector")
 
             // Act
-            screenshotToClipboardEnabledSelector.projector(appSettings)
-            screenshotToClipboardEnabledSelector.projector(appSettings)
+            screenshotToClipboardEnabledSelector.projector(preferences)
+            screenshotToClipboardEnabledSelector.projector(preferences)
 
             // Assert
             expect(spy).toHaveBeenCalledTimes(2)

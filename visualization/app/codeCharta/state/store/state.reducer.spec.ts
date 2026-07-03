@@ -14,19 +14,19 @@ describe("_applyPartialState", () => {
         const newState = _applyPartialState(clone(defaultState), partialState)
 
         expect(newState.mapState.invertArea).toBe(true)
-        expect(newState.appSettings.experimentalFeaturesEnabled).toBe(defaultState.appSettings.experimentalFeaturesEnabled)
+        expect(newState.preferences.experimentalFeaturesEnabled).toBe(defaultState.preferences.experimentalFeaturesEnabled)
     })
 
     it("should not update state property when a key does not exist", () => {
         const partialState = {
-            dynamicSettings: {
+            preferences: {
                 notValidKey: "doesn't exist"
             }
         }
 
         const newState = _applyPartialState(clone(defaultState), partialState)
 
-        expect(newState.dynamicSettings["notValidKey"]).toBeUndefined()
+        expect(newState.preferences["notValidKey"]).toBeUndefined()
     })
 
     it("should update partial state with objects that have dynamic keys ", () => {

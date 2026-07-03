@@ -172,7 +172,7 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutionScaling: number, maxWidth: number): SquarifiedTreeMap {
     const hierarchyNode = hierarchy(map)
     const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
-    const { experimentalFeaturesEnabled } = state.appSettings
+    const { experimentalFeaturesEnabled } = state.preferences
     const { enableFloorLabels, margin } = state.mapState
     const padding = margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling
 

@@ -26,7 +26,7 @@ export class StreetLayoutGenerator {
 
         const metricName = state.mapState.areaMetric
         const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
-        const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
+        const maxTreeMapFiles = state.preferences.maxTreeMapFiles
         const childBoxes = this.createBoxes(mergedMap, metricName, state, matcher, StreetOrientation.Vertical, 1, maxTreeMapFiles)
         const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
         rootStreet.calculateDimension(metricName)

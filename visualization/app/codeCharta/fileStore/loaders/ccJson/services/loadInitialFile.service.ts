@@ -71,11 +71,11 @@ export class LoadInitialFileService {
     private applySettingsAndFilesFromSavedState(savedFileStates: FileState[], savedCcState: CcState, savedNameDataPairs: NameDataPair[]) {
         const missingPropertiesInSavedCcState = []
 
-        if (!savedCcState.appSettings.resetCameraIfNewFileIsLoaded) {
+        if (!savedCcState.preferences.resetCameraIfNewFileIsLoaded) {
             this.loadInitialFileStore.dispatchResetCameraIfNewFileIsLoadedToFalse()
         }
-        const missingAppSettings = this.loadInitialFileStore.applyAppSettings(savedCcState.appSettings)
-        missingPropertiesInSavedCcState.push(...missingAppSettings)
+        const missingPreferences = this.loadInitialFileStore.applyPreferences(savedCcState.preferences)
+        missingPropertiesInSavedCcState.push(...missingPreferences)
         const missingMapState = this.loadInitialFileStore.applyMapState(savedCcState.mapState)
         missingPropertiesInSavedCcState.push(...missingMapState)
 
@@ -86,8 +86,6 @@ export class LoadInitialFileService {
         missingPropertiesInSavedCcState.push(...missingFileSettings)
         const missingMetricsLensSource = this.loadInitialFileStore.applyMetricsLensSource(savedCcState.metricsLensSource)
         missingPropertiesInSavedCcState.push(...missingMetricsLensSource)
-        const missingDynamicSettings = this.loadInitialFileStore.applyDynamicSettings(savedCcState.dynamicSettings)
-        missingPropertiesInSavedCcState.push(...missingDynamicSettings)
         const missingSharedView = this.loadInitialFileStore.applySharedView(savedCcState.sharedView)
         missingPropertiesInSavedCcState.push(...missingSharedView)
         if (missingPropertiesInSavedCcState.length > 0) {
@@ -143,9 +141,8 @@ export class LoadInitialFileService {
     private applyAllSettings(savedCcState: CcState) {
         const savedFileSettings = savedCcState.fileSettings
         const savedMetricsLensSource = savedCcState.metricsLensSource
-        const savedDynamicSettings = savedCcState.dynamicSettings
+        const savedPreferences = savedCcState.preferences
         const savedSharedView = savedCcState.sharedView
-        const savedAppSettings = savedCcState.appSettings
         const savedMapState = savedCcState.mapState
         const missingPropertiesInSavedCcState = []
         if (savedFileSettings) {
@@ -156,17 +153,13 @@ export class LoadInitialFileService {
             const missingMetricsLensSource = this.loadInitialFileStore.applyMetricsLensSource(savedMetricsLensSource)
             missingPropertiesInSavedCcState.push(...missingMetricsLensSource)
         }
-        if (savedDynamicSettings) {
-            const missingDynamicSettings = this.loadInitialFileStore.applyDynamicSettings(savedDynamicSettings)
-            missingPropertiesInSavedCcState.push(...missingDynamicSettings)
+        if (savedPreferences) {
+            const missingPreferences = this.loadInitialFileStore.applyPreferences(savedPreferences)
+            missingPropertiesInSavedCcState.push(...missingPreferences)
         }
         if (savedSharedView) {
             const missingSharedView = this.loadInitialFileStore.applySharedView(savedSharedView)
             missingPropertiesInSavedCcState.push(...missingSharedView)
-        }
-        if (savedAppSettings) {
-            const missingAppSettings = this.loadInitialFileStore.applyAppSettings(savedAppSettings)
-            missingPropertiesInSavedCcState.push(...missingAppSettings)
         }
         if (savedMapState) {
             const missingMapState = this.loadInitialFileStore.applyMapState(savedMapState)

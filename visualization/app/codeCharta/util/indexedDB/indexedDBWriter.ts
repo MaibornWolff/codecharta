@@ -2,10 +2,11 @@ import { CcState } from "app/codeCharta/codeCharta.model"
 import { defaultMapState } from "../../mapState/mapState.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.facade"
 import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
+import { defaultPreferences } from "../../preferences/preferences.facade"
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 10
+export const DB_VERSION = 11
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -272,6 +273,50 @@ export function migrateCcStateRecordToV10<T>(state: T): T {
     return next as T
 }
 
+// v11 (Slice 10b): the seven durable ex-appSettings prefs + the ex-dynamicSettings sortingOption moved
+// out of the appSettings/dynamicSettings grab-bags into a brand-new preferences root, and both now-empty
+// grab-bags are dropped. Like v6/v7 this CREATES a new root: an old (v10-shaped) blob has no preferences.
+// Build it fresh from defaultPreferences + the moved keys, so the rehydrate applier finds them under
+// preferences instead of silently reverting them to defaults — same silent-data-loss landmine the v3–v10
+// transforms close.
+const V11_PREFERENCE_KEYS_FROM_APPSETTINGS = [
+    "isPresentationMode",
+    "resetCameraIfNewFileIsLoaded",
+    "sortingOrderAscending",
+    "maxTreeMapFiles",
+    "experimentalFeaturesEnabled",
+    "screenshotToClipboardEnabled",
+    "isColorMetricLinkedToHeightMetric"
+]
+
+export function migrateCcStateRecordToV11<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const preferences: Record<string, unknown> = {
+        ...defaultPreferences,
+        ...((record["preferences"] as Record<string, unknown>) ?? {})
+    }
+    const next: Record<string, unknown> = { ...record }
+    const appSettings = record["appSettings"]
+    if (appSettings && typeof appSettings === "object") {
+        for (const key of V11_PREFERENCE_KEYS_FROM_APPSETTINGS) {
+            if (key in (appSettings as Record<string, unknown>)) {
+                preferences[key] = (appSettings as Record<string, unknown>)[key]
+            }
+        }
+    }
+    const dynamicSettings = record["dynamicSettings"]
+    if (dynamicSettings && typeof dynamicSettings === "object" && "sortingOption" in (dynamicSettings as Record<string, unknown>)) {
+        preferences["sortingOption"] = (dynamicSettings as Record<string, unknown>)["sortingOption"]
+    }
+    next["preferences"] = preferences
+    delete next["appSettings"]
+    delete next["dynamicSettings"]
+    return next as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -306,9 +351,10 @@ export async function openCodeChartaDB() {
             }
             // Existing DBs (oldVersion >= 1) may hold an older-shaped CcState blob; re-home its
             // map-view settings into mapState, its focus/search/blacklist/markedPackages into sharedView,
-            // its attributeTypes/attributeDescriptors into metricsLensSource, and its file-provenance
-            // flags (isLoadingFile/currentFilesAreSampleFiles) into their own top-level fileStore roots.
-            // Migrations chain: v2 blobs run v3→…→v10; a v9 blob runs only v10. A brand-new DB
+            // its attributeTypes/attributeDescriptors into metricsLensSource, its file-provenance flags
+            // (isLoadingFile/currentFilesAreSampleFiles) into their own top-level fileStore roots, and its
+            // durable prefs (appSettings + dynamicSettings.sortingOption) into a preferences root.
+            // Migrations chain: v2 blobs run v3→…→v11; a v10 blob runs only v11. A brand-new DB
             // (oldVersion 0) has no record to migrate.
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
@@ -338,6 +384,9 @@ export async function openCodeChartaDB() {
                     }
                     if (oldVersion < 10) {
                         migrated = migrateCcStateRecordToV10(migrated)
+                    }
+                    if (oldVersion < 11) {
+                        migrated = migrateCcStateRecordToV11(migrated)
                     }
                     await store.put({ ...record, state: migrated })
                 }

@@ -94,8 +94,8 @@ describe("codeMapMesh", () => {
             const buildings = mesh.getMeshDescription().buildings
             const ids = new Set([buildings[0].id])
 
-            const stateNormal: CcState = { ...STATE, appSettings: { ...STATE.appSettings, isPresentationMode: false } }
-            const statePresentation: CcState = { ...STATE, appSettings: { ...STATE.appSettings, isPresentationMode: true } }
+            const stateNormal: CcState = { ...STATE, preferences: { ...STATE.preferences, isPresentationMode: false } }
+            const statePresentation: CcState = { ...STATE, preferences: { ...STATE.preferences, isPresentationMode: true } }
 
             // First call with presentation mode off — establishes _prevHighlightedIds
             mesh.highlightBuilding(ids, buildings[0], null, stateNormal, new Map())
@@ -121,8 +121,8 @@ describe("codeMapMesh", () => {
             const buildings = mesh.getMeshDescription().buildings
             const ids = new Set([buildings[0].id])
 
-            const statePresentation: CcState = { ...STATE, appSettings: { ...STATE.appSettings, isPresentationMode: true } }
-            const stateNormal: CcState = { ...STATE, appSettings: { ...STATE.appSettings, isPresentationMode: false } }
+            const statePresentation: CcState = { ...STATE, preferences: { ...STATE.preferences, isPresentationMode: true } }
+            const stateNormal: CcState = { ...STATE, preferences: { ...STATE.preferences, isPresentationMode: false } }
 
             // First call in presentation mode
             mesh.highlightBuilding(ids, buildings[0], null, statePresentation, new Map())

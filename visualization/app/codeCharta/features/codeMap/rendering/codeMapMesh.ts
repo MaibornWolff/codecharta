@@ -133,7 +133,7 @@ export class CodeMapMesh {
         state: CcState,
         constantHighlight: Map<number, CodeMapBuilding>
     ) {
-        const { isPresentationMode } = state.appSettings
+        const { isPresentationMode } = state.preferences
         this.invalidateDiffCacheWhenPresentationModeChanged(isPresentationMode)
 
         const prev = this._prevHighlightedIds

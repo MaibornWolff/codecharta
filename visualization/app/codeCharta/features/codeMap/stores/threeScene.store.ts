@@ -18,8 +18,8 @@ export class ThreeSceneStore {
         return this.state.getValue()
     }
 
-    getAppSettings() {
-        return this.state.getValue().appSettings
+    getPreferences() {
+        return this.state.getValue().preferences
     }
 
     getMapState() {

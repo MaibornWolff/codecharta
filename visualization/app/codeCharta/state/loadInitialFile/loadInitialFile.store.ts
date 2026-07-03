@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { AppSettings, CcState, DynamicSettings, FileSettings, MapState, MetricsLensSource, SharedView } from "../../codeCharta.model"
+import { CcState, FileSettings, MapState, MetricsLensSource, Preferences, SharedView } from "../../codeCharta.model"
 import { FileState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
 import { metricDataSelector } from "../selectors/accumulatedData/metricData/metricData.selector"
@@ -39,15 +39,17 @@ import { setBlacklist } from "../../sharedView/sharedView.facade"
 import { setEdges } from "../store/fileSettings/edges/edges.actions"
 import { setMarkedPackages } from "../../sharedView/sharedView.facade"
 import { setAreaMetric, setHeightMetric, setEdgeMetric, setColorMetric, setDistributionMetric } from "../../mapState/mapState.facade"
-import { setSortingOption } from "../../preferences/preferences.facade"
+import {
+    setSortingOption,
+    setPresentationMode,
+    setResetCameraIfNewFileIsLoaded,
+    setMaxTreeMapFiles,
+    setExperimentalFeaturesEnabled,
+    setScreenshotToClipboardEnabled,
+    setIsColorMetricLinkedToHeightMetricAction
+} from "../../preferences/preferences.facade"
 import { setAllFocusedNodes } from "../../sharedView/sharedView.facade"
 import { setSearchPattern } from "../../sharedView/sharedView.facade"
-import { setPresentationMode } from "../../preferences/preferences.facade"
-import { setResetCameraIfNewFileIsLoaded } from "../../preferences/preferences.facade"
-import { setMaxTreeMapFiles } from "../../preferences/preferences.facade"
-import { setExperimentalFeaturesEnabled } from "../../preferences/preferences.facade"
-import { setScreenshotToClipboardEnabled } from "../../preferences/preferences.facade"
-import { setIsColorMetricLinkedToHeightMetricAction } from "../../preferences/preferences.facade"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {
@@ -87,21 +89,21 @@ export class LoadInitialFileStore {
         return missingFileSettings
     }
 
-    applyDynamicSettings(savedDynamicSettings: DynamicSettings) {
-        const currentDynamicSettings = (this.state.getValue() as CcState).dynamicSettings
-        const missingDynamicSettings = []
-        for (const [key, value] of Object.entries(currentDynamicSettings)) {
-            if (key in savedDynamicSettings) {
+    applyPreferences(savedPreferences: Preferences) {
+        const currentPreferences = (this.state.getValue() as CcState).preferences
+        const missingPreferences = []
+        for (const [key, value] of Object.entries(currentPreferences)) {
+            if (key in savedPreferences) {
                 const currentValue = stringify(value)
-                const loadedValue = stringify(savedDynamicSettings[key])
+                const loadedValue = stringify(savedPreferences[key])
                 if (currentValue !== loadedValue) {
-                    this.mapDynamicSettingToAction(key as keyof DynamicSettings, savedDynamicSettings[key])
+                    this.mapPreferenceToAction(key as keyof Preferences, savedPreferences[key])
                 }
             } else {
-                missingDynamicSettings.push(key)
+                missingPreferences.push(key)
             }
         }
-        return missingDynamicSettings
+        return missingPreferences
     }
 
     applyMetricsLensSource(savedMetricsLensSource: MetricsLensSource) {
@@ -136,23 +138,6 @@ export class LoadInitialFileStore {
             }
         }
         return missingSharedView
-    }
-
-    applyAppSettings(savedAppSettings: AppSettings) {
-        const currentAppSettings = (this.state.getValue() as CcState).appSettings
-        const missingAppSettings = []
-        for (const [key, value] of Object.entries(currentAppSettings)) {
-            if (key in savedAppSettings) {
-                const currentValue = stringify(value)
-                const loadedValue = stringify(savedAppSettings[key])
-                if (currentValue !== loadedValue) {
-                    this.mapAppSettingToAction(key as keyof AppSettings, savedAppSettings[key])
-                }
-            } else {
-                missingAppSettings.push(key)
-            }
-        }
-        return missingAppSettings
     }
 
     applyMapState(savedMapState: MapState) {
@@ -229,17 +214,6 @@ export class LoadInitialFileStore {
         }
     }
 
-    private mapDynamicSettingToAction(key: keyof DynamicSettings, value: any) {
-        switch (key) {
-            case "sortingOption":
-                this.store.dispatch(setSortingOption({ value }))
-                break
-            default: {
-                throw new Error(`Unhandled key: ${key}`)
-            }
-        }
-    }
-
     private mapSharedViewToAction(key: keyof SharedView, value: any) {
         switch (key) {
             case "focusedNodePath":
@@ -260,7 +234,7 @@ export class LoadInitialFileStore {
         }
     }
 
-    private mapAppSettingToAction(key: keyof AppSettings, value: any) {
+    private mapPreferenceToAction(key: keyof Preferences, value: any) {
         switch (key) {
             case "isPresentationMode":
                 this.store.dispatch(setPresentationMode({ value }))
@@ -282,6 +256,9 @@ export class LoadInitialFileStore {
                 break
             case "isColorMetricLinkedToHeightMetric":
                 this.store.dispatch(setIsColorMetricLinkedToHeightMetricAction({ value }))
+                break
+            case "sortingOption":
+                this.store.dispatch(setSortingOption({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

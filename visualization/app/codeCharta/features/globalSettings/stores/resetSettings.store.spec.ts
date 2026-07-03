@@ -67,7 +67,7 @@ describe("ResetSettingsStore", () => {
 
         it("should dispatch setState action with partial default state for multiple settings", async () => {
             // Arrange
-            const settingsKeys = ["mapState.hideFlatBuildings", "appSettings.experimentalFeaturesEnabled"]
+            const settingsKeys = ["mapState.hideFlatBuildings", "preferences.experimentalFeaturesEnabled"]
 
             // Act
             store.resetSettings(settingsKeys)
@@ -79,15 +79,15 @@ describe("ResetSettingsStore", () => {
                 mapState: {
                     hideFlatBuildings: defaultState.mapState.hideFlatBuildings
                 },
-                appSettings: {
-                    experimentalFeaturesEnabled: defaultState.appSettings.experimentalFeaturesEnabled
+                preferences: {
+                    experimentalFeaturesEnabled: defaultState.preferences.experimentalFeaturesEnabled
                 }
             })
         })
 
         it("should call State.getValue to get current state", () => {
             // Arrange
-            const settingsKeys = ["appSettings.resetCameraIfNewFileIsLoaded"]
+            const settingsKeys = ["preferences.resetCameraIfNewFileIsLoaded"]
 
             // Act
             store.resetSettings(settingsKeys)

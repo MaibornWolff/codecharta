@@ -9,7 +9,7 @@ describe("CodeMapTooltipService", () => {
 
     beforeEach(() => {
         const codeMapTooltipStore = {
-            getDynamicSettings: () => defaultState.dynamicSettings
+            getDynamicSettings: () => defaultState.preferences
         } as unknown as CodeMapTooltipStore
         tooltipService = new CodeMapTooltipService(codeMapTooltipStore)
 

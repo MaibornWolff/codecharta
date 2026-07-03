@@ -112,7 +112,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     sortVisibleNodesByHeightDescending(nodes: Node[]) {
-        const experimentalFeaturesEnabled = this.codeMapRenderStore.getState().appSettings.experimentalFeaturesEnabled
+        const experimentalFeaturesEnabled = this.codeMapRenderStore.getState().preferences.experimentalFeaturesEnabled
         if (experimentalFeaturesEnabled) {
             this.setMinBuildingLength(nodes)
             return nodes.filter(node => node.visible && node.width > 0).sort((a, b) => b.height - a.height)

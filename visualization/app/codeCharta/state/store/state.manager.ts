@@ -1,6 +1,5 @@
-import { appSettings, defaultAppSettings } from "./appSettings/appSettings.reducer"
 import { defaultFileSettings, fileSettings } from "./fileSettings/fileSettings.reducer"
-import { defaultDynamicSettings, dynamicSettings } from "./dynamicSettings/dynamicSettings.reducer"
+import { defaultPreferences, preferences } from "../../preferences/preferences.facade"
 import { defaultFiles, files } from "../../fileStore/store/files.reducer"
 import { defaultIsLoadingFile, isLoadingFile } from "../../fileStore/store/isLoadingFile/isLoadingFile.reducer"
 import {
@@ -17,10 +16,9 @@ import { isSetStateAction } from "./state.actions"
 export const appReducers = {
     fileSettings,
     metricsLensSource,
-    appSettings,
+    preferences,
     mapState,
     sharedView,
-    dynamicSettings,
     files,
     isLoadingFile,
     currentFilesAreSampleFiles
@@ -28,10 +26,9 @@ export const appReducers = {
 export const defaultState: CcState = {
     fileSettings: defaultFileSettings,
     metricsLensSource: defaultMetricsLensSource,
-    appSettings: defaultAppSettings,
+    preferences: defaultPreferences,
     mapState: defaultMapState,
     sharedView: defaultSharedView,
-    dynamicSettings: defaultDynamicSettings,
     files: defaultFiles,
     isLoadingFile: defaultIsLoadingFile,
     currentFilesAreSampleFiles: defaultCurrentFilesAreSampleFiles

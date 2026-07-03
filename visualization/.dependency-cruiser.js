@@ -221,8 +221,8 @@ module.exports = {
             name: "state-home-is-leaf",
             severity: "error",
             comment:
-                "State-home modules — mapState is the map-view state home (colors, labels, scaling, axis inversion, edge visibility, plus the Slice-6 presentation stragglers colorMode/colorRange/margin/layoutAlgorithm and the transient interaction ids), sharedView is the cross-renderer view-state home (focus + search) — are a leaf. They must not import lenses, renderers or shell; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store (legacy state/ stays a transitional read while the state/ split completes). Flipped to error for mapState in Slice 6 and for sharedView in Slice 8; extends to preferences as that home lands (Slice 10).",
-            from: { path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/"] },
+                "State-home modules — mapState is the map-view state home (colors, labels, scaling, axis inversion, edge visibility, plus the Slice-6 presentation stragglers colorMode/colorRange/margin/layoutAlgorithm and the transient interaction ids), sharedView is the cross-renderer view-state home (focus + search + blacklist + markedPackages), preferences is the durable global-preferences home (Slice 10) — are a leaf. They must not import lenses, renderers or shell; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store (legacy state/ stays a transitional read while the state/ split completes). Flipped to error for mapState in Slice 6, sharedView in Slice 8 and preferences in Slice 10b.",
+            from: { path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/", "^app/codeCharta/preferences/"] },
             to: {
                 path: ["^app/codeCharta/lenses/", "^app/codeCharta/renderers/", "^app/codeCharta/shell/"]
             }
@@ -231,10 +231,15 @@ module.exports = {
             name: "state-home-only-stores-import-ngrx",
             severity: "error",
             comment:
-                "Only a state-home's store/ folder may import @ngrx/store — the home's public facade is a barrel of re-exports and its consumers reach it through selectors/actions, never by importing ngrx from home code outside store/. Flipped to error for mapState in Slice 6 and for sharedView in Slice 8; extends to preferences as that home lands.",
+                "Only a state-home's store/ folder may import @ngrx/store — the home's public facade is a barrel of re-exports and its consumers reach it through selectors/actions, never by importing ngrx from home code outside store/. Flipped to error for mapState in Slice 6, sharedView in Slice 8 and preferences in Slice 10b.",
             from: {
-                path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/"],
-                pathNot: ["^app/codeCharta/mapState/store/", "^app/codeCharta/sharedView/store/", "\\.spec\\.ts$"]
+                path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/", "^app/codeCharta/preferences/"],
+                pathNot: [
+                    "^app/codeCharta/mapState/store/",
+                    "^app/codeCharta/sharedView/store/",
+                    "^app/codeCharta/preferences/store/",
+                    "\\.spec\\.ts$"
+                ]
             },
             to: { path: "@ngrx/store" }
         },

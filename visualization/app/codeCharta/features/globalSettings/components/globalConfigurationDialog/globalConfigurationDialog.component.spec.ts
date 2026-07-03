@@ -11,7 +11,7 @@ import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibi
 import { AutomaticCameraResetService } from "../../services/automaticCameraReset.service"
 import { LoadFileService } from "../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
-import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
+import { defaultPreferences } from "../../../../preferences/preferences.facade"
 import { defaultMapState } from "../../../../mapState/mapState.facade"
 
 describe("GlobalConfigurationDialogComponent", () => {
@@ -51,14 +51,14 @@ describe("GlobalConfigurationDialogComponent", () => {
         }
 
         mockState = {
-            getValue: jest.fn().mockReturnValue({ appSettings: defaultAppSettings, mapState: defaultMapState })
+            getValue: jest.fn().mockReturnValue({ preferences: defaultPreferences, mapState: defaultMapState })
         }
 
         TestBed.configureTestingModule({
             imports: [GlobalConfigurationDialogComponent],
             providers: [
                 provideMockStore({
-                    initialState: { appSettings: defaultAppSettings, mapState: defaultMapState }
+                    initialState: { preferences: defaultPreferences, mapState: defaultMapState }
                 }),
                 { provide: State, useValue: mockState },
                 { provide: ScreenshotDestinationService, useValue: mockScreenshotDestinationService },
