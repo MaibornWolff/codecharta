@@ -3,7 +3,7 @@ import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { mapColorsSelector } from "../../../mapState/mapState.read.facade"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
-import { setSelectedBuildingId } from "../../../mapState/mapState.write.facade"
+import { setSelectedBuildingId } from "../../../sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class ThreeSceneStore {

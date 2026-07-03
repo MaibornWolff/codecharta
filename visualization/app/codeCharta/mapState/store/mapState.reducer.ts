@@ -5,9 +5,6 @@ import { colorRange, defaultColorRange } from "./colorRange/colorRange.reducer"
 import { defaultMargin, margin } from "./margin/margin.reducer"
 import { defaultLayoutAlgorithm, layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
 import { defaultIsLoadingMap, isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
-import { defaultHoveredNodeId, hoveredNodeId } from "./hoveredNodeId/hoveredNodeId.reducer"
-import { defaultRightClickedNodeData, rightClickedNodeData } from "./rightClickedNodeData/rightClickedNodeData.reducer"
-import { defaultSelectedBuildingId, selectedBuildingId } from "./selectedBuildingId/selectedBuildingId.reducer"
 import { amountOfEdgePreviews, defaultAmountOfEdgesPreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.reducer"
 import { amountOfTopLabels, defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.reducer"
 import { colorLabels, defaultColorLabelOptions } from "./colorLabels/colorLabels.reducer"
@@ -28,7 +25,10 @@ import { defaultShowIncomingEdges, showIncomingEdges } from "./showEdges/incomin
 import { defaultShowOutgoingEdges, showOutgoingEdges } from "./showEdges/outgoing/showOutgoingEdges.reducer"
 import { defaultShowMetricLabelNameValue, showMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.reducer"
 import { defaultShowMetricLabelNodeName, showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
-import { defaultShowOnlyBuildingsWithEdges, showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
+import {
+    defaultShowOnlyBuildingsWithEdges,
+    showOnlyBuildingsWithEdges
+} from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
 import { areaMetric, defaultAreaMetric } from "./areaMetric/areaMetric.reducer"
 import { defaultHeightMetric, heightMetric } from "./heightMetric/heightMetric.reducer"
 import { colorMetric, defaultColorMetric } from "./colorMetric/colorMetric.reducer"
@@ -62,9 +62,6 @@ export const mapState = combineReducers({
     margin,
     layoutAlgorithm,
     isLoadingMap,
-    hoveredNodeId,
-    selectedBuildingId,
-    rightClickedNodeData,
     areaMetric,
     heightMetric,
     colorMetric,
@@ -99,9 +96,6 @@ export const defaultMapState: MapState = {
     margin: defaultMargin,
     layoutAlgorithm: defaultLayoutAlgorithm,
     isLoadingMap: defaultIsLoadingMap,
-    hoveredNodeId: defaultHoveredNodeId,
-    selectedBuildingId: defaultSelectedBuildingId,
-    rightClickedNodeData: defaultRightClickedNodeData,
     areaMetric: defaultAreaMetric,
     heightMetric: defaultHeightMetric,
     colorMetric: defaultColorMetric,

@@ -25,6 +25,7 @@ import {
     migrateCcStateRecordToV11,
     migrateCcStateRecordToV12,
     migrateCcStateRecordToV13,
+    migrateCcStateRecordToV14,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -519,7 +520,29 @@ describe("migrateCcStateRecordToV13 (Slice 14 edge-attributeTypes split transfor
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 transforms)", () => {
+describe("migrateCcStateRecordToV14 (Slice 14e-1 re-home transform)", () => {
+    it("should move the interaction ids out of mapState into sharedView, nulled", () => {
+        const migrated = migrateCcStateRecordToV14({
+            mapState: { hoveredNodeId: 7, selectedBuildingId: 3, rightClickedNodeData: { nodeId: 9 }, scaling: 1 },
+            sharedView: { blacklist: [] }
+        }) as unknown as { mapState: Record<string, unknown>; sharedView: Record<string, unknown> }
+
+        expect(migrated.sharedView.hoveredNodeId).toBeNull()
+        expect(migrated.sharedView.selectedBuildingId).toBeNull()
+        expect(migrated.sharedView.rightClickedNodeData).toBeNull()
+        expect("hoveredNodeId" in migrated.mapState).toBe(false)
+        expect("selectedBuildingId" in migrated.mapState).toBe(false)
+        expect("rightClickedNodeData" in migrated.mapState).toBe(false)
+        expect(migrated.mapState.scaling).toBe(1)
+        expect(migrated.sharedView.blacklist).toEqual([])
+    })
+
+    it("should return the record untouched when it is null", () => {
+        expect(migrateCcStateRecordToV14(null)).toBeNull()
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -577,7 +600,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v13, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9, v10, v11, v12 then v13 upgrade transforms.
+        // openCodeChartaDB (v14, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13 then v14 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings?: Record<string, unknown>
             dynamicSettings?: Record<string, unknown>
@@ -596,10 +619,10 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         expect(migratedState.mapState.invertHeight).toBe(true)
         expect(migratedState.mapState.amountOfTopLabels).toBe(7)
         expect(migratedState.mapState.layoutAlgorithm).toBe(LayoutAlgorithm.StreetMap)
-        // v4 re-home (stragglers out of dynamicSettings + interaction ids out of appStatus)
+        // v4 re-home (stragglers out of dynamicSettings; the interaction id v4 pulled out of appStatus is
+        // relocated again by v14 below)
         expect(migratedState.mapState.colorMode).toBe(ColorMode.absolute)
         expect(migratedState.mapState.margin).toBe(42)
-        expect(migratedState.mapState.hoveredNodeId).toBe(5)
         // v5 re-home (metric selection out of dynamicSettings)
         expect(migratedState.mapState.areaMetric).toBe("rloc")
         // v6 re-home (focus/search out of dynamicSettings into a brand-new sharedView root)
@@ -631,6 +654,13 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         // v13 edge-attributeTypes split (edge side out of metricsLensSource into a brand-new dependencyLensSource root)
         expect(migratedState.dependencyLensSource.attributeTypes).toEqual({ nodes: {}, edges: {} })
         expect(migratedState.metricsLensSource.attributeTypes).toEqual({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} })
+        // v14 re-home (interaction ids move mapState → sharedView, nulled — never restored from a stale ordinal)
+        expect("hoveredNodeId" in migratedState.mapState).toBe(false)
+        expect("selectedBuildingId" in migratedState.mapState).toBe(false)
+        expect("rightClickedNodeData" in migratedState.mapState).toBe(false)
+        expect(migratedState.sharedView.hoveredNodeId).toBeNull()
+        expect(migratedState.sharedView.selectedBuildingId).toBeNull()
+        expect(migratedState.sharedView.rightClickedNodeData).toBeNull()
     })
 })
 

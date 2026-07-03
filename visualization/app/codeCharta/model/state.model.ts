@@ -57,20 +57,29 @@ export interface Preferences {
 // Slice 9b pulled the blacklist and Slice 9c the markedPackages out of fileSettings (both scope what
 // every renderer shows/highlights, so they are shared view state, not cc.json source). The .cc.json file
 // still carries blacklist + markedPackages per-file, so CCFile keeps them (see the intersection on
-// CCFile.settings.fileSettings); only the merged STATE root moves here. A later slice grows it further
-// (the renderer-agnostic selected-node id in 13).
+// CCFile.settings.fileSettings); only the merged STATE root moves here. Slice 14e-1 grew it further with
+// the renderer-agnostic interaction ids (hoveredNodeId/selectedBuildingId/rightClickedNodeData) — they
+// scope what every renderer highlights, so they are shared view state (14e-2 re-expresses them as PATH ids).
 export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string
     blacklist: BlacklistItem[]
     markedPackages: MarkedPackage[]
+    hoveredNodeId: number | null
+    selectedBuildingId: number | null
+    rightClickedNodeData: {
+        nodeId: number
+        xPositionOfRightClickEvent: number
+        yPositionOfRightClickEvent: number
+        origin: "codeMap" | "explorer"
+    } | null
 }
 
 // The map-view state home (Slice 5+6+7): the purely-visual leaf settings that were
 // previously combined under appSettings/dynamicSettings/appStatus now live under
 // their own state.mapState root. Slice 6 absorbed the presentation stragglers
-// (colorMode/colorRange/margin, layoutAlgorithm/isLoadingMap) and the transient
-// interaction ids (hoveredNodeId/rightClickedNodeData/selectedBuildingId). Slice 7
+// (colorMode/colorRange/margin, layoutAlgorithm/isLoadingMap). The transient interaction
+// ids it also absorbed moved on to sharedView in Slice 14e-1. Slice 7
 // absorbed the metric SELECTION (the PrimaryMetrics area/height/color/edge + the
 // distributionMetric) — the map view's choice of which metric drives each channel.
 export interface MapState extends PrimaryMetrics {
@@ -101,14 +110,6 @@ export interface MapState extends PrimaryMetrics {
     margin: number
     layoutAlgorithm: LayoutAlgorithm
     isLoadingMap: boolean
-    hoveredNodeId: number | null
-    selectedBuildingId: number | null
-    rightClickedNodeData: {
-        nodeId: number
-        xPositionOfRightClickEvent: number
-        yPositionOfRightClickEvent: number
-        origin: "codeMap" | "explorer"
-    } | null
 }
 
 export interface CcState {

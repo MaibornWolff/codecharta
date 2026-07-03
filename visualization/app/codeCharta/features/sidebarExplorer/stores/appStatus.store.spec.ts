@@ -1,11 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { AppStatusStore } from "./appStatus.store"
-import { hoveredNodeIdSelector } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.selector"
-import { rightClickedNodeDataSelector } from "../../../mapState/store/rightClickedNodeData/rightClickedNodeData.selector"
-import { selectedBuildingIdSelector } from "../../../mapState/store/selectedBuildingId/selectedBuildingId.selector"
-import { setHoveredNodeId } from "../../../mapState/mapState.write.facade"
-import { setRightClickedNodeData } from "../../../mapState/mapState.write.facade"
+import { hoveredNodeIdSelector } from "../../../sharedView/store/hoveredNodeId/hoveredNodeId.selector"
+import { rightClickedNodeDataSelector } from "../../../sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
+import { selectedBuildingIdSelector } from "../../../sharedView/store/selectedBuildingId/selectedBuildingId.selector"
+import { setHoveredNodeId, setRightClickedNodeData } from "../../../sharedView/sharedView.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("AppStatusStore", () => {

@@ -51,7 +51,10 @@ describe("FileExtensionBarSegment", () => {
             focusedNodePath: [],
             searchPattern: "",
             blacklist: [],
-            markedPackages: []
+            markedPackages: [],
+            hoveredNodeId: null,
+            selectedBuildingId: null,
+            rightClickedNodeData: null
         }
     }
     const mockItem: MetricDistribution = {

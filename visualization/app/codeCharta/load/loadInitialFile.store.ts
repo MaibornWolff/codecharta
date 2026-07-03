@@ -66,10 +66,12 @@ import {
 export class LoadInitialFileStore {
     private static readonly optionalMapStateKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
 
-    // runtime-only map flag + transient interaction ids; never restored from a previous session's
-    // persisted state (appStatus was never applied on load).
-    private static readonly ignoredMapStateKeys = new Set<keyof MapState>([
-        "isLoadingMap",
+    // runtime-only map flag; never restored from a previous session's persisted state.
+    private static readonly ignoredMapStateKeys = new Set<keyof MapState>(["isLoadingMap"])
+
+    // transient interaction ids (Slice 14e-1 moved them mapState → sharedView); never restored from a
+    // previous session's persisted state — the mapState applier no-op'd them before, sharedView must too.
+    private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
         "hoveredNodeId",
         "selectedBuildingId",
         "rightClickedNodeData"
@@ -257,6 +259,9 @@ export class LoadInitialFileStore {
     }
 
     private mapSharedViewToAction(key: keyof SharedView, value: any) {
+        if (LoadInitialFileStore.ignoredSharedViewKeys.has(key)) {
+            return
+        }
         switch (key) {
             case "focusedNodePath":
                 this.store.dispatch(setAllFocusedNodes({ value }))

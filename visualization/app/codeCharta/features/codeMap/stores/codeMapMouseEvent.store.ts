@@ -2,10 +2,9 @@ import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
-import { hoveredNodeIdSelector } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.selector"
+import { blacklistSelector, hoveredNodeIdSelector } from "../../../sharedView/sharedView.read.facade"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
-import { setHoveredNodeId, setRightClickedNodeData } from "../../../mapState/mapState.write.facade"
+import { setHoveredNodeId, setRightClickedNodeData } from "../../../sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapMouseEventStore {
@@ -30,7 +29,7 @@ export class CodeMapMouseEventStore {
         this.store.dispatch(setHoveredNodeId({ value }))
     }
 
-    setRightClickedNodeData(value: CcState["mapState"]["rightClickedNodeData"]) {
+    setRightClickedNodeData(value: CcState["sharedView"]["rightClickedNodeData"]) {
         this.store.dispatch(setRightClickedNodeData({ value }))
     }
 }

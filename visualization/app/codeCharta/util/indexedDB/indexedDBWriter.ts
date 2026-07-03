@@ -7,7 +7,7 @@ import { defaultPreferences, defaultSorting } from "../../preferences/preference
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 13
+export const DB_VERSION = 14
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -375,6 +375,34 @@ export function migrateCcStateRecordToV13<T>(state: T): T {
     return next as T
 }
 
+// v14 (Slice 14e-1): the three transient interaction ids (hoveredNodeId/selectedBuildingId/
+// rightClickedNodeData) move out of mapState into the sharedView root — renderer-agnostic view state.
+// Like v8/v9 the sharedView root already exists, so MERGE into it; but the persisted values are
+// decoration-time ordinals that never survive a re-decoration (14e-2 re-expresses the id as a PATH), so
+// seed all three as NULL rather than carrying a stale number, and trim them off mapState — same
+// silent-data-loss landmine the v3–v13 transforms close.
+export function migrateCcStateRecordToV14<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const sharedView: Record<string, unknown> = { ...defaultSharedView, ...(record["sharedView"] as Record<string, unknown>) }
+    const next: Record<string, unknown> = { ...record }
+    const mapState = record["mapState"]
+    if (mapState && typeof mapState === "object") {
+        const trimmed = { ...(mapState as Record<string, unknown>) }
+        delete trimmed["hoveredNodeId"]
+        delete trimmed["selectedBuildingId"]
+        delete trimmed["rightClickedNodeData"]
+        next["mapState"] = trimmed
+    }
+    sharedView["hoveredNodeId"] = null
+    sharedView["selectedBuildingId"] = null
+    sharedView["rightClickedNodeData"] = null
+    next["sharedView"] = sharedView
+    return next as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -400,7 +428,7 @@ export async function deleteCcState() {
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
 // (v(N-1))-shaped blob into vN. A blob written at oldVersion runs every transform whose target version it
-// predates, in ascending order (a v2 blob runs v3→…→v13; a v12 blob runs only v13).
+// predates, in ascending order (a v2 blob runs v3→…→v14; a v13 blob runs only v14).
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -412,7 +440,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 10, migrate: migrateCcStateRecordToV10 },
     { version: 11, migrate: migrateCcStateRecordToV11 },
     { version: 12, migrate: migrateCcStateRecordToV12 },
-    { version: 13, migrate: migrateCcStateRecordToV13 }
+    { version: 13, migrate: migrateCcStateRecordToV13 },
+    { version: 14, migrate: migrateCcStateRecordToV14 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {
@@ -439,9 +468,11 @@ export async function openCodeChartaDB() {
             // its attributeTypes/attributeDescriptors into metricsLensSource, its file-provenance flags
             // (isLoadingFile/currentFilesAreSampleFiles) into their own top-level fileStore roots, and its
             // durable prefs (appSettings + dynamicSettings.sortingOption) into a preferences root,
-            // merge its two sort prefs into preferences.sorting, and split the edge attributeTypes out of
-            // metricsLensSource into a new dependencyLensSource root. Migrations chain: v2 blobs run
-            // v3→…→v13; a v12 blob runs only v13. A brand-new DB (oldVersion 0) has no record to migrate.
+            // merge its two sort prefs into preferences.sorting, split the edge attributeTypes out of
+            // metricsLensSource into a new dependencyLensSource root, and move the interaction ids
+            // (hoveredNodeId/selectedBuildingId/rightClickedNodeData) from mapState into sharedView.
+            // Migrations chain: v2 blobs run v3→…→v14; a v13 blob runs only v14. A brand-new DB
+            // (oldVersion 0) has no record to migrate.
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)

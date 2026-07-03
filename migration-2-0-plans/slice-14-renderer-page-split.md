@@ -76,8 +76,23 @@ merges into 14d.
 | **14b** | Name the `RendererEngine` seam (`load·highlight·settings` + `onSelect$/onHover$`) wrapping the existing render/scene services — contract-only, files stay put (DoD #8) | low, structural | render snapshots zero-diff | yes |
 | ~~14c~~ | ~~relocate `attributeTypes`~~ **RETIRED** — attributeTypes stay lens-owned (ADR 12); the CF#1 break is relayering, folded into 14d | — | — | — |
 | **14d** ✅ | Relayer `accumulatedData`/aggregation above the lenses (breaks CF#1) + composing-layer `valueOf(id)` + extract the **structure lens** (tree; `idToNode` ownership → 14e) | high | parity tests + zero snapshot | review-gated (done) |
-| **14e** | renderer-agnostic id (PATH) → **sharedView**, selection promotion (+ optional survives-reload) | high/XL | parity + **user e2e + manual smoke** (hover/select not snapshot-covered) | needs user smoke |
+| **14e-1** | promote `hoveredNodeId`/`selectedBuildingId`/`rightClickedNodeData` `state.mapState → state.sharedView`, **keeping them number-typed** (pure home-move, mirrors Slice 8/9) | med | snapshots zero-diff + dep-cruiser | **yes** (snapshot-verifiable) |
+| **14e-2** | retype those ids ordinal `number → PATH string`; set-sites emit `node.path`, read-sites resolve via a new `pathToNode` / `getBuildingByPath`; reconcile `IdToBuildingService` + `arrow.service`; v14 nulls the moved ids | high | parity + snapshots + **e2e + screenshot smoke** | yes (I run e2e + screenshot) |
+| **14e-3** | NodeDecorator id/metric split + promote `idToNode`/`valueOf` onto the structure/metrics lenses (owns the CF#1 cycle) | high/XL | parity + snapshots | later |
 | later | Graph/LSM renderer + `graphState` + physical `renderers/` move + engine settings-inversion + `renderer-engine-stays-dumb`/`page-uses-engine-public-api` → error | XL | needs renderer #2 | separate slice |
+
+**14e decomposition (scoped 2026-07-03 by a 4-area investigation — full map in the session).** Load-bearing facts:
+`node.path` is assigned once at load (`decorateMapWithPathAttribute`, `fileParser.ts:91`) and is stable across
+blacklist/mergeFolderChain/reload, so a PATH id needs no NodeDecorator change for the *selection* move — only 14e-3
+(lens-owned decoration-independent `idToNode`) needs the id/metric split. **Two id-spaces coincide today and must
+NOT be conflated:** the state-facing node id (→ PATH) vs the mesh instance index `building.id` (stays a `number` — it
+is the `InstancedMesh` color-buffer offset, `setInstanceColor(building.id)`/`selected.id * NUMBER_OF_COLOR_FIELDS`).
+The renderer already re-resolves selection by path (`threeSceneService.remapSelectedBuilding → getBuildingByPath`),
+so the render side of 14e-2 is nearly free — the coupling to fix is `IdToBuildingService` (ordinal-keyed mesh map) +
+`arrow.service.ts:26` (feeds the raw state id into it). **Top reshape hazard (14e-1):** `applySharedView`/
+`mapSharedViewToAction` have NO ignore mechanism, but `ignoredMapStateKeys` makes these 3 keys no-op on load — so
+14e-1 MUST add an `ignoredSharedViewKeys` guard or load would start restoring transient ids (a regression).
+`scenarioApplier` needs no change (it never references these keys); `state.manager` already registers both roots.
 
 ## Steps
 - [x] 14a: author `lens-no-view-state` at error (0 violations)
@@ -113,8 +128,14 @@ merges into 14d.
   **`idToNode` ownership → structure lens** — same PATH-id prerequisite. The `accumulatedData → metrics.facade`
   read is kept: it is a legal DOWNWARD edge, not part of any cycle (the cycle is broken by `valueOf` living above
   the lenses, not by removing that edge).
-- [ ] 14e: renderer-agnostic PATH id → sharedView + selection promotion; promote `valueOf`/`idToNode` onto the
-  structure/metrics lenses; NodeDecorator id/metric split (behavioral; user e2e + manual smoke)
+- [x] 14e-1 **DONE (2026-07-03)**: promoted the 3 interaction ids `mapState → sharedView`, number-typed (git-mv the 3
+  store folders, reducer rewire, CQRS facade export move, selector root repoint, `ignoredSharedViewKeys` guard preserving
+  no-op-on-load, dataMocks + specs, IndexedDB v13→v14 `migrateCcStateRecordToV14` nulling the moved ids). Structural,
+  behavior-preserving: tsc (root, incl specs) + full suite (2317 tests, **45/45 snapshots zero-diff**) + dep-cruiser 0
+  errors. Adversarial review: 1 defect (2 missed `SharedView` inline mocks) found + fixed. `building.id` mesh index untouched.
+- [ ] 14e-2: retype ordinal `number → PATH string` (set-sites → `node.path`, read-sites → `pathToNode`/`getBuildingByPath`,
+  reconcile `IdToBuildingService`/`arrow.service`, v14 nulls the moved ids). Behavioral; I run e2e + attempt screenshot smoke.
+- [ ] 14e-3 (later): NodeDecorator id/metric split; promote `valueOf`/`idToNode` onto the structure/metrics lenses.
 
 ## dep-cruiser rules
 - `lens-no-view-state` — **added at error in 14a** (lenses must not import mapState/sharedView/preferences;

@@ -2158,7 +2158,10 @@ export const STATE: CcState = {
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
         blacklist: [],
-        markedPackages: []
+        markedPackages: [],
+        hoveredNodeId: null,
+        selectedBuildingId: null,
+        rightClickedNodeData: null
     },
     preferences: {
         isColorMetricLinkedToHeightMetric: false,
@@ -2220,10 +2223,7 @@ export const STATE: CcState = {
         },
         colorMode: ColorMode.weightedGradient,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        isLoadingMap: true,
-        hoveredNodeId: null,
-        selectedBuildingId: null,
-        rightClickedNodeData: null
+        isLoadingMap: true
     },
     files: [],
     isLoadingFile: true,
@@ -2291,16 +2291,16 @@ export const DEFAULT_STATE: CcState = {
         },
         colorMode: ColorMode.weightedGradient,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        isLoadingMap: true,
-        hoveredNodeId: null,
-        selectedBuildingId: null,
-        rightClickedNodeData: null
+        isLoadingMap: true
     },
     sharedView: {
         focusedNodePath: [],
         searchPattern: "",
         blacklist: [],
-        markedPackages: []
+        markedPackages: [],
+        hoveredNodeId: null,
+        selectedBuildingId: null,
+        rightClickedNodeData: null
     },
     fileSettings: {
         edges: []
