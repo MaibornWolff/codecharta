@@ -283,9 +283,9 @@ module.exports = {
         },
         {
             name: "lens-owns-ccjson-source",
-            severity: "warn",
+            severity: "error",
             comment:
-                "Slice 9a: the cc.json SOURCE the metrics lens now owns — the attributeTypes/attributeDescriptors slices and their combined metricsLensSource root under lenses/metrics/store/ — is reached from outside the lens only through a metrics-lens facade (the read facade for selectors, the load facade for the write actions + store wiring), never its store internals. Locks 'the cc.json source lives only under lenses' as the fileSettings root dissolves. Staged at warn; flips to error once edges also move to a dependency-lens store (roadmap 9a).",
+                "Slice 9a: the cc.json SOURCE the metrics lens now owns — the attributeTypes/attributeDescriptors slices and their combined metricsLensSource root under lenses/metrics/store/ — is reached from outside the lens only through a metrics-lens facade (the read facade for selectors, the load facade for the write actions + store wiring), never its store internals. Locks 'the cc.json source lives only under lenses' as the fileSettings root dissolves. Flipped warn→error post-Slice-13 (grep-verified 0 violations); decoupled from the edges move — the two node sources (attributeTypes/attributeDescriptors) are already lens-owned, and the edge side re-homes with the future dependency-lens store (CF #2) which will extend, not gate, this rule.",
             from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/lenses/", "\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.mocks\\.ts$"] },
             to: {
                 path: [
@@ -356,6 +356,22 @@ module.exports = {
                     "^app/codeCharta/preferences/preferences\\.write\\.facade\\.ts$",
                     "^app/codeCharta/sharedView/sharedView\\.write\\.facade\\.ts$",
                     "^app/codeCharta/mapState/mapState\\.write\\.facade\\.ts$"
+                ]
+            }
+        },
+        {
+            name: "feature-reaches-state-home-only-via-facade",
+            severity: "error",
+            comment:
+                "Outside code reaches a state home only through its public facades (read/write), never its store/ internals — no raw import of a home's store/**/*.{selector,reducer,actions}. Scoped to sharedView + preferences (grep-verified 0 external raw store importers post-Slice-13; state.manager/appliers already route through the read/write facades, so no exemption is needed). mapState is deliberately EXCLUDED for now — it still has ~12 raw store/*.selector imports that fold onto MapStateReadWindow / the read facade in the CF #9 read-window dedup; mapState joins this rule once those clear. The home's own facades + store/ are exempt (from.pathNot); spec/e2e may wire raw for tests.",
+            from: {
+                path: "^app/codeCharta/",
+                pathNot: ["^app/codeCharta/sharedView/", "^app/codeCharta/preferences/", "\\.spec\\.ts$", "\\.e2e\\.ts$"]
+            },
+            to: {
+                path: [
+                    "^app/codeCharta/sharedView/store/",
+                    "^app/codeCharta/preferences/store/"
                 ]
             }
         }
