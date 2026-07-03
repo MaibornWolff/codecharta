@@ -1,5 +1,5 @@
-import { FileSelectionState, FileState } from "../../../../model/files/files"
-import { DeltaGenerator } from "../../../../util/deltaGenerator"
+import { FileSelectionState, FileState } from "../model/files/files"
+import { DeltaGenerator } from "./deltaGenerator"
 
 export const getDeltaFile = (visibleFileStates: FileState[]) => {
     if (visibleFileStates.length === 2) {

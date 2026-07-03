@@ -4,7 +4,7 @@ import { fileStatesAvailable, isDeltaState, isPartialState } from "../../../mode
 import { AggregationGenerator } from "../../../util/aggregationGenerator"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { edgeMetricNamesSelector } from "../edgeMetricData/edgeMetricData.selector"
-import { getDeltaFile } from "./utils/getDeltaFile"
+import { getDeltaFile } from "../../../util/getDeltaFile"
 import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
 import { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
 import { nodeAttributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
