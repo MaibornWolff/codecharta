@@ -1,9 +1,9 @@
 import { NodeType } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import packageJson from "../../../../../package.json"
-import { _getUndecoratedAccumulatedData } from "./accumulatedData.selector"
+import { _getUndecoratedAccumulatedData } from "./structureTree.selector"
 
-describe("accumulatedDataSelector", () => {
+describe("structureTreeSelector", () => {
     describe("_getUndecoratedAccumulatedData", () => {
         const fileState1 = {
             file: {
