@@ -26,6 +26,14 @@ version: 1
 
 ## Notes
 - Items 1, 2/2a, 4, 5 are concrete, near-term follow-ups; item 6 is the broad remaining roadmap; item 7 (localStorage) is the last Slice-10 DoD refinement, held pending user sign-off. Item 8 (the `sorting` merge) landed in Slice 10c.
+- **#7 product decision (2026-07-03, user): POSTPONE — not needed now.** The intended UX when #7 DOES land = TWO
+  distinct settings buttons: **(a) "wipe all data"** = today's "Reset Map" (`confirmResetMapDialog.resetMap()`:
+  `deleteCcState()` + `setState(defaultState)` + reload samples — a full wipe, the current name undersells it),
+  and **(b) "reset global settings"** = today's `cc-reset-settings-button`, which currently resets only a
+  hand-picked 5 keys (`hideFlatBuildings`, `isWhiteBackground`, `resetCameraIfNewFileIsLoaded`, `layoutAlgorithm`,
+  `maxTreeMapFiles`) — NOT the full durable-pref set. These two are cleanly separable ONLY once prefs live in
+  their own localStorage store (this very item): otherwise "wipe all data" keeps nuking prefs because they ride
+  the same IndexedDB blob. **So #7 + the two-button UX are one coherent future slice, done together — not urgent.**
 - **Done (2026-07-03):** ~~Slice 11~~ (legend re-home + `metrics-lens-ngrx-guard` flip, item #5's guard half) —
   `slice-11-legend-rehome.md`. `git mv lenses/metrics/features/legend/ → features/legend/` (the now-empty
   `lenses/metrics/features/` "shell" dir deleted — the abandoned features-in-lenses model is gone). 3 commits:
