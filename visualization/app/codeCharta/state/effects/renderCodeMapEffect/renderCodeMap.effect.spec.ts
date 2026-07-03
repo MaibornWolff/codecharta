@@ -1,8 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { Subject } from "rxjs"
 import { ScenariosFacade } from "../../../features/scenarios/facade"
-import { CodeMapRenderService } from "../../../features/codeMap/facade"
-import { ThreeRendererService } from "../../../features/codeMap/facade"
+import { CodeMapRenderService, ThreeRendererService } from "../../../features/codeMap/facade"
 import { UploadFilesService } from "../../../features/navBar/facade"
 import { wait } from "../../../util/testUtils/wait"
 import { accumulatedDataSelector } from "../../selectors/accumulatedData/accumulatedData.selector"
@@ -24,7 +23,7 @@ describe("renderCodeMapEffect", () => {
 
     beforeEach(() => {
         threeRendererService = { render: jest.fn() } as unknown as ThreeRendererService
-        codeMapRenderService = { render: jest.fn(), scaleMap: jest.fn() } as unknown as CodeMapRenderService
+        codeMapRenderService = { load: jest.fn() } as unknown as CodeMapRenderService
         scenariosFacadeMock = { isApplying: false }
         actions$ = new Subject<Action>()
 
@@ -48,16 +47,15 @@ describe("renderCodeMapEffect", () => {
         actions$.complete()
     })
 
-    it("should render throttled after actions requiring rerender and scale map", async () => {
+    it("should drive the renderer load seam throttled after actions requiring rerender", async () => {
         actions$.next(setInvertArea({ value: true }))
         actions$.next(setInvertArea({ value: true }))
-        expect(codeMapRenderService.render).toHaveBeenCalledTimes(0)
+        expect(codeMapRenderService.load).toHaveBeenCalledTimes(0)
         expect(threeRendererService.render).toHaveBeenCalledTimes(0)
 
         await wait(maxFPS)
-        expect(codeMapRenderService.render).toHaveBeenCalledTimes(1)
+        expect(codeMapRenderService.load).toHaveBeenCalledTimes(1)
         expect(threeRendererService.render).toHaveBeenCalledTimes(1)
-        expect(codeMapRenderService.scaleMap).toHaveBeenCalledTimes(1)
     })
 
     it("should remove loading indicators after a quiet period following the render", async () => {

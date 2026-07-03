@@ -205,6 +205,21 @@ describe("codeMapRenderService", () => {
         })
     })
 
+    describe("load (RendererEngine seam)", () => {
+        it("should compose and lay out the model by rendering then scaling", () => {
+            // Arrange
+            codeMapRenderService["render"] = jest.fn()
+            codeMapRenderService["scaleMap"] = jest.fn()
+
+            // Act
+            codeMapRenderService.load(map)
+
+            // Assert
+            expect(codeMapRenderService["render"]).toHaveBeenCalledWith(map)
+            expect(codeMapRenderService["scaleMap"]).toHaveBeenCalledTimes(1)
+        })
+    })
+
     describe("scaleMap", () => {
         it("should call codeMapMouseEventService.unhoverNode", () => {
             codeMapRenderService["scaleMap"]()

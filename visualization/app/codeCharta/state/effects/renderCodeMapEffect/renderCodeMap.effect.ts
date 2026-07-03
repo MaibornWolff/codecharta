@@ -34,8 +34,7 @@ export class RenderCodeMapEffect {
                 filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
                 throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
                 tap(([accumulatedData]) => {
-                    this.codeMapRenderService.render(accumulatedData.unifiedMapNode)
-                    this.codeMapRenderService.scaleMap()
+                    this.codeMapRenderService.load(accumulatedData.unifiedMapNode)
                     this.threeRendererService.render()
                     clearPendingHeavyDispatch()
                 }),

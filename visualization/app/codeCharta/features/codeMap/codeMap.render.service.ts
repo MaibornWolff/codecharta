@@ -16,6 +16,7 @@ import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
 import { labelsPerMapActiveSelector } from "../../state/selectors/labelsPerMapActive.selector"
+import { RendererEngine } from "./rendererEngine.contract"
 
 export interface ColorCategoryCounts {
     positive: number
@@ -26,7 +27,7 @@ export interface ColorCategoryCounts {
 const MIN_BUILDING_LENGTH = 2
 
 @Injectable({ providedIn: "root" })
-export class CodeMapRenderService implements OnDestroy {
+export class CodeMapRenderService implements OnDestroy, RendererEngine {
     private nodesByColor = {
         positive: [],
         neutral: [],
@@ -58,6 +59,14 @@ export class CodeMapRenderService implements OnDestroy {
         } else {
             this.threeStatsService?.resetPanels()
         }
+    }
+
+    // The RendererEngine `load` seam (Slice 14b): compose + lay out the render model. The render effect
+    // calls this, then requests a frame via ThreeRendererService — the frame scheduler is the driver's
+    // concern, not the engine's.
+    load(model: CodeMapNode) {
+        this.render(model)
+        this.scaleMap()
     }
 
     render(map: CodeMapNode) {
