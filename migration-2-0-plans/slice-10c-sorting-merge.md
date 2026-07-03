@@ -1,7 +1,7 @@
 ---
 name: viz-2.0-slice-10c-sorting-merge
 issue:
-state: progress
+state: complete
 version: 1
 ---
 
@@ -53,9 +53,26 @@ Organizational, behavior-preserving, snapshot-verifiable. The other Slice-10 ref
 
 ## Steps
 
-- [ ] Complete Task 1: Structural relocate → sorting/
-- [ ] Complete Task 2: Behavioral merge + IndexedDB v12
-- [ ] Complete Task 3: Verify + adversarial review
+- [x] Complete Task 1: Structural relocate → sorting/ (commit `97e5187ba`)
+- [x] Complete Task 2: Behavioral merge + IndexedDB v12 (commit `c16781a8a`)
+- [x] Complete Task 3: Verify + adversarial review (2309 passing, 45/45 snapshots zero-diff, tsc + biome + dep-cruiser clean)
+
+## Review Feedback Addressed
+
+Independent adversarial review (7 behavior-preservation claims) — verdict: no behavior-changing issues.
+Two notes surfaced; both handled:
+
+1. **Redundant idempotent load dispatch** (benign, accepted): when a loaded state's `sorting` differs
+   only in `orderAscending` (option identical to current), the single `case "sorting"` fires a
+   `setSortingOption` with the already-current option. Not user-observable — the memoized
+   `sortingOrderSelector` doesn't re-emit, no re-render, not a URL param; the only effect is one extra
+   CcState save of the same effective state. The load-bearing rule (sort *order* never restored on load)
+   is intact.
+2. **Reset-on-undefined semantics** (fixed): the merged reducer's inline handlers initially dropped the
+   `setState.reducer.factory` "reset to default on an undefined payload" behavior the two pre-merge
+   reducers had. Unreachable today (both dispatch sites pass defined values), but restored for exact
+   equivalence with an explicit `=== undefined` check (null still passes through, matching setState) +
+   two reducer spec cases.
 
 ## Notes
 
