@@ -1,9 +1,18 @@
 ---
 name: viz-2.0-slice-13-cqrs-homes
 issue:
-state: todo
+state: progress
 version: 1
 ---
+
+> **Status (2026-07-03):** 13a ✅, 13b ✅, 13c ✅ — all three homes CQRS-split (read/write facades),
+> the 3 CQRS rules at **error** across the whole tree (0 violations). 13d ✅ for the **mapState metric
+> cluster** (injectable `MapStateReadWindow` introduced; 3 pure-read duplicate wrapper classes deleted +
+> 6 metricsBar read+write stores' read halves delegated). 13d's **cross-cutting clusters remain**
+> (isDeltaState ×5 in `state/`, isLoadingFile ×3 in `fileStore/`, selectedNode/hoveredNodeId, blacklist +
+> the curated multi-read windows) — deferred to CARRIED-FORWARD because they need a home-placement
+> decision for cross-home read-windows (fileStore vs `features/shared` vs a not-yet-built viewState home)
+> and several feed hover/selection behaviour that wants the user's e2e + manual smoke vs `main`.
 
 ## Goal
 
@@ -72,10 +81,12 @@ behaviour); the dedup (13d) is **behavioral wiring** (DI rewire, value-identical
   delta. Value-identical (same selector, same emissions). Sub-slice by cluster if the blast radius warrants.
 
 ## Steps
-- [ ] 13a: split preferences read/write facade + 3 CQRS rules (→ error for preferences)
-- [ ] 13b: split sharedView read/write facade (→ error for sharedView)
-- [ ] 13c: split mapState read/write facade (→ error, all homes)
-- [ ] 13d: dedup the ~36 duplicate read wrappers into injectable home read-windows (report delta)
+- [x] 13a: split preferences read/write facade + 3 CQRS rules (→ error for preferences)
+- [x] 13b: split sharedView read/write facade (→ error for sharedView)
+- [x] 13c: split mapState read/write facade (→ error, all homes)
+- [~] 13d: dedup the duplicate read wrappers — **mapState metric cluster done** (MapStateReadWindow;
+  −3 pure-read wrapper classes: ExplorerAreaMetricStore/InspectorMapColorsStore/DistributionMetricStore;
+  6 metricsBar read+write stores delegate their read half). Cross-cutting clusters carried forward.
 
 ## dep-cruiser rules (staged warn→error per home, as each split lands)
 - `state-home-write-facade-is-sole-dispatch-surface` — action creators reachable only via `<h>.write.facade`.

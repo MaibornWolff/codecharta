@@ -75,8 +75,8 @@ deleted** — "state has a home" is finally true at runtime.
 9c  markedPackages → sharedView                               ── needs 8   ✅ DONE
 10  preferences (appSettings purge) + fileStore flags; DELETE grab-bags ── needs 5–9 · FLIP new-must-not-import-legacy, shared-state-is-leaf → error
 11  features OUT of lenses + legend RE-HOME + kill "shell"     ── needs 6/7 · FLIP metrics-lens-ngrx-guard → error
-12  CQRS read/write facade split on the homes + dedupe *Store wrappers ── needs 5–10
-13  structure lens + renderer-agnostic selected-node id + named renderer seam (+ graphState) ── LAST · FLIP lens-no-view-state → error
+13  CQRS read/write facade split on the homes + dedupe *Store wrappers ── needs 5–10   🟡 13a/b/c ✅ + 13d mapState-metric-cluster ✅; cross-cutting dedup → CF #9
+14  structure lens + renderer-agnostic selected-node id + named renderer seam (+ graphState) ── LAST · FLIP lens-no-view-state → error
 ```
 
 ## The reshape machinery (built once in Slice 5, reused by 6–10)
@@ -306,8 +306,13 @@ each **once** so later slices only *add a key*:
 > closed), which was not in this doc's original 5→13 spine. So CQRS shifted to **13** and the renderer/structure slice to **14**
 > (both re-keyed below). Neither had an ordering dependency on the boundary-close.
 
-### Slice 13 — CQRS read/write facade split on the homes + dedupe `*Store` wrappers
+### Slice 13 — CQRS read/write facade split on the homes + dedupe `*Store` wrappers — 🟡 13a/b/c ✅ + 13d mapState-metric-cluster ✅
 - Detailed sub-slice plan: `slice-13-cqrs-homes.md` (13a preferences → 13b sharedView → 13c mapState → 13d wrapper dedup).
+- **Status (2026-07-03):** 13a/b/c DONE — all three homes read/write-split, the 3 CQRS rules at **error** tree-wide (0
+  violations), components import zero write facades. 13d DONE for the **mapState metric cluster** (injectable
+  `MapStateReadWindow`; −3 pure-read wrapper classes + 6 metricsBar read+write reads delegated). The cross-cutting
+  read-wrapper dedup (isDeltaState/isLoadingFile/selectedNode/hoveredNodeId/blacklist + curated windows) is **CF #9** —
+  it needs a home decision for cross-home read-windows and manual smoke for hover/selection.
 - **Goal:** split each home's `export *` barrel into a **read facade** (selectors) + **write facade** (actions), so a
   display-only component importing only the read facade physically cannot dispatch; collapse the ~37 duplicate per-feature
   `*Store` wrappers.
@@ -340,7 +345,7 @@ each **once** so later slices only *add a key*:
 | `lens-no-view-state` | **a lens never reads mutable view state** (selection/blacklist/edge-visibility are parameters) — kills the `valueOf` coupling | **14** *(gated on 7 + 9b lifting all view-state reads out of both lenses)* |
 | `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6 ✅**, sharedView **8 ✅**, preferences **10** |
 | `state-home-only-stores-import-ngrx` | only a home's store touches ngrx | mapState **6 ✅** / sharedView **8 ✅** / preferences **10** |
-| `state-home-read-facade-has-no-dispatch` · `…-write-facade-is-sole-dispatch-surface` · `display-components-cannot-dispatch` | CQRS: read facade can't dispatch | **13** |
+| `state-home-read-facade-has-no-dispatch` · `…-write-facade-is-sole-dispatch-surface` · `display-components-cannot-dispatch` | CQRS: read facade can't dispatch | **13 ✅** — all 3 added at **error**, growing home-by-home (13a prefs → 13b sharedView → 13c mapState), 0 violations tree-wide |
 | `feature-reaches-state-home-only-via-facade` | features mutate state only via a home facade | mapState **7** / sharedView **8** (both deferred — no rule added; the ~18 sharedView consumers already reach it via `sharedView.facade`, enforcement folds into the Slice-12 CQRS split), prefs **10** |
 | `feature-services-reach-a-lens-only-via-its-facade` (+ retire the 5 lens-internal-feature rules) | features reach a lens only via its facade | **11** |
 | `filestore-external-access-only-via-facade` | fileStore reached only via its facade | **9a/10** |
