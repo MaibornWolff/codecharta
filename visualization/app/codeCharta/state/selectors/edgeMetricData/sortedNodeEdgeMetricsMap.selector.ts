@@ -5,7 +5,7 @@ import { calculateEdgeMetricData } from "../../../lenses/dependency/dependencyLe
 import { FileState } from "../../../model/files/files"
 import { EdgeMetricCount, EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../codeCharta.model"
 import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
-import { showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../mapState/mapState.facade"
+import { showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../mapState/mapState.read.facade"
 
 /**
  * Derived (view-state-aware) edge-visibility selector — Slice 9b P0-1 (half 2). Composes the dependency

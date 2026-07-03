@@ -4,7 +4,8 @@ import { Store } from "@ngrx/store"
 import { distinctUntilChanged, filter, map, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 import { edgeMetricDataSelector } from "../../selectors/edgeMetricData/edgeMetricData.selector"
-import { setEdgeMetric, edgeMetricSelector } from "../../../mapState/mapState.facade"
+import { edgeMetricSelector } from "../../../mapState/mapState.read.facade"
+import { setEdgeMetric } from "../../../mapState/mapState.write.facade"
 
 @Injectable()
 export class ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect {

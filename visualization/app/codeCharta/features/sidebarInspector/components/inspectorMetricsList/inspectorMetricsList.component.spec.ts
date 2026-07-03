@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { defaultMapColors, mapColorsSelector } from "../../../../mapState/mapState.facade"
+import { defaultMapColors, mapColorsSelector } from "../../../../mapState/mapState.read.facade"
 import { inspectorMetricRowsSelector, MetricRow } from "../../selectors/inspectorMetricRows.selector"
 import { InspectorMetricsListComponent } from "./inspectorMetricsList.component"
 

@@ -4,7 +4,7 @@ import { addPrefixWildcard, BlackListExtensionService, buildGlobPatterns, expand
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CategorizedMetricDistribution, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 import { BlacklistItem, BlacklistType, CcState, CodeMapNode, NodeType, SortingOption } from "../../../codeCharta.model"
-import { defaultMapState } from "../../../mapState/mapState.facade"
+import { defaultMapState } from "../../../mapState/mapState.read.facade"
 import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
 import { BlacklistExtensionAction } from "../../../state/effects/blacklistExtension/blacklistExtension.effect"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"

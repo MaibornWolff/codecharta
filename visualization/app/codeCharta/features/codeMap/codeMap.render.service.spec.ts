@@ -29,11 +29,11 @@ import {
     setLabelsPerMap,
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName
-} from "../../mapState/mapState.facade"
+} from "../../mapState/mapState.write.facade"
 import { klona } from "klona"
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setFiles } from "../../fileStore/store/files.actions"
-import { setHeightMetric } from "../../mapState/mapState.facade"
+import { setHeightMetric } from "../../mapState/mapState.write.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { nodeMetricDataSelector } from "../../state/selectors/nodeMetricData/nodeMetricData.selector"

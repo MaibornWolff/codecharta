@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { defaultMapColors, mapColorsSelector } from "../../../mapState/mapState.facade"
+import { defaultMapColors, mapColorsSelector } from "../../../mapState/mapState.read.facade"
 import { InspectorMapColorsStore } from "./mapColors.store"
 
 describe("InspectorMapColorsStore", () => {

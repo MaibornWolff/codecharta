@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { setHoveredNodeId } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.actions"
+import { setHoveredNodeId } from "../../../mapState/mapState.write.facade"
 import { hoveredNodeIdSelector } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.selector"
-import { setRightClickedNodeData } from "../../../mapState/store/rightClickedNodeData/rightClickedNodeData.actions"
+import { setRightClickedNodeData } from "../../../mapState/mapState.write.facade"
 import { rightClickedNodeDataSelector } from "../../../mapState/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { selectedBuildingIdSelector } from "../../../mapState/store/selectedBuildingId/selectedBuildingId.selector"
 

@@ -8,7 +8,7 @@ import { Subject } from "rxjs"
 import { LoadInitialFileService } from "../../../fileStore/fileStore.facade"
 import { EDGE_METRIC_DATA } from "../../../mocks/dataMocks"
 import { edgeMetricDataSelector } from "../../selectors/edgeMetricData/edgeMetricData.selector"
-import { setColorMetric, setEdgeMetric } from "../../../mapState/mapState.facade"
+import { setColorMetric, setEdgeMetric } from "../../../mapState/mapState.write.facade"
 import { defaultState } from "../../store/state.manager"
 import { UpdateQueryParametersEffect } from "./updateQueryParameters.effect"
 

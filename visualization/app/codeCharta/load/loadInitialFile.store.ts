@@ -33,12 +33,12 @@ import {
     setShowMetricLabelNodeName,
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
-} from "../mapState/mapState.facade"
+} from "../mapState/mapState.write.facade"
 import { setAttributeTypes, setAttributeDescriptors } from "../lenses/metrics/metricsLens.load.facade"
 import { setBlacklist } from "../sharedView/sharedView.write.facade"
 import { setEdges } from "../state/store/fileSettings/edges/edges.actions"
 import { setMarkedPackages } from "../sharedView/sharedView.write.facade"
-import { setAreaMetric, setHeightMetric, setEdgeMetric, setColorMetric, setDistributionMetric } from "../mapState/mapState.facade"
+import { setAreaMetric, setHeightMetric, setEdgeMetric, setColorMetric, setDistributionMetric } from "../mapState/mapState.write.facade"
 import {
     setSortingOption,
     setPresentationMode,

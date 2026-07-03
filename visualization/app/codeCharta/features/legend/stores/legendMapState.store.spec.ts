@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { areaMetricSelector, edgeMetricSelector } from "../../../mapState/mapState.facade"
+import { areaMetricSelector, edgeMetricSelector } from "../../../mapState/mapState.read.facade"
 import { LegendMapStateStore } from "./legendMapState.store"
 
 describe("LegendMapStateStore", () => {

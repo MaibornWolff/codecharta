@@ -5,7 +5,8 @@ import { filter, map } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../preferences/preferences.read.facade"
 
-import { setColorMetric, heightMetricSelector } from "../../../mapState/mapState.facade"
+import { heightMetricSelector } from "../../../mapState/mapState.read.facade"
+import { setColorMetric } from "../../../mapState/mapState.write.facade"
 
 export const heightAndLinkedSelector = createSelector(
     heightMetricSelector,

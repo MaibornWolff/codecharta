@@ -2,7 +2,7 @@ import { createSelector } from "@ngrx/store"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { FileExtensionCalculator } from "../../../util/fileExtension/fileExtensionCalculator"
-import { areaMetricSelector } from "../../../mapState/mapState.facade"
+import { areaMetricSelector } from "../../../mapState/mapState.read.facade"
 import { metricDistributionSelector } from "./metricDistribution.selector"
 import { NodeType } from "../../../codeCharta.model"
 

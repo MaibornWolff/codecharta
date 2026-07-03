@@ -21,14 +21,14 @@ import {
     setShowMetricLabelNodeName,
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
-} from "../../../mapState/mapState.facade"
-import { setLayoutAlgorithm } from "../../../mapState/store/layoutAlgorithm/layoutAlgorithm.actions"
+} from "../../../mapState/mapState.write.facade"
+import { setLayoutAlgorithm } from "../../../mapState/mapState.write.facade"
 import { setMaxTreeMapFiles } from "../../../preferences/preferences.write.facade"
-import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../mapState/mapState.facade"
-import { setColorMode } from "../../../mapState/store/colorMode/colorMode.actions"
-import { setColorRange } from "../../../mapState/store/colorRange/colorRange.actions"
+import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../mapState/mapState.write.facade"
+import { setColorMode } from "../../../mapState/mapState.write.facade"
+import { setColorRange } from "../../../mapState/mapState.write.facade"
 import { setAllFocusedNodes, focusNode, unfocusAllNodes, unfocusNode, setSearchPattern } from "../../../sharedView/sharedView.write.facade"
-import { setMargin } from "../../../mapState/store/margin/margin.actions"
+import { setMargin } from "../../../mapState/mapState.write.facade"
 import { setMarkedPackages, markPackages, unmarkPackage } from "../../../sharedView/sharedView.write.facade"
 import { setState } from "../../store/state.actions"
 

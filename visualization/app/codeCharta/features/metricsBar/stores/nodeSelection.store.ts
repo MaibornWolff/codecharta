@@ -4,7 +4,7 @@ import { CcState } from "../../../codeCharta.model"
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
 import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
-import { areaMetricSelector, heightMetricSelector } from "../../../mapState/mapState.facade"
+import { areaMetricSelector, heightMetricSelector } from "../../../mapState/mapState.read.facade"
 
 @Injectable({
     providedIn: "root"

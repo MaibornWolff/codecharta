@@ -8,7 +8,7 @@ import {
     edgeMetricSelector,
     colorRangeSelector,
     mapColorsSelector
-} from "../../../mapState/mapState.facade"
+} from "../../../mapState/mapState.read.facade"
 import { metricRangeSelector } from "../../../state/selectors/nodeMetricData/nodeMetricData.selector"
 
 // The legend's read-only window onto the mapState home (plus the color-metric value range from the

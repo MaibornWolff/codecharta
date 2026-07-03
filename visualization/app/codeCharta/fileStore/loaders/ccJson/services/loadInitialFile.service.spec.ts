@@ -11,7 +11,7 @@ import { MetricQueryParemter } from "../../../../util/queryParameter/metricQuery
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
 import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
 import { setSortingOption } from "../../../../preferences/preferences.write.facade"
-import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../../mapState/mapState.facade"
+import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../../mapState/mapState.write.facade"
 import { defaultSharedView } from "../../../../sharedView/sharedView.read.facade"
 import { defaultFileSettings } from "../../../../state/store/fileSettings/fileSettings.reducer"
 import { setDelta, setFiles } from "../../../store/files.actions"

@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { enableFloorLabelsSelector, setEnableFloorLabels } from "../../../mapState/mapState.facade"
+import { enableFloorLabelsSelector } from "../../../mapState/mapState.read.facade"
+import { setEnableFloorLabels } from "../../../mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

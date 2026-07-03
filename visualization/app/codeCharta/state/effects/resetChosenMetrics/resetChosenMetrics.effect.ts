@@ -5,7 +5,7 @@ import { filter, tap, withLatestFrom } from "rxjs"
 import { CcState, NodeMetricData } from "../../../codeCharta.model"
 import { nodeMetricDataSelector } from "../../selectors/nodeMetricData/nodeMetricData.selector"
 import { areChosenMetricsAvailableSelector } from "../../selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
-import { setAreaMetric, setColorMetric, setDistributionMetric, setHeightMetric } from "../../../mapState/mapState.facade"
+import { setAreaMetric, setColorMetric, setDistributionMetric, setHeightMetric } from "../../../mapState/mapState.write.facade"
 import { getDefaultDistribution } from "./utils/getDefaultDistributionMetric"
 import { defaultNMetrics, isAnyMetricAvailable, preselectCombination } from "./utils/metricHelper"
 

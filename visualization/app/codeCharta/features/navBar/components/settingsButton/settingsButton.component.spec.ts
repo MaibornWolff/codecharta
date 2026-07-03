@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event"
 import { LoadFileService } from "../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
 import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
-import { defaultMapState } from "../../../../mapState/mapState.facade"
+import { defaultMapState } from "../../../../mapState/mapState.read.facade"
 import { GlobalConfigurationDialogComponent } from "../../../globalSettings/components/globalConfigurationDialog/globalConfigurationDialog.component"
 import { SettingsButtonComponent } from "./settingsButton.component"
 

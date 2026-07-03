@@ -1,5 +1,5 @@
 import { CcState } from "app/codeCharta/codeCharta.model"
-import { defaultMapState } from "../../mapState/mapState.facade"
+import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
 import { defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"

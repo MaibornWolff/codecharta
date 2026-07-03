@@ -9,8 +9,8 @@ import {
     setLabelSize,
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName
-} from "../../../mapState/mapState.facade"
-import { setHeightMetric } from "../../../mapState/mapState.facade"
+} from "../../../mapState/mapState.write.facade"
+import { setHeightMetric } from "../../../mapState/mapState.write.facade"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 

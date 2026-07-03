@@ -10,7 +10,7 @@ import {
     heightMetricSelector,
     distributionMetricSelector,
     edgeMetricSelector
-} from "../../../mapState/mapState.facade"
+} from "../../../mapState/mapState.read.facade"
 import { areDynamicSettingsAvailable } from "./utils/areDynamicSettingsAvailable"
 import { areMetricsAvailable } from "./utils/areMetricsAvailable"
 

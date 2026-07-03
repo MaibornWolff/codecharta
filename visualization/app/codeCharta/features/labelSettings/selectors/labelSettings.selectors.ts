@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
-import { mapStateSelector } from "../../../mapState/mapState.facade"
+import { mapStateSelector } from "../../../mapState/mapState.read.facade"
 
-export { labelSizeSelector } from "../../../mapState/mapState.facade"
+export { labelSizeSelector } from "../../../mapState/mapState.read.facade"
 
 export const labelModeSelector = createSelector(mapStateSelector, mapState => mapState.labelMode)
 

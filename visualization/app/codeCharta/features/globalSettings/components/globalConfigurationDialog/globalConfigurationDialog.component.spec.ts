@@ -12,7 +12,7 @@ import { AutomaticCameraResetService } from "../../services/automaticCameraReset
 import { LoadFileService } from "../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
 import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
-import { defaultMapState } from "../../../../mapState/mapState.facade"
+import { defaultMapState } from "../../../../mapState/mapState.read.facade"
 
 describe("GlobalConfigurationDialogComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationDialogComponent>

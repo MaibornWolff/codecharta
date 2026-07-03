@@ -4,8 +4,8 @@ import { AppStatusStore } from "./appStatus.store"
 import { hoveredNodeIdSelector } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.selector"
 import { rightClickedNodeDataSelector } from "../../../mapState/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { selectedBuildingIdSelector } from "../../../mapState/store/selectedBuildingId/selectedBuildingId.selector"
-import { setHoveredNodeId } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.actions"
-import { setRightClickedNodeData } from "../../../mapState/store/rightClickedNodeData/rightClickedNodeData.actions"
+import { setHoveredNodeId } from "../../../mapState/mapState.write.facade"
+import { setRightClickedNodeData } from "../../../mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("AppStatusStore", () => {

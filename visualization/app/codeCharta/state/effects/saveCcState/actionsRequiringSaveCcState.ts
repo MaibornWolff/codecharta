@@ -34,7 +34,7 @@ import {
     setDistributionMetric,
     setColorMetric,
     setAreaMetric
-} from "../../../mapState/mapState.facade"
+} from "../../../mapState/mapState.write.facade"
 import { setSearchPattern, setAllFocusedNodes, unfocusAllNodes, focusNode, unfocusNode } from "../../../sharedView/sharedView.write.facade"
 
 // Slice 10b: the ex-appSettings / ex-dynamicSettings grab-bag action lists (appSettingsActions,

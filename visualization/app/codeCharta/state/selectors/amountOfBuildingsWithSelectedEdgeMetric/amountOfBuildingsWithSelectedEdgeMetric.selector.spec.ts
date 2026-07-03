@@ -7,7 +7,7 @@ import { setFiles } from "../../../fileStore/store/files.actions"
 import { DEFAULT_STATE, FILE_STATES } from "../../../mocks/dataMocks"
 import { CcState } from "../../../codeCharta.model"
 import { setState } from "../../store/state.actions"
-import { setShowIncomingEdges, setShowOutgoingEdges, setEdgeMetric } from "../../../mapState/mapState.facade"
+import { setShowIncomingEdges, setShowOutgoingEdges, setEdgeMetric } from "../../../mapState/mapState.write.facade"
 
 describe("countBuildingsWithEdgeMetric", () => {
     let store: Store<CcState>

@@ -9,7 +9,7 @@ import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog
 import { LoadFileService } from "../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
 import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
-import { defaultMapState } from "../../../../mapState/mapState.facade"
+import { defaultMapState } from "../../../../mapState/mapState.read.facade"
 
 describe("GlobalConfigurationButtonComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationButtonComponent>

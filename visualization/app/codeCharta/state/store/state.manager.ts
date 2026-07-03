@@ -6,7 +6,7 @@ import {
     currentFilesAreSampleFiles,
     defaultCurrentFilesAreSampleFiles
 } from "../../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
-import { defaultMapState, mapState } from "../../mapState/mapState.facade"
+import { defaultMapState, mapState } from "../../mapState/mapState.read.facade"
 import { defaultSharedView, sharedView } from "../../sharedView/sharedView.read.facade"
 import { defaultMetricsLensSource, metricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
 import { ActionReducer } from "@ngrx/store"

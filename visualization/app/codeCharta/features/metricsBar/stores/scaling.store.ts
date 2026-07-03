@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState, Scaling } from "../../../codeCharta.model"
-import { scalingSelector, setScaling } from "../../../mapState/mapState.facade"
+import { scalingSelector } from "../../../mapState/mapState.read.facade"
+import { setScaling } from "../../../mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

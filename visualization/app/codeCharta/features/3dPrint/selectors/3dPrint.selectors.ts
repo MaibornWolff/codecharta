@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { filesSelector } from "../../../fileStore/store/files.selector"
-import { mapStateSelector } from "../../../mapState/mapState.facade"
+import { mapStateSelector } from "../../../mapState/mapState.read.facade"
 
 // attributeDescriptors moved to the metrics lens source (Slice 9a); re-export the lens's read-facade
 // selector so this feature's consumers keep a single `3dPrint.selectors` import surface.

@@ -8,15 +8,17 @@ import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../sta
 import {
     amountOfEdgePreviewsSelector,
     edgeHeightSelector,
+    showIncomingEdgesSelector,
+    showOnlyBuildingsWithEdgesSelector,
+    showOutgoingEdgesSelector
+} from "../../../../mapState/mapState.read.facade"
+import {
     setAmountOfEdgePreviews,
     setEdgeHeight,
     setShowIncomingEdges,
     setShowOnlyBuildingsWithEdges,
-    setShowOutgoingEdges,
-    showIncomingEdgesSelector,
-    showOnlyBuildingsWithEdgesSelector,
-    showOutgoingEdgesSelector
-} from "../../../../mapState/mapState.facade"
+    setShowOutgoingEdges
+} from "../../../../mapState/mapState.write.facade"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { EdgeSettingsPopoverComponent } from "./edgeSettingsPopover.component"
 

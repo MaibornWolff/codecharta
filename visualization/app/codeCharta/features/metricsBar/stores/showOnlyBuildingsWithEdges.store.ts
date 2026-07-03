@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { showOnlyBuildingsWithEdgesSelector } from "../selectors/edgeAndColors.selectors"
-import { setShowOnlyBuildingsWithEdges } from "../../../mapState/mapState.facade"
+import { setShowOnlyBuildingsWithEdges } from "../../../mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

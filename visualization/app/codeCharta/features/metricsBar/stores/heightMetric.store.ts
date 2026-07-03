@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { setHeightMetric, heightMetricSelector } from "../../../mapState/mapState.facade"
+import { heightMetricSelector } from "../../../mapState/mapState.read.facade"
+import { setHeightMetric } from "../../../mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

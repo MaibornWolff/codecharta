@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { NodeEdgeMetricsMap } from "../../../codeCharta.model"
-import { amountOfEdgePreviewsSelector, edgeMetricSelector } from "../../../mapState/mapState.facade"
+import { amountOfEdgePreviewsSelector, edgeMetricSelector } from "../../../mapState/mapState.read.facade"
 import { sortedNodeEdgeMetricsMapSelector } from "../../../state/selectors/edgeMetricData/sortedNodeEdgeMetricsMap.selector"
 
 export const edgePreviewNodesSelector = createSelector(
