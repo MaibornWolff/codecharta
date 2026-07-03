@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { preferencesSelector } from "../../../preferences/preferences.facade"
+import { preferencesSelector } from "../../../preferences/preferences.read.facade"
 import { mapStateSelector } from "../../../mapState/mapState.facade"
 
 export const screenshotToClipboardEnabledSelector = createSelector(

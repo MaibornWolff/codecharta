@@ -1,5 +1,5 @@
 import { defaultFileSettings, fileSettings } from "./fileSettings/fileSettings.reducer"
-import { defaultPreferences, preferences } from "../../preferences/preferences.facade"
+import { defaultPreferences, preferences } from "../../preferences/preferences.read.facade"
 import { defaultFiles, files } from "../../fileStore/store/files.reducer"
 import { defaultIsLoadingFile, isLoadingFile } from "../../fileStore/store/isLoadingFile/isLoadingFile.reducer"
 import {

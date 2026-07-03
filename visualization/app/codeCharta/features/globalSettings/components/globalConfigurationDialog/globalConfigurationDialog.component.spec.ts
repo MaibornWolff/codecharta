@@ -11,7 +11,7 @@ import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibi
 import { AutomaticCameraResetService } from "../../services/automaticCameraReset.service"
 import { LoadFileService } from "../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
-import { defaultPreferences } from "../../../../preferences/preferences.facade"
+import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
 import { defaultMapState } from "../../../../mapState/mapState.facade"
 
 describe("GlobalConfigurationDialogComponent", () => {

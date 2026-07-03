@@ -8,7 +8,7 @@ import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton.
 import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
 import { LoadFileService } from "../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
-import { defaultPreferences } from "../../../../preferences/preferences.facade"
+import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
 import { defaultMapState } from "../../../../mapState/mapState.facade"
 
 describe("GlobalConfigurationButtonComponent", () => {

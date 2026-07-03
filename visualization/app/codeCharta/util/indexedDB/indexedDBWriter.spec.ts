@@ -1,7 +1,7 @@
 import "fake-indexeddb/auto"
 import { openDB } from "idb"
 import { defaultState } from "../../state/store/state.manager"
-import { defaultPreferences } from "../../preferences/preferences.facade"
+import { defaultPreferences } from "../../preferences/preferences.read.facade"
 import { defaultMapState } from "../../mapState/mapState.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.facade"
 import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"

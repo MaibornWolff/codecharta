@@ -47,7 +47,7 @@ import {
     setExperimentalFeaturesEnabled,
     setScreenshotToClipboardEnabled,
     setIsColorMetricLinkedToHeightMetricAction
-} from "../preferences/preferences.facade"
+} from "../preferences/preferences.write.facade"
 import { setAllFocusedNodes } from "../sharedView/sharedView.facade"
 import { setSearchPattern } from "../sharedView/sharedView.facade"
 

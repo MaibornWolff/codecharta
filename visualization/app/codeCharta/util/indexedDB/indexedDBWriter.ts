@@ -2,7 +2,7 @@ import { CcState } from "app/codeCharta/codeCharta.model"
 import { defaultMapState } from "../../mapState/mapState.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.facade"
 import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
-import { defaultPreferences, defaultSorting } from "../../preferences/preferences.facade"
+import { defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"

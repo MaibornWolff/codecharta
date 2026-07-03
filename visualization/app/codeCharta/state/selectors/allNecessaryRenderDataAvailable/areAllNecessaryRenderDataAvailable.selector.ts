@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { fileStatesAvailable } from "../../../model/files/files.helper"
-import { sortingOrderSelector } from "../../../preferences/preferences.facade"
+import { sortingOrderSelector } from "../../../preferences/preferences.read.facade"
 import { filesSelector } from "../../../fileStore/store/files.selector"
 import { nodeMetricDataSelector } from "../nodeMetricData/nodeMetricData.selector"
 import {

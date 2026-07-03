@@ -3,7 +3,7 @@ import { createEffect } from "@ngrx/effects"
 import { createSelector, Store } from "@ngrx/store"
 import { filter, map } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
-import { isColorMetricLinkedToHeightMetricSelector } from "../../../preferences/preferences.facade"
+import { isColorMetricLinkedToHeightMetricSelector } from "../../../preferences/preferences.read.facade"
 
 import { setColorMetric, heightMetricSelector } from "../../../mapState/mapState.facade"
 

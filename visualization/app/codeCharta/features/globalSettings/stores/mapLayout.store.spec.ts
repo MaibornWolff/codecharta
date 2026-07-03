@@ -3,7 +3,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { MapLayoutStore } from "./mapLayout.store"
 import { layoutAlgorithmSelector, maxTreeMapFilesSelector } from "../selectors/globalSettings.selectors"
 import { setLayoutAlgorithm } from "../../../mapState/store/layoutAlgorithm/layoutAlgorithm.actions"
-import { setMaxTreeMapFiles } from "../../../preferences/preferences.facade"
+import { setMaxTreeMapFiles } from "../../../preferences/preferences.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { LayoutAlgorithm } from "../../../codeCharta.model"
 

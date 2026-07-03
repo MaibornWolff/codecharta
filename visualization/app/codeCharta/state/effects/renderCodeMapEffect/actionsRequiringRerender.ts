@@ -23,7 +23,7 @@ import {
     setShowOutgoingEdges
 } from "../../../mapState/mapState.facade"
 import { setLayoutAlgorithm } from "../../../mapState/store/layoutAlgorithm/layoutAlgorithm.actions"
-import { setMaxTreeMapFiles } from "../../../preferences/preferences.facade"
+import { setMaxTreeMapFiles } from "../../../preferences/preferences.write.facade"
 import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../mapState/mapState.facade"
 import { setColorMode } from "../../../mapState/store/colorMode/colorMode.actions"
 import { setColorRange } from "../../../mapState/store/colorRange/colorRange.actions"

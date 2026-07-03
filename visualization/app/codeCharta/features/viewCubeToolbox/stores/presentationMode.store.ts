@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { setPresentationMode } from "../../../preferences/preferences.facade"
-import { isPresentationModeSelector } from "../../../preferences/preferences.facade"
+import { setPresentationMode } from "../../../preferences/preferences.write.facade"
+import { isPresentationModeSelector } from "../../../preferences/preferences.read.facade"
 
 @Injectable({ providedIn: "root" })
 export class PresentationModeStore {

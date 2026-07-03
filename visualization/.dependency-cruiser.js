@@ -294,6 +294,46 @@ module.exports = {
                     "^app/codeCharta/lenses/metrics/store/metricsLensSource"
                 ]
             }
+        },
+
+        /* ───────────── Visualization 2.0 — Slice 13 CQRS: read/write facade split ─────────────
+         * Each state home's single public barrel splits into a READ facade (selectors + root selector +
+         * default* fallbacks + store wiring) and a WRITE facade (action creators). A display-only
+         * consumer physically cannot dispatch. Staged per home as each split lands (13a preferences,
+         * 13b sharedView, 13c mapState) — the `to` patterns grow home-by-home and flip warn→error.
+         * See migration-2-0-plans/slice-13-cqrs-homes.md. */
+        {
+            name: "state-home-write-facade-is-sole-dispatch-surface",
+            severity: "error",
+            comment:
+                "A state home's action creators are reached from outside the home ONLY through its write facade (<home>.write.facade.ts), never the raw store/**/*.actions.ts files. The write facade is the sole dispatch surface; the read facade and default*/selectors carry no creator. Spec/e2e are exempt (test wiring may reference raw action creators). Scoped to preferences in Slice 13a; grows to sharedView (13b) and mapState (13c).",
+            from: {
+                path: "^app/codeCharta/",
+                pathNot: [
+                    "^app/codeCharta/preferences/",
+                    "^app/codeCharta/sharedView/",
+                    "^app/codeCharta/mapState/",
+                    "\\.spec\\.ts$",
+                    "\\.e2e\\.ts$"
+                ]
+            },
+            to: { path: ["^app/codeCharta/preferences/store/.*\\.actions\\.ts$"] }
+        },
+        {
+            name: "state-home-read-facade-has-no-dispatch",
+            severity: "error",
+            comment:
+                "A state home's READ facade (<home>.read.facade.ts) re-exports selectors, the root selector, default* fallbacks and the store wiring — but NO action creator. It must not import any of the home's store/**/*.actions.ts files, so importing the read facade can never hand a consumer a dispatch. Scoped to preferences in Slice 13a; grows to sharedView (13b) and mapState (13c).",
+            from: { path: "^app/codeCharta/preferences/preferences\\.read\\.facade\\.ts$" },
+            to: { path: ["^app/codeCharta/preferences/store/.*\\.actions\\.ts$"] }
+        },
+        {
+            name: "display-components-cannot-dispatch",
+            severity: "error",
+            comment:
+                "Display components (features/**/*.component.ts) render state and emit UI events; they never dispatch a state-home action. A component must not import a home write facade — it reads via a selector/feature-store and delegates writes to its feature's store service. Already 0 violations. Scoped to preferences in Slice 13a; grows to sharedView (13b) and mapState (13c).",
+            from: { path: "^app/codeCharta/features/.*\\.component\\.ts$", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: { path: ["^app/codeCharta/preferences/preferences\\.write\\.facade\\.ts$"] }
         }
     ],
     options: {
