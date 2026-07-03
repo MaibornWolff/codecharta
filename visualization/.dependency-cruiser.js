@@ -131,8 +131,9 @@ module.exports = {
         /* ───────────── Visualization 2.0 — Slice 1 lens/fileStore boundary ─────────────
          * Scoped to the dirs that exist this slice (lenses/metrics, fileStore). The 7 lens-internal
          * rules + `metrics-lens-ngrx-guard` are now `error` (the guard flipped in Slice 11 once the
-         * legend re-homed out of lenses/); `new-must-not-import-legacy` stays the last `warn` bridge
-         * until state/ becomes interaction/appearance. See migration-2-0-plans/rpi-plan/step-1-skeleton-and-model.md. */
+         * legend re-homed out of lenses/); `new-must-not-import-legacy` flipped to `error` in Slice 12
+         * once the last 6 residual lenses/|fileStore/ → features/|state/ edges were re-homed.
+         * See migration-2-0-plans/rpi-plan/step-1-skeleton-and-model.md. */
         {
             name: "lens-no-ui-dependency",
             severity: "error",
@@ -274,9 +275,9 @@ module.exports = {
         },
         {
             name: "new-must-not-import-legacy",
-            severity: "warn",
+            severity: "error",
             comment:
-                "Migration boundary: the new structure (lenses/, fileStore/) must not import the legacy features/ or state/. Kept at warn this slice because real transitional edges exist; util/ + model/ are the shared kernel and exempt. The reverse (legacy → new lens facade) is the allowed migration flow. Flips to error once state/ becomes interaction/appearance.",
+                "Migration boundary: the new structure (lenses/, fileStore/) must not import the legacy features/ or state/. Flipped to error in Slice 12 once the last 6 residual edges were re-homed (errorDialog + metricQueryParameter → util/; referenceFile.selector → fileStore/store/; the load applier → the neutral load/ layer; the metrics-lens view-aware outputs inverted so consumers read state/selectors/nodeMetricData through their own feature stores). util/ + model/ are the shared kernel and exempt. The reverse (legacy → new lens facade) is the allowed migration flow. Spec/e2e are exempt (test wiring may reference legacy action creators).",
             from: { path: "^app/codeCharta/(lenses|fileStore)/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: { path: ["^app/codeCharta/features/", "^app/codeCharta/state/"] }
         },
