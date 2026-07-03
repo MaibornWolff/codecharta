@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { BlacklistItem, CcState } from "../../../codeCharta.model"
-import { removeBlacklistItem } from "../../../sharedView/sharedView.facade"
+import { removeBlacklistItem } from "../../../sharedView/sharedView.write.facade"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 import { excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "../selectors/sidebarExplorer.selectors"
 

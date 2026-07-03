@@ -1,5 +1,5 @@
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { focusedNodePathSelector } from "../../../sharedView/sharedView.facade"
+import { focusedNodePathSelector } from "../../../sharedView/sharedView.read.facade"
 import { layoutAlgorithmSelector } from "../../../features/globalSettings/facade"
 import { enableFloorLabelsSelector, invertAreaSelector, areaMetricSelector } from "../../../mapState/mapState.facade"
 import { marginSelector } from "../../../mapState/store/margin/margin.selector"

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { map } from "rxjs"
 import { createEffect } from "@ngrx/effects"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { unfocusAllNodes } from "../../../sharedView/sharedView.facade"
+import { unfocusAllNodes } from "../../../sharedView/sharedView.write.facade"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 

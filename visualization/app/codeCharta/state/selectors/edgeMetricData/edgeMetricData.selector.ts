@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { blacklistMatcherSelector } from "../../../sharedView/sharedView.facade"
+import { blacklistMatcherSelector } from "../../../sharedView/sharedView.read.facade"
 import { calculateEdgeMetricData } from "../../../lenses/dependency/dependencyLens.facade"
 
 /**

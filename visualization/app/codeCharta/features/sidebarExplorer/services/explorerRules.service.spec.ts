@@ -2,10 +2,10 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BlacklistItem, CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/codeMapNodes.selector"
-import { blacklistSelector } from "../../../sharedView/sharedView.facade"
+import { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
 import { ExplorerRulesService } from "./explorerRules.service"
 import { firstValueFrom } from "rxjs"
-import { removeBlacklistItem } from "../../../sharedView/sharedView.facade"
+import { removeBlacklistItem } from "../../../sharedView/sharedView.write.facade"
 
 const makeLeaf = (path: string): CodeMapNode => ({
     name: path.split("/").pop() ?? path,

@@ -317,15 +317,30 @@ module.exports = {
                     "\\.e2e\\.ts$"
                 ]
             },
-            to: { path: ["^app/codeCharta/preferences/store/.*\\.actions\\.ts$"] }
+            to: {
+                path: [
+                    "^app/codeCharta/preferences/store/.*\\.actions\\.ts$",
+                    "^app/codeCharta/sharedView/store/.*\\.actions\\.ts$"
+                ]
+            }
         },
         {
             name: "state-home-read-facade-has-no-dispatch",
             severity: "error",
             comment:
                 "A state home's READ facade (<home>.read.facade.ts) re-exports selectors, the root selector, default* fallbacks and the store wiring — but NO action creator. It must not import any of the home's store/**/*.actions.ts files, so importing the read facade can never hand a consumer a dispatch. Scoped to preferences in Slice 13a; grows to sharedView (13b) and mapState (13c).",
-            from: { path: "^app/codeCharta/preferences/preferences\\.read\\.facade\\.ts$" },
-            to: { path: ["^app/codeCharta/preferences/store/.*\\.actions\\.ts$"] }
+            from: {
+                path: [
+                    "^app/codeCharta/preferences/preferences\\.read\\.facade\\.ts$",
+                    "^app/codeCharta/sharedView/sharedView\\.read\\.facade\\.ts$"
+                ]
+            },
+            to: {
+                path: [
+                    "^app/codeCharta/preferences/store/.*\\.actions\\.ts$",
+                    "^app/codeCharta/sharedView/store/.*\\.actions\\.ts$"
+                ]
+            }
         },
         {
             name: "display-components-cannot-dispatch",
@@ -333,7 +348,12 @@ module.exports = {
             comment:
                 "Display components (features/**/*.component.ts) render state and emit UI events; they never dispatch a state-home action. A component must not import a home write facade — it reads via a selector/feature-store and delegates writes to its feature's store service. Already 0 violations. Scoped to preferences in Slice 13a; grows to sharedView (13b) and mapState (13c).",
             from: { path: "^app/codeCharta/features/.*\\.component\\.ts$", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: { path: ["^app/codeCharta/preferences/preferences\\.write\\.facade\\.ts$"] }
+            to: {
+                path: [
+                    "^app/codeCharta/preferences/preferences\\.write\\.facade\\.ts$",
+                    "^app/codeCharta/sharedView/sharedView\\.write\\.facade\\.ts$"
+                ]
+            }
         }
     ],
     options: {

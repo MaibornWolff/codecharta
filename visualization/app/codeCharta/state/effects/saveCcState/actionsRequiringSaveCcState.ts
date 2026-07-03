@@ -35,7 +35,7 @@ import {
     setColorMetric,
     setAreaMetric
 } from "../../../mapState/mapState.facade"
-import { setSearchPattern, setAllFocusedNodes, unfocusAllNodes, focusNode, unfocusNode } from "../../../sharedView/sharedView.facade"
+import { setSearchPattern, setAllFocusedNodes, unfocusAllNodes, focusNode, unfocusNode } from "../../../sharedView/sharedView.write.facade"
 
 // Slice 10b: the ex-appSettings / ex-dynamicSettings grab-bag action lists (appSettingsActions,
 // dynamicSettingsActions) were dissolved together with those reducers. The exact set of actions that

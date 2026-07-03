@@ -9,8 +9,8 @@ import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { blacklistSelector } from "../../../sharedView/sharedView.facade"
-import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../sharedView/sharedView.facade"
+import { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
+import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../sharedView/sharedView.write.facade"
 import { FILE_STATES_JAVA } from "../../../mocks/dataMocks"
 
 describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {

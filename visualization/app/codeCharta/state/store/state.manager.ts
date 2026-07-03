@@ -7,7 +7,7 @@ import {
     defaultCurrentFilesAreSampleFiles
 } from "../../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
 import { defaultMapState, mapState } from "../../mapState/mapState.facade"
-import { defaultSharedView, sharedView } from "../../sharedView/sharedView.facade"
+import { defaultSharedView, sharedView } from "../../sharedView/sharedView.read.facade"
 import { defaultMetricsLensSource, metricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
 import { ActionReducer } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"

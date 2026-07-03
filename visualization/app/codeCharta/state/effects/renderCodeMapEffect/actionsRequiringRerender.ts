@@ -27,9 +27,9 @@ import { setMaxTreeMapFiles } from "../../../preferences/preferences.write.facad
 import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../mapState/mapState.facade"
 import { setColorMode } from "../../../mapState/store/colorMode/colorMode.actions"
 import { setColorRange } from "../../../mapState/store/colorRange/colorRange.actions"
-import { setAllFocusedNodes, focusNode, unfocusAllNodes, unfocusNode, setSearchPattern } from "../../../sharedView/sharedView.facade"
+import { setAllFocusedNodes, focusNode, unfocusAllNodes, unfocusNode, setSearchPattern } from "../../../sharedView/sharedView.write.facade"
 import { setMargin } from "../../../mapState/store/margin/margin.actions"
-import { setMarkedPackages, markPackages, unmarkPackage } from "../../../sharedView/sharedView.facade"
+import { setMarkedPackages, markPackages, unmarkPackage } from "../../../sharedView/sharedView.write.facade"
 import { setState } from "../../store/state.actions"
 
 export const actionsRequiringRerender = [

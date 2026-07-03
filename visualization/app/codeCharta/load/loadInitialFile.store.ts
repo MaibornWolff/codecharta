@@ -35,9 +35,9 @@ import {
     setShowOutgoingEdges
 } from "../mapState/mapState.facade"
 import { setAttributeTypes, setAttributeDescriptors } from "../lenses/metrics/metricsLens.load.facade"
-import { setBlacklist } from "../sharedView/sharedView.facade"
+import { setBlacklist } from "../sharedView/sharedView.write.facade"
 import { setEdges } from "../state/store/fileSettings/edges/edges.actions"
-import { setMarkedPackages } from "../sharedView/sharedView.facade"
+import { setMarkedPackages } from "../sharedView/sharedView.write.facade"
 import { setAreaMetric, setHeightMetric, setEdgeMetric, setColorMetric, setDistributionMetric } from "../mapState/mapState.facade"
 import {
     setSortingOption,
@@ -48,8 +48,8 @@ import {
     setScreenshotToClipboardEnabled,
     setIsColorMetricLinkedToHeightMetricAction
 } from "../preferences/preferences.write.facade"
-import { setAllFocusedNodes } from "../sharedView/sharedView.facade"
-import { setSearchPattern } from "../sharedView/sharedView.facade"
+import { setAllFocusedNodes } from "../sharedView/sharedView.write.facade"
+import { setSearchPattern } from "../sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {

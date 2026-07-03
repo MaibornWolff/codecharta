@@ -8,7 +8,7 @@ export { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLen
 
 // blacklist moved to the sharedView home (Slice 9b); re-export its selector so this feature keeps a
 // single `3dPrint.selectors` import surface.
-export { blacklistSelector } from "../../../sharedView/sharedView.facade"
+export { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
 
 export const areaMetricSelector = createSelector(mapStateSelector, mapState => mapState.areaMetric)
 
