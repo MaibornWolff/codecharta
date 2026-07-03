@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store"
 import { SortingOption } from "../../../codeCharta.model"
-import { setSortingOption } from "./sortingOption.actions"
+import { setSortingOption } from "./sorting.actions"
 import { setState } from "../../../util/setState.reducer.factory"
 
 export const defaultSortingOption = SortingOption.NAME

@@ -1,5 +1,5 @@
-import { sortingOption } from "./sortingOption.reducer"
-import { setSortingOption } from "./sortingOption.actions"
+import { sortingOption } from "./sorting.reducer"
+import { setSortingOption } from "./sorting.actions"
 import { SortingOption } from "../../../codeCharta.model"
 
 describe("sortingOption", () => {
