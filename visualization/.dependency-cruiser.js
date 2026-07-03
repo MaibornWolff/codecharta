@@ -295,6 +295,14 @@ module.exports = {
                 ]
             }
         },
+        {
+            name: "lens-no-view-state",
+            severity: "error",
+            comment:
+                "A lens is data/projection, never a reader of mutable VIEW STATE. Lens code (lenses/**) must not import a state home — mapState (map-view settings + transient interaction ids), sharedView (focus/search/blacklist/markedPackages) or preferences — nor any view-state selector; selection/blacklist/edge-visibility reach a lens only as explicit parameters passed by the composing layer. Authored at error in Slice 14a: precondition grep-verified 0 violations across all 15 lens source files (Slice 7 lifted the metrics lens's blacklist/dynamicSettings reads, Slice 9b the dependency lens's blacklist/showEdges reads, into state/selectors). Freezes the 'lenses never read view state' invariant ahead of Slice 14's structure lens + renderer-agnostic id + valueOf(id), which must not re-couple a lens to a home. Spec/e2e exempt (test wiring).",
+            from: { path: "^app/codeCharta/lenses/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: { path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/", "^app/codeCharta/preferences/"] }
+        },
 
         /* ───────────── Visualization 2.0 — Slice 13 CQRS: read/write facade split ─────────────
          * Each state home's single public barrel splits into a READ facade (selectors + root selector +
