@@ -128,10 +128,11 @@ module.exports = {
             }
         },
 
-        /* ───────────── Visualization 2.0 — Slice 1 lens/fileStore boundary (staged at warn) ─────────────
-         * Scoped to the dirs that exist this slice (lenses/metrics, fileStore). Step 7 flips the 7
-         * lens-internal rules to `error` and keeps `metrics-lens-ngrx-guard` + `new-must-not-import-legacy`
-         * at `warn` (documented temporary bridges). See migration-2-0-plans/rpi-plan/step-1-skeleton-and-model.md. */
+        /* ───────────── Visualization 2.0 — Slice 1 lens/fileStore boundary ─────────────
+         * Scoped to the dirs that exist this slice (lenses/metrics, fileStore). The 7 lens-internal
+         * rules + `metrics-lens-ngrx-guard` are now `error` (the guard flipped in Slice 11 once the
+         * legend re-homed out of lenses/); `new-must-not-import-legacy` stays the last `warn` bridge
+         * until state/ becomes interaction/appearance. See migration-2-0-plans/rpi-plan/step-1-skeleton-and-model.md. */
         {
             name: "lens-no-ui-dependency",
             severity: "error",
@@ -245,16 +246,12 @@ module.exports = {
         },
         {
             name: "metrics-lens-ngrx-guard",
-            severity: "warn",
+            severity: "error",
             comment:
-                "Lens code may import @ngrx/store only from a lens's repos/store (or a lens feature's stores/selectors). Staged at warn now so step 7 only flips it; stays warn until viewState/appearance land.",
+                "Lens code may import @ngrx/store only from a lens's repos/store. Enforced at error since Slice 11 re-homed the legend out of lenses/ — the last lens-code ngrx injection (legend.service) is gone, and the abandoned lenses/*/features/ 'shell' model no longer exists.",
             from: {
                 path: "^app/codeCharta/lenses/",
-                pathNot: [
-                    "^app/codeCharta/lenses/[^/]+/(repos|store)/",
-                    "^app/codeCharta/lenses/[^/]+/features/[^/]+/(stores|selectors)/",
-                    "\\.spec\\.ts$"
-                ]
+                pathNot: ["^app/codeCharta/lenses/[^/]+/(repos|store)/", "\\.spec\\.ts$"]
             },
             to: { path: "@ngrx/store" }
         },

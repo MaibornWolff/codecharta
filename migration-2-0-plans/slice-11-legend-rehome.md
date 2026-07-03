@@ -1,7 +1,7 @@
 ---
 name: viz-2.0-slice-11-legend-rehome
 issue:
-state: progress
+state: complete
 version: 1
 ---
 
@@ -57,9 +57,21 @@ rewire-in-place → move → flip.
 
 ## Steps
 
-- [ ] Complete Task 1: rewire in place (stores + service), guard warning cleared
-- [ ] Complete Task 2: git mv legend → features/legend/ + repoint
-- [ ] Complete Task 3: dep-cruiser flip (+ new rule) + CF #4 re-evaluation + docs
+- [x] Complete Task 1: rewire in place (stores + service), guard warning cleared (commit `e056b794b`)
+- [x] Complete Task 2: git mv legend → features/legend/ + repos→facade + repoint (commit `d319676d1`)
+- [x] Complete Task 3: dep-cruiser flip + CF #4 re-evaluation + docs
+
+## Review Feedback Addressed
+
+1. **`lens-internals-do-not-use-own-lens-facade` (error) caught mid-rewire**: swapping legend.service to
+   `MetricsLensFacade` while legend was STILL inside the lens violated this rule. Reordered so the
+   repos→facade swap lands with the git mv (once legend is an outside consumer), not in step 1.
+2. **New rule not needed**: the roadmap's proposed `feature-services-reach-a-lens-only-via-its-facade` is
+   already subsumed by the `error`-level `lens-external-access-only-via-public-surface` (outside code may
+   touch a lens only via its facade / a feature's components — never services/repos/stores). Not added.
+3. **CF #4 → HOLD**: the original target (`lenses/metrics/features/`) is the very model this slice deleted.
+   `metricSelectPopover`/`metricColorRangeDiagram` already live in `features/metricsBar/` and read the lens
+   only via `MetricsLensFacade`, so they are boundary-clean; no move without a future single-lens-UI home.
 
 ## Notes
 
