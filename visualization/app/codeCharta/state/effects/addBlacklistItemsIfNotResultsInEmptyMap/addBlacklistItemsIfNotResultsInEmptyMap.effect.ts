@@ -5,7 +5,7 @@ import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../.
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { blacklistSelector } from "../../../sharedView/sharedView.facade"
 import { resultsInEmptyMap } from "./resultsInEmptyMap"
-import { ErrorDialogService } from "../../../features/shared/components/errorDialog/errorDialog.service"
+import { ErrorDialogService } from "../../../util/errorDialog/errorDialog.service"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"

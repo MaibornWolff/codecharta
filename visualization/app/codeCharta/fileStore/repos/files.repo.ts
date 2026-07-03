@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { FileState } from "../../model/files/files"
-import { referenceFileSelector } from "../../state/selectors/referenceFile/referenceFile.selector"
+import { referenceFileSelector } from "../store/referenceFile.selector"
 import { setCurrentFilesAreSampleFiles } from "../store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import { setFiles, setStandardByNames, visibleFileStatesSelector } from "../store/files.store"
 

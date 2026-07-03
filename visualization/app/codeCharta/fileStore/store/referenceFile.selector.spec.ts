@@ -1,4 +1,4 @@
-import { FileSelectionState } from "../../../model/files/files"
+import { FileSelectionState } from "../../model/files/files"
 import { _getReferenceFile } from "./referenceFile.selector"
 
 describe("referenceFileSelector", () => {

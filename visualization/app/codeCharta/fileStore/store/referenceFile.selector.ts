@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { FileSelectionState, FileState } from "../../../model/files/files"
-import { filesSelector } from "../../../fileStore/store/files.selector"
+import { FileSelectionState, FileState } from "../../model/files/files"
+import { filesSelector } from "./files.selector"
 
 type Selectable = Pick<FileState, "selectedAs">
 type SelectableFile<File> = Selectable & { file: File }

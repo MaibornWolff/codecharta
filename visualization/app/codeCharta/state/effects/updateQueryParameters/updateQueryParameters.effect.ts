@@ -6,7 +6,7 @@ import { CcState } from "../../../codeCharta.model"
 import { LoadInitialFileService } from "../../../fileStore/fileStore.facade"
 import { edgeMetricDataSelector } from "../../selectors/edgeMetricData/edgeMetricData.selector"
 import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
-import { MetricQueryParemter } from "./metricQueryParameter"
+import { MetricQueryParemter } from "../../../util/queryParameter/metricQueryParameter"
 
 @Injectable()
 export class UpdateQueryParametersEffect {
