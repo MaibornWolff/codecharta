@@ -23,7 +23,7 @@ export function migrateCcStateRecordToV3<T>(state: T): T {
         return state
     }
     const appSettings = { ...(state["appSettings"] as Record<string, unknown>) }
-    const mapState: Record<string, unknown> = { ...defaultMapState, ...((state["mapState"] as Record<string, unknown>) ?? {}) }
+    const mapState: Record<string, unknown> = { ...defaultMapState, ...(state["mapState"] as Record<string, unknown>) }
     for (const key of Object.keys(defaultMapState)) {
         if (key in appSettings) {
             mapState[key] = appSettings[key]
@@ -49,7 +49,7 @@ export function migrateCcStateRecordToV4<T>(state: T): T {
         return state
     }
     const record = state as Record<string, unknown>
-    const mapState: Record<string, unknown> = { ...defaultMapState, ...((record["mapState"] as Record<string, unknown>) ?? {}) }
+    const mapState: Record<string, unknown> = { ...defaultMapState, ...(record["mapState"] as Record<string, unknown>) }
     const next: Record<string, unknown> = { ...record }
     for (const [home, keys] of Object.entries(V4_MOVES)) {
         const source = record[home]
@@ -82,7 +82,7 @@ export function migrateCcStateRecordToV5<T>(state: T): T {
         return state
     }
     const record = state as Record<string, unknown>
-    const mapState: Record<string, unknown> = { ...defaultMapState, ...((record["mapState"] as Record<string, unknown>) ?? {}) }
+    const mapState: Record<string, unknown> = { ...defaultMapState, ...(record["mapState"] as Record<string, unknown>) }
     const next: Record<string, unknown> = { ...record }
     for (const [home, keys] of Object.entries(V5_MOVES)) {
         const source = record[home]
@@ -117,7 +117,7 @@ export function migrateCcStateRecordToV6<T>(state: T): T {
         return state
     }
     const record = state as Record<string, unknown>
-    const sharedView: Record<string, unknown> = { ...defaultSharedView, ...((record["sharedView"] as Record<string, unknown>) ?? {}) }
+    const sharedView: Record<string, unknown> = { ...defaultSharedView, ...(record["sharedView"] as Record<string, unknown>) }
     const next: Record<string, unknown> = { ...record }
     for (const [home, keys] of Object.entries(V6_MOVES)) {
         const source = record[home]
@@ -153,7 +153,7 @@ export function migrateCcStateRecordToV7<T>(state: T): T {
     const record = state as Record<string, unknown>
     const metricsLensSource: Record<string, unknown> = {
         ...defaultMetricsLensSource,
-        ...((record["metricsLensSource"] as Record<string, unknown>) ?? {})
+        ...(record["metricsLensSource"] as Record<string, unknown>)
     }
     const next: Record<string, unknown> = { ...record }
     for (const [home, keys] of Object.entries(V7_MOVES)) {
@@ -188,7 +188,7 @@ export function migrateCcStateRecordToV8<T>(state: T): T {
         return state
     }
     const record = state as Record<string, unknown>
-    const sharedView: Record<string, unknown> = { ...defaultSharedView, ...((record["sharedView"] as Record<string, unknown>) ?? {}) }
+    const sharedView: Record<string, unknown> = { ...defaultSharedView, ...(record["sharedView"] as Record<string, unknown>) }
     const next: Record<string, unknown> = { ...record }
     for (const [home, keys] of Object.entries(V8_MOVES)) {
         const source = record[home]
@@ -221,7 +221,7 @@ export function migrateCcStateRecordToV9<T>(state: T): T {
         return state
     }
     const record = state as Record<string, unknown>
-    const sharedView: Record<string, unknown> = { ...defaultSharedView, ...((record["sharedView"] as Record<string, unknown>) ?? {}) }
+    const sharedView: Record<string, unknown> = { ...defaultSharedView, ...(record["sharedView"] as Record<string, unknown>) }
     const next: Record<string, unknown> = { ...record }
     for (const [home, keys] of Object.entries(V9_MOVES)) {
         const source = record[home]
@@ -297,7 +297,7 @@ export function migrateCcStateRecordToV11<T>(state: T): T {
     const record = state as Record<string, unknown>
     const preferences: Record<string, unknown> = {
         ...defaultPreferences,
-        ...((record["preferences"] as Record<string, unknown>) ?? {})
+        ...(record["preferences"] as Record<string, unknown>)
     }
     const next: Record<string, unknown> = { ...record }
     const appSettings = record["appSettings"]
@@ -357,7 +357,7 @@ export function migrateCcStateRecordToV13<T>(state: T): T {
     const record = state as Record<string, unknown>
     const dependencyLensSource: Record<string, unknown> = {
         ...defaultDependencyLensSource,
-        ...((record["dependencyLensSource"] as Record<string, unknown>) ?? {})
+        ...(record["dependencyLensSource"] as Record<string, unknown>)
     }
     const next: Record<string, unknown> = { ...record }
     const metricsLensSource = record["metricsLensSource"]
@@ -398,6 +398,33 @@ export async function deleteCcState() {
     await tx.done
 }
 
+// The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
+// (v(N-1))-shaped blob into vN. A blob written at oldVersion runs every transform whose target version it
+// predates, in ascending order (a v2 blob runs v3→…→v13; a v12 blob runs only v13).
+const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
+    { version: 3, migrate: migrateCcStateRecordToV3 },
+    { version: 4, migrate: migrateCcStateRecordToV4 },
+    { version: 5, migrate: migrateCcStateRecordToV5 },
+    { version: 6, migrate: migrateCcStateRecordToV6 },
+    { version: 7, migrate: migrateCcStateRecordToV7 },
+    { version: 8, migrate: migrateCcStateRecordToV8 },
+    { version: 9, migrate: migrateCcStateRecordToV9 },
+    { version: 10, migrate: migrateCcStateRecordToV10 },
+    { version: 11, migrate: migrateCcStateRecordToV11 },
+    { version: 12, migrate: migrateCcStateRecordToV12 },
+    { version: 13, migrate: migrateCcStateRecordToV13 }
+]
+
+function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {
+    let migrated = state
+    for (const { version, migrate } of CCSTATE_RECORD_MIGRATIONS) {
+        if (oldVersion < version) {
+            migrated = migrate(migrated)
+        }
+    }
+    return migrated
+}
+
 export async function openCodeChartaDB() {
     return openDB(DB_NAME, DB_VERSION, {
         async upgrade(database, oldVersion, _newVersion, transaction) {
@@ -419,40 +446,7 @@ export async function openCodeChartaDB() {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
                 if (record?.state) {
-                    let migrated = record.state
-                    if (oldVersion < 3) {
-                        migrated = migrateCcStateRecordToV3(migrated)
-                    }
-                    if (oldVersion < 4) {
-                        migrated = migrateCcStateRecordToV4(migrated)
-                    }
-                    if (oldVersion < 5) {
-                        migrated = migrateCcStateRecordToV5(migrated)
-                    }
-                    if (oldVersion < 6) {
-                        migrated = migrateCcStateRecordToV6(migrated)
-                    }
-                    if (oldVersion < 7) {
-                        migrated = migrateCcStateRecordToV7(migrated)
-                    }
-                    if (oldVersion < 8) {
-                        migrated = migrateCcStateRecordToV8(migrated)
-                    }
-                    if (oldVersion < 9) {
-                        migrated = migrateCcStateRecordToV9(migrated)
-                    }
-                    if (oldVersion < 10) {
-                        migrated = migrateCcStateRecordToV10(migrated)
-                    }
-                    if (oldVersion < 11) {
-                        migrated = migrateCcStateRecordToV11(migrated)
-                    }
-                    if (oldVersion < 12) {
-                        migrated = migrateCcStateRecordToV12(migrated)
-                    }
-                    if (oldVersion < 13) {
-                        migrated = migrateCcStateRecordToV13(migrated)
-                    }
+                    const migrated = migrateCcStateRecord(record.state, oldVersion)
                     await store.put({ ...record, state: migrated })
                 }
             }

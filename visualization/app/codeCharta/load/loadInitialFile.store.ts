@@ -41,14 +41,17 @@ import {
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName,
     setShowOnlyBuildingsWithEdges,
-    setShowOutgoingEdges
+    setShowOutgoingEdges,
+    setAreaMetric,
+    setHeightMetric,
+    setEdgeMetric,
+    setColorMetric,
+    setDistributionMetric
 } from "../mapState/mapState.write.facade"
 import { setAttributeTypes, setAttributeDescriptors } from "../lenses/metrics/metricsLens.load.facade"
 import { setEdgeAttributeTypes } from "../lenses/dependency/dependencyLens.load.facade"
-import { setBlacklist } from "../sharedView/sharedView.write.facade"
+import { setBlacklist, setMarkedPackages, setAllFocusedNodes, setSearchPattern } from "../sharedView/sharedView.write.facade"
 import { setEdges } from "../state/store/fileSettings/edges/edges.actions"
-import { setMarkedPackages } from "../sharedView/sharedView.write.facade"
-import { setAreaMetric, setHeightMetric, setEdgeMetric, setColorMetric, setDistributionMetric } from "../mapState/mapState.write.facade"
 import {
     setSortingOption,
     setPresentationMode,
@@ -58,12 +61,19 @@ import {
     setScreenshotToClipboardEnabled,
     setIsColorMetricLinkedToHeightMetricAction
 } from "../preferences/preferences.write.facade"
-import { setAllFocusedNodes } from "../sharedView/sharedView.write.facade"
-import { setSearchPattern } from "../sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {
     private static readonly optionalMapStateKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
+
+    // runtime-only map flag + transient interaction ids; never restored from a previous session's
+    // persisted state (appStatus was never applied on load).
+    private static readonly ignoredMapStateKeys = new Set<keyof MapState>([
+        "isLoadingMap",
+        "hoveredNodeId",
+        "selectedBuildingId",
+        "rightClickedNodeData"
+    ])
 
     constructor(
         private readonly store: Store,
@@ -217,14 +227,11 @@ export class LoadInitialFileStore {
     }
 
     private mapFileSettingToAction(key: keyof FileSettings, value: any) {
-        switch (key) {
-            case "edges":
-                this.store.dispatch(setEdges({ value }))
-                break
-            default: {
-                throw new Error(`Unhandled key: ${key}`)
-            }
+        if (key === "edges") {
+            this.store.dispatch(setEdges({ value }))
+            return
         }
+        throw new Error(`Unhandled key: ${key}`)
     }
 
     private mapMetricsLensSourceToAction(key: keyof MetricsLensSource, value: any) {
@@ -242,14 +249,11 @@ export class LoadInitialFileStore {
     }
 
     private mapDependencyLensSourceToAction(key: keyof DependencyLensSource, value: any) {
-        switch (key) {
-            case "attributeTypes":
-                this.store.dispatch(setEdgeAttributeTypes({ value }))
-                break
-            default: {
-                throw new Error(`Unhandled key: ${key}`)
-            }
+        if (key === "attributeTypes") {
+            this.store.dispatch(setEdgeAttributeTypes({ value }))
+            return
         }
+        throw new Error(`Unhandled key: ${key}`)
     }
 
     private mapSharedViewToAction(key: keyof SharedView, value: any) {
@@ -310,6 +314,9 @@ export class LoadInitialFileStore {
     }
 
     private mapMapStateToAction(key: keyof MapState, value: any) {
+        if (LoadInitialFileStore.ignoredMapStateKeys.has(key)) {
+            return
+        }
         switch (key) {
             case "amountOfTopLabels":
                 this.store.dispatch(setAmountOfTopLabels({ value }))
@@ -400,13 +407,6 @@ export class LoadInitialFileStore {
                 break
             case "distributionMetric":
                 this.store.dispatch(setDistributionMetric({ value }))
-                break
-            case "isLoadingMap":
-            case "hoveredNodeId":
-            case "selectedBuildingId":
-            case "rightClickedNodeData":
-                // runtime-only map flag + transient interaction ids; never restored from a
-                // previous session's persisted state (appStatus was never applied on load).
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

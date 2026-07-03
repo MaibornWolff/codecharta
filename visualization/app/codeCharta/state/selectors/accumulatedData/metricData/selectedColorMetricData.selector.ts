@@ -1,5 +1,3 @@
-import { metricRangeSelector } from "../../nodeMetricData/nodeMetricData.selector"
-
 export type MetricMinMax = {
     minValue: number
     maxValue: number
@@ -10,4 +8,4 @@ export type MetricMinMax = {
  * kept as a thin re-export so the render/effect consumers stay drop-in until a later slice points them
  * at the facade directly. Collapsing onto the lens selector removes the Slice-1 duplicate implementation.
  */
-export const selectedColorMetricDataSelector = metricRangeSelector
+export { metricRangeSelector as selectedColorMetricDataSelector } from "../../nodeMetricData/nodeMetricData.selector"

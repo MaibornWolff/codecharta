@@ -5,8 +5,7 @@ import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileS
 import { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
 import { hoveredNodeIdSelector } from "../../../mapState/store/hoveredNodeId/hoveredNodeId.selector"
 import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
-import { setHoveredNodeId } from "../../../mapState/mapState.write.facade"
-import { setRightClickedNodeData } from "../../../mapState/mapState.write.facade"
+import { setHoveredNodeId, setRightClickedNodeData } from "../../../mapState/mapState.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapMouseEventStore {

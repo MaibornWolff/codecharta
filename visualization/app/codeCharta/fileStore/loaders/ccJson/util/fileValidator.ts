@@ -65,7 +65,7 @@ export function detectApiVersionMajor(content: CcFileContent): number {
 
 export function removeAuthorsAttributes(file: CcFileContent): string[] {
     // 2.0 authors are regular metric attributes (out of scope); nothing to strip for 2.0/empty files.
-    if (isCcJson2(file) || file == null || !file.nodes) {
+    if (isCcJson2(file) || !file?.nodes) {
         return []
     }
     return removeAuthorsAttributeFromNodes(file.nodes)

@@ -1,6 +1,5 @@
-import { ExportBlacklistItem, ExportCCFile } from "../../../../codeCharta.api.model"
+import { ExportBlacklistItem, ExportCCFile, NameDataPair } from "../../../../codeCharta.api.model"
 import { CCFile } from "../../../../codeCharta.model"
-import { NameDataPair } from "../../../../codeCharta.api.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { getCCFile } from "./ccFileHelper"
 import { CCFileValidationResult as FileValidationResult, checkErrors, checkWarnings, removeAuthorsAttributes } from "./fileValidator"

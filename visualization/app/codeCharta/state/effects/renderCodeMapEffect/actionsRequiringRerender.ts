@@ -3,10 +3,16 @@ import {
     invertDeltaColors,
     setAmountOfEdgePreviews,
     setAmountOfTopLabels,
+    setAreaMetric,
     setColorLabels,
+    setColorMetric,
+    setColorMode,
+    setColorRange,
     setEdgeHeight,
+    setEdgeMetric,
     setEnableFloorLabels,
     setGroupLabelCollisions,
+    setHeightMetric,
     setHideFlatBuildings,
     setInvertArea,
     setInvertHeight,
@@ -14,7 +20,9 @@ import {
     setLabelMode,
     setLabelSize,
     setLabelsPerMap,
+    setLayoutAlgorithm,
     setMapColors,
+    setMargin,
     setScaling,
     setShowIncomingEdges,
     setShowMetricLabelNameValue,
@@ -22,14 +30,17 @@ import {
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
 } from "../../../mapState/mapState.write.facade"
-import { setLayoutAlgorithm } from "../../../mapState/mapState.write.facade"
 import { setMaxTreeMapFiles } from "../../../preferences/preferences.write.facade"
-import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../mapState/mapState.write.facade"
-import { setColorMode } from "../../../mapState/mapState.write.facade"
-import { setColorRange } from "../../../mapState/mapState.write.facade"
-import { setAllFocusedNodes, focusNode, unfocusAllNodes, unfocusNode, setSearchPattern } from "../../../sharedView/sharedView.write.facade"
-import { setMargin } from "../../../mapState/mapState.write.facade"
-import { setMarkedPackages, markPackages, unmarkPackage } from "../../../sharedView/sharedView.write.facade"
+import {
+    setAllFocusedNodes,
+    focusNode,
+    unfocusAllNodes,
+    unfocusNode,
+    setSearchPattern,
+    setMarkedPackages,
+    markPackages,
+    unmarkPackage
+} from "../../../sharedView/sharedView.write.facade"
 import { setState } from "../../store/state.actions"
 
 export const actionsRequiringRerender = [

@@ -1,9 +1,8 @@
 import { HttpClient, HttpResponse } from "@angular/common/http"
 import { firstValueFrom } from "rxjs"
-import { NameDataPair } from "../../../../codeCharta.api.model"
+import { NameDataPair, ExportCCFile, ExportWrappedCCFile } from "../../../../codeCharta.api.model"
 import { getCCFileAndDecorateFileChecksum } from "./ccFileHelper"
 import { isCcJson2 } from "./fileValidator"
-import { ExportCCFile, ExportWrappedCCFile } from "../../../../codeCharta.api.model"
 import { CcJson2 } from "../../../../model/ccjson2.model"
 import { ungzip } from "pako"
 

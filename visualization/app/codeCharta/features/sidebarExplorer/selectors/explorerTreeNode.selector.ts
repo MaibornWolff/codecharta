@@ -2,9 +2,8 @@ import { createSelector } from "@ngrx/store"
 import { klona } from "klona"
 
 import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { sortingOrderAscendingSelector } from "../../../preferences/preferences.read.facade"
+import { sortingOrderAscendingSelector, sortingOrderSelector } from "../../../preferences/preferences.read.facade"
 import { areaMetricSelector } from "../../../mapState/mapState.read.facade"
-import { sortingOrderSelector } from "../../../preferences/preferences.read.facade"
 import { sortNodesInPlace } from "./sortNodesInPlace"
 
 export const explorerTreeNodeSelector = createSelector(

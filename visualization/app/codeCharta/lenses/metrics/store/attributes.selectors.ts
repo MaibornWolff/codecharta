@@ -1,6 +1,5 @@
 import { createSelector } from "@ngrx/store"
 import { AttributeTypeValue } from "../../../codeCharta.model"
-import { attributeDescriptorsSelector } from "./attributeDescriptors/attributeDescriptors.selector"
 import { attributeTypesSelector } from "./attributeTypes/attributeTypes.selector"
 
 /**
@@ -18,7 +17,7 @@ import { attributeTypesSelector } from "./attributeTypes/attributeTypes.selector
  * grab-bag). Ratified decision (2026-07-03): attributeTypes/descriptors stay lens-owned — they are NOT
  * file-structure data and do NOT move to the FileStore.
  */
-export const nodeAttributeDescriptorsSelector = attributeDescriptorsSelector
+export { attributeDescriptorsSelector as nodeAttributeDescriptorsSelector } from "./attributeDescriptors/attributeDescriptors.selector"
 
 export const nodeAttributeTypesSelector = createSelector(
     attributeTypesSelector,
