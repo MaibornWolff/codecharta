@@ -250,7 +250,7 @@ export class ThreeSceneService implements OnDestroy {
             if (this.selected) {
                 this.getMapMesh().clearSelection(this.selected)
             }
-            this.threeSceneStore.setSelectedBuildingId(building.node.id)
+            this.threeSceneStore.setSelectedBuildingId(building.node.path)
         }
 
         this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)

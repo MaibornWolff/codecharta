@@ -50,10 +50,10 @@ export class ExplorerTreeLevelComponent implements OnInit {
     readonly rootUnary = toSignal(this.rootUnaryStore.rootUnary$, { requireSync: true })
     readonly buildingIds = toSignal(this.idToBuildingService.buildingIds$, { requireSync: true })
 
-    readonly isHovered = computed(() => this.hoveredNodeId() === this.node().id)
-    readonly isMarked = computed(() => this.rightClickedNodeData()?.nodeId === this.node().id)
+    readonly isHovered = computed(() => this.hoveredNodeId() === this.node().path)
+    readonly isMarked = computed(() => this.rightClickedNodeData()?.nodeId === this.node().path)
     readonly isRevealed = computed(() => this.revealService.revealedNodePath() === this.node().path)
-    readonly isSelected = computed(() => this.selectedBuildingId() === this.node().id)
+    readonly isSelected = computed(() => this.selectedBuildingId() === this.node().path)
     readonly isAreaMetricValid = computed(() => isAreaValid(this.node(), this.areaMetric()))
     readonly isLeafNode = computed(() => isLeaf(this.node()))
     readonly children = computed(() => this.node().children ?? [])
@@ -90,8 +90,8 @@ export class ExplorerTreeLevelComponent implements OnInit {
     }
 
     onMouseEnter($event: MouseEvent) {
-        this.codeMapMouseEventService.hoverNode(this.node().id)
-        this.appStatusStore.setHoveredNodeId(this.node().id)
+        this.codeMapMouseEventService.hoverNode(this.node().path)
+        this.appStatusStore.setHoveredNodeId(this.node().path)
         const rowRect = ($event.currentTarget as HTMLElement).getBoundingClientRect()
         this.codeMapTooltipService.show(this.node(), rowRect.right, rowRect.top)
     }
@@ -128,7 +128,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
         }
 
         this.appStatusStore.setRightClickedNodeData({
-            nodeId: this.node().id,
+            nodeId: this.node().path,
             xPositionOfRightClickEvent: $event.clientX,
             yPositionOfRightClickEvent: $event.clientY,
             origin: "explorer"

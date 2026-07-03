@@ -32,12 +32,12 @@ describe("AppStatusStore", () => {
     describe("hoveredNodeId$", () => {
         it("should emit value from selector", done => {
             // Arrange
-            mockStore.overrideSelector(hoveredNodeIdSelector, 42)
+            mockStore.overrideSelector(hoveredNodeIdSelector, "/root/File.ts")
             mockStore.refreshState()
 
             // Act & Assert
             store.hoveredNodeId$.subscribe(value => {
-                expect(value).toBe(42)
+                expect(value).toBe("/root/File.ts")
                 done()
             })
         })
@@ -46,7 +46,12 @@ describe("AppStatusStore", () => {
     describe("rightClickedNodeData$", () => {
         it("should emit value from selector", done => {
             // Arrange
-            const data = { nodeId: 7, xPositionOfRightClickEvent: 1, yPositionOfRightClickEvent: 2, origin: "explorer" as const }
+            const data = {
+                nodeId: "/root/File.ts",
+                xPositionOfRightClickEvent: 1,
+                yPositionOfRightClickEvent: 2,
+                origin: "explorer" as const
+            }
             mockStore.overrideSelector(rightClickedNodeDataSelector, data)
             mockStore.refreshState()
 
@@ -61,12 +66,12 @@ describe("AppStatusStore", () => {
     describe("selectedBuildingId$", () => {
         it("should emit value from selector", done => {
             // Arrange
-            mockStore.overrideSelector(selectedBuildingIdSelector, 99)
+            mockStore.overrideSelector(selectedBuildingIdSelector, "/root/File.ts")
             mockStore.refreshState()
 
             // Act & Assert
             store.selectedBuildingId$.subscribe(value => {
-                expect(value).toBe(99)
+                expect(value).toBe("/root/File.ts")
                 done()
             })
         })
@@ -75,17 +80,22 @@ describe("AppStatusStore", () => {
     describe("setHoveredNodeId", () => {
         it("should dispatch setHoveredNodeId action with value", async () => {
             // Arrange & Act
-            store.setHoveredNodeId(13)
+            store.setHoveredNodeId("/root/File.ts")
 
             // Assert
-            expect(await getLastAction(mockStore)).toEqual(setHoveredNodeId({ value: 13 }))
+            expect(await getLastAction(mockStore)).toEqual(setHoveredNodeId({ value: "/root/File.ts" }))
         })
     })
 
     describe("setRightClickedNodeData", () => {
         it("should dispatch setRightClickedNodeData action with value", async () => {
             // Arrange
-            const data = { nodeId: 5, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "explorer" as const }
+            const data = {
+                nodeId: "/root/File.ts",
+                xPositionOfRightClickEvent: 10,
+                yPositionOfRightClickEvent: 20,
+                origin: "explorer" as const
+            }
 
             // Act
             store.setRightClickedNodeData(data)

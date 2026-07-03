@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { selectedBuildingIdSelector } from "../../sharedView/sharedView.read.facade"
-import { idToNodeSelector } from "./accumulatedData/idToNode.selector"
+import { pathToNodeSelector } from "./accumulatedData/pathToNode.selector"
 
-export const selectedNodeSelector = createSelector(selectedBuildingIdSelector, idToNodeSelector, (selectedBuildingId, idToNode) =>
-    idToNode?.get(selectedBuildingId)
+export const selectedNodeSelector = createSelector(selectedBuildingIdSelector, pathToNodeSelector, (selectedBuildingId, pathToNode) =>
+    pathToNode?.get(selectedBuildingId)
 )

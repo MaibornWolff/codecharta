@@ -425,7 +425,7 @@ describe("codeMapMouseEventService", () => {
         it("should force an unhover over empty area when the highlight was cleared but the store still hovers a building", () => {
             // Arrange — the highlight was nulled out-of-band (e.g. by a click or a scroll that never re-raycasts)
             // while the store still points at a building, and the cursor is now over empty map area
-            jest.spyOn(codeMapMouseEventService["codeMapMouseEventStore"], "getHoveredNodeId").mockReturnValue(codeMapBuilding.node.id)
+            jest.spyOn(codeMapMouseEventService["codeMapMouseEventStore"], "getHoveredNodeId").mockReturnValue(codeMapBuilding.node.path)
             threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
             threeSceneService.getMapMesh = jest.fn().mockReturnValue({
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(undefined)
@@ -551,7 +551,7 @@ describe("codeMapMouseEventService", () => {
 
             it("should broadcast a building-right-clicked event", () => {
                 codeMapMouseEventService.onDocumentMouseMove(event)
-                codeMapMouseEventService["intersectedBuilding"] = { node: { id: 1 } } as CodeMapBuilding
+                codeMapMouseEventService["intersectedBuilding"] = { node: { id: 1, path: "/root/File.ts" } } as CodeMapBuilding
                 codeMapMouseEventService.onDocumentMouseDown(event)
 
                 codeMapMouseEventService.onDocumentMouseUp(event)
@@ -559,7 +559,7 @@ describe("codeMapMouseEventService", () => {
                 expect(dispatchSpy).toHaveBeenCalledWith(
                     setRightClickedNodeData({
                         value: {
-                            nodeId: 1,
+                            nodeId: "/root/File.ts",
                             xPositionOfRightClickEvent: 0,
                             yPositionOfRightClickEvent: 1,
                             origin: "codeMap"

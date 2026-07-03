@@ -3,6 +3,6 @@ import { hoveredNodeId } from "./hoveredNodeId.reducer"
 
 describe("hoveredNodeId", () => {
     it("should set hovered node id", () => {
-        expect(hoveredNodeId(null, setHoveredNodeId({ value: 42 }))).toBe(42)
+        expect(hoveredNodeId(null, setHoveredNodeId({ value: "/root/File.ts" }))).toBe("/root/File.ts")
     })
 })

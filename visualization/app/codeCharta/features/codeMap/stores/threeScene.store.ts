@@ -30,7 +30,7 @@ export class ThreeSceneStore {
         return idToNodeSelector(this.state.getValue())
     }
 
-    setSelectedBuildingId(value: number | null) {
+    setSelectedBuildingId(value: string | null) {
         this.store.dispatch(setSelectedBuildingId({ value }))
     }
 }

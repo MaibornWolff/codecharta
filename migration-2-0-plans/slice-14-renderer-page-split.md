@@ -133,8 +133,13 @@ so the render side of 14e-2 is nearly free — the coupling to fix is `IdToBuild
   no-op-on-load, dataMocks + specs, IndexedDB v13→v14 `migrateCcStateRecordToV14` nulling the moved ids). Structural,
   behavior-preserving: tsc (root, incl specs) + full suite (2317 tests, **45/45 snapshots zero-diff**) + dep-cruiser 0
   errors. Adversarial review: 1 defect (2 missed `SharedView` inline mocks) found + fixed. `building.id` mesh index untouched.
-- [ ] 14e-2: retype ordinal `number → PATH string` (set-sites → `node.path`, read-sites → `pathToNode`/`getBuildingByPath`,
-  reconcile `IdToBuildingService`/`arrow.service`, v14 nulls the moved ids). Behavioral; I run e2e + attempt screenshot smoke.
+- [x] 14e-2 **DONE (2026-07-03)**: retyped ordinal `number → PATH string` — set-sites emit `node.path`; the 3 resolving
+  selectors switched to a new `pathToNodeSelector`; `hoverNode(id)→hoverNode(path)`; `arrow.service` resolves via
+  `getMapMesh().getBuildingByPath` (dropping `IdToBuildingService`, which STAYS ordinal-keyed for the mesh paths — the two
+  id-spaces stay separate). No migration change (v14 already nulls). Verified: root tsc + **AOT prod build (strictTemplates)**
+  + full suite (2317 tests, **45/45 snapshots zero-diff**) + dep-cruiser 0 errors. **WebGL hover/select highlight NOT
+  runnable in the sandbox** (Playwright unsupported on arm64-ubuntu-26.04; chromium only via snap → no WebGL browser) — the
+  pixel-level "correct building highlights" smoke is a manual check for the user.
 - [ ] 14e-3 (later): NodeDecorator id/metric split; promote `valueOf`/`idToNode` onto the structure/metrics lenses.
 
 ## dep-cruiser rules

@@ -59,16 +59,17 @@ export interface Preferences {
 // still carries blacklist + markedPackages per-file, so CCFile keeps them (see the intersection on
 // CCFile.settings.fileSettings); only the merged STATE root moves here. Slice 14e-1 grew it further with
 // the renderer-agnostic interaction ids (hoveredNodeId/selectedBuildingId/rightClickedNodeData) — they
-// scope what every renderer highlights, so they are shared view state (14e-2 re-expresses them as PATH ids).
+// scope what every renderer highlights, so they are shared view state. Slice 14e-2 re-expressed them as
+// canonical node PATHs (stable across re-decoration/reload; sha-16 only at the serialization boundary).
 export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string
     blacklist: BlacklistItem[]
     markedPackages: MarkedPackage[]
-    hoveredNodeId: number | null
-    selectedBuildingId: number | null
+    hoveredNodeId: string | null
+    selectedBuildingId: string | null
     rightClickedNodeData: {
-        nodeId: number
+        nodeId: string
         xPositionOfRightClickEvent: number
         yPositionOfRightClickEvent: number
         origin: "codeMap" | "explorer"

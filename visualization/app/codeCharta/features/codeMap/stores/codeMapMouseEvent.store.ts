@@ -17,7 +17,7 @@ export class CodeMapMouseEventStore {
     readonly blacklist$ = this.store.select(blacklistSelector)
     readonly hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
 
-    getHoveredNodeId(): number | null {
+    getHoveredNodeId(): string | null {
         return hoveredNodeIdSelector(this.state.getValue())
     }
 
@@ -25,7 +25,7 @@ export class CodeMapMouseEventStore {
         return idToNodeSelector(this.state.getValue())
     }
 
-    setHoveredNodeId(value: number | null) {
+    setHoveredNodeId(value: string | null) {
         this.store.dispatch(setHoveredNodeId({ value }))
     }
 

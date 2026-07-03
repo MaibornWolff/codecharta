@@ -4,7 +4,6 @@ import { Node, EdgeVisibility } from "../../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { IdToBuildingService } from "../idToBuilding.service"
 import { tap } from "rxjs"
 import { debounce } from "../../../util/debounce"
 import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
@@ -23,7 +22,7 @@ export class CodeMapArrowService implements OnDestroy {
         .pipe(
             tap(hoveredNodeId => {
                 if (hoveredNodeId !== null) {
-                    const hoveredBuilding = this.idToBuildingService.get(hoveredNodeId)
+                    const hoveredBuilding = this.threeSceneService.getMapMesh()?.getMeshDescription().getBuildingByPath(hoveredNodeId)
                     this.onBuildingHovered(hoveredBuilding)
                 } else {
                     this.onBuildingUnhovered()
@@ -34,8 +33,7 @@ export class CodeMapArrowService implements OnDestroy {
 
     constructor(
         private readonly codeMapArrowStore: CodeMapArrowStore,
-        private threeSceneService: ThreeSceneService,
-        private readonly idToBuildingService: IdToBuildingService
+        private threeSceneService: ThreeSceneService
     ) {
         this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
         this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)

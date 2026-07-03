@@ -22,7 +22,6 @@ import {
 import { setEdges } from "../../../state/store/fileSettings/edges/edges.actions"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { wait } from "../../../util/testUtils/wait"
-import { IdToBuildingService } from "../idToBuilding.service"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { clone } from "../../../util/clone"
 
@@ -31,7 +30,6 @@ describe("CodeMapArrowService", () => {
     let threeSceneService: ThreeSceneService
     let store: Store<CcState>
     let state: State<CcState>
-    let idToBuildingService: IdToBuildingService
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -40,9 +38,8 @@ describe("CodeMapArrowService", () => {
         threeSceneService = TestBed.inject(ThreeSceneService)
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
-        idToBuildingService = TestBed.inject(IdToBuildingService)
         const codeMapArrowStore = TestBed.inject(CodeMapArrowStore)
-        codeMapArrowService = new CodeMapArrowService(codeMapArrowStore, threeSceneService, idToBuildingService)
+        codeMapArrowService = new CodeMapArrowService(codeMapArrowStore, threeSceneService)
     })
 
     function withMockedThreeSceneService() {

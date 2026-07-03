@@ -16,7 +16,7 @@ export class AppStatusStore {
     rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
     selectedBuildingId$ = this.store.select(selectedBuildingIdSelector)
 
-    setHoveredNodeId(value: null | number) {
+    setHoveredNodeId(value: string | null) {
         this.store.dispatch(setHoveredNodeId({ value }))
     }
 

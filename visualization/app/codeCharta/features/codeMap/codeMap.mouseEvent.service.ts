@@ -103,14 +103,14 @@ export class CodeMapMouseEventService implements OnDestroy {
         )
     }
 
-    hoverNode(id: number) {
+    hoverNode(path: string) {
         if (this.isGrabbingOrMoving()) {
             return
         }
 
         const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
         for (const building of buildings) {
-            if (building.node.id === id) {
+            if (building.node.path === path) {
                 this.hoverBuilding(building, false)
                 break
             }
@@ -329,7 +329,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         // after moving the map, when the cursor ends on a building.
         if (this.intersectedBuilding && !this.hasMouseMovedBeyondThreshold(this.mouseOnLastClick)) {
             this.codeMapMouseEventStore.setRightClickedNodeData({
-                nodeId: this.intersectedBuilding.node.id,
+                nodeId: this.intersectedBuilding.node.path,
                 xPositionOfRightClickEvent: this.mouse.x,
                 yPositionOfRightClickEvent: this.mouse.y,
                 origin: "codeMap"
@@ -381,7 +381,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
         this.threeSceneService.applyHighlights()
         if (updateStore) {
-            this.codeMapMouseEventStore.setHoveredNodeId(hoveredBuilding.node.id)
+            this.codeMapMouseEventStore.setHoveredNodeId(hoveredBuilding.node.path)
         }
     }
 

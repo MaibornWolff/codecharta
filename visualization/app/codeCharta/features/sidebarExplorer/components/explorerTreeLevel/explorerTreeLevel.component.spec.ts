@@ -27,6 +27,8 @@ describe("ExplorerTreeLevelComponent", () => {
 
     const rootNodeId = componentInputs.node.id
     const parentLeafId = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").id
+    const rootNodePath = componentInputs.node.path
+    const parentLeafPath = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").path
     const bigLeafId = componentInputs.node.children.find(childNode => childNode.name === "bigLeaf").id
     const smallLeafId = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").children[0].id
 
@@ -190,7 +192,7 @@ describe("ExplorerTreeLevelComponent", () => {
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(
             setRightClickedNodeData({
-                value: { nodeId: rootNodeId, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "explorer" }
+                value: { nodeId: rootNodePath, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "explorer" }
             })
         )
 
@@ -217,8 +219,8 @@ describe("ExplorerTreeLevelComponent", () => {
 
         // Assert
         await waitFor(() => {
-            expect(codeMapMouseEventService.hoverNode).toHaveBeenCalledWith(parentLeafId)
-            expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: parentLeafId }))
+            expect(codeMapMouseEventService.hoverNode).toHaveBeenCalledWith(parentLeafPath)
+            expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: parentLeafPath }))
         })
 
         // Act
