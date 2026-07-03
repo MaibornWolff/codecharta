@@ -40,12 +40,20 @@ sharedView, files, isLoadingFile, currentFilesAreSampleFiles }`.
   (`mapStateSaveActions` 31 + `sharedViewSaveActions` 5 + `preferencesActions` 10 + fileSettings +
   fileActions + setState); `setStandard` is already in `fileActions`, so dropping the explicit copy
   is net-neutral.
-- **TWO runtime landmines tsc missed** (the same class as Slice 9b's Print3D `getBlacklist`):
-  `State.getValue()` is loosely typed, so `getValue().appSettings` / `.dynamicSettings` compiled but
-  would throw at runtime. `ThreeSceneStore.getAppSettings()` (→ `getPreferences()`, read by
-  threeSceneService for `experimentalFeaturesEnabled`) and `CodeMapTooltipStore.getDynamicSettings()`
-  (returns `preferences` now — the tooltip has destructured undefined metrics since Slice 7; behavior
-  preserved, not "fixed"). Found by grepping `getValue()/getState().<grabbag>`, not by tsc.
+- **THREE runtime landmines tsc missed** (the same class as Slice 9b's Print3D `getBlacklist`):
+  1. `ThreeSceneStore.getAppSettings()` → `getPreferences()` (read by threeSceneService for
+     `experimentalFeaturesEnabled`) — `State.getValue()` is loosely typed, so `getValue().appSettings`
+     compiled but returns `undefined` at runtime.
+  2. `CodeMapTooltipStore.getDynamicSettings()` returns `preferences` now (the tooltip has destructured
+     undefined metrics since Slice 7 — behavior preserved, not "fixed").
+  3. **The "Reset global settings" button** (`globalConfigurationDialog.component.html`) passed five
+     dotted `appSettings.*` keys to `getPartialDefaultState`, which now silently skips them → reset
+     produced an empty patch and reset nothing. Repointed to `mapState.*` / `preferences.*`. **This one
+     lived in an HTML template**, so the initial `--include=*.ts` string-key grep missed it — it was
+     caught by the adversarial review sweep across `.html`. (2 of the 5 keys were Slice-10 regressions;
+     3 had been stale since the Slice 5/6 appearance→mapState move — the service spec already expected
+     mapState for those 3.)
+  Lesson: sweep `.html` templates too, not just `.ts`, for string-path state reads.
 - **Availability gate stays value-identical:** `areAllNecessaryRenderDataAvailable` read
   `{ ...dynamicSettings (= { sortingOption }), ...metrics, colorRange }`; now reads
   `{ sortingOption (from preferencesSelector), ...metrics, colorRange }` — same checked object.
@@ -73,11 +81,18 @@ sharedView, files, isLoadingFile, currentFilesAreSampleFiles }`.
    `explorerSortControl` UI + the two stores; `sorting` object shape; IndexedDB v12). Both prefs already
    live under `preferences`, so this is organizational, not architectural — low value, real cost.
 
+## Adversarial review (3 hunters, post-commit)
+
+Runtime-read hunter, save-trigger-union hunter, migration+applier hunter. Findings: the save-trigger
+union is identical (no persistence regression), the v3→v11 chain + `applyPreferences` + reducer
+registration are all correct, and **one confirmed runtime landmine** — the reset-button template
+(#3 above) — which was then fixed in commit `ebbeeb7`.
+
 ## Gates (all green)
 
 `tsc` clean · `npm test` **2305 passing** (+4 v11 tests, −1 merged applier test), **45/45 snapshots
 zero diff (no `-u`)** · `lint:architecture` **0 errors** / 104 warns. **NOT pushed; no PR** (held for
-the user's word).
+the user's word). Commits: 5 code + 1 docs + 1 landmine fix (`ebbeeb7`).
 
 ## Rollback
 
