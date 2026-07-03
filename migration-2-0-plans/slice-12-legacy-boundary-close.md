@@ -1,7 +1,7 @@
 ---
 name: viz-2.0-slice-12-legacy-boundary-close
 issue:
-state: todo
+state: complete
 version: 1
 ---
 
@@ -40,11 +40,19 @@ are out of scope) — that fuller `state/` dissolution is a later concern.
 - Edge 6: trim the lens store/repo/facade of the view-aware outputs; repoint the ~6 consumers to the read-model selectors directly (selectors unchanged → value-identical/memoization-identical; prove parity before deleting the lens members). Then **flip `new-must-not-import-legacy` `warn → error`** (one-line severity) once dep-cruiser shows 0 violations, and **fix its stale comment** (drop "once state/ becomes interaction/appearance"; it flips once the residue is re-homed). Verify + adversarial review.
 
 ## Steps
-- [ ] 12a: clean re-homes (edges 1,2,3,5)
-- [ ] 12b: LoadInitialFileStore → `load/` (edge 4) + `load/` rule
-- [ ] 12c: metrics-lens inversion (edge 6) → flip the rule + fix its comment
+- [x] 12a: clean re-homes (edges 1,2,3,5) — commit `ccfab7990`
+- [x] 12b: LoadInitialFileStore → `load/` (edge 4) + `load/` rule — commit `c13de5b3d`
+- [x] 12c: metrics-lens inversion (edge 6) → flip the rule + fix its comment — commits `4c135aaf2` (inversion) + `d228cd5e9` (flip)
 
 ## Notes
 - Behaviour-preserving end-to-end; Tidy First (structural vs behavioral commits), snapshots byte-identical.
 - The flip lands ONLY in 12c, after all 6 edges are gone (mirrors how `state-home-is-leaf` flipped only when the last home landed).
 - Scoping evidence: 4-agent workflow (errorDialog / loader-state-helpers / state-selector-reads / rule-numbering-safety).
+
+## Outcome (DONE)
+- `new-must-not-import-legacy` is now `error` with **0 violations**; dep-cruiser 0 errors overall.
+- 12a: `util/errorDialog/`, `util/queryParameter/`, `fileStore/store/referenceFile.selector` (git-mv + repoints).
+- 12b: new neutral `app/codeCharta/load/` layer holds `LoadInitialFileStore`; added rule `load-orchestrator-not-imported-by-lower-layers` (homes/lenses/renderers/shell must not import `load/`; the fileStore loader is the sole driver — a follow-up may move the loader in too to drop even that edge).
+- 12c: metrics-lens store/repo/facade lost the view-aware surface (`AttributesRepo` deleted); the 5 consumers read `nodeMetricDataSelector`/`metricRangeSelector` from `state/selectors/nodeMetricData` through their own feature stores (`codeMap.render.service`, `Print3DStateAccessStore`, `ColorRange` store/service, `LegendMapStateStore`). Value/memoization-identical (`selectedColorMetricDataSelector === metricRangeSelector`; `getNodeMetricData()` === `nodeMetricDataSelector(state)`).
+- Verified: tsc 0, biome clean, dep-cruiser 0 errors, full unit suite 385 suites / 2308 tests green, 45 snapshots byte-identical. Adversarially reviewed (4 lenses + verify): 0 parity/consumer/test/boundary defects.
+- Follow-ups (optional, not blocking): move `LoadInitialFileService` loader into `load/` (larger blast radius via `fileStore.facade`); the fuller `state/` → interaction/appearance dissolution stays a later concern (this slice only cleared the `lenses|fileStore` residue).
