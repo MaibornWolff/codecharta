@@ -340,13 +340,13 @@ each **once** so later slices only *add a key*:
 | `lens-no-renderer-or-page` | a lens never depends on UI | already error (inert-safe) |
 | `lens-cross-lens-only-via-read-facade` · `lens-internals-do-not-use-own-facade` | lenses compose only via read facades | already error |
 | `lens-external-access-only-via-public-surface` | a lens is reached only via its facade | already error; drop the `features/…/components/` exemption in **11** |
-| `lens-owns-ccjson-source` | edges/attributeTypes/descriptors live only under lenses | **9a ✅ (warn)** — added at warn; flips to error once edges also move to a dependency-lens store |
+| `lens-owns-ccjson-source` | edges/attributeTypes/descriptors live only under lenses | **9a (warn) → post-13 ✅ error** — flipped decoupled from the edges move (node sources already lens-owned; edge side extends the rule via the future dependency-lens store, CF #2) |
 | `lens-only-repos-store-import-ngrx` (evolved `metrics-lens-ngrx-guard`) | only lens repos/store touch ngrx | **11** |
 | `lens-no-view-state` | **a lens never reads mutable view state** (selection/blacklist/edge-visibility are parameters) — kills the `valueOf` coupling | **14** *(gated on 7 + 9b lifting all view-state reads out of both lenses)* |
 | `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6 ✅**, sharedView **8 ✅**, preferences **10** |
 | `state-home-only-stores-import-ngrx` | only a home's store touches ngrx | mapState **6 ✅** / sharedView **8 ✅** / preferences **10** |
 | `state-home-read-facade-has-no-dispatch` · `…-write-facade-is-sole-dispatch-surface` · `display-components-cannot-dispatch` | CQRS: read facade can't dispatch | **13 ✅** — all 3 added at **error**, growing home-by-home (13a prefs → 13b sharedView → 13c mapState), 0 violations tree-wide |
-| `feature-reaches-state-home-only-via-facade` | features mutate state only via a home facade | mapState **7** / sharedView **8** (both deferred — no rule added; the ~18 sharedView consumers already reach it via `sharedView.facade`, enforcement folds into the Slice-12 CQRS split), prefs **10** |
+| `feature-reaches-state-home-only-via-facade` | outside code reaches a home only via its facade (no raw store/ import) | **sharedView ✅ + preferences ✅ (post-13, error, 0 violations, no exemptions needed)**; **mapState still EXCLUDED** — ~12 raw `store/*.selector` imports remain, fold onto MapStateReadWindow / the read facade in the CF #9 read-window dedup, then mapState joins the rule |
 | `feature-services-reach-a-lens-only-via-its-facade` (+ retire the 5 lens-internal-feature rules) | features reach a lens only via its facade | **11** |
 | `filestore-external-access-only-via-facade` | fileStore reached only via its facade | **9a/10** |
 | `filestore-has-no-upward-deps` · `wire-dto-only-in-filestore-boundary` | fileStore is the source; wire DTO confined | already error (names evolved) |
