@@ -10,7 +10,6 @@ import {
     GeometryOptions,
     Preview3DPrintMesh
 } from "../../3DExports/3DPreview/preview3DPrintMesh"
-import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
 import { ThreeSceneService } from "../../../../features/codeMap/facade"
 import { FileDownloader } from "../../../../util/fileDownloader"
 import { FileNameHelper } from "../../../../util/fileNameHelper"
@@ -81,8 +80,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
 
     constructor(
         private readonly stateAccessStore: Print3DStateAccessStore,
-        private readonly threeSceneService: ThreeSceneService,
-        private readonly metricsLensFacade: MetricsLensFacade
+        private readonly threeSceneService: ThreeSceneService
     ) {
         this.exportMesh = this.threeSceneService.getMapMesh().toExportMesh()
         const initialMaxWidth = calculateMaxPossibleWidthForPreview3DPrintMesh(
@@ -104,7 +102,7 @@ export class Export3DMapDialogComponent implements AfterViewInit {
         this.heightMetric = this.stateAccessStore.getHeightMetric()
         this.colorMetric = this.stateAccessStore.getColorMetric()
 
-        const nodeMetricData = this.metricsLensFacade.getNodeMetricData()
+        const nodeMetricData = this.stateAccessStore.getNodeMetricData()
         this.nodeMetricData = nodeMetricData.filter(
             metric => metric.name === this.areaMetric || metric.name === this.heightMetric || metric.name === this.colorMetric
         )

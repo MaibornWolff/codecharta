@@ -36,15 +36,23 @@ import { setFiles } from "../../fileStore/store/files.actions"
 import { setHeightMetric } from "../../mapState/mapState.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { MetricsLensFacade } from "../../lenses/metrics/metricsLens.facade"
+import { nodeMetricDataSelector } from "../../state/selectors/nodeMetricData/nodeMetricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
-const metricsLensFacadeDouble: Pick<MetricsLensFacade, "getNodeMetricData"> = { getNodeMetricData: () => METRIC_DATA }
 jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
     metricDataSelector: jest.fn()
+}))
+
+// The render service reads node metrics via nodeMetricDataSelector(state) (Slice 12c: no longer through
+// the metrics-lens facade). Stub only that export — metricRangeSelector must stay real because
+// treeMapHelper's selectedColorMetricDataSelector aliases it for the color range.
+const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
+jest.mock("../../state/selectors/nodeMetricData/nodeMetricData.selector", () => ({
+    ...jest.requireActual("../../state/selectors/nodeMetricData/nodeMetricData.selector"),
+    nodeMetricDataSelector: jest.fn()
 }))
 
 describe("codeMapRenderService", () => {
@@ -92,6 +100,7 @@ describe("codeMapRenderService", () => {
             nodeMetricData: METRIC_DATA,
             edgeMetricData: []
         }))
+        mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
     }
 
     function rebuildService() {
@@ -101,8 +110,7 @@ describe("codeMapRenderService", () => {
             labelSettingsFacade,
             codeMapArrowService,
             threeStatsService,
-            codeMapMouseEventService,
-            metricsLensFacadeDouble as MetricsLensFacade
+            codeMapMouseEventService
         )
         codeMapRenderService["showCouplingArrows"] = jest.fn()
     }

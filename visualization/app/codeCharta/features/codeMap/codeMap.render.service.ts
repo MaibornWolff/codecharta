@@ -10,7 +10,7 @@ import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetL
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { BehaviorSubject, Subscription, tap } from "rxjs"
-import { MetricsLensFacade } from "../../lenses/metrics/metricsLens.facade"
+import { nodeMetricDataSelector } from "../../state/selectors/nodeMetricData/nodeMetricData.selector"
 import { blacklistMatcherSelector } from "../../sharedView/sharedView.facade"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
@@ -43,8 +43,7 @@ export class CodeMapRenderService implements OnDestroy {
         private readonly labelSettingsFacade: LabelSettingsFacade,
         private codeMapArrowService: CodeMapArrowService,
         private threeStatsService: ThreeStatsService,
-        private codeMapMouseEventService: CodeMapMouseEventService,
-        private readonly metricsLensFacade: MetricsLensFacade
+        private codeMapMouseEventService: CodeMapMouseEventService
     ) {
         this.subscription = this.codeMapRenderStore.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()
     }
@@ -88,7 +87,7 @@ export class CodeMapRenderService implements OnDestroy {
 
     getNodes(map: CodeMapNode) {
         const state = this.codeMapRenderStore.getState() as CcState
-        const nodeMetricData = this.metricsLensFacade.getNodeMetricData()
+        const nodeMetricData = nodeMetricDataSelector(state)
         const {
             mapState: { layoutAlgorithm },
             files

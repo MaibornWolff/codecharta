@@ -20,6 +20,10 @@ export class ColorRangeService {
         return this.colorRangeStore.metricColorRangeValues$
     }
 
+    selectedColorMetricData$() {
+        return this.colorRangeStore.selectedColorMetricData$
+    }
+
     setColorRange(value: Partial<ColorRange>) {
         this.colorRangeStore.setColorRange(value)
     }

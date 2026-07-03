@@ -6,7 +6,6 @@ import { MapColorLabelPipe } from "../../../../util/pipes/mapColorLabel.pipe"
 import { ColorMetricService } from "../../services/colorMetric.service"
 import { ColorRangeService } from "../../services/colorRange.service"
 import { MapColorsService } from "../../services/mapColors.service"
-import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
 import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 
 @Component({
@@ -19,7 +18,6 @@ export class ColorBandRowComponent {
     constructor(
         private readonly colorMetricService: ColorMetricService,
         private readonly colorRangeService: ColorRangeService,
-        private readonly metricsLensFacade: MetricsLensFacade,
         private readonly mapColorsService: MapColorsService
     ) {}
 
@@ -28,7 +26,7 @@ export class ColorBandRowComponent {
 
     readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
     readonly colorRange = toSignal(this.colorRangeService.colorRange$(), { initialValue: { from: 0, to: 0 } })
-    readonly nodeMetricRange = toSignal(this.metricsLensFacade.selectedColorMetricData$, {
+    readonly nodeMetricRange = toSignal(this.colorRangeService.selectedColorMetricData$(), {
         initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
     })
     private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })

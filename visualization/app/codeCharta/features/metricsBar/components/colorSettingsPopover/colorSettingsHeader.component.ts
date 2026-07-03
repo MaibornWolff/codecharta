@@ -6,7 +6,6 @@ import { ColorMetricService } from "../../services/colorMetric.service"
 import { ColorRangeService } from "../../services/colorRange.service"
 import { IsDeltaStateService } from "../../services/isDeltaState.service"
 import { MapColorsService } from "../../services/mapColors.service"
-import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
 
 @Component({
     selector: "cc-color-settings-header",
@@ -19,14 +18,13 @@ export class ColorSettingsHeaderComponent {
         private readonly colorMetricService: ColorMetricService,
         private readonly isDeltaStateService: IsDeltaStateService,
         private readonly mapColorsService: MapColorsService,
-        private readonly colorRangeService: ColorRangeService,
-        private readonly metricsLensFacade: MetricsLensFacade
+        private readonly colorRangeService: ColorRangeService
     ) {}
 
     readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
     private readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
     private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
-    private readonly selectedColorMetricData = toSignal(this.metricsLensFacade.selectedColorMetricData$, {
+    private readonly selectedColorMetricData = toSignal(this.colorRangeService.selectedColorMetricData$(), {
         initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
     })
 

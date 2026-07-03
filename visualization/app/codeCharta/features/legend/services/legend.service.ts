@@ -4,9 +4,9 @@ import { LegendMapStateStore } from "../stores/legendMapState.store"
 import { LegendIsDeltaStateStore } from "../stores/isDeltaState.store"
 
 /**
- * The single seam every legend component injects. Metric data comes from the metrics-lens facade
- * (selectedColorMetricData$ + descriptors$ — legend is now an outside consumer, so it reaches the lens
- * only through its public facade); the six view/appearance reads and the delta flag come from the
+ * The single seam every legend component injects. The attribute descriptors come from the metrics-lens
+ * facade (descriptors$ — legend is an outside consumer, so it reaches the lens only through its public
+ * facade); the color-metric value range, the six view/appearance reads and the delta flag come from the
  * feature-local stores — the only legend code allowed to inject @ngrx Store, so the service and
  * components stay ngrx-free.
  */
@@ -19,7 +19,7 @@ export class LegendService {
     ) {}
 
     selectedColorMetricData$() {
-        return this.metricsLensFacade.selectedColorMetricData$
+        return this.legendMapStateStore.selectedColorMetricData$
     }
 
     attributeDescriptors$() {

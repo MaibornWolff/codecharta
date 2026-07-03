@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core"
-import { AttributesRepo } from "./repos/attributes.repo"
 import { DescriptorsRepo } from "./repos/descriptors.repo"
 
 /**
@@ -8,35 +7,18 @@ import { DescriptorsRepo } from "./repos/descriptors.repo"
  * consumer shapes:
  *   (a) this injectable `MetricsLensFacade` for service/component consumers;
  *   (b) the re-exported public ngrx selectors below for `createSelector` graphs that can't inject.
+ *
+ * The lens exposes only its cc.json-derived attribute descriptors + types. The view-aware node-metric
+ * data / color-metric range are NOT here: they read view state, so consumers read
+ * `nodeMetricDataSelector`/`metricRangeSelector` from `state/selectors/nodeMetricData` through their own
+ * feature stores (Slice 12c inversion).
  */
 @Injectable({ providedIn: "root" })
 export class MetricsLensFacade {
-    constructor(
-        private readonly attributesRepo: AttributesRepo,
-        private readonly descriptorsRepo: DescriptorsRepo
-    ) {}
+    constructor(private readonly descriptorsRepo: DescriptorsRepo) {}
 
-    readonly nodeMetricData$ = this.attributesRepo.nodeMetricData$
-    readonly availableMetrics$ = this.attributesRepo.availableMetrics$
-    readonly selectedColorMetricData$ = this.attributesRepo.colorMetricRange$
     readonly descriptors$ = this.descriptorsRepo.descriptors$
     readonly attributeTypes$ = this.descriptorsRepo.attributeTypes$
-
-    availableMetrics() {
-        return this.attributesRepo.availableMetrics()
-    }
-
-    getNodeMetricData() {
-        return this.attributesRepo.getNodeMetricData()
-    }
-
-    rangeOf(metric: string) {
-        return this.attributesRepo.rangeOf(metric)
-    }
-
-    rangeOf$(metric: string) {
-        return this.attributesRepo.rangeOf$(metric)
-    }
 
     descriptors() {
         return this.descriptorsRepo.descriptors()
