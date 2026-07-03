@@ -256,6 +256,23 @@ module.exports = {
             to: { path: "@ngrx/store" }
         },
         {
+            name: "load-orchestrator-not-imported-by-lower-layers",
+            severity: "error",
+            comment:
+                "load/ is the initial-file load orchestrator (Slice 12b): on startup it hydrates state from a persisted/URL cc.json by driving the homes, lenses and fileStore through their public facades/actions. It is a TOP layer — nothing it writes into may import it back. Homes (mapState/sharedView/preferences), lenses, renderers and shell must not depend on load/ (that would invert the layering and risk a cycle, since load/ imports their facades). The fileStore ingestion boundary is the sole permitted importer: its loader kicks off the orchestrator (fileStore -> load/). A follow-up may move the loader itself into load/ to drop even that transitional edge.",
+            from: {
+                path: [
+                    "^app/codeCharta/mapState/",
+                    "^app/codeCharta/sharedView/",
+                    "^app/codeCharta/preferences/",
+                    "^app/codeCharta/lenses/",
+                    "^app/codeCharta/renderers/",
+                    "^app/codeCharta/shell/"
+                ]
+            },
+            to: { path: "^app/codeCharta/load/" }
+        },
+        {
             name: "new-must-not-import-legacy",
             severity: "warn",
             comment:

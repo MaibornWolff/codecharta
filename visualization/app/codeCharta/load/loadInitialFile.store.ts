@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { CcState, FileSettings, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../../codeCharta.model"
-import { FileState } from "../../model/files/files"
-import { getCCFiles } from "../../model/files/files.helper"
-import { metricDataSelector } from "../selectors/accumulatedData/metricData/metricData.selector"
-import { setDelta, setFiles } from "../../fileStore/store/files.actions"
-import { setCurrentFilesAreSampleFiles } from "../../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { CcState, FileSettings, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../codeCharta.model"
+import { FileState } from "../model/files/files"
+import { getCCFiles } from "../model/files/files.helper"
+import { metricDataSelector } from "../state/selectors/accumulatedData/metricData/metricData.selector"
+import { setDelta, setFiles } from "../fileStore/store/files.actions"
+import { setCurrentFilesAreSampleFiles } from "../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import {
     setAmountOfEdgePreviews,
     setAmountOfTopLabels,
@@ -33,12 +33,12 @@ import {
     setShowMetricLabelNodeName,
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
-} from "../../mapState/mapState.facade"
-import { setAttributeTypes, setAttributeDescriptors } from "../../lenses/metrics/metricsLens.load.facade"
-import { setBlacklist } from "../../sharedView/sharedView.facade"
-import { setEdges } from "../store/fileSettings/edges/edges.actions"
-import { setMarkedPackages } from "../../sharedView/sharedView.facade"
-import { setAreaMetric, setHeightMetric, setEdgeMetric, setColorMetric, setDistributionMetric } from "../../mapState/mapState.facade"
+} from "../mapState/mapState.facade"
+import { setAttributeTypes, setAttributeDescriptors } from "../lenses/metrics/metricsLens.load.facade"
+import { setBlacklist } from "../sharedView/sharedView.facade"
+import { setEdges } from "../state/store/fileSettings/edges/edges.actions"
+import { setMarkedPackages } from "../sharedView/sharedView.facade"
+import { setAreaMetric, setHeightMetric, setEdgeMetric, setColorMetric, setDistributionMetric } from "../mapState/mapState.facade"
 import {
     setSortingOption,
     setPresentationMode,
@@ -47,9 +47,9 @@ import {
     setExperimentalFeaturesEnabled,
     setScreenshotToClipboardEnabled,
     setIsColorMetricLinkedToHeightMetricAction
-} from "../../preferences/preferences.facade"
-import { setAllFocusedNodes } from "../../sharedView/sharedView.facade"
-import { setSearchPattern } from "../../sharedView/sharedView.facade"
+} from "../preferences/preferences.facade"
+import { setAllFocusedNodes } from "../sharedView/sharedView.facade"
+import { setSearchPattern } from "../sharedView/sharedView.facade"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {
