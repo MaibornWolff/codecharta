@@ -1,34 +1,24 @@
 import { Injectable } from "@angular/core"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../../../../codeCharta.model"
-import { isDeltaStateSelector } from "../../../../../state/selectors/isDeltaState.selector"
-import { mapColorsSelector, areaMetricSelector, colorMetricSelector, edgeMetricSelector, heightMetricSelector } from "../../../../../mapState/mapState.facade"
-import { colorRangeSelector } from "../../../../../mapState/store/colorRange/colorRange.selector"
 import { AttributesRepo } from "../../../repos/attributes.repo"
 import { DescriptorsRepo } from "../../../repos/descriptors.repo"
+import { LegendMapStateStore } from "../stores/legendMapState.store"
+import { LegendIsDeltaStateStore } from "../stores/isDeltaState.store"
 
 /**
- * The single seam every legend component injects. Metric data comes from the metrics-lens repos
- * (a feature inside the lens reads the repos, not the lens facade — that facade is the lens's outward
- * boundary); the remaining seven reads are view/appearance settings with no 2.0 home this slice and
- * stay as documented temporary direct selector reads (this keeps `@ngrx`-in-service, allowed at `warn`
- * via `metrics-lens-ngrx-guard` until viewState/appearance land).
+ * The single seam every legend component injects. While legend still lives inside the metrics lens the
+ * metric data comes from the lens repos (internal access); the six view/appearance reads and the delta
+ * flag come from the feature-local stores — the only legend code allowed to inject @ngrx Store, so the
+ * service and components stay ngrx-free. Slice 11 swaps the repos for the lens facade once legend
+ * re-homes to features/legend/ (a lens's internals may not import its own facade).
  */
 @Injectable({ providedIn: "root" })
 export class LegendService {
     constructor(
         private readonly attributesRepo: AttributesRepo,
         private readonly descriptorsRepo: DescriptorsRepo,
-        private readonly store: Store<CcState>
+        private readonly legendMapStateStore: LegendMapStateStore,
+        private readonly legendIsDeltaStateStore: LegendIsDeltaStateStore
     ) {}
-
-    private readonly areaMetric = this.store.select(areaMetricSelector)
-    private readonly heightMetric = this.store.select(heightMetricSelector)
-    private readonly colorMetric = this.store.select(colorMetricSelector)
-    private readonly edgeMetric = this.store.select(edgeMetricSelector)
-    private readonly colorRange = this.store.select(colorRangeSelector)
-    private readonly mapColors = this.store.select(mapColorsSelector)
-    private readonly isDeltaState = this.store.select(isDeltaStateSelector)
 
     selectedColorMetricData$() {
         return this.attributesRepo.colorMetricRange$
@@ -39,30 +29,30 @@ export class LegendService {
     }
 
     areaMetric$() {
-        return this.areaMetric
+        return this.legendMapStateStore.areaMetric$
     }
 
     heightMetric$() {
-        return this.heightMetric
+        return this.legendMapStateStore.heightMetric$
     }
 
     colorMetric$() {
-        return this.colorMetric
+        return this.legendMapStateStore.colorMetric$
     }
 
     edgeMetric$() {
-        return this.edgeMetric
+        return this.legendMapStateStore.edgeMetric$
     }
 
     colorRange$() {
-        return this.colorRange
+        return this.legendMapStateStore.colorRange$
     }
 
     mapColors$() {
-        return this.mapColors
+        return this.legendMapStateStore.mapColors$
     }
 
     isDeltaState$() {
-        return this.isDeltaState
+        return this.legendIsDeltaStateStore.isDeltaState$
     }
 }
