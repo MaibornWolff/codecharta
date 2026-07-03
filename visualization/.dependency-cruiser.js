@@ -285,13 +285,15 @@ module.exports = {
             name: "lens-owns-ccjson-source",
             severity: "error",
             comment:
-                "Slice 9a: the cc.json SOURCE the metrics lens now owns — the attributeTypes/attributeDescriptors slices and their combined metricsLensSource root under lenses/metrics/store/ — is reached from outside the lens only through a metrics-lens facade (the read facade for selectors, the load facade for the write actions + store wiring), never its store internals. Locks 'the cc.json source lives only under lenses' as the fileSettings root dissolves. Flipped warn→error post-Slice-13 (grep-verified 0 violations); decoupled from the edges move — the two node sources (attributeTypes/attributeDescriptors) are already lens-owned, and the edge side re-homes with the future dependency-lens store (CF #2) which will extend, not gate, this rule.",
+                "Slice 9a/14: the cc.json SOURCE the lenses own — the metrics lens's node attributeTypes/attributeDescriptors slices + their metricsLensSource root, and the dependency lens's edge attributeTypes slice + its dependencyLensSource root, all under lenses/*/store/ — is reached from outside the lens only through that lens's facade (the read facade for selectors, the load facade for the write actions + store wiring), never its store internals. Locks 'the cc.json source lives only under lenses' as the fileSettings root dissolves. Flipped warn→error post-Slice-13 (grep-verified 0 violations); Slice 14 re-homed the edge side out of the metrics lens into the dependency lens's own store and extended this rule to fence it too.",
             from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/lenses/", "\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.mocks\\.ts$"] },
             to: {
                 path: [
                     "^app/codeCharta/lenses/metrics/store/attributeTypes/",
                     "^app/codeCharta/lenses/metrics/store/attributeDescriptors/",
-                    "^app/codeCharta/lenses/metrics/store/metricsLensSource"
+                    "^app/codeCharta/lenses/metrics/store/metricsLensSource",
+                    "^app/codeCharta/lenses/dependency/store/attributeTypes/",
+                    "^app/codeCharta/lenses/dependency/store/dependencyLensSource"
                 ]
             }
         },
