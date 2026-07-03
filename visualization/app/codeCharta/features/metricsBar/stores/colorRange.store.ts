@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState, ColorRange } from "../../../codeCharta.model"
+import { MapStateReadWindow } from "../../../mapState/mapState.read.facade"
 import { setColorRange } from "../../../mapState/mapState.write.facade"
-import { colorRangeSelector } from "../../../mapState/store/colorRange/colorRange.selector"
 import { metricRangeSelector } from "../../../state/selectors/nodeMetricData/nodeMetricData.selector"
 import { metricColorRangeColorsSelector } from "../selectors/metricColorRangeColors.selector"
 import { metricColorRangeValuesSelector } from "../selectors/metricColorRangeValues.selector"
@@ -11,9 +11,12 @@ import { metricColorRangeValuesSelector } from "../selectors/metricColorRangeVal
     providedIn: "root"
 })
 export class ColorRangeStore {
-    constructor(private readonly store: Store<CcState>) {}
+    constructor(
+        private readonly store: Store<CcState>,
+        private readonly mapStateReadWindow: MapStateReadWindow
+    ) {}
 
-    colorRange$ = this.store.select(colorRangeSelector)
+    colorRange$ = this.mapStateReadWindow.colorRange$
 
     metricColorRangeColors$ = this.store.select(metricColorRangeColorsSelector)
 

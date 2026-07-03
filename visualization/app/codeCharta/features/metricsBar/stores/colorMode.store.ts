@@ -1,16 +1,19 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState, ColorMode } from "../../../codeCharta.model"
+import { MapStateReadWindow } from "../../../mapState/mapState.read.facade"
 import { setColorMode } from "../../../mapState/mapState.write.facade"
-import { colorModeSelector } from "../../../mapState/store/colorMode/colorMode.selector"
 
 @Injectable({
     providedIn: "root"
 })
 export class ColorModeStore {
-    constructor(private readonly store: Store<CcState>) {}
+    constructor(
+        private readonly store: Store<CcState>,
+        private readonly mapStateReadWindow: MapStateReadWindow
+    ) {}
 
-    colorMode$ = this.store.select(colorModeSelector)
+    colorMode$ = this.mapStateReadWindow.colorMode$
 
     setColorMode(value: ColorMode) {
         this.store.dispatch(setColorMode({ value }))
