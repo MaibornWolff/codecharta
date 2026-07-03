@@ -41,9 +41,11 @@ renderer (Graph/LSM) can later mount unchanged. Scoped by a **2-agent + design-i
   attributes/descriptors/types/clusters; `lenses.dependency` = edges + edge attribute types/descriptors),
   `attributeTypes` are lens data, because *the lens that holds the metric/dependency data owns its types*:
   - **node** `attributeTypes` → **metrics lens** — already there (`state.metricsLensSource`, Slice 9a). No move.
-  - **edge** `attributeTypes` → **dependency lens** — currently transiently in the metrics lens; re-homes to
-    a dependency-lens source store, bundled with **CF #2** (moving one field to a brand-new root + IndexedDB
-    migration in isolation is disproportionate — do it when the dependency-lens store lands).
+  - **edge** `attributeTypes` → **dependency lens** — **✅ DONE (2026-07-03)**: re-homed out of the metrics
+    lens's `state.metricsLensSource` into a new **`state.dependencyLensSource`** root (the twin of
+    `metricsLensSource`), with `dependencyLens.facade`/`.load.facade`, the effect splitting node/edge at load,
+    the applier + IndexedDB `v12→v13`, and `lens-owns-ccjson-source` extended to fence it (still error, 0
+    violations). Value-identical: 45/45 snapshots zero-diff. See CARRIED-FORWARD item #2d.
 
   This **vindicates the just-hardened `lens-owns-ccjson-source` rule** (no walk-back) and **retires the
   "move to fileStore" idea** (it traced to a now-stale comment in `attributes.selectors.ts`, since fixed).
