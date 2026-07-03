@@ -75,7 +75,7 @@ merges into 14d.
 | **14a** ✅ | Author `lens-no-view-state` at **error** (0 violations verified across all 15 lens files) | trivial | `lint:architecture` self-verifies | yes |
 | **14b** | Name the `RendererEngine` seam (`load·highlight·settings` + `onSelect$/onHover$`) wrapping the existing render/scene services — contract-only, files stay put (DoD #8) | low, structural | render snapshots zero-diff | yes |
 | ~~14c~~ | ~~relocate `attributeTypes`~~ **RETIRED** — attributeTypes stay lens-owned (ADR 12); the CF#1 break is relayering, folded into 14d | — | — | — |
-| **14d** | Relayer `accumulatedData`/aggregation above the lenses (breaks CF#1) + metrics-lens `valueOf(id)` + extract the **structure lens** (tree + `idToNode`) | high | parity tests + zero snapshot | review-gated |
+| **14d** ✅ | Relayer `accumulatedData`/aggregation above the lenses (breaks CF#1) + composing-layer `valueOf(id)` + extract the **structure lens** (tree; `idToNode` ownership → 14e) | high | parity tests + zero snapshot | review-gated (done) |
 | **14e** | renderer-agnostic id (PATH) → **sharedView**, selection promotion (+ optional survives-reload) | high/XL | parity + **user e2e + manual smoke** (hover/select not snapshot-covered) | needs user smoke |
 | later | Graph/LSM renderer + `graphState` + physical `renderers/` move + engine settings-inversion + `renderer-engine-stays-dumb`/`page-uses-engine-public-api` → error | XL | needs renderer #2 | separate slice |
 
@@ -90,9 +90,31 @@ merges into 14d.
   deferred to renderer #2 (design-intent: names frozen, signatures deferred). 45/45 snapshots zero-diff.
 - [x] ~~14c~~: **RETIRED** (2026-07-03) — attributeTypes stay lens-owned (node→metrics ✅ already;
   edge→dependency lens with CF #2). The CF#1 break is relayering, not relocation → merged into 14d.
-- [ ] 14d: relayer `accumulatedData`/aggregation above the lenses (breaks CF#1) + metrics-lens `valueOf(id)`
-  + structure-lens extraction (behavioral; parity tests)
-- [ ] 14e: renderer-agnostic PATH id → sharedView + selection promotion (behavioral; user e2e + manual smoke)
+- [x] 14d: relayer `accumulatedData`/aggregation above the lenses (breaks CF#1) + composing-layer `valueOf(id)`
+  + structure-lens extraction. **DONE (2026-07-03)** — 3 commits:
+  1. **`getDeltaFile` → `util/`** (structural) so the lens can build the tree without a `lenses/→state/` edge.
+  2. **structure lens** (`lenses/structure/`) owns the undecorated unified tree (`structureTreeSelector` via
+     `structure.facade`); `accumulatedData` becomes a pure composing selector reading it DOWNWARD, cloning it
+     (memoized instance — must not mutate in place) and layering metrics + blacklist + the `{nodes,edges}`
+     aggregation on the clone. The lens reads only the fileStore selection → clean under `lens-no-view-state`.
+  3. **`valueOf(id, metric)`** (`state/selectors/accumulatedData/valueOf.selector.ts`) — the cycle-free
+     per-node lookup, in the **composing layer** (next to `idToNode`), not the lens.
+  **How CF#1 is broken:** the aggregation/id-decoration + `valueOf` now live ABOVE the lenses, so a per-node
+  value lookup exists that no lens has to read back — and `new-must-not-import-legacy` (error) already forbids
+  `lenses/ → state/`, so a lens literally cannot import `idToNode`/`accumulatedData`/`valueOf`; the cycle is
+  structurally impossible today. 384 suites / 2312 passed, **45/45 snapshots zero-diff (no -u)**, tsc + biome +
+  dep-cruiser clean (0 errors, 94 warnings unchanged).
+  **Deliberately folded into 14e** (both need the PATH id to be safe/beneficial, so splitting them now is churn
+  without payoff): (a) the **NodeDecorator id/metric split** — a metric-free structure pass is blocked today by
+  the `blacklist-classify ↔ mergeFolderChain ↔ id-assignment` ordering entanglement, and a lens can't read
+  `blacklist` even as a selector input (`lens-no-view-state`), so the structure lens can't own a
+  decoration-independent `idToNode` until the PATH id (which is assigned pre-decoration); (b) **`valueOf` on the
+  metrics lens facade** — needs the lens's own id-keyed attributes (the 2.0 PATH id surviving load); (c)
+  **`idToNode` ownership → structure lens** — same PATH-id prerequisite. The `accumulatedData → metrics.facade`
+  read is kept: it is a legal DOWNWARD edge, not part of any cycle (the cycle is broken by `valueOf` living above
+  the lenses, not by removing that edge).
+- [ ] 14e: renderer-agnostic PATH id → sharedView + selection promotion; promote `valueOf`/`idToNode` onto the
+  structure/metrics lenses; NodeDecorator id/metric split (behavioral; user e2e + manual smoke)
 
 ## dep-cruiser rules
 - `lens-no-view-state` — **added at error in 14a** (lenses must not import mapState/sharedView/preferences;
@@ -105,8 +127,10 @@ merges into 14d.
 
 ## Notes / risks
 - **Behavioural pieces (14d/14e) are NOT snapshot-covered for selection/hover/highlight** — they need the
-  user's Playwright e2e + manual side-by-side vs `main` (CONVENTIONS "Not covered" row). Autonomous work
-  stops after 14b; 14c is gated on a decision; 14d/14e resume with the user in the loop.
+  user's Playwright e2e + manual side-by-side vs `main` (CONVENTIONS "Not covered" row). 14d landed as a
+  value-identical relayering that IS snapshot-covered (accumulatedData → render), so it verified autonomously
+  (45/45 zero-diff); the selection/hover-touching pieces were deliberately kept out of 14d and folded into 14e,
+  which resumes with the user running e2e + manual smoke. 14e stays the smoke-gated slice.
 - **Two distinct id-spaces** must not be conflated: the state-facing node id (moving to PATH) vs the mesh
   `building.id` instance index (stays `number`, render-order-coupled, `codeMapMesh.setInstanceColor`).
 - **IndexedDB migration** for the id move: null the number-valued `selectedBuildingId`/`hoveredNodeId`/
