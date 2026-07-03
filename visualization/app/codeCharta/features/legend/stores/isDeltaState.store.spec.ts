@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { isDeltaStateSelector } from "../../../../../state/selectors/isDeltaState.selector"
+import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
 import { LegendIsDeltaStateStore } from "./isDeltaState.store"
 
 describe("LegendIsDeltaStateStore", () => {

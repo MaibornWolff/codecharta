@@ -1,31 +1,29 @@
 import { Injectable } from "@angular/core"
-import { AttributesRepo } from "../../../repos/attributes.repo"
-import { DescriptorsRepo } from "../../../repos/descriptors.repo"
+import { MetricsLensFacade } from "../../../lenses/metrics/metricsLens.facade"
 import { LegendMapStateStore } from "../stores/legendMapState.store"
 import { LegendIsDeltaStateStore } from "../stores/isDeltaState.store"
 
 /**
- * The single seam every legend component injects. While legend still lives inside the metrics lens the
- * metric data comes from the lens repos (internal access); the six view/appearance reads and the delta
- * flag come from the feature-local stores — the only legend code allowed to inject @ngrx Store, so the
- * service and components stay ngrx-free. Slice 11 swaps the repos for the lens facade once legend
- * re-homes to features/legend/ (a lens's internals may not import its own facade).
+ * The single seam every legend component injects. Metric data comes from the metrics-lens facade
+ * (selectedColorMetricData$ + descriptors$ — legend is now an outside consumer, so it reaches the lens
+ * only through its public facade); the six view/appearance reads and the delta flag come from the
+ * feature-local stores — the only legend code allowed to inject @ngrx Store, so the service and
+ * components stay ngrx-free.
  */
 @Injectable({ providedIn: "root" })
 export class LegendService {
     constructor(
-        private readonly attributesRepo: AttributesRepo,
-        private readonly descriptorsRepo: DescriptorsRepo,
+        private readonly metricsLensFacade: MetricsLensFacade,
         private readonly legendMapStateStore: LegendMapStateStore,
         private readonly legendIsDeltaStateStore: LegendIsDeltaStateStore
     ) {}
 
     selectedColorMetricData$() {
-        return this.attributesRepo.colorMetricRange$
+        return this.metricsLensFacade.selectedColorMetricData$
     }
 
     attributeDescriptors$() {
-        return this.descriptorsRepo.descriptors$
+        return this.metricsLensFacade.descriptors$
     }
 
     areaMetric$() {

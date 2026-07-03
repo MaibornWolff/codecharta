@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from "@angular/core"
-import { InspectorVisibilityService } from "../../../../../../features/sidebarInspector/facade"
+import { InspectorVisibilityService } from "../../../../features/sidebarInspector/facade"
 import { LEGEND_BARS_OFFSET } from "../../models/legendPosition"
 
 @Component({

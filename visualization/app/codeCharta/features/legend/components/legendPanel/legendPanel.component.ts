@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, computed, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { InspectorVisibilityService } from "../../../../../../features/sidebarInspector/facade"
+import { InspectorVisibilityService } from "../../../../features/sidebarInspector/facade"
 import { LegendService } from "../../services/legend.service"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 import { LegendColorScaleSectionComponent } from "./legendColorScaleSection.component"

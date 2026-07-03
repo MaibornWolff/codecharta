@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { HexMapColor } from "../../../../../../codeCharta.model"
-import { defaultMapColors } from "../../../../../../mapState/mapState.facade"
-import { MapColorLabelPipe } from "../../../../../../util/pipes/mapColorLabel.pipe"
+import { HexMapColor } from "../../../../codeCharta.model"
+import { defaultMapColors } from "../../../../mapState/mapState.facade"
+import { MapColorLabelPipe } from "../../../../util/pipes/mapColorLabel.pipe"
 import { LegendService } from "../../services/legend.service"
 
 @Component({

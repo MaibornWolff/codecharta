@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../../../codeCharta.model"
+import { CcState } from "../../../codeCharta.model"
 import {
     areaMetricSelector,
     heightMetricSelector,
@@ -8,7 +8,7 @@ import {
     edgeMetricSelector,
     colorRangeSelector,
     mapColorsSelector
-} from "../../../../../mapState/mapState.facade"
+} from "../../../mapState/mapState.facade"
 
 // The legend's read-only window onto the mapState home. The only legend code allowed to inject
 // @ngrx Store (feature-only-stores-can-import-ngrx-store); every view/appearance read the legend
