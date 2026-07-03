@@ -146,7 +146,7 @@ each **once** so later slices only *add a key*:
 - **DoD:** these eight under `state.mapState`; `appStatus` holds only `currentFilesAreSampleFiles`; snapshots byte-identical ✅
   (e2e select/hover/context-menu/color-range: CI/manual, not run in this env).
 - **dep-cruiser:** flipped `state-home-is-leaf` → **error** for `mapState` and added `state-home-only-stores-import-ngrx` →
-  **error**. `selectedBuildingId` stays a Three.js id here (renderer-agnostic id → Slice 13). **Risk was:** MED/MED.
+  **error**. `selectedBuildingId` stays a Three.js id here (renderer-agnostic id → Slice 14). **Risk was:** MED/MED.
 
 ### Slice 7 — Map metric SELECTION + parameterize the metrics lens — ✅ DONE
 - **Outcome (2026-07-02, 4 commits):** (1) structural `git mv` of the 5 metric folders into
@@ -301,7 +301,13 @@ each **once** so later slices only *add a key*:
 - **dep-cruiser:** replace the 5 lens-internal-feature rules with the top-level `feature-*` rules + one new
   `feature-services-reach-a-lens-only-via-its-facade`; **FLIP `metrics-lens-ngrx-guard` → error** (closes CF **#5**). **Risk:** MED/MED. Needs 6/7.
 
-### Slice 12 — CQRS read/write facade split on the homes + dedupe `*Store` wrappers
+> **Numbering (2026-07-03):** the **legacy-boundary-close** slice (re-home the last 6 `(lenses|fileStore)/ → (features|state)/`
+> edges + flip `new-must-not-import-legacy → error`) landed as **Slice 12** (`slice-12-legacy-boundary-close.md`, DONE — CF #5
+> closed), which was not in this doc's original 5→13 spine. So CQRS shifted to **13** and the renderer/structure slice to **14**
+> (both re-keyed below). Neither had an ordering dependency on the boundary-close.
+
+### Slice 13 — CQRS read/write facade split on the homes + dedupe `*Store` wrappers
+- Detailed sub-slice plan: `slice-13-cqrs-homes.md` (13a preferences → 13b sharedView → 13c mapState → 13d wrapper dedup).
 - **Goal:** split each home's `export *` barrel into a **read facade** (selectors) + **write facade** (actions), so a
   display-only component importing only the read facade physically cannot dispatch; collapse the ~37 duplicate per-feature
   `*Store` wrappers.
@@ -310,7 +316,7 @@ each **once** so later slices only *add a key*:
 - **dep-cruiser:** add `state-home-read-facade-has-no-dispatch` + `state-home-write-facade-is-sole-dispatch-surface` +
   `display-components-cannot-dispatch` (warn→error as each home is split). **Risk:** MED/LARGE. Needs 5–10.
 
-### Slice 13 — Structure lens + renderer-agnostic id + named renderer seam (+ graphState)
+### Slice 14 — Structure lens + renderer-agnostic id + named renderer seam (+ graphState)
 - **Goal:** the genuine refactors, last: stand up the **structure lens**; re-express `selectedBuildingId` as a
   **renderer-agnostic node id** promoted to `sharedView` (P1-4); freeze a **named renderer-engine contract**
   (`load · highlight · settings` + `onSelect · onHover`); `graphState` when the Graph (LSM) renderer lands.
@@ -331,16 +337,16 @@ each **once** so later slices only *add a key*:
 | `lens-external-access-only-via-public-surface` | a lens is reached only via its facade | already error; drop the `features/…/components/` exemption in **11** |
 | `lens-owns-ccjson-source` | edges/attributeTypes/descriptors live only under lenses | **9a ✅ (warn)** — added at warn; flips to error once edges also move to a dependency-lens store |
 | `lens-only-repos-store-import-ngrx` (evolved `metrics-lens-ngrx-guard`) | only lens repos/store touch ngrx | **11** |
-| `lens-no-view-state` | **a lens never reads mutable view state** (selection/blacklist/edge-visibility are parameters) — kills the `valueOf` coupling | **13** *(gated on 7 + 9b lifting all view-state reads out of both lenses)* |
+| `lens-no-view-state` | **a lens never reads mutable view state** (selection/blacklist/edge-visibility are parameters) — kills the `valueOf` coupling | **14** *(gated on 7 + 9b lifting all view-state reads out of both lenses)* |
 | `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6 ✅**, sharedView **8 ✅**, preferences **10** |
 | `state-home-only-stores-import-ngrx` | only a home's store touches ngrx | mapState **6 ✅** / sharedView **8 ✅** / preferences **10** |
-| `state-home-read-facade-has-no-dispatch` · `…-write-facade-is-sole-dispatch-surface` · `display-components-cannot-dispatch` | CQRS: read facade can't dispatch | **12** |
+| `state-home-read-facade-has-no-dispatch` · `…-write-facade-is-sole-dispatch-surface` · `display-components-cannot-dispatch` | CQRS: read facade can't dispatch | **13** |
 | `feature-reaches-state-home-only-via-facade` | features mutate state only via a home facade | mapState **7** / sharedView **8** (both deferred — no rule added; the ~18 sharedView consumers already reach it via `sharedView.facade`, enforcement folds into the Slice-12 CQRS split), prefs **10** |
 | `feature-services-reach-a-lens-only-via-its-facade` (+ retire the 5 lens-internal-feature rules) | features reach a lens only via its facade | **11** |
 | `filestore-external-access-only-via-facade` | fileStore reached only via its facade | **9a/10** |
 | `filestore-has-no-upward-deps` · `wire-dto-only-in-filestore-boundary` | fileStore is the source; wire DTO confined | already error (names evolved) |
 | `new-must-not-import-legacy` (one rule, **12 edges** today, 0 markedPackages-related) | new layers stay clean of the dissolving `state/` | **10 + 11** (7 `state/`-survivor edges clear in 10, 5 legend/errorDialog edges clear in 11 — NOT 9c), then the rule + `state/` are removed |
-| `renderer-engine-stays-dumb` · `page-uses-engine-public-api` | swappable dumb engines | **13** (staged warn until renderer #2) |
+| `renderer-engine-stays-dumb` · `page-uses-engine-public-api` | swappable dumb engines | **14** (staged warn until renderer #2) |
 
 ## Reconciliation — keep / move / reverse (Slices 1–4)
 
@@ -361,13 +367,13 @@ each **once** so later slices only *add a key*:
 
 | # | Item | v2 target |
 |---|---|---|
-| 1 | `valueOf(id, metric)` | **13** (needs the `idToNode`/`accumulatedData` untangle) |
+| 1 | `valueOf(id, metric)` | **14** (needs the `idToNode`/`accumulatedData` untangle) |
 | 2 / 2a | dependency-lens remaining (source, injectable store) | **9a** (source); injectable store when an edge-UI feature lands |
 | 2b | edge selection + 3 edge effects | **7** (→ `mapState`) |
 | 3 | metric selection | **7** (→ `mapState`) |
 | 4 | `metricSelectPopover` / `metricColorRangeDiagram` out of shell | **11** (or explicitly re-deferred) |
 | 5 | flip `metrics-lens-ngrx-guard` + `new-must-not-import-legacy` → error | **11** + **9c/10** |
-| 6 | structure lens · renderer/page split · viewCube · multi-renderer · `graphState` | **13** |
+| 6 | structure lens · renderer/page split · viewCube · multi-renderer · `graphState` | **14** |
 
 ## Supersedes map (nothing silently dropped)
 
@@ -379,7 +385,7 @@ each **once** so later slices only *add a key*:
   architecture, architecture.mermaid, implementation-map, lens-anatomy, structure) — **removed** as stale (they encoded
   `interaction`/`viewState`/`shell` + features-in-lens); their unique still-valid design was salvaged into the "Carried
   design notes" section below. The dep-cruiser target is now `Ideas/dependency-cruiser.2.0.refined.cjs`. ⚠️ **That refined
-  draft's internal flip-slice comments predate this roadmap's canonical 5→13 numbering and do not yet encode the P0-1
+  draft's internal flip-slice comments predate this roadmap's canonical 5→14 numbering and do not yet encode the P0-1
   `lens-no-view-state` gate — reconcile both before wiring it into CI; this roadmap's flip schedule is authoritative.**
 
 ## Program Definition of Done
@@ -406,10 +412,10 @@ commit on green only; every slice names its rollback.
 - **P0-1 (blocker) — both lenses read view state, not just `colorMetric`.** Confirmed in code: `metricsLens.selectors.ts:4`,
   `dependencyLens.selectors.ts:3`, `sortedNodeEdgeMetricsMap.selector.ts:3,8` (blacklist + edge-visibility). Fix: the
   blacklist/edge-visibility **filtering moves to derived selectors** (Slice 7 for metrics, Slice 9b for dependency); the
-  `lens-no-view-state` rule stays **warn until Slice 13**, gated on both lenses being clean.
-- **P0-2 (blocker) — three drafts used three numbering schemes.** Unified to one canonical 5→13; every rule flip re-keyed.
+  `lens-no-view-state` rule stays **warn until Slice 14**, gated on both lenses being clean.
+- **P0-2 (blocker) — three drafts used three numbering schemes.** Unified to one canonical 5→14; every rule flip re-keyed.
 - **P1-3 — legend must move late (11), not first** (else a feature service imports ngrx, violating an error rule).
-- **P1-4 — renderer-agnostic selected-node id is Slice 13, not 8** (needs the `idToNode` untangle); Slice 8 = focus + search only.
+- **P1-4 — renderer-agnostic selected-node id is Slice 14, not 8** (needs the `idToNode` untangle); Slice 8 = focus + search only.
 - **P1-5 — Slice 9 split into 9a/9b/9c** (blacklist 31 + markedPackages 37 import sites is too big for one safe slice).
 - **P1-6 — IndexedDB/scenarios need a real record data-transform in Slice 5**, not a version bump (else old blobs silently
   revert to defaults with no snapshot signal).
@@ -425,21 +431,21 @@ recorded here so removing those files loses nothing but the outdated framing._
 - **cc.json 2.0 node identity — the key everything joins on.** Node `id` = **sha-256 of the canonical path, first 16 hex
   chars**. The *same* id keys the structure tree, metrics-by-id, and edge endpoints, so (a) lenses join without path-guessing
   and (b) `highlight(id)` / `focusedNodeId` / the selected-node id **resolve in any renderer** — which is exactly what makes
-  the Graph→CodeMap "jump" work. **Slice 13's renderer-agnostic-id re-expression targets this scheme**, replacing today's
+  the Graph→CodeMap "jump" work. **Slice 14's renderer-agnostic-id re-expression targets this scheme**, replacing today's
   decoration-time ordinal `CodeMapNode.id` (`id++` in `NodeDecorator`). This is the prerequisite behind `valueOf` (CF #1) and
   `sharedView` selection/focus.
 - **Render-model composition (why "edges live in the dependency lens but CodeMap needs them" is a non-problem).** The CodeMap
   renderer never imports the dependency lens. The composing layer reads `dependency.edges()` + `structure.tree()` + metrics +
   the chosen colorMetric, folds them into one `{ nodes, edges }` render-model, and calls `load(model)`. Edges stay a field in
-  the model; the lens stays their owner. (Belongs to the deferred renderer-engine seam, Slice 13.)
+  the model; the lens stays their owner. (Belongs to the deferred renderer-engine seam, Slice 14.)
 - **Renderer × lens reuse** (what justifies the lens split): Map = structure · metrics · dependency(edge previews); Graph =
   structure · dependency; WordCloud = structure · **terms** (blocked); Report = all.
 - **Terms lens / WordCloud gap.** WordCloud is **data-blocked**: cc.json carries no source text/identifiers and analysis emits
   nothing token-like → it needs a NEW **terms lens** from the analysis UnifiedParser (TreeSitter). Principle: "the answer to
   needing data X is add a lens, not hack the renderer." WordCloud is the last renderer, gated on that analysis work.
-- **Renderer build order** (the renderer axis, companion to the state-home slice spine 5→13): prove the lens seam (CodeMap +
+- **Renderer build order** (the renderer axis, companion to the state-home slice spine 5→14): prove the lens seam (CodeMap +
   legend — done) → prove the renderer seam (Graph/LSM; data largely exists via DependaCharta) → composite (Report page) →
-  WordCloud (blocked on terms). The roadmap sequences *state-home* slices; renderer work lands at Slice 13+.
+  WordCloud (blocked on terms). The roadmap sequences *state-home* slices; renderer work lands at Slice 14+.
 - **Features inventory.** Every current top-level `features/*` stays in the one flat `features/` layer under the refined model;
   the only structural moves are the legend **out** of `lenses/metrics/features/legend` (Slice 11) and the ex-"shell"
   cross-lens features (metricsBar, inspector) simply losing the "shell" label. Two durable non-state mappings:
