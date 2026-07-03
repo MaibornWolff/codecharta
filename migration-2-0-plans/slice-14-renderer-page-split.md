@@ -37,22 +37,34 @@ renderer (Graph/LSM) can later mount unchanged. Scoped by a **2-agent + design-i
   id is computed only when persisting or doing a cross-tool jump (it is provably `sha-256(path)`, so path
   is the 1:1 pre-image). **Root-prefix trap:** viz path is `/root/…`, the analysis canonicalPath excludes
   the synthetic root — strip `/root` (or use `NodeId.fromEndpoint`) before hashing.
-- **`attributeTypes` source home for the CF#1 cycle-break = POSTPONED** (user, 2026-07-03). This blocks
-  sub-slice **14c** (see below). The three candidates — move to fileStore/`files` identity layer
-  (ADR-12-aligned, parity-trivial), a new structure lens owns it, or keep it metrics-lens-owned (forces
-  the riskier structure-map split) — interact with the just-hardened `lens-owns-ccjson-source` rule and
-  are deferred to a dedicated decision.
+- **`attributeTypes` stay LENS-owned — NOT fileStore** (user, 2026-07-03). Per ADR 12 (`lenses.metrics` =
+  attributes/descriptors/types/clusters; `lenses.dependency` = edges + edge attribute types/descriptors),
+  `attributeTypes` are lens data, because *the lens that holds the metric/dependency data owns its types*:
+  - **node** `attributeTypes` → **metrics lens** — already there (`state.metricsLensSource`, Slice 9a). No move.
+  - **edge** `attributeTypes` → **dependency lens** — currently transiently in the metrics lens; re-homes to
+    a dependency-lens source store, bundled with **CF #2** (moving one field to a brand-new root + IndexedDB
+    migration in isolation is disproportionate — do it when the dependency-lens store lands).
 
-## The CF#1 keystone, reframed (lower-risk than the roadmap implied)
+  This **vindicates the just-hardened `lens-owns-ccjson-source` rule** (no walk-back) and **retires the
+  "move to fileStore" idea** (it traced to a now-stale comment in `attributes.selectors.ts`, since fixed).
+
+## The CF#1 keystone — the fix is RELAYERING, not relocation
 
 The `lens.valueOf → idToNode → accumulatedData → metricsLens.facade → lens` cycle is a **latent
-module-import cycle**, not a data cycle. The lens edge is a **single import**:
-`accumulatedData.selector.ts:10` pulls `attributeTypesSelector` through the metrics-lens facade, and
-`attributeTypes` is already a **leaf root-state slice** that reads nothing downstream. So **relocating its
-source off the metrics lens breaks the cycle with ZERO change to id assignment, decoration order, cloning,
-memoization, or object identity** (parity-trivial) — no risky "move the id decorator" surgery. The catch:
-it *reverses part of Slice 9a* and touches `lens-owns-ccjson-source` → that is the **postponed** decision
-above, so 14c waits on it.
+module-import cycle** from a **single import**: `accumulatedData.selector.ts:10` pulls
+`attributeTypesSelector` through the metrics-lens facade. The tempting "parity-trivial" fix was to relocate
+`attributeTypes` off the lens (e.g. to fileStore) — but the ratified decision says **`attributeTypes` stay
+lens-owned** (ADR 12), so **that fix is off the table** (cheap but architecturally wrong; it would diverge
+the in-app state from the `{files, lenses}` model and walk back `lens-owns-ccjson-source`).
+
+The **architecturally-correct** cycle-break is to **relayer**: `accumulatedData`/the aggregation is a
+*composing-layer* concern that belongs **above** the lenses (the refined doc: `accumulatedData`/`idToNode`
+are "computed selectors owned by the page/lens layer, not state at all"). A reader *above* the lenses reads
+`attributeTypes` **downward** with no cycle, and `valueOf(id)` reads the metric value from the metrics
+lens's own id-keyed attributes (2.0 "attributes keyed by id"), **not** from the downstream-decorated
+`idToNode`. So the CF#1 break folds into the **structure-lens / composing-layer relayering of 14d** — it is
+NOT a standalone relocation. **14c (the old "relocate attributeTypes" sub-slice) is retired**; its intent
+merges into 14d.
 
 ## Sub-slice ladder (risk-graded)
 
@@ -60,8 +72,8 @@ above, so 14c waits on it.
 |---|---|---|---|---|
 | **14a** ✅ | Author `lens-no-view-state` at **error** (0 violations verified across all 15 lens files) | trivial | `lint:architecture` self-verifies | yes |
 | **14b** | Name the `RendererEngine` seam (`load·highlight·settings` + `onSelect$/onHover$`) wrapping the existing render/scene services — contract-only, files stay put (DoD #8) | low, structural | render snapshots zero-diff | yes |
-| **14c** | Break the CF#1 cycle: relocate the `attributeTypes` source off the metrics lens (parity-trivial) → unblocks `valueOf` | med | unit value-parity | **BLOCKED on the postponed attributeTypes-home decision** |
-| **14d** | metrics-lens `valueOf(id)` + extract the **structure lens** (tree + `idToNode`) | high | parity tests + zero snapshot | review-gated |
+| ~~14c~~ | ~~relocate `attributeTypes`~~ **RETIRED** — attributeTypes stay lens-owned (ADR 12); the CF#1 break is relayering, folded into 14d | — | — | — |
+| **14d** | Relayer `accumulatedData`/aggregation above the lenses (breaks CF#1) + metrics-lens `valueOf(id)` + extract the **structure lens** (tree + `idToNode`) | high | parity tests + zero snapshot | review-gated |
 | **14e** | renderer-agnostic id (PATH) → **sharedView**, selection promotion (+ optional survives-reload) | high/XL | parity + **user e2e + manual smoke** (hover/select not snapshot-covered) | needs user smoke |
 | later | Graph/LSM renderer + `graphState` + physical `renderers/` move + engine settings-inversion + `renderer-engine-stays-dumb`/`page-uses-engine-public-api` → error | XL | needs renderer #2 | separate slice |
 
@@ -74,10 +86,10 @@ above, so 14c waits on it.
   need a store) and, via the facade re-export, a `no-circular` warning against the pre-existing
   render.service↔labelSettings cycle. `highlight`/`applySettings`/`onSelect`/`onHover` signatures stay
   deferred to renderer #2 (design-intent: names frozen, signatures deferred). 45/45 snapshots zero-diff.
-- [ ] 14c: CF#1 cycle-break — **BLOCKED** on the postponed `attributeTypes`-home decision (Q asked
-  2026-07-03, user postponed). Resume once that home is chosen (fileStore/`files` vs structure lens vs
-  keep-lens-owned).
-- [ ] 14d: metrics-lens `valueOf(id)` + structure-lens extraction (behavioral; parity tests)
+- [x] ~~14c~~: **RETIRED** (2026-07-03) — attributeTypes stay lens-owned (node→metrics ✅ already;
+  edge→dependency lens with CF #2). The CF#1 break is relayering, not relocation → merged into 14d.
+- [ ] 14d: relayer `accumulatedData`/aggregation above the lenses (breaks CF#1) + metrics-lens `valueOf(id)`
+  + structure-lens extraction (behavioral; parity tests)
 - [ ] 14e: renderer-agnostic PATH id → sharedView + selection promotion (behavioral; user e2e + manual smoke)
 
 ## dep-cruiser rules
