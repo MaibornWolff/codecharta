@@ -17,6 +17,7 @@
  */
 export * from "./store/mapState.reducer"
 export * from "./store/mapState.selector"
+export * from "./store/mapState.readWindow"
 export * from "./store/colorMode/colorMode.reducer"
 export * from "./store/colorMode/colorMode.selector"
 export * from "./store/colorRange/colorRange.reducer"

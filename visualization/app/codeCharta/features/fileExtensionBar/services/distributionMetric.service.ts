@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
-import { DistributionMetricStore } from "../stores/distributionMetric.store"
+import { MapStateReadWindow } from "../../../mapState/mapState.read.facade"
 
 @Injectable({ providedIn: "root" })
 export class DistributionMetricService {
-    constructor(private readonly distributionMetricStore: DistributionMetricStore) {}
+    constructor(private readonly mapStateReadWindow: MapStateReadWindow) {}
 
-    readonly areaMetric$ = this.distributionMetricStore.areaMetric$
+    readonly areaMetric$ = this.mapStateReadWindow.areaMetric$
 }

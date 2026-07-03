@@ -13,7 +13,7 @@ import { isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
 import { formatCompactNumber } from "../../formatCompactNumber"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { AppStatusStore } from "../../stores/appStatus.store"
-import { ExplorerAreaMetricStore } from "../../stores/areaMetric.store"
+import { MapStateReadWindow } from "../../../../mapState/mapState.read.facade"
 import { RootUnaryStore } from "../../stores/rootUnary.store"
 import { ExplorerTreeItemIconComponent } from "../explorerTreeItemIcon/explorerTreeItemIcon.component"
 import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerTreeItemName.component"
@@ -26,7 +26,7 @@ import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerT
 })
 export class ExplorerTreeLevelComponent implements OnInit {
     private readonly appStatusStore = inject(AppStatusStore)
-    private readonly areaMetricStore = inject(ExplorerAreaMetricStore)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
     private readonly rootUnaryStore = inject(RootUnaryStore)
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly idToBuildingService = inject(IdToBuildingService)
@@ -46,7 +46,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
     readonly hoveredNodeId = toSignal(this.appStatusStore.hoveredNodeId$, { requireSync: true })
     readonly rightClickedNodeData = toSignal(this.appStatusStore.rightClickedNodeData$, { requireSync: true })
     readonly selectedBuildingId = toSignal(this.appStatusStore.selectedBuildingId$, { requireSync: true })
-    readonly areaMetric = toSignal(this.areaMetricStore.areaMetric$, { requireSync: true })
+    readonly areaMetric = toSignal(this.mapStateReadWindow.areaMetric$, { requireSync: true })
     readonly rootUnary = toSignal(this.rootUnaryStore.rootUnary$, { requireSync: true })
     readonly buildingIds = toSignal(this.idToBuildingService.buildingIds$, { requireSync: true })
 

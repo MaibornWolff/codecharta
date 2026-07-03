@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { InspectorMapColorsStore } from "../stores/mapColors.store"
+import { MapStateReadWindow } from "../../../mapState/mapState.read.facade"
 import { InspectorMetricRowsStore } from "../stores/inspectorMetricRows.store"
 
 @Injectable({
@@ -8,7 +8,7 @@ import { InspectorMetricRowsStore } from "../stores/inspectorMetricRows.store"
 export class InspectorMetricsService {
     constructor(
         private readonly metricRowsStore: InspectorMetricRowsStore,
-        private readonly mapColorsStore: InspectorMapColorsStore
+        private readonly mapStateReadWindow: MapStateReadWindow
     ) {}
 
     metricRows$() {
@@ -16,6 +16,6 @@ export class InspectorMetricsService {
     }
 
     mapColors$() {
-        return this.mapColorsStore.mapColors$
+        return this.mapStateReadWindow.mapColors$
     }
 }
