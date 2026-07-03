@@ -1,7 +1,6 @@
 import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { Node } from "../../codeCharta.model"
 import { CodeMapTooltipStore } from "./stores/codeMapTooltip.store"
-import { defaultState } from "../../state/store/state.manager"
 
 describe("CodeMapTooltipService", () => {
     let tooltipService: CodeMapTooltipService
@@ -9,7 +8,7 @@ describe("CodeMapTooltipService", () => {
 
     beforeEach(() => {
         const codeMapTooltipStore = {
-            getDynamicSettings: () => defaultState.preferences
+            getSelectedMetrics: () => ({ areaMetric: "rloc", heightMetric: "mcc", colorMetric: "coverage" })
         } as unknown as CodeMapTooltipStore
         tooltipService = new CodeMapTooltipService(codeMapTooltipStore)
 
@@ -44,6 +43,12 @@ describe("CodeMapTooltipService", () => {
             // Assert
             const element = document.getElementById("cc-hover-tooltip")
             expect(element.textContent).toContain("sample.ts")
+            // each row is "<selected metric name>: <node's value for that metric>" — regression guard
+            // against reading the metrics from the wrong state home (they live in mapState since Slice 7)
+            expect(element.textContent).toContain("rloc: 100")
+            expect(element.textContent).toContain("mcc: 10")
+            expect(element.textContent).toContain("coverage: 80")
+            expect(element.textContent).not.toContain("undefined")
         })
 
         it("should position tooltip near cursor", () => {

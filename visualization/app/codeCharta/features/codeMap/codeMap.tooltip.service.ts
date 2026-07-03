@@ -96,7 +96,7 @@ export class CodeMapTooltipService {
     }
 
     private populateTooltip(node: TooltipNode) {
-        const { areaMetric, heightMetric, colorMetric } = this.codeMapTooltipStore.getDynamicSettings()
+        const { areaMetric, heightMetric, colorMetric } = this.codeMapTooltipStore.getSelectedMetrics()
 
         const metrics = [
             { label: areaMetric, value: node.attributes?.[areaMetric] },

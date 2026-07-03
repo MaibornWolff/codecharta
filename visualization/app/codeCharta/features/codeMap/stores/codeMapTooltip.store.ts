@@ -1,15 +1,20 @@
 import { Injectable } from "@angular/core"
 import { State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
+import { areaMetricSelector, colorMetricSelector, heightMetricSelector } from "../../../mapState/mapState.facade"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapTooltipStore {
     constructor(private readonly state: State<CcState>) {}
 
-    // Slice 10b: dynamicSettings was dissolved into the preferences home. This read historically pulled
-    // from dynamicSettings, which since Slice 7 no longer carries the metric names the tooltip destructures
-    // (they come through undefined) — reading the preferences home preserves that exact behavior.
-    getDynamicSettings() {
-        return this.state.getValue().preferences
+    // The hover tooltip labels each row with the currently selected area/height/color metric. Those live
+    // in the mapState home (moved there from dynamicSettings in Slice 7); read them through its facade.
+    getSelectedMetrics() {
+        const state = this.state.getValue()
+        return {
+            areaMetric: areaMetricSelector(state),
+            heightMetric: heightMetricSelector(state),
+            colorMetric: colorMetricSelector(state)
+        }
     }
 }
