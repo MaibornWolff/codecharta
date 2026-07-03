@@ -67,8 +67,16 @@ above, so 14c waits on it.
 
 ## Steps
 - [x] 14a: author `lens-no-view-state` at error (0 violations)
-- [ ] 14b: `RendererEngine` contract seam (contract-only, snapshot-safe)
-- [ ] 14c: CF#1 cycle-break — **blocked** on the postponed `attributeTypes`-home decision
+- [x] 14b: `RendererEngine` contract seam — `rendererEngine.contract.ts` interface + `CodeMapRenderService`
+  implements the `load(model)` member (render + scaleMap); the render effect calls `load()` then requests
+  a frame. **Note:** `load` lives ON `CodeMapRenderService` (already on the facade) rather than a separate
+  engine class — a separate class tripped `feature-only-stores-can-import-ngrx-store` (onSelect$/onHover$
+  need a store) and, via the facade re-export, a `no-circular` warning against the pre-existing
+  render.service↔labelSettings cycle. `highlight`/`applySettings`/`onSelect`/`onHover` signatures stay
+  deferred to renderer #2 (design-intent: names frozen, signatures deferred). 45/45 snapshots zero-diff.
+- [ ] 14c: CF#1 cycle-break — **BLOCKED** on the postponed `attributeTypes`-home decision (Q asked
+  2026-07-03, user postponed). Resume once that home is chosen (fileStore/`files` vs structure lens vs
+  keep-lens-owned).
 - [ ] 14d: metrics-lens `valueOf(id)` + structure-lens extraction (behavioral; parity tests)
 - [ ] 14e: renderer-agnostic PATH id → sharedView + selection promotion (behavioral; user e2e + manual smoke)
 

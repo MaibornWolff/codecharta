@@ -76,7 +76,7 @@ deleted** — "state has a home" is finally true at runtime.
 10  preferences (appSettings purge) + fileStore flags; DELETE grab-bags ── needs 5–9 · FLIP new-must-not-import-legacy, shared-state-is-leaf → error
 11  features OUT of lenses + legend RE-HOME + kill "shell"     ── needs 6/7 · FLIP metrics-lens-ngrx-guard → error
 13  CQRS read/write facade split on the homes + dedupe *Store wrappers ── needs 5–10   🟡 13a/b/c ✅ + 13d mapState-metric-cluster ✅; cross-cutting dedup → CF #9
-14  structure lens + renderer-agnostic selected-node id + named renderer seam (+ graphState) ── LAST · FLIP lens-no-view-state → error
+14  structure lens + renderer-agnostic selected-node id + named renderer seam (+ graphState) ── LAST   🟡 14a lens-no-view-state@error ✅ + 14b RendererEngine load seam ✅; 14c BLOCKED (attributeTypes-home decision postponed); 14d/e need user smoke. See slice-14-renderer-page-split.md
 ```
 
 ## The reshape machinery (built once in Slice 5, reused by 6–10)
@@ -321,7 +321,12 @@ each **once** so later slices only *add a key*:
 - **dep-cruiser:** add `state-home-read-facade-has-no-dispatch` + `state-home-write-facade-is-sole-dispatch-surface` +
   `display-components-cannot-dispatch` (warn→error as each home is split). **Risk:** MED/LARGE. Needs 5–10.
 
-### Slice 14 — Structure lens + renderer-agnostic id + named renderer seam (+ graphState)
+### Slice 14 — Structure lens + renderer-agnostic id + named renderer seam (+ graphState) — 🟡 14a ✅ + 14b ✅ (foundation); see slice-14-renderer-page-split.md
+> **Status (2026-07-03):** deep investigation done → `slice-14-renderer-page-split.md`. Landed: **14a**
+> `lens-no-view-state`@error (0 violations), **14b** the `RendererEngine` `load` seam on
+> `CodeMapRenderService`. **Decided:** selected-node id = canonical PATH in-app, sha-16 at the boundary.
+> **BLOCKED:** 14c (CF#1 cycle-break) on the postponed `attributeTypes`-home decision. **14d/14e**
+> (valueOf + structure lens; renderer-agnostic id promotion) need the user's e2e + manual smoke.
 - **Goal:** the genuine refactors, last: stand up the **structure lens**; re-express `selectedBuildingId` as a
   **renderer-agnostic node id** promoted to `sharedView` (P1-4); freeze a **named renderer-engine contract**
   (`load · highlight · settings` + `onSelect · onHover`); `graphState` when the Graph (LSM) renderer lands.
@@ -342,7 +347,7 @@ each **once** so later slices only *add a key*:
 | `lens-external-access-only-via-public-surface` | a lens is reached only via its facade | already error; drop the `features/…/components/` exemption in **11** |
 | `lens-owns-ccjson-source` | edges/attributeTypes/descriptors live only under lenses | **9a (warn) → post-13 ✅ error** — flipped decoupled from the edges move (node sources already lens-owned; edge side extends the rule via the future dependency-lens store, CF #2) |
 | `lens-only-repos-store-import-ngrx` (evolved `metrics-lens-ngrx-guard`) | only lens repos/store touch ngrx | **11** |
-| `lens-no-view-state` | **a lens never reads mutable view state** (selection/blacklist/edge-visibility are parameters) — kills the `valueOf` coupling | **14** *(gated on 7 + 9b lifting all view-state reads out of both lenses)* |
+| `lens-no-view-state` | **a lens never reads mutable view state** (selection/blacklist/edge-visibility are parameters) — kills the `valueOf` coupling | **14a ✅ (error)** — authored straight at error, 0 violations (Slice 7 + 9b lifted all view-state reads out of both lenses) |
 | `state-home-is-leaf` | mapState/sharedView/preferences are leaves | mapState **6 ✅**, sharedView **8 ✅**, preferences **10** |
 | `state-home-only-stores-import-ngrx` | only a home's store touches ngrx | mapState **6 ✅** / sharedView **8 ✅** / preferences **10** |
 | `state-home-read-facade-has-no-dispatch` · `…-write-facade-is-sole-dispatch-surface` · `display-components-cannot-dispatch` | CQRS: read facade can't dispatch | **13 ✅** — all 3 added at **error**, growing home-by-home (13a prefs → 13b sharedView → 13c mapState), 0 violations tree-wide |
