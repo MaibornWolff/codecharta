@@ -280,20 +280,14 @@ each **once** so later slices only *add a key*:
   consumers are `features/`+`state/`), so keeping `fileSettings: { edges }` does NOT block the flip — the 12 edges
   above do. Full flip lands **after 10 + 11**. **Risk:** MED/MED. Needs 8.
 
-### Slice 10 — Purge `appSettings` → `preferences`; finish fileStore; delete the grab-bags
-- **Goal:** durable global prefs → a `preferences` module (**localStorage**, not the IndexedDB `CcState` blob); `isLoadingFile`
-  + `currentFilesAreSampleFiles` → `fileStore`; delete the empty `appSettings`/`dynamicSettings`/`appStatus` reducers.
-- **Keystone cost:** `preferences` is localStorage-durable — this slice carves durable-prefs persistence out of
-  `saveCcState`/`readCcState` (a real behavior seam). Merge `sortingOrderAscending` + `sortingOption` → one `sorting` pref.
-- **DoD:** `state.preferences` real + localStorage-backed; `fileStore` owns the file-load flag + provenance; **three** grab-bags
-  (`appSettings`/`dynamicSettings`/`appStatus`) **gone**; `CcState = { mapState, sharedView, preferences, <lens source>, files,
-  fileSettings: { edges }, <fileStore flags> }`; snapshots byte-identical; e2e presentation-mode / experimental-features /
-  sorting / loading-indicator green. **NOTE:** `fileSettings` is NOT deletable here — it still holds the DEFERRED `edges`
-  (CF #2a). It shrinks to `{ edges }` and survives until the later edge-UI / render-model slice re-homes `edges` and deletes
-  the reducer. (Sequence that edges slice before 10 only if you want 10 to fully delete `fileSettings`; otherwise 10 leaves
-  `fileSettings: { edges }` standing.)
-- **dep-cruiser:** add `preferences` to the home rules; **FLIP `state-home-is-leaf` → error** across all three homes (its
-  "once the `state/` split completes" condition is now met). **Risk:** MED/MED. The "`state/` is dissolved" milestone.
+### Slice 10 — Purge `appSettings` → `preferences`; finish fileStore; delete the grab-bags — ✅ CORE DONE (localStorage + sorting-merge DEFERRED → 10c)
+- **Outcome (2026-07-03, 5 commits):** the "`state/` grab-bags dissolved" milestone landed.
+  - **10-pre (structural)** `b6d83fe` — `git mv state/store/util/setState.reducer.factory → util/` (shared kernel, 46 importers); clears the two lens-reducer `new-must-not-import-legacy` warns and preempts the fileStore→state warn.
+  - **10a (structural `6d80a21` + behavioral `1db6f5a`)** — `isLoadingFile` (ex-appSettings) + `currentFilesAreSampleFiles` (ex-appStatus) → their own **top-level fileStore-owned CcState roots**; the **`appStatus` grab-bag DELETED**. IndexedDB `v9→v10` (`migrateCcStateRecordToV10` promotes both scalar flags to roots, deletes appStatus). isLoadingFile stays runtime-only on load; currentFilesAreSampleFiles stays URL/sample-derived — behavior preserved.
+  - **10b (structural `e9a8bdb` + behavioral `44c3bd1`)** — the 7 durable ex-appSettings prefs + the ex-dynamicSettings `sortingOption` → a real **`state.preferences`** home (`preferences/` module + `preferences.facade`); the **`appSettings` + `dynamicSettings` grab-bags DELETED**. `applyAppSettings`+`applyDynamicSettings`→`applyPreferences`; the save-trigger union reconstituted exactly (grouped by home) in `actionsRequiringSaveCcState`; scenarios re-keyed `appSettings→preferences`; IndexedDB `v10→v11` (`migrateCcStateRecordToV11` creates the preferences root, deletes both grab-bags). **Two runtime landmines tsc missed** (`State.getValue()` is loosely typed) fixed: `ThreeSceneStore.getAppSettings` + `CodeMapTooltipStore.getDynamicSettings`. **dep-cruiser FLIP:** `preferences` added to `state-home-is-leaf` + `state-home-only-stores-import-ngrx`, both now **error across all three homes**.
+  - Gates: `tsc` clean; `npm test` **2305 passing, 45/45 snapshots zero diff (no -u)**; `lint:architecture` **0 errors** / 104 warns. All three grab-bags (`appSettings`/`dynamicSettings`/`appStatus`) are **gone**; `CcState = { fileSettings: { edges }, metricsLensSource, preferences, mapState, sharedView, files, isLoadingFile, currentFilesAreSampleFiles }`. Details: `slice-10-preferences.md`.
+- **DEFERRED to Slice 10c (two DoD refinements, NOT done):** (1) **`preferences` → localStorage** (out of the IndexedDB `CcState` blob) — a **real behavior seam** (per-blob → global durable prefs) with **NO snapshot and NO e2e coverage** for pref persistence, so it must not land as an unverifiable autonomous change; needs the user's sign-off + a characterization test. (2) **Merge `sortingOrderAscending` + `sortingOption` → one `sorting` pref** — a full additional reshape (sidebarExplorer sort feature + `sorting` object shape + IndexedDB v12 + `explorerSortControl` UI). Both prefs already live under `preferences`, so this is organizational, not architectural. See CF.
+- **Original goal (for reference):** durable global prefs → a `preferences` module (**localStorage**, not the IndexedDB `CcState` blob); `isLoadingFile` + `currentFilesAreSampleFiles` → `fileStore`; delete the empty `appSettings`/`dynamicSettings`/`appStatus` reducers. **NOTE:** `fileSettings` is NOT deletable here — it still holds the DEFERRED `edges` (CF #2a); it shrinks to `{ edges }` and survives until the later edge-UI / render-model slice.
 
 ### Slice 11 — Features OUT of lenses; RE-HOME the legend; kill "shell"
 - **Goal:** collapse the features-inside-lenses fiction: `git mv lenses/metrics/features/legend → features/legend/`, rewire to
