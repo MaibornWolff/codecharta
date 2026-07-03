@@ -77,6 +77,11 @@ export enum SortingOption {
     AREA_SIZE = "Area Size"
 }
 
+export interface Sorting {
+    option: SortingOption
+    orderAscending: boolean
+}
+
 export interface ColorLabelOptions {
     positive: boolean
     negative: boolean

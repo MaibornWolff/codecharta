@@ -2,11 +2,11 @@ import { CcState } from "app/codeCharta/codeCharta.model"
 import { defaultMapState } from "../../mapState/mapState.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.facade"
 import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
-import { defaultPreferences } from "../../preferences/preferences.facade"
+import { defaultPreferences, defaultSorting } from "../../preferences/preferences.facade"
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 11
+export const DB_VERSION = 12
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -317,6 +317,30 @@ export function migrateCcStateRecordToV11<T>(state: T): T {
     return next as T
 }
 
+// v12 (Slice 10c): the two file-explorer sort prefs merged into one `sorting` object WITHIN the
+// preferences home — preferences.sortingOption + preferences.sortingOrderAscending →
+// preferences.sorting = { option, orderAscending }. Unlike v3–v11 (which MOVE keys between homes),
+// this NESTS two sibling keys inside the already-existing preferences root. Re-shape a persisted blob
+// so the rehydrate applier finds the merged `sorting` object instead of silently reverting it to
+// defaults — same silent-data-loss landmine the v3–v11 transforms close.
+export function migrateCcStateRecordToV12<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const preferences = record["preferences"]
+    if (!preferences || typeof preferences !== "object") {
+        return state
+    }
+    const trimmed = { ...(preferences as Record<string, unknown>) }
+    const option = "sortingOption" in trimmed ? trimmed["sortingOption"] : defaultSorting.option
+    const orderAscending = "sortingOrderAscending" in trimmed ? trimmed["sortingOrderAscending"] : defaultSorting.orderAscending
+    delete trimmed["sortingOption"]
+    delete trimmed["sortingOrderAscending"]
+    trimmed["sorting"] = { option, orderAscending }
+    return { ...record, preferences: trimmed } as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -353,9 +377,9 @@ export async function openCodeChartaDB() {
             // map-view settings into mapState, its focus/search/blacklist/markedPackages into sharedView,
             // its attributeTypes/attributeDescriptors into metricsLensSource, its file-provenance flags
             // (isLoadingFile/currentFilesAreSampleFiles) into their own top-level fileStore roots, and its
-            // durable prefs (appSettings + dynamicSettings.sortingOption) into a preferences root.
-            // Migrations chain: v2 blobs run v3→…→v11; a v10 blob runs only v11. A brand-new DB
-            // (oldVersion 0) has no record to migrate.
+            // durable prefs (appSettings + dynamicSettings.sortingOption) into a preferences root, and
+            // merge its two sort prefs into preferences.sorting. Migrations chain: v2 blobs run
+            // v3→…→v12; a v11 blob runs only v12. A brand-new DB (oldVersion 0) has no record to migrate.
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
@@ -387,6 +411,9 @@ export async function openCodeChartaDB() {
                     }
                     if (oldVersion < 11) {
                         migrated = migrateCcStateRecordToV11(migrated)
+                    }
+                    if (oldVersion < 12) {
+                        migrated = migrateCcStateRecordToV12(migrated)
                     }
                     await store.put({ ...record, state: migrated })
                 }

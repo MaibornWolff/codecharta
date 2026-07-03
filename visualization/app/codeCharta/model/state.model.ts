@@ -12,7 +12,7 @@ import {
     MetricsLensSource,
     PrimaryMetrics,
     Scaling,
-    SortingOption
+    Sorting
 } from "./domain.model"
 
 export enum FileSelectionState {
@@ -37,16 +37,17 @@ export interface Settings {
 // The durable global-preferences home (Slice 10): the user-level prefs that are neither map-view
 // settings, cc.json source, nor cross-renderer view state. Slice 10 dissolved the appSettings and
 // dynamicSettings grab-bags into this single home — the seven ex-appSettings prefs plus the
-// ex-dynamicSettings sortingOption. These persist globally (not per-file-set).
+// ex-dynamicSettings sortingOption. Slice 10c merged the two file-explorer sort prefs
+// (ex-appSettings sortingOrderAscending + ex-dynamicSettings sortingOption) into one `sorting`
+// object. These persist globally (not per-file-set).
 export interface Preferences {
     isPresentationMode: boolean
     resetCameraIfNewFileIsLoaded: boolean
-    sortingOrderAscending: boolean
     maxTreeMapFiles: number
     experimentalFeaturesEnabled: boolean
     screenshotToClipboardEnabled: boolean
     isColorMetricLinkedToHeightMetric: boolean
-    sortingOption: SortingOption
+    sorting: Sorting
 }
 
 // The cross-renderer view-state home (Slice 8+9b+9c): values that are neither map-specific settings nor

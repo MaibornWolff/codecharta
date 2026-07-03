@@ -22,6 +22,7 @@ import {
     migrateCcStateRecordToV9,
     migrateCcStateRecordToV10,
     migrateCcStateRecordToV11,
+    migrateCcStateRecordToV12,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -59,7 +60,9 @@ describe("migrateCcStateRecordToV3 (Slice 5 re-home transform)", () => {
     })
 
     it("should fill map-view keys absent from the old blob with their defaults", () => {
-        const migrated = migrateCcStateRecordToV3({ appSettings: { ...defaultPreferences } }) as unknown as { mapState: Record<string, unknown> }
+        const migrated = migrateCcStateRecordToV3({ appSettings: { ...defaultPreferences } }) as unknown as {
+            mapState: Record<string, unknown>
+        }
 
         expect(migrated.mapState.labelSize).toBe(defaultMapState.labelSize)
         expect(migrated.mapState.scaling).toEqual(defaultMapState.scaling)
@@ -252,7 +255,10 @@ describe("migrateCcStateRecordToV7 (Slice 9a re-home transform)", () => {
 
     it("should return the record untouched when it is null, and build a default metricsLensSource when there is no fileSettings", () => {
         expect(migrateCcStateRecordToV7(null)).toBeNull()
-        const migrated = migrateCcStateRecordToV7({ files: [] }) as unknown as { files: unknown[]; metricsLensSource: Record<string, unknown> }
+        const migrated = migrateCcStateRecordToV7({ files: [] }) as unknown as {
+            files: unknown[]
+            metricsLensSource: Record<string, unknown>
+        }
         expect(migrated.files).toEqual([])
         expect(migrated.metricsLensSource.attributeTypes).toEqual(defaultMetricsLensSource.attributeTypes)
     })
@@ -414,21 +420,65 @@ describe("migrateCcStateRecordToV11 (Slice 10b re-home transform)", () => {
     })
 
     it("should fill preferences keys absent from the old blob with their defaults", () => {
-        const migrated = migrateCcStateRecordToV11({ appSettings: {}, dynamicSettings: {} }) as unknown as { preferences: Record<string, unknown> }
+        const migrated = migrateCcStateRecordToV11({ appSettings: {}, dynamicSettings: {} }) as unknown as {
+            preferences: Record<string, unknown>
+        }
 
         expect(migrated.preferences.maxTreeMapFiles).toBe(defaultPreferences.maxTreeMapFiles)
-        expect(migrated.preferences.sortingOption).toBe(defaultPreferences.sortingOption)
+        // sortingOption's default is no longer a top-level preference key (merged into `sorting` at v12);
+        // v11 now carries the default `sorting` object through its defaultPreferences base spread.
+        expect(migrated.preferences.sorting).toEqual(defaultPreferences.sorting)
     })
 
     it("should return the record untouched when it is null, and build a default preferences when there are no grab-bags", () => {
         expect(migrateCcStateRecordToV11(null)).toBeNull()
         const migrated = migrateCcStateRecordToV11({ files: [] }) as unknown as { files: unknown[]; preferences: Record<string, unknown> }
         expect(migrated.files).toEqual([])
-        expect(migrated.preferences.sortingOption).toBe(defaultPreferences.sortingOption)
+        expect(migrated.preferences.sorting).toEqual(defaultPreferences.sorting)
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 transforms)", () => {
+describe("migrateCcStateRecordToV12 (Slice 10c sort-merge transform)", () => {
+    const v11ShapeState = () => ({
+        preferences: {
+            isPresentationMode: true,
+            maxTreeMapFiles: 42,
+            sortingOption: "NUMBER_OF_FILES",
+            sortingOrderAscending: false
+        }
+    })
+
+    it("should nest the two flat sort prefs into a single preferences.sorting object", () => {
+        const migrated = migrateCcStateRecordToV12(v11ShapeState()) as unknown as { preferences: Record<string, unknown> }
+
+        expect(migrated.preferences.sorting).toEqual({ option: "NUMBER_OF_FILES", orderAscending: false })
+    })
+
+    it("should delete the two flat sort pref keys and keep the other preferences", () => {
+        const migrated = migrateCcStateRecordToV12(v11ShapeState()) as unknown as { preferences: Record<string, unknown> }
+
+        expect("sortingOption" in migrated.preferences).toBe(false)
+        expect("sortingOrderAscending" in migrated.preferences).toBe(false)
+        expect(migrated.preferences.maxTreeMapFiles).toBe(42)
+    })
+
+    it("should fall back to the sorting defaults when the flat keys are absent", () => {
+        const migrated = migrateCcStateRecordToV12({ preferences: { maxTreeMapFiles: 42 } }) as unknown as {
+            preferences: Record<string, unknown>
+        }
+
+        expect(migrated.preferences.sorting).toEqual(defaultPreferences.sorting)
+    })
+
+    it("should return the record untouched when it is null or has no preferences", () => {
+        expect(migrateCcStateRecordToV12(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV12({ files: [] }) as unknown as { files: unknown[]; preferences?: unknown }
+        expect(migrated.files).toEqual([])
+        expect(migrated.preferences).toBeUndefined()
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -447,6 +497,10 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
             ...defaultState,
             appSettings: {
                 ...defaultPreferences,
+                // defaultPreferences no longer spreads a flat sort-order key (Slice 10c merged it into
+                // `sorting`), so seed the pre-Slice-10c flat key explicitly — v11 lifts it into
+                // preferences and v12 nests it into preferences.sorting.orderAscending.
+                sortingOrderAscending: false,
                 isLoadingFile: false,
                 experimentalFeaturesEnabled: true,
                 invertHeight: true,
@@ -480,7 +534,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v11, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9, v10 then v11 upgrade transforms.
+        // openCodeChartaDB (v12, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9, v10, v11 then v12 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings?: Record<string, unknown>
             dynamicSettings?: Record<string, unknown>
@@ -524,9 +578,12 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         expect(migratedState.appStatus).toBeUndefined()
         // v11 re-home (durable prefs out of appSettings + dynamicSettings.sortingOption into a new preferences root; both grab-bags deleted)
         expect(migratedState.preferences.experimentalFeaturesEnabled).toBe(true)
-        expect(migratedState.preferences.sortingOption).toBe("NAME")
         expect(migratedState.appSettings).toBeUndefined()
         expect(migratedState.dynamicSettings).toBeUndefined()
+        // v12 sort-merge (the two flat sort prefs nested into one preferences.sorting object)
+        expect(migratedState.preferences.sorting).toEqual({ option: "NAME", orderAscending: false })
+        expect("sortingOption" in migratedState.preferences).toBe(false)
+        expect("sortingOrderAscending" in migratedState.preferences).toBe(false)
     })
 })
 

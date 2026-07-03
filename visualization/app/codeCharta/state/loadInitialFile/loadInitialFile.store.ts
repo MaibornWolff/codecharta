@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { CcState, FileSettings, MapState, MetricsLensSource, Preferences, SharedView } from "../../codeCharta.model"
+import { CcState, FileSettings, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../../codeCharta.model"
 import { FileState } from "../../model/files/files"
 import { getCCFiles } from "../../model/files/files.helper"
 import { metricDataSelector } from "../selectors/accumulatedData/metricData/metricData.selector"
@@ -242,9 +242,6 @@ export class LoadInitialFileStore {
             case "resetCameraIfNewFileIsLoaded":
                 this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
                 break
-            case "sortingOrderAscending":
-                // ignore settings for the file-explorer
-                break
             case "maxTreeMapFiles":
                 this.store.dispatch(setMaxTreeMapFiles({ value }))
                 break
@@ -257,9 +254,17 @@ export class LoadInitialFileStore {
             case "isColorMetricLinkedToHeightMetric":
                 this.store.dispatch(setIsColorMetricLinkedToHeightMetricAction({ value }))
                 break
-            case "sortingOption":
-                this.store.dispatch(setSortingOption({ value }))
+            case "sorting": {
+                // A loaded state may carry a sort option (restored) but the sort *order* is a pure
+                // file-explorer UI preference that a loaded file must not override — mirrors the
+                // pre-Slice-10c split where sortingOption was applied on load and sortingOrderAscending
+                // was ignored.
+                const sorting = value as Sorting
+                if (sorting?.option !== undefined) {
+                    this.store.dispatch(setSortingOption({ value: sorting.option }))
+                }
                 break
+            }
             default: {
                 throw new Error(`Unhandled key: ${key}`)
             }

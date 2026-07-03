@@ -4,12 +4,12 @@ import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
-import { CcState, FileSettings, Preferences, SharedView } from "../../../../codeCharta.model"
+import { CcState, FileSettings, Preferences, SharedView, SortingOption } from "../../../../codeCharta.model"
 import { FileSelectionState } from "../../../../model/files/files"
 import { getCCFiles } from "../../../../model/files/files.helper"
 import { MetricQueryParemter } from "../../../../state/effects/updateQueryParameters/metricQueryParameter"
 import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { defaultPreferences } from "../../../../preferences/preferences.facade"
+import { defaultPreferences, setSortingOption } from "../../../../preferences/preferences.facade"
 import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../../mapState/mapState.facade"
 import { defaultSharedView } from "../../../../sharedView/sharedView.facade"
 import { defaultFileSettings } from "../../../../state/store/fileSettings/fileSettings.reducer"
@@ -373,7 +373,7 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.sharedView, defaultSharedView))
         })
 
-        it("should set all differing preferences except sortingOrderAscending", async () => {
+        it("should set all differing preferences, restoring the sort option but never the sort order", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
             jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
             jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
@@ -381,6 +381,9 @@ describe("LoadInitialFileService", () => {
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
             mockedState.preferences = nullifyObjectValues(defaultPreferences) as Preferences
+            // sorting is applied as one object; give it a real value differing from the default so the
+            // applier restores the option (setSortingOption) but never the order (a file-explorer UI pref)
+            mockedState.preferences.sorting = { option: SortingOption.NUMBER_OF_FILES, orderAscending: false }
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
             jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
             const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -389,8 +392,10 @@ describe("LoadInitialFileService", () => {
 
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
-            // the preferences applier dispatches every differing key except sortingOrderAscending (ignored)
-            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.preferences, defaultPreferences) - 1)
+            // the sorting pref dispatches exactly one action (setSortingOption) — the order is never
+            // restored on load, so the total equals the differing-key count with no extra sort-order dispatch
+            expect(dispatchSpy).toHaveBeenCalledWith(setSortingOption({ value: SortingOption.NUMBER_OF_FILES }))
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.preferences, defaultPreferences))
         })
     })
 })

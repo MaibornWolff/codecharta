@@ -2161,11 +2161,10 @@ export const STATE: CcState = {
         isColorMetricLinkedToHeightMetric: false,
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
-        sortingOrderAscending: false,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
         maxTreeMapFiles: 200,
-        sortingOption: SortingOption.NAME
+        sorting: { option: SortingOption.NAME, orderAscending: false }
     },
     mapState: {
         areaMetric: "rloc",
@@ -2233,11 +2232,10 @@ export const DEFAULT_STATE: CcState = {
         isColorMetricLinkedToHeightMetric: false,
         isPresentationMode: false,
         resetCameraIfNewFileIsLoaded: true,
-        sortingOrderAscending: true,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
         maxTreeMapFiles: 100,
-        sortingOption: SortingOption.NAME
+        sorting: { option: SortingOption.NAME, orderAscending: true }
     },
     mapState: {
         areaMetric: null,

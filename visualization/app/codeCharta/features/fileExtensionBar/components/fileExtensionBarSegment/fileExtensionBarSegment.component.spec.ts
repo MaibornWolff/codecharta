@@ -38,12 +38,11 @@ describe("FileExtensionBarSegment", () => {
         preferences: {
             isPresentationMode: false,
             resetCameraIfNewFileIsLoaded: true,
-            sortingOrderAscending: true,
             maxTreeMapFiles: 100,
             experimentalFeaturesEnabled: false,
             screenshotToClipboardEnabled: false,
             isColorMetricLinkedToHeightMetric: false,
-            sortingOption: SortingOption.NAME
+            sorting: { option: SortingOption.NAME, orderAscending: true }
         },
         sharedView: {
             focusedNodePath: [],

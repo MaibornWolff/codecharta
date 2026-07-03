@@ -1,7 +1,11 @@
 import { createReducer, on } from "@ngrx/store"
-import { SortingOption } from "../../../codeCharta.model"
-import { setSortingOption } from "./sorting.actions"
-import { setState } from "../../../util/setState.reducer.factory"
+import { Sorting, SortingOption } from "../../../codeCharta.model"
+import { setSortingOption, setSortingOrderAscending, toggleSortingOrderAscending } from "./sorting.actions"
 
-export const defaultSortingOption = SortingOption.NAME
-export const sortingOption = createReducer(defaultSortingOption, on(setSortingOption, setState(defaultSortingOption)))
+export const defaultSorting: Sorting = { option: SortingOption.NAME, orderAscending: true }
+export const sorting = createReducer(
+    defaultSorting,
+    on(setSortingOption, (state, { value }) => ({ ...state, option: value })),
+    on(setSortingOrderAscending, (state, { value }) => ({ ...state, orderAscending: value })),
+    on(toggleSortingOrderAscending, state => ({ ...state, orderAscending: !state.orderAscending }))
+)
