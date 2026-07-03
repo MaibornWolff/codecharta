@@ -16,11 +16,15 @@ export enum LayoutAlgorithm {
 export interface CCFile {
     map: CodeMapNode
     settings: {
-        // The on-disk .cc.json file settings carry all groups. Three of them were split out of the STATE
+        // The on-disk .cc.json file settings carry all groups. Several were split out of the STATE
         // `fileSettings` root but stay bundled per-file (hence the intersection): the cc.json SOURCE the
-        // metrics lens owns (attributeTypes + attributeDescriptors, `MetricsLensSource`, Slice 9a) and the
+        // metrics lens owns (node `attributeTypes` + `attributeDescriptors`, `MetricsLensSource`, Slice 9a),
+        // the edge `attributeTypes` the dependency lens owns (`DependencyLensSource`, Slice 14 — the same
+        // per-file `attributeTypes` key, so intersecting is a no-op on the resolved type), and the
         // `blacklist` (Slice 9b) + `markedPackages` (Slice 9c) the sharedView home now owns.
-        fileSettings: FileSettings & MetricsLensSource & { blacklist: Array<BlacklistItem>; markedPackages: Array<MarkedPackage> }
+        fileSettings: FileSettings &
+            MetricsLensSource &
+            DependencyLensSource & { blacklist: Array<BlacklistItem>; markedPackages: Array<MarkedPackage> }
     }
     fileMeta: FileMeta
 }
@@ -113,14 +117,25 @@ export interface FileSettings {
     edges: Edge[]
 }
 
-// The cc.json SOURCE owned by the metrics lens (Slice 9a): the node+edge attribute-type map and the
-// flat attribute-descriptor map. Split out of `FileSettings` into its own `state.metricsLensSource`
-// root; still bundled into per-file `CCFile.settings.fileSettings` (an intersection) since the .cc.json
-// file carries them. The lens transiently owns the edge side of `attributeTypes` until a dependency-lens
-// store lands.
+// The cc.json SOURCE owned by the metrics lens (Slice 9a): the NODE attribute-type map (in
+// `attributeTypes.nodes`) and the flat attribute-descriptor map. Split out of `FileSettings` into its own
+// `state.metricsLensSource` root; still bundled into per-file `CCFile.settings.fileSettings` (an
+// intersection) since the .cc.json file carries them. The EDGE side of `attributeTypes` was re-homed to
+// the dependency lens's `DependencyLensSource` in Slice 14 (the runtime `attributeTypes.edges` here is now
+// empty; the type stays the full `AttributeTypes` shape because the per-file .cc.json carries both sides).
 export interface MetricsLensSource {
     attributeTypes: AttributeTypes
     attributeDescriptors: AttributeDescriptors
+}
+
+// The cc.json SOURCE owned by the dependency lens (Slice 14): the EDGE attribute-type map (in
+// `attributeTypes.edges`). The twin of `MetricsLensSource`, one step later — Slice 9a transiently parked
+// the edge side in the metrics lens's `state.metricsLensSource`; this slice re-homes it to its own
+// `state.dependencyLensSource` root. Per ADR 12 the dependency lens owns edge attribute types. Still
+// bundled into per-file `CCFile.settings.fileSettings` (an intersection) — the same `attributeTypes` key
+// the file carries, so the .cc.json round-trips both node and edge types.
+export interface DependencyLensSource {
+    attributeTypes: AttributeTypes
 }
 
 export interface PrimaryMetrics {

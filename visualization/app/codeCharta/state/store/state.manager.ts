@@ -9,6 +9,7 @@ import {
 import { defaultMapState, mapState } from "../../mapState/mapState.read.facade"
 import { defaultSharedView, sharedView } from "../../sharedView/sharedView.read.facade"
 import { defaultMetricsLensSource, metricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
+import { defaultDependencyLensSource, dependencyLensSource } from "../../lenses/dependency/dependencyLens.load.facade"
 import { ActionReducer } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { isSetStateAction } from "./state.actions"
@@ -16,6 +17,7 @@ import { isSetStateAction } from "./state.actions"
 export const appReducers = {
     fileSettings,
     metricsLensSource,
+    dependencyLensSource,
     preferences,
     mapState,
     sharedView,
@@ -26,6 +28,7 @@ export const appReducers = {
 export const defaultState: CcState = {
     fileSettings: defaultFileSettings,
     metricsLensSource: defaultMetricsLensSource,
+    dependencyLensSource: defaultDependencyLensSource,
     preferences: defaultPreferences,
     mapState: defaultMapState,
     sharedView: defaultSharedView,
@@ -44,6 +47,7 @@ export const setStateMiddleware =
 const objectWithDynamicKeysInStore = new Set([
     "metricsLensSource.attributeTypes",
     "metricsLensSource.attributeDescriptors",
+    "dependencyLensSource.attributeTypes",
     "fileSettings.edges",
     // arrays: must be replaced wholesale, otherwise the deep-merge spread turns them into objects with numeric keys
     "sharedView.blacklist",

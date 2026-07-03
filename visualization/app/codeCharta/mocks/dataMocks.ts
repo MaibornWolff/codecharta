@@ -2151,6 +2151,9 @@ export const STATE: CcState = {
         },
         attributeDescriptors: {}
     },
+    dependencyLensSource: {
+        attributeTypes: { nodes: {}, edges: {} }
+    },
     sharedView: {
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
@@ -2305,6 +2308,9 @@ export const DEFAULT_STATE: CcState = {
     metricsLensSource: {
         attributeTypes: { nodes: {}, edges: {} },
         attributeDescriptors: {}
+    },
+    dependencyLensSource: {
+        attributeTypes: { nodes: {}, edges: {} }
     },
     files: [],
     isLoadingFile: true,

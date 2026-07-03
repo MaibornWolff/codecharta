@@ -12,3 +12,9 @@
  * `migration-2-0-plans/CARRIED-FORWARD.md`.
  */
 export { calculateEdgeMetricData } from "./store/edgeMetricData.calculator"
+
+// Edge attribute-type map — the dependency lens owns the edge side of the cc.json `attributeTypes`
+// (Slice 14 re-homed it out of the metrics lens's `state.metricsLensSource`). The composing layer
+// combines it with the metrics lens's node types to reconstruct the full `{ nodes, edges }` map the
+// NodeDecorator aggregation (`accumulatedData`) + the metricsBar attribute-type label pipeline need.
+export { edgeAttributeTypesSelector } from "./store/attributeTypes.selectors"

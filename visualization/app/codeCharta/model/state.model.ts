@@ -4,6 +4,7 @@ import {
     ColorLabelOptions,
     ColorMode,
     ColorRange,
+    DependencyLensSource,
     FileSettings,
     LabelMode,
     LayoutAlgorithm,
@@ -113,6 +114,9 @@ export interface MapState extends PrimaryMetrics {
 export interface CcState {
     fileSettings: FileSettings
     metricsLensSource: MetricsLensSource
+    // The dependency lens's cc.json source root (Slice 14): the edge attribute types, re-homed out of the
+    // metrics lens's `metricsLensSource` (where Slice 9a transiently parked them). Twin of metricsLensSource.
+    dependencyLensSource: DependencyLensSource
     preferences: Preferences
     mapState: MapState
     sharedView: SharedView
