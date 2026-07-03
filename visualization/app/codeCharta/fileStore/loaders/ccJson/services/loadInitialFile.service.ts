@@ -86,6 +86,8 @@ export class LoadInitialFileService {
         missingPropertiesInSavedCcState.push(...missingFileSettings)
         const missingMetricsLensSource = this.loadInitialFileStore.applyMetricsLensSource(savedCcState.metricsLensSource)
         missingPropertiesInSavedCcState.push(...missingMetricsLensSource)
+        const missingDependencyLensSource = this.loadInitialFileStore.applyDependencyLensSource(savedCcState.dependencyLensSource)
+        missingPropertiesInSavedCcState.push(...missingDependencyLensSource)
         const missingSharedView = this.loadInitialFileStore.applySharedView(savedCcState.sharedView)
         missingPropertiesInSavedCcState.push(...missingSharedView)
         if (missingPropertiesInSavedCcState.length > 0) {
@@ -141,6 +143,7 @@ export class LoadInitialFileService {
     private applyAllSettings(savedCcState: CcState) {
         const savedFileSettings = savedCcState.fileSettings
         const savedMetricsLensSource = savedCcState.metricsLensSource
+        const savedDependencyLensSource = savedCcState.dependencyLensSource
         const savedPreferences = savedCcState.preferences
         const savedSharedView = savedCcState.sharedView
         const savedMapState = savedCcState.mapState
@@ -152,6 +155,10 @@ export class LoadInitialFileService {
         if (savedMetricsLensSource) {
             const missingMetricsLensSource = this.loadInitialFileStore.applyMetricsLensSource(savedMetricsLensSource)
             missingPropertiesInSavedCcState.push(...missingMetricsLensSource)
+        }
+        if (savedDependencyLensSource) {
+            const missingDependencyLensSource = this.loadInitialFileStore.applyDependencyLensSource(savedDependencyLensSource)
+            missingPropertiesInSavedCcState.push(...missingDependencyLensSource)
         }
         if (savedPreferences) {
             const missingPreferences = this.loadInitialFileStore.applyPreferences(savedPreferences)

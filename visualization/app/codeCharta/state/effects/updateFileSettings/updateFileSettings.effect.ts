@@ -29,6 +29,11 @@ export class UpdateFileSettingsEffect {
                 const allAttributeDescriptors = visibleFileStatesSelector(state).map(
                     ({ file }) => file.settings.fileSettings.attributeDescriptors
                 )
+                // The per-file `attributeTypes` is the full `{ nodes, edges }` map; Slice 14 SPLITS it at
+                // the load boundary so the metrics lens owns the node side (metricsLensSource) and the
+                // dependency lens owns the edge side (dependencyLensSource). Both are dynamic-key roots
+                // (wholesale-replaced), co-emitted in this one setState.
+                const mergedAttributeTypes = getMergedAttributeTypes(allAttributeTypes)
 
                 return setState({
                     value: {
@@ -43,8 +48,11 @@ export class UpdateFileSettingsEffect {
                             markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath)
                         },
                         metricsLensSource: {
-                            attributeTypes: getMergedAttributeTypes(allAttributeTypes),
+                            attributeTypes: { nodes: mergedAttributeTypes.nodes, edges: {} },
                             attributeDescriptors: getMergedAttributeDescriptors(allAttributeDescriptors)
+                        },
+                        dependencyLensSource: {
+                            attributeTypes: { nodes: {}, edges: mergedAttributeTypes.edges }
                         }
                     }
                 })

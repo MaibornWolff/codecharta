@@ -2,11 +2,12 @@ import { CcState } from "app/codeCharta/codeCharta.model"
 import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
+import { defaultDependencyLensSource } from "../../lenses/dependency/dependencyLens.load.facade"
 import { defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 12
+export const DB_VERSION = 13
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -341,6 +342,39 @@ export function migrateCcStateRecordToV12<T>(state: T): T {
     return { ...record, preferences: trimmed } as T
 }
 
+// v13 (Slice 14): the EDGE side of attributeTypes moved out of metricsLensSource into a brand-new
+// dependencyLensSource root (owned by the dependency lens). Unlike v3–v12 (which MOVE keys between homes
+// or NEST siblings), this SPLITS one nested object: metricsLensSource.attributeTypes = { nodes, edges }
+// becomes metricsLensSource.attributeTypes = { nodes, edges: {} } + dependencyLensSource.attributeTypes =
+// { nodes: {}, edges }. Like v6/v7 it CREATES a new root: an old (v12-shaped) blob has NO
+// dependencyLensSource. Re-shape a persisted blob so the rehydrate applier finds the edge types under
+// dependencyLensSource instead of silently reverting them to defaults — same silent-data-loss landmine the
+// v3–v12 transforms close.
+export function migrateCcStateRecordToV13<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const dependencyLensSource: Record<string, unknown> = {
+        ...defaultDependencyLensSource,
+        ...((record["dependencyLensSource"] as Record<string, unknown>) ?? {})
+    }
+    const next: Record<string, unknown> = { ...record }
+    const metricsLensSource = record["metricsLensSource"]
+    if (metricsLensSource && typeof metricsLensSource === "object") {
+        const trimmed = { ...(metricsLensSource as Record<string, unknown>) }
+        const attributeTypes = trimmed["attributeTypes"]
+        if (attributeTypes && typeof attributeTypes === "object") {
+            const { nodes, edges } = attributeTypes as { nodes?: unknown; edges?: unknown }
+            dependencyLensSource["attributeTypes"] = { nodes: {}, edges: edges ?? {} }
+            trimmed["attributeTypes"] = { nodes: nodes ?? {}, edges: {} }
+        }
+        next["metricsLensSource"] = trimmed
+    }
+    next["dependencyLensSource"] = dependencyLensSource
+    return next as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -377,9 +411,10 @@ export async function openCodeChartaDB() {
             // map-view settings into mapState, its focus/search/blacklist/markedPackages into sharedView,
             // its attributeTypes/attributeDescriptors into metricsLensSource, its file-provenance flags
             // (isLoadingFile/currentFilesAreSampleFiles) into their own top-level fileStore roots, and its
-            // durable prefs (appSettings + dynamicSettings.sortingOption) into a preferences root, and
-            // merge its two sort prefs into preferences.sorting. Migrations chain: v2 blobs run
-            // v3→…→v12; a v11 blob runs only v12. A brand-new DB (oldVersion 0) has no record to migrate.
+            // durable prefs (appSettings + dynamicSettings.sortingOption) into a preferences root,
+            // merge its two sort prefs into preferences.sorting, and split the edge attributeTypes out of
+            // metricsLensSource into a new dependencyLensSource root. Migrations chain: v2 blobs run
+            // v3→…→v13; a v12 blob runs only v13. A brand-new DB (oldVersion 0) has no record to migrate.
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
@@ -414,6 +449,9 @@ export async function openCodeChartaDB() {
                     }
                     if (oldVersion < 12) {
                         migrated = migrateCcStateRecordToV12(migrated)
+                    }
+                    if (oldVersion < 13) {
+                        migrated = migrateCcStateRecordToV13(migrated)
                     }
                     await store.put({ ...record, state: migrated })
                 }

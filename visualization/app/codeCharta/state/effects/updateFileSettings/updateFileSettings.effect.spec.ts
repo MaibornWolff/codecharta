@@ -53,7 +53,9 @@ describe("UpdateFileSettingsEffect", () => {
                     fileSettings,
                     // Slice 9b+9c: the merged blacklist + markedPackages are co-emitted under sharedView (not fileSettings).
                     sharedView: { blacklist, markedPackages },
-                    metricsLensSource: { attributeTypes, attributeDescriptors }
+                    // Slice 14: the full attributeTypes is split — node types to the metrics lens, edge types to the dependency lens.
+                    metricsLensSource: { attributeTypes: { nodes: attributeTypes.nodes, edges: {} }, attributeDescriptors },
+                    dependencyLensSource: { attributeTypes: { nodes: {}, edges: attributeTypes.edges } }
                 }
             })
         )

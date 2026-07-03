@@ -19,7 +19,8 @@ describe("createAttributeTypeSelector", () => {
 
     it("should read edges", () => {
         const state = clone(defaultState)
-        state.metricsLensSource.attributeTypes = { edges: { avgCommit: AttributeTypeValue.relative } }
+        // Slice 14: edge attribute types are owned by the dependency lens, not the metrics lens.
+        state.dependencyLensSource.attributeTypes = { edges: { avgCommit: AttributeTypeValue.relative } }
         state.mapState.edgeMetric = "avgCommit"
         const attributeTypeSelector = createAttributeTypeSelector("edges", "edgeMetric")
         expect(attributeTypeSelector(state)).toBe("x͂")

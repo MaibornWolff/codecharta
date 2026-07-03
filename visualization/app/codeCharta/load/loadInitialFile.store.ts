@@ -1,7 +1,16 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { CcState, FileSettings, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../codeCharta.model"
+import {
+    CcState,
+    DependencyLensSource,
+    FileSettings,
+    MapState,
+    MetricsLensSource,
+    Preferences,
+    SharedView,
+    Sorting
+} from "../codeCharta.model"
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
 import { metricDataSelector } from "../state/selectors/accumulatedData/metricData/metricData.selector"
@@ -35,6 +44,7 @@ import {
     setShowOutgoingEdges
 } from "../mapState/mapState.write.facade"
 import { setAttributeTypes, setAttributeDescriptors } from "../lenses/metrics/metricsLens.load.facade"
+import { setEdgeAttributeTypes } from "../lenses/dependency/dependencyLens.load.facade"
 import { setBlacklist } from "../sharedView/sharedView.write.facade"
 import { setEdges } from "../state/store/fileSettings/edges/edges.actions"
 import { setMarkedPackages } from "../sharedView/sharedView.write.facade"
@@ -123,6 +133,23 @@ export class LoadInitialFileStore {
         return missingMetricsLensSource
     }
 
+    applyDependencyLensSource(savedDependencyLensSource: DependencyLensSource) {
+        const currentDependencyLensSource = (this.state.getValue() as CcState).dependencyLensSource
+        const missingDependencyLensSource = []
+        for (const [key, value] of Object.entries(currentDependencyLensSource)) {
+            if (key in savedDependencyLensSource) {
+                const currentValue = stringify(value)
+                const loadedValue = stringify(savedDependencyLensSource[key])
+                if (currentValue !== loadedValue) {
+                    this.mapDependencyLensSourceToAction(key as keyof DependencyLensSource, savedDependencyLensSource[key])
+                }
+            } else {
+                missingDependencyLensSource.push(key)
+            }
+        }
+        return missingDependencyLensSource
+    }
+
     applySharedView(savedSharedView: SharedView) {
         const currentSharedView = (this.state.getValue() as CcState).sharedView
         const missingSharedView = []
@@ -207,6 +234,17 @@ export class LoadInitialFileStore {
                 break
             case "attributeDescriptors":
                 this.store.dispatch(setAttributeDescriptors({ value }))
+                break
+            default: {
+                throw new Error(`Unhandled key: ${key}`)
+            }
+        }
+    }
+
+    private mapDependencyLensSourceToAction(key: keyof DependencyLensSource, value: any) {
+        switch (key) {
+            case "attributeTypes":
+                this.store.dispatch(setEdgeAttributeTypes({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

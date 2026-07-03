@@ -31,8 +31,11 @@ describe("FileExtensionBarSegment", () => {
             edges: []
         },
         metricsLensSource: {
-            attributeTypes: null,
+            attributeTypes: { nodes: {}, edges: {} },
             attributeDescriptors: null
+        },
+        dependencyLensSource: {
+            attributeTypes: { nodes: {}, edges: {} }
         },
         files: [],
         preferences: {

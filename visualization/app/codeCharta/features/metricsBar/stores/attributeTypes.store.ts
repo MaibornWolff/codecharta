@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { AttributeTypes, CcState, PrimaryMetrics } from "../../../codeCharta.model"
-import { attributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { attributeTypesSelector } from "../selectors/attributeTypes.selector"
 import { createAttributeTypeSelector } from "../selectors/createAttributeTypeSelector.selector"
 
 @Injectable({

@@ -7,7 +7,8 @@ import { edgeMetricNamesSelector } from "../edgeMetricData/edgeMetricData.select
 import { getDeltaFile } from "./utils/getDeltaFile"
 import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
 import { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
-import { attributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { nodeAttributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { edgeAttributeTypesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
 import { createSelector } from "@ngrx/store"
@@ -23,10 +24,14 @@ export type AccumulatedData = { unifiedMapNode: CodeMapNode | undefined; unified
 export const accumulatedDataSelector = createSelector(
     metricDataSelector,
     visibleFileStatesSelector,
-    attributeTypesSelector,
+    // Slice 14: the full `{ nodes, edges }` attributeTypes is recomposed from the two lens sources — the
+    // metrics lens owns the node types, the dependency lens the edge types (ADR 12). Reading BOTH lens
+    // facades here is intended (the composing-layer relayering that untangles CF #1 is a later slice, 14d).
+    nodeAttributeTypesSelector,
+    edgeAttributeTypesSelector,
     blacklistSelector,
     edgeMetricNamesSelector,
-    (metricData, fileStates, attributeTypes, blacklist, edgeMetricNames) => {
+    (metricData, fileStates, nodeAttributeTypes, edgeAttributeTypes, blacklist, edgeMetricNames) => {
         if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData) {
             return accumulatedDataFallback
         }
@@ -38,7 +43,10 @@ export const accumulatedDataSelector = createSelector(
 
         NodeDecorator.decorateMap(data.map, metricData, blacklist)
         addEdgeMetricsForLeaves(metricData.nodeEdgeMetricsMap, data.map, edgeMetricNames)
-        NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), attributeTypes)
+        NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), {
+            nodes: nodeAttributeTypes,
+            edges: edgeAttributeTypes
+        })
 
         return {
             unifiedMapNode: data.map,

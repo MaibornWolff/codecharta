@@ -5,6 +5,7 @@ import { defaultPreferences } from "../../preferences/preferences.read.facade"
 import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
+import { defaultDependencyLensSource } from "../../lenses/dependency/dependencyLens.load.facade"
 import { AttributeTypeValue, ColorMode, LayoutAlgorithm } from "../../codeCharta.model"
 import {
     CCSTATE_PRIMARY_KEY,
@@ -23,6 +24,7 @@ import {
     migrateCcStateRecordToV10,
     migrateCcStateRecordToV11,
     migrateCcStateRecordToV12,
+    migrateCcStateRecordToV13,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -478,7 +480,46 @@ describe("migrateCcStateRecordToV12 (Slice 10c sort-merge transform)", () => {
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 transforms)", () => {
+describe("migrateCcStateRecordToV13 (Slice 14 edge-attributeTypes split transform)", () => {
+    const v12ShapeState = () => ({
+        metricsLensSource: {
+            attributeTypes: {
+                nodes: { rloc: AttributeTypeValue.absolute },
+                edges: { pairing_rate: AttributeTypeValue.relative }
+            },
+            attributeDescriptors: { rloc: { title: "Lines of Code" } }
+        }
+    })
+
+    it("should move the edge attributeTypes out of metricsLensSource into a brand-new dependencyLensSource root", () => {
+        const migrated = migrateCcStateRecordToV13(v12ShapeState()) as unknown as { dependencyLensSource: Record<string, unknown> }
+
+        expect(migrated.dependencyLensSource.attributeTypes).toEqual({ nodes: {}, edges: { pairing_rate: AttributeTypeValue.relative } })
+    })
+
+    it("should keep the node attributeTypes + descriptors in metricsLensSource and empty its edges", () => {
+        const migrated = migrateCcStateRecordToV13(v12ShapeState()) as unknown as { metricsLensSource: Record<string, unknown> }
+
+        expect(migrated.metricsLensSource.attributeTypes).toEqual({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} })
+        expect(migrated.metricsLensSource.attributeDescriptors).toEqual({ rloc: { title: "Lines of Code" } })
+    })
+
+    it("should fill dependencyLensSource with its default when metricsLensSource is absent", () => {
+        const migrated = migrateCcStateRecordToV13({ files: [] }) as unknown as {
+            files: unknown[]
+            dependencyLensSource: Record<string, unknown>
+        }
+
+        expect(migrated.files).toEqual([])
+        expect(migrated.dependencyLensSource.attributeTypes).toEqual(defaultDependencyLensSource.attributeTypes)
+    })
+
+    it("should return the record untouched when it is null", () => {
+        expect(migrateCcStateRecordToV13(null)).toBeNull()
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -527,6 +568,8 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         delete (v2ShapeState as { mapState?: unknown }).mapState
         delete (v2ShapeState as { sharedView?: unknown }).sharedView
         delete (v2ShapeState as { metricsLensSource?: unknown }).metricsLensSource
+        // A pre-Slice-14 v2 blob had no dependencyLensSource root (defaultState now spreads it in).
+        delete (v2ShapeState as { dependencyLensSource?: unknown }).dependencyLensSource
         // A pre-Slice-10 v2 blob had no top-level fileStore flag roots — they lived nested under
         // appSettings.isLoadingFile / appStatus.currentFilesAreSampleFiles (which defaultState no longer spreads).
         delete (v2ShapeState as { isLoadingFile?: unknown }).isLoadingFile
@@ -534,7 +577,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v12, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9, v10, v11 then v12 upgrade transforms.
+        // openCodeChartaDB (v13, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9, v10, v11, v12 then v13 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings?: Record<string, unknown>
             dynamicSettings?: Record<string, unknown>
@@ -544,6 +587,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
             sharedView: Record<string, unknown>
             fileSettings: Record<string, unknown>
             metricsLensSource: Record<string, unknown>
+            dependencyLensSource: Record<string, unknown>
             isLoadingFile: boolean
             currentFilesAreSampleFiles: boolean
         }
@@ -584,6 +628,9 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         expect(migratedState.preferences.sorting).toEqual({ option: "NAME", orderAscending: false })
         expect("sortingOption" in migratedState.preferences).toBe(false)
         expect("sortingOrderAscending" in migratedState.preferences).toBe(false)
+        // v13 edge-attributeTypes split (edge side out of metricsLensSource into a brand-new dependencyLensSource root)
+        expect(migratedState.dependencyLensSource.attributeTypes).toEqual({ nodes: {}, edges: {} })
+        expect(migratedState.metricsLensSource.attributeTypes).toEqual({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} })
     })
 })
 
