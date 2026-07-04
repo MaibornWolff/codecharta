@@ -1,7 +1,7 @@
 ---
 name: viz-2.0-slice-15-state-dissolution
 issue:
-state: progress
+state: complete
 version: 1
 ---
 
@@ -73,6 +73,21 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 | `store/{state.actions, state.manager}`, `store/util/getPartialDefaultState` | **`store/`** (+ `util/` for the deep-merge kernel) | reshape |
 
 ## Progress log
+- **✅✅ SLICE 15 COMPLETE (2026-07-04) — `app/codeCharta/state/` is DELETED.** The post-migration capstone is
+  done: the composing selectors live in `renderModel/`, the effects in `features/*/effects/` + `load/`, the root
+  store in `store/`, edges is a derived dependency-lens selector. All 6 sub-slices landed value-identical
+  (**45/45 snapshots zero-diff throughout**, 0 dep-cruiser errors / 94 warnings). New homes: `renderModel/`
+  (barrel facade, `render-model-is-top-derived-layer`@error), `store/` (`store.ts` composition +
+  `root-store-is-sole-composer`@error). `new-must-not-import-legacy` kept (state/ target dropped; features/ fence
+  stays). **Smoke owed to user** (not snapshot-covered): hover/select highlight (14e-3 carry-over) + edge/arrow
+  rendering (15e) → e2e + manual side-by-side vs `main`.
+- **15f ✅ DONE (2026-07-04).** Root store `state/store/` → `store/`; `state/` DELETED. Split the composition
+  (`appReducers`+`setStateMiddleware` → `store/store.ts`, app.config-only, `root-store-is-sole-composer`@error)
+  from the root-state contract (`defaultState`+`_applyPartialState` → `store/state.manager`; `setState` →
+  `store/state.actions`; `getPartialDefaultState` → `store/`) so consumers never touch the composition. ~90
+  importers repointed (path swaps; 2 specs split their co-import). `new-must-not-import-legacy` state/ target
+  dropped, features/ fence kept (the plan said "retire" but the features/ fence is still the only thing stopping
+  lenses/fileStore → features/). 45/45 snapshots zero-diff.
 - **15e ✅ DONE (2026-07-04).** Edges → dependency lens as a **derived selector** + `state.fileSettings` root
   **DELETED** (CF #2a closed). **User DECIDED option (b)** (derive, not keep a slice) after discussion: edges is
   never owned/mutated (`addEdge`/`removeEdge` dispatched nowhere), only ever re-derived as
