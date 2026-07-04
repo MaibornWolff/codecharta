@@ -25,7 +25,10 @@ renderer (Graph/LSM) can later mount unchanged. Scoped by a **2-agent + design-i
 - **Layering** = `page` is the top composing layer; the engine stays **inside** the codeMap feature; no
   top-level `renderers/` folder, no `shell/`. The page-wire is deferred to renderer #2.
 - **Structure lens** = a read-only projection of cc.json `files` owning the tree + `id→node` resolution.
-- **Graph/LSM renderer + `graphState` + `edgeMetric` promotion** = a **later** slice (CF #6); NOT Slice 14.
+- **Graph/LSM renderer + `graphState` + `edgeMetric` promotion** = a **later** slice (CF #6); NOT Slice 14 — and
+  **OUT of the migration entirely (ratified 2026-07-04, user): the migration is CodeMap-renderer-only.** Every other
+  renderer (Graph/LSM, WordCloud, Report) + the multi-renderer machinery is separate post-migration work. The seam
+  stays contract-only here.
 
 ## Decisions taken (2026-07-03, user)
 

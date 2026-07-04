@@ -46,6 +46,15 @@ sharedView; blacklist/markedPackages/edges/attributeTypes(/descriptors) out of `
 parameterized; `fileStore` owns raw files; features are one flat top-level layer (no "shell", legend re-homed); CQRS
 read/write facades on the homes; structure lens + a named renderer seam.
 
+> **SCOPE — CodeMap renderer ONLY (ratified 2026-07-04, user).** This migration targets the **CodeMap (map)
+> renderer only**. Every other renderer and all multi-renderer machinery — **Graph/LSM, WordCloud, the Report
+> composite page, the Terms lens, `graphState`, the physical `renderers/` folder move, the engine
+> settings-inversion, and the `renderer-engine-stays-dumb` / `page-uses-engine-public-api` error-flips** — is
+> **explicitly OUT of this migration** and comes later as its own separate work. The renderer-engine seam stays
+> **contract-only** (14b froze the names `load`/`highlight`/`settings`/`onSelect`/`onHover`; signatures land with
+> renderer #2, NOT here). DoD #8 is satisfied by that contract alone — nothing renderer-#2-shaped gates the
+> migration being "done".
+
 ## Home assignment — the litmus applied to every current slice
 
 | Current location | Slice(s) | → Home | Lands in |
@@ -407,7 +416,7 @@ each **once** so later slices only *add a key*:
 5. **CQRS on the homes** (read vs write facade; a display-only component can't dispatch).
 6. **All warn bridges flipped to error** (`metrics-lens-ngrx-guard`, `lens-no-view-state`, `state-home-is-leaf`; `new-must-not-import-legacy` removed with `state/`).
 7. **Legacy `state/` dissolved** into fileStore + lenses + the three homes; only derived selectors + the applier remain outside a home.
-8. **A named renderer-engine seam exists** (contract only; the full dumb-engine/page-wire wrapper lands with renderer #2 — not required for DoD).
+8. **A named renderer-engine seam exists** (contract only). The migration is **CodeMap-renderer-only** (ratified 2026-07-04) — the full dumb-engine/page-wire wrapper and every other renderer (Graph/LSM, WordCloud, Report) land later, **OUTSIDE** the migration; none of that is required for DoD.
 
 ## CONVENTIONS carryover
 
