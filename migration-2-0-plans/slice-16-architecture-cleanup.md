@@ -22,6 +22,9 @@ version: 1
 - **Zero grandfathered exemptions** — the `feature-no-circular-dependencies-between-features` codeMap/viewCube carve-out
   is gone.
 - **`fileStore` has zero upward runtime deps** — the last tolerated `fileStore → load/` edge is dropped.
+- **`util/` is a genuine LEAF kernel** — it imports only `util/` + `model/` + node_modules, enforced by a NEW
+  `util-is-a-leaf-kernel` rule at error. (Today util/ has NO outgoing-dep rule at all, which is why it silently
+  accreted upward edges.)
 - **No orphans, no stale rule/source comments, no misnamed rules, no duplicate read-wrapper classes.**
 - Every commit: `tsc` clean + `npm test` **45/45 snapshots zero-diff** (structural) or parity + e2e (the one behavioral
   piece, streetLayout). No `-u`.
@@ -36,6 +39,15 @@ version: 1
 Plus: `mapState` un-fenced (5 raw `mapState/store/*.selector` importers) → 16d; `isDeltaState` ×3 identical wrappers →
 16e; the last `fileStore → load/` edge → 16f; `index.d.ts` orphan + stale `state/` comments + the `new-must-not-import-legacy`
 misnomer → 16g. **`fileStore` runtime is ALREADY clean** — its `renderModel`/home imports are all spec-only (exempt).
+
+**`util/` is NOT a leaf today** (4 source files reach UPWARD, invisible because no rule fences util's outgoing deps) → **16i**:
+`util/algorithm/treeMapLayout/treeMapHelper.ts` → `renderModel.facade` + `lenses/dependency` (edges);
+`util/algorithm/streetLayout/streetViewHelper.ts` → `renderModel.facade`; `util/getNumberOfTopLabels.ts` → `mapState.read.facade`
+(a constant); `util/indexedDB/indexedDBWriter.ts` → `mapState`/`sharedView`/`preferences`/`lenses` defaults. Root cause: util
+accreted the **render/layout engine** (treeMapLayout + streetLayout are render-pipeline, not kernel — consumed by
+`codeMap.render.service`/`codeMapMesh`/`floorLabels`) and the **persistence writer** (indexedDBWriter seeds/migrates the CcState
+blob — a root-store concern). *(Slice 15 worsened it: 15e added `treeMapHelper → edgesSelector`, 15c added `getNumberOfTopLabels
+→ mapState`.)* NB a related oddity: `model/domain.model.ts` imports `util/algorithm/streetLayout` (model→util) — fold into 16i.
 
 ## Sub-slice ladder (each its own gated commit; capstone strictly last)
 
@@ -125,6 +137,26 @@ Drops the last tolerated `fileStore → load/` edge (`loadInitialFile.service` i
 - Reconcile `Ideas/dependency-cruiser.2.0.refined.cjs` (a pre-landing PROPOSAL) against the live config, or annotate it superseded.
 - Handle the single `no-orphans` info: `app/codeCharta/index.d.ts` — delete it or add to the rule's `pathNot`.
 
+### 16i — make `util/` a genuine leaf kernel · structural (mostly) · L
+Relocate the non-kernel concerns that accreted in `util/`, then lock it with a rule. The 4 upward edges split into 3 fixes:
+- **16i-1 — persistence writer → `store/` (M, structural).** `git mv` `util/indexedDB/` → `store/indexedDB/` (or `load/`): the
+  writer composes every home's default + the v3→v15 migration chain — that is root-store/persistence territory, next to
+  `defaultState`. Repoint its ~4 consumers (`load/effects/saveCcState`, the fileStore loader, `scenarios/scenarioIndexedDB`,
+  `confirmResetMapDialog.component`). After the move its home-default imports are legitimate (store/ composes homes).
+- **16i-2 — layout engine → a render layer (L, structural).** `git mv` `util/algorithm/{treeMapLayout,streetLayout}` OUT of
+  util into a render home (the `threeViewer/` layer 16c creates is the natural fit; else `features/codeMap/rendering/` or a new
+  `layout/`). It is the render pipeline (consumed by `codeMap.render.service`/`codeMapMesh`/`floorLabels`/`threeSceneService`),
+  so once it lives in a render layer its `renderModel`/lens-facade reads are legal DOWNWARD reads — no need to thread selector
+  values through the per-node calls. Repoint the ~8 consumers + fix the `model/domain.model.ts → streetLayout` edge (model must
+  not import a layout algorithm — move the shared type it needs, or invert). **Pure `git mv`** → snapshot-stable; verify 45/45.
+- **16i-3 — `getNumberOfTopLabels` (S).** Move the plain constant `defaultAmountOfTopLabels` down to `model/` (or pass it as a
+  param) so the helper stops importing `mapState`.
+- **16i-4 — add `util-is-a-leaf-kernel` at error.** `from: ^app/codeCharta/util/` (pathNot spec/e2e/mocks), forbidding imports
+  of `lenses/`, `renderModel/`, `mapState/`, `sharedView/`, `preferences/`, `fileStore/`, `store/`, `load/`, `features/`. Add
+  once 16i-1/2/3 clear it. This is the fitness function whose ABSENCE let the rot in — it also prevents regression.
+- **Dependency:** 16i-2's cleanest home is `threeViewer/`, so **do 16i AFTER 16c** (or pick `features/codeMap/rendering/` as the
+  home to decouple them). 16i-1/16i-3/16i-4 are independent of 16c.
+
 ### 16h — CAPSTONE: flip `no-circular` warn→error · config-only · S · STRICTLY LAST
 - **Precondition gate:** `depcruise app … --output-type err | grep no-circular` must print NOTHING (requires 16a + 16b + 16c
   all merged).
@@ -132,10 +164,13 @@ Drops the last tolerated `fileStore → load/` edge (`loadInitialFile.service` i
 - Verify: `npm run lint:architecture` → **0 errors, 0 warnings**.
 
 ## Sequencing (dependency graph)
-- **Independent / parallel-safe, any order:** 16a, 16b, 16d, 16e, 16f, 16g, and 16c.
+- **Independent / parallel-safe, any order:** 16a, 16b, 16d, 16e, 16f, 16g, and 16c. (16i-1/16i-3/16i-4-partial too.)
 - **16c** contains its own grandfather-drop as its last internal step.
+- **16i-2** (layout engine → render layer) prefers `threeViewer/` as its home ⇒ do it AFTER **16c** (or pick
+  `features/codeMap/rendering/` to decouple). The `util-is-a-leaf-kernel` flip (16i-4) needs all of 16i-1/2/3 done.
 - **16h is strictly LAST** — it requires 16a **and** 16b **and** 16c merged (any missing cycle ⇒ the flip fails).
-- Recommended landing order: 16a → 16b → 16d → 16e → 16g (quick wins first) → 16f → **16c** (the big one) → **16h** (capstone).
+- Recommended landing order: 16a → 16b → 16d → 16e → 16g (quick wins first) → 16f → **16c** (the big one) → **16i** (util leaf,
+  layout engine lands in the fresh threeViewer/ layer) → **16h** (capstone).
 
 ## Risks
 - **16c** is the large one (~40-file shared-layer extraction, 9 features). Keep every move a pure `git mv`; the grandfather-drop
