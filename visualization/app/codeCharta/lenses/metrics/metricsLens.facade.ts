@@ -43,3 +43,9 @@ export { nodeAttributeDescriptorsSelector as attributeDescriptorsSelector } from
 // need — neither lens exposes the full map anymore, so the edge side is only reachable via the
 // dependency lens.
 export { nodeAttributeTypesSelector } from "./store/attributes.selectors"
+
+// Per-node metric lookup `valueOf(id, metric)` — resolves a node via the structure lens's `idToNode`
+// and reads the metric off it (Slice 14e-3). Cycle-free: it only reaches DOWNWARD into another lens's
+// tree resolution, never up into the composing layer (`new-must-not-import-legacy` @ error).
+export { valueOfSelector } from "./store/valueOf.selector"
+export type { NodeMetricValueLookup } from "./store/valueOf.selector"

@@ -1,7 +1,7 @@
 import { CodeMapNode } from "../../../codeCharta.model"
 import { _valueOf } from "./valueOf.selector"
 
-describe("valueOfSelector", () => {
+describe("metrics lens valueOfSelector", () => {
     describe("_valueOf", () => {
         const idToNode = new Map<number, CodeMapNode>([
             [0, { id: 0, attributes: { rloc: 100, mcc: 5 } } as unknown as CodeMapNode],
