@@ -16,6 +16,11 @@ import {
     Sorting
 } from "./domain.model"
 
+// The default number of top-value labels shown on the map. A plain domain default (not ngrx state),
+// so it lives in model/ where both the mapState amountOfTopLabels reducer and the pure
+// getNumberOfTopLabels helper can read it without the helper importing a state home (util-is-a-leaf-kernel).
+export const defaultAmountOfTopLabels = 10
+
 export enum FileSelectionState {
     Reference = "Reference",
     Comparison = "Comparison",
