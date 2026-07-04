@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { defaultMapColors, mapColorsSelector } from "../../../../mapState/mapState.read.facade"
 import { invertColorRange, invertDeltaColors } from "../../../../mapState/mapState.write.facade"
-import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
+import { isDeltaStateSelector } from "../../../../fileStore/store/isDeltaState.selector"
 import { defaultState } from "../../../../state/store/state.manager"
 import { InvertResetRowComponent } from "./invertResetRow.component"
 

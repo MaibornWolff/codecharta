@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CodeMapNode } from "../../../codeCharta.model"
-import { isDeltaStateSelector } from "../../../state/selectors/isDeltaState.selector"
+import { isDeltaStateSelector } from "../../../fileStore/store/isDeltaState.selector"
 import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
 import { InspectorHeaderService } from "./inspectorHeader.service"
 

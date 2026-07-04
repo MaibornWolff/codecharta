@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { isPartialState } from "../../model/files/files.helper"
-import { visibleFileStatesSelector } from "../../fileStore/store/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "./visibleFileStates.selector"
 
 export const areMultipleMapsVisibleSelector = createSelector(
     visibleFileStatesSelector,
