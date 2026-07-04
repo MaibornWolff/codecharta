@@ -73,6 +73,21 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 | `store/{state.actions, state.manager}`, `store/util/getPartialDefaultState` | **`store/`** (+ `util/` for the deep-merge kernel) | reshape |
 
 ## Progress log
+- **15e ✅ DONE (2026-07-04).** Edges → dependency lens as a **derived selector** + `state.fileSettings` root
+  **DELETED** (CF #2a closed). **User DECIDED option (b)** (derive, not keep a slice) after discussion: edges is
+  never owned/mutated (`addEdge`/`removeEdge` dispatched nowhere), only ever re-derived as
+  `getMergedEdges(visibleFiles)` — a materialized view, not state. 3 commits: (15e-1) `getMergedEdges` kernel →
+  `util/edges/`; (15e-2) additive `edgesSelector` on `dependencyLens.facade` + **parity spec** proving it equals the
+  old stored derivation; (15e-3, behavioral, `feat!`) swap all readers (`edgeVisibility.selector`, `treeMapHelper`,
+  `codeMapArrow.store` — a `getValue().fileSettings.edges` **runtime landmine tsc missed**) onto `edgesSelector`,
+  drop the effect's edges branch + the `applyFileSettings` applier + both loader call-sites, delete the edges +
+  fileSettings slices, strip `fileSettings` from `appReducers`/`defaultState`/`objectWithDynamicKeysInStore`/`CcState`
+  (per-file `FileSettings` type stays), drop edge actions from the save-trigger union, **IndexedDB v14→v15**
+  (`migrateCcStateRecordToV15` drops the key). **45/45 snapshots zero-diff** (value-equivalent). **Test-mock lesson:**
+  the mocks decoupled `fileSettings.edges` from `files` (impossible in prod); specs now mock `edgesSelector` (import
+  via the FACADE for the boundary rule, `jest.mock` the store module for interception) with a `beforeEach` default to
+  stop `mockReturnValue` leaking across tests. **Smoke owed to user:** edge/arrow rendering isn't fully
+  snapshot-covered → e2e + manual side-by-side vs `main`.
 - **15d ✅ DONE (2026-07-04).** All 5 top-layer effects left `state/effects/` (now **dissolved**). 3 commits,
   value-identical (**45/45 snapshots zero-diff**, 0 errors): (15d-1) `unfocusNodes` + `saveCcState` +
   `updateQueryParameters` → `load/effects/` (URL sync folds into load/, no separate `url/`); (15d-2) blacklist
