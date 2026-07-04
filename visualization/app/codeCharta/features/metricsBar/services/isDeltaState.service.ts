@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { IsDeltaStateStore } from "../stores/isDeltaState.store"
+import { IsDeltaStateStore } from "../../shared/facade"
 
 @Injectable({
     providedIn: "root"

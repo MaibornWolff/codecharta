@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { MetricsLensFacade } from "../../../lenses/metrics/metricsLens.facade"
 import { LegendMapStateStore } from "../stores/legendMapState.store"
-import { LegendIsDeltaStateStore } from "../stores/isDeltaState.store"
+import { IsDeltaStateStore } from "../../shared/facade"
 
 /**
  * The single seam every legend component injects. The attribute descriptors come from the metrics-lens
@@ -15,7 +15,7 @@ export class LegendService {
     constructor(
         private readonly metricsLensFacade: MetricsLensFacade,
         private readonly legendMapStateStore: LegendMapStateStore,
-        private readonly legendIsDeltaStateStore: LegendIsDeltaStateStore
+        private readonly legendIsDeltaStateStore: IsDeltaStateStore
     ) {}
 
     selectedColorMetricData$() {

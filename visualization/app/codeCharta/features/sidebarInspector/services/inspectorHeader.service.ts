@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { InspectorIsDeltaStateStore } from "../stores/isDeltaState.store"
+import { IsDeltaStateStore } from "../../shared/facade"
 import { InspectorSelectedNodeStore } from "../stores/selectedNode.store"
 
 @Injectable({
@@ -8,7 +8,7 @@ import { InspectorSelectedNodeStore } from "../stores/selectedNode.store"
 export class InspectorHeaderService {
     constructor(
         private readonly selectedNodeStore: InspectorSelectedNodeStore,
-        private readonly isDeltaStateStore: InspectorIsDeltaStateStore
+        private readonly isDeltaStateStore: IsDeltaStateStore
     ) {}
 
     selectedNode$() {
