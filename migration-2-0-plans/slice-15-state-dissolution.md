@@ -14,6 +14,12 @@ version: 1
 > `git mv` before behavioral swap; per-commit `tsc`+`npm test` zero-snapshot-diff+`lint:architecture`; e2e +
 > manual smoke for what snapshots don't cover). Scoped 2026-07-04 by a 3-area file→destination mapping.
 
+## Prerequisite — Slice 14e-3 runs FIRST (decided 2026-07-04, user)
+Do **14e-3 before this slice**: it promotes `idToNode`/`valueOf` ONTO the structure/metrics lenses + does the
+NodeDecorator id/metric split. That way those two never move into `renderModel/` — Slice 15 moves only
+`accumulatedData` + the rest of the composing selectors. (User: finish 14e-3 then Slice 15; only the not-yet-built
+renderers stay out of scope.)
+
 ## What's still in `state/` (67 non-spec files)
 - **`store/` (9)** — the ngrx ROOT composition (`state.manager`: appReducers/defaultState/setStateMiddleware/
   `_applyPartialState`; the global `setState` action) + the LAST grab-bag `fileSettings: { edges }`.
@@ -25,10 +31,11 @@ version: 1
 ## The 3 new homes it creates
 
 1. **`renderModel/`** — NEW top-level **composing layer** (peer of `load/`). The cross-lens "render model": folds
-   the structure + metrics + dependency lenses + view state into the decorated tree + per-node lookups. The
-   refined architecture already calls `accumulatedData`/`idToNode` "computed selectors owned by the page/composing
-   layer, not state." It MAY import lens facades + home **read** facades + fileStore + util; **nothing may import it
-   back** except `features/`, `load/`, effects and renderers (a top derived layer). New rule
+   the structure + metrics + dependency lenses + view state into the decorated tree. Owns `accumulatedData`,
+   `pathToNode`, `codeMapNodes`, `rootUnary`, `metricData`, the derived metric selectors, and the node-resolving
+   selectors. **NOT `idToNode`/`valueOf`** — the prerequisite Slice 14e-3 promotes those ONTO the structure/metrics
+   lenses (see Prerequisite below). It MAY import lens facades + home **read** facades + fileStore + util; **nothing
+   may import it back** except `features/`, `load/`, effects and renderers (a top derived layer). New rule
    `render-model-is-top-derived-layer`.
 2. **`store/`** — NEW top-level **root-store module**: `appReducers` / `defaultState` / `setStateMiddleware` /
    `_applyPartialState` + the global `setState` action. The **single** module allowed to import every home reducer +
@@ -44,7 +51,8 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 
 | From `state/…` | → Destination | Move type |
 |---|---|---|
-| `selectors/accumulatedData/*` (accumulatedData, idToNode, pathToNode, valueOf, codeMapNodes, rootUnary, metricData, utils) | **`renderModel/`** | git-mv |
+| `selectors/accumulatedData/*` (accumulatedData, pathToNode, codeMapNodes, rootUnary, metricData, utils) | **`renderModel/`** | git-mv |
+| `selectors/accumulatedData/{idToNode, valueOf}` | **structure / metrics lens** (via prerequisite 14e-3, not this slice) | — |
 | `selectors/{nodeMetricData,edgeMetricData}`, `sortedNodeEdgeMetricsMap` | **`renderModel/derivedMetrics/`** | reshape |
 | `selectors/{selectedNode,hoveredNode,rightClickedCodeMapNode}`, `searchedNodes`, `allNecessaryRenderDataAvailable`, `labelsPerMapActive` | **`renderModel/`** | reshape |
 | `selectors/{isDeltaState, areMultipleMapsVisible}` | **`fileStore/store/`** (closes CF #9) | git-mv |
@@ -77,8 +85,10 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
   `updateQueryParameters` → `url/`; **`updateFileSettings` → `load/`** (highest-risk — it performs the Slice-14
   attributeTypes split into metricsLensSource/dependencyLensSource). Delete `state/effects/`.
 - **15e — Edges + fileSettings (CF #2a, behavioral, high).** Re-home `edges` into an injectable
-  `DependencyLensStore` under `lenses/dependency/store/` (writers reach it via the load facade, readers via the read
-  facade — the `mapState` edge-visibility fold stays in the composing/feature layer so `lens-no-view-state` holds);
+  `DependencyLensStore` under **`lenses/dependency/store/`** (DECIDED — ADR-12: the dependency lens owns edges +
+  edge types). Writers (the load pipeline) reach it via the load facade so they never import lens internals; readers
+  via the read facade — the `mapState` edge-visibility fold (show in/out) stays in the composing/feature layer so
+  `lens-no-view-state` holds.
   repoint the ~5 readers/writers + the `objectWithDynamicKeysInStore` path; **DELETE the `fileSettings` root slice**
   + drop its key from `appReducers`/`defaultState`.
 - **15f — Root store + teardown (keystone, high).** Move `state.actions` + `state.manager` → `store/` (optionally
@@ -99,8 +109,9 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 
 ## Open decisions (settle before starting)
 1. **`renderModel/` name** (vs `composing/`) and whether it exposes a barrel facade or is imported per-selector.
-2. **Edges (CF #2a):** injectable `DependencyLensStore` keeping the slice, **vs** a pure selector over
-   `fileStore` `visibleFileStates` that eliminates the slice entirely. Pick the new root key.
+2. **Edges (CF #2a) — home DECIDED = the dependency lens** (ADR-12), via an injectable `DependencyLensStore`.
+   Still open: keep the imperatively-merged slice, **vs** derive edges as a pure selector over `fileStore`
+   `visibleFileStates` (eliminating the slice). Pick the new root key when the slice-vs-selector call is made.
 3. **`url/`** as its own module vs fold into `load/`.
 4. **Does `renderModel/` host only selectors, or also "reaction" effects** (derived-selector → dispatch)? This
    decides whether the metric-reactive effects land in features (15c) or in `renderModel/`. Recommend **selectors
@@ -108,8 +119,8 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 5. **Single-feature derived selectors** (`amountOfBuildingsWithSelectedEdgeMetric`→metricsBar,
    `sortedNodeEdgeMetricsMap`→codeMap, `searchedNodes`→sidebarExplorer): push into the owning feature vs keep in
    `renderModel/` for cohesion.
-6. **Coordinate with 14e-3:** if 14e-3 (collapse `idToNode`, lens-native `valueOf`) lands first, `idToNode`/`valueOf`
-   *merge into the lenses* rather than git-mv into `renderModel/`. Sequence 14e-3 before 15b or accept the git-mv now.
+6. **14e-3 ordering — DECIDED: 14e-3 runs FIRST** (see Prerequisite). `idToNode`/`valueOf` become lens-owned in
+   14e-3 and are out of `renderModel/`; Slice 15 moves only `accumulatedData` + the rest.
 
 ## Risks
 - **High:** `updateFileSettings` (touches the lens-source split), `edges`/`fileSettings` deletion (CF #2a), the
