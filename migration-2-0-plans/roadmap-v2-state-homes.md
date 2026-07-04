@@ -85,7 +85,8 @@ deleted** — "state has a home" is finally true at runtime.
 10  preferences (appSettings purge) + fileStore flags; DELETE grab-bags ── needs 5–9 · FLIP new-must-not-import-legacy, shared-state-is-leaf → error
 11  features OUT of lenses + legend RE-HOME + kill "shell"     ── needs 6/7 · FLIP metrics-lens-ngrx-guard → error
 13  CQRS read/write facade split on the homes + dedupe *Store wrappers ── needs 5–10   🟡 13a/b/c ✅ + 13d mapState-metric-cluster ✅; cross-cutting dedup → CF #9
-14  structure lens + renderer-agnostic selected-node id + named renderer seam (+ graphState) ── LAST   🟡 14a lens-no-view-state@error ✅ + 14b RendererEngine load seam ✅; 14c BLOCKED (attributeTypes-home decision postponed); 14d/e need user smoke. See slice-14-renderer-page-split.md
+14  structure lens + renderer-agnostic selected-node id + named renderer seam (+ graphState) ── LAST spine slice   🟡 14a lens-no-view-state@error ✅ + 14b RendererEngine load seam ✅; 14c RETIRED; 14d ✅ + 14e-1/14e-2 ✅ (renderer-agnostic PATH id); 14e-3 (lens-owned idToNode/valueOf) remains. See slice-14-renderer-page-split.md
+15  CAPSTONE (post-migration): dissolve the legacy state/ folder entirely → renderModel/ (composing) + store/ (root) + features/*/effects/ + fileStore/util/load/lenses; DELETE state/. See slice-15-state-dissolution.md
 ```
 
 ## The reshape machinery (built once in Slice 5, reused by 6–10)
