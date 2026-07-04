@@ -11,7 +11,7 @@ import { klona } from "klona"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { ThreeViewerService } from "./threeViewer/threeViewer.service"
-import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
+import { idToNodeSelector } from "../../lenses/structure/structure.facade"
 import { IdToBuildingService } from "./idToBuilding.service"
 import { setRightClickedNodeData } from "../../sharedView/sharedView.write.facade"
 import { State, Store } from "@ngrx/store"
@@ -22,7 +22,7 @@ import { Box3 } from "three"
 import { TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../mocks/dataMocks"
 import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "./rendering/codeMapBuilding.mocks"
 
-jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
+jest.mock("../../lenses/structure/store/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
 }))
 const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)

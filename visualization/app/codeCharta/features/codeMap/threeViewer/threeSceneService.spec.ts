@@ -16,12 +16,12 @@ import { setEnableFloorLabels, setScaling } from "../../../mapState/mapState.wri
 import { Vector3 } from "three"
 import { setLayoutAlgorithm } from "../../../mapState/mapState.write.facade"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
-import { idToNodeSelector } from "../../../state/selectors/accumulatedData/idToNode.selector"
+import { idToNodeSelector } from "../../../lenses/structure/structure.facade"
 import { TestBed } from "@angular/core/testing"
 import { IdToBuildingService } from "../idToBuilding.service"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 
-jest.mock("../../../state/selectors/accumulatedData/idToNode.selector", () => ({
+jest.mock("../../../lenses/structure/store/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
 }))
 const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)

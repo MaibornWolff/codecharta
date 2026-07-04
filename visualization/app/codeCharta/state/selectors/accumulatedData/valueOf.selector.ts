@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { CodeMapNode } from "../../../codeCharta.model"
-import { idToNodeSelector } from "./idToNode.selector"
+import { idToNodeSelector } from "../../../lenses/structure/structure.facade"
 
 export type NodeMetricValueLookup = (id: number, metric: string) => number | undefined
 
