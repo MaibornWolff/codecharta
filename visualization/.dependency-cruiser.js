@@ -305,6 +305,23 @@ module.exports = {
             from: { path: "^app/codeCharta/lenses/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: { path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/", "^app/codeCharta/preferences/"] }
         },
+        {
+            name: "render-model-is-top-derived-layer",
+            severity: "error",
+            comment:
+                "renderModel/ is the cross-lens composing layer (Slice 15): it folds the structure/metrics/dependency lenses + the view-state homes into the decorated tree and its derived read models (accumulatedData, codeMapNodes, pathToNode, rootUnary, metricData, the derived metric + node-resolving selectors, the render-availability gates). It sits ABOVE the lenses and homes — it reads their facades DOWNWARD — so nothing below it may import it back: lenses, fileStore (the source) and the three state homes (mapState/sharedView/preferences) must not depend on renderModel/. Consumers ABOVE it (features/, load/, state effects, renderers, app.config) reach every composing selector through renderModel.facade. Mirrors load-orchestrator-not-imported-by-lower-layers. Spec/e2e exempt (test wiring).",
+            from: {
+                path: [
+                    "^app/codeCharta/lenses/",
+                    "^app/codeCharta/fileStore/",
+                    "^app/codeCharta/mapState/",
+                    "^app/codeCharta/sharedView/",
+                    "^app/codeCharta/preferences/"
+                ],
+                pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
+            },
+            to: { path: "^app/codeCharta/renderModel/" }
+        },
 
         /* ───────────── Visualization 2.0 — Slice 13 CQRS: read/write facade split ─────────────
          * Each state home's single public barrel splits into a READ facade (selectors + root selector +

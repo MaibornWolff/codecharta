@@ -13,7 +13,7 @@ import {
 } from "../codeCharta.model"
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
-import { metricDataSelector } from "../renderModel/accumulatedData/metricData/metricData.selector"
+import { metricDataSelector } from "../renderModel/renderModel.facade"
 import { setDelta, setFiles } from "../fileStore/store/files.actions"
 import { setCurrentFilesAreSampleFiles } from "../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import {

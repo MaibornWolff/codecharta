@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { hierarchy } from "d3-hierarchy"
 import { CodeMapNode, NodeType } from "../../../codeCharta.model"
-import { accumulatedDataSelector } from "../../../renderModel/accumulatedData/accumulatedData.selector"
+import { accumulatedDataSelector } from "../../../renderModel/renderModel.facade"
 
 export const _collectFolderPaths = (unifiedMapNode: CodeMapNode | undefined): string[] => {
     if (!unifiedMapNode) {

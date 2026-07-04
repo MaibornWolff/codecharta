@@ -1,8 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MapColors, PrimaryMetrics } from "../../../codeCharta.model"
 import { isDeltaStateSelector } from "../../../fileStore/store/isDeltaState.selector"
-import { primaryMetricNamesSelector } from "../../../renderModel/primaryMetrics/primaryMetricNames.selector"
-import { selectedNodeSelector } from "../../../renderModel/selectedNode.selector"
+import { primaryMetricNamesSelector, selectedNodeSelector } from "../../../renderModel/renderModel.facade"
 import { mapColorsSelector } from "../../../mapState/mapState.read.facade"
 import { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLens.facade"
 

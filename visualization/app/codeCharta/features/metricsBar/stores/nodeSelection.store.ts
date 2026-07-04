@@ -1,9 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { accumulatedDataSelector } from "../../../renderModel/accumulatedData/accumulatedData.selector"
-import { hoveredNodeSelector } from "../../../renderModel/hoveredNode.selector"
-import { selectedNodeSelector } from "../../../renderModel/selectedNode.selector"
+import { accumulatedDataSelector, hoveredNodeSelector, selectedNodeSelector } from "../../../renderModel/renderModel.facade"
 import { areaMetricSelector, heightMetricSelector } from "../../../mapState/mapState.read.facade"
 
 @Injectable({

@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { MarkedPackage } from "../../../codeCharta.model"
-import { rightClickedCodeMapNodeSelector } from "../../../renderModel/rightClickedCodeMapNode.selector"
+import { rightClickedCodeMapNodeSelector } from "../../../renderModel/renderModel.facade"
 import { mapColorsSelector } from "../../../mapState/mapState.read.facade"
 import { markedPackagesSelector, findIndexOfMarkedPackageOrParent } from "../../../sharedView/sharedView.read.facade"
 

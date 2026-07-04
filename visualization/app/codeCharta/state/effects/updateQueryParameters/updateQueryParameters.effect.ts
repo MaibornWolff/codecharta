@@ -4,7 +4,7 @@ import { State, Store } from "@ngrx/store"
 import { debounceTime, map, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
 import { LoadInitialFileService } from "../../../fileStore/fileStore.facade"
-import { edgeMetricDataSelector } from "../../../renderModel/edgeMetricData/edgeMetricData.selector"
+import { edgeMetricDataSelector } from "../../../renderModel/renderModel.facade"
 import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
 import { MetricQueryParemter } from "../../../util/queryParameter/metricQueryParameter"
 

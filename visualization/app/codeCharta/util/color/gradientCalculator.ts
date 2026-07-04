@@ -1,7 +1,7 @@
 import { ColorMode, ColorRange, MapColors } from "../../codeCharta.model"
 import { ColorConverter } from "./colorConverter"
 import { Color } from "three"
-import { MetricMinMax } from "../../renderModel/accumulatedData/metricData/selectedColorMetricData.selector"
+import { MetricMinMax } from "../metric/metricRange"
 
 export type CategoricalMapColors = Pick<MapColors, "positive" | "neutral" | "negative">
 

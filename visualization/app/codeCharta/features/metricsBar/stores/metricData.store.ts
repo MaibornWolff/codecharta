@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { metricDataSelector } from "../../../renderModel/accumulatedData/metricData/metricData.selector"
+import { metricDataSelector } from "../../../renderModel/renderModel.facade"
 
 @Injectable({
     providedIn: "root"

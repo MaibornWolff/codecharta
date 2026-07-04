@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { accumulatedDataSelector } from "../../../renderModel/accumulatedData/accumulatedData.selector"
+import { accumulatedDataSelector } from "../../../renderModel/renderModel.facade"
 import { FileExtensionCalculator } from "../../../util/fileExtension/fileExtensionCalculator"
 import { areaMetricSelector } from "../../../mapState/mapState.read.facade"
 

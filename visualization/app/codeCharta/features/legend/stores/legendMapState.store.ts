@@ -9,7 +9,7 @@ import {
     colorRangeSelector,
     mapColorsSelector
 } from "../../../mapState/mapState.read.facade"
-import { metricRangeSelector } from "../../../renderModel/nodeMetricData/nodeMetricData.selector"
+import { metricRangeSelector } from "../../../renderModel/renderModel.facade"
 
 // The legend's read-only window onto the mapState home (plus the color-metric value range from the
 // state read-model). The only legend code allowed to inject @ngrx Store
