@@ -73,6 +73,17 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 | `store/{state.actions, state.manager}`, `store/util/getPartialDefaultState` | **`store/`** (+ `util/` for the deep-merge kernel) | reshape |
 
 ## Progress log
+- **15b ✅ DONE (2026-07-04).** `state/selectors/` fully DISSOLVED into a new top-level `renderModel/` home
+  behind a barrel facade. Two structural commits, both value-identical (385 suites / 2321 passed, **45/45
+  snapshots zero-diff**, tsc + dep-cruiser 0 errors): (15b-1) `git mv state/selectors → renderModel` preserving
+  substructure — internal cross-refs preserved, out-of-tree imports lose one `../`, ~41 source + ~27 spec
+  importers repointed per-file; (15b-2) added `renderModel.facade.ts` (`export *` over 17 selector modules),
+  repointed source consumers onto it (specs kept per-file — jest.mock/spyOn need module granularity and
+  `export *` re-exports aren't spyable), and added `render-model-is-top-derived-layer` at **error**. **Cleanup
+  forced by the new rule:** the pure `MetricMinMax` type moved from the composing layer → `util/metric/metricRange`
+  (its documented superset), resolving a mapState-home → renderModel inversion (`calculateInitialColorRange` +
+  the util color/label helpers now read it downward). **Lesson:** a barrel over specs is fragile — collapsing
+  per-file jest.mock/spyOn targets onto one barrel path collides / breaks spyable bindings; keep specs per-file.
 - **15a ✅ DONE (2026-07-04).** Two structural commits, both value-identical (385 suites / 2321 passed, **45/45
   snapshots zero-diff**, tsc + dep-cruiser 0 errors / 94 warnings unchanged): (1) `getNodesByGitignorePath` pure
   kernel → `util/blacklist/`; (2) `isDeltaState` + `areMultipleMapsVisible` projections → `fileStore/store/`
@@ -85,10 +96,11 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 - **15a — Foundations (structural, low).** ✅ Move the pure kernels → `util/` and the two file-state projections
   `isDeltaState` + `areMultipleMapsVisible` → `fileStore/store/` (**closes CF #9**). Zero snapshot diff.
   (`renderModel/`/`store/` scaffold + rules folded into 15b/15f — see Progress log.)
-- **15b — Composing layer (structural git-mv → reshape).** Move the `accumulatedData` cluster → `renderModel/`;
-  the derived metric selectors → `renderModel/derivedMetrics/` (resolve the `metricRange`/`selectedColorMetricData`
-  shim); the node-resolving + render-gate selectors → `renderModel/`. Repoint importers. **Flip
-  `render-model-is-top-derived-layer` → error.** Delete `state/selectors/`.
+- **15b — Composing layer (structural git-mv → reshape).** ✅ Moved the WHOLE `state/selectors/` tree →
+  `renderModel/` (preserving substructure — the `derivedMetrics/` regrouping was skipped as cosmetic churn),
+  behind a `renderModel.facade.ts` barrel; source consumes the barrel, specs stay per-file. **Flipped
+  `render-model-is-top-derived-layer` → error** (0 violations after moving `MetricMinMax` → `util/metric`).
+  `state/selectors/` DELETED. See Progress log.
 - **15c — Effects → features (structural).** Establish the `features/<feature>/effects/` folder + a per-feature
   `<feature>Effects` array export; make `provideEffects` spread the bundles. Move the single-owner effects
   (codeMap render cluster; metricsBar metric-reactive; labelSettings; sidebarExplorer; fileExtensionBar).
