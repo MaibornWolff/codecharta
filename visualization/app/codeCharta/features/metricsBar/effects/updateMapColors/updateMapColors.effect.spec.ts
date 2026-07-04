@@ -8,7 +8,8 @@ import { MapColors } from "../../../../codeCharta.model"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
 import { defaultMapColors, colorMetricSelector } from "../../../../mapState/mapState.read.facade"
 import { setMapColors } from "../../../../mapState/mapState.write.facade"
-import { appReducers, defaultState, setStateMiddleware } from "../../../../state/store/state.manager"
+import { appReducers, setStateMiddleware } from "../../../../store/store"
+import { defaultState } from "../../../../store/state.manager"
 import { UpdateMapColorsEffect } from "./updateMapColors.effect"
 
 describe("UpdateMapColorsEffect", () => {

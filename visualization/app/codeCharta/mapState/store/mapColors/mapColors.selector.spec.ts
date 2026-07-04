@@ -1,6 +1,6 @@
 import { CcState } from "../../../codeCharta.model"
 import { clone } from "../../../util/clone"
-import { defaultState } from "../../../state/store/state.manager"
+import { defaultState } from "../../../store/state.manager"
 import { mapColorsSelector } from "./mapColors.selector"
 
 describe("mapColorsSelector", () => {

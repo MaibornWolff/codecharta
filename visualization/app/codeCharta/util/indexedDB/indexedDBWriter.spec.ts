@@ -1,6 +1,6 @@
 import "fake-indexeddb/auto"
 import { openDB } from "idb"
-import { defaultState } from "../../state/store/state.manager"
+import { defaultState } from "../../store/state.manager"
 import { defaultPreferences } from "../../preferences/preferences.read.facade"
 import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"

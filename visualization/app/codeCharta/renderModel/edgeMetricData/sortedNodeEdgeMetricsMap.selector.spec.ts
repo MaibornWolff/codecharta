@@ -3,7 +3,7 @@ import { sortedNodeEdgeMetricsMapSelector } from "./sortedNodeEdgeMetricsMap.sel
 import { Store, StoreModule } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { TestBed } from "@angular/core/testing"
-import { appReducers } from "../../state/store/state.manager"
+import { appReducers } from "../../store/store"
 import { setFiles } from "../../fileStore/store/files.actions"
 import { NodeEdgeMetricsMap } from "../../codeCharta.model"
 import { firstValueFrom } from "rxjs"

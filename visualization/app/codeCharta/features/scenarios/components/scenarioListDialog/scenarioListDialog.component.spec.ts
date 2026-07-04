@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BehaviorSubject } from "rxjs"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
 import { ScenarioViewModelService } from "../../services/scenarioViewModel.service"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"

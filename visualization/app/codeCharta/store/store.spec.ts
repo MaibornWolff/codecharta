@@ -1,7 +1,7 @@
-import { AttributeTypeValue } from "../../codeCharta.model"
+import { AttributeTypeValue } from "../codeCharta.model"
 import { _applyPartialState, defaultState } from "./state.manager"
 import { expect } from "@jest/globals"
-import { clone } from "../../util/clone"
+import { clone } from "../util/clone"
 
 describe("_applyPartialState", () => {
     it("should update partial state", () => {

@@ -7,7 +7,7 @@ import { FILE_STATES_TWO_FILES, TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../.
 import { fireEvent } from "@testing-library/angular"
 import { LabelSettingsPanelComponent } from "./labelSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
+import { appReducers, setStateMiddleware } from "../../../../store/store"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { BehaviorSubject } from "rxjs"
 import { LabelMode } from "../../../../codeCharta.model"

@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { SaveScenarioDialogComponent } from "./saveScenarioDialog.component"
 import { ScenariosService } from "../../services/scenarios.service"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { NodeType } from "../../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 

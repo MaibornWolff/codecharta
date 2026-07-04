@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { isDeltaStateSelector } from "../../../../fileStore/store/isDeltaState.selector"
 import { edgeMetricSelector } from "../../../../mapState/mapState.read.facade"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { InspectorVisibilityService } from "../../../../features/sidebarInspector/facade"
 import { LegendPanelComponent } from "./legendPanel.component"
 

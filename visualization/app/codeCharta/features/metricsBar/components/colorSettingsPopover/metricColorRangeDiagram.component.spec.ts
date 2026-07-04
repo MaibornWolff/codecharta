@@ -2,7 +2,7 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { of } from "rxjs"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
 

@@ -12,7 +12,7 @@ import {
 } from "../../../mapState/mapState.write.facade"
 import { setHeightMetric } from "../../../mapState/mapState.write.facade"
 import { Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { appReducers, setStateMiddleware } from "../../../store/store"
 
 describe("LabelCreationService", () => {
     let store: Store<CcState>

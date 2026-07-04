@@ -3,7 +3,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { setColorRange } from "../../../../mapState/mapState.write.facade"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { ColorRangeSectionComponent } from "./colorRangeSection.component"
 
 describe("ColorRangeSectionComponent", () => {

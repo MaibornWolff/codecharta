@@ -6,7 +6,7 @@ import { of } from "rxjs"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../../preferences/preferences.read.facade"
 import { colorMetricSelector } from "../../../../mapState/mapState.read.facade"
 import { setColorMetric } from "../../../../mapState/mapState.write.facade"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { ColorSegmentComponent } from "./colorSegment.component"
 

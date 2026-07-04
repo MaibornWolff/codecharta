@@ -6,7 +6,7 @@ import { of } from "rxjs"
 import { setEnableFloorLabels, setInvertArea } from "../../../../mapState/mapState.write.facade"
 import { setMargin } from "../../../../mapState/mapState.write.facade"
 import { marginSelector } from "../../../../mapState/store/margin/margin.selector"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { AreaSettingsPopoverComponent } from "./areaSettingsPopover.component"
 

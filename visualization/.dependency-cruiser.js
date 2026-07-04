@@ -282,9 +282,9 @@ module.exports = {
             name: "new-must-not-import-legacy",
             severity: "error",
             comment:
-                "Migration boundary: the new structure (lenses/, fileStore/) must not import the legacy features/ or state/. Flipped to error in Slice 12 once the last 6 residual edges were re-homed (errorDialog + metricQueryParameter → util/; referenceFile.selector → fileStore/store/; the load applier → the neutral load/ layer; the metrics-lens view-aware outputs inverted so consumers read state/selectors/nodeMetricData through their own feature stores). util/ + model/ are the shared kernel and exempt. The reverse (legacy → new lens facade) is the allowed migration flow. Spec/e2e are exempt (test wiring may reference legacy action creators).",
+                "Layering boundary: the SOURCE/DATA layers (lenses/, fileStore/) must not import UP into features/. Originally this also fenced the legacy state/ folder, but Slice 15 fully dissolved state/ (its selectors → renderModel/, effects → features/load, root store → store/), so only the features/ fence remains (lenses/fileStore sit BELOW features and must not depend on them — no other rule covers this edge; filestore-has-no-upward-deps stops at lenses/mapState). util/ + model/ are the shared kernel and exempt. The reverse (features → lens facade) is the allowed flow. Spec/e2e are exempt (test wiring).",
             from: { path: "^app/codeCharta/(lenses|fileStore)/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: { path: ["^app/codeCharta/features/", "^app/codeCharta/state/"] }
+            to: { path: ["^app/codeCharta/features/"] }
         },
         {
             name: "lens-owns-ccjson-source",
@@ -326,6 +326,14 @@ module.exports = {
                 pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
             to: { path: "^app/codeCharta/renderModel/" }
+        },
+        {
+            name: "root-store-is-sole-composer",
+            severity: "error",
+            comment:
+                "store/store.ts is the ngrx ROOT composition (Slice 15f): the per-home reducer map (appReducers) + the global setState meta-reducer. Only the app composition root (app/app.config.ts) may import it — nothing else re-composes or re-wires the store. The reusable root-state CONTRACT is deliberately kept OUT of this module so consumers never touch the composition: defaultState + the deep-merge kernel live in store/state.manager and the global setState action in store/state.actions, both freely importable. Spec/e2e are exempt (they wire a real store via StoreModule.forRoot(appReducers, ...) for integration tests).",
+            from: { path: "^app/codeCharta/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: { path: "^app/codeCharta/store/store\\.ts$" }
         },
 
         /* ───────────── Visualization 2.0 — Slice 13 CQRS: read/write facade split ─────────────

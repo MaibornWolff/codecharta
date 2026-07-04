@@ -5,7 +5,7 @@ import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { heightMetricSelector } from "../../../../mapState/mapState.read.facade"
 import { setHeightMetric } from "../../../../mapState/mapState.write.facade"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { HeightSegmentComponent } from "./heightSegment.component"
 

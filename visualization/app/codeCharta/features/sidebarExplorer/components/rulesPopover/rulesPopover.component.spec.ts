@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "../../selectors/sidebarExplorer.selectors"
 import { RulesPopoverComponent } from "./rulesPopover.component"
 

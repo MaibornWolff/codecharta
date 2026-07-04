@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { createEffect } from "@ngrx/effects"
-import { setState } from "../../../state/store/state.actions"
+import { setState } from "../../../store/state.actions"
 import { CcState } from "../../../codeCharta.model"
 import { map } from "rxjs"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"

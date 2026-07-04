@@ -6,7 +6,7 @@ import { isDeltaStateSelector } from "../../../../fileStore/store/isDeltaState.s
 import { calculateInitialColorRange } from "../../../../mapState/store/colorRange/calculateInitialColorRange"
 import { setColorRange } from "../../../../mapState/mapState.write.facade"
 import { colorMetricSelector } from "../../../../mapState/mapState.read.facade"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { ColorSettingsHeaderComponent } from "./colorSettingsHeader.component"
 
 describe("ColorSettingsHeaderComponent", () => {

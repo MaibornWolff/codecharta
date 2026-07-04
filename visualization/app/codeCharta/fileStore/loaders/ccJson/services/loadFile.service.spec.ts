@@ -15,7 +15,7 @@ import { loadFilesValidationToErrorDialog } from "./loadFilesValidationToErrorDi
 import { fileRoot } from "../../../../util/fileRoot"
 import { metricDataSelector } from "../../../../renderModel/accumulatedData/metricData/metricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
+import { appReducers, setStateMiddleware } from "../../../../store/store"
 import { setCurrentFilesAreSampleFiles } from "../../../store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import { getCCFileAndDecorateFileChecksum } from "../util/ccFileHelper"
 import { FileSelectionState, FileState } from "../../../../model/files/files"

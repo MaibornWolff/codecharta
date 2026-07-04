@@ -5,7 +5,7 @@ import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { areaMetricSelector } from "../../../../mapState/mapState.read.facade"
 import { setAreaMetric } from "../../../../mapState/mapState.write.facade"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { AreaSegmentComponent } from "./areaSegment.component"
 

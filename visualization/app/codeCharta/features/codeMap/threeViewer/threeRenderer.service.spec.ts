@@ -3,7 +3,7 @@ import { Scene, Vector2, WebGLRenderer, WebGLInfo, Camera } from "three"
 import { Store, StoreModule } from "@ngrx/store"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { setIsWhiteBackground } from "../../../mapState/mapState.write.facade"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { appReducers, setStateMiddleware } from "../../../store/store"
 
 jest.mock("three", () => {
     const originalThree = jest.requireActual("three")

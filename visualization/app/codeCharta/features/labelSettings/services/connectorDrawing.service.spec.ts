@@ -8,7 +8,7 @@ import { ThreeRendererService } from "../../../features/codeMap/facade"
 import { setShowMetricLabelNodeName } from "../../../mapState/mapState.write.facade"
 import { Store, StoreModule } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { appReducers, setStateMiddleware } from "../../../store/store"
 import { StateAccessStore } from "../stores/stateAccess.store"
 
 describe("ConnectorDrawingService", () => {

@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { metricDataSelector } from "../../../../renderModel/accumulatedData/metricData/metricData.selector"
 import { attributeDescriptorsSelector } from "../../../../lenses/metrics/metricsLens.facade"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { MetricSelectPopoverComponent } from "./metricSelectPopover.component"
 

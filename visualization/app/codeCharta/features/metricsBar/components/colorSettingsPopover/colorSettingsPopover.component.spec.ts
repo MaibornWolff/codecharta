@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { isDeltaStateSelector } from "../../../../fileStore/store/isDeltaState.selector"
 import { colorMetricSelector } from "../../../../mapState/mapState.read.facade"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { ColorSettingsPopoverComponent } from "./colorSettingsPopover.component"
 

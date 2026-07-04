@@ -2,7 +2,7 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { HexMapColor } from "../../../../codeCharta.model"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 
 describe("LegendColorRowComponent", () => {

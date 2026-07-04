@@ -1,28 +1,13 @@
-import { defaultPreferences, preferences } from "../../preferences/preferences.read.facade"
-import { defaultFiles, files } from "../../fileStore/store/files.reducer"
-import { defaultIsLoadingFile, isLoadingFile } from "../../fileStore/store/isLoadingFile/isLoadingFile.reducer"
-import {
-    currentFilesAreSampleFiles,
-    defaultCurrentFilesAreSampleFiles
-} from "../../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
-import { defaultMapState, mapState } from "../../mapState/mapState.read.facade"
-import { defaultSharedView, sharedView } from "../../sharedView/sharedView.read.facade"
-import { defaultMetricsLensSource, metricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
-import { defaultDependencyLensSource, dependencyLensSource } from "../../lenses/dependency/dependencyLens.load.facade"
-import { ActionReducer } from "@ngrx/store"
-import { CcState } from "../../codeCharta.model"
-import { isSetStateAction } from "./state.actions"
+import { defaultPreferences } from "../preferences/preferences.read.facade"
+import { defaultFiles } from "../fileStore/store/files.reducer"
+import { defaultIsLoadingFile } from "../fileStore/store/isLoadingFile/isLoadingFile.reducer"
+import { defaultCurrentFilesAreSampleFiles } from "../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
+import { defaultMapState } from "../mapState/mapState.read.facade"
+import { defaultSharedView } from "../sharedView/sharedView.read.facade"
+import { defaultMetricsLensSource } from "../lenses/metrics/metricsLens.load.facade"
+import { defaultDependencyLensSource } from "../lenses/dependency/dependencyLens.load.facade"
+import { CcState } from "../codeCharta.model"
 
-export const appReducers = {
-    metricsLensSource,
-    dependencyLensSource,
-    preferences,
-    mapState,
-    sharedView,
-    files,
-    isLoadingFile,
-    currentFilesAreSampleFiles
-}
 export const defaultState: CcState = {
     metricsLensSource: defaultMetricsLensSource,
     dependencyLensSource: defaultDependencyLensSource,
@@ -33,13 +18,6 @@ export const defaultState: CcState = {
     isLoadingFile: defaultIsLoadingFile,
     currentFilesAreSampleFiles: defaultCurrentFilesAreSampleFiles
 }
-
-export const setStateMiddleware =
-    (reducer: ActionReducer<CcState>): ActionReducer<CcState> =>
-    (state, action) => {
-        const newState = isSetStateAction(action) ? _applyPartialState({ ...state }, action.value) : state
-        return reducer(newState, action)
-    }
 
 const objectWithDynamicKeysInStore = new Set([
     "metricsLensSource.attributeTypes",

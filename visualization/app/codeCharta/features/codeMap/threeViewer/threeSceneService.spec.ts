@@ -19,7 +19,7 @@ import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { idToNodeSelector } from "../../../lenses/structure/structure.facade"
 import { TestBed } from "@angular/core/testing"
 import { IdToBuildingService } from "../idToBuilding.service"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { appReducers, setStateMiddleware } from "../../../store/store"
 
 jest.mock("../../../lenses/structure/store/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()

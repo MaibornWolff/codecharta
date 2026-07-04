@@ -22,7 +22,7 @@ import {
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { wait } from "../../../util/testUtils/wait"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+import { appReducers, setStateMiddleware } from "../../../store/store"
 import { clone } from "../../../util/clone"
 
 // Slice 15e: edges derives from files via the dependency lens; mock the selector to inject edges directly.

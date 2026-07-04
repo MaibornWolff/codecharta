@@ -5,7 +5,7 @@ import { of } from "rxjs"
 import { isDeltaStateSelector } from "../../../../fileStore/store/isDeltaState.selector"
 import { metricDataSelector } from "../../../../renderModel/accumulatedData/metricData/metricData.selector"
 import { areaMetricSelector, heightMetricSelector } from "../../../../mapState/mapState.read.facade"
-import { defaultState } from "../../../../state/store/state.manager"
+import { defaultState } from "../../../../store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { MetricsBarComponent } from "./metricsBar.component"
 
