@@ -23,23 +23,24 @@ module.exports = {
         {
             name: "feature-no-external-access-to-internals",
             severity: "error",
-            comment: "Feature internals can only be accessed within the same feature. External code must use facade.ts or components/",
+            comment:
+                "Feature internals can only be accessed within the same feature. External code must use facade.ts, components/ or a feature's effects bundle (effects/<feature>.effects.ts) — the latter is the public ngrx-registration manifest imported by the app composition root (Slice 15c), which must NOT be routed through the facade (that would pull every effect's cross-feature deps into the facade graph and form cycles).",
             from: {
                 pathNot: "^app/codeCharta/features/"
             },
             to: {
                 path: "^app/codeCharta/features/",
-                pathNot: ["^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)"]
+                pathNot: ["^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)", "^app/codeCharta/features/[^/]+/effects/[^/]+\\.effects\\.ts$"]
             }
         },
         {
             name: "feature-cross-feature-only-via-public-api",
             severity: "error",
             comment:
-                "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden. (e2e/page-object test files are exempt: they compose features and must not pull page objects through the runtime facade, which would bundle test/node deps.)",
+                "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden. (Test files — .e2e/.po/.spec — are exempt: they compose features for integration wiring, e.g. a service spec registering another feature's effect in a test EffectsModule, mirroring how every migration boundary rule exempts specs; the runtime source stays fenced.)",
             from: {
                 path: "^app/codeCharta/features/([^/]+)/",
-                pathNot: ["\\.e2e\\.ts$", "\\.po\\.ts$"]
+                pathNot: ["\\.e2e\\.ts$", "\\.po\\.ts$", "\\.spec\\.ts$"]
             },
             to: {
                 path: "^app/codeCharta/features/([^/]+)/",
@@ -97,10 +98,11 @@ module.exports = {
         {
             name: "feature-only-stores-can-import-ngrx-store",
             severity: "error",
-            comment: "Only stores/ folder can import from @ngrx/store. Components use services, services use stores.",
+            comment:
+                "Only a feature's stores/, selectors/ and effects/ may import @ngrx/store. Components use services, services use stores; effects are ngrx state-reactors (they own the createEffect streams) and legitimately touch the store, like a state-holder. The effects/ exemption was added in Slice 15c when the reactive side-effects moved from state/effects/ into their owning feature.",
             from: {
                 path: "^app/codeCharta/features/[^/]+/",
-                pathNot: ["^app/codeCharta/features/[^/]+/(stores|selectors)/", "\\.spec\\.ts$"]
+                pathNot: ["^app/codeCharta/features/[^/]+/(stores|selectors|effects)/", "\\.spec\\.ts$"]
             },
             to: {
                 path: "@ngrx/store"

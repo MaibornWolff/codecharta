@@ -10,7 +10,7 @@ import { EffectsModule } from "@ngrx/effects"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { CcState } from "../../../codeCharta.model"
-import { RenderCodeMapEffect } from "../../../state/effects/renderCodeMapEffect/renderCodeMap.effect"
+import { RenderCodeMapEffect } from "../../../features/codeMap/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { setFiles, setStandardByNames } from "../../../fileStore/store/files.actions"
 import { UnfocusNodesEffect } from "../../../state/effects/unfocusNodes/unfocusNodes.effect"
 

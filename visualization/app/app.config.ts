@@ -6,13 +6,11 @@ import { appReducers, setStateMiddleware } from "app/codeCharta/state/store/stat
 import { UnfocusNodesEffect } from "app/codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "app/codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
-import { AutoFitCodeMapEffect } from "app/codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
+import { codeMapEffects } from "app/codeCharta/features/codeMap/effects/codeMap.effects"
 import { LinkColorMetricToHeightMetricEffect } from "app/codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
-import { RenderCodeMapEffect } from "app/codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { ResetChosenMetricsEffect } from "app/codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "app/codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { SaveCcStateEffect } from "app/codeCharta/state/effects/saveCcState/saveCcState.effect"
-import { SetLoadingIndicatorEffect } from "app/codeCharta/state/effects/setLoadingIndicator/setLoadingIndicator.effect"
 import { UpdateEdgePreviewsEffect } from "app/codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
 import { UpdateFileSettingsEffect } from "app/codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 import { UpdateMapColorsEffect } from "app/codeCharta/state/effects/updateMapColors/updateMapColors.effect"
@@ -30,6 +28,7 @@ export const appConfig: ApplicationConfig = {
         provideStore(appReducers, { metaReducers: [setStateMiddleware] }),
 
         provideEffects([
+            ...codeMapEffects,
             UnfocusNodesEffect,
             AddBlacklistItemsIfNotResultsInEmptyMapEffect,
             UpdateAmountOfEdgePreviewsEffect,
@@ -38,13 +37,10 @@ export const appConfig: ApplicationConfig = {
             ResetColorRangeEffect,
             ResetChosenMetricsEffect,
             UpdateEdgePreviewsEffect,
-            RenderCodeMapEffect,
-            AutoFitCodeMapEffect,
             UpdateVisibleTopLabelsEffect,
             LinkColorMetricToHeightMetricEffect,
             ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
             UpdateFileSettingsEffect,
-            SetLoadingIndicatorEffect,
             SaveCcStateEffect,
             UpdateQueryParametersEffect,
             UpdateMapColorsEffect

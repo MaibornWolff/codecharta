@@ -29,8 +29,8 @@ import {
     setShowMetricLabelNodeName,
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
-} from "../../../mapState/mapState.write.facade"
-import { setMaxTreeMapFiles } from "../../../preferences/preferences.write.facade"
+} from "../../../../mapState/mapState.write.facade"
+import { setMaxTreeMapFiles } from "../../../../preferences/preferences.write.facade"
 import {
     setAllFocusedNodes,
     focusNode,
@@ -40,8 +40,8 @@ import {
     setMarkedPackages,
     markPackages,
     unmarkPackage
-} from "../../../sharedView/sharedView.write.facade"
-import { setState } from "../../store/state.actions"
+} from "../../../../sharedView/sharedView.write.facade"
+import { setState } from "../../../../state/store/state.actions"
 
 export const actionsRequiringRerender = [
     setColorLabels,
