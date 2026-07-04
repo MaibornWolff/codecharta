@@ -27,9 +27,6 @@ describe("FileExtensionBarSegment", () => {
             distributionMetric: "rloc",
             edgeMetric: ""
         },
-        fileSettings: {
-            edges: []
-        },
         metricsLensSource: {
             attributeTypes: { nodes: {}, edges: {} },
             attributeDescriptors: null

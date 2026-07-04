@@ -21,7 +21,7 @@ import {
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
 import { setState } from "../../state/store/state.actions"
-import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
+import { edgesSelector } from "../../lenses/dependency/dependencyLens.facade"
 import {
     setAmountOfTopLabels,
     setColorLabels,
@@ -45,6 +45,9 @@ const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../renderModel/accumulatedData/metricData/metricData.selector", () => ({
     metricDataSelector: jest.fn()
 }))
+
+// Slice 15e: edges derives from files via the dependency lens; mock the selector to inject edges directly.
+jest.mock("../../lenses/dependency/store/edges.selector", () => ({ edgesSelector: jest.fn(() => []) }))
 
 // The render service reads node metrics via nodeMetricDataSelector(state) (Slice 12c: no longer through
 // the metrics-lens facade). Stub only that export — metricRangeSelector must stay real because
@@ -79,6 +82,8 @@ describe("codeMapRenderService", () => {
     })
 
     function restartSystem() {
+        // Default to no edges (mirrors the fresh store) so a mockReturnValue from a prior test doesn't leak.
+        ;(edgesSelector as unknown as jest.Mock).mockReturnValue([])
         TestBed.configureTestingModule({
             imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
@@ -552,7 +557,7 @@ describe("codeMapRenderService", () => {
         })
 
         it("should call codeMapArrowService.addEdgeArrows", () => {
-            store.dispatch(setEdges({ value: VALID_EDGES }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue(VALID_EDGES)
 
             codeMapRenderService["setArrows"](sortedNodes)
 

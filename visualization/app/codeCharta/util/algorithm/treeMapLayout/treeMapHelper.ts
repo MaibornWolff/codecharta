@@ -3,6 +3,7 @@ import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { searchedNodePathsSelector, selectedColorMetricDataSelector } from "../../../renderModel/renderModel.facade"
+import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { MetricMinMax } from "../../metric/metricRange"
 import { getColorByMetricValue } from "../../color/gradientCalculator"
 
@@ -181,7 +182,7 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: CcState) {
         return searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
     }
 
-    if (state.mapState.showOnlyBuildingsWithEdges && state.fileSettings.edges.some(edge => edge.visible)) {
+    if (state.mapState.showOnlyBuildingsWithEdges && edgesSelector(state).some(edge => edge.visible)) {
         return nodeHasNoVisibleEdges(codeMapNode, state)
     }
 
@@ -191,7 +192,7 @@ export function isNodeFlat(codeMapNode: CodeMapNode, state: CcState) {
 function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, state: CcState) {
     return (
         codeMapNode.edgeAttributes[state.mapState.edgeMetric] === undefined ||
-        !state.fileSettings.edges.some(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName)
+        !edgesSelector(state).some(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName)
     )
 }
 

@@ -5,7 +5,6 @@ import { CcState } from "../../../codeCharta.model"
 import { map } from "rxjs"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { getMergedEdges } from "../../../util/edges/edges.merger"
 import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
 import { getMergedBlacklist } from "./utils/blacklist.merger"
 import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
@@ -37,12 +36,10 @@ export class UpdateFileSettingsEffect {
 
                 return setState({
                     value: {
-                        fileSettings: {
-                            edges: getMergedEdges(visibleFiles, withUpdatedPath)
-                        },
                         // Slice 9b+9c: the merged blacklist and markedPackages are co-emitted under the
                         // sharedView home (not fileSettings) in the SAME setState, so a single dynamic-key
-                        // replace re-homes each array.
+                        // replace re-homes each array. (Slice 15e: edges left this effect entirely — it is now
+                        // a pure derived selector on the dependency lens, not stored state.)
                         sharedView: {
                             blacklist: getMergedBlacklist(visibleFiles, withUpdatedPath),
                             markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath)

@@ -1,7 +1,7 @@
-import { fileSettingsActions } from "../../../state/store/fileSettings/fileSettings.actions"
 import { fileActions } from "../../../fileStore/store/files.actions"
 import { setState } from "../../../state/store/state.actions"
 import { preferencesActions } from "../../../preferences/preferences.write.facade"
+import { setAttributeTypes, setAttributeDescriptors } from "../../../lenses/metrics/metricsLens.load.facade"
 import {
     setColorLabels,
     setShowMetricLabelNodeName,
@@ -35,7 +35,20 @@ import {
     setColorMetric,
     setAreaMetric
 } from "../../../mapState/mapState.write.facade"
-import { setSearchPattern, setAllFocusedNodes, unfocusAllNodes, focusNode, unfocusNode } from "../../../sharedView/sharedView.write.facade"
+import {
+    setSearchPattern,
+    setAllFocusedNodes,
+    unfocusAllNodes,
+    focusNode,
+    unfocusNode,
+    setBlacklist,
+    addBlacklistItem,
+    addBlacklistItems,
+    removeBlacklistItem,
+    setMarkedPackages,
+    markPackages,
+    unmarkPackage
+} from "../../../sharedView/sharedView.write.facade"
 
 // Slice 10b: the ex-appSettings / ex-dynamicSettings grab-bag action lists (appSettingsActions,
 // dynamicSettingsActions) were dissolved together with those reducers. The exact set of actions that
@@ -76,10 +89,31 @@ const mapStateSaveActions = [
     setAreaMetric
 ]
 
-const sharedViewSaveActions = [setSearchPattern, setAllFocusedNodes, unfocusAllNodes, focusNode, unfocusNode]
+// Slice 9b/9c re-homed blacklist + markedPackages from the (now-deleted) fileSettings slice into
+// sharedView; their save-trigger actions belong here with the rest of the sharedView save actions.
+const sharedViewSaveActions = [
+    setSearchPattern,
+    setAllFocusedNodes,
+    unfocusAllNodes,
+    focusNode,
+    unfocusNode,
+    setBlacklist,
+    addBlacklistItem,
+    addBlacklistItems,
+    removeBlacklistItem,
+    setMarkedPackages,
+    markPackages,
+    unmarkPackage
+]
+
+// The metrics lens's cc.json source (node attributeTypes + descriptors) persists in the CcState blob.
+// Slice 15e removed the edge actions (setEdges/addEdge/removeEdge) from the save-trigger union entirely:
+// edges is no longer stored state (a pure derived selector on the dependency lens), so nothing about it
+// needs persisting.
+const metricsLensSaveActions = [setAttributeTypes, setAttributeDescriptors]
 
 export const actionsRequiringSaveCcState = [
-    [...fileSettingsActions],
+    [...metricsLensSaveActions],
     [...mapStateSaveActions],
     [...sharedViewSaveActions],
     [...preferencesActions],

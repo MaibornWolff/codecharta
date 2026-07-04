@@ -4,7 +4,7 @@ import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
-import { CcState, FileSettings, Preferences, SharedView, SortingOption } from "../../../../codeCharta.model"
+import { CcState, Preferences, SharedView, SortingOption } from "../../../../codeCharta.model"
 import { FileSelectionState } from "../../../../model/files/files"
 import { getCCFiles } from "../../../../model/files/files.helper"
 import { MetricQueryParemter } from "../../../../util/queryParameter/metricQueryParameter"
@@ -13,7 +13,6 @@ import { defaultPreferences } from "../../../../preferences/preferences.read.fac
 import { setSortingOption } from "../../../../preferences/preferences.write.facade"
 import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../../mapState/mapState.write.facade"
 import { defaultSharedView } from "../../../../sharedView/sharedView.read.facade"
-import { defaultFileSettings } from "../../../../state/store/fileSettings/fileSettings.reducer"
 import { setDelta, setFiles } from "../../../store/files.actions"
 import { appReducers, defaultState, setStateMiddleware } from "../../../../state/store/state.manager"
 import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../../mocks/dataMocks"
@@ -336,24 +335,8 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).not.toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
         })
 
-        it("should set all differing fileSettings", async () => {
-            const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
-                async () => new Promise(resolve => resolve(mockedNameDataPairs))
-            )
-            const mockedState = JSON.parse(stringify(defaultState)) as CcState
-            mockedState.fileSettings = nullifyObjectValues(defaultFileSettings) as FileSettings
-            jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
-            jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
-            const dispatchSpy = jest.spyOn(store, "dispatch")
-
-            await loadInitialFileService.loadFilesOrSampleFiles()
-
-            expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
-            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.fileSettings, defaultFileSettings))
-        })
+        // Slice 15e removed the fileSettings applier: edges is the only member that was left and it is now a
+        // derived dependency-lens selector, not stored state — so there is nothing to apply on load anymore.
 
         it("should set all differing sharedView", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]

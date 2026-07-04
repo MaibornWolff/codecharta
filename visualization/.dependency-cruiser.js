@@ -30,7 +30,10 @@ module.exports = {
             },
             to: {
                 path: "^app/codeCharta/features/",
-                pathNot: ["^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)", "^app/codeCharta/features/[^/]+/effects/[^/]+\\.effects\\.ts$"]
+                pathNot: [
+                    "^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)",
+                    "^app/codeCharta/features/[^/]+/effects/[^/]+\\.effects\\.ts$"
+                ]
             }
         },
         {
@@ -398,10 +401,7 @@ module.exports = {
                 pathNot: ["^app/codeCharta/sharedView/", "^app/codeCharta/preferences/", "\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
             to: {
-                path: [
-                    "^app/codeCharta/sharedView/store/",
-                    "^app/codeCharta/preferences/store/"
-                ]
+                path: ["^app/codeCharta/sharedView/store/", "^app/codeCharta/preferences/store/"]
             }
         }
     ],

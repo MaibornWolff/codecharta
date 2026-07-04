@@ -19,11 +19,14 @@ import {
     toggleEdgeMetricVisible,
     setHeightMetric
 } from "../../../mapState/mapState.write.facade"
-import { setEdges } from "../../../state/store/fileSettings/edges/edges.actions"
+import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
 import { clone } from "../../../util/clone"
+
+// Slice 15e: edges derives from files via the dependency lens; mock the selector to inject edges directly.
+jest.mock("../../../lenses/dependency/store/edges.selector", () => ({ edgesSelector: jest.fn(() => []) }))
 
 describe("CodeMapArrowService", () => {
     let codeMapArrowService: CodeMapArrowService
@@ -32,6 +35,9 @@ describe("CodeMapArrowService", () => {
     let state: State<CcState>
 
     beforeEach(() => {
+        // Default to no edges (mirrors the fresh store) — the constructor subscribes immediately, and a
+        // mockReturnValue set by a prior test would otherwise leak in before this.map is populated.
+        ;(edgesSelector as unknown as jest.Mock).mockReturnValue([])
         TestBed.configureTestingModule({
             imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
@@ -112,7 +118,7 @@ describe("CodeMapArrowService", () => {
 
     describe("Arrow Behaviour when selecting and hovering a building", () => {
         it("should only highlight small leaf when big leaf is selected", async () => {
-            store.dispatch(setEdges({ value: VALID_EDGES_DECORATED }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue(VALID_EDGES_DECORATED)
             const nodes: Node[] = [
                 CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node,
                 CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node,
@@ -171,7 +177,9 @@ describe("CodeMapArrowService", () => {
 
             store.dispatch(setShowOutgoingEdges({ value: true }))
             store.dispatch(setShowIncomingEdges({ value: false }))
-            store.dispatch(setEdges({ value: [{ fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }] }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }
+            ])
 
             codeMapArrowService["buildPairingEdges"](nodesMap)
 
@@ -192,7 +200,9 @@ describe("CodeMapArrowService", () => {
 
             store.dispatch(setShowOutgoingEdges({ value: false }))
             store.dispatch(setShowIncomingEdges({ value: true }))
-            store.dispatch(setEdges({ value: [{ fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }] }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }
+            ])
 
             codeMapArrowService["buildPairingEdges"](nodesMap)
 
@@ -342,7 +352,7 @@ describe("CodeMapArrowService", () => {
         it("when targetNode is invalid then it should not call preview mode", () => {
             const invalidEdge = clone(VALID_EDGES_DECORATED)
             invalidEdge[0].toNodeName = "invalid"
-            store.dispatch(setEdges({ value: invalidEdge }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue(invalidEdge)
             const nodes: Node[] = [CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node]
 
             codeMapArrowService.addEdgeMapBasedOnNodes(nodes)
@@ -353,7 +363,7 @@ describe("CodeMapArrowService", () => {
         it("when originNodeName is invalid then it should not call preview mode", () => {
             const invalidEdge = clone(VALID_EDGES_DECORATED)
             invalidEdge[0].fromNodeName = "invalid"
-            store.dispatch(setEdges({ value: invalidEdge }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue(invalidEdge)
             const nodes: Node[] = [CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node]
 
             codeMapArrowService.addEdgeMapBasedOnNodes(nodes)

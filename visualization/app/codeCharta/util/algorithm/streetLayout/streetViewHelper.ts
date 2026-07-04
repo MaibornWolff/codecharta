@@ -64,9 +64,7 @@ function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: 
         attributes: layoutNode.attributes,
         edgeAttributes: layoutNode.edgeAttributes,
         deltas: layoutNode.deltas,
-        heightDelta: layoutNode.deltas?.[state.mapState.heightMetric]
-            ? heightScale * layoutNode.deltas[state.mapState.heightMetric]
-            : 0,
+        heightDelta: layoutNode.deltas?.[state.mapState.heightMetric] ? heightScale * layoutNode.deltas[state.mapState.heightMetric] : 0,
         visible: isVisible(layoutNode, isNodeLeaf, state, flattened),
         path: layoutNode.path,
         link: layoutNode.link,

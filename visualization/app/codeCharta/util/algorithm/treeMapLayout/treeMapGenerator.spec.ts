@@ -4,7 +4,6 @@ import {
     METRIC_DATA,
     TEST_FILE_WITH_PATHS,
     VALID_NODE_WITH_PATH,
-    VALID_EDGES,
     STATE,
     FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE,
     FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE,
@@ -197,7 +196,6 @@ describe("treeMapGenerator", () => {
         it("area should be zero if metric does not exist", () => {
             state.mapState.areaMetric = "unknown"
             state.mapState.heightMetric = "unknown"
-            state.fileSettings.edges = VALID_EDGES
             metricData = [{ name: "unknown", maxValue: 100, minValue: 1, values: [1, 100] }]
 
             const nodes: Node[] = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)

@@ -580,7 +580,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
                 searchPattern: "needle"
             },
             fileSettings: {
-                ...defaultState.fileSettings,
+                edges: [],
                 blacklist: [{ path: "/root/excluded", type: "exclude" }],
                 markedPackages: [{ path: "/root/src", color: "#FF0000" }],
                 attributeTypes: { nodes: { rloc: AttributeTypeValue.absolute }, edges: {} },
@@ -600,7 +600,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v14, invoked by readCcState) chains the v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13 then v14 upgrade transforms.
+        // openCodeChartaDB (v15, invoked by readCcState) chains the v3…v14 then v15 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings?: Record<string, unknown>
             dynamicSettings?: Record<string, unknown>
@@ -608,7 +608,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
             preferences: Record<string, unknown>
             mapState: Record<string, unknown>
             sharedView: Record<string, unknown>
-            fileSettings: Record<string, unknown>
+            fileSettings?: Record<string, unknown>
             metricsLensSource: Record<string, unknown>
             dependencyLensSource: Record<string, unknown>
             isLoadingFile: boolean
@@ -631,14 +631,10 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         // v7 re-home (attributeTypes/descriptors out of fileSettings into a brand-new metricsLensSource root)
         expect(migratedState.metricsLensSource.attributeTypes).toEqual({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} })
         expect(migratedState.metricsLensSource.attributeDescriptors).toEqual({ rloc: { title: "Lines of Code" } })
-        expect("attributeTypes" in migratedState.fileSettings).toBe(false)
-        expect("attributeDescriptors" in migratedState.fileSettings).toBe(false)
         // v8 re-home (blacklist out of fileSettings into the existing sharedView root)
         expect(migratedState.sharedView.blacklist).toEqual([{ path: "/root/excluded", type: "exclude" }])
-        expect("blacklist" in migratedState.fileSettings).toBe(false)
         // v9 re-home (markedPackages out of fileSettings into the existing sharedView root)
         expect(migratedState.sharedView.markedPackages).toEqual([{ path: "/root/src", color: "#FF0000" }])
-        expect("markedPackages" in migratedState.fileSettings).toBe(false)
         // v10 re-home (file-provenance flags out of appSettings/appStatus into their own top-level roots; appStatus deleted)
         expect(migratedState.isLoadingFile).toBe(false)
         expect(migratedState.currentFilesAreSampleFiles).toBe(true)
@@ -661,6 +657,9 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         expect(migratedState.sharedView.hoveredNodeId).toBeNull()
         expect(migratedState.sharedView.selectedBuildingId).toBeNull()
         expect(migratedState.sharedView.rightClickedNodeData).toBeNull()
+        // v15 drop (edges was the last fileSettings member; it is now a derived dependency-lens selector, so
+        // the whole fileSettings root is removed from the persisted blob)
+        expect(migratedState.fileSettings).toBeUndefined()
     })
 })
 

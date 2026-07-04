@@ -9,7 +9,6 @@ import { setFiles } from "../../../fileStore/store/files.actions"
 import { writeCcState } from "../../../util/indexedDB/indexedDBWriter"
 import { waitFor } from "@testing-library/angular"
 import { setMarkedPackages } from "../../../sharedView/sharedView.write.facade"
-import { setEdges } from "../../../state/store/fileSettings/edges/edges.actions"
 
 jest.mock("../../../../../app/codeCharta/util/indexedDB/indexedDBWriter", () => {
     return {
@@ -44,7 +43,6 @@ describe("SaveCcStateEffect", () => {
 
     it("should debounce save cc-state on multiple actions requiring saving cc-state", async () => {
         const store = TestBed.inject(MockStore)
-        actions$.next(setEdges({ value: [] }))
         actions$.next(setFiles({ value: [] }))
         actions$.next(setMarkedPackages({ value: [] }))
         store.refreshState()

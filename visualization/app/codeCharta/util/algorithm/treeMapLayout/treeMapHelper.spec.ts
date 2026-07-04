@@ -1,8 +1,9 @@
 import { TreeMapHelper } from "./treeMapHelper"
 import { CcState, CodeMapNode, ColorMode, EdgeVisibility, NodeType } from "../../../codeCharta.model"
-import { STATE } from "../../../mocks/dataMocks"
+import { STATE, VALID_EDGES } from "../../../mocks/dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { clone } from "../../clone"
+import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 
 jest.mock("../../../renderModel/accumulatedData/accumulatedData.selector", () => ({
     accumulatedDataSelector: () => ({
@@ -19,6 +20,10 @@ jest.mock("../../../renderModel/accumulatedData/accumulatedData.selector", () =>
 jest.mock("../../../renderModel/accumulatedData/metricData/selectedColorMetricData.selector", () => ({
     selectedColorMetricDataSelector: () => ({ minValue: 0, maxValue: 100 })
 }))
+// Slice 15e: edges is now a derived selector on the dependency lens (not state.fileSettings.edges).
+// Mocking it lets these tests inject edges directly without seeding state.files (which would perturb
+// other file-derived selectors). Defaulted to VALID_EDGES to mirror the old STATE.fileSettings.edges.
+jest.mock("../../../lenses/dependency/store/edges.selector", () => ({ edgesSelector: jest.fn() }))
 
 describe("TreeMapHelper", () => {
     describe("build node", () => {
@@ -51,6 +56,7 @@ describe("TreeMapHelper", () => {
             } as HierarchyRectangularNode<CodeMapNode>
 
             state = clone(STATE)
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue(VALID_EDGES)
             state.mapState.margin = 15
             state.mapState.heightMetric = "theHeight"
             state.mapState.invertHeight = false
@@ -99,7 +105,7 @@ describe("TreeMapHelper", () => {
         })
 
         it("should set lowest possible height caused by other visible edge pairs", () => {
-            state.fileSettings.edges = [
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
                 {
                     fromNodeName: "/root/AnotherNode1",
                     toNodeName: "/root/AnotherNode2",
@@ -109,7 +115,7 @@ describe("TreeMapHelper", () => {
                     },
                     visible: EdgeVisibility.both
                 }
-            ]
+            ])
             expect(buildNode()).toMatchSnapshot()
         })
 
@@ -174,31 +180,31 @@ describe("TreeMapHelper", () => {
             })
 
             it("should not be a flat node when no visibleEdges", () => {
-                state.fileSettings.edges = []
+                ;(edgesSelector as unknown as jest.Mock).mockReturnValue([])
                 expect(buildNode().flat).toBeFalsy()
             })
 
             it("should be a flat node when other edges are visible", () => {
                 state.mapState.showOnlyBuildingsWithEdges = true
-                state.fileSettings.edges = [
+                ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
                     {
                         fromNodeName: "/root/anotherNode",
                         toNodeName: "/root/anotherNode2",
                         attributes: {},
                         visible: EdgeVisibility.both
                     }
-                ]
+                ])
                 expect(buildNode().flat).toBeTruthy()
             })
 
             it("should not be a flat node when it contains edges", () => {
-                state.fileSettings.edges = [
+                ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
                     {
                         fromNodeName: "/root/Anode",
                         toNodeName: "/root/anotherNode",
                         attributes: {}
                     }
-                ]
+                ])
                 expect(buildNode().flat).toBeFalsy()
             })
 

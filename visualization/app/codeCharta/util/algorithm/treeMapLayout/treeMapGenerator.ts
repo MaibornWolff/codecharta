@@ -287,9 +287,7 @@ export function calculateAreaValue(
         const isAttributeDirectionInversed = attributeDescriptors[areaMetric]?.direction === 1
 
         if (isAttributeDirectionInversed) {
-            return mapState.invertArea
-                ? node.attributes[mapState.areaMetric]
-                : maxWidth - node.attributes[mapState.areaMetric]
+            return mapState.invertArea ? node.attributes[mapState.areaMetric] : maxWidth - node.attributes[mapState.areaMetric]
         }
         return mapState.invertArea ? maxWidth - node.attributes[mapState.areaMetric] : node.attributes[mapState.areaMetric]
     }

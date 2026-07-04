@@ -7,7 +7,7 @@ import { defaultPreferences, defaultSorting } from "../../preferences/preference
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 14
+export const DB_VERSION = 15
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -403,6 +403,18 @@ export function migrateCcStateRecordToV14<T>(state: T): T {
     return next as T
 }
 
+// Slice 15e: edges was the last member of the `fileSettings` root, and it is now a pure derived selector
+// on the dependency lens (never stored). Drop the whole `fileSettings` key from the persisted blob so a
+// stale array can't linger — nothing reads it anymore (edges re-derives from the persisted files).
+export function migrateCcStateRecordToV15<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const next: Record<string, unknown> = { ...(state as Record<string, unknown>) }
+    delete next["fileSettings"]
+    return next as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -441,7 +453,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 11, migrate: migrateCcStateRecordToV11 },
     { version: 12, migrate: migrateCcStateRecordToV12 },
     { version: 13, migrate: migrateCcStateRecordToV13 },
-    { version: 14, migrate: migrateCcStateRecordToV14 }
+    { version: 14, migrate: migrateCcStateRecordToV14 },
+    { version: 15, migrate: migrateCcStateRecordToV15 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

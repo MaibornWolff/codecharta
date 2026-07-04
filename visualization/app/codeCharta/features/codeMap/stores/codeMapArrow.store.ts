@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { hoveredNodeIdSelector } from "../../../sharedView/sharedView.read.facade"
+import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { edgeVisibilitySelector } from "../selectors/edgeVisibility.selector"
 
 @Injectable({ providedIn: "root" })
@@ -18,7 +19,7 @@ export class CodeMapArrowStore {
     }
 
     getEdges() {
-        return this.state.getValue().fileSettings.edges
+        return edgesSelector(this.state.getValue())
     }
 
     getEdgeVisibility() {

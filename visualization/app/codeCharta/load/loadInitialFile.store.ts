@@ -1,16 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import {
-    CcState,
-    DependencyLensSource,
-    FileSettings,
-    MapState,
-    MetricsLensSource,
-    Preferences,
-    SharedView,
-    Sorting
-} from "../codeCharta.model"
+import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../codeCharta.model"
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
 import { metricDataSelector } from "../renderModel/renderModel.facade"
@@ -51,7 +42,6 @@ import {
 import { setAttributeTypes, setAttributeDescriptors } from "../lenses/metrics/metricsLens.load.facade"
 import { setEdgeAttributeTypes } from "../lenses/dependency/dependencyLens.load.facade"
 import { setBlacklist, setMarkedPackages, setAllFocusedNodes, setSearchPattern } from "../sharedView/sharedView.write.facade"
-import { setEdges } from "../state/store/fileSettings/edges/edges.actions"
 import {
     setSortingOption,
     setPresentationMode,
@@ -92,23 +82,6 @@ export class LoadInitialFileStore {
 
     dispatchResetCameraIfNewFileIsLoadedToFalse() {
         this.store.dispatch({ type: "StartWithGlobalOption:resetCameraIfNewFileIsLoadedSetToFalse" })
-    }
-
-    applyFileSettings(savedFileSettings: FileSettings) {
-        const currentFileSettings = (this.state.getValue() as CcState).fileSettings
-        const missingFileSettings = []
-        for (const [key, value] of Object.entries(currentFileSettings)) {
-            if (key in savedFileSettings) {
-                const currentValue = stringify(value)
-                const loadedValue = stringify(savedFileSettings[key])
-                if (currentValue !== loadedValue) {
-                    this.mapFileSettingToAction(key as keyof FileSettings, savedFileSettings[key])
-                }
-            } else {
-                missingFileSettings.push(key)
-            }
-        }
-        return missingFileSettings
     }
 
     applyPreferences(savedPreferences: Preferences) {
@@ -226,14 +199,6 @@ export class LoadInitialFileStore {
         if (renderState === "Delta" && files.length >= 2) {
             this.store.dispatch(setDelta({ referenceFile: files[0], comparisonFile: files[1] }))
         }
-    }
-
-    private mapFileSettingToAction(key: keyof FileSettings, value: any) {
-        if (key === "edges") {
-            this.store.dispatch(setEdges({ value }))
-            return
-        }
-        throw new Error(`Unhandled key: ${key}`)
     }
 
     private mapMetricsLensSourceToAction(key: keyof MetricsLensSource, value: any) {

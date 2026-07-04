@@ -2136,9 +2136,6 @@ export const EDGE_METRIC_DATA: EdgeMetricData[] = [
 ]
 
 export const STATE: CcState = {
-    fileSettings: {
-        edges: VALID_EDGES
-    },
     metricsLensSource: {
         attributeTypes: {
             nodes: {
@@ -2301,9 +2298,6 @@ export const DEFAULT_STATE: CcState = {
         hoveredNodeId: null,
         selectedBuildingId: null,
         rightClickedNodeData: null
-    },
-    fileSettings: {
-        edges: []
     },
     metricsLensSource: {
         attributeTypes: { nodes: {}, edges: {} },

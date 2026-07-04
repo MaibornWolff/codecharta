@@ -1,4 +1,3 @@
-import { defaultFileSettings, fileSettings } from "./fileSettings/fileSettings.reducer"
 import { defaultPreferences, preferences } from "../../preferences/preferences.read.facade"
 import { defaultFiles, files } from "../../fileStore/store/files.reducer"
 import { defaultIsLoadingFile, isLoadingFile } from "../../fileStore/store/isLoadingFile/isLoadingFile.reducer"
@@ -15,7 +14,6 @@ import { CcState } from "../../codeCharta.model"
 import { isSetStateAction } from "./state.actions"
 
 export const appReducers = {
-    fileSettings,
     metricsLensSource,
     dependencyLensSource,
     preferences,
@@ -26,7 +24,6 @@ export const appReducers = {
     currentFilesAreSampleFiles
 }
 export const defaultState: CcState = {
-    fileSettings: defaultFileSettings,
     metricsLensSource: defaultMetricsLensSource,
     dependencyLensSource: defaultDependencyLensSource,
     preferences: defaultPreferences,
@@ -48,7 +45,6 @@ const objectWithDynamicKeysInStore = new Set([
     "metricsLensSource.attributeTypes",
     "metricsLensSource.attributeDescriptors",
     "dependencyLensSource.attributeTypes",
-    "fileSettings.edges",
     // arrays: must be replaced wholesale, otherwise the deep-merge spread turns them into objects with numeric keys
     "sharedView.blacklist",
     "sharedView.markedPackages",

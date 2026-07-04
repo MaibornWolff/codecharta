@@ -17,7 +17,10 @@ describe("areDynamicSettingsAvailable", () => {
     })
 
     it("should return true when everything is set", () => {
-        const dynamicSettings: { sortingOption?: SortingOption } & Partial<PrimaryMetrics> & { distributionMetric?: string; colorRange: ColorRange } = {
+        const dynamicSettings: { sortingOption?: SortingOption } & Partial<PrimaryMetrics> & {
+                distributionMetric?: string
+                colorRange: ColorRange
+            } = {
             sortingOption: SortingOption.NAME,
             areaMetric: "rloc",
             heightMetric: "loc",

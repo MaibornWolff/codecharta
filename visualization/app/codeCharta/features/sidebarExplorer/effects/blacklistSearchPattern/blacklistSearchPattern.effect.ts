@@ -5,7 +5,11 @@ import { map, filter, withLatestFrom, tap, take, share } from "rxjs"
 import { BlacklistType, CcState } from "../../../../codeCharta.model"
 import { BlacklistExclusionGuard } from "../../../shared/facade"
 import { searchPatternSelector } from "../../../../sharedView/sharedView.read.facade"
-import { setSearchPattern, addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../sharedView/sharedView.write.facade"
+import {
+    setSearchPattern,
+    addBlacklistItems,
+    addBlacklistItemsIfNotResultsInEmptyMap
+} from "../../../../sharedView/sharedView.write.facade"
 import { parseBlacklistItems } from "../../../../util/blacklist/parseBlacklistItems"
 
 type BlacklistSearchPatternAction = {
