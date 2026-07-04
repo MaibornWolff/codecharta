@@ -9,19 +9,14 @@ import { isDeltaState } from "../../model/files/files.helper"
 import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
 import { ThreeStatsService } from "../../threeViewer/threeStats.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { BehaviorSubject, Subscription, tap } from "rxjs"
+import { ColorCategoryCountsStore } from "../../threeViewer/stores/colorCategoryCounts.store"
+import { Subscription, tap } from "rxjs"
 import { nodeMetricDataSelector, labelsPerMapActiveSelector } from "../../renderModel/renderModel.facade"
 import { blacklistMatcherSelector } from "../../sharedView/sharedView.read.facade"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
 import { RendererEngine } from "./rendererEngine.contract"
-
-export interface ColorCategoryCounts {
-    positive: number
-    neutral: number
-    negative: number
-}
 
 const MIN_BUILDING_LENGTH = 2
 
@@ -34,8 +29,6 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     }
     private unflattenedNodes
     private subscription: Subscription
-    private readonly _colorCategoryCounts$ = new BehaviorSubject<ColorCategoryCounts>({ positive: 0, neutral: 0, negative: 0 })
-    readonly colorCategoryCounts$ = this._colorCategoryCounts$.asObservable()
 
     constructor(
         private readonly codeMapRenderStore: CodeMapRenderStore,
@@ -43,7 +36,8 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         private readonly labelSettingsFacade: LabelSettingsFacade,
         private codeMapArrowService: CodeMapArrowService,
         private threeStatsService: ThreeStatsService,
-        private codeMapMouseEventService: CodeMapMouseEventService
+        private codeMapMouseEventService: CodeMapMouseEventService,
+        private readonly colorCategoryCountsStore: ColorCategoryCountsStore
     ) {
         this.subscription = this.codeMapRenderStore.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()
     }
@@ -162,7 +156,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
             }
         }
 
-        this._colorCategoryCounts$.next({
+        this.colorCategoryCountsStore.setColorCategoryCounts({
             positive: this.nodesByColor.positive.length,
             neutral: this.nodesByColor.neutral.length,
             negative: this.nodesByColor.negative.length

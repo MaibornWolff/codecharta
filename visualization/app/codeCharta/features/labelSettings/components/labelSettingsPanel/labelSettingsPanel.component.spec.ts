@@ -8,7 +8,7 @@ import { fireEvent } from "@testing-library/angular"
 import { LabelSettingsPanelComponent } from "./labelSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../../store/store"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { ColorCategoryCountsStore } from "../../../../threeViewer/threeViewer.facade"
 import { BehaviorSubject } from "rxjs"
 import { LabelMode } from "../../../../codeCharta.model"
 
@@ -19,7 +19,7 @@ describe("LabelSettingsPanelComponent", () => {
         colorCategoryCounts$ = new BehaviorSubject({ positive: 5, neutral: 3, negative: 2 })
         TestBed.configureTestingModule({
             imports: [LabelSettingsPanelComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
-            providers: [{ provide: CodeMapRenderService, useValue: { colorCategoryCounts$: colorCategoryCounts$.asObservable() } }]
+            providers: [{ provide: ColorCategoryCountsStore, useValue: { colorCategoryCounts$: colorCategoryCounts$.asObservable() } }]
         })
     })
 

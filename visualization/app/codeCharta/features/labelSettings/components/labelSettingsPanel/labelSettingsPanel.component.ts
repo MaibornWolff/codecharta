@@ -10,7 +10,7 @@ import { ColorLabelsService } from "../../services/colorLabels.service"
 import { GroupLabelCollisionsService } from "../../services/groupLabelCollisions.service"
 import { LabelsPerMapService } from "../../services/labelsPerMap.service"
 import { StateAccessStore } from "../../stores/stateAccess.store"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { ColorCategoryCountsStore } from "../../../../threeViewer/threeViewer.facade"
 import { debounce } from "../../../../util/debounce"
 import { parseNumberInput } from "../../../../util/parseNumberInput"
 import { LABEL_SIZE_STEP, MAX_LABEL_SIZE, MIN_LABEL_SIZE } from "../../services/label.constants"
@@ -34,7 +34,7 @@ export class LabelSettingsPanelComponent {
     private readonly groupLabelCollisionsService = inject(GroupLabelCollisionsService)
     private readonly labelsPerMapService = inject(LabelsPerMapService)
     private readonly stateAccessStore = inject(StateAccessStore)
-    private readonly codeMapRenderService = inject(CodeMapRenderService)
+    private readonly colorCategoryCountsStore = inject(ColorCategoryCountsStore)
 
     readonly LabelMode = LabelMode
     readonly MIN_LABEL_SIZE = MIN_LABEL_SIZE
@@ -60,7 +60,7 @@ export class LabelSettingsPanelComponent {
     readonly mapColors = toSignal(this.stateAccessStore.mapColors$, { requireSync: true })
     readonly isDeltaState = toSignal(this.stateAccessStore.isDeltaState$, { requireSync: true })
     readonly labelMode = toSignal(this.labelModeService.labelMode$(), { requireSync: true })
-    readonly colorCategoryCounts = toSignal(this.codeMapRenderService.colorCategoryCounts$, { requireSync: true })
+    readonly colorCategoryCounts = toSignal(this.colorCategoryCountsStore.colorCategoryCounts$, { requireSync: true })
     readonly groupLabelCollisions = toSignal(this.groupLabelCollisionsService.groupLabelCollisions$(), { requireSync: true })
     readonly labelsPerMap = toSignal(this.labelsPerMapService.labelsPerMap$(), { requireSync: true })
     readonly areMultipleMapsVisible = toSignal(this.stateAccessStore.areMultipleMapsVisible$, { requireSync: true })

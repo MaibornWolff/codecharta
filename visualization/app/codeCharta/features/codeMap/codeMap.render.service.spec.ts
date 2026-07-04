@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { CodeMapRenderService } from "./codeMap.render.service"
+import { ColorCategoryCountsStore } from "../../threeViewer/stores/colorCategoryCounts.store"
 import { ThreeSceneService } from "../../threeViewer/threeSceneService"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
@@ -115,7 +116,8 @@ describe("codeMapRenderService", () => {
             labelSettingsFacade,
             codeMapArrowService,
             threeStatsService,
-            codeMapMouseEventService
+            codeMapMouseEventService,
+            new ColorCategoryCountsStore()
         )
         codeMapRenderService["showCouplingArrows"] = jest.fn()
     }

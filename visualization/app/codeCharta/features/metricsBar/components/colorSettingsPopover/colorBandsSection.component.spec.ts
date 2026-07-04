@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { isDeltaStateSelector } from "../../../../fileStore/store/isDeltaState.selector"
 import { defaultState } from "../../../../store/state.manager"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { ColorCategoryCountsStore } from "../../../../threeViewer/threeViewer.facade"
 import { ColorBandsSectionComponent } from "./colorBandsSection.component"
 
 describe("ColorBandsSectionComponent", () => {
@@ -17,7 +17,7 @@ describe("ColorBandsSectionComponent", () => {
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 {
-                    provide: CodeMapRenderService,
+                    provide: ColorCategoryCountsStore,
                     useValue: { colorCategoryCounts$: of({ positive: 312, neutral: 186, negative: 98 }) }
                 }
             ]
