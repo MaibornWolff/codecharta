@@ -65,14 +65,13 @@ module.exports = {
             name: "feature-no-circular-dependencies-between-features",
             severity: "error",
             comment:
-                "Prevent circular dependencies BETWEEN features (cross-feature only; intra-feature cycles are covered by the app-wide 'no-circular' rule). The codeMap/viewCube rendering cluster is grandfathered out: making codeMap a feature surfaced real bidirectional couplings (codeMap<->viewCube — the cube renders into the map's interaction layer while the map renders the cube; codeMap<->labelSettings — mouse/render events drive labels while labels draw into the scene; codeMap<->sidebarInspector; viewCube->viewCubeToolbox->codeMap). Every current cross-feature cycle edge touches codeMap or viewCube, so those two are exempted via pathNot while the rest of the feature graph stays enforced. Break these via dependency inversion and drop the exemption in a follow-up.",
+                "Prevent circular dependencies BETWEEN features (cross-feature only; intra-feature cycles are covered by the app-wide 'no-circular' rule). The former codeMap/viewCube grandfather is GONE (Slice 16c): the shared 3D infra was extracted into the top-level threeViewer/ layer, the cursor indicator + colorCategoryCounts were relocated out of codeMap, and viewCube's last codeMap import was severed — so every cross-feature cycle edge is broken and the whole feature graph is now enforced with no exemption.",
             from: {
-                path: "^app/codeCharta/features/([^/]+)/",
-                pathNot: "^app/codeCharta/features/(codeMap|viewCube)/"
+                path: "^app/codeCharta/features/([^/]+)/"
             },
             to: {
                 path: "^app/codeCharta/features/([^/]+)/",
-                pathNot: ["^app/codeCharta/features/$1/", "^app/codeCharta/features/(codeMap|viewCube)/"],
+                pathNot: ["^app/codeCharta/features/$1/"],
                 circular: true
             }
         },
