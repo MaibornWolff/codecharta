@@ -1,7 +1,7 @@
 ---
 name: viz-2.0-slice-15-state-dissolution
 issue:
-state: proposal
+state: progress
 version: 1
 ---
 
@@ -72,11 +72,19 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 | `store/fileSettings/{reducer,selector,actions}` | **DELETE** — root slice gone (the per-file `FileSettings` **type** stays in `model/`) | inversion |
 | `store/{state.actions, state.manager}`, `store/util/getPartialDefaultState` | **`store/`** (+ `util/` for the deep-merge kernel) | reshape |
 
+## Progress log
+- **15a ✅ DONE (2026-07-04).** Two structural commits, both value-identical (385 suites / 2321 passed, **45/45
+  snapshots zero-diff**, tsc + dep-cruiser 0 errors / 94 warnings unchanged): (1) `getNodesByGitignorePath` pure
+  kernel → `util/blacklist/`; (2) `isDeltaState` + `areMultipleMapsVisible` projections → `fileStore/store/`
+  (closes CF #9's two homeless selectors). The `renderModel/` + `store/` folder scaffolding + their dep-cruiser
+  rules are **deferred into 15b/15f** (an empty folder isn't git-tracked, and a warn rule matching a not-yet-
+  existing path is a no-op; the rule is added at warn WITH the git-mv in 15b, then flipped to error).
+
 ## Sub-slice ladder (each its own gated commit; structural before behavioral)
 
-- **15a — Foundations (structural, low).** Scaffold empty `renderModel/` + `store/` + their dep-cruiser rules at
-  **warn**. Move the pure kernels → `util/` and the two file-state projections `isDeltaState` +
-  `areMultipleMapsVisible` → `fileStore/store/` (**closes CF #9**). Zero snapshot diff.
+- **15a — Foundations (structural, low).** ✅ Move the pure kernels → `util/` and the two file-state projections
+  `isDeltaState` + `areMultipleMapsVisible` → `fileStore/store/` (**closes CF #9**). Zero snapshot diff.
+  (`renderModel/`/`store/` scaffold + rules folded into 15b/15f — see Progress log.)
 - **15b — Composing layer (structural git-mv → reshape).** Move the `accumulatedData` cluster → `renderModel/`;
   the derived metric selectors → `renderModel/derivedMetrics/` (resolve the `metricRange`/`selectedColorMetricData`
   shim); the node-resolving + render-gate selectors → `renderModel/`. Repoint importers. **Flip
@@ -110,18 +118,20 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
   features/load), `lens-no-view-state` + `lens-owns-ccjson-source` (no lens imports `renderModel/` or view state),
   the CQRS read/write facade rules.
 
-## Open decisions (settle before starting)
-1. **`renderModel/` name** (vs `composing/`) and whether it exposes a barrel facade or is imported per-selector.
+## Open decisions — SETTLED (2026-07-04, user)
+1. **`renderModel/` name — DECIDED: `renderModel/`** (not `composing/`). Exposes a **barrel facade**
+   (`renderModel.facade.ts` re-exporting all composing selectors), mirroring the home read-facades.
 2. **Edges (CF #2a) — home DECIDED = the dependency lens** (ADR-12), via an injectable `DependencyLensStore`.
    Still open: keep the imperatively-merged slice, **vs** derive edges as a pure selector over `fileStore`
-   `visibleFileStates` (eliminating the slice). Pick the new root key when the slice-vs-selector call is made.
-3. **`url/`** as its own module vs fold into `load/`.
-4. **Does `renderModel/` host only selectors, or also "reaction" effects** (derived-selector → dispatch)? This
-   decides whether the metric-reactive effects land in features (15c) or in `renderModel/`. Recommend **selectors
-   only** → effects go to features (keeps the composing layer pure).
+   `visibleFileStates` (eliminating the slice). Pick the new root key when the slice-vs-selector call is made (15e).
+3. **`url/` — DECIDED: fold `updateQueryParameters` into `load/`** (no separate `url/` module). URL sync is a
+   persist/hydrate concern like `saveCcState`, which also lands in `load/`.
+4. **`renderModel/` hosts ONLY selectors — DECIDED: selectors only.** The reaction effects
+   (`resetChosenMetrics`/`updateMapColors`/…) land in `features/<feature>/effects/` (15c), keeping the composing
+   layer pure (mirrors the lenses).
 5. **Single-feature derived selectors** (`amountOfBuildingsWithSelectedEdgeMetric`→metricsBar,
-   `sortedNodeEdgeMetricsMap`→codeMap, `searchedNodes`→sidebarExplorer): push into the owning feature vs keep in
-   `renderModel/` for cohesion.
+   `sortedNodeEdgeMetricsMap`→codeMap, `searchedNodes`→sidebarExplorer): default = keep in `renderModel/` for
+   cohesion (the plan table's mapping); revisit only if a feature clearly owns one outright.
 6. **14e-3 ordering — DECIDED: 14e-3 runs FIRST** (see Prerequisite). `idToNode`/`valueOf` become lens-owned in
    14e-3 and are out of `renderModel/`; Slice 15 moves only `accumulatedData` + the rest.
 
