@@ -25,13 +25,17 @@ version: 1
 | 9 | **Slice 13d cross-cutting read-wrapper dedup (remaining).** 13d collapsed the **mapState metric cluster** into `MapStateReadWindow` (−3 pure-read wrapper classes + 6 metricsBar read+write stores delegated). **Still duplicated:** `isDeltaState` ×5 (`state/selectors/isDeltaState.selector`), `isLoadingFile` ×3 (`fileStore/store/…`), `selectedNode` ×3, `hoveredNodeId` ×3 (mapState), `blacklist` ×2 (sharedView), plus the curated multi-read windows (`legendMapState`, `nodeSelection`, `3dPrint.store`, `threeScene`, `stateAccess`). A `sharedView`/`preferences` read-window is trivial (both homes own their selectors); the hard part is the **cross-home** selectors (isDeltaState/isLoadingFile/selectedNode) that have **no settled home** — they'd need a fileStore read-window and/or the not-yet-built viewState/interaction layer, so folding them now would pre-empt that later slice. **(Post-13:** `feature-reaches-state-home-only-via-facade` is now at **error** for sharedView + preferences; **mapState is the only home excluded** because of its ~12 raw `store/*.selector` imports — folding those onto `MapStateReadWindow`/the read facade is the concrete mapState half of this item, after which mapState joins the rule.) | Slice 13d (metric cluster done) | (a) Cross-home selectors (isDeltaState/isLoadingFile/selectedNode) need a home decision — fileStore read-window vs `features/shared` vs a viewState home (roadmap's interaction/appearance layer). (b) `selectedNode`/`hoveredNodeId` feed selection/hover highlight — **not** snapshot-covered → need the user's e2e + manual side-by-side vs `main` (CONVENTIONS). | a later **read-window / interaction-layer** slice | The cross-home selectors' home is settled (fileStore read-window or viewState home exists); hover/selection dedup smoked against `main`. `hoveredNodeId` can also just be added to `MapStateReadWindow` (it IS a mapState selector) once its hover consumers are smoked. |
 
 ## Notes
-- **Planned (2026-07-04): Slice 15 — full `state/` dissolution** (`slice-15-state-dissolution.md`, the
-  post-migration capstone). It ABSORBS several open items: **CF #2a** (`edges` → an injectable dependency-lens
-  store + deleting the `fileSettings` root slice = its 15e), and the homeless cross-home read selectors from
-  **CF #9** (`isDeltaState`/`areMultipleMapsVisible` → `fileStore/store/` in 15a; `selectedNode`/`hoveredNode`
-  → the new `renderModel/` composing layer). When picking those up, use Slice 15 as the home. **Its 14e-3
-  prerequisite is now satisfied** (see below), so `idToNode`/`valueOf` are already lens-owned and Slice 15 moves
-  only `accumulatedData` + the rest of the composing selectors into `renderModel/`.
+- **✅ DONE (2026-07-04): Slice 15 — full `state/` dissolution** (`slice-15-state-dissolution.md`, state: complete).
+  **`app/codeCharta/state/` is DELETED.** It CLOSED: **CF #2a** (`edges` → the dependency lens as a **derived
+  `edgesSelector`**, NOT a slice — user decided edges was never owned/mutated; `fileSettings` root deleted,
+  IndexedDB v14→v15 = its 15e), and the homeless cross-home read selectors from **CF #9**
+  (`isDeltaState`/`areMultipleMapsVisible` → `fileStore/store/` in 15a; `selectedNode`/`hoveredNode` now live in
+  `renderModel/` since the whole `state/selectors/` tree moved there in 15b). **Still open from CF #9:** the
+  read-WRAPPER dedup (the `isDeltaState` ×5 / `selectedNode` ×3 duplicate wrapper *classes*) — that's the
+  read-window/interaction-layer concern, distinct from homing the selectors. NEW homes: `renderModel/` (composing,
+  barrel facade) + `store/` (root: `store.ts` composition + `state.manager`/`state.actions`/`getPartialDefaultState`).
+  Effects → `features/*/effects/` (per-feature bundles) + `load/effects/` + `features/shared/effects/`. All 6
+  sub-slices 45/45 snapshots zero-diff. **User smoke owed:** hover/select highlight (14e-3) + edge/arrow render (15e).
 - **Done (2026-07-04):** ~~CF #1 / Slice 14e-3~~ — `slice-14-renderer-page-split.md`. **NodeDecorator id/metric
   split + `idToNode`/`valueOf` promoted onto the lenses**, permanently breaking the CF #1 cycle. 3 commits:
   (1) extracted the view-state-INDEPENDENT structure pass `NodeDecorator.decorateMapWithStructure` (ordinal id +
