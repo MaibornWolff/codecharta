@@ -1,7 +1,7 @@
 import { getMergedEdges } from "./edges.merger"
-import { TEST_FILE_DATA } from "../../../../mocks/dataMocks"
-import { CCFile, Edge } from "../../../../codeCharta.model"
-import { clone } from "../../../../util/clone"
+import { TEST_FILE_DATA } from "../../mocks/dataMocks"
+import { CCFile, Edge } from "../../codeCharta.model"
+import { clone } from "../../util/clone"
 
 describe("EdgesMerger", () => {
     describe("getMergedEdges", () => {
