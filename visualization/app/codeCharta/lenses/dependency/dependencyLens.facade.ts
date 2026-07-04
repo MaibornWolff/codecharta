@@ -18,3 +18,7 @@ export { calculateEdgeMetricData } from "./store/edgeMetricData.calculator"
 // combines it with the metrics lens's node types to reconstruct the full `{ nodes, edges }` map the
 // NodeDecorator aggregation (`accumulatedData`) + the metricsBar attribute-type label pipeline need.
 export { edgeAttributeTypesSelector } from "./store/attributeTypes.selectors"
+
+// The merged edges of the currently visible files (Slice 15e) — derived from fileStore, replacing the
+// former `state.fileSettings.edges` slice (edges were never owned/mutated, only ever re-derived).
+export { edgesSelector } from "./store/edges.selector"
