@@ -73,6 +73,16 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 | `store/{state.actions, state.manager}`, `store/util/getPartialDefaultState` | **`store/`** (+ `util/` for the deep-merge kernel) | reshape |
 
 ## Progress log
+- **15d ✅ DONE (2026-07-04).** All 5 top-layer effects left `state/effects/` (now **dissolved**). 3 commits,
+  value-identical (**45/45 snapshots zero-diff**, 0 errors): (15d-1) `unfocusNodes` + `saveCcState` +
+  `updateQueryParameters` → `load/effects/` (URL sync folds into load/, no separate `url/`); (15d-2) blacklist
+  guard → `features/shared/effects/` with the shared `doBlacklistItemsResultInEmptyMap$` stream **extracted into a
+  root-provided `BlacklistExclusionGuard` injectable** (breaks the effect-injects-effect coupling — sidebarExplorer
+  injects it via a new `features/shared` facade); (15d-3) `updateFileSettings` (+ mergers) → `load/effects/`.
+  **Realized "sharedView/" as features/load** (the plan's dep-cruiser note is explicit: effects go to features/load,
+  never into a home — `state-home-only-stores-import-ngrx` forbids ngrx in a home). `app.config` now registers
+  every effect via per-feature/load **bundles** (`...codeMapEffects` etc.); no individual effect imports remain.
+  Pure `resultsInEmptyMap` → `util/blacklist`.
 - **15c ✅ DONE (2026-07-04).** All 13 single-owner reactive effects moved from `state/effects/` into their
   owning feature's `effects/` folder, each behind a `<feature>.effects.ts` bundle. 3 commits (codeMap ·
   metricsBar · labelSettings+sidebarExplorer+fileExtensionBar), all value-identical (**45/45 snapshots
