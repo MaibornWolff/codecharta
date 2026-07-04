@@ -1,4 +1,4 @@
-import { getNodesByGitignorePath } from "./getNodesByGitignorePath"
+import { getNodesByGitignorePath } from "../../../util/blacklist/getNodesByGitignorePath"
 import { searchPatternSelector } from "../../../sharedView/sharedView.read.facade"
 import { accumulatedDataSelector } from "../accumulatedData/accumulatedData.selector"
 import { createSelector } from "@ngrx/store"

@@ -1,7 +1,7 @@
 import { hierarchy } from "d3-hierarchy"
 
-import { CodeMapNode } from "../../../codeCharta.model"
-import { returnIgnore, transformPath } from "../../../util/blacklist/blacklistMatcher"
+import { CodeMapNode } from "../../codeCharta.model"
+import { returnIgnore, transformPath } from "./blacklistMatcher"
 
 export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string): CodeMapNode[] {
     gitignorePath = gitignorePath.trimStart()
