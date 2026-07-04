@@ -2,11 +2,11 @@ import { Injectable } from "@angular/core"
 import { createEffect } from "@ngrx/effects"
 import { createSelector, Store } from "@ngrx/store"
 import { filter, map } from "rxjs"
-import { CcState } from "../../../codeCharta.model"
-import { isColorMetricLinkedToHeightMetricSelector } from "../../../preferences/preferences.read.facade"
+import { CcState } from "../../../../codeCharta.model"
+import { isColorMetricLinkedToHeightMetricSelector } from "../../../../preferences/preferences.read.facade"
 
-import { heightMetricSelector } from "../../../mapState/mapState.read.facade"
-import { setColorMetric } from "../../../mapState/mapState.write.facade"
+import { heightMetricSelector } from "../../../../mapState/mapState.read.facade"
+import { setColorMetric } from "../../../../mapState/mapState.write.facade"
 
 export const heightAndLinkedSelector = createSelector(
     heightMetricSelector,

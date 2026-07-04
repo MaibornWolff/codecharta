@@ -9,7 +9,7 @@ import { getNameDataPair } from "../../../../../fileStore/fileStore.facade"
 import { LoadFileService } from "../../../../../fileStore/fileStore.facade"
 import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../fileStore/fileStore.facade"
 import { UrlExtractor } from "../../../../../fileStore/fileStore.facade"
-import * as resetChosenMetricsEffect from "../../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
+import * as resetChosenMetricsEffect from "../../../../../features/metricsBar/effects/resetChosenMetrics/setDefaultMetrics"
 import { nodeMetricDataSelector } from "../../../../../renderModel/nodeMetricData/nodeMetricData.selector"
 import { setState } from "../../../../../state/store/state.actions"
 import { defaultState } from "../../../../../state/store/state.manager"
@@ -19,7 +19,7 @@ import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.componen
 
 jest.mock("../../../../../util/indexedDB/indexedDBWriter")
 jest.mock("../../../../../fileStore/fileStore.facade")
-jest.mock("../../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect")
+jest.mock("../../../../../features/metricsBar/effects/resetChosenMetrics/setDefaultMetrics")
 
 describe("ConfirmResetMapDialogComponent", () => {
     beforeEach(() => {

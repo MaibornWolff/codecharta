@@ -7,18 +7,12 @@ import { UnfocusNodesEffect } from "app/codeCharta/state/effects/unfocusNodes/un
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "app/codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
 import { codeMapEffects } from "app/codeCharta/features/codeMap/effects/codeMap.effects"
-import { LinkColorMetricToHeightMetricEffect } from "app/codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
-import { ResetChosenMetricsEffect } from "app/codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
-import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "app/codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
+import { metricsBarEffects } from "app/codeCharta/features/metricsBar/effects/metricsBar.effects"
 import { SaveCcStateEffect } from "app/codeCharta/state/effects/saveCcState/saveCcState.effect"
-import { UpdateEdgePreviewsEffect } from "app/codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
 import { UpdateFileSettingsEffect } from "app/codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
-import { UpdateMapColorsEffect } from "app/codeCharta/state/effects/updateMapColors/updateMapColors.effect"
 import { UpdateQueryParametersEffect } from "app/codeCharta/state/effects/updateQueryParameters/updateQueryParameters.effect"
 import { UpdateVisibleTopLabelsEffect } from "app/codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
-import { ResetColorRangeEffect } from "app/codeCharta/state/effects/resetColorRange/resetColorRange.effect"
 import { BlacklistSearchPatternEffect } from "app/codeCharta/state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
-import { UpdateAmountOfEdgePreviewsEffect } from "./codeCharta/state/effects/amountOfEdgePreviews/updateAmountOfEdgePreviews.effect"
 import { BlacklistExtensionEffect } from "./codeCharta/state/effects/blacklistExtension/blacklistExtension.effect"
 
 export const appConfig: ApplicationConfig = {
@@ -29,21 +23,15 @@ export const appConfig: ApplicationConfig = {
 
         provideEffects([
             ...codeMapEffects,
+            ...metricsBarEffects,
             UnfocusNodesEffect,
             AddBlacklistItemsIfNotResultsInEmptyMapEffect,
-            UpdateAmountOfEdgePreviewsEffect,
             BlacklistSearchPatternEffect,
             BlacklistExtensionEffect,
-            ResetColorRangeEffect,
-            ResetChosenMetricsEffect,
-            UpdateEdgePreviewsEffect,
             UpdateVisibleTopLabelsEffect,
-            LinkColorMetricToHeightMetricEffect,
-            ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
             UpdateFileSettingsEffect,
             SaveCcStateEffect,
-            UpdateQueryParametersEffect,
-            UpdateMapColorsEffect
+            UpdateQueryParametersEffect
         ]),
 
         {

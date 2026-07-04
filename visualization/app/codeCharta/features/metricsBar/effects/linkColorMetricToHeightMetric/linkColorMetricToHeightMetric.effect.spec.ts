@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject } from "rxjs"
 import { heightAndLinkedSelector, LinkColorMetricToHeightMetricEffect } from "./linkColorMetricToHeightMetric.effect"
-import { setColorMetric } from "../../../mapState/mapState.write.facade"
+import { setColorMetric } from "../../../../mapState/mapState.write.facade"
 import { EffectsModule } from "@ngrx/effects"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { Action } from "@ngrx/store"
 import { provideMockActions } from "@ngrx/effects/testing"
-import { getLastAction } from "../../../util/testUtils/store.utils"
+import { getLastAction } from "../../../../util/testUtils/store.utils"
 
 describe("linkHeightAndColorMetricEffect", () => {
     let actions$: BehaviorSubject<Action>

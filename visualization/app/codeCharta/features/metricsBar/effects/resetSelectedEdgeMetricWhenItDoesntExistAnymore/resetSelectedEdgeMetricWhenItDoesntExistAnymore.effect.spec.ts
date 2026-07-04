@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing"
-import { edgeMetricDataSelector } from "../../../renderModel/edgeMetricData/edgeMetricData.selector"
-import { edgeMetricSelector } from "../../../mapState/mapState.read.facade"
-import { setEdgeMetric } from "../../../mapState/mapState.write.facade"
+import { edgeMetricDataSelector } from "../../../../renderModel/edgeMetricData/edgeMetricData.selector"
+import { edgeMetricSelector } from "../../../../mapState/mapState.read.facade"
+import { setEdgeMetric } from "../../../../mapState/mapState.write.facade"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
 import { EffectsModule } from "@ngrx/effects"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { getLastAction } from "../../../util/testUtils/store.utils"
+import { getLastAction } from "../../../../util/testUtils/store.utils"
 
 describe("ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect", () => {
     let store: MockStore
