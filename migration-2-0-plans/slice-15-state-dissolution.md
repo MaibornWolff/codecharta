@@ -73,6 +73,24 @@ applier), **`lenses/dependency/`** (edges, via an injectable store).
 | `store/{state.actions, state.manager}`, `store/util/getPartialDefaultState` | **`store/`** (+ `util/` for the deep-merge kernel) | reshape |
 
 ## Progress log
+- **15c ✅ DONE (2026-07-04).** All 13 single-owner reactive effects moved from `state/effects/` into their
+  owning feature's `effects/` folder, each behind a `<feature>.effects.ts` bundle. 3 commits (codeMap ·
+  metricsBar · labelSettings+sidebarExplorer+fileExtensionBar), all value-identical (**45/45 snapshots
+  zero-diff**, 0 errors). **Key decisions/patterns:**
+  - **Effect bundles are a composition-root registration surface, NOT routed through the feature facade** —
+    routing them through the facade pulls each effect's cross-feature deps into the facade graph and forms
+    cycles (hit this on codeMap → scenarios/navBar). `app.config` imports `features/<f>/effects/<f>.effects`
+    directly; the facade stays clean.
+  - **dep-cruiser rule updates:** `feature-only-stores-can-import-ngrx-store` now exempts `effects/` (effects are
+    ngrx state-reactors); `feature-no-external-access-to-internals` allows `effects/<f>.effects.ts` as a public
+    registration surface; `feature-cross-feature-only-via-public-api` now exempts `.spec.ts` (test-wiring,
+    consistent with every other boundary rule — a service spec may register another feature's effect in a test
+    EffectsModule).
+  - **Shared helpers pulled out of effect files:** `setDefaultMetrics` (metricsBar effect ↔ globalSettings
+    map-reset) → its own module, exposed via the metricsBar facade (the effect imports no other feature, so no
+    cycle); `getNumberOfTopLabels` (labelSettings effect ↔ state/store `getPartialDefaultState`) → `util/` (NOT
+    the labelSettings facade, which would close a codeMap↔labelSettings cycle; util→mapState has precedent).
+  - Effects import their OWN feature's services from source, never the feature facade (avoids facade↔effect cycle).
 - **15b ✅ DONE (2026-07-04).** `state/selectors/` fully DISSOLVED into a new top-level `renderModel/` home
   behind a barrel facade. Two structural commits, both value-identical (385 suites / 2321 passed, **45/45
   snapshots zero-diff**, tsc + dep-cruiser 0 errors): (15b-1) `git mv state/selectors → renderModel` preserving
