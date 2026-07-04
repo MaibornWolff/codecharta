@@ -421,13 +421,23 @@ module.exports = {
             name: "feature-reaches-state-home-only-via-facade",
             severity: "error",
             comment:
-                "Outside code reaches a state home only through its public facades (read/write), never its store/ internals — no raw import of a home's store/**/*.{selector,reducer,actions}. Scoped to sharedView + preferences (grep-verified 0 external raw store importers post-Slice-13; state.manager/appliers already route through the read/write facades, so no exemption is needed). mapState is deliberately EXCLUDED for now — it still has ~12 raw store/*.selector imports that fold onto MapStateReadWindow / the read facade in the CF #9 read-window dedup; mapState joins this rule once those clear. The home's own facades + store/ are exempt (from.pathNot); spec/e2e may wire raw for tests.",
+                "Outside code reaches a state home only through its public facades (read/write), never its store/ internals — no raw import of a home's store/**/*.{selector,reducer,actions}. All three homes fenced (sharedView + preferences since Slice 13; mapState joined in Slice 16d once its last raw store/*.selector imports folded onto MapStateReadWindow / the read facade). state.manager/appliers already route through the read/write facades, so no exemption is needed. The homes' own facades + store/ are exempt (from.pathNot); spec/e2e may wire raw for tests.",
             from: {
                 path: "^app/codeCharta/",
-                pathNot: ["^app/codeCharta/sharedView/", "^app/codeCharta/preferences/", "\\.spec\\.ts$", "\\.e2e\\.ts$"]
+                pathNot: [
+                    "^app/codeCharta/sharedView/",
+                    "^app/codeCharta/preferences/",
+                    "^app/codeCharta/mapState/",
+                    "\\.spec\\.ts$",
+                    "\\.e2e\\.ts$"
+                ]
             },
             to: {
-                path: ["^app/codeCharta/sharedView/store/", "^app/codeCharta/preferences/store/"]
+                path: [
+                    "^app/codeCharta/sharedView/store/",
+                    "^app/codeCharta/preferences/store/",
+                    "^app/codeCharta/mapState/store/"
+                ]
             }
         }
     ],

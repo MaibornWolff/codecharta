@@ -8,6 +8,7 @@ import { edgeMetricSelector } from "./edgeMetric/edgeMetric.selector"
 import { colorRangeSelector } from "./colorRange/colorRange.selector"
 import { colorModeSelector } from "./colorMode/colorMode.selector"
 import { mapColorsSelector } from "./mapColors/mapColors.selector"
+import { marginSelector } from "./margin/margin.selector"
 
 /**
  * The mapState home's injectable READ-WINDOW (Slice 13d) — one shared place that wraps the
@@ -32,4 +33,5 @@ export class MapStateReadWindow {
     readonly colorRange$ = this.store.select(colorRangeSelector)
     readonly colorMode$ = this.store.select(colorModeSelector)
     readonly mapColors$ = this.store.select(mapColorsSelector)
+    readonly margin$ = this.store.select(marginSelector)
 }

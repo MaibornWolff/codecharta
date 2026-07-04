@@ -1,8 +1,12 @@
 import { visibleFileStatesSelector } from "../../../../fileStore/store/visibleFileStates.selector"
 import { focusedNodePathSelector } from "../../../../sharedView/sharedView.read.facade"
 import { layoutAlgorithmSelector } from "../../../globalSettings/facade"
-import { enableFloorLabelsSelector, invertAreaSelector, areaMetricSelector } from "../../../../mapState/mapState.read.facade"
-import { marginSelector } from "../../../../mapState/store/margin/margin.selector"
+import {
+    enableFloorLabelsSelector,
+    invertAreaSelector,
+    areaMetricSelector,
+    marginSelector
+} from "../../../../mapState/mapState.read.facade"
 import { DefaultProjectorFn, MemoizedSelector } from "@ngrx/store"
 import { isDeltaStateSelector } from "../../../../fileStore/store/isDeltaState.selector"
 

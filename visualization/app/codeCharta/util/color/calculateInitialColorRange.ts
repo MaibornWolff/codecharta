@@ -1,4 +1,4 @@
-import { MetricMinMax } from "../../../util/metric/metricRange"
+import { MetricMinMax } from "../metric/metricRange"
 
 export const calculateInitialColorRange = (metricMinMax: MetricMinMax) => {
     const totalRange = metricMinMax.maxValue - metricMinMax.minValue
