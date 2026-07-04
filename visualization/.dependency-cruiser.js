@@ -3,8 +3,8 @@ module.exports = {
     forbidden: [
         {
             name: "no-circular",
-            severity: "warn",
-            comment: "Prevent circular dependencies between modules (currently warn until existing violations are fixed)",
+            severity: "error",
+            comment: "Prevent circular dependencies between modules. Flipped warn→error in Slice 16h once all 94 cycles were broken (16a 3DPreview SCC, 16b the two orphan cycles, 16c the codeMap↔sibling cross-feature cluster). The graph is acyclic.",
             from: {},
             to: {
                 circular: true
