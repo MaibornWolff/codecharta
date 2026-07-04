@@ -1,5 +1,5 @@
 import { CustomVisibilityMesh } from "./customVisibilityMesh"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../geometryOptions"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BufferAttribute, BufferGeometry, Float32BufferAttribute, InterleavedBufferAttribute, Mesh } from "three"
 import { indicesPerNode } from "../../../../../features/codeMap/facade"

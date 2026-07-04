@@ -1,5 +1,5 @@
 import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../geometryOptions"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { TextMesh } from "./textMesh"

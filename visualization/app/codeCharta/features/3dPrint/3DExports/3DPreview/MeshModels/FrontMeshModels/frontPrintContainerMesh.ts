@@ -1,4 +1,4 @@
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { GeneralMesh, GeneralSizeChangeMesh } from "../generalMesh"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { Font } from "three/addons/loaders/FontLoader.js"

@@ -1,5 +1,5 @@
 import { Font, FontData } from "three/addons/loaders/FontLoader.js"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { FrontPrintContainerMesh } from "./frontPrintContainerMesh"
 import { FrontTextMesh } from "./frontTextMesh"
 import { SecondRowTextMesh } from "./secondRowTextMesh"

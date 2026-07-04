@@ -1,7 +1,7 @@
 import { GeneralMesh } from "./generalMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 import { CustomVisibilityMesh } from "./customVisibilityMesh"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../geometryOptions"
 
 class MockColorChangeStrategy implements ColorChangeStrategy {
     execute(numberOfColors: number, _mesh: GeneralMesh): boolean {

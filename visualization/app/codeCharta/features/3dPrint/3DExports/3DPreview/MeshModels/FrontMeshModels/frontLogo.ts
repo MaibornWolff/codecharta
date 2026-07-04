@@ -1,4 +1,4 @@
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { GeneralMesh } from "../generalMesh"
 import { FrontPrintColorChangeStrategy } from "../../ColorChangeStrategies/frontPrintColorChangeStrategy"
 

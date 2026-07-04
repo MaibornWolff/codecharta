@@ -1,7 +1,7 @@
 import { BufferGeometry, Mesh, ShaderMaterial } from "three"
 import { BaseplateColorChangeStrategy } from "../ColorChangeStrategies/baseplateColorChangeStrategy"
 import { CreateBaseplateGeometryStrategy } from "../CreateGeometryStrategies/createBaseplateGeometryStrategy"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../geometryOptions"
 import { BaseplateMesh } from "./baseplateMesh"
 
 jest.mock("../CreateGeometryStrategies/createBaseplateGeometryStrategy")

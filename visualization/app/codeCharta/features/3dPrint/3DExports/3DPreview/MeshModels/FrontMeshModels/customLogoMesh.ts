@@ -1,5 +1,5 @@
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { MeshBasicMaterial } from "three"
 import { FrontLogo } from "./frontLogo"
 import { GeneralSizeChangeMesh } from "../generalMesh"

@@ -1,5 +1,5 @@
 import { BufferGeometry } from "three"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../geometryOptions"
 
 export interface CreateGeometryStrategyOptions {}
 export interface CreateGeometryStrategy {

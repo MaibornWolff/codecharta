@@ -1,5 +1,5 @@
 import { BufferAttribute, BufferGeometry, Float32BufferAttribute, Mesh, MeshBasicMaterial, Box3, Vector3, ShaderMaterial } from "three"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../geometryOptions"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { MapMesh } from "./mapMesh"
 import { indicesPerNode } from "../../../../../features/codeMap/facade"

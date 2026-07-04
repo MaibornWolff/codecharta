@@ -1,4 +1,4 @@
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { BufferGeometry, Mesh, ShaderMaterial } from "three"
 import { ColorRange, NodeMetricData } from "../../../../../../codeCharta.model"
 import { QrCodeMesh } from "./qrCodeMesh"

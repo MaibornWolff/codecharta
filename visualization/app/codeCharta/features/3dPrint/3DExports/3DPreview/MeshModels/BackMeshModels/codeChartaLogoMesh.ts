@@ -1,6 +1,6 @@
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { CustomVisibilityMesh } from "../customVisibilityMesh"
 
 export class CodeChartaLogoMesh extends CustomVisibilityMesh {

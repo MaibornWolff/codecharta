@@ -1,4 +1,4 @@
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { Font } from "three/addons/loaders/FontLoader.js"
 import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { TextMesh } from "../textMesh"

@@ -1,6 +1,6 @@
 import { CodeChartaLogoMesh } from "./codeChartaLogoMesh"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { BufferGeometry, Vector3 } from "three"
 
 describe("CodeChartaLogoMesh", () => {

@@ -1,6 +1,6 @@
 import { CreateGeometryStrategy } from "./createGeometryStrategy"
 import { BufferGeometry, ExtrudeGeometry, Shape } from "three"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../geometryOptions"
 
 export class CreateBaseplateGeometryStrategy implements CreateGeometryStrategy {
     async create(geometryOptions: GeometryOptions): Promise<BufferGeometry> {

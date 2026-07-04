@@ -4,7 +4,7 @@ import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { TextMesh } from "../textMesh"
 import { ColorMetricDescriptionBlockMesh, ColorMetricDescriptionBlockOptions } from "./colorMetricDescriptionBlockMesh"
 

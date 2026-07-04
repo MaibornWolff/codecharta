@@ -1,5 +1,5 @@
 import { CustomVisibilityMesh } from "../customVisibilityMesh"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BoxGeometry, BufferGeometry } from "three"
 import * as QRCode from "qrcode"

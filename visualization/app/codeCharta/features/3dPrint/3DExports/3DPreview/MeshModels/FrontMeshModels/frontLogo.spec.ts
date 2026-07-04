@@ -1,5 +1,5 @@
 import { FrontLogo } from "./frontLogo"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { FrontPrintColorChangeStrategy } from "../../ColorChangeStrategies/frontPrintColorChangeStrategy"
 import { GeneralMesh } from "../generalMesh"
 

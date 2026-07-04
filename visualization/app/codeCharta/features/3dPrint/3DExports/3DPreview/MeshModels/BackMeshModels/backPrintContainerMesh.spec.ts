@@ -1,5 +1,5 @@
 import { Font, FontData } from "three/addons/loaders/FontLoader.js"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { BackPrintContainerMesh } from "./backPrintContainerMesh"
 import { BackMWLogoMesh } from "./backMWLogoMesh"
 import { BackBelowLogoTextMesh } from "./backBelowLogoTextMesh"

@@ -1,6 +1,6 @@
 import { MeshBasicMaterial, BufferGeometry } from "three"
 import { CustomLogoMesh } from "./customLogoMesh"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 
 jest.mock("../../CreateGeometryStrategies/createSvgGeometryStrategy", () => {
     return {

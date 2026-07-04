@@ -1,5 +1,5 @@
-import { GeneralMesh } from "../MeshModels/generalMesh"
+import { Mesh } from "three"
 
 export interface ColorChangeStrategy {
-    execute(numberOfColors: number, mesh: GeneralMesh): boolean
+    execute(numberOfColors: number, mesh: Mesh): boolean
 }
