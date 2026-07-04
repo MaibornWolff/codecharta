@@ -226,9 +226,9 @@ module.exports = {
         },
         {
             name: "util-is-a-leaf-kernel",
-            severity: "warn",
+            severity: "error",
             comment:
-                "util/ is the shared LEAF kernel: pure, self-contained helpers that OTHER layers consume — never the reverse. It may import only within util/, the model/ type kernel (incl. the codeCharta.model re-export barrel) and node_modules; it must NOT reach into any app layer (lenses/renderModel/state homes/fileStore/store/load/features). This is the ONE layer that had no outgoing-dep fitness function, which let it silently accrete upward edges: today 4 files violate — util/algorithm/{treeMapLayout,streetLayout} (the render/layout ENGINE, which belongs in a render layer) read renderModel/lens facades; util/indexedDB/indexedDBWriter (the PERSISTENCE writer, which belongs in store/) reads every home default; util/getNumberOfTopLabels reads a mapState constant. Staged at WARN; Slice 16i relocates those concerns to their owning layer, then this flips to ERROR. Spec/e2e/mocks exempt. (Positive allow-list: anything under app/codeCharta/ that is NOT util/ or model/ is forbidden, so any future layer is auto-fenced.)",
+                "util/ is the shared LEAF kernel: pure, self-contained helpers that OTHER layers consume — never the reverse. It may import only within util/, the model/ type kernel (incl. the codeCharta.model re-export barrel) and node_modules; it must NOT reach into any app layer (lenses/renderModel/state homes/fileStore/store/load/features/threeViewer). This is the ONE layer that had no outgoing-dep fitness function, which let it silently accrete upward edges. Slice 16i relocated the 4 leak files to their owning layer — the render/layout ENGINE (treeMapLayout/streetLayout) → threeViewer/, the PERSISTENCE writer (indexedDBWriter) → store/, defaultAmountOfTopLabels → model/ — and this flipped WARN→ERROR (0 violations). Spec/e2e/mocks exempt. (Positive allow-list: anything under app/codeCharta/ that is NOT util/ or model/ is forbidden, so any future layer is auto-fenced.)",
             from: { path: "^app/codeCharta/util/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.mocks\\.ts$"] },
             to: {
                 path: "^app/codeCharta/",
