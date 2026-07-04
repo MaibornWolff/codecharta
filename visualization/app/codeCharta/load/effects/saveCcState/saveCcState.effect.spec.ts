@@ -9,7 +9,7 @@ import { setFiles } from "../../../fileStore/store/files.actions"
 import { writeCcState } from "../../../util/indexedDB/indexedDBWriter"
 import { waitFor } from "@testing-library/angular"
 import { setMarkedPackages } from "../../../sharedView/sharedView.write.facade"
-import { setEdges } from "../../store/fileSettings/edges/edges.actions"
+import { setEdges } from "../../../state/store/fileSettings/edges/edges.actions"
 
 jest.mock("../../../../../app/codeCharta/util/indexedDB/indexedDBWriter", () => {
     return {

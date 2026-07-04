@@ -1,6 +1,6 @@
-import { fileSettingsActions } from "../../store/fileSettings/fileSettings.actions"
+import { fileSettingsActions } from "../../../state/store/fileSettings/fileSettings.actions"
 import { fileActions } from "../../../fileStore/store/files.actions"
-import { setState } from "../../store/state.actions"
+import { setState } from "../../../state/store/state.actions"
 import { preferencesActions } from "../../../preferences/preferences.write.facade"
 import {
     setColorLabels,

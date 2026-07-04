@@ -12,7 +12,7 @@ import { appReducers, setStateMiddleware } from "../../../state/store/state.mana
 import { CcState } from "../../../codeCharta.model"
 import { RenderCodeMapEffect } from "../../../features/codeMap/effects/renderCodeMapEffect/renderCodeMap.effect"
 import { setFiles, setStandardByNames } from "../../../fileStore/store/files.actions"
-import { UnfocusNodesEffect } from "../../../state/effects/unfocusNodes/unfocusNodes.effect"
+import { UnfocusNodesEffect } from "../../../load/effects/unfocusNodes/unfocusNodes.effect"
 
 jest.mock("./createCCFileInput")
 
