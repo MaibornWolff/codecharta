@@ -16,7 +16,7 @@ module.exports = {
             comment: "Warn about orphan modules (files not imported anywhere)",
             from: {
                 orphan: true,
-                pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$", "(^|/)\\.[^/]+\\.[jt]s$", "app/main\\.ts$", "conf/", "script/"]
+                pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.d\\.ts$", "(^|/)\\.[^/]+\\.[jt]s$", "app/main\\.ts$", "conf/", "script/"]
             },
             to: {}
         },
@@ -136,8 +136,9 @@ module.exports = {
         /* ───────────── Visualization 2.0 — Slice 1 lens/fileStore boundary ─────────────
          * Scoped to the dirs that exist this slice (lenses/metrics, fileStore). The 7 lens-internal
          * rules + `metrics-lens-ngrx-guard` are now `error` (the guard flipped in Slice 11 once the
-         * legend re-homed out of lenses/); `new-must-not-import-legacy` flipped to `error` in Slice 12
-         * once the last 6 residual lenses/|fileStore/ → features/|state/ edges were re-homed.
+         * legend re-homed out of lenses/); `source-layers-must-not-import-features` (formerly
+         * `new-must-not-import-legacy`) flipped to `error` in Slice 12 once the last 6 residual
+         * lenses/|fileStore/ → features/|state/ edges were re-homed.
          * See migration-2-0-plans/rpi-plan/step-1-skeleton-and-model.md. */
         {
             name: "lens-no-ui-dependency",
@@ -212,7 +213,7 @@ module.exports = {
             name: "filestore-has-no-upward-deps",
             severity: "error",
             comment:
-                "FileStore is the source. It must not import lenses, renderers, shell, interaction or the mapState home. Spec/e2e files are exempt (they may reference a home's action creators for test wiring, mirroring new-must-not-import-legacy) — the runtime source stays clean.",
+                "FileStore is the source. It must not import lenses, renderers, shell, interaction or the mapState home. Spec/e2e files are exempt (they may reference a home's action creators for test wiring, mirroring source-layers-must-not-import-features) — the runtime source stays clean.",
             from: { path: "^app/codeCharta/fileStore/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: {
                 path: [
@@ -246,7 +247,7 @@ module.exports = {
             name: "state-home-is-leaf",
             severity: "error",
             comment:
-                "State-home modules — mapState is the map-view state home (colors, labels, scaling, axis inversion, edge visibility, plus the Slice-6 presentation stragglers colorMode/colorRange/margin/layoutAlgorithm and the transient interaction ids), sharedView is the cross-renderer view-state home (focus + search + blacklist + markedPackages), preferences is the durable global-preferences home (Slice 10) — are a leaf. They must not import lenses, renderers or shell; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store (legacy state/ stays a transitional read while the state/ split completes). Flipped to error for mapState in Slice 6, sharedView in Slice 8 and preferences in Slice 10b.",
+                "State-home modules — mapState is the map-view state home (colors, labels, scaling, axis inversion, edge visibility, plus the Slice-6 presentation stragglers colorMode/colorRange/margin/layoutAlgorithm and the transient interaction ids), sharedView is the cross-renderer view-state home (focus + search + blacklist + markedPackages), preferences is the durable global-preferences home (Slice 10) — are a leaf. They must not import lenses, renderers or shell; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store. Flipped to error for mapState in Slice 6, sharedView in Slice 8 and preferences in Slice 10b.",
             from: { path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/", "^app/codeCharta/preferences/"] },
             to: {
                 path: ["^app/codeCharta/lenses/", "^app/codeCharta/renderers/", "^app/codeCharta/shell/"]
@@ -297,10 +298,10 @@ module.exports = {
             to: { path: "^app/codeCharta/load/" }
         },
         {
-            name: "new-must-not-import-legacy",
+            name: "source-layers-must-not-import-features",
             severity: "error",
             comment:
-                "Layering boundary: the SOURCE/DATA layers (lenses/, fileStore/) must not import UP into features/. Originally this also fenced the legacy state/ folder, but Slice 15 fully dissolved state/ (its selectors → renderModel/, effects → features/load, root store → store/), so only the features/ fence remains (lenses/fileStore sit BELOW features and must not depend on them — no other rule covers this edge; filestore-has-no-upward-deps stops at lenses/mapState). util/ + model/ are the shared kernel and exempt. The reverse (features → lens facade) is the allowed flow. Spec/e2e are exempt (test wiring).",
+                "Layering boundary: the SOURCE/DATA layers (lenses/, fileStore/) must not import UP into features/. (Formerly `new-must-not-import-legacy`, when it also fenced the legacy state/ folder; Slice 15 fully dissolved state/ — its selectors → renderModel/, effects → features/load, root store → store/ — so only the features/ fence remains: lenses/fileStore sit BELOW features and must not depend on them; no other rule covers this edge — filestore-has-no-upward-deps stops at lenses/mapState.) util/ + model/ are the shared kernel and exempt. The reverse (features → lens facade) is the allowed flow. Spec/e2e are exempt (test wiring).",
             from: { path: "^app/codeCharta/(lenses|fileStore)/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: { path: ["^app/codeCharta/features/"] }
         },

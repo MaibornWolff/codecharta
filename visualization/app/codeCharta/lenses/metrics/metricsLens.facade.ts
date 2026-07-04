@@ -10,7 +10,7 @@ import { DescriptorsRepo } from "./repos/descriptors.repo"
  *
  * The lens exposes only its cc.json-derived attribute descriptors + types. The view-aware node-metric
  * data / color-metric range are NOT here: they read view state, so consumers read
- * `nodeMetricDataSelector`/`metricRangeSelector` from `state/selectors/nodeMetricData` through their own
+ * `nodeMetricDataSelector`/`metricRangeSelector` from `renderModel/nodeMetricData` through their own
  * feature stores (Slice 12c inversion).
  */
 @Injectable({ providedIn: "root" })
@@ -32,7 +32,7 @@ export class MetricsLensFacade {
 // (b) Public ngrx selector surface for the createSelector graphs that consume the lens.
 // `nodeMetricDataSelector`/`metricRangeSelector` were lifted OUT of the lens in Slice 7 (they read
 // blacklist + colorMetric view state); consumers import them from
-// `state/selectors/nodeMetricData/nodeMetricData.selector` directly. The lens surface stays read-only
+// `renderModel/nodeMetricData/nodeMetricData.selector` directly. The lens surface stays read-only
 // over cc.json-derived attribute descriptors + types.
 export { nodeAttributeDescriptorsSelector as attributeDescriptorsSelector } from "./store/attributes.selectors"
 
@@ -46,6 +46,6 @@ export { nodeAttributeTypesSelector } from "./store/attributes.selectors"
 
 // Per-node metric lookup `valueOf(id, metric)` — resolves a node via the structure lens's `idToNode`
 // and reads the metric off it (Slice 14e-3). Cycle-free: it only reaches DOWNWARD into another lens's
-// tree resolution, never up into the composing layer (`new-must-not-import-legacy` @ error).
+// tree resolution, never up into the composing layer (`render-model-is-top-derived-layer` @ error).
 export { valueOfSelector } from "./store/valueOf.selector"
 export type { NodeMetricValueLookup } from "./store/valueOf.selector"

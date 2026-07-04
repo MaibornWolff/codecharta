@@ -12,8 +12,9 @@ export type NodeMetricValueLookup = (id: number, metric: string) => number | und
  *
  * It lives on the metrics lens — metric value access is a metrics-lens concern — and is cycle-free
  * because it depends only DOWNWARD on the structure lens's own tree resolution, never on the composing
- * layer: `new-must-not-import-legacy` (error) forbids any lens -> state/ edge, so neither this selector
- * nor the structure lens's idToNode can reach `accumulatedData`, which is exactly the cycle CF #1 was
+ * layer: `render-model-is-top-derived-layer` (error) forbids any lens -> renderModel/ edge, so neither
+ * this selector nor the structure lens's idToNode can reach `accumulatedData` (which lives in
+ * renderModel/ since Slice 15) — exactly the cycle CF #1 was
  * about (`lens -> idToNode -> accumulatedData -> metricsLens.facade -> lens`). Slice 14d first made the
  * lookup cycle-free by parking it above the lenses; 14e-3 re-expresses it ON the lens now that the
  * structure lens owns a decoration-independent `id -> node` map.

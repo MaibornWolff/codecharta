@@ -9,9 +9,9 @@ import { nodeAttributeDescriptorsSelector, nodeAttributeTypesSelector } from "./
  * propagating. Exposes both reactive (`$`) and sync snapshot forms; the repos read from here.
  *
  * The view-aware node-metric data + color-metric range are NOT projected here: they read blacklist +
- * colorMetric view state, so they live in `state/selectors/nodeMetricData` and consumers read those
+ * colorMetric view state, so they live in `renderModel/nodeMetricData` and consumers read those
  * selectors through their own feature stores (Slice 12c inversion — the lens stops re-exposing them, so
- * lens code no longer imports state/).
+ * lens code no longer imports the composing layer).
  */
 @Injectable({ providedIn: "root" })
 export class MetricsLensStore {

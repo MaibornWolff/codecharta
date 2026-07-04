@@ -20,7 +20,7 @@ import { visibleFileStatesSelector } from "../../fileStore/store/visibleFileStat
 /**
  * Node metrics for the visible selection. Inputs are EXACTLY `visibleFileStates` + `blacklistMatcher`
  * (the two `calculateNodeMetricData` consumes) so the selector's memoization matches today's
- * `metricDataSelector`. Edge metrics stay on the legacy `metricDataSelector` (dependency lens, later).
+ * `metricDataSelector`. Edge metrics stay on the combined `metricDataSelector` (dependency lens, later).
  */
 export const nodeMetricDataSelector = createSelector(visibleFileStatesSelector, blacklistMatcherSelector, calculateNodeMetricData)
 

@@ -1,4 +1,12 @@
 /**
+ * ⚠️ SUPERSEDED PROPOSAL (annotated 2026-07-04, Slice 16g). This file was a forward-looking DRAFT of the
+ * 2.0 rule set written before the migration landed. The migration is now complete (Slices 1–15) and the
+ * AUTHORITATIVE, enforced config is `visualization/.dependency-cruiser.js` — it diverged from this draft as
+ * real code forced decisions (e.g. state/ fully dissolved into renderModel/ + store/, the rule formerly
+ * called `new-must-not-import-legacy` is now `source-layers-must-not-import-features`, all three state homes
+ * are fenced by `feature-reaches-state-home-only-via-facade`, `util-is-a-leaf-kernel` was added). Keep this
+ * only as a historical design artifact; do NOT treat it as the current rule set or copy from it wholesale.
+ *
  * CodeCharta 2.0 — dependency-cruiser rules for the REFINED layers & state-homes architecture.
  *
  * Source of truth: Ideas/codecharta-2.0-refined-layers-and-state-homes.html (ratified 2026-07-02).

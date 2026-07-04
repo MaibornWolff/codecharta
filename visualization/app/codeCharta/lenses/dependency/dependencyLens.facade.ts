@@ -4,7 +4,7 @@
  * metrics; this lens owns the edge (dependency) metric computation derived from each file's edges.
  *
  * Slice 9b lifted the view-state-aware edge selectors (blacklist + edge-visibility) OUT of the lens
- * into derived selectors under `state/selectors/edgeMetricData/`. What the lens exposes now is the RAW
+ * into derived selectors under `renderModel/edgeMetricData/`. What the lens exposes now is the RAW
  * pure computation `calculateEdgeMetricData(visibleFileStates, matcher)`; the derived selectors compose
  * it with the sharedView blacklist + mapState edge-visibility. So the lens reads no home selector.
  *
