@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import stringify from "safe-stable-stringify"
-import { readCcState } from "../util/indexedDB/indexedDBWriter"
+import { readCcState } from "../store/indexedDB/indexedDBWriter"
 import { CcState } from "../codeCharta.model"
 import { FileState } from "../model/files/files"
 import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"

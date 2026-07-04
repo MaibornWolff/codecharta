@@ -15,10 +15,10 @@ import { nodeMetricDataSelector } from "../../../../../renderModel/nodeMetricDat
 import { setState } from "../../../../../store/state.actions"
 import { defaultState } from "../../../../../store/state.manager"
 import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../../mocks/dataMocks"
-import * as indexedDBWriter from "../../../../../util/indexedDB/indexedDBWriter"
+import * as indexedDBWriter from "../../../../../store/indexedDB/indexedDBWriter"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 
-jest.mock("../../../../../util/indexedDB/indexedDBWriter")
+jest.mock("../../../../../store/indexedDB/indexedDBWriter")
 jest.mock("../../../../../fileStore/fileStore.facade")
 jest.mock("../../../../../features/metricsBar/effects/resetChosenMetrics/setDefaultMetrics")
 

@@ -17,7 +17,7 @@ import { setDelta, setFiles } from "../fileStore/store/files.actions"
 import { appReducers, setStateMiddleware } from "../store/store"
 import { defaultState } from "../store/state.manager"
 import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../mocks/dataMocks"
-import { readCcState } from "../util/indexedDB/indexedDBWriter"
+import { readCcState } from "../store/indexedDB/indexedDBWriter"
 import { getLastAction } from "../util/testUtils/store.utils"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
 import { getNameDataPair } from "../fileStore/loaders/ccJson/util/fileParser"
@@ -29,7 +29,7 @@ import { setCurrentFilesAreSampleFiles } from "../fileStore/store/currentFilesAr
 
 jest.mock("../fileStore/loaders/ccJson/util/urlExtractor")
 jest.mock("../model/files/files.helper")
-jest.mock("../util/indexedDB/indexedDBWriter")
+jest.mock("../store/indexedDB/indexedDBWriter")
 
 describe("LoadInitialFileService", () => {
     let store: MockStore

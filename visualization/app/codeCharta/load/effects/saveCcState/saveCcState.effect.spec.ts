@@ -6,11 +6,11 @@ import { SaveCcStateEffect } from "./saveCcState.effect"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { setFiles } from "../../../fileStore/store/files.actions"
-import { writeCcState } from "../../../util/indexedDB/indexedDBWriter"
+import { writeCcState } from "../../../store/indexedDB/indexedDBWriter"
 import { waitFor } from "@testing-library/angular"
 import { setMarkedPackages } from "../../../sharedView/sharedView.write.facade"
 
-jest.mock("../../../../../app/codeCharta/util/indexedDB/indexedDBWriter", () => {
+jest.mock("../../../../../app/codeCharta/store/indexedDB/indexedDBWriter", () => {
     return {
         __esModule: true,
         writeCcState: jest.fn()
