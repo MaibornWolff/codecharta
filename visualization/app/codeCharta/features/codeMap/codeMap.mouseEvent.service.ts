@@ -15,6 +15,7 @@ import { IdToBuildingService } from "../../threeViewer/idToBuilding.service"
 import { tap } from "rxjs"
 import { debounce } from "../../util/debounce"
 import { CodeMapMouseEventStore } from "./stores/codeMapMouseEvent.store"
+import { CursorType, changeCursorIndicator } from "../../threeViewer/cursorIndicator"
 
 interface Coordinates {
     x: number
@@ -24,13 +25,6 @@ interface Coordinates {
 export enum ClickType {
     LeftClick = 0,
     RightClick = 2
-}
-
-export enum CursorType {
-    Default = "default",
-    Grabbing = "grabbing",
-    Pointer = "pointer",
-    Moving = "move"
 }
 
 @Injectable({ providedIn: "root" })
@@ -78,10 +72,6 @@ export class CodeMapMouseEventService implements OnDestroy {
         for (const subscription of this.subscriptions) {
             subscription.unsubscribe()
         }
-    }
-
-    static changeCursorIndicator(cursorIcon: CursorType) {
-        document.body.style.cursor = cursorIcon
     }
 
     start() {
@@ -295,11 +285,11 @@ export class CodeMapMouseEventService implements OnDestroy {
     onDocumentMouseDown(event: MouseEvent) {
         if (event.button === ClickType.RightClick) {
             this.isMoving = true
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
+            changeCursorIndicator(CursorType.Moving)
         }
         if (event.button === ClickType.LeftClick) {
             this.isGrabbing = true
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+            changeCursorIndicator(CursorType.Grabbing)
         }
         this.labelSettingsFacade.setSuppressLayout(true)
         this.tooltipService.hide()
@@ -317,9 +307,9 @@ export class CodeMapMouseEventService implements OnDestroy {
             this.onRightClick()
         }
         if (this.intersectedBuilding !== undefined) {
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+            changeCursorIndicator(CursorType.Pointer)
         } else {
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+            changeCursorIndicator(CursorType.Default)
         }
     }
 
@@ -369,7 +359,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     private hoverBuilding(hoveredBuilding: CodeMapBuilding, updateStore = true) {
-        CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+        changeCursorIndicator(CursorType.Pointer)
 
         const idToNode = this.codeMapMouseEventStore.getIdToNode()
         const codeMapNode = idToNode.get(hoveredBuilding.node.id)
@@ -400,7 +390,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     private unhoverBuilding(updateStore = true) {
         if (!this.isGrabbingOrMoving()) {
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+            changeCursorIndicator(CursorType.Default)
         }
 
         if (this.threeSceneService.getConstantHighlight().size > 0) {

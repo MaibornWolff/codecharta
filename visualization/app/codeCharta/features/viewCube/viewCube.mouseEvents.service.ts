@@ -1,6 +1,5 @@
 import { hierarchy } from "d3-hierarchy"
-import { CodeMapMouseEventService, CursorType } from "../../features/codeMap/facade"
-import { ThreeMapControlsService } from "../../threeViewer/threeViewer.facade"
+import { ThreeMapControlsService, CursorType, changeCursorIndicator } from "../../threeViewer/threeViewer.facade"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
 import { isLeaf } from "../../util/codeMapHelper"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
@@ -144,13 +143,13 @@ export class ViewCubeMouseEventsService {
 
     private triggerViewCubeHoverEvent(cube: Mesh) {
         this.currentlyHovered = cube
-        CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+        changeCursorIndicator(CursorType.Pointer)
         this.eventEmitter.emit("viewCubeHoveredEvent", { cube })
     }
 
     private triggerViewCubeUnhoverEvent() {
         this.currentlyHovered = null
-        CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+        changeCursorIndicator(CursorType.Default)
         this.eventEmitter.emit("viewCubeUnHoveredEvent")
     }
 

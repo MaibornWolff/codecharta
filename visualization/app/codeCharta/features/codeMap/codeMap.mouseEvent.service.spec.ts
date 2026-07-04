@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
-import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouseEvent.service"
+import { ClickType, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { CursorType, changeCursorIndicator } from "../../threeViewer/cursorIndicator"
 import { ThreeCameraService } from "../../threeViewer/threeCamera.service"
 import { ThreeSceneService } from "../../threeViewer/threeSceneService"
 import { ThreeRendererService } from "../../threeViewer/threeRenderer.service"
@@ -272,7 +273,7 @@ describe("codeMapMouseEventService", () => {
 
     describe("changeCursorIndicator", () => {
         it("should set the mouseIcon to grabbing", () => {
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+            changeCursorIndicator(CursorType.Grabbing)
 
             expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
         })
@@ -280,7 +281,7 @@ describe("codeMapMouseEventService", () => {
         it("should set the mouseIcon to default", () => {
             document.body.style.cursor = CursorType.Pointer
 
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+            changeCursorIndicator(CursorType.Default)
 
             expect(document.body.style.cursor).toEqual(CursorType.Default)
         })
@@ -348,7 +349,7 @@ describe("codeMapMouseEventService", () => {
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
             })
             codeMapMouseEventService["isGrabbing"] = true
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+            changeCursorIndicator(CursorType.Grabbing)
 
             codeMapMouseEventService.updateHovering()
 
@@ -363,7 +364,7 @@ describe("codeMapMouseEventService", () => {
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
             })
             codeMapMouseEventService["isMoving"] = true
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
+            changeCursorIndicator(CursorType.Moving)
 
             codeMapMouseEventService.updateHovering()
 
