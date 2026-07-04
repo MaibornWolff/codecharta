@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core"
+import { Store } from "@ngrx/store"
 import { Camera, Scene, WebGLInfo, WebGLRenderer } from "three"
 import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js"
-import { GlobalSettingsFacade } from "../features/globalSettings/facade"
+import { CcState } from "../codeCharta.model"
+import { isWhiteBackgroundSelector } from "../mapState/mapState.read.facade"
 import { Observable, Subject } from "rxjs"
 
 @Injectable({ providedIn: "root" })
@@ -31,13 +33,13 @@ export class ThreeRendererService {
 
     private renderScheduled = false
 
-    constructor(private readonly globalSettingsFacade: GlobalSettingsFacade) {}
+    constructor(private readonly store: Store<CcState>) {}
 
     init(containerWidth: number, containerHeight: number, scene: Scene, camera: Camera) {
         this.scene = scene
         this.camera = camera
         this.initGL(containerWidth, containerHeight)
-        this.globalSettingsFacade.isWhiteBackground$().subscribe(isWhiteBackground => this.setBackgroundColorToState(isWhiteBackground))
+        this.store.select(isWhiteBackgroundSelector).subscribe(isWhiteBackground => this.setBackgroundColorToState(isWhiteBackground))
     }
 
     private setBackgroundColorToState(isWhiteBackground: boolean) {
