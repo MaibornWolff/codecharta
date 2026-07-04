@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { first, Subject } from "rxjs"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { BlacklistExclusionGuard } from "../../../shared/facade"
 import { blacklistSearchPattern, BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { searchPatternSelector } from "../../../../sharedView/sharedView.read.facade"
@@ -22,7 +22,7 @@ describe("BlacklistSearchPatternEffect", () => {
         TestBed.configureTestingModule({
             providers: [
                 BlacklistSearchPatternEffect,
-                { provide: AddBlacklistItemsIfNotResultsInEmptyMapEffect, useValue: { doBlacklistItemsResultInEmptyMap$ } },
+                { provide: BlacklistExclusionGuard, useValue: { doBlacklistItemsResultInEmptyMap$ } },
                 provideMockStore({ selectors: [{ selector: searchPatternSelector, value: "" }] }),
                 provideMockActions(() => actions$)
             ]

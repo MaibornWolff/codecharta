@@ -1,8 +1,8 @@
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
-import { CCFile, CodeMapNode } from "../../../codeCharta.model"
-import { FileState } from "../../../model/files/files"
-import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
-import { isLeaf } from "../../../util/codeMapHelper"
+import { CCFile, CodeMapNode } from "../../codeCharta.model"
+import { FileState } from "../../model/files/files"
+import { BlacklistMatcher } from "./blacklistMatcher"
+import { isLeaf } from "../codeMapHelper"
 
 export const resultsInEmptyMap = (visibleFiles: FileState[], matcher: BlacklistMatcher) => {
     for (const { file } of visibleFiles) {

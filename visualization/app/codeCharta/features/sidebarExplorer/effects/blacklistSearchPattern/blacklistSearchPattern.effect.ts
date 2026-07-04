@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { map, filter, withLatestFrom, tap, take, share } from "rxjs"
 import { BlacklistType, CcState } from "../../../../codeCharta.model"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { BlacklistExclusionGuard } from "../../../shared/facade"
 import { searchPatternSelector } from "../../../../sharedView/sharedView.read.facade"
 import { setSearchPattern, addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../sharedView/sharedView.write.facade"
 import { parseBlacklistItems } from "../../../../util/blacklist/parseBlacklistItems"
@@ -23,7 +23,7 @@ export class BlacklistSearchPatternEffect {
     constructor(
         private readonly actions$: Actions,
         private readonly store: Store<CcState>,
-        private readonly addBlacklistItemsIfNotResultsInEmptyMapEffect: AddBlacklistItemsIfNotResultsInEmptyMapEffect
+        private readonly blacklistExclusionGuard: BlacklistExclusionGuard
     ) {}
 
     private readonly searchPattern2BlacklistItems$ = this.actions$.pipe(
@@ -52,7 +52,7 @@ export class BlacklistSearchPatternEffect {
         this.searchPattern2BlacklistItems$.pipe(
             filter(searchPattern2BlacklistItems => searchPattern2BlacklistItems.type === "exclude"),
             tap(() => {
-                this.addBlacklistItemsIfNotResultsInEmptyMapEffect.doBlacklistItemsResultInEmptyMap$
+                this.blacklistExclusionGuard.doBlacklistItemsResultInEmptyMap$
                     .pipe(
                         take(1),
                         filter(doBlacklistItemsResultInEmptyMap => !doBlacklistItemsResultInEmptyMap.resultsInEmptyMap),

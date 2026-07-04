@@ -3,13 +3,13 @@ import { EffectsModule } from "@ngrx/effects"
 import { Store, StoreModule } from "@ngrx/store"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
-import { resultsInEmptyMap } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
+import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../features/shared/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { resultsInEmptyMap } from "../../../../util/blacklist/resultsInEmptyMap"
 import { BlacklistSearchPatternEffect } from "../../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
 import { ExplorerSearchBarComponent } from "./explorerSearchBar.component"
 
-jest.mock("../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap", () => ({
+jest.mock("../../../../util/blacklist/resultsInEmptyMap", () => ({
     resultsInEmptyMap: jest.fn()
 }))
 const mockedResultsInEmptyMap = jest.mocked(resultsInEmptyMap)

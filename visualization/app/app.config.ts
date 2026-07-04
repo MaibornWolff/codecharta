@@ -3,7 +3,7 @@ import { ApplicationConfig, APP_INITIALIZER } from "@angular/core"
 import { provideStore } from "@ngrx/store"
 import { provideEffects } from "@ngrx/effects"
 import { appReducers, setStateMiddleware } from "app/codeCharta/state/store/state.manager"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "app/codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { sharedEffects } from "app/codeCharta/features/shared/effects/shared.effects"
 import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
 import { codeMapEffects } from "app/codeCharta/features/codeMap/effects/codeMap.effects"
 import { metricsBarEffects } from "app/codeCharta/features/metricsBar/effects/metricsBar.effects"
@@ -25,8 +25,8 @@ export const appConfig: ApplicationConfig = {
             ...labelSettingsEffects,
             ...sidebarExplorerEffects,
             ...fileExtensionBarEffects,
+            ...sharedEffects,
             ...loadEffects,
-            AddBlacklistItemsIfNotResultsInEmptyMapEffect,
             UpdateFileSettingsEffect
         ]),
 

@@ -1,17 +1,17 @@
 import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject } from "rxjs"
 
-import { ErrorDialogService } from "../../../util/errorDialog/errorDialog.service"
+import { ErrorDialogService } from "../../../../util/errorDialog/errorDialog.service"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { EffectsModule } from "@ngrx/effects"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
-import { getLastAction } from "../../../util/testUtils/store.utils"
-import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
-import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../sharedView/sharedView.write.facade"
-import { FILE_STATES_JAVA } from "../../../mocks/dataMocks"
+import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { visibleFileStatesSelector } from "../../../../fileStore/store/visibleFileStates.selector"
+import { blacklistSelector } from "../../../../sharedView/sharedView.read.facade"
+import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../sharedView/sharedView.write.facade"
+import { FILE_STATES_JAVA } from "../../../../mocks/dataMocks"
 
 describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
     const mockedErrorDialogService = { open: jest.fn() }
