@@ -9,7 +9,8 @@ import {
     ShaderMaterial,
     Uint16BufferAttribute
 } from "three"
-import { Volume, exportedForTesting, serialize3mf } from "./serialize3mf.service"
+import { exportedForTesting, serialize3mf } from "./serialize3mf.service"
+import { Volume } from "./generateXML/volume"
 import { readFileSync } from "fs"
 import { strFromU8, unzipSync } from "fflate"
 import { resolve } from "node:path"

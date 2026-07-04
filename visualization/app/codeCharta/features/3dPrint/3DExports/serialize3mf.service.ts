@@ -13,15 +13,7 @@ import {
 import { getXMLrelationships, getXMLcontentType } from "./generateXML/build3mfStatics"
 import { getXMLmodelConfig } from "./generateXML/build3mfModelConfig"
 import { getXMLmodel } from "./generateXML/build3mfModel"
-
-export interface Volume {
-    id: number
-    name: string
-    color: string
-    extruder: number
-    firstTriangleId: number
-    lastTriangleId: number
-}
+import { Volume } from "./generateXML/volume"
 
 export async function serialize3mf(mesh: Mesh): Promise<string> {
     const { vertices, triangles, volumes } = extractMeshData(mesh)

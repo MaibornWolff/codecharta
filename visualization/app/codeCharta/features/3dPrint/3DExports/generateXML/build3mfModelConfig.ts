@@ -1,4 +1,4 @@
-import { Volume } from "../serialize3mf.service"
+import { Volume } from "./volume"
 
 export function getXMLmodelConfig(volumes: Volume[]): string {
     let modelConfig = _getXMLModelConfigHeader()

@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser"
-import { Volume } from "../serialize3mf.service"
+import { Volume } from "./volume"
 import { getXMLmodelConfig } from "./build3mfModelConfig"
 
 describe("build3mfModelConfig", () => {
