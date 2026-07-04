@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
+import { ThreeSceneService } from "../../threeViewer/threeSceneService"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { Node, CodeMapNode, CcState, LabelMode } from "../../codeCharta.model"
@@ -31,7 +31,7 @@ import {
     setShowMetricLabelNodeName
 } from "../../mapState/mapState.write.facade"
 import { klona } from "klona"
-import { ThreeStatsService } from "./threeViewer/threeStats.service"
+import { ThreeStatsService } from "../../threeViewer/threeStats.service"
 import { setFiles } from "../../fileStore/store/files.actions"
 import { setHeightMetric } from "../../mapState/mapState.write.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"

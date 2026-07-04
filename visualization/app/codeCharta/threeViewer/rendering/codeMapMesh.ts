@@ -2,7 +2,7 @@ import { CodeMapShaderStrings } from "./shaders/loaders/codeMapShaderStrings"
 import { GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { Node, Scaling, CcState } from "../../../codeCharta.model"
+import { Node, Scaling, CcState } from "../../codeCharta.model"
 import {
     BufferAttribute,
     BufferGeometry,
@@ -17,7 +17,7 @@ import {
     UniformsUtils,
     Vector3
 } from "three"
-import { treeMapSize } from "../../../util/algorithm/treeMapLayout/treeMapHelper"
+import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
 import {
     templatePositions,
     templateNormals,

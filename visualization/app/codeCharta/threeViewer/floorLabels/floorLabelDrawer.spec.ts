@@ -1,4 +1,4 @@
-import { Node } from "../../../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { FloorLabelDrawer } from "./floorLabelDrawer"
 import { MeshBasicMaterial, Vector3 } from "three"
 

@@ -1,5 +1,5 @@
 import { FloorLabelHelper } from "./floorLabelHelper"
-import { Node } from "../../../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 
 describe("FloorLabelHelper", () => {
     describe("getMapResolutionScaling", () => {

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { areaMetricSelector, colorMetricSelector, heightMetricSelector } from "../../../mapState/mapState.read.facade"
+import { CcState } from "../../codeCharta.model"
+import { areaMetricSelector, colorMetricSelector, heightMetricSelector } from "../../mapState/mapState.read.facade"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapTooltipStore {

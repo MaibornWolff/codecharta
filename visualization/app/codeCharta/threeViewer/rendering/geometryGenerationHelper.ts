@@ -1,8 +1,8 @@
-import { Node } from "../../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Box3, BufferAttribute, BufferGeometry, Vector3 } from "three"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
-import { ColorConverter } from "../../../util/color/colorConverter"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 export interface BoxMeasures {
     x: number

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Camera, Scene, WebGLInfo, WebGLRenderer } from "three"
 import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js"
-import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
+import { GlobalSettingsFacade } from "../features/globalSettings/facade"
 import { Observable, Subject } from "rxjs"
 
 @Injectable({ providedIn: "root" })

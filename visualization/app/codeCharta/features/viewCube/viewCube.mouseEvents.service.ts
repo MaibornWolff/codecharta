@@ -1,5 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
-import { CodeMapMouseEventService, CursorType, ThreeMapControlsService } from "../../features/codeMap/facade"
+import { CodeMapMouseEventService, CursorType } from "../../features/codeMap/facade"
+import { ThreeMapControlsService } from "../../threeViewer/threeViewer.facade"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
 import { isLeaf } from "../../util/codeMapHelper"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"

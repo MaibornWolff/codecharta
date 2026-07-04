@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { selectedNodeSelector } from "../../../renderModel/selectedNode.selector"
-import { ThreeRendererService } from "../../../features/codeMap/facade"
-import { ThreeSceneService } from "../../../features/codeMap/facade"
+import { ThreeRendererService } from "../../../threeViewer/threeViewer.facade"
+import { ThreeSceneService } from "../../../threeViewer/threeViewer.facade"
 import { InspectorVisibilityService } from "./inspectorVisibility.service"
 
 describe("InspectorVisibilityService", () => {

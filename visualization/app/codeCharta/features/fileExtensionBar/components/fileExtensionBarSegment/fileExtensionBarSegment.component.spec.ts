@@ -3,7 +3,7 @@ import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment.comp
 import { addPrefixWildcard, BlackListExtensionService } from "../../services/blackListExtension.service"
 import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { ThreeSceneService } from "../../../../features/codeMap/facade"
+import { ThreeSceneService } from "../../../../threeViewer/threeViewer.facade"
 import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { blacklistSelector } from "../../../../sharedView/sharedView.read.facade"
 import { defaultMapState } from "../../../../mapState/mapState.read.facade"

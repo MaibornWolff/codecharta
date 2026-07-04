@@ -2,7 +2,7 @@ import { BufferAttribute, BufferGeometry, Float32BufferAttribute, Mesh, MeshBasi
 import { GeometryOptions } from "../geometryOptions"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { MapMesh } from "./mapMesh"
-import { indicesPerNode } from "../../../../../features/codeMap/facade"
+import { indicesPerNode } from "../../../../../threeViewer/threeViewer.facade"
 
 describe("MapMesh", () => {
     let mapMesh: MapMesh

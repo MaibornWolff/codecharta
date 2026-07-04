@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { KeyValuePair } from "../../codeCharta.model"
+import { KeyValuePair } from "../codeCharta.model"
 import { CodeMapTooltipStore } from "./stores/codeMapTooltip.store"
 
 export interface TooltipNode {

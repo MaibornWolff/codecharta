@@ -2,13 +2,13 @@ import { NgClass } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, OnInit, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
 import {
     IdToBuildingService,
-    CodeMapMouseEventService,
     CodeMapTooltipService,
     ThreeRendererService,
     ThreeSceneService
-} from "../../../../features/codeMap/facade"
+} from "../../../../threeViewer/threeViewer.facade"
 import { isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
 import { formatCompactNumber } from "../../formatCompactNumber"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"

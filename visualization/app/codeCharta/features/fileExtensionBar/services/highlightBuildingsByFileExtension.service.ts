@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
-import { ThreeSceneService } from "../../../features/codeMap/facade"
+import { ThreeSceneService } from "../../../threeViewer/threeViewer.facade"
 import { MetricDistributionStore } from "../stores/metricDistribution.store"
 import { distinct, filter } from "rxjs"
 

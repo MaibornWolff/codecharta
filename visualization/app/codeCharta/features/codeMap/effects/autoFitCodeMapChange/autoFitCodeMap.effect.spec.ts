@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { BehaviorSubject, Subject } from "rxjs"
-import { ThreeMapControlsService } from "../../threeViewer/threeMapControls.service"
+import { ThreeMapControlsService } from "../../../../threeViewer/threeMapControls.service"
 import { visibleFileStatesSelector } from "../../../../fileStore/store/visibleFileStates.selector"
 import { GlobalSettingsFacade } from "../../../globalSettings/facade"
 import { layoutAlgorithmSelector, resetCameraIfNewFileIsLoadedSelector } from "../../../globalSettings/facade"

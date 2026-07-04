@@ -1,6 +1,6 @@
-import { Node } from "../../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { Box3, Vector3 } from "three"
-import { ColorConverter } from "../../../util/color/colorConverter"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 export class CodeMapBuilding {
     private readonly _id: number

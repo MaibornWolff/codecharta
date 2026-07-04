@@ -1,6 +1,6 @@
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Vector3, Ray, Box3 } from "three"
-import { Scaling } from "../../../codeCharta.model"
+import { Scaling } from "../../codeCharta.model"
 
 const BVH_LEAF_THRESHOLD = 4
 // BVH node layout: [minX, minY, minZ, maxX, maxY, maxZ, leftChild, rightChild, firstIndex, count]

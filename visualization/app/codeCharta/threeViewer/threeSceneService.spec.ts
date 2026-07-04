@@ -6,22 +6,22 @@ import {
     TEST_NODES,
     VALID_FILE_NODE_WITH_ID,
     VALID_NODES_WITH_ID
-} from "../../../mocks/dataMocks"
-import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "../rendering/codeMapBuilding.mocks"
-import { CodeMapBuilding } from "../rendering/codeMapBuilding"
+} from "../mocks/dataMocks"
+import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "./rendering/codeMapBuilding.mocks"
+import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
-import { CodeMapMesh } from "../rendering/codeMapMesh"
-import { CcState, CodeMapNode, LayoutAlgorithm } from "../../../codeCharta.model"
-import { setEnableFloorLabels, setScaling } from "../../../mapState/mapState.write.facade"
+import { CodeMapMesh } from "./rendering/codeMapMesh"
+import { CcState, CodeMapNode, LayoutAlgorithm } from "../codeCharta.model"
+import { setEnableFloorLabels, setScaling } from "../mapState/mapState.write.facade"
 import { Vector3 } from "three"
-import { setLayoutAlgorithm } from "../../../mapState/mapState.write.facade"
+import { setLayoutAlgorithm } from "../mapState/mapState.write.facade"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
-import { idToNodeSelector } from "../../../lenses/structure/structure.facade"
+import { idToNodeSelector } from "../lenses/structure/structure.facade"
 import { TestBed } from "@angular/core/testing"
-import { IdToBuildingService } from "../idToBuilding.service"
-import { appReducers, setStateMiddleware } from "../../../store/store"
+import { IdToBuildingService } from "./idToBuilding.service"
+import { appReducers, setStateMiddleware } from "../store/store"
 
-jest.mock("../../../lenses/structure/store/idToNode.selector", () => ({
+jest.mock("../lenses/structure/store/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
 }))
 const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)

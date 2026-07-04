@@ -2,7 +2,7 @@ import { ElementRef } from "@angular/core"
 import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { ThreeViewerService } from "./threeViewer/threeViewer.service"
+import { ThreeViewerService } from "../../threeViewer/threeViewer.service"
 import { CodeMapStore } from "./stores/codeMap.store"
 import { EMPTY } from "rxjs"
 

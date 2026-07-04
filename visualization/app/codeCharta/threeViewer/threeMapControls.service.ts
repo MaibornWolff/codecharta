@@ -4,7 +4,7 @@ import { Box3, PerspectiveCamera, Vector3, Sphere, MOUSE } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 import { MapControls } from "three/addons/controls/MapControls.js"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { EventEmitter } from "../../../util/EventEmitter"
+import { EventEmitter } from "../util/EventEmitter"
 import { BehaviorSubject } from "rxjs"
 
 type CameraChangeEvents = {

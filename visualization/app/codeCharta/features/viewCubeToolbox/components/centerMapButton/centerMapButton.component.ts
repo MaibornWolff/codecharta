@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
-import { ThreeMapControlsService } from "../../../../features/codeMap/facade"
+import { ThreeMapControlsService } from "../../../../threeViewer/threeViewer.facade"
 
 @Component({
     selector: "cc-toolbox-center-map-button",
