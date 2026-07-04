@@ -1,23 +1,23 @@
 import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import stringify from "safe-stable-stringify"
-import { readCcState } from "../../../../util/indexedDB/indexedDBWriter"
-import sample1 from "../../../../assets/sample1.cc.json"
-import sample2 from "../../../../assets/sample2.cc.json"
-import { ExportCCFile, NameDataPair } from "../../../../codeCharta.api.model"
-import { CcState } from "../../../../codeCharta.model"
-import { FileState } from "../../../../model/files/files"
-import { MetricQueryParemter } from "../../../../util/queryParameter/metricQueryParameter"
-import { ErrorDialogService } from "../../../../util/errorDialog/errorDialog.service"
-import { buildHtmlMessage } from "./loadFilesValidationToErrorDialog"
-import { getNameDataPair } from "../util/fileParser"
-import { getContentChecksum } from "../util/ccFileHelper"
-import { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "./loadFile.service"
-import { UrlExtractor } from "../util/urlExtractor"
-import { LoadInitialFileStore } from "../../../../load/loadInitialFile.store"
-
-export const sampleFile1 = { fileName: "sample1.cc.json", fileSize: 3 * 1024, content: sample1 as ExportCCFile }
-export const sampleFile2 = { fileName: "sample2.cc.json", fileSize: 2 * 1024, content: sample2 as ExportCCFile }
+import { readCcState } from "../util/indexedDB/indexedDBWriter"
+import { CcState } from "../codeCharta.model"
+import { FileState } from "../model/files/files"
+import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"
+import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
+import {
+    buildHtmlMessage,
+    getContentChecksum,
+    getNameDataPair,
+    LoadFileService,
+    NameDataPair,
+    NO_FILES_LOADED_ERROR_MESSAGE,
+    sampleFile1,
+    sampleFile2,
+    UrlExtractor
+} from "../fileStore/fileStore.facade"
+import { LoadInitialFileStore } from "./loadInitialFile.store"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileService {

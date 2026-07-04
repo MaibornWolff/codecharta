@@ -7,7 +7,7 @@ import { State } from "@ngrx/store"
 import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton.component"
 import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
 import { LoadFileService } from "../../../../fileStore/fileStore.facade"
-import { LoadInitialFileService } from "../../../../fileStore/fileStore.facade"
+import { LoadInitialFileService } from "../../../../load/load.facade"
 import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
 import { defaultMapState } from "../../../../mapState/mapState.read.facade"
 
