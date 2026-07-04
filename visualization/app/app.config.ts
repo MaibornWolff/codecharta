@@ -11,7 +11,6 @@ import { labelSettingsEffects } from "app/codeCharta/features/labelSettings/effe
 import { sidebarExplorerEffects } from "app/codeCharta/features/sidebarExplorer/effects/sidebarExplorer.effects"
 import { fileExtensionBarEffects } from "app/codeCharta/features/fileExtensionBar/effects/fileExtensionBar.effects"
 import { loadEffects } from "app/codeCharta/load/effects/load.effects"
-import { UpdateFileSettingsEffect } from "app/codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -26,8 +25,7 @@ export const appConfig: ApplicationConfig = {
             ...sidebarExplorerEffects,
             ...fileExtensionBarEffects,
             ...sharedEffects,
-            ...loadEffects,
-            UpdateFileSettingsEffect
+            ...loadEffects
         ]),
 
         {
