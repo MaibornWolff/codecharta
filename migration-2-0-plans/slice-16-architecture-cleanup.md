@@ -1,11 +1,23 @@
 ---
 name: viz-2.0-slice-16-architecture-cleanup
 issue:
-state: todo
+state: complete
 version: 1
 ---
 
 # Slice 16 — Architecture cleanup: to a zero-exemption, zero-cycle config
+
+> **✅ COMPLETE (2026-07-04).** All 8 sub-slices landed: 16a (3DPreview SCC, 73→0), 16b (2 orphan cycles),
+> 16d (mapState fenced — all 3 homes now on `feature-reaches-state-home-only-via-facade`), 16e (isDeltaState
+> dedup), 16g (rule rename `new-must-not-import-legacy`→`source-layers-must-not-import-features` + stale-comment
+> sweep + `.d.ts` orphan exempt), 16f (loader → `load/`, fileStore has ZERO upward deps), 16c (shared Three
+> layer → new top-level `threeViewer/`; GlobalSettings edge severed; cursor + colorCategoryCounts relocated;
+> codeMap/viewCube grandfather DROPPED), 16i (util/ is a genuine leaf kernel — indexedDB→`store/`,
+> treeMapLayout+streetLayout→`threeViewer/algorithm/`, `defaultAmountOfTopLabels`→`model/`, Rectangle→`model/`;
+> `util-is-a-leaf-kernel`@error), 16h CAPSTONE (`no-circular` warn→**error**). **`npm run lint:architecture` →
+> 0 errors, 0 warnings; the graph is acyclic; every fitness function is enforced at error.** Every commit:
+> tsc + biome clean, full suite 383 suites / 2318 passed, 45/45 snapshots zero-diff. **User smoke owed (not
+> snapshot-covered):** white-background toggle (16c-2 moved threeRenderer's isWhiteBackground read to mapState).
 
 > **The migration is done (`state/` deleted, Slice 15); this slice makes the result actually CLEAN.** It is the
 > post-migration debt sweep: break every circular dependency, fence the last state home, drop every grandfathered
