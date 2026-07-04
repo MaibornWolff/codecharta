@@ -14,11 +14,14 @@ version: 1
 > `git mv` before behavioral swap; per-commit `tsc`+`npm test` zero-snapshot-diff+`lint:architecture`; e2e +
 > manual smoke for what snapshots don't cover). Scoped 2026-07-04 by a 3-area file→destination mapping.
 
-## Prerequisite — Slice 14e-3 runs FIRST (decided 2026-07-04, user)
-Do **14e-3 before this slice**: it promotes `idToNode`/`valueOf` ONTO the structure/metrics lenses + does the
-NodeDecorator id/metric split. That way those two never move into `renderModel/` — Slice 15 moves only
-`accumulatedData` + the rest of the composing selectors. (User: finish 14e-3 then Slice 15; only the not-yet-built
-renderers stay out of scope.)
+## Prerequisite — Slice 14e-3 runs FIRST ✅ DONE (2026-07-04)
+Slice 14e-3 is **complete** (`slice-14-renderer-page-split.md`): it promoted `idToNodeSelector` ONTO the structure
+lens (`structure.facade`) and `valueOfSelector` ONTO the metrics lens (`metricsLens.facade`), and split the
+view-state-independent structure pass (`NodeDecorator.decorateMapWithStructure`) out of the metric pass — permanently
+breaking the CF #1 cycle. So those two are already lens-owned and **out of scope for `renderModel/`**: Slice 15 moves
+only `accumulatedData` + the rest of the composing selectors (`pathToNode`, `codeMapNodes`, `rootUnary`, `metricData`,
+the derived metric + node-resolving selectors). The `state/selectors/accumulatedData/` folder no longer contains
+`idToNode`/`valueOf`.
 
 ## What's still in `state/` (67 non-spec files)
 - **`store/` (9)** — the ngrx ROOT composition (`state.manager`: appReducers/defaultState/setStateMiddleware/

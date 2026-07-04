@@ -1,7 +1,7 @@
 ---
 name: viz-2.0-slice-14-renderer-page-split
 issue:
-state: progress
+state: complete
 version: 1
 ---
 
@@ -81,7 +81,7 @@ merges into 14d.
 | **14d** ✅ | Relayer `accumulatedData`/aggregation above the lenses (breaks CF#1) + composing-layer `valueOf(id)` + extract the **structure lens** (tree; `idToNode` ownership → 14e) | high | parity tests + zero snapshot | review-gated (done) |
 | **14e-1** | promote `hoveredNodeId`/`selectedBuildingId`/`rightClickedNodeData` `state.mapState → state.sharedView`, **keeping them number-typed** (pure home-move, mirrors Slice 8/9) | med | snapshots zero-diff + dep-cruiser | **yes** (snapshot-verifiable) |
 | **14e-2** | retype those ids ordinal `number → PATH string`; set-sites emit `node.path`, read-sites resolve via a new `pathToNode` / `getBuildingByPath`; reconcile `IdToBuildingService` + `arrow.service`; v14 nulls the moved ids | high | parity + snapshots + **e2e + screenshot smoke** | yes (I run e2e + screenshot) |
-| **14e-3** | NodeDecorator id/metric split + promote `idToNode`/`valueOf` onto the structure/metrics lenses (owns the CF#1 cycle) | high/XL | parity + snapshots | **NEXT — before Slice 15** (user 2026-07-04: finish it; only new renderers stay out) |
+| **14e-3** ✅ | NodeDecorator id/metric split + promote `idToNode`/`valueOf` onto the structure/metrics lenses (owns the CF#1 cycle) | high/XL | parity + snapshots (done) | **DONE 2026-07-04** — idToNode→structure lens, valueOf→metrics lens facade |
 | later | Graph/LSM renderer + `graphState` + physical `renderers/` move + engine settings-inversion + `renderer-engine-stays-dumb`/`page-uses-engine-public-api` → error | XL | needs renderer #2 | separate slice |
 
 **14e decomposition (scoped 2026-07-03 by a 4-area investigation — full map in the session).** Load-bearing facts:
@@ -143,8 +143,29 @@ so the render side of 14e-2 is nearly free — the coupling to fix is `IdToBuild
   + full suite (2317 tests, **45/45 snapshots zero-diff**) + dep-cruiser 0 errors. **WebGL hover/select highlight NOT
   runnable in the sandbox** (Playwright unsupported on arm64-ubuntu-26.04; chromium only via snap → no WebGL browser) — the
   pixel-level "correct building highlights" smoke is a manual check for the user.
-- [ ] 14e-3 (**NEXT, before Slice 15** — user 2026-07-04): NodeDecorator id/metric split; promote `valueOf`/`idToNode`
-  onto the structure/metrics lenses. Prerequisite of Slice 15 (so idToNode/valueOf become lens-owned, not moved to renderModel/).
+- [x] 14e-3 **DONE (2026-07-04)**: NodeDecorator id/metric split + `idToNode`/`valueOf` promoted onto the lenses — 3 commits:
+  1. **NodeDecorator split** (`refactor`) — extracted the view-state-INDEPENDENT structure pass
+     (`decorateMapWithStructure` = ordinal id + `mergeFolderChain`) out of `decorateMapWithMetricData`, which now runs it
+     first then does metric-only attribute init. Behavior-preserving: id+merge are deterministic, so the decorated tree
+     keeps identical ids/shape; the metric pass now iterates the merged tree (merged-away nodes are unreachable → skipping
+     their attr-init is unobservable). **Key constraint honored:** `accumulatedData` is UNCHANGED — it still classifies
+     blacklist on the UN-merged tree before merging (gitignore semantics mean classify-on-merged-path ≠ chain-head, so
+     merge must NOT be reordered ahead of classify). The structure lens runs its OWN independent structure pass instead.
+  2. **`idToNode` → structure lens** (`feat`) — new `idToNodeSelector` runs `decorateMapWithStructure` on a clone of the
+     lens's own undecorated tree, exposed via `structure.facade`. The highlight consumers (`codeMapMouseEvent.store`,
+     `threeScene.store` — hover + constant-highlight, which read only `.id` + child structure) repoint to the facade.
+     Parity test proves the lens-owned map resolves the SAME id→descendant structure as the old decorated tree. The two
+     service specs mock the store selector module but import through the facade (keeps
+     `lens-external-access-only-via-public-surface` green — `jest.mock` strings aren't dep-cruiser edges, only static imports).
+  3. **`valueOf` → metrics lens facade** (`feat`, user's ratified home) — resolves a node via the structure lens's
+     `idToNode` (legal lens→lens facade import, `lens-cross-lens-only-via-facade`) and reads the metric off it. Unconsumed,
+     so the value-source change (raw per-node attributes vs the old decorated tree) has no behavioral impact.
+  **CF#1 fully broken:** both `idToNode` (structure) + `valueOf` (metrics) reach only DOWNWARD into the structure lens's own
+  tree resolution; `new-must-not-import-legacy` (error) forbids the reverse `lens → state/` edge, so the old cycle
+  (`lens → idToNode → accumulatedData → metricsLens.facade → lens`) is structurally impossible. 385 suites / 2321 passed,
+  **45/45 snapshots zero-diff (no -u)**, tsc + biome + dep-cruiser clean (0 errors, 94 warnings unchanged).
+  **Smoke owed to user:** hover/constant-highlight are NOT snapshot-covered → e2e + manual side-by-side vs `main`
+  (hover a node → its subtree highlights; select → descendants highlight). Slice 15's 14e-3 prerequisite is now satisfied.
 
 ## dep-cruiser rules
 - `lens-no-view-state` — **added at error in 14a** (lenses must not import mapState/sharedView/preferences;
