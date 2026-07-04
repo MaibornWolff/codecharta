@@ -151,9 +151,13 @@ Relocate the non-kernel concerns that accreted in `util/`, then lock it with a r
   not import a layout algorithm — move the shared type it needs, or invert). **Pure `git mv`** → snapshot-stable; verify 45/45.
 - **16i-3 — `getNumberOfTopLabels` (S).** Move the plain constant `defaultAmountOfTopLabels` down to `model/` (or pass it as a
   param) so the helper stops importing `mapState`.
-- **16i-4 — add `util-is-a-leaf-kernel` at error.** `from: ^app/codeCharta/util/` (pathNot spec/e2e/mocks), forbidding imports
-  of `lenses/`, `renderModel/`, `mapState/`, `sharedView/`, `preferences/`, `fileStore/`, `store/`, `load/`, `features/`. Add
-  once 16i-1/2/3 clear it. This is the fitness function whose ABSENCE let the rot in — it also prevents regression.
+- **16i-4 — `util-is-a-leaf-kernel` (fitness function — ALREADY CREATED at `warn`, flip to `error` here).** Authored 2026-07-04
+  in `.dependency-cruiser.js` (after `filestore-has-no-upward-deps`) as a **positive allow-list**: `from: ^app/codeCharta/util/`
+  (pathNot spec/e2e/mocks) → any `^app/codeCharta/` path that is NOT `util/`, `model/`, `codeCharta.model.ts` or
+  `codeCharta.api.model.ts` is a violation (so any FUTURE layer is auto-fenced; the two `*.model.ts` type/contract files are
+  allowed because they are the shared vocabulary, not a layer — `fileDownloader → api.model` stays sanctioned under
+  `wire-dto-only-in-filestore-boundary`). Currently flags **exactly the 4 leak files / 9 edges**. Staged at `warn`; **flip to
+  `error` once 16i-1/2/3 have relocated those 4 files** (0 violations). This is the fitness function whose ABSENCE let the rot in.
 - **Dependency:** 16i-2's cleanest home is `threeViewer/`, so **do 16i AFTER 16c** (or pick `features/codeMap/rendering/` as the
   home to decouple them). 16i-1/16i-3/16i-4 are independent of 16c.
 
