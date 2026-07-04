@@ -7,6 +7,12 @@ version: 1
 
 # Carried-forward work — Visualization 2.0 migration
 
+> **Migration DONE (Slice 15, `state/` deleted). The remaining architecture DEBT is now scoped as one plan:
+> `slice-16-architecture-cleanup.md`** (break all 94 no-circular cycles → flip `no-circular` to error; fence
+> mapState; dedup isDeltaState wrappers; loader kickoff → load/; comment/naming sweep). It ABSORBS the CF #9
+> read-window/dedup remainder (16d + 16e) and CF #10 (16f). CF #2c is moot, CF #2b superseded (see §Notes).
+> **Still separate (not cleanup):** CF #7 (localStorage, user-postponed) and CF #6 (multi-renderer, new-feature work).
+
 > **Read this before scoping ANY new slice.** This is the single canonical list of work that earlier
 > slices deliberately deferred. Each slice's own roadmap records *why* it deferred something; this file
 > is the forward-looking backlog so a deferred item lands as an explicit task in the slice that unblocks
