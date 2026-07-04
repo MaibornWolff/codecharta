@@ -1,5 +1,5 @@
 import BoundingBox from "./boundingBox"
-import Rectangle from "./rectangle"
+import Rectangle from "../../../model/rectangle"
 import { Vector2 } from "three"
 import { CodeMapNode } from "../../../codeCharta.model"
 

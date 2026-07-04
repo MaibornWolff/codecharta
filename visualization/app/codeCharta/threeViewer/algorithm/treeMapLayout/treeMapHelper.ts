@@ -1,11 +1,11 @@
-import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../codeMapHelper"
+import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../../util/codeMapHelper"
 import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
 import { Vector3 } from "three"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { searchedNodePathsSelector, selectedColorMetricDataSelector } from "../../../renderModel/renderModel.facade"
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
-import { MetricMinMax } from "../../metric/metricRange"
-import { getColorByMetricValue } from "../../color/gradientCalculator"
+import { MetricMinMax } from "../../../util/metric/metricRange"
+import { getColorByMetricValue } from "../../../util/color/gradientCalculator"
 
 export const treeMapSize = 250
 

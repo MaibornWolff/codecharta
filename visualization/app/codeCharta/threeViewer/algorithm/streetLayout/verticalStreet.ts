@@ -1,5 +1,5 @@
 import BoundingBox from "./boundingBox"
-import Rectangle from "./rectangle"
+import Rectangle from "../../../model/rectangle"
 import Street from "./street"
 import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { StreetViewHelper } from "./streetViewHelper"

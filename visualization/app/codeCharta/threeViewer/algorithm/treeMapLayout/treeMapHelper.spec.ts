@@ -2,7 +2,7 @@ import { TreeMapHelper } from "./treeMapHelper"
 import { CcState, CodeMapNode, ColorMode, EdgeVisibility, NodeType } from "../../../codeCharta.model"
 import { STATE, VALID_EDGES } from "../../../mocks/dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
-import { clone } from "../../clone"
+import { clone } from "../../../util/clone"
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 
 jest.mock("../../../renderModel/accumulatedData/accumulatedData.selector", () => ({

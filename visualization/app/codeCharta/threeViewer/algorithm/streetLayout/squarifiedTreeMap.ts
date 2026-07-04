@@ -1,7 +1,7 @@
 import Treemap from "./treeMap"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { Vector2 } from "three"
-import Rectangle from "./rectangle"
+import Rectangle from "../../../model/rectangle"
 import HorizontalStrip from "./strip/horizontalStrip"
 import VerticalStrip from "./strip/verticalStrip"
 import Strip from "./strip/strip"

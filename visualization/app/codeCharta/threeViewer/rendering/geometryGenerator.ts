@@ -4,7 +4,7 @@ import { CodeMapBuilding } from "./codeMapBuilding"
 import { createTemplateBoxGeometry, BoxMeasures } from "./geometryGenerationHelper"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { InstancedMesh, InstancedBufferAttribute, Material, Matrix4, Vector3, Box3 } from "three"
-import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
+import { treeMapSize } from "../algorithm/treeMapLayout/treeMapHelper"
 
 export interface BuildResult {
     mesh: InstancedMesh

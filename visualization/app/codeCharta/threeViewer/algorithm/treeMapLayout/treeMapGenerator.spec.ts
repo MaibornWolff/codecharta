@@ -11,7 +11,7 @@ import {
     VALID_BIG_NODE_WITH_DELTAS
 } from "../../../mocks/dataMocks"
 import { klona } from "klona"
-import { NodeDecorator } from "../../nodeDecorator"
+import { NodeDecorator } from "../../../util/nodeDecorator"
 import { fileWithFixedFolders } from "../../../resources/fixed-folders/fixed-folders-example"
 import { getCCFile } from "../../../fileStore/fileStore.facade"
 import * as SquarifiedLayoutGenerator from "./treeMapGenerator"

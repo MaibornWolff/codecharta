@@ -1,7 +1,7 @@
 import Street from "./street"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { Vector2 } from "three"
-import Rectangle from "./rectangle"
+import Rectangle from "../../../model/rectangle"
 import BoundingBox from "./boundingBox"
 import { StreetViewHelper } from "./streetViewHelper"
 

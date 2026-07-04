@@ -1,7 +1,7 @@
 import { Vector3 } from "three"
 import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
 import { selectedColorMetricDataSelector } from "../../../renderModel/renderModel.facade"
-import { getMarkingColor, isLeaf } from "../../codeMapHelper"
+import { getMarkingColor, isLeaf } from "../../../util/codeMapHelper"
 import { TreeMapHelper, getBuildingColor, getIncomingEdgePoint, isNodeFlat, isVisible, treeMapSize } from "../treeMapLayout/treeMapHelper"
 
 function calculateSize(node: CodeMapNode, metricName: string) {

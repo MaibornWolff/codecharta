@@ -3,7 +3,7 @@
 import { Node } from "../../codeCharta.model"
 import { CanvasTexture, BackSide, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
 import { FloorLabelHelper } from "./floorLabelHelper"
-import { getFloorLabelPadding } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
+import { getFloorLabelPadding } from "../algorithm/treeMapLayout/treeMapGenerator"
 
 export class FloorLabelDrawer {
     // White glyphs on a transparent canvas fade to semi-transparent gray once mipmaps average

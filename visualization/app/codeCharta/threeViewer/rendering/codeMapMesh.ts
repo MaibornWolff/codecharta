@@ -17,7 +17,7 @@ import {
     UniformsUtils,
     Vector3
 } from "three"
-import { treeMapSize } from "../../util/algorithm/treeMapLayout/treeMapHelper"
+import { treeMapSize } from "../algorithm/treeMapLayout/treeMapHelper"
 import {
     templatePositions,
     templateNormals,

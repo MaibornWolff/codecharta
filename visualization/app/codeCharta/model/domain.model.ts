@@ -1,5 +1,5 @@
 import { Vector3 } from "three"
-import Rectangle from "../util/algorithm/streetLayout/rectangle"
+import Rectangle from "./rectangle"
 
 export type Scaling = {
     x: number
