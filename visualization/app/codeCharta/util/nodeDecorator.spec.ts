@@ -315,6 +315,60 @@ describe("nodeDecorator", () => {
         })
     })
 
+    describe("decorateMapWithStructure", () => {
+        it("should assign a unique id starting from 0 to every node", () => {
+            NodeDecorator.decorateMapWithStructure(map)
+
+            const h = hierarchy(map)
+            h.each(node => {
+                expect(node.data.id).toBeDefined()
+            })
+            expect(allUniqueIds(h)).toBeTruthy()
+            expect(map.id).toBe(0)
+        })
+
+        it("should merge single-child folder chains without touching attributes", () => {
+            map.children = [
+                {
+                    name: "middle",
+                    type: NodeType.FOLDER,
+                    attributes: {},
+                    isExcluded: false,
+                    isFlattened: false,
+                    children: [
+                        { name: "a", type: NodeType.FILE, attributes: {}, isExcluded: false, isFlattened: false },
+                        { name: "b", type: NodeType.FILE, attributes: {}, isExcluded: false, isFlattened: false }
+                    ]
+                }
+            ]
+
+            NodeDecorator.decorateMapWithStructure(map)
+
+            expect(map.name).toBe("root/middle")
+            expect(map.children.length).toBe(2)
+            expect(map.children[0].name).toBe("a")
+            expect(map.children[1].name).toBe("b")
+            // structure pass must not initialise metric attributes — that stays the metric pass's job
+            expect(map.children[0].attributes[UNARY_METRIC]).toBeUndefined()
+        })
+
+        it("should assign the same ids as the combined decorateMap pass", () => {
+            const structureOnly = clone(map)
+            const fullyDecorated = clone(map)
+
+            NodeDecorator.decorateMapWithStructure(structureOnly)
+            NodeDecorator.decorateMap(fullyDecorated, metricData, [])
+
+            const structureIds = hierarchy(structureOnly)
+                .descendants()
+                .map(node => `${node.data.path}:${node.data.id}`)
+            const decoratedIds = hierarchy(fullyDecorated)
+                .descendants()
+                .map(node => `${node.data.path}:${node.data.id}`)
+            expect(structureIds).toEqual(decoratedIds)
+        })
+    })
+
     describe("decorateMapWithPathAttribute", () => {
         it("should decorate nodes with the correct path", () => {
             NodeDecorator.decorateMapWithPathAttribute(file)
