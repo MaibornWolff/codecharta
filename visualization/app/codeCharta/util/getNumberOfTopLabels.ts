@@ -1,4 +1,4 @@
-import { defaultAmountOfTopLabels } from "../../../mapState/mapState.read.facade"
+import { defaultAmountOfTopLabels } from "../mapState/mapState.read.facade"
 
 const BUILDINGS_PER_LABEL = 100
 const MAX_NUMBER_OF_LABELS = 50

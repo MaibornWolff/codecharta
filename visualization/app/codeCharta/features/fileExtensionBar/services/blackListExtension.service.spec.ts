@@ -6,7 +6,7 @@ import { CategorizedMetricDistribution, OTHER_EXTENSION } from "../../../util/fi
 import { BlacklistItem, BlacklistType, CcState, CodeMapNode, NodeType, SortingOption } from "../../../codeCharta.model"
 import { defaultMapState } from "../../../mapState/mapState.read.facade"
 import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
-import { BlacklistExtensionAction } from "../../../state/effects/blacklistExtension/blacklistExtension.effect"
+import { BlacklistExtensionAction } from "../effects/blacklistExtension/blacklistExtension.effect"
 import { hoveredNodeSelector } from "../../../renderModel/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../renderModel/selectedNode.selector"
 

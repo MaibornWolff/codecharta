@@ -4,11 +4,11 @@ import { State, Store } from "@ngrx/store"
 import { createEffect } from "@ngrx/effects"
 import { map, pairwise, withLatestFrom } from "rxjs"
 
-import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { codeMapNodesSelector } from "../../../renderModel/renderModel.facade"
-import { setAmountOfTopLabels } from "../../../mapState/mapState.write.facade"
-import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
-import { CcState } from "../../../codeCharta.model"
+import { visibleFileStatesSelector } from "../../../../fileStore/store/visibleFileStates.selector"
+import { codeMapNodesSelector } from "../../../../renderModel/renderModel.facade"
+import { setAmountOfTopLabels } from "../../../../mapState/mapState.write.facade"
+import { getNumberOfTopLabels } from "../../../../util/getNumberOfTopLabels"
+import { CcState } from "../../../../codeCharta.model"
 
 @Injectable()
 export class UpdateVisibleTopLabelsEffect {

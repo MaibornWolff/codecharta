@@ -8,12 +8,12 @@ import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "app/codeCharta/st
 import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
 import { codeMapEffects } from "app/codeCharta/features/codeMap/effects/codeMap.effects"
 import { metricsBarEffects } from "app/codeCharta/features/metricsBar/effects/metricsBar.effects"
+import { labelSettingsEffects } from "app/codeCharta/features/labelSettings/effects/labelSettings.effects"
+import { sidebarExplorerEffects } from "app/codeCharta/features/sidebarExplorer/effects/sidebarExplorer.effects"
+import { fileExtensionBarEffects } from "app/codeCharta/features/fileExtensionBar/effects/fileExtensionBar.effects"
 import { SaveCcStateEffect } from "app/codeCharta/state/effects/saveCcState/saveCcState.effect"
 import { UpdateFileSettingsEffect } from "app/codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
 import { UpdateQueryParametersEffect } from "app/codeCharta/state/effects/updateQueryParameters/updateQueryParameters.effect"
-import { UpdateVisibleTopLabelsEffect } from "app/codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
-import { BlacklistSearchPatternEffect } from "app/codeCharta/state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
-import { BlacklistExtensionEffect } from "./codeCharta/state/effects/blacklistExtension/blacklistExtension.effect"
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -24,11 +24,11 @@ export const appConfig: ApplicationConfig = {
         provideEffects([
             ...codeMapEffects,
             ...metricsBarEffects,
+            ...labelSettingsEffects,
+            ...sidebarExplorerEffects,
+            ...fileExtensionBarEffects,
             UnfocusNodesEffect,
             AddBlacklistItemsIfNotResultsInEmptyMapEffect,
-            BlacklistSearchPatternEffect,
-            BlacklistExtensionEffect,
-            UpdateVisibleTopLabelsEffect,
             UpdateFileSettingsEffect,
             SaveCcStateEffect,
             UpdateQueryParametersEffect

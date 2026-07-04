@@ -5,7 +5,7 @@ import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { resultsInEmptyMap } from "../../../../state/effects/addBlacklistItemsIfNotResultsInEmptyMap/resultsInEmptyMap"
-import { BlacklistSearchPatternEffect } from "../../../../state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
+import { BlacklistSearchPatternEffect } from "../../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
 import { ExplorerSearchBarComponent } from "./explorerSearchBar.component"
 
