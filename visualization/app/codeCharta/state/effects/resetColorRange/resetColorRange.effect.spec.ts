@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore, MockStore } from "@ngrx/store/testing"
-import { selectedColorMetricDataSelector } from "../../selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { selectedColorMetricDataSelector } from "../../../renderModel/accumulatedData/metricData/selectedColorMetricData.selector"
 import { ResetColorRangeEffect } from "./resetColorRange.effect"
 import { EffectsModule } from "@ngrx/effects"
 import { provideMockActions } from "@ngrx/effects/testing"

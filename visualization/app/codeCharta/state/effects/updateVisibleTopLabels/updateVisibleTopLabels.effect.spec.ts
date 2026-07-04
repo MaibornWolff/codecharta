@@ -6,7 +6,7 @@ import { EffectsModule } from "@ngrx/effects"
 import { State, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../store/state.manager"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
+import { codeMapNodesSelector } from "../../../renderModel/accumulatedData/codeMapNodes.selector"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { setAmountOfTopLabels } from "../../../mapState/mapState.write.facade"
 

@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { CodeMapNode, NodeType } from "../../../../codeCharta.model"
-import { searchedNodePathsSelector } from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
+import { searchedNodePathsSelector } from "../../../../renderModel/searchedNodes/searchedNodePaths.selector"
 import { areaMetricSelector } from "../../../../mapState/mapState.read.facade"
 import { ExplorerTreeItemNameComponent } from "./explorerTreeItemName.component"
 

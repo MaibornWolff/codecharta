@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { CodeMapNode, MarkedPackage } from "../../../codeCharta.model"
-import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/codeMapNodes.selector"
+import { codeMapNodesSelector } from "../../../renderModel/accumulatedData/codeMapNodes.selector"
 import { markedPackagesSelector } from "../../../sharedView/sharedView.read.facade"
 import { isLeaf } from "../../../util/codeMapHelper"
 

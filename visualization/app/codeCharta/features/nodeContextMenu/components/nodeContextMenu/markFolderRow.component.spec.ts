@@ -3,7 +3,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render } from "@testing-library/angular"
 import { markPackages, unmarkPackage } from "../../../../sharedView/sharedView.write.facade"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
-import { rightClickedCodeMapNodeSelector } from "../../../../state/selectors/rightClickedCodeMapNode.selector"
+import { rightClickedCodeMapNodeSelector } from "../../../../renderModel/rightClickedCodeMapNode.selector"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
 

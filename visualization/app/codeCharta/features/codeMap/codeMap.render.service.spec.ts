@@ -35,14 +35,14 @@ import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { setFiles } from "../../fileStore/store/files.actions"
 import { setHeightMetric } from "../../mapState/mapState.write.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { nodeMetricDataSelector } from "../../state/selectors/nodeMetricData/nodeMetricData.selector"
+import { metricDataSelector } from "../../renderModel/accumulatedData/metricData/metricData.selector"
+import { nodeMetricDataSelector } from "../../renderModel/nodeMetricData/nodeMetricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
-jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
+jest.mock("../../renderModel/accumulatedData/metricData/metricData.selector", () => ({
     metricDataSelector: jest.fn()
 }))
 
@@ -50,8 +50,8 @@ jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector"
 // the metrics-lens facade). Stub only that export — metricRangeSelector must stay real because
 // treeMapHelper's selectedColorMetricDataSelector aliases it for the color range.
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
-jest.mock("../../state/selectors/nodeMetricData/nodeMetricData.selector", () => ({
-    ...jest.requireActual("../../state/selectors/nodeMetricData/nodeMetricData.selector"),
+jest.mock("../../renderModel/nodeMetricData/nodeMetricData.selector", () => ({
+    ...jest.requireActual("../../renderModel/nodeMetricData/nodeMetricData.selector"),
     nodeMetricDataSelector: jest.fn()
 }))
 

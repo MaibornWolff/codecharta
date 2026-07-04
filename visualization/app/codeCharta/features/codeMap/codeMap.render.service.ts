@@ -10,12 +10,12 @@ import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetL
 import { ThreeStatsService } from "./threeViewer/threeStats.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { BehaviorSubject, Subscription, tap } from "rxjs"
-import { nodeMetricDataSelector } from "../../state/selectors/nodeMetricData/nodeMetricData.selector"
+import { nodeMetricDataSelector } from "../../renderModel/nodeMetricData/nodeMetricData.selector"
 import { blacklistMatcherSelector } from "../../sharedView/sharedView.read.facade"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
-import { labelsPerMapActiveSelector } from "../../state/selectors/labelsPerMapActive.selector"
+import { labelsPerMapActiveSelector } from "../../renderModel/labelsPerMapActive.selector"
 import { RendererEngine } from "./rendererEngine.contract"
 
 export interface ColorCategoryCounts {

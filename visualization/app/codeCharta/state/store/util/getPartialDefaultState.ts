@@ -1,6 +1,6 @@
 import { RecursivePartial, Settings, CcState } from "../../../codeCharta.model"
 import { convertToVectors } from "../../../util/settingsHelper"
-import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/codeMapNodes.selector"
+import { codeMapNodesSelector } from "../../../renderModel/accumulatedData/codeMapNodes.selector"
 import { getNumberOfTopLabels } from "../../../state/effects/updateVisibleTopLabels/getNumberOfTopLabels"
 import { defaultState } from "../state.manager"
 

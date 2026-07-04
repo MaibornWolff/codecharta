@@ -6,7 +6,7 @@ import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 import { UpdateAmountOfEdgePreviewsEffect } from "./updateAmountOfEdgePreviews.effect"
-import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../selectors/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
+import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../renderModel/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
 import { amountOfEdgePreviewsSelector } from "../../../mapState/mapState.read.facade"
 
 describe("UpdateAmountOfEdgePreviewsEffect", () => {

@@ -3,8 +3,8 @@ import { Action, Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { createBlacklistItemSelector } from "../../../sharedView/sharedView.read.facade"
 import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
-import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
+import { hoveredNodeSelector } from "../../../renderModel/hoveredNode.selector"
+import { selectedNodeSelector } from "../../../renderModel/selectedNode.selector"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 
 @Injectable({

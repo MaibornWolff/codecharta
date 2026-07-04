@@ -5,7 +5,7 @@ import { createEffect } from "@ngrx/effects"
 import { map, pairwise, withLatestFrom } from "rxjs"
 
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
-import { codeMapNodesSelector } from "../../selectors/accumulatedData/codeMapNodes.selector"
+import { codeMapNodesSelector } from "../../../renderModel/accumulatedData/codeMapNodes.selector"
 import { setAmountOfTopLabels } from "../../../mapState/mapState.write.facade"
 import { getNumberOfTopLabels } from "./getNumberOfTopLabels"
 import { CcState } from "../../../codeCharta.model"

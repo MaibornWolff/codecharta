@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core"
 import { State } from "@ngrx/store"
 import { AttributeDescriptors, BlacklistItem, CcState, ColorRange, NodeMetricData } from "../../../codeCharta.model"
 import { FileState } from "../../../model/files/files"
-import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { nodeMetricDataSelector } from "../../../state/selectors/nodeMetricData/nodeMetricData.selector"
+import { accumulatedDataSelector } from "../../../renderModel/accumulatedData/accumulatedData.selector"
+import { nodeMetricDataSelector } from "../../../renderModel/nodeMetricData/nodeMetricData.selector"
 
 @Injectable({ providedIn: "root" })
 export class Print3DStateAccessStore {

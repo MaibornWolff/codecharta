@@ -1,6 +1,6 @@
 import { Vector3 } from "three"
 import { CcState, CodeMapNode, Node } from "../../../codeCharta.model"
-import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { selectedColorMetricDataSelector } from "../../../renderModel/accumulatedData/metricData/selectedColorMetricData.selector"
 import { getMarkingColor, isLeaf } from "../../codeMapHelper"
 import { TreeMapHelper, getBuildingColor, getIncomingEdgePoint, isNodeFlat, isVisible, treeMapSize } from "../treeMapLayout/treeMapHelper"
 

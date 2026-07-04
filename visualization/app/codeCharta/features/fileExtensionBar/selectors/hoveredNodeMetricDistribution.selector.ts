@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
+import { hoveredNodeSelector } from "../../../renderModel/hoveredNode.selector"
+import { selectedNodeSelector } from "../../../renderModel/selectedNode.selector"
 import { FileExtensionCalculator } from "../../../util/fileExtension/fileExtensionCalculator"
 import { areaMetricSelector } from "../../../mapState/mapState.read.facade"
 import { metricDistributionSelector } from "./metricDistribution.selector"

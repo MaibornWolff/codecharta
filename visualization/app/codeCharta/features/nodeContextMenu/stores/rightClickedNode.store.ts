@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
-import { rightClickedCodeMapNodeSelector } from "../../../state/selectors/rightClickedCodeMapNode.selector"
+import { rightClickedCodeMapNodeSelector } from "../../../renderModel/rightClickedCodeMapNode.selector"
 import { setRightClickedNodeData } from "../../../sharedView/sharedView.write.facade"
 import { rightClickedNodeDataSelector } from "../../../sharedView/sharedView.read.facade"
 

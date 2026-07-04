@@ -7,8 +7,8 @@ import { BlacklistItem, BlacklistType, CcState, CodeMapNode, NodeType, SortingOp
 import { defaultMapState } from "../../../mapState/mapState.read.facade"
 import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
 import { BlacklistExtensionAction } from "../../../state/effects/blacklistExtension/blacklistExtension.effect"
-import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
+import { hoveredNodeSelector } from "../../../renderModel/hoveredNode.selector"
+import { selectedNodeSelector } from "../../../renderModel/selectedNode.selector"
 
 class BlackListItemBuilder {
     private path = ""

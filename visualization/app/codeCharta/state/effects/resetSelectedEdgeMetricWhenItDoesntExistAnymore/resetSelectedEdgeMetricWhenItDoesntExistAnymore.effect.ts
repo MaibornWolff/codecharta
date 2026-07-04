@@ -3,7 +3,7 @@ import { createEffect } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { distinctUntilChanged, filter, map, withLatestFrom } from "rxjs"
 import { CcState } from "../../../codeCharta.model"
-import { edgeMetricDataSelector } from "../../selectors/edgeMetricData/edgeMetricData.selector"
+import { edgeMetricDataSelector } from "../../../renderModel/edgeMetricData/edgeMetricData.selector"
 import { edgeMetricSelector } from "../../../mapState/mapState.read.facade"
 import { setEdgeMetric } from "../../../mapState/mapState.write.facade"
 

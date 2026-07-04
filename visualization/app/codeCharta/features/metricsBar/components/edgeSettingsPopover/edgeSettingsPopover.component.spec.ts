@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
 import { defaultState } from "../../../../state/store/state.manager"
-import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../state/selectors/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
+import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../renderModel/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
 import {
     amountOfEdgePreviewsSelector,
     edgeHeightSelector,

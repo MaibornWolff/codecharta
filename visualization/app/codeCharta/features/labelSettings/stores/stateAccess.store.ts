@@ -4,7 +4,7 @@ import { CcState } from "../../../codeCharta.model"
 import { defaultAmountOfTopLabels, mapColorsSelector } from "../../../mapState/mapState.read.facade"
 import { isDeltaStateSelector } from "../../../fileStore/store/isDeltaState.selector"
 import { areMultipleMapsVisibleSelector } from "../../../fileStore/store/areMultipleMapsVisible.selector"
-import { labelsPerMapActiveSelector } from "../../../state/selectors/labelsPerMapActive.selector"
+import { labelsPerMapActiveSelector } from "../../../renderModel/labelsPerMapActive.selector"
 import { getPartialDefaultState } from "../../../state/store/util/getPartialDefaultState"
 import { setState } from "../../../state/store/state.actions"
 

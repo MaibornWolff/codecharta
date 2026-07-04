@@ -3,7 +3,7 @@ import { Store } from "@ngrx/store"
 import { CcState, ColorRange } from "../../../codeCharta.model"
 import { MapStateReadWindow } from "../../../mapState/mapState.read.facade"
 import { setColorRange } from "../../../mapState/mapState.write.facade"
-import { metricRangeSelector } from "../../../state/selectors/nodeMetricData/nodeMetricData.selector"
+import { metricRangeSelector } from "../../../renderModel/nodeMetricData/nodeMetricData.selector"
 import { metricColorRangeColorsSelector } from "../selectors/metricColorRangeColors.selector"
 import { metricColorRangeValuesSelector } from "../selectors/metricColorRangeValues.selector"
 

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BlacklistItem, CodeMapNode, NodeType } from "../../../codeCharta.model"
-import { codeMapNodesSelector } from "../../../state/selectors/accumulatedData/codeMapNodes.selector"
+import { codeMapNodesSelector } from "../../../renderModel/accumulatedData/codeMapNodes.selector"
 import { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
 import { ExplorerRulesService } from "./explorerRules.service"
 import { firstValueFrom } from "rxjs"

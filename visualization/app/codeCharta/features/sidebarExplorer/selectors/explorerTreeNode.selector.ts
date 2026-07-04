@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
 import { klona } from "klona"
 
-import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
+import { accumulatedDataSelector } from "../../../renderModel/accumulatedData/accumulatedData.selector"
 import { sortingOrderAscendingSelector, sortingOrderSelector } from "../../../preferences/preferences.read.facade"
 import { areaMetricSelector } from "../../../mapState/mapState.read.facade"
 import { sortNodesInPlace } from "./sortNodesInPlace"

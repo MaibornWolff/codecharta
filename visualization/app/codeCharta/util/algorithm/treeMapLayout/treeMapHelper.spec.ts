@@ -4,7 +4,7 @@ import { STATE } from "../../../mocks/dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
 import { clone } from "../../clone"
 
-jest.mock("../../../state/selectors/accumulatedData/accumulatedData.selector", () => ({
+jest.mock("../../../renderModel/accumulatedData/accumulatedData.selector", () => ({
     accumulatedDataSelector: () => ({
         unifiedMapNode: {
             name: "Anode",
@@ -16,7 +16,7 @@ jest.mock("../../../state/selectors/accumulatedData/accumulatedData.selector", (
         }
     })
 }))
-jest.mock("../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector", () => ({
+jest.mock("../../../renderModel/accumulatedData/metricData/selectedColorMetricData.selector", () => ({
     selectedColorMetricDataSelector: () => ({ minValue: 0, maxValue: 100 })
 }))
 

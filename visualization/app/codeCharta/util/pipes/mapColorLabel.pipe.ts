@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core"
 
 import { ColorRange, MapColors } from "../../codeCharta.model"
-import { MetricMinMax } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { MetricMinMax } from "../../renderModel/accumulatedData/metricData/selectedColorMetricData.selector"
 
 @Pipe({
     name: "mapColorLabel",

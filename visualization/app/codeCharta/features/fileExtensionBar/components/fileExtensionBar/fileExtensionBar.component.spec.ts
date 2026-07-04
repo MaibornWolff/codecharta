@@ -9,7 +9,7 @@ import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNo
 import { CategorizedMetricDistribution } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { BlacklistItem } from "../../../../codeCharta.model"
 import { blacklistSelector } from "../../../../sharedView/sharedView.read.facade"
-import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
+import { accumulatedDataSelector } from "../../../../renderModel/accumulatedData/accumulatedData.selector"
 import { areaMetricSelector } from "../../../../mapState/mapState.read.facade"
 import { hoveredNodeIdSelector } from "../../../../sharedView/store/hoveredNodeId/hoveredNodeId.selector"
 import { selectedBuildingIdSelector } from "../../../../sharedView/store/selectedBuildingId/selectedBuildingId.selector"

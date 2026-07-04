@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
-import { nodeMetricDataSelector } from "../../selectors/nodeMetricData/nodeMetricData.selector"
-import { areChosenMetricsAvailableSelector } from "../../selectors/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
+import { nodeMetricDataSelector } from "../../../renderModel/nodeMetricData/nodeMetricData.selector"
+import { areChosenMetricsAvailableSelector } from "../../../renderModel/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
 import { setAreaMetric, setColorMetric, setDistributionMetric, setHeightMetric } from "../../../mapState/mapState.write.facade"
 import { ResetChosenMetricsEffect } from "./resetChosenMetrics.effect"
 import { EffectsModule } from "@ngrx/effects"

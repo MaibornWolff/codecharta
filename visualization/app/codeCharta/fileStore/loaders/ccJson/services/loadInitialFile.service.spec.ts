@@ -8,7 +8,7 @@ import { CcState, FileSettings, Preferences, SharedView, SortingOption } from ".
 import { FileSelectionState } from "../../../../model/files/files"
 import { getCCFiles } from "../../../../model/files/files.helper"
 import { MetricQueryParemter } from "../../../../util/queryParameter/metricQueryParameter"
-import { metricDataSelector } from "../../../../state/selectors/accumulatedData/metricData/metricData.selector"
+import { metricDataSelector } from "../../../../renderModel/accumulatedData/metricData/metricData.selector"
 import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
 import { setSortingOption } from "../../../../preferences/preferences.write.facade"
 import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../../mapState/mapState.write.facade"

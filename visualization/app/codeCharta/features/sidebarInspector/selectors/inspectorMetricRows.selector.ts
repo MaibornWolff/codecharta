@@ -1,9 +1,9 @@
 import { createSelector } from "@ngrx/store"
 import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MetricData } from "../../../codeCharta.model"
-import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
+import { accumulatedDataSelector } from "../../../renderModel/accumulatedData/accumulatedData.selector"
 import { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLens.facade"
-import { nodeMetricDataSelector } from "../../../state/selectors/nodeMetricData/nodeMetricData.selector"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
+import { nodeMetricDataSelector } from "../../../renderModel/nodeMetricData/nodeMetricData.selector"
+import { selectedNodeSelector } from "../../../renderModel/selectedNode.selector"
 import { calculateMetricBar, MetricBar } from "../util/metricSeverity"
 
 export type MetricRow = {
