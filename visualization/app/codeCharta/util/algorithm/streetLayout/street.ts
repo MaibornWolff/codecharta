@@ -17,6 +17,10 @@ export default abstract class Street extends BoundingBox {
     protected abstract calculateStreetOverhang(streetOrigin: Vector2): number
     protected abstract rearrangeRows(): void
 
+    // Flips this street's orientation when it is placed as a child of the perpendicular sibling street.
+    // Public so a sibling street can reverse it without importing the concrete subclass (avoids a 2-cycle).
+    abstract reverseOrientation(): void
+
     protected getStreetThickness(): number {
         const pathParts = this.mapNode.path.split("/")
         const isDirectChildOfRoot = this.mapNode.path.startsWith("/root/") && pathParts.length === 3 && pathParts[2] !== ""

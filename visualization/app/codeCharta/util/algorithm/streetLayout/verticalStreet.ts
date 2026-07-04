@@ -1,6 +1,5 @@
 import BoundingBox from "./boundingBox"
 import Rectangle from "./rectangle"
-import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
 import Street from "./street"
 import { CodeMapNode, NodeType } from "../../../codeCharta.model"
 import { StreetViewHelper } from "./streetViewHelper"
@@ -21,6 +20,10 @@ export default class VerticalStreet extends Street {
         super(node)
         this.children = children
         this.orientation = orientation
+    }
+
+    reverseOrientation(): void {
+        this.orientation = VerticalOrientation.DOWN
     }
 
     calculateDimension(metricName: string): void {
@@ -142,8 +145,8 @@ export default class VerticalStreet extends Street {
 
         for (const child of children) {
             if (sum <= totalLength / 2) {
-                if (child instanceof HorizontalStreet) {
-                    child.orientation = HorizontalOrientation.LEFT
+                if (child instanceof Street) {
+                    child.reverseOrientation()
                 }
                 this.leftRow.push(child)
                 sum += child.height
@@ -176,11 +179,11 @@ export default class VerticalStreet extends Street {
         const firstLeftNode = this.leftRow[0]
         const firstRightNode = this.rightRow[0]
         const leftOverhang =
-            firstLeftNode instanceof HorizontalStreet && firstLeftNode.streetRect
+            firstLeftNode instanceof Street && firstLeftNode.streetRect
                 ? firstLeftNode.streetRect.topLeft.y - streetOrigin.y
                 : this.height - this.getLength(this.leftRow)
         const rightOverhang =
-            firstRightNode instanceof HorizontalStreet && firstRightNode.streetRect
+            firstRightNode instanceof Street && firstRightNode.streetRect
                 ? firstRightNode.streetRect.topLeft.y - streetOrigin.y
                 : this.height - this.getLength(this.rightRow)
 
@@ -192,11 +195,11 @@ export default class VerticalStreet extends Street {
         const lastRightNode = this.rightRow.at(-1)
         const streetBottomY = streetOrigin.y + this.height
         const leftOverhang =
-            lastLeftNode instanceof HorizontalStreet && lastLeftNode.streetRect
+            lastLeftNode instanceof Street && lastLeftNode.streetRect
                 ? streetBottomY - lastLeftNode.streetRect.getBottomRight().y
                 : this.height - this.getLength(this.leftRow)
         const rightOverhang =
-            lastRightNode instanceof HorizontalStreet && lastRightNode.streetRect
+            lastRightNode instanceof Street && lastRightNode.streetRect
                 ? streetBottomY - lastRightNode.streetRect.getBottomRight().y
                 : this.height - this.getLength(this.rightRow)
 
