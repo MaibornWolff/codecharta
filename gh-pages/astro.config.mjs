@@ -119,6 +119,7 @@ export default defineConfig({
 								{ label: 'Edge', slug: 'docs/filter/edge-filter' },
 								{ label: 'Structure Modifier', slug: 'docs/filter/structure-modifier' },
 								{ label: 'Inspection Tool', slug: 'docs/filter/inspection-tool' },
+								{ label: 'Convert', slug: 'docs/filter/convert' },
 							],
 						},
 					],

@@ -1,8 +1,9 @@
 # cc.json 2.0 — `{ meta, files, lenses }`
 
-> Status: **implemented on the analysis (`ccsh`) side.** `ccsh` emits 2.0 only; the whole pipeline reads
-> 2.0 only, and the legacy 1.x format is read solely by `ccsh convert` (which upgrades it). The
-> visualization still consumes 1.5 and migrates in its own story. See
+> Status: **implemented on both the analysis (`ccsh`) and the visualization side.** `ccsh` emits 2.0
+> only; every `ccsh` command reads 2.0, and the legacy 1.x format is read solely by `ccsh convert`
+> (which upgrades it). The visualization reads 2.0 natively and still opens legacy 1.x files by
+> normalizing them to 2.0 on load. See
 > [ADR 12](adr/2026-06-25-ADR_12_separate_file_structure_from_analysis_lenses.md).
 >
 > **Machine-readable schema:** [`cc-json-2.0.schema.json`](cc-json-2.0.schema.json) (JSON Schema draft-07).
@@ -100,13 +101,10 @@ combine consistently regardless of which tool produced them.
 remains on the analysis domain as a filter-time concept (MergeFilter dedup, StructureModifier and
 LargeMerge path rewrites); a project read from 2.0 carries an empty blacklist.
 
-## Known limitations (analysis-first staging)
+## Known limitations
 
-These are deliberate gaps while 2.0 is analysis-only — see `plans/2026-06-26-ccjson-2-deferred-gaps.md`:
+These are deliberate gaps — see `plans/2026-06-26-ccjson-2-deferred-gaps.md`:
 
-- **No 1.5 output / the visualization can't read 2.0 yet.** `ccsh` emits 2.0 by default and there is
-  no CLI flag to emit 1.5. The shipped visualization still parses 1.5 only, so a 2.0 file produced by
-  `ccsh` cannot be opened in the current visualization. The visualization migrates in its own story.
 - **Cross-tool / cross-repo joins need `--leaf`.** The *default* merge is recursive/union, which
   matches purely by tree position and name — differently-rooted trees (e.g. a Sonar import vs a parser
   scan, or two repos) are placed side-by-side, not joined. The content-hash / longest-suffix
@@ -123,6 +121,7 @@ All wire/identity/merge logic lives once in `model`/`serialization`; every parse
 - `NodeId` — the only builder of a canonical path or `id`.
 - `ChecksumCalculator` — the only content-hash routine.
 - `CcJsonV2` DTO + `ProjectToCcJsonV2Mapper` / `CcJsonV2ToProjectMapper` — the only code that knows
-  the 2.0 wire shape. (`ProjectToCcJson15Mapper` is the explicit 1.5 writer.)
+  the 2.0 wire shape. There is no 1.5 **writer**; legacy 1.x input is read only on the `ccsh convert`
+  on-ramp and immediately upgraded to the domain model.
 - `MergeResolverStrategy` — the only place node matching happens.
 - `Lens.merge()` per lens — the only place a lens's data is combined.
