@@ -235,15 +235,38 @@ class ProjectMergerTest {
     }
 
     @Test
-    fun `should keep the first file's opaque lens on a same-name collision`() {
+    fun `should fail loudly when an opaque lens has conflicting payloads across inputs`() {
         val firstDomain = JsonParser.parseString("""{"layer":"first"}""")
         val secondDomain = JsonParser.parseString("""{"layer":"second"}""")
         val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to firstDomain)))
         val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to secondDomain)))
 
+        assertFailsWith(MergeException::class) {
+            ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+        }
+    }
+
+    @Test
+    fun `should preserve a single copy of an identical opaque lens present in multiple inputs`() {
+        val domain = JsonParser.parseString("""{"layer":"backend"}""")
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to domain)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to domain)))
+
         val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
 
-        assertEquals(firstDomain, merged.lenses.opaqueLenses["domain"])
+        assertEquals(domain, merged.lenses.opaqueLenses["domain"])
+    }
+
+    @Test
+    fun `should let a data-bearing opaque lens win over an empty reserved slot of the same name`() {
+        val emptyDomain = JsonParser.parseString("{}")
+        val populatedDomain = JsonParser.parseString("""{"layer":"backend"}""")
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to emptyDomain)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to populatedDomain)))
+
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        assertEquals(populatedDomain, merged.lenses.opaqueLenses["domain"])
     }
 
     private fun compareProjectStrings(project: Project, equalProject: Project, except: List<String> = listOf()): Boolean {

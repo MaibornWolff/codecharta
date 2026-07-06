@@ -160,7 +160,7 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
     private fun processMimoMerge(sourceFiles: List<File>, makeStrategy: () -> NodeMergerStrategy) {
         val groupedFiles: List<Pair<Boolean, List<File>>> = Mimo.generateProjectGroups(sourceFiles, levenshteinDistance)
 
-        var skippedGroupWithLegacyInput = false
+        var skippedGroup = false
         groupedFiles.forEach { (exactMatch, files) ->
             val confirmedFileList = if (exactMatch) {
                 files
@@ -175,15 +175,17 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
             try {
                 mergeMimoGroup(confirmedFileList, makeStrategy)
             } catch (e: MergeException) {
-                // A group holding a legacy 1.x file is skipped with the convert hint instead of being
-                // written as a misleading partial merge; the command still exits non-zero afterwards.
+                // A group that cannot be merged (a legacy 1.x file, or e.g. conflicting opaque lenses) is
+                // skipped with its specific reason rather than written as a misleading partial merge; the
+                // command still exits non-zero afterwards.
                 Logger.error { "Skipping merge group: ${e.message}" }
-                skippedGroupWithLegacyInput = true
+                skippedGroup = true
             }
         }
 
-        require(!skippedGroupWithLegacyInput) {
-            "At least one merge group contained a legacy 1.x file. Run `ccsh convert <file>` to upgrade it first."
+        require(!skippedGroup) {
+            "At least one merge group could not be merged (see the errors above). " +
+                "A legacy 1.x file is the usual cause — run `ccsh convert <file>` to upgrade it first."
         }
     }
 

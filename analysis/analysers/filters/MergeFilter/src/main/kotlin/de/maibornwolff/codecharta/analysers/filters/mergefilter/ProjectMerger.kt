@@ -6,7 +6,6 @@ import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.model.mergeOpaqueLenses
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
     // Build straight from the merged typed lenses so an edge descriptor without a matching edge
@@ -26,9 +25,28 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         else -> throw MergeException("API versions not supported.")
     }
 
-    // Opaque lenses are unioned (keep-first on a name collision); the first non-null commit hash wins.
+    // Opaque lenses are unioned by name; the first non-null commit hash wins. Their payload schema is
+    // unknown, so two data-bearing payloads under the same name cannot be structurally combined: a genuine
+    // collision fails loudly instead of silently dropping one side. An empty reserved slot (domain/security
+    // `{}`) never conflicts and yields to a data-bearing payload so it still round-trips.
     private val mergedOpaqueLenses: Map<String, JsonElement> by lazy {
-        projects.map { it.lenses.opaqueLenses }.reduce { acc, next -> mergeOpaqueLenses(acc, next) }
+        val merged = LinkedHashMap<String, JsonElement>()
+        projects.forEach { project ->
+            project.lenses.opaqueLenses.forEach { (lensName, payload) -> mergeOpaqueLens(merged, lensName, payload) }
+        }
+        merged
+    }
+
+    private fun mergeOpaqueLens(merged: LinkedHashMap<String, JsonElement>, lensName: String, payload: JsonElement) {
+        val existing = merged[lensName]
+        when {
+            existing == null || existing == payload || !existing.carriesData() -> merged[lensName] = payload
+            !payload.carriesData() -> Unit
+            else -> throw MergeException(
+                "Opaque lens '$lensName' has conflicting payloads across inputs and cannot be merged. " +
+                    "Reconcile the inputs so this lens is identical or present in only one file, then retry."
+            )
+        }
     }
 
     private val mergedCommitHash: String? by lazy { projects.firstNotNullOfOrNull { it.commitHash } }
@@ -77,4 +95,14 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                 it.toString()
             }.toMutableList()
     }
+}
+
+// Whether an opaque JSON payload actually carries data. Empty objects/arrays and JSON null are the
+// reserved-but-unused lens slots (e.g. domain/security `{}`); they reference nothing, merge trivially,
+// and are safe to carry through a `--large` re-path unchanged.
+internal fun JsonElement.carriesData(): Boolean = when {
+    isJsonNull -> false
+    isJsonObject -> asJsonObject.size() > 0
+    isJsonArray -> asJsonArray.size() > 0
+    else -> true
 }
