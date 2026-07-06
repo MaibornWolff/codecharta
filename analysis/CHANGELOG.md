@@ -25,8 +25,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     later story). There is currently no CLI flag to emit 1.5; track this if you feed the viz directly.
 - The 2.0 wire format drops `blacklist` and `markedPackages`; a project read from 2.0 carries an empty
   blacklist. Converting a 1.5 file with a non-empty blacklist to 2.0 is therefore not round-trippable.
-- `ccsh check` validates the 2.0 format more strictly: `meta.apiVersion` must be `"2.0"`, `files` must
-  contain exactly one root, and unknown properties on `meta`, file nodes, and edges are rejected.
+- `ccsh check` validates the 2.0 format strictly: `meta.apiVersion` must be major 2 (any minor), `files`
+  must contain exactly one root, and unknown properties on `meta`, file nodes, and edges are rejected.
+- **cc.json 2.x is downward-compatible and additive-only.** `apiVersion` is no longer pinned to exactly
+  `"2.0"` — any major-2 minor (`2.0`, `2.1`, …) is accepted. New minors may only *add* optional fields;
+  existing fields are never removed, renamed, or repurposed (a breaking change is a new major, `3.0`,
+  which major-2 tools reject). So the newest tools read every older 2.x file, but an older tool rejects a
+  newer file that uses a field it doesn't know (`additionalProperties: false` stays). See
+  `dev_docs/cc-json-2.0-format.md`.
 - **BREAKING: only `ccsh convert` reads the legacy 1.x format now.** Every other command works with 2.0
   only — feeding a 1.x file to `merge`, `modify`, `edgefilter`, `inspect` or an importer reports that the
   file is legacy and points at `ccsh convert <file>` to upgrade it first. The merge compatibility gate and

@@ -346,5 +346,20 @@ describe("FileValidator", () => {
 
             expect(errors).toContain(`${ERROR_MESSAGES.nodeIdsNotUnique} Found duplicate id: ${file2_0.files[0].id}`)
         })
+
+        it("should accept a newer additive 2.x minor version", () => {
+            // Downward compatible: a structurally-identical file stamped with a newer minor still loads.
+            file2_0.meta.apiVersion = "2.7"
+
+            expect(isCcJson2(file2_0)).toBe(true)
+            expect(checkErrors(file2_0)).toEqual([])
+        })
+
+        it("should reject a file that adds an unknown field, so there is no upward compatibility", () => {
+            // A newer file using a field this build doesn't know is cleanly rejected, not partially loaded.
+            ;(file2_0.meta as unknown as Record<string, unknown>).futureOnlyField = "x"
+
+            expect(checkErrors(file2_0).length).toBeGreaterThan(0)
+        })
     })
 })

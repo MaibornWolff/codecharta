@@ -350,8 +350,8 @@
           "type": "string"
         },
         "apiVersion": {
-          "const": "2.0",
-          "type": "string"
+          "type": "string",
+          "pattern": "^2\\.\\d+$"
         },
         "checksum": {
           "type": "string"

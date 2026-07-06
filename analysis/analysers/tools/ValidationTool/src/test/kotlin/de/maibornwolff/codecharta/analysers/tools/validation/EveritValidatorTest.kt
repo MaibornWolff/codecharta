@@ -166,6 +166,29 @@ class EveritValidatorTest {
     }
 
     @Test
+    fun `should accept a newer additive 2_x minor version`() {
+        // Downward-compatible policy: any major-2 minor validates, so an older tool still reads a
+        // structurally-identical file stamped with a newer minor.
+        val newerMinor =
+            """{"meta":{"projectName":"p","apiVersion":"2.7","checksum":"x"},""" +
+                """"files":[{"id":"r","name":"root","type":"Folder"}],"lenses":{}}"""
+
+        validator.validate(ByteArrayInputStream(newerMinor.toByteArray()))
+    }
+
+    @Test
+    fun `should reject a future 3_0 major version`() {
+        // A breaking change is a new major; major-2 tooling must refuse it rather than misread it.
+        val futureMajor =
+            """{"meta":{"projectName":"p","apiVersion":"3.0","checksum":"x"},""" +
+                """"files":[{"id":"r","name":"root","type":"Folder"}],"lenses":{}}"""
+
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(futureMajor.toByteArray()))
+        }
+    }
+
+    @Test
     fun `should reject a 2_0 file with an empty files array`() {
         val emptyFiles = """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},"files":[],"lenses":{}}"""
 

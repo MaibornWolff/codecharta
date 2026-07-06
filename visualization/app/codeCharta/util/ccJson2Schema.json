@@ -25,7 +25,7 @@
       "required": ["projectName", "apiVersion", "checksum"],
       "properties": {
         "projectName": { "type": "string" },
-        "apiVersion": { "const": "2.0", "type": "string" },
+        "apiVersion": { "type": "string", "pattern": "^2\\.\\d+$", "description": "Major must be 2; any minor. Minors are additive-only (new optional fields only, never remove/rename/repurpose); a breaking change is a new major. See cc-json-2.0-format.md." },
         "checksum": { "type": "string" },
         "commitHash": { "type": "string" }
       }

@@ -102,7 +102,29 @@ combine consistently regardless of which tool produced them.
   importer reports that the file is legacy and points at `ccsh convert`. Only `ccsh convert` reads 1.x.
 - `ccsh convert <file> [-o out]` upgrades a 1.x (or 2.0) file to 2.0 — the one on-ramp for legacy files.
 - `ccsh check <file>` validates either format (the everit schema still accepts both via `anyOf`; the 2.0
-  branch is strict — `apiVersion` pinned, exactly one root, no unknown keys).
+  branch is strict — `apiVersion` major 2, exactly one root, no unknown keys).
+
+## Versioning & compatibility
+
+2.x is **downward-compatible and additive-only**:
+
+- **Readers accept any major-2 version**, not exactly `2.0`. `apiVersion` matches `^2\.\d+$` in the
+  schema; the analysis reader and the viz both gate on the *major* being `2`.
+- **Minors may only add.** A new minor (`2.1`, `2.2`, …) may introduce **optional** fields. Existing
+  fields are never removed, renamed, or repurposed, and their types don't change. So the newest tools
+  can always read every older 2.x file (**downward compatible**).
+- **Not upward compatible — by design.** `additionalProperties: false` stays on every object, so an
+  *older* tool meeting a *newer* file that uses a field it doesn't know cleanly **rejects** it rather
+  than loading partial data. The fix is to update CodeCharta; there is no "load the newer file anyway"
+  path. (A newer file that only bumped the version but added nothing still loads.)
+- **Breaking change ⇒ new major (`3.0`).** The day a field must be removed or repurposed, that is a
+  `3.0`, which major-2 tools reject.
+
+Practical rule for contributors: to extend 2.x, add an **optional** field (or a whole new lens — the
+`lenses` object already preserves unknown lenses verbatim) and bump the minor; never touch the meaning
+of an existing field. When you add a field, update all three schema copies (this file's schema, the
+viz-vendored `ccJson2Schema.json`, and the `ccsh check` `cc.json`) so `EveritValidatorTest` and the
+viz drift guard stay green.
 
 ## What left the format
 

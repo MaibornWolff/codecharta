@@ -123,3 +123,22 @@ export interface Fixed {
   ]
 }
 ```
+
+## 2.0
+
+- **Breaking restructure** to the `{ meta, files, lenses }` shape: `files` is the identity layer (each
+  node carries a stable `id`), and analysis signals move into additive `lenses` (`metrics`, `dependency`,
+  reserved `domain`/`security`, and any unknown lens preserved verbatim). Node metrics are keyed by `id`
+  in `lenses.metrics`; edges reference endpoints by `id` in `lenses.dependency`. `meta.checksum` is an
+  MD5 over the serialized `files`+`lenses`. See [`dev_docs/cc-json-2.0-format.md`](dev_docs/cc-json-2.0-format.md)
+  and [`dev_docs/cc-json-2.0.schema.json`](dev_docs/cc-json-2.0.schema.json).
+
+### Versioning policy (from 2.0 on)
+
+- **Downward-compatible, additive-only** — same contract the 1.x entries above followed. `apiVersion`
+  is validated as **major 2, any minor** (`^2\.\d+$`), not a pinned `2.0`.
+- A new minor (`2.1`, `2.2`, …) may only **add optional** fields (or a whole new lens). Existing fields
+  are never removed, renamed, retyped, or repurposed — so the newest tools read every older 2.x file.
+- Readers keep `additionalProperties: false`, so an **older** tool cleanly rejects a **newer** file that
+  uses a field it doesn't know (no upward compatibility — update CodeCharta to read newer files).
+- A change that must break an existing field is a **new major** (`3.0`); major-2 tools reject it.
