@@ -24,9 +24,9 @@ backend and a frontend built separately, or a coverage report rooted by package)
 {
   "meta": { "projectName": "p", "apiVersion": "2.0", "checksum": "<md5 of files+lenses>", "commitHash": "a1b2c3d" },
   "files": [
-    { "id": "<sha256(/)[:16]>", "name": "root", "type": "Folder", "children": [
-      { "id": "<sha256(/src)[:16]>", "name": "src", "type": "Folder", "children": [
-        { "id": "<sha256(/src/App.kt)[:16]>", "name": "App.kt", "type": "File", "contentHash": "<xxhash64>" }
+    { "id": "<sha256(Folder/)[:16]>", "name": "root", "type": "Folder", "children": [
+      { "id": "<sha256(Folder/src)[:16]>", "name": "src", "type": "Folder", "children": [
+        { "id": "<sha256(File/src/App.kt)[:16]>", "name": "App.kt", "type": "File", "contentHash": "<xxhash64>" }
       ] }
     ] }
   ],
@@ -49,8 +49,9 @@ backend and a frontend built separately, or a coverage report rooted by package)
 
 ## Identity: the `id` and the canonical path
 
-A node's `id` is the first **16 hex chars** of `sha-256(canonicalPath)`, computed by the single
-`NodeId` owner in `model`. The canonical path is the node's **tree position**:
+A node's `id` is the first **16 hex chars** of `sha-256(type.name + canonicalPath)`, computed by the
+single `NodeId` owner in `model`. The identity is the node's **tree position and its `NodeType`**. The
+canonical path is the tree position:
 
 - segments are the names from the root's children down — **`root` is excluded**;
 - `/`-separated and prefixed with `/` (the root itself canonicalizes to `"/"`);
@@ -59,8 +60,16 @@ A node's `id` is the first **16 hex chars** of `sha-256(canonicalPath)`, compute
   differently across operating systems);
 - **case preserved**.
 
-`NodeId.fromEndpoint("/root/src/App.kt")` strips the synthetic `root` and applies the same rules, so
-an edge endpoint and the file node it points at always resolve to the same `id`.
+The **type name is prepended** to the canonical path before hashing (`"File" + "/src/App.kt"`). This is
+what lets a File and a Folder legally share a name under one parent without their `id`s colliding; the
+preimage stays injective because a canonical path always begins with `/` and a `NodeType` name never
+contains `/`. The type is mixed in only at the hash, never into the canonical path itself, which also
+renders edge-endpoint strings and error messages.
+
+`NodeId.fromEndpoint("/root/src/App.kt")` strips the synthetic `root` and applies the same rules; an
+endpoint carries no type on the wire, so it defaults to **`File`** (a producer whose edge targets a
+non-File node resolves that node's real type from the tree). An edge endpoint and the file node it
+points at therefore resolve to the same `id`.
 
 **What the `id` can and cannot promise.** The canonicalizer removes *spurious* divergence (separator,
 root name, leading slash, `.`/`..`, Unicode form, trailing slash): the same tree position ⇒ the same
@@ -76,7 +85,7 @@ files with identical content (e.g. duplicated `README`) keep distinct `id`s.
 
 Merge is a resolver, not positional name-walking. For each incoming leaf it tries, in order:
 
-1. **exact `id`** (same tree position),
+1. **exact `id`** (same tree position and type),
 2. **unique content hash** (a rename: same `contentHash`, matched only if that hash is unique in the
    reference),
 3. **longest path-suffix** (differently-rooted trees),

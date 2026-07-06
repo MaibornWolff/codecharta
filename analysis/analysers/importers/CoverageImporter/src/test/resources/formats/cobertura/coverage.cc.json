@@ -2,32 +2,32 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "ea1db77dcde05bc6e90cd8bd91a4e8be"
+    "checksum": "3f018db1a8a99010d55bac8433254fdd"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "6cb34397b17defb0",
+          "id": "805f4633215c8609",
           "name": "SampleApp.Api",
           "type": "Folder",
           "children": [
             {
-              "id": "f6f2ea7a4c94ca13",
+              "id": "4deb69191f677145",
               "name": "Program.cs",
               "type": "File",
               "link": ""
             },
             {
-              "id": "829d1fdefe1702c0",
+              "id": "ef12b7950f3e60a2",
               "name": "Controllers",
               "type": "Folder",
               "children": [
                 {
-                  "id": "39e528210f61e017",
+                  "id": "0c8b6f7fbbc85e0b",
                   "name": "TasksController.cs",
                   "type": "File",
                   "link": ""
@@ -39,17 +39,17 @@
           "link": ""
         },
         {
-          "id": "fd15b3a18e7845e9",
+          "id": "4fb90dd6416bf476",
           "name": "SampleApp.Data",
           "type": "Folder",
           "children": [
             {
-              "id": "c759633671287901",
+              "id": "13da032f225ae710",
               "name": "Repositories",
               "type": "Folder",
               "children": [
                 {
-                  "id": "357016f845475de9",
+                  "id": "c91edf93c1ef5b50",
                   "name": "TaskRepository.cs",
                   "type": "File",
                   "link": ""
@@ -58,12 +58,12 @@
               "link": ""
             },
             {
-              "id": "12b39f4173fb03dd",
+              "id": "3718c19f42062986",
               "name": "Context",
               "type": "Folder",
               "children": [
                 {
-                  "id": "52398a706b14bd92",
+                  "id": "bb38a151e60512e4",
                   "name": "ApplicationDbContext.cs",
                   "type": "File",
                   "link": ""
@@ -75,22 +75,22 @@
           "link": ""
         },
         {
-          "id": "6846e3d778e64c3e",
+          "id": "3c4ed75e31614b2a",
           "name": "SampleApp.Core",
           "type": "Folder",
           "children": [
             {
-              "id": "32daaa57500ae41b",
+              "id": "5b6a15a0a421cdff",
               "name": "Utils",
               "type": "Folder",
               "children": [
                 {
-                  "id": "34bace88ff70c9bb",
+                  "id": "1f07e24bf02148af",
                   "name": "Helpers",
                   "type": "Folder",
                   "children": [
                     {
-                      "id": "fa56a677fcab398d",
+                      "id": "660b04345eb607ed",
                       "name": "TaskHelpers.cs",
                       "type": "File",
                       "link": ""
@@ -102,12 +102,12 @@
               "link": ""
             },
             {
-              "id": "676444eb367f1248",
+              "id": "2d049674f54274fb",
               "name": "Services",
               "type": "Folder",
               "children": [
                 {
-                  "id": "37c83e77130d7781",
+                  "id": "02e4fe06286e30be",
                   "name": "TaskService.cs",
                   "type": "File",
                   "link": ""
@@ -116,12 +116,12 @@
               "link": ""
             },
             {
-              "id": "dbfba2c4988feb66",
+              "id": "fdf162dee8f3756b",
               "name": "Models",
               "type": "Folder",
               "children": [
                 {
-                  "id": "3d06094afedde65d",
+                  "id": "248e771b05b75123",
                   "name": "Task.cs",
                   "type": "File",
                   "link": ""
@@ -139,31 +139,31 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "f6f2ea7a4c94ca13": {
+        "4deb69191f677145": {
           "line_coverage": 0.0,
           "branch_coverage": 100.0
         },
-        "39e528210f61e017": {
+        "0c8b6f7fbbc85e0b": {
           "line_coverage": 92.5,
           "branch_coverage": 100.0
         },
-        "357016f845475de9": {
+        "c91edf93c1ef5b50": {
           "line_coverage": 96.77,
           "branch_coverage": 50.0
         },
-        "52398a706b14bd92": {
+        "bb38a151e60512e4": {
           "line_coverage": 100.0,
           "branch_coverage": 100.0
         },
-        "fa56a677fcab398d": {
+        "660b04345eb607ed": {
           "line_coverage": 93.75,
           "branch_coverage": 83.33
         },
-        "37c83e77130d7781": {
+        "02e4fe06286e30be": {
           "line_coverage": 100.0,
           "branch_coverage": 100.0
         },
-        "3d06094afedde65d": {
+        "248e771b05b75123": {
           "line_coverage": 100.0,
           "branch_coverage": 100.0
         }

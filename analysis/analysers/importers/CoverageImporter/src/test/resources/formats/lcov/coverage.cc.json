@@ -2,16 +2,16 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "a2b236c1c7e00ac705d36f9c33db9d72"
+    "checksum": "30d06ddd1d466a1a6c7aad9a9f26b9bc"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "cb17436d891c9cc2",
+          "id": "78d69104f4cd88bb",
           "name": "codeCharta.api.model.ts",
           "type": "File",
           "link": ""
@@ -23,7 +23,7 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "cb17436d891c9cc2": {
+        "78d69104f4cd88bb": {
           "line_coverage": 100.0,
           "branch_coverage": 100.0,
           "statement_coverage": 100.0

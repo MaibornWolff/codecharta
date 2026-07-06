@@ -2,21 +2,21 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "f93a8ff0a532d6bc4cd2d8b868566178"
+    "checksum": "7d619e99510909d04b243afa2977a6d4"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "ae30ce2f596a5e6e",
+          "id": "934a5a37edcd0ef4",
           "name": "bar",
           "type": "Folder",
           "children": [
             {
-              "id": "e6d855799c6cb9b2",
+              "id": "9ea3ec2d9ce6938c",
               "name": "FooBar.java",
               "type": "File",
               "link": ""
@@ -25,7 +25,7 @@
           "link": ""
         },
         {
-          "id": "2a926be12909392d",
+          "id": "06dd73083c5af32b",
           "name": "foo.java",
           "type": "File",
           "link": ""
@@ -37,11 +37,11 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "e6d855799c6cb9b2": {
+        "9ea3ec2d9ce6938c": {
           "foo": 0.0,
           "loc": 18.0
         },
-        "2a926be12909392d": {
+        "06dd73083c5af32b": {
           "barx": 42.0
         }
       },

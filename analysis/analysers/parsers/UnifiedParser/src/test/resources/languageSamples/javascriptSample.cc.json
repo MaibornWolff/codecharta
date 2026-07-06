@@ -2,16 +2,16 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "c4887f624b74842abb0a6ac4af773400"
+    "checksum": "37ed117e2780a2ed4c65073e2e75040c"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "acebab9586263fef",
+          "id": "3b6faeeb65a829a7",
           "name": "javascriptSample.js",
           "type": "File",
           "contentHash": "fba54a2db29ac35e",
@@ -24,7 +24,7 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "acebab9586263fef": {
+        "3b6faeeb65a829a7": {
           "complexity": 33.0,
           "logic_complexity": 24.0,
           "comment_lines": 57.0,

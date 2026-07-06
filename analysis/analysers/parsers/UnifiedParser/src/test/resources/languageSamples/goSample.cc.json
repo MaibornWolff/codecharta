@@ -2,16 +2,16 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "d1839d3a12d50b9eda907c12d904c5f1"
+    "checksum": "7e1260153fbb93ea2ddedabb607a7077"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "d793f3852edc99aa",
+          "id": "b16263aba28794c9",
           "name": "goSample.go",
           "type": "File",
           "contentHash": "a01ebf0cb7aaab6b",
@@ -24,7 +24,7 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "d793f3852edc99aa": {
+        "b16263aba28794c9": {
           "complexity": 8.0,
           "logic_complexity": 5.0,
           "comment_lines": 4.0,

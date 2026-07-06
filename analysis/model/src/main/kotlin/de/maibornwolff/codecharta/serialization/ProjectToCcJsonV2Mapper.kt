@@ -26,8 +26,10 @@ import de.maibornwolff.codecharta.util.Checksum
 object ProjectToCcJsonV2Mapper {
     fun toDto(project: Project, commitHash: String? = project.commitHash): CcJsonV2 {
         val rootNode = materializeEdgeEndpoints(project.rootNode, project.lenses.dependency.edges)
+        val typeByCanonicalPath = HashMap<String, NodeType>()
+        collectTypesByCanonicalPath(rootNode, emptyList(), typeByCanonicalPath)
         val metricsByNodeId = LinkedHashMap<String, Map<String, Any>>()
-        val files = listOf(toFileDto(rootNode, emptyList(), metricsByNodeId))
+        val files = listOf(toFileDto(rootNode, emptyList(), metricsByNodeId, HashSet()))
 
         val metricsLens =
             MetricsLensDto(
@@ -40,7 +42,11 @@ object ProjectToCcJsonV2Mapper {
             DependencyLensDto(
                 edges =
                     project.lenses.dependency.edges.map {
-                        EdgeDto(NodeId.fromEndpoint(it.fromNodeName), NodeId.fromEndpoint(it.toNodeName), it.attributes)
+                        EdgeDto(
+                            edgeEndpointId(it.fromNodeName, typeByCanonicalPath),
+                            edgeEndpointId(it.toNodeName, typeByCanonicalPath),
+                            it.attributes
+                        )
                     },
                 attributeTypes = project.lenses.dependency.attributeTypes,
                 attributeDescriptors = project.lenses.dependency.attributeDescriptors
@@ -73,12 +79,14 @@ object ProjectToCcJsonV2Mapper {
      */
     private fun materializeEdgeEndpoints(root: Node, edges: List<Edge>): Node {
         if (edges.isEmpty()) return root
-        val existingIds = HashSet<String>()
-        collectIds(root, emptyList(), existingIds)
+        val existingPaths = HashSet<String>()
+        collectCanonicalPaths(root, emptyList(), existingPaths)
         val missing = edges
             .flatMap { listOf(it.fromNodeName, it.toNodeName) }
             .map { NodeId.segmentsFromEndpoint(it) }
-            .filter { it.isNotEmpty() && NodeId.fromSegments(it) !in existingIds }
+            // Existence is by canonical PATH, not id: an endpoint whose path already has a node (of any
+            // type) resolves to that node, so only genuinely-absent paths are materialized as Files.
+            .filter { it.isNotEmpty() && NodeId.canonicalPath(it) !in existingPaths }
             .distinct()
         if (missing.isEmpty()) return root
         val mutableRoot = root.toMutableNode()
@@ -88,24 +96,51 @@ object ProjectToCcJsonV2Mapper {
         return mutableRoot.toNode()
     }
 
-    private fun collectIds(node: Node, segments: List<String>, into: MutableSet<String>) {
-        into.add(NodeId.fromSegments(segments))
-        node.children.forEach { child -> collectIds(child, segments + child.name, into) }
+    private fun collectCanonicalPaths(node: Node, segments: List<String>, into: MutableSet<String>) {
+        into.add(NodeId.canonicalPath(segments))
+        node.children.forEach { child -> collectCanonicalPaths(child, segments + child.name, into) }
     }
 
-    private fun toFileDto(node: Node, segments: List<String>, metricsByNodeId: MutableMap<String, Map<String, Any>>): FileDto {
-        val id = NodeId.fromSegments(segments)
+    /**
+     * Maps each node's canonical path to its type so an edge endpoint (which carries no type) can be
+     * hashed with the real type of the node it targets, keeping folder-targeting edges resolvable. When
+     * a File and a Folder legally share a path, the lowest [NodeType] ordinal wins (File first) so the
+     * choice is independent of child iteration order — edges conventionally target files, and either id
+     * maps back to the same path on read, so the endpoint always still resolves.
+     */
+    private fun collectTypesByCanonicalPath(node: Node, segments: List<String>, into: MutableMap<String, NodeType>) {
+        into.merge(NodeId.canonicalPath(segments), node.type ?: NodeType.File) { existing, candidate ->
+            if (existing.ordinal <= candidate.ordinal) existing else candidate
+        }
+        node.children.forEach { child -> collectTypesByCanonicalPath(child, segments + child.name, into) }
+    }
+
+    private fun edgeEndpointId(endpoint: String, typeByCanonicalPath: Map<String, NodeType>): String {
+        val type = typeByCanonicalPath[NodeId.canonicalPathFromEndpoint(endpoint)] ?: NodeType.File
+        return NodeId.fromEndpoint(endpoint, type)
+    }
+
+    private fun toFileDto(
+        node: Node,
+        segments: List<String>,
+        metricsByNodeId: MutableMap<String, Map<String, Any>>,
+        seenIds: MutableSet<String>
+    ): FileDto {
+        val type = node.type ?: NodeType.File
+        val id = NodeId.fromSegments(segments, type)
+        // Unconditional: every node (folders and edge-materialized empties included) must own a unique
+        // id, so a collision fails loud instead of silently overwriting a metrics bag or dropping a node.
+        require(seenIds.add(id)) {
+            "Duplicate node id '$id' for ${type.name} ${NodeId.canonicalPath(segments)}; two nodes collide on one id"
+        }
         if (node.attributes.isNotEmpty()) {
-            require(id !in metricsByNodeId) {
-                "Duplicate node id '$id' for ${NodeId.canonicalPath(segments)}; two tree positions collide in the metrics lens"
-            }
             metricsByNodeId[id] = node.attributes
         }
-        val children = node.children.map { child -> toFileDto(child, segments + child.name, metricsByNodeId) }
+        val children = node.children.map { child -> toFileDto(child, segments + child.name, metricsByNodeId, seenIds) }
         return FileDto(
             id = id,
             name = node.name,
-            type = (node.type ?: NodeType.File).name,
+            type = type.name,
             children = children.ifEmpty { null },
             contentHash = node.checksum,
             // Pass link through verbatim for exact 1.5 parity: GSON omits null and emits "" as is.

@@ -2,16 +2,16 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "d4e98102d61efda34f17542efc9d527f"
+    "checksum": "ea080f9625548885faa96d6d493a7267"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "37256334dbbdb39d",
+          "id": "7a0f511bccdb24b5",
           "name": "javaSample.java",
           "type": "File",
           "contentHash": "c017327e52f10868",
@@ -24,7 +24,7 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "37256334dbbdb39d": {
+        "7a0f511bccdb24b5": {
           "complexity": 14.0,
           "logic_complexity": 9.0,
           "comment_lines": 7.0,

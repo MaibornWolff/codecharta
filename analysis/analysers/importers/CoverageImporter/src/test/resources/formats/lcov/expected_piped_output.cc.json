@@ -2,26 +2,26 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "1ac4b4cf40e20b7b4a49c3b99cc5ce41"
+    "checksum": "1d6e874dd04b54d22f39480aac675c71"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "f53b52ad6d21cceb",
+          "id": "06121309c9b10d8a",
           "name": "app",
           "type": "Folder",
           "children": [
             {
-              "id": "c8577dad2f91fd74",
+              "id": "132e6dd113ee5d0f",
               "name": "codeCharta",
               "type": "Folder",
               "children": [
                 {
-                  "id": "c62758ea6ae4adf4",
+                  "id": "fbc2a7ebf563a6f6",
                   "name": "codeCharta.api.model.ts",
                   "type": "File",
                   "link": ""
@@ -30,7 +30,7 @@
               "link": ""
             },
             {
-              "id": "7c555de11c8cd179",
+              "id": "d46cf3e69c5dc81e",
               "name": "app.config.ts",
               "type": "File",
               "link": ""
@@ -43,12 +43,12 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "c62758ea6ae4adf4": {
+        "fbc2a7ebf563a6f6": {
           "line_coverage": 100.0,
           "branch_coverage": 100.0,
           "statement_coverage": 100.0
         },
-        "7c555de11c8cd179": {
+        "d46cf3e69c5dc81e": {
           "line_coverage": 0.0,
           "branch_coverage": 100.0,
           "statement_coverage": 0.0

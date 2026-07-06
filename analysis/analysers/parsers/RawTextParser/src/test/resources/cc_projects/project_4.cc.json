@@ -2,42 +2,42 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "bbf5a967360b9bd8fe3305f65e7f8125"
+    "checksum": "58203edc2eb749288111e7535cb2daa4"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "e1f992c8794a864a",
+          "id": "bb8d8be3b0bf809f",
           "name": "spaces",
           "type": "Folder",
           "children": [
             {
-              "id": "3015dcbc3f1ba56b",
+              "id": "70fee42237300050",
               "name": "spaces_3.included",
               "type": "File",
               "contentHash": "a7714a3a621e7270",
               "link": ""
             },
             {
-              "id": "55dc7b51497f1f17",
+              "id": "fb804c44d4703a34",
               "name": "spaces_4.included",
               "type": "File",
               "contentHash": "9134b1ebb1e5ba80",
               "link": ""
             },
             {
-              "id": "493dca43a86796bc",
+              "id": "167cc05198f77034",
               "name": "spaces_5.includedtoo",
               "type": "File",
               "contentHash": "73d843464a419a54",
               "link": ""
             },
             {
-              "id": "46818d650f806ac1",
+              "id": "b1700b30336c6028",
               "name": "spaces_x_not_included.excluded",
               "type": "File",
               "contentHash": "58927614af51eb27",
@@ -53,25 +53,25 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "3015dcbc3f1ba56b": {
+        "70fee42237300050": {
           "loc": 6.0,
           "indentation_level_0+": 5.0,
           "indentation_level_1+": 3.0,
           "indentation_level_2+": 3.0
         },
-        "55dc7b51497f1f17": {
+        "fb804c44d4703a34": {
           "loc": 7.0,
           "indentation_level_0+": 7.0,
           "indentation_level_1+": 4.0,
           "indentation_level_2+": 4.0
         },
-        "493dca43a86796bc": {
+        "167cc05198f77034": {
           "loc": 6.0,
           "indentation_level_0+": 5.0,
           "indentation_level_1+": 3.0,
           "indentation_level_2+": 3.0
         },
-        "46818d650f806ac1": {
+        "b1700b30336c6028": {
           "loc": 5.0,
           "indentation_level_0+": 4.0,
           "indentation_level_1+": 3.0,

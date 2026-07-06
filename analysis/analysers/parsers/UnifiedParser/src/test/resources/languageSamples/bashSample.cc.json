@@ -2,16 +2,16 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "f131a3b1394a7bc7349674d0b7ab0406"
+    "checksum": "13454725514c861bf348cd06b8831e9d"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "b2c6e88ac0cc4896",
+          "id": "d13386b8e798b37f",
           "name": "bashSample.sh",
           "type": "File",
           "contentHash": "3ccac3cacd32f1c7",
@@ -24,7 +24,7 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "b2c6e88ac0cc4896": {
+        "d13386b8e798b37f": {
           "complexity": 32.0,
           "logic_complexity": 26.0,
           "comment_lines": 46.0,

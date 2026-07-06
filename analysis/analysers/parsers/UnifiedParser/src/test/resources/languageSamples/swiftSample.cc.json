@@ -2,16 +2,16 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "32ae0349a692e40de076cafb58e385ab"
+    "checksum": "27c1ee0a25cb1a949c624d9c28a28159"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "a0aef2918b2b39fd",
+          "id": "b9b19578b59eac84",
           "name": "swiftSample.swift",
           "type": "File",
           "contentHash": "5800082e26edf0ff",
@@ -24,7 +24,7 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "a0aef2918b2b39fd": {
+        "b9b19578b59eac84": {
           "complexity": 33.0,
           "logic_complexity": 16.0,
           "comment_lines": 22.0,

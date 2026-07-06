@@ -2,16 +2,16 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "2e7104106190423efc4b47e09cee9792"
+    "checksum": "8ed7297f394fb2adcb6dffe91edf30c7"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "0c2854e475819192",
+          "id": "0d10162157066dba",
           "name": "tsxSample.tsx",
           "type": "File",
           "contentHash": "63beee9616698ee1",
@@ -24,7 +24,7 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "0c2854e475819192": {
+        "0d10162157066dba": {
           "complexity": 23.0,
           "logic_complexity": 16.0,
           "comment_lines": 25.0,

@@ -16,6 +16,7 @@ import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -127,7 +128,7 @@ class CcJsonV2SerializationTest {
         // Assert: both the leaf authors list and the folder metric are keyed by their node id.
         val attributes = json.getAsJsonObject("lenses").getAsJsonObject("metrics").getAsJsonObject("attributes")
         val appId = NodeId.fromSegments(listOf("src", "App.kt"))
-        val srcId = NodeId.fromSegments(listOf("src"))
+        val srcId = NodeId.fromSegments(listOf("src"), NodeType.Folder)
         assertTrue(attributes.getAsJsonObject(appId).getAsJsonArray("authors").size() == 2)
         assertTrue(attributes.getAsJsonObject(srcId).has("commits"))
         assertEquals(serialized(project), serialized(roundTripped))
@@ -135,14 +136,46 @@ class CcJsonV2SerializationTest {
 
     @Test
     fun `should throw when two tree positions collide on the same node id`() {
-        // Arrange: a folder and a synthetic '.' child both carry attributes and canonicalize to "/src".
-        val dotChild = Node(".", NodeType.File, mapOf("x" to 1.0), "", setOf(), checksum = "c1")
+        // Arrange: a folder and a synthetic '.' folder both carry attributes and canonicalize to "/src".
+        val dotChild = Node(".", NodeType.Folder, mapOf("x" to 1.0), "", setOf(), checksum = "c1")
         val srcNode = Node("src", NodeType.Folder, mapOf("y" to 2.0), "", setOf(dotChild))
         val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(srcNode))
         val project = Project("p", listOf(root), Project.API_VERSION, LensSet())
 
         // Act + Assert: the colliding ids fail loud instead of silently overwriting metrics.
         assertThrows<IllegalArgumentException> { ProjectSerializer.serializeToString(project) }
+    }
+
+    @Test
+    fun `should throw on an attribute-less node id collision`() {
+        // Arrange: a synthetic '.' folder with NO attributes still canonicalizes to its parent's "/src".
+        // Before the unconditional guard this collision was silent (the guard only saw attributed nodes).
+        val dotChild = Node(".", NodeType.Folder, emptyMap(), "", setOf())
+        val srcNode = Node("src", NodeType.Folder, emptyMap(), "", setOf(dotChild))
+        val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(srcNode))
+        val project = Project("p", listOf(root), Project.API_VERSION, LensSet())
+
+        assertThrows<IllegalArgumentException> { ProjectSerializer.serializeToString(project) }
+    }
+
+    @Test
+    fun `should give a File and a Folder with the same name distinct ids instead of colliding`() {
+        // Arrange: a legal 1.x shape - a File and a Folder named "foo" under one parent (viz keys on path|type).
+        val fileFoo = Node("foo", NodeType.File, mapOf("rloc" to 1.0), "", setOf())
+        val folderFoo = Node("foo", NodeType.Folder, mapOf("rloc" to 2.0), "", setOf())
+        val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(fileFoo, folderFoo))
+        val project = Project("p", listOf(root), Project.API_VERSION, LensSet())
+
+        // Act: type is part of the id, so the two nodes no longer collide and serialization succeeds.
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
+
+        // Assert: both ids are present and distinct in the metrics lens.
+        val fileId = NodeId.fromSegments(listOf("foo"), NodeType.File)
+        val folderId = NodeId.fromSegments(listOf("foo"), NodeType.Folder)
+        val attributes = json.getAsJsonObject("lenses").getAsJsonObject("metrics").getAsJsonObject("attributes")
+        assertNotEquals(fileId, folderId)
+        assertEquals(1.0, attributes.getAsJsonObject(fileId).get("rloc").asDouble)
+        assertEquals(2.0, attributes.getAsJsonObject(folderId).get("rloc").asDouble)
     }
 
     @Test
@@ -256,6 +289,54 @@ class CcJsonV2SerializationTest {
         val edge = roundTripped.lenses.dependency.edges.first()
         assertEquals("/root/src/A.kt", edge.fromNodeName)
         assertEquals("/root/src/B.kt", edge.toNodeName)
+    }
+
+    @Test
+    fun `should pick an edge endpoint type independent of sibling order when a File and Folder share the path`() {
+        // A File and Folder both named "foo" under root share the path "/foo"; an edge targets it. The
+        // endpoint id must not depend on which sibling is iterated last, so it is pinned to File (lowest
+        // NodeType ordinal). Both orderings must emit the same, File-typed, edge fromId.
+        fun edgeFromId(children: Set<Node>): String {
+            val root = Node("root", NodeType.Folder, emptyMap(), "", children)
+            val edges = listOf(Edge("/root/foo", "/root/bar", mapOf("coupling" to 1.0)))
+            val project = Project("p", listOf(root), Project.API_VERSION, LensSet.fromLegacy(edges, emptyMap(), emptyMap()))
+            val json = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
+            return json
+                .getAsJsonObject("lenses")
+                .getAsJsonObject("dependency")
+                .getAsJsonArray("edges")
+                .first()
+                .asJsonObject
+                .get("fromId")
+                .asString
+        }
+        val fileFoo = Node("foo", NodeType.File)
+        val folderFoo = Node("foo", NodeType.Folder)
+
+        val expected = NodeId.fromSegments(listOf("foo"), NodeType.File)
+        assertEquals(expected, edgeFromId(setOf(fileFoo, folderFoo)))
+        assertEquals(expected, edgeFromId(setOf(folderFoo, fileFoo)))
+    }
+
+    @Test
+    fun `should resolve an edge whose endpoint is a Folder after a 2_0 round-trip`() {
+        // Arrange: an edge targets a Folder node (not a leaf File). The writer must hash the endpoint
+        // with the folder's real type (resolved from the tree) or the endpoint id would be sha(File/src),
+        // never match the Folder node's sha(Folder/src), and the edge would silently drop on read.
+        val leaf = Node("App.kt", NodeType.File)
+        val srcFolder = Node("src", NodeType.Folder, emptyMap(), "", setOf(leaf))
+        val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(srcFolder))
+        val edges = listOf(Edge("/root/src", "/root/src/App.kt", mapOf("coupling" to 3.0)))
+        val project = Project("p", listOf(root), Project.API_VERSION, LensSet.fromLegacy(edges, emptyMap(), emptyMap()))
+
+        // Act
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
+
+        // Assert: the folder-targeting edge survives because its endpoint id matched the Folder node's id.
+        assertEquals(1, roundTripped.sizeOfEdges())
+        val edge = roundTripped.lenses.dependency.edges.first()
+        assertEquals("/root/src", edge.fromNodeName)
+        assertEquals("/root/src/App.kt", edge.toNodeName)
     }
 
     @Test

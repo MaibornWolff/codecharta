@@ -71,9 +71,23 @@ class NodeIdTest {
 
     @Test
     fun `should reproduce known sha-256 anchors for cross-tool stability`() {
-        assertEquals("8a5edab282632443", NodeId.fromSegments(emptyList()))
-        assertEquals("56c9e1c4b5360a5b", NodeId.fromSegments(listOf("src")))
-        assertEquals("59b34b4d4f9e0acb", NodeId.fromSegments(listOf("src", "App.kt")))
+        assertEquals("164ddff4bb1345e1", NodeId.fromSegments(emptyList(), NodeType.Folder))
+        assertEquals("fabeab231626f275", NodeId.fromSegments(listOf("src"), NodeType.Folder))
+        assertEquals("22952359a83b9b23", NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File))
+    }
+
+    @Test
+    fun `should give distinct ids to a File and a Folder at the same tree position`() {
+        assertNotEquals(
+            NodeId.fromSegments(listOf("src", "foo"), NodeType.File),
+            NodeId.fromSegments(listOf("src", "foo"), NodeType.Folder)
+        )
+    }
+
+    @Test
+    fun `should default to File so an endpoint id matches a File node at the same position`() {
+        assertEquals(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File), NodeId.fromSegments(listOf("src", "App.kt")))
+        assertEquals(NodeId.fromEndpoint("/root/src/App.kt", NodeType.File), NodeId.fromEndpoint("/root/src/App.kt"))
     }
 
     @Test

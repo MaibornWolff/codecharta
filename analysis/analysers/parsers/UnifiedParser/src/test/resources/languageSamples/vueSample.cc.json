@@ -2,16 +2,16 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "aedf383b1b70564fbe16ecac0fd9e623"
+    "checksum": "9d3e9decacd7cd72cdc8185a11f90c45"
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "f121b99f898fa6bf",
+          "id": "a2d2af9eecb102cd",
           "name": "vueSample.vue",
           "type": "File",
           "contentHash": "10650b767e4682a4",
@@ -24,7 +24,7 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "f121b99f898fa6bf": {
+        "a2d2af9eecb102cd": {
           "complexity": 20.0,
           "logic_complexity": 12.0,
           "comment_lines": 16.0,
