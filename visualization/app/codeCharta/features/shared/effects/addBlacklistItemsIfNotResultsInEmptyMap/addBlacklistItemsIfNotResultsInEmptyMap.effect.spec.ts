@@ -12,6 +12,7 @@ import { visibleFileStatesSelector } from "../../../../fileStore/store/visibleFi
 import { blacklistSelector } from "../../../../sharedView/sharedView.read.facade"
 import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../sharedView/sharedView.write.facade"
 import { FILE_STATES_JAVA } from "../../../../mocks/dataMocks"
+import { isPendingHeavyDispatch$ } from "../../../../util/dispatchAfterPaint"
 
 describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
     const mockedErrorDialogService = { open: jest.fn() }
@@ -46,6 +47,7 @@ describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
 
     afterEach(() => {
         actions$.complete()
+        isPendingHeavyDispatch$.next(false)
     })
 
     it("should ignore a not relevant action", async () => {
@@ -58,6 +60,18 @@ describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
         actions$.next(addBlacklistItemsIfNotResultsInEmptyMap({ items: [{ type: "exclude", path: "foo/bar" }] }))
         store.refreshState()
         expect(mockedErrorDialogService.open).toHaveBeenCalledTimes(1)
+    })
+
+    it("should clear the pending heavy dispatch spinner when the exclude would result in an empty map", () => {
+        // Arrange
+        isPendingHeavyDispatch$.next(true)
+
+        // Act
+        actions$.next(addBlacklistItemsIfNotResultsInEmptyMap({ items: [{ type: "exclude", path: "foo/bar" }] }))
+        store.refreshState()
+
+        // Assert
+        expect(isPendingHeavyDispatch$.value).toBe(false)
     })
 
     it("should blacklist items if it doesn't lead to an empty map", async () => {
