@@ -42,11 +42,11 @@ object ProjectDeserializer {
         return try {
             parseProject(projectString, allowLegacy)
         } catch (e: Exception) {
+            // Surface the actionable hint (e.g. the `ccsh convert` message for a legacy 1.x pipe) without
+            // dumping the entire piped payload to stderr. Still returns null: a piped project is optional
+            // for many parsers/importers, so an unreadable pipe stays non-fatal here.
             Logger.error {
-                "Piped input: $projectString"
-            }
-            Logger.error {
-                "The piped input is not a valid project."
+                "The piped input is not a valid project: ${e.message}"
             }
             null
         }

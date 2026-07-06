@@ -17,7 +17,9 @@ import java.io.PrintStream
     description = [InspectionTool.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class InspectionTool(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) : AnalyserInterface {
+class InspectionTool(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) :
+    AnalyserInterface,
+    CommandLine.IExitCodeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
@@ -31,6 +33,9 @@ class InspectionTool(private val input: InputStream = System.`in`, private val o
     private var level: Int = 1
 
     private lateinit var project: Project
+
+    // Non-zero when a named input file could not be read, so `ccsh inspect <file>` fails detectably in scripts.
+    private var exitCode = 0
 
     override val name = NAME
     override val description = DESCRIPTION
@@ -53,6 +58,8 @@ class InspectionTool(private val input: InputStream = System.`in`, private val o
         return null
     }
 
+    override fun getExitCode(): Int = exitCode
+
     private fun readProject(): Project? {
         if (source == null) {
             return ProjectDeserializer.deserializeProject(input)
@@ -70,6 +77,8 @@ class InspectionTool(private val input: InputStream = System.`in`, private val o
             Logger.error {
                 "$sourceName could not be read and is therefore skipped: ${e.message}"
             }
+            // A named input file that cannot be read is a hard failure: signal a non-zero exit so scripts detect it.
+            exitCode = 1
             null
         }
     }

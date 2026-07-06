@@ -3,8 +3,11 @@ package de.maibornwolff.codecharta.serialization
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.PipedInputStream
 import java.io.PipedOutputStream
+import java.io.PrintStream
 import java.io.StringReader
 import java.nio.charset.StandardCharsets
 
@@ -45,6 +48,31 @@ class ProjectDeserializerTest {
 
         // when + then
         assertThrows<LegacyFileException> { ProjectDeserializer.deserializeProject(legacy) }
+    }
+
+    @Test
+    fun `should surface the convert hint without dumping the file when piped input is a legacy file`() {
+        // given: a legacy 1.x file arrives on stdin; the deserializer must point at `ccsh convert`, not dump the file.
+        val legacy = this.javaClass.classLoader.getResource(EXAMPLE_LEGACY)!!.readText()
+        val inputStream = ByteArrayInputStream(legacy.toByteArray(StandardCharsets.UTF_8))
+        val errContent = ByteArrayOutputStream()
+        val originalErr = System.err
+        System.setErr(PrintStream(errContent))
+
+        // when
+        val project =
+            try {
+                ProjectDeserializer.deserializeProject(inputStream)
+            } finally {
+                System.setErr(originalErr)
+            }
+
+        // then
+        assertThat(project).isNull()
+        val err = errContent.toString()
+        assertThat(err).contains("convert")
+        assertThat(err).doesNotContain("Piped input:")
+        assertThat(err).doesNotContain("201701poolobject")
     }
 
     @Test

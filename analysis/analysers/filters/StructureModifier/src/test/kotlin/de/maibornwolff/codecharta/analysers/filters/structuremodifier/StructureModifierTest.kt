@@ -67,6 +67,21 @@ class StructureModifierTest {
     }
 
     @Test
+    fun `should exit with a non-zero code when the named input file cannot be read`() {
+        // given
+        System.setErr(PrintStream(errContent))
+
+        // when
+        val exitCode = CommandLine(StructureModifier()).execute("src/test/resources/invalid_project.cc.json")
+
+        // then
+        assertThat(exitCode).isNotEqualTo(0)
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
     fun `should return error when given malformed piped input`() {
         // given
         val input = "{this: 12}"
