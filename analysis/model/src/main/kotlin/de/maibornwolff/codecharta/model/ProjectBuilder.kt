@@ -80,6 +80,33 @@ open class ProjectBuilder(
     open fun build(): Project = build(false)
 
     open fun build(cleanAttributeDescriptors: Boolean = false): Project {
+        processNodesAndEdges()
+        if (cleanAttributeDescriptors) {
+            removeUnusedAttributeDescriptors()
+        }
+        val baseLenses = LensSet.fromLegacy(edges.toList(), attributeTypes.toMap(), attributeDescriptors.toMap())
+        return assembleProject(
+            baseLenses.copy(
+                metrics = baseLenses.metrics.copy(clusters = clusters),
+                opaqueLenses = opaqueLenses
+            )
+        )
+    }
+
+    /**
+     * Assembles the project from fully-formed typed [lenses] instead of re-deriving them from the flat
+     * `attributeTypes`/`attributeDescriptors` projection. Lens-native callers that have already merged
+     * their lenses (the merger) use this so an edge descriptor with no matching edge attributeType is
+     * not relocated to the metrics lens by [LensSet.fromLegacy]. Node processing still runs, but the
+     * flat `edges`/`attributeTypes`/`attributeDescriptors` fields are ignored — [lenses] is authoritative,
+     * so its edges must already be merged and its metrics already translated.
+     */
+    fun buildFromLenses(lenses: LensSet): Project {
+        processNodesAndEdges()
+        return assembleProject(lenses)
+    }
+
+    private fun processNodesAndEdges() {
         nodes
             .flatMap {
                 it.nodes.values
@@ -94,19 +121,14 @@ open class ProjectBuilder(
         }
 
         filterEmptyFolders()
-        if (cleanAttributeDescriptors) {
-            removeUnusedAttributeDescriptors()
-        }
-        val baseLenses = LensSet.fromLegacy(edges.toList(), attributeTypes.toMap(), attributeDescriptors.toMap())
+    }
+
+    private fun assembleProject(lenses: LensSet): Project {
         val project =
             Project(
                 projectName = DUMMY_PROJECT_NAME,
                 nodes = nodes.map { it.toNode() }.toList(),
-                lenses =
-                    baseLenses.copy(
-                        metrics = baseLenses.metrics.copy(clusters = clusters),
-                        opaqueLenses = opaqueLenses
-                    ),
+                lenses = lenses,
                 blacklist = blacklist.toList(),
                 commitHash = commitHash
             )

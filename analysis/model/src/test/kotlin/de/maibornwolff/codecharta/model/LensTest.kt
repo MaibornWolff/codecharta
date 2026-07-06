@@ -70,6 +70,24 @@ class LensTest {
     }
 
     @Test
+    fun `should route a descriptor shared by node and edge types into both lenses`() {
+        val shared = AttributeDescriptor(title = "coupling")
+        val lenses =
+            LensSet.fromLegacy(
+                edges = emptyList(),
+                attributeTypes = mapOf(
+                    "edges" to mapOf("coupling" to AttributeType.RELATIVE),
+                    "nodes" to mapOf("coupling" to AttributeType.ABSOLUTE)
+                ),
+                attributeDescriptors = mapOf("coupling" to shared)
+            )
+
+        // A metric registered as both a node and an edge type keeps its descriptor on both lenses.
+        assertEquals(shared, lenses.metrics.attributeDescriptors["coupling"])
+        assertEquals(shared, lenses.dependency.attributeDescriptors["coupling"])
+    }
+
+    @Test
     fun `should default missing analyzers to Unknown when merging descriptors`() {
         val first = MetricsLens(attributeDescriptors = mapOf("rloc" to AttributeDescriptor(title = "rloc")))
         val second = MetricsLens()

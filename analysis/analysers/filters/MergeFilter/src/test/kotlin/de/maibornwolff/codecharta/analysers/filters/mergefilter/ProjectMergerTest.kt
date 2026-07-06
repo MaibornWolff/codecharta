@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.DependencyLens
+import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -203,6 +205,33 @@ class ProjectMergerTest {
         assertTrue(merged.lenses.opaqueLenses.containsKey("domain"))
         assertTrue(merged.lenses.opaqueLenses.containsKey("security"))
         assertEquals("aaa111", merged.commitHash)
+    }
+
+    @Test
+    fun `should keep an edge descriptor without a matching edge attributeType on the dependency lens after merge`() {
+        // Arrange
+        val edgeDescriptor = AttributeDescriptor(title = "coupling")
+        val projectWithEdgeDescriptor =
+            Project(
+                "a",
+                apiVersion = "2.0",
+                lenses =
+                    LensSet(
+                        dependency =
+                            DependencyLens(
+                                edges = listOf(Edge("/root/a", "/root/b", mapOf("coupling" to 1))),
+                                attributeDescriptors = mapOf("coupling" to edgeDescriptor)
+                            )
+                    )
+            )
+        val otherProject = Project("b", apiVersion = "2.0")
+
+        // Act
+        val merged = ProjectMerger(listOf(projectWithEdgeDescriptor, otherProject), nodeMergerStrategy).merge()
+
+        // Assert — the edge descriptor stays on the dependency lens and is not relocated to metrics.
+        assertEquals("coupling", merged.lenses.dependency.attributeDescriptors["coupling"]!!.title)
+        assertTrue(merged.lenses.metrics.attributeDescriptors.isEmpty())
     }
 
     @Test

@@ -1,10 +1,7 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonElement
-import de.maibornwolff.codecharta.model.AttributeDescriptor
-import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
-import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
@@ -12,18 +9,19 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.model.mergeOpaqueLenses
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
+    // Build straight from the merged typed lenses so an edge descriptor without a matching edge
+    // attributeType is not re-routed into the metrics lens by the flat legacy projection.
     fun merge(): Project = when {
         areAllAPIVersionsCompatible() ->
-            ProjectBuilder(
-                mergeProjectNodes(),
-                mergeEdges(),
-                mergeAttributeTypes(),
-                mergeAttributeDescriptors(),
-                mergeBlacklist()
-            ).withClusters(mergedMetricsLens.clusters)
-                .withOpaqueLenses(mergedOpaqueLenses)
+            ProjectBuilder(nodes = mergeProjectNodes(), blacklist = mergeBlacklist())
                 .withCommitHash(mergedCommitHash)
-                .build()
+                .buildFromLenses(
+                    LensSet(
+                        metrics = mergedMetricsLens,
+                        dependency = mergedDependencyLens,
+                        opaqueLenses = mergedOpaqueLenses
+                    )
+                )
 
         else -> throw MergeException("API versions not supported.")
     }
@@ -66,24 +64,6 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         nodeMerger.logMergeStats()
         return mergedNodes
     }
-
-    // The dependency lens already unions and dedupes edges, so read its result instead of
-    // re-deriving the dedup here.
-    private fun mergeEdges(): MutableList<Edge> = mergedDependencyLens.edges.toMutableList()
-
-    private fun mergeAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        if (mergedMetricsLens.attributeTypes.isNotEmpty()) {
-            mergedAttributeTypes[LensSet.NODES_KEY] = mergedMetricsLens.attributeTypes.toMutableMap()
-        }
-        if (mergedDependencyLens.attributeTypes.isNotEmpty()) {
-            mergedAttributeTypes[LensSet.EDGES_KEY] = mergedDependencyLens.attributeTypes.toMutableMap()
-        }
-        return mergedAttributeTypes
-    }
-
-    private fun mergeAttributeDescriptors(): MutableMap<String, AttributeDescriptor> =
-        (mergedMetricsLens.attributeDescriptors + mergedDependencyLens.attributeDescriptors).toMutableMap()
 
     private fun mergeBlacklist(): MutableList<BlacklistItem> {
         val mergedBlacklist = mutableListOf<BlacklistItem>()

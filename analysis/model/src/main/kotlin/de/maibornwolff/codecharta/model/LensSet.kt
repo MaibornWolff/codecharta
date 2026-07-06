@@ -51,10 +51,12 @@ data class LensSet(
         ): LensSet {
             val nodeTypes = attributeTypes[NODES_KEY] ?: emptyMap()
             val edgeTypes = attributeTypes[EDGES_KEY] ?: emptyMap()
-            // 1.5 shares one flat descriptor namespace; route a descriptor to the dependency lens
-            // when its metric is an edge type, otherwise to the metrics lens.
+            // 1.5 shares one flat descriptor namespace. A descriptor whose metric is an edge type goes
+            // to the dependency lens; one whose metric is a node type (or has no matching type) goes to
+            // the metrics lens. A metric registered as both a node and an edge type — e.g. `ccsh
+            // edgefilter` output — lands in both lenses so neither side loses its metadata.
             val edgeDescriptors = attributeDescriptors.filterKeys { it in edgeTypes.keys }
-            val metricDescriptors = attributeDescriptors.filterKeys { it !in edgeTypes.keys }
+            val metricDescriptors = attributeDescriptors.filterKeys { it in nodeTypes.keys || it !in edgeTypes.keys }
             return LensSet(
                 metrics = MetricsLens(nodeTypes, metricDescriptors),
                 dependency = DependencyLens(edges, edgeTypes, edgeDescriptors)
