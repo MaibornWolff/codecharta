@@ -5,13 +5,17 @@ import { CcJson2, FileNode } from "../../../../../model/ccjson2.model"
 /**
  * Normalizes a legacy 1.x export into the internal cc.json 2.0 model, so the whole load pipeline has a
  * single 2.0 path (`mapCcJson2ToCCFile`) instead of branching on version. 1.x nodes have no `id`, so we
- * synthesise a path-based id (the reader maps `id` -> `/root/...` path anyway, so edges resolve
- * identically). The 1.x-only fields the app still needs (blacklist, markedPackages, fixedPosition) ride
- * along on the deprecated slots; `repoCreationDate` is dropped (it has no readers).
+ * synthesise one from the node's path AND type (`/root/foo|File`): 1.x legally allows a File and a
+ * Folder with the same name under one parent, and keying on the bare path alone would collapse them
+ * (the second attributes clobber the first, both read one bag). Edges carry only paths, so we qualify
+ * each endpoint with the type of the node at that path (defaulting File) so it still resolves. The
+ * 1.x-only fields the app still needs (blacklist, markedPackages, fixedPosition) ride along on the
+ * deprecated slots; `repoCreationDate` is dropped (it has no readers).
  */
 export function normalizeExportCCFileToCcJson2(file: ExportCCFile): CcJson2 {
     const attributesByNodeId: Record<string, Record<string, number>> = {}
-    const rootNode = toFileNode(file.nodes[0], "", attributesByNodeId)
+    const typeByPath: Record<string, string> = {}
+    const rootNode = toFileNode(file.nodes[0], "", attributesByNodeId, typeByPath)
     const attributeTypes = normalizeAttributeTypes(file.attributeTypes)
 
     return {
@@ -29,8 +33,8 @@ export function normalizeExportCCFileToCcJson2(file: ExportCCFile): CcJson2 {
             },
             dependency: {
                 edges: (file.edges ?? []).map(edge => ({
-                    fromId: edge.fromNodeName,
-                    toId: edge.toNodeName,
+                    fromId: qualifiedNodeId(edge.fromNodeName, typeByPath[edge.fromNodeName]),
+                    toId: qualifiedNodeId(edge.toNodeName, typeByPath[edge.toNodeName]),
                     attributes: { ...edge.attributes }
                 })),
                 attributeTypes: attributeTypes.edges ?? {},
@@ -42,13 +46,25 @@ export function normalizeExportCCFileToCcJson2(file: ExportCCFile): CcJson2 {
     }
 }
 
-function toFileNode(node: CodeMapNode, parentPath: string, attributesByNodeId: Record<string, Record<string, number>>): FileNode {
+/** Join key into the metrics/edge lenses: a node's path plus its type, so File/Folder siblings differ. */
+function qualifiedNodeId(path: string, type: string | undefined): string {
+    return `${path}|${type ?? "File"}`
+}
+
+function toFileNode(
+    node: CodeMapNode,
+    parentPath: string,
+    attributesByNodeId: Record<string, Record<string, number>>,
+    typeByPath: Record<string, string>
+): FileNode {
     const path = parentPath === "" ? `/${node.name}` : `${parentPath}/${node.name}`
+    const id = qualifiedNodeId(path, node.type)
+    typeByPath[path] = node.type
     if (node.attributes && Object.keys(node.attributes).length > 0) {
-        attributesByNodeId[path] = { ...node.attributes }
+        attributesByNodeId[id] = { ...node.attributes }
     }
 
-    const fileNode: FileNode = { id: path, name: node.name, type: node.type }
+    const fileNode: FileNode = { id, name: node.name, type: node.type }
     if (node.link !== undefined) {
         fileNode.link = node.link
     }
@@ -56,7 +72,7 @@ function toFileNode(node: CodeMapNode, parentPath: string, attributesByNodeId: R
         fileNode.fixedPosition = node.fixedPosition
     }
     if (node.children !== undefined) {
-        fileNode.children = node.children.map(child => toFileNode(child, path, attributesByNodeId))
+        fileNode.children = node.children.map(child => toFileNode(child, path, attributesByNodeId, typeByPath))
     }
     return fileNode
 }
