@@ -88,10 +88,28 @@ class MergeResolverStrategy private constructor(
     }
 
     private fun resolveLeaves(referenceLeaves: Map<Path, MutableNode>, incomingLeaves: Map<Path, MutableNode>): Map<Path, MutableNode> {
+        val ambiguousIncomingHashes = ambiguousIncomingContentHashes(incomingLeaves)
+        val resolvedTargets =
+            incomingLeaves.mapValues { (incomingPath, incomingNode) ->
+                resolveTargetPath(incomingPath, incomingNode, referenceLeaves, ambiguousIncomingHashes)
+            }
+        // A reference path that more than one incoming leaf resolves to is ambiguous: mapping them all
+        // onto it would silently drop every leaf but the last. Refuse those matches (keep/drop with a
+        // warning) instead of collapsing them — this closes the drop for content-hash AND path-suffix
+        // collisions alike, not just the content-hash stage.
+        val collidingTargets =
+            resolvedTargets.values
+                .filterNotNull()
+                .groupingBy { it }
+                .eachCount()
+                .filterValues { it > 1 }
+                .keys
         val placedIncoming =
-            incomingLeaves
-                .mapKeys { (incomingPath, incomingNode) ->
-                    resolveTargetPath(incomingPath, incomingNode, referenceLeaves) ?: keepOrDrop(incomingPath)
+            incomingLeaves.entries
+                .associate { (incomingPath, incomingNode) ->
+                    val target = resolvedTargets[incomingPath]
+                    val finalPath = if (target != null && target !in collidingTargets) target else keepOrDrop(incomingPath)
+                    finalPath to incomingNode
                 }.filterKeys { !it.isTrivial }
         val untouchedReference = referenceLeaves.filterKeys { !placedIncoming.keys.contains(it) }
 
@@ -108,20 +126,43 @@ class MergeResolverStrategy private constructor(
         }
     }
 
+    /**
+     * Content hashes carried by more than one incoming leaf. A rename is only inferred from content
+     * when exactly one incoming leaf owns that content; when several do, resolving them all by content
+     * would collapse them onto the same reference path (silently dropping all but one) or mis-merge
+     * coincidentally identical boilerplate onto an unrelated node, so their content match is refused.
+     */
+    private fun ambiguousIncomingContentHashes(incomingLeaves: Map<Path, MutableNode>): Set<String> = incomingLeaves.values
+        .mapNotNull { it.checksum?.takeIf(String::isNotEmpty) }
+        .groupingBy { it }
+        .eachCount()
+        .filterValues { it > 1 }
+        .keys
+
     /** id (exact tree position) → unique content hash → unambiguous longest path-suffix → null. */
-    private fun resolveTargetPath(incomingPath: Path, incomingNode: MutableNode, referenceLeaves: Map<Path, MutableNode>): Path? {
+    private fun resolveTargetPath(
+        incomingPath: Path,
+        incomingNode: MutableNode,
+        referenceLeaves: Map<Path, MutableNode>,
+        ambiguousIncomingHashes: Set<String>
+    ): Path? {
         val exactMatch = referenceLeaves.keys.firstOrNull { pathsEqual(it, incomingPath) }
         if (exactMatch != null) return exactMatch
 
-        val contentMatch = uniqueContentMatch(incomingNode, referenceLeaves)
+        val contentMatch = uniqueContentMatch(incomingNode, referenceLeaves, ambiguousIncomingHashes)
         if (contentMatch != null) return contentMatch
 
         return unambiguousSuffixMatch(incomingPath, referenceLeaves.keys)
     }
 
-    private fun uniqueContentMatch(incomingNode: MutableNode, referenceLeaves: Map<Path, MutableNode>): Path? {
+    private fun uniqueContentMatch(
+        incomingNode: MutableNode,
+        referenceLeaves: Map<Path, MutableNode>,
+        ambiguousIncomingHashes: Set<String>
+    ): Path? {
         val contentHash = incomingNode.checksum
         if (contentHash.isNullOrEmpty()) return null
+        if (contentHash in ambiguousIncomingHashes) return null
         val matches = referenceLeaves.filterValues { it.checksum == contentHash }.keys
         return matches.singleOrNull()
     }

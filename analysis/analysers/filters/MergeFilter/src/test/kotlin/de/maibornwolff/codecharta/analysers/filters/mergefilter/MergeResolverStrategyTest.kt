@@ -87,6 +87,67 @@ class MergeResolverStrategyTest {
     }
 
     @Test
+    fun `should not silently drop an incoming leaf when two incoming leaves share the same content hash`() {
+        // Arrange: one reference leaf and two incoming leaves that are byte-identical to it.
+        val reference = tree(leaf("/src/App.kt", mapOf("a" to 1.0), checksum = "shared"))
+        val incoming =
+            tree(
+                leaf("/lib/One.kt", mapOf("b" to 2.0), checksum = "shared"),
+                leaf("/lib/Two.kt", mapOf("c" to 3.0), checksum = "shared")
+            )
+
+        // Act
+        val merged = merge(MergeResolverStrategy.leaf(true), reference, incoming)
+
+        // Assert: neither incoming leaf is guessed onto App.kt; both survive and App.kt is untouched.
+        assertEquals(3, merged.leaves.size)
+        assertNotNull(merged.leafByName("One.kt"))
+        assertNotNull(merged.leafByName("Two.kt"))
+        assertEquals(setOf("a"), merged.leafByName("App.kt")!!.attributes.keys)
+    }
+
+    @Test
+    fun `should not mis-merge coincidentally identical boilerplate onto an unrelated reference node`() {
+        // Arrange: an unrelated reference config and two incoming configs with identical empty content.
+        val reference = tree(leaf("/config/prod.yaml", mapOf("a" to 1.0), checksum = "boilerplate"))
+        val incoming =
+            tree(
+                leaf("/config/dev.yaml", mapOf("b" to 2.0), checksum = "boilerplate"),
+                leaf("/config/test.yaml", mapOf("c" to 3.0), checksum = "boilerplate")
+            )
+
+        // Act
+        val merged = merge(MergeResolverStrategy.leaf(true), reference, incoming)
+
+        // Assert: prod.yaml keeps only its own attribute; the boilerplate configs are kept separately.
+        assertEquals(setOf("a"), merged.leafByName("prod.yaml")!!.attributes.keys)
+        assertNotNull(merged.leafByName("dev.yaml"))
+        assertNotNull(merged.leafByName("test.yaml"))
+        assertEquals(3, merged.leaves.size)
+    }
+
+    @Test
+    fun `should not silently drop an incoming leaf when two incoming leaves suffix-match the same reference path`() {
+        // Arrange: one reference leaf and two differently-rooted incoming leaves that share its tail name
+        // (no checksums, so they reach the path-suffix stage rather than content matching).
+        val reference = tree(leaf("/a/b/File.kt", mapOf("a" to 1.0)))
+        val incoming =
+            tree(
+                leaf("/x/File.kt", mapOf("b" to 2.0)),
+                leaf("/y/File.kt", mapOf("c" to 3.0))
+            )
+
+        // Act
+        val merged = merge(MergeResolverStrategy.leaf(true), reference, incoming)
+
+        // Assert: the suffix match is ambiguous, so neither incoming is guessed onto File.kt; all three
+        // survive with their own single attribute (nothing was merged/overwritten).
+        assertEquals(3, merged.leaves.size)
+        assertTrue(merged.leaves.values.all { it.attributes.size == 1 })
+        assertEquals(setOf(setOf("a"), setOf("b"), setOf("c")), merged.leaves.values.map { it.attributes.keys }.toSet())
+    }
+
+    @Test
     fun `should keep an unmatched node when the add-missing flag is set`() {
         val reference = tree(leaf("/src/App.kt", mapOf("a" to 1.0)))
         val incoming = tree(leaf("/totally/different/Thing.py", mapOf("b" to 2.0)))
