@@ -16,6 +16,7 @@ import { ExportCCFile } from "../codeCharta.api.model"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
 import { UNARY_METRIC } from "./metric/unaryMetric"
+import { toExportApiVersion } from "./apiVersion"
 
 export type DownloadableSetting = "Nodes" | "AttributeTypes" | "AttributeDescriptors" | "Edges" | "Excludes" | "Flattens" | "MarkedPackages"
 
@@ -40,7 +41,7 @@ export class FileDownloader {
     ): ExportCCFile {
         return {
             projectName: fileMeta.projectName,
-            apiVersion: fileMeta.apiVersion,
+            apiVersion: toExportApiVersion(fileMeta.apiVersion),
             fileChecksum: fileMeta.fileChecksum,
             nodes: [this.undecorateMap(map)],
             attributeTypes: downloadSettings.includes("AttributeTypes") ? this.getAttributeTypesForJSON(fileSettings.attributeTypes) : {},

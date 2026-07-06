@@ -7,12 +7,16 @@ on:
     paths:
       - 'visualization/**'
       - 'logo/**'
+      # the 2.0 schema source of truth is validated by the viz drift guard (ccJson2Schema.drift.spec.ts)
+      - 'dev_docs/cc-json-2.0.schema.json'
   pull_request:
     branches:
       - main
     paths:
       - 'visualization/**'
       - 'logo/**'
+      # the 2.0 schema source of truth is validated by the viz drift guard (ccJson2Schema.drift.spec.ts)
+      - 'dev_docs/cc-json-2.0.schema.json'
 
 jobs:
  build_visualization_test:

@@ -39,6 +39,26 @@ class ProjectDeserializerTest {
     }
 
     @Test
+    fun `should throw LegacyFileException for a legacy 1_x file when legacy reading is not allowed`() {
+        // given: callers such as `ccsh merge` must be able to tell a legacy file apart from garbage.
+        val legacy = this.javaClass.classLoader.getResource(EXAMPLE_LEGACY)!!.readText()
+
+        // when + then
+        assertThrows<LegacyFileException> { ProjectDeserializer.deserializeProject(legacy) }
+    }
+
+    @Test
+    fun `should not treat arbitrary json without a lenses envelope as a legacy file`() {
+        // given: valid JSON that is neither a 2.0 nor a 1.x project must not demand a pointless convert.
+        val garbage = """{"object": "whatever"}"""
+
+        // when + then
+        val thrown = assertThrows<Exception> { ProjectDeserializer.deserializeProject(garbage) }
+        assertThat(thrown).isNotInstanceOf(LegacyFileException::class.java)
+        assertThat(thrown.message).doesNotContain("convert")
+    }
+
+    @Test
     fun `should read a legacy 1_x file when legacy reading is allowed`() {
         // given
         val legacy = this.javaClass.classLoader.getResource(EXAMPLE_LEGACY)!!.readText()

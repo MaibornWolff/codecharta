@@ -224,6 +224,44 @@ class MergeFilterTest {
         assertThat(errContent.toString()).contains("At least one merging strategy must be set")
     }
 
+    @Test
+    fun `should fail and write no output when a legacy 1x file is among named plain-merge inputs`() {
+        val outputFile = File("src/test/resources/legacyMergeOutput.cc.json")
+        outputFile.deleteOnExit()
+
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/legacyMerge/legacy.cc.json",
+            "src/test/resources/test.json",
+            "-nc",
+            "-o=src/test/resources/legacyMergeOutput"
+        )
+
+        assertThat(errContent.toString()).contains("convert")
+        assertThat(outputFile.exists()).isFalse
+    }
+
+    @Test
+    fun `should fail with convert hint and not crash when all plain-merge inputs are legacy`() {
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/legacyMerge/legacy.cc.json",
+            "src/test/resources/legacyMerge/legacy2.cc.json"
+        )
+
+        assertThat(errContent.toString()).contains("convert")
+        assertThat(errContent.toString()).doesNotContain("Empty collection")
+    }
+
+    @Test
+    fun `should fail cleanly when all named plain-merge inputs are corrupt`() {
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/testProject.invalid.cc.json",
+            "src/test/resources/mergeFolderTest/invalid.json"
+        )
+
+        assertThat(errContent.toString()).contains("No valid projects could be read for merging")
+        assertThat(errContent.toString()).doesNotContain("Empty collection")
+    }
+
     @Nested
     @DisplayName("MimoModeTests")
     inner class MimoModeTest {
@@ -257,6 +295,24 @@ class MergeFilterTest {
                 ).toString()
 
             assertThat(errContent.toString()).contains("Discarded 'test' of test.json as a potential group")
+        }
+
+        @Test
+        fun `should fail the mimo merge and write no group output when a group contains a legacy file`() {
+            val outputFile = File("testProject.merge.cc.json")
+            outputFile.deleteOnExit()
+
+            CommandLine(MergeFilter())
+                .execute(
+                    testProjectPathA,
+                    testProjectPathB,
+                    "src/test/resources/legacyMerge/testProject.legacy.cc.json",
+                    "--mimo",
+                    "-nc"
+                ).toString()
+
+            assertThat(errContent.toString()).contains("convert")
+            assertThat(outputFile.exists()).isFalse
         }
 
         @Nested
@@ -530,6 +586,20 @@ class MergeFilterTest {
                 ).toString()
 
             assertThat(errContent.toString()).contains("One or less projects in input, merging aborted.")
+            assertThat(errContent.toString()).doesNotContain("kotlin.Unit")
+        }
+
+        @Test
+        fun `should fail large merge with convert hint when all inputs are legacy`() {
+            CommandLine(MergeFilter())
+                .execute(
+                    "src/test/resources/legacyMerge/legacy.cc.json",
+                    "src/test/resources/legacyMerge/legacy2.cc.json",
+                    "--large"
+                ).toString()
+
+            assertThat(errContent.toString()).contains("convert")
+            assertThat(errContent.toString()).doesNotContain("kotlin.Unit")
         }
 
         @Test

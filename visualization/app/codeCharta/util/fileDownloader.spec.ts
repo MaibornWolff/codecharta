@@ -1,6 +1,8 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
+import packageJson from "../../../package.json"
 import { DownloadableSetting, FileDownloader } from "./fileDownloader"
 import { BlacklistItem, CodeMapNode, FileMeta, FileSettings, MarkedPackage, MetricsLensSource } from "../codeCharta.model"
+import { checkErrors, ERROR_MESSAGES } from "../fileStore/loaders/ccJson/util/fileValidator"
 import {
     TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED,
     TEST_ATTRIBUTE_TYPES,
@@ -100,6 +102,18 @@ describe("fileDownloader", () => {
 
             expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
             expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(JSON.stringify(expected), fileNameWithExtension)
+        })
+
+        it("should stamp a re-loadable 1.x apiVersion when downloading a 2.0-origin map", () => {
+            downloadSettings = []
+            const fileMetaFrom2_0 = { ...fileMeta, apiVersion: "2.0" }
+
+            FileDownloader.downloadCurrentMap(map, fileMetaFrom2_0, filesettings, downloadSettings, fileName)
+
+            const downloadedJson = (FileDownloader["downloadData"] as jest.Mock).mock.calls[0][0]
+            const downloaded = JSON.parse(downloadedJson)
+            expect(downloaded.apiVersion).toBe(packageJson.codecharta.apiVersion)
+            expect(checkErrors(downloaded)).not.toContain(ERROR_MESSAGES.majorApiVersionIsOutdated)
         })
     })
 })

@@ -52,6 +52,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   with exact duplicates dropped, and the first non-null commit hash is kept.
 - The `edgefilter` no longer drops each node's `contentHash` while aggregating edge metrics onto nodes,
   so its 2.0 output stays usable as a `--base-file` / content-match reference.
+- `merge` no longer silently drops a legacy 1.x input. `merge` (plain, `--mimo`, and `--large`) now
+  fails with the `ccsh convert` hint and writes no output when a named input is a legacy 1.x file,
+  instead of skipping it and emitting a partial merge as if complete (or crashing with `Empty collection`
+  / `kotlin.Unit` on all-legacy input). Genuinely unreadable files are still skipped with a warning.
+- Edge-only projects keep their edges through a 2.0 round-trip. The 2.0 writer now materializes a file
+  node for every dependency edge endpoint, so the documented `codemaatimport | edgefilter` workflow no
+  longer produces an empty result when the importer's edges reference nodes absent from the file tree.
+- `convert` now warns when it drops a source file's `blacklist` or `markedPackages` — these are not part
+  of the cc.json 2.0 format, so converting a curated 1.x file discards them; the loss is no longer silent.
+- CI now runs the 2.0 schema drift guards when only the schema source of truth (`dev_docs/cc-json-2.0.schema.json`)
+  changes: the analysis and visualization test workflows watch that path in addition to their own trees.
 
 ## [1.143.0] - 2026-04-28
 

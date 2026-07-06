@@ -67,14 +67,27 @@ object ProjectDeserializer {
             ApiVersion.TWO_ZERO -> CcJsonV2ToProjectMapper.toProject(CcJsonV2Gson.gson.fromJson(jsonObject, CcJsonV2::class.java))
             ApiVersion.ONE_FIVE -> {
                 if (!allowLegacy) {
-                    throw JsonParseException(
-                        "This is a legacy cc.json 1.x file. Run `ccsh convert <file>` to upgrade it to the 2.0 format first."
-                    )
+                    if (looksLikeLegacyProject(jsonObject)) {
+                        throw LegacyFileException(
+                            "This is a legacy cc.json 1.x file. Run `ccsh convert <file>` to upgrade it to the 2.0 format first."
+                        )
+                    }
+                    throw JsonParseException("not a valid cc.json 2.0 document: missing the `lenses` envelope")
                 }
                 GSON.fromJson(jsonObject, ProjectWrapper::class.java).data
             }
         }
     }
+
+    /**
+     * A genuine legacy 1.x project carries a flat `nodes` array, a wrapped `data` object, or a
+     * top-level `apiVersion`. Arbitrary JSON that merely lacks the 2.0 `lenses` envelope is not a
+     * cc.json at all and must not be mislabeled as legacy — otherwise `ccsh merge` would demand a
+     * pointless `convert` on plain garbage instead of skipping it as an unreadable file.
+     */
+    private fun looksLikeLegacyProject(jsonObject: JsonObject): Boolean = jsonObject.has("nodes") ||
+        jsonObject.get("data")?.isJsonObject == true ||
+        jsonObject.get("apiVersion")?.isJsonPrimitive == true
 
     private fun detectApiVersion(jsonObject: JsonObject): ApiVersion {
         // getAsJsonObject throws if "meta" is present but not an object, so check the type first.

@@ -241,6 +241,53 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
+    fun `should keep the edges of an edge-only project after a 2_0 round-trip`() {
+        // Arrange: a bare-root project carrying only edges - the shape CodeMaatImporter emits.
+        val root = Node("root", NodeType.Folder)
+        val edges = listOf(Edge("/root/src/A.kt", "/root/src/B.kt", mapOf("coupling" to 5.0)))
+        val attributeTypes = mapOf("edges" to mutableMapOf("coupling" to AttributeType.ABSOLUTE))
+        val project = Project("edge-only", listOf(root), Project.API_VERSION, LensSet.fromLegacy(edges, attributeTypes, emptyMap()))
+
+        // Act
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
+
+        // Assert: the edge survives and its endpoints resolve back to their original paths.
+        assertEquals(1, roundTripped.sizeOfEdges())
+        val edge = roundTripped.lenses.dependency.edges.first()
+        assertEquals("/root/src/A.kt", edge.fromNodeName)
+        assertEquals("/root/src/B.kt", edge.toNodeName)
+    }
+
+    @Test
+    fun `should materialize edge endpoint file nodes into the 2_0 file tree`() {
+        // Arrange
+        val root = Node("root", NodeType.Folder)
+        val edges = listOf(Edge("/root/src/A.kt", "/root/src/B.kt", mapOf("coupling" to 5.0)))
+        val project = Project("edge-only", listOf(root), Project.API_VERSION, LensSet.fromLegacy(edges, emptyMap(), emptyMap()))
+
+        // Act: the file tree now carries nodes whose ids equal the edge's fromId/toId.
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
+        val edge = json
+            .getAsJsonObject("lenses")
+            .getAsJsonObject("dependency")
+            .getAsJsonArray("edges")
+            .first()
+            .asJsonObject
+        val src = json
+            .getAsJsonArray("files")
+            .first()
+            .asJsonObject
+            .getAsJsonArray("children")
+            .first()
+            .asJsonObject
+        val childIds = src.getAsJsonArray("children").map { it.asJsonObject.get("id").asString }.toSet()
+
+        // Assert
+        assertTrue(childIds.contains(edge.get("fromId").asString))
+        assertTrue(childIds.contains(edge.get("toId").asString))
+    }
+
+    @Test
     fun `should drop edges whose endpoints do not resolve to a node`() {
         // Arrange: a valid 2.0 document whose single edge references ids absent from the file tree.
         val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject

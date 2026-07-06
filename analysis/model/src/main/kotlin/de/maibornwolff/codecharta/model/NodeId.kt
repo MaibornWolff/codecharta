@@ -77,7 +77,13 @@ object NodeId {
         return if (canonicalString == SEPARATOR) SEPARATOR + ROOT_SEGMENT else SEPARATOR + ROOT_SEGMENT + canonicalString
     }
 
-    private fun segmentsFromEndpoint(endpoint: String): List<String> {
+    /**
+     * The canonical, root-stripped tree-position segments of an edge endpoint string (inverse of
+     * [endpointFromSegments]). Producers that need to materialize the file node an edge points at —
+     * e.g. the 2.0 writer, so edge-only projects keep their edges through a round-trip — derive the
+     * node's position through this so it hashes to the same [id] the edge references.
+     */
+    fun segmentsFromEndpoint(endpoint: String): List<String> {
         val canonical = canonicalize(endpoint.split(SEPARATOR))
         return if (canonical.firstOrNull() == ROOT_SEGMENT) canonical.drop(1) else canonical
     }

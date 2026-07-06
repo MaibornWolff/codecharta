@@ -4,6 +4,7 @@ import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { getCCFile } from "./ccFileHelper"
 import { CCFileValidationResult as FileValidationResult, checkErrors, checkWarnings, removeAuthorsAttributes } from "./fileValidator"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
+import { toExportApiVersion } from "../../../../util/apiVersion"
 
 export function getNameDataPair(ccFile: CCFile): NameDataPair {
     return {
@@ -16,7 +17,7 @@ export function getNameDataPair(ccFile: CCFile): NameDataPair {
 function getExportCCFile(ccFile: CCFile): ExportCCFile {
     return {
         projectName: ccFile.fileMeta.projectName,
-        apiVersion: ccFile.fileMeta.apiVersion,
+        apiVersion: toExportApiVersion(ccFile.fileMeta.apiVersion),
         fileChecksum: ccFile.fileMeta.fileChecksum,
         nodes: [ccFile.map],
         attributeTypes: ccFile.settings.fileSettings.attributeTypes,

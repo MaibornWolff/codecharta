@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.tools.convert
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.LegacyCurationInspector
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -47,8 +48,30 @@ class ConvertTool(private val input: InputStream = System.`in`, private val outp
     override fun call(): Unit? {
         val project = readProject()
         require(project != null) { "No convertible project could be read, nothing was written." }
+        warnAboutDroppedLegacyCuration(project)
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, compress)
         return null
+    }
+
+    // `blacklist` and `markedPackages` are 1.x-only visualization view state that the cc.json 2.0 format
+    // does not carry, so converting a curated 1.x file silently discards them. Warn so the user knows the
+    // curation is not kept and can be re-applied in the visualization after loading the 2.0 file.
+    private fun warnAboutDroppedLegacyCuration(project: Project) {
+        val dropped = mutableListOf<String>()
+        if (project.blacklist.isNotEmpty()) {
+            dropped.add("${project.blacklist.size} blacklist item(s)")
+        }
+        // markedPackages is not part of the domain model, so it is detected from the raw source file. A
+        // stdin stream is already consumed by the deserializer, so piped markedPackages are not reported.
+        val markedPackageCount = source?.let { LegacyCurationInspector.countMarkedPackages(it.inputStream()) } ?: 0
+        if (markedPackageCount > 0) {
+            dropped.add("$markedPackageCount marked package(s)")
+        }
+        if (dropped.isEmpty()) return
+        Logger.warn {
+            "The cc.json 2.0 format does not carry blacklist or markedPackages. " +
+                "${dropped.joinToString(" and ")} from the source file were dropped and are not in the converted output."
+        }
     }
 
     private fun readProject(): Project? {

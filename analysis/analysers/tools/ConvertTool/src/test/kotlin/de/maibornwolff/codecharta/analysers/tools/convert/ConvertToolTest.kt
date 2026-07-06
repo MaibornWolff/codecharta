@@ -22,6 +22,14 @@ class ConvertToolTest {
             """{"name":"App.kt","type":"File","attributes":{"rloc":120.0},"link":""}]}],""" +
             """"edges":[],"attributeTypes":{},"attributeDescriptors":{},"blacklist":[]}}"""
 
+    private val legacy15JsonWithCuration =
+        """{"checksum":"x","data":{"projectName":"sample","apiVersion":"1.5",""" +
+            """"nodes":[{"name":"root","type":"Folder","attributes":{},"link":"","children":[""" +
+            """{"name":"App.kt","type":"File","attributes":{"rloc":120.0},"link":""}]}],""" +
+            """"edges":[],"attributeTypes":{},"attributeDescriptors":{},""" +
+            """"blacklist":[{"path":"/root/App.kt","type":"exclude"}],""" +
+            """"markedPackages":[{"path":"/root","color":"#ff0000"}]}}"""
+
     private fun write15File(): File {
         val file = File.createTempFile("convert-input", ".cc.json")
         file.deleteOnExit()
@@ -92,6 +100,51 @@ class ConvertToolTest {
         // Assert
         assertThat(exitCode).isNotEqualTo(0)
         assertThat(output.size()).isZero()
+    }
+
+    @Test
+    fun `should warn that blacklist and markedPackages are dropped when converting a curated 1_5 file`() {
+        // Arrange
+        val inputFile = File.createTempFile("convert-curated", ".cc.json")
+        inputFile.deleteOnExit()
+        inputFile.writeText(legacy15JsonWithCuration)
+        val output = ByteArrayOutputStream()
+        val err = ByteArrayOutputStream()
+        val originalErr = System.err
+        System.setErr(PrintStream(err))
+
+        // Act
+        try {
+            CommandLine(ConvertTool(ByteArrayInputStream(ByteArray(0)), PrintStream(output))).execute(inputFile.absolutePath)
+        } finally {
+            System.setErr(originalErr)
+        }
+
+        // Assert: the conversion still succeeds and the user is told the curation was dropped.
+        assertThat(ProjectDeserializer.deserializeProject(output.toString("UTF-8")).apiVersion).isEqualTo("2.0")
+        val warning = err.toString("UTF-8")
+        assertThat(warning).contains("blacklist").contains("markedPackages")
+        assertThat(warning).contains("1 blacklist item").contains("1 marked package")
+    }
+
+    @Test
+    fun `should not warn about dropped curation when the source has no blacklist or markedPackages`() {
+        // Arrange
+        val inputFile = write15File()
+        val output = ByteArrayOutputStream()
+        val err = ByteArrayOutputStream()
+        val originalErr = System.err
+        System.setErr(PrintStream(err))
+
+        // Act
+        try {
+            CommandLine(ConvertTool(ByteArrayInputStream(ByteArray(0)), PrintStream(output))).execute(inputFile.absolutePath)
+        } finally {
+            System.setErr(originalErr)
+        }
+
+        // Assert
+        assertThat(err.toString("UTF-8")).doesNotContain("does not carry blacklist or markedPackages")
     }
 
     @Test
