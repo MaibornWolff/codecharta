@@ -4,14 +4,24 @@ import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
-import { CcState, Preferences, SharedView, SortingOption } from "../codeCharta.model"
+import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, SortingOption } from "../codeCharta.model"
 import { FileSelectionState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
 import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"
 import { metricDataSelector } from "../renderModel/accumulatedData/metricData/metricData.selector"
 import { defaultPreferences } from "../preferences/preferences.read.facade"
 import { setSortingOption } from "../preferences/preferences.write.facade"
-import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../mapState/mapState.write.facade"
+import {
+    setAreaMetric,
+    setColorMetric,
+    setColorRange,
+    setEdgeMetric,
+    setHeightMetric,
+    setLayoutAlgorithm
+} from "../mapState/mapState.write.facade"
+import { defaultMapState } from "../mapState/mapState.read.facade"
+import { defaultMetricsLensSource, setAttributeDescriptors, setAttributeTypes } from "../lenses/metrics/metricsLens.load.facade"
+import { defaultDependencyLensSource, setEdgeAttributeTypes } from "../lenses/dependency/dependencyLens.load.facade"
 import { defaultSharedView } from "../sharedView/sharedView.read.facade"
 import { setDelta, setFiles } from "../fileStore/store/files.actions"
 import { appReducers, setStateMiddleware } from "../store/store"
@@ -383,6 +393,88 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(setSortingOption({ value: SortingOption.NUMBER_OF_FILES }))
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.preferences, defaultPreferences))
         })
+
+        it("should set all differing mapState values but never restore the runtime-only isLoadingMap flag", async () => {
+            // Arrange
+            const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
+            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+                async () => new Promise(resolve => resolve(mockedNameDataPairs))
+            )
+            const mockedState = JSON.parse(stringify(defaultState)) as CcState
+            // Make EVERY mapState value differ from its default — including the runtime-only isLoadingMap
+            // flag — so the applier's skip-isLoadingMap branch is genuinely exercised (were it dropped from
+            // ignoredMapStateKeys, the applier would hit the "Unhandled key" default and this test would fail).
+            mockedState.mapState = makeAllValuesDiffer(defaultMapState) as MapState
+            jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
+            jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            // Assert
+            expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
+            expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric({ value: mockedState.mapState.areaMetric }))
+            expect(dispatchSpy).toHaveBeenCalledWith(setColorRange({ value: mockedState.mapState.colorRange }))
+            expect(dispatchSpy).toHaveBeenCalledWith(setLayoutAlgorithm({ value: mockedState.mapState.layoutAlgorithm }))
+            // isLoadingMap differs too but is deliberately NOT restored, so exactly one differing key is
+            // skipped: the restore-dispatch count is the differing-key count minus that one.
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.mapState, defaultMapState) - 1)
+        })
+
+        it("should set all differing metricsLensSource values", async () => {
+            // Arrange
+            const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
+            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+                async () => new Promise(resolve => resolve(mockedNameDataPairs))
+            )
+            const mockedState = JSON.parse(stringify(defaultState)) as CcState
+            mockedState.metricsLensSource = {
+                attributeTypes: { nodes: { rloc: "absolute" }, edges: {} },
+                attributeDescriptors: { rloc: { title: "Real Lines of Code" } }
+            } as unknown as MetricsLensSource
+            jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
+            jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            // Assert
+            expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
+            expect(dispatchSpy).toHaveBeenCalledWith(setAttributeTypes({ value: mockedState.metricsLensSource.attributeTypes }))
+            expect(dispatchSpy).toHaveBeenCalledWith(setAttributeDescriptors({ value: mockedState.metricsLensSource.attributeDescriptors }))
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.metricsLensSource, defaultMetricsLensSource))
+        })
+
+        it("should set all differing dependencyLensSource values", async () => {
+            // Arrange
+            const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
+            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
+            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+                async () => new Promise(resolve => resolve(mockedNameDataPairs))
+            )
+            const mockedState = JSON.parse(stringify(defaultState)) as CcState
+            mockedState.dependencyLensSource = {
+                attributeTypes: { nodes: {}, edges: { pairingRate: "absolute" } }
+            } as unknown as DependencyLensSource
+            jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
+            jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            await loadInitialFileService.loadFilesOrSampleFiles()
+
+            // Assert
+            expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
+            expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
+            expect(dispatchSpy).toHaveBeenCalledWith(setEdgeAttributeTypes({ value: mockedState.dependencyLensSource.attributeTypes }))
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.dependencyLensSource, defaultDependencyLensSource))
+        })
     })
 })
 
@@ -391,6 +483,29 @@ function nullifyObjectValues(originalObject) {
         accumulator[key] = null
         return accumulator
     }, {})
+}
+
+// Produces a shallow copy of the given state object in which every value is guaranteed to differ from
+// the original — unlike nullifyObjectValues, this also exercises keys whose default is already null
+// (e.g. the mapState metric keys), which nullifying would leave equal to their default.
+function makeAllValuesDiffer<T extends object>(source: T): T {
+    const result = {}
+    for (const [key, value] of Object.entries(source)) {
+        if (typeof value === "boolean") {
+            result[key] = !value
+        } else if (typeof value === "number") {
+            result[key] = value + 1
+        } else if (typeof value === "string") {
+            result[key] = `${value}_changed`
+        } else if (value === null) {
+            result[key] = "changed"
+        } else if (Array.isArray(value)) {
+            result[key] = [...value, "changed"]
+        } else {
+            result[key] = { ...value, __changed: true }
+        }
+    }
+    return result as T
 }
 
 function countDifferences<T>(object1: T, object2: T): number {
