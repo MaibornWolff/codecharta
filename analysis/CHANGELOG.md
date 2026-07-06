@@ -18,11 +18,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **BREAKING: `ccsh` now emits the new cc.json 2.0 `{ meta, files, lenses }` format by default.**
   Node metrics move off the file tree into a `metrics` lens keyed by a stable, content-independent
   node `id` (`sha-256(canonicalPath)`), dependency edges move into a `dependency` lens referenced by
-  id, and reserved/unknown lenses round-trip verbatim. The deserializer auto-detects and still reads
-  both 1.5 and 2.0 input. See ADR 12 and `dev_docs/cc-json-2.0-format.md`.
-  - **Interop note:** the visualization still consumes 1.5 only — a 2.0 file produced by `ccsh` cannot
-    be opened in the current visualization yet (2.0 is analysis-first; the visualization migrates in a
-    later story). There is currently no CLI flag to emit 1.5; track this if you feed the viz directly.
+  id, and reserved/unknown lenses round-trip verbatim. `ccsh` emits 2.0 only; the legacy 1.x format is
+  read exclusively by `ccsh convert` (see below). See ADR 12 and `dev_docs/cc-json-2.0-format.md`.
+  - **Interop note:** the visualization reads cc.json 2.0, so a 2.0 file produced by `ccsh` opens
+    directly in the current visualization. There is no CLI flag to emit 1.5; use `ccsh convert` only to
+    upgrade an existing 1.x file to 2.0.
 - The 2.0 wire format drops `blacklist` and `markedPackages`; a project read from 2.0 carries an empty
   blacklist. Converting a 1.5 file with a non-empty blacklist to 2.0 is therefore not round-trippable.
 - `ccsh check` validates the 2.0 format strictly: `meta.apiVersion` must be major 2 (any minor), `files`
@@ -43,8 +43,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Remove the long-deprecated `sourcecodeparser` command and its module. Use `unifiedparser` instead.
 - Remove the 1.5 **writer**: `ccsh` no longer emits the legacy 1.5 `{ checksum, data }` format from any
   code path (the `ProjectToCcJson15Mapper`, its DTO and GSON are gone, and `ProjectSerializer` no longer
-  takes an `apiVersion`). The 1.5 format is still **read** — every reader auto-detects and accepts 1.5 or
-  2.0 input — but it is never produced.
+  takes an `apiVersion`). The 1.5 format is still **read**, but only by `ccsh convert`, which upgrades it
+  to 2.0; every other command rejects a 1.x file and points at `ccsh convert`. It is never produced.
 
 ### Fixed 🐞
 
