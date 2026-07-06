@@ -52,6 +52,57 @@ class CcJsonV2SerializationTest {
     private fun serialized(project: Project): String = ProjectSerializer.serializeToString(project)
 
     @Test
+    fun `should keep the meta checksum byte-stable`() {
+        // Characterization guard: meta.checksum is an MD5 over the serialized {files, lenses} body.
+        // This pins its exact value so the single-pass DigestOutputStream optimization cannot change
+        // the wire definition.
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
+
+        assertEquals("24d98eb4e93ec5d7ea6a8223928c6437", json.getAsJsonObject("meta").get("checksum").asString)
+    }
+
+    @Test
+    fun `should preserve non-ASCII node names as UTF-8 through the single-pass output stream`() {
+        val file = Node("Größe.kt", NodeType.File, mapOf("rloc" to 1.0), "", setOf(), checksum = "u1")
+        val folder = Node("Prüfungsordner", NodeType.Folder, emptyMap(), "", setOf(file))
+        val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(folder))
+        val project = Project("Straße", listOf(root), Project.API_VERSION, LensSet())
+        val out = ByteArrayOutputStream()
+
+        ProjectSerializer.serializeProject(project, out, compress = false)
+
+        val bytes = out.toByteArray()
+        // The umlaut is written as its UTF-8 byte sequence (ü = 0xC3 0xBC), not a default-charset mangle.
+        assertTrue(containsSubsequence(bytes, byteArrayOf(0xC3.toByte(), 0xBC.toByte())))
+        // Decoding as UTF-8 and reading the file back preserves the German names exactly.
+        val readBack = ProjectDeserializer.deserializeProject(String(bytes, Charsets.UTF_8))
+        val readFolder = readBack.rootNode.children.single()
+        assertEquals("Prüfungsordner", readFolder.name)
+        assertEquals("Größe.kt", readFolder.children.single().name)
+        // The single-pass stream and the DTO path agree byte-for-byte on the non-ASCII content too.
+        assertEquals(ProjectSerializer.serializeToString(project), String(bytes, Charsets.UTF_8))
+    }
+
+    private fun containsSubsequence(haystack: ByteArray, needle: ByteArray): Boolean {
+        for (i in 0..haystack.size - needle.size) {
+            if ((needle.indices).all { haystack[i + it] == needle[it] }) return true
+        }
+        return false
+    }
+
+    @Test
+    fun `should write byte-identical output through the single-pass stream and the DTO path`() {
+        // The hot OutputStream path splices reused body bytes after meta; assert those bytes match the
+        // canonical DTO serialization exactly (framing, key order, and checksum all identical).
+        val project = sampleProject()
+        val out = ByteArrayOutputStream()
+
+        ProjectSerializer.serializeProject(project, out, compress = false)
+
+        assertEquals(ProjectSerializer.serializeToString(project), out.toString("UTF-8"))
+    }
+
+    @Test
     fun `should emit 2_0 with meta files and lenses and no outer wrapper`() {
         val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
 

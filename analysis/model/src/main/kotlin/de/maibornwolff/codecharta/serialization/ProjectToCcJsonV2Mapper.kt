@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
-import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Node
@@ -16,6 +16,12 @@ import de.maibornwolff.codecharta.serialization.dto.LensesDto
 import de.maibornwolff.codecharta.serialization.dto.MetaDto
 import de.maibornwolff.codecharta.serialization.dto.MetricsLensDto
 import de.maibornwolff.codecharta.util.Checksum
+import java.io.ByteArrayOutputStream
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.nio.charset.StandardCharsets
+import java.security.DigestOutputStream
+import java.security.MessageDigest
 
 /**
  * Maps the domain [Project] onto the 2.0 wire DTO. This is the only place where metrics are lifted
@@ -24,7 +30,38 @@ import de.maibornwolff.codecharta.util.Checksum
  * lens-native domain (Stage B) makes this mapping near-trivial.
  */
 object ProjectToCcJsonV2Mapper {
+    private val FILES_TYPE = object : TypeToken<List<FileDto>>() {}.type
+    private val DOCUMENT_META_PREFIX = "{\"meta\":".toByteArray(StandardCharsets.UTF_8)
+    private val BODY_SEPARATOR = ",".toByteArray(StandardCharsets.UTF_8)
+    private val DOCUMENT_SUFFIX = "}".toByteArray(StandardCharsets.UTF_8)
+
     fun toDto(project: Project, commitHash: String? = project.commitHash): CcJsonV2 {
+        val (files, lenses) = buildFilesAndLenses(project)
+        val checksum = serializeBody(files, lenses).second
+        return CcJsonV2(buildMeta(project, checksum, commitHash), files, lenses)
+    }
+
+    /**
+     * Writes the 2.0 document to [out] in a single serialization pass. The `{ files, lenses }` body is
+     * serialized exactly once — through a [DigestOutputStream] into a byte buffer — yielding both the
+     * `meta.checksum` and the reusable body bytes. Because the checksum must precede the body inside
+     * `meta`, the naive path serializes the body twice (once to hash, once to write); reusing the
+     * buffered bytes here removes that second full serialization. The output is byte-identical to
+     * serializing the [toDto] result with the shared GSON.
+     */
+    fun writeProject(project: Project, out: OutputStream, commitHash: String? = project.commitHash) {
+        val (files, lenses) = buildFilesAndLenses(project)
+        val (bodyBytes, checksum) = serializeBody(files, lenses)
+        val metaJson = CcJsonV2Gson.gson.toJson(buildMeta(project, checksum, commitHash))
+        out.write(DOCUMENT_META_PREFIX)
+        out.write(metaJson.toByteArray(StandardCharsets.UTF_8))
+        out.write(BODY_SEPARATOR)
+        // bodyBytes is `{"files":…,"lenses":…}`; splice its inner keys between meta and the closing brace.
+        out.write(bodyBytes, 1, bodyBytes.size - 2)
+        out.write(DOCUMENT_SUFFIX)
+    }
+
+    private fun buildFilesAndLenses(project: Project): Pair<List<FileDto>, LensesDto> {
         val rootNode = materializeEdgeEndpoints(project.rootNode, project.lenses.dependency.edges)
         val typeByCanonicalPath = HashMap<String, NodeType>()
         collectTypesByCanonicalPath(rootNode, emptyList(), typeByCanonicalPath)
@@ -51,22 +88,20 @@ object ProjectToCcJsonV2Mapper {
                 attributeTypes = project.lenses.dependency.attributeTypes,
                 attributeDescriptors = project.lenses.dependency.attributeDescriptors
             )
-        val lenses =
+        return files to
             LensesDto(
                 metrics = metricsLens,
                 dependency = dependencyLens,
                 opaqueLenses = project.lenses.opaqueLenses
             )
-
-        val meta =
-            MetaDto(
-                projectName = project.projectName,
-                apiVersion = ApiVersion.TWO_ZERO.versionString,
-                checksum = computeChecksum(files, lenses),
-                commitHash = commitHash
-            )
-        return CcJsonV2(meta, files, lenses)
     }
+
+    private fun buildMeta(project: Project, checksum: String, commitHash: String?): MetaDto = MetaDto(
+        projectName = project.projectName,
+        apiVersion = ApiVersion.TWO_ZERO.versionString,
+        checksum = checksum,
+        commitHash = commitHash
+    )
 
     /**
      * Ensure every dependency edge endpoint has a real file node so it resolves by id after a 2.0
@@ -148,12 +183,23 @@ object ProjectToCcJsonV2Mapper {
         )
     }
 
-    private fun computeChecksum(files: List<FileDto>, lenses: LensesDto): String {
-        val payload = JsonObject()
-        payload.add("files", CcJsonV2Gson.gson.toJsonTree(files))
-        payload.add("lenses", CcJsonV2Gson.gson.toJsonTree(lenses))
-        // Intentional second serialization: the checksum lives in `meta`, which is written before the
-        // body, so files+lenses are serialized here for hashing and again by the outer writer.
-        return Checksum.md5(CcJsonV2Gson.gson.toJson(payload))
+    /**
+     * Serializes the `{ files, lenses }` body once, streaming it through a [DigestOutputStream] so the
+     * MD5 is computed without materializing the whole body as an intermediate String or byte copy.
+     * Returns the body bytes (reused by [writeProject]) and the checksum. The emitted byte sequence —
+     * and therefore the checksum — is identical to `md5(gson.toJson({ files, lenses }))`, so the wire
+     * definition is unchanged.
+     */
+    private fun serializeBody(files: List<FileDto>, lenses: LensesDto): Pair<ByteArray, String> {
+        val digest = MessageDigest.getInstance("MD5")
+        val buffer = ByteArrayOutputStream()
+        OutputStreamWriter(DigestOutputStream(buffer, digest), StandardCharsets.UTF_8).use { writer ->
+            writer.append("{\"files\":")
+            CcJsonV2Gson.gson.toJson(files, FILES_TYPE, writer)
+            writer.append(",\"lenses\":")
+            CcJsonV2Gson.gson.toJson(lenses, LensesDto::class.java, writer)
+            writer.append("}")
+        }
+        return buffer.toByteArray() to Checksum.hex(digest.digest())
     }
 }

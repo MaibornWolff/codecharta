@@ -7,7 +7,6 @@ import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.io.Writer
-import java.nio.charset.StandardCharsets.UTF_8
 import java.util.zip.GZIPOutputStream
 
 /**
@@ -45,9 +44,14 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: OutputStream, compress: Boolean, isOutputFileSpecified: Boolean = false) {
+        // Single-pass byte writer: the {files, lenses} body is serialized once and its bytes are reused
+        // for both the meta.checksum and the output, instead of serializing the whole body twice.
         val wrappedOut = if (compress && isOutputFileSpecified) GZIPOutputStream(out) else out
-        val writer = wrappedOut.bufferedWriter(UTF_8)
-        serializeProject(project, writer, isOutputFileSpecified)
+        ProjectToCcJsonV2Mapper.writeProject(project, wrappedOut)
+        wrappedOut.flush()
+        if (isOutputFileSpecified) {
+            wrappedOut.close()
+        }
     }
 
     /**
