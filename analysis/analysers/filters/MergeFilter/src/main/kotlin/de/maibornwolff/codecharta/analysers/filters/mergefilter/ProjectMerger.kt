@@ -57,7 +57,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
     // Edges from every input are unioned and de-duplicated by endpoint pair, regardless of merge
     // strategy, so overlaying a dependency-bearing project never silently drops its edges.
     private val mergedDependencyLens by lazy {
-        projects.map { it.lenses.dependency }.reduce { acc, lens -> acc.merge(lens, mergeEdges = true) }
+        projects.map { it.lenses.dependency }.reduce { acc, lens -> acc.merge(lens) }
     }
 
     private fun areAllAPIVersionsCompatible(): Boolean {

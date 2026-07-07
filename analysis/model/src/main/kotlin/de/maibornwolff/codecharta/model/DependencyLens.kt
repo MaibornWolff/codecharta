@@ -11,11 +11,11 @@ data class DependencyLens(
     val attributeDescriptors: Map<String, AttributeDescriptor> = emptyMap()
 ) : Lens {
     /**
-     * Merges [other] in. Edges are concatenated and de-duplicated by endpoint pair only when
-     * [mergeEdges] is set (the recursive strategy); otherwise this lens keeps its own edges.
+     * Merges [other] in. Edges from both lenses are concatenated and de-duplicated by endpoint pair, so
+     * overlaying a dependency-bearing lens never drops either side's edges.
      */
-    fun merge(other: DependencyLens, mergeEdges: Boolean): DependencyLens = DependencyLens(
-        edges = if (mergeEdges) (edges + other.edges).distinctBy { listOf(it.fromNodeName, it.toNodeName) } else edges,
+    fun merge(other: DependencyLens): DependencyLens = DependencyLens(
+        edges = (edges + other.edges).distinctBy { listOf(it.fromNodeName, it.toNodeName) },
         attributeTypes = mergeAttributeTypes(attributeTypes, other.attributeTypes),
         attributeDescriptors = mergeAttributeDescriptors(attributeDescriptors, other.attributeDescriptors)
     )

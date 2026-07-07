@@ -98,14 +98,14 @@ class LensTest {
     }
 
     @Test
-    fun `should merge edges deduplicated by endpoints when mergeEdges is set`() {
+    fun `should merge edges deduplicated by endpoints`() {
         val first = DependencyLens(edges = listOf(Edge("/root/a", "/root/b", mapOf("x" to 1))))
         val second =
             DependencyLens(
                 edges = listOf(Edge("/root/a", "/root/b", mapOf("x" to 9)), Edge("/root/b", "/root/c", mapOf("x" to 2)))
             )
 
-        val merged = first.merge(second, mergeEdges = true)
+        val merged = first.merge(second)
 
         assertEquals(2, merged.edges.size)
         // The duplicate a->b keeps the first lens's attributes (x=1, not 9); the unique b->c survives.
@@ -116,13 +116,13 @@ class LensTest {
     }
 
     @Test
-    fun `should keep only its own edges when mergeEdges is not set`() {
+    fun `should always union edges from both lenses`() {
         val first = DependencyLens(edges = listOf(Edge("/root/a", "/root/b")))
         val second = DependencyLens(edges = listOf(Edge("/root/b", "/root/c")))
 
-        val merged = first.merge(second, mergeEdges = false)
+        val merged = first.merge(second)
 
-        assertEquals(1, merged.edges.size)
+        assertEquals(2, merged.edges.size)
     }
 
     @Test
