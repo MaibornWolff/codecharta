@@ -65,6 +65,35 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
+    fun `should emit children in a deterministic order regardless of input sibling order`() {
+        // Arrange: the same three attributed leaves under one folder, inserted in opposite sibling orders.
+        val zebra = Node("Zebra.kt", NodeType.File, mapOf("rloc" to 1.0), "", setOf(), checksum = "z")
+        val apple = Node("Apple.kt", NodeType.File, mapOf("rloc" to 2.0), "", setOf(), checksum = "a")
+        val mango = Node("mango.kt", NodeType.File, mapOf("rloc" to 3.0), "", setOf(), checksum = "m")
+        val projectA =
+            Project("p", listOf(Node("root", NodeType.Folder, emptyMap(), "", setOf(zebra, apple, mango))), Project.API_VERSION, LensSet())
+        val projectB =
+            Project("p", listOf(Node("root", NodeType.Folder, emptyMap(), "", setOf(mango, apple, zebra))), Project.API_VERSION, LensSet())
+
+        // Act
+        val a = ProjectSerializer.serializeToString(projectA)
+        val b = ProjectSerializer.serializeToString(projectB)
+
+        // Assert: byte-identical output (hence identical meta.checksum) regardless of input order ...
+        assertEquals(a, b)
+        // ... with children sorted by NFC name (uppercase before lowercase pins the comparator).
+        val names =
+            JsonParser
+                .parseString(a)
+                .asJsonObject
+                .getAsJsonArray("files")[0]
+                .asJsonObject
+                .getAsJsonArray("children")
+                .map { it.asJsonObject.get("name").asString }
+        assertEquals(listOf("Apple.kt", "Zebra.kt", "mango.kt"), names)
+    }
+
+    @Test
     fun `should preserve non-ASCII node names as UTF-8 through the single-pass output stream`() {
         val file = Node("Größe.kt", NodeType.File, mapOf("rloc" to 1.0), "", setOf(), checksum = "u1")
         val folder = Node("Prüfungsordner", NodeType.Folder, emptyMap(), "", setOf(file))

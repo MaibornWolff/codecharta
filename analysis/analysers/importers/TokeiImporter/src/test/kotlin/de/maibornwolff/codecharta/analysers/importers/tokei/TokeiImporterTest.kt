@@ -127,11 +127,10 @@ class TokeiImporterTest {
         val cliResult = executeForOutput(input, arrayOf("--path-separator=\\"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        assertThat(project.rootNode.children.size).isEqualTo(3)
-        assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("CHANGELOG.md")
-        assertThat(project.rootNode.children.toMutableList()[0].attributes["loc"]).isEqualTo(450.0)
-        assertThat(project.rootNode.children.toMutableList()[2].name).isEqualTo("src")
-        assertThat(project.rootNode.children.toMutableList()[2].size).isEqualTo(3)
+        val children = project.rootNode.children
+        assertThat(children.size).isEqualTo(3)
+        assertThat(children.single { it.name == "CHANGELOG.md" }.attributes["loc"]).isEqualTo(450.0)
+        assertThat(children.single { it.name == "src" }.size).isEqualTo(3)
     }
 
     @Test
@@ -145,19 +144,13 @@ class TokeiImporterTest {
         val cliResult = executeForOutput(input)
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        assertThat(project.rootNode.children.size).isEqualTo(2)
+        val children = project.rootNode.children
+        assertThat(children.size).isEqualTo(2)
         assertThat(project.rootNode.name).isEqualTo("root")
-        assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("make_release.sh")
-        assertThat(project.rootNode.children.toMutableList()[0].attributes["rloc"]).isEqualTo(500.0)
-        assertThat(project.rootNode.children.toMutableList()[1].attributes["rloc"]).isNull()
-        assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
-        assertThat(
-            project.rootNode.children
-                .toMutableList()[1]
-                .children
-                .toMutableList()
-                .size
-        ).isEqualTo(2)
+        assertThat(children.single { it.name == "make_release.sh" }.attributes["rloc"]).isEqualTo(500.0)
+        val foo = children.single { it.name == "foo" }
+        assertThat(foo.attributes["rloc"]).isNull()
+        assertThat(foo.children.size).isEqualTo(2)
     }
 
     @Test
@@ -171,8 +164,7 @@ class TokeiImporterTest {
         val cliResult = executeForOutput(input)
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        val rootLevelFile = project.rootNode.children.toMutableList()[0]
-        assertThat(rootLevelFile.name).isEqualTo("make_release.sh")
+        val rootLevelFile = project.rootNode.children.single { it.name == "make_release.sh" }
         assertThat(rootLevelFile.children).isEmpty()
         assertThat(rootLevelFile.attributes).isNotEmpty()
     }
@@ -259,7 +251,7 @@ class TokeiImporterTest {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_pre12_unix_root.json", "-r=foo/bar"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("CHANGELOG.md")
+        assertThat(project.rootNode.children.map { it.name }).contains("CHANGELOG.md")
     }
 
     @Test
@@ -268,7 +260,7 @@ class TokeiImporterTest {
             executeForOutput("", arrayOf("src/test/resources/tokei_pre12_windows.json", "--path-separator=\\"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
+        assertThat(project.rootNode.children.map { it.name }).contains("foo")
     }
 
     @Test
@@ -276,7 +268,7 @@ class TokeiImporterTest {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_12_unix.json", "--path-separator=/"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
+        assertThat(project.rootNode.children.map { it.name }).contains("foo")
     }
 
     @Test

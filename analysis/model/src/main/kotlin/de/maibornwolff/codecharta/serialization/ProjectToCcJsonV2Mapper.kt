@@ -171,7 +171,14 @@ object ProjectToCcJsonV2Mapper {
         if (node.attributes.isNotEmpty()) {
             metricsByNodeId[id] = node.attributes
         }
-        val children = node.children.map { child -> toFileDto(child, segments + child.name, metricsByNodeId, seenIds) }
+        // Emit siblings in a canonical order (NFC name, then File before Folder) so the files tree, the
+        // DFS-populated metrics-lens key order, and thus meta.checksum are byte-stable regardless of how
+        // producers or merges happened to order children. Sorting the input before recursion is what keeps
+        // the metrics LinkedHashMap canonical too.
+        val children =
+            node.children
+                .sortedWith(compareBy({ NodeId.normalizeName(it.name) }, { (it.type ?: NodeType.File).ordinal }))
+                .map { child -> toFileDto(child, segments + child.name, metricsByNodeId, seenIds) }
         return FileDto(
             id = id,
             // NFC-normalize the emitted name so the wire is self-consistent with its NFC id and edge
