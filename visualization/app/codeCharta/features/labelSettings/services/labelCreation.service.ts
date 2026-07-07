@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Vector3 } from "three"
 import { LabelMode, Node } from "../../../model/codeCharta.model"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { treeMapSize } from "../../../renderer/threeViewer/algorithm/treeMapLayout/treeMapHelper"
+import { treeMapSize } from "../../../renderer/threeViewer/threeViewer.facade"
 import { StateAccessStore } from "../stores/stateAccess.store"
 import { LabelElement } from "./labelElement"
 

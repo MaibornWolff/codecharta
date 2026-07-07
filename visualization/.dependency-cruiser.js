@@ -356,6 +356,17 @@ module.exports = {
             from: { path: "^app/codeCharta/renderer/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: { path: ["^app/codeCharta/features/", "^app/codeCharta/views/", "^app/codeCharta/load/"] }
         },
+        {
+            name: "threeviewer-external-access-only-via-facade",
+            severity: "error",
+            comment:
+                "Outside code may touch the shared 3D engine (renderer/threeViewer/ — the Three.js scene/camera/renderer/controls services, the codeMap mesh + building render primitives, the treemap/street layout ALGORITHM and the scene stores) ONLY through its public surface, renderer/threeViewer/threeViewer.facade.ts. Its internals are heavily cross-wired and must stay private so sibling features (codeMap, viewCube, labelSettings, …) consume the engine without reaching past the facade and forming cycles (this layer was extracted OUT of features/codeMap for exactly that reason). Mirrors lens-external-access-only-via-public-surface. The layer's own files (from.pathNot) — including the facade re-exporting its internals — and spec/e2e are exempt.",
+            from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/renderer/threeViewer/", "\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: {
+                path: "^app/codeCharta/renderer/threeViewer/",
+                pathNot: ["^app/codeCharta/renderer/threeViewer/threeViewer\\.facade\\.ts$"]
+            }
+        },
 
         /* ───────────────────────────────── util — the leaf kernel ───────────────────────────────── */
         {
