@@ -1491,7 +1491,24 @@
     }
   ],
   "apiVersion": "1.2",
-  "edges": [],
-  "attributeTypes": {},
-  "blacklist": []
+  "edges": [
+    {
+      "fromNodeName": "/root/src/main/java/de/vandermeer/asciitable/AsciiTable.java",
+      "toNodeName": "/root/src/main/java/de/vandermeer/asciitable/AsciiTableException.java",
+      "attributes": { "pairingRate": 42.0 }
+    }
+  ],
+  "attributeTypes": {
+    "nodes": { "rloc": "absolute" },
+    "edges": { "pairingRate": "relative" }
+  },
+  "attributeDescriptors": {
+    "rloc": { "title": "Real Lines of Code", "direction": 1 }
+  },
+  "blacklist": [
+    { "path": "/root/src/main/java/de/vandermeer/asciitable/AsciiTable.java", "type": "exclude" }
+  ],
+  "markedPackages": [
+    { "path": "/root/src", "color": "#ff0000" }
+  ]
 }

@@ -30,6 +30,15 @@ class ConvertToolTest {
             """"blacklist":[{"path":"/root/App.kt","type":"exclude"}],""" +
             """"markedPackages":[{"path":"/root","color":"#ff0000"}]}}"""
 
+    private val legacy15JsonWithData =
+        """{"checksum":"x","data":{"projectName":"sample","apiVersion":"1.5",""" +
+            """"nodes":[{"name":"root","type":"Folder","attributes":{},"link":"","children":[""" +
+            """{"name":"App.kt","type":"File","attributes":{"rloc":120.0},"link":""},""" +
+            """{"name":"Lib.kt","type":"File","attributes":{"rloc":30.0},"link":""}]}],""" +
+            """"edges":[{"fromNodeName":"/root/App.kt","toNodeName":"/root/Lib.kt","attributes":{"pairingRate":42.0}}],""" +
+            """"attributeTypes":{"nodes":{"rloc":"absolute"},"edges":{"pairingRate":"relative"}},""" +
+            """"attributeDescriptors":{"rloc":{"title":"Real Lines of Code","direction":1}},"blacklist":[]}}"""
+
     private fun write15File(): File {
         val file = File.createTempFile("convert-input", ".cc.json")
         file.deleteOnExit()
@@ -47,6 +56,26 @@ class ConvertToolTest {
         val rawOutput = output.toString("UTF-8")
         assertThat(rawOutput).contains("\"files\"").contains("\"lenses\"").contains("\"metrics\"")
         assertThat(ProjectDeserializer.deserializeProject(rawOutput).apiVersion).isEqualTo("2.0")
+    }
+
+    @Test
+    fun `should carry edges, attributeTypes and descriptors into the 2_0 lenses when converting a rich 1_5 file`() {
+        // Arrange
+        val inputFile = File.createTempFile("convert-rich", ".cc.json")
+        inputFile.deleteOnExit()
+        inputFile.writeText(legacy15JsonWithData)
+        val output = ByteArrayOutputStream()
+
+        // Act
+        CommandLine(ConvertTool(ByteArrayInputStream(ByteArray(0)), PrintStream(output))).execute(inputFile.absolutePath)
+
+        // Assert: the flat 1.5 edges/types/descriptors are routed into the typed 2.0 lenses, not dropped.
+        val project = ProjectDeserializer.deserializeProject(output.toString("UTF-8"))
+        assertThat(project.apiVersion).isEqualTo("2.0")
+        assertThat(project.lenses.dependency.edges).hasSize(1)
+        assertThat(project.lenses.dependency.attributeTypes).containsKey("pairingRate")
+        assertThat(project.lenses.metrics.attributeTypes).containsKey("rloc")
+        assertThat(project.lenses.metrics.attributeDescriptors).containsKey("rloc")
     }
 
     private fun write20File(): File {
