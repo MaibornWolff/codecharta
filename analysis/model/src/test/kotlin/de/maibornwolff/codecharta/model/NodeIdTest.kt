@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.model
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -40,6 +41,19 @@ class NodeIdTest {
     @Test
     fun `should reject a segment that still contains a forward-slash separator`() {
         assertThrows<IllegalArgumentException> { NodeId.fromSegments(listOf("src/App.kt")) }
+    }
+
+    @Test
+    fun `should explain that a name may not contain the path separator when rejecting a slashed segment`() {
+        // Arrange
+        val slashedName = "a/b"
+
+        // Act
+        val exception = assertThrows<IllegalArgumentException> { NodeId.fromSegments(listOf(slashedName)) }
+
+        // Assert: the message names the offending value and points at the likely cause instead of an internal precondition.
+        assertTrue(exception.message!!.contains(slashedName))
+        assertTrue(exception.message!!.contains("path separator"))
     }
 
     @Test

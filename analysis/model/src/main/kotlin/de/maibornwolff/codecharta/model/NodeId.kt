@@ -120,7 +120,9 @@ object NodeId {
         val result = ArrayDeque<String>()
         segments.forEach { rawSegment ->
             require(SEPARATOR !in rawSegment) {
-                "NodeId segments must be pre-split; got a segment containing a '$SEPARATOR' separator: '$rawSegment'"
+                "A file or folder name may not contain '$SEPARATOR', which the .cc.json 2.0 format reserves as the " +
+                    "path separator when building node ids: '$rawSegment'. Check the input's path separator " +
+                    "(e.g. csvimport --path-separator) so paths are split into segments."
             }
             when (val segment = normalizeName(rawSegment)) {
                 "", "." -> Unit
