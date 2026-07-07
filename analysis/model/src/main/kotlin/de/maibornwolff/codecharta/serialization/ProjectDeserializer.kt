@@ -68,9 +68,7 @@ object ProjectDeserializer {
             ApiVersion.ONE_FIVE -> {
                 if (!allowLegacy) {
                     if (looksLikeLegacyProject(jsonObject)) {
-                        throw LegacyFileException(
-                            "This is a legacy cc.json 1.x file. Run `ccsh convert <file>` to upgrade it to the 2.0 format first."
-                        )
+                        throw LegacyFileException(LegacyFileException.CONVERT_HINT)
                     }
                     throw JsonParseException("not a valid cc.json 2.0 document: missing the `lenses` envelope")
                 }

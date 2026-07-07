@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.LegacyFileException
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.InputHelper
@@ -42,8 +43,18 @@ class EveritValidatorTest {
     private val validator = EveritValidator(ValidationTool.SCHEMA_PATH)
 
     @Test
-    fun `should extract and validate a valid file`() {
-        validator.validate(this.javaClass.classLoader.getResourceAsStream("validCompressed.gz")!!)
+    fun `should reject a compressed legacy 1_x file with a convert hint`() {
+        // Arrange: a gzipped, wrapped legacy 1.x file — check must reject it like every other command,
+        // and the compressed input must still be decompressed before the legacy gate sees it.
+
+        // Act
+        val thrown =
+            assertFailsWith(LegacyFileException::class) {
+                validator.validate(this.javaClass.classLoader.getResourceAsStream("validCompressed.gz")!!)
+            }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("convert")
     }
 
     @Test
@@ -54,15 +65,29 @@ class EveritValidatorTest {
     }
 
     @Test
-    fun `should throw exception on compressed json with no project`() {
-        assertFailsWith(ValidationException::class) {
-            validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidProjectCompressed.gz")!!)
-        }
+    fun `should reject an unwrapped compressed legacy file with a convert hint`() {
+        // Act
+        val thrown =
+            assertFailsWith(LegacyFileException::class) {
+                validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidProjectCompressed.gz")!!)
+            }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("convert")
     }
 
     @Test
-    fun `should validate valid File`() {
-        validator.validate(this.javaClass.classLoader.getResourceAsStream("validFile.cc.json")!!)
+    fun `should reject a legacy 1_x file with a convert hint`() {
+        // Arrange: a wrapped legacy 1.x document (checksum + data), the shape ccsh check silently accepted before.
+
+        // Act
+        val thrown =
+            assertFailsWith(LegacyFileException::class) {
+                validator.validate(this.javaClass.classLoader.getResourceAsStream("validFile.cc.json")!!)
+            }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("convert")
     }
 
     @Test
@@ -209,17 +234,26 @@ class EveritValidatorTest {
     }
 
     @Test
-    fun `should throw exception on missing node name`() {
+    fun `should reject a 2_0 file whose node is missing its name`() {
+        val missingName =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"r","type":"Folder"}],"lenses":{}}"""
+
         assertFailsWith(ValidationException::class) {
-            validator.validate(this.javaClass.classLoader.getResourceAsStream("missingNodeNameFile.json")!!)
+            validator.validate(ByteArrayInputStream(missingName.toByteArray()))
         }
     }
 
     @Test
-    fun `should throw exception on missing project`() {
-        assertFailsWith(ValidationException::class) {
-            validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json")!!)
-        }
+    fun `should reject an unwrapped legacy 1_x file with a convert hint`() {
+        // Act
+        val thrown =
+            assertFailsWith(LegacyFileException::class) {
+                validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidFile.json")!!)
+            }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("convert")
     }
 
     @Test
