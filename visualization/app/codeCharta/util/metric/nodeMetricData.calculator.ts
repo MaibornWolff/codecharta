@@ -1,6 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
 
-import { NodeMetricData } from "../../codeCharta.model"
+import { NodeMetricData } from "../../model/codeCharta.model"
 import { FileState } from "../../model/files/files"
 import { BlacklistMatcher } from "../blacklist/blacklistMatcher"
 import { isLeaf } from "../codeMapHelper"

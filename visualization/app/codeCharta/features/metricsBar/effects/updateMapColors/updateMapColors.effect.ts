@@ -3,9 +3,9 @@ import { createEffect } from "@ngrx/effects"
 import { State, Store } from "@ngrx/store"
 import { map } from "rxjs"
 import stringify from "safe-stable-stringify"
-import { CcState, MapColors } from "../../../../codeCharta.model"
-import { defaultMapColors, colorMetricSelector } from "../../../../mapState/mapState.read.facade"
-import { setMapColors } from "../../../../mapState/mapState.write.facade"
+import { CcState, MapColors } from "../../../../model/codeCharta.model"
+import { defaultMapColors, colorMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { setMapColors } from "../../../../stores/mapState/mapState.write.facade"
 
 @Injectable()
 export class UpdateMapColorsEffect {

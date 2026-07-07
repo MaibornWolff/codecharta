@@ -1,6 +1,6 @@
 import { edgeAttributeTypes } from "./attributeTypes.reducer"
 import { setEdgeAttributeTypes } from "./attributeTypes.actions"
-import { AttributeTypes, AttributeTypeValue } from "../../../../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue } from "../../../../model/codeCharta.model"
 
 describe("edgeAttributeTypes", () => {
     const defaultValue: AttributeTypes = {

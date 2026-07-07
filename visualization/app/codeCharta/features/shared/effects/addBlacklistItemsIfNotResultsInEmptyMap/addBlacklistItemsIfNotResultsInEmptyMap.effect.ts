@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { createEffect } from "@ngrx/effects"
 import { filter, map, tap } from "rxjs"
-import { addBlacklistItems } from "../../../../sharedView/sharedView.write.facade"
+import { addBlacklistItems } from "../../../../stores/sharedView/sharedView.write.facade"
 import { ErrorDialogService } from "../../../../util/errorDialog/errorDialog.service"
 import { clearPendingHeavyDispatch } from "../../../../util/dispatchAfterPaint"
 import { BlacklistExclusionGuard } from "./blacklistExclusionGuard"

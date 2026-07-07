@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toObservable, toSignal } from "@angular/core/rxjs-interop"
 import { switchMap } from "rxjs"
-import { AttributeTypes, CodeMapNode, Node, PrimaryMetrics } from "../../../../codeCharta.model"
+import { AttributeTypes, CodeMapNode, Node, PrimaryMetrics } from "../../../../model/codeCharta.model"
 import { isLeaf } from "../../../../util/codeMapHelper"
 import { AttributeTypesService } from "../../services/attributeTypes.service"
 import { NodeSelectionService } from "../../services/nodeSelection.service"

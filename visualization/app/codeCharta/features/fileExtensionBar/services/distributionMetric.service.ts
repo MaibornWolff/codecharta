@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { MapStateReadWindow } from "../../../mapState/mapState.read.facade"
+import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 
 @Injectable({ providedIn: "root" })
 export class DistributionMetricService {

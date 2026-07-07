@@ -4,8 +4,8 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
 import { BlacklistExtensionEffect, blacklistExtensionsPattern } from "./blacklistExtension.effect"
-import { BlacklistItem, BlacklistType, CcState } from "../../../../codeCharta.model"
-import { addBlacklistItems } from "../../../../sharedView/sharedView.write.facade"
+import { BlacklistItem, BlacklistType, CcState } from "../../../../model/codeCharta.model"
+import { addBlacklistItems } from "../../../../stores/sharedView/sharedView.write.facade"
 
 describe("BlackListExtensionEffect", () => {
     let effect: BlacklistExtensionEffect

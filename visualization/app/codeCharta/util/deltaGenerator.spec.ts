@@ -7,7 +7,7 @@ import {
     TEST_DELTA_MAP_E,
     TEST_DELTA_MAP_F
 } from "../mocks/dataMocks"
-import { CCFile, FileCount, NodeType } from "../codeCharta.model"
+import { CCFile, FileCount, NodeType } from "../model/codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { clone } from "./clone"
 import { hierarchy } from "d3-hierarchy"

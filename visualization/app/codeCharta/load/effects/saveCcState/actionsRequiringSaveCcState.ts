@@ -1,6 +1,6 @@
-import { fileActions } from "../../../fileStore/store/files.actions"
+import { fileActions } from "../../../stores/fileStore/store/files.actions"
 import { setState } from "../../../store/state.actions"
-import { preferencesActions } from "../../../preferences/preferences.write.facade"
+import { preferencesActions } from "../../../stores/preferences/preferences.write.facade"
 import { setAttributeTypes, setAttributeDescriptors } from "../../../lenses/metrics/metricsLens.load.facade"
 import {
     setColorLabels,
@@ -36,7 +36,7 @@ import {
     setDistributionMetric,
     setColorMetric,
     setAreaMetric
-} from "../../../mapState/mapState.write.facade"
+} from "../../../stores/mapState/mapState.write.facade"
 import {
     setSearchPattern,
     setAllFocusedNodes,
@@ -51,7 +51,7 @@ import {
     setMarkedPackages,
     markPackages,
     unmarkPackage
-} from "../../../sharedView/sharedView.write.facade"
+} from "../../../stores/sharedView/sharedView.write.facade"
 
 // Slice 10b: the ex-appSettings / ex-dynamicSettings grab-bag action lists (appSettingsActions,
 // dynamicSettingsActions) were dissolved together with those reducers. The exact set of actions that

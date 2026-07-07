@@ -1,5 +1,5 @@
 import { AttributeDescriptorTooltipPipe } from "./attributeDescriptorTooltip.pipe"
-import { AttributeDescriptor } from "../../codeCharta.model"
+import { AttributeDescriptor } from "../../model/codeCharta.model"
 
 const testKey = "testKey"
 const testTitle = "testTitle"

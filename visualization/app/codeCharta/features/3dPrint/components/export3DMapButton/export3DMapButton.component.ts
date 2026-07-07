@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal, viewChild } from "@angular/core"
 import { take } from "rxjs"
-import { ColorMode } from "../../../../codeCharta.model"
+import { ColorMode } from "../../../../model/codeCharta.model"
 import { ActionIconComponent } from "../../../../features/shared/components/actionIcon/actionIcon.component"
 import { ErrorDialogComponent } from "../../../../features/shared/components/errorDialog/errorDialog.component"
 import { Export3DColorModeStore } from "../../stores/colorMode.store"

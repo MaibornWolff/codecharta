@@ -1,4 +1,4 @@
-import { NodeType } from "../../../codeCharta.model"
+import { NodeType } from "../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import packageJson from "../../../../../package.json"
 import { _getUndecoratedAccumulatedData } from "./structureTree.selector"

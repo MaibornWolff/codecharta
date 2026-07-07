@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { ColorRange } from "../../../codeCharta.model"
+import { ColorRange } from "../../../model/codeCharta.model"
 import { ColorRangeStore } from "../stores/colorRange.store"
 
 @Injectable({

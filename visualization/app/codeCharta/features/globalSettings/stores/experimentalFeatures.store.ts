@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CcState } from "../../../model/codeCharta.model"
 import { experimentalFeaturesEnabledSelector } from "../selectors/globalSettings.selectors"
-import { setExperimentalFeaturesEnabled } from "../../../preferences/preferences.write.facade"
+import { setExperimentalFeaturesEnabled } from "../../../stores/preferences/preferences.write.facade"
 
 @Injectable({
     providedIn: "root"

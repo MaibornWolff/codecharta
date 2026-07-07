@@ -18,11 +18,11 @@ import {
     NodeType,
     SortingOption,
     CcState
-} from "../codeCharta.model"
+} from "../model/codeCharta.model"
 import { Vector3 } from "three"
 import { hierarchy } from "d3-hierarchy"
 import { FileSelectionState, FileState } from "../model/files/files"
-import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
+import { APIVersions, ExportCCFile } from "../model/codeCharta.api.model"
 import { CcJson2 } from "../model/ccjson2.model"
 import packageJson from "../../../package.json"
 import { isLeaf } from "../util/codeMapHelper"

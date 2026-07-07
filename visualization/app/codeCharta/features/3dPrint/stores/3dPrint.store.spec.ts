@@ -11,9 +11,9 @@ import {
     blacklistSelector,
     print3DFilesSelector
 } from "../selectors/3dPrint.selectors"
-import { setColorMode } from "../../../mapState/mapState.write.facade"
+import { setColorMode } from "../../../stores/mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { ColorMode } from "../../../codeCharta.model"
+import { ColorMode } from "../../../model/codeCharta.model"
 
 describe("Print3DStore", () => {
     let store: Print3DStore

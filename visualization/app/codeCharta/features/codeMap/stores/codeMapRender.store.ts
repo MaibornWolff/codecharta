@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
-import { CcState, ColorLabelOptions } from "../../../codeCharta.model"
-import { isLoadingFileSelector } from "../../../fileStore/store/isLoadingFile/isLoadingFile.selector"
-import { setColorLabels } from "../../../mapState/mapState.write.facade"
+import { CcState, ColorLabelOptions } from "../../../model/codeCharta.model"
+import { isLoadingFileSelector } from "../../../stores/fileStore/store/isLoadingFile/isLoadingFile.selector"
+import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapRenderStore {

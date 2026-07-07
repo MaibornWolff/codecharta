@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, output, signa
 import { toSignal } from "@angular/core/rxjs-interop"
 import { FormsModule } from "@angular/forms"
 import { map } from "rxjs"
-import { MetricData } from "../../../../codeCharta.model"
+import { MetricData } from "../../../../model/codeCharta.model"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
 import { CCSCENARIO_EXTENSION, Scenario } from "../../model/scenario.model"
 import { ScenarioImportExportService } from "../../services/scenarioImportExport.service"

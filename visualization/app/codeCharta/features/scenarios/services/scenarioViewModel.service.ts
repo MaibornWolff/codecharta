@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { MetricData } from "../../../codeCharta.model"
+import { MetricData } from "../../../model/codeCharta.model"
 import { getAvailableSectionKeys, Scenario } from "../model/scenario.model"
 import { ScenarioApplierService } from "./scenarioApplier.service"
 import { ScenarioView } from "../components/scenarioListDialog/scenarioView.model"

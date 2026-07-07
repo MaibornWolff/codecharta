@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState, LabelMode } from "../../../codeCharta.model"
+import { CcState, LabelMode } from "../../../model/codeCharta.model"
 import { labelModeSelector } from "../selectors/labelSettings.selectors"
-import { setLabelMode } from "../../../mapState/mapState.write.facade"
+import { setLabelMode } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

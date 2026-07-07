@@ -1,5 +1,5 @@
 import { firstValueFrom, of } from "rxjs"
-import { AttributeTypeValue } from "../../../codeCharta.model"
+import { AttributeTypeValue } from "../../../model/codeCharta.model"
 import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED } from "../../../mocks/dataMocks"
 import { MetricsLensStore } from "../store/metricsLens.store"
 import { DescriptorsRepo } from "./descriptors.repo"

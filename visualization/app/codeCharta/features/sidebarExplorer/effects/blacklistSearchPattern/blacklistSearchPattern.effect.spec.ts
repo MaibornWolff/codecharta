@@ -3,11 +3,11 @@ import { first, Subject } from "rxjs"
 import { BlacklistExclusionGuard } from "../../../shared/facade"
 import { blacklistSearchPattern, BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { searchPatternSelector } from "../../../../sharedView/sharedView.read.facade"
+import { searchPatternSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
-import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../sharedView/sharedView.write.facade"
-import { setSearchPattern } from "../../../../sharedView/sharedView.write.facade"
+import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../stores/sharedView/sharedView.write.facade"
+import { setSearchPattern } from "../../../../stores/sharedView/sharedView.write.facade"
 
 describe("BlacklistSearchPatternEffect", () => {
     let effect: BlacklistSearchPatternEffect

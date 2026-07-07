@@ -1,7 +1,7 @@
 import { attributeTypes } from "./attributeTypes.reducer"
 import { setAttributeTypes } from "./attributeTypes.actions"
 import { STATE } from "../../../../mocks/dataMocks"
-import { AttributeTypes } from "../../../../codeCharta.model"
+import { AttributeTypes } from "../../../../model/codeCharta.model"
 
 describe("attributeTypes", () => {
     const defaultValue: AttributeTypes = {

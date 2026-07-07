@@ -1,5 +1,5 @@
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
-import { CCFile, CodeMapNode } from "../../codeCharta.model"
+import { CCFile, CodeMapNode } from "../../model/codeCharta.model"
 import { FileState } from "../../model/files/files"
 import { BlacklistMatcher } from "./blacklistMatcher"
 import { isLeaf } from "../codeMapHelper"

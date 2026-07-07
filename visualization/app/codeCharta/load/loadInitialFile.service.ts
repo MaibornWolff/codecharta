@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import stringify from "safe-stable-stringify"
 import { readCcState } from "../store/indexedDB/indexedDBWriter"
-import { CcState } from "../codeCharta.model"
+import { CcState } from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
@@ -16,7 +16,7 @@ import {
     sampleFile1,
     sampleFile2,
     UrlExtractor
-} from "../fileStore/fileStore.facade"
+} from "../stores/fileStore/fileStore.facade"
 import { LoadInitialFileStore } from "./loadInitialFile.store"
 
 @Injectable({ providedIn: "root" })

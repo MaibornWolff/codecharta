@@ -1,5 +1,5 @@
 import { combineReducers } from "@ngrx/store"
-import { MetricsLensSource } from "../../../codeCharta.model"
+import { MetricsLensSource } from "../../../model/codeCharta.model"
 import { attributeTypes, defaultAttributeTypes } from "./attributeTypes/attributeTypes.reducer"
 import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors/attributeDescriptors.reducer"
 

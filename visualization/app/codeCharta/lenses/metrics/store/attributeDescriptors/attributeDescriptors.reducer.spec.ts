@@ -1,5 +1,5 @@
 import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors.reducer"
-import { AttributeDescriptors } from "../../../../codeCharta.model"
+import { AttributeDescriptors } from "../../../../model/codeCharta.model"
 import { setAttributeDescriptors } from "./attributeDescriptors.action"
 
 describe("attributeDescriptors", () => {

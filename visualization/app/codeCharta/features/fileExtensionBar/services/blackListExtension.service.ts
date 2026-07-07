@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
-import { BlacklistItem, CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { BlacklistItem, CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { blacklistExtensionsPattern } from "../effects/blacklistExtension/blacklistExtension.effect"
 import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
-import { removeBlacklistItems } from "../../../sharedView/sharedView.write.facade"
+import { removeBlacklistItems } from "../../../stores/sharedView/sharedView.write.facade"
 import { combineLatest, map, Observable, take } from "rxjs"
 import { BlackListExtensionStore } from "../stores/blackListExtension.store"
 

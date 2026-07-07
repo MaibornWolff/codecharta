@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from "@angular/core"
 import { take } from "rxjs"
-import { ColorMode } from "../../../../codeCharta.model"
+import { ColorMode } from "../../../../model/codeCharta.model"
 import { Export3DColorModeStore } from "../../../3dPrint/facade"
 import { Export3DMapDialogComponent } from "../../../3dPrint/components/export3DMapDialog/export3DMapDialog.component"
 import { ErrorDialogComponent } from "../../../../features/shared/components/errorDialog/errorDialog.component"

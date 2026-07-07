@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { State } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CcState } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
 
 @Injectable({ providedIn: "root" })

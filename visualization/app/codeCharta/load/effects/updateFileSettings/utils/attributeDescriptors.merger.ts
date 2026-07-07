@@ -1,4 +1,4 @@
-import { AttributeDescriptors } from "../../../../codeCharta.model"
+import { AttributeDescriptors } from "../../../../model/codeCharta.model"
 
 export function getMergedAttributeDescriptors(allAttributeDescriptors: AttributeDescriptors[]): AttributeDescriptors {
     const uniqueAttributeDescriptors = {}

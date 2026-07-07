@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
-import { CcState, RecursivePartial } from "../../../codeCharta.model"
-import { setIsLoadingFile } from "../../../fileStore/store/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../../mapState/mapState.write.facade"
+import { CcState, RecursivePartial } from "../../../model/codeCharta.model"
+import { setIsLoadingFile } from "../../../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingMap } from "../../../stores/mapState/mapState.write.facade"
 import { setState } from "../../../store/state.actions"
 
 @Injectable({ providedIn: "root" })

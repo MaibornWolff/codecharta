@@ -424,12 +424,13 @@ npm run e2e:auto
 - Serialization: `analysis/model/src/main/kotlin/de/maibornwolff/codecharta/serialization/`
 
 ### Visualization
-- Main component: `visualization/app/codeCharta/codeCharta.component.ts`
-- State management: `visualization/app/codeCharta/state/`
-- 3D rendering: `visualization/app/codeCharta/services/3DExports/`
-- UI components: `visualization/app/codeCharta/ui/`
-- Layout algorithms: `visualization/app/codeCharta/util/algorithm/`
-- Model types: `visualization/app/codeCharta/codeCharta.model.ts`
+- Main component (page/view): `visualization/app/codeCharta/views/codeCharta.component.ts`
+- State homes: `visualization/app/codeCharta/stores/` (mapState, sharedView, preferences, fileStore)
+- Lenses (cc.json projections): `visualization/app/codeCharta/lenses/` (metrics, dependency, structure)
+- 3D rendering engine + derived read-model: `visualization/app/codeCharta/renderer/` (threeViewer, renderModel)
+- UI components: `visualization/app/codeCharta/features/`
+- Layout algorithms: `visualization/app/codeCharta/renderer/threeViewer/algorithm/`
+- Model types: `visualization/app/codeCharta/model/codeCharta.model.ts`
 
 ## CI/CD (GitHub Actions)
 

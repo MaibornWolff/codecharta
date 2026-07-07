@@ -1,4 +1,4 @@
-import { NodeMetricData } from "../../codeCharta.model"
+import { NodeMetricData } from "../../model/codeCharta.model"
 
 /**
  * A metric's value bounds. A pure data shape in the util kernel so any layer — the composing render

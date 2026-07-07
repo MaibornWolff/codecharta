@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { LabelMode } from "../../../codeCharta.model"
+import { LabelMode } from "../../../model/codeCharta.model"
 import { LabelModeStore } from "../stores/labelMode.store"
 
 @Injectable({

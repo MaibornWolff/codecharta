@@ -1,4 +1,4 @@
-import { CCFile } from "../../codeCharta.model"
+import { CCFile } from "../codeCharta.model"
 import { FileSelectionState, FileState } from "./files"
 
 const FILE_EXTENSION_PNG = ".png"

@@ -12,7 +12,7 @@ import {
     viewChild
 } from "@angular/core"
 import { FormsModule } from "@angular/forms"
-import { MetricData } from "../../../../codeCharta.model"
+import { MetricData } from "../../../../model/codeCharta.model"
 import {
     getAvailableSectionKeys,
     Scenario,

@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { metricDataSelector } from "../../../renderModel/renderModel.facade"
-import { filesSelector } from "../../../fileStore/store/files.selector"
+import { CcState } from "../../../model/codeCharta.model"
+import { metricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { filesSelector } from "../../../stores/fileStore/store/files.selector"
 
 @Injectable({ providedIn: "root" })
 export class ScenarioDialogStore {

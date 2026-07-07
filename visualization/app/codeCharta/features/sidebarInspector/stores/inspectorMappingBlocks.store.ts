@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CcState } from "../../../model/codeCharta.model"
 import { inspectorMappingBlocksSelector } from "../selectors/inspectorMappingBlocks.selector"
 
 @Injectable({

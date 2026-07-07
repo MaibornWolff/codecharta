@@ -1,5 +1,5 @@
-import { NodeType } from "../../codeCharta.model"
-import { ExportCCFile } from "../../codeCharta.api.model"
+import { NodeType } from "../../model/codeCharta.model"
+import { ExportCCFile } from "../../model/codeCharta.api.model"
 
 export const fileWithFixedOverlappingSubFolders: ExportCCFile = {
     projectName: "example-project",

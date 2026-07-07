@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../model/codeCharta.model"
 
 /**
  * The named renderer-engine seam (Slice 14b — contract only, DoD #8).

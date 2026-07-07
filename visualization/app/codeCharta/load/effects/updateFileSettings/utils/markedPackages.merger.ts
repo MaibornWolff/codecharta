@@ -1,5 +1,5 @@
 import { getUpdatedBlacklistItemPath } from "../../../../util/nodePathHelper"
-import { CCFile, MarkedPackage } from "../../../../codeCharta.model"
+import { CCFile, MarkedPackage } from "../../../../model/codeCharta.model"
 
 export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: boolean) {
     if (inputFiles.length === 1) {

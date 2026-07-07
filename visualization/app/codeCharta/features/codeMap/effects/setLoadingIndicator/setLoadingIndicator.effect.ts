@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { map } from "rxjs"
-import { setIsLoadingFile } from "../../../../fileStore/store/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingFile } from "../../../../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
 import { actionsRequiringRerender } from "../renderCodeMapEffect/actionsRequiringRerender"
-import { setIsLoadingMap } from "../../../../mapState/mapState.write.facade"
-import { CcState } from "../../../../codeCharta.model"
+import { setIsLoadingMap } from "../../../../stores/mapState/mapState.write.facade"
+import { CcState } from "../../../../model/codeCharta.model"
 import { Store } from "@ngrx/store"
-import { visibleFileStatesSelector } from "../../../../fileStore/store/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../../stores/fileStore/store/visibleFileStates.selector"
 
 @Injectable()
 export class SetLoadingIndicatorEffect {

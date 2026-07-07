@@ -1,4 +1,4 @@
-import { CCFile, CodeMapNode, FileMeta, KeyValuePair, NodeType } from "../codeCharta.model"
+import { CCFile, CodeMapNode, FileMeta, KeyValuePair, NodeType } from "../model/codeCharta.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"

@@ -1,4 +1,4 @@
-import { BlacklistItem, CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { BlacklistItem, CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 import { _calculateExplorerCounts, flattenRulesWithCountSelector } from "./sidebarExplorer.selectors"
 

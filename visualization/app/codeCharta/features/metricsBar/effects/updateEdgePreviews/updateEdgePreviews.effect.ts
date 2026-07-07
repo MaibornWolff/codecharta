@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core"
 import { filter, map, withLatestFrom } from "rxjs"
 import { createEffect } from "@ngrx/effects"
-import { isEdgeMetricVisibleSelector, edgeMetricSelector } from "../../../../mapState/mapState.read.facade"
-import { toggleEdgeMetricVisible } from "../../../../mapState/mapState.write.facade"
+import { isEdgeMetricVisibleSelector, edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { toggleEdgeMetricVisible } from "../../../../stores/mapState/mapState.write.facade"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../../codeCharta.model"
+import { CcState } from "../../../../model/codeCharta.model"
 
 @Injectable()
 export class UpdateEdgePreviewsEffect {

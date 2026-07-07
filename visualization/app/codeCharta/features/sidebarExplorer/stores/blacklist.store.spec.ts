@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BlacklistStore } from "./blacklist.store"
-import { BlacklistItem } from "../../../codeCharta.model"
-import { blacklistSelector } from "../../../sharedView/sharedView.read.facade"
-import { removeBlacklistItem } from "../../../sharedView/sharedView.write.facade"
+import { BlacklistItem } from "../../../model/codeCharta.model"
+import { blacklistSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { removeBlacklistItem } from "../../../stores/sharedView/sharedView.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
 
 describe("BlacklistStore", () => {

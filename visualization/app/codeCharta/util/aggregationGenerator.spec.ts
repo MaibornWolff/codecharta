@@ -1,4 +1,4 @@
-import { CCFile, NodeType } from "../codeCharta.model"
+import { CCFile, NodeType } from "../model/codeCharta.model"
 import { AggregationGenerator } from "./aggregationGenerator"
 import packageJson from "../../../package.json"
 import { FileState } from "../model/files/files"

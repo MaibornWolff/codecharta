@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { AsyncPipe } from "@angular/common"
-import { distributionMetric } from "../../../../mapState/mapState.read.facade"
+import { distributionMetric } from "../../../../stores/mapState/mapState.read.facade"
 import { DistributionMetricService } from "../../services/distributionMetric.service"
 
 @Component({

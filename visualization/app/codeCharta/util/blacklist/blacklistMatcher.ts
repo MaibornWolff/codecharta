@@ -1,5 +1,5 @@
 import ignore from "ignore"
-import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType } from "../../model/codeCharta.model"
 
 export function transformPath(toTransform: string) {
     let removeNumberOfCharactersFromStart = 2

@@ -1,4 +1,4 @@
-import { AttributeDescriptors } from "../../../../codeCharta.model"
+import { AttributeDescriptors } from "../../../../model/codeCharta.model"
 import { getMergedAttributeDescriptors } from "./attributeDescriptors.merger"
 
 describe("AttributeDescriptorsMerger", () => {

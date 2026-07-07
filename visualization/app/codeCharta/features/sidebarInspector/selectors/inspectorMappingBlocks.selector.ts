@@ -1,8 +1,8 @@
 import { createSelector } from "@ngrx/store"
-import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MapColors, PrimaryMetrics } from "../../../codeCharta.model"
-import { isDeltaStateSelector } from "../../../fileStore/store/isDeltaState.selector"
-import { primaryMetricNamesSelector, selectedNodeSelector } from "../../../renderModel/renderModel.facade"
-import { mapColorsSelector } from "../../../mapState/mapState.read.facade"
+import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MapColors, PrimaryMetrics } from "../../../model/codeCharta.model"
+import { isDeltaStateSelector } from "../../../stores/fileStore/store/isDeltaState.selector"
+import { primaryMetricNamesSelector, selectedNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { mapColorsSelector } from "../../../stores/mapState/mapState.read.facade"
 import { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLens.facade"
 
 export type MappingBlockKind = "area" | "height" | "color" | "edge"

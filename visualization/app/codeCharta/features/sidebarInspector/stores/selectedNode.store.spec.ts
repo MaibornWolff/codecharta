@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { CodeMapNode } from "../../../codeCharta.model"
-import { selectedNodeSelector } from "../../../renderModel/selectedNode.selector"
+import { CodeMapNode } from "../../../model/codeCharta.model"
+import { selectedNodeSelector } from "../../../renderer/renderModel/selectedNode.selector"
 import { InspectorSelectedNodeStore } from "./selectedNode.store"
 
 describe("InspectorSelectedNodeStore", () => {

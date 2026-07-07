@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../codeCharta.model"
+import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
-import { metricDataSelector } from "../renderModel/renderModel.facade"
-import { setDelta, setFiles } from "../fileStore/store/files.actions"
-import { setCurrentFilesAreSampleFiles } from "../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { metricDataSelector } from "../renderer/renderModel/renderModel.facade"
+import { setDelta, setFiles } from "../stores/fileStore/store/files.actions"
+import { setCurrentFilesAreSampleFiles } from "../stores/fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import {
     setAmountOfEdgePreviews,
     setAmountOfTopLabels,
@@ -38,10 +38,10 @@ import {
     setEdgeMetric,
     setColorMetric,
     setDistributionMetric
-} from "../mapState/mapState.write.facade"
+} from "../stores/mapState/mapState.write.facade"
 import { setAttributeTypes, setAttributeDescriptors } from "../lenses/metrics/metricsLens.load.facade"
 import { setEdgeAttributeTypes } from "../lenses/dependency/dependencyLens.load.facade"
-import { setBlacklist, setMarkedPackages, setAllFocusedNodes, setSearchPattern } from "../sharedView/sharedView.write.facade"
+import { setBlacklist, setMarkedPackages, setAllFocusedNodes, setSearchPattern } from "../stores/sharedView/sharedView.write.facade"
 import {
     setSortingOption,
     setPresentationMode,
@@ -50,7 +50,7 @@ import {
     setExperimentalFeaturesEnabled,
     setScreenshotToClipboardEnabled,
     setIsColorMetricLinkedToHeightMetricAction
-} from "../preferences/preferences.write.facade"
+} from "../stores/preferences/preferences.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {

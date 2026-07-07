@@ -5,13 +5,13 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import "fake-indexeddb/auto"
-import { getNameDataPair } from "../../../../../fileStore/fileStore.facade"
-import { LoadFileService } from "../../../../../fileStore/fileStore.facade"
-import { sampleFile1, sampleFile2 } from "../../../../../fileStore/fileStore.facade"
+import { getNameDataPair } from "../../../../../stores/fileStore/fileStore.facade"
+import { LoadFileService } from "../../../../../stores/fileStore/fileStore.facade"
+import { sampleFile1, sampleFile2 } from "../../../../../stores/fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../../load/load.facade"
-import { UrlExtractor } from "../../../../../fileStore/fileStore.facade"
+import { UrlExtractor } from "../../../../../stores/fileStore/fileStore.facade"
 import * as resetChosenMetricsEffect from "../../../../../features/metricsBar/effects/resetChosenMetrics/setDefaultMetrics"
-import { nodeMetricDataSelector } from "../../../../../renderModel/nodeMetricData/nodeMetricData.selector"
+import { nodeMetricDataSelector } from "../../../../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
 import { setState } from "../../../../../store/state.actions"
 import { defaultState } from "../../../../../store/state.manager"
 import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../../mocks/dataMocks"
@@ -19,7 +19,7 @@ import * as indexedDBWriter from "../../../../../store/indexedDB/indexedDBWriter
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 
 jest.mock("../../../../../store/indexedDB/indexedDBWriter")
-jest.mock("../../../../../fileStore/fileStore.facade")
+jest.mock("../../../../../stores/fileStore/fileStore.facade")
 jest.mock("../../../../../features/metricsBar/effects/resetChosenMetrics/setDefaultMetrics")
 
 describe("ConfirmResetMapDialogComponent", () => {

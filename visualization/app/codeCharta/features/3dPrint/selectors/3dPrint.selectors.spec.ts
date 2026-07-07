@@ -1,4 +1,4 @@
-import { CcState, ColorMode } from "../../../codeCharta.model"
+import { CcState, ColorMode } from "../../../model/codeCharta.model"
 import { defaultState } from "../../../store/state.manager"
 import {
     areaMetricSelector,

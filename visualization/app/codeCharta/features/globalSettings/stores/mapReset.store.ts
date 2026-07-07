@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { first, tap } from "rxjs"
-import { CcState, NodeMetricData } from "../../../codeCharta.model"
+import { CcState, NodeMetricData } from "../../../model/codeCharta.model"
 import { setDefaultMetrics } from "../../metricsBar/facade"
-import { nodeMetricDataSelector } from "../../../renderModel/renderModel.facade"
+import { nodeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { setState } from "../../../store/state.actions"
 import { defaultState } from "../../../store/state.manager"
 

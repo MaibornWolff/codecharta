@@ -4,21 +4,21 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
 import { defaultState } from "../../../../store/state.manager"
-import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../renderModel/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
+import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../renderer/renderModel/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
 import {
     amountOfEdgePreviewsSelector,
     edgeHeightSelector,
     showIncomingEdgesSelector,
     showOnlyBuildingsWithEdgesSelector,
     showOutgoingEdgesSelector
-} from "../../../../mapState/mapState.read.facade"
+} from "../../../../stores/mapState/mapState.read.facade"
 import {
     setAmountOfEdgePreviews,
     setEdgeHeight,
     setShowIncomingEdges,
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
-} from "../../../../mapState/mapState.write.facade"
+} from "../../../../stores/mapState/mapState.write.facade"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { EdgeSettingsPopoverComponent } from "./edgeSettingsPopover.component"
 

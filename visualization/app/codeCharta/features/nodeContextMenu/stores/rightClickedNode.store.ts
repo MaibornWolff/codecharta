@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { rightClickedCodeMapNodeSelector } from "../../../renderModel/renderModel.facade"
-import { setRightClickedNodeData } from "../../../sharedView/sharedView.write.facade"
-import { rightClickedNodeDataSelector } from "../../../sharedView/sharedView.read.facade"
+import { CcState } from "../../../model/codeCharta.model"
+import { rightClickedCodeMapNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
+import { rightClickedNodeDataSelector } from "../../../stores/sharedView/sharedView.read.facade"
 
 @Injectable({
     providedIn: "root"

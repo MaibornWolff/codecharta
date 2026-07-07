@@ -4,13 +4,13 @@ import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
-import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, SortingOption } from "../codeCharta.model"
+import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, SortingOption } from "../model/codeCharta.model"
 import { FileSelectionState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
 import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"
-import { metricDataSelector } from "../renderModel/accumulatedData/metricData/metricData.selector"
-import { defaultPreferences } from "../preferences/preferences.read.facade"
-import { setSortingOption } from "../preferences/preferences.write.facade"
+import { metricDataSelector } from "../renderer/renderModel/accumulatedData/metricData/metricData.selector"
+import { defaultPreferences } from "../stores/preferences/preferences.read.facade"
+import { setSortingOption } from "../stores/preferences/preferences.write.facade"
 import {
     setAreaMetric,
     setColorMetric,
@@ -18,26 +18,26 @@ import {
     setEdgeMetric,
     setHeightMetric,
     setLayoutAlgorithm
-} from "../mapState/mapState.write.facade"
-import { defaultMapState } from "../mapState/mapState.read.facade"
+} from "../stores/mapState/mapState.write.facade"
+import { defaultMapState } from "../stores/mapState/mapState.read.facade"
 import { defaultMetricsLensSource, setAttributeDescriptors, setAttributeTypes } from "../lenses/metrics/metricsLens.load.facade"
 import { defaultDependencyLensSource, setEdgeAttributeTypes } from "../lenses/dependency/dependencyLens.load.facade"
-import { defaultSharedView } from "../sharedView/sharedView.read.facade"
-import { setDelta, setFiles } from "../fileStore/store/files.actions"
+import { defaultSharedView } from "../stores/sharedView/sharedView.read.facade"
+import { setDelta, setFiles } from "../stores/fileStore/store/files.actions"
 import { appReducers, setStateMiddleware } from "../store/store"
 import { defaultState } from "../store/state.manager"
 import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../mocks/dataMocks"
 import { readCcState } from "../store/indexedDB/indexedDBWriter"
 import { getLastAction } from "../util/testUtils/store.utils"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
-import { getNameDataPair } from "../fileStore/loaders/ccJson/util/fileParser"
-import { LoadFileService } from "../fileStore/loaders/ccJson/services/loadFile.service"
+import { getNameDataPair } from "../stores/fileStore/loaders/ccJson/util/fileParser"
+import { LoadFileService } from "../stores/fileStore/loaders/ccJson/services/loadFile.service"
 import { LoadInitialFileService } from "./loadInitialFile.service"
-import { sampleFile1, sampleFile2 } from "../fileStore/loaders/ccJson/sampleFiles"
-import { UrlExtractor } from "../fileStore/loaders/ccJson/util/urlExtractor"
-import { setCurrentFilesAreSampleFiles } from "../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { sampleFile1, sampleFile2 } from "../stores/fileStore/loaders/ccJson/sampleFiles"
+import { UrlExtractor } from "../stores/fileStore/loaders/ccJson/util/urlExtractor"
+import { setCurrentFilesAreSampleFiles } from "../stores/fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
-jest.mock("../fileStore/loaders/ccJson/util/urlExtractor")
+jest.mock("../stores/fileStore/loaders/ccJson/util/urlExtractor")
 jest.mock("../model/files/files.helper")
 jest.mock("../store/indexedDB/indexedDBWriter")
 

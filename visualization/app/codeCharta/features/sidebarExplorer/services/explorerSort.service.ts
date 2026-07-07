@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { combineLatest } from "rxjs"
-import { SortingOption } from "../../../codeCharta.model"
+import { SortingOption } from "../../../model/codeCharta.model"
 import { SortingOptionStore } from "../stores/sortingOption.store"
 import { SortingOrderAscendingStore } from "../stores/sortingOrderAscending.store"
 

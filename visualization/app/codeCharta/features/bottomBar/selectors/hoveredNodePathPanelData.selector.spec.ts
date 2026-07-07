@@ -1,4 +1,4 @@
-import { NodeType } from "../../../codeCharta.model"
+import { NodeType } from "../../../model/codeCharta.model"
 import { _getHoveredNodePathPanelData } from "./hoveredNodePathPanelData.selector"
 
 describe("hoveredNodePathPanelDataSelector", () => {

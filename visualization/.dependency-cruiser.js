@@ -4,11 +4,9 @@ module.exports = {
         {
             name: "no-circular",
             severity: "error",
-            comment: "Prevent circular dependencies between modules. Flipped warn→error in Slice 16h once all 94 cycles were broken (16a 3DPreview SCC, 16b the two orphan cycles, 16c the codeMap↔sibling cross-feature cluster). The graph is acyclic.",
+            comment: "Prevent circular dependencies between modules. The graph is acyclic (Slice 16h). Unchanged by the reorg — it is path-agnostic.",
             from: {},
-            to: {
-                circular: true
-            }
+            to: { circular: true }
         },
         {
             name: "no-orphans",
@@ -20,14 +18,23 @@ module.exports = {
             },
             to: {}
         },
+
+        /* ─────────────────────────── NEW — the view/page top layer ─────────────────────────── */
+        {
+            name: "nothing-imports-views",
+            severity: "error",
+            comment:
+                "views/ is the TOP layer — routes + page composition (the CodeCharta page today; Graph/Report later). It composes features and owns no logic, so NOTHING inside app/codeCharta/ may import it back. Only the Angular bootstrap (app/app.config.ts, app/main.ts — outside codeCharta/) mounts the page. Spec/e2e exempt (test harness may mount a page). NEW rule: the flat tree had no view layer to fence.",
+            from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/views/", "\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: { path: "^app/codeCharta/views/" }
+        },
+
         {
             name: "feature-no-external-access-to-internals",
             severity: "error",
             comment:
-                "Feature internals can only be accessed within the same feature. External code must use facade.ts, components/ or a feature's effects bundle (effects/<feature>.effects.ts) — the latter is the public ngrx-registration manifest imported by the app composition root (Slice 15c), which must NOT be routed through the facade (that would pull every effect's cross-feature deps into the facade graph and form cycles).",
-            from: {
-                pathNot: "^app/codeCharta/features/"
-            },
+                "Feature internals can only be accessed within the same feature. External code (now including views/) must use facade.ts, components/ or a feature's effects bundle (effects/<feature>.effects.ts) — the latter is the public ngrx-registration manifest imported by the app composition root, which must NOT be routed through the facade (that would pull every effect's cross-feature deps into the facade graph and form cycles).",
+            from: { pathNot: "^app/codeCharta/features/" },
             to: {
                 path: "^app/codeCharta/features/",
                 pathNot: [
@@ -40,7 +47,7 @@ module.exports = {
             name: "feature-cross-feature-only-via-public-api",
             severity: "error",
             comment:
-                "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden. (Test files — .e2e/.po/.spec — are exempt: they compose features for integration wiring, e.g. a service spec registering another feature's effect in a test EffectsModule, mirroring how every migration boundary rule exempts specs; the runtime source stays fenced.)",
+                "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden. (Test files — .e2e/.po/.spec — are exempt.)",
             from: {
                 path: "^app/codeCharta/features/([^/]+)/",
                 pathNot: ["\\.e2e\\.ts$", "\\.po\\.ts$", "\\.spec\\.ts$"]
@@ -54,21 +61,14 @@ module.exports = {
             name: "feature-types-cannot-import-from-feature-internals",
             severity: "error",
             comment: "Features: types/ folder can only contain type definitions and cannot import from services, stores, or effects",
-            from: {
-                path: "^app/codeCharta/features/[^/]+/types/"
-            },
-            to: {
-                path: "^app/codeCharta/features/[^/]+/(services|stores|effects)/"
-            }
+            from: { path: "^app/codeCharta/features/[^/]+/types/" },
+            to: { path: "^app/codeCharta/features/[^/]+/(services|stores|effects)/" }
         },
         {
             name: "feature-no-circular-dependencies-between-features",
             severity: "error",
-            comment:
-                "Prevent circular dependencies BETWEEN features (cross-feature only; intra-feature cycles are covered by the app-wide 'no-circular' rule). The former codeMap/viewCube grandfather is GONE (Slice 16c): the shared 3D infra was extracted into the top-level threeViewer/ layer, the cursor indicator + colorCategoryCounts were relocated out of codeMap, and viewCube's last codeMap import was severed — so every cross-feature cycle edge is broken and the whole feature graph is now enforced with no exemption.",
-            from: {
-                path: "^app/codeCharta/features/([^/]+)/"
-            },
+            comment: "Prevent circular dependencies BETWEEN features (cross-feature only; intra-feature cycles are covered by 'no-circular'). No exemption — the codeMap/viewCube grandfather was dropped in Slice 16c.",
+            from: { path: "^app/codeCharta/features/([^/]+)/" },
             to: {
                 path: "^app/codeCharta/features/([^/]+)/",
                 pathNot: ["^app/codeCharta/features/$1/"],
@@ -78,46 +78,36 @@ module.exports = {
         {
             name: "no-component-scss-files",
             severity: "error",
-            comment:
-                "Component SCSS is not allowed under app/codeCharta/ (the ui/ -> features/ migration is complete); use daisyUI/Tailwind. Global styles live in app/app.scss + app/mixins.scss.",
+            comment: "Component SCSS is not allowed under app/codeCharta/; use daisyUI/Tailwind. Global styles live in app/app.scss + app/mixins.scss.",
             from: {},
-            to: {
-                path: "^app/codeCharta/.*\\.scss$"
-            }
+            to: { path: "^app/codeCharta/.*\\.scss$" }
         },
         {
             name: "no-angular-material",
             severity: "error",
             comment: "Angular Material has been fully removed from the app, use DaisyUI instead",
-            from: {
-                path: "^app/codeCharta/",
-                pathNot: "\\.spec\\.ts$"
-            },
-            to: {
-                path: "@angular/(material|cdk)"
-            }
+            from: { path: "^app/codeCharta/", pathNot: "\\.spec\\.ts$" },
+            to: { path: "@angular/(material|cdk)" }
         },
         {
             name: "feature-only-stores-can-import-ngrx-store",
             severity: "error",
             comment:
-                "Only a feature's stores/, selectors/ and effects/ may import @ngrx/store. Components use services, services use stores; effects are ngrx state-reactors (they own the createEffect streams) and legitimately touch the store, like a state-holder. The effects/ exemption was added in Slice 15c when the reactive side-effects moved from state/effects/ into their owning feature.",
+                "Only a feature's stores/, selectors/ and effects/ may import @ngrx/store. Components use services, services use stores; effects are ngrx state-reactors and legitimately touch the store.",
             from: {
                 path: "^app/codeCharta/features/[^/]+/",
                 pathNot: ["^app/codeCharta/features/[^/]+/(stores|selectors|effects)/", "\\.spec\\.ts$"]
             },
-            to: {
-                path: "@ngrx/store"
-            }
+            to: { path: "@ngrx/store" }
         },
         {
             name: "wire-dto-only-in-filestore-boundary",
             severity: "error",
             comment:
-                "codeCharta.api.model is the cc.json wire DTO — the data contract with the CLI. Only the fileStore ingestion boundary may depend on it: the moved load pipeline (fileStore/loaders), the navBar gameObjects importer, and util/fileDownloader (export). Keeping it out of rendering/state/UI/lenses means a cc.json format change (2.0) stays contained to the ingestion seam. The 2.0 domain types live in model/ccjson2.model.ts, which must NOT import api.model (so model/ is not allow-listed). Test/mocks/fixtures are exempt.",
+                "codeCharta.api.model is the cc.json wire DTO — the data contract with the CLI. Only the fileStore ingestion boundary may depend on it: the moved load pipeline (stores/fileStore/loaders), the navBar gameObjects importer, and util/fileDownloader (export). Keeping it out of rendering/state/UI/lenses means a cc.json format change (2.0) stays contained to the ingestion seam. The 2.0 domain types live in model/ccjson2.model.ts, which must NOT import api.model. Test/mocks/fixtures are exempt. NOTE: after the reorg the DTO lives at model/codeCharta.api.model.ts — this rule targets it by that EXACT path and must never be relaxed into a whole-model/ allow.",
             from: {
                 pathNot: [
-                    "^app/codeCharta/fileStore/",
+                    "^app/codeCharta/stores/fileStore/",
                     "^app/codeCharta/features/navBar/util/gameObjectsParser/",
                     "^app/codeCharta/util/fileDownloader\\.ts$",
                     "^app/codeCharta/mocks/",
@@ -127,18 +117,10 @@ module.exports = {
                     "\\.mocks\\.ts$"
                 ]
             },
-            to: {
-                path: "^app/codeCharta/codeCharta\\.api\\.model\\.ts$"
-            }
+            to: { path: "^app/codeCharta/model/codeCharta\\.api\\.model\\.ts$" }
         },
 
-        /* ───────────── Visualization 2.0 — Slice 1 lens/fileStore boundary ─────────────
-         * Scoped to the dirs that exist this slice (lenses/metrics, fileStore). The 7 lens-internal
-         * rules + `metrics-lens-ngrx-guard` are now `error` (the guard flipped in Slice 11 once the
-         * legend re-homed out of lenses/); `source-layers-must-not-import-features` (formerly
-         * `new-must-not-import-legacy`) flipped to `error` in Slice 12 once the last 6 residual
-         * lenses/|fileStore/ → features/|state/ edges were re-homed.
-         * See migration-2-0-plans/rpi-plan/step-1-skeleton-and-model.md. */
+        /* ───────────────────────────────── lenses (read-only projection) ───────────────────────────────── */
         {
             name: "lens-cross-lens-only-via-facade",
             severity: "error",
@@ -152,8 +134,7 @@ module.exports = {
         {
             name: "lens-external-access-only-via-public-surface",
             severity: "error",
-            comment:
-                "Outside code may touch a lens only through its public surface: the lens facade (for data). Never its services, repos, stores or models.",
+            comment: "Outside code may touch a lens only through its public surface: the lens facade (for data). Never its services, repos, stores or models.",
             from: { pathNot: "^app/codeCharta/lenses/" },
             to: {
                 path: "^app/codeCharta/lenses/",
@@ -164,7 +145,7 @@ module.exports = {
             name: "lens-internals-do-not-use-own-lens-facade",
             severity: "error",
             comment:
-                "A lens's own code (its features/services/store/repos) reads the repos/store — never its own lens facade. That facade is the OUTWARD public API for code outside the lens; an inside consumer must not route back through it. Cross-lens access to ANOTHER lens's facade stays allowed (governed by lens-cross-lens-only-via-facade). The lens facade file itself and specs are exempt.",
+                "A lens's own code reads the repos/store — never its own lens facade (that facade is the OUTWARD public API). Cross-lens access to ANOTHER lens's facade stays allowed. The lens facade file itself and specs are exempt.",
             from: {
                 path: "^app/codeCharta/lenses/([^/]+)/",
                 pathNot: ["^app/codeCharta/lenses/[^/]+/[^/]+\\.facade\\.ts$", "\\.spec\\.ts$", "\\.e2e\\.ts$"]
@@ -172,69 +153,9 @@ module.exports = {
             to: { path: "^app/codeCharta/lenses/$1/[^/]+\\.facade\\.ts$" }
         },
         {
-            name: "filestore-has-no-upward-deps",
-            severity: "error",
-            comment:
-                "FileStore is the source: it sits below every view layer. It must not import lenses or any state home (mapState, sharedView, preferences). Extended to the sharedView + preferences homes so ingestion cannot read back the blacklist/markedPackages/focus/durable-prefs they own; the phantom renderers/shell/interaction targets were dropped when those never-built layers were removed from the tree. Spec/e2e files are exempt (they may reference a home's action creators for test wiring, mirroring source-layers-must-not-import-features) — the runtime source stays clean.",
-            from: { path: "^app/codeCharta/fileStore/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: {
-                path: [
-                    "^app/codeCharta/lenses/",
-                    "^app/codeCharta/mapState/",
-                    "^app/codeCharta/sharedView/",
-                    "^app/codeCharta/preferences/"
-                ]
-            }
-        },
-        {
-            name: "util-is-a-leaf-kernel",
-            severity: "error",
-            comment:
-                "util/ is the shared LEAF kernel: pure, self-contained helpers that OTHER layers consume — never the reverse. It may import only within util/, the model/ type kernel (incl. the codeCharta.model re-export barrel) and node_modules; it must NOT reach into any app layer (lenses/renderModel/state homes/fileStore/store/load/features/threeViewer). This is the ONE layer that had no outgoing-dep fitness function, which let it silently accrete upward edges. Slice 16i relocated the 4 leak files to their owning layer — the render/layout ENGINE (treeMapLayout/streetLayout) → threeViewer/, the PERSISTENCE writer (indexedDBWriter) → store/, defaultAmountOfTopLabels → model/ — and this flipped WARN→ERROR (0 violations). Spec/e2e/mocks exempt. (Positive allow-list: anything under app/codeCharta/ that is NOT util/ or model/ is forbidden, so any future layer is auto-fenced.)",
-            from: { path: "^app/codeCharta/util/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.mocks\\.ts$"] },
-            to: {
-                path: "^app/codeCharta/",
-                pathNot: [
-                    "^app/codeCharta/util/",
-                    "^app/codeCharta/model/",
-                    "^app/codeCharta/codeCharta\\.model\\.ts$",
-                    // the wire DTO is a pure cc.json type contract, not a layer; util/fileDownloader is a sanctioned
-                    // wire-dto consumer (export path) already fenced by wire-dto-only-in-filestore-boundary.
-                    "^app/codeCharta/codeCharta\\.api\\.model\\.ts$"
-                ]
-            }
-        },
-        {
-            name: "state-home-is-leaf",
-            severity: "error",
-            comment:
-                "State-home modules — mapState is the map-view state home (colors, labels, scaling, axis inversion, edge visibility, plus the Slice-6 presentation stragglers colorMode/colorRange/margin/layoutAlgorithm and the transient interaction ids), sharedView is the cross-renderer view-state home (focus + search + blacklist + markedPackages), preferences is the durable global-preferences home (Slice 10) — are a leaf. They must not import lenses; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store. Flipped to error for mapState in Slice 6, sharedView in Slice 8 and preferences in Slice 10b.",
-            from: { path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/", "^app/codeCharta/preferences/"] },
-            to: {
-                path: ["^app/codeCharta/lenses/"]
-            }
-        },
-        {
-            name: "state-home-only-stores-import-ngrx",
-            severity: "error",
-            comment:
-                "Only a state-home's store/ folder may import @ngrx/store — the home's public facade is a barrel of re-exports and its consumers reach it through selectors/actions, never by importing ngrx from home code outside store/. Flipped to error for mapState in Slice 6, sharedView in Slice 8 and preferences in Slice 10b.",
-            from: {
-                path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/", "^app/codeCharta/preferences/"],
-                pathNot: [
-                    "^app/codeCharta/mapState/store/",
-                    "^app/codeCharta/sharedView/store/",
-                    "^app/codeCharta/preferences/store/",
-                    "\\.spec\\.ts$"
-                ]
-            },
-            to: { path: "@ngrx/store" }
-        },
-        {
             name: "metrics-lens-ngrx-guard",
             severity: "error",
-            comment:
-                "Lens code may import @ngrx/store only from a lens's repos/store. Enforced at error since Slice 11 re-homed the legend out of lenses/ — the last lens-code ngrx injection (legend.service) is gone, and the abandoned lenses/*/features/ 'shell' model no longer exists.",
+            comment: "Lens code may import @ngrx/store only from a lens's repos/store.",
             from: {
                 path: "^app/codeCharta/lenses/",
                 pathNot: ["^app/codeCharta/lenses/[^/]+/(repos|store)/", "\\.spec\\.ts$"]
@@ -242,35 +163,10 @@ module.exports = {
             to: { path: "@ngrx/store" }
         },
         {
-            name: "load-orchestrator-not-imported-by-lower-layers",
-            severity: "error",
-            comment:
-                "load/ is the initial-file load orchestrator (Slice 12b): on startup it hydrates state from a persisted/URL cc.json by driving the homes, lenses and fileStore through their public facades/actions. It is a TOP layer — nothing it writes into may import it back. Homes (mapState/sharedView/preferences), lenses AND fileStore must not depend on load/ (that would invert the layering and risk a cycle, since load/ imports their facades). Slice 16f moved the initial-file loader itself INTO load/, so fileStore now has ZERO upward deps — the last transitional fileStore -> load/ edge is gone. threeViewer's own upward edges to load/ are fenced by three-viewer-engine-does-not-import-up. Spec/e2e are exempt (test wiring may reference the orchestrator).",
-            from: {
-                path: [
-                    "^app/codeCharta/mapState/",
-                    "^app/codeCharta/sharedView/",
-                    "^app/codeCharta/preferences/",
-                    "^app/codeCharta/lenses/",
-                    "^app/codeCharta/fileStore/"
-                ],
-                pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
-            },
-            to: { path: "^app/codeCharta/load/" }
-        },
-        {
-            name: "source-layers-must-not-import-features",
-            severity: "error",
-            comment:
-                "Layering boundary: the SOURCE/DATA layers (lenses/, fileStore/) must not import UP into features/. (Formerly `new-must-not-import-legacy`, when it also fenced the legacy state/ folder; Slice 15 fully dissolved state/ — its selectors → renderModel/, effects → features/load, root store → store/ — so only the features/ fence remains: lenses/fileStore sit BELOW features and must not depend on them; no other rule covers this edge — filestore-has-no-upward-deps stops at lenses/mapState.) util/ + model/ are the shared kernel and exempt. The reverse (features → lens facade) is the allowed flow. Spec/e2e are exempt (test wiring).",
-            from: { path: "^app/codeCharta/(lenses|fileStore)/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: { path: ["^app/codeCharta/features/"] }
-        },
-        {
             name: "lens-owns-ccjson-source",
             severity: "error",
             comment:
-                "Slice 9a/14: the cc.json SOURCE the lenses own — the metrics lens's node attributeTypes/attributeDescriptors slices + their metricsLensSource root, and the dependency lens's edge attributeTypes slice + its dependencyLensSource root, all under lenses/*/store/ — is reached from outside the lens only through that lens's facade (the read facade for selectors, the load facade for the write actions + store wiring), never its store internals. Locks 'the cc.json source lives only under lenses' as the fileSettings root dissolves. Flipped warn→error post-Slice-13 (grep-verified 0 violations); Slice 14 re-homed the edge side out of the metrics lens into the dependency lens's own store and extended this rule to fence it too.",
+                "The cc.json SOURCE the lenses own — the metrics lens's node attributeTypes/attributeDescriptors slices + their metricsLensSource root, and the dependency lens's edge attributeTypes slice + its dependencyLensSource root, all under lenses/*/store/ — is reached from outside the lens only through that lens's facade, never its store internals.",
             from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/lenses/", "\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.mocks\\.ts$"] },
             to: {
                 path: [
@@ -286,70 +182,95 @@ module.exports = {
             name: "lens-no-view-state",
             severity: "error",
             comment:
-                "A lens is data/projection, never a reader of mutable VIEW STATE. Lens code (lenses/**) must not import a state home — mapState (map-view settings + transient interaction ids), sharedView (focus/search/blacklist/markedPackages) or preferences — nor any view-state selector; selection/blacklist/edge-visibility reach a lens only as explicit parameters passed by the composing layer. Authored at error in Slice 14a: precondition grep-verified 0 violations across all 15 lens source files (Slice 7 lifted the metrics lens's blacklist/dynamicSettings reads, Slice 9b the dependency lens's blacklist/showEdges reads, into state/selectors). Freezes the 'lenses never read view state' invariant ahead of Slice 14's structure lens + renderer-agnostic id + valueOf(id), which must not re-couple a lens to a home. Spec/e2e exempt (test wiring).",
+                "A lens is data/projection, never a reader of mutable VIEW STATE. Lens code (lenses/**) must not import a state home — stores/mapState, stores/sharedView or stores/preferences — nor any view-state selector; selection/blacklist/edge-visibility reach a lens only as explicit parameters passed by the composing layer (renderModel). This half of the lens‖home fence is why 'Lenses above Stores' is a readability order, not a real edge. Spec/e2e exempt.",
             from: { path: "^app/codeCharta/lenses/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: { path: ["^app/codeCharta/mapState/", "^app/codeCharta/sharedView/", "^app/codeCharta/preferences/"] }
-        },
-        {
-            name: "render-model-is-top-derived-layer",
-            severity: "error",
-            comment:
-                "renderModel/ is the cross-lens composing layer (Slice 15): it folds the structure/metrics/dependency lenses + the view-state homes into the decorated tree and its derived read models (accumulatedData, codeMapNodes, pathToNode, rootUnary, metricData, the derived metric + node-resolving selectors, the render-availability gates). It sits ABOVE the lenses and homes — it reads their facades DOWNWARD — so nothing below it may import it back: lenses, fileStore (the source) and the three state homes (mapState/sharedView/preferences) must not depend on renderModel/. Consumers ABOVE it (features/, load/, state effects, renderers, app.config) reach every composing selector through renderModel.facade. Mirrors load-orchestrator-not-imported-by-lower-layers. Spec/e2e exempt (test wiring).",
-            from: {
-                path: [
-                    "^app/codeCharta/lenses/",
-                    "^app/codeCharta/fileStore/",
-                    "^app/codeCharta/mapState/",
-                    "^app/codeCharta/sharedView/",
-                    "^app/codeCharta/preferences/"
-                ],
-                pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
-            },
-            to: { path: "^app/codeCharta/renderModel/" }
-        },
-        {
-            name: "three-viewer-engine-does-not-import-up",
-            severity: "error",
-            comment:
-                "threeViewer/ is the shared 3D render-engine layer extracted in Slice 16c (Three.js scene/camera/controls/renderer, the codeMap mesh + treemap/street layout ALGORITHM, and the scene stores). It sits BELOW the features/ that drive it — codeMap, viewCube, labelSettings, scenarios, sidebar… reach it through threeViewer.facade, and the codeMap renderer feature also drives its internals directly (the map-renderer-only migration keeps that coupling intentional, so facade-only INBOUND access is not enforced). Everything else it needs it reads DOWNWARD through public facades (renderModel.facade, the lens facades, the mapState/sharedView home facades, fileStore.facade), which the existing lens/home/renderModel boundary rules already fence for any 'outside' importer. The one edge with no fitness function was the UPWARD one: the engine must NOT import features/ (its consumers) or load/ (the startup orchestrator) — that would invert the layering and risk a cycle. Grep-verified 0 such edges. Spec/e2e exempt (test wiring).",
-            from: { path: "^app/codeCharta/threeViewer/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: { path: ["^app/codeCharta/features/", "^app/codeCharta/load/"] }
-        },
-        {
-            name: "root-store-is-sole-composer",
-            severity: "error",
-            comment:
-                "store/store.ts is the ngrx ROOT composition (Slice 15f): the per-home reducer map (appReducers) + the global setState meta-reducer. Only the app composition root (app/app.config.ts) may import it — nothing else re-composes or re-wires the store. The reusable root-state CONTRACT is deliberately kept OUT of this module so consumers never touch the composition: defaultState + the deep-merge kernel live in store/state.manager and the global setState action in store/state.actions, both freely importable. Spec/e2e are exempt (they wire a real store via StoreModule.forRoot(appReducers, ...) for integration tests).",
-            from: { path: "^app/codeCharta/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: { path: "^app/codeCharta/store/store\\.ts$" }
+            to: { path: ["^app/codeCharta/stores/mapState/", "^app/codeCharta/stores/sharedView/", "^app/codeCharta/stores/preferences/"] }
         },
 
-        /* ───────────── Visualization 2.0 — Slice 13 CQRS: read/write facade split ─────────────
-         * Each state home's single public barrel splits into a READ facade (selectors + root selector +
-         * default* fallbacks + store wiring) and a WRITE facade (action creators). A display-only
-         * consumer physically cannot dispatch. Staged per home as each split lands (13a preferences,
-         * 13b sharedView, 13c mapState) — the `to` patterns grow home-by-home and flip warn→error.
-         * See migration-2-0-plans/slice-13-cqrs-homes.md. */
+        /* ───────────────────────────────── stores (state homes + the source) ───────────────────────────────── */
         {
-            name: "state-home-write-facade-is-sole-dispatch-surface",
+            name: "filestore-has-no-upward-deps",
             severity: "error",
             comment:
-                "A state home's action creators are reached from outside the home ONLY through its write facade (<home>.write.facade.ts), never the raw store/**/*.actions.ts files. The write facade is the sole dispatch surface; the read facade and default*/selectors carry no creator. Spec/e2e are exempt (test wiring may reference raw action creators). Scoped to preferences in Slice 13a; grows to sharedView (13b) and mapState (13c).",
+                "FileStore is the source: it sits below every view layer. It must not import lenses or any state home (stores/mapState, stores/sharedView, stores/preferences) so ingestion cannot read back the state they own. Spec/e2e exempt.",
+            from: { path: "^app/codeCharta/stores/fileStore/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: {
+                path: [
+                    "^app/codeCharta/lenses/",
+                    "^app/codeCharta/stores/mapState/",
+                    "^app/codeCharta/stores/sharedView/",
+                    "^app/codeCharta/stores/preferences/"
+                ]
+            }
+        },
+        {
+            name: "state-home-is-leaf",
+            severity: "error",
+            comment:
+                "State-home modules — stores/mapState (map-view presentation + metric selection + transient interaction ids), stores/sharedView (focus + search + blacklist + markedPackages), stores/preferences (durable global prefs) — are leaves. They must not import lenses; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store.",
+            from: { path: ["^app/codeCharta/stores/mapState/", "^app/codeCharta/stores/sharedView/", "^app/codeCharta/stores/preferences/"] },
+            to: { path: ["^app/codeCharta/lenses/"] }
+        },
+        {
+            name: "state-home-only-stores-import-ngrx",
+            severity: "error",
+            comment: "Only a state-home's store/ folder may import @ngrx/store — consumers reach the home through its facades, never by importing ngrx from home code outside store/.",
+            from: {
+                path: ["^app/codeCharta/stores/mapState/", "^app/codeCharta/stores/sharedView/", "^app/codeCharta/stores/preferences/"],
+                pathNot: [
+                    "^app/codeCharta/stores/mapState/store/",
+                    "^app/codeCharta/stores/sharedView/store/",
+                    "^app/codeCharta/stores/preferences/store/",
+                    "\\.spec\\.ts$"
+                ]
+            },
+            to: { path: "@ngrx/store" }
+        },
+        {
+            name: "feature-reaches-state-home-only-via-facade",
+            severity: "error",
+            comment:
+                "Outside code reaches a state home only through its public facades (read/write), never its store/ internals — no raw import of a home's store/**/*.{selector,reducer,actions}. All three homes fenced. The homes' own facades + store/ are exempt (from.pathNot); spec/e2e may wire raw for tests.",
             from: {
                 path: "^app/codeCharta/",
                 pathNot: [
-                    "^app/codeCharta/preferences/",
-                    "^app/codeCharta/sharedView/",
-                    "^app/codeCharta/mapState/",
+                    "^app/codeCharta/stores/sharedView/",
+                    "^app/codeCharta/stores/preferences/",
+                    "^app/codeCharta/stores/mapState/",
                     "\\.spec\\.ts$",
                     "\\.e2e\\.ts$"
                 ]
             },
             to: {
                 path: [
-                    "^app/codeCharta/preferences/store/.*\\.actions\\.ts$",
-                    "^app/codeCharta/sharedView/store/.*\\.actions\\.ts$",
-                    "^app/codeCharta/mapState/store/.*\\.actions\\.ts$"
+                    "^app/codeCharta/stores/sharedView/store/",
+                    "^app/codeCharta/stores/preferences/store/",
+                    "^app/codeCharta/stores/mapState/store/"
+                ]
+            }
+        },
+
+        /* ─────────────── CQRS read/write facade split on the homes (Slice 13) ─────────────── */
+        {
+            name: "state-home-write-facade-is-sole-dispatch-surface",
+            severity: "error",
+            comment:
+                "A state home's action creators are reached from outside the home ONLY through its write facade (<home>.write.facade.ts), never the raw store/**/*.actions.ts files. Spec/e2e exempt.",
+            from: {
+                path: "^app/codeCharta/",
+                pathNot: [
+                    "^app/codeCharta/stores/preferences/",
+                    "^app/codeCharta/stores/sharedView/",
+                    "^app/codeCharta/stores/mapState/",
+                    "\\.spec\\.ts$",
+                    "\\.e2e\\.ts$"
+                ]
+            },
+            to: {
+                path: [
+                    "^app/codeCharta/stores/preferences/store/.*\\.actions\\.ts$",
+                    "^app/codeCharta/stores/sharedView/store/.*\\.actions\\.ts$",
+                    "^app/codeCharta/stores/mapState/store/.*\\.actions\\.ts$"
                 ]
             }
         },
@@ -357,19 +278,19 @@ module.exports = {
             name: "state-home-read-facade-has-no-dispatch",
             severity: "error",
             comment:
-                "A state home's READ facade (<home>.read.facade.ts) re-exports selectors, the root selector, default* fallbacks and the store wiring — but NO action creator. It must not import any of the home's store/**/*.actions.ts files, so importing the read facade can never hand a consumer a dispatch. Scoped to preferences in Slice 13a; grew to sharedView (13b) and mapState (13c) — all three homes now enforced.",
+                "A state home's READ facade (<home>.read.facade.ts) re-exports selectors/root/default*/store-wiring — but NO action creator; it must not import any store/**/*.actions.ts, so importing the read facade can never hand a consumer a dispatch.",
             from: {
                 path: [
-                    "^app/codeCharta/preferences/preferences\\.read\\.facade\\.ts$",
-                    "^app/codeCharta/sharedView/sharedView\\.read\\.facade\\.ts$",
-                    "^app/codeCharta/mapState/mapState\\.read\\.facade\\.ts$"
+                    "^app/codeCharta/stores/preferences/preferences\\.read\\.facade\\.ts$",
+                    "^app/codeCharta/stores/sharedView/sharedView\\.read\\.facade\\.ts$",
+                    "^app/codeCharta/stores/mapState/mapState\\.read\\.facade\\.ts$"
                 ]
             },
             to: {
                 path: [
-                    "^app/codeCharta/preferences/store/.*\\.actions\\.ts$",
-                    "^app/codeCharta/sharedView/store/.*\\.actions\\.ts$",
-                    "^app/codeCharta/mapState/store/.*\\.actions\\.ts$"
+                    "^app/codeCharta/stores/preferences/store/.*\\.actions\\.ts$",
+                    "^app/codeCharta/stores/sharedView/store/.*\\.actions\\.ts$",
+                    "^app/codeCharta/stores/mapState/store/.*\\.actions\\.ts$"
                 ]
             }
         },
@@ -377,38 +298,94 @@ module.exports = {
             name: "display-components-cannot-dispatch",
             severity: "error",
             comment:
-                "Display components (features/**/*.component.ts) render state and emit UI events; they never dispatch a state-home action. A component must not import a home write facade — it reads via a selector/feature-store and delegates writes to its feature's store service. Already 0 violations. Scoped to preferences in Slice 13a; grew to sharedView (13b) and mapState (13c) — all three homes now enforced.",
+                "Display components (features/**/*.component.ts) render state and emit UI events; they never dispatch a state-home action. A component must not import a home write facade — it reads via a selector/feature-store and delegates writes to its feature's store service.",
             from: { path: "^app/codeCharta/features/.*\\.component\\.ts$", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: {
                 path: [
-                    "^app/codeCharta/preferences/preferences\\.write\\.facade\\.ts$",
-                    "^app/codeCharta/sharedView/sharedView\\.write\\.facade\\.ts$",
-                    "^app/codeCharta/mapState/mapState\\.write\\.facade\\.ts$"
+                    "^app/codeCharta/stores/preferences/preferences\\.write\\.facade\\.ts$",
+                    "^app/codeCharta/stores/sharedView/sharedView\\.write\\.facade\\.ts$",
+                    "^app/codeCharta/stores/mapState/mapState\\.write\\.facade\\.ts$"
                 ]
             }
         },
+
+        /* ───────────────────────────────── renderer (engine + derived read-model) ───────────────────────────────── */
         {
-            name: "feature-reaches-state-home-only-via-facade",
+            name: "render-model-is-top-derived",
             severity: "error",
             comment:
-                "Outside code reaches a state home only through its public facades (read/write), never its store/ internals — no raw import of a home's store/**/*.{selector,reducer,actions}. All three homes fenced (sharedView + preferences since Slice 13; mapState joined in Slice 16d once its last raw store/*.selector imports folded onto MapStateReadWindow / the read facade). state.manager/appliers already route through the read/write facades, so no exemption is needed. The homes' own facades + store/ are exempt (from.pathNot); spec/e2e may wire raw for tests.",
+                "renderer/renderModel/ is the cross-lens composing layer: it folds the structure/metrics/dependency lenses + the view-state homes into the decorated tree and its derived read models. It sits ABOVE the lenses and homes — it reads their facades DOWNWARD — so nothing below it may import it back: lenses, stores/fileStore (the source) and the three state homes (stores/mapState, stores/sharedView, stores/preferences) must not depend on it. Consumers ABOVE it (features/, views/, load/, the renderer engine) reach every composing selector through renderModel.facade. Spec/e2e exempt.",
             from: {
-                path: "^app/codeCharta/",
-                pathNot: [
-                    "^app/codeCharta/sharedView/",
-                    "^app/codeCharta/preferences/",
-                    "^app/codeCharta/mapState/",
-                    "\\.spec\\.ts$",
-                    "\\.e2e\\.ts$"
-                ]
-            },
-            to: {
                 path: [
-                    "^app/codeCharta/sharedView/store/",
-                    "^app/codeCharta/preferences/store/",
-                    "^app/codeCharta/mapState/store/"
-                ]
+                    "^app/codeCharta/lenses/",
+                    "^app/codeCharta/stores/fileStore/",
+                    "^app/codeCharta/stores/mapState/",
+                    "^app/codeCharta/stores/sharedView/",
+                    "^app/codeCharta/stores/preferences/"
+                ],
+                pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
+            },
+            to: { path: "^app/codeCharta/renderer/renderModel/" }
+        },
+        {
+            name: "renderer-does-not-import-up",
+            severity: "error",
+            comment:
+                "renderer/ is the render tier: the Three.js engine (renderer/threeViewer/ — scene/camera/controls/renderer, the codeMap mesh + treemap/street layout ALGORITHM, the scene stores) plus the derived read-model (renderer/renderModel/). It sits BELOW the features/ that drive it and the views/ that host them. Everything it needs it reads DOWNWARD through public facades (renderModel.facade, the lens facades, the mapState/sharedView home facades, fileStore.facade). The UPWARD edge is forbidden: the renderer must NOT import features/, views/ or load/ (the startup orchestrator) — that would invert the layering and risk a cycle. Renamed + widened from `three-viewer-engine-does-not-import-up` (now covers renderModel too). Spec/e2e exempt.",
+            from: { path: "^app/codeCharta/renderer/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: { path: ["^app/codeCharta/features/", "^app/codeCharta/views/", "^app/codeCharta/load/"] }
+        },
+
+        /* ───────────────────────────────── util — the leaf kernel ───────────────────────────────── */
+        {
+            name: "util-is-a-leaf-kernel",
+            severity: "error",
+            comment:
+                "util/ is the shared LEAF kernel: pure, self-contained helpers that OTHER layers consume — never the reverse. It may import only within util/, the model/ type kernel (incl. the codeCharta.model re-export barrel + the api.model wire DTO, both now under model/) and node_modules; it must NOT reach into any app layer (views/features/renderer/lenses/stores). Positive allow-list: anything under app/codeCharta/ that is NOT util/ or model/ is forbidden, so any future layer is auto-fenced. Spec/e2e/mocks exempt.",
+            from: { path: "^app/codeCharta/util/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.mocks\\.ts$"] },
+            to: {
+                path: "^app/codeCharta/",
+                pathNot: ["^app/codeCharta/util/", "^app/codeCharta/model/"]
             }
+        },
+
+        /* ───────────────────── PARKED — composition-root shards (load/, store/) ─────────────────────
+         * These are NOT yet placed by the reorg (see TARGET-ARCHITECTURE.md "Open questions"). Their
+         * rules are kept verbatim at the current paths so the config stays enforceable; the state-home
+         * targets inside them were updated to the stores/ prefix. Revisit when load/ + store/ get a home
+         * (likely an `app-root` band above views/). */
+        {
+            name: "load-orchestrator-not-imported-by-lower-layers",
+            severity: "error",
+            comment:
+                "load/ is the initial-file load orchestrator: on startup it hydrates state from a persisted/URL cc.json by driving the homes, lenses and fileStore through their public facades/actions. It is a TOP layer — nothing it writes into may import it back. Homes (stores/mapState, stores/sharedView, stores/preferences), lenses AND stores/fileStore must not depend on load/. renderer's own upward edges to load/ are fenced by renderer-does-not-import-up. Spec/e2e exempt. PARKED path.",
+            from: {
+                path: [
+                    "^app/codeCharta/stores/mapState/",
+                    "^app/codeCharta/stores/sharedView/",
+                    "^app/codeCharta/stores/preferences/",
+                    "^app/codeCharta/lenses/",
+                    "^app/codeCharta/stores/fileStore/"
+                ],
+                pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
+            },
+            to: { path: "^app/codeCharta/load/" }
+        },
+        {
+            name: "source-layers-must-not-import-features",
+            severity: "error",
+            comment:
+                "Layering boundary: the SOURCE/DATA layers (lenses/, stores/fileStore/) must not import UP into features/. util/ + model/ are the shared kernel and exempt. The reverse (features → lens facade) is the allowed flow. Spec/e2e exempt.",
+            from: { path: ["^app/codeCharta/lenses/", "^app/codeCharta/stores/fileStore/"], pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: { path: ["^app/codeCharta/features/"] }
+        },
+        {
+            name: "root-store-is-sole-composer",
+            severity: "error",
+            comment:
+                "store/store.ts is the ngrx ROOT composition: the per-home reducer map (appReducers) + the global setState meta-reducer. Only the app composition root (app/app.config.ts) may import it. The reusable root-state CONTRACT (defaultState + deep-merge kernel in store/state.manager, the global setState action in store/state.actions) is deliberately kept OUT of this module so consumers never touch the composition. Spec/e2e exempt. PARKED path (store/ home TBD).",
+            from: { path: "^app/codeCharta/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: { path: "^app/codeCharta/store/store\\.ts$" }
         }
     ],
     options: {
@@ -417,15 +394,10 @@ module.exports = {
             dependencyTypes: ["npm", "npm-dev", "npm-optional", "npm-peer", "npm-bundled", "npm-no-pkg"]
         },
         exclude: {
-            // Test fixtures are not production architecture: keep the mocks/ folder and
-            // any *.mocks.ts file out of the dependency graph and the boundary rules so
-            // they don't obscure real structure (they are only ever imported by tests).
             path: ["(^|/)node_modules/(?!@(ngrx|angular)/)", "^app/codeCharta/mocks/", "\\.mocks\\.ts$"]
         },
         tsPreCompilationDeps: true,
-        tsConfig: {
-            fileName: "tsconfig.json"
-        },
+        tsConfig: { fileName: "tsconfig.json" },
         enhancedResolveOptions: {
             exportsFields: ["exports"],
             conditionNames: ["import", "require", "node", "default", "types"],
@@ -435,23 +407,13 @@ module.exports = {
         reporterOptions: {
             dot: {
                 collapsePattern: "^node_modules/(@[^/]+/[^/]+|[^/]+)",
-                theme: {
-                    graph: {
-                        splines: "ortho"
-                    }
-                }
+                theme: { graph: { splines: "ortho" } }
             },
             archi: {
-                collapsePattern: "^app/codeCharta/(features/[^/]+|lenses/[^/]+|fileStore)",
-                theme: {
-                    graph: {
-                        splines: "ortho"
-                    }
-                }
+                collapsePattern: "^app/codeCharta/(views|features/[^/]+|renderer/[^/]+|lenses/[^/]+|stores/[^/]+)",
+                theme: { graph: { splines: "ortho" } }
             },
-            text: {
-                highlightFocused: true
-            }
+            text: { highlightFocused: true }
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Store } from "@ngrx/store"
-import { CcState, NodeMetricData } from "../../../../codeCharta.model"
-import { setAreaMetric, setColorMetric, setDistributionMetric, setHeightMetric } from "../../../../mapState/mapState.write.facade"
+import { CcState, NodeMetricData } from "../../../../model/codeCharta.model"
+import { setAreaMetric, setColorMetric, setDistributionMetric, setHeightMetric } from "../../../../stores/mapState/mapState.write.facade"
 import { getDefaultDistribution } from "./utils/getDefaultDistributionMetric"
 import { defaultNMetrics, preselectCombination } from "./utils/metricHelper"
 

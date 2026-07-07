@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { MarkedPackage } from "../../../codeCharta.model"
+import { MarkedPackage } from "../../../model/codeCharta.model"
 import { FolderOverridesStore } from "../stores/folderOverrides.store"
 
 @Injectable({

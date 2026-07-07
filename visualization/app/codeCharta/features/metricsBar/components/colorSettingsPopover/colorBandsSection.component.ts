@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ColorCategoryCountsStore } from "../../../../threeViewer/threeViewer.facade"
+import { ColorCategoryCountsStore } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { IsDeltaStateService } from "../../services/isDeltaState.service"
 import { ColorBandRowComponent } from "./colorBandRow.component"
 

@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MetricData } from "../../../codeCharta.model"
-import { accumulatedDataSelector, nodeMetricDataSelector, selectedNodeSelector } from "../../../renderModel/renderModel.facade"
+import { AttributeDescriptor, AttributeDescriptors, CodeMapNode, MetricData } from "../../../model/codeCharta.model"
+import { accumulatedDataSelector, nodeMetricDataSelector, selectedNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { calculateMetricBar, MetricBar } from "../util/metricSeverity"
 

@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
 import { Print3DService } from "./3dPrint.service"
 import { Print3DStore } from "../stores/3dPrint.store"
-import { ColorMode } from "../../../codeCharta.model"
+import { ColorMode } from "../../../model/codeCharta.model"
 
 describe("Print3DService", () => {
     let service: Print3DService

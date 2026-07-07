@@ -1,4 +1,4 @@
-import { ColorMode, ColorRange, MapColors } from "../../codeCharta.model"
+import { ColorMode, ColorRange, MapColors } from "../../model/codeCharta.model"
 import { ColorConverter } from "./colorConverter"
 import { Color } from "three"
 import { MetricMinMax } from "../metric/metricRange"

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
-import { CCFile, CcState } from "../../../codeCharta.model"
+import { CCFile, CcState } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
 import {
     removeFiles,
@@ -10,7 +10,7 @@ import {
     setFiles,
     setStandard,
     switchReferenceAndComparison
-} from "../../../fileStore/store/files.actions"
+} from "../../../stores/fileStore/store/files.actions"
 import { filesSelector, isDeltaStateSelector, referenceFileSelector } from "../selectors/navBar.selectors"
 
 @Injectable({ providedIn: "root" })

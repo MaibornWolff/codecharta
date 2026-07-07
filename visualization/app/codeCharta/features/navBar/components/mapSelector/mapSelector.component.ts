@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CCFile } from "../../../../codeCharta.model"
+import { CCFile } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { RemoveExtensionPipe } from "../../removeExtension.pipe"
 import { FilesSelectionStore } from "../../stores/filesSelection.store"

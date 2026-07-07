@@ -1,4 +1,4 @@
-import { AttributeTypeValue } from "../codeCharta.model"
+import { AttributeTypeValue } from "../model/codeCharta.model"
 import { _applyPartialState, defaultState } from "./state.manager"
 import { expect } from "@jest/globals"
 import { clone } from "../util/clone"

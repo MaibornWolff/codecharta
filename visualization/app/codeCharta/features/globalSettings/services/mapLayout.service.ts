@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { LayoutAlgorithm } from "../../../codeCharta.model"
+import { LayoutAlgorithm } from "../../../model/codeCharta.model"
 import { MapLayoutStore } from "../stores/mapLayout.store"
 
 @Injectable({

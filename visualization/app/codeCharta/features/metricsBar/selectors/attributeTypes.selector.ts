@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { AttributeTypes } from "../../../codeCharta.model"
+import { AttributeTypes } from "../../../model/codeCharta.model"
 import { nodeAttributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { edgeAttributeTypesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 

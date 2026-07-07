@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { of } from "rxjs"
 import { MapLayoutSelectionComponent } from "./mapLayoutSelection.component"
 import { MapLayoutService } from "../../../services/mapLayout.service"
-import { LayoutAlgorithm } from "../../../../../codeCharta.model"
+import { LayoutAlgorithm } from "../../../../../model/codeCharta.model"
 
 describe("MapLayoutSelectionComponent", () => {
     let fixture: ComponentFixture<MapLayoutSelectionComponent>

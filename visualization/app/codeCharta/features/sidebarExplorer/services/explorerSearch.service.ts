@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { BlacklistType } from "../../../codeCharta.model"
+import { BlacklistType } from "../../../model/codeCharta.model"
 import { SearchPatternStore } from "../stores/searchPattern.store"
 
 @Injectable({

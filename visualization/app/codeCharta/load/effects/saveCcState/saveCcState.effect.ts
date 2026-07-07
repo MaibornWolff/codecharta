@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { State } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CcState } from "../../../model/codeCharta.model"
 import { debounceTime, filter, tap } from "rxjs"
 import { writeCcState } from "../../../store/indexedDB/indexedDBWriter"
 import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
-import { setHoveredNodeId } from "../../../sharedView/sharedView.write.facade"
+import { setHoveredNodeId } from "../../../stores/sharedView/sharedView.write.facade"
 
 @Injectable()
 export class SaveCcStateEffect {

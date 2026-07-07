@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { combineLatest, map } from "rxjs"
-import { ColorRange } from "../../../../codeCharta.model"
+import { ColorRange } from "../../../../model/codeCharta.model"
 import { debounce } from "../../../../util/debounce"
 import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
 import { ColorMetricService } from "../../services/colorMetric.service"

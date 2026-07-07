@@ -1,8 +1,8 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import packageJson from "../../../package.json"
 import { DownloadableSetting, FileDownloader } from "./fileDownloader"
-import { BlacklistItem, CodeMapNode, FileMeta, FileSettings, MarkedPackage, MetricsLensSource } from "../codeCharta.model"
-import { checkErrors, ERROR_MESSAGES } from "../fileStore/loaders/ccJson/util/fileValidator"
+import { BlacklistItem, CodeMapNode, FileMeta, FileSettings, MarkedPackage, MetricsLensSource } from "../model/codeCharta.model"
+import { checkErrors, ERROR_MESSAGES } from "../stores/fileStore/loaders/ccJson/util/fileValidator"
 import {
     TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED,
     TEST_ATTRIBUTE_TYPES,

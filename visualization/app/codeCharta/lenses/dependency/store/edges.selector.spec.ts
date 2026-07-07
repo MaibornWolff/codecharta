@@ -2,7 +2,7 @@ import { edgesSelector } from "./edges.selector"
 import { getMergedEdges } from "../../../util/edges/edges.merger"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../../model/files/files"
-import { CCFile, Edge } from "../../../codeCharta.model"
+import { CCFile, Edge } from "../../../model/codeCharta.model"
 import { TEST_FILE_DATA } from "../../../mocks/dataMocks"
 import { clone } from "../../../util/clone"
 

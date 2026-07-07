@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { selectedNodeSelector } from "../../../renderModel/renderModel.facade"
+import { CcState } from "../../../model/codeCharta.model"
+import { selectedNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 
 @Injectable({
     providedIn: "root"

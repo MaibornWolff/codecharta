@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing"
 import { State, Store } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { ColorMode } from "../../../../codeCharta.model"
-import { setColorMode } from "../../../../mapState/mapState.write.facade"
+import { ColorMode } from "../../../../model/codeCharta.model"
+import { setColorMode } from "../../../../stores/mapState/mapState.write.facade"
 import { Print3DButtonComponent } from "./print3DButton.component"
 
 describe("Print3DButtonComponent", () => {

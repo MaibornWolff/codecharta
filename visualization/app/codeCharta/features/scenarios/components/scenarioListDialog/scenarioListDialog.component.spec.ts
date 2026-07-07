@@ -8,7 +8,7 @@ import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { ScenariosService } from "../../services/scenarios.service"
 import { ScenarioImportExportService } from "../../services/scenarioImportExport.service"
 import { Scenario } from "../../model/scenario.model"
-import { ColorMode, LabelMode, MetricData, NodeType } from "../../../../codeCharta.model"
+import { ColorMode, LabelMode, MetricData, NodeType } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 
 const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[]): Scenario => ({

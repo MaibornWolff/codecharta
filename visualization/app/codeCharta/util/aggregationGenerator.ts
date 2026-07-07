@@ -1,4 +1,4 @@
-import { CodeMapNode, CCFile, NodeType } from "../codeCharta.model"
+import { CodeMapNode, CCFile, NodeType } from "../model/codeCharta.model"
 import { FileNameHelper } from "./fileNameHelper"
 import { getUpdatedPath } from "./nodePathHelper"
 import packageJson from "../../../package.json"

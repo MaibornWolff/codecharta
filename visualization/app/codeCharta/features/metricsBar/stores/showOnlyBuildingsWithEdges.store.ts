@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CcState } from "../../../model/codeCharta.model"
 import { showOnlyBuildingsWithEdgesSelector } from "../selectors/edgeAndColors.selectors"
-import { setShowOnlyBuildingsWithEdges } from "../../../mapState/mapState.write.facade"
+import { setShowOnlyBuildingsWithEdges } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

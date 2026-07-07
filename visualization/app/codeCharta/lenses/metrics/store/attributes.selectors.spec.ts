@@ -1,4 +1,4 @@
-import { AttributeTypeValue } from "../../../codeCharta.model"
+import { AttributeTypeValue } from "../../../model/codeCharta.model"
 import { nodeAttributeTypesSelector } from "./attributes.selectors"
 
 describe("nodeAttributeTypesSelector", () => {

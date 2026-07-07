@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core"
 
-import { ColorRange, MapColors } from "../../codeCharta.model"
+import { ColorRange, MapColors } from "../../model/codeCharta.model"
 import { MetricMinMax } from "../metric/metricRange"
 
 @Pipe({

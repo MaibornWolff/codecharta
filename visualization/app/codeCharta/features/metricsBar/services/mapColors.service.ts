@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { MapColors } from "../../../codeCharta.model"
+import { MapColors } from "../../../model/codeCharta.model"
 import { MapColorsStore } from "../stores/mapColors.store"
 
 @Injectable({

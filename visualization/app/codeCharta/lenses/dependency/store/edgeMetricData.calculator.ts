@@ -1,5 +1,5 @@
 import { hierarchy } from "d3-hierarchy"
-import { Edge, EdgeMetricCountMap, EdgeMetricData, NodeEdgeMetricsMap } from "../../../codeCharta.model"
+import { Edge, EdgeMetricCountMap, EdgeMetricData, NodeEdgeMetricsMap } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
 import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 import { sortByMetricName } from "../../../util/metric/sortByMetricName"

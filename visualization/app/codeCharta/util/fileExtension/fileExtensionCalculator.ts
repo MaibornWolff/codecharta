@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../model/codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { HSL } from "../color/hsl"
 import { isLeaf } from "../codeMapHelper"

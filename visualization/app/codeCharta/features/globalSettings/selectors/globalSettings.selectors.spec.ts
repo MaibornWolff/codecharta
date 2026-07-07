@@ -1,4 +1,4 @@
-import { CcState, LayoutAlgorithm } from "../../../codeCharta.model"
+import { CcState, LayoutAlgorithm } from "../../../model/codeCharta.model"
 import { defaultState } from "../../../store/state.manager"
 import {
     screenshotToClipboardEnabledSelector,

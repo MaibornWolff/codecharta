@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { map } from "rxjs"
-import { CcState } from "../../../codeCharta.model"
-import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../sharedView/sharedView.read.facade"
-import { focusNode, unfocusAllNodes, unfocusNode } from "../../../sharedView/sharedView.write.facade"
+import { CcState } from "../../../model/codeCharta.model"
+import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { focusNode, unfocusAllNodes, unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
 
 @Injectable({
     providedIn: "root"

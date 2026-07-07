@@ -3,7 +3,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { SaveScenarioDialogComponent } from "./saveScenarioDialog.component"
 import { ScenariosService } from "../../services/scenarios.service"
 import { defaultState } from "../../../../store/state.manager"
-import { NodeType } from "../../../../codeCharta.model"
+import { NodeType } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 
 const createFileState = (fileName: string): FileState => ({

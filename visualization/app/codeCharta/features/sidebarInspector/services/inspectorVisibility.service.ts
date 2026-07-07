@@ -1,6 +1,6 @@
 import { computed, inject, Injectable } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ThreeRendererService, ThreeSceneService } from "../../../threeViewer/threeViewer.facade"
+import { ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { InspectorSelectedNodeStore } from "../stores/selectedNode.store"
 
 @Injectable({ providedIn: "root" })

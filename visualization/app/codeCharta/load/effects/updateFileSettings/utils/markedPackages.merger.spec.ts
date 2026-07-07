@@ -1,6 +1,6 @@
 import { TEST_FILE_DATA } from "../../../../mocks/dataMocks"
 import { getMergedMarkedPackages } from "./markedPackages.merger"
-import { CCFile, MarkedPackage } from "../../../../codeCharta.model"
+import { CCFile, MarkedPackage } from "../../../../model/codeCharta.model"
 import { clone } from "../../../../util/clone"
 
 describe("MarkedPackagesMerger", () => {

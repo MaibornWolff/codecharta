@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CcState } from "../../../model/codeCharta.model"
 import { isWhiteBackgroundSelector } from "../selectors/globalSettings.selectors"
-import { setIsWhiteBackground } from "../../../mapState/mapState.write.facade"
+import { setIsWhiteBackground } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

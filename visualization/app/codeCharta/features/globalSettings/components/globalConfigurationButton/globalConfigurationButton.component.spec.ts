@@ -6,10 +6,10 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
 import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton.component"
 import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
-import { LoadFileService } from "../../../../fileStore/fileStore.facade"
+import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../load/load.facade"
-import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
-import { defaultMapState } from "../../../../mapState/mapState.read.facade"
+import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
+import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
 
 describe("GlobalConfigurationButtonComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationButtonComponent>

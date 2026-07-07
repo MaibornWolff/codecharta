@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { AttributeDescriptors, AttributeTypeValue } from "../../../codeCharta.model"
+import { AttributeDescriptors, AttributeTypeValue } from "../../../model/codeCharta.model"
 import { MetricsLensStore } from "../store/metricsLens.store"
 
 /** Metric metadata access for the metrics lens (node-side descriptors + types; the store owns the node projection). */

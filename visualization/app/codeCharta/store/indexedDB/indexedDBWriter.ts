@@ -1,9 +1,9 @@
-import { CcState } from "app/codeCharta/codeCharta.model"
-import { defaultMapState } from "../../mapState/mapState.read.facade"
-import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
+import { CcState } from "app/codeCharta/model/codeCharta.model"
+import { defaultMapState } from "../../stores/mapState/mapState.read.facade"
+import { defaultSharedView } from "../../stores/sharedView/sharedView.read.facade"
 import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
 import { defaultDependencyLensSource } from "../../lenses/dependency/dependencyLens.load.facade"
-import { defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
+import { defaultPreferences, defaultSorting } from "../../stores/preferences/preferences.read.facade"
 import { openDB } from "idb"
 
 export const DB_NAME = "CodeCharta"

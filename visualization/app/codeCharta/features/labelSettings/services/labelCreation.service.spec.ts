@@ -1,16 +1,16 @@
 import { TestBed } from "@angular/core/testing"
 import { LabelCreationService } from "./labelCreation.service"
-import { CcState, Node } from "../../../codeCharta.model"
+import { CcState, Node } from "../../../model/codeCharta.model"
 import { Group, BoxGeometry, Mesh } from "three"
-import { ThreeSceneService } from "../../../threeViewer/threeViewer.facade"
+import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { StateAccessStore } from "../stores/stateAccess.store"
 import {
     setAmountOfTopLabels,
     setLabelSize,
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName
-} from "../../../mapState/mapState.write.facade"
-import { setHeightMetric } from "../../../mapState/mapState.write.facade"
+} from "../../../stores/mapState/mapState.write.facade"
+import { setHeightMetric } from "../../../stores/mapState/mapState.write.facade"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../store/store"
 

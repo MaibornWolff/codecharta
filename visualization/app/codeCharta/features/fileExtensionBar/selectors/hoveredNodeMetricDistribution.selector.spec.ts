@@ -1,7 +1,7 @@
 import { hoveredNodeMetricDistributionSelector } from "./hoveredNodeMetricDistribution.selector"
 import { FileExtensionCalculator } from "../../../util/fileExtension/fileExtensionCalculator"
 import { VALID_NODE_WITH_MULTIPLE_FOLDERS, VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED } from "../../../mocks/dataMocks"
-import { NodeType } from "../../../codeCharta.model"
+import { NodeType } from "../../../model/codeCharta.model"
 
 describe("hoveredNodeMetricDistributionSelector", () => {
     const areaMetric = "rloc"

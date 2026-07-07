@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { filesSelector } from "../../../fileStore/store/files.selector"
+import { filesSelector } from "../../../stores/fileStore/store/files.selector"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
 import { getMergedEdges } from "../../../util/edges/edges.merger"
 

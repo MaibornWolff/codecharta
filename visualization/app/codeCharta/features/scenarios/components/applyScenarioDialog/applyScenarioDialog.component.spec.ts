@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { ApplyScenarioDialogComponent } from "./applyScenarioDialog.component"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { Scenario, ScenarioSectionKey } from "../../model/scenario.model"
-import { ColorMode, LabelMode, MetricData } from "../../../../codeCharta.model"
+import { ColorMode, LabelMode, MetricData } from "../../../../model/codeCharta.model"
 import { defaultState } from "../../../../store/state.manager"
 
 const createTestScenario = (): Scenario => ({

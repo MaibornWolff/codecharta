@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CcState } from "../../../model/codeCharta.model"
 import { resetCameraIfNewFileIsLoadedSelector } from "../selectors/globalSettings.selectors"
-import { setResetCameraIfNewFileIsLoaded } from "../../../preferences/preferences.write.facade"
+import { setResetCameraIfNewFileIsLoaded } from "../../../stores/preferences/preferences.write.facade"
 
 @Injectable({
     providedIn: "root"

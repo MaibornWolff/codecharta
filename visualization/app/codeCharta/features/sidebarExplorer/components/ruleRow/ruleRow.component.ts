@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
-import { BlacklistItem } from "../../../../codeCharta.model"
+import { BlacklistItem } from "../../../../model/codeCharta.model"
 import { ExplorerRulesService } from "../../services/explorerRules.service"
 
 @Component({

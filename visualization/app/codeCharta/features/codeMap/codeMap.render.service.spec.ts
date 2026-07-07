@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { ColorCategoryCountsStore } from "../../threeViewer/stores/colorCategoryCounts.store"
-import { ThreeSceneService } from "../../threeViewer/threeSceneService"
+import { ColorCategoryCountsStore } from "../../renderer/threeViewer/stores/colorCategoryCounts.store"
+import { ThreeSceneService } from "../../renderer/threeViewer/threeSceneService"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { Node, CodeMapNode, CcState, LabelMode } from "../../codeCharta.model"
+import { Node, CodeMapNode, CcState, LabelMode } from "../../model/codeCharta.model"
 import {
     COLOR_TEST_NODES,
     DEFAULT_STATE,
@@ -30,20 +30,20 @@ import {
     setLabelsPerMap,
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName
-} from "../../mapState/mapState.write.facade"
+} from "../../stores/mapState/mapState.write.facade"
 import { klona } from "klona"
-import { ThreeStatsService } from "../../threeViewer/threeStats.service"
-import { setFiles } from "../../fileStore/store/files.actions"
-import { setHeightMetric } from "../../mapState/mapState.write.facade"
+import { ThreeStatsService } from "../../renderer/threeViewer/threeStats.service"
+import { setFiles } from "../../stores/fileStore/store/files.actions"
+import { setHeightMetric } from "../../stores/mapState/mapState.write.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { metricDataSelector } from "../../renderModel/accumulatedData/metricData/metricData.selector"
-import { nodeMetricDataSelector } from "../../renderModel/nodeMetricData/nodeMetricData.selector"
+import { metricDataSelector } from "../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
+import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 import { appReducers, setStateMiddleware } from "../../store/store"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
-jest.mock("../../renderModel/accumulatedData/metricData/metricData.selector", () => ({
+jest.mock("../../renderer/renderModel/accumulatedData/metricData/metricData.selector", () => ({
     metricDataSelector: jest.fn()
 }))
 
@@ -54,8 +54,8 @@ jest.mock("../../lenses/dependency/store/edges.selector", () => ({ edgesSelector
 // the metrics-lens facade). Stub only that export — metricRangeSelector must stay real because
 // treeMapHelper's selectedColorMetricDataSelector aliases it for the color range.
 const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
-jest.mock("../../renderModel/nodeMetricData/nodeMetricData.selector", () => ({
-    ...jest.requireActual("../../renderModel/nodeMetricData/nodeMetricData.selector"),
+jest.mock("../../renderer/renderModel/nodeMetricData/nodeMetricData.selector", () => ({
+    ...jest.requireActual("../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"),
     nodeMetricDataSelector: jest.fn()
 }))
 

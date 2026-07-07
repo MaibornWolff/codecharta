@@ -1,6 +1,6 @@
 import { Action, Store } from "@ngrx/store"
 import { BehaviorSubject } from "rxjs"
-import { CcState } from "../codeCharta.model"
+import { CcState } from "../model/codeCharta.model"
 
 // Tracks whether a user-initiated heavy operation (e.g. blacklist add/remove)
 // is currently waiting to be processed. The spinner reads this subject. Cleared

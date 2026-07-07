@@ -1,14 +1,14 @@
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { UpdateVisibleTopLabelsEffect } from "./updateVisibleTopLabels.effect"
-import { CcState } from "app/codeCharta/codeCharta.model"
+import { CcState } from "app/codeCharta/model/codeCharta.model"
 import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { State, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../../store/store"
-import { visibleFileStatesSelector } from "../../../../fileStore/store/visibleFileStates.selector"
-import { codeMapNodesSelector } from "../../../../renderModel/accumulatedData/codeMapNodes.selector"
+import { visibleFileStatesSelector } from "../../../../stores/fileStore/store/visibleFileStates.selector"
+import { codeMapNodesSelector } from "../../../../renderer/renderModel/accumulatedData/codeMapNodes.selector"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
-import { setAmountOfTopLabels } from "../../../../mapState/mapState.write.facade"
+import { setAmountOfTopLabels } from "../../../../stores/mapState/mapState.write.facade"
 
 describe("updateVisibleTopLabelsEffect", () => {
     let store: MockStore<CcState>

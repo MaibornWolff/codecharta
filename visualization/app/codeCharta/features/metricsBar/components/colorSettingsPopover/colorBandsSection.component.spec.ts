@@ -2,9 +2,9 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { isDeltaStateSelector } from "../../../../fileStore/store/isDeltaState.selector"
+import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
 import { defaultState } from "../../../../store/state.manager"
-import { ColorCategoryCountsStore } from "../../../../threeViewer/threeViewer.facade"
+import { ColorCategoryCountsStore } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { ColorBandsSectionComponent } from "./colorBandsSection.component"
 
 describe("ColorBandsSectionComponent", () => {

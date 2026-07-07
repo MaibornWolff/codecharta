@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { ZoomSliderComponent } from "./zoomSlider.component"
-import { ThreeMapControlsService } from "../../../threeViewer/threeViewer.facade"
+import { ThreeMapControlsService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { BehaviorSubject } from "rxjs"
 
 describe("ZoomSliderComponent", () => {

@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { AttributeTypeValue } from "../../../codeCharta.model"
+import { AttributeTypeValue } from "../../../model/codeCharta.model"
 import { attributeTypesSelector } from "./attributeTypes/attributeTypes.selector"
 
 /**

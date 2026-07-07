@@ -8,7 +8,7 @@ import {
     NodeMetricData,
     EdgeMetricData,
     MetricData
-} from "../codeCharta.model"
+} from "../model/codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { HierarchyNode, hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"

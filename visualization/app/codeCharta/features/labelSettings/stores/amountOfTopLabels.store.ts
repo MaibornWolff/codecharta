@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
+import { CcState } from "../../../model/codeCharta.model"
 import { amountOfTopLabelsSelector } from "../selectors/labelSettings.selectors"
-import { setAmountOfTopLabels } from "../../../mapState/mapState.write.facade"
+import { setAmountOfTopLabels } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

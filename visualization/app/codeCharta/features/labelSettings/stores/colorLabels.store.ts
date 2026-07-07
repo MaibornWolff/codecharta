@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState, ColorLabelOptions } from "../../../codeCharta.model"
+import { CcState, ColorLabelOptions } from "../../../model/codeCharta.model"
 import { colorLabelsSelector } from "../selectors/labelSettings.selectors"
-import { setColorLabels } from "../../../mapState/mapState.write.facade"
+import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

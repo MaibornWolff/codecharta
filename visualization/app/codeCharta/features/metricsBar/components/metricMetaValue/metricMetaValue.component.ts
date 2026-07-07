@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapNode, Node, PrimaryMetrics } from "../../../../codeCharta.model"
+import { CodeMapNode, Node, PrimaryMetrics } from "../../../../model/codeCharta.model"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
 import { PrimaryMetricsService } from "../../services/primaryMetrics.service"
 import { MetricChooserTypeComponent } from "./metricChooserType.component"

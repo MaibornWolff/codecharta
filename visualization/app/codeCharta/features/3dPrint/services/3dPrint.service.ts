@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { ColorMode } from "../../../codeCharta.model"
+import { ColorMode } from "../../../model/codeCharta.model"
 import { Print3DStore } from "../stores/3dPrint.store"
 
 @Injectable({

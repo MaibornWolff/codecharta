@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState, ColorMode } from "../../../codeCharta.model"
-import { MapStateReadWindow } from "../../../mapState/mapState.read.facade"
-import { setColorMode } from "../../../mapState/mapState.write.facade"
+import { CcState, ColorMode } from "../../../model/codeCharta.model"
+import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
+import { setColorMode } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({
     providedIn: "root"

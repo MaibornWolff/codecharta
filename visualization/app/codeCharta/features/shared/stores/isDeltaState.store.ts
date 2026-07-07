@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { isDeltaStateSelector } from "../../../fileStore/store/isDeltaState.selector"
+import { CcState } from "../../../model/codeCharta.model"
+import { isDeltaStateSelector } from "../../../stores/fileStore/store/isDeltaState.selector"
 
 @Injectable({
     providedIn: "root"

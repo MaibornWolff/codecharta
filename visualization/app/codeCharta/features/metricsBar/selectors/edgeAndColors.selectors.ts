@@ -6,5 +6,5 @@ export {
     showIncomingEdgesSelector,
     showOnlyBuildingsWithEdgesSelector,
     showOutgoingEdgesSelector
-} from "../../../mapState/mapState.read.facade"
-export { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../renderModel/renderModel.facade"
+} from "../../../stores/mapState/mapState.read.facade"
+export { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../renderer/renderModel/renderModel.facade"

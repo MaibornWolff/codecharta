@@ -1,5 +1,5 @@
 import { Mesh, ShaderMaterial } from "three"
-import { ColorRange, NodeMetricData } from "../../../../codeCharta.model"
+import { ColorRange, NodeMetricData } from "../../../../model/codeCharta.model"
 
 export interface GeometryOptions {
     originalMapMesh: Mesh

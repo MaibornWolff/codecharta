@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core"
-import { EdgeMetricData, NodeMetricData } from "../../../../codeCharta.model"
+import { EdgeMetricData, NodeMetricData } from "../../../../model/codeCharta.model"
 
 const METRIC_ALIASES = new Map<string, string[]>([
     ["complexity", ["formerly mcc"]],

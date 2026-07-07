@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { getMarkingColor, isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
-import { MapStateReadWindow } from "../../../../mapState/mapState.read.facade"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { MarkedPackagesStore } from "../../stores/markedPackages.store"
 
 @Component({

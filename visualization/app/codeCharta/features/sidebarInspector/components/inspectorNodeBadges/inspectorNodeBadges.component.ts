@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core"
-import { FileCount } from "../../../../codeCharta.model"
+import { FileCount } from "../../../../model/codeCharta.model"
 
 @Component({
     selector: "cc-inspector-node-badges",

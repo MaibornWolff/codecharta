@@ -2,15 +2,15 @@ import { TestBed } from "@angular/core/testing"
 import { StoreModule, Store, State } from "@ngrx/store"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
-import { ThreeSceneService } from "../../../threeViewer/threeSceneService"
+import { ThreeSceneService } from "../../../renderer/threeViewer/threeSceneService"
 import { Object3D, Vector3 } from "three"
 import { OUTGOING_NODE, DIFFERENT_NODE, INCOMING_NODE, VALID_EDGES_DECORATED } from "../../../mocks/dataMocks"
 import {
     CODE_MAP_BUILDING,
     CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE,
     CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE
-} from "../../../threeViewer/rendering/codeMapBuilding.mocks"
-import { CcState, Node } from "../../../codeCharta.model"
+} from "../../../renderer/threeViewer/rendering/codeMapBuilding.mocks"
+import { CcState, Node } from "../../../model/codeCharta.model"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import {
     setScaling,
@@ -18,9 +18,9 @@ import {
     setShowOutgoingEdges,
     toggleEdgeMetricVisible,
     setHeightMetric
-} from "../../../mapState/mapState.write.facade"
+} from "../../../stores/mapState/mapState.write.facade"
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
-import { CodeMapMesh } from "../../../threeViewer/rendering/codeMapMesh"
+import { CodeMapMesh } from "../../../renderer/threeViewer/rendering/codeMapMesh"
 import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../store/store"
 import { clone } from "../../../util/clone"

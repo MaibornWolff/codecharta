@@ -9,10 +9,10 @@ import { ExperimentalFeaturesService } from "../../services/experimentalFeatures
 import { BackgroundThemeService } from "../../services/backgroundTheme.service"
 import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibility.service"
 import { AutomaticCameraResetService } from "../../services/automaticCameraReset.service"
-import { LoadFileService } from "../../../../fileStore/fileStore.facade"
+import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../load/load.facade"
-import { defaultPreferences } from "../../../../preferences/preferences.read.facade"
-import { defaultMapState } from "../../../../mapState/mapState.read.facade"
+import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
+import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
 
 describe("GlobalConfigurationDialogComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationDialogComponent>

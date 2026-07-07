@@ -1,5 +1,5 @@
 import { hierarchy } from "d3-hierarchy"
-import { ThreeMapControlsService, CursorType, changeCursorIndicator } from "../../threeViewer/threeViewer.facade"
+import { ThreeMapControlsService, CursorType, changeCursorIndicator } from "../../renderer/threeViewer/threeViewer.facade"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
 import { isLeaf } from "../../util/codeMapHelper"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"

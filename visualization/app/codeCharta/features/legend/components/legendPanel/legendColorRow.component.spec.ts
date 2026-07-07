@@ -1,7 +1,7 @@
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
-import { HexMapColor } from "../../../../codeCharta.model"
+import { HexMapColor } from "../../../../model/codeCharta.model"
 import { defaultState } from "../../../../store/state.manager"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 

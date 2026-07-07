@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { ThreeMapControlsService } from "../../../../threeViewer/threeViewer.facade"
+import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { CenterMapButtonComponent } from "./centerMapButton.component"
 
 describe("CenterMapButtonComponent (toolbox)", () => {

@@ -1,5 +1,5 @@
 import { combineReducers } from "@ngrx/store"
-import { DependencyLensSource } from "../../../codeCharta.model"
+import { DependencyLensSource } from "../../../model/codeCharta.model"
 import { edgeAttributeTypes, defaultEdgeAttributeTypes } from "./attributeTypes/attributeTypes.reducer"
 
 // The dependency lens's cc.json SOURCE root (Slice 14): the EDGE attribute-type map, seeded from the

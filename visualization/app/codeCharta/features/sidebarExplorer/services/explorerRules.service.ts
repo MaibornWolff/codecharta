@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { BlacklistItem } from "../../../codeCharta.model"
+import { BlacklistItem } from "../../../model/codeCharta.model"
 import { BlacklistStore } from "../stores/blacklist.store"
 
 @Injectable({

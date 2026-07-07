@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { AttributeTypes, PrimaryMetrics } from "../../../codeCharta.model"
-import { primaryMetricNamesSelector } from "../../../renderModel/renderModel.facade"
+import { AttributeTypes, PrimaryMetrics } from "../../../model/codeCharta.model"
+import { primaryMetricNamesSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { attributeTypesSelector } from "./attributeTypes.selector"
 
 export const createAttributeTypeSelector = (metricType: keyof AttributeTypes, metricFor: keyof PrimaryMetrics) =>

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { NodeType } from "../../../../codeCharta.model"
+import { NodeType } from "../../../../model/codeCharta.model"
 import { InspectorHeaderService } from "../../services/inspectorHeader.service"
 import { InspectorVisibilityService } from "../../services/inspectorVisibility.service"
 import { getFileCount } from "../../util/getFileCount"

@@ -9,7 +9,7 @@ import { GroupLabelCollisionsService } from "./services/groupLabelCollisions.ser
 import { LabelCreationService } from "./services/labelCreation.service"
 import { LabelCollisionService } from "./services/labelCollision.service"
 import { ConnectorDrawingService } from "./services/connectorDrawing.service"
-import { ColorLabelOptions, LabelMode, Node } from "../../codeCharta.model"
+import { ColorLabelOptions, LabelMode, Node } from "../../model/codeCharta.model"
 
 @Injectable({
     providedIn: "root"

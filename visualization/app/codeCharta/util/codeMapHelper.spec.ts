@@ -1,4 +1,4 @@
-import { CCFile, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
+import { CCFile, CodeMapNode, MarkedPackage, NodeType } from "../model/codeCharta.model"
 import packageJson from "../../../package.json"
 import { getAllNodes, getMapResolutionScaleFactor, getMarkingColor, MAP_RESOLUTION_SCALE } from "./codeMapHelper"
 import { FileSelectionState, FileState } from "../model/files/files"

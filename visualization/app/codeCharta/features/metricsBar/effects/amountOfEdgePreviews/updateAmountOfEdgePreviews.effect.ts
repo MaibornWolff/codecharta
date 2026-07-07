@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../../codeCharta.model"
-import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../renderModel/renderModel.facade"
-import { amountOfEdgePreviewsSelector } from "../../../../mapState/mapState.read.facade"
-import { setAmountOfEdgePreviews } from "../../../../mapState/mapState.write.facade"
+import { CcState } from "../../../../model/codeCharta.model"
+import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../renderer/renderModel/renderModel.facade"
+import { amountOfEdgePreviewsSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { setAmountOfEdgePreviews } from "../../../../stores/mapState/mapState.write.facade"
 import { filter, map, skip, withLatestFrom } from "rxjs"
 import { createEffect } from "@ngrx/effects"
 

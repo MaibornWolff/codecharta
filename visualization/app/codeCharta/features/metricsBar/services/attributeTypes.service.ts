@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { AttributeTypes, PrimaryMetrics } from "../../../codeCharta.model"
+import { AttributeTypes, PrimaryMetrics } from "../../../model/codeCharta.model"
 import { AttributeTypesStore } from "../stores/attributeTypes.store"
 
 @Injectable({

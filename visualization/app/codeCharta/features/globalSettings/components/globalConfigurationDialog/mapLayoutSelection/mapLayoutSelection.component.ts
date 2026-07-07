@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { LayoutAlgorithm } from "../../../../../codeCharta.model"
+import { LayoutAlgorithm } from "../../../../../model/codeCharta.model"
 import { debounce } from "../../../../../util/debounce"
 import { MapLayoutService } from "../../../services/mapLayout.service"
 

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { Scaling } from "../../../codeCharta.model"
+import { Scaling } from "../../../model/codeCharta.model"
 import { ScalingStore } from "../stores/scaling.store"
 
 @Injectable({

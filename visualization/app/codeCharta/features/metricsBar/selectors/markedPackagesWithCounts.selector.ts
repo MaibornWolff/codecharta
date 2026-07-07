@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
-import { CodeMapNode, MarkedPackage } from "../../../codeCharta.model"
-import { codeMapNodesSelector } from "../../../renderModel/renderModel.facade"
-import { markedPackagesSelector } from "../../../sharedView/sharedView.read.facade"
+import { CodeMapNode, MarkedPackage } from "../../../model/codeCharta.model"
+import { codeMapNodesSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { markedPackagesSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { isLeaf } from "../../../util/codeMapHelper"
 
 export type MarkedPackageWithCount = MarkedPackage & { fileCount: number }

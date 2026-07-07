@@ -2,7 +2,7 @@ import { CustomVisibilityMesh } from "./customVisibilityMesh"
 import { GeometryOptions } from "../geometryOptions"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { BufferAttribute, BufferGeometry, Float32BufferAttribute, InterleavedBufferAttribute, Mesh } from "three"
-import { indicesPerNode } from "../../../../../threeViewer/threeViewer.facade"
+import { indicesPerNode } from "../../../../../renderer/threeViewer/threeViewer.facade"
 
 export class MapMesh extends CustomVisibilityMesh {
     private originalColors: BufferAttribute | InterleavedBufferAttribute

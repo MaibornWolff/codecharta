@@ -1,16 +1,16 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { setColorLabels, setLabelMode, setLabelSize, setLabelsPerMap } from "../../../../mapState/mapState.write.facade"
-import { setDelta, setFiles } from "../../../../fileStore/store/files.actions"
+import { setColorLabels, setLabelMode, setLabelSize, setLabelsPerMap } from "../../../../stores/mapState/mapState.write.facade"
+import { setDelta, setFiles } from "../../../../stores/fileStore/store/files.actions"
 import { FILE_STATES_TWO_FILES, TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../../mocks/dataMocks"
 import { fireEvent } from "@testing-library/angular"
 import { LabelSettingsPanelComponent } from "./labelSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"
 import { appReducers, setStateMiddleware } from "../../../../store/store"
-import { ColorCategoryCountsStore } from "../../../../threeViewer/threeViewer.facade"
+import { ColorCategoryCountsStore } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { BehaviorSubject } from "rxjs"
-import { LabelMode } from "../../../../codeCharta.model"
+import { LabelMode } from "../../../../model/codeCharta.model"
 
 describe("LabelSettingsPanelComponent", () => {
     let colorCategoryCounts$: BehaviorSubject<{ positive: number; neutral: number; negative: number }>

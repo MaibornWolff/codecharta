@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { sortingOrderAscendingSelector } from "../../../preferences/preferences.read.facade"
-import { toggleSortingOrderAscending } from "../../../preferences/preferences.write.facade"
+import { CcState } from "../../../model/codeCharta.model"
+import { sortingOrderAscendingSelector } from "../../../stores/preferences/preferences.read.facade"
+import { toggleSortingOrderAscending } from "../../../stores/preferences/preferences.write.facade"
 
 @Injectable({
     providedIn: "root"

@@ -1,4 +1,4 @@
-import { CodeMapNode, NodeType, SortingOption } from "../../../codeCharta.model"
+import { CodeMapNode, NodeType, SortingOption } from "../../../model/codeCharta.model"
 
 type CompareFunction = (a: CodeMapNode, b: CodeMapNode) => number
 

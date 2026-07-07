@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ColorMode } from "../../../../codeCharta.model"
+import { ColorMode } from "../../../../model/codeCharta.model"
 import { ColorModeService } from "../../services/colorMode.service"
 
 @Component({

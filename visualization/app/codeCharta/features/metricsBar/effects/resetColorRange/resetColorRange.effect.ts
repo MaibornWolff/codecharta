@@ -2,12 +2,12 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { map, skip, switchMap, take, withLatestFrom } from "rxjs"
-import { selectedColorMetricDataSelector } from "../../../../renderModel/renderModel.facade"
+import { selectedColorMetricDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { calculateInitialColorRange } from "../../../../util/color/calculateInitialColorRange"
-import { setColorRange, setColorMetric } from "../../../../mapState/mapState.write.facade"
-import { fileActions } from "../../../../fileStore/store/files.actions"
-import { CcState } from "../../../../codeCharta.model"
-import { visibleFileStatesSelector } from "../../../../fileStore/store/visibleFileStates.selector"
+import { setColorRange, setColorMetric } from "../../../../stores/mapState/mapState.write.facade"
+import { fileActions } from "../../../../stores/fileStore/store/files.actions"
+import { CcState } from "../../../../model/codeCharta.model"
+import { visibleFileStatesSelector } from "../../../../stores/fileStore/store/visibleFileStates.selector"
 
 @Injectable()
 export class ResetColorRangeEffect {
