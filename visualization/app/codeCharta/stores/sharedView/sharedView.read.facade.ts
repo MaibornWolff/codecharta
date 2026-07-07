@@ -7,29 +7,22 @@
  * and the `markedPackages`.
  *
  * Slice 13b split the old single `sharedView.facade` barrel into this read facade and a
- * `sharedView.write.facade` (action creators). This barrel re-exports each slice's selectors (read),
- * the pure `findIndexOfMarkedPackageOrParent` read helper, and reducer + `default*` (store wiring),
- * plus the combined `sharedView` reducer, `defaultSharedView`, and the `sharedViewSelector` root
- * selector used by `state.manager` to register the home. It re-exports NO action creator — enforced
- * by the `state-home-read-facade-has-no-dispatch` dep-cruiser rule.
+ * `sharedView.write.facade` (action creators). This barrel re-exports the combined `sharedView`
+ * reducer + `defaultSharedView` (store wiring for `state.manager`), each slice's read selectors, and
+ * the pure `findIndexOfMarkedPackageOrParent` read helper. Slice 18c made every re-export explicit (no
+ * more `export *`) and dropped the ones no consumer imported via the facade — the per-slice reducers
+ * and the `sharedViewSelector` root selector are imported directly. It re-exports NO action creator —
+ * enforced by the `state-home-read-facade-has-no-dispatch` dep-cruiser rule.
  */
-export * from "./store/sharedView.reducer"
-export * from "./store/sharedView.selector"
-export * from "./store/focusedNodePath/focusedNodePath.reducer"
-export * from "./store/focusedNodePath/focusedNodePath.selector"
-export * from "./store/focusedNodePath/currentFocused.selector"
-export * from "./store/searchPattern/searchPattern.reducer"
-export * from "./store/searchPattern/searchPattern.selector"
-export * from "./store/blacklist/blacklist.reducer"
-export * from "./store/blacklist/blacklist.selector"
-export * from "./store/blacklist/blacklistByType.selector"
-export * from "./store/blacklist/blacklistMatcher.selector"
-export * from "./store/markedPackages/markedPackages.reducer"
-export * from "./store/markedPackages/markedPackages.selector"
-export * from "./store/markedPackages/util/findIndexOfMarkedPackageOrParent"
-export * from "./store/hoveredNodeId/hoveredNodeId.reducer"
-export * from "./store/hoveredNodeId/hoveredNodeId.selector"
-export * from "./store/selectedBuildingId/selectedBuildingId.reducer"
-export * from "./store/selectedBuildingId/selectedBuildingId.selector"
-export * from "./store/rightClickedNodeData/rightClickedNodeData.reducer"
-export * from "./store/rightClickedNodeData/rightClickedNodeData.selector"
+export { defaultSharedView, sharedView } from "./store/sharedView.reducer"
+export { focusedNodePathSelector } from "./store/focusedNodePath/focusedNodePath.selector"
+export { currentFocusedNodePathSelector } from "./store/focusedNodePath/currentFocused.selector"
+export { searchPatternSelector } from "./store/searchPattern/searchPattern.selector"
+export { blacklistSelector } from "./store/blacklist/blacklist.selector"
+export { createBlacklistItemSelector } from "./store/blacklist/blacklistByType.selector"
+export { blacklistMatcherSelector } from "./store/blacklist/blacklistMatcher.selector"
+export { markedPackagesSelector } from "./store/markedPackages/markedPackages.selector"
+export { findIndexOfMarkedPackageOrParent } from "./store/markedPackages/util/findIndexOfMarkedPackageOrParent"
+export { hoveredNodeIdSelector } from "./store/hoveredNodeId/hoveredNodeId.selector"
+export { selectedBuildingIdSelector } from "./store/selectedBuildingId/selectedBuildingId.selector"
+export { rightClickedNodeDataSelector } from "./store/rightClickedNodeData/rightClickedNodeData.selector"

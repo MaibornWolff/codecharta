@@ -9,20 +9,16 @@
  *
  * Slice 13a split the old single `preferences.facade` barrel into this read facade and a
  * `preferences.write.facade` (action creators), so a display-only consumer physically cannot dispatch.
- * This barrel re-exports each slice's selectors (read) and reducer + `default*` (store wiring + shared
- * read fallbacks), plus the combined `preferences` reducer, `defaultPreferences`, and the
- * `preferencesSelector` root selector used by `state.manager` to register the home. It re-exports NO
- * action creator — enforced by the `state-home-read-facade-has-no-dispatch` dep-cruiser rule.
+ * This barrel re-exports the combined `preferences` reducer + `defaultPreferences` and the
+ * `preferencesSelector` root selector (store wiring for `state.manager`), plus the read selectors and
+ * `default*` read fallbacks consumed through it. Slice 18c made every re-export explicit (no more
+ * `export *`) and dropped the ones no consumer imported via the facade — the per-slice reducers are
+ * imported directly by the combined reducer. It re-exports NO action creator — enforced by the
+ * `state-home-read-facade-has-no-dispatch` dep-cruiser rule.
  */
-export * from "./store/preferences.reducer"
-export * from "./store/preferences.selector"
-export * from "./store/enableClipboard/screenshotToClipboardEnabled.reducer"
-export * from "./store/enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
-export * from "./store/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
-export * from "./store/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
-export * from "./store/isPresentationMode/isPresentationMode.reducer"
-export * from "./store/isPresentationMode/isPresentationMode.selector"
-export * from "./store/maxTreeMapFiles/maxTreeMapFiles.reducer"
-export * from "./store/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.reducer"
-export * from "./store/sorting/sorting.reducer"
-export * from "./store/sorting/sorting.selector"
+export { defaultPreferences, preferences } from "./store/preferences.reducer"
+export { preferencesSelector } from "./store/preferences.selector"
+export { isColorMetricLinkedToHeightMetricSelector } from "./store/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
+export { isPresentationModeSelector } from "./store/isPresentationMode/isPresentationMode.selector"
+export { defaultSorting } from "./store/sorting/sorting.reducer"
+export { sortingOrderAscendingSelector, sortingOrderSelector } from "./store/sorting/sorting.selector"
