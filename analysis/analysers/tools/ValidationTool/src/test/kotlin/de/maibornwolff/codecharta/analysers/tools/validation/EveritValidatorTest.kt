@@ -245,6 +245,68 @@ class EveritValidatorTest {
     }
 
     @Test
+    fun `should accept a 2_0 file whose metrics and edge references all resolve to node ids`() {
+        // Every metrics-lens key and every edge endpoint points at an id present in the files tree.
+        val resolvable =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+                """{"id":"app-id","name":"App.kt","type":"File"},{"id":"lib-id","name":"Lib.kt","type":"File"}]}],""" +
+                """"lenses":{"metrics":{"attributes":{"app-id":{"rloc":120},"lib-id":{"rloc":30}}},""" +
+                """"dependency":{"edges":[{"fromId":"app-id","toId":"lib-id","attributes":{"pairingRate":42}}]}}}"""
+
+        validator.validate(ByteArrayInputStream(resolvable.toByteArray()))
+    }
+
+    @Test
+    fun `should reject a 2_0 file whose edge references an unknown endpoint id`() {
+        // Schema-valid, but toId 'ghost-id' resolves to no node — the reader would silently drop this edge.
+        val danglingEdge =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
+                """"lenses":{"dependency":{"edges":[{"fromId":"app-id","toId":"ghost-id","attributes":{}}]}}}"""
+
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) {
+                validator.validate(ByteArrayInputStream(danglingEdge.toByteArray()))
+            }
+        Assertions.assertThat(thrown.message).contains("toId").contains("ghost-id")
+    }
+
+    @Test
+    fun `should reject a 2_0 file whose metrics-lens key references an unknown node id`() {
+        // Schema-valid, but the metrics bag is keyed by an id no node carries — the reader would silently drop it.
+        val danglingMetric =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
+                """"lenses":{"metrics":{"attributes":{"ghost-id":{"rloc":1}}}}}"""
+
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) {
+                validator.validate(ByteArrayInputStream(danglingMetric.toByteArray()))
+            }
+        Assertions.assertThat(thrown.message).contains("metrics-lens").contains("ghost-id")
+    }
+
+    @Test
+    fun `should report every dangling reference it finds, not just the first`() {
+        // One dangling metrics key and one dangling edge endpoint — both must surface in the failure message.
+        val multipleDangling =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
+                """"lenses":{"metrics":{"attributes":{"ghost-metric":{"rloc":1}}},""" +
+                """"dependency":{"edges":[{"fromId":"app-id","toId":"ghost-edge","attributes":{}}]}}}"""
+
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) {
+                validator.validate(ByteArrayInputStream(multipleDangling.toByteArray()))
+            }
+        Assertions.assertThat(thrown.message).contains("ghost-metric").contains("ghost-edge")
+    }
+
+    @Test
     fun `should reject an unwrapped legacy 1_x file with a convert hint`() {
         // Act
         val thrown =

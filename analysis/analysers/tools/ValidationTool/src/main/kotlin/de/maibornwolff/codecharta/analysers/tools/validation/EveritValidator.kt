@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.serialization.CompressedStreamHandler
 import de.maibornwolff.codecharta.serialization.LegacyFileException
 import org.everit.json.schema.Schema
 import org.everit.json.schema.loader.SchemaLoader
+import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
 import java.io.InputStream
@@ -31,6 +32,7 @@ class EveritValidator(private var schemaPath: String) : Validator {
         content.close()
         rejectLegacyDocument(json)
         schema.validate(json)
+        checkReferentialIntegrity(json)
     }
 
     /**
@@ -46,6 +48,55 @@ class EveritValidator(private var schemaPath: String) : Validator {
         val looksLegacy = json.has("nodes") || json.optJSONObject("data") != null || json.has("apiVersion")
         if (major != ApiVersion.TWO_ZERO.major.toString() && looksLegacy) {
             throw LegacyFileException(LegacyFileException.CONVERT_HINT)
+        }
+    }
+
+    /**
+     * JSON Schema cannot express that a metrics-lens key or an edge endpoint must resolve to an existing
+     * file-tree node id, so a schema-valid file with a dangling id slips through while the reader silently
+     * drops the orphaned entry ([de.maibornwolff.codecharta.serialization.CcJsonV2ToProjectMapper] only warns).
+     * This semantic pass makes `ccsh check` fail loudly instead, asserting that every metrics-lens key and every
+     * edge endpoint references an id that actually exists in the `files` tree.
+     */
+    private fun checkReferentialIntegrity(json: JSONObject) {
+        val files = json.optJSONArray("files") ?: return
+        val nodeIds = HashSet<String>()
+        for (index in 0 until files.length()) {
+            collectNodeIds(files.getJSONObject(index), nodeIds)
+        }
+
+        val lenses = json.optJSONObject("lenses") ?: return
+        val danglingReferences = mutableListOf<String>()
+
+        lenses.optJSONObject("metrics")?.optJSONObject("attributes")?.keySet()?.forEach { nodeId ->
+            if (nodeId !in nodeIds) {
+                danglingReferences.add("metrics-lens entry for unknown node id '$nodeId'")
+            }
+        }
+
+        lenses.optJSONObject("dependency")?.optJSONArray("edges")?.let { edges ->
+            for (index in 0 until edges.length()) {
+                val edge = edges.getJSONObject(index)
+                val fromId = edge.optString("fromId")
+                val toId = edge.optString("toId")
+                if (fromId !in nodeIds) danglingReferences.add("edge with unknown fromId '$fromId'")
+                if (toId !in nodeIds) danglingReferences.add("edge with unknown toId '$toId'")
+            }
+        }
+
+        if (danglingReferences.isNotEmpty()) {
+            throw ReferentialIntegrityException(
+                "This cc.json has references that do not resolve to a file-tree node id: " +
+                    danglingReferences.joinToString("; ") + "."
+            )
+        }
+    }
+
+    private fun collectNodeIds(fileNode: JSONObject, nodeIds: MutableSet<String>) {
+        nodeIds.add(fileNode.getString("id"))
+        val children: JSONArray = fileNode.optJSONArray("children") ?: return
+        for (index in 0 until children.length()) {
+            collectNodeIds(children.getJSONObject(index), nodeIds)
         }
     }
 }
