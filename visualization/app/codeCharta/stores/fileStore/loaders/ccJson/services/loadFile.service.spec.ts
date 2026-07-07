@@ -1,7 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { FILES_ALREADY_LOADED_ERROR_MESSAGE, LoadFileService } from "./loadFile.service"
 import { FilesRepo } from "../../../repos/files.repo"
-import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_WITH_AUTHORS, TEST_FILE_CONTENT_WITHOUT_AUTHORS } from "../../../../../mocks/dataMocks"
+import {
+    TEST_FILE_CONTENT,
+    TEST_FILE_CONTENT_CC_JSON_2,
+    TEST_FILE_CONTENT_WITH_AUTHORS,
+    TEST_FILE_CONTENT_WITHOUT_AUTHORS
+} from "../../../../../mocks/dataMocks"
 import { CCFile, CcState, NodeMetricData, NodeType } from "../../../../../model/codeCharta.model"
 import { removeFiles, setDeltaReference, setStandard } from "../../../store/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "../../../../../model/codeCharta.api.model"
@@ -155,6 +160,43 @@ describe("loadFileService", () => {
 
             expect(fileRoot.rootName).toBe(expected.map.name)
             expect(fileRoot.rootPath).toBe(`/${expected.map.name}`)
+        })
+
+        it("should load a cc.json 2.0 file (meta/files/lenses envelope) into a CCFile", () => {
+            // Arrange
+            const ccJson2Content = clone(TEST_FILE_CONTENT_CC_JSON_2)
+
+            // Act
+            codeChartaService.loadFiles([{ fileName, content: ccJson2Content, fileSize: 42 }])
+
+            // Assert
+            const loaded = getCCFiles(state.getValue().files)[0]
+            expect(errorDialogService.open).not.toHaveBeenCalled()
+            expect(loaded.fileMeta).toEqual({
+                fileName,
+                fileChecksum: "valid-md5-sample-cc2",
+                projectName: "Sample 2.0 Map",
+                apiVersion: "2.0",
+                exportedFileSize: 42,
+                repoCreationDate: ""
+            })
+
+            // id-keyed 2.0 metric attributes land on the right node; list-valued authors is stripped; path is decorated
+            const bigLeaf = loaded.map.children.find(node => node.name === "big.ts")
+            expect(bigLeaf.attributes).toEqual({ rloc: 100 })
+            expect(bigLeaf.link).toBe("http://example.com")
+            expect(bigLeaf.path).toBe("/root/big.ts")
+
+            // edge fromId/toId resolved back to node paths
+            expect(loaded.settings.fileSettings.edges).toEqual([
+                { fromNodeName: "/root/big.ts", toNodeName: "/root/Parent/small.ts", attributes: { pairingRate: 42 } }
+            ])
+
+            // attributeTypes split across the metrics (nodes) + dependency (edges) lenses
+            expect(loaded.settings.fileSettings.attributeTypes).toEqual({ nodes: { rloc: "absolute" }, edges: { pairingRate: "relative" } })
+            expect(loaded.settings.fileSettings.blacklist).toEqual([])
+            expect(loaded.settings.fileSettings.markedPackages).toEqual([])
+            expect(isPartialState(state.getValue().files)).toBeTruthy()
         })
 
         it("should keep old files when loading new files", () => {

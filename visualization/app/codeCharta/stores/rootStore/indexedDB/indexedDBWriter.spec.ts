@@ -26,6 +26,7 @@ import {
     migrateCcStateRecordToV12,
     migrateCcStateRecordToV13,
     migrateCcStateRecordToV14,
+    migrateCcStateRecordToV15,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -542,7 +543,49 @@ describe("migrateCcStateRecordToV14 (Slice 14e-1 re-home transform)", () => {
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 transforms)", () => {
+describe("migrateCcStateRecordToV15 (Slice 15e fileSettings-drop transform)", () => {
+    const v14ShapeState = () => ({
+        fileSettings: { edges: [{ fromNodeName: "/root/a", toNodeName: "/root/b", attributes: {} }] },
+        sharedView: { blacklist: [], hoveredNodeId: null, selectedBuildingId: null, rightClickedNodeData: null },
+        mapState: { scaling: 1 }
+    })
+
+    it("should drop the whole fileSettings root now that edges is a derived dependency-lens selector", () => {
+        // Arrange
+        const oldShapeState = v14ShapeState()
+
+        // Act
+        const migrated = migrateCcStateRecordToV15(oldShapeState) as unknown as { fileSettings?: Record<string, unknown> }
+
+        // Assert
+        expect(migrated.fileSettings).toBeUndefined()
+    })
+
+    it("should leave every other root untouched", () => {
+        // Arrange
+        const oldShapeState = v14ShapeState()
+
+        // Act
+        const migrated = migrateCcStateRecordToV15(oldShapeState) as unknown as {
+            sharedView: Record<string, unknown>
+            mapState: Record<string, unknown>
+        }
+
+        // Assert
+        expect(migrated.sharedView).toEqual({ blacklist: [], hoveredNodeId: null, selectedBuildingId: null, rightClickedNodeData: null })
+        expect(migrated.mapState).toEqual({ scaling: 1 })
+    })
+
+    it("should return the record untouched when it is null or already has no fileSettings", () => {
+        // Arrange / Act / Assert
+        expect(migrateCcStateRecordToV15(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV15({ files: [] }) as unknown as { files: unknown[]; fileSettings?: unknown }
+        expect(migrated.files).toEqual([])
+        expect(migrated.fileSettings).toBeUndefined()
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {

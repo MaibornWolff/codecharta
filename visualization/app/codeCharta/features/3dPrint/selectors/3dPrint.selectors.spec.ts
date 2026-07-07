@@ -19,7 +19,7 @@ describe("3dPrint.selectors", () => {
     })
 
     describe("areaMetricSelector", () => {
-        it("should select areaMetric from dynamicSettings", () => {
+        it("should select areaMetric from mapState", () => {
             // Arrange
             mockState.mapState.areaMetric = "rloc"
 
@@ -32,7 +32,7 @@ describe("3dPrint.selectors", () => {
     })
 
     describe("heightMetricSelector", () => {
-        it("should select heightMetric from dynamicSettings", () => {
+        it("should select heightMetric from mapState", () => {
             // Arrange
             mockState.mapState.heightMetric = "mcc"
 
@@ -45,7 +45,7 @@ describe("3dPrint.selectors", () => {
     })
 
     describe("colorMetricSelector", () => {
-        it("should select colorMetric from dynamicSettings", () => {
+        it("should select colorMetric from mapState", () => {
             // Arrange
             mockState.mapState.colorMetric = "complexity"
 
@@ -58,7 +58,7 @@ describe("3dPrint.selectors", () => {
     })
 
     describe("colorRangeSelector", () => {
-        it("should select colorRange from dynamicSettings", () => {
+        it("should select colorRange from mapState", () => {
             // Arrange
             mockState.mapState.colorRange = { from: 10, to: 50 }
 
@@ -71,7 +71,7 @@ describe("3dPrint.selectors", () => {
     })
 
     describe("colorModeSelector", () => {
-        it("should select colorMode from dynamicSettings", () => {
+        it("should select colorMode from mapState", () => {
             // Arrange
             mockState.mapState.colorMode = ColorMode.absolute
 
