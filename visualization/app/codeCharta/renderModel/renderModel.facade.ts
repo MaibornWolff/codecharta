@@ -13,6 +13,7 @@
 export * from "./accumulatedData/accumulatedData.selector"
 export * from "./accumulatedData/codeMapNodes.selector"
 export * from "./accumulatedData/pathToNode.selector"
+export * from "./accumulatedData/idToNode.selector"
 export * from "./accumulatedData/rootUnary.selector"
 export * from "./accumulatedData/metricData/metricData.selector"
 export * from "./accumulatedData/metricData/selectedColorMetricData.selector"

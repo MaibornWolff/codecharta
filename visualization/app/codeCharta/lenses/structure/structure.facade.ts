@@ -6,10 +6,8 @@
  *
  * Slice 14d extracted the undecorated-tree build (previously inlined in `accumulatedData`) here so
  * `accumulatedData` becomes a pure composing selector above the lenses — it reads `structureTree`
- * downward, then layers metrics + blacklist + aggregation on a clone. Slice 14e-3 added ownership of
- * `id -> node` resolution (`idToNodeSelector`): the lens runs the deterministic, view-state-independent
- * structure pass (id + mergeFolderChain) on its own undecorated tree, so it resolves nodes for the
- * highlight consumers without reaching up to the composing layer — the structural break of CF #1.
+ * downward, then layers metrics + blacklist + aggregation on a clone. `id -> node` resolution lives in
+ * renderModel (`idToNode.selector`), keyed on the ids of that already-decorated tree, so this lens no
+ * longer re-derives them from a second clone + structure pass.
  */
 export { structureTreeSelector } from "./store/structureTree.selector"
-export { idToNodeSelector } from "./store/idToNode.selector"

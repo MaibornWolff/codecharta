@@ -3,7 +3,7 @@ import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../codeCharta.model"
 import { visibleFileStatesSelector } from "../../../fileStore/store/visibleFileStates.selector"
 import { blacklistSelector, hoveredNodeIdSelector } from "../../../sharedView/sharedView.read.facade"
-import { idToNodeSelector } from "../../../lenses/structure/structure.facade"
+import { idToNodeSelector } from "../../../renderModel/renderModel.facade"
 import { setHoveredNodeId, setRightClickedNodeData } from "../../../sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })

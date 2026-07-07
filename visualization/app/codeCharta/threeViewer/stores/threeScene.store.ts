@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../codeCharta.model"
 import { mapColorsSelector } from "../../mapState/mapState.read.facade"
-import { idToNodeSelector } from "../../lenses/structure/structure.facade"
+import { idToNodeSelector } from "../../renderModel/renderModel.facade"
 import { setSelectedBuildingId } from "../../sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
