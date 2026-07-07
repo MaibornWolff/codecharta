@@ -163,18 +163,24 @@ module.exports = {
             to: { path: "@ngrx/store" }
         },
         {
-            name: "lens-owns-ccjson-source",
+            name: "stores-own-ccjson-source",
             severity: "error",
             comment:
-                "The cc.json SOURCE the lenses own — the metrics lens's node attributeTypes/attributeDescriptors slices + their metricsLensSource root, and the dependency lens's edge attributeTypes slice + its dependencyLensSource root, all under lenses/*/store/ — is reached from outside the lens only through that lens's facade, never its store internals.",
-            from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/lenses/", "\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.mocks\\.ts$"] },
+                "The cc.json SOURCE state now lives in stores/ (Slice 19b moved it OUT of the lenses so the ngrx composition root store/ no longer imports lenses/): the metricsLensSource home (node attributeTypes + attributeDescriptors + the metricsLensSource root reducer/selector) and the dependencyLensSource home (edge attributeTypes + the dependencyLensSource root). Its ngrx store/ internals are reached from outside the owning home ONLY through that home's read/write facade — so the composition root (store/), the load pipeline (load/) and the now-pure-projection lenses all go through the facades, never store/ internals. Replaces the old lens-owns-ccjson-source rule (the source is no longer lens-owned). Spec/e2e/mocks exempt.",
+            from: {
+                path: "^app/codeCharta/",
+                pathNot: [
+                    "^app/codeCharta/stores/metricsLensSource/",
+                    "^app/codeCharta/stores/dependencyLensSource/",
+                    "\\.spec\\.ts$",
+                    "\\.e2e\\.ts$",
+                    "\\.mocks\\.ts$"
+                ]
+            },
             to: {
                 path: [
-                    "^app/codeCharta/lenses/metrics/store/attributeTypes/",
-                    "^app/codeCharta/lenses/metrics/store/attributeDescriptors/",
-                    "^app/codeCharta/lenses/metrics/store/metricsLensSource",
-                    "^app/codeCharta/lenses/dependency/store/attributeTypes/",
-                    "^app/codeCharta/lenses/dependency/store/dependencyLensSource"
+                    "^app/codeCharta/stores/metricsLensSource/store/",
+                    "^app/codeCharta/stores/dependencyLensSource/store/"
                 ]
             }
         },
@@ -208,7 +214,7 @@ module.exports = {
             severity: "error",
             comment:
                 "State-home modules — stores/mapState (map-view presentation + metric selection + transient interaction ids), stores/sharedView (focus + search + blacklist + markedPackages), stores/preferences (durable global prefs) — are leaves. They must not import lenses; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store.",
-            from: { path: ["^app/codeCharta/stores/mapState/", "^app/codeCharta/stores/sharedView/", "^app/codeCharta/stores/preferences/"] },
+            from: { path: ["^app/codeCharta/stores/mapState/", "^app/codeCharta/stores/sharedView/", "^app/codeCharta/stores/preferences/", "^app/codeCharta/stores/metricsLensSource/", "^app/codeCharta/stores/dependencyLensSource/"] },
             to: { path: ["^app/codeCharta/lenses/"] }
         },
         {
@@ -216,11 +222,13 @@ module.exports = {
             severity: "error",
             comment: "Only a state-home's store/ folder may import @ngrx/store — consumers reach the home through its facades, never by importing ngrx from home code outside store/.",
             from: {
-                path: ["^app/codeCharta/stores/mapState/", "^app/codeCharta/stores/sharedView/", "^app/codeCharta/stores/preferences/"],
+                path: ["^app/codeCharta/stores/mapState/", "^app/codeCharta/stores/sharedView/", "^app/codeCharta/stores/preferences/", "^app/codeCharta/stores/metricsLensSource/", "^app/codeCharta/stores/dependencyLensSource/"],
                 pathNot: [
                     "^app/codeCharta/stores/mapState/store/",
                     "^app/codeCharta/stores/sharedView/store/",
                     "^app/codeCharta/stores/preferences/store/",
+                    "^app/codeCharta/stores/metricsLensSource/store/",
+                    "^app/codeCharta/stores/dependencyLensSource/store/",
                     "\\.spec\\.ts$"
                 ]
             },
@@ -321,7 +329,9 @@ module.exports = {
                     "^app/codeCharta/stores/fileStore/",
                     "^app/codeCharta/stores/mapState/",
                     "^app/codeCharta/stores/sharedView/",
-                    "^app/codeCharta/stores/preferences/"
+                    "^app/codeCharta/stores/preferences/",
+                    "^app/codeCharta/stores/metricsLensSource/",
+                    "^app/codeCharta/stores/dependencyLensSource/"
                 ],
                 pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
@@ -365,7 +375,9 @@ module.exports = {
                     "^app/codeCharta/stores/sharedView/",
                     "^app/codeCharta/stores/preferences/",
                     "^app/codeCharta/lenses/",
-                    "^app/codeCharta/stores/fileStore/"
+                    "^app/codeCharta/stores/fileStore/",
+                    "^app/codeCharta/stores/metricsLensSource/",
+                    "^app/codeCharta/stores/dependencyLensSource/"
                 ],
                 pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
@@ -376,7 +388,7 @@ module.exports = {
             severity: "error",
             comment:
                 "Layering boundary: the SOURCE/DATA layers (lenses/, stores/fileStore/) must not import UP into features/. util/ + model/ are the shared kernel and exempt. The reverse (features → lens facade) is the allowed flow. Spec/e2e exempt.",
-            from: { path: ["^app/codeCharta/lenses/", "^app/codeCharta/stores/fileStore/"], pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            from: { path: ["^app/codeCharta/lenses/", "^app/codeCharta/stores/fileStore/", "^app/codeCharta/stores/metricsLensSource/", "^app/codeCharta/stores/dependencyLensSource/"], pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: { path: ["^app/codeCharta/features/"] }
         },
         {

@@ -39,8 +39,8 @@ import {
     setColorMetric,
     setDistributionMetric
 } from "../stores/mapState/mapState.write.facade"
-import { setAttributeTypes, setAttributeDescriptors } from "../lenses/metrics/metricsLens.load.facade"
-import { setEdgeAttributeTypes } from "../lenses/dependency/dependencyLens.load.facade"
+import { setAttributeTypes, setAttributeDescriptors } from "../stores/metricsLensSource/metricsLensSource.write.facade"
+import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import { setBlacklist, setMarkedPackages, setAllFocusedNodes, setSearchPattern } from "../stores/sharedView/sharedView.write.facade"
 import {
     setSortingOption,

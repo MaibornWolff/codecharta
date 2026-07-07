@@ -4,8 +4,8 @@ import { defaultIsLoadingFile } from "../stores/fileStore/store/isLoadingFile/is
 import { defaultCurrentFilesAreSampleFiles } from "../stores/fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
 import { defaultMapState } from "../stores/mapState/mapState.read.facade"
 import { defaultSharedView } from "../stores/sharedView/sharedView.read.facade"
-import { defaultMetricsLensSource } from "../lenses/metrics/metricsLens.load.facade"
-import { defaultDependencyLensSource } from "../lenses/dependency/dependencyLens.load.facade"
+import { defaultMetricsLensSource } from "../stores/metricsLensSource/metricsLensSource.read.facade"
+import { defaultDependencyLensSource } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { CcState } from "../model/codeCharta.model"
 
 export const defaultState: CcState = {

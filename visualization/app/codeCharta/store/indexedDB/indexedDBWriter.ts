@@ -1,8 +1,8 @@
 import { CcState } from "app/codeCharta/model/codeCharta.model"
 import { defaultMapState } from "../../stores/mapState/mapState.read.facade"
 import { defaultSharedView } from "../../stores/sharedView/sharedView.read.facade"
-import { defaultMetricsLensSource } from "../../lenses/metrics/metricsLens.load.facade"
-import { defaultDependencyLensSource } from "../../lenses/dependency/dependencyLens.load.facade"
+import { defaultMetricsLensSource } from "../../stores/metricsLensSource/metricsLensSource.read.facade"
+import { defaultDependencyLensSource } from "../../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { defaultPreferences, defaultSorting } from "../../stores/preferences/preferences.read.facade"
 import { openDB } from "idb"
 

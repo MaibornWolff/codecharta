@@ -20,8 +20,10 @@ import {
     setLayoutAlgorithm
 } from "../stores/mapState/mapState.write.facade"
 import { defaultMapState } from "../stores/mapState/mapState.read.facade"
-import { defaultMetricsLensSource, setAttributeDescriptors, setAttributeTypes } from "../lenses/metrics/metricsLens.load.facade"
-import { defaultDependencyLensSource, setEdgeAttributeTypes } from "../lenses/dependency/dependencyLens.load.facade"
+import { defaultMetricsLensSource } from "../stores/metricsLensSource/metricsLensSource.read.facade"
+import { setAttributeDescriptors, setAttributeTypes } from "../stores/metricsLensSource/metricsLensSource.write.facade"
+import { defaultDependencyLensSource } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
+import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import { defaultSharedView } from "../stores/sharedView/sharedView.read.facade"
 import { setDelta, setFiles } from "../stores/fileStore/store/files.actions"
 import { appReducers, setStateMiddleware } from "../store/store"

@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { AttributeTypeValue } from "../../../model/codeCharta.model"
-import { attributeTypesSelector } from "./attributeTypes/attributeTypes.selector"
+import { attributeTypesSelector } from "../../../stores/dependencyLensSource/dependencyLensSource.read.facade"
 
 /**
  * Edge-side attribute-type map OWNED by the dependency lens.

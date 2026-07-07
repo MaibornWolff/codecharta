@@ -62,9 +62,12 @@ Repoints:
 - **`feature-reaches-state-home-only-via-facade` / CQRS rules** → optional; the `stores-own-ccjson-source` fence covers the source homes.
 
 ## Steps
-- [ ] A: relocate `getPartialDefaultState` → `features/shared/` (sever store→renderer); tsc+lint+tests green; commit.
-- [ ] B: move the 2 lens-source roots → `stores/`, new facades, repoint composition+load, retire lens load facades, rule edits (sever store→lenses); tsc+lint 0/0 + full suite zero-diff; commit.
-- [ ] Verify LSM: `store/` outgoing bands = only `stores/ util/ model/`; store sits just above stores.
+- [x] A (commit f09561192): relocate `getPartialDefaultState` → `features/shared/` (sever store→renderer); tsc+lint 0/0, specs green.
+- [x] B: moved the 2 lens-source roots → `stores/metricsLensSource/` + `stores/dependencyLensSource/` (same-depth git mv, moved files byte-identical), added read/write facades each, repointed all 16 importers (composition→read, load→write, lens projection reads source downward), retired the 2 lens load facades, rule edits (sever store→lenses). **tsc 0 · lint 0/0 (1172 modules) · full suite 384/384, 45/45 snapshots zero-diff.**
+- [x] Verify LSM: `store/` outgoing bands = only `stores/` (26), `model/` (5), `util/` (1) — NO lenses, NO renderer. store sits just above stores. ✅
+
+## Outcome (2026-07-07)
+Structural, zero-persistence-impact (DB_VERSION stays 15, no migration, keys `metricsLensSource`/`dependencyLensSource` unchanged). Rule changes: `lens-owns-ccjson-source` → `stores-own-ccjson-source` (facade-only access to the 2 source homes); both homes added to `state-home-is-leaf`, `state-home-only-stores-import-ngrx`, `render-model-is-top-derived`, `load-orchestrator-not-imported-by-lower-layers`, `source-layers-must-not-import-features`; `lens-no-view-state` untouched (a lens reading its own source downward is legal). The lenses are now pure read-only projections that own no ngrx state.
 
 ## Rollback
 Two independent structural commits; revert either. No data/persistence/schema touched (keys preserved, DB_VERSION 15).

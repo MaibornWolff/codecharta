@@ -1,7 +1,7 @@
 import { fileActions } from "../../../stores/fileStore/store/files.actions"
 import { setState } from "../../../store/state.actions"
 import { preferencesActions } from "../../../stores/preferences/preferences.write.facade"
-import { setAttributeTypes, setAttributeDescriptors } from "../../../lenses/metrics/metricsLens.load.facade"
+import { setAttributeTypes, setAttributeDescriptors } from "../../../stores/metricsLensSource/metricsLensSource.write.facade"
 import {
     setColorLabels,
     setShowMetricLabelNodeName,
