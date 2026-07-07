@@ -440,7 +440,7 @@ export async function deleteCcState() {
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
 // (v(N-1))-shaped blob into vN. A blob written at oldVersion runs every transform whose target version it
-// predates, in ascending order (a v2 blob runs v3→…→v14; a v13 blob runs only v14).
+// predates, in ascending order (a v2 blob runs v3→…→v15; a v14 blob runs only v15).
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -484,7 +484,7 @@ export async function openCodeChartaDB() {
             // merge its two sort prefs into preferences.sorting, split the edge attributeTypes out of
             // metricsLensSource into a new dependencyLensSource root, and move the interaction ids
             // (hoveredNodeId/selectedBuildingId/rightClickedNodeData) from mapState into sharedView.
-            // Migrations chain: v2 blobs run v3→…→v14; a v13 blob runs only v14. A brand-new DB
+            // Migrations chain: v2 blobs run v3→…→v15; a v14 blob runs only v15. A brand-new DB
             // (oldVersion 0) has no record to migrate.
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)

@@ -60,8 +60,6 @@ export interface FileNode {
 export interface Lenses {
     metrics?: MetricsLensData
     dependency?: DependencyLensData
-    /** Reserved/unknown top-level lenses (e.g. domain, security) round-tripped verbatim. */
-    opaqueLenses?: Record<string, unknown>
 }
 
 export interface MetricsLensData {

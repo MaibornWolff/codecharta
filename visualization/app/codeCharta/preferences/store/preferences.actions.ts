@@ -7,13 +7,12 @@ import {
     setIsColorMetricLinkedToHeightMetricAction,
     toggleIsColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
-import { setSortingOption, setSortingOrderAscending, toggleSortingOrderAscending } from "./sorting/sorting.actions"
+import { setSortingOption, toggleSortingOrderAscending } from "./sorting/sorting.actions"
 
 // The durable-preference actions that trigger a CcState save (consumed by actionsRequiringSaveCcState).
 export const preferencesActions = [
     setPresentationMode,
     setResetCameraIfNewFileIsLoaded,
-    setSortingOrderAscending,
     toggleSortingOrderAscending,
     setMaxTreeMapFiles,
     setExperimentalFeaturesEnabled,
