@@ -57,6 +57,16 @@ class NodeIdTest {
     }
 
     @Test
+    fun `should NFC-normalize a single name so NFD and NFC spellings become equal`() {
+        val nfcName = Char(0x00C4) + "pfel" // precomposed A-umlaut + "pfel"
+        val nfdName = "A" + Char(0x0308) + "pfel" // A + combining diaeresis + "pfel"
+
+        assertNotEquals(nfcName, nfdName)
+        assertEquals(NodeId.normalizeName(nfcName), NodeId.normalizeName(nfdName))
+        assertEquals(nfcName, NodeId.normalizeName(nfdName))
+    }
+
+    @Test
     fun `should be deterministic for the same tree position`() {
         assertEquals(NodeId.fromSegments(listOf("src", "App.kt")), NodeId.fromSegments(listOf("src", "App.kt")))
     }

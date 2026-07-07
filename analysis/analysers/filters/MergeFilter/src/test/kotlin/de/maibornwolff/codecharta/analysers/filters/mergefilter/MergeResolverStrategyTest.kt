@@ -224,6 +224,24 @@ class MergeResolverStrategyTest {
     }
 
     @Test
+    fun `should overlay an NFD-spelled leaf onto its NFC-spelled reference by exact position`() {
+        // Arrange: the same file spelled precomposed (NFC) in the reference and decomposed (NFD) in the
+        // incoming tree - the same file on disk, two byte strings. NodeId normalizes both to one id, so
+        // the overlay must match them or the incoming metrics are dropped.
+        val nfcApfel = Char(0x00C4) + "pfel.kt" // precomposed Ä + "pfel.kt"
+        val nfdApfel = "A" + Char(0x0308) + "pfel.kt" // A + combining diaeresis + "pfel.kt"
+        val reference = tree(leaf("/src/$nfcApfel", mapOf("a" to 1.0)))
+        val incoming = tree(leaf("/src/$nfdApfel", mapOf("b" to 2.0)))
+
+        // Act
+        val merged = merge(MergeResolverStrategy.leaf(false), reference, incoming)
+
+        // Assert: one merged leaf carrying both attributes, not two normalization-variant siblings.
+        assertThat(merged.leaves).hasSize(1)
+        assertThat(merged.leaves.values.single().attributes).containsKeys("a", "b")
+    }
+
+    @Test
     fun `should accumulate stats when a strategy is reused but not when a fresh one is used per run`() {
         // Arrange: capture the processed-node count logged by logMergeStats.
         mockkObject(Logger)

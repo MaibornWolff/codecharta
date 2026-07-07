@@ -174,7 +174,10 @@ object ProjectToCcJsonV2Mapper {
         val children = node.children.map { child -> toFileDto(child, segments + child.name, metricsByNodeId, seenIds) }
         return FileDto(
             id = id,
-            name = node.name,
+            // NFC-normalize the emitted name so the wire is self-consistent with its NFC id and edge
+            // endpoints: a freshly-written file then has name==id normalization form, and a 2.0
+            // round-trip is byte-idempotent (stable meta.checksum). The domain keeps original spelling.
+            name = NodeId.normalizeName(node.name),
             type = type.name,
             children = children.ifEmpty { null },
             contentHash = node.checksum,

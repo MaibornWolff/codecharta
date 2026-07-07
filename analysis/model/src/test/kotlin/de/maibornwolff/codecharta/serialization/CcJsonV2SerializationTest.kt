@@ -13,6 +13,9 @@ import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
+import de.maibornwolff.codecharta.serialization.dto.FileDto
+import de.maibornwolff.codecharta.serialization.dto.LensesDto
+import de.maibornwolff.codecharta.serialization.dto.MetaDto
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -388,6 +391,95 @@ class CcJsonV2SerializationTest {
         val edge = roundTripped.lenses.dependency.edges.first()
         assertEquals("/root/src", edge.fromNodeName)
         assertEquals("/root/src/App.kt", edge.toNodeName)
+    }
+
+    @Test
+    fun `should keep node names and edge endpoints NFC-consistent through a 2_0 round-trip`() {
+        // Arrange: a leaf whose name is spelled NFD (as a macOS filesystem walker emits) with an edge
+        // targeting it. On the wire the node id and the endpoint are NFC; the node name must be NFC too
+        // or EdgeFilter's exact-string endpoint matching silently stops aggregating and inserts ghost
+        // NFC-named duplicate nodes.
+        val nfcName = Char(0x00C4) + "pfel.kt" // precomposed Ä + "pfel.kt"
+        val nfdName = "A" + Char(0x0308) + "pfel.kt" // A + combining diaeresis + "pfel.kt"
+        val nfdLeaf = Node(nfdName, NodeType.File)
+        val otherLeaf = Node("Other.kt", NodeType.File)
+        val src = Node("src", NodeType.Folder, emptyMap(), "", setOf(nfdLeaf, otherLeaf))
+        val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(src))
+        val edges = listOf(Edge("/root/src/$nfdName", "/root/src/Other.kt", mapOf("coupling" to 1.0)))
+        val project = Project("nfd", listOf(root), Project.API_VERSION, LensSet.fromLegacy(edges, emptyMap(), emptyMap()))
+
+        // Act
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
+
+        // Assert: the node name is NFC (not the original NFD bytes) ...
+        val srcFolder = roundTripped.rootNode.children.first()
+        val readLeaf = srcFolder.children.first { it.name.endsWith("pfel.kt") }
+        assertEquals(nfcName, readLeaf.name)
+        assertNotEquals(nfdName, readLeaf.name)
+        // ... and the reconstructed edge endpoint is the same NFC path, so EdgeFilter can aggregate.
+        val edge = roundTripped.lenses.dependency.edges.first { it.fromNodeName.endsWith("pfel.kt") }
+        assertEquals("/root/src/$nfcName", edge.fromNodeName)
+    }
+
+    @Test
+    fun `should write NFC-normalized node names so a 2_0 round-trip is byte-idempotent`() {
+        // Arrange: a leaf spelled NFD. The writer must emit its name NFC (matching the NFC id), or a
+        // read (which normalizes the name) followed by a re-write yields different bytes and a drifting
+        // meta.checksum.
+        val nfcName = Char(0x00C4) + "pfel.kt"
+        val nfdName = "A" + Char(0x0308) + "pfel.kt"
+        val leaf = Node(nfdName, NodeType.File)
+        val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(leaf))
+        val project = Project("nfd", listOf(root))
+
+        // Act
+        val serialized = ProjectSerializer.serializeToString(project)
+
+        // Assert: the emitted name is NFC, not the original NFD bytes ...
+        val emittedName =
+            JsonParser
+                .parseString(serialized)
+                .asJsonObject
+                .getAsJsonArray("files")
+                .first()
+                .asJsonObject
+                .getAsJsonArray("children")
+                .first()
+                .asJsonObject
+                .get("name")
+                .asString
+        assertEquals(nfcName, emittedName)
+        // ... so re-serializing the parsed-back project is byte-identical (stable meta.checksum).
+        val reSerialized = ProjectSerializer.serializeToString(ProjectDeserializer.deserializeProject(serialized))
+        assertEquals(serialized, reSerialized)
+    }
+
+    @Test
+    fun `should NFC-normalize a foreign 2_0 file whose node name is NFD on read`() {
+        // Arrange: a 2.0 DTO built directly (not via the normalizing writer), as a foreign producer might
+        // emit — node name NFD. The reader must normalize it so it agrees with its NFC id and endpoints.
+        val nfcName = Char(0x00C4) + "pfel.kt"
+        val nfdName = "A" + Char(0x0308) + "pfel.kt"
+        val dto =
+            CcJsonV2(
+                MetaDto("foreign", "2.0", "checksum"),
+                listOf(
+                    FileDto(
+                        id = "id-root",
+                        name = "root",
+                        type = "Folder",
+                        children = listOf(FileDto(id = "id-leaf", name = nfdName, type = "File"))
+                    )
+                ),
+                LensesDto()
+            )
+
+        // Act
+        val project = CcJsonV2ToProjectMapper.toProject(dto)
+
+        // Assert
+        val readLeaf = project.rootNode.children.first()
+        assertEquals(nfcName, readLeaf.name)
     }
 
     @Test

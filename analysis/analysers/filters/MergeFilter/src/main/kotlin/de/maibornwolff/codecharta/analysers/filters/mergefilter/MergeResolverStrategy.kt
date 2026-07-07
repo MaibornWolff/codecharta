@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.util.Logger
 
@@ -52,7 +53,11 @@ class MergeResolverStrategy private constructor(
         }
     }
 
-    private fun namesMatch(first: String, second: String): Boolean = first.equals(second, ignoreCase = ignoreCase)
+    // NFC-normalize before comparing so a name spelled NFD (macOS walkers) and NFC (git parsers) is
+    // treated as one node. Node identity ([NodeId]) is NFC, so without this the variants survive the
+    // merge as distinct siblings and then collide on one id at the 2.0 writer's duplicate-id guard.
+    private fun namesMatch(first: String, second: String): Boolean =
+        NodeId.normalizeName(first).equals(NodeId.normalizeName(second), ignoreCase = ignoreCase)
 
     // --- UNION (recursive) ----------------------------------------------------------------------
 
@@ -192,9 +197,12 @@ class MergeResolverStrategy private constructor(
     private fun pathsEqual(first: Path, second: Path): Boolean = first.edgesList.size == second.edgesList.size &&
         first.edgesList.indices.all { namesMatch(first.edgesList[it], second.edgesList[it]) }
 
-    // Lowercase the edge list once per path (when ignoreCase) instead of re-allocating it on every
-    // suffix comparison.
-    private fun normalizedEdges(path: Path): List<String> = if (ignoreCase) path.edgesList.map { it.lowercase() } else path.edgesList
+    // NFC-normalize (and lowercase when ignoreCase) the edge list once per path instead of re-allocating
+    // it on every suffix comparison, so suffix matching stays consistent with the NFC-aware namesMatch.
+    private fun normalizedEdges(path: Path): List<String> = path.edgesList.map {
+        val normalized = NodeId.normalizeName(it)
+        if (ignoreCase) normalized.lowercase() else normalized
+    }
 
     private fun suffixFit(firstEdges: List<String>, secondEdges: List<String>): Int =
         Path(firstEdges).fittingEdgesFromTailWith(Path(secondEdges))

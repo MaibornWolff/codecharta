@@ -53,6 +53,16 @@ object NodeId {
     fun canonicalSegments(segments: List<String>): List<String> = canonicalize(segments)
 
     /**
+     * NFC-normalizes a single node name so name-based operations agree with the NFC-normalized [id].
+     * macOS stores filenames NFD and Linux/git NFC, so the same name only compares and hashes
+     * identically after this. Used wherever a name must reconcile with identity but must NOT go through
+     * the full path canonicalizer — merge name-matching (so normalization-variant siblings merge instead
+     * of surviving to collide at the writer's duplicate-id guard) and the 2.0 read boundary (so tree
+     * names match the NFC edge endpoints the reader reconstructs).
+     */
+    fun normalizeName(name: String): String = Normalizer.normalize(name, Normalizer.Form.NFC)
+
+    /**
      * The canonical path string for the node reached by following [segments] from the root's
      * children down. The root is excluded, so the root node itself canonicalizes to `"/"`.
      */
@@ -112,7 +122,7 @@ object NodeId {
             require(SEPARATOR !in rawSegment) {
                 "NodeId segments must be pre-split; got a segment containing a '$SEPARATOR' separator: '$rawSegment'"
             }
-            when (val segment = Normalizer.normalize(rawSegment, Normalizer.Form.NFC)) {
+            when (val segment = normalizeName(rawSegment)) {
                 "", "." -> Unit
                 ".." -> if (result.isNotEmpty()) result.removeLast()
                 else -> result.addLast(segment)

@@ -65,7 +65,11 @@ object CcJsonV2ToProjectMapper {
     private fun toNode(fileDto: FileDto, metricsByNodeId: Map<String, Map<String, Any>>): Node {
         val children = fileDto.children?.map { toNode(it, metricsByNodeId) } ?: emptyList()
         return Node(
-            name = fileDto.name,
+            // NFC-normalize the name so the reconstructed tree agrees with the NFC edge endpoints
+            // collectEndpoints derives (and with the node's own id): otherwise an NFD-named tree read
+            // from 2.0 makes EdgeFilter's exact-string endpoint matching silently stop aggregating and
+            // insert ghost NFC-named duplicate nodes.
+            name = NodeId.normalizeName(fileDto.name),
             type = NodeType.parse(fileDto.type),
             attributes = metricsByNodeId[fileDto.id] ?: emptyMap(),
             link = fileDto.link,

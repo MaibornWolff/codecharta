@@ -5,8 +5,12 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
+import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -71,6 +75,33 @@ class ProjectMergerTest {
         val projectList = listOf(originalProject, originalProject)
         val project = ProjectMerger(projectList, nodeMergerStrategy).merge()
         assertTrue(compareProjectStrings(project, originalProject, listOf("projectName", "apiVersion")))
+    }
+
+    @Test
+    fun `should merge NFC and NFD spellings of the same file and serialize without a duplicate-id crash`() {
+        // Arrange: the same file under /src spelled precomposed (NFC) in one project and decomposed (NFD)
+        // in the other - a macOS filesystem walker vs a git parser. NodeId normalizes both to one id, so
+        // before the fix they survived the merge as two siblings and collided at the 2.0 writer's
+        // duplicate-id guard.
+        val nfcName = Char(0x00C4) + "pfel.kt" // precomposed Ä + "pfel.kt"
+        val nfdName = "A" + Char(0x0308) + "pfel.kt" // A + combining diaeresis + "pfel.kt"
+
+        fun project(leafName: String, metric: String): Project {
+            val leaf = Node(leafName, NodeType.File, mapOf(metric to 1.0))
+            val src = Node("src", NodeType.Folder, emptyMap(), "", setOf(leaf))
+            return Project("p", listOf(Node("root", NodeType.Folder, emptyMap(), "", setOf(src))), Project.API_VERSION)
+        }
+        val projects = listOf(project(nfcName, "a"), project(nfdName, "b"))
+
+        // Act
+        val merged = ProjectMerger(projects, nodeMergerStrategy).merge()
+
+        // Assert: the two spellings merged into one node carrying both attributes ...
+        val srcChildren = merged.rootNode.children.single().children
+        assertEquals(1, srcChildren.size)
+        assertTrue(srcChildren.single().attributes.containsKey("a") && srcChildren.single().attributes.containsKey("b"))
+        // ... and the merged project serializes (the writer's duplicate-id guard does not fire).
+        assertDoesNotThrow { ProjectSerializer.serializeToString(merged) }
     }
 
     @Test
