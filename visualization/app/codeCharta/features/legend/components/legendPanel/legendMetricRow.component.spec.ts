@@ -2,7 +2,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { TestBed } from "@angular/core/testing"
-import { defaultState } from "../../../../store/state.manager"
+import { defaultState } from "../../../../stores/store/state.manager"
 import { attributeDescriptorsSelector } from "../../../../lenses/metrics/metricsLens.facade"
 import { LegendMetricRowComponent } from "./legendMetricRow.component"
 

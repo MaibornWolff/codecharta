@@ -1,12 +1,12 @@
 import "fake-indexeddb/auto"
 import { openDB } from "idb"
-import { defaultState } from "../../store/state.manager"
-import { defaultPreferences } from "../../stores/preferences/preferences.read.facade"
-import { defaultMapState } from "../../stores/mapState/mapState.read.facade"
-import { defaultSharedView } from "../../stores/sharedView/sharedView.read.facade"
-import { defaultMetricsLensSource } from "../../stores/metricsLensSource/metricsLensSource.read.facade"
-import { defaultDependencyLensSource } from "../../stores/dependencyLensSource/dependencyLensSource.read.facade"
-import { AttributeTypeValue, ColorMode, LayoutAlgorithm } from "../../model/codeCharta.model"
+import { defaultState } from "../state.manager"
+import { defaultPreferences } from "../../preferences/preferences.read.facade"
+import { defaultMapState } from "../../mapState/mapState.read.facade"
+import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
+import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSource.read.facade"
+import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
+import { AttributeTypeValue, ColorMode, LayoutAlgorithm } from "../../../model/codeCharta.model"
 import {
     CCSTATE_PRIMARY_KEY,
     CCSTATE_STATE_ID,

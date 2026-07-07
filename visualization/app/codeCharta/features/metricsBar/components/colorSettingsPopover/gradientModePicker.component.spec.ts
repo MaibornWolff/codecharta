@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { ColorMode } from "../../../../model/codeCharta.model"
 import { setColorMode } from "../../../../stores/mapState/mapState.write.facade"
-import { defaultState } from "../../../../store/state.manager"
+import { defaultState } from "../../../../stores/store/state.manager"
 import { GradientModePickerComponent } from "./gradientModePicker.component"
 
 describe("GradientModePickerComponent", () => {

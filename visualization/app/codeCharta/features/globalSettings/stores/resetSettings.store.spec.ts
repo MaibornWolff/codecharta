@@ -2,9 +2,9 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { ResetSettingsStore } from "./resetSettings.store"
-import { setState } from "../../../store/state.actions"
+import { setState } from "../../../stores/store/state.actions"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { defaultState } from "../../../store/state.manager"
+import { defaultState } from "../../../stores/store/state.manager"
 
 jest.mock("../../shared/getPartialDefaultState", () => ({
     getPartialDefaultState: jest.fn((settingsKeys: string[], _state) => {

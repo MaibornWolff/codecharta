@@ -1,5 +1,5 @@
 import { BlacklistItem, CcState } from "../../../../model/codeCharta.model"
-import { defaultState } from "../../../../store/state.manager"
+import { defaultState } from "../../../store/state.manager"
 import { blacklistMatcherSelector } from "./blacklistMatcher.selector"
 
 const stateWithBlacklist = (blacklist: BlacklistItem[]): CcState => ({

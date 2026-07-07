@@ -3,7 +3,7 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
-import { defaultState } from "../../../../store/state.manager"
+import { defaultState } from "../../../../stores/store/state.manager"
 import { UploadFilesService } from "../../services/uploadFiles.service"
 import { NavBarComponent } from "./navBar.component"
 

@@ -6,7 +6,7 @@ import { of } from "rxjs"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
 import { invertHeightSelector, scalingSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setInvertHeight, setScaling } from "../../../../stores/mapState/mapState.write.facade"
-import { defaultState } from "../../../../store/state.manager"
+import { defaultState } from "../../../../stores/store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { HeightSettingsPopoverComponent } from "./heightSettingsPopover.component"
 

@@ -1,6 +1,6 @@
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
-import { defaultState } from "../../../../store/state.manager"
+import { defaultState } from "../../../../stores/store/state.manager"
 import { BottomBarComponent } from "./bottomBar.component"
 
 describe("BottomBarComponent", () => {

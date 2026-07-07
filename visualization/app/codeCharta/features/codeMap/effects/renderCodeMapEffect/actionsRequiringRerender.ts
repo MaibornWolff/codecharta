@@ -41,7 +41,7 @@ import {
     markPackages,
     unmarkPackage
 } from "../../../../stores/sharedView/sharedView.write.facade"
-import { setState } from "../../../../store/state.actions"
+import { setState } from "../../../../stores/store/state.actions"
 
 export const actionsRequiringRerender = [
     setColorLabels,

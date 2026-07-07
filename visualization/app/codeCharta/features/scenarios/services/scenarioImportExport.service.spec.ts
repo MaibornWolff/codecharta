@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
-import { defaultState } from "../../../store/state.manager"
+import { defaultState } from "../../../stores/store/state.manager"
 import { ThreeCameraService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { ThreeMapControlsService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { ScenariosService } from "./scenarios.service"

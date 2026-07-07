@@ -1,5 +1,5 @@
 import { CcState, ColorMode } from "../../../model/codeCharta.model"
-import { defaultState } from "../../../store/state.manager"
+import { defaultState } from "../../../stores/store/state.manager"
 import {
     areaMetricSelector,
     heightMetricSelector,

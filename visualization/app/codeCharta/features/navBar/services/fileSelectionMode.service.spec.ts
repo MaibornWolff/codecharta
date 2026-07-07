@@ -5,7 +5,7 @@ import { addFile, removeFiles, setDelta, setStandard } from "../../../stores/fil
 import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../mocks/dataMocks"
 import { FileSelectionModeService } from "./fileSelectionMode.service"
 import { State, Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../store/store"
+import { appReducers, setStateMiddleware } from "../../../stores/store/store"
 import { CcState } from "../../../model/codeCharta.model"
 import { FilesSelectionStore } from "../stores/filesSelection.store"
 

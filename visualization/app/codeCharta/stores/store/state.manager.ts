@@ -1,12 +1,12 @@
-import { defaultPreferences } from "../stores/preferences/preferences.read.facade"
-import { defaultFiles } from "../stores/fileStore/store/files.reducer"
-import { defaultIsLoadingFile } from "../stores/fileStore/store/isLoadingFile/isLoadingFile.reducer"
-import { defaultCurrentFilesAreSampleFiles } from "../stores/fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
-import { defaultMapState } from "../stores/mapState/mapState.read.facade"
-import { defaultSharedView } from "../stores/sharedView/sharedView.read.facade"
-import { defaultMetricsLensSource } from "../stores/metricsLensSource/metricsLensSource.read.facade"
-import { defaultDependencyLensSource } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
-import { CcState } from "../model/codeCharta.model"
+import { defaultPreferences } from "../preferences/preferences.read.facade"
+import { defaultFiles } from "../fileStore/store/files.reducer"
+import { defaultIsLoadingFile } from "../fileStore/store/isLoadingFile/isLoadingFile.reducer"
+import { defaultCurrentFilesAreSampleFiles } from "../fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
+import { defaultMapState } from "../mapState/mapState.read.facade"
+import { defaultSharedView } from "../sharedView/sharedView.read.facade"
+import { defaultMetricsLensSource } from "../metricsLensSource/metricsLensSource.read.facade"
+import { defaultDependencyLensSource } from "../dependencyLensSource/dependencyLensSource.read.facade"
+import { CcState } from "../../model/codeCharta.model"
 
 export const defaultState: CcState = {
     metricsLensSource: defaultMetricsLensSource,

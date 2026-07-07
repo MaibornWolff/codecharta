@@ -6,7 +6,7 @@ import { isDeltaStateSelector } from "../../../stores/fileStore/store/isDeltaSta
 import { areMultipleMapsVisibleSelector } from "../../../stores/fileStore/store/areMultipleMapsVisible.selector"
 import { labelsPerMapActiveSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { getPartialDefaultState } from "../../shared/facade"
-import { setState } from "../../../store/state.actions"
+import { setState } from "../../../stores/store/state.actions"
 
 @Injectable({
     providedIn: "root"

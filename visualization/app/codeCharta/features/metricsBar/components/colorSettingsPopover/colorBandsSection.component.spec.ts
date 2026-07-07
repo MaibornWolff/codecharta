@@ -3,7 +3,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
-import { defaultState } from "../../../../store/state.manager"
+import { defaultState } from "../../../../stores/store/state.manager"
 import { ColorCategoryCountsStore } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { ColorBandsSectionComponent } from "./colorBandsSection.component"
 

@@ -26,10 +26,10 @@ import { defaultDependencyLensSource } from "../stores/dependencyLensSource/depe
 import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import { defaultSharedView } from "../stores/sharedView/sharedView.read.facade"
 import { setDelta, setFiles } from "../stores/fileStore/store/files.actions"
-import { appReducers, setStateMiddleware } from "../store/store"
-import { defaultState } from "../store/state.manager"
+import { appReducers, setStateMiddleware } from "../stores/store/store"
+import { defaultState } from "../stores/store/state.manager"
 import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../mocks/dataMocks"
-import { readCcState } from "../store/indexedDB/indexedDBWriter"
+import { readCcState } from "../stores/store/indexedDB/indexedDBWriter"
 import { getLastAction } from "../util/testUtils/store.utils"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
 import { getNameDataPair } from "../stores/fileStore/loaders/ccJson/util/fileParser"
@@ -41,7 +41,7 @@ import { setCurrentFilesAreSampleFiles } from "../stores/fileStore/store/current
 
 jest.mock("../stores/fileStore/loaders/ccJson/util/urlExtractor")
 jest.mock("../model/files/files.helper")
-jest.mock("../store/indexedDB/indexedDBWriter")
+jest.mock("../stores/store/indexedDB/indexedDBWriter")
 
 describe("LoadInitialFileService", () => {
     let store: MockStore

@@ -18,7 +18,7 @@ import { setRightClickedNodeData } from "../../stores/sharedView/sharedView.writ
 import { State, Store } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CodeMapMouseEventStore } from "./stores/codeMapMouseEvent.store"
-import { defaultState } from "../../store/state.manager"
+import { defaultState } from "../../stores/store/state.manager"
 import { Box3 } from "three"
 import { TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../mocks/dataMocks"
 import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "../../renderer/threeViewer/rendering/codeMapBuilding.mocks"

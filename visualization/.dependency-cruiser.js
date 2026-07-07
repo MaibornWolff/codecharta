@@ -359,11 +359,11 @@ module.exports = {
             }
         },
 
-        /* ───────────────────── PARKED — composition-root shards (load/, store/) ─────────────────────
-         * These are NOT yet placed by the reorg (see TARGET-ARCHITECTURE.md "Open questions"). Their
-         * rules are kept verbatim at the current paths so the config stays enforceable; the state-home
-         * targets inside them were updated to the stores/ prefix. Revisit when load/ + store/ get a home
-         * (likely an `app-root` band above views/). */
+        /* ───────────────────── PARKED — composition-root shard (load/) ─────────────────────
+         * store/ was nested under stores/ in Slice 19c (it composes the home stores + depends only on
+         * stores/util/model, so it lives in the same band). load/ (the initial-file orchestrator) is
+         * still top-level and unplaced (see TARGET-ARCHITECTURE.md "Open questions"); revisit when it
+         * gets a home (likely an `app-root` band above views/). */
         {
             name: "load-orchestrator-not-imported-by-lower-layers",
             severity: "error",
@@ -395,9 +395,9 @@ module.exports = {
             name: "root-store-is-sole-composer",
             severity: "error",
             comment:
-                "store/store.ts is the ngrx ROOT composition: the per-home reducer map (appReducers) + the global setState meta-reducer. Only the app composition root (app/app.config.ts) may import it. The reusable root-state CONTRACT (defaultState + deep-merge kernel in store/state.manager, the global setState action in store/state.actions) is deliberately kept OUT of this module so consumers never touch the composition. Spec/e2e exempt. PARKED path (store/ home TBD).",
+                "stores/store/store.ts is the ngrx ROOT composition: the per-home reducer map (appReducers) + the global setState meta-reducer. Only the app composition root (app/app.config.ts) may import it. The reusable root-state CONTRACT (defaultState + deep-merge kernel in stores/store/state.manager, the global setState action in stores/store/state.actions) is deliberately kept OUT of this module so consumers never touch the composition. Spec/e2e exempt. Slice 19c nested store/ under stores/ (it composes the home stores + depends only on stores/util/model, so it lives in the same band as the stores it combines).",
             from: { path: "^app/codeCharta/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: { path: "^app/codeCharta/store/store\\.ts$" }
+            to: { path: "^app/codeCharta/stores/store/store\\.ts$" }
         }
     ],
     options: {

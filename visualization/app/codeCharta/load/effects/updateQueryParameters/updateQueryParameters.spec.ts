@@ -9,7 +9,7 @@ import { LoadInitialFileService } from "../../loadInitialFile.service"
 import { EDGE_METRIC_DATA } from "../../../mocks/dataMocks"
 import { edgeMetricDataSelector } from "../../../renderer/renderModel/edgeMetricData/edgeMetricData.selector"
 import { setColorMetric, setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
-import { defaultState } from "../../../store/state.manager"
+import { defaultState } from "../../../stores/store/state.manager"
 import { UpdateQueryParametersEffect } from "./updateQueryParameters.effect"
 
 describe("UpdateQueryParametersEffect", () => {

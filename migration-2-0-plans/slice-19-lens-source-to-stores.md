@@ -66,6 +66,15 @@ Repoints:
 - [x] B: moved the 2 lens-source roots → `stores/metricsLensSource/` + `stores/dependencyLensSource/` (same-depth git mv, moved files byte-identical), added read/write facades each, repointed all 16 importers (composition→read, load→write, lens projection reads source downward), retired the 2 lens load facades, rule edits (sever store→lenses). **tsc 0 · lint 0/0 (1172 modules) · full suite 384/384, 45/45 snapshots zero-diff.**
 - [x] Verify LSM: `store/` outgoing bands = only `stores/` (26), `model/` (5), `util/` (1) — NO lenses, NO renderer. store sits just above stores. ✅
 
+## 19c — nest store/ under stores/ (the payoff)
+Once 19a+19b made `store/` depend only on `stores/`+`util`+`model`, the ngrx composition root could move
+INTO the band it composes: `git mv store/ → stores/store/` (codemod repointed 141 specifiers across 101
+importers). This eliminates the confusing top-level `store/` vs `stores/` siblings entirely — `store/` is gone
+from the top level. `stores/` now holds the 6 leaf homes + the `store/` composer, and the WHOLE `stores/`
+subtree has **zero upward edges** (depends only on `util`/`model`). Rule `root-store-is-sole-composer` retargeted
+to `^app/codeCharta/stores/store/store.ts$`. tsc 0 · lint 0/0 · full suite 384/384, 45/45 zero-diff. (`load/`
+stays the last parked composition-root shard — TARGET open question.)
+
 ## Outcome (2026-07-07)
 Structural, zero-persistence-impact (DB_VERSION stays 15, no migration, keys `metricsLensSource`/`dependencyLensSource` unchanged). Rule changes: `lens-owns-ccjson-source` → `stores-own-ccjson-source` (facade-only access to the 2 source homes); both homes added to `state-home-is-leaf`, `state-home-only-stores-import-ngrx`, `render-model-is-top-derived`, `load-orchestrator-not-imported-by-lower-layers`, `source-layers-must-not-import-features`; `lens-no-view-state` untouched (a lens reading its own source downward is legal). The lenses are now pure read-only projections that own no ngrx state.
 

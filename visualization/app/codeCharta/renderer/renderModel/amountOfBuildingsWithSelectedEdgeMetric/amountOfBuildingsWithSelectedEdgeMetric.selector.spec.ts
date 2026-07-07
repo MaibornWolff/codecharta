@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { Store, StoreModule } from "@ngrx/store"
-import { appReducers } from "../../../store/store"
+import { appReducers } from "../../../stores/store/store"
 import { firstValueFrom } from "rxjs"
 import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./amountOfBuildingsWithSelectedEdgeMetric.selector"
 import { setFiles } from "../../../stores/fileStore/store/files.actions"
 import { DEFAULT_STATE, FILE_STATES } from "../../../mocks/dataMocks"
 import { CcState } from "../../../model/codeCharta.model"
-import { setState } from "../../../store/state.actions"
+import { setState } from "../../../stores/store/state.actions"
 import { setShowIncomingEdges, setShowOutgoingEdges, setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
 
 describe("countBuildingsWithEdgeMetric", () => {

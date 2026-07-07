@@ -2,7 +2,7 @@ import { RecursivePartial, Settings, CcState } from "../../model/codeCharta.mode
 import { convertToVectors } from "../../util/settingsHelper"
 import { codeMapNodesSelector } from "../../renderer/renderModel/renderModel.facade"
 import { getNumberOfTopLabels } from "../../util/getNumberOfTopLabels"
-import { defaultState } from "../../store/state.manager"
+import { defaultState } from "../../stores/store/state.manager"
 
 const MAP_STATE_AMOUNT_OF_TOP_LABELS = "mapState.amountOfTopLabels"
 
