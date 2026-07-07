@@ -10,7 +10,7 @@ import { CodeMapNode, NodeType } from "../../../../codeCharta.model"
 import { NameDataPair } from "../../../../codeCharta.api.model"
 import { CcJson2 } from "../../../../model/ccjson2.model"
 import packageJson from "../../../../../../package.json"
-import { checkErrors, checkWarnings, detectApiVersionMajor, isCcJson2, removeAuthorsAttributes, ERROR_MESSAGES } from "./fileValidator"
+import { checkErrors, checkWarnings, isCcJson2, removeAuthorsAttributes, ERROR_MESSAGES } from "./fileValidator"
 import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../../../../resources/fixed-folders/fixed-folders-example"
 import { APIVersions, ExportCCFile } from "../../../../codeCharta.api.model"
 import { clone } from "../../../../util/clone"
@@ -317,7 +317,6 @@ describe("FileValidator", () => {
 
         it("should detect a 2.0 envelope by its meta but not a legacy file claiming apiVersion 2.0", () => {
             expect(isCcJson2(file2_0)).toBe(true)
-            expect(detectApiVersionMajor(file2_0)).toBe(2)
             expect(isCcJson2(TEST_FILE_CONTENT_INVALID_MAJOR_API)).toBe(false)
         })
 
@@ -325,9 +324,45 @@ describe("FileValidator", () => {
             expect(checkErrors(file2_0)).toEqual([])
         })
 
-        it("should not strip authors or emit minor-version warnings for 2.0 files", () => {
+        it("should not strip authors or emit minor-version warnings for a valid 2.0 file", () => {
             expect(removeAuthorsAttributes(file2_0)).toEqual([])
             expect(checkWarnings(file2_0)).toEqual([])
+        })
+
+        it("should warn about a 2.0 dependency edge whose to endpoint id does not resolve to a node", () => {
+            file2_0.lenses.dependency.edges.push({ fromId: "/root/big.ts", toId: "/does/not/exist", attributes: {} })
+
+            expect(checkWarnings(file2_0)).toEqual([`${ERROR_MESSAGES.unresolvedEdgeEndpoint} /root/big.ts -> /does/not/exist`])
+        })
+
+        it("should warn about a 2.0 dependency edge whose from endpoint id does not resolve to a node", () => {
+            file2_0.lenses.dependency.edges.push({ fromId: "/does/not/exist", toId: "/root/big.ts", attributes: {} })
+
+            expect(checkWarnings(file2_0)).toEqual([`${ERROR_MESSAGES.unresolvedEdgeEndpoint} /does/not/exist -> /root/big.ts`])
+        })
+
+        it("should report an error for two 2.0 sibling nodes sharing a name and type but with distinct ids", () => {
+            file2_0.files[0].children.push({ id: "/root/big.ts#dup", name: "big.ts", type: NodeType.FILE })
+
+            expect(checkErrors(file2_0)).toContain(
+                `${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${NodeType.FILE} with path: /root/big.ts`
+            )
+        })
+
+        it("should report a 2.0 sibling name|type duplicate nested below the root (recursion)", () => {
+            // two small.ts File siblings under /root/Parent, not at the root level
+            file2_0.files[0].children[1].children.push({ id: "/root/Parent/small.ts#dup", name: "small.ts", type: NodeType.FILE })
+
+            expect(checkErrors(file2_0)).toContain(
+                `${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${NodeType.FILE} with path: /root/Parent/small.ts`
+            )
+        })
+
+        it("should not report a 2.0 same-name-same-type node living under two different parents", () => {
+            // big.ts already exists under /root; a second big.ts under /root/Parent is a different sibling scope
+            file2_0.files[0].children[1].children.push({ id: "/root/Parent/big.ts", name: "big.ts", type: NodeType.FILE })
+
+            expect(checkErrors(file2_0)).toEqual([])
         })
 
         it("should report schema errors for a malformed 2.0 file", () => {

@@ -27,6 +27,7 @@ export const ERROR_MESSAGES = {
     minorApiVersionOutdated: "Minor API Version Outdated.",
     nodesNotUnique: "Node names in combination with node types are not unique.",
     nodeIdsNotUnique: "Node ids are not unique.",
+    unresolvedEdgeEndpoint: "Dependency edge dropped: an endpoint id does not resolve to a node.",
     nodesEmpty: "The nodes array is empty. At least one node is required.",
     notAllFoldersAreFixed: "If at least one direct sub-folder of root is marked as fixed, all direct sub-folders of root must be fixed.",
     fixedFoldersOutOfBounds: "Coordinates of fixed folders must be within a range of 0 and 100.",
@@ -53,16 +54,6 @@ export function isCcJson2(content: CcFileContent): content is CcJson2 {
     return typeof content.meta.apiVersion === "string" && getAsApiVersion(content.meta.apiVersion).major === 2
 }
 
-export function detectApiVersionMajor(content: CcFileContent): number {
-    if (isCcJson2(content)) {
-        return getAsApiVersion(content.meta.apiVersion).major
-    }
-    if (content != null && typeof content.apiVersion === "string") {
-        return getAsApiVersion(content.apiVersion).major
-    }
-    return Number.NaN
-}
-
 export function removeAuthorsAttributes(file: CcFileContent): string[] {
     // 2.0 authors are regular metric attributes (out of scope); nothing to strip for 2.0/empty files.
     if (isCcJson2(file) || !file?.nodes) {
@@ -72,13 +63,44 @@ export function removeAuthorsAttributes(file: CcFileContent): string[] {
 }
 
 export function checkWarnings(file: CcFileContent): string[] {
-    if (file == null || isCcJson2(file)) {
+    if (file == null) {
         return []
+    }
+    if (isCcJson2(file)) {
+        return collectUnresolvedEdgeWarnings(file)
     }
     if (fileHasHigherMinorVersion(file)) {
         return [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`]
     }
     return []
+}
+
+/**
+ * cc.json 2.0 dependency edges reference nodes by id; the 2.0 reader silently drops any edge whose
+ * fromId/toId is absent from the file tree (mapEdges). Surface each drop as a load warning so it shows in
+ * the load-warnings dialog instead of only console.warn.
+ */
+function collectUnresolvedEdgeWarnings(file: CcJson2): string[] {
+    const root = file.files?.[0]
+    if (root === undefined) {
+        return []
+    }
+    const nodeIds = new Set<string>()
+    collectFileNodeIds(root, nodeIds)
+    const warnings: string[] = []
+    for (const edge of file.lenses.dependency?.edges ?? []) {
+        if (!nodeIds.has(edge.fromId) || !nodeIds.has(edge.toId)) {
+            warnings.push(`${ERROR_MESSAGES.unresolvedEdgeEndpoint} ${edge.fromId} -> ${edge.toId}`)
+        }
+    }
+    return warnings
+}
+
+function collectFileNodeIds(node: FileNode, into: Set<string>) {
+    into.add(node.id)
+    for (const child of node.children ?? []) {
+        collectFileNodeIds(child, into)
+    }
 }
 
 export function checkErrors(file: CcFileContent): string[] {
@@ -109,7 +131,7 @@ function checkErrors2_0(file: CcJson2): string[] {
     if (!validate(file)) {
         return validate.errors.map((error: ErrorObject) => getValidationMessage(error))
     }
-    return validateAllFileNodeIdsAreUnique(file.files[0])
+    return [...validateAllFileNodeIdsAreUnique(file.files[0]), ...validateAllFileNodesAreUnique(file.files[0])]
 }
 
 function validateAllFileNodeIdsAreUnique(root: FileNode): string[] {
@@ -126,6 +148,31 @@ function collectDuplicateFileNodeIds(node: FileNode, seenIds: Set<string>, error
     }
     for (const child of node.children ?? []) {
         collectDuplicateFileNodeIds(child, seenIds, errors)
+    }
+}
+
+/**
+ * A 2.0 node id already encodes type + tree position, but the file may come from a producer that did not
+ * enforce it; check sibling name|type uniqueness directly (mirrors the 1.x validateAllNodesAreUnique
+ * check) so two same-name-same-type siblings are rejected instead of trusted.
+ */
+function validateAllFileNodesAreUnique(root: FileNode): string[] {
+    const errors: string[] = []
+    collectDuplicateSiblingFileNodes(root, `/${root.name}`, errors)
+    return errors
+}
+
+function collectDuplicateSiblingFileNodes(node: FileNode, subPath: string, errors: string[]) {
+    const seen = new Set<string>()
+    for (const child of node.children ?? []) {
+        const path = `${subPath}/${child.name}`
+        const key = `${child.name}|${child.type}`
+        if (seen.has(key)) {
+            errors.push(`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${child.type} with path: ${path}`)
+        } else {
+            seen.add(key)
+            collectDuplicateSiblingFileNodes(child, path, errors)
+        }
     }
 }
 

@@ -10,6 +10,8 @@ import {
     invertColorRange,
     invertDeltaColors,
     setShowOnlyBuildingsWithEdges,
+    setShowIncomingEdges,
+    setShowOutgoingEdges,
     setIsEdgeMetricVisible,
     toggleEdgeMetricVisible,
     setIsWhiteBackground,
@@ -45,6 +47,7 @@ import {
     addBlacklistItem,
     addBlacklistItems,
     removeBlacklistItem,
+    removeBlacklistItems,
     setMarkedPackages,
     markPackages,
     unmarkPackage
@@ -55,6 +58,8 @@ import {
 // trigger a CcState save is preserved, now grouped by the state home each action belongs to — mapState
 // (view settings), sharedView (focus/search) and preferences (durable prefs). The fileStore setStandard
 // action that used to sit in dynamicSettingsActions is already covered by fileActions.
+// setShowIncomingEdges/setShowOutgoingEdges are dispatched by the edge-settings popover but were missing
+// from this union, so those runtime toggles were not persisted; they are included now.
 const mapStateSaveActions = [
     setColorLabels,
     setShowMetricLabelNodeName,
@@ -63,6 +68,8 @@ const mapStateSaveActions = [
     invertColorRange,
     invertDeltaColors,
     setShowOnlyBuildingsWithEdges,
+    setShowIncomingEdges,
+    setShowOutgoingEdges,
     setIsEdgeMetricVisible,
     toggleEdgeMetricVisible,
     setIsWhiteBackground,
@@ -91,6 +98,8 @@ const mapStateSaveActions = [
 
 // Slice 9b/9c re-homed blacklist + markedPackages from the (now-deleted) fileSettings slice into
 // sharedView; their save-trigger actions belong here with the rest of the sharedView save actions.
+// removeBlacklistItems (plural, dispatched by the file-extension bar) was missing from this union, so a
+// bulk blacklist removal was not persisted; it is included now alongside the singular removeBlacklistItem.
 const sharedViewSaveActions = [
     setSearchPattern,
     setAllFocusedNodes,
@@ -101,6 +110,7 @@ const sharedViewSaveActions = [
     addBlacklistItem,
     addBlacklistItems,
     removeBlacklistItem,
+    removeBlacklistItems,
     setMarkedPackages,
     markPackages,
     unmarkPackage

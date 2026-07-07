@@ -8,7 +8,8 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { setFiles } from "../../../fileStore/store/files.actions"
 import { writeCcState } from "../../../store/indexedDB/indexedDBWriter"
 import { waitFor } from "@testing-library/angular"
-import { setMarkedPackages } from "../../../sharedView/sharedView.write.facade"
+import { removeBlacklistItems, setMarkedPackages } from "../../../sharedView/sharedView.write.facade"
+import { setShowIncomingEdges } from "../../../mapState/mapState.write.facade"
 
 jest.mock("../../../../../app/codeCharta/store/indexedDB/indexedDBWriter", () => {
     return {
@@ -31,6 +32,9 @@ describe("SaveCcStateEffect", () => {
 
     afterEach(() => {
         actions$.complete()
+        // Clear the module-level writeCcState mock so each test's call count is independent (the
+        // debounce test asserts an exact count and must not see saves triggered by earlier tests).
+        ;(writeCcState as jest.Mock).mockClear()
     })
 
     it("should save cc-state on actions requiring saving cc-state", async () => {
@@ -38,6 +42,20 @@ describe("SaveCcStateEffect", () => {
         actions$.next(setFiles({ value: [] }))
         store.refreshState()
         await waitFor(() => expect(writeCcState).toHaveBeenCalledTimes(1))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+    })
+
+    it("should save cc-state on setShowIncomingEdges (previously missing from the save-trigger union)", async () => {
+        const store = TestBed.inject(MockStore)
+        actions$.next(setShowIncomingEdges({ value: true }))
+        store.refreshState()
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+    })
+
+    it("should save cc-state on removeBlacklistItems (previously missing from the save-trigger union)", async () => {
+        const store = TestBed.inject(MockStore)
+        actions$.next(removeBlacklistItems({ items: [] }))
+        store.refreshState()
         await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
     })
 
