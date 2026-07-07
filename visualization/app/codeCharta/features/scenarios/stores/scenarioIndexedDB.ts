@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { openCodeChartaDB, SCENARIOS_STORE_NAME } from "../../../stores/store/indexedDB/indexedDBWriter"
+import { openCodeChartaDB, SCENARIOS_STORE_NAME } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { Scenario } from "../model/scenario.model"
 
 @Injectable({ providedIn: "root" })

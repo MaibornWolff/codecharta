@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { setState } from "../../../stores/store/state.actions"
+import { setState } from "../../../stores/rootStore/state.actions"
 import { getPartialDefaultState } from "../../shared/facade"
 
 @Injectable({

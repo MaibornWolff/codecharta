@@ -3,7 +3,7 @@ import { State, Store } from "@ngrx/store"
 import { CcState, RecursivePartial } from "../../../model/codeCharta.model"
 import { setIsLoadingFile } from "../../../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../stores/mapState/mapState.write.facade"
-import { setState } from "../../../stores/store/state.actions"
+import { setState } from "../../../stores/rootStore/state.actions"
 
 @Injectable({ providedIn: "root" })
 export class ScenarioApplierStore {

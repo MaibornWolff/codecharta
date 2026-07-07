@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event"
 import { LoadFileService } from "../../../../../stores/fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../../load/load.facade"
 import { nodeMetricDataSelector } from "../../../../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
-import { defaultState } from "../../../../../stores/store/state.manager"
+import { defaultState } from "../../../../../stores/rootStore/state.manager"
 import { METRIC_DATA } from "../../../../../mocks/dataMocks"
 import { ResetMapButtonComponent } from "./resetMapButton.component"
 

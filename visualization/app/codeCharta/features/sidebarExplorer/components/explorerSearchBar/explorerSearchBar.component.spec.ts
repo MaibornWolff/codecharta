@@ -6,7 +6,7 @@ import userEvent from "@testing-library/user-event"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../features/shared/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { resultsInEmptyMap } from "../../../../util/blacklist/resultsInEmptyMap"
 import { BlacklistSearchPatternEffect } from "../../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
-import { appReducers, setStateMiddleware } from "../../../../stores/store/store"
+import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { ExplorerSearchBarComponent } from "./explorerSearchBar.component"
 
 jest.mock("../../../../util/blacklist/resultsInEmptyMap", () => ({

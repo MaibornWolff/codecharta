@@ -360,8 +360,9 @@ module.exports = {
         },
 
         /* ───────────────────── PARKED — composition-root shard (load/) ─────────────────────
-         * store/ was nested under stores/ in Slice 19c (it composes the home stores + depends only on
-         * stores/util/model, so it lives in the same band). load/ (the initial-file orchestrator) is
+         * the ngrx composition root was nested under stores/ as stores/rootStore/ (Slice 19c/19d — it
+         * composes the home stores + depends only on stores/util/model, so it lives in the same band).
+         * load/ (the initial-file orchestrator) is
          * still top-level and unplaced (see TARGET-ARCHITECTURE.md "Open questions"); revisit when it
          * gets a home (likely an `app-root` band above views/). */
         {
@@ -395,9 +396,9 @@ module.exports = {
             name: "root-store-is-sole-composer",
             severity: "error",
             comment:
-                "stores/store/store.ts is the ngrx ROOT composition: the per-home reducer map (appReducers) + the global setState meta-reducer. Only the app composition root (app/app.config.ts) may import it. The reusable root-state CONTRACT (defaultState + deep-merge kernel in stores/store/state.manager, the global setState action in stores/store/state.actions) is deliberately kept OUT of this module so consumers never touch the composition. Spec/e2e exempt. Slice 19c nested store/ under stores/ (it composes the home stores + depends only on stores/util/model, so it lives in the same band as the stores it combines).",
+                "stores/rootStore/store.ts is the ngrx ROOT composition: the per-home reducer map (appReducers) + the global setState meta-reducer. Only the app composition root (app/app.config.ts) may import it. The reusable root-state CONTRACT (defaultState + deep-merge kernel in stores/rootStore/state.manager, the global setState action in stores/rootStore/state.actions) is deliberately kept OUT of this module so consumers never touch the composition. Spec/e2e exempt. Slice 19c nested the composition root under stores/ (it composes the home stores + depends only on stores/util/model, so it lives in the same band); 19d named it rootStore/ — the root store that composes the home stores.",
             from: { path: "^app/codeCharta/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: { path: "^app/codeCharta/stores/store/store\\.ts$" }
+            to: { path: "^app/codeCharta/stores/rootStore/store\\.ts$" }
         }
     ],
     options: {

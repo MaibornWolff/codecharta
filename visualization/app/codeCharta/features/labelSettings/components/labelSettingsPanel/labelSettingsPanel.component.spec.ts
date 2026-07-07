@@ -7,7 +7,7 @@ import { FILE_STATES_TWO_FILES, TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../.
 import { fireEvent } from "@testing-library/angular"
 import { LabelSettingsPanelComponent } from "./labelSettingsPanel.component"
 import { Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../../stores/store/store"
+import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { ColorCategoryCountsStore } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { BehaviorSubject } from "rxjs"
 import { LabelMode } from "../../../../model/codeCharta.model"

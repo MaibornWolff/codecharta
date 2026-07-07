@@ -12,13 +12,13 @@ import { LoadInitialFileService } from "../../../../../load/load.facade"
 import { UrlExtractor } from "../../../../../stores/fileStore/fileStore.facade"
 import * as resetChosenMetricsEffect from "../../../../../features/metricsBar/effects/resetChosenMetrics/setDefaultMetrics"
 import { nodeMetricDataSelector } from "../../../../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
-import { setState } from "../../../../../stores/store/state.actions"
-import { defaultState } from "../../../../../stores/store/state.manager"
+import { setState } from "../../../../../stores/rootStore/state.actions"
+import { defaultState } from "../../../../../stores/rootStore/state.manager"
 import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../../mocks/dataMocks"
-import * as indexedDBWriter from "../../../../../stores/store/indexedDB/indexedDBWriter"
+import * as indexedDBWriter from "../../../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 
-jest.mock("../../../../../stores/store/indexedDB/indexedDBWriter")
+jest.mock("../../../../../stores/rootStore/indexedDB/indexedDBWriter")
 jest.mock("../../../../../stores/fileStore/fileStore.facade")
 jest.mock("../../../../../features/metricsBar/effects/resetChosenMetrics/setDefaultMetrics")
 

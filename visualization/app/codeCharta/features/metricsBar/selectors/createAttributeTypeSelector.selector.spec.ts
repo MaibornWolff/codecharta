@@ -1,5 +1,5 @@
 import { AttributeTypeValue } from "../../../model/codeCharta.model"
-import { defaultState } from "../../../stores/store/state.manager"
+import { defaultState } from "../../../stores/rootStore/state.manager"
 import { clone } from "../../../util/clone"
 import { createAttributeTypeSelector } from "./createAttributeTypeSelector.selector"
 

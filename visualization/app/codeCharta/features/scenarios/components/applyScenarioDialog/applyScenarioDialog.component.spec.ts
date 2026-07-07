@@ -3,7 +3,7 @@ import { ApplyScenarioDialogComponent } from "./applyScenarioDialog.component"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { Scenario, ScenarioSectionKey } from "../../model/scenario.model"
 import { ColorMode, LabelMode, MetricData } from "../../../../model/codeCharta.model"
-import { defaultState } from "../../../../stores/store/state.manager"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 
 const createTestScenario = (): Scenario => ({
     id: "test-id",

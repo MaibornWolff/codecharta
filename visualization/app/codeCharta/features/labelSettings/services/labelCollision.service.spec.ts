@@ -9,7 +9,7 @@ import { ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.
 import { CodeMapTooltipService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { setLabelsPerMap, setShowMetricLabelNodeName, setHeightMetric } from "../../../stores/mapState/mapState.write.facade"
 import { Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../stores/store/store"
+import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
 import { StateAccessStore } from "../stores/stateAccess.store"
 import { setFiles } from "../../../stores/fileStore/store/files.actions"
 import { FILE_STATES_TWO_FILES } from "../../../mocks/dataMocks"

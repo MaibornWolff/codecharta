@@ -4,8 +4,8 @@ import { first, tap } from "rxjs"
 import { CcState, NodeMetricData } from "../../../model/codeCharta.model"
 import { setDefaultMetrics } from "../../metricsBar/facade"
 import { nodeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
-import { setState } from "../../../stores/store/state.actions"
-import { defaultState } from "../../../stores/store/state.manager"
+import { setState } from "../../../stores/rootStore/state.actions"
+import { defaultState } from "../../../stores/rootStore/state.manager"
 
 @Injectable({ providedIn: "root" })
 export class MapResetStore {

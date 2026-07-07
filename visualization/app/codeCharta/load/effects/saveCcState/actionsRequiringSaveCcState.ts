@@ -1,5 +1,5 @@
 import { fileActions } from "../../../stores/fileStore/store/files.actions"
-import { setState } from "../../../stores/store/state.actions"
+import { setState } from "../../../stores/rootStore/state.actions"
 import { preferencesActions } from "../../../stores/preferences/preferences.write.facade"
 import { setAttributeTypes, setAttributeDescriptors } from "../../../stores/metricsLensSource/metricsLensSource.write.facade"
 import {

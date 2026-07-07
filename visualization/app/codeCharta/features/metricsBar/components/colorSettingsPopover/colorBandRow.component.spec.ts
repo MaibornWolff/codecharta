@@ -3,7 +3,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { setMapColors } from "../../../../stores/mapState/mapState.write.facade"
-import { defaultState } from "../../../../stores/store/state.manager"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { HexMapColor } from "../../../../model/codeCharta.model"
 import { ColorBandRowComponent } from "./colorBandRow.component"
 

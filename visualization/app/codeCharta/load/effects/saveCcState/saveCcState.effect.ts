@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { State } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
 import { debounceTime, filter, tap } from "rxjs"
-import { writeCcState } from "../../../stores/store/indexedDB/indexedDBWriter"
+import { writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
 import { setHoveredNodeId } from "../../../stores/sharedView/sharedView.write.facade"
 

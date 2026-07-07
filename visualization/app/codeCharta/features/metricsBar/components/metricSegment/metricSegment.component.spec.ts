@@ -3,7 +3,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { metricDataSelector } from "../../../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
-import { defaultState } from "../../../../stores/store/state.manager"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { MetricSegmentComponent } from "./metricSegment.component"
 

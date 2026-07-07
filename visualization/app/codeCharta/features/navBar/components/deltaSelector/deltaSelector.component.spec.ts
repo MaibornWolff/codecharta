@@ -8,7 +8,7 @@ import {
     setDeltaReference,
     switchReferenceAndComparison
 } from "../../../../stores/fileStore/store/files.actions"
-import { appReducers, setStateMiddleware } from "../../../../stores/store/store"
+import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../../mocks/dataMocks"
 import { DeltaSelectorComponent } from "./deltaSelector.component"
 

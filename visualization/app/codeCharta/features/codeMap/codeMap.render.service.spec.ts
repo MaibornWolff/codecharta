@@ -21,7 +21,7 @@ import {
 } from "../../mocks/dataMocks"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
-import { setState } from "../../stores/store/state.actions"
+import { setState } from "../../stores/rootStore/state.actions"
 import { edgesSelector } from "../../lenses/dependency/dependencyLens.facade"
 import {
     setAmountOfTopLabels,
@@ -40,7 +40,7 @@ import { metricDataSelector } from "../../renderer/renderModel/accumulatedData/m
 import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
 import { State, Store, StoreModule } from "@ngrx/store"
 import { CodeMapRenderStore } from "./stores/codeMapRender.store"
-import { appReducers, setStateMiddleware } from "../../stores/store/store"
+import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../renderer/renderModel/accumulatedData/metricData/metricData.selector", () => ({

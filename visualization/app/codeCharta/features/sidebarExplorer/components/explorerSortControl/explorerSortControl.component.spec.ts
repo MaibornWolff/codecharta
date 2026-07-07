@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event"
 import { SortingOption } from "../../../../model/codeCharta.model"
 import { toggleSortingOrderAscending } from "../../../../stores/preferences/preferences.write.facade"
 import { setSortingOption } from "../../../../stores/preferences/preferences.write.facade"
-import { appReducers, setStateMiddleware } from "../../../../stores/store/store"
+import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { ExplorerSortControlComponent } from "./explorerSortControl.component"
 
 describe("ExplorerSortControlComponent", () => {
