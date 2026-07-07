@@ -88,6 +88,25 @@ class LensTest {
     }
 
     @Test
+    fun `should preserve both node and edge descriptors for the same metric when flattening lenses`() {
+        // Arrange: the same metric carries divergent descriptors on the two lenses.
+        val nodeDescriptor = AttributeDescriptor(title = "Node Coupling", analyzers = setOf("unified"))
+        val edgeDescriptor = AttributeDescriptor(title = "Edge Coupling", analyzers = setOf("codemaat"))
+        val lenses =
+            LensSet(
+                metrics = MetricsLens(attributeDescriptors = mapOf("coupling" to nodeDescriptor)),
+                dependency = DependencyLens(attributeDescriptors = mapOf("coupling" to edgeDescriptor))
+            )
+
+        // Act
+        val flat = lenses.allAttributeDescriptors()
+
+        // Assert: the flat map keeps the metrics-lens metadata and unions both sides' analyzers.
+        assertEquals(setOf("unified", "codemaat"), flat["coupling"]!!.analyzers)
+        assertEquals("Node Coupling", flat["coupling"]!!.title)
+    }
+
+    @Test
     fun `should default missing analyzers to Unknown when merging descriptors`() {
         val first = MetricsLens(attributeDescriptors = mapOf("rloc" to AttributeDescriptor(title = "rloc")))
         val second = MetricsLens()

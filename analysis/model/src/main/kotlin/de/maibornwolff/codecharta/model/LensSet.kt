@@ -36,7 +36,18 @@ data class LensSet(
     }
 
     /** The flat 1.5 descriptor map (metric and edge descriptors share one namespace). */
-    fun allAttributeDescriptors(): Map<String, AttributeDescriptor> = metrics.attributeDescriptors + dependency.attributeDescriptors
+    fun allAttributeDescriptors(): Map<String, AttributeDescriptor> {
+        // A metric registered on both lenses (e.g. `ccsh edgefilter` output) must not lose either side's
+        // metadata when flattened: keep the metrics-lens descriptor and union in the edge lens's analyzers,
+        // rather than letting `+` overwrite it with the dependency descriptor.
+        val merged = metrics.attributeDescriptors.toMutableMap()
+        dependency.attributeDescriptors.forEach { (metric, descriptor) ->
+            val existing = merged[metric]
+            merged[metric] =
+                if (existing == null) descriptor else existing.copy(analyzers = existing.analyzers union descriptor.analyzers)
+        }
+        return merged
+    }
 
     companion object {
         const val NODES_KEY = "nodes"
