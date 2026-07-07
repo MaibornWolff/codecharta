@@ -16,7 +16,12 @@ import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
 import de.maibornwolff.codecharta.serialization.dto.FileDto
 import de.maibornwolff.codecharta.serialization.dto.LensesDto
 import de.maibornwolff.codecharta.serialization.dto.MetaDto
+import de.maibornwolff.codecharta.serialization.dto.MetricsLensDto
 import de.maibornwolff.codecharta.util.CodeChartaConstants
+import de.maibornwolff.codecharta.util.Logger
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -558,6 +563,31 @@ class CcJsonV2SerializationTest {
 
         // Assert: the unresolved edge is dropped instead of leaking a raw hash as a node name.
         assertTrue(project.lenses.dependency.edges.isEmpty())
+    }
+
+    @Test
+    fun `should warn when a metrics-lens entry has an unresolved node id`() {
+        // Arrange: a foreign 2.0 DTO whose metrics lens keys an id absent from the file tree.
+        val dto =
+            CcJsonV2(
+                MetaDto("foreign", "2.0", "checksum"),
+                listOf(FileDto(id = "id-root", name = "root", type = "Folder")),
+                LensesDto(metrics = MetricsLensDto(attributes = mapOf("dangling-id" to mapOf("rloc" to 1.0))))
+            )
+        val warnings = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        try {
+            every { Logger.warn(capture(warnings)) } returns Unit
+
+            // Act
+            val project = CcJsonV2ToProjectMapper.toProject(dto)
+
+            // Assert: the orphaned metric is dropped and a warning names the unresolved id.
+            assertTrue(project.rootNode.attributes.isEmpty())
+            assertTrue(warnings.any { it().contains("dangling-id") })
+        } finally {
+            unmockkObject(Logger)
+        }
     }
 
     @Test

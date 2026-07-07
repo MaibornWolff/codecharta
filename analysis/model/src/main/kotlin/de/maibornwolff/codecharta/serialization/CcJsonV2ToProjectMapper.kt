@@ -25,6 +25,11 @@ object CcJsonV2ToProjectMapper {
 
         val idToEndpoint = HashMap<String, String>()
         collectEndpoints(rootFileDto, emptyList(), idToEndpoint)
+        // A metrics-lens entry whose id resolves to no file node is dropped on read (its bag is never
+        // looked up in toNode). Warn on it, mirroring the edge-endpoint path, so the loss is not silent.
+        metricsByNodeId.keys
+            .filterNot { it in idToEndpoint }
+            .forEach { orphanId -> Logger.warn { "Dropping metrics-lens entry with unresolved node id: $orphanId" } }
         val edges =
             dto.lenses.dependency.edges.mapNotNull { edge ->
                 val from = idToEndpoint[edge.fromId]
