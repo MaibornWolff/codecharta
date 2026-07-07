@@ -30,11 +30,13 @@ export interface ExportBlacklistItem {
     type: ExportBlacklistType
 }
 
+/** @public wire-contract enum — members are serialized cc.json blacklist-type values (referenced as strings). */
 export enum ExportBlacklistType {
     hide = "hide",
     exclude = "exclude"
 }
 
+/** @public wire-contract enum — the cc.json apiVersion ladder; members map to serialized version strings. */
 export enum APIVersions {
     ZERO_POINT_ONE = "0.1",
     ONE_POINT_ZERO = "1.0",

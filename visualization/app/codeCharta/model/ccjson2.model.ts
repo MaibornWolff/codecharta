@@ -34,6 +34,7 @@ export interface CcJson2 {
     markedPackages?: MarkedPackage[]
 }
 
+/** @public cc.json 2.0 contract — consumed by the not-yet-wired 2.0 reader; see file header. */
 export interface Meta2 {
     projectName: string
     apiVersion: string
@@ -57,11 +58,13 @@ export interface FileNode {
     fixedPosition?: FixedPosition
 }
 
+/** @public cc.json 2.0 contract — consumed by the not-yet-wired 2.0 reader; see file header. */
 export interface Lenses {
     metrics?: MetricsLensData
     dependency?: DependencyLensData
 }
 
+/** @public cc.json 2.0 contract — consumed by the not-yet-wired 2.0 reader; see file header. */
 export interface MetricsLensData {
     /** Keyed by the string node `id`; metric name → value (scalar or list-valued). */
     attributes: Record<string, Record<string, number | number[]>>
@@ -70,12 +73,14 @@ export interface MetricsLensData {
     clusters?: unknown[]
 }
 
+/** @public cc.json 2.0 contract — consumed by the not-yet-wired 2.0 reader; see file header. */
 export interface DependencyLensData {
     edges: DependencyEdge[]
     attributeTypes: Record<string, AttributeTypeValue>
     attributeDescriptors: AttributeDescriptors
 }
 
+/** @public cc.json 2.0 contract — consumed by the not-yet-wired 2.0 reader; see file header. */
 export interface DependencyEdge {
     fromId: string
     toId: string
