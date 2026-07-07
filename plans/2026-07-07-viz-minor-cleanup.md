@@ -1,7 +1,7 @@
 ---
 name: viz-minor-cleanup
 issue: n/a
-state: progress
+state: complete
 version: 1
 ---
 
@@ -32,10 +32,10 @@ Close three MINOR items from the branch review (`plans/2026-07-05-full-branch-re
 
 ## Steps
 
-- [ ] Task 1: dep-cruiser gaps — edits + `npm run lint:architecture` green
-- [ ] Task 2: test gaps — 4 spec files + targeted `npm test` green
-- [ ] Task 3: sample files → 2.0 — regenerate assets, repoint, fix parity + e2e + `npm test` green
-- [ ] Full `npm test` + `npm run lint:architecture` green
+- [x] Task 1: dep-cruiser gaps — edits + `npm run lint:architecture` green (fb09a4599)
+- [x] Task 2: test gaps — 4 spec files + `npm test` green (85fea0004)
+- [x] Task 3: sample files → 2.0 — regenerated app/+public/ assets, repointed, fixed parity + e2e
+- [x] Full `npm test` (384 suites, 2339 passed, 45 snapshots) + `npm run lint:architecture` (0 violations) + `tsc` (0 errors) green
 
 ## Notes
 

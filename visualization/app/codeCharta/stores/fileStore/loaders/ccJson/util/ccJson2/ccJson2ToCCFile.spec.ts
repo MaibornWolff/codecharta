@@ -4,12 +4,21 @@ import { clone } from "../../../../../../util/clone"
 import { TEST_FILE_CONTENT_CC_JSON_2 } from "../../../../../../mocks/dataMocks"
 import { getCCFile } from "../ccFileHelper"
 import { mapCcJson2ToCCFile } from "./ccJson2ToCCFile"
-import sample1 from "../../../../../../assets/sample1.cc.json"
-import sample1Cc2 from "../../../../../../assets/sample1.cc2.json"
+import sample1CcJson2 from "../../../../../../assets/sample1.cc.json"
+import sample1Legacy from "../../../../../../resources/sample1_legacy_1_2.cc.json"
 import { ExportCCFile } from "../../../../../../model/codeCharta.api.model"
 
 function nameDataPair(content: CcJson2): NameDataPair {
     return { fileName: "fileName", fileSize: 42, content }
+}
+
+// ccsh sorts tree nodes (folders first, then alphabetical) while the 1.x normalizer preserves the
+// source order, so the render-parity map compare is made order-insensitive by sorting children by name.
+function sortChildrenByName<T extends { name: string; children?: T[] }>(node: T): T {
+    if (!node.children) {
+        return node
+    }
+    return { ...node, children: node.children.map(sortChildrenByName).sort((a, b) => a.name.localeCompare(b.name)) }
 }
 
 describe("mapCcJson2ToCCFile", () => {
@@ -89,13 +98,14 @@ describe("mapCcJson2ToCCFile", () => {
         warn.mockRestore()
     })
 
-    it("should produce the same map, edges and attributeTypes as the 1.5 twin sample (render parity)", () => {
-        // Arrange
-        const from1_5 = getCCFile({ fileName: "sample1.cc.json", fileSize: 0, content: sample1 as unknown as ExportCCFile })
-        const from2_0 = getCCFile({ fileName: "sample1.cc2.json", fileSize: 0, content: sample1Cc2 as unknown as CcJson2 })
+    it("should produce the same map, edges and attributeTypes as the 1.5 source it was converted from (ccsh render parity)", () => {
+        // Arrange — the REAL ccsh-converted 2.0 bundled sample (opaque hashed ids) vs the 1.x source it
+        // was produced from. Proves the 2.0 reader's id→path join does not rely on id==path.
+        const from1_5 = getCCFile({ fileName: "sample1.cc.json", fileSize: 0, content: sample1Legacy as unknown as ExportCCFile })
+        const from2_0 = getCCFile({ fileName: "sample1.cc.json", fileSize: 0, content: sample1CcJson2 as unknown as CcJson2 })
 
         // Assert
-        expect(from2_0.map).toEqual(from1_5.map)
+        expect(sortChildrenByName(from2_0.map)).toEqual(sortChildrenByName(from1_5.map))
         expect(from2_0.settings.fileSettings.edges).toEqual(from1_5.settings.fileSettings.edges)
         expect(from2_0.settings.fileSettings.attributeTypes).toEqual(from1_5.settings.fileSettings.attributeTypes)
     })

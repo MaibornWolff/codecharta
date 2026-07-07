@@ -1,40 +1,72 @@
 {
-	"projectName": "Sample Project",
-	"fileChecksum": "valid-md5-sample",
-	"apiVersion": "1.2",
-	"nodes": [
-		{
-			"name": "root",
-			"type": "Folder",
-			"attributes": {},
-			"children": [
-				{
-					"name": "bigLeaf.ts",
-					"type": "File",
-					"attributes": { "rloc": 120, "functions": 10, "sonar_complexity": 1 },
-					"link": "http://www.google.de"
-				},
-				{
-					"name": "ParentLeaf",
-					"type": "Folder",
-					"attributes": {},
-					"children": [
-						{
-							"name": "smallLeaf.html",
-							"type": "File",
-							"attributes": { "rloc": 30, "functions": 19, "sonar_complexity": 80 }
-						},
-						{
-							"name": "otherSmallLeaf.ts",
-							"type": "File",
-							"attributes": { "rloc": 80, "functions": 10, "sonar_complexity": 100 }
-						}
-					]
-				}
-			]
-		}
-	],
-	"attributeTypes": {
-		"nodes": { "rloc": "absolute", "functions": "absolute", "sonar_complexity": "absolute" }
-	}
+    "meta": {
+        "projectName": "Sample Project",
+        "apiVersion": "2.0",
+        "checksum": "0f309a686f9338cfb8f8a147a2ac2219"
+    },
+    "files": [
+        {
+            "id": "164ddff4bb1345e1",
+            "name": "root",
+            "type": "Folder",
+            "children": [
+                {
+                    "id": "1ae98c1a93690d75",
+                    "name": "ParentLeaf",
+                    "type": "Folder",
+                    "children": [
+                        {
+                            "id": "ea70504d5daa3547",
+                            "name": "otherSmallLeaf.ts",
+                            "type": "File"
+                        },
+                        {
+                            "id": "120a1569e3556450",
+                            "name": "smallLeaf.html",
+                            "type": "File"
+                        }
+                    ]
+                },
+                {
+                    "id": "7de6343f370ff7cf",
+                    "name": "bigLeaf.ts",
+                    "type": "File",
+                    "link": "http://www.google.de"
+                }
+            ]
+        }
+    ],
+    "lenses": {
+        "metrics": {
+            "attributes": {
+                "ea70504d5daa3547": {
+                    "rloc": 80,
+                    "functions": 10,
+                    "sonar_complexity": 100
+                },
+                "120a1569e3556450": {
+                    "rloc": 30,
+                    "functions": 19,
+                    "sonar_complexity": 80
+                },
+                "7de6343f370ff7cf": {
+                    "rloc": 120,
+                    "functions": 10,
+                    "sonar_complexity": 1
+                }
+            },
+            "attributeDescriptors": {},
+            "attributeTypes": {
+                "rloc": "absolute",
+                "functions": "absolute",
+                "sonar_complexity": "absolute"
+            },
+            "clusters": []
+        },
+        "dependency": {
+            "edges": [],
+            "attributeTypes": {},
+            "attributeDescriptors": {}
+        }
+    }
 }

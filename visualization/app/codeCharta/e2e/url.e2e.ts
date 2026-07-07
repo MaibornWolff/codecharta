@@ -2,7 +2,6 @@ import { test, expect } from "@playwright/test"
 import { CC_URL, clearIndexedDB, goto } from "../../playwright.helper"
 import { MapSelectorPageObject } from "../features/navBar/components/mapSelector/mapSelector.po"
 import sample1 from "../assets/sample1.cc.json"
-import sample1Cc2 from "../assets/sample1.cc2.json"
 import sample3 from "../assets/sample3.cc.json"
 import sample2 from "../assets/sample2.cc.json"
 import { gzip } from "pako"
@@ -68,18 +67,18 @@ test.describe("codecharta", () => {
         const filePanel = new MapSelectorPageObject(page)
 
         await page.route("**/*", async route => {
-            if (route.request().url().includes("/sample1.cc2.json")) {
+            if (route.request().url().includes("/sample1.cc.json")) {
                 await route.fulfill({
                     contentType: "application/json",
                     headers: { "Access-Control-Allow-Origin": "*" },
-                    body: JSON.stringify(sample1Cc2)
+                    body: JSON.stringify(sample1)
                 })
             } else {
                 await route.continue()
             }
         })
 
-        await goto(page, `${CC_URL}?file=sample1.cc2.json`)
+        await goto(page, `${CC_URL}?file=sample1.cc.json`)
 
         expect(await filePanel.getSelectedName()).toEqual("Sample Project with Edges")
         expect(await page.locator("#codeMap").count()).toBe(1)
