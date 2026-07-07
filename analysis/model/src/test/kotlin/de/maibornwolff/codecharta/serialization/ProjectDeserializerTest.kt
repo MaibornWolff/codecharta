@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
+import de.maibornwolff.codecharta.model.Project
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -126,6 +127,19 @@ class ProjectDeserializerTest {
         assertThat(node.link).isNull()
         assertThat(node.attributes).isNotNull
         assertThat(node.children).isNotNull
+    }
+
+    @Test
+    fun `should not label a legacy file without an apiVersion as the current version`() {
+        // given: a legacy 1.x project predating the apiVersion field (no apiVersion key).
+        val legacyWithoutApiVersion = "{projectName='old', nodes=[{name:'root',type:'Folder'}]}"
+
+        // when
+        val project = ProjectDeserializer.deserializeProject(StringReader(legacyWithoutApiVersion), allowLegacy = true)
+
+        // then: a missing version must be treated as legacy, not stamped as the current 2.0.
+        assertThat(project.apiVersion).isNotEqualTo(Project.API_VERSION)
+        assertThat(Project.isAPIVersionCompatible(project.apiVersion)).isFalse()
     }
 
     @Test

@@ -25,7 +25,9 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
 
         val projectName = jsonNode.get("projectName")?.asString ?: ""
         val nodes = context.deserialize<List<Node>>(jsonNode.get("nodes"), listOfNodesType) ?: listOf()
-        val apiVersion = jsonNode.get("apiVersion")?.asString ?: Project.API_VERSION
+        // This deserializer reads legacy 1.x only, so a file predating the apiVersion field is legacy —
+        // never the current 2.0. Defaulting to Project.API_VERSION would mislabel it as compatible.
+        val apiVersion = jsonNode.get("apiVersion")?.asString ?: ApiVersion.ONE_FIVE.versionString
         val edges = context.deserialize<List<Edge>>(jsonNode.get("edges"), listOfEdgesType) ?: listOf()
         val attributeTypes =
             context.deserialize<Map<String, MutableMap<String, AttributeType>>>(
