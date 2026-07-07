@@ -5,7 +5,7 @@ import { defaultAmountOfTopLabels, mapColorsSelector } from "../../../stores/map
 import { isDeltaStateSelector } from "../../../stores/fileStore/store/isDeltaState.selector"
 import { areMultipleMapsVisibleSelector } from "../../../stores/fileStore/store/areMultipleMapsVisible.selector"
 import { labelsPerMapActiveSelector } from "../../../renderer/renderModel/renderModel.facade"
-import { getPartialDefaultState } from "../../../store/getPartialDefaultState"
+import { getPartialDefaultState } from "../../shared/facade"
 import { setState } from "../../../store/state.actions"
 
 @Injectable({
