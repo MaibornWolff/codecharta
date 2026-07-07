@@ -338,6 +338,17 @@ module.exports = {
             to: { path: "^app/codeCharta/renderer/renderModel/" }
         },
         {
+            name: "render-model-external-access-only-via-facade",
+            severity: "error",
+            comment:
+                "Outside code reaches the renderModel composing layer only through its public surface — renderModel.facade.ts — never its internal selector modules (accumulatedData/, nodeMetricData/, edgeMetricData/, searchedNodes/, primaryMetrics/, allNecessaryRenderDataAvailable/, amountOfBuildingsWithSelectedEdgeMetric/, and the root-level *.selector.ts). The facade is the single barrel every consumer (features/, load/, effects, the renderer engine) imports; the internal selector modules import each other directly, so the layer's OWN files are exempt (from.pathNot); spec/e2e may reach internals for white-box testing / jest.spyOn. Companion to render-model-is-top-derived, which fences DIRECTION only (nothing below may import renderModel) — this rule fences the SURFACE (above may import it, but only via the facade). Mirrors lens-external-access-only-via-public-surface + feature-reaches-state-home-only-via-facade.",
+            from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/renderer/renderModel/", "\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: {
+                path: "^app/codeCharta/renderer/renderModel/",
+                pathNot: ["^app/codeCharta/renderer/renderModel/renderModel\\.facade\\.ts$"]
+            }
+        },
+        {
             name: "renderer-does-not-import-up",
             severity: "error",
             comment:
@@ -383,6 +394,17 @@ module.exports = {
                 pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
             to: { path: "^app/codeCharta/load/" }
+        },
+        {
+            name: "load-external-access-only-via-facade",
+            severity: "error",
+            comment:
+                "Outside code reaches the load/ orchestration layer only through its public surface: load.facade.ts (the initial-file loader) — never its service (loadInitialFile.service), its store (loadInitialFile.store) or an individual effect. The single exception is the ngrx effects-registration manifest load/effects/load.effects.ts (the loadEffects array), which the app composition root (app.config.ts) imports directly; routing that manifest through the facade would pull every effect's cross-feature deps into the facade graph and risk cycles. Spec/e2e exempt. Twin of lens-external-access-only-via-public-surface and feature-reaches-state-home-only-via-facade. Complements load-orchestrator-not-imported-by-lower-layers (that one governs DIRECTION/upward edges; this one governs the ENTRY POINT).",
+            from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/load/", "\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: {
+                path: "^app/codeCharta/load/",
+                pathNot: ["^app/codeCharta/load/load\\.facade\\.ts$", "^app/codeCharta/load/effects/load\\.effects\\.ts$"]
+            }
         },
         {
             name: "source-layers-must-not-import-features",
