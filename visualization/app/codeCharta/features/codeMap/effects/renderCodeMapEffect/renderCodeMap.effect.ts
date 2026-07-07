@@ -9,7 +9,7 @@ import { ScenariosFacade } from "../../../scenarios/facade"
 import { UploadFilesService } from "../../../navBar/facade"
 import { accumulatedDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { actionsRequiringRerender } from "./actionsRequiringRerender"
-import { setIsLoadingFile } from "../../../../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingFile } from "../../../../stores/fileStore/fileStore.facade"
 import { setIsLoadingMap } from "../../../../stores/mapState/mapState.write.facade"
 import { clearPendingHeavyDispatch } from "../../../../util/dispatchAfterPaint"
 

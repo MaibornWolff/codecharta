@@ -7,7 +7,7 @@ import { blacklistSelector } from "../../../stores/sharedView/sharedView.read.fa
 import { nodeAttributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { edgeAttributeTypesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { structureTreeSelector } from "../../../lenses/structure/structure.facade"
-import { visibleFileStatesSelector } from "../../../stores/fileStore/store/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { metricDataSelector } from "./metricData/metricData.selector"
 import { createSelector } from "@ngrx/store"
 import { clone } from "../../../util/clone"

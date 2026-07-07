@@ -5,7 +5,7 @@ import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
 import { AggregationGenerator } from "../../../util/aggregationGenerator"
 import { getDeltaFile } from "../../../util/getDeltaFile"
 import { clone } from "../../../util/clone"
-import { visibleFileStatesSelector } from "../../../stores/fileStore/store/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
 
 /**
  * The structure lens's undecorated unified tree — the read-only projection of the visible cc.json

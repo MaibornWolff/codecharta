@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store, State } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { visibleFileStatesSelector } from "../../../stores/fileStore/store/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { blacklistSelector, hoveredNodeIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { idToNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { setHoveredNodeId, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"

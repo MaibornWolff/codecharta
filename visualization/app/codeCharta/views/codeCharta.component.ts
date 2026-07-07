@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { LoadInitialFileService } from "../load/load.facade"
-import { setIsLoadingFile } from "../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingFile } from "../stores/fileStore/fileStore.facade"
 import { NavBarComponent } from "../features/navBar/facade"
 import { BottomBarComponent } from "../features/bottomBar/facade"
 import { NodeContextMenuComponent } from "../features/nodeContextMenu/facade"

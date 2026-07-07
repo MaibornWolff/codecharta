@@ -10,7 +10,7 @@ import {
     setFiles,
     setStandard,
     switchReferenceAndComparison
-} from "../../../stores/fileStore/store/files.actions"
+} from "../../../stores/fileStore/fileStore.facade"
 import { filesSelector, isDeltaStateSelector, referenceFileSelector } from "../selectors/navBar.selectors"
 
 @Injectable({ providedIn: "root" })

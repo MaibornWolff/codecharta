@@ -3,7 +3,7 @@ import { calculateNodeMetricData } from "../../../util/metric/nodeMetricData.cal
 import { rangeOfMetric } from "../../../util/metric/metricRange"
 import { blacklistMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { colorMetricSelector } from "../../../stores/mapState/mapState.read.facade"
-import { visibleFileStatesSelector } from "../../../stores/fileStore/store/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
 
 /**
  * Derived (view-state-aware) node-metric selectors — Slice 7 P0-1.

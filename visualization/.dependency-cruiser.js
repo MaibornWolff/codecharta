@@ -210,6 +210,17 @@ module.exports = {
             }
         },
         {
+            name: "filestore-external-access-only-via-facade",
+            severity: "error",
+            comment:
+                "fileStore is THE cc.json SOURCE home. Outside code reaches it ONLY through its public surface, fileStore.facade.ts. Its store/ ngrx internals (slice reducers/selectors/actions), the repos/ data-access seam (FilesRepo) and the loaders/ ingestion boundary are PRIVATE — no external module imports them: the facade re-exports the load-pipeline entry points, the files-slice read selectors + action creators, and the slice reducers/defaults the rootStore composition registers (exactly as every other home is wired via its read facade). fileStore's own code + spec/e2e are exempt. Mirrors lens-external-access-only-via-public-surface and feature-reaches-state-home-only-via-facade — the last unfenced state home.",
+            from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/stores/fileStore/", "\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: {
+                path: "^app/codeCharta/stores/fileStore/",
+                pathNot: ["^app/codeCharta/stores/fileStore/fileStore\\.facade\\.ts$"]
+            }
+        },
+        {
             name: "state-home-is-leaf",
             severity: "error",
             comment:

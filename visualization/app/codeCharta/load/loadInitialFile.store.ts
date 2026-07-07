@@ -5,8 +5,8 @@ import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
 import { metricDataSelector } from "../renderer/renderModel/renderModel.facade"
-import { setDelta, setFiles } from "../stores/fileStore/store/files.actions"
-import { setCurrentFilesAreSampleFiles } from "../stores/fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { setDelta, setFiles } from "../stores/fileStore/fileStore.facade"
+import { setCurrentFilesAreSampleFiles } from "../stores/fileStore/fileStore.facade"
 import {
     setAmountOfEdgePreviews,
     setAmountOfTopLabels,

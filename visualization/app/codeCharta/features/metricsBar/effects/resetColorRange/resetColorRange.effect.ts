@@ -5,9 +5,9 @@ import { map, skip, switchMap, take, withLatestFrom } from "rxjs"
 import { selectedColorMetricDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { calculateInitialColorRange } from "../../../../util/color/calculateInitialColorRange"
 import { setColorRange, setColorMetric } from "../../../../stores/mapState/mapState.write.facade"
-import { fileActions } from "../../../../stores/fileStore/store/files.actions"
+import { fileActions } from "../../../../stores/fileStore/fileStore.facade"
 import { CcState } from "../../../../model/codeCharta.model"
-import { visibleFileStatesSelector } from "../../../../stores/fileStore/store/visibleFileStates.selector"
+import { visibleFileStatesSelector } from "../../../../stores/fileStore/fileStore.facade"
 
 @Injectable()
 export class ResetColorRangeEffect {

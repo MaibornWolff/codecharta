@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { filesSelector } from "../../../stores/fileStore/store/files.selector"
+import { filesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { mapStateSelector } from "../../../stores/mapState/mapState.read.facade"
 
 // attributeDescriptors moved to the metrics lens source (Slice 9a); re-export the lens's read-facade

@@ -1,3 +1,3 @@
-export { filesSelector } from "../../../stores/fileStore/store/files.selector"
-export { isDeltaStateSelector } from "../../../stores/fileStore/store/isDeltaState.selector"
-export { referenceFileSelector } from "../../../stores/fileStore/store/referenceFile.selector"
+export { filesSelector } from "../../../stores/fileStore/fileStore.facade"
+export { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
+export { referenceFileSelector } from "../../../stores/fileStore/fileStore.facade"

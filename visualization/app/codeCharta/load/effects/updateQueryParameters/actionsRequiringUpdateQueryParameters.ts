@@ -1,5 +1,5 @@
 import { setAreaMetric, setColorMetric, setEdgeMetric, setHeightMetric } from "../../../stores/mapState/mapState.write.facade"
-import { setCurrentFilesAreSampleFiles } from "../../../stores/fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { setCurrentFilesAreSampleFiles } from "../../../stores/fileStore/fileStore.facade"
 
 export const actionsRequiringUpdateQueryParameters = [
     setEdgeMetric,
