@@ -3,7 +3,7 @@ import { TreeMapHelper, treeMapSize } from "./treeMapHelper"
 import { CodeMapNode, MapState, Node, NodeMetricData, CcState } from "../../../../model/codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../../../util/codeMapHelper"
 
-export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
+type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
 const PADDING_SCALING_FACTOR = 0.4
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
@@ -13,7 +13,7 @@ const DEFAULT_SUB_FLOOR_LABEL_SCALING = 0.028
 // Maps the margin setting to a fraction of the average child footprint side,
 // so that gaps scale with the buildings they separate instead of being absolute.
 const MARGIN_TO_CHILD_SIZE_FRACTION = 0.000_5
-export const FLOOR_LABEL_MAX_FRACTION_OF_FOLDER = 0.15
+const FLOOR_LABEL_MAX_FRACTION_OF_FOLDER = 0.15
 export const HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDARY = 3
 
 export function getFloorLabelPadding(folderWidth: number, depth: number) {

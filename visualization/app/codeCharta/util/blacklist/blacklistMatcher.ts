@@ -62,7 +62,7 @@ export function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistI
     return isPathBlacklisted(path, blacklist, "exclude", isLeafNode) || isPathBlacklisted(path, blacklist, "flatten", isLeafNode)
 }
 
-export function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType, isLeafNode = true) {
+function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType, isLeafNode = true) {
     if (blacklist.length === 0) {
         return false
     }

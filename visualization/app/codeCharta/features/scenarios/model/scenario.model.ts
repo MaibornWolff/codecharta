@@ -21,7 +21,7 @@ export interface ColorsSection {
     readonly mapColors?: Partial<MapColors>
 }
 
-export interface CameraSection {
+interface CameraSection {
     readonly position: PlainPosition
     readonly target: PlainPosition
 }

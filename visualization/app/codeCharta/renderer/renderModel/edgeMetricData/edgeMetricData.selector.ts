@@ -15,7 +15,7 @@ import { calculateEdgeMetricData } from "../../../lenses/dependency/dependencyLe
  * Inputs are EXACTLY `visibleFileStates` + `blacklistMatcher` (the two `calculateEdgeMetricData` consumes)
  * so the memoization matches the edge computation that previously lived inside the lens.
  */
-export const edgeMetricDataResultSelector = createSelector(visibleFileStatesSelector, blacklistMatcherSelector, calculateEdgeMetricData)
+const edgeMetricDataResultSelector = createSelector(visibleFileStatesSelector, blacklistMatcherSelector, calculateEdgeMetricData)
 
 export const edgeMetricDataSelector = createSelector(edgeMetricDataResultSelector, result => result.edgeMetricData)
 

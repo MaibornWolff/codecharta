@@ -8,9 +8,3 @@ export interface ScenarioView {
     sectionKeys: ScenarioSectionKey[]
     formattedDate: string
 }
-
-export interface ScenarioGroup {
-    label: string
-    icon: string
-    scenarios: ScenarioView[]
-}

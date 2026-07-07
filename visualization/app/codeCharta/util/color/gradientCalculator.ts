@@ -36,7 +36,7 @@ export function getColorByMetricValue(
     return gradientCalculator.getColorByWeightedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
 }
 
-export const gradientCalculator = {
+const gradientCalculator = {
     getColorByTrueGradient(
         mapColors: CategoricalMapColors,
         colorRange: ColorRange,

@@ -114,7 +114,7 @@ function buildNodeFrom(
     }
 }
 
-export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeight: number, flattened: boolean) {
+function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeight: number, flattened: boolean) {
     const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 
     if (flattened) {
@@ -140,7 +140,7 @@ export function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeig
     return heightValue
 }
 
-export function resolveHeightValue(heightValue: number, heightScale: number, data: CodeMapNode, state: CcState): number {
+function resolveHeightValue(heightValue: number, heightScale: number, data: CodeMapNode, state: CcState): number {
     const minimalHeight = data.deltas?.[state.mapState.heightMetric] ? 0 : MIN_BUILDING_HEIGHT
     return Math.max(Math.abs(heightScale * heightValue), minimalHeight)
 }
@@ -164,7 +164,7 @@ export function getIncomingEdgePoint(width: number, height: number, length: numb
     return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + length / 4)
 }
 
-export function getOutgoingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
+function getOutgoingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
     if (width > length) {
         return new Vector3(vector.x - mapSize + 0.75 * width, vector.y + height, vector.z - mapSize + length / 2)
     }

@@ -6,11 +6,7 @@ import { FlatBuildingVisibilityService } from "./services/flatBuildingVisibility
 import { AutomaticCameraResetService } from "./services/automaticCameraReset.service"
 import { MapLayoutService } from "./services/mapLayout.service"
 
-export {
-    layoutAlgorithmSelector,
-    resetCameraIfNewFileIsLoadedSelector,
-    screenshotToClipboardEnabledSelector
-} from "./selectors/globalSettings.selectors"
+export { layoutAlgorithmSelector, resetCameraIfNewFileIsLoadedSelector } from "./selectors/globalSettings.selectors"
 
 @Injectable({
     providedIn: "root"
