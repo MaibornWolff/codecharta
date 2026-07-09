@@ -23,13 +23,15 @@ export const _getUndecoratedAccumulatedData = (fileStates: FileState[]): CCFile 
     if (isPartialState(fileStates)) {
         return AggregationGenerator.calculateAggregationFile(fileStates)
     }
-    if (isDeltaState(fileStates)) {
-        const [reference, comparison] = fileStates
-        if (comparison && reference.file.map.name !== comparison.file.map.name) {
-            return AggregationGenerator.calculateAggregationFile(fileStates)
-        }
-        return getDeltaFile(fileStates)
+    if (!isDeltaState(fileStates)) {
+        return undefined
     }
+
+    const [reference, comparison] = fileStates
+    if (comparison && reference.file.map.name !== comparison.file.map.name) {
+        return AggregationGenerator.calculateAggregationFile(fileStates)
+    }
+    return getDeltaFile(fileStates)
 }
 
 export const structureTreeSelector = createSelector(visibleFileStatesSelector, fileStates =>
