@@ -1,6 +1,11 @@
 import { createSelector } from "@ngrx/store"
 
-import { areaMetricSelector, colorMetricSelector, edgeMetricSelector, heightMetricSelector } from "../../../stores/mapState/mapState.read.facade"
+import {
+    areaMetricSelector,
+    colorMetricSelector,
+    edgeMetricSelector,
+    heightMetricSelector
+} from "../../../stores/mapState/mapState.read.facade"
 
 export const primaryMetricNamesSelector = createSelector(
     areaMetricSelector,

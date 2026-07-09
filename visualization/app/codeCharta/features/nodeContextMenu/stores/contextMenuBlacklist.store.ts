@@ -1,7 +1,11 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState, CodeMapNode } from "../../../model/codeCharta.model"
-import { addBlacklistItem, addBlacklistItemsIfNotResultsInEmptyMap, removeBlacklistItem } from "../../../stores/sharedView/sharedView.write.facade"
+import {
+    addBlacklistItem,
+    addBlacklistItemsIfNotResultsInEmptyMap,
+    removeBlacklistItem
+} from "../../../stores/sharedView/sharedView.write.facade"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 
 type BlacklistableNode = Pick<CodeMapNode, "path" | "type">

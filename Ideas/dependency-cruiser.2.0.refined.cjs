@@ -119,7 +119,8 @@ module.exports = {
         {
             name: "no-component-scss-files",
             severity: "error",
-            comment: "Component SCSS is banned under app/codeCharta/; use daisyUI/Tailwind. Global styles live in app/app.scss + app/mixins.scss.",
+            comment:
+                "Component SCSS is banned under app/codeCharta/; use daisyUI/Tailwind. Global styles live in app/app.scss + app/mixins.scss.",
             from: {},
             to: { path: `${APP}/.*\\.scss$` }
         },
@@ -156,7 +157,8 @@ module.exports = {
         {
             name: "lens-no-renderer-or-page",
             severity: "error",
-            comment: "A lens is data — it never depends on a UI renderer or the page that shows it. (Inert today: no renderers/ or pages/ tree yet.)",
+            comment:
+                "A lens is data — it never depends on a UI renderer or the page that shows it. (Inert today: no renderers/ or pages/ tree yet.)",
             from: { path: LENSES },
             to: { path: [RENDERERS, PAGES] }
         },
@@ -179,7 +181,8 @@ module.exports = {
         {
             name: "lens-cross-lens-only-via-read-facade",
             severity: "error",
-            comment: "One lens may reach another lens only through that lens's READ facade (never its repos/store/model, and never its load facade — a lens does not seed another lens).",
+            comment:
+                "One lens may reach another lens only through that lens's READ facade (never its repos/store/model, and never its load facade — a lens does not seed another lens).",
             from: { path: `${APP}/lenses/([^/]+)/` },
             to: { path: `${APP}/lenses/([^/]+)/`, pathNot: [`${APP}/lenses/$1/`, LENS_READ_FACADE] }
         },
