@@ -1,14 +1,14 @@
 import { TestBed } from "@angular/core/testing"
-import { provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
-import { ThreeSceneService } from "./threeSceneService"
+import { provideMockStore } from "@ngrx/store/testing"
+import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import { MapControls } from "three/addons/controls/MapControls.js"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { ThreeViewerService } from "./threeViewer.service"
-import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import { ThreeSceneService } from "./threeSceneService"
 import { ThreeStatsService } from "./threeStats.service"
-import { MapControls } from "three/addons/controls/MapControls.js"
+import { ThreeViewerService } from "./threeViewer.service"
 
 describe("ThreeViewerService", () => {
     let threeViewerService: ThreeViewerService

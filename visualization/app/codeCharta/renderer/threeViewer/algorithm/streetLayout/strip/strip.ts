@@ -1,6 +1,6 @@
-import Rectangle from "../../../../../model/rectangle"
 import { Vector2 } from "three"
 import { CodeMapNode } from "../../../../../model/codeCharta.model"
+import Rectangle from "../../../../../model/rectangle"
 import { TreeMapHelper } from "../../treeMapLayout/treeMapHelper"
 
 export default abstract class Strip {

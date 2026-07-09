@@ -1,5 +1,5 @@
-import { RecursivePartial, Settings } from "../model/codeCharta.model"
 import { Vector3 } from "three"
+import { RecursivePartial, Settings } from "../model/codeCharta.model"
 
 export function convertToVectors(settings: RecursivePartial<Settings>) {
     const DEFAULT_VALUE = 1

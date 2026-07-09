@@ -34,12 +34,10 @@ export class MetricsLensFacade {
 // blacklist + colorMetric view state); consumers import them from
 // `renderModel/nodeMetricData/nodeMetricData.selector` directly. The lens surface stays read-only
 // over cc.json-derived attribute descriptors + types.
-export { nodeAttributeDescriptorsSelector as attributeDescriptorsSelector } from "./store/attributes.selectors"
-
-// Node attribute-type map — the metrics lens owns the NODE side of the cc.json `attributeTypes`; the
-// EDGE side re-homed to the dependency lens in Slice 14 (`dependencyLens.facade`'s
-// `edgeAttributeTypesSelector`). The composing layer (`accumulatedData` + the metricsBar attribute-type
-// label pipeline) reads both and recombines them into the full `{ nodes, edges }` map their signatures
-// need — neither lens exposes the full map anymore, so the edge side is only reachable via the
-// dependency lens.
-export { nodeAttributeTypesSelector } from "./store/attributes.selectors"
+//
+// `nodeAttributeTypesSelector` is the NODE side of the cc.json `attributeTypes` map; the EDGE side
+// re-homed to the dependency lens in Slice 14 (`dependencyLens.facade`'s `edgeAttributeTypesSelector`).
+// The composing layer (`accumulatedData` + the metricsBar attribute-type label pipeline) reads both and
+// recombines them into the full `{ nodes, edges }` map their signatures need — neither lens exposes the
+// full map anymore, so the edge side is only reachable via the dependency lens.
+export { nodeAttributeDescriptorsSelector as attributeDescriptorsSelector, nodeAttributeTypesSelector } from "./store/attributes.selectors"

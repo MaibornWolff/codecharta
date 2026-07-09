@@ -1,5 +1,5 @@
-import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { Node } from "../../model/codeCharta.model"
+import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { CodeMapTooltipStore } from "./stores/codeMapTooltip.store"
 
 describe("CodeMapTooltipService", () => {

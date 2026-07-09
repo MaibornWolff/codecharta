@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, inject } from "@angular/core"
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy } from "@angular/core"
 import { AttributionComponent } from "../attribution/attribution.component"
 import { HoveredPathComponent } from "../hoveredPath/hoveredPath.component"
 

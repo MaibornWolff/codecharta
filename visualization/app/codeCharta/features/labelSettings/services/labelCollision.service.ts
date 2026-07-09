@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core"
-import { ThreeRendererService, CodeMapTooltipService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { LabelCreationService, InternalLabel } from "./labelCreation.service"
 import { LabelMode } from "../../../model/codeCharta.model"
+import { CodeMapTooltipService, ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { getTopLevelMapName } from "../../../util/nodePathHelper"
 import { StateAccessStore } from "../stores/stateAccess.store"
 import { ConnectorDrawingService, LabelLayoutInfo } from "./connectorDrawing.service"
 import { LABEL_GAP_PX, MAX_DISPLACEMENT_PX, TOOLTIP_COLLISION_PADDING_PX } from "./label.constants"
-import { getTopLevelMapName } from "../../../util/nodePathHelper"
+import { InternalLabel, LabelCreationService } from "./labelCreation.service"
 
 @Injectable({ providedIn: "root" })
 export class LabelCollisionService {

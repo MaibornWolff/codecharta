@@ -7,6 +7,7 @@
  * seed, plus the raw source selectors the metrics lens projection reads. NO write actions (see the write
  * facade). External access goes only through this facade, never store/ internals (stores-own-ccjson-source).
  */
-export { metricsLensSource, defaultMetricsLensSource } from "./store/metricsLensSource.reducer"
-export { attributeTypesSelector } from "./store/attributeTypes/attributeTypes.selector"
+
 export { attributeDescriptorsSelector } from "./store/attributeDescriptors/attributeDescriptors.selector"
+export { attributeTypesSelector } from "./store/attributeTypes/attributeTypes.selector"
+export { defaultMetricsLensSource, metricsLensSource } from "./store/metricsLensSource.reducer"

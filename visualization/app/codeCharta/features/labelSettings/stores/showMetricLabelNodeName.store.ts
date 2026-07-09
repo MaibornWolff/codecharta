@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { showMetricLabelNodeNameSelector } from "../selectors/labelSettings.selectors"
 import { setShowMetricLabelNodeName } from "../../../stores/mapState/mapState.write.facade"
+import { showMetricLabelNodeNameSelector } from "../selectors/labelSettings.selectors"
 
 @Injectable({
     providedIn: "root"

@@ -1,19 +1,19 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { Print3DStore } from "./3dPrint.store"
-import {
-    areaMetricSelector,
-    heightMetricSelector,
-    colorMetricSelector,
-    colorRangeSelector,
-    colorModeSelector,
-    attributeDescriptorsSelector,
-    blacklistSelector,
-    print3DFilesSelector
-} from "../selectors/3dPrint.selectors"
+import { ColorMode } from "../../../model/codeCharta.model"
 import { setColorMode } from "../../../stores/mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { ColorMode } from "../../../model/codeCharta.model"
+import {
+    areaMetricSelector,
+    attributeDescriptorsSelector,
+    blacklistSelector,
+    colorMetricSelector,
+    colorModeSelector,
+    colorRangeSelector,
+    heightMetricSelector,
+    print3DFilesSelector
+} from "../selectors/3dPrint.selectors"
+import { Print3DStore } from "./3dPrint.store"
 
 describe("Print3DStore", () => {
     let store: Print3DStore

@@ -1,5 +1,5 @@
 import { ColorRange, PrimaryMetrics, SortingOption } from "../../../../model/codeCharta.model"
-import { areDynamicSettingsAvailable, _isDynamicSettingAvailable } from "./areDynamicSettingsAvailable"
+import { _isDynamicSettingAvailable, areDynamicSettingsAvailable } from "./areDynamicSettingsAvailable"
 
 describe("areDynamicSettingsAvailable", () => {
     it("should return false when colorRange aren't set", () => {

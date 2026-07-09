@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { AutomaticCameraResetStore } from "./automaticCameraReset.store"
-import { resetCameraIfNewFileIsLoadedSelector } from "../selectors/globalSettings.selectors"
 import { setResetCameraIfNewFileIsLoaded } from "../../../stores/preferences/preferences.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { resetCameraIfNewFileIsLoadedSelector } from "../selectors/globalSettings.selectors"
+import { AutomaticCameraResetStore } from "./automaticCameraReset.store"
 
 describe("AutomaticCameraResetStore", () => {
     let store: AutomaticCameraResetStore

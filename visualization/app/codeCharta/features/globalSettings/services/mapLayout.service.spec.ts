@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
-import { MapLayoutService } from "./mapLayout.service"
-import { MapLayoutStore } from "../stores/mapLayout.store"
 import { LayoutAlgorithm } from "../../../model/codeCharta.model"
+import { MapLayoutStore } from "../stores/mapLayout.store"
+import { MapLayoutService } from "./mapLayout.service"
 
 describe("MapLayoutService", () => {
     let service: MapLayoutService

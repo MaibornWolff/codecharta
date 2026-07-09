@@ -4,13 +4,28 @@ import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
-import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, SortingOption } from "../model/codeCharta.model"
+import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../mocks/dataMocks"
+import {
+    CcState,
+    DependencyLensSource,
+    MapState,
+    MetricsLensSource,
+    Preferences,
+    SharedView,
+    SortingOption
+} from "../model/codeCharta.model"
 import { FileSelectionState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
-import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"
 import { metricDataSelector } from "../renderer/renderModel/accumulatedData/metricData/metricData.selector"
-import { defaultPreferences } from "../stores/preferences/preferences.read.facade"
-import { setSortingOption } from "../stores/preferences/preferences.write.facade"
+import { defaultDependencyLensSource } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
+import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
+import { sampleFile1, sampleFile2 } from "../stores/fileStore/loaders/ccJson/sampleFiles"
+import { LoadFileService } from "../stores/fileStore/loaders/ccJson/services/loadFile.service"
+import { getNameDataPair } from "../stores/fileStore/loaders/ccJson/util/fileParser"
+import { UrlExtractor } from "../stores/fileStore/loaders/ccJson/util/urlExtractor"
+import { setCurrentFilesAreSampleFiles } from "../stores/fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { setDelta, setFiles } from "../stores/fileStore/store/files.actions"
+import { defaultMapState } from "../stores/mapState/mapState.read.facade"
 import {
     setAreaMetric,
     setColorMetric,
@@ -19,25 +34,18 @@ import {
     setHeightMetric,
     setLayoutAlgorithm
 } from "../stores/mapState/mapState.write.facade"
-import { defaultMapState } from "../stores/mapState/mapState.read.facade"
 import { defaultMetricsLensSource } from "../stores/metricsLensSource/metricsLensSource.read.facade"
 import { setAttributeDescriptors, setAttributeTypes } from "../stores/metricsLensSource/metricsLensSource.write.facade"
-import { defaultDependencyLensSource } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
-import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
-import { defaultSharedView } from "../stores/sharedView/sharedView.read.facade"
-import { setDelta, setFiles } from "../stores/fileStore/store/files.actions"
-import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
-import { defaultState } from "../stores/rootStore/state.manager"
-import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../mocks/dataMocks"
+import { defaultPreferences } from "../stores/preferences/preferences.read.facade"
+import { setSortingOption } from "../stores/preferences/preferences.write.facade"
 import { readCcState } from "../stores/rootStore/indexedDB/indexedDBWriter"
-import { getLastAction } from "../util/testUtils/store.utils"
+import { defaultState } from "../stores/rootStore/state.manager"
+import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
+import { defaultSharedView } from "../stores/sharedView/sharedView.read.facade"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
-import { getNameDataPair } from "../stores/fileStore/loaders/ccJson/util/fileParser"
-import { LoadFileService } from "../stores/fileStore/loaders/ccJson/services/loadFile.service"
+import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"
+import { getLastAction } from "../util/testUtils/store.utils"
 import { LoadInitialFileService } from "./loadInitialFile.service"
-import { sampleFile1, sampleFile2 } from "../stores/fileStore/loaders/ccJson/sampleFiles"
-import { UrlExtractor } from "../stores/fileStore/loaders/ccJson/util/urlExtractor"
-import { setCurrentFilesAreSampleFiles } from "../stores/fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 
 jest.mock("../stores/fileStore/loaders/ccJson/util/urlExtractor")
 jest.mock("../model/files/files.helper")

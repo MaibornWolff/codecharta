@@ -1,8 +1,8 @@
-import { edgesSelector } from "./edges.selector"
-import { FileSelectionState, FileState } from "../../../model/files/files"
-import { CCFile, Edge } from "../../../model/codeCharta.model"
 import { TEST_FILE_DATA } from "../../../mocks/dataMocks"
+import { CCFile, Edge } from "../../../model/codeCharta.model"
+import { FileSelectionState, FileState } from "../../../model/files/files"
 import { clone } from "../../../util/clone"
+import { edgesSelector } from "./edges.selector"
 
 describe("dependency lens edgesSelector", () => {
     const edge1: Edge = { fromNodeName: "/root/nodeA", toNodeName: "/root/nodeB", attributes: { pairingRate: 10 } }

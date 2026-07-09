@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, output, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { FolderOverridesService } from "../../services/folderOverrides.service"
 import { MarkedPackageWithCount } from "../../selectors/markedPackagesWithCounts.selector"
+import { FolderOverridesService } from "../../services/folderOverrides.service"
 
 const MAX_FOLDER_SUGGESTIONS = 8
 

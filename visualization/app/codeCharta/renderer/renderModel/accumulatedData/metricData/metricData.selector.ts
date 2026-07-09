@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { nodeMetricDataSelector } from "../../nodeMetricData/nodeMetricData.selector"
 import { edgeMetricDataSelector, nodeEdgeMetricsMapSelector } from "../../edgeMetricData/edgeMetricData.selector"
+import { nodeMetricDataSelector } from "../../nodeMetricData/nodeMetricData.selector"
 
 /**
  * Shrinking aggregator over the two derived metric-data selectors: `nodeMetricData` composes the metrics

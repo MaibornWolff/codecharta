@@ -2,19 +2,19 @@ import {
     AfterViewInit,
     ChangeDetectionStrategy,
     Component,
-    ElementRef,
-    OnDestroy,
     computed,
+    ElementRef,
     inject,
     input,
+    OnDestroy,
     output,
     signal,
     viewChild
 } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { FormsModule } from "@angular/forms"
-import { EdgeMetricData, NodeMetricData } from "../../../../model/codeCharta.model"
 import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
+import { EdgeMetricData, NodeMetricData } from "../../../../model/codeCharta.model"
 import { MetricDataService } from "../../services/metricData.service"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"

@@ -1,5 +1,5 @@
-import { amountOfTopLabels } from "./amountOfTopLabels.reducer"
 import { setAmountOfTopLabels } from "./amountOfTopLabels.actions"
+import { amountOfTopLabels } from "./amountOfTopLabels.reducer"
 
 describe("amountOfTopLabels", () => {
     it("should set new amountOfTopLabels", () => {

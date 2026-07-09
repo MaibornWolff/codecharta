@@ -1,3 +1,5 @@
+import { hierarchy } from "d3-hierarchy"
+import { ExportCCFile } from "../model/codeCharta.api.model"
 import {
     AttributeDescriptors,
     AttributeTypes,
@@ -12,11 +14,9 @@ import {
     NodeType
 } from "../model/codeCharta.model"
 import { CC_FILE_EXTENSION } from "../model/files/files"
-import { ExportCCFile } from "../model/codeCharta.api.model"
-import { hierarchy } from "d3-hierarchy"
+import { toExportApiVersion } from "./apiVersion"
 import { clone } from "./clone"
 import { UNARY_METRIC } from "./metric/unaryMetric"
-import { toExportApiVersion } from "./apiVersion"
 
 export type DownloadableSetting = "Nodes" | "AttributeTypes" | "AttributeDescriptors" | "Edges" | "Excludes" | "Flattens" | "MarkedPackages"
 

@@ -4,9 +4,9 @@ import { Store, StoreModule } from "@ngrx/store"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../features/shared/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { resultsInEmptyMap } from "../../../../util/blacklist/resultsInEmptyMap"
 import { BlacklistSearchPatternEffect } from "../../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
-import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { ExplorerSearchBarComponent } from "./explorerSearchBar.component"
 
 jest.mock("../../../../util/blacklist/resultsInEmptyMap", () => ({

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { VersionService } from "./services/version.service"
 import { ChangelogParserService } from "./services/changelogParser.service"
+import { VersionService } from "./services/version.service"
 
 @Injectable({ providedIn: "root" })
 export class ChangelogFacade {

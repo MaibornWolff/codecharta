@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing"
+import { Store } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { BlacklistItem } from "../../../../model/codeCharta.model"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { removeBlacklistItem } from "../../../../stores/sharedView/sharedView.write.facade"
-import { Store } from "@ngrx/store"
 import { RuleRowComponent } from "./ruleRow.component"
 
 const flattenItem: BlacklistItem = { type: "flatten", path: "**/*.spec.ts" }

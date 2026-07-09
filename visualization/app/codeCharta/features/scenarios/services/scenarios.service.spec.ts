@@ -1,12 +1,11 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
+import { Vector3 } from "three"
+import { ThreeCameraService, ThreeMapControlsService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
-import { ThreeCameraService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { ThreeMapControlsService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { ScenariosService } from "./scenarios.service"
 import { PlainPosition, Scenario } from "../model/scenario.model"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
-import { Vector3 } from "three"
+import { ScenariosService } from "./scenarios.service"
 
 const BUILT_IN_SCENARIO_COUNT = 6
 

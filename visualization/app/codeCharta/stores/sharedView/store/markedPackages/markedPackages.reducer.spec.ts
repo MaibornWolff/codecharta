@@ -1,6 +1,6 @@
-import { markedPackages } from "./markedPackages.reducer"
-import { setMarkedPackages, markPackages, unmarkPackage } from "./markedPackages.actions"
 import { MARKED_PACKAGES } from "../../../../mocks/dataMocks"
+import { markPackages, setMarkedPackages, unmarkPackage } from "./markedPackages.actions"
+import { markedPackages } from "./markedPackages.reducer"
 
 describe("markedPackages", () => {
     describe("Action: SET_MARKED_PACKAGES", () => {

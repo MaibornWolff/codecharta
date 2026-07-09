@@ -2,12 +2,12 @@ import { CcState, ColorMode } from "../../../model/codeCharta.model"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import {
     areaMetricSelector,
-    heightMetricSelector,
-    colorMetricSelector,
-    colorRangeSelector,
-    colorModeSelector,
     attributeDescriptorsSelector,
     blacklistSelector,
+    colorMetricSelector,
+    colorModeSelector,
+    colorRangeSelector,
+    heightMetricSelector,
     print3DFilesSelector
 } from "./3dPrint.selectors"
 

@@ -1,10 +1,10 @@
 import { CcState } from "app/codeCharta/model/codeCharta.model"
-import { defaultMapState } from "../../mapState/mapState.read.facade"
-import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
-import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSource.read.facade"
-import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
-import { defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
 import { openDB } from "idb"
+import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
+import { defaultMapState } from "../../mapState/mapState.read.facade"
+import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSource.read.facade"
+import { defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
+import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
 export const DB_VERSION = 15

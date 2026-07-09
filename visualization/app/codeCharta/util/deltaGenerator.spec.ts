@@ -1,4 +1,4 @@
-import { DeltaGenerator } from "./deltaGenerator"
+import { hierarchy } from "d3-hierarchy"
 import {
     TEST_DELTA_MAP_A,
     TEST_DELTA_MAP_B,
@@ -8,9 +8,9 @@ import {
     TEST_DELTA_MAP_F
 } from "../mocks/dataMocks"
 import { CCFile, FileCount, NodeType } from "../model/codeCharta.model"
-import { NodeDecorator } from "./nodeDecorator"
 import { clone } from "./clone"
-import { hierarchy } from "d3-hierarchy"
+import { DeltaGenerator } from "./deltaGenerator"
+import { NodeDecorator } from "./nodeDecorator"
 
 describe("deltaGenerator", () => {
     let fileA: CCFile

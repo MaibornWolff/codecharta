@@ -1,13 +1,12 @@
-import { FILE_STATES, FILE_STATES_WITHOUT_EDGES } from "../../../mocks/dataMocks"
-import { sortedNodeEdgeMetricsMapSelector } from "./sortedNodeEdgeMetricsMap.selector"
-import { Store, StoreModule } from "@ngrx/store"
-import { CcState } from "../../../model/codeCharta.model"
 import { TestBed } from "@angular/core/testing"
-import { appReducers } from "../../../stores/rootStore/store"
-import { setFiles } from "../../../stores/fileStore/store/files.actions"
-import { NodeEdgeMetricsMap } from "../../../model/codeCharta.model"
+import { Store, StoreModule } from "@ngrx/store"
 import { firstValueFrom } from "rxjs"
+import { FILE_STATES, FILE_STATES_WITHOUT_EDGES } from "../../../mocks/dataMocks"
+import { CcState, NodeEdgeMetricsMap } from "../../../model/codeCharta.model"
+import { setFiles } from "../../../stores/fileStore/store/files.actions"
 import { setShowIncomingEdges, setShowOutgoingEdges } from "../../../stores/mapState/mapState.write.facade"
+import { appReducers } from "../../../stores/rootStore/store"
+import { sortedNodeEdgeMetricsMapSelector } from "./sortedNodeEdgeMetricsMap.selector"
 
 describe("sortedNodeEdgeMetricsMapSelector", () => {
     let store: Store<CcState>

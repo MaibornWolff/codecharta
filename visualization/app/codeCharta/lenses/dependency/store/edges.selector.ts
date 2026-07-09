@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { filesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
+import { filesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { getMergedEdges } from "../../../util/edges/edges.merger"
 
 /**

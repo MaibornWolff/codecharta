@@ -1,8 +1,8 @@
+import { InstancedBufferAttribute, InstancedMesh, Matrix4 } from "three"
+import { STATE, TEST_NODE_ROOT } from "../../../mocks/dataMocks"
 import { Node } from "../../../model/codeCharta.model"
 import { clone } from "../../../util/clone"
-import { STATE, TEST_NODE_ROOT } from "../../../mocks/dataMocks"
 import { BuildResult, GeometryGenerator } from "./geometryGenerator"
-import { InstancedBufferAttribute, InstancedMesh, Matrix4 } from "three"
 
 describe("geometryGenerator", () => {
     let geomGen: GeometryGenerator

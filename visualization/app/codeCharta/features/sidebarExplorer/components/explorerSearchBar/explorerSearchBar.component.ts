@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ExplorerSearchService } from "../../services/explorerSearch.service"
 import { debounce } from "../../../../util/debounce"
+import { ExplorerSearchService } from "../../services/explorerSearch.service"
 
 @Component({
     selector: "cc-explorer-search-bar",

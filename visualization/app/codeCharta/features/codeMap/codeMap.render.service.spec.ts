@@ -1,10 +1,9 @@
 import { TestBed } from "@angular/core/testing"
-import { CodeMapRenderService } from "./codeMap.render.service"
-import { ColorCategoryCountsStore } from "../../renderer/threeViewer/stores/colorCategoryCounts.store"
-import { ThreeSceneService } from "../../renderer/threeViewer/threeSceneService"
+import { State, Store, StoreModule } from "@ngrx/store"
+import { klona } from "klona"
+import { Object3D, Vector3 } from "three"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
-import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { Node, CodeMapNode, CcState, LabelMode } from "../../model/codeCharta.model"
+import { edgesSelector } from "../../lenses/dependency/dependencyLens.facade"
 import {
     COLOR_TEST_NODES,
     DEFAULT_STATE,
@@ -19,28 +18,29 @@ import {
     TEST_NODES,
     VALID_EDGES
 } from "../../mocks/dataMocks"
-import { NodeDecorator } from "../../util/nodeDecorator"
-import { Object3D, Vector3 } from "three"
-import { setState } from "../../stores/rootStore/state.actions"
-import { edgesSelector } from "../../lenses/dependency/dependencyLens.facade"
+import { CcState, CodeMapNode, LabelMode, Node } from "../../model/codeCharta.model"
+import { metricDataSelector } from "../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
+import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
+import { ColorCategoryCountsStore } from "../../renderer/threeViewer/stores/colorCategoryCounts.store"
+import { ThreeSceneService } from "../../renderer/threeViewer/threeSceneService"
+import { ThreeStatsService } from "../../renderer/threeViewer/threeStats.service"
+import { setFiles } from "../../stores/fileStore/store/files.actions"
 import {
     setAmountOfTopLabels,
     setColorLabels,
+    setHeightMetric,
     setLabelMode,
     setLabelsPerMap,
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName
 } from "../../stores/mapState/mapState.write.facade"
-import { klona } from "klona"
-import { ThreeStatsService } from "../../renderer/threeViewer/threeStats.service"
-import { setFiles } from "../../stores/fileStore/store/files.actions"
-import { setHeightMetric } from "../../stores/mapState/mapState.write.facade"
-import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { metricDataSelector } from "../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
-import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
-import { State, Store, StoreModule } from "@ngrx/store"
-import { CodeMapRenderStore } from "./stores/codeMapRender.store"
+import { setState } from "../../stores/rootStore/state.actions"
 import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
+import { NodeDecorator } from "../../util/nodeDecorator"
+import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { CodeMapRenderService } from "./codeMap.render.service"
+import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../renderer/renderModel/accumulatedData/metricData/metricData.selector", () => ({

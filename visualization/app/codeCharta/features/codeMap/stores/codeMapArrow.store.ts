@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
-import { Store, State } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
+import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState } from "../../../model/codeCharta.model"
 import { hoveredNodeIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { edgeVisibilitySelector } from "../selectors/edgeVisibility.selector"
 
 @Injectable({ providedIn: "root" })

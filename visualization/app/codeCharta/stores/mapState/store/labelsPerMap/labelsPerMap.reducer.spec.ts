@@ -1,5 +1,5 @@
-import { labelsPerMap } from "./labelsPerMap.reducer"
 import { setLabelsPerMap } from "./labelsPerMap.actions"
+import { labelsPerMap } from "./labelsPerMap.reducer"
 
 describe("labelsPerMap", () => {
     it("should set new labelsPerMap", () => {

@@ -1,5 +1,5 @@
-import { defaultMapColors, mapColors } from "./mapColors.reducer"
 import { invertColorRange, invertDeltaColors, setMapColors } from "./mapColors.actions"
+import { defaultMapColors, mapColors } from "./mapColors.reducer"
 
 describe("mapColors", () => {
     it("should set new mapColors", () => {

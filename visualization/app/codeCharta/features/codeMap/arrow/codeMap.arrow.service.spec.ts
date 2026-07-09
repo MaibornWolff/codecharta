@@ -1,29 +1,29 @@
 import { TestBed } from "@angular/core/testing"
-import { StoreModule, Store, State } from "@ngrx/store"
-import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
-import { ThreeSceneService } from "../../../renderer/threeViewer/threeSceneService"
+import { State, Store, StoreModule } from "@ngrx/store"
 import { Object3D, Vector3 } from "three"
-import { OUTGOING_NODE, DIFFERENT_NODE, INCOMING_NODE, VALID_EDGES_DECORATED } from "../../../mocks/dataMocks"
+import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { DIFFERENT_NODE, INCOMING_NODE, OUTGOING_NODE, VALID_EDGES_DECORATED } from "../../../mocks/dataMocks"
+import { CcState, Node } from "../../../model/codeCharta.model"
 import {
     CODE_MAP_BUILDING,
     CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE,
     CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE
 } from "../../../renderer/threeViewer/rendering/codeMapBuilding.mocks"
-import { CcState, Node } from "../../../model/codeCharta.model"
-import { ColorConverter } from "../../../util/color/colorConverter"
+import { CodeMapMesh } from "../../../renderer/threeViewer/rendering/codeMapMesh"
+import { ThreeSceneService } from "../../../renderer/threeViewer/threeSceneService"
 import {
+    setHeightMetric,
     setScaling,
     setShowIncomingEdges,
     setShowOutgoingEdges,
-    toggleEdgeMetricVisible,
-    setHeightMetric
+    toggleEdgeMetricVisible
 } from "../../../stores/mapState/mapState.write.facade"
-import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
-import { CodeMapMesh } from "../../../renderer/threeViewer/rendering/codeMapMesh"
-import { wait } from "../../../util/testUtils/wait"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
 import { clone } from "../../../util/clone"
+import { ColorConverter } from "../../../util/color/colorConverter"
+import { wait } from "../../../util/testUtils/wait"
+import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
+import { CodeMapArrowService } from "./codeMap.arrow.service"
 
 // Slice 15e: edges derives from files via the dependency lens; mock the selector to inject edges directly.
 jest.mock("../../../lenses/dependency/store/edges.selector", () => ({ edgesSelector: jest.fn(() => []) }))

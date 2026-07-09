@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { pathToNodeSelector } from "./accumulatedData/pathToNode.selector"
 import { rightClickedNodeDataSelector } from "../../stores/sharedView/sharedView.read.facade"
+import { pathToNodeSelector } from "./accumulatedData/pathToNode.selector"
 
 export const rightClickedCodeMapNodeSelector = createSelector(
     rightClickedNodeDataSelector,

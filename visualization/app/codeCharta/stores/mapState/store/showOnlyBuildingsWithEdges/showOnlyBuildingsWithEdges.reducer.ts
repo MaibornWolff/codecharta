@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store"
-import { setShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges.actions"
 import { setState } from "../../../../util/setState.reducer.factory"
+import { setShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges.actions"
 
 export const defaultShowOnlyBuildingsWithEdges = false
 export const showOnlyBuildingsWithEdges = createReducer(

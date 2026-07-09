@@ -1,4 +1,6 @@
+import { TestBed } from "@angular/core/testing"
 import { State, Store, StoreModule } from "@ngrx/store"
+import { Vector3 } from "three"
 import {
     TEST_LEAF_NODE_WITHOUT_EXTENSION,
     TEST_NODE_LEAF,
@@ -7,19 +9,16 @@ import {
     VALID_FILE_NODE_WITH_ID,
     VALID_NODES_WITH_ID
 } from "../../mocks/dataMocks"
-import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "./rendering/codeMapBuilding.mocks"
-import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { ThreeSceneService } from "./threeSceneService"
-import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { CcState, CodeMapNode, LayoutAlgorithm } from "../../model/codeCharta.model"
-import { setEnableFloorLabels, setScaling } from "../../stores/mapState/mapState.write.facade"
-import { Vector3 } from "three"
-import { setLayoutAlgorithm } from "../../stores/mapState/mapState.write.facade"
-import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
-import { idToNodeSelector } from "../renderModel/renderModel.facade"
-import { TestBed } from "@angular/core/testing"
-import { IdToBuildingService } from "./idToBuilding.service"
+import { setEnableFloorLabels, setLayoutAlgorithm, setScaling } from "../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
+import { idToNodeSelector } from "../renderModel/renderModel.facade"
+import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
+import { IdToBuildingService } from "./idToBuilding.service"
+import { CodeMapBuilding } from "./rendering/codeMapBuilding"
+import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "./rendering/codeMapBuilding.mocks"
+import { CodeMapMesh } from "./rendering/codeMapMesh"
+import { ThreeSceneService } from "./threeSceneService"
 
 jest.mock("../renderModel/accumulatedData/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()

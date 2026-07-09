@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
+import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
 import { HexMapColor } from "../../../../model/codeCharta.model"
 import { defaultMapColors } from "../../../../stores/mapState/mapState.read.facade"
 import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
-import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
 import { AmountOfBuildingsWithSelectedEdgeMetricService } from "../../services/amountOfBuildingsWithSelectedEdgeMetric.service"
 import { AmountOfEdgePreviewsService } from "../../services/amountOfEdgePreviews.service"
 import { EdgeHeightService } from "../../services/edgeHeight.service"
@@ -12,9 +12,9 @@ import { MapColorsService } from "../../services/mapColors.service"
 import { ShowIncomingEdgesService } from "../../services/showIncomingEdges.service"
 import { ShowOnlyBuildingsWithEdgesService } from "../../services/showOnlyBuildingsWithEdges.service"
 import { ShowOutgoingEdgesService } from "../../services/showOutgoingEdges.service"
-import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { SliderNumberInputComponent } from "../sliderNumberInput/sliderNumberInput.component"
+import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 
 @Component({
     selector: "cc-edge-settings-popover",

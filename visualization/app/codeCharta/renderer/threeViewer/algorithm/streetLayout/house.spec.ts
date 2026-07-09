@@ -1,8 +1,8 @@
-import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { klona } from "klona"
-import { VALID_NODE_WITH_PATH } from "../../../../mocks/dataMocks"
-import House from "./house"
 import { Vector2 } from "three"
+import { VALID_NODE_WITH_PATH } from "../../../../mocks/dataMocks"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
+import House from "./house"
 
 describe("house", () => {
     let codeMapNode: CodeMapNode

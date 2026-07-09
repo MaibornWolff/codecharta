@@ -1,10 +1,10 @@
-import { Node, CcState } from "../../../model/codeCharta.model"
-import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
-import { CodeMapBuilding } from "./codeMapBuilding"
-import { createTemplateBoxGeometry, BoxMeasures } from "./geometryGenerationHelper"
+import { Box3, InstancedBufferAttribute, InstancedMesh, Material, Matrix4, Vector3 } from "three"
+import { CcState, Node } from "../../../model/codeCharta.model"
 import { ColorConverter } from "../../../util/color/colorConverter"
-import { InstancedMesh, InstancedBufferAttribute, Material, Matrix4, Vector3, Box3 } from "three"
 import { treeMapSize } from "../algorithm/treeMapLayout/treeMapHelper"
+import { CodeMapBuilding } from "./codeMapBuilding"
+import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
+import { BoxMeasures, createTemplateBoxGeometry } from "./geometryGenerationHelper"
 
 export interface BuildResult {
     mesh: InstancedMesh

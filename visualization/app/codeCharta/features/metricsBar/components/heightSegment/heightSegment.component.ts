@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { HeightMetricService } from "../../services/heightMetric.service"
-import { MetricSegmentComponent } from "../metricSegment/metricSegment.component"
 import { HeightSettingsPopoverComponent } from "../heightSettingsPopover/heightSettingsPopover.component"
+import { MetricSegmentComponent } from "../metricSegment/metricSegment.component"
 
 @Component({
     selector: "cc-height-segment",

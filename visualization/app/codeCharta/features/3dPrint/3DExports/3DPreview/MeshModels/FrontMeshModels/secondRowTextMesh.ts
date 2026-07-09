@@ -1,8 +1,8 @@
-import { GeometryOptions } from "../../geometryOptions"
 import { Font } from "three/addons/loaders/FontLoader.js"
-import { TextMesh } from "../textMesh"
-import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { FrontPrintColorChangeStrategy } from "../../ColorChangeStrategies/frontPrintColorChangeStrategy"
+import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { GeometryOptions } from "../../geometryOptions"
+import { TextMesh } from "../textMesh"
 
 export class SecondRowTextMesh extends TextMesh {
     constructor(name: string, font: Font, geometryOptions: GeometryOptions) {

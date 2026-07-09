@@ -1,6 +1,6 @@
-import { validateGameObjects } from "./gameObjectsValidator"
 import { clone } from "../../../../util/clone"
 import { TEST_GAMEOBJECTS_FILE } from "./gameObjectsMocks"
+import { validateGameObjects } from "./gameObjectsValidator"
 
 describe("GameObjectsValidator", () => {
     it("should check if gameObjects File structure is valid", function () {

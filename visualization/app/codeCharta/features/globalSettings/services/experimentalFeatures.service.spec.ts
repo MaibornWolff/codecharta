@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
-import { ExperimentalFeaturesService } from "./experimentalFeatures.service"
 import { ExperimentalFeaturesStore } from "../stores/experimentalFeatures.store"
+import { ExperimentalFeaturesService } from "./experimentalFeatures.service"
 
 describe("ExperimentalFeaturesService", () => {
     let service: ExperimentalFeaturesService

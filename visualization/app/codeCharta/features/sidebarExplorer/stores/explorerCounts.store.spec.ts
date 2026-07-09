@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { ExplorerCountsStore } from "./explorerCounts.store"
 import { explorerCountsSelector } from "../selectors/sidebarExplorer.selectors"
+import { ExplorerCountsStore } from "./explorerCounts.store"
 
 describe("ExplorerCountsStore", () => {
     let store: ExplorerCountsStore

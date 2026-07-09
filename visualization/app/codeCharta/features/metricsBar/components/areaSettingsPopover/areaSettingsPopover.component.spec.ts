@@ -3,11 +3,10 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { setEnableFloorLabels, setInvertArea } from "../../../../stores/mapState/mapState.write.facade"
-import { setMargin } from "../../../../stores/mapState/mapState.write.facade"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { setEnableFloorLabels, setInvertArea, setMargin } from "../../../../stores/mapState/mapState.write.facade"
 import { marginSelector } from "../../../../stores/mapState/store/margin/margin.selector"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { AreaSettingsPopoverComponent } from "./areaSettingsPopover.component"
 
 describe("AreaSettingsPopoverComponent", () => {

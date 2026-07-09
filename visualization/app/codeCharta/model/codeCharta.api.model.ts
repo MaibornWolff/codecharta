@@ -1,5 +1,5 @@
-import { AttributeDescriptors, AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage } from "./codeCharta.model"
 import { CcJson2 } from "./ccjson2.model"
+import { AttributeDescriptors, AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage } from "./codeCharta.model"
 
 export interface NameDataPair {
     fileName: string

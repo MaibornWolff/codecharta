@@ -2,12 +2,12 @@ import { Injectable } from "@angular/core"
 import { Actions, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { map, share, withLatestFrom } from "rxjs"
-import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../stores/sharedView/sharedView.write.facade"
+import { CcState } from "../../../../model/codeCharta.model"
 import { visibleFileStatesSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { blacklistSelector } from "../../../../stores/sharedView/sharedView.read.facade"
-import { resultsInEmptyMap } from "../../../../util/blacklist/resultsInEmptyMap"
-import { CcState } from "../../../../model/codeCharta.model"
+import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../stores/sharedView/sharedView.write.facade"
 import { createBlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
+import { resultsInEmptyMap } from "../../../../util/blacklist/resultsInEmptyMap"
 
 /**
  * The shared "would excluding these items leave an empty map?" stream (Slice 15d). Extracted out of

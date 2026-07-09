@@ -1,10 +1,10 @@
-import { FILE_STATES } from "../../../mocks/dataMocks"
-import { Store, StoreModule } from "@ngrx/store"
-import { CcState } from "../../../model/codeCharta.model"
 import { TestBed } from "@angular/core/testing"
-import { appReducers } from "../../../stores/rootStore/store"
-import { setFiles } from "../../../stores/fileStore/store/files.actions"
+import { Store, StoreModule } from "@ngrx/store"
 import { firstValueFrom } from "rxjs"
+import { FILE_STATES } from "../../../mocks/dataMocks"
+import { CcState } from "../../../model/codeCharta.model"
+import { setFiles } from "../../../stores/fileStore/store/files.actions"
+import { appReducers } from "../../../stores/rootStore/store"
 import { edgeMetricDataSelector, edgeMetricNamesSelector, nodeEdgeMetricsMapSelector } from "./edgeMetricData.selector"
 
 describe("edgeMetricData selectors", () => {

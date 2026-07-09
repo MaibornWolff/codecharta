@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
-import { BlacklistItem, CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { blacklistExtensionsPattern } from "../effects/blacklistExtension/blacklistExtension.effect"
-import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
-import { removeBlacklistItems } from "../../../stores/sharedView/sharedView.write.facade"
 import { combineLatest, map, Observable, take } from "rxjs"
+import { BlacklistItem, CodeMapNode, NodeType } from "../../../model/codeCharta.model"
+import { removeBlacklistItems } from "../../../stores/sharedView/sharedView.write.facade"
+import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
+import { blacklistExtensionsPattern } from "../effects/blacklistExtension/blacklistExtension.effect"
 import { BlackListExtensionStore } from "../stores/blackListExtension.store"
 
 export function addPrefixWildcard(extension: string) {

@@ -1,5 +1,5 @@
-import { experimentalFeaturesEnabled } from "./experimentalFeaturesEnabled.reducer"
 import { setExperimentalFeaturesEnabled } from "./experimentalFeaturesEnabled.actions"
+import { experimentalFeaturesEnabled } from "./experimentalFeaturesEnabled.reducer"
 
 describe("experimentalFeaturesEnabled", () => {
     it("should set new experimentalFeaturesEnabled", () => {

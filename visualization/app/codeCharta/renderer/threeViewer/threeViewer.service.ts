@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
-import { ThreeSceneService } from "./threeSceneService"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
+import { ThreeSceneService } from "./threeSceneService"
 import { ThreeStatsService } from "./threeStats.service"
 
 @Injectable({ providedIn: "root" })

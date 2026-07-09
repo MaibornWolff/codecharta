@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
-import { Observable, combineLatest, filter, map, shareReplay } from "rxjs"
+import { combineLatest, filter, map, Observable, shareReplay } from "rxjs"
+import { CodeMapRenderService } from "../../../features/codeMap/facade"
 import { CodeMapNode, Node } from "../../../model/codeCharta.model"
 import { AccumulatedData } from "../../../renderer/renderModel/renderModel.facade"
-import { CodeMapRenderService } from "../../../features/codeMap/facade"
 import { NodeSelectionStore } from "../stores/nodeSelection.store"
 
 @Injectable({ providedIn: "root" })

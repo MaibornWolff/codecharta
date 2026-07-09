@@ -1,6 +1,6 @@
-import { sorting, defaultSorting } from "./sorting.reducer"
-import { setSortingOption, toggleSortingOrderAscending } from "./sorting.actions"
 import { SortingOption } from "../../../../model/codeCharta.model"
+import { setSortingOption, toggleSortingOrderAscending } from "./sorting.actions"
+import { defaultSorting, sorting } from "./sorting.reducer"
 
 describe("sorting", () => {
     describe("Action: SET_SORTING_OPTION", () => {

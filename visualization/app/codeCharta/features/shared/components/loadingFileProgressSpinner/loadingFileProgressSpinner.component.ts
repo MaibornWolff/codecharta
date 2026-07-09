@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { AsyncPipe } from "@angular/common"
+import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { Observable } from "rxjs"
 import { LoadingFileProgressSpinnerService } from "../../services/loadingFileProgressSpinner.service"
 

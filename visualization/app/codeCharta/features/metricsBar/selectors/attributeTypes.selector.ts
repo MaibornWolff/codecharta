@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
-import { AttributeTypes } from "../../../model/codeCharta.model"
-import { nodeAttributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { edgeAttributeTypesSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { nodeAttributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { AttributeTypes } from "../../../model/codeCharta.model"
 
 /**
  * The full `{ nodes, edges }` attribute-type map, recomposed from the two lens sources: the metrics lens

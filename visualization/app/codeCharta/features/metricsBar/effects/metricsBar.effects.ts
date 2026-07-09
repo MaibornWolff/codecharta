@@ -1,10 +1,10 @@
+import { UpdateAmountOfEdgePreviewsEffect } from "./amountOfEdgePreviews/updateAmountOfEdgePreviews.effect"
+import { LinkColorMetricToHeightMetricEffect } from "./linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
 import { ResetChosenMetricsEffect } from "./resetChosenMetrics/resetChosenMetrics.effect"
 import { ResetColorRangeEffect } from "./resetColorRange/resetColorRange.effect"
-import { UpdateMapColorsEffect } from "./updateMapColors/updateMapColors.effect"
-import { LinkColorMetricToHeightMetricEffect } from "./linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
-import { UpdateEdgePreviewsEffect } from "./updateEdgePreviews/updateEdgePreviews.effect"
-import { UpdateAmountOfEdgePreviewsEffect } from "./amountOfEdgePreviews/updateAmountOfEdgePreviews.effect"
 import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "./resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
+import { UpdateEdgePreviewsEffect } from "./updateEdgePreviews/updateEdgePreviews.effect"
+import { UpdateMapColorsEffect } from "./updateMapColors/updateMapColors.effect"
 
 /**
  * The metricsBar feature's ngrx effects (metric-reactive resets + edge previews), registered by the

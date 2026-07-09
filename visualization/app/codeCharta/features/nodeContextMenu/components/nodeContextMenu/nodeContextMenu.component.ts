@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, HostListener, inject, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, HostListener, inject, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"

@@ -1,7 +1,7 @@
-import Strip from "./strip"
-import Rectangle from "../../../../../model/rectangle"
 import { Vector2 } from "three"
 import { CodeMapNode } from "../../../../../model/codeCharta.model"
+import Rectangle from "../../../../../model/rectangle"
+import Strip from "./strip"
 
 export enum VerticalOrder {
     topToBottom,

@@ -31,17 +31,17 @@ import {
     setShowOutgoingEdges
 } from "../../../../stores/mapState/mapState.write.facade"
 import { setMaxTreeMapFiles } from "../../../../stores/preferences/preferences.write.facade"
+import { setState } from "../../../../stores/rootStore/state.actions"
 import {
-    setAllFocusedNodes,
     focusNode,
+    markPackages,
+    setAllFocusedNodes,
+    setMarkedPackages,
+    setSearchPattern,
     unfocusAllNodes,
     unfocusNode,
-    setSearchPattern,
-    setMarkedPackages,
-    markPackages,
     unmarkPackage
 } from "../../../../stores/sharedView/sharedView.write.facade"
-import { setState } from "../../../../stores/rootStore/state.actions"
 
 export const actionsRequiringRerender = [
     setColorLabels,

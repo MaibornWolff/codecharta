@@ -3,10 +3,10 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { HexMapColor } from "../../../../model/codeCharta.model"
 import { defaultMapColors } from "../../../../stores/mapState/mapState.read.facade"
 import { MapColorLabelPipe } from "../../../../util/pipes/mapColorLabel.pipe"
+import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 import { ColorMetricService } from "../../services/colorMetric.service"
 import { ColorRangeService } from "../../services/colorRange.service"
 import { MapColorsService } from "../../services/mapColors.service"
-import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
 
 @Component({
     selector: "cc-color-band-row",

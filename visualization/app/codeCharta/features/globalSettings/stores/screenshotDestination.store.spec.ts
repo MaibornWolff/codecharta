@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { ScreenshotDestinationStore } from "./screenshotDestination.store"
-import { screenshotToClipboardEnabledSelector } from "../selectors/globalSettings.selectors"
 import { setScreenshotToClipboardEnabled } from "../../../stores/preferences/preferences.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { screenshotToClipboardEnabledSelector } from "../selectors/globalSettings.selectors"
+import { ScreenshotDestinationStore } from "./screenshotDestination.store"
 
 describe("ScreenshotDestinationStore", () => {
     let store: ScreenshotDestinationStore

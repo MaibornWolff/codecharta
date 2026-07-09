@@ -1,7 +1,7 @@
-import { AccumulatedData, accumulatedDataSelector } from "./accumulatedData.selector"
-import { getAllNodes } from "../../../util/codeMapHelper"
-import { CodeMapNode } from "../../../model/codeCharta.model"
 import { createSelector } from "@ngrx/store"
+import { CodeMapNode } from "../../../model/codeCharta.model"
+import { getAllNodes } from "../../../util/codeMapHelper"
+import { AccumulatedData, accumulatedDataSelector } from "./accumulatedData.selector"
 
 export const codeMapNodesSelector = createSelector(
     accumulatedDataSelector,

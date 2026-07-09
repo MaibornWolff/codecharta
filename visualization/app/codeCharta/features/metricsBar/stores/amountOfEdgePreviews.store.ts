@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { amountOfEdgePreviewsSelector } from "../selectors/edgeAndColors.selectors"
 import { setAmountOfEdgePreviews } from "../../../stores/mapState/mapState.write.facade"
+import { amountOfEdgePreviewsSelector } from "../selectors/edgeAndColors.selectors"
 
 @Injectable({
     providedIn: "root"

@@ -1,6 +1,6 @@
-import { colorMode } from "./colorMode.reducer"
-import { setColorMode } from "./colorMode.actions"
 import { ColorMode } from "../../../../model/codeCharta.model"
+import { setColorMode } from "./colorMode.actions"
+import { colorMode } from "./colorMode.reducer"
 
 describe("colorMode", () => {
     it("should set new colorMode", () => {

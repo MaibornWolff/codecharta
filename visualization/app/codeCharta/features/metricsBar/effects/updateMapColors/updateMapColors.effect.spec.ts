@@ -1,15 +1,14 @@
 import { TestBed } from "@angular/core/testing"
+import { EffectsModule } from "@ngrx/effects"
 import { State, StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-
-import { EffectsModule } from "@ngrx/effects"
 import stringify from "safe-stable-stringify"
 import { MapColors } from "../../../../model/codeCharta.model"
-import { getLastAction } from "../../../../util/testUtils/store.utils"
-import { defaultMapColors, colorMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { colorMetricSelector, defaultMapColors } from "../../../../stores/mapState/mapState.read.facade"
 import { setMapColors } from "../../../../stores/mapState/mapState.write.facade"
-import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
+import { getLastAction } from "../../../../util/testUtils/store.utils"
 import { UpdateMapColorsEffect } from "./updateMapColors.effect"
 
 describe("UpdateMapColorsEffect", () => {

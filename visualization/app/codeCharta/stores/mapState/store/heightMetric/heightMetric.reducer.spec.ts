@@ -1,5 +1,5 @@
-import { heightMetric } from "./heightMetric.reducer"
 import { setHeightMetric } from "./heightMetric.actions"
+import { heightMetric } from "./heightMetric.reducer"
 
 describe("heightMetric", () => {
     it("should set new heightMetric", () => {

@@ -1,8 +1,8 @@
 import { BufferGeometry, ExtrudeGeometry } from "three"
 import { SVGLoader } from "three/addons/loaders/SVGLoader.js"
-import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createGeometryStrategy"
-import { GeometryOptions } from "../geometryOptions"
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
+import { GeometryOptions } from "../geometryOptions"
+import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createGeometryStrategy"
 
 export interface CreateSvgGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     filePath: string

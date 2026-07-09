@@ -1,21 +1,24 @@
 import { Injectable, OnDestroy } from "@angular/core"
-import { ThreeCameraService } from "../../renderer/threeViewer/threeViewer.facade"
-import { CodeMapBuilding } from "../../renderer/threeViewer/threeViewer.facade"
-import { ViewCubeMouseEventsService } from "../viewCube/facade"
-import { BlacklistItem, Node } from "../../model/codeCharta.model"
-import { ThreeSceneService } from "../../renderer/threeViewer/threeViewer.facade"
-import { ThreeRendererService } from "../../renderer/threeViewer/threeViewer.facade"
-import { isPathHiddenOrExcluded } from "../../util/blacklist/blacklistMatcher"
 import { hierarchy } from "d3-hierarchy"
+import { tap } from "rxjs"
 import { Raycaster, Vector2 } from "three"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
-import { CodeMapTooltipService } from "../../renderer/threeViewer/threeViewer.facade"
-import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.facade"
-import { IdToBuildingService } from "../../renderer/threeViewer/threeViewer.facade"
-import { tap } from "rxjs"
+import { BlacklistItem, Node } from "../../model/codeCharta.model"
+import {
+    CodeMapBuilding,
+    CodeMapTooltipService,
+    CursorType,
+    changeCursorIndicator,
+    IdToBuildingService,
+    ThreeCameraService,
+    ThreeRendererService,
+    ThreeSceneService,
+    ThreeViewerService
+} from "../../renderer/threeViewer/threeViewer.facade"
+import { isPathHiddenOrExcluded } from "../../util/blacklist/blacklistMatcher"
 import { debounce } from "../../util/debounce"
+import { ViewCubeMouseEventsService } from "../viewCube/facade"
 import { CodeMapMouseEventStore } from "./stores/codeMapMouseEvent.store"
-import { CursorType, changeCursorIndicator } from "../../renderer/threeViewer/threeViewer.facade"
 
 interface Coordinates {
     x: number

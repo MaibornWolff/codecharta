@@ -1,11 +1,11 @@
 import { BoxGeometry, Mesh } from "three"
 import { Font } from "three/addons/loaders/FontLoader.js"
-import { GeometryOptions } from "../../geometryOptions"
-import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
-import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
-import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"
-import { MetricDescriptionsContainerMesh } from "./metricDescriptionsContainerMesh"
 import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { GeometryOptions } from "../../geometryOptions"
+import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"
+import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
+import { MetricDescriptionsContainerMesh } from "./metricDescriptionsContainerMesh"
 
 jest.mock("./metricDescriptionBlockMesh", () => ({
     MetricDescriptionBlockMesh: jest.fn().mockImplementation(() => ({

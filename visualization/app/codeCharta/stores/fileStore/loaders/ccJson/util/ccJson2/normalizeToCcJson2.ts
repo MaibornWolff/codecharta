@@ -1,6 +1,6 @@
+import { CcJson2, FileNode } from "../../../../../../model/ccjson2.model"
 import { ExportBlacklistItem, ExportBlacklistType, ExportCCFile, OldAttributeTypes } from "../../../../../../model/codeCharta.api.model"
 import { AttributeTypes, BlacklistItem, CodeMapNode } from "../../../../../../model/codeCharta.model"
-import { CcJson2, FileNode } from "../../../../../../model/ccjson2.model"
 
 /**
  * Normalizes a legacy 1.x export into the internal cc.json 2.0 model, so the whole load pipeline has a

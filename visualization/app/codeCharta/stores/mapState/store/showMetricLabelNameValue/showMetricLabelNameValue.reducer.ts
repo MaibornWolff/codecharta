@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store"
-import { setShowMetricLabelNameValue } from "./showMetricLabelNameValue.actions"
 import { setState } from "../../../../util/setState.reducer.factory"
+import { setShowMetricLabelNameValue } from "./showMetricLabelNameValue.actions"
 
 export const defaultShowMetricLabelNameValue = false
 export const showMetricLabelNameValue = createReducer(

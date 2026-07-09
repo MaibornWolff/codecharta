@@ -1,8 +1,3 @@
-import { CodeMapShaderStrings } from "./shaders/loaders/codeMapShaderStrings"
-import { GeometryGenerator } from "./geometryGenerator"
-import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
-import { CodeMapBuilding } from "./codeMapBuilding"
-import { Node, Scaling, CcState } from "../../../model/codeCharta.model"
 import {
     BufferAttribute,
     BufferGeometry,
@@ -17,15 +12,20 @@ import {
     UniformsUtils,
     Vector3
 } from "three"
+import { CcState, Node, Scaling } from "../../../model/codeCharta.model"
 import { treeMapSize } from "../algorithm/treeMapLayout/treeMapHelper"
+import { CodeMapBuilding } from "./codeMapBuilding"
+import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import {
-    templatePositions,
-    templateNormals,
-    templateIsHeight,
-    templateIndices,
     indicesPerNode,
+    templateIndices,
+    templateIsHeight,
+    templateNormals,
+    templatePositions,
     verticesPerBox
 } from "./geometryGenerationHelper"
+import { GeometryGenerator } from "./geometryGenerator"
+import { CodeMapShaderStrings } from "./shaders/loaders/codeMapShaderStrings"
 
 export interface MousePos {
     x: number

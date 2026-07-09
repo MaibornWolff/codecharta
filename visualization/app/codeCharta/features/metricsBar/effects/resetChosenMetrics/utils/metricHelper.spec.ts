@@ -1,4 +1,4 @@
-import { defaultNMetrics, isAnyMetricAvailable, areScenarioSettingsApplicable, preselectCombination } from "./metricHelper"
+import { areScenarioSettingsApplicable, defaultNMetrics, isAnyMetricAvailable, preselectCombination } from "./metricHelper"
 
 describe("metricHelper", () => {
     describe("isAnyMetricAvailable", () => {

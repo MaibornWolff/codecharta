@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing"
-import { FileSelectionState } from "../../../model/files/files"
-import { referenceFileSelector } from "../../../stores/fileStore/store/referenceFile.selector"
-import { addFile, removeFiles, setDelta, setStandard } from "../../../stores/fileStore/store/files.actions"
-import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../mocks/dataMocks"
-import { FileSelectionModeService } from "./fileSelectionMode.service"
 import { State, Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
+import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../mocks/dataMocks"
 import { CcState } from "../../../model/codeCharta.model"
+import { FileSelectionState } from "../../../model/files/files"
+import { addFile, removeFiles, setDelta, setStandard } from "../../../stores/fileStore/store/files.actions"
+import { referenceFileSelector } from "../../../stores/fileStore/store/referenceFile.selector"
+import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
 import { FilesSelectionStore } from "../stores/filesSelection.store"
+import { FileSelectionModeService } from "./fileSelectionMode.service"
 
 describe("FileSelectionModeService", () => {
     let fileSelectionModeService: FileSelectionModeService

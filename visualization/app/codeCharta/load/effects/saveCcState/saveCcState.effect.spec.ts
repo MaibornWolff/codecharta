@@ -1,15 +1,15 @@
 import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
-import { Action, State } from "@ngrx/store"
-import { Subject } from "rxjs"
-import { SaveCcStateEffect } from "./saveCcState.effect"
 import { provideMockActions } from "@ngrx/effects/testing"
+import { Action, State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { setFiles } from "../../../stores/fileStore/store/files.actions"
-import { writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { waitFor } from "@testing-library/angular"
-import { removeBlacklistItems, setMarkedPackages } from "../../../stores/sharedView/sharedView.write.facade"
+import { Subject } from "rxjs"
+import { setFiles } from "../../../stores/fileStore/store/files.actions"
 import { setShowIncomingEdges } from "../../../stores/mapState/mapState.write.facade"
+import { writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
+import { removeBlacklistItems, setMarkedPackages } from "../../../stores/sharedView/sharedView.write.facade"
+import { SaveCcStateEffect } from "./saveCcState.effect"
 
 jest.mock("../../../stores/rootStore/indexedDB/indexedDBWriter", () => {
     return {

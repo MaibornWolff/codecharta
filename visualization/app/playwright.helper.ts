@@ -1,5 +1,5 @@
-import path from "path"
 import { Page } from "@playwright/test"
+import path from "path"
 
 export const CC_URL = `file:${path.join(__dirname, "../dist/bundler/browser/index.html")}`
 

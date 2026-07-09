@@ -1,11 +1,11 @@
 import { createSelector } from "@ngrx/store"
-import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
-import { blacklistMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { calculateEdgeMetricData } from "../../../lenses/dependency/dependencyLens.facade"
-import { FileState } from "../../../model/files/files"
 import { EdgeMetricCount, EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../model/codeCharta.model"
-import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
+import { FileState } from "../../../model/files/files"
+import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../stores/mapState/mapState.read.facade"
+import { blacklistMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 
 /**
  * Derived (view-state-aware) edge-visibility selector — Slice 9b P0-1 (half 2). Composes the dependency

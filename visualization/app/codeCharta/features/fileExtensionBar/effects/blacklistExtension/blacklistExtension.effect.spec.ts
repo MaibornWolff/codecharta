@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing"
-import { Subject } from "rxjs"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
-import { BlacklistExtensionEffect, blacklistExtensionsPattern } from "./blacklistExtension.effect"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { Subject } from "rxjs"
 import { BlacklistItem, BlacklistType, CcState } from "../../../../model/codeCharta.model"
 import { addBlacklistItems } from "../../../../stores/sharedView/sharedView.write.facade"
+import { BlacklistExtensionEffect, blacklistExtensionsPattern } from "./blacklistExtension.effect"
 
 describe("BlackListExtensionEffect", () => {
     let effect: BlacklistExtensionEffect

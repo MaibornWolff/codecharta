@@ -1,5 +1,5 @@
-import { margin } from "./margin.reducer"
 import { setMargin } from "./margin.actions"
+import { margin } from "./margin.reducer"
 
 describe("margin", () => {
     it("should set new margin", () => {

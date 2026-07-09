@@ -3,9 +3,9 @@ import { createEffect } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { filter, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../../model/codeCharta.model"
-import { nodeMetricDataSelector, areChosenMetricsAvailableSelector } from "../../../../renderer/renderModel/renderModel.facade"
-import { isAnyMetricAvailable } from "./utils/metricHelper"
+import { areChosenMetricsAvailableSelector, nodeMetricDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { setDefaultMetrics } from "./setDefaultMetrics"
+import { isAnyMetricAvailable } from "./utils/metricHelper"
 
 @Injectable()
 export class ResetChosenMetricsEffect {

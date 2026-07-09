@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core"
 import { createEffect } from "@ngrx/effects"
-import { setState } from "../../../stores/rootStore/state.actions"
-import { CcState } from "../../../model/codeCharta.model"
+import { State, Store } from "@ngrx/store"
 import { map } from "rxjs"
+import { CcState } from "../../../model/codeCharta.model"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
-import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
-import { getMergedBlacklist } from "./utils/blacklist.merger"
-import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
+import { setState } from "../../../stores/rootStore/state.actions"
 import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merger"
-import { State, Store } from "@ngrx/store"
+import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
+import { getMergedBlacklist } from "./utils/blacklist.merger"
+import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
 
 @Injectable()
 export class UpdateFileSettingsEffect {

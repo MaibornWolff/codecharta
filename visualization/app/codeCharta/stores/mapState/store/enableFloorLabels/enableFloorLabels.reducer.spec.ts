@@ -1,5 +1,5 @@
-import { enableFloorLabels } from "./enableFloorLabels.reducer"
 import { setEnableFloorLabels } from "./enableFloorLabels.actions"
+import { enableFloorLabels } from "./enableFloorLabels.reducer"
 
 describe("enableFloorLabel", () => {
     it("should set new enableFloorLabel", () => {

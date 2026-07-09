@@ -6,5 +6,6 @@
  * store/state.manager + indexedDBWriter seed, plus the raw source selector the dependency lens projection
  * reads. NO write action (see the write facade). External access only via this facade (stores-own-ccjson-source).
  */
-export { dependencyLensSource, defaultDependencyLensSource } from "./store/dependencyLensSource.reducer"
+
 export { attributeTypesSelector } from "./store/attributeTypes/attributeTypes.selector"
+export { defaultDependencyLensSource, dependencyLensSource } from "./store/dependencyLensSource.reducer"

@@ -2,10 +2,10 @@ import { createSelector } from "@ngrx/store"
 import { CCFile } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
 import { isDeltaState, isPartialState } from "../../../model/files/files.helper"
-import { AggregationGenerator } from "../../../util/aggregationGenerator"
-import { getDeltaFile } from "../../../util/getDeltaFile"
-import { clone } from "../../../util/clone"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
+import { AggregationGenerator } from "../../../util/aggregationGenerator"
+import { clone } from "../../../util/clone"
+import { getDeltaFile } from "../../../util/getDeltaFile"
 
 /**
  * The structure lens's undecorated unified tree — the read-only projection of the visible cc.json

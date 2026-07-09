@@ -1,5 +1,5 @@
-import { showMetricLabelNodeName } from "./showMetricLabelNodeName.reducer"
 import { setShowMetricLabelNodeName } from "./showMetricLabelNodeName.actions"
+import { showMetricLabelNodeName } from "./showMetricLabelNodeName.reducer"
 
 describe("showMetricLabelNodeName", () => {
     it("should set new showMetricLabelNodeName", () => {

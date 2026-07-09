@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ScreenshotDestinationService } from "../../services/screenshotDestination.service"
-import { ExperimentalFeaturesService } from "../../services/experimentalFeatures.service"
-import { BackgroundThemeService } from "../../services/backgroundTheme.service"
-import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibility.service"
 import { AutomaticCameraResetService } from "../../services/automaticCameraReset.service"
+import { BackgroundThemeService } from "../../services/backgroundTheme.service"
+import { ExperimentalFeaturesService } from "../../services/experimentalFeatures.service"
+import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibility.service"
+import { ScreenshotDestinationService } from "../../services/screenshotDestination.service"
+import { ExternalLinksComponent } from "./externalLinks/externalLinks.component"
 import { MapLayoutSelectionComponent } from "./mapLayoutSelection/mapLayoutSelection.component"
 import { ResetMapButtonComponent } from "./resetMapButton/resetMapButton.component"
 import { ResetSettingsButtonComponent } from "./resetSettingsButton/resetSettingsButton.component"
 import { SettingToggleComponent } from "./settingToggle/settingToggle.component"
-import { ExternalLinksComponent } from "./externalLinks/externalLinks.component"
 
 @Component({
     selector: "cc-global-configuration-dialog",

@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { nodeMetricDataSelector } from "../nodeMetricData/nodeMetricData.selector"
 import { areaMetricSelector, colorMetricSelector, heightMetricSelector } from "../../../stores/mapState/mapState.read.facade"
+import { nodeMetricDataSelector } from "../nodeMetricData/nodeMetricData.selector"
 import { areMetricsAvailable } from "./utils/areMetricsAvailable"
 
 export const areChosenMetricsAvailableSelector = createSelector(

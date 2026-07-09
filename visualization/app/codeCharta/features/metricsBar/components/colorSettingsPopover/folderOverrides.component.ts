@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { MarkedPackageWithCount } from "../../selectors/markedPackagesWithCounts.selector"
 import { defaultMapColors } from "../../../../stores/mapState/mapState.read.facade"
+import { MarkedPackageWithCount } from "../../selectors/markedPackagesWithCounts.selector"
 import { FolderOverridesService } from "../../services/folderOverrides.service"
 import { MapColorsService } from "../../services/mapColors.service"
 import { FolderOverrideRowComponent } from "./folderOverrideRow.component"

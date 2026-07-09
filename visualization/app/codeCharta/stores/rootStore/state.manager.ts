@@ -1,12 +1,10 @@
-import { defaultPreferences } from "../preferences/preferences.read.facade"
-import { defaultFiles } from "../fileStore/fileStore.facade"
-import { defaultIsLoadingFile } from "../fileStore/fileStore.facade"
-import { defaultCurrentFilesAreSampleFiles } from "../fileStore/fileStore.facade"
-import { defaultMapState } from "../mapState/mapState.read.facade"
-import { defaultSharedView } from "../sharedView/sharedView.read.facade"
-import { defaultMetricsLensSource } from "../metricsLensSource/metricsLensSource.read.facade"
-import { defaultDependencyLensSource } from "../dependencyLensSource/dependencyLensSource.read.facade"
 import { CcState } from "../../model/codeCharta.model"
+import { defaultDependencyLensSource } from "../dependencyLensSource/dependencyLensSource.read.facade"
+import { defaultCurrentFilesAreSampleFiles, defaultFiles, defaultIsLoadingFile } from "../fileStore/fileStore.facade"
+import { defaultMapState } from "../mapState/mapState.read.facade"
+import { defaultMetricsLensSource } from "../metricsLensSource/metricsLensSource.read.facade"
+import { defaultPreferences } from "../preferences/preferences.read.facade"
+import { defaultSharedView } from "../sharedView/sharedView.read.facade"
 
 export const defaultState: CcState = {
     metricsLensSource: defaultMetricsLensSource,

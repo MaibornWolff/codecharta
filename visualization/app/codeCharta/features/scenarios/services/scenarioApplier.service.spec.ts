@@ -1,16 +1,14 @@
 import { TestBed } from "@angular/core/testing"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { Vector3 } from "three"
-import { defaultState } from "../../../stores/rootStore/state.manager"
-import { ThreeCameraService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { ThreeMapControlsService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { CcState, ColorMode, LabelMode, MetricData, RecursivePartial } from "../../../model/codeCharta.model"
+import { ThreeCameraService, ThreeMapControlsService, ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { setIsLoadingFile } from "../../../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../../stores/mapState/mapState.write.facade"
-import { MetricsSection, Scenario, ScenarioSections, ScenarioSectionKey } from "../model/scenario.model"
+import { defaultState } from "../../../stores/rootStore/state.manager"
+import { MetricsSection, Scenario, ScenarioSectionKey, ScenarioSections } from "../model/scenario.model"
 import { ScenarioApplierService } from "./scenarioApplier.service"
-import { ColorMode, LabelMode, MetricData, RecursivePartial, CcState } from "../../../model/codeCharta.model"
 
 const testSections: ScenarioSections = {
     metrics: {

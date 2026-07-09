@@ -1,10 +1,10 @@
 import { HttpClient, HttpResponse } from "@angular/common/http"
+import { ungzip } from "pako"
 import { firstValueFrom } from "rxjs"
-import { NameDataPair, ExportCCFile, ExportWrappedCCFile } from "../../../../../model/codeCharta.api.model"
+import { CcJson2 } from "../../../../../model/ccjson2.model"
+import { ExportCCFile, ExportWrappedCCFile, NameDataPair } from "../../../../../model/codeCharta.api.model"
 import { getCCFileAndDecorateFileChecksum } from "./ccFileHelper"
 import { isCcJson2 } from "./fileValidator"
-import { CcJson2 } from "../../../../../model/ccjson2.model"
-import { ungzip } from "pako"
 
 function getProjectName(content: ExportCCFile | CcJson2): string {
     return isCcJson2(content) ? content.meta.projectName : content.projectName

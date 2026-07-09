@@ -1,12 +1,12 @@
+import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
-import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { isEdgeMetricVisibleSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { toggleEdgeMetricVisible } from "../../../../stores/mapState/mapState.write.facade"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
 
 describe("EdgeMetricToggleComponent", () => {

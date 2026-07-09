@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
-import { ScreenshotDestinationService } from "./screenshotDestination.service"
 import { ScreenshotDestinationStore } from "../stores/screenshotDestination.store"
+import { ScreenshotDestinationService } from "./screenshotDestination.service"
 
 describe("ScreenshotDestinationService", () => {
     let service: ScreenshotDestinationService

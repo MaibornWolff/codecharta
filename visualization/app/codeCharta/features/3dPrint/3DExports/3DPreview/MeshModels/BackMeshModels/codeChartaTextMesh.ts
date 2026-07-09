@@ -1,7 +1,7 @@
 import { Font } from "three/addons/loaders/FontLoader.js"
-import { TextMesh } from "../textMesh"
-import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { TextMesh } from "../textMesh"
 
 export class CodeChartaTextMesh extends TextMesh {
     constructor(name: string, font: Font) {

@@ -1,8 +1,7 @@
 import { Group, Mesh, PerspectiveCamera, Vector2, WebGLRenderer } from "three"
-import { ThreeMapControlsService } from "../../renderer/threeViewer/threeViewer.facade"
-import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
-import { CursorType } from "../../renderer/threeViewer/threeViewer.facade"
+import { CursorType, ThreeMapControlsService } from "../../renderer/threeViewer/threeViewer.facade"
+import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 
 jest.mock("three", () => ({
     ...jest.requireActual("three"),

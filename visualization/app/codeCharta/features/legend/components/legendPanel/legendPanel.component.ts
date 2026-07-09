@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, computed, inject, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, OnDestroy, OnInit, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { InspectorVisibilityService } from "../../../../features/sidebarInspector/facade"
+import { LEGEND_BARS_OFFSET } from "../../models/legendPosition"
 import { LegendService } from "../../services/legend.service"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 import { LegendColorScaleSectionComponent } from "./legendColorScaleSection.component"
 import { LegendDeltaColorsSectionComponent } from "./legendDeltaColorsSection.component"
 import { LegendEdgeColorsSectionComponent } from "./legendEdgeColorsSection.component"
 import { LegendMetricsSectionComponent } from "./legendMetricsSection.component"
-import { LEGEND_BARS_OFFSET } from "../../models/legendPosition"
 import { LegendToggleButtonComponent } from "./legendToggleButton.component"
 
 @Component({

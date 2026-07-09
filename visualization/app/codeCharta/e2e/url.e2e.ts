@@ -1,10 +1,10 @@
-import { test, expect } from "@playwright/test"
-import { CC_URL, clearIndexedDB, goto } from "../../playwright.helper"
-import { MapSelectorPageObject } from "../features/navBar/components/mapSelector/mapSelector.po"
-import sample1 from "../assets/sample1.cc.json"
-import sample3 from "../assets/sample3.cc.json"
-import sample2 from "../assets/sample2.cc.json"
+import { expect, test } from "@playwright/test"
 import { gzip } from "pako"
+import { CC_URL, clearIndexedDB, goto } from "../../playwright.helper"
+import sample1 from "../assets/sample1.cc.json"
+import sample2 from "../assets/sample2.cc.json"
+import sample3 from "../assets/sample3.cc.json"
+import { MapSelectorPageObject } from "../features/navBar/components/mapSelector/mapSelector.po"
 import { DialogErrorPageObject } from "../features/shared/components/errorDialog/errorDialog.component.po"
 
 test.describe("codecharta", () => {

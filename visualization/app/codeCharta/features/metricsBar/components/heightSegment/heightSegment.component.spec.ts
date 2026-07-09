@@ -1,12 +1,12 @@
+import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { heightMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setHeightMetric } from "../../../../stores/mapState/mapState.write.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { HeightSegmentComponent } from "./heightSegment.component"
 
 describe("HeightSegmentComponent", () => {

@@ -1,5 +1,5 @@
-import { showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges.reducer"
 import { setShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges.actions"
+import { showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges.reducer"
 
 describe("showOnlyBuildingsWithEdges", () => {
     it("should set new showOnlyBuildingsWithEdges", () => {

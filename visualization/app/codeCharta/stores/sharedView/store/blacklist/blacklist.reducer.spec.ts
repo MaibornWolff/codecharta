@@ -1,6 +1,6 @@
-import { addBlacklistItem, setBlacklist, removeBlacklistItem, addBlacklistItems } from "./blacklist.actions"
-import { blacklist } from "./blacklist.reducer"
 import { BlacklistItem } from "../../../../model/codeCharta.model"
+import { addBlacklistItem, addBlacklistItems, removeBlacklistItem, setBlacklist } from "./blacklist.actions"
+import { blacklist } from "./blacklist.reducer"
 
 describe("blacklist", () => {
     const item: BlacklistItem = { type: "flatten", path: "foo/bar" }

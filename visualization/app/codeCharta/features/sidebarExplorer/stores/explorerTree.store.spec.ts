@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { ExplorerTreeStore } from "./explorerTree.store"
-import { explorerTreeNodeSelector } from "../selectors/explorerTreeNode.selector"
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
+import { explorerTreeNodeSelector } from "../selectors/explorerTreeNode.selector"
+import { ExplorerTreeStore } from "./explorerTree.store"
 
 describe("ExplorerTreeStore", () => {
     let store: ExplorerTreeStore

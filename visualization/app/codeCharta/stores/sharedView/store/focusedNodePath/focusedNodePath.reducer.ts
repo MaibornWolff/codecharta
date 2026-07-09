@@ -1,6 +1,6 @@
-import { focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
-import { fileRoot } from "../../../../util/fileRoot"
 import { createReducer, on } from "@ngrx/store"
+import { fileRoot } from "../../../../util/fileRoot"
+import { focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
 
 export const defaultFocusedNodePath: string[] = []
 export const focusedNodePath = createReducer(

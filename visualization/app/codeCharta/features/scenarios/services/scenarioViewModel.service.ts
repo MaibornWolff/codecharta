@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { MetricData } from "../../../model/codeCharta.model"
+import { ScenarioView } from "../components/scenarioListDialog/scenarioView.model"
 import { getAvailableSectionKeys, Scenario } from "../model/scenario.model"
 import { ScenarioApplierService } from "./scenarioApplier.service"
-import { ScenarioView } from "../components/scenarioListDialog/scenarioView.model"
 
 const GROUP_DEFINITIONS: { priority: number; label: string; icon: string }[] = [
     { priority: 0, label: "Current Map", icon: "fa-map-pin" },

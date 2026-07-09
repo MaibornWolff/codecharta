@@ -1,12 +1,12 @@
+import { Font } from "three/addons/loaders/FontLoader.js"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { GeometryOptions } from "../../geometryOptions"
 import { GeneralMesh, GeneralSizeChangeMesh } from "../generalMesh"
-import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
-import { Font } from "three/addons/loaders/FontLoader.js"
-import { FrontTextMesh } from "./frontTextMesh"
-import { SecondRowTextMesh } from "./secondRowTextMesh"
-import { FrontMWLogoMesh } from "./frontMWLogoMesh"
 import { CustomLogoMesh } from "./customLogoMesh"
 import { FrontLogo } from "./frontLogo"
+import { FrontMWLogoMesh } from "./frontMWLogoMesh"
+import { FrontTextMesh } from "./frontTextMesh"
+import { SecondRowTextMesh } from "./secondRowTextMesh"
 
 export class FrontPrintContainerMesh extends GeneralMesh implements GeneralSizeChangeMesh {
     private childrenMeshes: Map<string, GeneralMesh>

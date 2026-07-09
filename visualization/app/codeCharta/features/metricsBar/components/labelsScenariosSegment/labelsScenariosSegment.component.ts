@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { MetricData } from "../../../../model/codeCharta.model"
 import { LabelSettingsPanelComponent } from "../../../labelSettings/components/labelSettingsPanel/labelSettingsPanel.component"

@@ -1,5 +1,5 @@
-import { colorRange } from "./colorRange.reducer"
 import { setColorRange } from "./colorRange.actions"
+import { colorRange } from "./colorRange.reducer"
 
 describe("colorRange", () => {
     it("should set new colorRange", () => {

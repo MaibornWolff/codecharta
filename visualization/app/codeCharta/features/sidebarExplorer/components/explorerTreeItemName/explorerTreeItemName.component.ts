@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
-import { isAreaValid } from "../../../../util/codeMapHelper"
 import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { isAreaValid } from "../../../../util/codeMapHelper"
 import { SearchedNodePathsStore } from "../../stores/searchedNodePaths.store"
 
 @Component({

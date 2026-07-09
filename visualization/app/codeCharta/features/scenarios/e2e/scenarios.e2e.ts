@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { clearIndexedDB, goto } from "../../../../playwright.helper"
 import { ScenariosPageObject } from "./scenarios.po"
 

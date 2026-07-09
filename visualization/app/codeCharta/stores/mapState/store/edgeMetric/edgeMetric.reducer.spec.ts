@@ -1,5 +1,5 @@
-import { edgeMetric } from "./edgeMetric.reducer"
 import { setEdgeMetric } from "./edgeMetric.actions"
+import { edgeMetric } from "./edgeMetric.reducer"
 
 describe("edgeMetric", () => {
     it("should set new edgeMetric", () => {

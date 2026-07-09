@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { SortingOptionStore } from "./sortingOption.store"
+import { SortingOption } from "../../../model/codeCharta.model"
 import { sortingOrderSelector } from "../../../stores/preferences/preferences.read.facade"
 import { setSortingOption } from "../../../stores/preferences/preferences.write.facade"
-import { SortingOption } from "../../../model/codeCharta.model"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { SortingOptionStore } from "./sortingOption.store"
 
 describe("SortingOptionStore", () => {
     let store: SortingOptionStore

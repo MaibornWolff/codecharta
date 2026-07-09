@@ -1,9 +1,9 @@
-import { CCFile, CodeMapNode, FileMeta, KeyValuePair, NodeType } from "../model/codeCharta.model"
-import { FileNameHelper } from "./fileNameHelper"
 import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"
-import { getParent } from "./nodePathHelper"
+import { CCFile, CodeMapNode, FileMeta, KeyValuePair, NodeType } from "../model/codeCharta.model"
+import { FileNameHelper } from "./fileNameHelper"
 import { fileRoot } from "./fileRoot"
+import { getParent } from "./nodePathHelper"
 
 export class DeltaGenerator {
     static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {

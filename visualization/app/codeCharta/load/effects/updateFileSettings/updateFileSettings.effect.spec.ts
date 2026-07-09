@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing"
-import { State } from "@ngrx/store"
 import { EffectsModule } from "@ngrx/effects"
-import { provideMockStore, MockStore } from "@ngrx/store/testing"
-import { setState } from "../../../stores/rootStore/state.actions"
-import { UpdateFileSettingsEffect } from "./updateFileSettings.effect"
-import { getLastAction } from "../../../util/testUtils/store.utils"
+import { State } from "@ngrx/store"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA, TEST_FILE_DATA_TWO } from "../../../mocks/dataMocks"
 import { FileSelectionState } from "../../../model/files/files"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/store/visibleFileStates.selector"
+import { setState } from "../../../stores/rootStore/state.actions"
+import { getLastAction } from "../../../util/testUtils/store.utils"
+import { UpdateFileSettingsEffect } from "./updateFileSettings.effect"
 
 describe("UpdateFileSettingsEffect", () => {
     const modifiedDefaultState = {

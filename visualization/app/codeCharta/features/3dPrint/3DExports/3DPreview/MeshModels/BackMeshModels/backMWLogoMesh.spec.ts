@@ -1,7 +1,7 @@
-import { BackMWLogoMesh } from "./backMWLogoMesh"
+import { BufferGeometry, Vector3 } from "three"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../geometryOptions"
-import { BufferGeometry, Vector3 } from "three"
+import { BackMWLogoMesh } from "./backMWLogoMesh"
 
 jest.mock("../../CreateGeometryStrategies/createSvgGeometryStrategy")
 

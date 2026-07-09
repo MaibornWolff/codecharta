@@ -1,6 +1,6 @@
-import { RecursivePartial, CcState } from "../model/codeCharta.model"
-import { convertToVectors } from "./settingsHelper"
 import { Vector3 } from "three"
+import { CcState, RecursivePartial } from "../model/codeCharta.model"
+import { convertToVectors } from "./settingsHelper"
 
 describe("SettingsHelper", () => {
     describe("convertToVectors", () => {

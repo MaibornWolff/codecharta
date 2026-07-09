@@ -1,11 +1,11 @@
-import { FileSelectionState, FileState } from "../../../model/files/files"
-import { clone } from "../../../util/clone"
-import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 import { TEST_DELTA_MAP_A } from "../../../mocks/dataMocks"
-import { NodeDecorator } from "../../../util/nodeDecorator"
-import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
-import { calculateNodeMetricData } from "../../../util/metric/nodeMetricData.calculator"
+import { FileSelectionState, FileState } from "../../../model/files/files"
+import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
+import { clone } from "../../../util/clone"
 import { rangeOfMetric } from "../../../util/metric/metricRange"
+import { calculateNodeMetricData } from "../../../util/metric/nodeMetricData.calculator"
+import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
+import { NodeDecorator } from "../../../util/nodeDecorator"
 import { metricRangeSelector, nodeMetricDataSelector } from "./nodeMetricData.selector"
 
 describe("derived nodeMetricData selectors", () => {

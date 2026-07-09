@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
+import { metricRangeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import {
     areaMetricSelector,
-    heightMetricSelector,
     colorMetricSelector,
-    edgeMetricSelector,
     colorRangeSelector,
+    edgeMetricSelector,
+    heightMetricSelector,
     mapColorsSelector
 } from "../../../stores/mapState/mapState.read.facade"
-import { metricRangeSelector } from "../../../renderer/renderModel/renderModel.facade"
 
 // The legend's read-only window onto the mapState home (plus the color-metric value range from the
 // state read-model). The only legend code allowed to inject @ngrx Store

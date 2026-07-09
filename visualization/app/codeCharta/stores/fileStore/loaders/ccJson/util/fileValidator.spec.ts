@@ -1,3 +1,4 @@
+import packageJson from "../../../../../../../package.json"
 import {
     TEST_FILE_CONTENT,
     TEST_FILE_CONTENT_CC_JSON_2,
@@ -6,14 +7,12 @@ import {
     TEST_FILE_CONTENT_INVALID_MINOR_API,
     TEST_FILE_CONTENT_NO_API
 } from "../../../../../mocks/dataMocks"
-import { CodeMapNode, NodeType } from "../../../../../model/codeCharta.model"
-import { NameDataPair } from "../../../../../model/codeCharta.api.model"
 import { CcJson2 } from "../../../../../model/ccjson2.model"
-import packageJson from "../../../../../../../package.json"
-import { checkErrors, checkWarnings, isCcJson2, removeAuthorsAttributes, ERROR_MESSAGES } from "./fileValidator"
+import { APIVersions, ExportCCFile, NameDataPair } from "../../../../../model/codeCharta.api.model"
+import { CodeMapNode, NodeType } from "../../../../../model/codeCharta.model"
 import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../../../../../resources/fixed-folders/fixed-folders-example"
-import { APIVersions, ExportCCFile } from "../../../../../model/codeCharta.api.model"
 import { clone } from "../../../../../util/clone"
+import { checkErrors, checkWarnings, ERROR_MESSAGES, isCcJson2, removeAuthorsAttributes } from "./fileValidator"
 
 describe("FileValidator", () => {
     let file: ExportCCFile

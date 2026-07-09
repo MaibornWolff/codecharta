@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { provideMockActions } from "@ngrx/effects/testing"
-import { Subject } from "rxjs"
 import { Action } from "@ngrx/store"
-import { provideMockStore, MockStore } from "@ngrx/store/testing"
-import { isEdgeMetricVisibleSelector, edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { Subject } from "rxjs"
+import { edgeMetricSelector, isEdgeMetricVisibleSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { toggleEdgeMetricVisible } from "../../../../stores/mapState/mapState.write.facade"
-import { UpdateEdgePreviewsEffect } from "./updateEdgePreviews.effect"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { UpdateEdgePreviewsEffect } from "./updateEdgePreviews.effect"
 
 describe("updateEdgePreviewsEffect", () => {
     let actions$: Subject<Action>

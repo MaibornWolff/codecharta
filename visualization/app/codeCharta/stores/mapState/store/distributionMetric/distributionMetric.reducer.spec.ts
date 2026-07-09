@@ -1,5 +1,5 @@
-import { distributionMetric } from "./distributionMetric.reducer"
 import { setDistributionMetric } from "./distributionMetric.actions"
+import { distributionMetric } from "./distributionMetric.reducer"
 
 describe("distributionMetric", () => {
     it("should set new distributionMetric", () => {

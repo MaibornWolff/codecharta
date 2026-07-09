@@ -1,7 +1,7 @@
 import { hierarchy } from "d3-hierarchy"
 import { CCFile, CodeMapNode, MetricData, NodeType } from "../../../model/codeCharta.model"
-import { NodeDecorator } from "../../../util/nodeDecorator"
 import { clone } from "../../../util/clone"
+import { NodeDecorator } from "../../../util/nodeDecorator"
 import { _calculateIdToNode } from "./idToNode.selector"
 
 function buildDecoratedMap(): CodeMapNode {

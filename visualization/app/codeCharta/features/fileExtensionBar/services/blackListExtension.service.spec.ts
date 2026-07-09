@@ -1,14 +1,13 @@
 import { TestBed } from "@angular/core/testing"
-
-import { addPrefixWildcard, BlackListExtensionService, buildGlobPatterns, expandExtensions } from "./blackListExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { CategorizedMetricDistribution, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 import { BlacklistItem, BlacklistType, CcState, CodeMapNode, NodeType, SortingOption } from "../../../model/codeCharta.model"
-import { defaultMapState } from "../../../stores/mapState/mapState.read.facade"
-import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
-import { BlacklistExtensionAction } from "../effects/blacklistExtension/blacklistExtension.effect"
 import { hoveredNodeSelector } from "../../../renderer/renderModel/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../renderer/renderModel/selectedNode.selector"
+import { defaultMapState } from "../../../stores/mapState/mapState.read.facade"
+import { CategorizedMetricDistribution, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
+import { BlacklistExtensionAction } from "../effects/blacklistExtension/blacklistExtension.effect"
+import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
+import { addPrefixWildcard, BlackListExtensionService, buildGlobPatterns, expandExtensions } from "./blackListExtension.service"
 
 class BlackListItemBuilder {
     private path = ""

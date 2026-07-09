@@ -1,5 +1,5 @@
-import { focusedNodePath } from "./focusedNodePath.reducer"
 import { focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
+import { focusedNodePath } from "./focusedNodePath.reducer"
 
 describe("focusedNodePath", () => {
     describe("Action: FOCUS_NODE", () => {

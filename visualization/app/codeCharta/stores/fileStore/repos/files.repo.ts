@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core"
-import { Store, State } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
-import { referenceFileSelector } from "../store/referenceFile.selector"
 import { setCurrentFilesAreSampleFiles } from "../store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import { setFiles, setStandardByNames, visibleFileStatesSelector } from "../store/files.store"
+import { referenceFileSelector } from "../store/referenceFile.selector"
 
 /**
  * Data-access seam for the files slice. Absorbs the former `LoadFileStore`; the load pipeline and

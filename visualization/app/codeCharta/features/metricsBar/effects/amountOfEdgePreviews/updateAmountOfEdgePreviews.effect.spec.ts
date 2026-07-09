@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing"
-import { BehaviorSubject } from "rxjs"
 import { EffectsModule } from "@ngrx/effects"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
-import { getLastAction } from "../../../../util/testUtils/store.utils"
-import { UpdateAmountOfEdgePreviewsEffect } from "./updateAmountOfEdgePreviews.effect"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { BehaviorSubject } from "rxjs"
 import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../renderer/renderModel/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
 import { amountOfEdgePreviewsSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { UpdateAmountOfEdgePreviewsEffect } from "./updateAmountOfEdgePreviews.effect"
 
 describe("UpdateAmountOfEdgePreviewsEffect", () => {
     let actions$: BehaviorSubject<Action>

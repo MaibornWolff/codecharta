@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, viewChild } from "@angular/core"
 import { NgClass } from "@angular/common"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, viewChild } from "@angular/core"
 import { ChangelogFacade } from "../../facade"
 import { ChangelogCategory } from "../../services/changelogParser.service"
 

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { Store, State } from "@ngrx/store"
+import { State, Store } from "@ngrx/store"
 import { CcState, ColorLabelOptions } from "../../../model/codeCharta.model"
 import { isLoadingFileSelector } from "../../../stores/fileStore/fileStore.facade"
 import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"

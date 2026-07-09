@@ -1,10 +1,8 @@
-import { ThreeMapControlsService } from "../../renderer/threeViewer/threeViewer.facade"
-import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
-import { PerspectiveCamera } from "three"
-import { ThreeCameraService } from "../../renderer/threeViewer/threeViewer.facade"
-import { Color, Mesh, Vector3, WebGLRenderer } from "three"
+import { Color, Mesh, PerspectiveCamera, Vector3, WebGLRenderer } from "three"
 import { MapControls } from "three/addons/controls/MapControls.js"
+import { ThreeCameraService, ThreeMapControlsService } from "../../renderer/threeViewer/threeViewer.facade"
 import { ViewCubeComponent } from "./viewCube.component"
+import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 
 describe("ViewCubeComponent", () => {
     let viewCubeComponent: ViewCubeComponent

@@ -10,6 +10,8 @@ import {
     SimpleChanges,
     ViewChild
 } from "@angular/core"
+import { parseChangedNumberInput } from "../../util/settingsInput"
+import { RangeSliderLabelsComponent } from "./rangeSliderLabels.component"
 import {
     calculateSliderRangePosition,
     clampToRange,
@@ -17,8 +19,6 @@ import {
     updateLeftThumb,
     updateRightThumb
 } from "./utils/SliderRangePosition"
-import { RangeSliderLabelsComponent } from "./rangeSliderLabels.component"
-import { parseChangedNumberInput } from "../../util/settingsInput"
 
 export type HandleValueChange = (changedValue: { newLeftValue?: number; newRightValue?: number }) => void
 export type CurrentlySliding = undefined | "leftThumb" | "rightThumb"

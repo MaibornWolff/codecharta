@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing"
-import { visibleFileStatesSelector } from "../../../stores/fileStore/store/visibleFileStates.selector"
-import { unfocusAllNodes } from "../../../stores/sharedView/sharedView.write.facade"
-import { UnfocusNodesEffect } from "./unfocusNodes.effect"
+import { EffectsModule } from "@ngrx/effects"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { FILE_STATES } from "../../../mocks/dataMocks"
+import { visibleFileStatesSelector } from "../../../stores/fileStore/store/visibleFileStates.selector"
+import { unfocusAllNodes } from "../../../stores/sharedView/sharedView.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { EffectsModule } from "@ngrx/effects"
+import { UnfocusNodesEffect } from "./unfocusNodes.effect"
 
 describe("UnfocusNodesEffect", () => {
     beforeEach(() => {

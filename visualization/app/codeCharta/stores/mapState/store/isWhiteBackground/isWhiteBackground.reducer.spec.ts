@@ -1,5 +1,5 @@
-import { isWhiteBackground } from "./isWhiteBackground.reducer"
 import { setIsWhiteBackground } from "./isWhiteBackground.actions"
+import { isWhiteBackground } from "./isWhiteBackground.reducer"
 
 describe("isWhiteBackground", () => {
     it("should set new isWhiteBackground", () => {

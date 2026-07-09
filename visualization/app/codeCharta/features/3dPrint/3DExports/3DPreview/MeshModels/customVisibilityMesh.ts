@@ -1,5 +1,5 @@
-import { GeneralMesh } from "./generalMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
+import { GeneralMesh } from "./generalMesh"
 
 export abstract class CustomVisibilityMesh extends GeneralMesh {
     currentWidth: number

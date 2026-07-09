@@ -1,7 +1,7 @@
-import { CodeChartaLogoMesh } from "./codeChartaLogoMesh"
+import { BufferGeometry, Vector3 } from "three"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../geometryOptions"
-import { BufferGeometry, Vector3 } from "three"
+import { CodeChartaLogoMesh } from "./codeChartaLogoMesh"
 
 describe("CodeChartaLogoMesh", () => {
     let createSvgGeometryStrategyMock: jest.Mocked<CreateSvgGeometryStrategy>

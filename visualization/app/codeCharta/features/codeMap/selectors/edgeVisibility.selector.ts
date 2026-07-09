@@ -1,9 +1,9 @@
 import { createSelector } from "@ngrx/store"
-import { edgePreviewNodesSelector } from "./edgePreviewNodes.selector"
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { edgeMetricSelector, showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../stores/mapState/mapState.read.facade"
 import { clone } from "../../../util/clone"
+import { edgePreviewNodesSelector } from "./edgePreviewNodes.selector"
 import { setEdgeVisibility } from "./setEdgeVisibility"
-import { showIncomingEdgesSelector, showOutgoingEdgesSelector, edgeMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 
 export const edgeVisibilitySelector = createSelector(
     edgePreviewNodesSelector,

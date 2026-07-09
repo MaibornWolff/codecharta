@@ -1,5 +1,5 @@
-import { maxTreeMapFiles } from "./maxTreeMapFiles.reducer"
 import { setMaxTreeMapFiles } from "./maxTreeMapFiles.actions"
+import { maxTreeMapFiles } from "./maxTreeMapFiles.reducer"
 
 describe("maxTreeMapFiles", () => {
     it("should set new maxTreeMapFiles", () => {

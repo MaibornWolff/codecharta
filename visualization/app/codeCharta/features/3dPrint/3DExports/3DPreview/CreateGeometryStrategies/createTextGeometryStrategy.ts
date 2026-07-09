@@ -1,9 +1,9 @@
 import { BufferGeometry } from "three"
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js"
 import { Font } from "three/addons/loaders/FontLoader.js"
-import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createGeometryStrategy"
-import { GeometryOptions } from "../geometryOptions"
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
+import { GeometryOptions } from "../geometryOptions"
+import { CreateGeometryStrategy, CreateGeometryStrategyOptions } from "./createGeometryStrategy"
 
 export interface CreateTextGeometryStrategyOptions extends CreateGeometryStrategyOptions {
     font: Font

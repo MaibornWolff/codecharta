@@ -1,6 +1,6 @@
+import { MeshBasicMaterial, Vector3 } from "three"
 import { Node } from "../../../model/codeCharta.model"
 import { FloorLabelDrawer } from "./floorLabelDrawer"
-import { MeshBasicMaterial, Vector3 } from "three"
 
 describe("FloorLabelDrawer", () => {
     let createElementOrigin

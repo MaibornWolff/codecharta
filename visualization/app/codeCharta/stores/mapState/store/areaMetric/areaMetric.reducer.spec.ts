@@ -1,5 +1,5 @@
-import { areaMetric } from "./areaMetric.reducer"
 import { setAreaMetric } from "./areaMetric.actions"
+import { areaMetric } from "./areaMetric.reducer"
 
 describe("areaMetric", () => {
     it("should set new areaMetric", () => {

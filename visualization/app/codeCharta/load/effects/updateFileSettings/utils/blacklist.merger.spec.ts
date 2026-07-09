@@ -1,7 +1,7 @@
-import { getMergedBlacklist } from "./blacklist.merger"
 import { TEST_FILE_DATA } from "../../../../mocks/dataMocks"
 import { BlacklistItem, CCFile } from "../../../../model/codeCharta.model"
 import { clone } from "../../../../util/clone"
+import { getMergedBlacklist } from "./blacklist.merger"
 
 describe("BlacklistMerger", () => {
     let file1: CCFile

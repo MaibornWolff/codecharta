@@ -1,5 +1,5 @@
-import { clone } from "./clone"
 import { dequal } from "dequal"
+import { clone } from "./clone"
 
 export function removeItemFromArray<T>(array: T[], searchItem: T) {
     return array.filter(entry => !dequal(entry, searchItem))

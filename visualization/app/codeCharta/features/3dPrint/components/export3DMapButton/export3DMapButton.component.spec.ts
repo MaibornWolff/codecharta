@@ -3,10 +3,10 @@ import { TestBed } from "@angular/core/testing"
 import { State, Store } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { ColorMode } from "../../../../model/codeCharta.model"
-import { setColorMode } from "../../../../stores/mapState/mapState.write.facade"
 import { ActionIconComponent } from "../../../../features/shared/components/actionIcon/actionIcon.component"
 import { ErrorDialogComponent } from "../../../../features/shared/components/errorDialog/errorDialog.component"
+import { ColorMode } from "../../../../model/codeCharta.model"
+import { setColorMode } from "../../../../stores/mapState/mapState.write.facade"
 import { Export3DMapButtonComponent } from "./export3DMapButton.component"
 
 // The real export dialog needs a fully initialized Three.js scene in its constructor.

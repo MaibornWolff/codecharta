@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { BackgroundThemeStore } from "./backgroundTheme.store"
-import { isWhiteBackgroundSelector } from "../selectors/globalSettings.selectors"
 import { setIsWhiteBackground } from "../../../stores/mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { isWhiteBackgroundSelector } from "../selectors/globalSettings.selectors"
+import { BackgroundThemeStore } from "./backgroundTheme.store"
 
 describe("BackgroundThemeStore", () => {
     let store: BackgroundThemeStore

@@ -1,9 +1,15 @@
+import { hierarchy } from "d3-hierarchy"
+import { Vector3 } from "three"
+import packageJson from "../../../package.json"
+import { CcJson2 } from "../model/ccjson2.model"
+import { APIVersions, ExportCCFile } from "../model/codeCharta.api.model"
 import {
-    AttributeTypeValue,
     AttributeDescriptors,
+    AttributeTypeValue,
     BlacklistItem,
     BlacklistType,
     CCFile,
+    CcState,
     CodeMapNode,
     ColorMode,
     Edge,
@@ -16,15 +22,9 @@ import {
     Node,
     NodeMetricData,
     NodeType,
-    SortingOption,
-    CcState
+    SortingOption
 } from "../model/codeCharta.model"
-import { Vector3 } from "three"
-import { hierarchy } from "d3-hierarchy"
 import { FileSelectionState, FileState } from "../model/files/files"
-import { APIVersions, ExportCCFile } from "../model/codeCharta.api.model"
-import { CcJson2 } from "../model/ccjson2.model"
-import packageJson from "../../../package.json"
 import { isLeaf } from "../util/codeMapHelper"
 import { UNARY_METRIC } from "../util/metric/unaryMetric"
 

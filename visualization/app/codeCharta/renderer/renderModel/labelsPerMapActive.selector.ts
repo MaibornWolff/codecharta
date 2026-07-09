@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { labelsPerMapSelector } from "../../stores/mapState/mapState.read.facade"
 import { areMultipleMapsVisibleSelector } from "../../stores/fileStore/fileStore.facade"
+import { labelsPerMapSelector } from "../../stores/mapState/mapState.read.facade"
 
 export const labelsPerMapActiveSelector = createSelector(
     labelsPerMapSelector,

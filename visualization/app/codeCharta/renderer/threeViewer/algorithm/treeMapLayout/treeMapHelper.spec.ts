@@ -1,9 +1,9 @@
-import { TreeMapHelper } from "./treeMapHelper"
-import { CcState, CodeMapNode, ColorMode, EdgeVisibility, NodeType } from "../../../../model/codeCharta.model"
-import { STATE, VALID_EDGES } from "../../../../mocks/dataMocks"
 import { HierarchyRectangularNode } from "d3-hierarchy"
-import { clone } from "../../../../util/clone"
 import { edgesSelector } from "../../../../lenses/dependency/dependencyLens.facade"
+import { STATE, VALID_EDGES } from "../../../../mocks/dataMocks"
+import { CcState, CodeMapNode, ColorMode, EdgeVisibility, NodeType } from "../../../../model/codeCharta.model"
+import { clone } from "../../../../util/clone"
+import { TreeMapHelper } from "./treeMapHelper"
 
 jest.mock("../../../renderModel/accumulatedData/accumulatedData.selector", () => ({
     accumulatedDataSelector: () => ({

@@ -3,18 +3,20 @@ import { Store, StoreModule } from "@ngrx/store"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { of } from "rxjs"
-import { IdToBuildingService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
 import * as SearchedNodePathsSelector from "../../../../renderer/renderModel/searchedNodes/searchedNodePaths.selector"
+import {
+    CodeMapBuilding,
+    CodeMapTooltipService,
+    IdToBuildingService,
+    ThreeRendererService,
+    ThreeSceneService
+} from "../../../../renderer/threeViewer/threeViewer.facade"
+import * as AreaMetricSelector from "../../../../stores/mapState/store/areaMetric/areaMetric.selector"
+import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { setHoveredNodeId, setRightClickedNodeData } from "../../../../stores/sharedView/sharedView.write.facade"
 import { defaultRightClickedNodeData } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.reducer"
 import * as RightClickedNodeDataSelector from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
-import * as AreaMetricSelector from "../../../../stores/mapState/store/areaMetric/areaMetric.selector"
-import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
-import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
-import { CodeMapTooltipService } from "../../../../renderer/threeViewer/threeViewer.facade"
-import { CodeMapBuilding } from "../../../../renderer/threeViewer/threeViewer.facade"
-import { ThreeRendererService } from "../../../../renderer/threeViewer/threeViewer.facade"
-import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { ExplorerTreeLevelComponent } from "./explorerTreeLevel.component"
 import { rootNode } from "./mocks"

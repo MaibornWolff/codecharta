@@ -1,7 +1,7 @@
-import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-hierarchy"
-import { TreeMapHelper, treeMapSize } from "./treeMapHelper"
-import { CodeMapNode, MapState, Node, NodeMetricData, CcState } from "../../../../model/codeCharta.model"
+import { HierarchyNode, HierarchyRectangularNode, hierarchy, treemap } from "d3-hierarchy"
+import { CcState, CodeMapNode, MapState, Node, NodeMetricData } from "../../../../model/codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../../../util/codeMapHelper"
+import { TreeMapHelper, treeMapSize } from "./treeMapHelper"
 
 type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { RootUnaryStore } from "./rootUnary.store"
 import { rootUnarySelector } from "../../../renderer/renderModel/accumulatedData/rootUnary.selector"
+import { RootUnaryStore } from "./rootUnary.store"
 
 describe("RootUnaryStore", () => {
     let store: RootUnaryStore

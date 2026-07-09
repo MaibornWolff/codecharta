@@ -1,5 +1,5 @@
-import { resetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded.reducer"
 import { setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded.actions"
+import { resetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded.reducer"
 
 describe("resetCameraIfNewFileIsLoaded", () => {
     it("should set new resetCameraIfNewFileIsLoaded", () => {

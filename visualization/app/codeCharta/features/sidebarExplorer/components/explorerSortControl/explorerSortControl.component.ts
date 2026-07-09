@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, computed, inject, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { SortingOption } from "../../../../model/codeCharta.model"
 import { ExplorerSortService } from "../../services/explorerSort.service"

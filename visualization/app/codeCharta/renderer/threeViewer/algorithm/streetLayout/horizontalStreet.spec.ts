@@ -1,10 +1,10 @@
-import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { klona } from "klona"
-import { VALID_NODE_WITH_PATH } from "../../../../mocks/dataMocks"
-import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
-import BoundingBox from "./boundingBox"
-import House from "./house"
 import { Vector2 } from "three"
+import { VALID_NODE_WITH_PATH } from "../../../../mocks/dataMocks"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
+import BoundingBox from "./boundingBox"
+import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
+import House from "./house"
 
 describe("horizontalStreet", () => {
     let codeMapNode: CodeMapNode

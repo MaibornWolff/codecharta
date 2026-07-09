@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { MetricsLensFacade } from "../../../lenses/metrics/metricsLens.facade"
-import { LegendMapStateStore } from "../stores/legendMapState.store"
 import { IsDeltaStateStore } from "../../shared/facade"
+import { LegendMapStateStore } from "../stores/legendMapState.store"
 
 /**
  * The single seam every legend component injects. The attribute descriptors come from the metrics-lens

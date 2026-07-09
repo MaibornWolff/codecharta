@@ -3,10 +3,10 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
-import { calculateInitialColorRange } from "../../../../util/color/calculateInitialColorRange"
-import { setColorRange } from "../../../../stores/mapState/mapState.write.facade"
 import { colorMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { setColorRange } from "../../../../stores/mapState/mapState.write.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { calculateInitialColorRange } from "../../../../util/color/calculateInitialColorRange"
 import { ColorSettingsHeaderComponent } from "./colorSettingsHeader.component"
 
 describe("ColorSettingsHeaderComponent", () => {

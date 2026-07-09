@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { Print3DService } from "./services/3dPrint.service"
 import { ColorMode } from "../../model/codeCharta.model"
+import { Print3DService } from "./services/3dPrint.service"
 
 export { Export3DColorModeStore } from "./stores/colorMode.store"
 

@@ -2,7 +2,7 @@ import { createSelector } from "@ngrx/store"
 import { MarkedPackage } from "../../../model/codeCharta.model"
 import { rightClickedCodeMapNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { mapColorsSelector } from "../../../stores/mapState/mapState.read.facade"
-import { markedPackagesSelector, findIndexOfMarkedPackageOrParent } from "../../../stores/sharedView/sharedView.read.facade"
+import { findIndexOfMarkedPackageOrParent, markedPackagesSelector } from "../../../stores/sharedView/sharedView.read.facade"
 
 export type MarkFolderItem = {
     color: string

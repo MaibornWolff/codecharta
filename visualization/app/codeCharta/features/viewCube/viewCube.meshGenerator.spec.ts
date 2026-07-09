@@ -1,5 +1,5 @@
-import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
 import { Group } from "three"
+import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
 
 describe("ViewCubemeshGenerator", () => {
     it("should build a cube made up from the group and json for the top and side meshes", () => {

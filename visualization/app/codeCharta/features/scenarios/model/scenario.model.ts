@@ -1,4 +1,12 @@
-import { BlacklistItem, ColorMode, ColorRange, LabelMode, MapColors, MarkedPackage, ColorLabelOptions } from "../../../model/codeCharta.model"
+import {
+    BlacklistItem,
+    ColorLabelOptions,
+    ColorMode,
+    ColorRange,
+    LabelMode,
+    MapColors,
+    MarkedPackage
+} from "../../../model/codeCharta.model"
 
 export interface PlainPosition {
     readonly x: number

@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { FlatBuildingVisibilityStore } from "./flatBuildingVisibility.store"
-import { hideFlatBuildingsSelector } from "../selectors/globalSettings.selectors"
 import { setHideFlatBuildings } from "../../../stores/mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { hideFlatBuildingsSelector } from "../selectors/globalSettings.selectors"
+import { FlatBuildingVisibilityStore } from "./flatBuildingVisibility.store"
 
 describe("FlatBuildingVisibilityStore", () => {
     let store: FlatBuildingVisibilityStore

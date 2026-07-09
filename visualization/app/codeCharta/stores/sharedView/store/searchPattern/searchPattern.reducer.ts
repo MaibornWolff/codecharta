@@ -1,7 +1,7 @@
 import { createReducer, on } from "@ngrx/store"
-import { setSearchPattern } from "./searchPattern.actions"
-import { setStandard } from "../../../fileStore/fileStore.facade"
 import { setState } from "../../../../util/setState.reducer.factory"
+import { setStandard } from "../../../fileStore/fileStore.facade"
+import { setSearchPattern } from "./searchPattern.actions"
 
 export const defaultSearchPattern = ""
 export const searchPattern = createReducer(

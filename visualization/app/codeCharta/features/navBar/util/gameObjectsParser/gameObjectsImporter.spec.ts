@@ -1,6 +1,6 @@
-import { TEST_GAMEOBJECTS_FILE } from "./gameObjectsMocks"
 import { clone } from "../../../../util/clone"
 import { parseGameObjectsFile } from "./gameObjectsImporter"
+import { TEST_GAMEOBJECTS_FILE } from "./gameObjectsMocks"
 
 describe("GameObjectsImporter", () => {
     it("should parse gameObjects json to cc.json", function () {

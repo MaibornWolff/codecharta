@@ -1,18 +1,17 @@
 import { TestBed } from "@angular/core/testing"
-import { BehaviorSubject } from "rxjs"
-
-import { ErrorDialogService } from "../../../../util/errorDialog/errorDialog.service"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { EffectsModule } from "@ngrx/effects"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
-import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { BehaviorSubject } from "rxjs"
+import { FILE_STATES_JAVA } from "../../../../mocks/dataMocks"
 import { visibleFileStatesSelector } from "../../../../stores/fileStore/store/visibleFileStates.selector"
 import { blacklistSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { addBlacklistItems, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../stores/sharedView/sharedView.write.facade"
-import { FILE_STATES_JAVA } from "../../../../mocks/dataMocks"
 import { isPendingHeavyDispatch$ } from "../../../../util/dispatchAfterPaint"
+import { ErrorDialogService } from "../../../../util/errorDialog/errorDialog.service"
+import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "./addBlacklistItemsIfNotResultsInEmptyMap.effect"
 
 describe("AddBlacklistItemsIfNotResultsInEmptyMapEffect", () => {
     const mockedErrorDialogService = { open: jest.fn() }

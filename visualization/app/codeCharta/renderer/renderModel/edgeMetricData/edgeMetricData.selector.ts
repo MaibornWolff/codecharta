@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
+import { calculateEdgeMetricData } from "../../../lenses/dependency/dependencyLens.facade"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { blacklistMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { calculateEdgeMetricData } from "../../../lenses/dependency/dependencyLens.facade"
 
 /**
  * Derived (view-state-aware) edge-metric selectors — Slice 9b P0-1 (half 2).

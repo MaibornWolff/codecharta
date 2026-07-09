@@ -1,5 +1,5 @@
-import { showIncomingEdges } from "./showIncomingEdges.reducer"
 import { setShowIncomingEdges } from "./showIncomingEdges.actions"
+import { showIncomingEdges } from "./showIncomingEdges.reducer"
 
 describe("showIncomingEdges", () => {
     it("should set new showIncomingEdges", () => {

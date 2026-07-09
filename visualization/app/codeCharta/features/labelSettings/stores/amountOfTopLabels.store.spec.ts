@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { AmountOfTopLabelsStore } from "./amountOfTopLabels.store"
-import { amountOfTopLabelsSelector } from "../selectors/labelSettings.selectors"
 import { setAmountOfTopLabels } from "../../../stores/mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { amountOfTopLabelsSelector } from "../selectors/labelSettings.selectors"
+import { AmountOfTopLabelsStore } from "./amountOfTopLabels.store"
 
 describe("AmountOfTopLabelsStore", () => {
     let store: AmountOfTopLabelsStore

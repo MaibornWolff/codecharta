@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { hideFlatBuildingsSelector } from "../selectors/globalSettings.selectors"
 import { setHideFlatBuildings } from "../../../stores/mapState/mapState.write.facade"
+import { hideFlatBuildingsSelector } from "../selectors/globalSettings.selectors"
 
 @Injectable({
     providedIn: "root"

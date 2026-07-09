@@ -4,13 +4,12 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, WebGLRenderer } from "three"
 import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../../../mocks/dataMocks"
-import { CodeMapMesh } from "../../../../renderer/threeViewer/threeViewer.facade"
-import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
-import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
-import { QrCodeMesh } from "../../3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
-import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../../model/codeCharta.model"
+import { FileSelectionState, FileState } from "../../../../model/files/files"
+import { CodeMapMesh, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { QrCodeMesh } from "../../3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
 import { Export3DMapButtonComponent } from "../export3DMapButton/export3DMapButton.component"
+import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
 
 jest.mock("three/addons/loaders/SVGLoader.js", () => {
     return {

@@ -1,6 +1,6 @@
+import { ShaderMaterial } from "three"
 import { BaseplateMesh } from "../MeshModels/baseplateMesh"
 import { BaseplateColorChangeStrategy } from "./baseplateColorChangeStrategy"
-import { ShaderMaterial } from "three"
 
 describe("BaseplateColorChangeStrategy", () => {
     let strategy

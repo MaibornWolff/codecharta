@@ -1,7 +1,7 @@
-import { CustomVisibilityMesh } from "../customVisibilityMesh"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../geometryOptions"
-import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { CustomVisibilityMesh } from "../customVisibilityMesh"
 
 export class BackMWLogoMesh extends CustomVisibilityMesh {
     constructor(name: string) {

@@ -1,7 +1,7 @@
-import { UnfocusNodesEffect } from "./unfocusNodes/unfocusNodes.effect"
 import { SaveCcStateEffect } from "./saveCcState/saveCcState.effect"
-import { UpdateQueryParametersEffect } from "./updateQueryParameters/updateQueryParameters.effect"
+import { UnfocusNodesEffect } from "./unfocusNodes/unfocusNodes.effect"
 import { UpdateFileSettingsEffect } from "./updateFileSettings/updateFileSettings.effect"
+import { UpdateQueryParametersEffect } from "./updateQueryParameters/updateQueryParameters.effect"
 
 /**
  * The load/persistence layer's ngrx effects (Slice 15d): view-reset on file change, CcState persistence,

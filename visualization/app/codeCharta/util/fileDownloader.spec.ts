@@ -1,8 +1,6 @@
+import { klona } from "klona"
 import { stubDate } from "../../../mocks/dateMock.helper"
 import packageJson from "../../../package.json"
-import { DownloadableSetting, FileDownloader } from "./fileDownloader"
-import { BlacklistItem, CodeMapNode, FileMeta, FileSettings, MarkedPackage, MetricsLensSource } from "../model/codeCharta.model"
-import { checkErrors, ERROR_MESSAGES } from "../stores/fileStore/loaders/ccJson/util/fileValidator"
 import {
     TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED,
     TEST_ATTRIBUTE_TYPES,
@@ -11,7 +9,9 @@ import {
     VALID_EDGES_DECORATED,
     VALID_NODE_DECORATED
 } from "../mocks/dataMocks"
-import { klona } from "klona"
+import { BlacklistItem, CodeMapNode, FileMeta, FileSettings, MarkedPackage, MetricsLensSource } from "../model/codeCharta.model"
+import { checkErrors, ERROR_MESSAGES } from "../stores/fileStore/loaders/ccJson/util/fileValidator"
+import { DownloadableSetting, FileDownloader } from "./fileDownloader"
 
 describe("fileDownloader", () => {
     let map: CodeMapNode

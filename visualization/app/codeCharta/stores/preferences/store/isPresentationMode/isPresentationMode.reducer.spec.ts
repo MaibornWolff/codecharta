@@ -1,5 +1,5 @@
-import { isPresentationMode } from "./isPresentationMode.reducer"
 import { setPresentationMode } from "./isPresentationMode.actions"
+import { isPresentationMode } from "./isPresentationMode.reducer"
 
 describe("isPresentationMode", () => {
     it("should activate presentation mode", () => {

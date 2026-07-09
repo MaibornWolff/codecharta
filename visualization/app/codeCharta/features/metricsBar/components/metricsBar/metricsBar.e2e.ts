@@ -1,7 +1,7 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { clearIndexedDB, collapseExplorer, goto } from "../../../../../playwright.helper"
-import { MetricsBarPageObject } from "./metricsBar.po"
 import { NavBarFolderButtonPageObject } from "../../../navBar/components/navBarFolderButton/navBarFolderButton.po"
+import { MetricsBarPageObject } from "./metricsBar.po"
 
 test.describe("MetricsBar", () => {
     test.beforeEach(async ({ page }) => {

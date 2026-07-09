@@ -1,6 +1,6 @@
-import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors.reducer"
 import { AttributeDescriptors } from "../../../../model/codeCharta.model"
 import { setAttributeDescriptors } from "./attributeDescriptors.action"
+import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors.reducer"
 
 describe("attributeDescriptors", () => {
     it("should set new attributeDescriptors", () => {

@@ -1,22 +1,24 @@
 import { Injectable, OnDestroy } from "@angular/core"
-import { CodeMapMesh } from "../../renderer/threeViewer/threeViewer.facade"
-import { createTreemapNodes } from "../../renderer/threeViewer/threeViewer.facade"
+import { Subscription, tap } from "rxjs"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
-import { ThreeSceneService } from "../../renderer/threeViewer/threeViewer.facade"
-import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { CcState, CodeMapNode, ColorLabelOptions, colorLabelTypes, LabelMode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
-import { StreetLayoutGenerator } from "../../renderer/threeViewer/threeViewer.facade"
-import { ThreeStatsService } from "../../renderer/threeViewer/threeViewer.facade"
-import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { ColorCategoryCountsStore } from "../../renderer/threeViewer/threeViewer.facade"
-import { Subscription, tap } from "rxjs"
-import { nodeMetricDataSelector, labelsPerMapActiveSelector } from "../../renderer/renderModel/renderModel.facade"
+import { labelsPerMapActiveSelector, nodeMetricDataSelector } from "../../renderer/renderModel/renderModel.facade"
+import {
+    CodeMapMesh,
+    ColorCategoryCountsStore,
+    createTreemapNodes,
+    StreetLayoutGenerator,
+    ThreeSceneService,
+    ThreeStatsService
+} from "../../renderer/threeViewer/threeViewer.facade"
 import { blacklistMatcherSelector } from "../../stores/sharedView/sharedView.read.facade"
-import { CodeMapRenderStore } from "./stores/codeMapRender.store"
-import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
+import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { RendererEngine } from "./rendererEngine.contract"
+import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
+import { CodeMapRenderStore } from "./stores/codeMapRender.store"
 
 const MIN_BUILDING_LENGTH = 2
 

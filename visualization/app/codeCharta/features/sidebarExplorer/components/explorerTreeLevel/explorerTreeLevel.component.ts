@@ -1,19 +1,19 @@
 import { NgClass } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, OnInit, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
 import {
-    IdToBuildingService,
     CodeMapTooltipService,
+    IdToBuildingService,
     ThreeRendererService,
     ThreeSceneService
 } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
 import { formatCompactNumber } from "../../formatCompactNumber"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { AppStatusStore } from "../../stores/appStatus.store"
-import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { RootUnaryStore } from "../../stores/rootUnary.store"
 import { ExplorerTreeItemIconComponent } from "../explorerTreeItemIcon/explorerTreeItemIcon.component"
 import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerTreeItemName.component"

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { ResetSettingsButtonComponent } from "./resetSettingsButton.component"
 import { ResetSettingsService } from "../../../services/resetSettings.service"
+import { ResetSettingsButtonComponent } from "./resetSettingsButton.component"
 
 describe("ResetSettingsButtonComponent", () => {
     let fixture: ComponentFixture<ResetSettingsButtonComponent>

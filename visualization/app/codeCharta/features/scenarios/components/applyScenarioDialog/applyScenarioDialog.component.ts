@@ -15,9 +15,9 @@ import { FormsModule } from "@angular/forms"
 import { MetricData } from "../../../../model/codeCharta.model"
 import {
     getAvailableSectionKeys,
-    Scenario,
     SCENARIO_SECTION_ICONS,
     SCENARIO_SECTION_LABELS,
+    Scenario,
     ScenarioSectionKey
 } from "../../model/scenario.model"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"

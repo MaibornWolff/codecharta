@@ -2,14 +2,17 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
-import { IdToBuildingService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderModel/rightClickedCodeMapNode.selector"
-import { setRightClickedNodeData } from "../../../../stores/sharedView/sharedView.write.facade"
-import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
+import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
-import { focusNode, unfocusAllNodes } from "../../../../stores/sharedView/sharedView.write.facade"
-import { addBlacklistItem, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../stores/sharedView/sharedView.write.facade"
-import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import {
+    addBlacklistItem,
+    addBlacklistItemsIfNotResultsInEmptyMap,
+    focusNode,
+    setRightClickedNodeData,
+    unfocusAllNodes
+} from "../../../../stores/sharedView/sharedView.write.facade"
+import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"
 import { NodeContextMenuComponent } from "./nodeContextMenu.component"

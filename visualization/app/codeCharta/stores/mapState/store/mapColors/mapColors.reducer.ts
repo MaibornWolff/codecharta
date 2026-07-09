@@ -1,7 +1,7 @@
 import { createReducer, on } from "@ngrx/store"
 import { MapColors } from "../../../../model/codeCharta.model"
-import { invertColorRange, invertDeltaColors, setMapColors } from "./mapColors.actions"
 import { mergeState } from "../../../../util/setState.reducer.factory"
+import { invertColorRange, invertDeltaColors, setMapColors } from "./mapColors.actions"
 
 export const defaultMapColors: MapColors = {
     positive: "#69AE40",

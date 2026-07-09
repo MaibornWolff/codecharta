@@ -1,18 +1,18 @@
+import { HierarchyNode, hierarchy } from "d3-hierarchy"
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "../mocks/dataMocks"
 import {
+    AttributeTypes,
+    AttributeTypeValue,
     CCFile,
     CodeMapNode,
-    NodeType,
-    AttributeTypeValue,
-    AttributeTypes,
-    NodeMetricData,
     EdgeMetricData,
-    MetricData
+    MetricData,
+    NodeMetricData,
+    NodeType
 } from "../model/codeCharta.model"
-import { NodeDecorator } from "./nodeDecorator"
-import { HierarchyNode, hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
 import { UNARY_METRIC } from "./metric/unaryMetric"
+import { NodeDecorator } from "./nodeDecorator"
 
 describe("nodeDecorator", () => {
     let file: CCFile

@@ -1,8 +1,8 @@
-import { Node, CcState } from "../../../model/codeCharta.model"
-import { CodeMapMesh } from "./codeMapMesh"
-import { CodeMapBuilding } from "./codeMapBuilding"
-import { STATE, TEST_NODE_ROOT, TEST_NODES } from "../../../mocks/dataMocks"
 import { InstancedBufferAttribute, InstancedMesh } from "three"
+import { STATE, TEST_NODE_ROOT, TEST_NODES } from "../../../mocks/dataMocks"
+import { CcState, Node } from "../../../model/codeCharta.model"
+import { CodeMapBuilding } from "./codeMapBuilding"
+import { CodeMapMesh } from "./codeMapMesh"
 
 describe("codeMapMesh", () => {
     const testNodes: Node[] = [TEST_NODE_ROOT] // no need for 2 files

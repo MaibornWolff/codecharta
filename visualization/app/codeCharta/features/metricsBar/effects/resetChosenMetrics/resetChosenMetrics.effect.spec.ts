@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing"
-import { nodeMetricDataSelector } from "../../../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
-import { areChosenMetricsAvailableSelector } from "../../../../renderer/renderModel/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
-import { setAreaMetric, setColorMetric, setDistributionMetric, setHeightMetric } from "../../../../stores/mapState/mapState.write.facade"
-import { ResetChosenMetricsEffect } from "./resetChosenMetrics.effect"
 import { EffectsModule } from "@ngrx/effects"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { areChosenMetricsAvailableSelector } from "../../../../renderer/renderModel/allNecessaryRenderDataAvailable/areAllNecessaryRenderDataAvailable.selector"
+import { nodeMetricDataSelector } from "../../../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
+import { setAreaMetric, setColorMetric, setDistributionMetric, setHeightMetric } from "../../../../stores/mapState/mapState.write.facade"
+import { ResetChosenMetricsEffect } from "./resetChosenMetrics.effect"
 
 describe("resetChosenMetricsEffect", () => {
     let store: MockStore

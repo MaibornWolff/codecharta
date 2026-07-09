@@ -1,5 +1,5 @@
 import { Action, createAction, props } from "@ngrx/store"
-import { RecursivePartial, CcState } from "../../model/codeCharta.model"
+import { CcState, RecursivePartial } from "../../model/codeCharta.model"
 
 export const setState = createAction("SET_STATE", props<{ value: RecursivePartial<CcState> }>())
 

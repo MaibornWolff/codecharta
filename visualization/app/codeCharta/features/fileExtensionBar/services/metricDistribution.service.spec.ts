@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
-import { MetricDistributionService } from "./metricDistribution.service"
-import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
 import { CategorizedMetricDistribution } from "../../../util/fileExtension/fileExtensionCalculator"
+import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
+import { MetricDistributionService } from "./metricDistribution.service"
 
 describe("MetricDistributionService", () => {
     let service: MetricDistributionService

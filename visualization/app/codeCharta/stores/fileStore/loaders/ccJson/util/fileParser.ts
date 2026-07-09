@@ -1,10 +1,10 @@
 import { ExportBlacklistItem, ExportCCFile, NameDataPair } from "../../../../../model/codeCharta.api.model"
 import { CCFile } from "../../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../../model/files/files"
-import { getCCFile } from "./ccFileHelper"
-import { CCFileValidationResult as FileValidationResult, checkErrors, checkWarnings, removeAuthorsAttributes } from "./fileValidator"
-import { NodeDecorator } from "../../../../../util/nodeDecorator"
 import { toExportApiVersion } from "../../../../../util/apiVersion"
+import { NodeDecorator } from "../../../../../util/nodeDecorator"
+import { getCCFile } from "./ccFileHelper"
+import { checkErrors, checkWarnings, CCFileValidationResult as FileValidationResult, removeAuthorsAttributes } from "./fileValidator"
 
 export function getNameDataPair(ccFile: CCFile): NameDataPair {
     return {

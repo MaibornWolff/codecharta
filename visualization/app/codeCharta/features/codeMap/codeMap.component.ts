@@ -1,10 +1,10 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy } from "@angular/core"
-import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.facade"
-import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
-import { CodeMapStore } from "./stores/codeMap.store"
-import { ViewCubeComponent } from "../viewCube/facade"
 import { AsyncPipe } from "@angular/common"
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy } from "@angular/core"
+import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
+import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.facade"
+import { ViewCubeComponent } from "../viewCube/facade"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { CodeMapStore } from "./stores/codeMap.store"
 
 @Component({
     selector: "cc-code-map",

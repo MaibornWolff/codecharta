@@ -1,6 +1,6 @@
-import BoundingBox from "./boundingBox"
-import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { Vector2 } from "three"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
+import BoundingBox from "./boundingBox"
 import { StreetViewHelper } from "./streetViewHelper"
 
 export default class House extends BoundingBox {

@@ -16,9 +16,10 @@
  * imported directly by the combined reducer. It re-exports NO action creator — enforced by the
  * `state-home-read-facade-has-no-dispatch` dep-cruiser rule.
  */
-export { defaultPreferences, preferences } from "./store/preferences.reducer"
-export { preferencesSelector } from "./store/preferences.selector"
+
 export { isColorMetricLinkedToHeightMetricSelector } from "./store/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 export { isPresentationModeSelector } from "./store/isPresentationMode/isPresentationMode.selector"
+export { defaultPreferences, preferences } from "./store/preferences.reducer"
+export { preferencesSelector } from "./store/preferences.selector"
 export { defaultSorting } from "./store/sorting/sorting.reducer"
 export { sortingOrderAscendingSelector, sortingOrderSelector } from "./store/sorting/sorting.selector"

@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
-import { ResetSettingsService } from "./resetSettings.service"
 import { ResetSettingsStore } from "../stores/resetSettings.store"
+import { ResetSettingsService } from "./resetSettings.service"
 
 describe("ResetSettingsService", () => {
     let service: ResetSettingsService

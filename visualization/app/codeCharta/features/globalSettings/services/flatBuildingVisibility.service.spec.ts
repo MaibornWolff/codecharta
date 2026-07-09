@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
-import { FlatBuildingVisibilityService } from "./flatBuildingVisibility.service"
 import { FlatBuildingVisibilityStore } from "../stores/flatBuildingVisibility.store"
+import { FlatBuildingVisibilityService } from "./flatBuildingVisibility.service"
 
 describe("FlatBuildingVisibilityService", () => {
     let service: FlatBuildingVisibilityService

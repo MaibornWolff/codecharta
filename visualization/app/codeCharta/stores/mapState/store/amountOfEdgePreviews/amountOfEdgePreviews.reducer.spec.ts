@@ -1,5 +1,5 @@
-import { amountOfEdgePreviews } from "./amountOfEdgePreviews.reducer"
 import { setAmountOfEdgePreviews } from "./amountOfEdgePreviews.actions"
+import { amountOfEdgePreviews } from "./amountOfEdgePreviews.reducer"
 
 describe("amountOfEdgePreviews", () => {
     it("should set new amountOfEdgePreviews", () => {

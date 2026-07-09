@@ -1,3 +1,4 @@
+export { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../renderer/renderModel/renderModel.facade"
 export {
     amountOfEdgePreviewsSelector,
     edgeHeightSelector,
@@ -7,4 +8,3 @@ export {
     showOnlyBuildingsWithEdgesSelector,
     showOutgoingEdgesSelector
 } from "../../../stores/mapState/mapState.read.facade"
-export { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../renderer/renderModel/renderModel.facade"

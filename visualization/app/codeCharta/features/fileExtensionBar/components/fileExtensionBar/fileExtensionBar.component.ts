@@ -1,8 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, inject, signal } from "@angular/core"
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { MetricDistributionService } from "../../services/metricDistribution.service"
 import { DistributionMetricComponent } from "../distributionMetric/distributionMetric.component"
 import { FileExtensionBarSegmentComponent } from "../fileExtensionBarSegment/fileExtensionBarSegment.component"
-import { MetricDistributionService } from "../../services/metricDistribution.service"
 
 @Component({
     selector: "cc-file-extension-bar",

@@ -1,5 +1,5 @@
-import { colorMetric } from "./colorMetric.reducer"
 import { setColorMetric } from "./colorMetric.actions"
+import { colorMetric } from "./colorMetric.reducer"
 
 describe("colorMetric", () => {
     it("should set new colorMetric", () => {

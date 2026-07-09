@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
-import { nodeEdgeMetricsMapSelector } from "../edgeMetricData/edgeMetricData.selector"
-import { showIncomingEdgesSelector, showOutgoingEdgesSelector, edgeMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../model/codeCharta.model"
+import { edgeMetricSelector, showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../stores/mapState/mapState.read.facade"
+import { nodeEdgeMetricsMapSelector } from "../edgeMetricData/edgeMetricData.selector"
 
 export const amountOfBuildingsWithSelectedEdgeMetricSelector = createSelector(
     nodeEdgeMetricsMapSelector,

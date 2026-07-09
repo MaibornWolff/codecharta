@@ -2,8 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CodeMapNode } from "../../../model/codeCharta.model"
 import { selectedNodeSelector } from "../../../renderer/renderModel/selectedNode.selector"
-import { ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { InspectorVisibilityService } from "./inspectorVisibility.service"
 
 describe("InspectorVisibilityService", () => {

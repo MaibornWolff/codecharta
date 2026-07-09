@@ -1,29 +1,29 @@
 import { TestBed } from "@angular/core/testing"
-import { FILES_ALREADY_LOADED_ERROR_MESSAGE, LoadFileService } from "./loadFile.service"
-import { FilesRepo } from "../../../repos/files.repo"
+import { State, Store, StoreModule } from "@ngrx/store"
+import { klona } from "klona"
+import packageJson from "../../../../../../../package.json"
 import {
     TEST_FILE_CONTENT,
     TEST_FILE_CONTENT_CC_JSON_2,
     TEST_FILE_CONTENT_WITH_AUTHORS,
     TEST_FILE_CONTENT_WITHOUT_AUTHORS
 } from "../../../../../mocks/dataMocks"
-import { CCFile, CcState, NodeMetricData, NodeType } from "../../../../../model/codeCharta.model"
-import { removeFiles, setDeltaReference, setStandard } from "../../../store/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "../../../../../model/codeCharta.api.model"
-import { getCCFiles, isPartialState } from "../../../../../model/files/files.helper"
-import { CCFileValidationResult, ERROR_MESSAGES } from "../util/fileValidator"
-import packageJson from "../../../../../../../package.json"
-import { clone } from "../../../../../util/clone"
-import { klona } from "klona"
-import { ErrorDialogService } from "../../../../../util/errorDialog/errorDialog.service"
-import { loadFilesValidationToErrorDialog } from "./loadFilesValidationToErrorDialog"
-import { fileRoot } from "../../../../../util/fileRoot"
-import { metricDataSelector } from "../../../../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
-import { State, Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../../rootStore/store"
-import { setCurrentFilesAreSampleFiles } from "../../../store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
-import { getCCFileAndDecorateFileChecksum } from "../util/ccFileHelper"
+import { CCFile, CcState, NodeMetricData, NodeType } from "../../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../../model/files/files"
+import { getCCFiles, isPartialState } from "../../../../../model/files/files.helper"
+import { metricDataSelector } from "../../../../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
+import { clone } from "../../../../../util/clone"
+import { ErrorDialogService } from "../../../../../util/errorDialog/errorDialog.service"
+import { fileRoot } from "../../../../../util/fileRoot"
+import { appReducers, setStateMiddleware } from "../../../../rootStore/store"
+import { FilesRepo } from "../../../repos/files.repo"
+import { setCurrentFilesAreSampleFiles } from "../../../store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
+import { removeFiles, setDeltaReference, setStandard } from "../../../store/files.actions"
+import { getCCFileAndDecorateFileChecksum } from "../util/ccFileHelper"
+import { CCFileValidationResult, ERROR_MESSAGES } from "../util/fileValidator"
+import { FILES_ALREADY_LOADED_ERROR_MESSAGE, LoadFileService } from "./loadFile.service"
+import { loadFilesValidationToErrorDialog } from "./loadFilesValidationToErrorDialog"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../../../../renderer/renderModel/accumulatedData/metricData/metricData.selector", () => ({

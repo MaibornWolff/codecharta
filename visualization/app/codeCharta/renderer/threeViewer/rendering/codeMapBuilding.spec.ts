@@ -1,7 +1,7 @@
-import { CodeMapBuilding } from "./codeMapBuilding"
-import { TEST_NODE_ROOT } from "../../../mocks/dataMocks"
 import { Vector3 } from "three"
+import { TEST_NODE_ROOT } from "../../../mocks/dataMocks"
 import { ColorConverter } from "../../../util/color/colorConverter"
+import { CodeMapBuilding } from "./codeMapBuilding"
 
 function mockColorConverter() {
     ColorConverter.colorToVector3 = jest.fn().mockReturnValue(new Vector3(0, 1, 2))

@@ -1,5 +1,5 @@
-import { showOutgoingEdges } from "./showOutgoingEdges.reducer"
 import { setShowOutgoingEdges } from "./showOutgoingEdges.actions"
+import { showOutgoingEdges } from "./showOutgoingEdges.reducer"
 
 describe("showOutgoingEdges", () => {
     it("should set new showOutgoingEdges", () => {

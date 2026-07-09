@@ -1,14 +1,13 @@
-import stringify from "safe-stable-stringify"
 import { Injectable } from "@angular/core"
-import { State, Store } from "@ngrx/store"
 import { createEffect } from "@ngrx/effects"
+import { State, Store } from "@ngrx/store"
 import { map, pairwise, withLatestFrom } from "rxjs"
-
-import { visibleFileStatesSelector } from "../../../../stores/fileStore/fileStore.facade"
+import stringify from "safe-stable-stringify"
+import { CcState } from "../../../../model/codeCharta.model"
 import { codeMapNodesSelector } from "../../../../renderer/renderModel/renderModel.facade"
+import { visibleFileStatesSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { setAmountOfTopLabels } from "../../../../stores/mapState/mapState.write.facade"
 import { getNumberOfTopLabels } from "../../../../util/getNumberOfTopLabels"
-import { CcState } from "../../../../model/codeCharta.model"
 
 @Injectable()
 export class UpdateVisibleTopLabelsEffect {

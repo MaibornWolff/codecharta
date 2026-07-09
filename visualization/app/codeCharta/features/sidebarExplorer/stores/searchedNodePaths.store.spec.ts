@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { SearchedNodePathsStore } from "./searchedNodePaths.store"
 import { searchedNodePathsSelector } from "../../../renderer/renderModel/searchedNodes/searchedNodePaths.selector"
+import { SearchedNodePathsStore } from "./searchedNodePaths.store"
 
 describe("SearchedNodePathsStore", () => {
     let store: SearchedNodePathsStore

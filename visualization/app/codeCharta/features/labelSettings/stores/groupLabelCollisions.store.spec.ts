@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { GroupLabelCollisionsStore } from "./groupLabelCollisions.store"
-import { groupLabelCollisionsSelector } from "../selectors/labelSettings.selectors"
 import { setGroupLabelCollisions } from "../../../stores/mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { groupLabelCollisionsSelector } from "../selectors/labelSettings.selectors"
+import { GroupLabelCollisionsStore } from "./groupLabelCollisions.store"
 
 describe("GroupLabelCollisionsStore", () => {
     let store: GroupLabelCollisionsStore

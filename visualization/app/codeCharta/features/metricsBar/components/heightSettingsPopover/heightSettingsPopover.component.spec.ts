@@ -3,11 +3,11 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
 import { invertHeightSelector, scalingSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setInvertHeight, setScaling } from "../../../../stores/mapState/mapState.write.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { HeightSettingsPopoverComponent } from "./heightSettingsPopover.component"
 
 describe("HeightSettingsPopoverComponent", () => {

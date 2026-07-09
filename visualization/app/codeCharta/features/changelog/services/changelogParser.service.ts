@@ -1,7 +1,7 @@
-import markdownFile from "../../../../../CHANGELOG.md"
 import { Injectable } from "@angular/core"
 import { marked } from "marked"
 import { mangle } from "marked-mangle"
+import markdownFile from "../../../../../CHANGELOG.md"
 
 export interface ChangelogCategory {
     title: string

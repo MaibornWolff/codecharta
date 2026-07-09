@@ -1,5 +1,5 @@
-import { scaling } from "./scaling.reducer"
 import { setScaling } from "./scaling.actions"
+import { scaling } from "./scaling.reducer"
 
 describe("scaling", () => {
     it("should set new scaling", () => {

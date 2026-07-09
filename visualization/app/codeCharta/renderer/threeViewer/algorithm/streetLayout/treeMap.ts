@@ -1,7 +1,7 @@
-import BoundingBox from "./boundingBox"
-import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { Vector2 } from "three"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { TreeMapHelper } from "../treeMapLayout/treeMapHelper"
+import BoundingBox from "./boundingBox"
 
 export default abstract class Treemap extends BoundingBox {
     protected treeMapNodes: CodeMapNode[] = []

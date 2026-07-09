@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
-import { BackgroundThemeService } from "./backgroundTheme.service"
 import { BackgroundThemeStore } from "../stores/backgroundTheme.store"
+import { BackgroundThemeService } from "./backgroundTheme.service"
 
 describe("BackgroundThemeService", () => {
     let service: BackgroundThemeService

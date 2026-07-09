@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
-import { LoadInitialFileService } from "../load/load.facade"
-import { CodeChartaComponent } from "./codeCharta.component"
-import { setIsLoadingFile } from "../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
 import { Store } from "@ngrx/store"
+import { LoadInitialFileService } from "../load/load.facade"
+import { setIsLoadingFile } from "../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
+import { CodeChartaComponent } from "./codeCharta.component"
 
 describe("codeChartaComponent", () => {
     beforeEach(() => {

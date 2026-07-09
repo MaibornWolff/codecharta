@@ -3,10 +3,10 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { State, Store } from "@ngrx/store"
 import { debounceTime, map, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../model/codeCharta.model"
-import { LoadInitialFileService } from "../../loadInitialFile.service"
 import { edgeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
-import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
 import { MetricQueryParemter } from "../../../util/queryParameter/metricQueryParameter"
+import { LoadInitialFileService } from "../../loadInitialFile.service"
+import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
 
 @Injectable()
 export class UpdateQueryParametersEffect {

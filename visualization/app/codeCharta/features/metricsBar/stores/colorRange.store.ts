@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState, ColorRange } from "../../../model/codeCharta.model"
+import { metricRangeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { setColorRange } from "../../../stores/mapState/mapState.write.facade"
-import { metricRangeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { metricColorRangeColorsSelector } from "../selectors/metricColorRangeColors.selector"
 import { metricColorRangeValuesSelector } from "../selectors/metricColorRangeValues.selector"
 

@@ -1,15 +1,13 @@
 import { TestBed } from "@angular/core/testing"
-import { ConnectorDrawingService, LabelLayoutInfo } from "./connectorDrawing.service"
-import { LabelCreationService } from "./labelCreation.service"
-import { Node } from "../../../model/codeCharta.model"
-import { Group, BoxGeometry, Mesh, Scene, PerspectiveCamera } from "three"
-import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { setShowMetricLabelNodeName } from "../../../stores/mapState/mapState.write.facade"
 import { Store, StoreModule } from "@ngrx/store"
-import { CcState } from "../../../model/codeCharta.model"
+import { BoxGeometry, Group, Mesh, PerspectiveCamera, Scene } from "three"
+import { CcState, Node } from "../../../model/codeCharta.model"
+import { ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { setShowMetricLabelNodeName } from "../../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
 import { StateAccessStore } from "../stores/stateAccess.store"
+import { ConnectorDrawingService, LabelLayoutInfo } from "./connectorDrawing.service"
+import { LabelCreationService } from "./labelCreation.service"
 
 describe("ConnectorDrawingService", () => {
     let store: Store<CcState>

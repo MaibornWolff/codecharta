@@ -1,8 +1,8 @@
-import { addBlacklistItem, addBlacklistItems, removeBlacklistItem, removeBlacklistItems, setBlacklist } from "./blacklist.actions"
-import { addItemsToArray, addItemToArray, removeItemFromArray, removeItemsFromArray } from "../../../../util/arrayHelper"
 import { createReducer, on } from "@ngrx/store"
 import { BlacklistItem } from "../../../../model/codeCharta.model"
+import { addItemsToArray, addItemToArray, removeItemFromArray, removeItemsFromArray } from "../../../../util/arrayHelper"
 import { setState } from "../../../../util/setState.reducer.factory"
+import { addBlacklistItem, addBlacklistItems, removeBlacklistItem, removeBlacklistItems, setBlacklist } from "./blacklist.actions"
 
 export const defaultBlacklist: BlacklistItem[] = []
 export const blacklist = createReducer(

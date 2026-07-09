@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { ChangelogDialogComponent } from "./changelogDialog.component"
-import { ChangelogFacade } from "../../facade"
 import { signal, WritableSignal } from "@angular/core"
+import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { ChangelogFacade } from "../../facade"
+import { ChangelogDialogComponent } from "./changelogDialog.component"
 
 describe("ChangelogDialogComponent", () => {
     let component: ChangelogDialogComponent

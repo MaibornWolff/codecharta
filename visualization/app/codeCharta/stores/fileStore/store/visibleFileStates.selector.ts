@@ -1,8 +1,8 @@
-import { FileSelectionState, FileState } from "../../../model/files/files"
 import { createSelectorFactory, defaultMemoize } from "@ngrx/store"
-import { filesSelector } from "./files.selector"
+import { FileSelectionState, FileState } from "../../../model/files/files"
 import { getVisibleFileStates, isDeltaState } from "../../../model/files/files.helper"
 import { compareContentIgnoringOrder } from "../../../util/arrayHelper"
+import { filesSelector } from "./files.selector"
 
 export function _onlyVisibleFilesMatterComparer(fileStates1: FileState[], fileStates2: FileState[]): boolean {
     if (fileStates1 === fileStates2) {

@@ -1,11 +1,11 @@
-import Treemap from "./treeMap"
-import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { Vector2 } from "three"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
 import Rectangle from "../../../../model/rectangle"
-import HorizontalStrip from "./strip/horizontalStrip"
-import VerticalStrip from "./strip/verticalStrip"
-import Strip from "./strip/strip"
 import { TreeMapHelper } from "../treeMapLayout/treeMapHelper"
+import HorizontalStrip from "./strip/horizontalStrip"
+import Strip from "./strip/strip"
+import VerticalStrip from "./strip/verticalStrip"
+import Treemap from "./treeMap"
 
 export default class SquarifiedTreeMap extends Treemap {
     constructor(rootNode: CodeMapNode) {

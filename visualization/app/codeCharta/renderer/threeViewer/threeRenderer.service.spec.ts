@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
-import { Scene, Vector2, WebGLRenderer, WebGLInfo, Camera } from "three"
 import { Store, StoreModule } from "@ngrx/store"
-import { ThreeRendererService } from "./threeRenderer.service"
+import { Camera, Scene, Vector2, WebGLInfo, WebGLRenderer } from "three"
 import { setIsWhiteBackground } from "../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
+import { ThreeRendererService } from "./threeRenderer.service"
 
 jest.mock("three", () => {
     const originalThree = jest.requireActual("three")

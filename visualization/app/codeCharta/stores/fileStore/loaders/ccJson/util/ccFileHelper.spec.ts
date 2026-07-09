@@ -1,12 +1,11 @@
-import { ExportBlacklistType, ExportCCFile } from "../../../../../model/codeCharta.api.model"
-import { AttributeTypeValue } from "../../../../../model/codeCharta.model"
-import { NameDataPair } from "../../../../../model/codeCharta.api.model"
+import md5 from "md5"
+import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "../../../../../mocks/dataMocks"
 import { CcJson2 } from "../../../../../model/ccjson2.model"
+import { ExportBlacklistType, ExportCCFile, NameDataPair } from "../../../../../model/codeCharta.api.model"
+import { AttributeTypeValue } from "../../../../../model/codeCharta.model"
+import { clone } from "../../../../../util/clone"
 import { getCCFile, getCCFileAndDecorateFileChecksum } from "./ccFileHelper"
 import { isCcJson2 } from "./fileValidator"
-import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "../../../../../mocks/dataMocks"
-import { clone } from "../../../../../util/clone"
-import md5 from "md5"
 
 function asExportCCFile(content: ExportCCFile | CcJson2 | null): ExportCCFile {
     if (content === null || isCcJson2(content)) {

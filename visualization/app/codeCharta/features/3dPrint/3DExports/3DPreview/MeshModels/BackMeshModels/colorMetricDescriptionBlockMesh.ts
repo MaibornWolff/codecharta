@@ -1,13 +1,13 @@
-import { GeometryOptions } from "../../geometryOptions"
 import { Font } from "three/addons/loaders/FontLoader.js"
-import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
-import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
 import { ColorRange } from "../../../../../../model/codeCharta.model"
-import { MetricDescriptionBlockMesh, MetricDescriptionBlockOptions } from "./metricDescriptionBlockMesh"
-import { TextMesh } from "../textMesh"
-import { PositivePrintColorChangeStrategy } from "../../ColorChangeStrategies/positivePrintColorChangeStrategy"
-import { NeutralPrintColorChangeStrategy } from "../../ColorChangeStrategies/neutralPrintColorChangeStrategy"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
 import { NegativePrintColorChangeStrategy } from "../../ColorChangeStrategies/negativePrintColorChangeStrategy"
+import { NeutralPrintColorChangeStrategy } from "../../ColorChangeStrategies/neutralPrintColorChangeStrategy"
+import { PositivePrintColorChangeStrategy } from "../../ColorChangeStrategies/positivePrintColorChangeStrategy"
+import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { GeometryOptions } from "../../geometryOptions"
+import { TextMesh } from "../textMesh"
+import { MetricDescriptionBlockMesh, MetricDescriptionBlockOptions } from "./metricDescriptionBlockMesh"
 
 export interface ColorMetricDescriptionBlockOptions extends MetricDescriptionBlockOptions {
     colorRange: ColorRange

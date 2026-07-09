@@ -1,15 +1,15 @@
 import { HttpClient } from "@angular/common/http"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { State } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { provideMockStore } from "@ngrx/store/testing"
-import { State } from "@ngrx/store"
-import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton.component"
-import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
-import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
 import { LoadInitialFileService } from "../../../../load/load.facade"
-import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
+import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
+import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
+import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
+import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton.component"
 
 describe("GlobalConfigurationButtonComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationButtonComponent>

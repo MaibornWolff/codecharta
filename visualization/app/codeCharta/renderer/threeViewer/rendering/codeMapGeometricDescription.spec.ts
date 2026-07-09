@@ -1,7 +1,7 @@
-import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
-import { CodeMapBuilding } from "./codeMapBuilding"
 import { Box3, Ray, Vector3 } from "three"
 import { Node } from "../../../model/codeCharta.model"
+import { CodeMapBuilding } from "./codeMapBuilding"
+import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 
 function makeBuilding(id: number, minX: number, minZ: number, maxX: number, maxZ: number, height = 10): CodeMapBuilding {
     const box = new Box3(new Vector3(minX, 0, minZ), new Vector3(maxX, height, maxZ))

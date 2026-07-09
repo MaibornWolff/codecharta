@@ -11,13 +11,16 @@
  * An injectable facade + repos/store land when an edge UI feature reads the lens directly — see
  * `migration-2-0-plans/CARRIED-FORWARD.md`.
  */
-export { calculateEdgeMetricData } from "./store/edgeMetricData.calculator"
 
-// Edge attribute-type map — the dependency lens owns the edge side of the cc.json `attributeTypes`
+// `edgeAttributeTypesSelector` — the dependency lens owns the edge side of the cc.json `attributeTypes`
 // (Slice 14 re-homed it out of the metrics lens's `state.metricsLensSource`). The composing layer
 // combines it with the metrics lens's node types to reconstruct the full `{ nodes, edges }` map the
 // NodeDecorator aggregation (`accumulatedData`) + the metricsBar attribute-type label pipeline need.
 export { edgeAttributeTypesSelector } from "./store/attributeTypes.selectors"
+
+// The raw pure edge-metric computation; the derived selectors under `renderModel/edgeMetricData/`
+// compose it with the sharedView blacklist + mapState edge-visibility.
+export { calculateEdgeMetricData } from "./store/edgeMetricData.calculator"
 
 // The merged edges of the currently visible files (Slice 15e) — derived from fileStore, replacing the
 // former `state.fileSettings.edges` slice (edges were never owned/mutated, only ever re-derived).

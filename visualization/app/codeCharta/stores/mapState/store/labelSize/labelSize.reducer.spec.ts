@@ -1,5 +1,5 @@
-import { defaultLabelSize, labelSize } from "./labelSize.reducer"
 import { setLabelSize } from "./labelSize.actions"
+import { defaultLabelSize, labelSize } from "./labelSize.reducer"
 
 describe("labelSize", () => {
     it("should default to 1", () => {

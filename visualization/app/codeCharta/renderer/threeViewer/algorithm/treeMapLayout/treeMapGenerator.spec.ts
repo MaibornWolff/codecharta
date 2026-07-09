@@ -1,19 +1,19 @@
-import { NodeMetricData, CcState, CodeMapNode, Node } from "../../../../model/codeCharta.model"
-import { NameDataPair } from "../../../../model/codeCharta.api.model"
-import {
-    METRIC_DATA,
-    TEST_FILE_WITH_PATHS,
-    VALID_NODE_WITH_PATH,
-    STATE,
-    FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE,
-    FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE,
-    VALID_NODE_WITH_PATH_AND_DELTAS,
-    VALID_BIG_NODE_WITH_DELTAS
-} from "../../../../mocks/dataMocks"
 import { klona } from "klona"
-import { NodeDecorator } from "../../../../util/nodeDecorator"
+import {
+    FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE,
+    FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE,
+    METRIC_DATA,
+    STATE,
+    TEST_FILE_WITH_PATHS,
+    VALID_BIG_NODE_WITH_DELTAS,
+    VALID_NODE_WITH_PATH,
+    VALID_NODE_WITH_PATH_AND_DELTAS
+} from "../../../../mocks/dataMocks"
+import { NameDataPair } from "../../../../model/codeCharta.api.model"
+import { CcState, CodeMapNode, Node, NodeMetricData } from "../../../../model/codeCharta.model"
 import { fileWithFixedFolders } from "../../../../resources/fixed-folders/fixed-folders-example"
 import { getCCFile } from "../../../../stores/fileStore/fileStore.facade"
+import { NodeDecorator } from "../../../../util/nodeDecorator"
 import * as SquarifiedLayoutGenerator from "./treeMapGenerator"
 
 describe("treeMapGenerator", () => {

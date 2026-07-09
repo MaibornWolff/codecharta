@@ -1,13 +1,12 @@
 import { TestBed } from "@angular/core/testing"
-import { first, Subject } from "rxjs"
-import { BlacklistExclusionGuard } from "../../../shared/facade"
-import { blacklistSearchPattern, BlacklistSearchPatternEffect } from "./blacklistSearchPattern.effect"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { searchPatternSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
-import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../stores/sharedView/sharedView.write.facade"
-import { setSearchPattern } from "../../../../stores/sharedView/sharedView.write.facade"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { first, Subject } from "rxjs"
+import { searchPatternSelector } from "../../../../stores/sharedView/sharedView.read.facade"
+import { addBlacklistItemsIfNotResultsInEmptyMap, setSearchPattern } from "../../../../stores/sharedView/sharedView.write.facade"
+import { BlacklistExclusionGuard } from "../../../shared/facade"
+import { BlacklistSearchPatternEffect, blacklistSearchPattern } from "./blacklistSearchPattern.effect"
 
 describe("BlacklistSearchPatternEffect", () => {
     let effect: BlacklistSearchPatternEffect

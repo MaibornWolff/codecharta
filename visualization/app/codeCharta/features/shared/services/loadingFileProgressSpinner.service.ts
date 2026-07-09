@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { combineLatest, map, Observable } from "rxjs"
-import { IsLoadingFileStore } from "../stores/isLoadingFile.store"
 import { isPendingHeavyDispatch$ } from "../../../util/dispatchAfterPaint"
+import { IsLoadingFileStore } from "../stores/isLoadingFile.store"
 
 @Injectable({
     providedIn: "root"

@@ -1,5 +1,5 @@
-import { Color, Vector3 } from "three"
 import convert from "color-convert"
+import { Color, Vector3 } from "three"
 import { HSL } from "./hsl"
 
 export class ColorConverter {

@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { Store, StoreModule } from "@ngrx/store"
 import { fireEvent, render, screen, within } from "@testing-library/angular"
+import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../../mocks/dataMocks"
 import {
     addFile,
     setDelta,
@@ -9,7 +10,6 @@ import {
     switchReferenceAndComparison
 } from "../../../../stores/fileStore/store/files.actions"
 import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
-import { TEST_FILE_DATA, TEST_FILE_DATA_TWO } from "../../../../mocks/dataMocks"
 import { DeltaSelectorComponent } from "./deltaSelector.component"
 
 describe("DeltaSelectorComponent", () => {

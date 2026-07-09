@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core"
-import { ScreenshotDestinationService } from "./services/screenshotDestination.service"
-import { ExperimentalFeaturesService } from "./services/experimentalFeatures.service"
-import { BackgroundThemeService } from "./services/backgroundTheme.service"
-import { FlatBuildingVisibilityService } from "./services/flatBuildingVisibility.service"
 import { AutomaticCameraResetService } from "./services/automaticCameraReset.service"
+import { BackgroundThemeService } from "./services/backgroundTheme.service"
+import { ExperimentalFeaturesService } from "./services/experimentalFeatures.service"
+import { FlatBuildingVisibilityService } from "./services/flatBuildingVisibility.service"
 import { MapLayoutService } from "./services/mapLayout.service"
+import { ScreenshotDestinationService } from "./services/screenshotDestination.service"
 
 export { layoutAlgorithmSelector, resetCameraIfNewFileIsLoadedSelector } from "./selectors/globalSettings.selectors"
 

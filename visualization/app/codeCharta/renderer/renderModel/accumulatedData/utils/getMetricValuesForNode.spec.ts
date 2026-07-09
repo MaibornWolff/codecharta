@@ -1,6 +1,5 @@
 import { HierarchyNode } from "d3-hierarchy"
-import { CodeMapNode } from "../../../../model/codeCharta.model"
-import { NodeEdgeMetricsMap, EdgeMetricCountMap } from "../../../../model/codeCharta.model"
+import { CodeMapNode, EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../../../model/codeCharta.model"
 import { getMetricValuesForNode } from "./getMetricValuesForNode"
 
 describe("getMetricValuesForNode", () => {

@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { ChangelogButtonComponent } from "./changelogButton.component"
-import { ChangelogFacade } from "../../facade"
 import { signal } from "@angular/core"
+import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { ChangelogFacade } from "../../facade"
+import { ChangelogButtonComponent } from "./changelogButton.component"
 
 describe("ChangelogButtonComponent", () => {
     let component: ChangelogButtonComponent

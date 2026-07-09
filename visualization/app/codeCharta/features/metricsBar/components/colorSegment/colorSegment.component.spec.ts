@@ -1,13 +1,13 @@
+import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { isColorMetricLinkedToHeightMetricSelector } from "../../../../stores/preferences/preferences.read.facade"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { colorMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setColorMetric } from "../../../../stores/mapState/mapState.write.facade"
+import { isColorMetricLinkedToHeightMetricSelector } from "../../../../stores/preferences/preferences.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { ColorSegmentComponent } from "./colorSegment.component"
 
 describe("ColorSegmentComponent", () => {

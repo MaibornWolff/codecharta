@@ -14,15 +14,16 @@
  * and the `sharedViewSelector` root selector are imported directly. It re-exports NO action creator —
  * enforced by the `state-home-read-facade-has-no-dispatch` dep-cruiser rule.
  */
-export { defaultSharedView, sharedView } from "./store/sharedView.reducer"
-export { focusedNodePathSelector } from "./store/focusedNodePath/focusedNodePath.selector"
-export { currentFocusedNodePathSelector } from "./store/focusedNodePath/currentFocused.selector"
-export { searchPatternSelector } from "./store/searchPattern/searchPattern.selector"
+
 export { blacklistSelector } from "./store/blacklist/blacklist.selector"
 export { createBlacklistItemSelector } from "./store/blacklist/blacklistByType.selector"
 export { blacklistMatcherSelector } from "./store/blacklist/blacklistMatcher.selector"
+export { currentFocusedNodePathSelector } from "./store/focusedNodePath/currentFocused.selector"
+export { focusedNodePathSelector } from "./store/focusedNodePath/focusedNodePath.selector"
+export { hoveredNodeIdSelector } from "./store/hoveredNodeId/hoveredNodeId.selector"
 export { markedPackagesSelector } from "./store/markedPackages/markedPackages.selector"
 export { findIndexOfMarkedPackageOrParent } from "./store/markedPackages/util/findIndexOfMarkedPackageOrParent"
-export { hoveredNodeIdSelector } from "./store/hoveredNodeId/hoveredNodeId.selector"
-export { selectedBuildingIdSelector } from "./store/selectedBuildingId/selectedBuildingId.selector"
 export { rightClickedNodeDataSelector } from "./store/rightClickedNodeData/rightClickedNodeData.selector"
+export { searchPatternSelector } from "./store/searchPattern/searchPattern.selector"
+export { selectedBuildingIdSelector } from "./store/selectedBuildingId/selectedBuildingId.selector"
+export { defaultSharedView, sharedView } from "./store/sharedView.reducer"

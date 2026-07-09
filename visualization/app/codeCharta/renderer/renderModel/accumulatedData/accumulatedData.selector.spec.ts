@@ -1,5 +1,5 @@
 import { hierarchy } from "d3-hierarchy"
-import { CCFile, CodeMapNode, FileState, FileSelectionState, NodeType } from "../../../model/codeCharta.model"
+import { CCFile, CodeMapNode, FileSelectionState, FileState, NodeType } from "../../../model/codeCharta.model"
 import { NodeEdgeMetricsMap } from "../../../model/domain.model"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { accumulatedDataSelector } from "./accumulatedData.selector"

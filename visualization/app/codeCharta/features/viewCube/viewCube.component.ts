@@ -1,3 +1,4 @@
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from "@angular/core"
 import {
     AmbientLight,
     AxesHelper,
@@ -11,11 +12,10 @@ import {
     Vector3,
     WebGLRenderer
 } from "three"
-import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
-import { ThreeMapControlsService } from "../../renderer/threeViewer/threeViewer.facade"
-import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from "@angular/core"
 import { ViewCubeToolboxComponent } from "../../features/viewCubeToolbox/facade"
+import { ThreeMapControlsService } from "../../renderer/threeViewer/threeViewer.facade"
+import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
+import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 import { ZoomSliderComponent } from "./zoomSlider/zoomSlider.component"
 
 @Component({

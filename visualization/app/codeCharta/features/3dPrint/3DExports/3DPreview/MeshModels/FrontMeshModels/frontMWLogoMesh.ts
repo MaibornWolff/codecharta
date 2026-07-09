@@ -1,7 +1,7 @@
 import { CreateSvgGeometryStrategy } from "./../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { GeometryOptions } from "../../geometryOptions"
-import { FrontLogo } from "./frontLogo"
 import { GeneralSizeChangeMesh } from "../generalMesh"
+import { FrontLogo } from "./frontLogo"
 
 export class FrontMWLogoMesh extends FrontLogo implements GeneralSizeChangeMesh {
     constructor(name: string) {

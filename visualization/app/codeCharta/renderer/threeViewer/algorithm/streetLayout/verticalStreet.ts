@@ -1,9 +1,9 @@
-import BoundingBox from "./boundingBox"
-import Rectangle from "../../../../model/rectangle"
-import Street from "./street"
-import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
-import { StreetViewHelper } from "./streetViewHelper"
 import { Vector2 } from "three"
+import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
+import Rectangle from "../../../../model/rectangle"
+import BoundingBox from "./boundingBox"
+import Street from "./street"
+import { StreetViewHelper } from "./streetViewHelper"
 
 export enum VerticalOrientation {
     UP,

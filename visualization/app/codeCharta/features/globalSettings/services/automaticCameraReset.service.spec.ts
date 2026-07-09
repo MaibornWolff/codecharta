@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
-import { AutomaticCameraResetService } from "./automaticCameraReset.service"
 import { AutomaticCameraResetStore } from "../stores/automaticCameraReset.store"
+import { AutomaticCameraResetService } from "./automaticCameraReset.service"
 
 describe("AutomaticCameraResetService", () => {
     let service: AutomaticCameraResetService

@@ -1,5 +1,5 @@
-import { edgeHeight } from "./edgeHeight.reducer"
 import { setEdgeHeight } from "./edgeHeight.actions"
+import { edgeHeight } from "./edgeHeight.reducer"
 
 describe("edgeHeight", () => {
     it("should set new edgeHeight", () => {

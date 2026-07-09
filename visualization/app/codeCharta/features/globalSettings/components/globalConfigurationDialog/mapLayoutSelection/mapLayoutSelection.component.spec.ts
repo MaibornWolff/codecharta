@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { of } from "rxjs"
-import { MapLayoutSelectionComponent } from "./mapLayoutSelection.component"
-import { MapLayoutService } from "../../../services/mapLayout.service"
 import { LayoutAlgorithm } from "../../../../../model/codeCharta.model"
+import { MapLayoutService } from "../../../services/mapLayout.service"
+import { MapLayoutSelectionComponent } from "./mapLayoutSelection.component"
 
 describe("MapLayoutSelectionComponent", () => {
     let fixture: ComponentFixture<MapLayoutSelectionComponent>

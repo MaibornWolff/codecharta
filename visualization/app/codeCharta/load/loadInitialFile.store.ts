@@ -5,17 +5,22 @@ import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
 import { metricDataSelector } from "../renderer/renderModel/renderModel.facade"
-import { setDelta, setFiles } from "../stores/fileStore/fileStore.facade"
-import { setCurrentFilesAreSampleFiles } from "../stores/fileStore/fileStore.facade"
+import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
+import { setCurrentFilesAreSampleFiles, setDelta, setFiles } from "../stores/fileStore/fileStore.facade"
 import {
     setAmountOfEdgePreviews,
     setAmountOfTopLabels,
+    setAreaMetric,
     setColorLabels,
+    setColorMetric,
     setColorMode,
     setColorRange,
+    setDistributionMetric,
     setEdgeHeight,
+    setEdgeMetric,
     setEnableFloorLabels,
     setGroupLabelCollisions,
+    setHeightMetric,
     setHideFlatBuildings,
     setInvertArea,
     setInvertHeight,
@@ -32,25 +37,19 @@ import {
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName,
     setShowOnlyBuildingsWithEdges,
-    setShowOutgoingEdges,
-    setAreaMetric,
-    setHeightMetric,
-    setEdgeMetric,
-    setColorMetric,
-    setDistributionMetric
+    setShowOutgoingEdges
 } from "../stores/mapState/mapState.write.facade"
-import { setAttributeTypes, setAttributeDescriptors } from "../stores/metricsLensSource/metricsLensSource.write.facade"
-import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
-import { setBlacklist, setMarkedPackages, setAllFocusedNodes, setSearchPattern } from "../stores/sharedView/sharedView.write.facade"
+import { setAttributeDescriptors, setAttributeTypes } from "../stores/metricsLensSource/metricsLensSource.write.facade"
 import {
-    setSortingOption,
+    setExperimentalFeaturesEnabled,
+    setIsColorMetricLinkedToHeightMetricAction,
+    setMaxTreeMapFiles,
     setPresentationMode,
     setResetCameraIfNewFileIsLoaded,
-    setMaxTreeMapFiles,
-    setExperimentalFeaturesEnabled,
     setScreenshotToClipboardEnabled,
-    setIsColorMetricLinkedToHeightMetricAction
+    setSortingOption
 } from "../stores/preferences/preferences.write.facade"
+import { setAllFocusedNodes, setBlacklist, setMarkedPackages, setSearchPattern } from "../stores/sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {

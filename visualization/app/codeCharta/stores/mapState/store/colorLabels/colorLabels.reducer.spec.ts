@@ -1,5 +1,5 @@
-import { colorLabels, defaultColorLabelOptions } from "./colorLabels.reducer"
 import { setColorLabels } from "./colorLabels.actions"
+import { colorLabels, defaultColorLabelOptions } from "./colorLabels.reducer"
 
 describe("colorLabels", () => {
     const otherColorLabelOption = {

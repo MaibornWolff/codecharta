@@ -1,10 +1,10 @@
 import { ElementRef } from "@angular/core"
+import { EMPTY } from "rxjs"
 import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
+import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.service"
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.service"
 import { CodeMapStore } from "./stores/codeMap.store"
-import { EMPTY } from "rxjs"
 
 describe("CodeMapComponent", () => {
     let mockedThreeViewService: ThreeViewerService

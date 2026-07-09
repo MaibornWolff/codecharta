@@ -1,7 +1,7 @@
+import { HttpClient } from "@angular/common/http"
+import { gzip } from "pako"
 import { of } from "rxjs"
 import { UrlExtractor } from "./urlExtractor"
-import { gzip } from "pako"
-import { HttpClient } from "@angular/common/http"
 
 describe("urlExtractor", () => {
     let urlExtractor: UrlExtractor

@@ -1,10 +1,10 @@
+import md5 from "md5"
+import { CcJson2 } from "../../../../../model/ccjson2.model"
 import { ExportCCFile, ExportWrappedCCFile, NameDataPair } from "../../../../../model/codeCharta.api.model"
 import { CCFile } from "../../../../../model/codeCharta.model"
-import { CcJson2 } from "../../../../../model/ccjson2.model"
-import md5 from "md5"
-import { isCcJson2 } from "./fileValidator"
 import { mapCcJson2ToCCFile } from "./ccJson2/ccJson2ToCCFile"
 import { normalizeExportCCFileToCcJson2 } from "./ccJson2/normalizeToCcJson2"
+import { isCcJson2 } from "./fileValidator"
 
 export function getContentChecksum(content: ExportCCFile | CcJson2): string {
     return isCcJson2(content) ? content.meta.checksum : content.fileChecksum

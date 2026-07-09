@@ -1,13 +1,13 @@
 import { CcState, LayoutAlgorithm } from "../../../model/codeCharta.model"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import {
-    screenshotToClipboardEnabledSelector,
     experimentalFeaturesEnabledSelector,
-    isWhiteBackgroundSelector,
     hideFlatBuildingsSelector,
-    resetCameraIfNewFileIsLoadedSelector,
+    isWhiteBackgroundSelector,
     layoutAlgorithmSelector,
-    maxTreeMapFilesSelector
+    maxTreeMapFilesSelector,
+    resetCameraIfNewFileIsLoadedSelector,
+    screenshotToClipboardEnabledSelector
 } from "./globalSettings.selectors"
 
 describe("globalSettings.selectors", () => {

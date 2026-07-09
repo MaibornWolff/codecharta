@@ -1,11 +1,11 @@
-import { inject, Injectable } from "@angular/core"
+import { Injectable, inject } from "@angular/core"
 import html2canvas from "html2canvas-pro"
 import { Color, WebGLRenderer } from "three"
 import { FileState } from "../../../model/files/files"
 import { createPNGFileName } from "../../../model/files/files.helper"
 import { ThreeCameraService, ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
 import { StateAccessStore } from "../stores/stateAccess.store"
+import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
 
 @Injectable({ providedIn: "root" })
 export class ScreenshotService {

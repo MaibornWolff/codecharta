@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
+import { ColorMode } from "../../model/codeCharta.model"
 import { Print3DFacade } from "./facade"
 import { Print3DService } from "./services/3dPrint.service"
-import { ColorMode } from "../../model/codeCharta.model"
 
 describe("Print3DFacade", () => {
     let facade: Print3DFacade

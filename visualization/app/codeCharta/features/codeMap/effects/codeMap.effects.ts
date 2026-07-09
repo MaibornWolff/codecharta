@@ -1,5 +1,5 @@
-import { RenderCodeMapEffect } from "./renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapEffect } from "./autoFitCodeMapChange/autoFitCodeMap.effect"
+import { RenderCodeMapEffect } from "./renderCodeMapEffect/renderCodeMap.effect"
 import { SetLoadingIndicatorEffect } from "./setLoadingIndicator/setLoadingIndicator.effect"
 
 /**

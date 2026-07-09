@@ -1,14 +1,14 @@
 import { TestBed } from "@angular/core/testing"
 import { StoreModule } from "@ngrx/store"
-import { ThreeMapControlsService } from "./threeMapControls.service"
-import { ThreeCameraService } from "./threeCamera.service"
-import { ThreeSceneService } from "./threeSceneService"
-import { BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } from "three"
-import { ThreeRendererService } from "./threeRenderer.service"
-import { wait } from "../../util/testUtils/wait"
-import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
-import { MapControls } from "three/addons/controls/MapControls.js"
 import { take } from "rxjs"
+import { BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } from "three"
+import { MapControls } from "three/addons/controls/MapControls.js"
+import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
+import { wait } from "../../util/testUtils/wait"
+import { ThreeCameraService } from "./threeCamera.service"
+import { ThreeMapControlsService } from "./threeMapControls.service"
+import { ThreeRendererService } from "./threeRenderer.service"
+import { ThreeSceneService } from "./threeSceneService"
 
 describe("ThreeMapControlsService", () => {
     let threeMapControlsService: ThreeMapControlsService

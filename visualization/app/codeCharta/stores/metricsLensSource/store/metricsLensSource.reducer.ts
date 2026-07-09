@@ -1,7 +1,7 @@
 import { combineReducers } from "@ngrx/store"
 import { MetricsLensSource } from "../../../model/codeCharta.model"
-import { attributeTypes, defaultAttributeTypes } from "./attributeTypes/attributeTypes.reducer"
 import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors/attributeDescriptors.reducer"
+import { attributeTypes, defaultAttributeTypes } from "./attributeTypes/attributeTypes.reducer"
 
 // The metrics lens's cc.json SOURCE root (Slice 9a): the NODE attribute-type map (`attributeTypes.nodes`)
 // and the flat attribute-descriptor map, seeded from the loaded cc.json. Slice 9a pulled these two slices

@@ -2,11 +2,11 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
+import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { metricDataSelector } from "../../../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
+import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
 import { areaMetricSelector, heightMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { MetricsBarComponent } from "./metricsBar.component"
 
 describe("MetricsBarComponent", () => {

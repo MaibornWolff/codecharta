@@ -1,9 +1,9 @@
 import { createSelector } from "@ngrx/store"
-import { calculateNodeMetricData } from "../../../util/metric/nodeMetricData.calculator"
-import { rangeOfMetric } from "../../../util/metric/metricRange"
-import { blacklistMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { colorMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
+import { colorMetricSelector } from "../../../stores/mapState/mapState.read.facade"
+import { blacklistMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { rangeOfMetric } from "../../../util/metric/metricRange"
+import { calculateNodeMetricData } from "../../../util/metric/nodeMetricData.calculator"
 
 /**
  * Derived (view-state-aware) node-metric selectors — Slice 7 P0-1.

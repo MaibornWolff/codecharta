@@ -1,5 +1,5 @@
-import { isLoadingMap } from "./isLoadingMap.reducer"
 import { setIsLoadingMap } from "./isLoadingMap.actions"
+import { isLoadingMap } from "./isLoadingMap.reducer"
 
 describe("isLoadingMap", () => {
     it("should set new isLoadingMap", () => {

@@ -1,6 +1,6 @@
+import { Injectable, isDevMode } from "@angular/core"
 import Stats from "three/addons/libs/stats.module.js"
 import { ThreeRendererService } from "./threeRenderer.service"
-import { Injectable, isDevMode } from "@angular/core"
 
 const ONE_SECOND = 1000
 export interface CustomPanel {

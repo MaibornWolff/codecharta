@@ -1,5 +1,5 @@
-import packageJson from "../../../../../package.json"
 import { Injectable, signal } from "@angular/core"
+import packageJson from "../../../../../package.json"
 
 const LOCAL_STORAGE_KEY = "codeChartaVersion"
 

@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { SearchPatternStore } from "./searchPattern.store"
 import { searchPatternSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { setSearchPattern } from "../../../stores/sharedView/sharedView.write.facade"
-import { blacklistSearchPattern } from "../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { getLastAction } from "../../../util/testUtils/store.utils"
+import { blacklistSearchPattern } from "../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
+import { SearchPatternStore } from "./searchPattern.store"
 
 describe("SearchPatternStore", () => {
     let store: SearchPatternStore

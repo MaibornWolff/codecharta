@@ -1,8 +1,12 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
+import {
+    hoveredNodeIdSelector,
+    rightClickedNodeDataSelector,
+    selectedBuildingIdSelector
+} from "../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodeId, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
-import { hoveredNodeIdSelector, rightClickedNodeDataSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
 
 type RightClickedNodeData = CcState["sharedView"]["rightClickedNodeData"]
 
