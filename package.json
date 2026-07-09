@@ -20,7 +20,7 @@
     "arrowParens": "avoid"
   },
   "scripts": {
-    "format": "biome check --write --linter-enabled=false --no-errors-on-unmatched",
+    "format": "biome check --write --no-errors-on-unmatched",
     "format:check": "biome check",
     "prepare": "husky install",
     "commitlint": "commitlint --config commitlint.config.js --edit"
