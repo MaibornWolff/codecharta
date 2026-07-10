@@ -1,4 +1,4 @@
-import { CcJson2, FileNode } from "../../../../../../model/ccjson2.model"
+import { CcJson2WithCarryover, FileNodeWithCarryover } from "../../../../../../model/ccjson2.model"
 import { ExportBlacklistItem, ExportBlacklistType, ExportCCFile, OldAttributeTypes } from "../../../../../../model/codeCharta.api.model"
 import { AttributeTypes, BlacklistItem, CodeMapNode } from "../../../../../../model/codeCharta.model"
 
@@ -10,9 +10,9 @@ import { AttributeTypes, BlacklistItem, CodeMapNode } from "../../../../../../mo
  * (the second attributes clobber the first, both read one bag). Edges carry only paths, so we qualify
  * each endpoint with the type of the node at that path (defaulting File) so it still resolves. The
  * 1.x-only fields the app still needs (blacklist, markedPackages, fixedPosition) ride along on the
- * deprecated slots; `repoCreationDate` is dropped (it has no readers).
+ * carryover types; `repoCreationDate` is dropped (it has no readers).
  */
-export function normalizeExportCCFileToCcJson2(file: ExportCCFile): CcJson2 {
+export function normalizeExportCCFileToCcJson2(file: ExportCCFile): CcJson2WithCarryover {
     const attributesByNodeId: Record<string, Record<string, number>> = {}
     const typeByPath: Record<string, string> = {}
     const rootNode = toFileNode(file.nodes[0], "", attributesByNodeId, typeByPath)
@@ -56,7 +56,7 @@ function toFileNode(
     parentPath: string,
     attributesByNodeId: Record<string, Record<string, number>>,
     typeByPath: Record<string, string>
-): FileNode {
+): FileNodeWithCarryover {
     const path = parentPath === "" ? `/${node.name}` : `${parentPath}/${node.name}`
     const id = qualifiedNodeId(path, node.type)
     typeByPath[path] = node.type
@@ -64,7 +64,7 @@ function toFileNode(
         attributesByNodeId[id] = { ...node.attributes }
     }
 
-    const fileNode: FileNode = { id, name: node.name, type: node.type }
+    const fileNode: FileNodeWithCarryover = { id, name: node.name, type: node.type }
     if (node.link !== undefined) {
         fileNode.link = node.link
     }

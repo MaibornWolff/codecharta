@@ -21,17 +21,6 @@ export interface CcJson2 {
     /** Exactly one root folder. */
     files: FileNode[]
     lenses: Lenses
-    /**
-     * @deprecated 1.x-normalization carryover — NOT part of cc.json 2.0. Legacy 1.x files embed
-     * exclude/flatten rules; the normalizer copies them here so they survive. Remove when 1.x
-     * ingestion is dropped. 2.0 files never set this.
-     */
-    blacklist?: BlacklistItem[]
-    /**
-     * @deprecated 1.x-normalization carryover — NOT part of cc.json 2.0. Legacy 1.x files embed
-     * marked-folder colors; the normalizer copies them here. Remove when 1.x ingestion is dropped.
-     */
-    markedPackages?: MarkedPackage[]
 }
 
 /** @public cc.json 2.0 contract — consumed by the not-yet-wired 2.0 reader; see file header. */
@@ -50,12 +39,6 @@ export interface FileNode {
     children?: FileNode[]
     contentHash?: string
     link?: string
-    /**
-     * @deprecated 1.x-normalization carryover — NOT part of cc.json 2.0. Legacy 1.x files embed
-     * fixed-folder placement on nodes; the normalizer copies it so the treemap layout still pins
-     * fixed folders. Remove when 1.x ingestion is dropped. 2.0 files never set this.
-     */
-    fixedPosition?: FixedPosition
 }
 
 /** @public cc.json 2.0 contract — consumed by the not-yet-wired 2.0 reader; see file header. */
@@ -85,4 +68,28 @@ export interface DependencyEdge {
     fromId: string
     toId: string
     attributes: Record<string, number>
+}
+
+/*
+ * 1.x → 2.0 normalization carryover. These fields are NOT part of cc.json 2.0, and a native 2.0 file
+ * never sets them: `normalizeToCcJson2` copies a legacy file's exclude/flatten rules, marked-folder
+ * colors and fixed-folder placement onto them so `ccJson2ToCCFile` can still apply them.
+ *
+ * They live on their own types rather than on `CcJson2`/`FileNode`, so that reading one is a
+ * deliberate act — a consumer of the pure 2.0 types cannot even see them. Tagging them as deprecated
+ * on the base types said something different: every linter reads that tag as "stop calling this, it is
+ * going away", and flagged the normalizer for doing the one job it exists to do.
+ *
+ * Delete these two types, and the normalizer with them, when 1.x ingestion is dropped.
+ */
+
+export interface FileNodeWithCarryover extends FileNode {
+    fixedPosition?: FixedPosition
+    children?: FileNodeWithCarryover[]
+}
+
+export type CcJson2WithCarryover = Omit<CcJson2, "files"> & {
+    files: FileNodeWithCarryover[]
+    blacklist?: BlacklistItem[]
+    markedPackages?: MarkedPackage[]
 }

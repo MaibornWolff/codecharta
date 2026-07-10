@@ -1,4 +1,4 @@
-import { CcJson2, FileNode } from "../../../../../../model/ccjson2.model"
+import { CcJson2, CcJson2WithCarryover, FileNodeWithCarryover } from "../../../../../../model/ccjson2.model"
 import { NameDataPair } from "../../../../../../model/codeCharta.api.model"
 import {
     AttributeDescriptor,
@@ -16,7 +16,7 @@ import {
  * `lenses.metrics.attributes[id]` and `lenses.dependency.edges[].fromId/toId`; the viz never
  * re-hashes — it resolves each `id` to that node's `/root/...` path while walking the tree.
  */
-export function mapCcJson2ToCCFile(file: CcJson2, nameDataPair: NameDataPair): CCFile {
+export function mapCcJson2ToCCFile(file: CcJson2WithCarryover, nameDataPair: NameDataPair): CCFile {
     const attributesByNodeId = file.lenses.metrics?.attributes ?? {}
     const idToPath: Record<string, string> = {}
     const map = mapFileNode(file.files[0], "", attributesByNodeId, idToPath)
@@ -35,7 +35,7 @@ export function mapCcJson2ToCCFile(file: CcJson2, nameDataPair: NameDataPair): C
                 edges: mapEdges(file, idToPath),
                 attributeTypes: getAttributeTypes(file),
                 attributeDescriptors: getAttributeDescriptors(file),
-                // 2.0 files carry neither; both are populated only when a 1.x file is normalized (deprecated).
+                // 2.0 files carry neither; both are populated only when a 1.x file is normalized.
                 blacklist: file.blacklist ?? [],
                 markedPackages: file.markedPackages ?? []
             }
@@ -45,7 +45,7 @@ export function mapCcJson2ToCCFile(file: CcJson2, nameDataPair: NameDataPair): C
 }
 
 function mapFileNode(
-    node: FileNode,
+    node: FileNodeWithCarryover,
     parentPath: string,
     attributesByNodeId: Record<string, Record<string, number | number[]>>,
     idToPath: Record<string, string>
@@ -64,7 +64,7 @@ function mapFileNode(
     if (node.children !== undefined) {
         mappedNode.children = node.children.map(child => mapFileNode(child, path, attributesByNodeId, idToPath))
     }
-    // fixedPosition only exists on a normalized 1.x node (deprecated); the treemap layout pins fixed folders by it.
+    // fixedPosition only exists on a normalized 1.x node; the treemap layout pins fixed folders by it.
     if (node.fixedPosition !== undefined) {
         mappedNode.fixedPosition = node.fixedPosition
     }
