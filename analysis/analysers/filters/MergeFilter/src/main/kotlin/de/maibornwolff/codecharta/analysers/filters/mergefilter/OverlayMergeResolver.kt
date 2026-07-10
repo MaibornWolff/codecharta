@@ -14,6 +14,18 @@ import de.maibornwolff.codecharta.util.Logger
 internal class OverlayMergeResolver(private val addUnmatchedNodes: Boolean, ignoreCase: Boolean) : MergeResolverStrategy(ignoreCase) {
     private var nodesUnmatched = 0
 
+    // Matches on the name alone, without the File/Folder clash guard UNION applies — deliberately.
+    // This list only ever holds project roots: ProjectMerger folds one singleton [rootNode] per project,
+    // and unlike UNION this step never recurses into children. So there is no sibling here to keep a
+    // clashing node apart from, and the else-branch below drops rather than appends — refusing a clash
+    // would silently discard the whole incoming project. Every ccsh writer roots a project at a Folder
+    // named "root" (ProjectBuilder), so two roots of differing types need a hand-written 2.0 file, and
+    // NodeMaxAttributeMerger.createType warns when it is handed more than one concrete type anyway.
+    //
+    // A File/Folder clash IS reachable deeper in this mode: mergeLeavesIntoReference re-inserts leaves
+    // through NodeInserter, which also resolves parents by name, so an incoming leaf under a folder
+    // `foo` nests inside a same-named reference *file* `foo`. That is a separate defect, not something
+    // a guard here would catch.
     override fun mergeNode(nodeList: List<MutableNode>, node: MutableNode): List<MutableNode> = nodeList.map { existingNode ->
         if (namesMatch(existingNode.name, node.name)) {
             mergeLeavesIntoReference(existingNode, node)
