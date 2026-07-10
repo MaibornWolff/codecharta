@@ -34,11 +34,11 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
 
     constructor(
         private readonly codeMapRenderStore: CodeMapRenderStore,
-        private threeSceneService: ThreeSceneService,
+        private readonly threeSceneService: ThreeSceneService,
         private readonly labelSettingsFacade: LabelSettingsFacade,
-        private codeMapArrowService: CodeMapArrowService,
-        private threeStatsService: ThreeStatsService,
-        private codeMapMouseEventService: CodeMapMouseEventService,
+        private readonly codeMapArrowService: CodeMapArrowService,
+        private readonly threeStatsService: ThreeStatsService,
+        private readonly codeMapMouseEventService: CodeMapMouseEventService,
         private readonly colorCategoryCountsStore: ColorCategoryCountsStore
     ) {
         this.subscription = this.codeMapRenderStore.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()

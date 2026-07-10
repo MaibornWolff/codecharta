@@ -131,7 +131,7 @@ describe("codeMapRenderService", () => {
     }
 
     function withMockedThreeSceneService() {
-        threeSceneService = codeMapRenderService["threeSceneService"] = jest.fn().mockReturnValue({
+        threeSceneService = jest.fn().mockReturnValue({
             scaleHeight: jest.fn(),
             mapGeometry: jest.fn().mockReturnValue({
                 scale: new Vector3(1, 2, 3)
@@ -140,16 +140,18 @@ describe("codeMapRenderService", () => {
             forceRerender: jest.fn(),
             setMapMesh: jest.fn()
         })()
+        Object.defineProperty(codeMapRenderService, "threeSceneService", { value: threeSceneService })
     }
 
     function withMockedCodeMapMouseEventService() {
-        codeMapMouseEventService = codeMapRenderService["codeMapMouseEventService"] = jest.fn().mockReturnValue({
+        codeMapMouseEventService = jest.fn().mockReturnValue({
             unhoverNode: jest.fn()
         })()
+        Object.defineProperty(codeMapRenderService, "codeMapMouseEventService", { value: codeMapMouseEventService })
     }
 
     function withMockedCodeMapArrowService() {
-        codeMapArrowService = codeMapRenderService["codeMapArrowService"] = jest.fn().mockReturnValue({
+        codeMapArrowService = jest.fn().mockReturnValue({
             scale: jest.fn(),
             clearArrows: jest.fn(),
             addEdgeArrows: jest.fn(),
@@ -158,13 +160,15 @@ describe("codeMapRenderService", () => {
             arrows: [new Object3D()],
             threeSceneService
         })()
+        Object.defineProperty(codeMapRenderService, "codeMapArrowService", { value: codeMapArrowService })
     }
 
     function withMockedStatsService() {
-        threeStatsService = codeMapRenderService["threeStatsService"] = jest.fn().mockReturnValue({
+        threeStatsService = jest.fn().mockReturnValue({
             resetPanels: jest.fn(),
             dispose: jest.fn()
         })()
+        Object.defineProperty(codeMapRenderService, "threeStatsService", { value: threeStatsService })
     }
 
     describe("onIsLoadingFileChanged", () => {

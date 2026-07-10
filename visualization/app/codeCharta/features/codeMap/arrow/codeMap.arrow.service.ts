@@ -32,7 +32,7 @@ export class CodeMapArrowService implements OnDestroy {
 
     constructor(
         private readonly codeMapArrowStore: CodeMapArrowStore,
-        private threeSceneService: ThreeSceneService
+        private readonly threeSceneService: ThreeSceneService
     ) {
         this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
         this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)

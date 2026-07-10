@@ -49,7 +49,7 @@ describe("CodeMapArrowService", () => {
     })
 
     function withMockedThreeSceneService() {
-        threeSceneService = codeMapArrowService["threeSceneService"] = jest.fn().mockReturnValue({
+        threeSceneService = jest.fn().mockReturnValue({
             edgeArrows: {
                 children: [],
                 add: jest.fn()
@@ -68,6 +68,7 @@ describe("CodeMapArrowService", () => {
                 value: "value"
             })
         })()
+        Object.defineProperty(codeMapArrowService, "threeSceneService", { value: threeSceneService })
     }
 
     function setupEdgeArrowsWithChildren() {
