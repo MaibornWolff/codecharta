@@ -209,8 +209,8 @@ export class LoadInitialFileService {
         this.loadInitialFileStore.setMetricsFromUrlValues(areaMetric, heightMetric, colorMetric, edgeMetric)
     }
 
-    // TODO: Please make sure that this function works fine on Github pages with
-    //  the updated file selection (no more single mode!)
+    // "Delta" is the only recognized value, and only with at least two loaded files.
+    // Anything else — including the removed single-file mode — falls through to the default state.
     setRenderStateFromUrl() {
         const renderState = this.urlUtils.getParameterByName("mode")
         this.loadInitialFileStore.setRenderState(renderState)
