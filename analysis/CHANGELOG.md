@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Add Rust support to UnifiedParser (.rs)
 - Add JSX support to UnifiedParser
 - Add TSX support to UnifiedParser
 - Add `convert` command that upgrades a 1.5 `.cc.json` file to the 2.0 format

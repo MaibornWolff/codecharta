@@ -28,6 +28,7 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 | Bash         | .sh                                    |
 | Vue          | .vue                                   |
 | Delphi       | .pas, .dpr                             |
+| Rust         | .rs                                    |
 
 ### Supported Metrics
 
@@ -239,6 +240,13 @@ contribute to complexity:
 - **Functions**: `defProc` (procedure/function implementation), `lambda`
 - **Logical operators**: `kAnd`, `kOr`, `kXor` in `exprBinary`
 
+##### Rust (.rs)
+
+- **Control flow**: `if_expression`, `while_expression`, `for_expression`, `loop_expression`, `match_arm` (the
+  `if`/`while` nodes also cover `if let`/`while let`; the `_` wildcard arm counts like any other arm)
+- **Functions**: `function_item`, `function_signature_item` (bodyless trait method signatures), `closure_expression`
+- **Logical operators**: `&&`, `||` in binary expressions
+
 #### Comment Lines
 
 Comment lines are counted based on language-specific comment syntax:
@@ -256,6 +264,7 @@ Comment lines are counted based on language-specific comment syntax:
 - **Swift**: `comment`, `multiline_comment`
 - **Bash**: `comment`
 - **Delphi**: `comment` (covers `//` line, `{ }` brace, and `(* *)` star comments)
+- **Rust**: `line_comment`, `block_comment` (cover `//`, `///`, `//!` and `/* */`, `/** */`, `/*! */`)
 
 #### Number of Functions
 
@@ -338,6 +347,11 @@ Function counting identifies different types of function definitions per languag
 - **Functions**: `defProc` (procedure/function implementation in the `implementation` section). Forward declarations in the `interface` section
   (`declProc`) are not counted, and `lambda` contributes only to complexity.
 
+##### Rust (.rs)
+
+- **Functions**: `function_item` (free functions, `impl` methods, trait default methods) and `function_signature_item`
+  (bodyless trait method signatures). `closure_expression` contributes only to complexity and is not counted as a function.
+
 #### Lines of Code (LOC)
 
 LOC is calculated as the total number of lines in the file, including empty lines and comments. This metric is language-independent and
@@ -371,6 +385,7 @@ Parameters per function counts the number of parameters declared for each functi
 - **Swift**: `parameter`
 - **Bash**: Parameters are counted from function definitions
 - **Delphi**: `declArg`
+- **Rust**: `parameter` (the `self` receiver is a distinct `self_parameter` node and is excluded)
 
 #### Message Chains
 
@@ -451,6 +466,11 @@ Message chains are not applicable to Bash as it does not support method chaining
 - **Chain nodes**: `exprCall`, `exprDot`
 - **Call nodes**: `exprCall`, `exprDot` (paren-less `Obj.M1.M2.M3.M4` chains). When `exprDot` is wrapped in `exprCall` (e.g.
   `Obj.M1().M2().M3().M4()`), only `exprCall` counts, preventing double-counting of message-chain calls.
+
+##### Rust (.rs)
+
+- **Chain nodes**: `call_expression`, `field_expression`
+- **Call nodes**: `call_expression`
 
 #### Code Smells
 

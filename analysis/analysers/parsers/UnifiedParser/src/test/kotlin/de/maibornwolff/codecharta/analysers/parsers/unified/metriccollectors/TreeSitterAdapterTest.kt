@@ -77,7 +77,8 @@ class TreeSitterAdapterTest {
             FileExtension.C to Language.C,
             FileExtension.OBJECTIVE_C to Language.OBJECTIVE_C,
             FileExtension.VUE to Language.VUE,
-            FileExtension.DELPHI to Language.DELPHI
+            FileExtension.DELPHI to Language.DELPHI,
+            FileExtension.RUST to Language.RUST
         )
 
         // Act & Assert
@@ -162,7 +163,8 @@ class TreeSitterAdapterTest {
             FileExtension.C,
             FileExtension.OBJECTIVE_C,
             FileExtension.VUE,
-            FileExtension.DELPHI
+            FileExtension.DELPHI,
+            FileExtension.RUST
         )
 
         // Act & Assert

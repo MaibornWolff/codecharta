@@ -26,5 +26,6 @@ enum class AvailableCollectors(
     SWIFT(FileExtension.SWIFT, { TreeSitterLibraryCollector(Language.SWIFT) }),
     BASH(FileExtension.BASH, { TreeSitterLibraryCollector(Language.BASH) }),
     VUE(FileExtension.VUE, { TreeSitterLibraryCollector(Language.VUE) }),
-    DELPHI(FileExtension.DELPHI, { TreeSitterLibraryCollector(Language.DELPHI) })
+    DELPHI(FileExtension.DELPHI, { TreeSitterLibraryCollector(Language.DELPHI) }),
+    RUST(FileExtension.RUST, { TreeSitterLibraryCollector(Language.RUST) })
 }
