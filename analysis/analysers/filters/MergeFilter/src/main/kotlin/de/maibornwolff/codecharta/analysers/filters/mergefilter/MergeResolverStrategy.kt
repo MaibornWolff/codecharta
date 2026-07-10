@@ -57,8 +57,20 @@ class MergeResolverStrategy private constructor(
     // NFC-normalize before comparing so a name spelled NFD (macOS walkers) and NFC (git parsers) is
     // treated as one node. Node identity ([NodeId]) is NFC, so without this the variants survive the
     // merge as distinct siblings and then collide on one id at the 2.0 writer's duplicate-id guard.
-    private fun namesMatch(first: String, second: String): Boolean =
-        NodeId.normalizeName(first).equals(NodeId.normalizeName(second), ignoreCase = ignoreCase)
+    //
+    // When ignoreCase, fold each character the way String.equals(ignoreCase = true) does — uppercase
+    // then lowercase — rather than through String.lowercase(), which is locale-aware and can change a
+    // string's length ("İ" lowercases to two characters), so it disagrees with equals() on exactly the
+    // names where it matters. Folding to a canonical form instead of comparing pairwise is what lets
+    // the reference leaves be indexed by name rather than rescanned; see [ReferenceIndex].
+    private fun foldedName(name: String): String {
+        val normalized = NodeId.normalizeName(name)
+        return if (ignoreCase) normalized.map { it.uppercaseChar().lowercaseChar() }.joinToString("") else normalized
+    }
+
+    private fun foldedEdges(path: Path): List<String> = path.edgesList.map { foldedName(it) }
+
+    private fun namesMatch(first: String, second: String): Boolean = foldedName(first) == foldedName(second)
 
     // A File and a Folder that share a name are genuinely distinct nodes — they own distinct 2.0 ids, so
     // merging them would flip one's type (NodeMaxAttributeMerger.createType prefers File) or, if both were
@@ -122,9 +134,10 @@ class MergeResolverStrategy private constructor(
 
     private fun resolveLeaves(referenceLeaves: Map<Path, MutableNode>, incomingLeaves: Map<Path, MutableNode>): Map<Path, MutableNode> {
         val ambiguousIncomingHashes = ambiguousIncomingContentHashes(incomingLeaves)
+        val reference = ReferenceIndex(referenceLeaves)
         val resolvedTargets =
             incomingLeaves.mapValues { (incomingPath, incomingNode) ->
-                resolveTargetPath(incomingPath, incomingNode, referenceLeaves, ambiguousIncomingHashes)
+                resolveTargetPath(incomingPath, incomingNode, reference, ambiguousIncomingHashes)
             }
         // A reference path that more than one incoming leaf resolves to is ambiguous: mapping them all
         // onto it would silently drop every leaf but the last. Refuse those matches (keep/drop with a
@@ -172,43 +185,63 @@ class MergeResolverStrategy private constructor(
         .filterValues { it > 1 }
         .keys
 
+    /**
+     * The reference leaves, indexed once per merge. Each stage of [resolveTargetPath] used to rescan
+     * the whole reference tree for every incoming leaf — the exact stage re-folding each candidate's
+     * every edge, the suffix stage re-folding every reference path — so merging I incoming leaves over
+     * R reference leaves folded R paths I times over.
+     */
+    private inner class ReferenceIndex(referenceLeaves: Map<Path, MutableNode>) {
+        /**
+         * Folded edge list → the first reference path spelled that way. Two distinct paths can fold
+         * alike (an NFD and an NFC spelling, or two casings when [ignoreCase]); the linear scan this
+         * replaces returned the first of them, so keep the first here too.
+         */
+        val pathByFoldedEdges: Map<List<String>, Path> =
+            LinkedHashMap<List<String>, Path>().apply {
+                referenceLeaves.keys.forEach { putIfAbsent(foldedEdges(it), it) }
+            }
+
+        /** Content hash → the reference paths carrying it. Blank and absent hashes are not indexed. */
+        val pathsByContentHash: Map<String, List<Path>> =
+            referenceLeaves.entries
+                .mapNotNull { (path, node) -> node.checksum?.takeIf(String::isNotEmpty)?.let { it to path } }
+                .groupBy({ it.first }, { it.second })
+
+        /** Every non-trivial reference path with its folded edges, for suffix matching. */
+        val foldedPaths: List<Pair<Path, List<String>>> =
+            referenceLeaves.keys.filter { !it.isTrivial }.map { it to foldedEdges(it) }
+    }
+
     /** id (exact tree position) → unique content hash → unambiguous longest path-suffix → null. */
     private fun resolveTargetPath(
         incomingPath: Path,
         incomingNode: MutableNode,
-        referenceLeaves: Map<Path, MutableNode>,
+        reference: ReferenceIndex,
         ambiguousIncomingHashes: Set<String>
     ): Path? {
-        val exactMatch = referenceLeaves.keys.firstOrNull { pathsEqual(it, incomingPath) }
+        val exactMatch = reference.pathByFoldedEdges[foldedEdges(incomingPath)]
         if (exactMatch != null) return exactMatch
 
-        val contentMatch = uniqueContentMatch(incomingNode, referenceLeaves, ambiguousIncomingHashes)
+        val contentMatch = uniqueContentMatch(incomingNode, reference, ambiguousIncomingHashes)
         if (contentMatch != null) return contentMatch
 
-        return unambiguousSuffixMatch(incomingPath, referenceLeaves.keys)
+        return unambiguousSuffixMatch(incomingPath, reference)
     }
 
-    private fun uniqueContentMatch(
-        incomingNode: MutableNode,
-        referenceLeaves: Map<Path, MutableNode>,
-        ambiguousIncomingHashes: Set<String>
-    ): Path? {
+    private fun uniqueContentMatch(incomingNode: MutableNode, reference: ReferenceIndex, ambiguousIncomingHashes: Set<String>): Path? {
         val contentHash = incomingNode.checksum
         if (contentHash.isNullOrEmpty()) return null
         if (contentHash in ambiguousIncomingHashes) return null
-        val matches = referenceLeaves.filterValues { it.checksum == contentHash }.keys
-        return matches.singleOrNull()
+        return reference.pathsByContentHash[contentHash]?.singleOrNull()
     }
 
-    private fun unambiguousSuffixMatch(incomingPath: Path, referencePaths: Set<Path>): Path? {
-        val incomingEdges = normalizedEdges(incomingPath)
+    private fun unambiguousSuffixMatch(incomingPath: Path, reference: ReferenceIndex): Path? {
+        val incomingEdges = foldedEdges(incomingPath)
         val scored =
-            referencePaths
-                .asSequence()
-                .filter { !it.isTrivial }
-                .map { it to suffixFit(incomingEdges, normalizedEdges(it)) }
+            reference.foldedPaths
+                .map { (path, referenceEdges) -> path to suffixFit(incomingEdges, referenceEdges) }
                 .filter { it.second > 0 }
-                .toList()
         val bestFit = scored.maxOfOrNull { it.second } ?: return null
         return scored.filter { it.second == bestFit }.map { it.first }.singleOrNull()
     }
@@ -222,18 +255,14 @@ class MergeResolverStrategy private constructor(
         return if (addUnmatchedNodes) incomingPath else Path.TRIVIAL
     }
 
-    private fun pathsEqual(first: Path, second: Path): Boolean = first.edgesList.size == second.edgesList.size &&
-        first.edgesList.indices.all { namesMatch(first.edgesList[it], second.edgesList[it]) }
-
-    // NFC-normalize (and lowercase when ignoreCase) the edge list once per path instead of re-allocating
-    // it on every suffix comparison, so suffix matching stays consistent with the NFC-aware namesMatch.
-    private fun normalizedEdges(path: Path): List<String> = path.edgesList.map {
-        val normalized = NodeId.normalizeName(it)
-        if (ignoreCase) normalized.lowercase() else normalized
+    // Path.fittingEdgesFromTailWith over edge lists that are already folded, so a comparison neither
+    // re-folds a name nor allocates the two Path objects that wrapping them back up would cost.
+    private fun suffixFit(firstEdges: List<String>, secondEdges: List<String>): Int {
+        val minSize = minOf(firstEdges.size, secondEdges.size)
+        return (0 until minSize).firstOrNull {
+            firstEdges[firstEdges.size - (it + 1)] != secondEdges[secondEdges.size - (it + 1)]
+        } ?: minSize
     }
-
-    private fun suffixFit(firstEdges: List<String>, secondEdges: List<String>): Int =
-        Path(firstEdges).fittingEdgesFromTailWith(Path(secondEdges))
 
     companion object {
         fun recursive(ignoreCase: Boolean = false): MergeResolverStrategy =

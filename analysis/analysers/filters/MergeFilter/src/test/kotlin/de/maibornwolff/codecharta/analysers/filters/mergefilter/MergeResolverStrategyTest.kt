@@ -269,6 +269,21 @@ class MergeResolverStrategyTest {
     }
 
     @Test
+    fun `should fold case for suffix matching the same way name matching does`() {
+        // Arrange: 'İ' (U+0130) is the case where String.lowercase() and String.equals(ignoreCase = true)
+        // part ways — lowercasing it yields two characters, so a lowercase-folding suffix matcher would
+        // not see these as the same file even though exact-position matching does.
+        val reference = tree(leaf("/backend/src/İstanbul.kt", mapOf("a" to 1.0)))
+        val incoming = tree(leaf("/istanbul.kt", mapOf("b" to 2.0)))
+
+        // Act
+        val merged = merge(MergeResolverStrategy.leaf(false, ignoreCase = true), reference, incoming)
+
+        // Assert
+        assertThat(merged.leaves.values.single().attributes).containsKeys("a", "b")
+    }
+
+    @Test
     fun `should overlay an NFD-spelled leaf onto its NFC-spelled reference by exact position`() {
         // Arrange: the same file spelled precomposed (NFC) in the reference and decomposed (NFD) in the
         // incoming tree - the same file on disk, two byte strings. NodeId normalizes both to one id, so
