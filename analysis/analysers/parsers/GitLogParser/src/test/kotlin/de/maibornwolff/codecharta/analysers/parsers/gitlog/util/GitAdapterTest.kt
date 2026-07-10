@@ -27,7 +27,7 @@ class GitAdapterTest {
         val assertion = assertThrowsExactly(RuntimeException::class.java) { GitAdapter(File(gitFile.parent), gitFile).getGitLog() }
         Assertions.assertThat(assertion).hasMessageContainingAll(
             "Error while executing Git! Command was",
-            "[git, log, --numstat, --raw, --topo-order, --reverse, -m]",
+            "[git, -c, core.quotepath=off, log, --numstat, --raw, --topo-order, --reverse, -m]",
             "Process returned with exit status",
             "128"
         )

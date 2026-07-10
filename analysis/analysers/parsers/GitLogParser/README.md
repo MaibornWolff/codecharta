@@ -106,7 +106,7 @@ The resulting project has the project name specified for the GitLogParser.
 
 | SCM | Log format                   | Command for log creation                            | tracks renames | ignores deleted files | supports code churn |
 | --- | ---------------------------- | --------------------------------------------------- | -------------- | --------------------- | ------------------- |
-| git | GIT_LOG_NUMSTAT_RAW_REVERSED | `git log --numstat --raw --topo-order --reverse -m` | yes            | yes                   | yes                 |
+| git | GIT_LOG_NUMSTAT_RAW_REVERSED | `git -c core.quotepath=off log --numstat --raw --topo-order --reverse -m` | yes            | yes                   | yes                 |
 
 You can also use the bash
 script [anongit](https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/GitLogParser/src/main/dist/anongit)
@@ -115,7 +115,7 @@ which generates a git log with anonymized authors for usage with CodeCharta.
 #### Creating the git files list of the repository for metric generation
 
 ```
-git ls-files > file-name-list.txt
+git -c core.quotepath=off ls-files > file-name-list.txt
 ```
 
 Please make sure to execute this command in the root folder of your repository.
@@ -124,8 +124,8 @@ Please make sure to execute this command in the root folder of your repository.
 
 ```
 cd <my_git_project>
-git log --numstat --raw --topo-order --reverse -m > git.log (or anongit > git.log)
-git ls-files > file-name-list.txt
+git -c core.quotepath=off log --numstat --raw --topo-order --reverse -m > git.log (or anongit > git.log)
+git -c core.quotepath=off ls-files > file-name-list.txt
 ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz
 ```
 

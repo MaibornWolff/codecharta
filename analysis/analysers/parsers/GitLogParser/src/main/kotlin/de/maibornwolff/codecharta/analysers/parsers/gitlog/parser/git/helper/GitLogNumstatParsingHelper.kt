@@ -56,15 +56,21 @@ class GitLogNumstatParsingHelper {
                 return Modification.EMPTY
             }
 
-            return Modification(newFileName, oldFileName, additions, deletions, Modification.Type.RENAME)
+            return Modification(
+                GitPathUnquoter.unquote(newFileName),
+                GitPathUnquoter.unquote(oldFileName),
+                additions,
+                deletions,
+                Modification.Type.RENAME
+            )
         }
 
         private fun parseStandardModification(fileLine: String): Modification {
             val lineParts = fileLine.split(STANDARD_FILE_LINE_SPLITTER.toRegex()).dropLastWhile({ it.isEmpty() })
             val additions = lineParts[0].toLong()
             val deletions = lineParts[1].toLong()
-            val filename = lineParts[2]
-            return Modification(filename.trim(), additions, deletions)
+            val filename = GitPathUnquoter.unquote(lineParts[2].trim())
+            return Modification(filename, additions, deletions)
         }
     }
 }
