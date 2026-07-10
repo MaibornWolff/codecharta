@@ -110,7 +110,7 @@ class NodeJsonDeserializerTest {
         val node = deserializer.deserialize(obj, nodeClass, null)
 
         assertThat(node.link).isEqualTo(url)
-        assertThat(node.attributes[attributeName] as Double).isEqualTo(attributeValue.toDouble())
+        assertThat(node.attributes[attributeName] as Long).isEqualTo(attributeValue.toLong())
         assertThat(node.children.size).isEqualTo(1)
     }
 }

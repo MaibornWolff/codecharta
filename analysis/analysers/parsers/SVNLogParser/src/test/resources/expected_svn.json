@@ -52,32 +52,32 @@
     "metrics": {
       "attributes": {
         "17334816e50f3f93": {
-          "number_of_authors": 2.0,
-          "number_of_commits": 5.0,
-          "range_of_weeks_with_commits": 1.0,
-          "successive_weeks_with_commits": 1.0,
-          "weeks_with_commits": 1.0,
+          "number_of_authors": 2,
+          "number_of_commits": 5,
+          "range_of_weeks_with_commits": 1,
+          "successive_weeks_with_commits": 1,
+          "weeks_with_commits": 1,
           "authors": [
             "MartinSc",
             "AlexH"
           ]
         },
         "877245ae4d360af8": {
-          "number_of_authors": 1.0,
-          "number_of_commits": 2.0,
-          "range_of_weeks_with_commits": 1.0,
-          "successive_weeks_with_commits": 1.0,
-          "weeks_with_commits": 1.0,
+          "number_of_authors": 1,
+          "number_of_commits": 2,
+          "range_of_weeks_with_commits": 1,
+          "successive_weeks_with_commits": 1,
+          "weeks_with_commits": 1,
           "authors": [
             "MartinSc"
           ]
         },
         "b3442dcb0abc7334": {
-          "number_of_authors": 2.0,
-          "number_of_commits": 4.0,
-          "range_of_weeks_with_commits": 1.0,
-          "successive_weeks_with_commits": 1.0,
-          "weeks_with_commits": 1.0,
+          "number_of_authors": 2,
+          "number_of_commits": 4,
+          "range_of_weeks_with_commits": 1,
+          "successive_weeks_with_commits": 1,
+          "weeks_with_commits": 1,
           "authors": [
             "MartinSc",
             "AlexH"

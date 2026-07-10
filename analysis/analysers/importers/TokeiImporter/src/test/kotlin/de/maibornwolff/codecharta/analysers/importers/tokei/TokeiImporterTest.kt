@@ -129,7 +129,7 @@ class TokeiImporterTest {
         val project = ProjectDeserializer.deserializeProject(cliResult)
         val children = project.rootNode.children
         assertThat(children.size).isEqualTo(3)
-        assertThat(children.single { it.name == "CHANGELOG.md" }.attributes["loc"]).isEqualTo(450.0)
+        assertThat(children.single { it.name == "CHANGELOG.md" }.attributes["loc"]).isEqualTo(450L)
         assertThat(children.single { it.name == "src" }.size).isEqualTo(3)
     }
 
@@ -147,7 +147,7 @@ class TokeiImporterTest {
         val children = project.rootNode.children
         assertThat(children.size).isEqualTo(2)
         assertThat(project.rootNode.name).isEqualTo("root")
-        assertThat(children.single { it.name == "make_release.sh" }.attributes["rloc"]).isEqualTo(500.0)
+        assertThat(children.single { it.name == "make_release.sh" }.attributes["rloc"]).isEqualTo(500L)
         val foo = children.single { it.name == "foo" }
         assertThat(foo.attributes["rloc"]).isNull()
         assertThat(foo.children.size).isEqualTo(2)

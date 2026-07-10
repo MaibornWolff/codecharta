@@ -8,6 +8,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
+import com.google.gson.ToNumberPolicy
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypeDeserializer
 import de.maibornwolff.codecharta.model.AttributeTypeSerializer
@@ -23,6 +24,10 @@ import java.lang.reflect.Type
 object CcJsonV2Gson {
     val gson: Gson =
         GsonBuilder()
+            // Read whole-number JSON values back as Long (not Double), so a 2.0 read→write leaves an
+            // integer attribute like `1` unchanged instead of coercing it to `1.0`. Non-integral values
+            // still deserialize as Double.
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
             .registerTypeAdapter(AttributeType::class.java, AttributeTypeDeserializer())
             .registerTypeAdapter(LensesDto::class.java, LensesDtoSerializer())
