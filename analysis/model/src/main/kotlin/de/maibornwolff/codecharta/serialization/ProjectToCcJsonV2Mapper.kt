@@ -16,6 +16,7 @@ import de.maibornwolff.codecharta.serialization.dto.LensesDto
 import de.maibornwolff.codecharta.serialization.dto.MetaDto
 import de.maibornwolff.codecharta.serialization.dto.MetricsLensDto
 import de.maibornwolff.codecharta.util.Checksum
+import de.maibornwolff.codecharta.util.Logger
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.io.OutputStreamWriter
@@ -124,6 +125,12 @@ object ProjectToCcJsonV2Mapper {
             .filter { it.isNotEmpty() && NodeId.canonicalPath(it) !in existingPaths }
             .distinct()
         if (missing.isEmpty()) return root
+        // Surface producer leaks in ccsh output: an edge whose endpoint has no node is materialized here
+        // (needed for edge-only producers like CodeMaat), but a large count usually signals a producer
+        // emitting edges to renamed or deleted paths (see GitLogParser coupling edges).
+        Logger.warn {
+            "${missing.size} dependency edge endpoint(s) had no matching node and were materialized as empty File nodes"
+        }
         val mutableRoot = root.toMutableNode()
         missing.forEach { segments ->
             mutableRoot.insertAt(Path(segments.dropLast(1)), MutableNode(segments.last(), NodeType.File))

@@ -16,9 +16,18 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
  * creates Projects from List of VersionControlledFiles
  */
 class ProjectConverter(private val containsAuthors: Boolean) {
-    private fun addVersionControlledFile(projectBuilder: ProjectBuilder, versionControlledFile: VersionControlledFile) {
+    private fun addVersionControlledFile(
+        projectBuilder: ProjectBuilder,
+        versionControlledFile: VersionControlledFile,
+        filesInLog: Set<String>
+    ) {
         val attributes = extractAttributes(versionControlledFile)
-        val edges = versionControlledFile.getEdgeList()
+        // Keep only edges whose coupled partner still exists at HEAD (is in the git file list). A coupling
+        // edge records the partner under its commit-time name; a partner since renamed or deleted is not in
+        // the list, so its edge would point at a path with no node. 1.5 dropped those silently, but the 2.0
+        // writer materializes every edge endpoint into a ghost File node. This is the same predicate the
+        // node list uses (VersionControlledFilesInGitProject), applied here before the /root/ prefixing.
+        val edges = versionControlledFile.getEdgeList().filter { filesInLog.contains(it.toNodeName) }
         val fileName = versionControlledFile.filename.substringAfterLast(PATH_SEPARATOR)
         val newNode = MutableNode(fileName, NodeType.File, attributes, "", mutableSetOf())
         val path =
@@ -55,10 +64,11 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val vcFList = versionControlledFiles.getList()
 
         val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(vcFList, filesInLog)
+        val filesInLogSet = filesInLog.toHashSet()
 
         versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().forEach { // TODO Coroutines?
             vcFile ->
-            addVersionControlledFile(projectBuilder, vcFile)
+            addVersionControlledFile(projectBuilder, vcFile, filesInLogSet)
         }
 
         val metrics = metricsFactory.createMetrics()
