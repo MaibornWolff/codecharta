@@ -29,6 +29,12 @@ class MergeResolverStrategyTest {
     private fun merge(strategy: MergeResolverStrategy, reference: MutableNode, incoming: MutableNode): MutableNode =
         strategy.mergeNodeLists(listOf(listOf(reference), listOf(incoming))).single()
 
+    private fun rootWith(child: MutableNode): MutableNode {
+        val root = MutableNode("root", NodeType.Folder)
+        root.children.add(child)
+        return root
+    }
+
     private fun MutableNode.leafByName(name: String): MutableNode? = leaves.values.firstOrNull { it.name == name }
 
     @Test
@@ -54,6 +60,31 @@ class MergeResolverStrategyTest {
         val foos = src.children.filter { it.name == "foo" }
         assertThat(foos).hasSize(2)
         assertThat(foos.map { it.type }).containsExactlyInAnyOrder(NodeType.File, NodeType.Folder)
+    }
+
+    @Test
+    fun `should not merge a wildcard-typed node into more than one same-named node in a union merge`() {
+        // Arrange
+        // Only a File-vs-Folder pairing counts as a clash, so a File "foo" and a Folder "foo" survive as
+        // siblings while an incoming "foo" of any third type matches both of them.
+        val withFile = rootWith(MutableNode("foo", NodeType.File, mapOf("a" to 1.0)))
+        val withFolder = rootWith(MutableNode("foo", NodeType.Folder, mapOf("b" to 2.0)))
+        val withWildcard = rootWith(MutableNode("foo", NodeType.Unknown, mapOf("wildcard" to 99.0)))
+
+        // Act
+        val merged =
+            MergeResolverStrategy
+                .recursive()
+                .mergeNodeLists(listOf(listOf(withFile), listOf(withFolder), listOf(withWildcard)))
+                .single()
+
+        // Assert
+        val foos = merged.children.filter { it.name == "foo" }
+        assertThat(foos).hasSize(3)
+        assertThat(foos.map { it.type }).containsExactlyInAnyOrder(NodeType.File, NodeType.Folder, NodeType.Unknown)
+        assertThat(foos.single { it.type == NodeType.File }.attributes).containsOnlyKeys("a")
+        assertThat(foos.single { it.type == NodeType.Folder }.attributes).containsOnlyKeys("b")
+        assertThat(foos.single { it.type == NodeType.Unknown }.attributes).containsOnlyKeys("wildcard")
     }
 
     @Test

@@ -70,6 +70,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   of the cc.json 2.0 format, so converting a curated 1.x file discards them; the loss is no longer silent.
 - CI now runs the 2.0 schema drift guards when only the schema source of truth (`dev_docs/cc-json-2.0.schema.json`)
   changes: the analysis and visualization test workflows watch that path in addition to their own trees.
+- `merge` no longer copies a node into several same-named nodes at once. A File and a Folder that share a
+  name are kept apart, so a third node of the same name whose type is neither File nor Folder matched both
+  of them and had its attributes and children merged onto each. Such an ambiguous node is now kept as a
+  node of its own with a warning, rather than being guessed onto one of them.
 
 ## [1.143.0] - 2026-04-28
 
