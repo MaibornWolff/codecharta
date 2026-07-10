@@ -165,6 +165,61 @@ class GitignoreHandlerTest {
         assertThat(shouldExclude).isFalse()
     }
 
+    // ========== .GIT DIRECTORY TESTS ==========
+
+    @Test
+    fun `should exclude the git directory even when a root gitignore exists`() {
+        // Arrange: git never lists .git in a .gitignore; it is implicitly ignored
+        File(rootDir, ".gitignore").writeText("*.log")
+        val handler = GitignoreHandler(rootDir)
+        val gitDir = File(rootDir, ".git")
+        gitDir.mkdirs()
+
+        // Act & Assert
+        assertThat(handler.shouldExclude(gitDir)).isTrue()
+    }
+
+    @Test
+    fun `should exclude files inside the git directory`() {
+        // Arrange
+        File(rootDir, ".gitignore").writeText("*.log")
+        val handler = GitignoreHandler(rootDir)
+        val gitInternalFile = File(rootDir, ".git/objects/pack/pack-1.idx")
+        gitInternalFile.parentFile.mkdirs()
+        gitInternalFile.createNewFile()
+
+        // Act & Assert
+        assertThat(handler.shouldExclude(gitInternalFile)).isTrue()
+    }
+
+    @Test
+    fun `should exclude the git directory even when no gitignore exists anywhere`() {
+        // Arrange: no .gitignore at all, so the rule cache is empty
+        val handler = GitignoreHandler(rootDir)
+        val gitDir = File(rootDir, ".git")
+        gitDir.mkdirs()
+
+        // Act & Assert
+        assertThat(handler.shouldExclude(gitDir)).isTrue()
+    }
+
+    @Test
+    fun `should not treat dot-git-prefixed siblings like github and gitattributes as the git directory`() {
+        // Arrange
+        File(rootDir, ".gitignore").writeText("*.log")
+        val handler = GitignoreHandler(rootDir)
+
+        val githubWorkflow = File(rootDir, ".github/workflows/ci.yml")
+        githubWorkflow.parentFile.mkdirs()
+        githubWorkflow.createNewFile()
+        val gitattributes = File(rootDir, ".gitattributes")
+        gitattributes.createNewFile()
+
+        // Act & Assert
+        assertThat(handler.shouldExclude(githubWorkflow)).isFalse()
+        assertThat(handler.shouldExclude(gitattributes)).isFalse()
+    }
+
     @Test
     fun `should exclude file in nested directory`() {
         // Arrange

@@ -10,6 +10,7 @@ import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
@@ -39,8 +40,16 @@ class RawTextParserTest {
         )
     }
 
+    @BeforeEach
+    fun beforeTest() {
+        // Reset the shared buffer so each test asserts only on its own output, not another test's leftovers
+        errContent.reset()
+    }
+
     @AfterEach
     fun afterTest() {
+        // Restore stderr even if a test threw before its own cleanup, so a leaked redirect can't affect later tests
+        System.setErr(originalErr)
         unmockkAll()
     }
 

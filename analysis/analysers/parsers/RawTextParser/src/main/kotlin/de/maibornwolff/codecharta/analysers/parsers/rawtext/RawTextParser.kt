@@ -70,7 +70,6 @@ class RawTextParser(
 
         const val DEFAULT_INDENT_LVL = 10
         const val DEFAULT_TAB_WIDTH = -1
-        private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
     }
 
     @Throws(IOException::class)
@@ -147,12 +146,16 @@ class RawTextParser(
         val excludePatterns = specifiedExcludePatterns.toMutableList()
         val rootGitignoreExists = File(inputFile, ".gitignore").exists()
 
+        // Always exclude the repository's own .git store, even under --bypass-gitignore (no gitignore
+        // handler consulted) or when a root .gitignore suppresses the build-folder fallback below.
+        excludePatterns.add(CodeChartaConstants.GIT_DIRECTORY_EXCLUDE_PATTERN)
+
         if (useGitignore && !rootGitignoreExists) {
             Logger.warn { "No .gitignore found at root level, excluding common build folders as fallback..." }
         }
 
         if (!includeBuildFolders && !rootGitignoreExists) {
-            excludePatterns.addAll(DEFAULT_EXCLUDES)
+            excludePatterns.addAll(CodeChartaConstants.BUILD_FOLDERS)
         }
 
         return excludePatterns
