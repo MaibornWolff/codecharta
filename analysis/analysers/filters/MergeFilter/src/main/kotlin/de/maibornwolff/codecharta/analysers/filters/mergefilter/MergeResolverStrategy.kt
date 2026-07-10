@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeId
+import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.util.Logger
 
@@ -59,14 +60,24 @@ class MergeResolverStrategy private constructor(
     private fun namesMatch(first: String, second: String): Boolean =
         NodeId.normalizeName(first).equals(NodeId.normalizeName(second), ignoreCase = ignoreCase)
 
+    // A File and a Folder that share a name are genuinely distinct nodes — they own distinct 2.0 ids, so
+    // merging them would flip one's type (NodeMaxAttributeMerger.createType prefers File) or, if both were
+    // kept, collide at the writer's duplicate-id guard. Refuse only that clash; every other pairing (equal
+    // types, or an Unknown/absent type acting as a wildcard) merges exactly as before.
+    private fun nodesMatch(first: MutableNode, second: MutableNode): Boolean =
+        namesMatch(first.name, second.name) && !isFileFolderClash(first.type, second.type)
+
+    private fun isFileFolderClash(first: NodeType?, second: NodeType?): Boolean =
+        (first == NodeType.File && second == NodeType.Folder) || (first == NodeType.Folder && second == NodeType.File)
+
     // --- UNION (recursive) ----------------------------------------------------------------------
 
     private fun mergeOrAppendNode(nodeList: List<MutableNode>, node: MutableNode): List<MutableNode> {
-        if (nodeList.none { namesMatch(it.name, node.name) }) {
+        if (nodeList.none { nodesMatch(it, node) }) {
             return nodeList + node
         }
         nodesMerged++
-        return nodeList.map { if (namesMatch(it.name, node.name)) mergeRecursively(it, node) else it }
+        return nodeList.map { if (nodesMatch(it, node)) mergeRecursively(it, node) else it }
     }
 
     private fun mergeRecursively(reference: MutableNode, incoming: MutableNode): MutableNode {

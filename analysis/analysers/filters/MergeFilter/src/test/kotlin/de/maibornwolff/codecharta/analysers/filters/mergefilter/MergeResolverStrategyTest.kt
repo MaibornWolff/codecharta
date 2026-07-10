@@ -43,6 +43,20 @@ class MergeResolverStrategyTest {
     }
 
     @Test
+    fun `should keep a File and a Folder with the same name as distinct nodes in a union merge`() {
+        // reference has /src/foo as a File; incoming has /src/foo as a Folder (holding a leaf)
+        val reference = tree(leaf("/src/foo", mapOf("a" to 1.0)))
+        val incoming = tree(leaf("/src/foo/bar.kt", mapOf("b" to 2.0)))
+
+        val merged = merge(MergeResolverStrategy.recursive(), reference, incoming)
+
+        val src = merged.children.single { it.name == "src" }
+        val foos = src.children.filter { it.name == "foo" }
+        assertThat(foos).hasSize(2)
+        assertThat(foos.map { it.type }).containsExactlyInAnyOrder(NodeType.File, NodeType.Folder)
+    }
+
+    @Test
     fun `should merge a renamed file by its unique content hash`() {
         val reference = tree(leaf("/src/Application.kt", mapOf("a" to 1.0), checksum = "hash-1"))
         val incoming = tree(leaf("/lib/App.kt", mapOf("b" to 2.0), checksum = "hash-1"))

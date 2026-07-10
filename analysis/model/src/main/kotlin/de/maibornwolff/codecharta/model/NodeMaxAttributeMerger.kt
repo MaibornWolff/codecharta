@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.model
 
+import de.maibornwolff.codecharta.util.Logger
+
 /**
  * merging multiply nodes by using max attribute and link, ignoring children
  */
@@ -49,11 +51,23 @@ class NodeMaxAttributeMerger(var mergeChildrenList: Boolean = false) : NodeMerge
                     it.type
                 }.distinct()
 
-        return types.firstOrNull {
+        val resolvedType = types.firstOrNull {
             it != NodeType.Folder && it != NodeType.Unknown
         } ?: types.firstOrNull {
             it != NodeType.Unknown
         } ?: NodeType.Unknown
+
+        // Surface the ambiguity when nodes with more than one concrete (non-Unknown) type are merged onto
+        // one node — e.g. a File merged with a Folder. Type-aware UNION matching normally prevents this,
+        // so a warning here means an unexpected clash slipped through.
+        val concreteTypes = types.filter { it != NodeType.Unknown }
+        if (concreteTypes.size > 1) {
+            Logger.warn {
+                "Merged nodes named '${nodes.first().name}' have conflicting types $concreteTypes; using $resolvedType"
+            }
+        }
+
+        return resolvedType
     }
 
     private fun createName(nodes: MutableNode) = nodes.name
