@@ -115,12 +115,11 @@ module.exports = {
             name: "wire-dto-only-in-filestore-boundary",
             severity: "error",
             comment:
-                "codeCharta.api.model is the cc.json wire DTO — the data contract with the CLI. Only the fileStore ingestion boundary may depend on it: the moved load pipeline (stores/fileStore/loaders), the navBar gameObjects importer, and util/fileDownloader (export). Keeping it out of rendering/state/UI/lenses means a cc.json format change (2.0) stays contained to the ingestion seam. The 2.0 domain types live in model/ccjson2.model.ts, which must NOT import api.model. Test/mocks/fixtures are exempt. NOTE: after the reorg the DTO lives at model/codeCharta.api.model.ts — this rule targets it by that EXACT path and must never be relaxed into a whole-model/ allow.",
+                "codeCharta.api.model is the cc.json wire DTO — the data contract with the CLI. Only the fileStore ingestion boundary may depend on it: the moved load pipeline (stores/fileStore/loaders) and the navBar gameObjects importer. Keeping it out of rendering/state/UI/lenses means a cc.json format change (2.0) stays contained to the ingestion seam. The 2.0 domain types live in model/ccjson2.model.ts, which must NOT import api.model. Test/mocks/fixtures are exempt. NOTE: after the reorg the DTO lives at model/codeCharta.api.model.ts — this rule targets it by that EXACT path and must never be relaxed into a whole-model/ allow.",
             from: {
                 pathNot: [
                     "^app/codeCharta/stores/fileStore/",
                     "^app/codeCharta/features/navBar/util/gameObjectsParser/",
-                    "^app/codeCharta/util/fileDownloader\\.ts$",
                     "^app/codeCharta/mocks/",
                     "^app/codeCharta/resources/",
                     "\\.spec\\.ts$",
