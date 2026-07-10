@@ -1,4 +1,3 @@
-import { expect } from "@jest/globals"
 import { AttributeTypeValue } from "../../model/codeCharta.model"
 import { clone } from "../../util/clone"
 import { _applyPartialState, defaultState } from "./state.manager"
