@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.JsonParser
+import de.maibornwolff.codecharta.util.Logger
 import java.io.InputStream
 
 /**
@@ -16,6 +17,13 @@ object LegacyCurationInspector {
         val holder = root.get("data")?.takeIf { it.isJsonObject }?.asJsonObject ?: root
         holder.get("markedPackages")?.takeIf { it.isJsonArray }?.asJsonArray?.size() ?: 0
     } catch (e: Exception) {
+        // The caller reads this count to warn that 1.x curation is dropped by the 2.0 conversion, so a
+        // silent 0 would claim "none to drop" when the truth is "could not tell" — the exact data loss
+        // this inspector exists to announce. Warn instead; the conversion itself stays unaffected.
+        Logger.warn {
+            "Could not inspect the source file for markedPackages: ${e.message}. " +
+                "Any marked packages it carries are dropped from the converted output without further notice."
+        }
         0
     }
 }
