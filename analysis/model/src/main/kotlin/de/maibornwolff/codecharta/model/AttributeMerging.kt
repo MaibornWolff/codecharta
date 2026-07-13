@@ -37,16 +37,16 @@ private fun AttributeDescriptor.withAnalyzersOrUnknown(): AttributeDescriptor =
     if (analyzers.isEmpty()) copy(analyzers = setOf("Unknown")) else this
 
 private fun warnIfDescriptorsDiffer(existing: AttributeDescriptor, metric: String, incoming: AttributeDescriptor) {
-    if (existing.title != incoming.title) Logger.info { "Title of '$metric' metric differs between files! Using value of first file..." }
-    if (existing.description !=
-        incoming.description
-    ) {
+    if (existing.title != incoming.title) {
+        Logger.info { "Title of '$metric' metric differs between files! Using value of first file..." }
+    }
+    if (existing.description != incoming.description) {
         Logger.info { "Description of '$metric' metric differs between files! Using value of first file..." }
     }
-    if (existing.link != incoming.link) Logger.info { "Link of '$metric' metric differs between files! Using value of first file..." }
-    if (existing.direction !=
-        incoming.direction
-    ) {
+    if (existing.link != incoming.link) {
+        Logger.info { "Link of '$metric' metric differs between files! Using value of first file..." }
+    }
+    if (existing.direction != incoming.direction) {
         Logger.info { "Direction of '$metric' metric differs between files! Using value of first file..." }
     }
 }
