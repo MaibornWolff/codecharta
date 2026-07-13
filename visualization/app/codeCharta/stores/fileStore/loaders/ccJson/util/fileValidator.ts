@@ -55,7 +55,6 @@ export function isCcJson2(content: CcFileContent): content is CcJson2 {
 }
 
 export function removeAuthorsAttributes(file: CcFileContent): string[] {
-    // 2.0 authors are regular metric attributes (out of scope); nothing to strip for 2.0/empty files.
     if (isCcJson2(file) || !file?.nodes) {
         return []
     }

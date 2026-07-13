@@ -10,12 +10,6 @@ import {
     KeyValuePair
 } from "../../../../../../model/codeCharta.model"
 
-/**
- * Maps a parsed cc.json 2.0 (`{ meta, files, lenses }`) into today's internal `CCFile`, so the map
- * renders identically to a 1.x file. The string `FileNode.id` is the join key into
- * `lenses.metrics.attributes[id]` and `lenses.dependency.edges[].fromId/toId`; the viz never
- * re-hashes — it resolves each `id` to that node's `/root/...` path while walking the tree.
- */
 export function mapCcJson2ToCCFile(file: CcJson2WithCarryover, nameDataPair: NameDataPair): CCFile {
     const attributesByNodeId = file.lenses.metrics?.attributes ?? {}
     const idToPath: Record<string, string> = {}

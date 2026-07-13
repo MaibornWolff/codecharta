@@ -4,10 +4,6 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.util.Logger
 
-/**
- * Merges nodes whose tree positions coincide and keeps every other node — the same-rooting union.
- * Construct through [MergeResolverStrategy.recursive].
- */
 internal class UnionMergeResolver(ignoreCase: Boolean) : MergeResolverStrategy(ignoreCase) {
     override fun mergeNode(nodeList: List<MutableNode>, node: MutableNode): List<MutableNode> {
         val matchCount = nodeList.count { nodesMatch(it, node) }
@@ -37,11 +33,8 @@ internal class UnionMergeResolver(ignoreCase: Boolean) : MergeResolverStrategy(i
     private fun isFileFolderClash(first: NodeType?, second: NodeType?): Boolean =
         (first == NodeType.File && second == NodeType.Folder) || (first == NodeType.Folder && second == NodeType.File)
 
-    // [nodesMatch] is not transitive: a node whose type is neither File nor Folder acts as a wildcard, so
-    // it matches a same-named File *and* a same-named Folder — a pair the clash guard above deliberately
-    // keeps apart as siblings. Merging into every match would copy the incoming attributes and children
-    // onto both. Append the node instead, the same "skipped, never guessed" rule OVERLAY applies to
-    // ambiguous content and suffix matches. The appended node keeps its own type and therefore its own id.
+    // [nodesMatch] is not transitive: a wildcard-typed node matches both a same-named File and a same-named
+    // Folder — a pair the clash guard deliberately keeps apart — so merging into every match would corrupt both.
     private fun warnAmbiguousMatch(node: MutableNode, matchCount: Int) {
         Logger.warn {
             "Node '${node.name}' of type ${node.type} matches $matchCount same-named nodes of differing types; " +

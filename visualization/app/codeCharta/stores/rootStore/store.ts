@@ -9,12 +9,6 @@ import { sharedView } from "../sharedView/sharedView.read.facade"
 import { isSetStateAction } from "./state.actions"
 import { _applyPartialState } from "./state.manager"
 
-/**
- * The ngrx ROOT composition (Slice 15f): the per-home reducer map + the global setState meta-reducer.
- * This is the SOLE store-wiring module — only app.config.ts imports it (enforced by
- * `root-store-is-sole-composer`). The reusable root-state CONTRACT (defaultState + the deep-merge kernel)
- * lives in ./state.manager and the global setState action in ./state.actions, both freely importable.
- */
 export const appReducers = {
     metricsLensSource,
     dependencyLensSource,

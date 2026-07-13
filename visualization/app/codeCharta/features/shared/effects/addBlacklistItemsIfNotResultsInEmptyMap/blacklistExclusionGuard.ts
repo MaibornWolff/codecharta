@@ -9,13 +9,6 @@ import { addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../stores/shar
 import { createBlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
 import { resultsInEmptyMap } from "../../../../util/blacklist/resultsInEmptyMap"
 
-/**
- * The shared "would excluding these items leave an empty map?" stream (Slice 15d). Extracted out of
- * AddBlacklistItemsIfNotResultsInEmptyMapEffect into a root-provided injectable so the guard effect and
- * the sidebarExplorer search-pattern effect subscribe to the SAME shared stream without one effect
- * injecting another (the coupling the migration removes). Singleton (`providedIn: "root"`) → both
- * consumers see one `share()`d execution.
- */
 @Injectable({ providedIn: "root" })
 export class BlacklistExclusionGuard {
     constructor(

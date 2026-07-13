@@ -9,11 +9,6 @@ import java.io.OutputStream
 import java.io.Writer
 import java.util.zip.GZIPOutputStream
 
-/**
- * Converts a [Project] to json. `ccsh` only ever emits the cc.json 2.0 `{ meta, files, lenses }`
- * format — there is no 1.5 writer. The 1.5 format is still *readable* (see [ProjectDeserializer]),
- * but it is never produced.
- */
 object ProjectSerializer {
     /** The wire object + its GSON. Only the 2.0 format is emitted — this is the single dispatch point. */
     private fun wire(project: Project): Pair<Gson, Any> = CcJsonV2Gson.gson to ProjectToCcJsonV2Mapper.toDto(project)

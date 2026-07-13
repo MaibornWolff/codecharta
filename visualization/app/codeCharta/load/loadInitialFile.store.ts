@@ -58,8 +58,7 @@ export class LoadInitialFileStore {
     // runtime-only map flag; never restored from a previous session's persisted state.
     private static readonly ignoredMapStateKeys = new Set<keyof MapState>(["isLoadingMap"])
 
-    // transient interaction ids (Slice 14e-1 moved them mapState → sharedView); never restored from a
-    // previous session's persisted state — the mapState applier no-op'd them before, sharedView must too.
+    // transient interaction ids; never restored from a previous session's persisted state.
     private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
         "hoveredNodeId",
         "selectedBuildingId",

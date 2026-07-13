@@ -8,8 +8,6 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
-    // Build straight from the merged typed lenses so an edge descriptor without a matching edge
-    // attributeType is not re-routed into the metrics lens by the flat legacy projection.
     fun merge(): Project = when {
         areAllAPIVersionsCompatible() ->
             ProjectBuilder(nodes = mergeProjectNodes(), blacklist = mergeBlacklist())
@@ -25,10 +23,6 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         else -> throw MergeException("API versions not supported.")
     }
 
-    // Opaque lenses are unioned by name; the first non-null commit hash wins. Their payload schema is
-    // unknown, so two data-bearing payloads under the same name cannot be structurally combined: a genuine
-    // collision fails loudly instead of silently dropping one side. An empty reserved slot (domain/security
-    // `{}`) never conflicts and yields to a data-bearing payload so it still round-trips.
     private val mergedOpaqueLenses: Map<String, JsonElement> by lazy {
         val merged = LinkedHashMap<String, JsonElement>()
         projects.forEach { project ->
@@ -51,11 +45,8 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private val mergedCommitHash: String? by lazy { projects.firstNotNullOfOrNull { it.commitHash } }
 
-    // Each lens owns how its attribute types and descriptors combine; the merger only delegates.
     private val mergedMetricsLens by lazy { projects.map { it.lenses.metrics }.reduce { acc, lens -> acc.merge(lens) } }
 
-    // Edges from every input are unioned and de-duplicated by endpoint pair, regardless of merge
-    // strategy, so overlaying a dependency-bearing project never silently drops its edges.
     private val mergedDependencyLens by lazy {
         projects.map { it.lenses.dependency }.reduce { acc, lens -> acc.merge(lens) }
     }

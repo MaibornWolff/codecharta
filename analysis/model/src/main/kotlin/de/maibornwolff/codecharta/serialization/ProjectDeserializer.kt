@@ -52,11 +52,6 @@ object ProjectDeserializer {
         }
     }
 
-    /**
-     * Auto-detects the format by apiVersion major and routes to the matching reader. 2.0 is read
-     * everywhere; 1.x is read only when [allowLegacy] is set — i.e. only by `ccsh convert`. Every other
-     * command rejects a 1.x file and points the user at `convert`.
-     */
     private fun parseProject(projectString: String, allowLegacy: Boolean): Project {
         val parsed = JsonParser.parseString(projectString)
         if (!parsed.isJsonObject) {

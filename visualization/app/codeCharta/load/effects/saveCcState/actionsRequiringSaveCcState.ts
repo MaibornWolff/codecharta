@@ -53,13 +53,6 @@ import {
     unmarkPackage
 } from "../../../stores/sharedView/sharedView.write.facade"
 
-// Slice 10b: the ex-appSettings / ex-dynamicSettings grab-bag action lists (appSettingsActions,
-// dynamicSettingsActions) were dissolved together with those reducers. The exact set of actions that
-// trigger a CcState save is preserved, now grouped by the state home each action belongs to — mapState
-// (view settings), sharedView (focus/search) and preferences (durable prefs). The fileStore setStandard
-// action that used to sit in dynamicSettingsActions is already covered by fileActions.
-// setShowIncomingEdges/setShowOutgoingEdges are dispatched by the edge-settings popover but were missing
-// from this union, so those runtime toggles were not persisted; they are included now.
 const mapStateSaveActions = [
     setColorLabels,
     setShowMetricLabelNodeName,
@@ -96,10 +89,6 @@ const mapStateSaveActions = [
     setAreaMetric
 ]
 
-// Slice 9b/9c re-homed blacklist + markedPackages from the (now-deleted) fileSettings slice into
-// sharedView; their save-trigger actions belong here with the rest of the sharedView save actions.
-// removeBlacklistItems (plural, dispatched by the file-extension bar) was missing from this union, so a
-// bulk blacklist removal was not persisted; it is included now alongside the singular removeBlacklistItem.
 const sharedViewSaveActions = [
     setSearchPattern,
     setAllFocusedNodes,
@@ -116,10 +105,6 @@ const sharedViewSaveActions = [
     unmarkPackage
 ]
 
-// The metrics lens's cc.json source (node attributeTypes + descriptors) persists in the CcState blob.
-// Slice 15e removed the edge actions (setEdges/addEdge/removeEdge) from the save-trigger union entirely:
-// edges is no longer stored state (a pure derived selector on the dependency lens), so nothing about it
-// needs persisting.
 const metricsLensSaveActions = [setAttributeTypes, setAttributeDescriptors]
 
 export const actionsRequiringSaveCcState = [

@@ -2,18 +2,8 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.helper
 
 import java.io.ByteArrayOutputStream
 
-/**
- * Decodes git's C-style path quoting.
- *
- * `-c core.quotepath=off` (see [GitAdapter][de.maibornwolff.codecharta.analysers.parsers.gitlog.util.GitAdapter])
- * keeps non-ASCII bytes raw, but git still wraps a path in double quotes and escapes it when it contains
- * a literal `"`, a backslash, or a control character. It also octal-escapes high bytes when quotepath is
- * *not* off, so decoding octal here makes externally-generated logs (produced without the flag) parse too.
- *
- * A path that is not fully double-quoted is returned unchanged, so calling this on every path is safe.
- * Octal escapes are reassembled as raw bytes and the whole result is UTF-8 decoded, so a multi-byte
- * character split across several `\NNN` escapes is rebuilt correctly.
- */
+// git -c core.quotepath=off suppresses C-style octet escapes for non-ASCII paths; this unquoter strips
+// them from log output that was collected without that flag so externally-generated logs parse correctly.
 object GitPathUnquoter {
     fun unquote(path: String): String {
         if (path.length < 2 || path.first() != '"' || path.last() != '"') return path

@@ -12,25 +12,9 @@ object DcJsonParser {
     const val OUTGOING_DEPENDENCIES = "outgoing_dependencies"
     const val INCOMING_DEPENDENCIES = "incoming_dependencies"
 
-    /**
-     * The canonical tree-position segments of every leaf, keyed by leaf id and computed once. Both
-     * the edge and the file-node building derive from this, so a physical path is canonicalized a
-     * single time instead of once per leaf and again per referencing edge.
-     */
     fun canonicalSegmentsByLeafId(dcProject: DcProject): Map<String, List<String>> =
         dcProject.leaves.mapValues { (_, leaf) -> canonicalSegments(leaf.physicalPath) }
 
-    /**
-     * One [MutableNode] per unique leaf `physicalPath`, paired with the folder [Path] to insert it
-     * under. DependaCharta describes symbols (classes/functions) but the code map is file-level, and
-     * several symbols can share one file, so paths are de-duplicated. Building these nodes lets the
-     * dependency edges reference real file nodes — the edge endpoints and the nodes are derived from
-     * the same canonical path, so they resolve to the same id.
-     *
-     * Each file node carries its aggregated [OUTGOING_DEPENDENCIES]/[INCOMING_DEPENDENCIES] weight
-     * (summed from [edges]) so a DependaCharta map has a default node metric to size buildings by,
-     * instead of only the edge metric.
-     */
     fun parseFileNodes(
         dcProject: DcProject,
         edges: List<Edge> = emptyList(),

@@ -7,12 +7,6 @@ import { showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../s
 import { blacklistMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 
-/**
- * Derived (view-state-aware) edge-visibility selector — Slice 9b P0-1 (half 2). Composes the dependency
- * lens's RAW edge-metric computation with the `blacklist` matcher (sharedView) AND the edge-visibility
- * flags `showIncoming/OutgoingEdges` (mapState) to sort + filter the node-edge map. Lifted out of
- * `lenses/dependency/store/` so the lens reads no mutable view state (the `lens-no-view-state` goal).
- */
 export const sortedNodeEdgeMetricsMapSelector = createSelector(
     visibleFileStatesSelector,
     blacklistMatcherSelector,

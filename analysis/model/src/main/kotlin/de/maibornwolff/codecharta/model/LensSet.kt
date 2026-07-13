@@ -2,32 +2,15 @@ package de.maibornwolff.codecharta.model
 
 import com.google.gson.JsonElement
 
-/**
- * The set of lenses a [Project] carries. [metrics] and [dependency] are concrete, typed lenses;
- * every other top-level lens — the reserved `domain`/`security` slots and any unknown lens a newer
- * tool emits — is preserved verbatim in [opaqueLenses] as raw JSON, so it survives a round-trip
- * through an older tool. [domain]/[security] are typed accessors over that bag.
- *
- * [fromLegacy] (legacy → lenses) and [legacyAttributeTypes]/[allAttributeDescriptors] (lenses →
- * legacy) are explicit converters between the lens model and the 1.5-era flat
- * `attributeTypes`/`attributeDescriptors`/`edges` triple. They are consumed only where the legacy
- * shape is genuinely needed — the 1.5 wire mapper, the 1.5 reader, and the [ProjectBuilder]
- * accumulation API (whose [ProjectBuilder.fromLenses] factory rebuilds the flat maps for lens-native
- * callers). The filters operate on the typed [MetricsLens]/[DependencyLens] and never reach for the
- * legacy projection.
- */
 data class LensSet(
     val metrics: MetricsLens = MetricsLens(),
     val dependency: DependencyLens = DependencyLens(),
     val opaqueLenses: Map<String, JsonElement> = emptyMap()
 ) {
-    /** The reserved `domain` lens, carried verbatim and present only if the source supplied one. */
     val domain: JsonElement? get() = opaqueLenses[DOMAIN_KEY]
 
-    /** The reserved `security` lens, carried verbatim and present only if the source supplied one. */
     val security: JsonElement? get() = opaqueLenses[SECURITY_KEY]
 
-    /** The edge-only `attributeTypes["nodes"]`/`["edges"]` split, rebuilt for legacy consumers. */
     fun legacyAttributeTypes(): Map<String, MutableMap<String, AttributeType>> {
         val result = mutableMapOf<String, MutableMap<String, AttributeType>>()
         if (metrics.attributeTypes.isNotEmpty()) result[NODES_KEY] = metrics.attributeTypes.toMutableMap()
@@ -35,7 +18,6 @@ data class LensSet(
         return result
     }
 
-    /** The flat 1.5 descriptor map (metric and edge descriptors share one namespace). */
     fun allAttributeDescriptors(): Map<String, AttributeDescriptor> {
         // A metric registered on both lenses (e.g. `ccsh edgefilter` output) must not lose either side's
         // metadata when flattened: keep the metrics-lens descriptor and union in the edge lens's analyzers,

@@ -3,13 +3,6 @@ import { MetricsLensFacade } from "../../../lenses/metrics/metricsLens.facade"
 import { IsDeltaStateStore } from "../../shared/facade"
 import { LegendMapStateStore } from "../stores/legendMapState.store"
 
-/**
- * The single seam every legend component injects. The attribute descriptors come from the metrics-lens
- * facade (descriptors$ — legend is an outside consumer, so it reaches the lens only through its public
- * facade); the color-metric value range, the six view/appearance reads and the delta flag come from the
- * feature-local stores — the only legend code allowed to inject @ngrx Store, so the service and
- * components stay ngrx-free.
- */
 @Injectable({ providedIn: "root" })
 export class LegendService {
     constructor(

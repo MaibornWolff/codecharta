@@ -17,16 +17,10 @@ import de.maibornwolff.codecharta.serialization.dto.LensesDto
 import de.maibornwolff.codecharta.serialization.dto.MetricsLensDto
 import java.lang.reflect.Type
 
-/**
- * The single owner of the 2.0 wire GSON configuration. Both mappers and the (de)serializer share it
- * so the on-disk shape is defined in exactly one place.
- */
 object CcJsonV2Gson {
     val gson: Gson =
         GsonBuilder()
-            // Read whole-number JSON values back as Long (not Double), so a 2.0 read→write leaves an
-            // integer attribute like `1` unchanged instead of coercing it to `1.0`. Non-integral values
-            // still deserialize as Double.
+            // Keep integer attributes as Long so a read→write round-trip doesn't coerce `1` to `1.0`.
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
             .registerTypeAdapter(AttributeType::class.java, AttributeTypeDeserializer())
@@ -39,7 +33,6 @@ object CcJsonV2Gson {
 
     private val TYPED_LENS_KEYS = setOf(METRICS_KEY, DEPENDENCY_KEY)
 
-    /** Serializes the typed lenses and re-emits every opaque lens (domain/security/unknown) verbatim. */
     private class LensesDtoSerializer : JsonSerializer<LensesDto> {
         override fun serialize(src: LensesDto, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
             val result = JsonObject()
@@ -50,7 +43,6 @@ object CcJsonV2Gson {
         }
     }
 
-    /** Reads the typed lenses into typed fields and captures every other key verbatim into `opaqueLenses`. */
     private class LensesDtoDeserializer : JsonDeserializer<LensesDto> {
         override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): LensesDto {
             val jsonObject = json.asJsonObject

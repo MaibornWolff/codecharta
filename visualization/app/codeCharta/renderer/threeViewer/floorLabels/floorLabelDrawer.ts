@@ -74,7 +74,6 @@ export class FloorLabelDrawer {
     private static createLabelPlaneCanvas(scaledMapWidth: number, scaledMapHeight: number) {
         const textCanvas = document.createElement("canvas")
 
-        // Flip map width and height to support non squarified maps (e.g. if a rectangular subfolder is focused)
         let textCanvasWidth = scaledMapWidth
         let textCanvasHeight = scaledMapHeight
 
@@ -147,10 +146,8 @@ export class FloorLabelDrawer {
 
         const planeMesh = new Mesh(plane, material)
 
-        // Rotate plane to be horizontally
         planeMesh.rotateX((90 * Math.PI) / 180)
 
-        // Position plane over the map
         const liftToPreventZFighting = 2
 
         plane.translate(
@@ -159,7 +156,6 @@ export class FloorLabelDrawer {
             -this.folderGeometryHeight * this.scaling.y * (floorLevel + 1) - liftToPreventZFighting
         )
 
-        // Move and scale plane mesh exactly like the squarified map
         planeMesh.scale.set(this.scaling.x / mapResolutionScaling, this.scaling.z / mapResolutionScaling, 1)
         planeMesh.position.set(-this.mapSize * this.scaling.x, 0, -this.mapSize * this.scaling.z)
 

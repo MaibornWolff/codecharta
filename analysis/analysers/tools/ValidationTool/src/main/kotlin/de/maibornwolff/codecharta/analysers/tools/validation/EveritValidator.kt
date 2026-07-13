@@ -35,13 +35,6 @@ class EveritValidator(private var schemaPath: String) : Validator {
         checkReferentialIntegrity(json)
     }
 
-    /**
-     * `ccsh check` bypasses [de.maibornwolff.codecharta.serialization.ProjectDeserializer], so without this
-     * gate a legacy 1.x file would either pass (the bundled schema still accepts the wrapped 1.x shape) or
-     * fail with an opaque schema stack trace — inconsistent with every other command, which points the user
-     * at `ccsh convert`. Mirrors ProjectDeserializer's version detection so only a genuine 1.x file is
-     * rejected with the convert hint; unrelated malformed 2.0 input still falls through to schema validation.
-     */
     private fun rejectLegacyDocument(json: JSONObject) {
         val metaApiVersion = json.optJSONObject("meta")?.optString("apiVersion")?.takeIf { it.isNotBlank() }
         val major = metaApiVersion?.substringBefore('.') ?: if (json.has("lenses")) "2" else "1"
@@ -51,13 +44,6 @@ class EveritValidator(private var schemaPath: String) : Validator {
         }
     }
 
-    /**
-     * JSON Schema cannot express that a metrics-lens key or an edge endpoint must resolve to an existing
-     * file-tree node id, so a schema-valid file with a dangling id slips through while the reader silently
-     * drops the orphaned entry ([de.maibornwolff.codecharta.serialization.CcJsonV2ToProjectMapper] only warns).
-     * This semantic pass makes `ccsh check` fail loudly instead, asserting that every metrics-lens key and every
-     * edge endpoint references an id that actually exists in the `files` tree.
-     */
     private fun checkReferentialIntegrity(json: JSONObject) {
         val files = json.optJSONArray("files") ?: return
         val nodeIds = HashSet<String>()

@@ -2,11 +2,6 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.util.Logger
 
-/**
- * Shared attribute-type/descriptor merge helpers used by every concrete [Lens]. They live here, on
- * neutral ground, because both [MetricsLens] and [DependencyLens] depend on them — keeping them in
- * one lens implementation would make the other reach across into it.
- */
 internal fun mergeAttributeTypes(first: Map<String, AttributeType>, second: Map<String, AttributeType>): Map<String, AttributeType> {
     val merged = first.toMutableMap()
     second.forEach { (metric, type) -> merged.putIfAbsent(metric, type) }

@@ -1,22 +1,3 @@
-/**
- * Public surface of fileStore — THE cc.json source home. Outside code reaches it only through this
- * barrel (enforced by `filestore-external-access-only-via-facade`); the `store/` ngrx internals, the
- * `repos/` data-access seam and the `loaders/` ingestion boundary stay private.
- *
- * Exports are sorted by module path (Biome `organizeImports`), so they no longer sit in role-ordered
- * blocks. The surface serves four audiences:
- *   - LOAD PIPELINE — `LoadFileService`, `UrlExtractor`, `getCCFile*`, `getContentChecksum`,
- *     `getNameDataPair`, `buildHtmlMessage`, `sampleFile1`/`sampleFile2`, and the `NameDataPair`
- *     wire-DTO type (re-exported so the load orchestrator can type its ingestion handoff without
- *     importing the wire DTO directly — `wire-dto-only-in-filestore-boundary`).
- *   - READ selectors — `filesSelector`, `referenceFileSelector`, `visibleFileStatesSelector`,
- *     `isDeltaStateSelector`, `areMultipleMapsVisibleSelector`, `isLoadingFileSelector`.
- *   - WRITE action creators — `fileActions`, `setFiles`, `removeFiles`, `setDelta*`, `setStandard`,
- *     `switchReferenceAndComparison`, `setIsLoadingFile`, `setCurrentFilesAreSampleFiles`.
- *   - STORE WIRING — the slice reducers + defaults the `rootStore` composition registers
- *     (`files`/`defaultFiles`, `isLoadingFile`/`defaultIsLoadingFile`,
- *     `currentFilesAreSampleFiles`/`defaultCurrentFilesAreSampleFiles`).
- */
 export type { NameDataPair } from "../../model/codeCharta.api.model"
 export { sampleFile1, sampleFile2 } from "./loaders/ccJson/sampleFiles"
 export { LoadFileService, NO_FILES_LOADED_ERROR_MESSAGE } from "./loaders/ccJson/services/loadFile.service"

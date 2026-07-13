@@ -24,12 +24,6 @@ import java.nio.charset.StandardCharsets
 import java.security.DigestOutputStream
 import java.security.MessageDigest
 
-/**
- * Maps the domain [Project] onto the 2.0 wire DTO. This is the only place where metrics are lifted
- * off file nodes into the metrics lens (keyed by [NodeId]) and where edge endpoint strings are
- * resolved to node ids. The domain still carries metrics on nodes and edges as path strings; the
- * lens-native domain (Stage B) makes this mapping near-trivial.
- */
 object ProjectToCcJsonV2Mapper {
     private val FILES_TYPE = object : TypeToken<List<FileDto>>() {}.type
     private val DOCUMENT_META_PREFIX = "{\"meta\":".toByteArray(StandardCharsets.UTF_8)
@@ -42,14 +36,6 @@ object ProjectToCcJsonV2Mapper {
         return CcJsonV2(buildMeta(project, checksum, commitHash), files, lenses)
     }
 
-    /**
-     * Writes the 2.0 document to [out] in a single serialization pass. The `{ files, lenses }` body is
-     * serialized exactly once — through a [DigestOutputStream] into a byte buffer — yielding both the
-     * `meta.checksum` and the reusable body bytes. Because the checksum must precede the body inside
-     * `meta`, the naive path serializes the body twice (once to hash, once to write); reusing the
-     * buffered bytes here removes that second full serialization. The output is byte-identical to
-     * serializing the [toDto] result with the shared GSON.
-     */
     fun writeProject(project: Project, out: OutputStream, commitHash: String? = project.commitHash) {
         val (files, lenses) = buildFilesAndLenses(project)
         val (bodyBytes, checksum) = serializeBody(files, lenses)
@@ -104,15 +90,7 @@ object ProjectToCcJsonV2Mapper {
         commitHash = commitHash
     )
 
-    /**
-     * Ensure every dependency edge endpoint has a real file node so it resolves by id after a 2.0
-     * round-trip. Edge-only producers (e.g. CodeMaatImporter) emit a bare root plus edges; without
-     * this the reader drops every edge as unresolved because only the endpoint hash — never the path —
-     * survives on the wire. Endpoints already backed by a node are left untouched (a no-op for normal
-     * projects); only genuinely-missing ones are materialized as empty File nodes. This is the 1.5
-     * EdgeFilter.insertEmptyNodesFromEdges behaviour, moved to the single serialization boundary so it
-     * covers every edge-only producer.
-     */
+    // Ensure every edge endpoint has a file node so it resolves by id after a 2.0 round-trip.
     private fun materializeEdgeEndpoints(root: Node, edges: List<Edge>): Node {
         if (edges.isEmpty()) return root
         val existingPaths = HashSet<String>()
@@ -143,13 +121,7 @@ object ProjectToCcJsonV2Mapper {
         node.children.forEach { child -> collectCanonicalPaths(child, segments + child.name, into) }
     }
 
-    /**
-     * Maps each node's canonical path to its type so an edge endpoint (which carries no type) can be
-     * hashed with the real type of the node it targets, keeping folder-targeting edges resolvable. When
-     * a File and a Folder legally share a path, the lowest [NodeType] ordinal wins (File first) so the
-     * choice is independent of child iteration order — edges conventionally target files, and either id
-     * maps back to the same path on read, so the endpoint always still resolves.
-     */
+    // Map canonical path → node type so edge endpoints can be hashed with the real type of the node they target.
     private fun collectTypesByCanonicalPath(node: Node, segments: List<String>, into: MutableMap<String, NodeType>) {
         into.merge(NodeId.canonicalPath(segments), node.type ?: NodeType.File) { existing, candidate ->
             if (existing.ordinal <= candidate.ordinal) existing else candidate
@@ -200,13 +172,6 @@ object ProjectToCcJsonV2Mapper {
         )
     }
 
-    /**
-     * Serializes the `{ files, lenses }` body once, streaming it through a [DigestOutputStream] so the
-     * MD5 is computed without materializing the whole body as an intermediate String or byte copy.
-     * Returns the body bytes (reused by [writeProject]) and the checksum. The emitted byte sequence —
-     * and therefore the checksum — is identical to `md5(gson.toJson({ files, lenses }))`, so the wire
-     * definition is unchanged.
-     */
     private fun serializeBody(files: List<FileDto>, lenses: LensesDto): Pair<ByteArray, String> {
         val digest = MessageDigest.getInstance("MD5")
         val buffer = ByteArrayOutputStream()

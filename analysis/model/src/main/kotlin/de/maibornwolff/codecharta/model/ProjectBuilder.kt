@@ -39,9 +39,6 @@ open class ProjectBuilder(
         true
     }
 
-    // 2.0 lens data with no legacy flat-map projection: the reserved metrics `clusters`, the opaque
-    // (domain/security/unknown) lenses, and the meta `commitHash`. They are carried verbatim through
-    // build() so a filter rebuild does not silently drop them.
     private var clusters: List<JsonElement> = emptyList()
 
     private var opaqueLenses: Map<String, JsonElement> = emptyMap()
@@ -93,14 +90,6 @@ open class ProjectBuilder(
         )
     }
 
-    /**
-     * Assembles the project from fully-formed typed [lenses] instead of re-deriving them from the flat
-     * `attributeTypes`/`attributeDescriptors` projection. Lens-native callers that have already merged
-     * their lenses (the merger) use this so an edge descriptor with no matching edge attributeType is
-     * not relocated to the metrics lens by [LensSet.fromLegacy]. Node processing still runs, but the
-     * flat `edges`/`attributeTypes`/`attributeDescriptors` fields are ignored — [lenses] is authoritative,
-     * so its edges must already be merged and its metrics already translated.
-     */
     fun buildFromLenses(lenses: LensSet): Project {
         processNodesAndEdges()
         return assembleProject(lenses)
@@ -323,12 +312,6 @@ open class ProjectBuilder(
     companion object {
         const val DUMMY_PROJECT_NAME = ""
 
-        /**
-         * Builds a [ProjectBuilder] straight from typed lenses, so lens-native callers (the filters)
-         * never have to hand-assemble the legacy `attributeTypes`/`attributeDescriptors` maps. The
-         * edges come from [dependency]; the produced project is byte-identical to passing the legacy
-         * projection of these lenses into the primary constructor.
-         */
         fun fromLenses(
             nodes: List<MutableNode>,
             metrics: MetricsLens,

@@ -329,7 +329,6 @@ export class ThreeSceneService implements OnDestroy {
 
         this.initFloorLabels(nodes)
 
-        // Reset children
         this.mapGeometry.children.length = 0
 
         this.mapGeometry.position.x = -treeMapSize

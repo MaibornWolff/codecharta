@@ -13,11 +13,7 @@ export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
 export const CCSTATE_STATE_ID = 1001
 
-// v3 (Slice 5): the map-view settings moved out of appSettings into their own mapState root.
-// A persisted CcState blob written at v2 still keeps those values under appSettings; re-home them
-// so neither the rehydrate applier nor _applyPartialState's isKeyOf guard silently drops them
-// back to defaults (there would be no crash and no snapshot signal — hence a real record transform,
-// not a bare version bump).
+// v3: map-view settings → mapState (was appSettings)
 export function migrateCcStateRecordToV3<T>(state: T): T {
     if (!state || typeof state !== "object" || !("appSettings" in state) || !state["appSettings"]) {
         return state
@@ -33,11 +29,7 @@ export function migrateCcStateRecordToV3<T>(state: T): T {
     return { ...state, appSettings, mapState }
 }
 
-// v4 (Slice 6): the presentation stragglers (colorMode/colorRange/margin from dynamicSettings,
-// layoutAlgorithm/isLoadingMap from appSettings) and the transient interaction ids (hoveredNodeId/
-// selectedBuildingId/rightClickedNodeData from appStatus) moved into mapState. Re-home them in a
-// persisted blob so the rehydrate applier finds them under mapState instead of silently reverting
-// them to defaults — same silent-data-loss landmine the v3 transform closes.
+// v4: colorMode/colorRange/margin/layoutAlgorithm/isLoadingMap/interaction ids → mapState
 const V4_MOVES: Record<string, string[]> = {
     dynamicSettings: ["colorMode", "colorRange", "margin"],
     appSettings: ["layoutAlgorithm", "isLoadingMap"],
@@ -69,10 +61,7 @@ export function migrateCcStateRecordToV4<T>(state: T): T {
     return next as T
 }
 
-// v5 (Slice 7): the metric SELECTION (areaMetric/heightMetric/colorMetric/edgeMetric/
-// distributionMetric) moved out of dynamicSettings into mapState. Re-home them in a persisted
-// blob so the rehydrate applier finds them under mapState instead of silently reverting them to
-// defaults — same silent-data-loss landmine the v3/v4 transforms close.
+// v5: metric selection (areaMetric/heightMetric/colorMetric/edgeMetric/distributionMetric) → mapState
 const V5_MOVES: Record<string, string[]> = {
     dynamicSettings: ["areaMetric", "heightMetric", "colorMetric", "edgeMetric", "distributionMetric"]
 }
@@ -102,12 +91,7 @@ export function migrateCcStateRecordToV5<T>(state: T): T {
     return next as T
 }
 
-// v6 (Slice 8): focusedNodePath + searchPattern moved out of dynamicSettings into a brand-new
-// sharedView root. Unlike v3/v4/v5 — which merged INTO the pre-existing mapState — this is the FIRST
-// migration that CREATES a new root: an old (v5-shaped) blob has NO sharedView at all. Build it fresh
-// from defaultSharedView + the two moved keys pulled out of dynamicSettings, so the rehydrate applier
-// finds them under sharedView instead of silently reverting them to defaults — same silent-data-loss
-// landmine the v3/v4/v5 transforms close.
+// v6: focusedNodePath + searchPattern → sharedView (new root; was dynamicSettings)
 const V6_MOVES: Record<string, string[]> = {
     dynamicSettings: ["focusedNodePath", "searchPattern"]
 }
@@ -137,11 +121,7 @@ export function migrateCcStateRecordToV6<T>(state: T): T {
     return next as T
 }
 
-// v7 (Slice 9a): attributeTypes + attributeDescriptors moved out of fileSettings into a brand-new
-// metricsLensSource root (owned by the metrics lens). Like v6, this CREATES a new root: an old
-// (v6-shaped) blob has NO metricsLensSource. Build it fresh from defaultMetricsLensSource + the two
-// moved keys pulled out of fileSettings, so the rehydrate applier finds them under metricsLensSource
-// instead of silently reverting them to defaults — same silent-data-loss landmine the v3–v6 transforms close.
+// v7: attributeTypes + attributeDescriptors → metricsLensSource (new root; was fileSettings)
 const V7_MOVES: Record<string, string[]> = {
     fileSettings: ["attributeTypes", "attributeDescriptors"]
 }
@@ -174,11 +154,7 @@ export function migrateCcStateRecordToV7<T>(state: T): T {
     return next as T
 }
 
-// v8 (Slice 9b): blacklist moved out of fileSettings into the sharedView root. Unlike v6/v7 — which
-// CREATED new roots — the sharedView root already exists (created at v6), so this MERGES into it,
-// exactly like v3/v4/v5 merged into the pre-existing mapState. Re-home blacklist so the rehydrate applier
-// finds it under sharedView instead of silently reverting it to defaults — same silent-data-loss landmine
-// the v3–v7 transforms close.
+// v8: blacklist → sharedView (was fileSettings)
 const V8_MOVES: Record<string, string[]> = {
     fileSettings: ["blacklist"]
 }
@@ -208,10 +184,7 @@ export function migrateCcStateRecordToV8<T>(state: T): T {
     return next as T
 }
 
-// v9 (Slice 9c): markedPackages moved out of fileSettings into the sharedView root. Like v8, the
-// sharedView root already exists (created at v6), so this MERGES into it (mirrors v3/v4/v5/v8), not a
-// new root. Re-home markedPackages so the rehydrate applier finds it under sharedView instead of
-// silently reverting it to defaults — same silent-data-loss landmine the v3–v8 transforms close.
+// v9: markedPackages → sharedView (was fileSettings)
 const V9_MOVES: Record<string, string[]> = {
     fileSettings: ["markedPackages"]
 }
@@ -241,13 +214,7 @@ export function migrateCcStateRecordToV9<T>(state: T): T {
     return next as T
 }
 
-// v10 (Slice 10a): the file-provenance flags moved out of the appSettings/appStatus grab-bags into
-// their own top-level roots owned by the fileStore — appSettings.isLoadingFile → isLoadingFile,
-// appStatus.currentFilesAreSampleFiles → currentFilesAreSampleFiles — and the now-empty appStatus
-// grab-bag is dropped. Unlike v3–v9 (which merged into an existing/new nested root), this promotes two
-// scalar flags to top-level roots and deletes a whole grab-bag. The rehydrate appliers never restored
-// these runtime flags, but keeping the persisted record shape-valid mirrors the v3–v9 transforms and
-// defends any full-blob apply against the same silent-data-loss landmine.
+// v10: isLoadingFile → top-level (was appSettings); currentFilesAreSampleFiles → top-level; drop appStatus
 export function migrateCcStateRecordToV10<T>(state: T): T {
     if (!state || typeof state !== "object") {
         return state
@@ -274,12 +241,7 @@ export function migrateCcStateRecordToV10<T>(state: T): T {
     return next as T
 }
 
-// v11 (Slice 10b): the seven durable ex-appSettings prefs + the ex-dynamicSettings sortingOption moved
-// out of the appSettings/dynamicSettings grab-bags into a brand-new preferences root, and both now-empty
-// grab-bags are dropped. Like v6/v7 this CREATES a new root: an old (v10-shaped) blob has no preferences.
-// Build it fresh from defaultPreferences + the moved keys, so the rehydrate applier finds them under
-// preferences instead of silently reverting them to defaults — same silent-data-loss landmine the v3–v10
-// transforms close.
+// v11: user prefs → preferences (new root; was appSettings + dynamicSettings.sortingOption); drop both grab-bags
 const V11_PREFERENCE_KEYS_FROM_APPSETTINGS = [
     "isPresentationMode",
     "resetCameraIfNewFileIsLoaded",
@@ -318,12 +280,7 @@ export function migrateCcStateRecordToV11<T>(state: T): T {
     return next as T
 }
 
-// v12 (Slice 10c): the two file-explorer sort prefs merged into one `sorting` object WITHIN the
-// preferences home — preferences.sortingOption + preferences.sortingOrderAscending →
-// preferences.sorting = { option, orderAscending }. Unlike v3–v11 (which MOVE keys between homes),
-// this NESTS two sibling keys inside the already-existing preferences root. Re-shape a persisted blob
-// so the rehydrate applier finds the merged `sorting` object instead of silently reverting it to
-// defaults — same silent-data-loss landmine the v3–v11 transforms close.
+// v12: sortingOption + sortingOrderAscending → preferences.sorting = { option, orderAscending }
 export function migrateCcStateRecordToV12<T>(state: T): T {
     if (!state || typeof state !== "object") {
         return state
@@ -342,14 +299,7 @@ export function migrateCcStateRecordToV12<T>(state: T): T {
     return { ...record, preferences: trimmed } as T
 }
 
-// v13 (Slice 14): the EDGE side of attributeTypes moved out of metricsLensSource into a brand-new
-// dependencyLensSource root (owned by the dependency lens). Unlike v3–v12 (which MOVE keys between homes
-// or NEST siblings), this SPLITS one nested object: metricsLensSource.attributeTypes = { nodes, edges }
-// becomes metricsLensSource.attributeTypes = { nodes, edges: {} } + dependencyLensSource.attributeTypes =
-// { nodes: {}, edges }. Like v6/v7 it CREATES a new root: an old (v12-shaped) blob has NO
-// dependencyLensSource. Re-shape a persisted blob so the rehydrate applier finds the edge types under
-// dependencyLensSource instead of silently reverting them to defaults — same silent-data-loss landmine the
-// v3–v12 transforms close.
+// v13: edge attributeTypes → dependencyLensSource (new root; was metricsLensSource.attributeTypes.edges)
 export function migrateCcStateRecordToV13<T>(state: T): T {
     if (!state || typeof state !== "object") {
         return state
@@ -375,12 +325,7 @@ export function migrateCcStateRecordToV13<T>(state: T): T {
     return next as T
 }
 
-// v14 (Slice 14e-1): the three transient interaction ids (hoveredNodeId/selectedBuildingId/
-// rightClickedNodeData) move out of mapState into the sharedView root — renderer-agnostic view state.
-// Like v8/v9 the sharedView root already exists, so MERGE into it; but the persisted values are
-// decoration-time ordinals that never survive a re-decoration (14e-2 re-expresses the id as a PATH), so
-// seed all three as NULL rather than carrying a stale number, and trim them off mapState — same
-// silent-data-loss landmine the v3–v13 transforms close.
+// v14: hoveredNodeId/selectedBuildingId/rightClickedNodeData → sharedView (was mapState; seed as null)
 export function migrateCcStateRecordToV14<T>(state: T): T {
     if (!state || typeof state !== "object") {
         return state
@@ -403,9 +348,7 @@ export function migrateCcStateRecordToV14<T>(state: T): T {
     return next as T
 }
 
-// Slice 15e: edges was the last member of the `fileSettings` root, and it is now a pure derived selector
-// on the dependency lens (never stored). Drop the whole `fileSettings` key from the persisted blob so a
-// stale array can't linger — nothing reads it anymore (edges re-derives from the persisted files).
+// v15: drop fileSettings (edges now derives from the dependency lens, not stored)
 export function migrateCcStateRecordToV15<T>(state: T): T {
     if (!state || typeof state !== "object") {
         return state
@@ -476,16 +419,7 @@ export async function openCodeChartaDB() {
             if (!database.objectStoreNames.contains(SCENARIOS_STORE_NAME)) {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
-            // Existing DBs (oldVersion >= 1) may hold an older-shaped CcState blob; re-home its
-            // map-view settings into mapState, its focus/search/blacklist/markedPackages into sharedView,
-            // its attributeTypes/attributeDescriptors into metricsLensSource, its file-provenance flags
-            // (isLoadingFile/currentFilesAreSampleFiles) into their own top-level fileStore roots, and its
-            // durable prefs (appSettings + dynamicSettings.sortingOption) into a preferences root,
-            // merge its two sort prefs into preferences.sorting, split the edge attributeTypes out of
-            // metricsLensSource into a new dependencyLensSource root, and move the interaction ids
-            // (hoveredNodeId/selectedBuildingId/rightClickedNodeData) from mapState into sharedView.
-            // Migrations chain: v2 blobs run v3→…→v15; a v14 blob runs only v15. A brand-new DB
-            // (oldVersion 0) has no record to migrate.
+            // Migrate persisted blobs forward through all applicable transforms (v3→…→v15).
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)

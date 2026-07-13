@@ -1,13 +1,3 @@
-/**
- * WRITE surface of the mapState state-home (Slice 13 CQRS split) — the ONLY dispatch surface.
- *
- * This barrel re-exports the mapState action creators (map colors, labels, scaling, axis inversion,
- * edge visibility/appearance, the Slice-6 presentation stragglers, the transient interaction ids, and
- * the Slice-7 metric-selection setters). Writers (feature `stores/`, the load applier, save/rerender
- * effects) import from here; display components do not — enforced by the
- * `state-home-write-facade-is-sole-dispatch-surface` and `display-components-cannot-dispatch`
- * dep-cruiser rules. Readers use `mapState.read.facade`.
- */
 
 export { setAmountOfEdgePreviews } from "./store/amountOfEdgePreviews/amountOfEdgePreviews.actions"
 export { setAmountOfTopLabels } from "./store/amountOfTopLabels/amountOfTopLabels.actions"

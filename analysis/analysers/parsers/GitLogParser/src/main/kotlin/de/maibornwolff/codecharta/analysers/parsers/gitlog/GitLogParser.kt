@@ -75,13 +75,9 @@ class GitLogParser(
             return detector.detectedCharset
         }
 
-        /**
-         * Paths from `git -c core.quotepath=off` are raw UTF-8 bytes. Prefer UTF-8 whenever the log is
-         * valid UTF-8, so those paths decode correctly and match the ls-files list read with the same
-         * charset. The charset detector otherwise misreads a mostly-ASCII log with a few multi-byte paths
-         * as a single-byte Western encoding (e.g. WINDOWS-1252), garbling the path and dropping the file's
-         * git metrics. Only a log that is not valid UTF-8 (a genuinely legacy encoding) falls back to it.
-         */
+        // Prefer UTF-8; fall back to the JVM default when the log contains non-UTF-8 bytes.
+        // Used because the charset detector misreads a mostly-ASCII log with a few multi-byte paths as a
+        // single-byte Western encoding (e.g. WINDOWS-1252), garbling non-ASCII paths and losing their metrics.
         internal fun determineLogEncoding(pathToLog: File): String {
             if (isValidUtf8(pathToLog)) return "UTF-8"
             return guessEncoding(pathToLog) ?: "UTF-8"

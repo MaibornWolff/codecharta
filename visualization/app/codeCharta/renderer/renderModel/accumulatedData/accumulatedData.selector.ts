@@ -19,13 +19,7 @@ const accumulatedDataFallback: AccumulatedData = Object.freeze({
 
 export type AccumulatedData = { unifiedMapNode: CodeMapNode | undefined; unifiedFileMeta: FileMeta | undefined }
 
-// The composing layer above the lenses (Slice 14d): it reads the structure lens's undecorated tree
-// (`structureTreeSelector`) DOWNWARD, then layers on the metric data, the blacklist and the
-// `{ nodes, edges }` attributeTypes recomposed from the two metric lenses (metrics = node types, ADR
-// 12; dependency = edge types). Because the aggregation/id-decoration lives HERE, above the lenses,
-// the metrics lens can never need to read this back — which is exactly what makes a cycle-free
-// per-node `valueOf` possible (CF #1). The structure tree is cloned before decoration: the selector is
-// memoized, so its instance is shared across recomputes and must not be mutated in place.
+// The structure tree is cloned before decoration: the selector is memoized, so its instance is shared across recomputes and must not be mutated in place.
 export const accumulatedDataSelector = createSelector(
     metricDataSelector,
     visibleFileStatesSelector,

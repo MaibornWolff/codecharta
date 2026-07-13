@@ -12,11 +12,6 @@ import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
 import de.maibornwolff.codecharta.serialization.dto.FileDto
 import de.maibornwolff.codecharta.util.Logger
 
-/**
- * Maps the 2.0 wire DTO back onto the domain [Project]. Metrics are re-attached to nodes from the
- * metrics lens by id, the node/edge `attributeTypes` split is reconstructed, and edge endpoints are
- * rebuilt from ids by walking the file tree (the inverse of [ProjectToCcJsonV2Mapper]).
- */
 object CcJsonV2ToProjectMapper {
     fun toProject(dto: CcJsonV2): Project {
         val metricsByNodeId = dto.lenses.metrics.attributes
@@ -70,10 +65,7 @@ object CcJsonV2ToProjectMapper {
     private fun toNode(fileDto: FileDto, metricsByNodeId: Map<String, Map<String, Any>>): Node {
         val children = fileDto.children?.map { toNode(it, metricsByNodeId) } ?: emptyList()
         return Node(
-            // NFC-normalize the name so the reconstructed tree agrees with the NFC edge endpoints
-            // collectEndpoints derives (and with the node's own id): otherwise an NFD-named tree read
-            // from 2.0 makes EdgeFilter's exact-string endpoint matching silently stop aggregating and
-            // insert ghost NFC-named duplicate nodes.
+            // NFC-normalize each segment so it agrees with NodeId.normalizeName (macOS NFD vs Linux NFC).
             name = NodeId.normalizeName(fileDto.name),
             type = NodeType.parse(fileDto.type),
             attributes = metricsByNodeId[fileDto.id] ?: emptyMap(),

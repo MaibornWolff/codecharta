@@ -85,8 +85,6 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
     }
 
     override fun call(): Unit? {
-        // A factory rather than a shared instance, so every merge group gets a strategy with fresh
-        // stat counters (a reused instance accumulated stats across MIMO groups).
         val makeStrategy: () -> NodeMergerStrategy = when {
             leafStrategySet -> { -> MergeResolverStrategy.leaf(addMissingNodes, ignoreCase) }
             recursiveStrategySet && !leafStrategySet -> { -> MergeResolverStrategy.recursive(ignoreCase) }
@@ -106,10 +104,6 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
         } else {
             val projects = readInputFiles(sourceFiles)
 
-            // A legacy input already fails loudly in the read step above; here we only guard the empty
-            // case so an all-unreadable input reports cleanly instead of crashing on an empty reduce. A
-            // single valid project is still merged (passed through) - the interactive flow relies on it
-            // when one of two analysers writes its result to stdout instead of a file.
             require(projects.isNotEmpty()) {
                 "No valid projects could be read for merging, stopping execution."
             }
@@ -175,9 +169,6 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
             try {
                 mergeMimoGroup(confirmedFileList, makeStrategy)
             } catch (e: MergeException) {
-                // A group that cannot be merged (a legacy 1.x file, or e.g. conflicting opaque lenses) is
-                // skipped with its specific reason rather than written as a misleading partial merge; the
-                // command still exits non-zero afterwards.
                 Logger.error { "Skipping merge group: ${e.message}" }
                 skippedGroup = true
             }

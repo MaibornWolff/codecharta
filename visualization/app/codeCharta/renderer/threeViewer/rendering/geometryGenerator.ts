@@ -83,7 +83,6 @@ export class GeometryGenerator {
         return delta <= 0 ? height : Math.max(height, GeometryGenerator.MINIMAL_BUILDING_HEIGHT)
     }
 
-    /** Dispatches to the floor or building fill path based on whether the node is a leaf. */
     private fillInstance(index: number, node: Node, state: CcState, isDeltaState: boolean, ctx: BuildContext) {
         if (!node.isLeaf) {
             const color = this.getMarkingColorWithGradient(node)
@@ -108,7 +107,6 @@ export class GeometryGenerator {
         }
     }
 
-    /** Writes all per-instance attributes common to both floors and buildings. */
     private fillInstanceBase(
         index: number,
         measures: BoxMeasures,

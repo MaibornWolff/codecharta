@@ -40,12 +40,6 @@ export interface Settings {
     sharedView: SharedView
 }
 
-// The durable global-preferences home (Slice 10): the user-level prefs that are neither map-view
-// settings, cc.json source, nor cross-renderer view state. Slice 10 dissolved the appSettings and
-// dynamicSettings grab-bags into this single home — the seven ex-appSettings prefs plus the
-// ex-dynamicSettings sortingOption. Slice 10c merged the two file-explorer sort prefs
-// (ex-appSettings sortingOrderAscending + ex-dynamicSettings sortingOption) into one `sorting`
-// object. These persist globally (not per-file-set).
 export interface Preferences {
     isPresentationMode: boolean
     resetCameraIfNewFileIsLoaded: boolean
@@ -56,16 +50,7 @@ export interface Preferences {
     sorting: Sorting
 }
 
-// The cross-renderer view-state home (Slice 8+9b+9c): values that are neither map-specific settings nor
-// cc.json source, and that any renderer (CodeMap, Graph, …) shares — the focus stack, the search
-// pattern, the blacklist and the marked packages. Slice 8 pulled focus/search out of dynamicSettings;
-// Slice 9b pulled the blacklist and Slice 9c the markedPackages out of fileSettings (both scope what
-// every renderer shows/highlights, so they are shared view state, not cc.json source). The .cc.json file
-// still carries blacklist + markedPackages per-file, so CCFile keeps them (see the intersection on
-// CCFile.settings.fileSettings); only the merged STATE root moves here. Slice 14e-1 grew it further with
-// the renderer-agnostic interaction ids (hoveredNodeId/selectedBuildingId/rightClickedNodeData) — they
-// scope what every renderer highlights, so they are shared view state. Slice 14e-2 re-expressed them as
-// canonical node PATHs (stable across re-decoration/reload; sha-16 only at the serialization boundary).
+// Shared renderer view state: focus stack, search pattern, blacklist, marked packages, interaction ids.
 export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string
@@ -81,13 +66,6 @@ export interface SharedView {
     } | null
 }
 
-// The map-view state home (Slice 5+6+7): the purely-visual leaf settings that were
-// previously combined under appSettings/dynamicSettings/appStatus now live under
-// their own state.mapState root. Slice 6 absorbed the presentation stragglers
-// (colorMode/colorRange/margin, layoutAlgorithm/isLoadingMap). The transient interaction
-// ids it also absorbed moved on to sharedView in Slice 14e-1. Slice 7
-// absorbed the metric SELECTION (the PrimaryMetrics area/height/color/edge + the
-// distributionMetric) — the map view's choice of which metric drives each channel.
 export interface MapState extends PrimaryMetrics {
     distributionMetric: string
     amountOfTopLabels: number
@@ -120,16 +98,11 @@ export interface MapState extends PrimaryMetrics {
 
 export interface CcState {
     metricsLensSource: MetricsLensSource
-    // The dependency lens's cc.json source root (Slice 14): the edge attribute types, re-homed out of the
-    // metrics lens's `metricsLensSource` (where Slice 9a transiently parked them). Twin of metricsLensSource.
     dependencyLensSource: DependencyLensSource
     preferences: Preferences
     mapState: MapState
     sharedView: SharedView
     files: FileState[]
-    // fileStore-owned provenance/status flags (Slice 10a): the file-load spinner flag and whether
-    // the currently loaded files are the bundled samples. Pulled out of the appSettings/appStatus
-    // grab-bags into their own top-level roots, owned by the fileStore that sets them.
     isLoadingFile: boolean
     currentFilesAreSampleFiles: boolean
 }

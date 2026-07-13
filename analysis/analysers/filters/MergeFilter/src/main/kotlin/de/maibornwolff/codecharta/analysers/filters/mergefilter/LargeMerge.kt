@@ -11,16 +11,9 @@ class LargeMerge {
         private const val ROOT_NODE_NAME = "root"
 
         fun wrapProjectInFolder(project: Project, prefix: String): Project {
-            // Detect a non-"root" base directly: edge endpoints always carry the synthetic "root"
-            // prefix once read, so the root node name is the reliable signal (not the edge paths).
             require(project.rootNode.name == ROOT_NODE_NAME) {
                 "Input project structure doesn't have '/root/' as a base folder. If that's intended open an issue."
             }
-            // Node metrics travel on the tree and edges/blacklist are re-pathed below, but opaque lens
-            // payloads and metrics `clusters` are copied verbatim. If they key by node id/path, wrapping the
-            // tree under a new folder would silently dangle those references, and their schema is unknown so a
-            // data-bearing payload cannot be re-pathed. Reject it loudly instead of corrupting it; the empty
-            // reserved slots (domain/security `{}`, `clusters` `[]`) reference nothing and pass through.
             val dataBearingOpaqueLenses = project.lenses.opaqueLenses.filterValues { it.carriesData() }.keys
             require(dataBearingOpaqueLenses.isEmpty()) {
                 "Cannot '--large' merge '${project.projectName}': opaque lens(es) ${dataBearingOpaqueLenses.joinToString()} " +
@@ -31,8 +24,6 @@ class LargeMerge {
                 "Cannot '--large' merge '${project.projectName}': metrics 'clusters' data may reference node ids " +
                     "that re-pathing into a subfolder would invalidate. Merge without '--large' or open an issue."
             }
-            // Only the dependency edges are re-pathed; node metrics travel on the tree and the remaining
-            // (empty) opaque/cluster slots are preserved verbatim.
             val rePathedDependency = project.lenses.dependency.copy(edges = addFolderToEdgePaths(project.lenses.dependency.edges, prefix))
             return Project(
                 projectName = project.projectName,

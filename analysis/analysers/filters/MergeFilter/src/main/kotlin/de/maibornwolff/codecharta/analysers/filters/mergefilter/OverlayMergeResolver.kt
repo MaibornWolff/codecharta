@@ -4,28 +4,11 @@ import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.util.Logger
 
-/**
- * Overlays each incoming leaf onto the reference tree by a prioritized chain — exact id (tree
- * position) → unique content hash (rename) → longest path-suffix (differently-rooted trees) → keep +
- * warn. Ambiguous content or suffix matches are skipped, never guessed; unmatched leaves are kept only
- * when [addUnmatchedNodes] is set (the `-a` flag), otherwise they are dropped with a warning.
- * Construct through [MergeResolverStrategy.leaf].
- */
 internal class OverlayMergeResolver(private val addUnmatchedNodes: Boolean, ignoreCase: Boolean) : MergeResolverStrategy(ignoreCase) {
     private var nodesUnmatched = 0
 
-    // Matches on the name alone, without the File/Folder clash guard UNION applies — deliberately.
-    // This list only ever holds project roots: ProjectMerger folds one singleton [rootNode] per project,
-    // and unlike UNION this step never recurses into children. So there is no sibling here to keep a
-    // clashing node apart from, and the else-branch below drops rather than appends — refusing a clash
-    // would silently discard the whole incoming project. Every ccsh writer roots a project at a Folder
-    // named "root" (ProjectBuilder), so two roots of differing types need a hand-written 2.0 file, and
-    // NodeMaxAttributeMerger.createType warns when it is handed more than one concrete type anyway.
-    //
-    // A File/Folder clash IS reachable deeper in this mode: mergeLeavesIntoReference re-inserts leaves
-    // through NodeInserter, which also resolves parents by name, so an incoming leaf under a folder
-    // `foo` nests inside a same-named reference *file* `foo`. That is a separate defect, not something
-    // a guard here would catch.
+    // No File/Folder clash guard here — this only folds project roots, and dropping rather than
+    // appending is deliberate for clashing root types.
     override fun mergeNode(nodeList: List<MutableNode>, node: MutableNode): List<MutableNode> = nodeList.map { existingNode ->
         if (namesMatch(existingNode.name, node.name)) {
             mergeLeavesIntoReference(existingNode, node)
@@ -84,12 +67,6 @@ internal class OverlayMergeResolver(private val addUnmatchedNodes: Boolean, igno
         }
     }
 
-    /**
-     * Content hashes carried by more than one incoming leaf. A rename is only inferred from content
-     * when exactly one incoming leaf owns that content; when several do, resolving them all by content
-     * would collapse them onto the same reference path (silently dropping all but one) or mis-merge
-     * coincidentally identical boilerplate onto an unrelated node, so their content match is refused.
-     */
     private fun ambiguousIncomingContentHashes(incomingLeaves: Map<Path, MutableNode>): Set<String> = incomingLeaves.values
         .mapNotNull { it.checksum?.takeIf(String::isNotEmpty) }
         .groupingBy { it }
@@ -97,35 +74,21 @@ internal class OverlayMergeResolver(private val addUnmatchedNodes: Boolean, igno
         .filterValues { it > 1 }
         .keys
 
-    /**
-     * The reference leaves, indexed once per merge. Each stage of [resolveTargetPath] used to rescan
-     * the whole reference tree for every incoming leaf — the exact stage re-folding each candidate's
-     * every edge, the suffix stage re-folding every reference path — so merging I incoming leaves over
-     * R reference leaves folded R paths I times over.
-     */
     private inner class ReferenceIndex(referenceLeaves: Map<Path, MutableNode>) {
-        /**
-         * Folded edge list → the first reference path spelled that way. Two distinct paths can fold
-         * alike (an NFD and an NFC spelling, or two casings when ignoreCase); the linear scan this
-         * replaces returned the first of them, so keep the first here too.
-         */
         val pathByFoldedEdges: Map<List<String>, Path> =
             LinkedHashMap<List<String>, Path>().apply {
                 referenceLeaves.keys.forEach { putIfAbsent(foldedEdges(it), it) }
             }
 
-        /** Content hash → the reference paths carrying it. Blank and absent hashes are not indexed. */
         val pathsByContentHash: Map<String, List<Path>> =
             referenceLeaves.entries
                 .mapNotNull { (path, node) -> node.checksum?.takeIf(String::isNotEmpty)?.let { it to path } }
                 .groupBy({ it.first }, { it.second })
 
-        /** Every non-trivial reference path with its folded edges, for suffix matching. */
         val foldedPaths: List<Pair<Path, List<String>>> =
             referenceLeaves.keys.filter { !it.isTrivial }.map { it to foldedEdges(it) }
     }
 
-    /** id (exact tree position) → unique content hash → unambiguous longest path-suffix → null. */
     private fun resolveTargetPath(
         incomingPath: Path,
         incomingNode: MutableNode,

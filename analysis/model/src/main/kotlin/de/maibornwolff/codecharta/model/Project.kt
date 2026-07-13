@@ -1,11 +1,5 @@
 package de.maibornwolff.codecharta.model
 
-/**
- * The lens-native analysis domain project. Analysis signals live in [lenses] (a [LensSet]); the file
- * tree ([nodes]) is the identity layer. The legacy 1.5 split/flat shapes (`edges`, the
- * `attributeTypes` node/edge map, the flat `attributeDescriptors`) exist only at the wire boundary
- * and inside [ProjectBuilder] — converted explicitly via [LensSet], never exposed on the domain.
- */
 class Project(
     val projectName: String,
     private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
