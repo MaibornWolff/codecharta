@@ -1,4 +1,3 @@
-
 export { setAmountOfEdgePreviews } from "./store/amountOfEdgePreviews/amountOfEdgePreviews.actions"
 export { setAmountOfTopLabels } from "./store/amountOfTopLabels/amountOfTopLabels.actions"
 export { setAreaMetric } from "./store/areaMetric/areaMetric.actions"
