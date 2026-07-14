@@ -19,7 +19,7 @@ import { fileRoot } from "../../../../../util/fileRoot"
 import { appReducers, setStateMiddleware } from "../../../../rootStore/store"
 import { FilesRepo } from "../../../repos/files.repo"
 import { setCurrentFilesAreSampleFiles } from "../../../store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
-import { removeFiles, setDeltaReference, setStandard } from "../../../store/files.actions"
+import { removeFiles, setStandard } from "../../../store/files.actions"
 import { getCCFileAndDecorateFileChecksum } from "../util/ccFileHelper"
 import { CCFileValidationResult, ERROR_MESSAGES } from "../util/fileValidator"
 import { FILES_ALREADY_LOADED_ERROR_MESSAGE, LoadFileService } from "./loadFile.service"
@@ -54,8 +54,7 @@ describe("loadFileService", () => {
         storeDispatchSpy = jest.spyOn(store, "dispatch")
     })
 
-    afterEach(() => {
-    })
+    afterEach(() => {})
 
     function restartSystem() {
         TestBed.configureTestingModule({

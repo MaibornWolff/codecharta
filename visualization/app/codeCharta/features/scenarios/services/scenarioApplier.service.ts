@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core"
 import { Vector3 } from "three"
 import { CcState, MetricData, RecursivePartial } from "../../../model/codeCharta.model"
 import { ThreeCameraService, ThreeMapControlsService, ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { setIsApplyingScenario } from "../../../util/busy/isApplyingScenario"
 import {
     ColorsSection,
     FiltersSection,
@@ -11,7 +12,6 @@ import {
     ScenarioSectionKey,
     ScenarioSections
 } from "../model/scenario.model"
-import { setIsApplyingScenario } from "../../../util/busy/isApplyingScenario"
 import { ScenariosStore } from "../stores/scenarios.store"
 
 export interface MissingMetrics {

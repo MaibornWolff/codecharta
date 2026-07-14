@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from "@angular/core"
-import { Store } from "@ngrx/store"
 import { BottomBarComponent } from "../features/bottomBar/facade"
 import { ChangelogDialogComponent } from "../features/changelog/components/changelogDialog/changelogDialog.component"
 import { CodeMapComponent } from "../features/codeMap/facade"

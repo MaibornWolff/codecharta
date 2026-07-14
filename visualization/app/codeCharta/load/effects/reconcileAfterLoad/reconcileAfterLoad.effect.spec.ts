@@ -3,12 +3,12 @@ import { EffectsModule } from "@ngrx/effects"
 import { Action, State, Store, StoreModule } from "@ngrx/store"
 import { TEST_FILE_CONTENT } from "../../../mocks/dataMocks"
 import { CcState, SharedView } from "../../../model/codeCharta.model"
+import { defaultDependencyLensSource } from "../../../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { LoadFileService, RestoredSettings, setDeltaReference, setStandard } from "../../../stores/fileStore/fileStore.facade"
 import { filesLoaded } from "../../../stores/fileStore/store/filesLoaded/filesLoaded.actions"
-import { defaultDependencyLensSource } from "../../../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { defaultMetricsLensSource } from "../../../stores/metricsLensSource/metricsLensSource.read.facade"
-import { defaultSharedView } from "../../../stores/sharedView/sharedView.read.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
+import { defaultSharedView } from "../../../stores/sharedView/sharedView.read.facade"
 import { addBlacklistItem, setAllFocusedNodes } from "../../../stores/sharedView/sharedView.write.facade"
 import { clone } from "../../../util/clone"
 import { ErrorDialogService } from "../../../util/errorDialog/errorDialog.service"
@@ -56,10 +56,7 @@ describe("ReconcileAfterLoadEffect", () => {
     const flushDebounce = () => new Promise(resolve => setTimeout(resolve, 0))
 
     /** Loads a real file through the real LoadFileService, then signals the load, as the use-case does. */
-    const loadFileAndSignal = async (
-        urlMetrics: UrlMetricSelection = NO_URL_METRICS,
-        restoredSettings: RestoredSettings | null = null
-    ) => {
+    const loadFileAndSignal = async (urlMetrics: UrlMetricSelection = NO_URL_METRICS, restoredSettings: RestoredSettings | null = null) => {
         loadFileService.loadFiles([{ fileName: "test.cc.json", fileSize: 42, content: clone(TEST_FILE_CONTENT) }])
         store.dispatch(aFilesLoaded(urlMetrics, restoredSettings))
         await flushDebounce()

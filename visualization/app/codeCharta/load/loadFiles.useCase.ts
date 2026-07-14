@@ -5,15 +5,15 @@ import { CcState } from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import {
     buildHtmlMessage,
-    filesLoaded,
     FilesLoadedPayload,
     FilesLoadedSource,
-    RestoredSettings,
+    filesLoaded,
     getContentChecksum,
     getNameDataPair,
     LoadFileService,
     NameDataPair,
     NO_FILES_LOADED_ERROR_MESSAGE,
+    RestoredSettings,
     sampleFile1,
     sampleFile2,
     setIsLoadingFile,
@@ -182,7 +182,11 @@ export class LoadFilesUseCase {
         this.store.dispatch(filesLoaded(provenance))
     }
 
-    private loadSampleFiles(savedCcState: CcState | null, source: FilesLoadedSource, urlMetrics: UrlMetricSelection = NO_URL_METRICS): void {
+    private loadSampleFiles(
+        savedCcState: CcState | null,
+        source: FilesLoadedSource,
+        urlMetrics: UrlMetricSelection = NO_URL_METRICS
+    ): void {
         try {
             if (savedCcState) {
                 this.applyAllSettings(savedCcState)
@@ -230,10 +234,7 @@ export class LoadFilesUseCase {
         missingProperties.push(...this.loadInitialFileStore.missingKeysOfMetricsLensSource(savedCcState.metricsLensSource))
         missingProperties.push(...this.loadInitialFileStore.missingKeysOfDependencyLensSource(savedCcState.dependencyLensSource))
 
-        this.commit(
-            savedNameDataPairs,
-            this.provenance(source, { areSampleFiles: false, urlMetrics, forceAutoFit, restoredSettings })
-        )
+        this.commit(savedNameDataPairs, this.provenance(source, { areSampleFiles: false, urlMetrics, forceAutoFit, restoredSettings }))
         this.loadInitialFileStore.setFiles(savedFileStates)
 
         this.showMissingPropertiesDialog(missingProperties)

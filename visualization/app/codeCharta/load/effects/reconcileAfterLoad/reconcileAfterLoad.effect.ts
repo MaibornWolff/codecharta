@@ -4,11 +4,16 @@ import { Action, Store } from "@ngrx/store"
 import { buffer, combineLatest, debounceTime, filter, map, merge, share, skip, tap } from "rxjs"
 import { CcState } from "../../../model/codeCharta.model"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
-import { codeMapNodesSelector, edgeMetricDataSelector, metricDataSelector, nodeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
 import {
+    codeMapNodesSelector,
+    edgeMetricDataSelector,
+    metricDataSelector,
+    nodeMetricDataSelector
+} from "../../../renderer/renderModel/renderModel.facade"
+import {
+    FileStoreReadWindow,
     FilesLoadedPayload,
     filesLoaded,
-    FileStoreReadWindow,
     RestoredSettings,
     visibleFileStatesSelector
 } from "../../../stores/fileStore/fileStore.facade"
@@ -32,11 +37,11 @@ import { rangeOfMetric } from "../../../util/metric/metricRange"
 import { NO_URL_METRICS } from "../../../util/queryParameter/queryParameter"
 import { QueryParamsService } from "../../../util/queryParameter/queryParams.service"
 import { LoadInitialFileStore } from "../../loadInitialFile.store"
+import { MetricSelection, resolveMetricSelection } from "./resolveMetricSelection"
 import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merger"
 import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
 import { getMergedBlacklist } from "./utils/blacklist.merger"
 import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
-import { MetricSelection, resolveMetricSelection } from "./resolveMetricSelection"
 
 /**
  * A file set arrived (a load, or a file-panel change: delta switch, file removal, re-selection).
@@ -271,8 +276,6 @@ export class ReconcileAfterLoadEffect {
     private updateVisibleTopLabels(): void {
         const codeMapNodes = codeMapNodesSelector(this.ccStateSnapshot.get())
         const storedAmountOfTopLabels = this.mapStateReadWindow.getAmountOfTopLabels()
-        this.store.dispatch(
-            setAmountOfTopLabels({ value: Math.min(storedAmountOfTopLabels, getNumberOfTopLabels(codeMapNodes)) })
-        )
+        this.store.dispatch(setAmountOfTopLabels({ value: Math.min(storedAmountOfTopLabels, getNumberOfTopLabels(codeMapNodes)) }))
     }
 }

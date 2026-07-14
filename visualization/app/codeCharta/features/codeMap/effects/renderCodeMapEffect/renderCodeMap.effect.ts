@@ -36,5 +36,4 @@ export class RenderCodeMapEffect {
             ),
         { dispatch: false }
     )
-
 }

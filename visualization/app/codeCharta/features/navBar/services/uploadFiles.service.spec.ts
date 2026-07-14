@@ -15,7 +15,7 @@ import { UploadFilesService } from "./uploadFiles.service"
 jest.mock("./createCCFileInput")
 
 describe("UploadFilesService", () => {
-    let loadFileService: LoadFileService
+    let _loadFileService: LoadFileService
     let uploadFilesService: UploadFilesService
     let store: Store<CcState>
     let dispatchSpy: jest.SpyInstance
@@ -35,8 +35,7 @@ describe("UploadFilesService", () => {
         ;(createCCFileInput as jest.Mock).mockReturnValue(mockFileInput)
     })
 
-    afterEach(() => {
-    })
+    afterEach(() => {})
 
     function restartSystem() {
         TestBed.configureTestingModule({
@@ -51,7 +50,7 @@ describe("UploadFilesService", () => {
 
     function rebuildServices() {
         uploadFilesService = TestBed.inject(UploadFilesService)
-        loadFileService = TestBed.inject(LoadFileService)
+        _loadFileService = TestBed.inject(LoadFileService)
     }
 
     it("should upload file", async () => {

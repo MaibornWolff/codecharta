@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http"
 import { TestBed } from "@angular/core/testing"
 import { StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
 import { EDGE_METRIC_DATA, FILE_STATES, METRIC_DATA, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../mocks/dataMocks"
 import {
@@ -32,14 +31,7 @@ import { setDelta, setFiles } from "../stores/fileStore/store/files.actions"
 import { filesLoaded } from "../stores/fileStore/store/filesLoaded/filesLoaded.actions"
 import { setIsLoadingFile } from "../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
 import { defaultMapState, MapStateReadWindow } from "../stores/mapState/mapState.read.facade"
-import {
-    setAreaMetric,
-    setColorMetric,
-    setColorRange,
-    setEdgeMetric,
-    setHeightMetric,
-    setLayoutAlgorithm
-} from "../stores/mapState/mapState.write.facade"
+import { setAreaMetric, setColorRange, setLayoutAlgorithm } from "../stores/mapState/mapState.write.facade"
 import { defaultMetricsLensSource, MetricsLensSourceReadWindow } from "../stores/metricsLensSource/metricsLensSource.read.facade"
 import { setAttributeDescriptors, setAttributeTypes } from "../stores/metricsLensSource/metricsLensSource.write.facade"
 import { defaultPreferences, PreferencesReadWindow } from "../stores/preferences/preferences.read.facade"
@@ -730,13 +722,10 @@ describe("LoadFilesUseCase", () => {
             await loadFilesUseCase.reloadAfterReset()
 
             // Assert — the old reset dialog swallowed this error silently
-            expect(mockedErrorDialogService.open).toHaveBeenCalledWith(
-                expect.objectContaining({ title: URL_LOAD_ERROR_TITLE })
-            )
+            expect(mockedErrorDialogService.open).toHaveBeenCalledWith(expect.objectContaining({ title: URL_LOAD_ERROR_TITLE }))
             expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
         })
     })
-
 })
 
 function nullifyObjectValues(originalObject) {

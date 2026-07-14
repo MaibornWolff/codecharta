@@ -43,5 +43,4 @@ export class NavBarWriteStore {
     setFiles(value: FileState[]) {
         this.store.dispatch(setFiles({ value }))
     }
-
 }

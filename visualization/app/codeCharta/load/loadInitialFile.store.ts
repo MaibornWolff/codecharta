@@ -99,10 +99,8 @@ export class LoadInitialFileStore {
     }
 
     applyDependencyLensSource(savedDependencyLensSource: DependencyLensSource) {
-        return this.applySlice(
-            this.dependencyLensSourceReadWindow.getDependencyLensSource(),
-            savedDependencyLensSource,
-            (key, value) => this.mapDependencyLensSourceToAction(key, value)
+        return this.applySlice(this.dependencyLensSourceReadWindow.getDependencyLensSource(), savedDependencyLensSource, (key, value) =>
+            this.mapDependencyLensSourceToAction(key, value)
         )
     }
 
