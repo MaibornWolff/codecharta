@@ -3,7 +3,6 @@ import { EffectsModule } from "@ngrx/effects"
 import { Store, StoreModule } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
 import { RenderCodeMapEffect } from "../../../features/codeMap/effects/renderCodeMapEffect/renderCodeMap.effect"
-import { UnfocusNodesEffect } from "../../../load/effects/unfocusNodes/unfocusNodes.effect"
 import { TEST_FILE_CONTENT } from "../../../mocks/dataMocks"
 import { CcState } from "../../../model/codeCharta.model"
 import { LoadFileService } from "../../../stores/fileStore/fileStore.facade"
@@ -44,7 +43,7 @@ describe("UploadFilesService", () => {
         TestBed.configureTestingModule({
             imports: [
                 StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
-                EffectsModule.forRoot([RenderCodeMapEffect, UnfocusNodesEffect])
+                EffectsModule.forRoot([RenderCodeMapEffect])
             ],
             providers: [UploadFilesService, LoadFileService]
         })

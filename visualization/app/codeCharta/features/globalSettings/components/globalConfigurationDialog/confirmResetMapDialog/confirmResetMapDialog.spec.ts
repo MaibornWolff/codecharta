@@ -4,15 +4,12 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import "fake-indexeddb/auto"
-import * as resetChosenMetricsEffect from "../../../../../features/metricsBar/effects/resetChosenMetrics/setDefaultMetrics"
 import { CcStatePersistence, LoadFilesUseCase } from "../../../../../load/load.facade"
 import { METRIC_DATA } from "../../../../../mocks/dataMocks"
 import { nodeMetricDataSelector } from "../../../../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
 import { setState } from "../../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../../stores/rootStore/state.manager"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
-
-jest.mock("../../../../../features/metricsBar/effects/resetChosenMetrics/setDefaultMetrics")
 
 describe("ConfirmResetMapDialogComponent", () => {
     let mockedCcStatePersistence: { read: jest.Mock; delete: jest.Mock }
@@ -68,18 +65,6 @@ describe("ConfirmResetMapDialogComponent", () => {
         expect(mockedCcStatePersistence.delete).toHaveBeenCalled()
         expect(dispatchSpy).toHaveBeenCalledWith(setState({ value: defaultState }))
         expect(mockedLoadFilesUseCase.reloadAfterReset).toHaveBeenCalled()
-    })
-
-    it("should not set the default metrics itself, because the reconciliation derives them from the reloaded files", async () => {
-        // Arrange
-        await renderAndOpen()
-        const setDefaultMetricsSpy = jest.spyOn(resetChosenMetricsEffect, "setDefaultMetrics")
-
-        // Act
-        await userEvent.click(screen.getByText("Yes"))
-
-        // Assert
-        expect(setDefaultMetricsSpy).not.toHaveBeenCalled()
     })
 
     it("should close dialog when abort is selected", async () => {

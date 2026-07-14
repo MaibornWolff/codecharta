@@ -67,7 +67,7 @@ export function resolveMetricSelection(
     return { areaMetric, heightMetric, colorMetric, distributionMetric, edgeMetric }
 }
 
-export function computeDefaultCombination(nodeMetricData: NodeMetricData[]): string[] {
+function computeDefaultCombination(nodeMetricData: NodeMetricData[]): string[] {
     const combination = preselectCombination(nodeMetricData)
     const [areaMetric, heightMetric, colorMetric] = combination
     if (areaMetric && heightMetric && colorMetric) {
