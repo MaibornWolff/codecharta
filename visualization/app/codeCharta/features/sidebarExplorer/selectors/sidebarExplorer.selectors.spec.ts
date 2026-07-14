@@ -1,6 +1,6 @@
 import { BlacklistItem, CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
-import { _calculateExplorerCounts, flattenRulesWithCountSelector } from "./sidebarExplorer.selectors"
+import { _calculateExplorerCounts, excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "./sidebarExplorer.selectors"
 
 const makeLeaf = (path: string, attributes: Record<string, number> = { unary: 1, rloc: 1 }): CodeMapNode => ({
     name: path.split("/").pop() ?? path,
@@ -194,6 +194,56 @@ describe("sidebarExplorer.selectors", () => {
 
             // Assert
             expect(result[0].affectedCount).toBe(2)
+        })
+
+        it("should mark wildcard paths as RULE and concrete paths as MANUAL", () => {
+            // Arrange
+            const blacklist: BlacklistItem[] = [
+                { type: "flatten", path: "*.spec.ts*" },
+                { type: "flatten", path: "/root/src/alpha.kt" }
+            ]
+
+            // Act
+            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves)
+
+            // Assert
+            expect(result.find(rule => rule.item.path === "*.spec.ts*").kind).toBe("RULE")
+            expect(result.find(rule => rule.item.path === "/root/src/alpha.kt").kind).toBe("MANUAL")
+        })
+
+        it("should not include exclude items", () => {
+            // Arrange
+            const blacklist: BlacklistItem[] = [
+                { type: "flatten", path: "*alpha*" },
+                { type: "exclude", path: "*node_modules*" }
+            ]
+
+            // Act
+            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves)
+
+            // Assert
+            expect(result).toHaveLength(1)
+            expect(result[0].item.type).toBe("flatten")
+        })
+    })
+
+    describe("excludeRulesWithCountSelector", () => {
+        const allLeaves: CodeMapNode[] = [makeLeaf("/root/src/alpha.kt"), makeLeaf("/root/node_modules/beta.kt")]
+
+        it("should only include exclude items", () => {
+            // Arrange
+            const blacklist: BlacklistItem[] = [
+                { type: "flatten", path: "*alpha*" },
+                { type: "exclude", path: "*node_modules*" }
+            ]
+
+            // Act
+            const result = excludeRulesWithCountSelector.projector(blacklist, allLeaves)
+
+            // Assert
+            expect(result).toHaveLength(1)
+            expect(result[0].item.path).toBe("*node_modules*")
+            expect(result[0].affectedCount).toBe(1)
         })
     })
 })

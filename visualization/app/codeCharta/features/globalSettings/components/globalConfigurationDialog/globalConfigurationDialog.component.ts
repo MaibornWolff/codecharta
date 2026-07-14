@@ -1,10 +1,8 @@
-import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { AutomaticCameraResetService } from "../../services/automaticCameraReset.service"
-import { BackgroundThemeService } from "../../services/backgroundTheme.service"
-import { ExperimentalFeaturesService } from "../../services/experimentalFeatures.service"
-import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibility.service"
-import { ScreenshotDestinationService } from "../../services/screenshotDestination.service"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { PreferencesReadWindow } from "../../../../stores/preferences/preferences.read.facade"
+import { GlobalSettingsWriteStore } from "../../stores/globalSettings.write.store"
 import { ExternalLinksComponent } from "./externalLinks/externalLinks.component"
 import { MapLayoutSelectionComponent } from "./mapLayoutSelection/mapLayoutSelection.component"
 import { ResetMapButtonComponent } from "./resetMapButton/resetMapButton.component"
@@ -24,27 +22,23 @@ import { SettingToggleComponent } from "./settingToggle/settingToggle.component"
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalConfigurationDialogComponent {
+    private readonly preferencesReadWindow = inject(PreferencesReadWindow)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
+    private readonly globalSettingsWriteStore = inject(GlobalSettingsWriteStore)
+
     dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
 
-    screenshotToClipboardEnabled = toSignal(this.screenshotDestinationService.screenshotToClipboardEnabled$(), {
+    screenshotToClipboardEnabled = toSignal(this.preferencesReadWindow.screenshotToClipboardEnabled$, {
         requireSync: true
     })
-    experimentalFeaturesEnabled = toSignal(this.experimentalFeaturesService.experimentalFeaturesEnabled$(), {
+    experimentalFeaturesEnabled = toSignal(this.preferencesReadWindow.experimentalFeaturesEnabled$, {
         requireSync: true
     })
-    isWhiteBackground = toSignal(this.backgroundThemeService.isWhiteBackground$(), { requireSync: true })
-    hideFlatBuildings = toSignal(this.flatBuildingVisibilityService.hideFlatBuildings$(), { requireSync: true })
-    resetCameraIfNewFileIsLoaded = toSignal(this.automaticCameraResetService.resetCameraIfNewFileIsLoaded$(), {
+    isWhiteBackground = toSignal(this.mapStateReadWindow.isWhiteBackground$, { requireSync: true })
+    hideFlatBuildings = toSignal(this.mapStateReadWindow.hideFlatBuildings$, { requireSync: true })
+    resetCameraIfNewFileIsLoaded = toSignal(this.preferencesReadWindow.resetCameraIfNewFileIsLoaded$, {
         requireSync: true
     })
-
-    constructor(
-        private readonly screenshotDestinationService: ScreenshotDestinationService,
-        private readonly experimentalFeaturesService: ExperimentalFeaturesService,
-        private readonly backgroundThemeService: BackgroundThemeService,
-        private readonly flatBuildingVisibilityService: FlatBuildingVisibilityService,
-        private readonly automaticCameraResetService: AutomaticCameraResetService
-    ) {}
 
     open() {
         this.dialogElement().nativeElement.showModal()
@@ -55,22 +49,22 @@ export class GlobalConfigurationDialogComponent {
     }
 
     handleResetCameraIfNewFileIsLoadedChanged(checked: boolean) {
-        this.automaticCameraResetService.setResetCameraIfNewFileIsLoaded(checked)
+        this.globalSettingsWriteStore.setResetCameraIfNewFileIsLoaded(checked)
     }
 
     handleHideFlatBuildingsChanged(checked: boolean) {
-        this.flatBuildingVisibilityService.setHideFlatBuildings(checked)
+        this.globalSettingsWriteStore.setHideFlatBuildings(checked)
     }
 
     handleIsWhiteBackgroundChanged(checked: boolean) {
-        this.backgroundThemeService.setWhiteBackground(checked)
+        this.globalSettingsWriteStore.setWhiteBackground(checked)
     }
 
     handleExperimentalFeaturesEnabledChanged(checked: boolean) {
-        this.experimentalFeaturesService.setExperimentalFeaturesEnabled(checked)
+        this.globalSettingsWriteStore.setExperimentalFeaturesEnabled(checked)
     }
 
     handleScreenshotToClipboardEnabledChanged(checked: boolean) {
-        this.screenshotDestinationService.setScreenshotToClipboard(checked)
+        this.globalSettingsWriteStore.setScreenshotToClipboard(checked)
     }
 }

@@ -2,18 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { toSignal } from "@angular/core/rxjs-interop"
 import { ColorLabelOptions, LabelMode } from "../../../../model/codeCharta.model"
 import { ColorCategoryCountsStore } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { debounce } from "../../../../util/debounce"
 import { parseNumberInput } from "../../../../util/parseNumberInput"
-import { AmountOfTopLabelsService } from "../../services/amountOfTopLabels.service"
-import { ColorLabelsService } from "../../services/colorLabels.service"
-import { GroupLabelCollisionsService } from "../../services/groupLabelCollisions.service"
 import { LABEL_SIZE_STEP, MAX_LABEL_SIZE, MIN_LABEL_SIZE } from "../../services/label.constants"
-import { LabelModeService } from "../../services/labelMode.service"
-import { LabelSizeService } from "../../services/labelSize.service"
-import { LabelsPerMapService } from "../../services/labelsPerMap.service"
-import { ShowMetricLabelNameValueService } from "../../services/showMetricLabelNameValue.service"
-import { ShowMetricLabelNodeNameService } from "../../services/showMetricLabelNodeName.service"
-import { StateAccessStore } from "../../stores/stateAccess.store"
+import { LabelSettingsWriteStore } from "../../stores/labelSettings.write.store"
 
 @Component({
     selector: "cc-label-settings-panel",
@@ -25,15 +19,9 @@ import { StateAccessStore } from "../../stores/stateAccess.store"
 export class LabelSettingsPanelComponent {
     private static readonly DEBOUNCE_TIME = 400
 
-    private readonly labelModeService = inject(LabelModeService)
-    private readonly amountOfTopLabelsService = inject(AmountOfTopLabelsService)
-    private readonly labelSizeService = inject(LabelSizeService)
-    private readonly showMetricLabelNodeNameService = inject(ShowMetricLabelNodeNameService)
-    private readonly showMetricLabelNameValueService = inject(ShowMetricLabelNameValueService)
-    private readonly colorLabelsService = inject(ColorLabelsService)
-    private readonly groupLabelCollisionsService = inject(GroupLabelCollisionsService)
-    private readonly labelsPerMapService = inject(LabelsPerMapService)
-    private readonly stateAccessStore = inject(StateAccessStore)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
+    private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
+    private readonly labelSettingsWriteStore = inject(LabelSettingsWriteStore)
     private readonly colorCategoryCountsStore = inject(ColorCategoryCountsStore)
 
     readonly LabelMode = LabelMode
@@ -52,18 +40,18 @@ export class LabelSettingsPanelComponent {
         "mapState.labelsPerMap"
     ]
 
-    readonly amountOfTopLabels = toSignal(this.amountOfTopLabelsService.amountOfTopLabels$(), { requireSync: true })
-    readonly labelSize = toSignal(this.labelSizeService.labelSize$(), { requireSync: true })
-    readonly showMetricLabelNodeName = toSignal(this.showMetricLabelNodeNameService.showMetricLabelNodeName$(), { requireSync: true })
-    readonly showMetricLabelNodeValue = toSignal(this.showMetricLabelNameValueService.showMetricLabelNameValue$(), { requireSync: true })
-    readonly colorLabels = toSignal(this.colorLabelsService.colorLabels$(), { requireSync: true })
-    readonly mapColors = toSignal(this.stateAccessStore.mapColors$, { requireSync: true })
-    readonly isDeltaState = toSignal(this.stateAccessStore.isDeltaState$, { requireSync: true })
-    readonly labelMode = toSignal(this.labelModeService.labelMode$(), { requireSync: true })
+    readonly amountOfTopLabels = toSignal(this.mapStateReadWindow.amountOfTopLabels$, { requireSync: true })
+    readonly labelSize = toSignal(this.mapStateReadWindow.labelSize$, { requireSync: true })
+    readonly showMetricLabelNodeName = toSignal(this.mapStateReadWindow.showMetricLabelNodeName$, { requireSync: true })
+    readonly showMetricLabelNodeValue = toSignal(this.mapStateReadWindow.showMetricLabelNameValue$, { requireSync: true })
+    readonly colorLabels = toSignal(this.mapStateReadWindow.colorLabels$, { requireSync: true })
+    readonly mapColors = toSignal(this.mapStateReadWindow.mapColors$, { requireSync: true })
+    readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { requireSync: true })
+    readonly labelMode = toSignal(this.mapStateReadWindow.labelMode$, { requireSync: true })
     readonly colorCategoryCounts = toSignal(this.colorCategoryCountsStore.colorCategoryCounts$, { requireSync: true })
-    readonly groupLabelCollisions = toSignal(this.groupLabelCollisionsService.groupLabelCollisions$(), { requireSync: true })
-    readonly labelsPerMap = toSignal(this.labelsPerMapService.labelsPerMap$(), { requireSync: true })
-    readonly areMultipleMapsVisible = toSignal(this.stateAccessStore.areMultipleMapsVisible$, { requireSync: true })
+    readonly groupLabelCollisions = toSignal(this.mapStateReadWindow.groupLabelCollisions$, { requireSync: true })
+    readonly labelsPerMap = toSignal(this.mapStateReadWindow.labelsPerMap$, { requireSync: true })
+    readonly areMultipleMapsVisible = toSignal(this.fileStoreReadWindow.areMultipleMapsVisible$, { requireSync: true })
 
     readonly showColorLabels = computed(() => this.labelMode() === LabelMode.Color && !this.isDeltaState())
 
@@ -73,11 +61,11 @@ export class LabelSettingsPanelComponent {
     })
 
     readonly applyDebouncedTopLabels = debounce((amountOfTopLabels: number) => {
-        this.amountOfTopLabelsService.setAmountOfTopLabels(amountOfTopLabels)
+        this.labelSettingsWriteStore.setAmountOfTopLabels(amountOfTopLabels)
     }, LabelSettingsPanelComponent.DEBOUNCE_TIME)
 
     readonly applyDebouncedLabelSize = debounce((labelSize: number) => {
-        this.labelSizeService.setLabelSize(labelSize)
+        this.labelSettingsWriteStore.setLabelSize(labelSize)
     }, LabelSettingsPanelComponent.DEBOUNCE_TIME)
 
     handleTopLabelsInput(event: Event) {
@@ -109,30 +97,30 @@ export class LabelSettingsPanelComponent {
     }
 
     setShowMetricLabelNodeName(event: Event) {
-        this.showMetricLabelNodeNameService.setShowMetricLabelNodeName((event.target as HTMLInputElement).checked)
+        this.labelSettingsWriteStore.setShowMetricLabelNodeName((event.target as HTMLInputElement).checked)
     }
 
     setShowMetricLabelNameValue(event: Event) {
-        this.showMetricLabelNameValueService.setShowMetricLabelNameValue((event.target as HTMLInputElement).checked)
+        this.labelSettingsWriteStore.setShowMetricLabelNameValue((event.target as HTMLInputElement).checked)
     }
 
     setColorLabel(event: Event, colorLabelToToggle: keyof ColorLabelOptions) {
-        this.colorLabelsService.setColorLabels({ [colorLabelToToggle]: (event.target as HTMLInputElement).checked })
+        this.labelSettingsWriteStore.setColorLabels({ [colorLabelToToggle]: (event.target as HTMLInputElement).checked })
     }
 
     setLabelMode(mode: LabelMode) {
-        this.labelModeService.setLabelMode(mode)
+        this.labelSettingsWriteStore.setLabelMode(mode)
     }
 
     setGroupLabelCollisions(event: Event) {
-        this.groupLabelCollisionsService.setGroupLabelCollisions((event.target as HTMLInputElement).checked)
+        this.labelSettingsWriteStore.setGroupLabelCollisions((event.target as HTMLInputElement).checked)
     }
 
     setLabelsPerMap(value: boolean) {
-        this.labelsPerMapService.setLabelsPerMap(value)
+        this.labelSettingsWriteStore.setLabelsPerMap(value)
     }
 
     resetSettings() {
-        this.stateAccessStore.resetSettings(this.resetSettingsKeys)
+        this.labelSettingsWriteStore.resetSettings(this.resetSettingsKeys)
     }
 }

@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { LayoutAlgorithm } from "../../../../../model/codeCharta.model"
+import { MapStateReadWindow } from "../../../../../stores/mapState/mapState.read.facade"
+import { PreferencesReadWindow } from "../../../../../stores/preferences/preferences.read.facade"
 import { debounce } from "../../../../../util/debounce"
-import { MapLayoutService } from "../../../services/mapLayout.service"
+import { GlobalSettingsWriteStore } from "../../../stores/globalSettings.write.store"
 
 @Component({
     selector: "cc-map-layout-selection",
@@ -11,17 +13,19 @@ import { MapLayoutService } from "../../../services/mapLayout.service"
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapLayoutSelectionComponent {
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
+    private readonly preferencesReadWindow = inject(PreferencesReadWindow)
+    private readonly globalSettingsWriteStore = inject(GlobalSettingsWriteStore)
+
     layoutAlgorithms = Object.values(LayoutAlgorithm)
-    layoutAlgorithm = toSignal(this.mapLayoutService.layoutAlgorithm$(), { requireSync: true })
-    maxTreeMapFiles = toSignal(this.mapLayoutService.maxTreeMapFiles$(), { requireSync: true })
+    layoutAlgorithm = toSignal(this.mapStateReadWindow.layoutAlgorithm$, { requireSync: true })
+    maxTreeMapFiles = toSignal(this.preferencesReadWindow.maxTreeMapFiles$, { requireSync: true })
 
     showTreeMapSlider = computed(() => this.layoutAlgorithm() === "TreeMapStreet")
 
-    constructor(private readonly mapLayoutService: MapLayoutService) {}
-
     handleSelectedLayoutAlgorithmChanged(event: Event) {
         const value = (event.target as HTMLSelectElement).value as LayoutAlgorithm
-        this.mapLayoutService.setLayoutAlgorithm(value)
+        this.globalSettingsWriteStore.setLayoutAlgorithm(value)
     }
 
     handleMaxTreeMapFilesRangeInput(event: Event) {
@@ -39,6 +43,6 @@ export class MapLayoutSelectionComponent {
     }
 
     private readonly debouncedSetMaxTreeMapFiles = debounce((value: number) => {
-        this.mapLayoutService.setMaxTreeMapFiles(value)
+        this.globalSettingsWriteStore.setMaxTreeMapFiles(value)
     }, 400)
 }

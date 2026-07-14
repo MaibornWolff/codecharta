@@ -1,27 +1,39 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { of } from "rxjs"
+import { Observable, of } from "rxjs"
 import { LayoutAlgorithm } from "../../../../../model/codeCharta.model"
-import { MapLayoutService } from "../../../services/mapLayout.service"
+import { MapStateReadWindow } from "../../../../../stores/mapState/mapState.read.facade"
+import { PreferencesReadWindow } from "../../../../../stores/preferences/preferences.read.facade"
+import { GlobalSettingsWriteStore } from "../../../stores/globalSettings.write.store"
 import { MapLayoutSelectionComponent } from "./mapLayoutSelection.component"
 
 describe("MapLayoutSelectionComponent", () => {
     let fixture: ComponentFixture<MapLayoutSelectionComponent>
     let component: MapLayoutSelectionComponent
-    let mockMapLayoutService: jest.Mocked<Partial<MapLayoutService>>
+    let mockMapStateReadWindow: { layoutAlgorithm$: Observable<LayoutAlgorithm> }
+    let mockPreferencesReadWindow: { maxTreeMapFiles$: Observable<number> }
+    let mockGlobalSettingsWriteStore: jest.Mocked<Partial<GlobalSettingsWriteStore>>
 
     beforeEach(() => {
-        mockMapLayoutService = {
-            layoutAlgorithm$: jest.fn().mockReturnValue(of(LayoutAlgorithm.SquarifiedTreeMap)),
-            maxTreeMapFiles$: jest.fn().mockReturnValue(of(100)),
+        mockMapStateReadWindow = {
+            layoutAlgorithm$: of(LayoutAlgorithm.SquarifiedTreeMap)
+        }
+        mockPreferencesReadWindow = {
+            maxTreeMapFiles$: of(100)
+        }
+        mockGlobalSettingsWriteStore = {
             setLayoutAlgorithm: jest.fn(),
             setMaxTreeMapFiles: jest.fn()
         }
 
         TestBed.configureTestingModule({
             imports: [MapLayoutSelectionComponent],
-            providers: [{ provide: MapLayoutService, useValue: mockMapLayoutService }]
+            providers: [
+                { provide: MapStateReadWindow, useValue: mockMapStateReadWindow },
+                { provide: PreferencesReadWindow, useValue: mockPreferencesReadWindow },
+                { provide: GlobalSettingsWriteStore, useValue: mockGlobalSettingsWriteStore }
+            ]
         })
 
         fixture = TestBed.createComponent(MapLayoutSelectionComponent)
@@ -35,7 +47,7 @@ describe("MapLayoutSelectionComponent", () => {
             expect(component).toBeTruthy()
         })
 
-        it("should initialize layout algorithm from service", () => {
+        it("should initialize layout algorithm from read window", () => {
             // Arrange & Act
             const layoutAlgorithm = component.layoutAlgorithm()
 
@@ -43,7 +55,7 @@ describe("MapLayoutSelectionComponent", () => {
             expect(layoutAlgorithm).toBe(LayoutAlgorithm.SquarifiedTreeMap)
         })
 
-        it("should initialize maxTreeMapFiles from service", () => {
+        it("should initialize maxTreeMapFiles from read window", () => {
             // Arrange & Act
             const maxTreeMapFiles = component.maxTreeMapFiles()
 
@@ -75,7 +87,7 @@ describe("MapLayoutSelectionComponent", () => {
             await userEvent.selectOptions(select, LayoutAlgorithm.StreetMap)
 
             // Assert
-            expect(mockMapLayoutService.setLayoutAlgorithm).toHaveBeenCalledWith(LayoutAlgorithm.StreetMap)
+            expect(mockGlobalSettingsWriteStore.setLayoutAlgorithm).toHaveBeenCalledWith(LayoutAlgorithm.StreetMap)
         })
 
         it("should display current layout algorithm value", () => {
@@ -98,7 +110,7 @@ describe("MapLayoutSelectionComponent", () => {
 
         it("should show slider when layout is TreeMapStreet", () => {
             // Arrange
-            mockMapLayoutService.layoutAlgorithm$ = jest.fn().mockReturnValue(of(LayoutAlgorithm.TreeMapStreet))
+            mockMapStateReadWindow.layoutAlgorithm$ = of(LayoutAlgorithm.TreeMapStreet)
             fixture = TestBed.createComponent(MapLayoutSelectionComponent)
             component = fixture.componentInstance
             fixture.detectChanges()
@@ -113,7 +125,7 @@ describe("MapLayoutSelectionComponent", () => {
 
     describe("maxTreeMapFiles range input", () => {
         beforeEach(() => {
-            mockMapLayoutService.layoutAlgorithm$ = jest.fn().mockReturnValue(of(LayoutAlgorithm.TreeMapStreet))
+            mockMapStateReadWindow.layoutAlgorithm$ = of(LayoutAlgorithm.TreeMapStreet)
             fixture = TestBed.createComponent(MapLayoutSelectionComponent)
             component = fixture.componentInstance
             fixture.detectChanges()
@@ -131,7 +143,7 @@ describe("MapLayoutSelectionComponent", () => {
             await new Promise(resolve => setTimeout(resolve, 450))
 
             // Assert
-            expect(mockMapLayoutService.setMaxTreeMapFiles).toHaveBeenCalledWith(250)
+            expect(mockGlobalSettingsWriteStore.setMaxTreeMapFiles).toHaveBeenCalledWith(250)
         })
 
         it("should display current maxTreeMapFiles value in range input", () => {
@@ -145,7 +157,7 @@ describe("MapLayoutSelectionComponent", () => {
 
     describe("maxTreeMapFiles number input", () => {
         beforeEach(() => {
-            mockMapLayoutService.layoutAlgorithm$ = jest.fn().mockReturnValue(of(LayoutAlgorithm.TreeMapStreet))
+            mockMapStateReadWindow.layoutAlgorithm$ = of(LayoutAlgorithm.TreeMapStreet)
             fixture = TestBed.createComponent(MapLayoutSelectionComponent)
             component = fixture.componentInstance
             fixture.detectChanges()
@@ -163,13 +175,13 @@ describe("MapLayoutSelectionComponent", () => {
             await new Promise(resolve => setTimeout(resolve, 450))
 
             // Assert
-            expect(mockMapLayoutService.setMaxTreeMapFiles).toHaveBeenCalledWith(500)
+            expect(mockGlobalSettingsWriteStore.setMaxTreeMapFiles).toHaveBeenCalledWith(500)
         })
 
         it("should not call setMaxTreeMapFiles with value below minimum (1)", async () => {
             // Arrange
             const numberInput = screen.getByRole("spinbutton") as HTMLInputElement
-            mockMapLayoutService.setMaxTreeMapFiles.mockClear()
+            mockGlobalSettingsWriteStore.setMaxTreeMapFiles.mockClear()
 
             // Act - Set value directly to avoid triggering debounce with valid intermediate values
             numberInput.value = "0"
@@ -179,13 +191,13 @@ describe("MapLayoutSelectionComponent", () => {
             await new Promise(resolve => setTimeout(resolve, 450))
 
             // Assert
-            expect(mockMapLayoutService.setMaxTreeMapFiles).not.toHaveBeenCalled()
+            expect(mockGlobalSettingsWriteStore.setMaxTreeMapFiles).not.toHaveBeenCalled()
         })
 
         it("should not call setMaxTreeMapFiles with value above maximum (1000)", async () => {
             // Arrange
             const numberInput = screen.getByRole("spinbutton") as HTMLInputElement
-            mockMapLayoutService.setMaxTreeMapFiles.mockClear()
+            mockGlobalSettingsWriteStore.setMaxTreeMapFiles.mockClear()
 
             // Act - Set value directly to avoid triggering debounce with valid intermediate values
             numberInput.value = "1001"
@@ -195,7 +207,7 @@ describe("MapLayoutSelectionComponent", () => {
             await new Promise(resolve => setTimeout(resolve, 450))
 
             // Assert
-            expect(mockMapLayoutService.setMaxTreeMapFiles).not.toHaveBeenCalled()
+            expect(mockGlobalSettingsWriteStore.setMaxTreeMapFiles).not.toHaveBeenCalled()
         })
 
         it("should accept minimum value of 1", async () => {
@@ -210,7 +222,7 @@ describe("MapLayoutSelectionComponent", () => {
             await new Promise(resolve => setTimeout(resolve, 450))
 
             // Assert
-            expect(mockMapLayoutService.setMaxTreeMapFiles).toHaveBeenCalledWith(1)
+            expect(mockGlobalSettingsWriteStore.setMaxTreeMapFiles).toHaveBeenCalledWith(1)
         })
 
         it("should accept maximum value of 1000", async () => {
@@ -225,13 +237,13 @@ describe("MapLayoutSelectionComponent", () => {
             await new Promise(resolve => setTimeout(resolve, 450))
 
             // Assert
-            expect(mockMapLayoutService.setMaxTreeMapFiles).toHaveBeenCalledWith(1000)
+            expect(mockGlobalSettingsWriteStore.setMaxTreeMapFiles).toHaveBeenCalledWith(1000)
         })
     })
 
     describe("debounce behavior", () => {
         beforeEach(() => {
-            mockMapLayoutService.layoutAlgorithm$ = jest.fn().mockReturnValue(of(LayoutAlgorithm.TreeMapStreet))
+            mockMapStateReadWindow.layoutAlgorithm$ = of(LayoutAlgorithm.TreeMapStreet)
             fixture = TestBed.createComponent(MapLayoutSelectionComponent)
             component = fixture.componentInstance
             fixture.detectChanges()
@@ -240,7 +252,7 @@ describe("MapLayoutSelectionComponent", () => {
         it("should debounce rapid input changes", async () => {
             // Arrange
             const rangeInput = screen.getByRole("slider") as HTMLInputElement
-            mockMapLayoutService.setMaxTreeMapFiles.mockClear()
+            mockGlobalSettingsWriteStore.setMaxTreeMapFiles.mockClear()
 
             // Act - Trigger multiple rapid changes
             rangeInput.value = "200"
@@ -256,8 +268,8 @@ describe("MapLayoutSelectionComponent", () => {
             await new Promise(resolve => setTimeout(resolve, 450))
 
             // Assert - Should only call once with the last value
-            expect(mockMapLayoutService.setMaxTreeMapFiles).toHaveBeenCalledTimes(1)
-            expect(mockMapLayoutService.setMaxTreeMapFiles).toHaveBeenCalledWith(400)
+            expect(mockGlobalSettingsWriteStore.setMaxTreeMapFiles).toHaveBeenCalledTimes(1)
+            expect(mockGlobalSettingsWriteStore.setMaxTreeMapFiles).toHaveBeenCalledWith(400)
         })
     })
 })

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener,
 import { toSignal } from "@angular/core/rxjs-interop"
 import { SortingOption } from "../../../../model/codeCharta.model"
 import { ExplorerSortService } from "../../services/explorerSort.service"
+import { SidebarExplorerWriteStore } from "../../stores/sidebarExplorer.write.store"
 
 @Component({
     selector: "cc-explorer-sort-control",
@@ -10,6 +11,7 @@ import { ExplorerSortService } from "../../services/explorerSort.service"
 })
 export class ExplorerSortControlComponent {
     private readonly explorerSortService = inject(ExplorerSortService)
+    private readonly writeStore = inject(SidebarExplorerWriteStore)
     private readonly elementRef = inject(ElementRef<HTMLElement>)
 
     readonly isOpen = signal(false)
@@ -34,12 +36,12 @@ export class ExplorerSortControlComponent {
     }
 
     setSortingOption(value: SortingOption) {
-        this.explorerSortService.setSortingOption(value)
+        this.writeStore.setSortingOption(value)
         this.isOpen.set(false)
     }
 
     toggleSortOrder() {
-        this.explorerSortService.toggleSortingOrderAscending()
+        this.writeStore.toggleSortingOrderAscending()
         this.isOpen.set(false)
     }
 }

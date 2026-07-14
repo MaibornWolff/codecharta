@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { ResetSettingsService } from "../../../services/resetSettings.service"
+import { ResetSettingsStore } from "../../../stores/resetSettings.store"
 import { ResetSettingsButtonComponent } from "./resetSettingsButton.component"
 
 describe("ResetSettingsButtonComponent", () => {
     let fixture: ComponentFixture<ResetSettingsButtonComponent>
     let component: ResetSettingsButtonComponent
-    let mockResetSettingsService: jest.Mocked<Partial<ResetSettingsService>>
+    let mockResetSettingsStore: jest.Mocked<Partial<ResetSettingsStore>>
 
     beforeEach(() => {
-        mockResetSettingsService = {
+        mockResetSettingsStore = {
             resetSettings: jest.fn()
         }
 
         TestBed.configureTestingModule({
             imports: [ResetSettingsButtonComponent],
-            providers: [{ provide: ResetSettingsService, useValue: mockResetSettingsService }]
+            providers: [{ provide: ResetSettingsStore, useValue: mockResetSettingsStore }]
         })
 
         fixture = TestBed.createComponent(ResetSettingsButtonComponent)
@@ -107,7 +107,7 @@ describe("ResetSettingsButtonComponent", () => {
     })
 
     describe("applyDefaultSettings", () => {
-        it("should call resetSettings service with provided settings keys", async () => {
+        it("should call resetSettings store with provided settings keys", async () => {
             // Arrange
             const button = screen.getByRole("button")
 
@@ -115,7 +115,7 @@ describe("ResetSettingsButtonComponent", () => {
             await userEvent.click(button)
 
             // Assert
-            expect(mockResetSettingsService.resetSettings).toHaveBeenCalledWith(["mapState.isWhiteBackground"])
+            expect(mockResetSettingsStore.resetSettings).toHaveBeenCalledWith(["mapState.isWhiteBackground"])
         })
 
         it("should emit callback event when button is clicked", async () => {
@@ -143,10 +143,7 @@ describe("ResetSettingsButtonComponent", () => {
             await userEvent.click(button)
 
             // Assert
-            expect(mockResetSettingsService.resetSettings).toHaveBeenCalledWith([
-                "mapState.isWhiteBackground",
-                "mapState.hideFlatBuildings"
-            ])
+            expect(mockResetSettingsStore.resetSettings).toHaveBeenCalledWith(["mapState.isWhiteBackground", "mapState.hideFlatBuildings"])
         })
 
         it("should call resetSettings before emitting callback", async () => {
@@ -154,7 +151,7 @@ describe("ResetSettingsButtonComponent", () => {
             const button = screen.getByRole("button")
             const callOrder: string[] = []
 
-            mockResetSettingsService.resetSettings.mockImplementation(() => {
+            mockResetSettingsStore.resetSettings.mockImplementation(() => {
                 callOrder.push("resetSettings")
             })
 
@@ -176,7 +173,7 @@ describe("ResetSettingsButtonComponent", () => {
             component.applyDefaultSettings()
 
             // Assert
-            expect(mockResetSettingsService.resetSettings).toHaveBeenCalledWith(["mapState.isWhiteBackground"])
+            expect(mockResetSettingsStore.resetSettings).toHaveBeenCalledWith(["mapState.isWhiteBackground"])
         })
 
         it("should emit callback when applyDefaultSettings is called directly", () => {
@@ -212,7 +209,7 @@ describe("ResetSettingsButtonComponent", () => {
             await userEvent.keyboard("{Enter}")
 
             // Assert
-            expect(mockResetSettingsService.resetSettings).toHaveBeenCalled()
+            expect(mockResetSettingsStore.resetSettings).toHaveBeenCalled()
         })
     })
 
@@ -227,7 +224,7 @@ describe("ResetSettingsButtonComponent", () => {
             await userEvent.click(button)
 
             // Assert
-            expect(mockResetSettingsService.resetSettings).toHaveBeenCalledWith([])
+            expect(mockResetSettingsStore.resetSettings).toHaveBeenCalledWith([])
         })
 
         it("should handle button click without callback subscriber", async () => {
@@ -236,7 +233,7 @@ describe("ResetSettingsButtonComponent", () => {
 
             // Act & Assert - Should not throw error
             await expect(userEvent.click(button)).resolves.not.toThrow()
-            expect(mockResetSettingsService.resetSettings).toHaveBeenCalled()
+            expect(mockResetSettingsStore.resetSettings).toHaveBeenCalled()
         })
     })
 })

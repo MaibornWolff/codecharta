@@ -1,92 +1,19 @@
 import { Injectable } from "@angular/core"
-import { ColorLabelOptions, LabelMode, Node } from "../../model/codeCharta.model"
-import { AmountOfTopLabelsService } from "./services/amountOfTopLabels.service"
-import { ColorLabelsService } from "./services/colorLabels.service"
+import { Node } from "../../model/codeCharta.model"
 import { ConnectorDrawingService } from "./services/connectorDrawing.service"
-import { GroupLabelCollisionsService } from "./services/groupLabelCollisions.service"
 import { LabelCollisionService } from "./services/labelCollision.service"
 import { LabelCreationService } from "./services/labelCreation.service"
-import { LabelModeService } from "./services/labelMode.service"
-import { LabelSizeService } from "./services/labelSize.service"
-import { ShowMetricLabelNameValueService } from "./services/showMetricLabelNameValue.service"
-import { ShowMetricLabelNodeNameService } from "./services/showMetricLabelNodeName.service"
 
 @Injectable({
     providedIn: "root"
 })
 export class LabelSettingsFacade {
     constructor(
-        private readonly labelModeService: LabelModeService,
-        private readonly amountOfTopLabelsService: AmountOfTopLabelsService,
-        private readonly labelSizeService: LabelSizeService,
-        private readonly showMetricLabelNodeNameService: ShowMetricLabelNodeNameService,
-        private readonly showMetricLabelNameValueService: ShowMetricLabelNameValueService,
-        private readonly colorLabelsService: ColorLabelsService,
-        private readonly groupLabelCollisionsService: GroupLabelCollisionsService,
         private readonly labelCreationService: LabelCreationService,
         private readonly labelCollisionService: LabelCollisionService,
         private readonly connectorDrawingService: ConnectorDrawingService
     ) {}
 
-    // Settings observables
-    labelMode$() {
-        return this.labelModeService.labelMode$()
-    }
-
-    amountOfTopLabels$() {
-        return this.amountOfTopLabelsService.amountOfTopLabels$()
-    }
-
-    labelSize$() {
-        return this.labelSizeService.labelSize$()
-    }
-
-    showMetricLabelNodeName$() {
-        return this.showMetricLabelNodeNameService.showMetricLabelNodeName$()
-    }
-
-    showMetricLabelNameValue$() {
-        return this.showMetricLabelNameValueService.showMetricLabelNameValue$()
-    }
-
-    colorLabels$() {
-        return this.colorLabelsService.colorLabels$()
-    }
-
-    groupLabelCollisions$() {
-        return this.groupLabelCollisionsService.groupLabelCollisions$()
-    }
-
-    // Settings mutations
-    setLabelMode(value: LabelMode) {
-        this.labelModeService.setLabelMode(value)
-    }
-
-    setAmountOfTopLabels(value: number) {
-        this.amountOfTopLabelsService.setAmountOfTopLabels(value)
-    }
-
-    setLabelSize(value: number) {
-        this.labelSizeService.setLabelSize(value)
-    }
-
-    setShowMetricLabelNodeName(value: boolean) {
-        this.showMetricLabelNodeNameService.setShowMetricLabelNodeName(value)
-    }
-
-    setShowMetricLabelNameValue(value: boolean) {
-        this.showMetricLabelNameValueService.setShowMetricLabelNameValue(value)
-    }
-
-    setColorLabels(value: Partial<ColorLabelOptions>) {
-        this.colorLabelsService.setColorLabels(value)
-    }
-
-    setGroupLabelCollisions(value: boolean) {
-        this.groupLabelCollisionsService.setGroupLabelCollisions(value)
-    }
-
-    // Label rendering
     addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
         this.labelCreationService.addLeafLabel(node, highestNodeInSet, enforceLabel)
     }

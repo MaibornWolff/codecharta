@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
-import { ResetSettingsService } from "../../../services/resetSettings.service"
+import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core"
+import { ResetSettingsStore } from "../../../stores/resetSettings.store"
 
 @Component({
     selector: "cc-reset-settings-button",
@@ -8,15 +8,15 @@ import { ResetSettingsService } from "../../../services/resetSettings.service"
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResetSettingsButtonComponent {
+    private readonly resetSettingsStore = inject(ResetSettingsStore)
+
     settingsKeys = input.required<string[]>()
     tooltip = input<string>()
     label = input<string>()
     callback = output<void>()
 
-    constructor(private readonly resetSettingsService: ResetSettingsService) {}
-
     applyDefaultSettings() {
-        this.resetSettingsService.resetSettings(this.settingsKeys())
+        this.resetSettingsStore.resetSettings(this.settingsKeys())
         this.callback.emit()
     }
 }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ExplorerTreeStore } from "../../stores/explorerTree.store"
+import { SidebarExplorerReadStore } from "../../stores/sidebarExplorer.read.store"
 import { ExplorerTreeLevelComponent } from "../explorerTreeLevel/explorerTreeLevel.component"
 
 @Component({
@@ -10,7 +10,7 @@ import { ExplorerTreeLevelComponent } from "../explorerTreeLevel/explorerTreeLev
     imports: [ExplorerTreeLevelComponent]
 })
 export class ExplorerTreeComponent {
-    private readonly explorerTreeStore = inject(ExplorerTreeStore)
+    private readonly readStore = inject(SidebarExplorerReadStore)
 
-    readonly rootNode = toSignal(this.explorerTreeStore.rootNode$, { requireSync: true })
+    readonly rootNode = toSignal(this.readStore.rootNode$, { requireSync: true })
 }

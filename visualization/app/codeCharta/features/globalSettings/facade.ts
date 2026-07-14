@@ -1,49 +1,41 @@
 import { Injectable } from "@angular/core"
-import { AutomaticCameraResetService } from "./services/automaticCameraReset.service"
-import { BackgroundThemeService } from "./services/backgroundTheme.service"
-import { ExperimentalFeaturesService } from "./services/experimentalFeatures.service"
-import { FlatBuildingVisibilityService } from "./services/flatBuildingVisibility.service"
-import { MapLayoutService } from "./services/mapLayout.service"
-import { ScreenshotDestinationService } from "./services/screenshotDestination.service"
+import { MapStateReadWindow } from "../../stores/mapState/mapState.read.facade"
+import { PreferencesReadWindow } from "../../stores/preferences/preferences.read.facade"
 
 @Injectable({
     providedIn: "root"
 })
 export class GlobalSettingsFacade {
     constructor(
-        private readonly screenshotDestinationService: ScreenshotDestinationService,
-        private readonly experimentalFeaturesService: ExperimentalFeaturesService,
-        private readonly backgroundThemeService: BackgroundThemeService,
-        private readonly flatBuildingVisibilityService: FlatBuildingVisibilityService,
-        private readonly automaticCameraResetService: AutomaticCameraResetService,
-        private readonly mapLayoutService: MapLayoutService
+        private readonly preferencesReadWindow: PreferencesReadWindow,
+        private readonly mapStateReadWindow: MapStateReadWindow
     ) {}
 
     screenshotToClipboardEnabled$() {
-        return this.screenshotDestinationService.screenshotToClipboardEnabled$()
+        return this.preferencesReadWindow.screenshotToClipboardEnabled$
     }
 
     experimentalFeaturesEnabled$() {
-        return this.experimentalFeaturesService.experimentalFeaturesEnabled$()
+        return this.preferencesReadWindow.experimentalFeaturesEnabled$
     }
 
     isWhiteBackground$() {
-        return this.backgroundThemeService.isWhiteBackground$()
+        return this.mapStateReadWindow.isWhiteBackground$
     }
 
     hideFlatBuildings$() {
-        return this.flatBuildingVisibilityService.hideFlatBuildings$()
+        return this.mapStateReadWindow.hideFlatBuildings$
     }
 
     resetCameraIfNewFileIsLoaded$() {
-        return this.automaticCameraResetService.resetCameraIfNewFileIsLoaded$()
+        return this.preferencesReadWindow.resetCameraIfNewFileIsLoaded$
     }
 
     layoutAlgorithm$() {
-        return this.mapLayoutService.layoutAlgorithm$()
+        return this.mapStateReadWindow.layoutAlgorithm$
     }
 
     maxTreeMapFiles$() {
-        return this.mapLayoutService.maxTreeMapFiles$()
+        return this.preferencesReadWindow.maxTreeMapFiles$
     }
 }
