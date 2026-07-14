@@ -5,7 +5,7 @@ import { Vector3 } from "three"
 import { CcState, ColorMode, LabelMode, MetricData, RecursivePartial } from "../../../model/codeCharta.model"
 import { ThreeCameraService, ThreeMapControlsService, ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { setIsLoadingFile } from "../../../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../../stores/mapState/mapState.write.facade"
+import { isApplyingScenario$ } from "../../../util/busy/isApplyingScenario"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import { MetricsSection, Scenario, ScenarioSectionKey, ScenarioSections } from "../model/scenario.model"
 import { ScenarioApplierService } from "./scenarioApplier.service"
@@ -287,19 +287,29 @@ describe("ScenarioApplierService", () => {
         it("should show loading spinner during application and hide it after", async () => {
             // Arrange
             const scenario = createTestScenario()
+            const flags: boolean[] = []
+            const subscription = isApplyingScenario$.subscribe(value => flags.push(value))
+
+            // Act
+            const promise = service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
+            await promise
+            subscription.unsubscribe()
+
+            // Assert — applying a scenario is not a file load, so it raises its own flag
+            expect(flags).toEqual([false, true, false])
+        })
+
+        it("should never write the file loading flag, because applying a scenario is not a file load", async () => {
+            // Arrange
+            const scenario = createTestScenario()
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
             // Act
-            expect(service.isApplying).toBe(false)
-            const promise = service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
-            expect(service.isApplying).toBe(true)
-            await promise
+            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
 
             // Assert
-            expect(service.isApplying).toBe(false)
-            expect(dispatchSpy.mock.calls[0][0]).toEqual(setIsLoadingFile({ value: true }))
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+            expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: true }))
+            expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
         })
 
         it("should dispatch setState for metrics section", async () => {
@@ -358,21 +368,21 @@ describe("ScenarioApplierService", () => {
             expect(threeRendererService.render).toHaveBeenCalled()
         })
 
-        it("should clear isApplying and loading state even when an error occurs during application", async () => {
+        it("should clear the applying flag even when an error occurs during application", async () => {
             // Arrange
             const scenario = createTestScenario()
             threeRendererService.render.mockImplementation(() => {
                 throw new Error("render failed")
             })
-            const dispatchSpy = jest.spyOn(store, "dispatch")
+            const flags: boolean[] = []
+            const subscription = isApplyingScenario$.subscribe(value => flags.push(value))
 
             // Act
             await expect(service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))).rejects.toThrow("render failed")
+            subscription.unsubscribe()
 
             // Assert
-            expect(service.isApplying).toBe(false)
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+            expect(flags.at(-1)).toBe(false)
         })
     })
 

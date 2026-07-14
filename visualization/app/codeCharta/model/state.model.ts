@@ -93,7 +93,6 @@ export interface MapState extends PrimaryMetrics {
     colorRange: ColorRange
     margin: number
     layoutAlgorithm: LayoutAlgorithm
-    isLoadingMap: boolean
 }
 
 export interface CcState {

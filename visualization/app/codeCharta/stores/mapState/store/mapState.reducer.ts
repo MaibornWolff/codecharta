@@ -17,7 +17,6 @@ import { defaultHideFlatBuildings, hideFlatBuildings } from "./hideFlatBuildings
 import { defaultInvertArea, invertArea } from "./invertArea/invertArea.reducer"
 import { defaultInvertHeight, invertHeight } from "./invertHeight/invertHeight.reducer"
 import { defaultIsEdgeMetricVisible, isEdgeMetricVisible } from "./isEdgeMetricVisible/isEdgeMetricVisible.reducer"
-import { defaultIsLoadingMap, isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
 import { defaultIsWhiteBackground, isWhiteBackground } from "./isWhiteBackground/isWhiteBackground.reducer"
 import { defaultLabelMode, labelMode } from "./labelMode/labelMode.reducer"
 import { defaultLabelSize, labelSize } from "./labelSize/labelSize.reducer"
@@ -61,7 +60,6 @@ export const mapState = combineReducers({
     colorRange,
     margin,
     layoutAlgorithm,
-    isLoadingMap,
     areaMetric,
     heightMetric,
     colorMetric,
@@ -95,7 +93,6 @@ export const defaultMapState: MapState = {
     colorRange: defaultColorRange,
     margin: defaultMargin,
     layoutAlgorithm: defaultLayoutAlgorithm,
-    isLoadingMap: defaultIsLoadingMap,
     areaMetric: defaultAreaMetric,
     heightMetric: defaultHeightMetric,
     colorMetric: defaultColorMetric,

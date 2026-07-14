@@ -8,11 +8,9 @@ import {
     setDeltaComparison,
     setDeltaReference,
     setFiles,
-    setIsLoadingFile,
     setStandard,
     switchReferenceAndComparison
 } from "../../../stores/fileStore/fileStore.facade"
-import { setIsLoadingMap } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class NavBarWriteStore {
@@ -46,11 +44,4 @@ export class NavBarWriteStore {
         this.store.dispatch(setFiles({ value }))
     }
 
-    setLoadingFile(value: boolean) {
-        this.store.dispatch(setIsLoadingFile({ value }))
-    }
-
-    setLoadingMap(value: boolean) {
-        this.store.dispatch(setIsLoadingMap({ value }))
-    }
 }

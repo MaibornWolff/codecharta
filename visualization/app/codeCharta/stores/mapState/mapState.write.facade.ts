@@ -15,7 +15,6 @@ export { setHideFlatBuildings } from "./store/hideFlatBuildings/hideFlatBuilding
 export { setInvertArea } from "./store/invertArea/invertArea.actions"
 export { setInvertHeight } from "./store/invertHeight/invertHeight.actions"
 export { setIsEdgeMetricVisible, toggleEdgeMetricVisible } from "./store/isEdgeMetricVisible/isEdgeMetricVisible.actions"
-export { setIsLoadingMap } from "./store/isLoadingMap/isLoadingMap.actions"
 export { setIsWhiteBackground } from "./store/isWhiteBackground/isWhiteBackground.actions"
 export { setLabelMode } from "./store/labelMode/labelMode.actions"
 export { setLabelSize } from "./store/labelSize/labelSize.actions"

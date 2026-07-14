@@ -2134,7 +2134,6 @@ export const STATE: CcState = {
         },
         colorMode: ColorMode.weightedGradient,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        isLoadingMap: true
     },
     files: [],
     isLoadingFile: true,
@@ -2202,7 +2201,6 @@ export const DEFAULT_STATE: CcState = {
         },
         colorMode: ColorMode.weightedGradient,
         layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        isLoadingMap: true
     },
     sharedView: {
         focusedNodePath: [],

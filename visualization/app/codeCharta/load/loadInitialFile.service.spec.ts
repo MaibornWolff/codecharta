@@ -429,7 +429,7 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.preferences, defaultPreferences))
         })
 
-        it("should set all differing mapState values but never restore the runtime-only isLoadingMap flag", async () => {
+        it("should set all differing mapState values", async () => {
             // Arrange
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
             mockUrlWithFile()
@@ -437,9 +437,8 @@ describe("LoadInitialFileService", () => {
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
-            // Make EVERY mapState value differ from its default — including the runtime-only isLoadingMap
-            // flag — so the applier's skip-isLoadingMap branch is genuinely exercised (were it dropped from
-            // ignoredMapStateKeys, the applier would hit the "Unhandled key" default and this test would fail).
+            // Make EVERY mapState value differ from its default, so every key of the applier is exercised
+            // (an unmapped key would hit the "Unhandled key" default and fail this test).
             mockedState.mapState = makeAllValuesDiffer(defaultMapState) as MapState
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
             jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))
@@ -454,9 +453,7 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric({ value: mockedState.mapState.areaMetric }))
             expect(dispatchSpy).toHaveBeenCalledWith(setColorRange({ value: mockedState.mapState.colorRange }))
             expect(dispatchSpy).toHaveBeenCalledWith(setLayoutAlgorithm({ value: mockedState.mapState.layoutAlgorithm }))
-            // isLoadingMap differs too but is deliberately NOT restored, so exactly one differing key is
-            // skipped: the restore-dispatch count is the differing-key count minus that one.
-            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.mapState, defaultMapState) - 1)
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.mapState, defaultMapState))
         })
 
         it("should set all differing metricsLensSource values", async () => {

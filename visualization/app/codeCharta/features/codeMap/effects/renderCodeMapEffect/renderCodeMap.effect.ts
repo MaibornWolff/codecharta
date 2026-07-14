@@ -1,28 +1,21 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
-import { asyncScheduler, combineLatest, debounceTime, filter, share, tap, throttleTime } from "rxjs"
+import { asyncScheduler, combineLatest, filter, share, tap, throttleTime } from "rxjs"
 import { CcState } from "../../../../model/codeCharta.model"
 import { accumulatedDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { ThreeRendererService } from "../../../../renderer/threeViewer/threeViewer.facade"
-import { setIsLoadingFile } from "../../../../stores/fileStore/fileStore.facade"
-import { setIsLoadingMap } from "../../../../stores/mapState/mapState.write.facade"
 import { clearPendingHeavyDispatch } from "../../../../util/dispatchAfterPaint"
-import { UploadFilesService } from "../../../navBar/facade"
-import { ScenariosFacade } from "../../../scenarios/facade"
 import { CodeMapRenderService } from "../../codeMap.render.service"
 import { actionsRequiringRerender } from "./actionsRequiringRerender"
 
 export const maxFPS = 1000 / 60
-export const LOADING_INDICATOR_QUIET_PERIOD_MS = 350
 
 @Injectable()
 export class RenderCodeMapEffect {
     constructor(
         private readonly store: Store<CcState>,
         private readonly actions$: Actions,
-        private readonly scenariosFacade: ScenariosFacade,
-        private readonly uploadFilesService: UploadFilesService,
         private readonly threeRendererService: ThreeRendererService,
         private readonly codeMapRenderService: CodeMapRenderService
     ) {}
@@ -44,18 +37,4 @@ export class RenderCodeMapEffect {
         { dispatch: false }
     )
 
-    removeLoadingIndicatorAfterRender$ = createEffect(
-        () =>
-            this.renderCodeMap$.pipe(
-                filter(() => !this.uploadFilesService.isUploading && !this.scenariosFacade.isApplying),
-                // Wait for the burst of late-arriving renders (blacklist apply, autoFit) to settle
-                // before hiding the spinner, otherwise the user sees the map jump after the spinner clears.
-                debounceTime(LOADING_INDICATOR_QUIET_PERIOD_MS),
-                tap(() => {
-                    this.store.dispatch(setIsLoadingFile({ value: false }))
-                    this.store.dispatch(setIsLoadingMap({ value: false }))
-                })
-            ),
-        { dispatch: false }
-    )
 }

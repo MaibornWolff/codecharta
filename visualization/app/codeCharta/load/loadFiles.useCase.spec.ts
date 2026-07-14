@@ -600,15 +600,14 @@ describe("LoadFilesUseCase", () => {
             )
         })
 
-        it("should set all differing mapState values but never restore the runtime-only isLoadingMap flag", async () => {
+        it("should set all differing mapState values", async () => {
             // Arrange
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
             mockUrlWithFile()
             mockUrlFiles(mockedNameDataPairs)
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
-            // Make EVERY mapState value differ from its default — including the runtime-only isLoadingMap
-            // flag — so the applier's skip-isLoadingMap branch is genuinely exercised (were it dropped from
-            // ignoredMapStateKeys, the applier would hit the "Unhandled key" default and this test would fail).
+            // Make EVERY mapState value differ from its default, so every key of the applier is exercised
+            // (an unmapped key would hit the "Unhandled key" default and fail this test).
             mockedState.mapState = makeAllValuesDiffer(defaultMapState) as MapState
             mockPersistedState(mockedState)
             const dispatchSpy = jest.spyOn(store, "dispatch")
@@ -622,9 +621,7 @@ describe("LoadFilesUseCase", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric({ value: mockedState.mapState.areaMetric }))
             expect(dispatchSpy).toHaveBeenCalledWith(setColorRange({ value: mockedState.mapState.colorRange }))
             expect(dispatchSpy).toHaveBeenCalledWith(setLayoutAlgorithm({ value: mockedState.mapState.layoutAlgorithm }))
-            // isLoadingMap differs too but is deliberately NOT restored, so exactly one differing key is
-            // skipped: the restore-dispatch count is the differing-key count minus that one.
-            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.mapState, defaultMapState) - 1 + FRAMING_DISPATCH_COUNT)
+            expect(dispatchSpy).toHaveBeenCalledTimes(countDifferences(mockedState.mapState, defaultMapState) + FRAMING_DISPATCH_COUNT)
         })
 
         it("should set all differing metricsLensSource values", async () => {

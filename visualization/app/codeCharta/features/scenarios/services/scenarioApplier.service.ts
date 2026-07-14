@@ -11,6 +11,7 @@ import {
     ScenarioSectionKey,
     ScenarioSections
 } from "../model/scenario.model"
+import { setIsApplyingScenario } from "../../../util/busy/isApplyingScenario"
 import { ScenariosStore } from "../stores/scenarios.store"
 
 export interface MissingMetrics {
@@ -22,8 +23,6 @@ const NODE_METRIC_KEYS = ["areaMetric", "heightMetric", "colorMetric", "distribu
 
 @Injectable({ providedIn: "root" })
 export class ScenarioApplierService {
-    isApplying = false
-
     constructor(
         private readonly scenariosStore: ScenariosStore,
         private readonly threeCameraService: ThreeCameraService,
@@ -83,8 +82,7 @@ export class ScenarioApplierService {
     }
 
     async applyScenario(scenario: Scenario, selectedKeys: Set<ScenarioSectionKey>, metricData?: MetricData): Promise<void> {
-        this.isApplying = true
-        this.scenariosStore.setIsLoadingFile(true)
+        setIsApplyingScenario(true)
 
         try {
             const cameraVectors = selectedKeys.has("camera") ? this.getCameraVectors(scenario.sections) : undefined
@@ -125,9 +123,7 @@ export class ScenarioApplierService {
 
             this.threeRendererService.render()
         } finally {
-            this.isApplying = false
-            this.scenariosStore.setIsLoadingFile(false)
-            this.scenariosStore.setIsLoadingMap(false)
+            setIsApplyingScenario(false)
         }
     }
 

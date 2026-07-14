@@ -61,9 +61,6 @@ import { setAllFocusedNodes, setBlacklist, setMarkedPackages, setSearchPattern }
 export class LoadInitialFileStore {
     private static readonly optionalMapStateKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
 
-    // runtime-only map flag; never restored from a previous session's persisted state.
-    private static readonly ignoredMapStateKeys = new Set<keyof MapState>(["isLoadingMap"])
-
     // transient interaction ids; never restored from a previous session's persisted state.
     private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
         "hoveredNodeId",
@@ -294,9 +291,6 @@ export class LoadInitialFileStore {
     }
 
     private mapMapStateToAction(key: keyof MapState, value: any) {
-        if (LoadInitialFileStore.ignoredMapStateKeys.has(key)) {
-            return
-        }
         switch (key) {
             case "amountOfTopLabels":
                 this.store.dispatch(setAmountOfTopLabels({ value }))

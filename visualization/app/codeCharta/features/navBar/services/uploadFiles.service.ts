@@ -10,9 +10,6 @@ import { readFiles } from "./readFiles"
  */
 @Injectable({ providedIn: "root" })
 export class UploadFilesService {
-    // Read by renderCodeMap.effect to hold the spinner during an upload; retired in the next commit.
-    isUploading = false
-
     constructor(private readonly loadFilesUseCase: LoadFilesUseCase) {}
 
     uploadFiles() {
