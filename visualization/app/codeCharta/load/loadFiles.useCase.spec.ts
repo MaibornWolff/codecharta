@@ -438,14 +438,16 @@ describe("LoadFilesUseCase", () => {
             // Act
             await loadFilesUseCase.loadOnBoot()
 
-            // Assert
+            // Assert — the use-case carries the url metrics on the provenance; applying them is the
+            // reconciliation's job, where the precedence rule (url > persisted > default) lives.
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
-
-            await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setAreaMetric({ value: "mcc" })))
-            await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setHeightMetric({ value: "rloc" })))
-            await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setColorMetric({ value: "functions" })))
-            await waitFor(() => expect(dispatchSpy).toHaveBeenCalledWith(setEdgeMetric({ value: "pairing_rate" })))
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: "FILES_LOADED",
+                    urlMetrics: { areaMetric: "mcc", heightMetric: "rloc", colorMetric: "functions", edgeMetric: "pairing_rate" }
+                })
+            )
         })
     })
 

@@ -4,7 +4,6 @@ import stringify from "safe-stable-stringify"
 import { DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
-import { metricDataSelector } from "../renderer/renderModel/renderModel.facade"
 import { DependencyLensSourceReadWindow } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import { FileStoreReadWindow, setCurrentFilesAreSampleFiles, setDelta, setFiles } from "../stores/fileStore/fileStore.facade"
@@ -53,12 +52,13 @@ import {
     setScreenshotToClipboardEnabled,
     setSortingOption
 } from "../stores/preferences/preferences.write.facade"
-import { CcStateSnapshot } from "../stores/rootStore/ccState.snapshot"
 import { SharedViewReadWindow } from "../stores/sharedView/sharedView.read.facade"
 import { setAllFocusedNodes, setBlacklist, setMarkedPackages, setSearchPattern } from "../stores/sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {
+    private static readonly noOptionalKeys: ReadonlySet<string> = new Set()
+
     private static readonly optionalMapStateKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
 
     // transient interaction ids; never restored from a previous session's persisted state.
@@ -70,7 +70,6 @@ export class LoadInitialFileStore {
 
     constructor(
         private readonly store: Store,
-        private readonly ccStateSnapshot: CcStateSnapshot,
         private readonly preferencesReadWindow: PreferencesReadWindow,
         private readonly metricsLensSourceReadWindow: MetricsLensSourceReadWindow,
         private readonly dependencyLensSourceReadWindow: DependencyLensSourceReadWindow,
@@ -87,118 +86,71 @@ export class LoadInitialFileStore {
         this.store.dispatch(setCurrentFilesAreSampleFiles({ value }))
     }
 
-    dispatchResetCameraIfNewFileIsLoadedToFalse() {
-        this.store.dispatch({ type: "StartWithGlobalOption:resetCameraIfNewFileIsLoadedSetToFalse" })
-    }
-
     applyPreferences(savedPreferences: Preferences) {
-        const currentPreferences = this.preferencesReadWindow.getPreferences()
-        const missingPreferences = []
-        for (const [key, value] of Object.entries(currentPreferences)) {
-            if (key in savedPreferences) {
-                const currentValue = stringify(value)
-                const loadedValue = stringify(savedPreferences[key])
-                if (currentValue !== loadedValue) {
-                    this.mapPreferenceToAction(key as keyof Preferences, savedPreferences[key])
-                }
-            } else {
-                missingPreferences.push(key)
-            }
-        }
-        return missingPreferences
+        return this.applySlice(this.preferencesReadWindow.getPreferences(), savedPreferences, (key, value) =>
+            this.mapPreferenceToAction(key, value)
+        )
     }
 
     applyMetricsLensSource(savedMetricsLensSource: MetricsLensSource) {
-        const currentMetricsLensSource = this.metricsLensSourceReadWindow.getMetricsLensSource()
-        const missingMetricsLensSource = []
-        for (const [key, value] of Object.entries(currentMetricsLensSource)) {
-            if (key in savedMetricsLensSource) {
-                const currentValue = stringify(value)
-                const loadedValue = stringify(savedMetricsLensSource[key])
-                if (currentValue !== loadedValue) {
-                    this.mapMetricsLensSourceToAction(key as keyof MetricsLensSource, savedMetricsLensSource[key])
-                }
-            } else {
-                missingMetricsLensSource.push(key)
-            }
-        }
-        return missingMetricsLensSource
+        return this.applySlice(this.metricsLensSourceReadWindow.getMetricsLensSource(), savedMetricsLensSource, (key, value) =>
+            this.mapMetricsLensSourceToAction(key, value)
+        )
     }
 
     applyDependencyLensSource(savedDependencyLensSource: DependencyLensSource) {
-        const currentDependencyLensSource = this.dependencyLensSourceReadWindow.getDependencyLensSource()
-        const missingDependencyLensSource = []
-        for (const [key, value] of Object.entries(currentDependencyLensSource)) {
-            if (key in savedDependencyLensSource) {
-                const currentValue = stringify(value)
-                const loadedValue = stringify(savedDependencyLensSource[key])
-                if (currentValue !== loadedValue) {
-                    this.mapDependencyLensSourceToAction(key as keyof DependencyLensSource, savedDependencyLensSource[key])
-                }
-            } else {
-                missingDependencyLensSource.push(key)
-            }
-        }
-        return missingDependencyLensSource
+        return this.applySlice(
+            this.dependencyLensSourceReadWindow.getDependencyLensSource(),
+            savedDependencyLensSource,
+            (key, value) => this.mapDependencyLensSourceToAction(key, value)
+        )
     }
 
     applySharedView(savedSharedView: SharedView) {
-        const currentSharedView = this.sharedViewReadWindow.getSharedView()
-        const missingSharedView = []
-        for (const [key, value] of Object.entries(currentSharedView)) {
-            if (key in savedSharedView) {
-                const currentValue = stringify(value)
-                const loadedValue = stringify(savedSharedView[key])
-                if (currentValue !== loadedValue) {
-                    this.mapSharedViewToAction(key as keyof SharedView, savedSharedView[key])
-                }
-            } else {
-                missingSharedView.push(key)
-            }
-        }
-        return missingSharedView
+        return this.applySlice(this.sharedViewReadWindow.getSharedView(), savedSharedView, (key, value) =>
+            this.mapSharedViewToAction(key, value)
+        )
     }
 
     applyMapState(savedMapState: MapState) {
-        const currentMapState = this.mapStateReadWindow.getMapState()
-        const missingMapState = []
-        for (const [key, value] of Object.entries(currentMapState)) {
-            if (key in savedMapState) {
-                const currentValue = stringify(value)
-                const loadedValue = stringify(savedMapState[key])
-                if (currentValue !== loadedValue) {
-                    this.mapMapStateToAction(key as keyof MapState, savedMapState[key])
-                }
-            } else if (!LoadInitialFileStore.optionalMapStateKeys.has(key)) {
-                missingMapState.push(key)
-            }
-        }
-        return missingMapState
+        return this.applySlice(
+            this.mapStateReadWindow.getMapState(),
+            savedMapState,
+            (key, value) => this.mapMapStateToAction(key, value),
+            LoadInitialFileStore.optionalMapStateKeys
+        )
     }
 
-    setMetricsFromUrlValues(areaMetric: string, heightMetric: string, colorMetric: string, edgeMetric: string) {
-        const state = this.ccStateSnapshot.get()
-        const nodeMetricData = metricDataSelector(state).nodeMetricData
-        const edgeMetricData = metricDataSelector(state).edgeMetricData
-        if (!nodeMetricData) {
-            return
+    /**
+     * Restores one persisted slice onto the current one: every key of the CURRENT slice whose persisted
+     * value differs is dispatched through the slice's own mapper, and every key the persisted slice does
+     * not have at all is reported back as missing, for the "could not be fully restored" dialog.
+     *
+     * Iterating the CURRENT slice's keys — not the persisted ones — is what makes an older persisted
+     * state forward-compatible: a key added since it was written is simply left at its default.
+     */
+    private applySlice<Slice extends object>(
+        currentSlice: Slice,
+        savedSlice: Slice,
+        dispatchKey: (key: keyof Slice, value: Slice[keyof Slice]) => void,
+        optionalKeys: ReadonlySet<string> = LoadInitialFileStore.noOptionalKeys
+    ): string[] {
+        const missingKeys: string[] = []
+
+        for (const [key, currentValue] of Object.entries(currentSlice)) {
+            if (!(key in savedSlice)) {
+                if (!optionalKeys.has(key)) {
+                    missingKeys.push(key)
+                }
+                continue
+            }
+            const savedValue = savedSlice[key]
+            if (stringify(currentValue) !== stringify(savedValue)) {
+                dispatchKey(key as keyof Slice, savedValue)
+            }
         }
 
-        const nodeMetricNames = new Set(nodeMetricData.map(nodeMetric => nodeMetric.name))
-        const edgeMetricNames = edgeMetricData.map(edgeMetric => edgeMetric.name)
-
-        if (areaMetric && nodeMetricNames.has(areaMetric)) {
-            this.store.dispatch(setAreaMetric({ value: areaMetric }))
-        }
-        if (heightMetric && nodeMetricNames.has(heightMetric)) {
-            this.store.dispatch(setHeightMetric({ value: heightMetric }))
-        }
-        if (colorMetric && nodeMetricNames.has(colorMetric)) {
-            this.store.dispatch(setColorMetric({ value: colorMetric }))
-        }
-        if (edgeMetric && edgeMetricNames.includes(edgeMetric)) {
-            this.store.dispatch(setEdgeMetric({ value: edgeMetric }))
-        }
+        return missingKeys
     }
 
     setRenderState(renderState: string) {

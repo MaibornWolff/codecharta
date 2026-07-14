@@ -4,7 +4,6 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { LoadInitialFileService } from "../../../../load/load.facade"
 import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
@@ -26,10 +25,6 @@ describe("SettingsButtonComponent", () => {
             providers: [
                 provideMockStore({ initialState: { preferences: defaultPreferences, mapState: defaultMapState } }),
                 { provide: State, useValue: { getValue: () => ({ preferences: defaultPreferences, mapState: defaultMapState }) } },
-                {
-                    provide: LoadInitialFileService,
-                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
-                },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: HttpClient, useValue: {} }
             ]

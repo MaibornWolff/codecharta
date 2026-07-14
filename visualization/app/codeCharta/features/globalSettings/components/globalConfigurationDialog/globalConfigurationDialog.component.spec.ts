@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
-import { LoadInitialFileService } from "../../../../load/load.facade"
 import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
@@ -38,10 +37,6 @@ describe("GlobalConfigurationDialogComponent", () => {
                 }),
                 { provide: State, useValue: mockState },
                 { provide: GlobalSettingsWriteStore, useValue: mockGlobalSettingsWriteStore },
-                {
-                    provide: LoadInitialFileService,
-                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
-                },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: HttpClient, useValue: {} }
             ]

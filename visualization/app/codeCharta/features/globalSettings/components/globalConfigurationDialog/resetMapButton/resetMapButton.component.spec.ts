@@ -4,7 +4,6 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { LoadInitialFileService } from "../../../../../load/load.facade"
 import { METRIC_DATA } from "../../../../../mocks/dataMocks"
 import { nodeMetricDataSelector } from "../../../../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
 import { LoadFileService } from "../../../../../stores/fileStore/fileStore.facade"
@@ -17,10 +16,6 @@ describe("ResetMapButtonComponent", () => {
             imports: [ResetMapButtonComponent],
             providers: [
                 { provide: State, useValue: { getValue: () => defaultState } },
-                {
-                    provide: LoadInitialFileService,
-                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
-                },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: HttpClient, useValue: {} },
                 provideMockStore({

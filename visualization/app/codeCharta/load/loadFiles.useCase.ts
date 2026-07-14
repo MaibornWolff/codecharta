@@ -92,7 +92,6 @@ export class LoadFilesUseCase {
             const urlMetrics = this.urlMetrics()
             this.commit(urlNameDataPairs, this.provenance("reset", { areSampleFiles: false, urlMetrics }))
             this.applyRenderModeFromUrl()
-            this.applyMetricsFromUrl(urlMetrics)
             this.applySampleFileFlagFromUrl()
         } catch (error) {
             this.showUrlLoadErrorDialog(error as Error)
@@ -135,7 +134,6 @@ export class LoadFilesUseCase {
         } catch (error) {
             this.handleUrlLoadError(error as Error, persisted.state, urlMetrics)
         } finally {
-            this.applyMetricsFromUrl(urlMetrics)
             this.applySampleFileFlagFromUrl()
         }
     }
@@ -209,12 +207,9 @@ export class LoadFilesUseCase {
     ): void {
         const missingProperties = []
 
-        // The very first map is fitted once even when the user turned the camera reset off.
+        // The very first map is fitted once even when the user turned the camera reset off — the
+        // autofit step reads this off the provenance.
         const forceAutoFit = !savedCcState.preferences.resetCameraIfNewFileIsLoaded
-        if (forceAutoFit) {
-            // Superseded by the forceAutoFit provenance below once the reconciliation owns step 6.
-            this.loadInitialFileStore.dispatchResetCameraIfNewFileIsLoadedToFalse()
-        }
 
         missingProperties.push(...this.loadInitialFileStore.applyPreferences(savedCcState.preferences))
         missingProperties.push(...this.loadInitialFileStore.applyMapState(savedCcState.mapState))
@@ -255,17 +250,6 @@ export class LoadFilesUseCase {
 
     private urlMetrics(): UrlMetricSelection {
         return this.queryParamsService.getMetrics()
-    }
-
-    // The reconciliation sequence takes this over in the next commit; until then the metrics from
-    // the url are applied here, exactly where LoadInitialFileService applied them.
-    private applyMetricsFromUrl(urlMetrics: UrlMetricSelection): void {
-        this.loadInitialFileStore.setMetricsFromUrlValues(
-            urlMetrics.areaMetric,
-            urlMetrics.heightMetric,
-            urlMetrics.colorMetric,
-            urlMetrics.edgeMetric
-        )
     }
 
     // "Delta" is the only recognized value, and only with at least two loaded files.
