@@ -48,7 +48,7 @@ import { defaultState } from "../stores/rootStore/state.manager"
 import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
 import { defaultSharedView, SharedViewReadWindow } from "../stores/sharedView/sharedView.read.facade"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
-import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"
+import { QueryParamsService, UrlMetricSelection } from "../util/queryParameter/queryParams.service"
 import { getLastAction } from "../util/testUtils/store.utils"
 import { LoadInitialFileService } from "./loadInitialFile.service"
 
@@ -56,19 +56,47 @@ jest.mock("../stores/fileStore/loaders/ccJson/util/urlExtractor")
 jest.mock("../model/files/files.helper")
 jest.mock("../stores/rootStore/indexedDB/indexedDBWriter")
 
+const NO_URL_METRICS: UrlMetricSelection = { areaMetric: null, heightMetric: null, colorMetric: null, edgeMetric: null }
+
 describe("LoadInitialFileService", () => {
     let store: MockStore
     let loadFileService: LoadFileService
     let loadInitialFileService: LoadInitialFileService
     let mockedErrorDialogService: ErrorDialogService
+    let mockedQueryParamsService: jest.Mocked<QueryParamsService>
+
+    const mockUrlWithFile = (options: { renderMode?: string; areSampleFiles?: boolean; metrics?: UrlMetricSelection } = {}) => {
+        mockedQueryParamsService.hasFile.mockReturnValue(true)
+        mockedQueryParamsService.getFileNames.mockReturnValue(["filename"])
+        mockedQueryParamsService.getRenderMode.mockReturnValue(options.renderMode ?? null)
+        mockedQueryParamsService.areSampleFilesFlagged.mockReturnValue(options.areSampleFiles ?? false)
+        mockedQueryParamsService.getMetrics.mockReturnValue(options.metrics ?? NO_URL_METRICS)
+    }
+
+    const mockUrlWithoutFile = () => {
+        mockedQueryParamsService.hasFile.mockReturnValue(false)
+        mockedQueryParamsService.getFileNames.mockReturnValue([])
+        mockedQueryParamsService.getRenderMode.mockReturnValue(null)
+        mockedQueryParamsService.areSampleFilesFlagged.mockReturnValue(false)
+        mockedQueryParamsService.getMetrics.mockReturnValue(NO_URL_METRICS)
+    }
 
     beforeEach(() => {
         mockedErrorDialogService = { open: jest.fn() } as unknown as ErrorDialogService
+        mockedQueryParamsService = {
+            hasFile: jest.fn(() => false),
+            getFileNames: jest.fn(() => []),
+            getRenderMode: jest.fn(() => null),
+            getMetrics: jest.fn(() => NO_URL_METRICS),
+            areSampleFilesFlagged: jest.fn(() => false),
+            write: jest.fn()
+        } as unknown as jest.Mocked<QueryParamsService>
 
         TestBed.configureTestingModule({
             imports: [[StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]],
             providers: [
                 { provide: ErrorDialogService, useValue: mockedErrorDialogService },
+                { provide: QueryParamsService, useValue: mockedQueryParamsService },
                 { provide: HttpClient, useValue: {} },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: CcStateSnapshot, useValue: { get: () => defaultState } },
@@ -110,8 +138,8 @@ describe("LoadInitialFileService", () => {
     describe("load file from query params", () => {
         it("should load files from query params when files query params contain valid file parameter and files are not saved in indexeddb", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(null)))
@@ -124,8 +152,8 @@ describe("LoadInitialFileService", () => {
         })
 
         it("should load sample files when load files from query params throws error", async () => {
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(() => {
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(() => {
                 throw new Error("files could not be loaded from query param")
             })
 
@@ -137,12 +165,7 @@ describe("LoadInitialFileService", () => {
 
         it("should dispatch currentFilesAreSampleFiles when query param currentFilesAreSampleFiles is true", async () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(queryParameter => {
-                if (queryParameter === MetricQueryParemter.currentFilesAreSampleFiles) {
-                    return "true"
-                }
-                return "filename"
-            })
+            mockUrlWithFile({ areSampleFiles: true })
 
             await loadInitialFileService.loadFilesOrSampleFiles()
 
@@ -151,12 +174,7 @@ describe("LoadInitialFileService", () => {
 
         it("should not dispatch currentFilesAreSampleFiles when query param currentFilesAreSampleFiles is not existent", async () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(queryParameter => {
-                if (queryParameter === MetricQueryParemter.currentFilesAreSampleFiles) {
-                    return undefined
-                }
-                return "filename"
-            })
+            mockUrlWithFile()
 
             await loadInitialFileService.loadFilesOrSampleFiles()
 
@@ -169,8 +187,8 @@ describe("LoadInitialFileService", () => {
         it("should set currentFilesAreSampleFiles to true if sample files are loaded", async () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(() => {
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(() => {
                 throw new Error("files could not be loaded from query param")
             })
 
@@ -182,8 +200,8 @@ describe("LoadInitialFileService", () => {
         it("should set files and then apply settings when files in query params and indexeddb are equal", async () => {
             const AMOUNT_OF_TOP_LABELS = 600
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
@@ -208,8 +226,8 @@ describe("LoadInitialFileService", () => {
 
         it("should apply settings and then set files when files in query params differ from files in indexeddb", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
@@ -242,8 +260,8 @@ describe("LoadInitialFileService", () => {
                     selectedAs: FileSelectionState.Comparison
                 }
             ]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "Delta")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            mockUrlWithFile({ renderMode: "Delta" })
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(defaultState)))
@@ -269,24 +287,13 @@ describe("LoadInitialFileService", () => {
                     selectedAs: FileSelectionState.Comparison
                 }
             ]
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(defaultState)))
             jest.mocked(getCCFiles).mockImplementation(() => mockedState.files.map(state => state.file))
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(parameter => {
-                switch (parameter) {
-                    case MetricQueryParemter.areaMetric:
-                        return "mcc"
-                    case MetricQueryParemter.heightMetric:
-                        return "rloc"
-                    case MetricQueryParemter.colorMetric:
-                        return "functions"
-                    case MetricQueryParemter.edgeMetric:
-                        return "pairing_rate"
-                    default:
-                        return "-"
-                }
+            mockUrlWithFile({
+                metrics: { areaMetric: "mcc", heightMetric: "rloc", colorMetric: "functions", edgeMetric: "pairing_rate" }
             })
             const dispatchSpy = jest.spyOn(store, "dispatch")
             store.overrideSelector(metricDataSelector, {
@@ -312,7 +319,7 @@ describe("LoadInitialFileService", () => {
         it("should load files from indexeddb when query params do not contain file parameter", async () => {
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
             mockedState.files = FILE_STATES
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
+            mockUrlWithoutFile()
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(defaultState)))
             const savedFileStates = defaultState.files
             const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
@@ -324,7 +331,7 @@ describe("LoadInitialFileService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(setFiles({ value: savedFileStates }))
         })
         it("should load sample-files when indexeddb is empty", async () => {
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
+            mockUrlWithoutFile()
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(null)))
             await loadInitialFileService.loadFilesOrSampleFiles()
 
@@ -332,7 +339,7 @@ describe("LoadInitialFileService", () => {
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
         })
         it("should load sample files when load files from indexeddb throws error", async () => {
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
+            mockUrlWithoutFile()
             jest.mocked(readCcState).mockImplementation(
                 async () =>
                     new Promise(() => {
@@ -349,7 +356,7 @@ describe("LoadInitialFileService", () => {
         it("should set currentFilesAreSampleFiles to true if sample files are loaded", async () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
+            mockUrlWithoutFile()
             jest.mocked(readCcState).mockImplementation(
                 async () =>
                     new Promise(() => {
@@ -365,7 +372,7 @@ describe("LoadInitialFileService", () => {
         it("should not set currentFilesAreSampleFiles if files from indexeddb are loaded", async () => {
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
             mockedState.files = FILE_STATES
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => null)
+            mockUrlWithoutFile()
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(defaultState)))
             const dispatchSpy = jest.spyOn(store, "dispatch")
             await loadInitialFileService.loadFilesOrSampleFiles()
@@ -379,8 +386,8 @@ describe("LoadInitialFileService", () => {
 
         it("should set all differing sharedView", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
@@ -398,8 +405,8 @@ describe("LoadInitialFileService", () => {
 
         it("should set all differing preferences, restoring the sort option but never the sort order", async () => {
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
@@ -424,8 +431,8 @@ describe("LoadInitialFileService", () => {
         it("should set all differing mapState values but never restore the runtime-only isLoadingMap flag", async () => {
             // Arrange
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
@@ -454,8 +461,8 @@ describe("LoadInitialFileService", () => {
         it("should set all differing metricsLensSource values", async () => {
             // Arrange
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
@@ -481,8 +488,8 @@ describe("LoadInitialFileService", () => {
         it("should set all differing dependencyLensSource values", async () => {
             // Arrange
             const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-            jest.mocked(UrlExtractor.prototype.getParameterByName).mockImplementation(() => "filename")
-            jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+            mockUrlWithFile()
+            jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
                 async () => new Promise(resolve => resolve(mockedNameDataPairs))
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState

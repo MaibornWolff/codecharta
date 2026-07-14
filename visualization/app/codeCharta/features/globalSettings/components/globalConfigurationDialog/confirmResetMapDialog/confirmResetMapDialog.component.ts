@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from "@angu
 import { LoadInitialFileService } from "../../../../../load/load.facade"
 import { LoadFileService, sampleFile1, sampleFile2, UrlExtractor } from "../../../../../stores/fileStore/fileStore.facade"
 import { deleteCcState } from "../../../../../stores/rootStore/indexedDB/indexedDBWriter"
+import { QueryParamsService } from "../../../../../util/queryParameter/queryParams.service"
 import { MapResetStore } from "../../../stores/mapReset.store"
 
 @Component({
@@ -19,6 +20,7 @@ export class ConfirmResetMapDialogComponent {
         private readonly mapResetStore: MapResetStore,
         private readonly httpClient: HttpClient,
         private readonly loadFileService: LoadFileService,
+        private readonly queryParamsService: QueryParamsService,
         private readonly loadInitialFileService: LoadInitialFileService
     ) {}
 
@@ -42,7 +44,7 @@ export class ConfirmResetMapDialogComponent {
         const isFileQueryParameterPresent = this.loadInitialFileService.checkFileQueryParameterPresent()
         if (isFileQueryParameterPresent) {
             try {
-                const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
+                const urlNameDataPairs = await this.urlUtils.getFileDataFromFileNames(this.queryParamsService.getFileNames())
                 this.loadFileService.loadFiles(urlNameDataPairs)
                 this.loadInitialFileService.setRenderStateFromUrl()
             } catch {

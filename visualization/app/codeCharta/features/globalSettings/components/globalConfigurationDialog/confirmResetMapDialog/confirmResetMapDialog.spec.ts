@@ -13,6 +13,7 @@ import { getNameDataPair, LoadFileService, sampleFile1, sampleFile2, UrlExtracto
 import * as indexedDBWriter from "../../../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { setState } from "../../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../../stores/rootStore/state.manager"
+import { QueryParamsService } from "../../../../../util/queryParameter/queryParams.service"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 
 jest.mock("../../../../../stores/rootStore/indexedDB/indexedDBWriter")
@@ -30,6 +31,7 @@ describe("ConfirmResetMapDialogComponent", () => {
                     useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
                 },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
+                { provide: QueryParamsService, useValue: { getFileNames: jest.fn(() => ["valid.json"]) } },
                 { provide: HttpClient, useValue: {} },
                 provideMockStore({
                     selectors: [
@@ -90,7 +92,7 @@ describe("ConfirmResetMapDialogComponent", () => {
         const spyDeleteCcState = jest.spyOn(indexedDBWriter, "deleteCcState")
         const resetMetricsSpy = jest.spyOn(resetChosenMetricsEffect, "setDefaultMetrics")
         jest.spyOn(loadInitialFileService, "checkFileQueryParameterPresent").mockImplementation(() => true)
-        jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
+        jest.mocked(UrlExtractor.prototype.getFileDataFromFileNames).mockImplementation(
             async () => new Promise(resolve => resolve(mockedNameDataPairs))
         )
 

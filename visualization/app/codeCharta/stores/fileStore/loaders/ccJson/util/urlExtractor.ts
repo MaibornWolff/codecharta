@@ -1,4 +1,5 @@
 import { HttpClient, HttpResponse } from "@angular/common/http"
+import { Injectable } from "@angular/core"
 import { ungzip } from "pako"
 import { firstValueFrom } from "rxjs"
 import { CcJson2 } from "../../../../../model/ccjson2.model"
@@ -10,27 +11,11 @@ function getProjectName(content: ExportCCFile | CcJson2): string {
     return isCcJson2(content) ? content.meta.projectName : content.projectName
 }
 
+@Injectable({ providedIn: "root" })
 export class UrlExtractor {
     constructor(private readonly httpClient: HttpClient) {}
 
-    getParameterByName(name: string) {
-        const sanitizedName = name.replaceAll(/[[\]]/g, "\\$&")
-        const regex = new RegExp(`[?&]${sanitizedName}(=([^&#]*)|&|#|$)`),
-            results = regex.exec(window.location.href)
-
-        if (!results) {
-            return null
-        }
-        if (!results[2]) {
-            return ""
-        }
-        return decodeURIComponent(results[2].replaceAll("+", " "))
-    }
-
-    async getFileDataFromQueryParam() {
-        const queryParameters = new URLSearchParams(window.location.search)
-        const fileNames = queryParameters.getAll("file")
-
+    async getFileDataFromFileNames(fileNames: string[]) {
         if (fileNames.length === 0) {
             throw new Error("Filename is missing")
         }

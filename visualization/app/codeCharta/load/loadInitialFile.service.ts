@@ -16,7 +16,7 @@ import {
 } from "../stores/fileStore/fileStore.facade"
 import { readCcState } from "../stores/rootStore/indexedDB/indexedDBWriter"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
-import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"
+import { QueryParamsService } from "../util/queryParameter/queryParams.service"
 import { LoadInitialFileStore } from "./loadInitialFile.store"
 
 @Injectable({ providedIn: "root" })
@@ -27,6 +27,7 @@ export class LoadInitialFileService {
         private readonly loadInitialFileStore: LoadInitialFileStore,
         private readonly errorDialogService: ErrorDialogService,
         private readonly loadFileService: LoadFileService,
+        private readonly queryParamsService: QueryParamsService,
         private readonly httpClient: HttpClient
     ) {}
 
@@ -36,12 +37,12 @@ export class LoadInitialFileService {
     }
 
     checkFileQueryParameterPresent() {
-        return Boolean(this.urlUtils.getParameterByName("file"))
+        return this.queryParamsService.hasFile()
     }
 
     private async loadFilesFromQueryParams() {
         try {
-            const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
+            const urlNameDataPairs = await this.urlUtils.getFileDataFromFileNames(this.queryParamsService.getFileNames())
             const savedCcState = await readCcState()
             if (!savedCcState) {
                 this.loadFileService.loadFiles(urlNameDataPairs)
@@ -202,23 +203,18 @@ export class LoadInitialFileService {
     }
 
     setMetricsFromUrl() {
-        const areaMetric = this.urlUtils.getParameterByName(MetricQueryParemter.areaMetric)
-        const heightMetric = this.urlUtils.getParameterByName(MetricQueryParemter.heightMetric)
-        const colorMetric = this.urlUtils.getParameterByName(MetricQueryParemter.colorMetric)
-        const edgeMetric = this.urlUtils.getParameterByName(MetricQueryParemter.edgeMetric)
+        const { areaMetric, heightMetric, colorMetric, edgeMetric } = this.queryParamsService.getMetrics()
         this.loadInitialFileStore.setMetricsFromUrlValues(areaMetric, heightMetric, colorMetric, edgeMetric)
     }
 
     // "Delta" is the only recognized value, and only with at least two loaded files.
     // Anything else — including the removed single-file mode — falls through to the default state.
     setRenderStateFromUrl() {
-        const renderState = this.urlUtils.getParameterByName("mode")
-        this.loadInitialFileStore.setRenderState(renderState)
+        this.loadInitialFileStore.setRenderState(this.queryParamsService.getRenderMode())
     }
 
     private setCurrentFilesAreSampleFilesFromUrl() {
-        const currentFilesAreSampleFiles = this.urlUtils.getParameterByName(MetricQueryParemter.currentFilesAreSampleFiles)
-        if (currentFilesAreSampleFiles && currentFilesAreSampleFiles === "true") {
+        if (this.queryParamsService.areSampleFilesFlagged()) {
             this.loadInitialFileStore.setCurrentFilesAreSampleFiles(true)
         }
     }

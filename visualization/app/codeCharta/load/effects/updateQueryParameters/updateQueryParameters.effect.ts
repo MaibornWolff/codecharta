@@ -6,17 +6,16 @@ import { CcState } from "../../../model/codeCharta.model"
 import { edgeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
-import { MetricQueryParemter } from "../../../util/queryParameter/metricQueryParameter"
-import { LoadInitialFileService } from "../../loadInitialFile.service"
+import { QueryParamsService } from "../../../util/queryParameter/queryParams.service"
 import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
 
 @Injectable()
 export class UpdateQueryParametersEffect {
     constructor(
-        private readonly loadInitialFileService: LoadInitialFileService,
         private readonly actions$: Actions,
         private readonly mapStateReadWindow: MapStateReadWindow,
         private readonly fileStoreReadWindow: FileStoreReadWindow,
+        private readonly queryParamsService: QueryParamsService,
         private readonly store: Store<CcState>
     ) {}
 
@@ -36,69 +35,14 @@ export class UpdateQueryParametersEffect {
 
     private updateMetricQueryParameters(isEdgeMetricDefined: boolean): void {
         const { edgeMetric, heightMetric, colorMetric, areaMetric } = this.mapStateReadWindow.getMapState()
-        const isFileQueryParameterPresent = this.loadInitialFileService.checkFileQueryParameterPresent()
-        if (!isFileQueryParameterPresent) {
-            return
-        }
 
-        this.addOrUpdateQueryParameter(MetricQueryParemter.areaMetric, areaMetric)
-        this.addOrUpdateQueryParameter(MetricQueryParemter.heightMetric, heightMetric)
-        this.addOrUpdateQueryParameter(MetricQueryParemter.colorMetric, colorMetric)
-        if (isEdgeMetricDefined) {
-            this.addOrUpdateQueryParameter(MetricQueryParemter.edgeMetric, edgeMetric)
-        } else {
-            this.deleteQueryParameterIfExists(MetricQueryParemter.edgeMetric)
-        }
-
-        if (this.fileStoreReadWindow.getCurrentFilesAreSampleFiles()) {
-            this.addOrUpdateQueryParameter(MetricQueryParemter.currentFilesAreSampleFiles, true)
-        } else {
-            this.deleteQueryParameterIfExists(MetricQueryParemter.currentFilesAreSampleFiles)
-        }
-    }
-
-    private addOrUpdateQueryParameter(parameterName: string, parameterValue: string | number | boolean) {
-        const newUrl = new URL(window.location.href)
-
-        const queryString = newUrl.search.slice(1)
-        const queryParts = queryString.length > 0 ? queryString.split("&") : []
-        const updatedQuery = []
-        let parameterFound = false
-
-        for (const part of queryParts) {
-            const key = part.split("=")[0]
-            if (key === parameterName) {
-                updatedQuery.push(`${parameterName}=${encodeURIComponent(parameterValue)}`)
-                parameterFound = true
-            } else {
-                updatedQuery.push(part)
-            }
-        }
-
-        if (!parameterFound) {
-            updatedQuery.push(`${parameterName}=${encodeURIComponent(parameterValue)}`)
-        }
-
-        newUrl.search = updatedQuery.join("&")
-
-        window.history.replaceState(null, "", newUrl.toString())
-    }
-
-    deleteQueryParameterIfExists(parameterName) {
-        const newUrl = new URL(window.location.href)
-
-        const queryString = newUrl.search.slice(1)
-        const queryParts = queryString.length > 0 ? queryString.split("&") : []
-        const updatedQuery = []
-
-        for (const part of queryParts) {
-            const [key, value] = part.split("=")
-            if (key !== parameterName) {
-                updatedQuery.push(`${key}=${value}`)
-            }
-        }
-
-        newUrl.search = updatedQuery.join("&")
-        window.history.replaceState(null, "", newUrl.toString())
+        this.queryParamsService.write({
+            areaMetric,
+            heightMetric,
+            colorMetric,
+            edgeMetric,
+            isEdgeMetricDefined,
+            currentFilesAreSampleFiles: this.fileStoreReadWindow.getCurrentFilesAreSampleFiles()
+        })
     }
 }

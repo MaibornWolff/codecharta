@@ -11,7 +11,6 @@ import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { setColorMetric, setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
-import { LoadInitialFileService } from "../../loadInitialFile.service"
 import { UpdateQueryParametersEffect } from "./updateQueryParameters.effect"
 
 describe("UpdateQueryParametersEffect", () => {
@@ -33,16 +32,12 @@ describe("UpdateQueryParametersEffect", () => {
         actions$ = new Subject()
         mockGetState = jest.fn()
 
+        // The effect only writes back when a file query parameter is present.
+        window.history.replaceState(null, "", "http://localhost/?file=valid.json")
+
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([UpdateQueryParametersEffect])],
             providers: [
-                {
-                    provide: LoadInitialFileService,
-                    useValue: {
-                        setRenderStateFromUrl: jest.fn(),
-                        checkFileQueryParameterPresent: jest.fn(() => true)
-                    }
-                },
                 {
                     provide: MapStateReadWindow,
                     useValue: { getMapState: () => mockGetState().mapState }
@@ -67,11 +62,12 @@ describe("UpdateQueryParametersEffect", () => {
     afterEach(() => {
         actions$.complete()
         jest.restoreAllMocks()
+        window.history.replaceState(null, "", "http://localhost/")
     })
 
     it("should not save metrics in query parameters when file parameter is not specified", async () => {
-        const loadInitialFileService = TestBed.inject(LoadInitialFileService)
-        jest.spyOn(loadInitialFileService, "checkFileQueryParameterPresent").mockImplementation(() => false)
+        window.history.replaceState(null, "", "http://localhost/")
+        replaceStateSpy.mockClear()
 
         actions$.next(setEdgeMetric({ value: "pairingRate" }))
 
@@ -82,21 +78,25 @@ describe("UpdateQueryParametersEffect", () => {
         actions$.next(setEdgeMetric({ value: "pairingRate" }))
 
         await waitFor(() =>
-            expect(replaceStateSpy).toHaveBeenCalledWith(null, "", `http://localhost/?area=rloc&height=mcc&color=functions`)
+            expect(replaceStateSpy).toHaveBeenCalledWith(null, "", `http://localhost/?file=valid.json&area=rloc&height=mcc&color=functions`)
         )
     })
 
     it("should remove currentFilesAreSampleFiles query parameter when currentFilesAreSampleFiles is false", async () => {
-        global.window.history.replaceState(
+        window.history.replaceState(
             null,
             "",
-            `http://localhost/?area=rloc&height=mcc&color=functions&currentFilesAreSampleFiles=true`
+            `http://localhost/?file=valid.json&area=rloc&height=mcc&color=functions&currentFilesAreSampleFiles=true`
         )
 
         actions$.next(setColorMetric({ value: "pairingRate" }))
 
         await waitFor(() => {
-            expect(replaceStateSpy).toHaveBeenLastCalledWith(null, "", `http://localhost/?area=rloc&height=mcc&color=functions`) // Now it checks for the latest state
+            expect(replaceStateSpy).toHaveBeenLastCalledWith(
+                null,
+                "",
+                `http://localhost/?file=valid.json&area=rloc&height=mcc&color=functions`
+            )
         })
     })
 
@@ -112,7 +112,7 @@ describe("UpdateQueryParametersEffect", () => {
             expect(replaceStateSpy).toHaveBeenCalledWith(
                 null,
                 "",
-                `http://localhost/?area=rloc&height=mcc&color=functions&currentFilesAreSampleFiles=true`
+                `http://localhost/?file=valid.json&area=rloc&height=mcc&color=functions&currentFilesAreSampleFiles=true`
             )
         )
     })
@@ -127,16 +127,19 @@ describe("UpdateQueryParametersEffect", () => {
             expect(replaceStateSpy).toHaveBeenCalledWith(
                 null,
                 "",
-                `http://localhost/?area=rloc&height=mcc&color=functions&edge=pairingRate`
+                `http://localhost/?file=valid.json&area=rloc&height=mcc&color=functions&edge=pairingRate`
             )
         )
     })
 
     it("should debounce save metrics in query parameters on multiple actions", async () => {
+        replaceStateSpy.mockClear()
+
         actions$.next(setColorMetric({ value: "pairingRate" }))
         actions$.next(setColorMetric({ value: "avgCommits" }))
         store.refreshState()
 
-        await waitFor(() => expect(replaceStateSpy).toHaveBeenCalledTimes(5))
+        // The whole query string is now written in a single replaceState per debounced update.
+        await waitFor(() => expect(replaceStateSpy).toHaveBeenCalledTimes(1))
     })
 })

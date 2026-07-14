@@ -1,4 +1,6 @@
-export enum MetricQueryParemter {
+export enum QueryParameter {
+    file = "file",
+    mode = "mode",
     areaMetric = "area",
     heightMetric = "height",
     colorMetric = "color",
