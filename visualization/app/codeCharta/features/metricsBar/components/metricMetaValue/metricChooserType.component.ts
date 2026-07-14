@@ -3,8 +3,8 @@ import { toObservable, toSignal } from "@angular/core/rxjs-interop"
 import { switchMap } from "rxjs"
 import { AttributeTypes, CodeMapNode, Node, PrimaryMetrics } from "../../../../model/codeCharta.model"
 import { isLeaf } from "../../../../util/codeMapHelper"
-import { AttributeTypesService } from "../../services/attributeTypes.service"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
+import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
 
 @Component({
     selector: "cc-metric-chooser-type",
@@ -13,7 +13,7 @@ import { NodeSelectionService } from "../../services/nodeSelection.service"
 })
 export class MetricChooserTypeComponent {
     private readonly nodeSelectionService = inject(NodeSelectionService)
-    private readonly attributeTypesService = inject(AttributeTypesService)
+    private readonly metricsBarReadStore = inject(MetricsBarReadStore)
 
     readonly metricFor = input.required<keyof PrimaryMetrics>()
     readonly attributeType = input<keyof AttributeTypes>("nodes")
@@ -35,7 +35,7 @@ export class MetricChooserTypeComponent {
 
     readonly attributeTypeLabel = toSignal(
         toObservable(this.selectorInputs).pipe(
-            switchMap(({ attributeType, metricFor }) => this.attributeTypesService.attributeTypeLabel$(attributeType, metricFor))
+            switchMap(({ attributeType, metricFor }) => this.metricsBarReadStore.attributeTypeLabel$(attributeType, metricFor))
         )
     )
 }

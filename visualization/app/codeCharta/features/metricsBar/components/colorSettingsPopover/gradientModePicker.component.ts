@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { ColorMode } from "../../../../model/codeCharta.model"
-import { ColorModeService } from "../../services/colorMode.service"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 
 @Component({
     selector: "cc-gradient-mode-picker",
@@ -10,14 +11,17 @@ import { ColorModeService } from "../../services/colorMode.service"
     host: { class: "contents" }
 })
 export class GradientModePickerComponent {
-    constructor(private readonly colorModeService: ColorModeService) {}
+    constructor(
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly metricsBarWriteStore: MetricsBarWriteStore
+    ) {}
 
     /** Unique radio group name, so multiple popovers in the DOM cannot cross-link. */
     readonly groupName = input.required<string>()
 
-    readonly colorMode = toSignal(this.colorModeService.colorMode$(), { initialValue: "absolute" as ColorMode })
+    readonly colorMode = toSignal(this.mapStateReadWindow.colorMode$, { initialValue: "absolute" as ColorMode })
 
     handleColorModeChange(value: string) {
-        this.colorModeService.setColorMode(value as ColorMode)
+        this.metricsBarWriteStore.setColorMode(value as ColorMode)
     }
 }

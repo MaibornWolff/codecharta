@@ -15,7 +15,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { FormsModule } from "@angular/forms"
 import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
 import { EdgeMetricData, NodeMetricData } from "../../../../model/codeCharta.model"
-import { MetricDataService } from "../../services/metricData.service"
+import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
 import { MetricSelectOptionComponent } from "./metricSelectOption.component"
@@ -30,7 +30,7 @@ export type MetricSelectKind = "node" | "edge"
     imports: [FormsModule, FilterMetricDataBySearchTermPipe, SettingsPopoverShellComponent, MetricSelectOptionComponent]
 })
 export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
-    private readonly metricDataService = inject(MetricDataService)
+    private readonly metricsBarReadStore = inject(MetricsBarReadStore)
     private readonly metricsLensFacade = inject(MetricsLensFacade)
 
     readonly popoverId = input.required<string>()
@@ -51,7 +51,7 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
     readonly activeIndex = signal(0)
     readonly isOpen = signal(false)
 
-    private readonly metricDataState = toSignal(this.metricDataService.metricData$(), {
+    private readonly metricDataState = toSignal(this.metricsBarReadStore.metricData$, {
         initialValue: { nodeMetricData: [], edgeMetricData: [], nodeEdgeMetricsMap: new Map() }
     })
     readonly attributeDescriptors = toSignal(this.metricsLensFacade.descriptors$, { initialValue: {} })

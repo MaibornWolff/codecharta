@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
-import { IsDeltaStateService } from "../../services/isDeltaState.service"
-import { MetricDataService } from "../../services/metricData.service"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
 import { AreaSegmentComponent } from "../areaSegment/areaSegment.component"
 import { AxisCardComponent } from "../axisCard/axisCard.component"
 import { ColorSegmentComponent } from "../colorSegment/colorSegment.component"
@@ -36,11 +36,11 @@ import { LinkColorHeightButtonComponent } from "../linkColorHeightButton/linkCol
     }
 })
 export class MetricsBarComponent {
-    private readonly isDeltaStateService = inject(IsDeltaStateService)
-    private readonly metricDataService = inject(MetricDataService)
+    private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
+    private readonly metricsBarReadStore = inject(MetricsBarReadStore)
 
-    readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
-    readonly hasEdgeMetric = toSignal(this.metricDataService.metricData$().pipe(map(metricData => metricData.edgeMetricData.length > 0)), {
+    readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { initialValue: false })
+    readonly hasEdgeMetric = toSignal(this.metricsBarReadStore.metricData$.pipe(map(metricData => metricData.edgeMetricData.length > 0)), {
         initialValue: false
     })
 

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from "@an
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode, Node, PrimaryMetrics } from "../../../../model/codeCharta.model"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
-import { PrimaryMetricsService } from "../../services/primaryMetrics.service"
+import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
 import { MetricChooserTypeComponent } from "./metricChooserType.component"
 
 type DeltaDisplay = {
@@ -23,12 +23,12 @@ type MetricDisplay = {
 })
 export class MetricMetaValueComponent {
     private readonly nodeSelectionService = inject(NodeSelectionService)
-    private readonly primaryMetricsService = inject(PrimaryMetricsService)
+    private readonly metricsBarReadStore = inject(MetricsBarReadStore)
 
     readonly metricFor = input.required<keyof PrimaryMetrics>()
 
     readonly node = toSignal<CodeMapNode | Node | undefined>(this.nodeSelectionService.createNodeObservable())
-    private readonly primaryMetricNames = toSignal(this.primaryMetricsService.primaryMetricNames$())
+    private readonly primaryMetricNames = toSignal(this.metricsBarReadStore.primaryMetricNames$)
 
     private readonly metricName = computed(() => this.primaryMetricNames()?.[this.metricFor()] ?? null)
 

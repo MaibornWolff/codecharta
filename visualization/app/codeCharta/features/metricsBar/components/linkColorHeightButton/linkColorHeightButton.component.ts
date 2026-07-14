@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { IsHeightAndColorMetricLinkedService } from "../../services/isHeightAndColorMetricLinked.service"
+import { PreferencesReadWindow } from "../../../../stores/preferences/preferences.read.facade"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 
 @Component({
     selector: "cc-link-color-height-button",
@@ -9,9 +10,10 @@ import { IsHeightAndColorMetricLinkedService } from "../../services/isHeightAndC
     host: { class: "self-center px-1" }
 })
 export class LinkColorHeightButtonComponent {
-    private readonly isHeightAndColorMetricLinkedService = inject(IsHeightAndColorMetricLinkedService)
+    private readonly preferencesReadWindow = inject(PreferencesReadWindow)
+    private readonly metricsBarWriteStore = inject(MetricsBarWriteStore)
 
-    readonly isLinked = toSignal(this.isHeightAndColorMetricLinkedService.isHeightAndColorMetricLinked$(), { initialValue: false })
+    readonly isLinked = toSignal(this.preferencesReadWindow.isColorMetricLinkedToHeightMetric$, { initialValue: false })
 
     readonly iconClass = computed(() => (this.isLinked() ? "fa fa-link" : "fa fa-unlink"))
     readonly title = computed(() => (this.isLinked() ? "Unlink Height and Color Metric" : "Link Height and Color Metric"))
@@ -22,6 +24,6 @@ export class LinkColorHeightButtonComponent {
     )
 
     toggle() {
-        this.isHeightAndColorMetricLinkedService.toggleIsHeightAndColorMetricLinked()
+        this.metricsBarWriteStore.toggleIsHeightAndColorMetricLinked()
     }
 }

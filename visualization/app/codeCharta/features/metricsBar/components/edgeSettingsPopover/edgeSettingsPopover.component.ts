@@ -3,15 +3,10 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
 import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
 import { HexMapColor } from "../../../../model/codeCharta.model"
-import { defaultMapColors } from "../../../../stores/mapState/mapState.read.facade"
+import { defaultMapColors, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
-import { AmountOfBuildingsWithSelectedEdgeMetricService } from "../../services/amountOfBuildingsWithSelectedEdgeMetric.service"
-import { AmountOfEdgePreviewsService } from "../../services/amountOfEdgePreviews.service"
-import { EdgeHeightService } from "../../services/edgeHeight.service"
-import { MapColorsService } from "../../services/mapColors.service"
-import { ShowIncomingEdgesService } from "../../services/showIncomingEdges.service"
-import { ShowOnlyBuildingsWithEdgesService } from "../../services/showOnlyBuildingsWithEdges.service"
-import { ShowOutgoingEdgesService } from "../../services/showOutgoingEdges.service"
+import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { SliderNumberInputComponent } from "../sliderNumberInput/sliderNumberInput.component"
 import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
@@ -30,38 +25,31 @@ import { EdgeMetricToggleComponent } from "./edgeMetricToggle.component"
     ]
 })
 export class EdgeSettingsPopoverComponent {
-    private readonly amountOfBuildingsWithSelectedEdgeMetricService = inject(AmountOfBuildingsWithSelectedEdgeMetricService)
-    private readonly amountOfEdgePreviewsService = inject(AmountOfEdgePreviewsService)
-    private readonly edgeHeightService = inject(EdgeHeightService)
-    private readonly showOutgoingEdgesService = inject(ShowOutgoingEdgesService)
-    private readonly showIncomingEdgesService = inject(ShowIncomingEdgesService)
-    private readonly showOnlyBuildingsWithEdgesService = inject(ShowOnlyBuildingsWithEdgesService)
-    private readonly mapColorsService = inject(MapColorsService)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
+    private readonly metricsBarReadStore = inject(MetricsBarReadStore)
+    private readonly metricsBarWriteStore = inject(MetricsBarWriteStore)
 
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
 
-    readonly amountOfBuildingsWithSelectedEdgeMetric = toSignal(
-        this.amountOfBuildingsWithSelectedEdgeMetricService.amountOfBuildingsWithSelectedEdgeMetric$(),
-        {
-            initialValue: 0
-        }
-    )
+    readonly amountOfBuildingsWithSelectedEdgeMetric = toSignal(this.metricsBarReadStore.amountOfBuildingsWithSelectedEdgeMetric$, {
+        initialValue: 0
+    })
     readonly edgePreviewLabel = toSignal(
-        this.amountOfBuildingsWithSelectedEdgeMetricService
-            .amountOfBuildingsWithSelectedEdgeMetric$()
-            .pipe(map(amount => `Preview the edges of up to ${amount} buildings with the highest amount of incoming and outgoing edges`)),
+        this.metricsBarReadStore.amountOfBuildingsWithSelectedEdgeMetric$.pipe(
+            map(amount => `Preview the edges of up to ${amount} buildings with the highest amount of incoming and outgoing edges`)
+        ),
         { initialValue: "" }
     )
-    readonly amountOfEdgePreviews = toSignal(this.amountOfEdgePreviewsService.amountOfEdgePreviews$(), { initialValue: 0 })
-    readonly edgeHeight = toSignal(this.edgeHeightService.edgeHeight$(), { initialValue: 1 })
-    readonly showOutgoingEdges = toSignal(this.showOutgoingEdgesService.showOutgoingEdges$(), { initialValue: false })
-    readonly showIncomingEdges = toSignal(this.showIncomingEdgesService.showIncomingEdges$(), { initialValue: false })
-    readonly showOnlyBuildingsWithEdges = toSignal(this.showOnlyBuildingsWithEdgesService.showOnlyBuildingsWithEdges$(), {
+    readonly amountOfEdgePreviews = toSignal(this.mapStateReadWindow.amountOfEdgePreviews$, { initialValue: 0 })
+    readonly edgeHeight = toSignal(this.mapStateReadWindow.edgeHeight$, { initialValue: 1 })
+    readonly showOutgoingEdges = toSignal(this.mapStateReadWindow.showOutgoingEdges$, { initialValue: false })
+    readonly showIncomingEdges = toSignal(this.mapStateReadWindow.showIncomingEdges$, { initialValue: false })
+    readonly showOnlyBuildingsWithEdges = toSignal(this.mapStateReadWindow.showOnlyBuildingsWithEdges$, {
         initialValue: false
     })
 
-    private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
+    private readonly mapColors = toSignal(this.mapStateReadWindow.mapColors$, { initialValue: defaultMapColors })
     readonly outgoingEdgeColor = computed(() => this.mapColors().outgoingEdge as string)
     readonly incomingEdgeColor = computed(() => this.mapColors().incomingEdge as string)
 
@@ -77,29 +65,29 @@ export class EdgeSettingsPopoverComponent {
     ]
 
     setAmountOfEdgePreviews(value: number) {
-        this.amountOfEdgePreviewsService.setAmountOfEdgePreviews(value)
+        this.metricsBarWriteStore.setAmountOfEdgePreviews(value)
     }
 
     setEdgeHeight(value: number) {
-        this.edgeHeightService.setEdgeHeight(value)
+        this.metricsBarWriteStore.setEdgeHeight(value)
     }
 
     setShowOutgoingEdges(event: Event) {
         const checked = (event.target as HTMLInputElement).checked
-        this.showOutgoingEdgesService.setShowOutgoingEdges(checked)
+        this.metricsBarWriteStore.setShowOutgoingEdges(checked)
     }
 
     setShowIncomingEdges(event: Event) {
         const checked = (event.target as HTMLInputElement).checked
-        this.showIncomingEdgesService.setShowIncomingEdges(checked)
+        this.metricsBarWriteStore.setShowIncomingEdges(checked)
     }
 
     setShowOnlyBuildingsWithEdges(event: Event) {
         const checked = (event.target as HTMLInputElement).checked
-        this.showOnlyBuildingsWithEdgesService.setShowOnlyBuildingsWithEdges(checked)
+        this.metricsBarWriteStore.setShowOnlyBuildingsWithEdges(checked)
     }
 
     setMapColor(mapColorFor: HexMapColor, newHexColor: string) {
-        this.mapColorsService.setMapColors({ [mapColorFor]: newHexColor })
+        this.metricsBarWriteStore.setMapColors({ [mapColorFor]: newHexColor })
     }
 }

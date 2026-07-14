@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { defaultMapColors } from "../../../../stores/mapState/mapState.read.facade"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { defaultMapColors, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { calculateInitialColorRange } from "../../../../util/color/calculateInitialColorRange"
-import { ColorMetricService } from "../../services/colorMetric.service"
-import { ColorRangeService } from "../../services/colorRange.service"
-import { IsDeltaStateService } from "../../services/isDeltaState.service"
-import { MapColorsService } from "../../services/mapColors.service"
+import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 
 @Component({
     selector: "cc-color-settings-header",
@@ -15,16 +14,16 @@ import { MapColorsService } from "../../services/mapColors.service"
 })
 export class ColorSettingsHeaderComponent {
     constructor(
-        private readonly colorMetricService: ColorMetricService,
-        private readonly isDeltaStateService: IsDeltaStateService,
-        private readonly mapColorsService: MapColorsService,
-        private readonly colorRangeService: ColorRangeService
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
+        private readonly metricsBarReadStore: MetricsBarReadStore,
+        private readonly metricsBarWriteStore: MetricsBarWriteStore
     ) {}
 
-    readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
-    private readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
-    private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
-    private readonly selectedColorMetricData = toSignal(this.colorRangeService.selectedColorMetricData$(), {
+    readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { initialValue: "" })
+    private readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { initialValue: false })
+    private readonly mapColors = toSignal(this.mapStateReadWindow.mapColors$, { initialValue: defaultMapColors })
+    private readonly selectedColorMetricData = toSignal(this.metricsBarReadStore.selectedColorMetricData$, {
         initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
     })
 
@@ -38,6 +37,6 @@ export class ColorSettingsHeaderComponent {
     })
 
     resetThresholds() {
-        this.colorRangeService.setColorRange(calculateInitialColorRange(this.selectedColorMetricData()))
+        this.metricsBarWriteStore.setColorRange(calculateInitialColorRange(this.selectedColorMetricData()))
     }
 }

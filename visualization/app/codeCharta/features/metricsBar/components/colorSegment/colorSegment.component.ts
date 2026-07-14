@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ColorMetricService } from "../../services/colorMetric.service"
-import { IsHeightAndColorMetricLinkedService } from "../../services/isHeightAndColorMetricLinked.service"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { PreferencesReadWindow } from "../../../../stores/preferences/preferences.read.facade"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { AxisCardComponent } from "../axisCard/axisCard.component"
 import { ColorSettingsPopoverComponent } from "../colorSettingsPopover/colorSettingsPopover.component"
 import { MetricMetaValueComponent } from "../metricMetaValue/metricMetaValue.component"
@@ -16,8 +17,9 @@ import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelec
 })
 export class ColorSegmentComponent {
     constructor(
-        private readonly colorMetricService: ColorMetricService,
-        private readonly isHeightAndColorMetricLinkedService: IsHeightAndColorMetricLinkedService
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly preferencesReadWindow: PreferencesReadWindow,
+        private readonly metricsBarWriteStore: MetricsBarWriteStore
     ) {}
 
     readonly searchPopoverId = "metric-select-popover-color"
@@ -25,10 +27,10 @@ export class ColorSegmentComponent {
     readonly settingsPopoverId = "metric-settings-popover-color"
     readonly settingsAnchorName = "metric-segment-color-cog"
 
-    readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
-    readonly isLinked = toSignal(this.isHeightAndColorMetricLinkedService.isHeightAndColorMetricLinked$(), { initialValue: false })
+    readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { initialValue: "" })
+    readonly isLinked = toSignal(this.preferencesReadWindow.isColorMetricLinkedToHeightMetric$, { initialValue: false })
 
     handleMetricSelected(value: string) {
-        this.colorMetricService.setColorMetric(value)
+        this.metricsBarWriteStore.setColorMetric(value)
     }
 }

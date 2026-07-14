@@ -3,18 +3,20 @@ import { combineLatest, filter, map, Observable, shareReplay } from "rxjs"
 import { CodeMapRenderService } from "../../../features/codeMap/facade"
 import { CodeMapNode, Node } from "../../../model/codeCharta.model"
 import { AccumulatedData } from "../../../renderer/renderModel/renderModel.facade"
-import { NodeSelectionStore } from "../stores/nodeSelection.store"
+import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
+import { MetricsBarReadStore } from "../stores/metricsBar.read.store"
 
 @Injectable({ providedIn: "root" })
 export class NodeSelectionService {
     private readonly node$: Observable<CodeMapNode | Node | undefined>
 
     constructor(
-        private readonly nodeSelectionStore: NodeSelectionStore,
+        private readonly metricsBarReadStore: MetricsBarReadStore,
+        private readonly mapStateReadWindow: MapStateReadWindow,
         private readonly codeMapRenderService: CodeMapRenderService
     ) {
-        const hoveredNode$ = this.nodeSelectionStore.hoveredNode$
-        const selectedNode$ = this.nodeSelectionStore.selectedNode$
+        const hoveredNode$ = this.metricsBarReadStore.hoveredNode$
+        const selectedNode$ = this.metricsBarReadStore.selectedNode$
         const topLevelNode$ = this.createTopLevelNodeObservable()
 
         this.node$ = combineLatest([hoveredNode$, selectedNode$, topLevelNode$]).pipe(
@@ -32,9 +34,9 @@ export class NodeSelectionService {
         // depending on the whole dynamicSettings slice would re-run the full layout
         // on every search keystroke or margin drag just for a fallback display value
         return combineLatest([
-            this.nodeSelectionStore.accumulatedData$,
-            this.nodeSelectionStore.areaMetric$,
-            this.nodeSelectionStore.heightMetric$
+            this.metricsBarReadStore.accumulatedData$,
+            this.mapStateReadWindow.areaMetric$,
+            this.mapStateReadWindow.heightMetric$
         ]).pipe(
             filter(([accumulatedData]) => Boolean(accumulatedData.unifiedMapNode)),
             map(([accumulatedData]) => this.findTopLevelNode(accumulatedData))

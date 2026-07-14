@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
-import { EnableFloorLabelsService } from "../../services/enableFloorLabels.service"
-import { InvertAreaService } from "../../services/invertArea.service"
-import { MarginService } from "../../services/margin.service"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { SliderNumberInputComponent } from "../sliderNumberInput/sliderNumberInput.component"
 
@@ -15,30 +14,29 @@ import { SliderNumberInputComponent } from "../sliderNumberInput/sliderNumberInp
     imports: [ResetSettingsButtonComponent, SettingsPopoverShellComponent, SliderNumberInputComponent]
 })
 export class AreaSettingsPopoverComponent {
-    private readonly marginService = inject(MarginService)
-    private readonly enableFloorLabelsService = inject(EnableFloorLabelsService)
-    private readonly invertAreaService = inject(InvertAreaService)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
+    private readonly metricsBarWriteStore = inject(MetricsBarWriteStore)
 
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
 
-    readonly margin = toSignal(this.marginService.margin$(), { initialValue: 0 })
-    readonly enableFloorLabels = toSignal(this.enableFloorLabelsService.enableFloorLabels$(), { initialValue: false })
-    readonly isInvertedArea = toSignal(this.invertAreaService.invertArea$(), { initialValue: false })
+    readonly margin = toSignal(this.mapStateReadWindow.margin$, { initialValue: 0 })
+    readonly enableFloorLabels = toSignal(this.mapStateReadWindow.enableFloorLabels$, { initialValue: false })
+    readonly isInvertedArea = toSignal(this.mapStateReadWindow.invertArea$, { initialValue: false })
 
     readonly resetKeys = ["mapState.margin", "mapState.invertArea", "mapState.enableFloorLabels"]
 
     setMargin(margin: number) {
-        this.marginService.setMargin(margin)
+        this.metricsBarWriteStore.setMargin(margin)
     }
 
     setEnableFloorLabel(event: Event) {
         const checked = (event.target as HTMLInputElement).checked
-        this.enableFloorLabelsService.setEnableFloorLabels(checked)
+        this.metricsBarWriteStore.setEnableFloorLabels(checked)
     }
 
     toggleInvertingArea(event: Event) {
         const checked = (event.target as HTMLInputElement).checked
-        this.invertAreaService.setInvertArea(checked)
+        this.metricsBarWriteStore.setInvertArea(checked)
     }
 }

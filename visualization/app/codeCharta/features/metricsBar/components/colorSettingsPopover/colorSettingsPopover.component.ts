@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ColorMetricService } from "../../services/colorMetric.service"
-import { IsDeltaStateService } from "../../services/isDeltaState.service"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { ColorBandsSectionComponent } from "./colorBandsSection.component"
 import { ColorRangeSectionComponent } from "./colorRangeSection.component"
@@ -27,15 +27,15 @@ import { InvertResetRowComponent } from "./invertResetRow.component"
 })
 export class ColorSettingsPopoverComponent {
     constructor(
-        private readonly colorMetricService: ColorMetricService,
-        private readonly isDeltaStateService: IsDeltaStateService
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly fileStoreReadWindow: FileStoreReadWindow
     ) {}
 
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
 
-    private readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
-    private readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
+    private readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { initialValue: "" })
+    private readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { initialValue: false })
 
     readonly hasRangeSection = computed(() => !this.isDeltaState() && this.colorMetric() !== "unary")
 }

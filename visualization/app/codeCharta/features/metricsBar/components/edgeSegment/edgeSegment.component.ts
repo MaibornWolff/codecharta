@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { EdgeMetricService } from "../../services/edgeMetric.service"
-import { IsEdgeMetricVisibleService } from "../../services/isEdgeMetricVisible.service"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { AxisCardComponent } from "../axisCard/axisCard.component"
 import { EdgeSettingsPopoverComponent } from "../edgeSettingsPopover/edgeSettingsPopover.component"
 import { MetricChooserTypeComponent } from "../metricMetaValue/metricChooserType.component"
@@ -16,8 +16,8 @@ import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelec
     imports: [AxisCardComponent, MetricChooserTypeComponent, MetricSelectPopoverComponent, EdgeSettingsPopoverComponent]
 })
 export class EdgeSegmentComponent {
-    private readonly edgeMetricService = inject(EdgeMetricService)
-    private readonly isEdgeMetricVisibleService = inject(IsEdgeMetricVisibleService)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
+    private readonly metricsBarWriteStore = inject(MetricsBarWriteStore)
     private readonly nodeSelectionService = inject(NodeSelectionService)
 
     readonly searchPopoverId = "metric-select-popover-edge"
@@ -25,8 +25,8 @@ export class EdgeSegmentComponent {
     readonly settingsPopoverId = "metric-settings-popover-edge"
     readonly settingsAnchorName = "metric-segment-edges-cog"
 
-    readonly edgeMetric = toSignal(this.edgeMetricService.edgeMetric$(), { initialValue: "" })
-    readonly isEdgeMetricVisible = toSignal(this.isEdgeMetricVisibleService.isEdgeMetricVisible$(), { initialValue: true })
+    readonly edgeMetric = toSignal(this.mapStateReadWindow.edgeMetric$, { initialValue: "" })
+    readonly isEdgeMetricVisible = toSignal(this.mapStateReadWindow.isEdgeMetricVisible$, { initialValue: true })
     readonly hoveredNode = toSignal(this.nodeSelectionService.createNodeObservable())
 
     readonly hoveredEdgeValue = computed(() => {
@@ -43,7 +43,7 @@ export class EdgeSegmentComponent {
     })
 
     handleMetricSelected(value: string) {
-        this.edgeMetricService.setEdgeMetric(value)
+        this.metricsBarWriteStore.setEdgeMetric(value)
     }
 }
 

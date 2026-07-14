@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { defaultMapColors } from "../../../../stores/mapState/mapState.read.facade"
+import { defaultMapColors, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { MarkedPackageWithCount } from "../../selectors/markedPackagesWithCounts.selector"
-import { FolderOverridesService } from "../../services/folderOverrides.service"
-import { MapColorsService } from "../../services/mapColors.service"
+import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { FolderOverrideRowComponent } from "./folderOverrideRow.component"
 import { PinFolderSearchComponent } from "./pinFolderSearch.component"
 
@@ -16,25 +16,26 @@ import { PinFolderSearchComponent } from "./pinFolderSearch.component"
 })
 export class FolderOverridesComponent {
     constructor(
-        private readonly folderOverridesService: FolderOverridesService,
-        private readonly mapColorsService: MapColorsService
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly metricsBarReadStore: MetricsBarReadStore,
+        private readonly metricsBarWriteStore: MetricsBarWriteStore
     ) {}
 
-    readonly overrides = toSignal(this.folderOverridesService.markedPackagesWithCounts$(), {
+    readonly overrides = toSignal(this.metricsBarReadStore.markedPackagesWithCounts$, {
         initialValue: [] as MarkedPackageWithCount[]
     })
-    private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
+    private readonly mapColors = toSignal(this.mapStateReadWindow.mapColors$, { initialValue: defaultMapColors })
 
     handlePin(path: string) {
-        this.folderOverridesService.markPackage({ path, color: this.nextMarkingColor(path) })
+        this.metricsBarWriteStore.markPackage({ path, color: this.nextMarkingColor(path) })
     }
 
     handleRecolor(path: string, color: string) {
-        this.folderOverridesService.markPackage({ path, color })
+        this.metricsBarWriteStore.markPackage({ path, color })
     }
 
     handleUnpin(path: string) {
-        this.folderOverridesService.unmarkPackage(path)
+        this.metricsBarWriteStore.unmarkPackage(path)
     }
 
     private nextMarkingColor(path: string) {

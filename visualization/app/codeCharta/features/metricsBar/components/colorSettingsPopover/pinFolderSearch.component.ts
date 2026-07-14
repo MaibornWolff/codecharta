@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, output, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { MarkedPackageWithCount } from "../../selectors/markedPackagesWithCounts.selector"
-import { FolderOverridesService } from "../../services/folderOverrides.service"
+import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
 
 const MAX_FOLDER_SUGGESTIONS = 8
 
@@ -12,12 +12,12 @@ const MAX_FOLDER_SUGGESTIONS = 8
     host: { class: "contents" }
 })
 export class PinFolderSearchComponent {
-    constructor(private readonly folderOverridesService: FolderOverridesService) {}
+    constructor(private readonly metricsBarReadStore: MetricsBarReadStore) {}
 
     readonly pinFolder = output<string>()
 
-    private readonly folderPaths = toSignal(this.folderOverridesService.markableFolderPaths$(), { initialValue: [] as string[] })
-    private readonly overrides = toSignal(this.folderOverridesService.markedPackagesWithCounts$(), {
+    private readonly folderPaths = toSignal(this.metricsBarReadStore.markableFolderPaths$, { initialValue: [] as string[] })
+    private readonly overrides = toSignal(this.metricsBarReadStore.markedPackagesWithCounts$, {
         initialValue: [] as MarkedPackageWithCount[]
     })
 
