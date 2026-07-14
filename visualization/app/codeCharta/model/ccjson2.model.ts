@@ -6,7 +6,7 @@ export interface CcJson2 {
     lenses: Lenses
 }
 
-export interface Meta2 {
+interface Meta2 {
     projectName: string
     apiVersion: string
     checksum: string
@@ -22,25 +22,25 @@ export interface FileNode {
     link?: string
 }
 
-export interface Lenses {
+interface Lenses {
     metrics?: MetricsLensData
     dependency?: DependencyLensData
 }
 
-export interface MetricsLensData {
+interface MetricsLensData {
     attributes: Record<string, Record<string, number | number[]>>
     attributeDescriptors: AttributeDescriptors
     attributeTypes: Record<string, AttributeTypeValue>
     clusters?: unknown[]
 }
 
-export interface DependencyLensData {
+interface DependencyLensData {
     edges: DependencyEdge[]
     attributeTypes: Record<string, AttributeTypeValue>
     attributeDescriptors: AttributeDescriptors
 }
 
-export interface DependencyEdge {
+interface DependencyEdge {
     fromId: string
     toId: string
     attributes: Record<string, number>
