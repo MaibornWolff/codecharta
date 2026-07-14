@@ -1,9 +1,15 @@
 ---
 name: viz-2.0-slice-13-cqrs-homes
 issue:
-state: progress
+state: complete
 version: 1
 ---
+
+> **✅ COMPLETE (verified 2026-07-08).** All three homes CQRS-split (read/write facades present),
+> the 3 CQRS dep-cruiser rules at **error** (`state-home-write-facade-is-sole-dispatch-surface`,
+> `state-home-read-facade-has-no-dispatch`, `display-components-cannot-dispatch`), `lint:architecture` →
+> 0 violations. 13d's cross-cutting read-wrapper dedup **remainder** is NOT slice-13 work — it was relocated
+> to CARRIED-FORWARD #9 (interaction-layer slice; cleanup halves already closed by Slices 16d/16e).
 
 > **Status (2026-07-03):** 13a ✅, 13b ✅, 13c ✅ — all three homes CQRS-split (read/write facades),
 > the 3 CQRS rules at **error** across the whole tree (0 violations). 13d ✅ for the **mapState metric

@@ -259,9 +259,46 @@ version: 1
   `createActionGroup`, or a `defineSetting()` factory. Slice 20 deliberately changed only the layers *above* the slice
   dirs; the dirs themselves are still hand-rolled action/reducer/selector triplets. Now that every home has a complete
   read window, this is a self-contained mechanical slice.
-- **Still open after Slice 20:** `SET_STATE`'s string-path deep-merge + the hand-maintained `objectWithDynamicKeysInStore`
-  allowlist (`stores/rootStore/state.manager.ts`). Slice 21 Task 5 (typed `hydrate(partial)` per home) is the
-  precondition for deleting it. Slice 21 is **not** started.
+- **Still open after Slice 21:** `SET_STATE`'s string-path deep-merge + the hand-maintained `objectWithDynamicKeysInStore`
+  allowlist (`stores/rootStore/state.manager.ts`). Slice 21 Task 5 collapsed the five apply-loops into one generic
+  `applySlice`, but **deliberately did not** move the four `map*ToAction` switches into a typed `hydrate(partial)` per
+  home — so **the allowlist is not yet deletable**. Do that before trying.
+  **Why a naive `setState(savedCcState)` cannot replace the diff-loop** (checked, do not re-litigate): `_applyPartialState`
+  **skips `null`/`undefined` values**, and `mapState`'s metric keys legitimately default to `null`; there is no
+  missing-key detection, which is what drives the "previous state could not be fully restored" dialog; there are no
+  ignore lists, so it would restore `sharedView.hoveredNodeId` / `selectedBuildingId` / `rightClickedNodeData` and
+  `preferences.sorting.orderAscending`, none of which may be restored; and the ~30-dispatch fan-out is observable
+  (it drives `actionsRequiringSaveCcState` / `actionsRequiringRerender`). The per-home `hydrate` is the way.
+- **Done (2026-07-14):** ~~Slice 21~~ — one load pipeline, one post-load reconciliation
+  (`slice-21-single-load-pipeline.md`). Five load entry points → one `LoadFilesUseCase`; nine independent post-load
+  subscribers → one deterministic sequence; `isLoadingFile` 5 writers → 2; `readCcState` 2–3 reads per boot → 1.
+  The precedence rule — **URL > persisted > computed default** — is written down and enforced in one pure function.
+  **Two load-bearing lessons, both of which cost real bugs:**
+  **(a) Enumerate the TRIGGER SET before collapsing effects.** The old subscribers listened on *selectors*
+  (`visibleFileStatesSelector`), not on actions, so they fired on file-**panel** changes (delta switch, file removal,
+  re-selection) as well as on loads. An action-only trigger would have silently dropped the entire cascade for the
+  non-load paths, and no snapshot or unit test in the repo would have caught it. Related: a load's synchronous action
+  burst does **not** end with the signal action (the restore branch writes `setFiles` after it), so the burst must be
+  **reduced** (any provenance in it wins), never merely debounced-to-last.
+  **(b) DEFERRING WORK RE-ORDERS IT — and the old order was load-bearing and undocumented.** ngrx runs
+  `store.select(...)` effect subscriptions **synchronously inside `dispatch`**. So the old "merge the file settings"
+  effect ran *before* the loader's own synchronous `applySharedView(persisted)`, and persisted therefore won. Moving
+  that merge into a debounced sequence put it *after* — and it silently erased the user's exclusions, marked packages
+  and focused folder on **every page reload**, then persisted the loss. Three of the four regressions in this slice
+  were this one inversion. The fix is not "restore the old order" but **write the precedence down**: the persisted
+  view now travels on the `filesLoaded` provenance and the sequence applies it as its explicit last step
+  (**persisted > file-derived**). When you defer anything that previously ran inside a dispatch, ask what used to run
+  after it — and make the answer explicit rather than positional.
+  **A flake was the ground truth.** The fourth regression (a max-wait that dismissed the loading indicator *mid-load*,
+  because it is armed before the fetch even starts) was raised by two reviewers and **refuted by both adversarial
+  verifiers** as sanctioned-by-spec. They were wrong. What proved it real was a ~50% flake in the full e2e suite. Do
+  not explain a flake away — it is often the only witness to a race that reasoning has already talked itself out of.
+- **Deferred out of Slice 21 (small):** `isApplyingScenario$` (`util/busy/`) is a module-level `BehaviorSubject`,
+  mirroring the existing `isPendingHeavyDispatch$` pattern rather than being store state. Fine for now — it is a
+  transient UI-busy flag with one writer and one reader — but if a third such flag appears, they want a home.
+- **Deferred out of Slice 21 (verify before trusting):** applying a scenario no longer writes `isLoadingFile`, so it no
+  longer disposes/rebuilds the Three scene (`codeMap.render.service.ts` watches that flag) and no longer hides the
+  canvas. Almost certainly an improvement, but it has not been eyeballed side-by-side with `main`.
 - **Done (2026-07-14):** ~~Slice 22~~ — the raw-state hole is closed and fenced (`slice-22-close-the-raw-state-hole.md`).
   All 17 non-spec files outside `stores/` that injected ngrx `State<CcState>` and read other homes raw via
   `getValue().<home>.<slice>` now go through a home read window's sync accessor, or through the single new

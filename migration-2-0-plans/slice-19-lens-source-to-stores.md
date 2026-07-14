@@ -1,11 +1,17 @@
 ---
 name: viz-2.0-slice-19-lens-source-to-stores
 issue:
-state: progress
+state: complete
 version: 1
 ---
 
 # Slice 19 — Move the lens SOURCE state into stores/ (drop store/ below lenses)
+
+> **✅ COMPLETE (verified 2026-07-08).** Both lens-source homes live under `stores/metricsLensSource/` +
+> `stores/dependencyLensSource/` (each with read/write facades + private `store/` internals);
+> `getPartialDefaultState` moved to `features/shared/`; the ngrx composition root (`stores/rootStore/store.ts`)
+> has **zero** `store → lenses` / `store → renderer` edges; the `stores-own-ccjson-source` dep-cruiser rule
+> (labeled "Slice 19b") replaced `lens-owns-ccjson-source` at error. `lint:architecture` → 0 violations.
 
 > Independent of the slice-18 facade-hygiene draft. Goal: make the ngrx composition root `store/` sit **just
 > above** the state homes `stores/` in the dependency LSM, by severing its two upward edges — `store → renderer`
