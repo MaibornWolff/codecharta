@@ -1,12 +1,5 @@
 import { Injectable } from "@angular/core"
-import { QueryParameter } from "./queryParameter"
-
-export interface UrlMetricSelection {
-    areaMetric: string | null
-    heightMetric: string | null
-    colorMetric: string | null
-    edgeMetric: string | null
-}
+import { QueryParameter, UrlMetricSelection } from "./queryParameter"
 
 export interface QueryParamsWrite {
     areaMetric: string

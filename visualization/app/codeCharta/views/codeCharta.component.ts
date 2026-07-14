@@ -12,8 +12,7 @@ import { ErrorDialogComponent } from "../features/shared/components/errorDialog/
 import { LoadingFileProgressSpinnerComponent } from "../features/shared/components/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 import { SidebarExplorerComponent } from "../features/sidebarExplorer/facade"
 import { SidebarInspectorComponent } from "../features/sidebarInspector/facade"
-import { LoadInitialFileService } from "../load/load.facade"
-import { setIsLoadingFile } from "../stores/fileStore/fileStore.facade"
+import { LoadFilesUseCase } from "../load/load.facade"
 
 @Component({
     selector: "cc-code-charta",
@@ -37,15 +36,15 @@ import { setIsLoadingFile } from "../stores/fileStore/fileStore.facade"
 export class CodeChartaComponent implements OnInit {
     isInitialized = signal(false)
 
-    constructor(
-        private readonly store: Store,
-        private readonly loadInitialFileService: LoadInitialFileService
-    ) {}
+    constructor(private readonly loadFilesUseCase: LoadFilesUseCase) {}
 
     ngOnInit(): void {
-        this.store.dispatch(setIsLoadingFile({ value: true }))
-        this.loadInitialFileService.loadFilesOrSampleFiles().then(() => {
-            this.isInitialized.set(true)
-        })
+        // The use-case owns the loading indicator. A rejection must never leave the app uninitialized.
+        this.loadFilesUseCase
+            .loadOnBoot()
+            .catch(() => undefined)
+            .finally(() => {
+                this.isInitialized.set(true)
+            })
     }
 }

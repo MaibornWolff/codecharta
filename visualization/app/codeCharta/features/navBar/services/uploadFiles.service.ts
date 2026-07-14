@@ -1,17 +1,19 @@
 import { Injectable } from "@angular/core"
-import { getCCFileAndDecorateFileChecksum, LoadFileService } from "../../../stores/fileStore/fileStore.facade"
-import { NavBarWriteStore } from "../stores/navBar.write.store"
+import { LoadFilesUseCase } from "../../../load/load.facade"
+import { getCCFileAndDecorateFileChecksum, NameDataPair } from "../../../stores/fileStore/fileStore.facade"
 import { createCCFileInput } from "./createCCFileInput"
 import { readFiles } from "./readFiles"
 
+/**
+ * The DOM half of an upload: it picks the files and turns them into name/data pairs.
+ * LoadFilesUseCase owns everything from there — the loading indicator, the load and its errors.
+ */
 @Injectable({ providedIn: "root" })
 export class UploadFilesService {
+    // Read by renderCodeMap.effect to hold the spinner during an upload; retired in the next commit.
     isUploading = false
 
-    constructor(
-        private readonly navBarWriteStore: NavBarWriteStore,
-        private readonly loadFileService: LoadFileService
-    ) {}
+    constructor(private readonly loadFilesUseCase: LoadFilesUseCase) {}
 
     uploadFiles() {
         const ccFileInput = createCCFileInput()
@@ -28,27 +30,13 @@ export class UploadFilesService {
             return
         }
 
-        try {
-            this.isUploading = true
-            this.navBarWriteStore.setLoadingFile(true)
-            this.navBarWriteStore.setLoadingMap(true)
-
-            const plainFileContents = await Promise.all(readFiles(ccFileInput.files))
-            const ccFiles = this.buildCCFiles(ccFileInput.files, plainFileContents)
-
-            if (ccFiles.length > 0) {
-                this.loadFileService.loadFiles(ccFiles)
-            }
-        } catch {
-            this.navBarWriteStore.setLoadingFile(false)
-            this.navBarWriteStore.setLoadingMap(false)
-        } finally {
-            this.isUploading = false
-        }
+        const pickedFiles = ccFileInput.files
+        await this.loadFilesUseCase.loadFromUpload(() => this.readNameDataPairs(pickedFiles))
     }
 
-    private buildCCFiles(fileList: FileList, contents: string[]) {
-        return contents.map((content, index) => ({
+    private async readNameDataPairs(fileList: FileList): Promise<NameDataPair[]> {
+        const plainFileContents = await Promise.all(readFiles(fileList))
+        return plainFileContents.map((content, index) => ({
             fileName: fileList[index].name,
             fileSize: fileList[index].size,
             content: getCCFileAndDecorateFileChecksum(content)

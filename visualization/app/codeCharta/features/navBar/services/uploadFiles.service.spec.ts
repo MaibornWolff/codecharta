@@ -38,7 +38,6 @@ describe("UploadFilesService", () => {
     })
 
     afterEach(() => {
-        loadFileService.referenceFileSubscription.unsubscribe()
     })
 
     function restartSystem() {
@@ -67,20 +66,25 @@ describe("UploadFilesService", () => {
         expect(dispatchSpy).toHaveBeenCalledWith(setStandardByNames({ fileNames: ["test.cc.json"] }))
     })
 
-    it("should dispatch loading false if already loaded file is uploaded", async () => {
-        uploadFilesService.uploadFiles()
+    it("should raise the loading indicator before the files are read", async () => {
+        // Act
+        await uploadFilesService["uploadFilesOnEvent"](mockFileInput)
 
-        expect(mockFileInput.click).toHaveBeenCalled()
+        // Assert
+        expect(dispatchSpy).toHaveBeenNthCalledWith(1, setIsLoadingFile({ value: true }))
+    })
+
+    it("should still commit an already loaded file so that the loading indicator is cleared by the render", async () => {
+        // Arrange
         await uploadFilesService["uploadFilesOnEvent"](mockFileInput)
         dispatchSpy.mockClear()
 
-        uploadFilesService.uploadFiles()
-
-        expect(mockFileInput.click).toHaveBeenCalled()
+        // Act
         await uploadFilesService["uploadFilesOnEvent"](mockFileInput)
 
-        expect(dispatchSpy).toHaveBeenNthCalledWith(4, setStandardByNames({ fileNames: ["test.cc.json"] }))
-        expect(dispatchSpy).toHaveBeenNthCalledWith(5, setIsLoadingFile({ value: false }))
-        expect(dispatchSpy).toHaveBeenNthCalledWith(6, setIsLoadingMap({ value: false }))
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(setStandardByNames({ fileNames: ["test.cc.json"] }))
+        expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: "FILES_LOADED", source: "upload" }))
+        expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
     })
 })

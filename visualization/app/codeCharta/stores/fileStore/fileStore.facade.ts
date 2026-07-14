@@ -24,6 +24,8 @@ export {
     switchReferenceAndComparison
 } from "./store/files.actions"
 export { defaultFiles, files } from "./store/files.reducer"
+export { filesLoaded } from "./store/filesLoaded/filesLoaded.actions"
+export type { FilesLoadedPayload, FilesLoadedSource } from "./store/filesLoaded/filesLoaded.actions"
 export { isDeltaStateSelector } from "./store/isDeltaState.selector"
 export { setIsLoadingFile } from "./store/isLoadingFile/isLoadingFile.actions"
 export { defaultIsLoadingFile, isLoadingFile } from "./store/isLoadingFile/isLoadingFile.reducer"

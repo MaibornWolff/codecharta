@@ -1,44 +1,57 @@
 import { TestBed } from "@angular/core/testing"
-import { Store } from "@ngrx/store"
-import { LoadInitialFileService } from "../load/load.facade"
-import { setIsLoadingFile } from "../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
+import { LoadFilesUseCase } from "../load/load.facade"
 import { CodeChartaComponent } from "./codeCharta.component"
 
 describe("codeChartaComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [CodeChartaComponent],
-            providers: [{ provide: LoadInitialFileService, useValue: { loadFilesOrSampleFiles: jest.fn() } }]
+            providers: [{ provide: LoadFilesUseCase, useValue: { loadOnBoot: jest.fn() } }]
         })
     })
 
-    it("should set is loading and call loadFilesOrSampleFiles on initialization", () => {
-        const mockedStore = { dispatch: jest.fn() } as unknown as Store
-        const mockedLoadInitialFileService = {
-            loadFilesOrSampleFiles: jest.fn().mockResolvedValue(undefined)
-        } as unknown as LoadInitialFileService
+    it("should load the files on initialization", () => {
+        // Arrange
+        const mockedLoadFilesUseCase = {
+            loadOnBoot: jest.fn().mockResolvedValue(undefined)
+        } as unknown as LoadFilesUseCase
+        const codeChartaComponent = new CodeChartaComponent(mockedLoadFilesUseCase)
 
-        const codeChartaComponent = new CodeChartaComponent(mockedStore, mockedLoadInitialFileService)
+        // Act
         codeChartaComponent.ngOnInit()
 
-        expect(mockedStore.dispatch).toHaveBeenCalledWith(setIsLoadingFile({ value: true }))
-        expect(mockedLoadInitialFileService.loadFilesOrSampleFiles).toHaveBeenCalled()
+        // Assert
+        expect(mockedLoadFilesUseCase.loadOnBoot).toHaveBeenCalled()
     })
 
-    it("should set isInitialized on angulars init event after fileService is loaded", async () => {
+    it("should set isInitialized on angulars init event after the files are loaded", async () => {
         // Arrange
-        const mockedStore = { dispatch: jest.fn() } as unknown as Store
-        const mockedLoadInitialFileService = {
-            loadFilesOrSampleFiles: jest.fn().mockResolvedValue(undefined)
-        } as unknown as LoadInitialFileService
-
-        const codeChartaComponent = new CodeChartaComponent(mockedStore, mockedLoadInitialFileService)
+        const mockedLoadFilesUseCase = {
+            loadOnBoot: jest.fn().mockResolvedValue(undefined)
+        } as unknown as LoadFilesUseCase
+        const codeChartaComponent = new CodeChartaComponent(mockedLoadFilesUseCase)
 
         // Act
         expect(codeChartaComponent.isInitialized()).toBe(false)
         codeChartaComponent.ngOnInit()
+        await Promise.resolve()
+        await Promise.resolve()
 
-        // Wait for promise to resolve
+        // Assert
+        expect(codeChartaComponent.isInitialized()).toBe(true)
+    })
+
+    it("should set isInitialized even when the load rejects", async () => {
+        // Arrange
+        const mockedLoadFilesUseCase = {
+            loadOnBoot: jest.fn().mockRejectedValue(new Error("boom"))
+        } as unknown as LoadFilesUseCase
+        const codeChartaComponent = new CodeChartaComponent(mockedLoadFilesUseCase)
+
+        // Act
+        codeChartaComponent.ngOnInit()
+        await Promise.resolve()
+        await Promise.resolve()
         await Promise.resolve()
 
         // Assert
