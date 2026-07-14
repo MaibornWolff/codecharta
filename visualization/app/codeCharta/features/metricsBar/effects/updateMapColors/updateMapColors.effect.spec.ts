@@ -1,11 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
-import { State, StoreModule } from "@ngrx/store"
+import { StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import stringify from "safe-stable-stringify"
 import { MapColors } from "../../../../model/codeCharta.model"
-import { colorMetricSelector, defaultMapColors } from "../../../../stores/mapState/mapState.read.facade"
+import { colorMetricSelector, defaultMapColors, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { setMapColors } from "../../../../stores/mapState/mapState.write.facade"
+import { MetricsLensSourceReadWindow } from "../../../../stores/metricsLensSource/metricsLensSource.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
@@ -45,7 +46,16 @@ describe("UpdateMapColorsEffect", () => {
                 StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })
             ],
             providers: [
-                { provide: State, useValue: { getValue: () => modifiedDefaultState } },
+                {
+                    provide: MetricsLensSourceReadWindow,
+                    useValue: {
+                        getAttributeDescriptors: () => modifiedDefaultState.metricsLensSource.attributeDescriptors
+                    }
+                },
+                {
+                    provide: MapStateReadWindow,
+                    useValue: { getMapColors: () => modifiedDefaultState.mapState.mapColors }
+                },
                 provideMockStore({
                     selectors: [
                         {

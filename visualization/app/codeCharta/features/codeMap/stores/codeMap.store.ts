@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core"
-import { State, Store } from "@ngrx/store"
+import { Store } from "@ngrx/store"
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState, ColorLabelOptions } from "../../../model/codeCharta.model"
 import { idToNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"
-import { hoveredNodeIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
+import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodeId, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
 import { edgeVisibilitySelector } from "../selectors/edgeVisibility.selector"
 
@@ -12,31 +14,33 @@ import { edgeVisibilitySelector } from "../selectors/edgeVisibility.selector"
 export class CodeMapStore {
     constructor(
         private readonly store: Store<CcState>,
-        private readonly state: State<CcState>
+        private readonly ccStateSnapshot: CcStateSnapshot,
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly sharedViewReadWindow: SharedViewReadWindow
     ) {}
 
     getState(): CcState {
-        return this.state.getValue()
+        return this.ccStateSnapshot.get()
     }
 
     getMapState() {
-        return this.state.getValue().mapState
+        return this.mapStateReadWindow.getMapState()
     }
 
     getEdges() {
-        return edgesSelector(this.state.getValue())
+        return edgesSelector(this.ccStateSnapshot.get())
     }
 
     getEdgeVisibility() {
-        return edgeVisibilitySelector(this.state.getValue())
+        return edgeVisibilitySelector(this.ccStateSnapshot.get())
     }
 
     getHoveredNodeId(): string | null {
-        return hoveredNodeIdSelector(this.state.getValue())
+        return this.sharedViewReadWindow.getHoveredNodeId()
     }
 
     getIdToNode() {
-        return idToNodeSelector(this.state.getValue())
+        return idToNodeSelector(this.ccStateSnapshot.get())
     }
 
     setHoveredNodeId(value: string | null) {

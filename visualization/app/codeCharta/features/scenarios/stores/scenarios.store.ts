@@ -1,19 +1,20 @@
 import { Injectable } from "@angular/core"
-import { State, Store } from "@ngrx/store"
+import { Store } from "@ngrx/store"
 import { CcState, RecursivePartial } from "../../../model/codeCharta.model"
 import { setIsLoadingFile } from "../../../stores/fileStore/fileStore.facade"
 import { setIsLoadingMap } from "../../../stores/mapState/mapState.write.facade"
+import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { setState } from "../../../stores/rootStore/state.actions"
 
 @Injectable({ providedIn: "root" })
 export class ScenariosStore {
     constructor(
         private readonly store: Store<CcState>,
-        private readonly state: State<CcState>
+        private readonly ccStateSnapshot: CcStateSnapshot
     ) {}
 
     getValue(): CcState {
-        return this.state.getValue()
+        return this.ccStateSnapshot.get()
     }
 
     setIsLoadingFile(value: boolean) {

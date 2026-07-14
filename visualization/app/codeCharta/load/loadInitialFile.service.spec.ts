@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http"
 import { TestBed } from "@angular/core/testing"
-import { State, StoreModule } from "@ngrx/store"
+import { StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import stringify from "safe-stable-stringify"
@@ -17,15 +17,19 @@ import {
 import { FileSelectionState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
 import { metricDataSelector } from "../renderer/renderModel/accumulatedData/metricData/metricData.selector"
-import { defaultDependencyLensSource } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
+import {
+    DependencyLensSourceReadWindow,
+    defaultDependencyLensSource
+} from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
+import { FileStoreReadWindow } from "../stores/fileStore/fileStore.facade"
 import { sampleFile1, sampleFile2 } from "../stores/fileStore/loaders/ccJson/sampleFiles"
 import { LoadFileService } from "../stores/fileStore/loaders/ccJson/services/loadFile.service"
 import { getNameDataPair } from "../stores/fileStore/loaders/ccJson/util/fileParser"
 import { UrlExtractor } from "../stores/fileStore/loaders/ccJson/util/urlExtractor"
 import { setCurrentFilesAreSampleFiles } from "../stores/fileStore/store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import { setDelta, setFiles } from "../stores/fileStore/store/files.actions"
-import { defaultMapState } from "../stores/mapState/mapState.read.facade"
+import { defaultMapState, MapStateReadWindow } from "../stores/mapState/mapState.read.facade"
 import {
     setAreaMetric,
     setColorMetric,
@@ -34,14 +38,15 @@ import {
     setHeightMetric,
     setLayoutAlgorithm
 } from "../stores/mapState/mapState.write.facade"
-import { defaultMetricsLensSource } from "../stores/metricsLensSource/metricsLensSource.read.facade"
+import { defaultMetricsLensSource, MetricsLensSourceReadWindow } from "../stores/metricsLensSource/metricsLensSource.read.facade"
 import { setAttributeDescriptors, setAttributeTypes } from "../stores/metricsLensSource/metricsLensSource.write.facade"
-import { defaultPreferences } from "../stores/preferences/preferences.read.facade"
+import { defaultPreferences, PreferencesReadWindow } from "../stores/preferences/preferences.read.facade"
 import { setSortingOption } from "../stores/preferences/preferences.write.facade"
+import { CcStateSnapshot } from "../stores/rootStore/ccState.snapshot"
 import { readCcState } from "../stores/rootStore/indexedDB/indexedDBWriter"
 import { defaultState } from "../stores/rootStore/state.manager"
 import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
-import { defaultSharedView } from "../stores/sharedView/sharedView.read.facade"
+import { defaultSharedView, SharedViewReadWindow } from "../stores/sharedView/sharedView.read.facade"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
 import { MetricQueryParemter } from "../util/queryParameter/metricQueryParameter"
 import { getLastAction } from "../util/testUtils/store.utils"
@@ -66,7 +71,19 @@ describe("LoadInitialFileService", () => {
                 { provide: ErrorDialogService, useValue: mockedErrorDialogService },
                 { provide: HttpClient, useValue: {} },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
-                { provide: State, useValue: { getValue: () => defaultState } },
+                { provide: CcStateSnapshot, useValue: { get: () => defaultState } },
+                { provide: PreferencesReadWindow, useValue: { getPreferences: () => defaultState.preferences } },
+                {
+                    provide: MetricsLensSourceReadWindow,
+                    useValue: { getMetricsLensSource: () => defaultState.metricsLensSource }
+                },
+                {
+                    provide: DependencyLensSourceReadWindow,
+                    useValue: { getDependencyLensSource: () => defaultState.dependencyLensSource }
+                },
+                { provide: SharedViewReadWindow, useValue: { getSharedView: () => defaultState.sharedView } },
+                { provide: MapStateReadWindow, useValue: { getMapState: () => defaultState.mapState } },
+                { provide: FileStoreReadWindow, useValue: { getFiles: () => defaultState.files } },
                 provideMockStore({
                     selectors: [
                         {

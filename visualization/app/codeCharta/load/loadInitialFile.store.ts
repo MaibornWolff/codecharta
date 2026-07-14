@@ -1,12 +1,14 @@
 import { Injectable } from "@angular/core"
-import { State, Store } from "@ngrx/store"
+import { Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { CcState, DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../model/codeCharta.model"
+import { DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
 import { metricDataSelector } from "../renderer/renderModel/renderModel.facade"
+import { DependencyLensSourceReadWindow } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
-import { setCurrentFilesAreSampleFiles, setDelta, setFiles } from "../stores/fileStore/fileStore.facade"
+import { FileStoreReadWindow, setCurrentFilesAreSampleFiles, setDelta, setFiles } from "../stores/fileStore/fileStore.facade"
+import { MapStateReadWindow } from "../stores/mapState/mapState.read.facade"
 import {
     setAmountOfEdgePreviews,
     setAmountOfTopLabels,
@@ -39,7 +41,9 @@ import {
     setShowOnlyBuildingsWithEdges,
     setShowOutgoingEdges
 } from "../stores/mapState/mapState.write.facade"
+import { MetricsLensSourceReadWindow } from "../stores/metricsLensSource/metricsLensSource.read.facade"
 import { setAttributeDescriptors, setAttributeTypes } from "../stores/metricsLensSource/metricsLensSource.write.facade"
+import { PreferencesReadWindow } from "../stores/preferences/preferences.read.facade"
 import {
     setExperimentalFeaturesEnabled,
     setIsColorMetricLinkedToHeightMetricAction,
@@ -49,6 +53,8 @@ import {
     setScreenshotToClipboardEnabled,
     setSortingOption
 } from "../stores/preferences/preferences.write.facade"
+import { CcStateSnapshot } from "../stores/rootStore/ccState.snapshot"
+import { SharedViewReadWindow } from "../stores/sharedView/sharedView.read.facade"
 import { setAllFocusedNodes, setBlacklist, setMarkedPackages, setSearchPattern } from "../stores/sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
@@ -67,7 +73,13 @@ export class LoadInitialFileStore {
 
     constructor(
         private readonly store: Store,
-        private readonly state: State<CcState>
+        private readonly ccStateSnapshot: CcStateSnapshot,
+        private readonly preferencesReadWindow: PreferencesReadWindow,
+        private readonly metricsLensSourceReadWindow: MetricsLensSourceReadWindow,
+        private readonly dependencyLensSourceReadWindow: DependencyLensSourceReadWindow,
+        private readonly sharedViewReadWindow: SharedViewReadWindow,
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly fileStoreReadWindow: FileStoreReadWindow
     ) {}
 
     setFiles(value: FileState[]) {
@@ -83,7 +95,7 @@ export class LoadInitialFileStore {
     }
 
     applyPreferences(savedPreferences: Preferences) {
-        const currentPreferences = (this.state.getValue() as CcState).preferences
+        const currentPreferences = this.preferencesReadWindow.getPreferences()
         const missingPreferences = []
         for (const [key, value] of Object.entries(currentPreferences)) {
             if (key in savedPreferences) {
@@ -100,7 +112,7 @@ export class LoadInitialFileStore {
     }
 
     applyMetricsLensSource(savedMetricsLensSource: MetricsLensSource) {
-        const currentMetricsLensSource = (this.state.getValue() as CcState).metricsLensSource
+        const currentMetricsLensSource = this.metricsLensSourceReadWindow.getMetricsLensSource()
         const missingMetricsLensSource = []
         for (const [key, value] of Object.entries(currentMetricsLensSource)) {
             if (key in savedMetricsLensSource) {
@@ -117,7 +129,7 @@ export class LoadInitialFileStore {
     }
 
     applyDependencyLensSource(savedDependencyLensSource: DependencyLensSource) {
-        const currentDependencyLensSource = (this.state.getValue() as CcState).dependencyLensSource
+        const currentDependencyLensSource = this.dependencyLensSourceReadWindow.getDependencyLensSource()
         const missingDependencyLensSource = []
         for (const [key, value] of Object.entries(currentDependencyLensSource)) {
             if (key in savedDependencyLensSource) {
@@ -134,7 +146,7 @@ export class LoadInitialFileStore {
     }
 
     applySharedView(savedSharedView: SharedView) {
-        const currentSharedView = (this.state.getValue() as CcState).sharedView
+        const currentSharedView = this.sharedViewReadWindow.getSharedView()
         const missingSharedView = []
         for (const [key, value] of Object.entries(currentSharedView)) {
             if (key in savedSharedView) {
@@ -151,7 +163,7 @@ export class LoadInitialFileStore {
     }
 
     applyMapState(savedMapState: MapState) {
-        const currentMapState = (this.state.getValue() as CcState).mapState
+        const currentMapState = this.mapStateReadWindow.getMapState()
         const missingMapState = []
         for (const [key, value] of Object.entries(currentMapState)) {
             if (key in savedMapState) {
@@ -168,7 +180,7 @@ export class LoadInitialFileStore {
     }
 
     setMetricsFromUrlValues(areaMetric: string, heightMetric: string, colorMetric: string, edgeMetric: string) {
-        const state = this.state.getValue() as CcState
+        const state = this.ccStateSnapshot.get()
         const nodeMetricData = metricDataSelector(state).nodeMetricData
         const edgeMetricData = metricDataSelector(state).edgeMetricData
         if (!nodeMetricData) {
@@ -193,7 +205,7 @@ export class LoadInitialFileStore {
     }
 
     setRenderState(renderState: string) {
-        const files = getCCFiles(this.state.getValue().files)
+        const files = getCCFiles(this.fileStoreReadWindow.getFiles())
         if (renderState === "Delta" && files.length >= 2) {
             this.store.dispatch(setDelta({ referenceFile: files[0], comparisonFile: files[1] }))
         }

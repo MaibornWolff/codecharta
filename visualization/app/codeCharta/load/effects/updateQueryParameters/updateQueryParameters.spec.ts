@@ -1,12 +1,14 @@
 import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { provideMockActions } from "@ngrx/effects/testing"
-import { Action, State } from "@ngrx/store"
+import { Action } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import { Subject } from "rxjs"
 import { EDGE_METRIC_DATA } from "../../../mocks/dataMocks"
 import { edgeMetricDataSelector } from "../../../renderer/renderModel/edgeMetricData/edgeMetricData.selector"
+import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
+import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { setColorMetric, setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import { LoadInitialFileService } from "../../loadInitialFile.service"
@@ -42,8 +44,12 @@ describe("UpdateQueryParametersEffect", () => {
                     }
                 },
                 {
-                    provide: State,
-                    useValue: { getValue: mockGetState }
+                    provide: MapStateReadWindow,
+                    useValue: { getMapState: () => mockGetState().mapState }
+                },
+                {
+                    provide: FileStoreReadWindow,
+                    useValue: { getCurrentFilesAreSampleFiles: () => mockGetState().currentFilesAreSampleFiles }
                 },
                 provideMockStore({
                     selectors: [{ selector: edgeMetricDataSelector, value: [] }]

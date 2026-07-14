@@ -1,9 +1,11 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
-import { State, Store } from "@ngrx/store"
+import { Store } from "@ngrx/store"
 import { debounceTime, map, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../model/codeCharta.model"
 import { edgeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
+import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { MetricQueryParemter } from "../../../util/queryParameter/metricQueryParameter"
 import { LoadInitialFileService } from "../../loadInitialFile.service"
 import { actionsRequiringUpdateQueryParameters } from "./actionsRequiringUpdateQueryParameters"
@@ -13,7 +15,8 @@ export class UpdateQueryParametersEffect {
     constructor(
         private readonly loadInitialFileService: LoadInitialFileService,
         private readonly actions$: Actions,
-        private readonly state: State<CcState>,
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
         private readonly store: Store<CcState>
     ) {}
 
@@ -32,8 +35,7 @@ export class UpdateQueryParametersEffect {
     )
 
     private updateMetricQueryParameters(isEdgeMetricDefined: boolean): void {
-        const state: CcState = this.state.getValue()
-        const { edgeMetric, heightMetric, colorMetric, areaMetric } = state.mapState
+        const { edgeMetric, heightMetric, colorMetric, areaMetric } = this.mapStateReadWindow.getMapState()
         const isFileQueryParameterPresent = this.loadInitialFileService.checkFileQueryParameterPresent()
         if (!isFileQueryParameterPresent) {
             return
@@ -48,7 +50,7 @@ export class UpdateQueryParametersEffect {
             this.deleteQueryParameterIfExists(MetricQueryParemter.edgeMetric)
         }
 
-        if (state.currentFilesAreSampleFiles) {
+        if (this.fileStoreReadWindow.getCurrentFilesAreSampleFiles()) {
             this.addOrUpdateQueryParameter(MetricQueryParemter.currentFilesAreSampleFiles, true)
         } else {
             this.deleteQueryParameterIfExists(MetricQueryParemter.currentFilesAreSampleFiles)

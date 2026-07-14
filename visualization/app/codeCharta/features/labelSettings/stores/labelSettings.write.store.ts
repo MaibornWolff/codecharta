@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { State, Store } from "@ngrx/store"
+import { Store } from "@ngrx/store"
 import { CcState, ColorLabelOptions, LabelMode } from "../../../model/codeCharta.model"
 import { defaultAmountOfTopLabels } from "../../../stores/mapState/mapState.read.facade"
 import {
@@ -12,6 +12,7 @@ import {
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName
 } from "../../../stores/mapState/mapState.write.facade"
+import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { setState } from "../../../stores/rootStore/state.actions"
 import { getPartialDefaultState } from "../../shared/facade"
 
@@ -21,7 +22,7 @@ import { getPartialDefaultState } from "../../shared/facade"
 export class LabelSettingsWriteStore {
     constructor(
         private readonly store: Store<CcState>,
-        private readonly state: State<CcState>
+        private readonly ccStateSnapshot: CcStateSnapshot
     ) {}
 
     setLabelMode(value: LabelMode) {
@@ -57,7 +58,7 @@ export class LabelSettingsWriteStore {
     }
 
     resetSettings(keys: string[]) {
-        const partialDefaultState = getPartialDefaultState(keys, this.state.getValue())
+        const partialDefaultState = getPartialDefaultState(keys, this.ccStateSnapshot.get())
         if (partialDefaultState.mapState?.amountOfTopLabels !== undefined) {
             partialDefaultState.mapState.amountOfTopLabels = defaultAmountOfTopLabels
         }

@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
-import { State } from "@ngrx/store"
 import { debounceTime, filter, tap } from "rxjs"
 import { CcState } from "../../../model/codeCharta.model"
+import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { setHoveredNodeId } from "../../../stores/sharedView/sharedView.write.facade"
 import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
@@ -11,7 +11,7 @@ import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
 export class SaveCcStateEffect {
     constructor(
         private readonly actions$: Actions,
-        private readonly state: State<CcState>
+        private readonly ccStateSnapshot: CcStateSnapshot
     ) {}
 
     saveCcState$ = createEffect(
@@ -21,7 +21,7 @@ export class SaveCcStateEffect {
                 ofType(...actionsRequiringSaveCcState),
                 debounceTime(500),
                 tap(async () => {
-                    const state: CcState = this.state.getValue()
+                    const state: CcState = this.ccStateSnapshot.get()
                     await writeCcState(state)
                 })
             ),

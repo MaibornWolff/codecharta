@@ -1,7 +1,7 @@
 "use strict"
 
 import { BackSide, CanvasTexture, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
-import { Node } from "../../../model/codeCharta.model"
+import { Node, Scaling } from "../../../model/codeCharta.model"
 import { getFloorLabelPadding } from "../algorithm/treeMapLayout/treeMapGenerator"
 import { FloorLabelHelper } from "./floorLabelHelper"
 
@@ -18,7 +18,7 @@ export class FloorLabelDrawer {
     private readonly scaling: Vector3
     private readonly maxAnisotropy: number
     readonly folderGeometryHeight: number = 2.01
-    private lastScaling: Vector3 = new Vector3(1, 1, 1)
+    private lastScaling: Scaling = new Vector3(1, 1, 1)
     private floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
 
     private floorLabelsPerLevel = new Map()
@@ -61,7 +61,7 @@ export class FloorLabelDrawer {
         return this.floorLabelPlanes
     }
 
-    translatePlaneCanvases(scale: Vector3) {
+    translatePlaneCanvases(scale: Scaling) {
         const defaultFolderHeight = 2
         for (const plane of this.floorLabelPlanes) {
             const level = this.floorLabelPlaneLevel.get(plane) + 1

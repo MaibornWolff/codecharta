@@ -1,20 +1,20 @@
 import { Injectable } from "@angular/core"
-import { State, Store } from "@ngrx/store"
+import { Store } from "@ngrx/store"
 import { CcState, ColorMode } from "../../../model/codeCharta.model"
-import { colorModeSelector } from "../../../stores/mapState/mapState.read.facade"
+import { colorModeSelector, MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { setColorMode } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class Export3DColorModeStore {
     constructor(
         private readonly store: Store<CcState>,
-        private readonly state: State<CcState>
+        private readonly mapStateReadWindow: MapStateReadWindow
     ) {}
 
     colorMode$ = this.store.select(colorModeSelector)
 
     getColorMode(): ColorMode {
-        return this.state.getValue().mapState.colorMode
+        return this.mapStateReadWindow.getColorMode()
     }
 
     setAbsoluteColorMode() {

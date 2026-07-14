@@ -1,10 +1,11 @@
 import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
-import { State, StoreModule } from "@ngrx/store"
+import { StoreModule } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { CcState } from "app/codeCharta/model/codeCharta.model"
 import { codeMapNodesSelector } from "../../../../renderer/renderModel/accumulatedData/codeMapNodes.selector"
 import { visibleFileStatesSelector } from "../../../../stores/fileStore/store/visibleFileStates.selector"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { setAmountOfTopLabels } from "../../../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
@@ -40,9 +41,9 @@ describe("updateVisibleTopLabelsEffect", () => {
                     ]
                 }),
                 {
-                    provide: State,
+                    provide: MapStateReadWindow,
                     useValue: {
-                        getValue: () => ({ mapState: { amountOfTopLabels: 5 } })
+                        getAmountOfTopLabels: () => 5
                     }
                 }
             ]
@@ -110,9 +111,9 @@ describe("updateVisibleTopLabelsEffect when stored value is lower than auto-calc
                     ]
                 }),
                 {
-                    provide: State,
+                    provide: MapStateReadWindow,
                     useValue: {
-                        getValue: () => ({ mapState: { amountOfTopLabels: 1 } })
+                        getAmountOfTopLabels: () => 1
                     }
                 }
             ]
