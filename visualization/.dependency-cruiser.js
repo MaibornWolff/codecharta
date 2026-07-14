@@ -352,6 +352,31 @@ module.exports = {
             }
         },
         {
+            name: "home-selectors-are-declared-in-their-home",
+            severity: "error",
+            comment:
+                "A home's ROOT selector (the raw `state => state.<home>` slice accessor: mapStateSelector, preferencesSelector, sharedViewSelector, filesSelector) is a private store/ internal. Only the owning home's own store/ folder may import it — that is where every derived leaf selector (areaMetricSelector, blacklistSelector, isDeltaStateSelector, …) and the home's read window (store/<home>.readWindow.ts) are declared. Handing the root selector out lets a consumer re-derive home state OUTSIDE the home, which duplicates the home's projection surface in feature land and defeats the read facade; this rule mechanically bans createSelector(mapStateSelector, …) in features/. Consumers get a NAMED derived selector or a read-window stream from the home's read facade instead. The facades are deliberately NOT exempt: dependency-cruiser sees only the module edge consumer→facade, so a barrel re-export of the root selector would bypass the fence — hence none of the four barrels re-exports one. Spec/e2e exempt.",
+            from: {
+                path: "^app/",
+                pathNot: [
+                    "^app/codeCharta/stores/mapState/store/",
+                    "^app/codeCharta/stores/preferences/store/",
+                    "^app/codeCharta/stores/sharedView/store/",
+                    "^app/codeCharta/stores/fileStore/store/",
+                    "\\.spec\\.ts$",
+                    "\\.e2e\\.ts$"
+                ]
+            },
+            to: {
+                path: [
+                    "^app/codeCharta/stores/mapState/store/mapState\\.selector\\.ts$",
+                    "^app/codeCharta/stores/preferences/store/preferences\\.selector\\.ts$",
+                    "^app/codeCharta/stores/sharedView/store/sharedView\\.selector\\.ts$",
+                    "^app/codeCharta/stores/fileStore/store/files\\.selector\\.ts$"
+                ]
+            }
+        },
+        {
             name: "display-components-cannot-dispatch",
             severity: "error",
             comment:

@@ -5,7 +5,6 @@ export { isPresentationModeSelector } from "./store/isPresentationMode/isPresent
 export { maxTreeMapFilesSelector } from "./store/maxTreeMapFiles/maxTreeMapFiles.selector"
 export { PreferencesReadWindow } from "./store/preferences.readWindow"
 export { defaultPreferences, preferences } from "./store/preferences.reducer"
-export { preferencesSelector } from "./store/preferences.selector"
 export { resetCameraIfNewFileIsLoadedSelector } from "./store/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
 export { defaultSorting } from "./store/sorting/sorting.reducer"
 export { sortingOrderAscendingSelector, sortingOrderSelector } from "./store/sorting/sorting.selector"
