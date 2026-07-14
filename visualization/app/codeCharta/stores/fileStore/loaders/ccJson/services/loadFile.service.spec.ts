@@ -55,7 +55,6 @@ describe("loadFileService", () => {
     })
 
     afterEach(() => {
-        codeChartaService.referenceFileSubscription.unsubscribe()
     })
 
     function restartSystem() {
@@ -620,20 +619,6 @@ describe("loadFileService", () => {
             expect(state.getValue().files).toHaveLength(1)
             expect(state.getValue().files[0].file.fileMeta.fileName).toEqual("ThirdFile")
         })
-    })
-
-    it("should update its ROOT_PATH when reference file is being set to a file", () => {
-        codeChartaService.loadFiles([{ fileName: "FirstFile", content: validFileContent, fileSize: 42 }])
-        const updateRootDataSpy = jest.spyOn(fileRoot, "updateRoot")
-
-        const newReferenceFile = state.getValue().files[0].file
-        store.dispatch(setDeltaReference({ file: newReferenceFile }))
-        expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
-        expect(updateRootDataSpy).toHaveBeenCalledWith(state.getValue().files[0].file.map.name)
-
-        // set reference file to a partial selected file. Therefore reference file becomes undefined
-        store.dispatch(setStandard({ files: [state.getValue().files[0].file] }))
-        expect(updateRootDataSpy).toHaveBeenCalledTimes(1)
     })
 
     it("should load files ignoring the authors attribute", () => {

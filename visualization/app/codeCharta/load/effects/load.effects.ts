@@ -1,6 +1,9 @@
+import { ReconcileAfterLoadEffect } from "./reconcileAfterLoad/reconcileAfterLoad.effect"
 import { SaveCcStateEffect } from "./saveCcState/saveCcState.effect"
-import { UnfocusNodesEffect } from "./unfocusNodes/unfocusNodes.effect"
-import { UpdateFileSettingsEffect } from "./updateFileSettings/updateFileSettings.effect"
 import { UpdateQueryParametersEffect } from "./updateQueryParameters/updateQueryParameters.effect"
 
-export const loadEffects = [UnfocusNodesEffect, SaveCcStateEffect, UpdateQueryParametersEffect, UpdateFileSettingsEffect]
+/**
+ * ReconcileAfterLoadEffect owns the whole post-load sequence. It replaced UnfocusNodesEffect and
+ * UpdateFileSettingsEffect here, and the metric/colorRange/top-label resets in the feature bundles.
+ */
+export const loadEffects = [ReconcileAfterLoadEffect, SaveCcStateEffect, UpdateQueryParametersEffect]

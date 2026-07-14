@@ -1,5 +1,4 @@
-import { Injectable, OnDestroy } from "@angular/core"
-import { tap } from "rxjs"
+import { Injectable } from "@angular/core"
 import { NameDataPair } from "../../../../../model/codeCharta.api.model"
 import { FileState } from "../../../../../model/files/files"
 import { clone } from "../../../../../util/clone"
@@ -14,25 +13,11 @@ export const NO_FILES_LOADED_ERROR_MESSAGE = "File(s) could not be loaded"
 export const FILES_ALREADY_LOADED_ERROR_MESSAGE = "File(s) are already loaded"
 
 @Injectable({ providedIn: "root" })
-export class LoadFileService implements OnDestroy {
-    referenceFileSubscription = this.filesRepo.referenceFile$
-        .pipe(
-            tap(newReferenceFile => {
-                if (newReferenceFile) {
-                    fileRoot.updateRoot(newReferenceFile.map.name)
-                }
-            })
-        )
-        .subscribe()
-
+export class LoadFileService {
     constructor(
         private readonly filesRepo: FilesRepo,
         private readonly errorDialogService: ErrorDialogService
     ) {}
-
-    ngOnDestroy(): void {
-        this.referenceFileSubscription.unsubscribe()
-    }
 
     loadFiles(nameDataPairs: NameDataPair[]) {
         const fileStates: FileState[] = clone(this.filesRepo.getFiles())

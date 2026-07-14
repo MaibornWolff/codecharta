@@ -1,4 +1,4 @@
-import { NodeMetricData, RecursivePartial, Settings } from "../../../../../model/codeCharta.model"
+import { NodeMetricData, RecursivePartial, Settings } from "../../model/codeCharta.model"
 
 const sizeMetrics = ["rloc", "real_lines_of_code", "loc", "lines_of_code", "lines", "statements", "functions"]
 const complexityMetrics = [

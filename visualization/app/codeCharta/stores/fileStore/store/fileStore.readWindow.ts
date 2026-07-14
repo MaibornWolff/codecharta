@@ -33,6 +33,10 @@ export class FileStoreReadWindow {
         return visibleFileStatesSelector(this.state.getValue())
     }
 
+    getReferenceFile() {
+        return referenceFileSelector(this.state.getValue())
+    }
+
     getCurrentFilesAreSampleFiles(): boolean {
         return this.state.getValue().currentFilesAreSampleFiles
     }

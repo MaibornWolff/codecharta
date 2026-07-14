@@ -5,7 +5,7 @@ import { filter, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../../model/codeCharta.model"
 import { areChosenMetricsAvailableSelector, nodeMetricDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { setDefaultMetrics } from "./setDefaultMetrics"
-import { isAnyMetricAvailable } from "./utils/metricHelper"
+import { isAnyMetricAvailable } from "../../../../util/metric/metricHelper"
 
 @Injectable()
 export class ResetChosenMetricsEffect {

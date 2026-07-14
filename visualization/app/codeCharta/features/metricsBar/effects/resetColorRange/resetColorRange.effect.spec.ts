@@ -46,14 +46,6 @@ describe("ResetColorRangeEffect", () => {
         actions$.complete()
     })
 
-    it("should fire on file selection actions after color metric data are recalculated", async () => {
-        const store = TestBed.inject(MockStore)
-        actions$.next(setStandard({ files: [] }))
-        store.overrideSelector(selectedColorMetricDataSelector, { minValue: 20, maxValue: 120, values: [20, 120] })
-        store.refreshState()
-        expect(await getLastAction(store)).toEqual({ value: { from: 53, to: 86 }, type: "SET_COLOR_RANGE" })
-    })
-
     it("should not fire when only selectedColorMetricData changed", async () => {
         const store = TestBed.inject(MockStore)
         store.overrideSelector(selectedColorMetricDataSelector, { minValue: 20, maxValue: 120, values: [20, 120] })
