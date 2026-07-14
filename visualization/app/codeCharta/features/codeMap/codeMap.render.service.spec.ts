@@ -24,6 +24,7 @@ import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricDat
 import { ColorCategoryCountsStore } from "../../renderer/threeViewer/stores/colorCategoryCounts.store"
 import { ThreeSceneService } from "../../renderer/threeViewer/threeSceneService"
 import { ThreeStatsService } from "../../renderer/threeViewer/threeStats.service"
+import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
 import { setFiles } from "../../stores/fileStore/store/files.actions"
 import {
     setAmountOfTopLabels,
@@ -40,7 +41,7 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { CodeMapRenderStore } from "./stores/codeMapRender.store"
+import { CodeMapStore } from "./stores/codeMap.store"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
 jest.mock("../../renderer/renderModel/accumulatedData/metricData/metricData.selector", () => ({
@@ -62,7 +63,8 @@ jest.mock("../../renderer/renderModel/nodeMetricData/nodeMetricData.selector", (
 describe("codeMapRenderService", () => {
     let store: Store<CcState>
     let state: State<CcState>
-    let codeMapRenderStore: CodeMapRenderStore
+    let codeMapStore: CodeMapStore
+    let fileStoreReadWindow: FileStoreReadWindow
     let codeMapRenderService: CodeMapRenderService
     let threeSceneService: ThreeSceneService
     let labelSettingsFacade: LabelSettingsFacade
@@ -90,7 +92,8 @@ describe("codeMapRenderService", () => {
         })
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
-        codeMapRenderStore = TestBed.inject(CodeMapRenderStore)
+        codeMapStore = TestBed.inject(CodeMapStore)
+        fileStoreReadWindow = TestBed.inject(FileStoreReadWindow)
         labelSettingsFacade = TestBed.inject(LabelSettingsFacade)
         codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
         threeStatsService = TestBed.inject(ThreeStatsService)
@@ -114,7 +117,8 @@ describe("codeMapRenderService", () => {
 
     function rebuildService() {
         codeMapRenderService = new CodeMapRenderService(
-            codeMapRenderStore,
+            codeMapStore,
+            fileStoreReadWindow,
             threeSceneService,
             labelSettingsFacade,
             codeMapArrowService,

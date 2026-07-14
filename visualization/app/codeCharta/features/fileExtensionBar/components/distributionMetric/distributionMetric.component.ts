@@ -1,7 +1,6 @@
 import { AsyncPipe } from "@angular/common"
 import { ChangeDetectionStrategy, Component } from "@angular/core"
-import { distributionMetric } from "../../../../stores/mapState/mapState.read.facade"
-import { DistributionMetricService } from "../../services/distributionMetric.service"
+import { distributionMetric, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 
 @Component({
     selector: "cc-distribution-metric",
@@ -11,8 +10,8 @@ import { DistributionMetricService } from "../../services/distributionMetric.ser
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DistributionMetricComponent {
-    readonly areaMetric$ = this.distributionMetricService.areaMetric$
+    readonly areaMetric$ = this.mapStateReadWindow.areaMetric$
     readonly distributionMetric = distributionMetric
 
-    constructor(private readonly distributionMetricService: DistributionMetricService) {}
+    constructor(private readonly mapStateReadWindow: MapStateReadWindow) {}
 }

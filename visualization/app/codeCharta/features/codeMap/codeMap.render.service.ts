@@ -12,13 +12,14 @@ import {
     ThreeSceneService,
     ThreeStatsService
 } from "../../renderer/threeViewer/threeViewer.facade"
+import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
 import { blacklistMatcherSelector } from "../../stores/sharedView/sharedView.read.facade"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { RendererEngine } from "./rendererEngine.contract"
 import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
-import { CodeMapRenderStore } from "./stores/codeMapRender.store"
+import { CodeMapStore } from "./stores/codeMap.store"
 
 const MIN_BUILDING_LENGTH = 2
 
@@ -33,7 +34,8 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     private subscription: Subscription
 
     constructor(
-        private readonly codeMapRenderStore: CodeMapRenderStore,
+        private readonly codeMapStore: CodeMapStore,
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
         private readonly threeSceneService: ThreeSceneService,
         private readonly labelSettingsFacade: LabelSettingsFacade,
         private readonly codeMapArrowService: CodeMapArrowService,
@@ -41,7 +43,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         private readonly codeMapMouseEventService: CodeMapMouseEventService,
         private readonly colorCategoryCountsStore: ColorCategoryCountsStore
     ) {
-        this.subscription = this.codeMapRenderStore.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()
+        this.subscription = this.fileStoreReadWindow.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()
     }
 
     ngOnDestroy(): void {
@@ -76,7 +78,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     }
 
     private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
-        const state = this.codeMapRenderStore.getState() as CcState
+        const state = this.codeMapStore.getState() as CcState
         const mapMesh = new CodeMapMesh(visibleSortedNodes, state, isDeltaState(state.files))
         this.threeSceneService.setMapMesh(allMeshNodes, mapMesh)
     }
@@ -90,7 +92,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     }
 
     getNodes(map: CodeMapNode) {
-        const state = this.codeMapRenderStore.getState() as CcState
+        const state = this.codeMapStore.getState() as CcState
         const nodeMetricData = nodeMetricDataSelector(state)
         const {
             mapState: { layoutAlgorithm },
@@ -115,7 +117,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     }
 
     sortVisibleNodesByHeightDescending(nodes: Node[]) {
-        const experimentalFeaturesEnabled = this.codeMapRenderStore.getState().preferences.experimentalFeaturesEnabled
+        const experimentalFeaturesEnabled = this.codeMapStore.getState().preferences.experimentalFeaturesEnabled
         if (experimentalFeaturesEnabled) {
             this.setMinBuildingLength(nodes)
             return nodes.filter(node => node.visible && node.width > 0).sort((a, b) => b.height - a.height)
@@ -132,7 +134,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
-        const state = this.codeMapRenderStore.getState()
+        const state = this.codeMapStore.getState()
         const colorRange = state.mapState.colorRange
 
         this.nodesByColor = {
@@ -168,7 +170,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     }
 
     private uncheckEmptyColorLabels() {
-        const colorLabels = this.codeMapRenderStore.getState().mapState.colorLabels
+        const colorLabels = this.codeMapStore.getState().mapState.colorLabels
         const unchecks: Partial<ColorLabelOptions> = {}
         for (const category of colorLabelTypes) {
             if (colorLabels[category] && this.nodesByColor[category].length === 0) {
@@ -176,7 +178,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
             }
         }
         if (Object.keys(unchecks).length > 0) {
-            this.codeMapRenderStore.setColorLabels(unchecks)
+            this.codeMapStore.setColorLabels(unchecks)
         }
     }
 
@@ -193,7 +195,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
             return
         }
 
-        const state = this.codeMapRenderStore.getState() as CcState
+        const state = this.codeMapStore.getState() as CcState
         const {
             showMetricLabelNodeName,
             showMetricLabelNameValue,

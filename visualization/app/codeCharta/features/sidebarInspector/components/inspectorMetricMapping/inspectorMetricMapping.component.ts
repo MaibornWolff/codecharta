@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { InspectorMetricMappingService } from "../../services/inspectorMetricMapping.service"
+import { SidebarInspectorReadStore } from "../../stores/sidebarInspector.read.store"
 import { InspectorMappingBlockComponent } from "../inspectorMappingBlock/inspectorMappingBlock.component"
 
 @Component({
@@ -11,7 +11,7 @@ import { InspectorMappingBlockComponent } from "../inspectorMappingBlock/inspect
     host: { class: "block shrink-0 border-t border-base-300 px-3 py-2" }
 })
 export class InspectorMetricMappingComponent {
-    private readonly metricMappingService = inject(InspectorMetricMappingService)
+    private readonly readStore = inject(SidebarInspectorReadStore)
 
-    readonly mappingBlocks = toSignal(this.metricMappingService.mappingBlocks$(), { requireSync: true })
+    readonly mappingBlocks = toSignal(this.readStore.mappingBlocks$, { requireSync: true })
 }

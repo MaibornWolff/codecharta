@@ -19,10 +19,11 @@ import {
     toggleEdgeMetricVisible
 } from "../../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
+import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { clone } from "../../../util/clone"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { wait } from "../../../util/testUtils/wait"
-import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
+import { CodeMapStore } from "../stores/codeMap.store"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 
 // Slice 15e: edges derives from files via the dependency lens; mock the selector to inject edges directly.
@@ -44,8 +45,9 @@ describe("CodeMapArrowService", () => {
         threeSceneService = TestBed.inject(ThreeSceneService)
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
-        const codeMapArrowStore = TestBed.inject(CodeMapArrowStore)
-        codeMapArrowService = new CodeMapArrowService(codeMapArrowStore, threeSceneService)
+        const codeMapStore = TestBed.inject(CodeMapStore)
+        const sharedViewReadWindow = TestBed.inject(SharedViewReadWindow)
+        codeMapArrowService = new CodeMapArrowService(codeMapStore, sharedViewReadWindow, threeSceneService)
     })
 
     function withMockedThreeSceneService() {

@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { isEmptyMetricRow } from "../../selectors/inspectorMetricRows.selector"
 import { InspectorComparisonModeService } from "../../services/inspectorComparisonMode.service"
-import { InspectorMetricsService } from "../../services/inspectorMetrics.service"
+import { SidebarInspectorReadStore } from "../../stores/sidebarInspector.read.store"
 import { InspectorComparisonToggleComponent } from "../inspectorComparisonToggle/inspectorComparisonToggle.component"
 import { InspectorEmptyMetricsComponent } from "../inspectorEmptyMetrics/inspectorEmptyMetrics.component"
 import { InspectorMetricRowComponent } from "../inspectorMetricRow/inspectorMetricRow.component"
@@ -15,11 +16,12 @@ import { InspectorMetricRowComponent } from "../inspectorMetricRow/inspectorMetr
     host: { class: "block border-t border-base-300 px-3 py-2" }
 })
 export class InspectorMetricsListComponent {
-    private readonly metricsService = inject(InspectorMetricsService)
+    private readonly readStore = inject(SidebarInspectorReadStore)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
     private readonly comparisonModeService = inject(InspectorComparisonModeService)
 
-    readonly metricRows = toSignal(this.metricsService.metricRows$(), { requireSync: true })
-    readonly mapColors = toSignal(this.metricsService.mapColors$(), { requireSync: true })
+    readonly metricRows = toSignal(this.readStore.metricRows$, { requireSync: true })
+    readonly mapColors = toSignal(this.mapStateReadWindow.mapColors$, { requireSync: true })
     readonly comparisonMode = this.comparisonModeService.comparisonMode
 
     readonly metricRowsWithValues = computed(() => this.metricRows().filter(row => !isEmptyMetricRow(row)))
