@@ -9,4 +9,5 @@ export { findIndexOfMarkedPackageOrParent } from "./store/markedPackages/util/fi
 export { rightClickedNodeDataSelector } from "./store/rightClickedNodeData/rightClickedNodeData.selector"
 export { searchPatternSelector } from "./store/searchPattern/searchPattern.selector"
 export { selectedBuildingIdSelector } from "./store/selectedBuildingId/selectedBuildingId.selector"
+export { SharedViewReadWindow } from "./store/sharedView.readWindow"
 export { defaultSharedView, sharedView } from "./store/sharedView.reducer"

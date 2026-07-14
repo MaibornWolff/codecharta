@@ -11,6 +11,7 @@ export {
     currentFilesAreSampleFiles,
     defaultCurrentFilesAreSampleFiles
 } from "./store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.reducer"
+export { FileStoreReadWindow } from "./store/fileStore.readWindow"
 export {
     fileActions,
     removeFiles,
