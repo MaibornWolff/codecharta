@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { LabelMode } from "../../../model/codeCharta.model"
+import { labelModeSelector } from "../../../stores/mapState/mapState.read.facade"
 import { setLabelMode } from "../../../stores/mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { labelModeSelector } from "../selectors/labelSettings.selectors"
 import { LabelModeStore } from "./labelMode.store"
 
 describe("LabelModeStore", () => {

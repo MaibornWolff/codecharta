@@ -5,6 +5,7 @@ export { buildHtmlMessage } from "./loaders/ccJson/services/loadFilesValidationT
 export { getCCFile, getCCFileAndDecorateFileChecksum, getContentChecksum } from "./loaders/ccJson/util/ccFileHelper"
 export { getNameDataPair } from "./loaders/ccJson/util/fileParser"
 export { UrlExtractor } from "./loaders/ccJson/util/urlExtractor"
+export { FilesRepo } from "./repos/files.repo"
 export { areMultipleMapsVisibleSelector } from "./store/areMultipleMapsVisible.selector"
 export { setCurrentFilesAreSampleFiles } from "./store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 export {

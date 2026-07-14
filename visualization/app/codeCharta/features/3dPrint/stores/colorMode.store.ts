@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState, ColorMode } from "../../../model/codeCharta.model"
+import { colorModeSelector } from "../../../stores/mapState/mapState.read.facade"
 import { setColorMode } from "../../../stores/mapState/mapState.write.facade"
-import { colorModeSelector } from "../selectors/3dPrint.selectors"
 
 @Injectable({ providedIn: "root" })
 export class Export3DColorModeStore {

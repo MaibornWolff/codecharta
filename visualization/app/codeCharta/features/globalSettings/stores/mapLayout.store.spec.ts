@@ -1,10 +1,11 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { LayoutAlgorithm } from "../../../model/codeCharta.model"
+import { layoutAlgorithmSelector } from "../../../stores/mapState/mapState.read.facade"
 import { setLayoutAlgorithm } from "../../../stores/mapState/mapState.write.facade"
+import { maxTreeMapFilesSelector } from "../../../stores/preferences/preferences.read.facade"
 import { setMaxTreeMapFiles } from "../../../stores/preferences/preferences.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { layoutAlgorithmSelector, maxTreeMapFilesSelector } from "../selectors/globalSettings.selectors"
 import { MapLayoutStore } from "./mapLayout.store"
 
 describe("MapLayoutStore", () => {

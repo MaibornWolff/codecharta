@@ -1,8 +1,10 @@
 import { Injectable } from "@angular/core"
-import { State, Store } from "@ngrx/store"
+import { Store } from "@ngrx/store"
 import { CCFile, CcState } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
 import {
+    FileStoreReadWindow,
+    FilesRepo,
     removeFiles,
     setDelta,
     setDeltaComparison,
@@ -11,21 +13,21 @@ import {
     setStandard,
     switchReferenceAndComparison
 } from "../../../stores/fileStore/fileStore.facade"
-import { filesSelector, isDeltaStateSelector, referenceFileSelector } from "../selectors/navBar.selectors"
 
 @Injectable({ providedIn: "root" })
 export class FilesSelectionStore {
     constructor(
         private readonly store: Store<CcState>,
-        private readonly state: State<CcState>
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
+        private readonly filesRepo: FilesRepo
     ) {}
 
-    files$ = this.store.select(filesSelector)
-    referenceFile$ = this.store.select(referenceFileSelector)
-    isDeltaState$ = this.store.select(isDeltaStateSelector)
+    files$ = this.fileStoreReadWindow.files$
+    referenceFile$ = this.fileStoreReadWindow.referenceFile$
+    isDeltaState$ = this.fileStoreReadWindow.isDeltaState$
 
     getCurrentFiles(): FileState[] {
-        return filesSelector(this.state.getValue())
+        return this.filesRepo.getFiles()
     }
 
     setStandard(files: CCFile[]) {

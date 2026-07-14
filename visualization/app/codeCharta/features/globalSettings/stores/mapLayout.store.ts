@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState, LayoutAlgorithm } from "../../../model/codeCharta.model"
+import { layoutAlgorithmSelector } from "../../../stores/mapState/mapState.read.facade"
 import { setLayoutAlgorithm } from "../../../stores/mapState/mapState.write.facade"
+import { maxTreeMapFilesSelector } from "../../../stores/preferences/preferences.read.facade"
 import { setMaxTreeMapFiles } from "../../../stores/preferences/preferences.write.facade"
-import { layoutAlgorithmSelector, maxTreeMapFilesSelector } from "../selectors/globalSettings.selectors"
 
 @Injectable({
     providedIn: "root"

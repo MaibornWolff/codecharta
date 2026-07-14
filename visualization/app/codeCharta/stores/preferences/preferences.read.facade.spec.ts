@@ -1,16 +1,13 @@
-import { CcState, LayoutAlgorithm } from "../../../model/codeCharta.model"
-import { defaultState } from "../../../stores/rootStore/state.manager"
+import { CcState } from "../../model/codeCharta.model"
+import { defaultState } from "../rootStore/state.manager"
 import {
     experimentalFeaturesEnabledSelector,
-    hideFlatBuildingsSelector,
-    isWhiteBackgroundSelector,
-    layoutAlgorithmSelector,
     maxTreeMapFilesSelector,
     resetCameraIfNewFileIsLoadedSelector,
     screenshotToClipboardEnabledSelector
-} from "./globalSettings.selectors"
+} from "./preferences.read.facade"
 
-describe("globalSettings.selectors", () => {
+describe("preferences.read.facade", () => {
     let mockState: CcState
 
     beforeEach(() => {
@@ -65,54 +62,6 @@ describe("globalSettings.selectors", () => {
         })
     })
 
-    describe("isWhiteBackgroundSelector", () => {
-        it("should select isWhiteBackground from preferences", () => {
-            // Arrange
-            mockState.mapState.isWhiteBackground = true
-
-            // Act
-            const result = isWhiteBackgroundSelector.projector(mockState.mapState)
-
-            // Assert
-            expect(result).toBe(true)
-        })
-
-        it("should return false when isWhiteBackground is false", () => {
-            // Arrange
-            mockState.mapState.isWhiteBackground = false
-
-            // Act
-            const result = isWhiteBackgroundSelector.projector(mockState.mapState)
-
-            // Assert
-            expect(result).toBe(false)
-        })
-    })
-
-    describe("hideFlatBuildingsSelector", () => {
-        it("should select hideFlatBuildings from preferences", () => {
-            // Arrange
-            mockState.mapState.hideFlatBuildings = true
-
-            // Act
-            const result = hideFlatBuildingsSelector.projector(mockState.mapState)
-
-            // Assert
-            expect(result).toBe(true)
-        })
-
-        it("should return false when hideFlatBuildings is false", () => {
-            // Arrange
-            mockState.mapState.hideFlatBuildings = false
-
-            // Act
-            const result = hideFlatBuildingsSelector.projector(mockState.mapState)
-
-            // Assert
-            expect(result).toBe(false)
-        })
-    })
-
     describe("resetCameraIfNewFileIsLoadedSelector", () => {
         it("should select resetCameraIfNewFileIsLoaded from preferences", () => {
             // Arrange
@@ -134,41 +83,6 @@ describe("globalSettings.selectors", () => {
 
             // Assert
             expect(result).toBe(false)
-        })
-    })
-
-    describe("layoutAlgorithmSelector", () => {
-        it("should select layoutAlgorithm from preferences", () => {
-            // Arrange
-            mockState.mapState.layoutAlgorithm = LayoutAlgorithm.StreetMap
-
-            // Act
-            const result = layoutAlgorithmSelector.projector(mockState.mapState)
-
-            // Assert
-            expect(result).toBe(LayoutAlgorithm.StreetMap)
-        })
-
-        it("should return SquarifiedTreeMap when set to SquarifiedTreeMap", () => {
-            // Arrange
-            mockState.mapState.layoutAlgorithm = LayoutAlgorithm.SquarifiedTreeMap
-
-            // Act
-            const result = layoutAlgorithmSelector.projector(mockState.mapState)
-
-            // Assert
-            expect(result).toBe(LayoutAlgorithm.SquarifiedTreeMap)
-        })
-
-        it("should return TreeMapStreet when set to TreeMapStreet", () => {
-            // Arrange
-            mockState.mapState.layoutAlgorithm = LayoutAlgorithm.TreeMapStreet
-
-            // Act
-            const result = layoutAlgorithmSelector.projector(mockState.mapState)
-
-            // Assert
-            expect(result).toBe(LayoutAlgorithm.TreeMapStreet)
         })
     })
 
@@ -204,22 +118,6 @@ describe("globalSettings.selectors", () => {
 
             // Assert
             expect(result).toBe(1000)
-        })
-    })
-
-    describe("Selector memoization", () => {
-        it("should not recompute when preferences reference is the same", () => {
-            // Arrange
-            const preferences = mockState.preferences
-            const spy = jest.spyOn(screenshotToClipboardEnabledSelector, "projector")
-
-            // Act
-            screenshotToClipboardEnabledSelector.projector(preferences)
-            screenshotToClipboardEnabledSelector.projector(preferences)
-
-            // Assert
-            expect(spy).toHaveBeenCalledTimes(2)
-            // Memoization is tested at the selector level, not projector level
         })
     })
 })

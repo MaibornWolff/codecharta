@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { showMetricLabelNodeNameSelector } from "../../../stores/mapState/mapState.read.facade"
 import { setShowMetricLabelNodeName } from "../../../stores/mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { showMetricLabelNodeNameSelector } from "../selectors/labelSettings.selectors"
 import { ShowMetricLabelNodeNameStore } from "./showMetricLabelNodeName.store"
 
 describe("ShowMetricLabelNodeNameStore", () => {

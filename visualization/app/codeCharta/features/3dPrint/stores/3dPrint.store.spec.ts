@@ -1,18 +1,17 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { ColorMode } from "../../../model/codeCharta.model"
-import { setColorMode } from "../../../stores/mapState/mapState.write.facade"
-import { getLastAction } from "../../../util/testUtils/store.utils"
 import {
     areaMetricSelector,
-    attributeDescriptorsSelector,
-    blacklistSelector,
     colorMetricSelector,
     colorModeSelector,
     colorRangeSelector,
-    heightMetricSelector,
-    print3DFilesSelector
-} from "../selectors/3dPrint.selectors"
+    heightMetricSelector
+} from "../../../stores/mapState/mapState.read.facade"
+import { setColorMode } from "../../../stores/mapState/mapState.write.facade"
+import { blacklistSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { getLastAction } from "../../../util/testUtils/store.utils"
 import { Print3DStore } from "./3dPrint.store"
 
 describe("Print3DStore", () => {
@@ -31,8 +30,7 @@ describe("Print3DStore", () => {
                         { selector: colorRangeSelector, value: { from: 10, to: 50 } },
                         { selector: colorModeSelector, value: ColorMode.absolute },
                         { selector: attributeDescriptorsSelector, value: {} },
-                        { selector: blacklistSelector, value: [] },
-                        { selector: print3DFilesSelector, value: [] }
+                        { selector: blacklistSelector, value: [] }
                     ]
                 })
             ]

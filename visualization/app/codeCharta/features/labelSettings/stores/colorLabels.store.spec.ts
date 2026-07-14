@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { colorLabelsSelector } from "../../../stores/mapState/mapState.read.facade"
 import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { colorLabelsSelector } from "../selectors/labelSettings.selectors"
 import { ColorLabelsStore } from "./colorLabels.store"
 
 describe("ColorLabelsStore", () => {

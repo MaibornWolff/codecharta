@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { experimentalFeaturesEnabledSelector } from "../../../stores/preferences/preferences.read.facade"
 import { setExperimentalFeaturesEnabled } from "../../../stores/preferences/preferences.write.facade"
 import { getLastAction } from "../../../util/testUtils/store.utils"
-import { experimentalFeaturesEnabledSelector } from "../selectors/globalSettings.selectors"
 import { ExperimentalFeaturesStore } from "./experimentalFeatures.store"
 
 describe("ExperimentalFeaturesStore", () => {

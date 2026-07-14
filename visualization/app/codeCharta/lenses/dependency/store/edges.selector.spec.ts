@@ -1,5 +1,5 @@
 import { TEST_FILE_DATA } from "../../../mocks/dataMocks"
-import { CCFile, Edge } from "../../../model/codeCharta.model"
+import { CCFile, CcState, Edge } from "../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 import { clone } from "../../../util/clone"
 import { edgesSelector } from "./edges.selector"
@@ -53,8 +53,8 @@ describe("dependency lens edgesSelector", () => {
             { file: fileWith("hidden", [edge2]), selectedAs: FileSelectionState.None }
         ]
 
-        // Act — only "visible" survives getVisibleFiles => single-file passthrough
-        const derived = edgesSelector.projector(files)
+        // Act — only "visible" survives the visible-file narrowing => single-file passthrough
+        const derived = edgesSelector({ files } as CcState)
 
         // Assert — edge2 (hidden file) is gone; edge1 kept unprefixed
         expect(derived).toEqual([{ fromNodeName: "/root/nodeA", toNodeName: "/root/nodeB", attributes: { pairingRate: 10 } }])
