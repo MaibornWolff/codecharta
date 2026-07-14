@@ -243,3 +243,22 @@ version: 1
   derived selectors; the dependency lens now imports no `state/` view state.
 - Sources: `slice-2-metrics-lens-completion.md` (items 1, 3, 4, 5), `rpi-plan/00-roadmap.md` scope guards
   (items 2, 5, 6), `slice-3-dependency-lens.md` (items 2, 2b).
+- **Done (2026-07-14):** ~~Slice 20~~ — the read facades are real APIs (`slice-20-facades-are-apis.md`).
+  Read windows completed on all four homes (mapState 8→29 streams; sharedView/preferences/fileStore added), the 19
+  re-declared feature selectors folded back home behind a parity guard, the passthrough layer collapsed
+  (`features/**/*.store.ts` 81→25; −6,065 lines net; 1,164→1,025 modules), and
+  `home-selectors-are-declared-in-their-home` fences the root selectors at **error**. Zero snapshot diff.
+  **Two facts to carry into later slices:** (a) `display-components-cannot-dispatch` matches *every*
+  `features/**/*.component.ts` **on the import path**, so no injectable wrapper evades it — a component can never
+  reach a write facade, and every feature therefore keeps exactly one write store as its dispatch seam; plan around
+  that seam rather than trying to delete it. (b) There is **no serialization boundary** for IndexedDB: `writeCcState`
+  persists `state.getValue()` verbatim and the restore path re-dispatches persisted values straight into the `set*`
+  actions, so **any in-memory state reshape is a persisted-shape change** and needs a `DB_VERSION` bump + record
+  transform (v16 unwrapped the `attributeTypes` halves). Assume this for every future reshape.
+- **Deferred out of Slice 20 (candidate slice):** rewrite the 51 slice folders onto ngrx `createFeature` /
+  `createActionGroup`, or a `defineSetting()` factory. Slice 20 deliberately changed only the layers *above* the slice
+  dirs; the dirs themselves are still hand-rolled action/reducer/selector triplets. Now that every home has a complete
+  read window, this is a self-contained mechanical slice.
+- **Still open after Slice 20:** `SET_STATE`'s string-path deep-merge + the hand-maintained `objectWithDynamicKeysInStore`
+  allowlist (`stores/rootStore/state.manager.ts`). Slice 21 Task 5 (typed `hydrate(partial)` per home) is the
+  precondition for deleting it. Slice 21 is **not** started.
