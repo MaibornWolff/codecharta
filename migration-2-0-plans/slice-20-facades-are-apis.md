@@ -115,6 +115,7 @@ Nine commits, `78482bc8..61b371b31`. **316 files changed, +1,803 / −6,065.**
 | **Snapshots** | 45/45 | **45/45 — no `.snap` file changed at all** (`git diff` over `*__snapshots__*` is empty; `-u` never run) |
 | `lint:architecture` | 0 violations, 1,164 modules | 0 violations, **1,025 modules** |
 | `features/**/*.store.ts` | 81 | **25** |
+| `npm run e2e` | green | green |
 
 - **T1** — 12 missing home leaf selectors created; `MapStateReadWindow` grown 8 → 29 streams;
   `SharedViewReadWindow` / `PreferencesReadWindow` / `FileStoreReadWindow` added. Purely additive.
