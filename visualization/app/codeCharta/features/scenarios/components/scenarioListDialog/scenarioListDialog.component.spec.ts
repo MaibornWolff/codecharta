@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BehaviorSubject } from "rxjs"
+import { provideMockState } from "../../../../mocks/state.mocks"
 import { ColorMode, LabelMode, MetricData, NodeType } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
@@ -104,6 +105,7 @@ describe("ScenarioListDialogComponent", () => {
         TestBed.configureTestingModule({
             imports: [ScenarioListDialogComponent],
             providers: [
+                provideMockState(),
                 provideMockStore({ initialState: defaultState }),
                 { provide: ScenariosService, useValue: scenariosService },
                 { provide: ScenarioImportExportService, useValue: importExportService },

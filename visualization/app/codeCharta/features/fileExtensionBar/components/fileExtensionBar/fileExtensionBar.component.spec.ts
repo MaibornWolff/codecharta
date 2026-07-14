@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
+import { provideMockState } from "../../../../mocks/state.mocks"
 import { BlacklistItem } from "../../../../model/codeCharta.model"
 import { accumulatedDataSelector } from "../../../../renderer/renderModel/accumulatedData/accumulatedData.selector"
 import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
@@ -26,6 +27,7 @@ describe("FileExtensionBarComponent", () => {
         TestBed.configureTestingModule({
             imports: [FileExtensionBarComponent],
             providers: [
+                provideMockState(),
                 provideMockStore({
                     selectors: [
                         { selector: areaMetricSelector, value: {} },

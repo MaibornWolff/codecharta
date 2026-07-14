@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../../model/codeCharta.model"
+import { State, Store } from "@ngrx/store"
+import { CcState, Preferences } from "../../../model/codeCharta.model"
 import { screenshotToClipboardEnabledSelector } from "./enableClipboard/screenshotToClipboardEnabled.selector"
 import { experimentalFeaturesEnabledSelector } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 import { isColorMetricLinkedToHeightMetricSelector } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
@@ -13,7 +13,10 @@ import { sortingOrderAscendingSelector, sortingOrderSelector } from "./sorting/s
     providedIn: "root"
 })
 export class PreferencesReadWindow {
-    constructor(private readonly store: Store<CcState>) {}
+    constructor(
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>
+    ) {}
 
     readonly isPresentationMode$ = this.store.select(isPresentationModeSelector)
     readonly isColorMetricLinkedToHeightMetric$ = this.store.select(isColorMetricLinkedToHeightMetricSelector)
@@ -23,4 +26,8 @@ export class PreferencesReadWindow {
     readonly maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)
     readonly sortingOrder$ = this.store.select(sortingOrderSelector)
     readonly sortingOrderAscending$ = this.store.select(sortingOrderAscendingSelector)
+
+    getPreferences(): Preferences {
+        return this.state.getValue().preferences
+    }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { Store } from "@ngrx/store"
-import { CcState } from "../../../model/codeCharta.model"
+import { State, Store } from "@ngrx/store"
+import { CcState, ColorMode, ColorRange, MapColors, MapState } from "../../../model/codeCharta.model"
 import { amountOfEdgePreviewsSelector } from "./amountOfEdgePreviews/amountOfEdgePreviews.selector"
 import { amountOfTopLabelsSelector } from "./amountOfTopLabels/amountOfTopLabels.selector"
 import { areaMetricSelector } from "./areaMetric/areaMetric.selector"
@@ -35,7 +35,10 @@ import { showOnlyBuildingsWithEdgesSelector } from "./showOnlyBuildingsWithEdges
     providedIn: "root"
 })
 export class MapStateReadWindow {
-    constructor(private readonly store: Store<CcState>) {}
+    constructor(
+        private readonly store: Store<CcState>,
+        private readonly state: State<CcState>
+    ) {}
 
     readonly areaMetric$ = this.store.select(areaMetricSelector)
     readonly heightMetric$ = this.store.select(heightMetricSelector)
@@ -66,4 +69,40 @@ export class MapStateReadWindow {
     readonly enableFloorLabels$ = this.store.select(enableFloorLabelsSelector)
     readonly showMetricLabelNodeName$ = this.store.select(showMetricLabelNodeNameSelector)
     readonly showMetricLabelNameValue$ = this.store.select(showMetricLabelNameValueSelector)
+
+    getMapState(): MapState {
+        return this.state.getValue().mapState
+    }
+
+    getAreaMetric(): string {
+        return this.state.getValue().mapState.areaMetric
+    }
+
+    getHeightMetric(): string {
+        return this.state.getValue().mapState.heightMetric
+    }
+
+    getColorMetric(): string {
+        return this.state.getValue().mapState.colorMetric
+    }
+
+    getEdgeMetric(): string {
+        return this.state.getValue().mapState.edgeMetric
+    }
+
+    getColorRange(): ColorRange {
+        return this.state.getValue().mapState.colorRange
+    }
+
+    getColorMode(): ColorMode {
+        return this.state.getValue().mapState.colorMode
+    }
+
+    getMapColors(): MapColors {
+        return this.state.getValue().mapState.mapColors
+    }
+
+    getAmountOfTopLabels(): number {
+        return this.state.getValue().mapState.amountOfTopLabels
+    }
 }

@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
+import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { selectedNodeSelector } from "../../../../renderer/renderModel/selectedNode.selector"
 import { ThreeRendererService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
@@ -37,6 +38,7 @@ describe("InspectorHeaderComponent", () => {
         writeText.mockClear()
         TestBed.configureTestingModule({
             providers: [
+                provideMockState(),
                 provideMockStore({
                     selectors: [
                         { selector: selectedNodeSelector, value: fileNode },

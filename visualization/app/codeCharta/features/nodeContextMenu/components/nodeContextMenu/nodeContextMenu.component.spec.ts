@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
+import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderModel/rightClickedCodeMapNode.selector"
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
@@ -65,6 +66,7 @@ describe("nodeContextMenu component", () => {
         const focusedNodePaths = [focusedNodePath, previousFocusedNodePath].filter(Boolean)
         const renderResult = await render(NodeContextMenuComponent, {
             providers: [
+                provideMockState(),
                 provideMockStore({
                     selectors: [
                         { selector: rightClickedNodeDataSelector, value: rightClickedNodeData },

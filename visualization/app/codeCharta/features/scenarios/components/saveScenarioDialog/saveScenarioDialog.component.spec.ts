@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { provideMockState } from "../../../../mocks/state.mocks"
 import { NodeType } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
@@ -25,7 +26,11 @@ describe("SaveScenarioDialogComponent", () => {
 
         TestBed.configureTestingModule({
             imports: [SaveScenarioDialogComponent],
-            providers: [provideMockStore({ initialState: defaultState }), { provide: ScenariosService, useValue: scenariosService }]
+            providers: [
+                provideMockState(),
+                provideMockStore({ initialState: defaultState }),
+                { provide: ScenariosService, useValue: scenariosService }
+            ]
         })
 
         store = TestBed.inject(MockStore)
