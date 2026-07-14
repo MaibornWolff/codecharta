@@ -143,6 +143,17 @@
           }
         },
         "useNodejsImportProtocol": "off",
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "@ngrx/store": {
+                "importNames": ["State"],
+                "message": "Raw ngrx State is owned by the state homes. Read another home through its read window, or inject CcStateSnapshot for the whole tree. This fence is symbol-level because dependency-cruiser sees only the module edge to @ngrx/store and cannot ban State while allowing Store."
+              }
+            }
+          }
+        },
         "useNumberNamespace": "error",
         "useTemplate": "error",
         "useThrowNewError": "error",
@@ -243,6 +254,14 @@
             "noVar": "error"
           },
           "complexity": { "noArguments": "error" }
+        }
+      }
+    },
+    {
+      "includes": ["**/visualization/app/codeCharta/stores/**", "**/visualization/app/codeCharta/mocks/state.mocks.ts", "**/*.spec.ts"],
+      "linter": {
+        "rules": {
+          "style": { "noRestrictedImports": "off" }
         }
       }
     },
