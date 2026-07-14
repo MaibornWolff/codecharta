@@ -5,7 +5,13 @@ import { buffer, combineLatest, debounceTime, filter, map, merge, share, skip, t
 import { CcState } from "../../../model/codeCharta.model"
 import { getVisibleFiles, isPartialState } from "../../../model/files/files.helper"
 import { codeMapNodesSelector, edgeMetricDataSelector, metricDataSelector, nodeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
-import { FilesLoadedPayload, filesLoaded, FileStoreReadWindow, visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
+import {
+    FilesLoadedPayload,
+    filesLoaded,
+    FileStoreReadWindow,
+    RestoredSettings,
+    visibleFileStatesSelector
+} from "../../../stores/fileStore/fileStore.facade"
 import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import {
     setAmountOfTopLabels,
@@ -25,6 +31,7 @@ import { getNumberOfTopLabels } from "../../../util/getNumberOfTopLabels"
 import { rangeOfMetric } from "../../../util/metric/metricRange"
 import { NO_URL_METRICS } from "../../../util/queryParameter/queryParameter"
 import { QueryParamsService } from "../../../util/queryParameter/queryParams.service"
+import { LoadInitialFileStore } from "../../loadInitialFile.store"
 import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merger"
 import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
 import { getMergedBlacklist } from "./utils/blacklist.merger"
@@ -54,8 +61,9 @@ type ReconcileTrigger = FileSetTrigger | MetricDataTrigger
  *   3. resolve the metric selection, precedence URL > persisted > computed default
  *   4. derive the color range from the resolved color metric — once
  *   5. unfocus the nodes, lower the top-label count to what the new map can carry
+ *   6. apply the RESTORED session on top — persisted beats everything derived from the files
  *
- * Steps 6 (camera autofit) and 7 (clear the loading indicator) belong to the same sequence but live
+ * Steps 7 (camera autofit) and 8 (clear the loading indicator) belong to the same sequence but live
  * in features/codeMap/, because they need the renderer. They key off the same `filesLoaded` action.
  *
  * Deriving the metric data from the snapshot in step 2 — rather than from a selector subscription —
@@ -70,7 +78,8 @@ export class ReconcileAfterLoadEffect {
         private readonly ccStateSnapshot: CcStateSnapshot,
         private readonly fileStoreReadWindow: FileStoreReadWindow,
         private readonly mapStateReadWindow: MapStateReadWindow,
-        private readonly queryParamsService: QueryParamsService
+        private readonly queryParamsService: QueryParamsService,
+        private readonly loadInitialFileStore: LoadInitialFileStore
     ) {}
 
     private readonly fileSetTriggers$ = merge(
@@ -154,7 +163,8 @@ export class ReconcileAfterLoadEffect {
             current,
             nodeMetricData,
             edgeMetricData,
-            this.queryParamsService.hasFile()
+            this.queryParamsService.hasFile(),
+            trigger.kind === "fileSet" && Boolean(trigger.provenance?.forceDefaultMetrics)
         )
         if (!resolved) {
             return
@@ -171,7 +181,29 @@ export class ReconcileAfterLoadEffect {
         if (trigger.kind === "fileSet") {
             this.store.dispatch(unfocusAllNodes())
             this.updateVisibleTopLabels()
+            this.applyRestoredSettings(trigger.provenance?.restoredSettings ?? null)
         }
+    }
+
+    /**
+     * Step 6 — the persisted session wins over everything the sequence derived from the files.
+     *
+     * This runs LAST on purpose. A user's exclusions, marked packages and focused node live ONLY in the
+     * persisted state — they are never written back into a file's own fileSettings — so step 1's merge and
+     * step 5's unfocus would erase them. Applying the persisted view after them states the precedence
+     * explicitly: **persisted > file-derived**.
+     *
+     * Each applier diffs against what the sequence just wrote and dispatches only the differences, so a
+     * fresh load (restoredSettings === null) costs nothing.
+     */
+    private applyRestoredSettings(restoredSettings: RestoredSettings | null): void {
+        if (!restoredSettings) {
+            return
+        }
+
+        this.loadInitialFileStore.applyMetricsLensSource(restoredSettings.metricsLensSource)
+        this.loadInitialFileStore.applyDependencyLensSource(restoredSettings.dependencyLensSource)
+        this.loadInitialFileStore.applySharedView(restoredSettings.sharedView)
     }
 
     // ───────────────────────────── step 1: the file settings ─────────────────────────────

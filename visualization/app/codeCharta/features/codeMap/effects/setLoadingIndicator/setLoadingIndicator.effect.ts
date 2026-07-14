@@ -7,7 +7,14 @@ import { FileStoreReadWindow, setIsLoadingFile, visibleFileStatesSelector } from
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 
 export const LOADING_INDICATOR_QUIET_PERIOD_MS = 350
-export const LOADING_INDICATOR_MAX_WAIT_MS = 5000
+
+/**
+ * The last-resort deadline for a load that never renders. It is deliberately far longer than any real
+ * load: the indicator is armed the moment a load STARTS (before the file is even fetched), so a deadline
+ * anywhere near a plausible load time would dismiss the spinner mid-load — which does not merely look
+ * wrong, it tells the rest of the app the load is done while it is still writing to the store.
+ */
+export const LOADING_INDICATOR_MAX_WAIT_MS = 60_000
 
 /**
  * Step 7 of the post-load reconciliation: the loading indicator goes down when the map it was raised

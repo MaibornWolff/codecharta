@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { CC_URL, clearIndexedDB, goto } from "../../playwright.helper"
+import { CC_URL, clearIndexedDB, collapseExplorer, goto } from "../../playwright.helper"
 import sample1 from "../assets/sample1.cc.json"
 import sample2 from "../assets/sample2.cc.json"
 import { MetricsBarPageObject } from "../features/metricsBar/components/metricsBar/metricsBar.po"
@@ -91,6 +91,26 @@ test.describe("load pipeline", () => {
         const areaMetric = await metricsBar.getSelectedAreaMetricName()
         expect(areaMetric).not.toEqual("this_metric_does_not_exist")
         expect(areaMetric).toBeTruthy()
+    })
+
+    test("should reset the metric selection back to the default when the map is reset", async ({ page }) => {
+        // Arrange — pick a metric that is NOT what the default combination would choose. The metrics bar
+        // sits behind the open explorer, so collapse it first.
+        await goto(page)
+        await collapseExplorer(page)
+        const metricsBar = new MetricsBarPageObject(page)
+        await metricsBar.openAreaMetricSelect()
+        await metricsBar.selectAreaMetricOption("functions")
+        expect(await metricsBar.getSelectedAreaMetricName()).toEqual("functions")
+
+        // Act — Global Configuration → Reset map to default → Yes
+        await page.locator('button[title="Global Configuration"]').click()
+        await page.getByRole("button", { name: "Reset map" }).click()
+        await page.getByText("Yes").click()
+        await page.locator("#loading-gif-file").waitFor({ state: "hidden", timeout: 60_000 })
+
+        // Assert — the button promises to reset the selected metrics, so it must
+        await expect.poll(() => metricsBar.getSelectedAreaMetricName()).not.toEqual("functions")
     })
 
     test("should re-run the reconciliation when the file selection changes without a load", async ({ page }) => {

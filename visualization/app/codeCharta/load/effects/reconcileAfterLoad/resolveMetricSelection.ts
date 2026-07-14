@@ -20,6 +20,10 @@ export type MetricSelection = Pick<MapState, "areaMetric" | "heightMetric" | "co
  * and any valid URL name is then re-applied on top. This mirrors the all-or-nothing semantics of
  * areChosenMetricsAvailableSelector. edgeMetric resolves independently.
  *
+ * `discardCurrentSelection` drops the middle candidate: a "reset map" deliberately throws the previous
+ * selection away, so the computed default must win even though the old selection would still be valid.
+ * The URL still beats the default.
+ *
  * Returns null when the map carries no usable metric at all — nothing should be dispatched then.
  */
 export function resolveMetricSelection(
@@ -27,7 +31,8 @@ export function resolveMetricSelection(
     current: MetricSelection,
     nodeMetricData: NodeMetricData[],
     edgeMetricData: EdgeMetricData[],
-    hasFileQueryParameter: boolean
+    hasFileQueryParameter: boolean,
+    discardCurrentSelection = false
 ): MetricSelection | null {
     const nodeMetricNames = new Set(nodeMetricData.map(metric => metric.name))
     const edgeMetricNames = new Set(edgeMetricData.map(metric => metric.name))
@@ -36,11 +41,16 @@ export function resolveMetricSelection(
 
     const url = hasFileQueryParameter ? urlMetrics : NO_URL_METRICS
 
-    // 1) The URL wins where it is valid; otherwise the persisted selection stands.
-    let areaMetric = isNodeMetric(url.areaMetric) ? url.areaMetric : current.areaMetric
-    let heightMetric = isNodeMetric(url.heightMetric) ? url.heightMetric : current.heightMetric
-    let colorMetric = isNodeMetric(url.colorMetric) ? url.colorMetric : current.colorMetric
-    let distributionMetric = current.distributionMetric
+    // 1) The URL wins where it is valid; otherwise the persisted selection stands — unless this load
+    //    discards it, in which case only the URL and the computed default remain.
+    const persisted: MetricSelection = discardCurrentSelection
+        ? { areaMetric: null, heightMetric: null, colorMetric: null, distributionMetric: null, edgeMetric: null }
+        : current
+
+    let areaMetric = isNodeMetric(url.areaMetric) ? url.areaMetric : persisted.areaMetric
+    let heightMetric = isNodeMetric(url.heightMetric) ? url.heightMetric : persisted.heightMetric
+    let colorMetric = isNodeMetric(url.colorMetric) ? url.colorMetric : persisted.colorMetric
+    let distributionMetric = persisted.distributionMetric
 
     // 2) If that triple is not fully available in this map, fall back to the computed default
     //    combination — and let a valid url metric win over the computed value again.
@@ -57,7 +67,7 @@ export function resolveMetricSelection(
     }
 
     // 3) The edge metric, independently. It becomes undefined when the map has no edge metrics.
-    let edgeMetric = current.edgeMetric
+    let edgeMetric = persisted.edgeMetric
     if (isEdgeMetric(url.edgeMetric)) {
         edgeMetric = url.edgeMetric
     } else if (!isEdgeMetric(edgeMetric)) {

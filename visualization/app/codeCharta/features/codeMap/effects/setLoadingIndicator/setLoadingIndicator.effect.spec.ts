@@ -90,14 +90,29 @@ describe("LoadingIndicatorEffect", () => {
         expect(scannedActions).not.toContainEqual(setIsLoadingFile({ value: false }))
     })
 
-    it("should hide the loading indicator after the maximum wait even when no render occurs", async () => {
+    it("should hide the loading indicator after the maximum wait even when no render occurs", () => {
         // Arrange — a load that produces no renderable map must not leave the spinner up forever
+        jest.useFakeTimers()
         isLoadingFile$.next(true)
 
         // Act
-        await wait(LOADING_INDICATOR_MAX_WAIT_MS + maxFPS)
+        jest.advanceTimersByTime(LOADING_INDICATOR_MAX_WAIT_MS + 1)
 
         // Assert
         expect(scannedActions).toContainEqual(setIsLoadingFile({ value: false }))
-    }, 10000)
+        jest.useRealTimers()
+    })
+
+    it("should not hide the loading indicator before the maximum wait when no render occurs", () => {
+        // Arrange — the deadline must never fire while a slow load is still in flight
+        jest.useFakeTimers()
+        isLoadingFile$.next(true)
+
+        // Act
+        jest.advanceTimersByTime(LOADING_INDICATOR_MAX_WAIT_MS - 1)
+
+        // Assert
+        expect(scannedActions).not.toContainEqual(setIsLoadingFile({ value: false }))
+        jest.useRealTimers()
+    })
 })

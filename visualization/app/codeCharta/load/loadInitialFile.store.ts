@@ -121,6 +121,23 @@ export class LoadInitialFileStore {
         )
     }
 
+    missingKeysOfSharedView(savedSharedView: SharedView): string[] {
+        return this.missingKeysOf(this.sharedViewReadWindow.getSharedView(), savedSharedView)
+    }
+
+    missingKeysOfMetricsLensSource(savedMetricsLensSource: MetricsLensSource): string[] {
+        return this.missingKeysOf(this.metricsLensSourceReadWindow.getMetricsLensSource(), savedMetricsLensSource)
+    }
+
+    missingKeysOfDependencyLensSource(savedDependencyLensSource: DependencyLensSource): string[] {
+        return this.missingKeysOf(this.dependencyLensSourceReadWindow.getDependencyLensSource(), savedDependencyLensSource)
+    }
+
+    /** Which keys of the current slice the persisted one does not have at all. Dispatches nothing. */
+    private missingKeysOf<Slice extends object>(currentSlice: Slice, savedSlice: Slice): string[] {
+        return Object.keys(currentSlice).filter(key => !(key in savedSlice))
+    }
+
     /**
      * Restores one persisted slice onto the current one: every key of the CURRENT slice whose persisted
      * value differs is dispatched through the slice's own mapper, and every key the persisted slice does

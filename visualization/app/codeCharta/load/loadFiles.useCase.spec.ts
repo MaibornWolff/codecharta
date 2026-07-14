@@ -202,7 +202,7 @@ describe("LoadFilesUseCase", () => {
             // Assert
             expect(dispatchedTypes(dispatchSpy)).toEqual([setIsLoadingFile.type, filesLoaded.type])
             expect(dispatchSpy).toHaveBeenCalledWith(
-                filesLoaded({ source: "url", areSampleFiles: false, urlMetrics: NO_URL_METRICS, forceAutoFit: false })
+                expect.objectContaining({ type: filesLoaded.type, source: "url", areSampleFiles: false, restoredSettings: null })
             )
         })
 
@@ -469,8 +469,14 @@ describe("LoadFilesUseCase", () => {
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(loadFileService.loadFiles).toHaveBeenCalledWith(savedNameDataPairs)
             expect(dispatchSpy).toHaveBeenCalledWith(setFiles({ value: savedFileStates }))
+            // The persisted view slices travel on the provenance; the reconciliation applies them AFTER
+            // its file-derived merge, because persisted beats file-derived.
             expect(dispatchSpy).toHaveBeenCalledWith(
-                filesLoaded({ source: "indexedDB", areSampleFiles: false, urlMetrics: NO_URL_METRICS, forceAutoFit: false })
+                expect.objectContaining({
+                    type: filesLoaded.type,
+                    source: "indexedDB",
+                    restoredSettings: expect.objectContaining({ sharedView: mockedState.sharedView })
+                })
             )
         })
 
@@ -487,7 +493,7 @@ describe("LoadFilesUseCase", () => {
             expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             expect(dispatchSpy).toHaveBeenCalledWith(
-                filesLoaded({ source: "sample", areSampleFiles: true, urlMetrics: NO_URL_METRICS, forceAutoFit: false })
+                expect.objectContaining({ type: filesLoaded.type, source: "sample", areSampleFiles: true, restoredSettings: null })
             )
         })
 
@@ -676,6 +682,61 @@ describe("LoadFilesUseCase", () => {
             )
         })
     })
+
+    describe("reload after reset", () => {
+        it("should load the sample files and discard the previous metric selection when no file parameter is present", async () => {
+            // Arrange
+            mockUrlWithoutFile()
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            await loadFilesUseCase.reloadAfterReset()
+
+            // Assert — a reset deliberately throws the previous selection away, so the reconciliation must
+            // fall back to the computed default even when the old selection is still available.
+            expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                expect.objectContaining({ type: filesLoaded.type, source: "reset", forceDefaultMetrics: true })
+            )
+        })
+
+        it("should load the files from the url and honour its metrics when a file parameter is present", async () => {
+            // Arrange
+            const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
+            mockUrlWithFile({ metrics: { ...NO_URL_METRICS, areaMetric: "mcc" } })
+            mockUrlFiles(mockedNameDataPairs)
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            await loadFilesUseCase.reloadAfterReset()
+
+            // Assert
+            expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: filesLoaded.type,
+                    source: "reset",
+                    urlMetrics: expect.objectContaining({ areaMetric: "mcc" })
+                })
+            )
+        })
+
+        it("should raise the error dialog and fall back to the sample files when the url load fails", async () => {
+            // Arrange
+            mockUrlWithFile()
+            mockUrlLoadError(new Error("could not be loaded"))
+
+            // Act
+            await loadFilesUseCase.reloadAfterReset()
+
+            // Assert — the old reset dialog swallowed this error silently
+            expect(mockedErrorDialogService.open).toHaveBeenCalledWith(
+                expect.objectContaining({ title: URL_LOAD_ERROR_TITLE })
+            )
+            expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
+        })
+    })
+
 })
 
 function nullifyObjectValues(originalObject) {

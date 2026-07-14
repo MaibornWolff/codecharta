@@ -147,6 +147,29 @@ describe("resolveMetricSelection", () => {
         expect(resolved.edgeMetric).toBeUndefined()
     })
 
+    it("should discard the current selection and take the computed default when the load discards it", () => {
+        // Arrange — a reset: the previous selection is still perfectly valid in the reloaded files, but the
+        // user asked for a reset, so it must not survive.
+        const stillValidSelection: MetricSelection = { ...persistedSelection, areaMetric: "functions" }
+
+        // Act
+        const resolved = resolveMetricSelection(noUrlMetrics, stillValidSelection, nodeMetricData, edgeMetricData, true, true)
+
+        // Assert
+        expect(resolved.areaMetric).toBe("rloc")
+    })
+
+    it("should let a url metric win over the computed default even when the load discards the current selection", () => {
+        // Arrange
+        const urlMetrics: UrlMetricSelection = { ...noUrlMetrics, areaMetric: "functions" }
+
+        // Act
+        const resolved = resolveMetricSelection(urlMetrics, persistedSelection, nodeMetricData, edgeMetricData, true, true)
+
+        // Assert
+        expect(resolved.areaMetric).toBe("functions")
+    })
+
     it("should return null when no metric is available at all", () => {
         // Arrange
         const emptyMetricData: NodeMetricData[] = [{ name: "unary", maxValue: 0, minValue: 0, values: [] }]

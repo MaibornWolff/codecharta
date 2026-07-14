@@ -2,11 +2,14 @@ import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { Action, State, Store, StoreModule } from "@ngrx/store"
 import { TEST_FILE_CONTENT } from "../../../mocks/dataMocks"
-import { CcState } from "../../../model/codeCharta.model"
-import { LoadFileService, setDeltaReference, setStandard } from "../../../stores/fileStore/fileStore.facade"
+import { CcState, SharedView } from "../../../model/codeCharta.model"
+import { LoadFileService, RestoredSettings, setDeltaReference, setStandard } from "../../../stores/fileStore/fileStore.facade"
 import { filesLoaded } from "../../../stores/fileStore/store/filesLoaded/filesLoaded.actions"
+import { defaultDependencyLensSource } from "../../../stores/dependencyLensSource/dependencyLensSource.read.facade"
+import { defaultMetricsLensSource } from "../../../stores/metricsLensSource/metricsLensSource.read.facade"
+import { defaultSharedView } from "../../../stores/sharedView/sharedView.read.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
-import { addBlacklistItem } from "../../../stores/sharedView/sharedView.write.facade"
+import { addBlacklistItem, setAllFocusedNodes } from "../../../stores/sharedView/sharedView.write.facade"
 import { clone } from "../../../util/clone"
 import { ErrorDialogService } from "../../../util/errorDialog/errorDialog.service"
 import { fileRoot } from "../../../util/fileRoot"
@@ -32,16 +35,33 @@ describe("ReconcileAfterLoadEffect", () => {
         write: jest.Mock
     }
 
-    const aFilesLoaded = (urlMetrics: UrlMetricSelection = NO_URL_METRICS) =>
-        filesLoaded({ source: "url", areSampleFiles: false, urlMetrics, forceAutoFit: false })
+    const aFilesLoaded = (urlMetrics: UrlMetricSelection = NO_URL_METRICS, restoredSettings: RestoredSettings | null = null) =>
+        filesLoaded({
+            source: "url",
+            areSampleFiles: false,
+            urlMetrics,
+            forceAutoFit: false,
+            forceDefaultMetrics: false,
+            restoredSettings
+        })
+
+    /** A persisted session carrying the view state that only the persisted state can hold. */
+    const aRestoredSettings = (sharedView: Partial<SharedView>): RestoredSettings => ({
+        sharedView: { ...defaultSharedView, ...sharedView },
+        metricsLensSource: defaultMetricsLensSource,
+        dependencyLensSource: defaultDependencyLensSource
+    })
 
     /** The sequence is debounced onto the next macrotask; this is how a test waits for it. */
     const flushDebounce = () => new Promise(resolve => setTimeout(resolve, 0))
 
     /** Loads a real file through the real LoadFileService, then signals the load, as the use-case does. */
-    const loadFileAndSignal = async (urlMetrics: UrlMetricSelection = NO_URL_METRICS) => {
+    const loadFileAndSignal = async (
+        urlMetrics: UrlMetricSelection = NO_URL_METRICS,
+        restoredSettings: RestoredSettings | null = null
+    ) => {
         loadFileService.loadFiles([{ fileName: "test.cc.json", fileSize: 42, content: clone(TEST_FILE_CONTENT) }])
-        store.dispatch(aFilesLoaded(urlMetrics))
+        store.dispatch(aFilesLoaded(urlMetrics, restoredSettings))
         await flushDebounce()
     }
 
@@ -246,6 +266,61 @@ describe("ReconcileAfterLoadEffect", () => {
 
         // Assert
         expect(dispatchSpy).not.toHaveBeenCalled()
+    })
+
+    // ── the restored session beats everything derived from the files ──────────────────
+    //
+    // A user's exclusions, marked packages and focus live ONLY in the persisted state — they are never
+    // written back into a file's own fileSettings. The old effects merged the file settings synchronously
+    // INSIDE setFiles, i.e. before the persisted state was restored, so the restore won. The sequence runs
+    // one macrotask later, so it has to apply the restored session last, or it would erase all three.
+
+    it("should keep the restored blacklist when files are loaded from a persisted session", async () => {
+        // Arrange
+        const restoredSettings = aRestoredSettings({
+            blacklist: [{ path: "/root/excluded", type: "exclude" }]
+        })
+
+        // Act
+        await loadFileAndSignal(NO_URL_METRICS, restoredSettings)
+
+        // Assert
+        expect(state.getValue().sharedView.blacklist).toEqual([{ path: "/root/excluded", type: "exclude" }])
+    })
+
+    it("should keep the restored marked packages when files are loaded from a persisted session", async () => {
+        // Arrange
+        const restoredSettings = aRestoredSettings({
+            markedPackages: [{ path: "/root", color: "#ff0000" }]
+        })
+
+        // Act
+        await loadFileAndSignal(NO_URL_METRICS, restoredSettings)
+
+        // Assert
+        expect(state.getValue().sharedView.markedPackages).toEqual([{ path: "/root", color: "#ff0000" }])
+    })
+
+    it("should keep the restored focused node when files are loaded from a persisted session", async () => {
+        // Arrange
+        const restoredSettings = aRestoredSettings({ focusedNodePath: ["/root/focused"] })
+
+        // Act
+        await loadFileAndSignal(NO_URL_METRICS, restoredSettings)
+
+        // Assert — step 5 unfocuses, and the restore then puts the focus back
+        expect(state.getValue().sharedView.focusedNodePath).toEqual(["/root/focused"])
+    })
+
+    it("should still unfocus the nodes when the load does not restore a persisted session", async () => {
+        // Arrange
+        store.dispatch(setAllFocusedNodes({ value: ["/root/stale"] }))
+
+        // Act
+        await loadFileAndSignal()
+
+        // Assert
+        expect(state.getValue().sharedView.focusedNodePath).toEqual([])
     })
 
     // ── replaces ResetChosenMetricsEffect / ResetSelectedEdgeMetric… on a blacklist edit ─

@@ -20,7 +20,7 @@ import { AutoFitCodeMapEffect } from "./autoFitCodeMap.effect"
 import { viewSelectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
 
 const aFilesLoaded = (forceAutoFit = false) =>
-    filesLoaded({ source: "url", areSampleFiles: false, urlMetrics: NO_URL_METRICS, forceAutoFit })
+    filesLoaded({ source: "url", areSampleFiles: false, urlMetrics: NO_URL_METRICS, forceAutoFit, forceDefaultMetrics: false, restoredSettings: null })
 
 describe("autoFitCodeMapEffect", () => {
     let mockedRenderCodeMap$: Subject<unknown>

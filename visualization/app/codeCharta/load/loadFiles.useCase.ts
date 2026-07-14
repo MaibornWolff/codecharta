@@ -8,6 +8,7 @@ import {
     filesLoaded,
     FilesLoadedPayload,
     FilesLoadedSource,
+    RestoredSettings,
     getContentChecksum,
     getNameDataPair,
     LoadFileService,
@@ -211,15 +212,29 @@ export class LoadFilesUseCase {
         // autofit step reads this off the provenance.
         const forceAutoFit = !savedCcState.preferences.resetCameraIfNewFileIsLoaded
 
+        // Preferences and mapState are applied up front: the metric selection has to be in the store
+        // before the reconciliation resolves it, since the persisted selection is one of the candidates.
         missingProperties.push(...this.loadInitialFileStore.applyPreferences(savedCcState.preferences))
         missingProperties.push(...this.loadInitialFileStore.applyMapState(savedCcState.mapState))
 
-        this.commit(savedNameDataPairs, this.provenance(source, { areSampleFiles: false, urlMetrics, forceAutoFit }))
-        this.loadInitialFileStore.setFiles(savedFileStates)
+        // The view slices are NOT applied here. They are carried on the provenance and applied by the
+        // reconciliation AFTER its file-derived merge, because persisted beats file-derived: a user's
+        // exclusions, marked packages and focus exist only in the persisted state, so merging the files'
+        // own settings on top of them would erase them.
+        const restoredSettings: RestoredSettings = {
+            sharedView: savedCcState.sharedView,
+            metricsLensSource: savedCcState.metricsLensSource,
+            dependencyLensSource: savedCcState.dependencyLensSource
+        }
+        missingProperties.push(...this.loadInitialFileStore.missingKeysOfSharedView(savedCcState.sharedView))
+        missingProperties.push(...this.loadInitialFileStore.missingKeysOfMetricsLensSource(savedCcState.metricsLensSource))
+        missingProperties.push(...this.loadInitialFileStore.missingKeysOfDependencyLensSource(savedCcState.dependencyLensSource))
 
-        missingProperties.push(...this.loadInitialFileStore.applyMetricsLensSource(savedCcState.metricsLensSource))
-        missingProperties.push(...this.loadInitialFileStore.applyDependencyLensSource(savedCcState.dependencyLensSource))
-        missingProperties.push(...this.loadInitialFileStore.applySharedView(savedCcState.sharedView))
+        this.commit(
+            savedNameDataPairs,
+            this.provenance(source, { areSampleFiles: false, urlMetrics, forceAutoFit, restoredSettings })
+        )
+        this.loadInitialFileStore.setFiles(savedFileStates)
 
         this.showMissingPropertiesDialog(missingProperties)
     }
@@ -266,13 +281,22 @@ export class LoadFilesUseCase {
 
     private provenance(
         source: FilesLoadedSource,
-        options: { areSampleFiles: boolean; urlMetrics?: UrlMetricSelection; forceAutoFit?: boolean }
+        options: {
+            areSampleFiles: boolean
+            urlMetrics?: UrlMetricSelection
+            forceAutoFit?: boolean
+            restoredSettings?: RestoredSettings
+        }
     ): FilesLoadedPayload {
         return {
             source,
             areSampleFiles: options.areSampleFiles,
             urlMetrics: options.urlMetrics ?? NO_URL_METRICS,
-            forceAutoFit: options.forceAutoFit ?? false
+            forceAutoFit: options.forceAutoFit ?? false,
+            // A reset deliberately discards the previous selection, so the metrics must fall back to the
+            // computed default even when the old selection is still available in the reloaded files.
+            forceDefaultMetrics: source === "reset",
+            restoredSettings: options.restoredSettings ?? null
         }
     }
 
