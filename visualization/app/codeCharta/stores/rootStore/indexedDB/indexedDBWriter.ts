@@ -7,7 +7,7 @@ import { defaultPreferences, defaultSorting } from "../../preferences/preference
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 15
+export const DB_VERSION = 16
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -358,6 +358,40 @@ export function migrateCcStateRecordToV15<T>(state: T): T {
     return next as T
 }
 
+// v16: each lens source's attributeTypes flattens to the half it owns (metrics keeps nodes, dependency keeps edges)
+function unwrapAttributeTypesHalf(source: unknown, half: "nodes" | "edges"): unknown {
+    if (!source || typeof source !== "object") {
+        return source
+    }
+    const trimmed = { ...(source as Record<string, unknown>) }
+    const attributeTypes = trimmed["attributeTypes"]
+    if (!attributeTypes || typeof attributeTypes !== "object") {
+        return trimmed
+    }
+    const container = attributeTypes as Record<string, unknown>
+    // a flat map's values are AttributeTypeValue strings, so an object-valued `nodes`/`edges` means the legacy container
+    const isLegacyContainer = typeof container["nodes"] === "object" || typeof container["edges"] === "object"
+    if (isLegacyContainer) {
+        trimmed["attributeTypes"] = container[half] ?? {}
+    }
+    return trimmed
+}
+
+export function migrateCcStateRecordToV16<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const next: Record<string, unknown> = { ...record }
+    if ("metricsLensSource" in record) {
+        next["metricsLensSource"] = unwrapAttributeTypesHalf(record["metricsLensSource"], "nodes")
+    }
+    if ("dependencyLensSource" in record) {
+        next["dependencyLensSource"] = unwrapAttributeTypesHalf(record["dependencyLensSource"], "edges")
+    }
+    return next as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
@@ -383,7 +417,7 @@ export async function deleteCcState() {
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
 // (v(N-1))-shaped blob into vN. A blob written at oldVersion runs every transform whose target version it
-// predates, in ascending order (a v2 blob runs v3→…→v15; a v14 blob runs only v15).
+// predates, in ascending order (a v2 blob runs v3→…→v16; a v15 blob runs only v16).
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -397,7 +431,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 12, migrate: migrateCcStateRecordToV12 },
     { version: 13, migrate: migrateCcStateRecordToV13 },
     { version: 14, migrate: migrateCcStateRecordToV14 },
-    { version: 15, migrate: migrateCcStateRecordToV15 }
+    { version: 15, migrate: migrateCcStateRecordToV15 },
+    { version: 16, migrate: migrateCcStateRecordToV16 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {
@@ -419,7 +454,7 @@ export async function openCodeChartaDB() {
             if (!database.objectStoreNames.contains(SCENARIOS_STORE_NAME)) {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
-            // Migrate persisted blobs forward through all applicable transforms (v3→…→v15).
+            // Migrate persisted blobs forward through all applicable transforms (v3→…→v16).
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)

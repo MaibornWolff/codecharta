@@ -27,6 +27,7 @@ import {
     migrateCcStateRecordToV13,
     migrateCcStateRecordToV14,
     migrateCcStateRecordToV15,
+    migrateCcStateRecordToV16,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -585,7 +586,103 @@ describe("migrateCcStateRecordToV15 (Slice 15e fileSettings-drop transform)", ()
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 transforms)", () => {
+describe("migrateCcStateRecordToV16 (Slice 20 attributeTypes-unwrap transform)", () => {
+    const v15ShapeState = () => ({
+        metricsLensSource: {
+            attributeTypes: { nodes: { rloc: AttributeTypeValue.absolute }, edges: {} },
+            attributeDescriptors: { rloc: { title: "Lines of Code" } }
+        },
+        dependencyLensSource: {
+            attributeTypes: { nodes: {}, edges: { pairing_rate: AttributeTypeValue.relative } }
+        },
+        mapState: { scaling: 1 }
+    })
+
+    it("should unwrap the metrics lens source's attributeTypes to the node half it owns", () => {
+        // Arrange
+        const oldShapeState = v15ShapeState()
+
+        // Act
+        const migrated = migrateCcStateRecordToV16(oldShapeState) as unknown as { metricsLensSource: Record<string, unknown> }
+
+        // Assert
+        expect(migrated.metricsLensSource.attributeTypes).toEqual({ rloc: AttributeTypeValue.absolute })
+        expect(migrated.metricsLensSource.attributeDescriptors).toEqual({ rloc: { title: "Lines of Code" } })
+    })
+
+    it("should unwrap the dependency lens source's attributeTypes to the edge half it owns", () => {
+        // Arrange
+        const oldShapeState = v15ShapeState()
+
+        // Act
+        const migrated = migrateCcStateRecordToV16(oldShapeState) as unknown as { dependencyLensSource: Record<string, unknown> }
+
+        // Assert
+        expect(migrated.dependencyLensSource.attributeTypes).toEqual({ pairing_rate: AttributeTypeValue.relative })
+    })
+
+    it("should fall back to an empty map when the owned half is missing", () => {
+        // Arrange
+        const oldShapeState = {
+            metricsLensSource: { attributeTypes: { edges: {} } },
+            dependencyLensSource: { attributeTypes: { nodes: {} } }
+        }
+
+        // Act
+        const migrated = migrateCcStateRecordToV16(oldShapeState) as unknown as {
+            metricsLensSource: Record<string, unknown>
+            dependencyLensSource: Record<string, unknown>
+        }
+
+        // Assert
+        expect(migrated.metricsLensSource.attributeTypes).toEqual({})
+        expect(migrated.dependencyLensSource.attributeTypes).toEqual({})
+    })
+
+    it("should leave an already flat attributeTypes map untouched", () => {
+        // Arrange
+        const alreadyFlatState = {
+            metricsLensSource: { attributeTypes: { rloc: AttributeTypeValue.absolute } },
+            dependencyLensSource: { attributeTypes: { pairing_rate: AttributeTypeValue.relative } }
+        }
+
+        // Act
+        const migrated = migrateCcStateRecordToV16(alreadyFlatState) as unknown as {
+            metricsLensSource: Record<string, unknown>
+            dependencyLensSource: Record<string, unknown>
+        }
+
+        // Assert
+        expect(migrated.metricsLensSource.attributeTypes).toEqual({ rloc: AttributeTypeValue.absolute })
+        expect(migrated.dependencyLensSource.attributeTypes).toEqual({ pairing_rate: AttributeTypeValue.relative })
+    })
+
+    it("should leave every other root untouched", () => {
+        // Arrange
+        const oldShapeState = v15ShapeState()
+
+        // Act
+        const migrated = migrateCcStateRecordToV16(oldShapeState) as unknown as { mapState: Record<string, unknown> }
+
+        // Assert
+        expect(migrated.mapState).toEqual({ scaling: 1 })
+    })
+
+    it("should return the record untouched when it is null or has no lens source roots", () => {
+        // Arrange / Act / Assert
+        expect(migrateCcStateRecordToV16(null)).toBeNull()
+        const migrated = migrateCcStateRecordToV16({ files: [] }) as unknown as {
+            files: unknown[]
+            metricsLensSource?: unknown
+            dependencyLensSource?: unknown
+        }
+        expect(migrated.files).toEqual([])
+        expect(migrated.metricsLensSource).toBeUndefined()
+        expect(migrated.dependencyLensSource).toBeUndefined()
+    })
+})
+
+describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
@@ -643,7 +740,7 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         await v2Database.put(CCSTATE_STORE_NAME, { [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID, state: v2ShapeState })
         v2Database.close()
 
-        // openCodeChartaDB (v15, invoked by readCcState) chains the v3…v14 then v15 upgrade transforms.
+        // openCodeChartaDB (v16, invoked by readCcState) chains the v3…v15 then v16 upgrade transforms.
         const migratedState = (await readCcState()) as unknown as {
             appSettings?: Record<string, unknown>
             dynamicSettings?: Record<string, unknown>
@@ -671,8 +768,8 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         // v6 re-home (focus/search out of dynamicSettings into a brand-new sharedView root)
         expect(migratedState.sharedView.focusedNodePath).toEqual(["/root/ParentLeaf"])
         expect(migratedState.sharedView.searchPattern).toBe("needle")
-        // v7 re-home (attributeTypes/descriptors out of fileSettings into a brand-new metricsLensSource root)
-        expect(migratedState.metricsLensSource.attributeTypes).toEqual({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} })
+        // v7 re-home (attributeTypes/descriptors out of fileSettings into a brand-new metricsLensSource root; the
+        // attributeTypes container is unwrapped again by v16 below)
         expect(migratedState.metricsLensSource.attributeDescriptors).toEqual({ rloc: { title: "Lines of Code" } })
         // v8 re-home (blacklist out of fileSettings into the existing sharedView root)
         expect(migratedState.sharedView.blacklist).toEqual([{ path: "/root/excluded", type: "exclude" }])
@@ -690,9 +787,6 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         expect(migratedState.preferences.sorting).toEqual({ option: "NAME", orderAscending: false })
         expect("sortingOption" in migratedState.preferences).toBe(false)
         expect("sortingOrderAscending" in migratedState.preferences).toBe(false)
-        // v13 edge-attributeTypes split (edge side out of metricsLensSource into a brand-new dependencyLensSource root)
-        expect(migratedState.dependencyLensSource.attributeTypes).toEqual({ nodes: {}, edges: {} })
-        expect(migratedState.metricsLensSource.attributeTypes).toEqual({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} })
         // v14 re-home (interaction ids move mapState → sharedView, nulled — never restored from a stale ordinal)
         expect("hoveredNodeId" in migratedState.mapState).toBe(false)
         expect("selectedBuildingId" in migratedState.mapState).toBe(false)
@@ -703,6 +797,10 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         // v15 drop (edges was the last fileSettings member; it is now a derived dependency-lens selector, so
         // the whole fileSettings root is removed from the persisted blob)
         expect(migratedState.fileSettings).toBeUndefined()
+        // v16 unwrap (v13 split the halves but kept the { nodes, edges } container on both sides; each lens source
+        // now persists only the flat map it owns)
+        expect(migratedState.metricsLensSource.attributeTypes).toEqual({ rloc: AttributeTypeValue.absolute })
+        expect(migratedState.dependencyLensSource.attributeTypes).toEqual({})
     })
 })
 
