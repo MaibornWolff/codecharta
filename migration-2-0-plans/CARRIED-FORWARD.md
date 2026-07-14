@@ -262,3 +262,22 @@ version: 1
 - **Still open after Slice 20:** `SET_STATE`'s string-path deep-merge + the hand-maintained `objectWithDynamicKeysInStore`
   allowlist (`stores/rootStore/state.manager.ts`). Slice 21 Task 5 (typed `hydrate(partial)` per home) is the
   precondition for deleting it. Slice 21 is **not** started.
+- **Done (2026-07-14):** ~~Slice 22~~ — the raw-state hole is closed and fenced (`slice-22-close-the-raw-state-hole.md`).
+  All 17 non-spec files outside `stores/` that injected ngrx `State<CcState>` and read other homes raw via
+  `getValue().<home>.<slice>` now go through a home read window's sync accessor, or through the single new
+  `CcStateSnapshot` (`stores/rootStore/`) for the four legitimate whole-tree readers (reset-to-defaults ×2,
+  persistence, scenarios). Zero snapshot diff.
+  **The load-bearing lesson — read this before writing another fitness function:** dependency-cruiser is a
+  **module-graph** analyser. `import { State, Store } from "@ngrx/store"` is ONE edge carrying TWO symbols, and
+  `features/*/stores/` legitimately needs `Store`. **No dep-cruiser rule can ban `State` while allowing `Store` —
+  do not go looking for one.** This is why the hole survived every rule in Slice 13/16/20, including
+  `home-selectors-are-declared-in-their-home` (that path imports no selector at all). The fence is therefore
+  **symbol-level, in Biome** (`noRestrictedImports` + `importNames`, at `error`, exempting `stores/**`, specs and
+  `mocks/state.mocks.ts`) — Biome was already wired via `format:check` + the Husky pre-commit hook, so no new
+  tooling. **Generalise the rule of thumb:** dep-cruiser fences *where a module may be imported from*; it cannot
+  fence *which symbol* or *what you do with it*. Anything of the latter shape needs Biome/ESLint, or must be made
+  structurally impossible instead.
+- **Deferred out of Slice 22 (small):** `MapStateReadWindow.getMapState()` and `PreferencesReadWindow.getPreferences()`
+  hand out a **whole home object** (for `codeMap.store.ts` and `threeViewer/threeScene.store.ts`, which consume many
+  slices at once). Still owned and typed by the home, and now a single seam rather than raw `getValue()` — but worth
+  narrowing to per-slice accessors when those two callers are next touched.
