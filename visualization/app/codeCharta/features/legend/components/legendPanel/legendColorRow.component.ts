@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { HexMapColor } from "../../../../model/codeCharta.model"
-import { defaultMapColors } from "../../../../stores/mapState/mapState.read.facade"
+import { defaultMapColors, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { MapColorLabelPipe } from "../../../../util/pipes/mapColorLabel.pipe"
-import { LegendService } from "../../services/legend.service"
+import { LegendMetricRangeStore } from "../../stores/legendMetricRange.store"
 
 @Component({
     selector: "cc-legend-color-row",
@@ -12,16 +12,19 @@ import { LegendService } from "../../services/legend.service"
     imports: [MapColorLabelPipe]
 })
 export class LegendColorRowComponent {
-    constructor(private readonly legendService: LegendService) {}
+    constructor(
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly legendMetricRangeStore: LegendMetricRangeStore
+    ) {}
 
     readonly mapColorFor = input.required<HexMapColor>()
 
-    readonly colorMetric = toSignal(this.legendService.colorMetric$(), { initialValue: "" })
-    readonly colorRange = toSignal(this.legendService.colorRange$(), { initialValue: { from: 0, to: 0 } })
-    readonly nodeMetricRange = toSignal(this.legendService.selectedColorMetricData$(), {
+    readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { initialValue: "" })
+    readonly colorRange = toSignal(this.mapStateReadWindow.colorRange$, { initialValue: { from: 0, to: 0 } })
+    readonly nodeMetricRange = toSignal(this.legendMetricRangeStore.selectedColorMetricData$, {
         initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
     })
-    private readonly mapColors = toSignal(this.legendService.mapColors$(), { initialValue: defaultMapColors })
+    private readonly mapColors = toSignal(this.mapStateReadWindow.mapColors$, { initialValue: defaultMapColors })
 
     readonly color = computed(() => this.mapColors()[this.mapColorFor()] as string)
 }

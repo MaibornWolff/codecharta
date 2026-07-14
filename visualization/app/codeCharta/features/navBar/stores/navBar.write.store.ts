@@ -3,32 +3,20 @@ import { Store } from "@ngrx/store"
 import { CCFile, CcState } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
 import {
-    FileStoreReadWindow,
-    FilesRepo,
     removeFiles,
     setDelta,
     setDeltaComparison,
     setDeltaReference,
     setFiles,
+    setIsLoadingFile,
     setStandard,
     switchReferenceAndComparison
 } from "../../../stores/fileStore/fileStore.facade"
+import { setIsLoadingMap } from "../../../stores/mapState/mapState.write.facade"
 
 @Injectable({ providedIn: "root" })
-export class FilesSelectionStore {
-    constructor(
-        private readonly store: Store<CcState>,
-        private readonly fileStoreReadWindow: FileStoreReadWindow,
-        private readonly filesRepo: FilesRepo
-    ) {}
-
-    files$ = this.fileStoreReadWindow.files$
-    referenceFile$ = this.fileStoreReadWindow.referenceFile$
-    isDeltaState$ = this.fileStoreReadWindow.isDeltaState$
-
-    getCurrentFiles(): FileState[] {
-        return this.filesRepo.getFiles()
-    }
+export class NavBarWriteStore {
+    constructor(private readonly store: Store<CcState>) {}
 
     setStandard(files: CCFile[]) {
         this.store.dispatch(setStandard({ files }))
@@ -56,5 +44,13 @@ export class FilesSelectionStore {
 
     setFiles(value: FileState[]) {
         this.store.dispatch(setFiles({ value }))
+    }
+
+    setLoadingFile(value: boolean) {
+        this.store.dispatch(setIsLoadingFile({ value }))
+    }
+
+    setLoadingMap(value: boolean) {
+        this.store.dispatch(setIsLoadingMap({ value }))
     }
 }

@@ -3,8 +3,8 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { FormsModule } from "@angular/forms"
 import { map } from "rxjs"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { ScenariosService } from "../../services/scenarios.service"
-import { ScenarioDialogStore } from "../../stores/scenarioDialog.store"
 
 @Component({
     selector: "cc-save-scenario-dialog",
@@ -21,7 +21,7 @@ export class SaveScenarioDialogComponent {
     readonly nameValid = computed(() => this.name().trim().length > 0)
 
     readonly visibleFileNames = toSignal(
-        this.scenarioDialogStore.files$.pipe(map(fileStates => getVisibleFiles(fileStates).map(f => f.fileMeta.fileName))),
+        this.fileStoreReadWindow.files$.pipe(map(fileStates => getVisibleFiles(fileStates).map(f => f.fileMeta.fileName))),
         { initialValue: [] as string[] }
     )
 
@@ -29,7 +29,7 @@ export class SaveScenarioDialogComponent {
 
     constructor(
         private readonly scenariosService: ScenariosService,
-        private readonly scenarioDialogStore: ScenarioDialogStore
+        private readonly fileStoreReadWindow: FileStoreReadWindow
     ) {}
 
     open() {

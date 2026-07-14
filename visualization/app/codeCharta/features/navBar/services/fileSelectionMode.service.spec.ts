@@ -3,10 +3,11 @@ import { State, Store, StoreModule } from "@ngrx/store"
 import { TEST_FILE_DATA, TEST_FILE_DATA_JAVA } from "../../../mocks/dataMocks"
 import { CcState } from "../../../model/codeCharta.model"
 import { FileSelectionState } from "../../../model/files/files"
+import { FileStoreReadWindow, FilesRepo } from "../../../stores/fileStore/fileStore.facade"
 import { addFile, removeFiles, setDelta, setStandard } from "../../../stores/fileStore/store/files.actions"
 import { referenceFileSelector } from "../../../stores/fileStore/store/referenceFile.selector"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
-import { FilesSelectionStore } from "../stores/filesSelection.store"
+import { NavBarWriteStore } from "../stores/navBar.write.store"
 import { FileSelectionModeService } from "./fileSelectionMode.service"
 
 describe("FileSelectionModeService", () => {
@@ -24,7 +25,11 @@ describe("FileSelectionModeService", () => {
         store.dispatch(addFile({ file: TEST_FILE_DATA }))
         store.dispatch(setStandard({ files: [TEST_FILE_DATA] })) //fileName: "fileA"
 
-        fileSelectionModeService = new FileSelectionModeService(TestBed.inject(FilesSelectionStore))
+        fileSelectionModeService = new FileSelectionModeService(
+            TestBed.inject(FileStoreReadWindow),
+            TestBed.inject(FilesRepo),
+            TestBed.inject(NavBarWriteStore)
+        )
     })
 
     it("should set first selected file as reference, when there was no reference file before", () => {
@@ -59,7 +64,11 @@ describe("FileSelectionModeService", () => {
         // Arrange — simulate the post-reload state: store is in delta mode but the service
         // has no remembered "previous standard" snapshot because it was just constructed.
         store.dispatch(setDelta({ referenceFile: TEST_FILE_DATA, comparisonFile: TEST_FILE_DATA_JAVA }))
-        const freshService = new FileSelectionModeService(TestBed.inject(FilesSelectionStore))
+        const freshService = new FileSelectionModeService(
+            TestBed.inject(FileStoreReadWindow),
+            TestBed.inject(FilesRepo),
+            TestBed.inject(NavBarWriteStore)
+        )
         expect(freshService.lastSetFilesOfPreviousMode).toEqual([])
 
         // Act

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { LegendService } from "../../services/legend.service"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 
 @Component({
@@ -11,7 +11,7 @@ import { LegendColorRowComponent } from "./legendColorRow.component"
     imports: [LegendColorRowComponent]
 })
 export class LegendEdgeColorsSectionComponent {
-    constructor(private readonly legendService: LegendService) {}
+    constructor(private readonly mapStateReadWindow: MapStateReadWindow) {}
 
-    readonly edgeMetric = toSignal(this.legendService.edgeMetric$(), { initialValue: null })
+    readonly edgeMetric = toSignal(this.mapStateReadWindow.edgeMetric$, { initialValue: null })
 }

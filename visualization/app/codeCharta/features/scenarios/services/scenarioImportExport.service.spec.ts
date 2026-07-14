@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
 import { Vector3 } from "three"
 import { ThreeCameraService, ThreeMapControlsService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
@@ -29,6 +30,7 @@ describe("ScenarioImportExportService", () => {
 
         TestBed.configureTestingModule({
             providers: [
+                provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
                 { provide: ThreeMapControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } },

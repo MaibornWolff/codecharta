@@ -11,7 +11,7 @@ import {
     ScenarioSectionKey,
     ScenarioSections
 } from "../model/scenario.model"
-import { ScenarioApplierStore } from "../stores/scenarioApplier.store"
+import { ScenariosStore } from "../stores/scenarios.store"
 
 export interface MissingMetrics {
     nodeMetrics: string[]
@@ -25,7 +25,7 @@ export class ScenarioApplierService {
     isApplying = false
 
     constructor(
-        private readonly scenarioApplierStore: ScenarioApplierStore,
+        private readonly scenariosStore: ScenariosStore,
         private readonly threeCameraService: ThreeCameraService,
         private readonly threeMapControlsService: ThreeMapControlsService,
         private readonly threeRendererService: ThreeRendererService
@@ -84,7 +84,7 @@ export class ScenarioApplierService {
 
     async applyScenario(scenario: Scenario, selectedKeys: Set<ScenarioSectionKey>, metricData?: MetricData): Promise<void> {
         this.isApplying = true
-        this.scenarioApplierStore.setIsLoadingFile(true)
+        this.scenariosStore.setIsLoadingFile(true)
 
         try {
             const cameraVectors = selectedKeys.has("camera") ? this.getCameraVectors(scenario.sections) : undefined
@@ -94,9 +94,7 @@ export class ScenarioApplierService {
             // When applying camera, temporarily disable autoFit so it doesn't
             // overwrite our camera position after the render cycle completes.
             const previousResetCamera =
-                applyCamera && patches.length > 0
-                    ? this.scenarioApplierStore.getValue().preferences.resetCameraIfNewFileIsLoaded
-                    : undefined
+                applyCamera && patches.length > 0 ? this.scenariosStore.getValue().preferences.resetCameraIfNewFileIsLoaded : undefined
             if (previousResetCamera && patches.length > 0) {
                 patches[0].preferences = { ...patches[0].preferences, resetCameraIfNewFileIsLoaded: false }
             }
@@ -105,7 +103,7 @@ export class ScenarioApplierService {
             // earlier patches (e.g. resetColorRange after metric change)
             // settle before subsequent patches override their values.
             for (const patch of patches) {
-                this.scenarioApplierStore.setStatePatch(patch)
+                this.scenariosStore.setStatePatch(patch)
                 await new Promise<void>(resolve => setTimeout(resolve))
             }
 
@@ -120,7 +118,7 @@ export class ScenarioApplierService {
                 // Restore resetCameraIfNewFileIsLoaded after autoFit window has passed.
                 if (previousResetCamera) {
                     setTimeout(() => {
-                        this.scenarioApplierStore.setStatePatch({ preferences: { resetCameraIfNewFileIsLoaded: true } })
+                        this.scenariosStore.setStatePatch({ preferences: { resetCameraIfNewFileIsLoaded: true } })
                     })
                 }
             }
@@ -128,8 +126,8 @@ export class ScenarioApplierService {
             this.threeRendererService.render()
         } finally {
             this.isApplying = false
-            this.scenarioApplierStore.setIsLoadingFile(false)
-            this.scenarioApplierStore.setIsLoadingMap(false)
+            this.scenariosStore.setIsLoadingFile(false)
+            this.scenariosStore.setIsLoadingMap(false)
         }
     }
 

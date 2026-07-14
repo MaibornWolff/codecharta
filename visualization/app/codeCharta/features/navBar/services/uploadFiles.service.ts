@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { getCCFileAndDecorateFileChecksum, LoadFileService } from "../../../stores/fileStore/fileStore.facade"
-import { LoadingStateStore } from "../stores/loadingState.store"
+import { NavBarWriteStore } from "../stores/navBar.write.store"
 import { createCCFileInput } from "./createCCFileInput"
 import { readFiles } from "./readFiles"
 
@@ -9,7 +9,7 @@ export class UploadFilesService {
     isUploading = false
 
     constructor(
-        private readonly loadingStateStore: LoadingStateStore,
+        private readonly navBarWriteStore: NavBarWriteStore,
         private readonly loadFileService: LoadFileService
     ) {}
 
@@ -30,8 +30,8 @@ export class UploadFilesService {
 
         try {
             this.isUploading = true
-            this.loadingStateStore.setLoadingFile(true)
-            this.loadingStateStore.setLoadingMap(true)
+            this.navBarWriteStore.setLoadingFile(true)
+            this.navBarWriteStore.setLoadingMap(true)
 
             const plainFileContents = await Promise.all(readFiles(ccFileInput.files))
             const ccFiles = this.buildCCFiles(ccFileInput.files, plainFileContents)
@@ -40,8 +40,8 @@ export class UploadFilesService {
                 this.loadFileService.loadFiles(ccFiles)
             }
         } catch {
-            this.loadingStateStore.setLoadingFile(false)
-            this.loadingStateStore.setLoadingMap(false)
+            this.navBarWriteStore.setLoadingFile(false)
+            this.navBarWriteStore.setLoadingMap(false)
         } finally {
             this.isUploading = false
         }

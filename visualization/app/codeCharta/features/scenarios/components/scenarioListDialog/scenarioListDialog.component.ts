@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms"
 import { map } from "rxjs"
 import { MetricData } from "../../../../model/codeCharta.model"
 import { getVisibleFiles } from "../../../../model/files/files.helper"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { CCSCENARIO_EXTENSION, Scenario } from "../../model/scenario.model"
 import { ScenarioImportExportService } from "../../services/scenarioImportExport.service"
 import { ScenariosService } from "../../services/scenarios.service"
@@ -33,7 +34,7 @@ export class ScenarioListDialogComponent {
     readonly searchTerm = signal("")
 
     readonly visibleFileNames = toSignal(
-        this.scenarioDialogStore.files$.pipe(map(fileStates => new Set(getVisibleFiles(fileStates).map(f => f.fileMeta.fileName)))),
+        this.fileStoreReadWindow.files$.pipe(map(fileStates => new Set(getVisibleFiles(fileStates).map(f => f.fileMeta.fileName)))),
         { initialValue: new Set<string>() }
     )
 
@@ -61,6 +62,7 @@ export class ScenarioListDialogComponent {
         private readonly scenariosService: ScenariosService,
         private readonly importExportService: ScenarioImportExportService,
         private readonly scenarioDialogStore: ScenarioDialogStore,
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
         private readonly helpers: ScenarioViewModelService
     ) {}
 

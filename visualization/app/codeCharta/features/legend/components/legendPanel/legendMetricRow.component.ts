@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
 import { AttributeDescriptors } from "../../../../model/codeCharta.model"
 import { metricTitles } from "../../../../util/metric/metricTitles"
 import { AttributeDescriptorTooltipPipe } from "../../../../util/pipes/attributeDescriptorTooltip.pipe"
-import { LegendService } from "../../services/legend.service"
 
 @Component({
     selector: "cc-legend-metric-row",
@@ -12,12 +12,12 @@ import { LegendService } from "../../services/legend.service"
     imports: [AttributeDescriptorTooltipPipe]
 })
 export class LegendMetricRowComponent {
-    constructor(private readonly legendService: LegendService) {}
+    constructor(private readonly metricsLensFacade: MetricsLensFacade) {}
 
     readonly label = input.required<string>()
     readonly metricName = input.required<string>()
 
-    private readonly attributeDescriptors = toSignal(this.legendService.attributeDescriptors$(), {
+    private readonly attributeDescriptors = toSignal(this.metricsLensFacade.descriptors$, {
         initialValue: {} as AttributeDescriptors
     })
 

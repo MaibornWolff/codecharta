@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { isLoadingFileSelector } from "../../../stores/fileStore/fileStore.facade"
+import { metricRangeSelector } from "../../../renderer/renderModel/renderModel.facade"
 
 @Injectable({
     providedIn: "root"
 })
-export class IsLoadingFileStore {
+export class LegendMetricRangeStore {
     constructor(private readonly store: Store<CcState>) {}
 
-    isLoadingFile$ = this.store.select(isLoadingFileSelector)
+    readonly selectedColorMetricData$ = this.store.select(metricRangeSelector)
 }

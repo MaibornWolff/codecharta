@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { FileSelectionModeService } from "../../services/fileSelectionMode.service"
-import { FilesSelectionStore } from "../../stores/filesSelection.store"
 
 @Component({
     selector: "cc-mode-toggle",
@@ -9,10 +9,10 @@ import { FilesSelectionStore } from "../../stores/filesSelection.store"
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModeToggleComponent {
-    private readonly filesSelectionStore = inject(FilesSelectionStore)
+    private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
     private readonly fileSelectionModeService = inject(FileSelectionModeService)
 
-    isDeltaState = toSignal(this.filesSelectionStore.isDeltaState$, { requireSync: true })
+    isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { requireSync: true })
 
     selectExplore() {
         if (this.isDeltaState()) {

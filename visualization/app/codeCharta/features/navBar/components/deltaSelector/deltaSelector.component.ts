@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener,
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CCFile } from "../../../../model/codeCharta.model"
 import { FileSelectionState } from "../../../../model/files/files"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { RemoveExtensionPipe } from "../../removeExtension.pipe"
-import { FilesSelectionStore } from "../../stores/filesSelection.store"
+import { NavBarWriteStore } from "../../stores/navBar.write.store"
 
 type OpenDropdown = "none" | "reference" | "comparison"
 
@@ -14,11 +15,12 @@ type OpenDropdown = "none" | "reference" | "comparison"
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DeltaSelectorComponent {
-    private readonly filesSelectionStore = inject(FilesSelectionStore)
+    private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
+    private readonly navBarWriteStore = inject(NavBarWriteStore)
     private readonly elementRef = inject(ElementRef<HTMLElement>)
 
-    private readonly fileStates = toSignal(this.filesSelectionStore.files$, { requireSync: true })
-    private readonly referenceFile = toSignal(this.filesSelectionStore.referenceFile$, { requireSync: true })
+    private readonly fileStates = toSignal(this.fileStoreReadWindow.files$, { requireSync: true })
+    private readonly referenceFile = toSignal(this.fileStoreReadWindow.referenceFile$, { requireSync: true })
 
     openDropdown = signal<OpenDropdown>("none")
 
@@ -61,12 +63,12 @@ export class DeltaSelectorComponent {
     }
 
     handleReferenceChange(file: CCFile) {
-        this.filesSelectionStore.setDeltaReference(file)
+        this.navBarWriteStore.setDeltaReference(file)
         this.openDropdown.set("none")
     }
 
     handleComparisonChange(file: CCFile) {
-        this.filesSelectionStore.setDeltaComparison(file)
+        this.navBarWriteStore.setDeltaComparison(file)
         this.openDropdown.set("none")
     }
 
@@ -74,7 +76,7 @@ export class DeltaSelectorComponent {
         if (this.swapDisabled()) {
             return
         }
-        this.filesSelectionStore.switchReferenceAndComparison()
+        this.navBarWriteStore.switchReferenceAndComparison()
     }
 
     isReferenceSelected(file: CCFile): boolean {
