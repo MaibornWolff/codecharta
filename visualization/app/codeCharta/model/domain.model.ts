@@ -16,9 +16,12 @@ export enum LayoutAlgorithm {
 export interface CCFile {
     map: CodeMapNode
     settings: {
-        fileSettings: FileSettings &
-            MetricsLensSource &
-            DependencyLensSource & { blacklist: Array<BlacklistItem>; markedPackages: Array<MarkedPackage> }
+        fileSettings: FileSettings & {
+            attributeTypes: AttributeTypes
+            attributeDescriptors: AttributeDescriptors
+            blacklist: Array<BlacklistItem>
+            markedPackages: Array<MarkedPackage>
+        }
     }
     fileMeta: FileMeta
 }
@@ -107,12 +110,12 @@ export interface FileSettings {
 }
 
 export interface MetricsLensSource {
-    attributeTypes: AttributeTypes
+    attributeTypes: AttributeTypeMap
     attributeDescriptors: AttributeDescriptors
 }
 
 export interface DependencyLensSource {
-    attributeTypes: AttributeTypes
+    attributeTypes: AttributeTypeMap
 }
 
 export interface PrimaryMetrics {
@@ -150,9 +153,11 @@ export interface ColorRange {
     to: number | null
 }
 
+export type AttributeTypeMap = { [key: string]: AttributeTypeValue }
+
 export interface AttributeTypes {
-    nodes?: { [key: string]: AttributeTypeValue }
-    edges?: { [key: string]: AttributeTypeValue }
+    nodes?: AttributeTypeMap
+    edges?: AttributeTypeMap
 }
 
 export interface AttributeDescriptors {

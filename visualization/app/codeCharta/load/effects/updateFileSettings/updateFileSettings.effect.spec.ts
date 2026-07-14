@@ -49,12 +49,9 @@ describe("UpdateFileSettingsEffect", () => {
         expect(await getLastAction(store)).toEqual(
             setState({
                 value: {
-                    // Slice 15e: edges left this effect (now a derived dependency-lens selector), so no fileSettings key.
-                    // Slice 9b+9c: the merged blacklist + markedPackages are co-emitted under sharedView (not fileSettings).
                     sharedView: { blacklist, markedPackages },
-                    // Slice 14: the full attributeTypes is split — node types to the metrics lens, edge types to the dependency lens.
-                    metricsLensSource: { attributeTypes: { nodes: attributeTypes.nodes, edges: {} }, attributeDescriptors },
-                    dependencyLensSource: { attributeTypes: { nodes: {}, edges: attributeTypes.edges } }
+                    metricsLensSource: { attributeTypes: attributeTypes.nodes, attributeDescriptors },
+                    dependencyLensSource: { attributeTypes: attributeTypes.edges }
                 }
             })
         )

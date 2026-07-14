@@ -1,19 +1,15 @@
-import { AttributeTypeValue } from "../../../model/codeCharta.model"
+import { STATE } from "../../../mocks/dataMocks"
 import { nodeAttributeTypesSelector } from "./attributes.selectors"
 
 describe("nodeAttributeTypesSelector", () => {
-    it("should project the node side of the attribute types", () => {
+    it("should select the node attribute types of the metrics lens source", () => {
         // Arrange
-        const attributeTypes = { nodes: { rloc: AttributeTypeValue.absolute }, edges: { pairingRate: AttributeTypeValue.relative } }
+        const state = STATE
 
         // Act
-        const result = nodeAttributeTypesSelector.projector(attributeTypes)
+        const result = nodeAttributeTypesSelector(state)
 
         // Assert
-        expect(result).toEqual({ rloc: AttributeTypeValue.absolute })
-    })
-
-    it("should default to an empty map when the node side is undefined", () => {
-        expect(nodeAttributeTypesSelector.projector({ edges: {} })).toEqual({})
+        expect(result).toEqual(STATE.metricsLensSource.attributeTypes)
     })
 })

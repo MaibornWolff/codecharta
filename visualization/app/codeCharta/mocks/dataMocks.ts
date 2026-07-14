@@ -2055,18 +2055,15 @@ export const EDGE_METRIC_DATA: EdgeMetricData[] = [
 export const STATE: CcState = {
     metricsLensSource: {
         attributeTypes: {
-            nodes: {
-                rloc: AttributeTypeValue.absolute,
-                mcc: AttributeTypeValue.absolute,
-                coverage: AttributeTypeValue.relative,
-                pairing_rate: AttributeTypeValue.absolute
-            },
-            edges: {}
+            rloc: AttributeTypeValue.absolute,
+            mcc: AttributeTypeValue.absolute,
+            coverage: AttributeTypeValue.relative,
+            pairing_rate: AttributeTypeValue.absolute
         },
         attributeDescriptors: {}
     },
     dependencyLensSource: {
-        attributeTypes: { nodes: {}, edges: {} }
+        attributeTypes: {}
     },
     sharedView: {
         focusedNodePath: ["/root/ParentLeaf"],
@@ -2217,11 +2214,11 @@ export const DEFAULT_STATE: CcState = {
         rightClickedNodeData: null
     },
     metricsLensSource: {
-        attributeTypes: { nodes: {}, edges: {} },
+        attributeTypes: {},
         attributeDescriptors: {}
     },
     dependencyLensSource: {
-        attributeTypes: { nodes: {}, edges: {} }
+        attributeTypes: {}
     },
     files: [],
     isLoadingFile: true,

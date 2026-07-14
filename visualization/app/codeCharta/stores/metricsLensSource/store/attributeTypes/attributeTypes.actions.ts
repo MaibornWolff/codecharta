@@ -1,4 +1,4 @@
 import { createAction, props } from "@ngrx/store"
-import { AttributeTypes } from "../../../../model/codeCharta.model"
+import { AttributeTypeMap } from "../../../../model/codeCharta.model"
 
-export const setAttributeTypes = createAction("SET_ATTRIBUTE_TYPES", props<{ value: AttributeTypes }>())
+export const setAttributeTypes = createAction("SET_ATTRIBUTE_TYPES", props<{ value: AttributeTypeMap }>())

@@ -1,3 +1,4 @@
+import { setEdgeAttributeTypes } from "../../../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import { fileActions } from "../../../stores/fileStore/fileStore.facade"
 import {
     invertColorRange,
@@ -107,8 +108,11 @@ const sharedViewSaveActions = [
 
 const metricsLensSaveActions = [setAttributeTypes, setAttributeDescriptors]
 
+const dependencyLensSaveActions = [setEdgeAttributeTypes]
+
 export const actionsRequiringSaveCcState = [
     [...metricsLensSaveActions],
+    [...dependencyLensSaveActions],
     [...mapStateSaveActions],
     [...sharedViewSaveActions],
     [...preferencesActions],

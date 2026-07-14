@@ -1,13 +1,10 @@
 import { STATE } from "../../../../mocks/dataMocks"
-import { AttributeTypes } from "../../../../model/codeCharta.model"
+import { AttributeTypeMap } from "../../../../model/codeCharta.model"
 import { setAttributeTypes } from "./attributeTypes.actions"
 import { attributeTypes } from "./attributeTypes.reducer"
 
 describe("attributeTypes", () => {
-    const defaultValue: AttributeTypes = {
-        nodes: {},
-        edges: {}
-    }
+    const defaultValue: AttributeTypeMap = {}
 
     describe("Action: SET_ATTRIBUTE_TYPES", () => {
         it("should set new attributeTypes", () => {

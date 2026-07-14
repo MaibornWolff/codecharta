@@ -37,11 +37,11 @@ export class UpdateFileSettingsEffect {
                             markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath)
                         },
                         metricsLensSource: {
-                            attributeTypes: { nodes: mergedAttributeTypes.nodes, edges: {} },
+                            attributeTypes: mergedAttributeTypes.nodes,
                             attributeDescriptors: getMergedAttributeDescriptors(allAttributeDescriptors)
                         },
                         dependencyLensSource: {
-                            attributeTypes: { nodes: {}, edges: mergedAttributeTypes.edges }
+                            attributeTypes: mergedAttributeTypes.edges
                         }
                     }
                 })

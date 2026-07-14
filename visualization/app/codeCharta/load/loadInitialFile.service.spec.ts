@@ -443,7 +443,7 @@ describe("LoadInitialFileService", () => {
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
             mockedState.metricsLensSource = {
-                attributeTypes: { nodes: { rloc: "absolute" }, edges: {} },
+                attributeTypes: { rloc: "absolute" },
                 attributeDescriptors: { rloc: { title: "Real Lines of Code" } }
             } as unknown as MetricsLensSource
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
@@ -470,7 +470,7 @@ describe("LoadInitialFileService", () => {
             )
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
             mockedState.dependencyLensSource = {
-                attributeTypes: { nodes: {}, edges: { pairingRate: "absolute" } }
+                attributeTypes: { pairingRate: "absolute" }
             } as unknown as DependencyLensSource
             jest.mocked(readCcState).mockImplementation(async () => new Promise(resolve => resolve(mockedState)))
             jest.mocked(getCCFiles).mockImplementation(() => defaultState.files.map(state => state.file))

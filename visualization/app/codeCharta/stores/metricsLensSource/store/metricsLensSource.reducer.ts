@@ -3,11 +3,8 @@ import { MetricsLensSource } from "../../../model/codeCharta.model"
 import { attributeDescriptors, defaultAttributeDescriptors } from "./attributeDescriptors/attributeDescriptors.reducer"
 import { attributeTypes, defaultAttributeTypes } from "./attributeTypes/attributeTypes.reducer"
 
-// The metrics lens's cc.json SOURCE root (Slice 9a): the NODE attribute-type map (`attributeTypes.nodes`)
-// and the flat attribute-descriptor map, seeded from the loaded cc.json. Slice 9a pulled these two slices
-// out of the `fileSettings` combineReducers into this lens-owned `state.metricsLensSource` root; Slice 14
-// re-homed the EDGE side of `attributeTypes` to the dependency lens's `state.dependencyLensSource`, so the
-// runtime `attributeTypes.edges` here is now empty (the type keeps the full `AttributeTypes` shape).
+// The metrics lens's cc.json SOURCE root: the NODE attribute-type map and the attribute-descriptor map,
+// both seeded from the loaded cc.json. The EDGE attribute types live in `state.dependencyLensSource`.
 export const metricsLensSource = combineReducers({
     attributeTypes,
     attributeDescriptors
