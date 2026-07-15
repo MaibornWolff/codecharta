@@ -63,6 +63,23 @@ class MergeResolverStrategyTest {
     }
 
     @Test
+    fun `should keep a File and a Folder with the same name as distinct nodes in an overlay merge`() {
+        // reference has /src/foo as a File; incoming has /src/foo as a Folder (holding a leaf) — same
+        // input shape as the union clash test above, exercised through OverlayMergeResolver instead.
+        val reference = tree(leaf("/src/foo", mapOf("a" to 1.0)))
+        val incoming = tree(leaf("/src/foo/bar.kt", mapOf("b" to 2.0)))
+
+        val merged = merge(MergeResolverStrategy.leaf(true), reference, incoming)
+
+        val src = merged.children.single { it.name == "src" }
+        val foos = src.children.filter { it.name == "foo" }
+        assertThat(foos).hasSize(2)
+        assertThat(foos.map { it.type }).containsExactlyInAnyOrder(NodeType.File, NodeType.Folder)
+        assertThat(foos.single { it.type == NodeType.File }.attributes).containsOnlyKeys("a")
+        assertThat(foos.single { it.type == NodeType.Folder }.children.map { it.name }).containsExactly("bar.kt")
+    }
+
+    @Test
     fun `should not merge a wildcard-typed node into more than one same-named node in a union merge`() {
         // Arrange
         // Only a File-vs-Folder pairing counts as a clash, so a File "foo" and a Folder "foo" survive as
