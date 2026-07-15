@@ -4,8 +4,7 @@ import { Page } from "@playwright/test"
 // context gets isolated, persistent origin storage — a file:// origin shares IndexedDB across all
 // contexts, which makes the IndexedDB-restore tests flaky under parallel execution.
 export const E2E_PORT = 9009
-export const E2E_BASE_URL = `http://localhost:${E2E_PORT}/`
-export const CC_URL = E2E_BASE_URL
+export const CC_URL = `http://localhost:${E2E_PORT}/`
 
 export async function goto(page: Page, url = CC_URL) {
     await page.goto(url)

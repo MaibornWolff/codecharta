@@ -1,5 +1,5 @@
 import { defineConfig, devices } from "@playwright/test"
-import { E2E_BASE_URL, E2E_PORT } from "./app/playwright.helper"
+import { CC_URL, E2E_PORT } from "./app/playwright.helper"
 
 export default defineConfig({
     testDir: "./app",
@@ -17,13 +17,13 @@ export default defineConfig({
     // origin gives each Playwright context its own isolated, persistent storage.
     webServer: {
         command: `node e2e.staticServer.mjs ${E2E_PORT}`,
-        url: E2E_BASE_URL,
+        url: CC_URL,
         timeout: 30_000,
         reuseExistingServer: !process.env.CI
     },
 
     use: {
-        baseURL: E2E_BASE_URL,
+        baseURL: CC_URL,
         trace: "retain-on-failure",
         screenshot: "only-on-failure",
         viewport: { width: 1920, height: 1080 },
