@@ -127,11 +127,27 @@ class LensTest {
         val merged = first.merge(second)
 
         assertEquals(2, merged.edges.size)
-        // The duplicate a->b keeps the first lens's attributes (x=1, not 9); the unique b->c survives.
+        // The duplicate a->b keeps the first lens's value on the conflicting key (x=1, not 9); b->c survives.
         val ab = merged.edges.single { it.fromNodeName == "/root/a" && it.toNodeName == "/root/b" }
         val bc = merged.edges.single { it.fromNodeName == "/root/b" && it.toNodeName == "/root/c" }
         assertEquals(1, ab.attributes["x"])
         assertEquals(2, bc.attributes["x"])
+    }
+
+    @Test
+    fun `should union attributes of duplicate edges keeping the first lens on conflicting keys`() {
+        // Arrange: both lenses describe the same a->b dependency with a distinct metric plus a shared one.
+        val first = DependencyLens(edges = listOf(Edge("/root/a", "/root/b", mapOf("pairingRate" to 80, "shared" to 1))))
+        val second = DependencyLens(edges = listOf(Edge("/root/a", "/root/b", mapOf("avgCommits" to 12, "shared" to 9))))
+
+        // Act
+        val merged = first.merge(second)
+
+        // Assert: distinct metrics from both lenses survive; the conflicting key keeps the first lens's value.
+        val ab = merged.edges.single()
+        assertEquals(80, ab.attributes["pairingRate"])
+        assertEquals(12, ab.attributes["avgCommits"])
+        assertEquals(1, ab.attributes["shared"])
     }
 
     @Test
