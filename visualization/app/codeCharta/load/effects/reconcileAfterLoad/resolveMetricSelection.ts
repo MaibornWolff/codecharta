@@ -6,25 +6,11 @@ import { NO_URL_METRICS, UrlMetricSelection } from "../../../util/queryParameter
 export type MetricSelection = Pick<MapState, "areaMetric" | "heightMetric" | "colorMetric" | "edgeMetric" | "distributionMetric">
 
 /**
- * PRECEDENCE: URL > persisted (the current selection) > computed default.
+ * Resolves the metric selection for freshly loaded files with precedence URL > current selection >
+ * computed default. A candidate only wins if the metric it names exists in the loaded files;
+ * an unavailable candidate is dropped silently — no dialog, no error.
  *
- * A candidate only wins if the metric it names actually EXISTS in the metric data derived from the
- * files that were just loaded. A URL metric naming a metric that the loaded files do not have is
- * dropped silently — no dialog, no error — and the next candidate in the chain wins.
- *
- * URL metrics are only honored when a ?file= parameter is present: without it the URL is not
- * written back either, so honoring ?area= on an IndexedDB boot would make the URL a one-way input.
- *
- * area/height/color resolve as a COMBINATION, not independently: if the resulting triple is not
- * fully available in the loaded map, the whole triple falls back to the computed default combination
- * and any valid URL name is then re-applied on top. This mirrors the all-or-nothing semantics of
- * areChosenMetricsAvailableSelector. edgeMetric resolves independently.
- *
- * `discardCurrentSelection` drops the middle candidate: a "reset map" deliberately throws the previous
- * selection away, so the computed default must win even though the old selection would still be valid.
- * The URL still beats the default.
- *
- * Returns null when the map carries no usable metric at all — nothing should be dispatched then.
+ * Returns null when the map carries no usable node metric at all — nothing should be dispatched then.
  */
 export function resolveMetricSelection(
     urlMetrics: UrlMetricSelection,
@@ -36,69 +22,65 @@ export function resolveMetricSelection(
 ): MetricSelection | null {
     const nodeMetricNames = new Set(nodeMetricData.map(metric => metric.name))
     const edgeMetricNames = new Set(edgeMetricData.map(metric => metric.name))
-    const isNodeMetric = (name: string | null) => Boolean(name) && nodeMetricNames.has(name)
-    const isEdgeMetric = (name: string | null) => Boolean(name) && edgeMetricNames.has(name)
+    const isAvailableNodeMetric = (name: string | null) => Boolean(name) && nodeMetricNames.has(name)
+    const isAvailableEdgeMetric = (name: string | null) => Boolean(name) && edgeMetricNames.has(name)
 
-    const url = hasFileQueryParameter ? urlMetrics : NO_URL_METRICS
+    // Without ?file= the URL is never written back, so honoring its metrics would make the URL a one-way input.
+    const applicableUrlMetrics = hasFileQueryParameter ? urlMetrics : NO_URL_METRICS
 
-    // 1) The URL wins where it is valid; otherwise the persisted selection stands — unless this load
-    //    discards it, in which case only the URL and the computed default remain.
-    const persisted: MetricSelection = discardCurrentSelection
+    // A "reset map" deliberately throws the previous selection away: the computed default must win over it
+    // even though it might still be valid. The URL still beats the default.
+    const baseSelection: MetricSelection = discardCurrentSelection
         ? { areaMetric: null, heightMetric: null, colorMetric: null, distributionMetric: null, edgeMetric: null }
         : current
 
-    const triple = resolveTriple(url, persisted, nodeMetricData, isNodeMetric)
-    if (triple === null) {
+    const nodeMetricSelection = resolveNodeMetricSelection(applicableUrlMetrics, baseSelection, nodeMetricData, isAvailableNodeMetric)
+    if (nodeMetricSelection === null) {
         return null
     }
 
-    // 3) The edge metric, independently. It becomes undefined when the map has no edge metrics.
-    let edgeMetric = persisted.edgeMetric
-    if (isEdgeMetric(url.edgeMetric)) {
-        edgeMetric = url.edgeMetric
-    } else if (!isEdgeMetric(edgeMetric)) {
+    let edgeMetric = baseSelection.edgeMetric
+    if (isAvailableEdgeMetric(applicableUrlMetrics.edgeMetric)) {
+        edgeMetric = applicableUrlMetrics.edgeMetric
+    } else if (!isAvailableEdgeMetric(edgeMetric)) {
         edgeMetric = edgeMetricData[0]?.name
     }
 
-    return { ...triple, edgeMetric }
+    return { ...nodeMetricSelection, edgeMetric }
 }
 
-type MetricTriple = Pick<MetricSelection, "areaMetric" | "heightMetric" | "colorMetric" | "distributionMetric">
+type NodeMetricSelection = Pick<MetricSelection, "areaMetric" | "heightMetric" | "colorMetric" | "distributionMetric">
 
 /**
- * Resolves area/height/color as an all-or-nothing COMBINATION (see resolveMetricSelection):
- * URL beats persisted, but if the resulting triple is not fully available it falls back to the
- * computed default and any valid URL name is re-applied on top. Returns null when the map carries
- * no usable metric at all.
+ * area/height/color resolve as an all-or-nothing combination, mirroring the semantics of
+ * areChosenMetricsAvailableSelector: if the resolved combination is not fully available in the loaded
+ * map, all three fall back to the computed default and valid URL metrics are re-applied on top.
  */
-function resolveTriple(
-    url: UrlMetricSelection,
-    persisted: MetricSelection,
+function resolveNodeMetricSelection(
+    urlMetrics: UrlMetricSelection,
+    baseSelection: MetricSelection,
     nodeMetricData: NodeMetricData[],
-    isNodeMetric: (name: string | null) => boolean
-): MetricTriple | null {
-    let areaMetric = isNodeMetric(url.areaMetric) ? url.areaMetric : persisted.areaMetric
-    let heightMetric = isNodeMetric(url.heightMetric) ? url.heightMetric : persisted.heightMetric
-    let colorMetric = isNodeMetric(url.colorMetric) ? url.colorMetric : persisted.colorMetric
-    let distributionMetric = persisted.distributionMetric
+    isAvailableNodeMetric: (name: string | null) => boolean
+): NodeMetricSelection | null {
+    const areaMetric = isAvailableNodeMetric(urlMetrics.areaMetric) ? urlMetrics.areaMetric : baseSelection.areaMetric
+    const heightMetric = isAvailableNodeMetric(urlMetrics.heightMetric) ? urlMetrics.heightMetric : baseSelection.heightMetric
+    const colorMetric = isAvailableNodeMetric(urlMetrics.colorMetric) ? urlMetrics.colorMetric : baseSelection.colorMetric
 
-    if (isNodeMetric(areaMetric) && isNodeMetric(heightMetric) && isNodeMetric(colorMetric)) {
-        return { areaMetric, heightMetric, colorMetric, distributionMetric }
+    if (isAvailableNodeMetric(areaMetric) && isAvailableNodeMetric(heightMetric) && isAvailableNodeMetric(colorMetric)) {
+        return { areaMetric, heightMetric, colorMetric, distributionMetric: baseSelection.distributionMetric }
     }
 
-    // The triple is not fully available in this map: fall back to the computed default combination,
-    // and let a valid url metric win over the computed value again.
     if (!isAnyMetricAvailable(nodeMetricData)) {
         return null
     }
 
     const [defaultArea, defaultHeight, defaultColor] = computeDefaultCombination(nodeMetricData)
-    areaMetric = isNodeMetric(url.areaMetric) ? url.areaMetric : defaultArea
-    heightMetric = isNodeMetric(url.heightMetric) ? url.heightMetric : defaultHeight
-    colorMetric = isNodeMetric(url.colorMetric) ? url.colorMetric : defaultColor
-    distributionMetric = getDefaultDistribution(nodeMetricData)
-
-    return { areaMetric, heightMetric, colorMetric, distributionMetric }
+    return {
+        areaMetric: isAvailableNodeMetric(urlMetrics.areaMetric) ? urlMetrics.areaMetric : defaultArea,
+        heightMetric: isAvailableNodeMetric(urlMetrics.heightMetric) ? urlMetrics.heightMetric : defaultHeight,
+        colorMetric: isAvailableNodeMetric(urlMetrics.colorMetric) ? urlMetrics.colorMetric : defaultColor,
+        distributionMetric: getDefaultDistribution(nodeMetricData)
+    }
 }
 
 function computeDefaultCombination(nodeMetricData: NodeMetricData[]): string[] {
