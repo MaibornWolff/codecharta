@@ -13,6 +13,8 @@ import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
+import de.maibornwolff.codecharta.serialization.dto.DependencyLensDto
+import de.maibornwolff.codecharta.serialization.dto.EdgeDto
 import de.maibornwolff.codecharta.serialization.dto.FileDto
 import de.maibornwolff.codecharta.serialization.dto.LensesDto
 import de.maibornwolff.codecharta.serialization.dto.MetaDto
@@ -585,6 +587,47 @@ class CcJsonV2SerializationTest {
             // Assert: the orphaned metric is dropped and a warning names the unresolved id.
             assertTrue(project.rootNode.attributes.isEmpty())
             assertTrue(warnings.any { it().contains("dangling-id") })
+        } finally {
+            unmockkObject(Logger)
+        }
+    }
+
+    @Test
+    fun `should warn and keep the first node when two 2_0 file nodes share an id`() {
+        // Arrange: a foreign 2.0 DTO where two sibling files declare the same id, plus an edge using it.
+        val dto =
+            CcJsonV2(
+                MetaDto("foreign", "2.0", "checksum"),
+                listOf(
+                    FileDto(
+                        id = "id-root",
+                        name = "root",
+                        type = "Folder",
+                        children =
+                            listOf(
+                                FileDto(id = "dup", name = "A.kt", type = "File"),
+                                FileDto(id = "dup", name = "B.kt", type = "File")
+                            )
+                    )
+                ),
+                LensesDto(dependency = DependencyLensDto(edges = listOf(EdgeDto(fromId = "dup", toId = "id-root"))))
+            )
+        val warnings = mutableListOf<() -> String>()
+        mockkObject(Logger)
+        try {
+            every { Logger.warn(capture(warnings)) } returns Unit
+
+            // Act
+            val project = CcJsonV2ToProjectMapper.toProject(dto)
+
+            // Assert: the collision is warned, and the first-declared node (A.kt) keeps the id binding.
+            assertTrue(warnings.any { it().contains("dup") })
+            assertEquals(
+                NodeId.endpointFromSegments(listOf("A.kt")),
+                project.lenses.dependency.edges
+                    .single()
+                    .fromNodeName
+            )
         } finally {
             unmockkObject(Logger)
         }

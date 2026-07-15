@@ -76,7 +76,13 @@ object CcJsonV2ToProjectMapper {
     }
 
     private fun collectEndpoints(fileDto: FileDto, segments: List<String>, idToEndpoint: MutableMap<String, String>) {
-        idToEndpoint[fileDto.id] = NodeId.endpointFromSegments(segments)
+        // Two file nodes sharing an id is only possible in foreign/hand-authored 2.0 input (the writer
+        // derives every id from its unique tree position). Keep the first-declared binding and warn, so a
+        // colliding id surfaces instead of silently re-pointing this id's edges at the last node.
+        val existingEndpoint = idToEndpoint.putIfAbsent(fileDto.id, NodeId.endpointFromSegments(segments))
+        if (existingEndpoint != null) {
+            Logger.warn { "Duplicate node id '${fileDto.id}'; keeping the first node and ignoring later ones." }
+        }
         fileDto.children?.forEach { child -> collectEndpoints(child, segments + child.name, idToEndpoint) }
     }
 }
