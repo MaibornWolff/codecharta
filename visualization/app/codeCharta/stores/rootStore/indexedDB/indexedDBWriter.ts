@@ -394,7 +394,9 @@ export function migrateCcStateRecordToV16<T>(state: T): T {
 
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
-    const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
+    // Strict durability: the default (relaxed) reports success before the data reaches disk, so a
+    // browser storage-process crash right after a save can silently lose the whole persisted session.
+    const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
     await tx.store.put({
         [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
         state

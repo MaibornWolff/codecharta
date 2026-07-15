@@ -817,6 +817,18 @@ describe("IndexedDBWriter", () => {
 
             expect(result.state).toEqual(defaultState)
         })
+
+        it("should commit the write with strict durability so a confirmed save survives a storage-process crash", async () => {
+            // Arrange
+            const transactionSpy = jest.spyOn(IDBDatabase.prototype, "transaction")
+
+            // Act
+            await writeCcState(defaultState)
+
+            // Assert
+            expect(transactionSpy).toHaveBeenCalledWith(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
+            transactionSpy.mockRestore()
+        })
     })
 
     describe("deleteCcState", () => {
