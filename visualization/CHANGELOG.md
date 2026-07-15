@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - **Camera auto-fit after load**: Loading or importing a map and applying a scenario no longer intermittently skip the camera reset, leaving the previous view in place. The post-load auto-fit now waits for the new map mesh to be placed into the scene instead of racing the throttled render stream (which reliably missed for `.gz` files), and briefly retries while the geometry is not there yet.
+- **Camera front view on auto-fit**: The camera reset no longer lands in a skewed "tilted diamond" view when the newly fitted map is much larger than the previous one (or the orbit target had been panned far away). The fit previously let the map controls clamp the fresh camera position against the previous map's zoom limits, locking the off-axis direction in.
 - **cc.json 2.0 map survives reload**: A cc.json **2.0** file loaded into the app is no longer replaced by the sample files on the next page load. Re-exporting a loaded map for IndexedDB persistence now stamps the flat export shape with the 1.x `apiVersion` it actually is, instead of copying `"2.0"` verbatim onto a 1.x body — which previously made the reloaded file fail validation as an outdated major version and fall back to sample files.
 
 ### Chore 👨‍💻 👩‍💻

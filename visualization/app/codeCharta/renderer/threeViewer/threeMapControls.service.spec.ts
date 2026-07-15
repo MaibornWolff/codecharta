@@ -144,6 +144,29 @@ describe("ThreeMapControlsService", () => {
             expect(threeCameraService.camera.updateProjectionMatrix).toHaveBeenCalled()
         })
 
+        it("should fit a much larger map with the same view direction as a fresh fit", async () => {
+            // Arrange
+            const smallMap = new Sphere(new Vector3(500, 100, 500), 500)
+            const largeMap = new Sphere(new Vector3(5000, 300, 5000), 5000)
+            const getBoundingSphereSpy = jest.spyOn(threeMapControlsService, "getBoundingSphere")
+            const fitAndGetViewDirection = async (boundingSphere: Sphere) => {
+                getBoundingSphereSpy.mockReturnValue(boundingSphere)
+                threeMapControlsService.autoFitTo()
+                await wait(0)
+                return threeCameraService.camera.position.clone().sub(threeMapControlsService.controls.target).normalize()
+            }
+            threeMapControlsService.controls = new MapControls(threeCameraService.camera, document.createElement("canvas"))
+            const canonicalDirection = await fitAndGetViewDirection(largeMap)
+
+            // Act — refit while the controls still hold the small map's target and zoom limits
+            threeMapControlsService.controls = new MapControls(threeCameraService.camera, document.createElement("canvas"))
+            await fitAndGetViewDirection(smallMap)
+            const refitDirection = await fitAndGetViewDirection(largeMap)
+
+            // Assert
+            expect(refitDirection.distanceTo(canonicalDirection)).toBeLessThan(1e-6)
+        })
+
         it("should return early if boundingSphere.radius is -1", async () => {
             jest.spyOn(threeMapControlsService, "getBoundingSphere").mockReturnValue(new Sphere())
             threeCameraService.camera.position.set(0, 0, 0)

@@ -69,18 +69,21 @@ export class ThreeMapControlsService {
         const length = this.cameraPerspectiveLengthCalculation(boundingSphere)
         const cameraReference = this.threeCameraService.camera
 
-        cameraReference.position.set(length, length, boundingSphere.center.z)
-
-        this.updateControls()
-
-        this.focusCameraViewToCenter(boundingSphere)
-        this.threeRendererService.render()
-        this.onInput(this.threeCameraService.camera)
-
+        // The target and zoom limits must describe the new map before the camera is placed and
+        // `controls.update()` runs: update() clamps the camera's distance-to-target into
+        // [minDistance, maxDistance], and against the previous map's values that drags the camera
+        // off the front-view axis — the skewed direction would then be locked in by
+        // setZoomPercentage below.
         const scale = 1.3 // object size / display size
-
         this.controls.maxDistance = length * 4
         this.controls.minDistance = boundingSphere.radius / (10 * scale)
+
+        cameraReference.position.set(length, length, boundingSphere.center.z)
+        this.focusCameraViewToCenter(boundingSphere)
+        this.updateControls()
+
+        this.threeRendererService.render()
+        this.onInput(this.threeCameraService.camera)
 
         this.setZoomPercentage(140)
     }
