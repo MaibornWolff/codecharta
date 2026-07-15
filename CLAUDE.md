@@ -313,14 +313,18 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 
 ### Code Quality Guidelines
 
-**General Principles**:
-- **DRY**: Extract repeated logic into reusable functions
-- **Clean Code**: Self-documenting code with clear intent
+**⚠️ CLEAN CODE IS MANDATORY.** This codebase enforces clean code standards during active refactoring (see [`CODE_QUALITY.md`](./CODE_QUALITY.md)). All new code and refactored code must follow these principles. Violations will be identified during review and must be fixed before merge.
+
+**General Principles** (enforced):
+- **DRY**: Extract repeated logic into reusable functions (3+ occurrences → extract)
+- **Clean Code**: Self-documenting code with clear intent — no single-letter variables, no magic numbers
 - **SOLID**: Single responsibility, open/closed, dependency inversion
-- **Expressive Naming**: Descriptive names that reveal intent
+- **Expressive Naming**: Descriptive names that reveal intent (>2 chars, avoid abbreviations)
 - **Fix Warnings**: Never suppress, always resolve
-- **Consistent Style**: Match existing patterns
-- **Comments**: Use sparingly for complex business logic rationale. Prefer clear function names over comments.
+- **Consistent Style**: Match existing patterns; follow language conventions
+- **Comments**: Use sparingly; explain *why* not *what*. Prefer clear function names over comments.
+- **Method Size**: Keep methods <25 lines; split complex logic into focused helpers
+- **Parameter Lists**: Max 3-4 parameters; use data classes for related groups
 - **Metric Accuracy**: All metrics must be deterministic and reproducible across runs
 - **Immutability**: Prefer immutable data structures, especially in the model layer
 - **Backward Compatibility**: Changes to `.cc.json` format require careful versioning
