@@ -91,7 +91,9 @@ test.describe("codecharta", () => {
         await goto(page, `${CC_URL}?file=invalid234`)
 
         const message = await dialogError.getMessage()
-        expect(message).toEqual("Error (Http failure response for invalid234: 0 Unknown Error)")
+        // The exact HTTP status text depends on the transport/server, so assert the stable parts only.
+        expect(message).toContain("Error (Http failure response for")
+        expect(message).toContain("invalid234")
         await dialogError.clickOk()
 
         expect(await filePanel.getSelectedName()).toEqual("sample1 +1")

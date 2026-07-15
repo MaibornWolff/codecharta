@@ -1,7 +1,11 @@
 import { Page } from "@playwright/test"
-import path from "path"
 
-export const CC_URL = `file:${path.join(__dirname, "../dist/bundler/browser/index.html")}`
+// The built app is served over HTTP (see playwright.config.ts webServer) so each parallel browser
+// context gets isolated, persistent origin storage — a file:// origin shares IndexedDB across all
+// contexts, which makes the IndexedDB-restore tests flaky under parallel execution.
+export const E2E_PORT = 9009
+export const E2E_BASE_URL = `http://localhost:${E2E_PORT}/`
+export const CC_URL = E2E_BASE_URL
 
 export async function goto(page: Page, url = CC_URL) {
     await page.goto(url)
@@ -32,9 +36,9 @@ export async function clearIndexedDB(page: Page) {
  * write and boot from a stale database.
  *
  * It waits for `expectedFileName` specifically, not just "any files": IndexedDB may still hold a prior
- * test's persisted state (afterEach clearing is not perfectly reliable for `file://` origins), so a
- * "files exist" check would be satisfied by that stale record and never actually wait for this test's
- * save. Waiting for the file this test just loaded is immune to both the leak and machine speed.
+ * boot's persisted state, so a "files exist" check would be satisfied by that stale record and never
+ * actually wait for this test's save. Waiting for the file this test just loaded is immune to both the
+ * stale record and machine speed.
  *
  * Mirrors the constants in stores/rootStore/indexedDB/indexedDBWriter.ts (DB "CodeCharta", store
  * "ccstate", key 1001, record shape { id, state }); the persisted file name is
