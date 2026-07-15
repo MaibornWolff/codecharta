@@ -46,10 +46,7 @@ module.exports = {
             from: { pathNot: ["^app/codeCharta/features/", "\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.po\\.ts$"] },
             to: {
                 path: "^app/codeCharta/features/",
-                pathNot: [
-                    "^app/codeCharta/features/[^/]+/facade\\.ts$",
-                    "^app/codeCharta/features/[^/]+/effects/[^/]+\\.effects\\.ts$"
-                ]
+                pathNot: ["^app/codeCharta/features/[^/]+/facade\\.ts$", "^app/codeCharta/features/[^/]+/effects/[^/]+\\.effects\\.ts$"]
             }
         },
         {

@@ -218,8 +218,10 @@ export class LoadFilesUseCase {
 
         // Preferences and mapState are applied up front: the metric selection has to be in the store
         // before the reconciliation resolves it, since the persisted selection is one of the candidates.
-        missingProperties.push(...this.loadInitialFileStore.applyPreferences(savedCcState.preferences))
-        missingProperties.push(...this.loadInitialFileStore.applyMapState(savedCcState.mapState))
+        missingProperties.push(
+            ...this.loadInitialFileStore.applyPreferences(savedCcState.preferences),
+            ...this.loadInitialFileStore.applyMapState(savedCcState.mapState)
+        )
 
         // The view slices are NOT applied here. They are carried on the provenance and applied by the
         // reconciliation AFTER its file-derived merge, because persisted beats file-derived: a user's
@@ -230,9 +232,11 @@ export class LoadFilesUseCase {
             metricsLensSource: savedCcState.metricsLensSource,
             dependencyLensSource: savedCcState.dependencyLensSource
         }
-        missingProperties.push(...this.loadInitialFileStore.missingKeysOfSharedView(savedCcState.sharedView))
-        missingProperties.push(...this.loadInitialFileStore.missingKeysOfMetricsLensSource(savedCcState.metricsLensSource))
-        missingProperties.push(...this.loadInitialFileStore.missingKeysOfDependencyLensSource(savedCcState.dependencyLensSource))
+        missingProperties.push(
+            ...this.loadInitialFileStore.missingKeysOfSharedView(savedCcState.sharedView),
+            ...this.loadInitialFileStore.missingKeysOfMetricsLensSource(savedCcState.metricsLensSource),
+            ...this.loadInitialFileStore.missingKeysOfDependencyLensSource(savedCcState.dependencyLensSource)
+        )
 
         this.commit(savedNameDataPairs, this.provenance(source, { areSampleFiles: false, urlMetrics, forceAutoFit, restoredSettings }))
         this.loadInitialFileStore.setFiles(savedFileStates)

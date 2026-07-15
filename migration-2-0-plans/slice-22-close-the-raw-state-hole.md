@@ -1,7 +1,7 @@
 ---
 name: viz-2.0-slice-22-close-the-raw-state-hole
 issue:
-state: todo
+state: complete
 version: 1
 ---
 
@@ -97,12 +97,16 @@ it flags `State` and leaves `Store` alone. `biome check` (= format **+ lint**) a
       (symbol-level by necessity: dep-cruiser sees only the module edge to `@ngrx/store` and cannot ban `State`
       while allowing `Store` — no such dep-cruiser rule can exist. Exempt: `stores/**`, `**/*.spec.ts`, and the
       TestBed provider `mocks/state.mocks.ts`.)
-- [ ] Final: `tsc` clean ✅ · full suite green ✅ · **45/45 snapshots zero-diff** ✅ · `npm run e2e` **NOT YET RUN**
+- [x] Final: `tsc` clean ✅ · full suite green ✅ · **45/45 snapshots zero-diff** ✅ · `npm run e2e` ✅ (confirmed 2026-07-15,
+      see below)
 
 ## Outcome (2026-07-14)
 
 Three commits, `2d743ada1..4a00b5f7a`. `tsc` clean · **341 suites / 2,196 passed** · **45/45 snapshots, no `.snap`
-file touched** · `lint:architecture` 0 (1,029 modules) · `format:check` clean. **e2e still outstanding.**
+file touched** · `lint:architecture` 0 (1,029 modules) · `format:check` clean. **e2e confirmed 2026-07-15**: this
+slice's commits (`4a00b5f7a`) are an ancestor of the e2e-chromium-fallback fix (`plans/2026-07-15-e2e-chromium-fallback.md`,
+state: complete), which reports three consecutive full-suite runs at 40/40 passing against a HEAD that includes
+this slice's changes — the raw-state-hole re-routing has been exercised end-to-end, not just unit-tested.
 
 **Definition of done met:** `grep -rln "State<CcState>" app/codeCharta` outside `stores/`, excluding specs and the
 TestBed provider `mocks/state.mocks.ts`, returns **nothing**. All 17 files routed.

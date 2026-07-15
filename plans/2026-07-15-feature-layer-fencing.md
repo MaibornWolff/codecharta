@@ -1,9 +1,16 @@
 ---
 name: feature-layer-fencing
 issue: n/a
-state: todo
-version: 1
+state: complete
+version: 2
 ---
+
+## Decisions taken (2026-07-15)
+
+- **Effects-bundle carve-out:** KEPT. `app.config.ts -> effects/<feature>.effects.ts` stays exempt (mirrors the existing `load-external-access-only-via-facade` carve-out).
+- **Rollout:** fix violations, land rules at `error` in one pass.
+- **Rule 3 (`feature-components-go-through-services`, components -> stores) DROPPED.** Deliberate deviation from Goal #2's "never components -> stores directly". Rationale: in this codebase the feature `stores/` layer (`*.read.store.ts` / `*.write.store.ts`) is already an `@Injectable` service-shaped accessor over the global state homes, so forcing a `services/` pass-through adds ~57 no-behavior indirections; and `display-components-cannot-dispatch` already fences the risky edge (components mutating state homes directly). `component -> service` stays allowed, so a service can be introduced per-case when real write logic appears. The other 3 rules (external->facade tightening, cross-feature->facade tightening, `feature-services-not-to-components`) were kept — cheap and high-value.
+- Also: `feature-no-external-access-to-internals` gained a test-file exemption (`.spec/.e2e/.po`) so e2e specs can still import feature page-objects, which the old `components/` target exemption used to mask.
 
 ## Goal
 
@@ -70,16 +77,15 @@ No cross-feature store leaks (already blocked by existing rules). Concentrated i
 
 ## Steps
 
-- [ ] Decide effects-bundle carve-out and rollout strategy (Task 1)
-- [ ] Add the 4 rules to `visualization/.dependency-cruiser.js` (Task 2)
-- [ ] Fix scenarios services->components violation (1)
-- [ ] Fix outside->non-facade violations in views/ and app.config.ts (9)
-- [ ] Re-export shared/'s dumb components through shared/facade.ts, fix remaining cross-feature violations (20)
-- [ ] Fix components->stores violations in metricsBar (25)
-- [ ] Fix components->stores violations in sidebarExplorer (10)
-- [ ] Fix components->stores violations in the remaining 11 features (22 total)
-- [ ] Flip rules to `error` (if landed as `warn`) once all violations are cleared
-- [ ] `npm run lint:architecture` clean
+- [x] Decide effects-bundle carve-out and rollout strategy (Task 1)
+- [x] Add the 3 kept rules to `visualization/.dependency-cruiser.js` (rule 3 dropped — see Decisions)
+- [x] Fix scenarios services->components violation (1) — moved `scenarioView.model.ts` into `scenarios/model/`
+- [x] Fix outside->non-facade violations in views/ (3) via facade re-exports; effects carve-out kept
+- [x] Re-export dumb/dialog components through facades (shared, labelSettings, scenarios, 3dPrint, globalSettings, changelog), fix 20 cross-feature violations
+- [x] Break changelog self-cycle: `changelogDialog` injects `VersionService`/`ChangelogParserService` directly instead of its own outward `ChangelogFacade`
+- [x] components->stores rule dropped — no per-feature refactor needed
+- [x] `npm run lint:architecture` clean (0 violations)
+- [ ] `knip` clean of dead code left by the refactor
 
 ## Notes
 

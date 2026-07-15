@@ -47,23 +47,9 @@ export function resolveMetricSelection(
         ? { areaMetric: null, heightMetric: null, colorMetric: null, distributionMetric: null, edgeMetric: null }
         : current
 
-    let areaMetric = isNodeMetric(url.areaMetric) ? url.areaMetric : persisted.areaMetric
-    let heightMetric = isNodeMetric(url.heightMetric) ? url.heightMetric : persisted.heightMetric
-    let colorMetric = isNodeMetric(url.colorMetric) ? url.colorMetric : persisted.colorMetric
-    let distributionMetric = persisted.distributionMetric
-
-    // 2) If that triple is not fully available in this map, fall back to the computed default
-    //    combination — and let a valid url metric win over the computed value again.
-    if (!(isNodeMetric(areaMetric) && isNodeMetric(heightMetric) && isNodeMetric(colorMetric))) {
-        if (!isAnyMetricAvailable(nodeMetricData)) {
-            return null
-        }
-
-        const [defaultArea, defaultHeight, defaultColor] = computeDefaultCombination(nodeMetricData)
-        areaMetric = isNodeMetric(url.areaMetric) ? url.areaMetric : defaultArea
-        heightMetric = isNodeMetric(url.heightMetric) ? url.heightMetric : defaultHeight
-        colorMetric = isNodeMetric(url.colorMetric) ? url.colorMetric : defaultColor
-        distributionMetric = getDefaultDistribution(nodeMetricData)
+    const triple = resolveTriple(url, persisted, nodeMetricData, isNodeMetric)
+    if (triple === null) {
+        return null
     }
 
     // 3) The edge metric, independently. It becomes undefined when the map has no edge metrics.
@@ -74,7 +60,45 @@ export function resolveMetricSelection(
         edgeMetric = edgeMetricData[0]?.name
     }
 
-    return { areaMetric, heightMetric, colorMetric, distributionMetric, edgeMetric }
+    return { ...triple, edgeMetric }
+}
+
+type MetricTriple = Pick<MetricSelection, "areaMetric" | "heightMetric" | "colorMetric" | "distributionMetric">
+
+/**
+ * Resolves area/height/color as an all-or-nothing COMBINATION (see resolveMetricSelection):
+ * URL beats persisted, but if the resulting triple is not fully available it falls back to the
+ * computed default and any valid URL name is re-applied on top. Returns null when the map carries
+ * no usable metric at all.
+ */
+function resolveTriple(
+    url: UrlMetricSelection,
+    persisted: MetricSelection,
+    nodeMetricData: NodeMetricData[],
+    isNodeMetric: (name: string | null) => boolean
+): MetricTriple | null {
+    let areaMetric = isNodeMetric(url.areaMetric) ? url.areaMetric : persisted.areaMetric
+    let heightMetric = isNodeMetric(url.heightMetric) ? url.heightMetric : persisted.heightMetric
+    let colorMetric = isNodeMetric(url.colorMetric) ? url.colorMetric : persisted.colorMetric
+    let distributionMetric = persisted.distributionMetric
+
+    if (isNodeMetric(areaMetric) && isNodeMetric(heightMetric) && isNodeMetric(colorMetric)) {
+        return { areaMetric, heightMetric, colorMetric, distributionMetric }
+    }
+
+    // The triple is not fully available in this map: fall back to the computed default combination,
+    // and let a valid url metric win over the computed value again.
+    if (!isAnyMetricAvailable(nodeMetricData)) {
+        return null
+    }
+
+    const [defaultArea, defaultHeight, defaultColor] = computeDefaultCombination(nodeMetricData)
+    areaMetric = isNodeMetric(url.areaMetric) ? url.areaMetric : defaultArea
+    heightMetric = isNodeMetric(url.heightMetric) ? url.heightMetric : defaultHeight
+    colorMetric = isNodeMetric(url.colorMetric) ? url.colorMetric : defaultColor
+    distributionMetric = getDefaultDistribution(nodeMetricData)
+
+    return { areaMetric, heightMetric, colorMetric, distributionMetric }
 }
 
 function computeDefaultCombination(nodeMetricData: NodeMetricData[]): string[] {
