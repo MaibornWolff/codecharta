@@ -37,8 +37,10 @@ export default defineConfig({
             name: "chromium",
             use: {
                 ...devices["Desktop Chrome"],
-                // Use system Chrome instead of Playwright's bundled Chromium (bundled Chromium lacks WebGL support in headless mode on macOS)
-                channel: "chrome"
+                // Use system Chrome instead of Playwright's bundled Chromium (bundled Chromium lacks WebGL support
+                // in headless mode on macOS). Google Chrome is not built for Linux arm64, so fall back to the
+                // bundled Chromium there — its headless WebGL works on Linux.
+                channel: process.platform === "linux" && process.arch === "arm64" ? "chromium" : "chrome"
             }
         }
     ]
