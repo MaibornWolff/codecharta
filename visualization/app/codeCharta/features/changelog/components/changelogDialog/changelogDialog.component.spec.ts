@@ -1,31 +1,39 @@
 import { signal, WritableSignal } from "@angular/core"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { ChangelogFacade } from "../../facade"
+import { ChangelogParserService } from "../../services/changelogParser.service"
+import { VersionService } from "../../services/version.service"
 import { ChangelogDialogComponent } from "./changelogDialog.component"
 
 describe("ChangelogDialogComponent", () => {
     let component: ChangelogDialogComponent
     let fixture: ComponentFixture<ChangelogDialogComponent>
-    let mockFacade: {
+    let mockVersionService: {
         currentVersion: string
         previousVersion: WritableSignal<string | null>
         shouldShowChangelog: WritableSignal<boolean>
-        parseChangesBetweenVersions: jest.Mock
         acknowledgeChangelog: jest.Mock
+    }
+    let mockChangelogParserService: {
+        parseChangesBetweenVersions: jest.Mock
     }
 
     beforeEach(async () => {
-        mockFacade = {
+        mockVersionService = {
             currentVersion: "1.77.0",
             previousVersion: signal<string | null>("1.76.0"),
             shouldShowChangelog: signal(false),
-            parseChangesBetweenVersions: jest.fn().mockReturnValue([{ title: "Added 🚀", changes: "<li>New feature</li>" }]),
             acknowledgeChangelog: jest.fn()
+        }
+        mockChangelogParserService = {
+            parseChangesBetweenVersions: jest.fn().mockReturnValue([{ title: "Added 🚀", changes: "<li>New feature</li>" }])
         }
 
         await TestBed.configureTestingModule({
             imports: [ChangelogDialogComponent],
-            providers: [{ provide: ChangelogFacade, useValue: mockFacade }]
+            providers: [
+                { provide: VersionService, useValue: mockVersionService },
+                { provide: ChangelogParserService, useValue: mockChangelogParserService }
+            ]
         }).compileComponents()
 
         fixture = TestBed.createComponent(ChangelogDialogComponent)
@@ -44,7 +52,7 @@ describe("ChangelogDialogComponent", () => {
 
         // Assert
         expect(changes).toEqual([{ title: "Added 🚀", changes: "<li>New feature</li>" }])
-        expect(mockFacade.parseChangesBetweenVersions).toHaveBeenCalledWith("1.76.0", "1.77.0")
+        expect(mockChangelogParserService.parseChangesBetweenVersions).toHaveBeenCalledWith("1.76.0", "1.77.0")
     })
 
     it("should have dialog element", () => {
@@ -76,13 +84,13 @@ describe("ChangelogDialogComponent", () => {
         component.close()
 
         // Assert
-        expect(mockFacade.acknowledgeChangelog).toHaveBeenCalled()
+        expect(mockVersionService.acknowledgeChangelog).toHaveBeenCalled()
         expect(mockClose).toHaveBeenCalled()
     })
 
     it("should return empty changes when no previous version", () => {
         // Arrange
-        mockFacade.previousVersion.set(null)
+        mockVersionService.previousVersion.set(null)
         fixture.detectChanges()
 
         // Act

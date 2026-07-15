@@ -2,6 +2,9 @@ import { Injectable } from "@angular/core"
 import { MapStateReadWindow } from "../../stores/mapState/mapState.read.facade"
 import { PreferencesReadWindow } from "../../stores/preferences/preferences.read.facade"
 
+// Dialog opened from other features (e.g. the navBar settings button).
+export { GlobalConfigurationDialogComponent } from "./components/globalConfigurationDialog/globalConfigurationDialog.component"
+
 @Injectable({
     providedIn: "root"
 })

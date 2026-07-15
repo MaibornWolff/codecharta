@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, viewChild } from "@angular/core"
-import { ActionIconComponent } from "../../../../features/shared/components/actionIcon/actionIcon.component"
+import { ActionIconComponent } from "../../../shared/facade"
 import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
 
 @Component({

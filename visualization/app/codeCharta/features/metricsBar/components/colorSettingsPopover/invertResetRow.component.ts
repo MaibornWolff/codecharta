@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultMapColors, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { ResetSettingsButtonComponent } from "../../../shared/facade"
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 
 @Component({

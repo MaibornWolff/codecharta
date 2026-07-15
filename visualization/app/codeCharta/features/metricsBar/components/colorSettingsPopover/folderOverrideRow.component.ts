@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
-import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
+import { InlineColorPickerComponent } from "../../../shared/facade"
 import { MarkedPackageWithCount } from "../../selectors/markedPackagesWithCounts.selector"
 
 @Component({

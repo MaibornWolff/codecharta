@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
+import { InlineColorPickerComponent } from "../../../shared/facade"
 import { MarkFolderItem } from "../../selectors/markFolderItems.selector"
 import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
 import { NodeContextMenuWriteStore } from "../../stores/nodeContextMenu.write.store"

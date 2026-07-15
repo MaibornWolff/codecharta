@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { Scenario } from "../../../model/scenario.model"
-import { ScenarioView } from "../scenarioView.model"
+import { ScenarioView } from "../../../model/scenarioView.model"
 import { ScenarioItemComponent } from "./scenarioItem.component"
 
 const createTestView = (overrides: Partial<ScenarioView> = {}): ScenarioView => {

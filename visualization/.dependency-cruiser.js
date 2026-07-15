@@ -42,12 +42,12 @@ module.exports = {
             name: "feature-no-external-access-to-internals",
             severity: "error",
             comment:
-                "Feature internals can only be accessed within the same feature. External code (now including views/) must use facade.ts, components/ or a feature's effects bundle (effects/<feature>.effects.ts) — the latter is the public ngrx-registration manifest imported by the app composition root, which must NOT be routed through the facade (that would pull every effect's cross-feature deps into the facade graph and form cycles).",
-            from: { pathNot: "^app/codeCharta/features/" },
+                "Feature internals can only be accessed within the same feature. External code (now including views/) must use facade.ts or a feature's effects bundle (effects/<feature>.effects.ts) — the latter is the public ngrx-registration manifest imported by the app composition root, which must NOT be routed through the facade (that would pull every effect's cross-feature deps into the facade graph and form cycles). components/ is NO LONGER a public surface: outside code reaches a feature's UI only through facade.ts (which may re-export presentational components). Test files (.spec/.e2e/.po) are exempt — the harness may import a feature's page-objects/components directly.",
+            from: { pathNot: ["^app/codeCharta/features/", "\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.po\\.ts$"] },
             to: {
                 path: "^app/codeCharta/features/",
                 pathNot: [
-                    "^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)",
+                    "^app/codeCharta/features/[^/]+/facade\\.ts$",
                     "^app/codeCharta/features/[^/]+/effects/[^/]+\\.effects\\.ts$"
                 ]
             }
@@ -56,15 +56,26 @@ module.exports = {
             name: "feature-cross-feature-only-via-public-api",
             severity: "error",
             comment:
-                "Cross-feature imports must go through facade.ts or components/. Direct access to services, stores, selectors, model is forbidden. (Test files — .e2e/.po/.spec — are exempt.)",
+                "Cross-feature imports must go through facade.ts. Direct access to components, services, stores, selectors, model is forbidden. components/ is NO LONGER a public surface — a sibling feature reaches another feature's UI only through its facade.ts (which may re-export presentational components). (Test files — .e2e/.po/.spec — are exempt.)",
             from: {
                 path: "^app/codeCharta/features/([^/]+)/",
                 pathNot: ["\\.e2e\\.ts$", "\\.po\\.ts$", "\\.spec\\.ts$"]
             },
             to: {
                 path: "^app/codeCharta/features/([^/]+)/",
-                pathNot: ["^app/codeCharta/features/$1/", "^app/codeCharta/features/[^/]+/(components/|facade\\.ts$)"]
+                pathNot: ["^app/codeCharta/features/$1/", "^app/codeCharta/features/[^/]+/facade\\.ts$"]
             }
+        },
+        {
+            name: "feature-services-not-to-components",
+            severity: "error",
+            comment:
+                "Inside a feature the read-order is components -> (services) -> stores: a component may read the feature's own stores/ directly (the feature read/write stores are the injectable state API) or lean on a service for logic, but a service sits BELOW the components it feeds and must not import one: services/ -> components/ is forbidden (that would invert the layer). Types/models shared with a component belong in services/ or a feature-level model/, not under components/. (We deliberately do NOT force components through a services/ pass-through: the feature stores are already service-shaped and display-components-cannot-dispatch already fences direct state-home mutation.) Spec/e2e/po exempt.",
+            from: {
+                path: "^app/codeCharta/features/[^/]+/services/",
+                pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$", "\\.po\\.ts$"]
+            },
+            to: { path: "^app/codeCharta/features/[^/]+/components/" }
         },
         {
             name: "feature-types-cannot-import-from-feature-internals",

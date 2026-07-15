@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { MetricData } from "../../../../model/codeCharta.model"
-import { LabelSettingsPanelComponent } from "../../../labelSettings/components/labelSettingsPanel/labelSettingsPanel.component"
-import { ApplyScenarioDialogComponent } from "../../../scenarios/components/applyScenarioDialog/applyScenarioDialog.component"
-import { SaveScenarioDialogComponent } from "../../../scenarios/components/saveScenarioDialog/saveScenarioDialog.component"
-import { ScenarioListDialogComponent } from "../../../scenarios/components/scenarioListDialog/scenarioListDialog.component"
-import { Scenario, ScenariosService } from "../../../scenarios/facade"
+import { LabelSettingsPanelComponent } from "../../../labelSettings/facade"
+import {
+    ApplyScenarioDialogComponent,
+    SaveScenarioDialogComponent,
+    Scenario,
+    ScenarioListDialogComponent,
+    ScenariosService
+} from "../../../scenarios/facade"
 import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 
 @Component({

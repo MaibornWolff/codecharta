@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, viewChild } from "@angular/core"
-import { GlobalConfigurationDialogComponent } from "../../../globalSettings/components/globalConfigurationDialog/globalConfigurationDialog.component"
+import { GlobalConfigurationDialogComponent } from "../../../globalSettings/facade"
 
 @Component({
     selector: "cc-settings-button",

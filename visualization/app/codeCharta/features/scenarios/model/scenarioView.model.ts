@@ -1,4 +1,4 @@
-import { Scenario, ScenarioSectionKey } from "../../model/scenario.model"
+import { Scenario, ScenarioSectionKey } from "./scenario.model"
 
 export interface ScenarioView {
     scenario: Scenario

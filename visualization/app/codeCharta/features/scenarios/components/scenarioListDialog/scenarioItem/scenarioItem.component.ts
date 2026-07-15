@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
-import { ScenarioView } from "../scenarioView.model"
+import { ScenarioView } from "../../../model/scenarioView.model"
 import { ScenarioItemActionsComponent } from "./scenarioItemActions/scenarioItemActions.component"
 import { ScenarioItemBadgesComponent } from "./scenarioItemBadges/scenarioItemBadges.component"
 

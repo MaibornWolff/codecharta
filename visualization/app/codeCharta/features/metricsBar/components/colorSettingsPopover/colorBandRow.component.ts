@@ -3,7 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { HexMapColor } from "../../../../model/codeCharta.model"
 import { defaultMapColors, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { MapColorLabelPipe } from "../../../../util/pipes/mapColorLabel.pipe"
-import { InlineColorPickerComponent } from "../../../shared/components/inlineColorPicker/inlineColorPicker.component"
+import { InlineColorPickerComponent } from "../../../shared/facade"
 import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 

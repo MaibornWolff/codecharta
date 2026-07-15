@@ -4,6 +4,9 @@ import { ConnectorDrawingService } from "./services/connectorDrawing.service"
 import { LabelCollisionService } from "./services/labelCollision.service"
 import { LabelCreationService } from "./services/labelCreation.service"
 
+// Panel component composed by other features (e.g. the metricsBar labels/scenarios segment).
+export { LabelSettingsPanelComponent } from "./components/labelSettingsPanel/labelSettingsPanel.component"
+
 @Injectable({
     providedIn: "root"
 })
