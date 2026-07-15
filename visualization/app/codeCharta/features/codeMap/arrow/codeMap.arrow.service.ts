@@ -45,10 +45,16 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     private resetEdgesOfBuildings = (hoveredBuilding: CodeMapBuilding) => {
-        if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
-            this.clearArrows()
-            this.showEdgesOfBuildings(hoveredBuilding)
+        if (!this.codeMapStore.getMapState().isEdgeMetricVisible) {
+            this.scale()
+            return
         }
+        // Always clear on a hover change so arrows from the previously hovered building do not linger
+        // when moving onto a building that has no edges (e.g. a flat or hidden building). showEdgesOfBuildings
+        // then restores the selected building's edges or the edge preview, and adds the hovered building's
+        // edges only when it is edge-applicable.
+        this.clearArrows()
+        this.showEdgesOfBuildings(this.isEdgeApplicableForBuilding(hoveredBuilding) ? hoveredBuilding : undefined)
         this.scale()
     }
 

@@ -252,6 +252,41 @@ describe("CodeMapArrowService", () => {
             expect(codeMapArrowService.addEdgePreview).toHaveBeenCalledTimes(0)
         })
 
+        it("should clear arrows when hovering a flat building so previously shown edges do not linger", () => {
+            // Arrange — a flat building is not edge-applicable; the previous building's arrows must still be cleared
+            const flatBuilding = { node: { ...CODE_MAP_BUILDING.node, flat: true } } as CodeMapBuilding
+
+            // Act
+            codeMapArrowService["resetEdgesOfBuildings"](flatBuilding)
+
+            // Assert — clear runs and the selected building's edges / preview are restored via showEdgesOfBuildings
+            expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+            expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledWith(undefined)
+        })
+
+        it("should clear arrows when hovering an undefined building so previously shown edges do not linger", () => {
+            // Arrange — a building hidden from the mesh resolves to undefined; arrows must still be cleared
+            // Act
+            codeMapArrowService["resetEdgesOfBuildings"](undefined)
+
+            // Assert
+            expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+            expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledWith(undefined)
+        })
+
+        it("should not clear arrows on hover when the edge metric is disabled", () => {
+            // Arrange
+            store.dispatch(toggleEdgeMetricVisible())
+
+            // Act
+            codeMapArrowService["resetEdgesOfBuildings"](CODE_MAP_BUILDING)
+
+            // Assert
+            expect(codeMapArrowService.clearArrows).not.toHaveBeenCalled()
+            expect(codeMapArrowService["showEdgesOfBuildings"]).not.toHaveBeenCalled()
+            expect(codeMapArrowService.scale).toHaveBeenCalled()
+        })
+
         it("should call clearArrows and showEdgesOfBuildings through BuildingUnHovered when edge metric is enabled", () => {
             codeMapArrowService.onBuildingUnhovered()
 
