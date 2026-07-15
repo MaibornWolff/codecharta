@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { CC_URL, clearIndexedDB, collapseExplorer, goto, waitForCcStatePersisted } from "../../playwright.helper"
+import { CC_URL, clearIndexedDB, collapseExplorer, goto, waitForCcStatePersisted, withDiskBackedPage } from "../../playwright.helper"
 import sample1 from "../assets/sample1.cc.json"
 import sample2 from "../assets/sample2.cc.json"
 import { MetricsBarPageObject } from "../features/metricsBar/components/metricsBar/metricsBar.po"
@@ -48,20 +48,26 @@ test.describe("load pipeline", () => {
         expect(await filePanel.getSelectedName()).toBeTruthy()
     })
 
-    test("should restore the previously loaded file from indexeddb on a boot without a file parameter", async ({ page }) => {
-        // Arrange — load a file from the url, then wait until it is actually persisted (the save is
-        // debounced, so a reload can otherwise outrace the write and boot from an empty database)
-        await routeSampleFiles(page)
-        await goto(page, `${CC_URL}?file=fileOne.json`)
-        const filePanel = new MapSelectorPageObject(page)
-        const nameAfterUrlLoad = await filePanel.getSelectedName()
-        await waitForCcStatePersisted(page, nameAfterUrlLoad)
+    test("should restore the previously loaded file from indexeddb on a boot without a file parameter", async () => {
+        // The fixture page's in-memory IndexedDB can vanish between the two boots (a macOS-only
+        // flake), so this test runs on a disk-backed page — the extra browser launch it brings
+        // needs headroom beyond the default timeout.
+        test.setTimeout(30_000)
+        await withDiskBackedPage(async page => {
+            // Arrange — load a file from the url, then wait until it is actually persisted (the save is
+            // debounced, so a reload can otherwise outrace the write and boot from an empty database)
+            await routeSampleFiles(page)
+            await goto(page, `${CC_URL}?file=fileOne.json`)
+            const filePanel = new MapSelectorPageObject(page)
+            const nameAfterUrlLoad = await filePanel.getSelectedName()
+            await waitForCcStatePersisted(page, nameAfterUrlLoad)
 
-        // Act — boot again WITHOUT the file parameter: the persisted state must come back
-        await goto(page, CC_URL)
+            // Act — boot again WITHOUT the file parameter: the persisted state must come back
+            await goto(page, CC_URL)
 
-        // Assert
-        expect(await filePanel.getSelectedName()).toEqual(nameAfterUrlLoad)
+            // Assert
+            expect(await filePanel.getSelectedName()).toEqual(nameAfterUrlLoad)
+        })
     })
 
     test("should apply the metric from the url and write the resolved metrics back into the url", async ({ page }) => {

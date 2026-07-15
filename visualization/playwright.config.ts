@@ -1,5 +1,5 @@
 import { defineConfig, devices } from "@playwright/test"
-import { CC_URL, E2E_PORT } from "./app/playwright.helper"
+import { BROWSER_CHANNEL, CC_URL, E2E_PORT, E2E_SLOW_MO, E2E_VIEWPORT } from "./app/playwright.helper"
 
 export default defineConfig({
     testDir: "./app",
@@ -26,9 +26,9 @@ export default defineConfig({
         baseURL: CC_URL,
         trace: "retain-on-failure",
         screenshot: "only-on-failure",
-        viewport: { width: 1920, height: 1080 },
+        viewport: E2E_VIEWPORT,
         launchOptions: {
-            slowMo: 25
+            slowMo: E2E_SLOW_MO
         }
     },
 
@@ -37,10 +37,7 @@ export default defineConfig({
             name: "chromium",
             use: {
                 ...devices["Desktop Chrome"],
-                // Use system Chrome instead of Playwright's bundled Chromium (bundled Chromium lacks WebGL support
-                // in headless mode on macOS). Google Chrome is not built for Linux arm64, so fall back to the
-                // bundled Chromium there — its headless WebGL works on Linux.
-                channel: process.platform === "linux" && process.arch === "arm64" ? "chromium" : "chrome"
+                channel: BROWSER_CHANNEL
             }
         }
     ]
