@@ -103,6 +103,19 @@ describe("ThreeMapControlsService", () => {
     })
 
     describe("autoFitTo", () => {
+        let requestAnimationFrameSpy: jest.SpyInstance
+
+        beforeEach(() => {
+            requestAnimationFrameSpy = jest.spyOn(window, "requestAnimationFrame").mockImplementation((callback: FrameRequestCallback) => {
+                callback(0)
+                return 0
+            })
+        })
+
+        afterEach(() => {
+            requestAnimationFrameSpy.mockRestore()
+        })
+
         it("should auto fit map to its origin value ", async () => {
             threeCameraService.camera.position.set(0, 0, 0)
 

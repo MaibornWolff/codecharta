@@ -14,6 +14,8 @@ type CameraChangeEvents = {
 @Injectable({ providedIn: "root" })
 export class ThreeMapControlsService {
     static readonly CAMERA_CHANGED_EVENT_NAME = "camera-changed"
+    // Number of frames the fit will wait for the freshly loaded geometry before giving up.
+    private static readonly MAX_AUTO_FIT_FRAMES = 10
     MAX_ZOOM = 200
     MIN_ZOOM = 10
 
@@ -45,29 +47,42 @@ export class ThreeMapControlsService {
     }
 
     autoFitTo() {
-        setTimeout(() => {
+        this.scheduleAutoFit(ThreeMapControlsService.MAX_AUTO_FIT_FRAMES)
+    }
+
+    private scheduleAutoFit(framesLeft: number) {
+        requestAnimationFrame(() => {
             const boundingSphere = this.getBoundingSphere()
             if (boundingSphere.radius === -1) {
+                // The freshly loaded map is not in the scene yet — retry next frame instead of silently
+                // giving up, so a fit that is requested a touch early still lands once the geometry exists.
+                if (framesLeft > 0) {
+                    this.scheduleAutoFit(framesLeft - 1)
+                }
                 return
             }
-            const length = this.cameraPerspectiveLengthCalculation(boundingSphere)
-            const cameraReference = this.threeCameraService.camera
-
-            cameraReference.position.set(length, length, boundingSphere.center.z)
-
-            this.updateControls()
-
-            this.focusCameraViewToCenter(boundingSphere)
-            this.threeRendererService.render()
-            this.onInput(this.threeCameraService.camera)
-
-            const scale = 1.3 // object size / display size
-
-            this.controls.maxDistance = length * 4
-            this.controls.minDistance = boundingSphere.radius / (10 * scale)
-
-            this.setZoomPercentage(140)
+            this.fitCameraToBoundingSphere(boundingSphere)
         })
+    }
+
+    private fitCameraToBoundingSphere(boundingSphere: Sphere) {
+        const length = this.cameraPerspectiveLengthCalculation(boundingSphere)
+        const cameraReference = this.threeCameraService.camera
+
+        cameraReference.position.set(length, length, boundingSphere.center.z)
+
+        this.updateControls()
+
+        this.focusCameraViewToCenter(boundingSphere)
+        this.threeRendererService.render()
+        this.onInput(this.threeCameraService.camera)
+
+        const scale = 1.3 // object size / display size
+
+        this.controls.maxDistance = length * 4
+        this.controls.minDistance = boundingSphere.radius / (10 * scale)
+
+        this.setZoomPercentage(140)
     }
 
     private cameraPerspectiveLengthCalculation(boundingSphere: Sphere) {

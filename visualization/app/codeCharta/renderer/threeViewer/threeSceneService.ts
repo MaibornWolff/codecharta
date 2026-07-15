@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from "@angular/core"
 import { hierarchy } from "d3-hierarchy"
+import { Subject } from "rxjs"
 import { AmbientLight, DirectionalLight, Group, Material, Scene, Vector3 } from "three"
 import { CodeMapNode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
 import { ColorConverter } from "../../util/color/colorConverter"
@@ -25,6 +26,10 @@ export class ThreeSceneService implements OnDestroy {
     floorLabelPlanes: Group
     edgeArrows: Group
     mapGeometry: Group
+
+    /** Emits right after a new map mesh has been placed into `mapGeometry` — the deterministic
+     *  "the map is now in the scene" moment the camera auto-fit waits for. */
+    readonly mapMeshChanged$ = new Subject<void>()
 
     private readonly lights: Group
     private mapMesh: CodeMapMesh
@@ -339,6 +344,8 @@ export class ThreeSceneService implements OnDestroy {
 
         this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
         this.remapSelectedBuilding()
+
+        this.mapMeshChanged$.next()
     }
 
     // The selection must not survive a mesh swap pointing at a building of the old

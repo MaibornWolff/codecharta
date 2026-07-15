@@ -6,6 +6,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BehaviorSubject, Subject } from "rxjs"
 import { LayoutAlgorithm } from "../../../../model/codeCharta.model"
 import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeMapControls.service"
+import { ThreeSceneService } from "../../../../renderer/threeViewer/threeSceneService"
 import { filesLoaded } from "../../../../stores/fileStore/fileStore.facade"
 import { visibleFileStatesSelector } from "../../../../stores/fileStore/store/visibleFileStates.selector"
 import { layoutAlgorithmSelector } from "../../../../stores/mapState/mapState.read.facade"
@@ -15,7 +16,6 @@ import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { focusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { NO_URL_METRICS } from "../../../../util/queryParameter/queryParameter"
 import { GlobalSettingsFacade } from "../../../globalSettings/facade"
-import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 import { AutoFitCodeMapEffect } from "./autoFitCodeMap.effect"
 import { viewSelectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
 
@@ -30,15 +30,20 @@ const aFilesLoaded = (forceAutoFit = false) =>
     })
 
 describe("autoFitCodeMapEffect", () => {
-    let mockedRenderCodeMap$: Subject<unknown>
+    let mockedMapMeshChanged$: Subject<void>
     let mockedAutoFitTo: jest.Mock
     let actions$: BehaviorSubject<Action>
     let store: MockStore
     let resetCameraIfNewFileIsLoaded$: BehaviorSubject<boolean>
 
+    // Standing in for the scene: signal that a new map mesh has been placed, which is what the fit waits for.
+    const emitMapMeshChanged = () => {
+        mockedMapMeshChanged$.next()
+    }
+
     beforeEach(() => {
         actions$ = new BehaviorSubject({ type: "" })
-        mockedRenderCodeMap$ = new Subject()
+        mockedMapMeshChanged$ = new Subject()
         mockedAutoFitTo = jest.fn()
         resetCameraIfNewFileIsLoaded$ = new BehaviorSubject(true)
         const mockedSelectorsTriggeringAutoFit = viewSelectorsTriggeringAutoFit.map(selector => {
@@ -47,7 +52,7 @@ describe("autoFitCodeMapEffect", () => {
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([AutoFitCodeMapEffect])],
             providers: [
-                { provide: RenderCodeMapEffect, useValue: { renderCodeMap$: mockedRenderCodeMap$ } },
+                { provide: ThreeSceneService, useValue: { mapMeshChanged$: mockedMapMeshChanged$ } },
                 provideMockStore({
                     initialState: defaultState,
                     selectors: [
@@ -76,22 +81,49 @@ describe("autoFitCodeMapEffect", () => {
 
     it("should skip first change", () => {
         // Act
-        mockedRenderCodeMap$.next("")
+        emitMapMeshChanged()
 
         // Assert
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(0)
     })
 
-    it("should auto fit the map once after the render that a load causes", () => {
+    it("should auto fit the map once after the mesh a load produces is placed", () => {
         // Act
         actions$.next(aFilesLoaded())
-        mockedRenderCodeMap$.next("")
+        emitMapMeshChanged()
 
         // Assert
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
 
-        // Act — a later render must not fit again
-        mockedRenderCodeMap$.next("")
+        // Act — a later mesh swap must not fit again
+        emitMapMeshChanged()
+
+        // Assert
+        expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
+    })
+
+    it("should collapse a burst of triggers from a single load into exactly one fit", () => {
+        // Act — a load emits the action and makes the file/view selectors emit, all synchronously
+        actions$.next(aFilesLoaded())
+        store.overrideSelector(visibleFileStatesSelector, [{}] as never)
+        store.refreshState()
+        store.overrideSelector(focusedNodePathSelector, [])
+        store.refreshState()
+        emitMapMeshChanged()
+
+        // Assert
+        expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
+    })
+
+    it("should still fit when the mesh is placed before the trigger settles into a later frame", () => {
+        // Act — the request is registered first, the mesh swap arrives afterwards (the load ordering)
+        actions$.next(aFilesLoaded())
+
+        // Assert — nothing fits until the mesh is actually in the scene
+        expect(mockedAutoFitTo).toHaveBeenCalledTimes(0)
+
+        // Act
+        emitMapMeshChanged()
 
         // Assert
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
@@ -101,7 +133,7 @@ describe("autoFitCodeMapEffect", () => {
         // Act
         store.overrideSelector(visibleFileStatesSelector, [{}] as never)
         store.refreshState()
-        mockedRenderCodeMap$.next("")
+        emitMapMeshChanged()
 
         // Assert
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
@@ -113,7 +145,7 @@ describe("autoFitCodeMapEffect", () => {
 
         // Act
         actions$.next(aFilesLoaded())
-        mockedRenderCodeMap$.next(undefined)
+        emitMapMeshChanged()
 
         // Assert
         expect(mockedAutoFitTo).not.toHaveBeenCalled()
@@ -123,7 +155,7 @@ describe("autoFitCodeMapEffect", () => {
         // Act
         store.overrideSelector(colorRangeSelector, { from: 1, to: 2 })
         store.refreshState()
-        mockedRenderCodeMap$.next(undefined)
+        emitMapMeshChanged()
 
         // Assert
         expect(mockedAutoFitTo).not.toHaveBeenCalled()
@@ -133,7 +165,7 @@ describe("autoFitCodeMapEffect", () => {
         // Act
         store.overrideSelector(focusedNodePathSelector, [])
         store.refreshState()
-        mockedRenderCodeMap$.next(undefined)
+        emitMapMeshChanged()
 
         // Assert
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
@@ -143,7 +175,7 @@ describe("autoFitCodeMapEffect", () => {
         // Act
         store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.TreeMapStreet)
         store.refreshState()
-        mockedRenderCodeMap$.next(undefined)
+        emitMapMeshChanged()
 
         // Assert
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)
@@ -155,7 +187,7 @@ describe("autoFitCodeMapEffect", () => {
 
         // Act
         actions$.next(aFilesLoaded(true))
-        mockedRenderCodeMap$.next(undefined)
+        emitMapMeshChanged()
 
         // Assert
         expect(mockedAutoFitTo).toHaveBeenCalledTimes(1)

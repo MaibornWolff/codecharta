@@ -3,10 +3,9 @@ import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { combineLatest, filter, map, merge, skip, switchMap, take, tap, withLatestFrom } from "rxjs"
 import { CcState } from "../../../../model/codeCharta.model"
-import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { ThreeMapControlsService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { filesLoaded, visibleFileStatesSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { GlobalSettingsFacade } from "../../../globalSettings/facade"
-import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 import { viewSelectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
 
 /**
@@ -20,7 +19,7 @@ import { viewSelectorsTriggeringAutoFit } from "./selectorsTriggeringAutoFit"
 export class AutoFitCodeMapEffect {
     constructor(
         private readonly store: Store<CcState>,
-        private readonly renderCodeMapEffect: RenderCodeMapEffect,
+        private readonly threeSceneService: ThreeSceneService,
         private readonly threeMapControlsService: ThreeMapControlsService,
         private readonly actions$: Actions,
         private readonly globalSettingsFacade: GlobalSettingsFacade
@@ -48,9 +47,12 @@ export class AutoFitCodeMapEffect {
             this.autoFitRequests$.pipe(
                 withLatestFrom(this.globalSettingsFacade.resetCameraIfNewFileIsLoaded$()),
                 filter(([request, resetCameraIfNewFileIsLoaded]) => resetCameraIfNewFileIsLoaded || request.force),
-                // Fit to the render this change causes, not to the one still on screen. switchMap
-                // collapses the burst of triggers a single load produces into exactly one fit.
-                switchMap(() => this.renderCodeMapEffect.renderCodeMap$.pipe(take(1))),
+                // Fit to the map this change produces, not the one still on screen: wait for the next
+                // mesh swap into the scene. Requests come in a synchronous burst before that swap, so
+                // switchMap subscribes ahead of it — unlike racing the throttled render stream, whose
+                // trailing edge can fire first (reliably so after the CPU-heavy synchronous gzip inflate)
+                // and be missed, leaving the camera unfit.
+                switchMap(() => this.threeSceneService.mapMeshChanged$.pipe(take(1))),
                 tap(() => {
                     this.threeMapControlsService.autoFitTo()
                 })
