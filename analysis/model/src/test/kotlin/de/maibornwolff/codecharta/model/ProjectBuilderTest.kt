@@ -343,13 +343,11 @@ class ProjectBuilderTest {
     }
 
     @Test
-    fun `it should carry clusters, opaque lenses and commit hash through the build`() {
+    fun `it should carry opaque lenses and commit hash through the build`() {
         // given
-        val cluster = JsonParser.parseString("""{"id":1,"members":["a","b"]}""")
         val domainLens = JsonParser.parseString("""{"layer":"backend"}""")
         val projectBuilder =
             ProjectBuilder()
-                .withClusters(listOf(cluster))
                 .withOpaqueLenses(mapOf("domain" to domainLens))
                 .withCommitHash("abc1234")
 
@@ -357,16 +355,15 @@ class ProjectBuilderTest {
         val project = projectBuilder.build()
 
         // then
-        assertThat(project.lenses.metrics.clusters).containsExactly(cluster)
         assertThat(project.lenses.opaqueLenses).containsEntry("domain", domainLens)
         assertThat(project.commitHash).isEqualTo("abc1234")
     }
 
     @Test
-    fun `fromLenses should preserve clusters, opaque lenses and commit hash`() {
+    fun `fromLenses should preserve opaque lenses and commit hash`() {
         // given
         val securityLens = JsonParser.parseString("""{"cves":3}""")
-        val metrics = MetricsLens(clusters = listOf(JsonParser.parseString("""{"id":7}""")))
+        val metrics = MetricsLens(attributeTypes = mapOf("rloc" to AttributeType.ABSOLUTE))
 
         // when
         val project =
@@ -381,7 +378,7 @@ class ProjectBuilderTest {
 
         // then
         assertThat(project.lenses.opaqueLenses).containsEntry("security", securityLens)
-        assertThat(project.lenses.metrics.clusters).hasSize(1)
+        assertThat(project.lenses.metrics.attributeTypes).containsEntry("rloc", AttributeType.ABSOLUTE)
         assertThat(project.commitHash).isEqualTo("deadbee")
     }
 }

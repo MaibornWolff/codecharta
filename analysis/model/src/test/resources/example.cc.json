@@ -140,8 +140,7 @@
         "loc": "absolute",
         "empty_lines": "absolute",
         "comment_lines": "absolute"
-      },
-      "clusters": []
+      }
     },
     "dependency": {
       "edges": [],

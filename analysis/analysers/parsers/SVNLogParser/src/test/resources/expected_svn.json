@@ -158,8 +158,7 @@
         "range_of_weeks_with_commits": "relative",
         "successive_weeks_with_commits": "relative",
         "weeks_with_commits": "relative"
-      },
-      "clusters": []
+      }
     },
     "dependency": {
       "edges": [],

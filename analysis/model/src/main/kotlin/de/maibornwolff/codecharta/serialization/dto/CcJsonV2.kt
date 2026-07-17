@@ -26,8 +26,7 @@ class LensesDto(
 class MetricsLensDto(
     val attributes: Map<String, Map<String, Any>> = emptyMap(),
     val attributeDescriptors: Map<String, AttributeDescriptor> = emptyMap(),
-    val attributeTypes: Map<String, AttributeType> = emptyMap(),
-    val clusters: List<JsonElement> = emptyList()
+    val attributeTypes: Map<String, AttributeType> = emptyMap()
 )
 
 class DependencyLensDto(

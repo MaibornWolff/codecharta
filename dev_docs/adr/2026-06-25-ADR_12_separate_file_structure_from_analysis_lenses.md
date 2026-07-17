@@ -35,9 +35,10 @@ Introduce `.cc.json` **2.0** with the shape `{ meta, files, lenses }`, on the **
 - **`files`** is the identity layer: pure file/folder structure, one root folder, nested `children`,
   each node carrying a stable `id` and an optional `contentHash`. Metrics are pulled off the node.
 - **`lenses`** are namespaced, additive overlays joined to `files` by `id`: `metrics` (attributes keyed
-  by id, descriptors, types, clusters), `dependency` (edges + edge attribute types/descriptors),
-  `domain` and `security` (reserved for the suite). Unknown lenses are preserved verbatim on round-trip,
-  so a newer tool's lens survives an older tool.
+  by id, descriptors, types), `dependency` (edges + edge attribute types/descriptors), `clusters`
+  (clusterings grouping node ids — defined, no producer yet), `domain` and `security` (reserved for the
+  suite). Unknown lenses are preserved verbatim on round-trip, so a newer tool's lens survives an older
+  tool.
 - **Identity is decoupled from matching.** `id = sha-256(canonical path)` (truncated), computed by a
   single owner so every suite tool reproduces it; a canonicalization pass removes *spurious* divergence
   (separators, the synthetic root name, `.`/`..`, Unicode form) while preserving case. `contentHash` (the existing

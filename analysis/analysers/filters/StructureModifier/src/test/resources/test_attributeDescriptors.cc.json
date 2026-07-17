@@ -159,8 +159,7 @@
         "mcc": "absolute",
         "pairingRate": "relative",
         "ymcc": "absolute"
-      },
-      "clusters": []
+      }
     },
     "dependency": {
       "edges": [],

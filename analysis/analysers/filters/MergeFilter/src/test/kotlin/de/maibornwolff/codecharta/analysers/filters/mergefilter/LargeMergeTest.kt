@@ -4,11 +4,11 @@ import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
-import de.maibornwolff.codecharta.model.MetricsLens
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFailsWith
 
@@ -70,15 +70,22 @@ class LargeMergeTest {
     }
 
     @Test
-    fun `should fail loudly when metrics clusters cannot be re-pathed`() {
-        // Arrange
-        val project = rootProject(
-            lenses = LensSet(metrics = MetricsLens(clusters = listOf(JsonParser.parseString("""{"nodeId":"/root/file.kt"}"""))))
-        )
+    fun `should fail loudly and name the lens when a data-bearing clusters lens cannot be re-pathed`() {
+        // Arrange: the top-level clusters lens is untyped, so it rides the opaque-lens passthrough and its
+        // member node ids must be protected from re-pathing by the same guard as any other opaque lens.
+        val clustersLens =
+            JsonParser.parseString(
+                """{"clusterings":{"author-ownership":{"clusters":[{"id":"author-a","members":[{"nodeId":"a1b2c3d4e5f60718"}]}]}}}"""
+            )
+        val project = rootProject(lenses = LensSet(opaqueLenses = mapOf("clusters" to clustersLens)))
 
-        // Act & Assert
-        assertFailsWith(IllegalArgumentException::class) {
-            LargeMerge.wrapProjectInFolder(project, "alpha")
-        }
+        // Act
+        val thrown =
+            assertFailsWith(IllegalArgumentException::class) {
+                LargeMerge.wrapProjectInFolder(project, "alpha")
+            }
+
+        // Assert
+        assertTrue(thrown.message!!.contains("clusters"))
     }
 }

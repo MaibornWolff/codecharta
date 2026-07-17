@@ -2,7 +2,7 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.0",
-    "checksum": "afa2d65668f4ee88144f70038a342384"
+    "checksum": "aec9f244d684142542c1b173a7c6e577"
   },
   "files": [
     {
@@ -79,8 +79,7 @@
           ]
         }
       },
-      "attributeTypes": {},
-      "clusters": []
+      "attributeTypes": {}
     },
     "dependency": {
       "edges": [],

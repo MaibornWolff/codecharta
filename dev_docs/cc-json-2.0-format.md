@@ -31,8 +31,9 @@ backend and a frontend built separately, or a coverage report rooted by package)
     ] }
   ],
   "lenses": {
-    "metrics":    { "attributes": { "<id>": { "rloc": 120, "mcc": 8 } }, "attributeDescriptors": {}, "attributeTypes": {}, "clusters": [] },
+    "metrics":    { "attributes": { "<id>": { "rloc": 120, "mcc": 8 } }, "attributeDescriptors": {}, "attributeTypes": {} },
     "dependency": { "edges": [ { "fromId": "<id>", "toId": "<id>", "attributes": { "pairingRate": 42 } } ], "attributeTypes": {}, "attributeDescriptors": {} },
+    "clusters":   { "clusterings": { "author-ownership": { "title": "Author ownership", "membership": "weighted", "weightBasis": "rloc", "analyzers": ["gitlogparser"], "clusters": [ { "id": "author-a", "name": "Author A", "members": [ { "nodeId": "<id>", "weight": 0.62 } ] } ] } } },
     "domain":     {},
     "security":   {}
   }
@@ -42,8 +43,10 @@ backend and a frontend built separately, or a coverage report rooted by package)
 - **`files`** is the identity layer: exactly one root folder, nested `children`, each node carrying a
   stable `id` and an optional `contentHash`. No metrics live on the node.
 - **`lenses`** are additive overlays joined to `files` by `id`. `metrics` and `dependency` are
-  concrete; `domain` and `security` are reserved. **Unknown top-level lenses are preserved verbatim**
-  on round-trip, so a newer tool's lens survives an older tool.
+  concrete; `clusters` is optional and fully defined by the schema but has no producer or
+  visualization support yet — see [the `clusters` lens](cc-json-2.0-clusters-lens.md) for its full
+  definition and merge semantics; `domain` and `security` are reserved. **Unknown top-level lenses
+  are preserved verbatim** on round-trip, so a newer tool's lens survives an older tool.
 - **`meta.checksum`** is an MD5 over the serialized `files` + `lenses` payload (folded into `meta`,
   unlike the 1.5 `{ checksum, data }` wrapper). `commitHash` is an optional short git SHA.
 

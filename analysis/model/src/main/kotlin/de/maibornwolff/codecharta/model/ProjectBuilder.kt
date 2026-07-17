@@ -39,16 +39,9 @@ open class ProjectBuilder(
         true
     }
 
-    private var clusters: List<JsonElement> = emptyList()
-
     private var opaqueLenses: Map<String, JsonElement> = emptyMap()
 
     private var commitHash: String? = null
-
-    fun withClusters(clusters: List<JsonElement>): ProjectBuilder {
-        this.clusters = clusters
-        return this
-    }
 
     fun withOpaqueLenses(opaqueLenses: Map<String, JsonElement>): ProjectBuilder {
         this.opaqueLenses = opaqueLenses
@@ -82,12 +75,7 @@ open class ProjectBuilder(
             removeUnusedAttributeDescriptors()
         }
         val baseLenses = LensSet.fromLegacy(edges.toList(), attributeTypes.toMap(), attributeDescriptors.toMap())
-        return assembleProject(
-            baseLenses.copy(
-                metrics = baseLenses.metrics.copy(clusters = clusters),
-                opaqueLenses = opaqueLenses
-            )
-        )
+        return assembleProject(baseLenses.copy(opaqueLenses = opaqueLenses))
     }
 
     fun buildFromLenses(lenses: LensSet): Project {
@@ -327,8 +315,7 @@ open class ProjectBuilder(
                 lenses.legacyAttributeTypes().toMutableMap(),
                 lenses.allAttributeDescriptors().toMutableMap(),
                 blacklist
-            ).withClusters(metrics.clusters)
-                .withOpaqueLenses(opaqueLenses)
+            ).withOpaqueLenses(opaqueLenses)
                 .withCommitHash(commitHash)
         }
     }

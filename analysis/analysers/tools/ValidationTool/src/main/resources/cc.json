@@ -486,9 +486,6 @@
             "type": "string"
           },
           "type": "object"
-        },
-        "clusters": {
-          "type": "array"
         }
       },
       "type": "object"
@@ -521,6 +518,124 @@
       },
       "type": "object"
     },
+    "ClusterMember": {
+      "additionalProperties": false,
+      "properties": {
+        "nodeId": {
+          "type": "string"
+        },
+        "weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "nodeId"
+      ],
+      "type": "object"
+    },
+    "Cluster": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attributes": {
+          "type": "object"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/definitions/ClusterMember"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "members"
+      ],
+      "type": "object"
+    },
+    "Clustering": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "membership": {
+          "enum": [
+            "partition",
+            "weighted",
+            "overlay"
+          ],
+          "type": "string"
+        },
+        "weightBasis": {
+          "type": "string"
+        },
+        "analyzers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "clusters": {
+          "items": {
+            "$ref": "#/definitions/Cluster"
+          },
+          "type": "array"
+        },
+        "attributeDescriptors": {
+          "additionalProperties": {
+            "$ref": "#/definitions/AttributeDescriptor"
+          },
+          "type": "object"
+        },
+        "attributeTypes": {
+          "additionalProperties": {
+            "enum": [
+              "absolute",
+              "relative"
+            ],
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "title",
+        "membership",
+        "analyzers",
+        "clusters"
+      ],
+      "type": "object"
+    },
+    "ClustersLens": {
+      "additionalProperties": false,
+      "properties": {
+        "clusterings": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Clustering"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "clusterings"
+      ],
+      "type": "object"
+    },
     "Lenses": {
       "properties": {
         "metrics": {
@@ -528,6 +643,9 @@
         },
         "dependency": {
           "$ref": "#/definitions/DependencyLens"
+        },
+        "clusters": {
+          "$ref": "#/definitions/ClustersLens"
         },
         "domain": {
           "type": "object"

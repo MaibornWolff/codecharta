@@ -353,8 +353,7 @@
         }
       },
       "attributeDescriptors": {},
-      "attributeTypes": {},
-      "clusters": []
+      "attributeTypes": {}
     },
     "dependency": {
       "edges": [],

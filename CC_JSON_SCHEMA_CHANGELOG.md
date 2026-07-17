@@ -128,8 +128,11 @@ export interface Fixed {
 
 - **Breaking restructure** to the `{ meta, files, lenses }` shape: `files` is the identity layer (each
   node carries a stable `id`), and analysis signals move into additive `lenses` (`metrics`, `dependency`,
-  reserved `domain`/`security`, and any unknown lens preserved verbatim). Node metrics are keyed by `id`
-  in `lenses.metrics`; edges reference endpoints by `id` in `lenses.dependency`. `meta.checksum` is an
+  `clusters`, reserved `domain`/`security`, and any unknown lens preserved verbatim). Node metrics are
+  keyed by `id` in `lenses.metrics`; edges reference endpoints by `id` in `lenses.dependency`.
+  `lenses.clusters` groups node ids into clusterings — optional and fully defined by the schema, but
+  with no producer or visualization support in 2.0; see
+  [`dev_docs/cc-json-2.0-clusters-lens.md`](dev_docs/cc-json-2.0-clusters-lens.md). `meta.checksum` is an
   MD5 over the serialized `files`+`lenses`. See [`dev_docs/cc-json-2.0-format.md`](dev_docs/cc-json-2.0-format.md)
   and [`dev_docs/cc-json-2.0.schema.json`](dev_docs/cc-json-2.0.schema.json).
 

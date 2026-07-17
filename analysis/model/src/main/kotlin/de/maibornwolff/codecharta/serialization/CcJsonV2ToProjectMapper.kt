@@ -41,8 +41,7 @@ object CcJsonV2ToProjectMapper {
                 metrics =
                     MetricsLens(
                         attributeTypes = dto.lenses.metrics.attributeTypes,
-                        attributeDescriptors = dto.lenses.metrics.attributeDescriptors,
-                        clusters = dto.lenses.metrics.clusters
+                        attributeDescriptors = dto.lenses.metrics.attributeDescriptors
                     ),
                 dependency =
                     DependencyLens(

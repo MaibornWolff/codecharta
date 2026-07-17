@@ -92,8 +92,7 @@
         "rloc": "absolute",
         "functions": "absolute",
         "mcc": "absolute"
-      },
-      "clusters": []
+      }
     },
     "dependency": {
       "edges": [],

@@ -97,8 +97,7 @@
         "attributeA": "absolute",
         "attributeB": "absolute",
         "attributeZ": "absolute"
-      },
-      "clusters": []
+      }
     },
     "dependency": {
       "edges": [

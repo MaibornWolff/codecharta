@@ -58,17 +58,18 @@
       "type": "string"
     },
     "Lenses": {
-      "description": "Additive overlays joined to `files` by id. `metrics` and `dependency` are concrete; `domain`/`security` are reserved; any unknown top-level lens is preserved verbatim on round-trip (hence no additionalProperties:false here).",
+      "description": "Additive overlays joined to `files` by id. `metrics`, `dependency` and `clusters` are concrete; `domain`/`security` are reserved; any unknown top-level lens is preserved verbatim on round-trip (hence no additionalProperties:false here).",
       "type": "object",
       "properties": {
         "metrics": { "$ref": "#/definitions/MetricsLens" },
         "dependency": { "$ref": "#/definitions/DependencyLens" },
+        "clusters": { "$ref": "#/definitions/ClustersLens" },
         "domain": { "type": "object" },
         "security": { "type": "object" }
       }
     },
     "MetricsLens": {
-      "description": "Per-node metrics, keyed by node id, plus their descriptors, types and the reserved clusters slot.",
+      "description": "Per-node metrics, keyed by node id, plus their descriptors and types.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -84,8 +85,7 @@
         "attributeTypes": {
           "type": "object",
           "additionalProperties": { "enum": ["absolute", "relative"], "type": "string" }
-        },
-        "clusters": { "type": "array" }
+        }
       }
     },
     "DependencyLens": {
@@ -116,6 +116,81 @@
         "fromId": { "type": "string" },
         "toId": { "type": "string" },
         "attributes": { "type": "object" }
+      }
+    },
+    "ClustersLens": {
+      "description": "Named clusterings of nodes, joined to `files` by id. Structurally a cross-cutting relation like edges, not a per-node metric. Defined but not yet produced or visualized; see dev_docs/cc-json-2.0-clusters-lens.md.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clusterings"],
+      "properties": {
+        "clusterings": {
+          "description": "Map of clustering id -> clustering. A keyed map because clusterings merge by exactly one key, so JSON itself enforces id uniqueness.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/Clustering" }
+        }
+      }
+    },
+    "Clustering": {
+      "description": "One grouping of the nodes (author ownership, temporal coupling, feature scope, ...). A file may carry several orthogonal clusterings side by side; views activate one at a time, like the edge metric today.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "membership", "analyzers", "clusters"],
+      "properties": {
+        "title": { "type": "string" },
+        "membership": {
+          "description": "How a node may belong to clusters. `partition`: at most one cluster, weight implied 1. `weighted`: overlapping fractional membership; a node's weights across the clusters of this clustering must sum to at most 1 — a semantic invariant that JSON Schema cannot express, so it is not validated here. `overlay`: independent per-cluster membership; weights are per-cluster and never summed across clusters.",
+          "enum": ["partition", "weighted", "overlay"],
+          "type": "string"
+        },
+        "weightBasis": {
+          "description": "Names the metrics lens key the member weights are a fraction of (e.g. `rloc`, `loc`, `commits`), so views can weight aggregation with real per-node values.",
+          "type": "string"
+        },
+        "analyzers": {
+          "description": "The producers that contributed to this clustering; merged by union.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "clusters": {
+          "description": "Producer-controlled display order; an array rather than a map because clusters are fuller records.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/Cluster" }
+        },
+        "attributeDescriptors": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/AttributeDescriptor" }
+        },
+        "attributeTypes": {
+          "type": "object",
+          "additionalProperties": { "enum": ["absolute", "relative"], "type": "string" }
+        }
+      }
+    },
+    "Cluster": {
+      "description": "A single group of nodes within a clustering, carrying its own attributes (described by the clustering's descriptors and types). `parentId` forms an optional forest within the clustering; flat clusterings leave it null or omit it.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "members"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "parentId": { "type": ["string", "null"] },
+        "attributes": { "type": "object" },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ClusterMember" }
+        }
+      }
+    },
+    "ClusterMember": {
+      "description": "A node's membership in a cluster, referencing the node by id — the same join as edges. `weight` is the fraction of the clustering's `weightBasis` attributed to this cluster; omitted means 1.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeId"],
+      "properties": {
+        "nodeId": { "type": "string" },
+        "weight": { "type": "number", "minimum": 0, "maximum": 1 }
       }
     },
     "AttributeDescriptor": {

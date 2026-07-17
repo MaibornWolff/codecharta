@@ -25,13 +25,17 @@ export interface FileNode {
 interface Lenses {
     metrics?: MetricsLensData
     dependency?: DependencyLensData
+    /*
+     * Opaque passthrough — the schema defines the clusters lens, but the viz neither reads nor
+     * renders it yet. The typed model lands with the first producer.
+     */
+    clusters?: unknown
 }
 
 interface MetricsLensData {
     attributes: Record<string, Record<string, number | number[]>>
     attributeDescriptors: AttributeDescriptors
     attributeTypes: Record<string, AttributeTypeValue>
-    clusters?: unknown[]
 }
 
 interface DependencyLensData {

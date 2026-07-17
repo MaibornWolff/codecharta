@@ -70,8 +70,7 @@
                 "rloc": "absolute",
                 "functions": "absolute",
                 "sonar_complexity": "absolute"
-            },
-            "clusters": []
+            }
         },
         "dependency": {
             "edges": [],

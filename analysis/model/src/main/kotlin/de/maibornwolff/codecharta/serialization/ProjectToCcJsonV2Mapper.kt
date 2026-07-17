@@ -59,8 +59,7 @@ object ProjectToCcJsonV2Mapper {
             MetricsLensDto(
                 attributes = metricsByNodeId,
                 attributeDescriptors = project.lenses.metrics.attributeDescriptors,
-                attributeTypes = project.lenses.metrics.attributeTypes,
-                clusters = project.lenses.metrics.clusters
+                attributeTypes = project.lenses.metrics.attributeTypes
             )
         val dependencyLens =
             DependencyLensDto(

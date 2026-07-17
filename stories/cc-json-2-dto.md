@@ -48,8 +48,7 @@ separated into additive, id-joined lenses that the suite can extend without bloa
                 "<sha256(/src/App.kt)[:16]>": { "rloc": 120, "mcc": 8 }
             },
             "attributeDescriptors": {},
-            "attributeTypes": {},
-            "clusters": []
+            "attributeTypes": {}
         },
         "dependency": {
             "edges": [
@@ -78,7 +77,9 @@ Unknown top-level lenses are preserved verbatim on round-trip (forward-compat).
   content hash → longest path-suffix → warn.
 - **`blacklist` and `markedPackages` are NOT in the format** — they are visualization view state.
 - **Default output flips to 2.0** with a one-way **1.5 → 2.0** converter; the reader auto-detects both.
-- **`clusters` / `domain` / `security`** shapes are reserved here and defined in their own stories.
+- **`clusters`** is a top-level lens, not a metrics field; its shape is defined in
+  [`dev_docs/cc-json-2.0-clusters-lens.md`](../dev_docs/cc-json-2.0-clusters-lens.md) (no producer in 2.0).
+  **`domain` / `security`** shapes are reserved here and defined in their own stories.
 
 ## Acceptance Criteria (analysis only)
 - [x] The everit JSON schema (analysis `ValidationTool` resource) is rewritten for 2.0; `ValidationTool`
@@ -90,7 +91,7 @@ Unknown top-level lenses are preserved verbatim on round-trip (forward-compat).
       `lenses.metrics` round-trip correctly; `dependency.edges` (by `fromId`/`toId`) round-trip correctly.
 - [x] `id` is reproducible across tools for the same tree position; the merge resolver joins by
       id/content/suffix and warns (never silently mis-merges) on unmatched/ambiguous input.
-- [x] `domain`, `security`, and `clusters` are scaffolded (reserved keys); unknown lenses survive
+- [x] `domain` and `security` are scaffolded (reserved keys); unknown lenses survive
       round-trip.
 - [x] Analysis unit + integration/golden suites pass against the new format (fixtures migrated).
 

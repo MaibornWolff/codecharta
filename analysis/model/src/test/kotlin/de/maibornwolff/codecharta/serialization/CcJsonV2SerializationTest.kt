@@ -7,7 +7,6 @@ import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.BlacklistType
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
-import de.maibornwolff.codecharta.model.MetricsLens
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
@@ -68,7 +67,7 @@ class CcJsonV2SerializationTest {
         // the wire definition.
         val json = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
 
-        assertEquals("24d98eb4e93ec5d7ea6a8223928c6437", json.getAsJsonObject("meta").get("checksum").asString)
+        assertEquals("ee52136040c44b0767cfd7e000338e38", json.getAsJsonObject("meta").get("checksum").asString)
     }
 
     @Test
@@ -173,22 +172,50 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
-    fun `should round-trip non-numeric clusters json verbatim`() {
-        // Arrange: a metrics lens carrying a raw-JSON clusters entry.
-        val cluster = JsonParser.parseString("""{"id":1,"label":"core"}""")
-        val project =
-            Project(
-                "p",
-                listOf(Node("root", NodeType.Folder)),
-                Project.API_VERSION,
-                LensSet(metrics = MetricsLens(clusters = listOf(cluster)))
+    fun `should preserve a populated top-level clusters lens verbatim through a 2_0 round-trip`() {
+        // Arrange: a 2.0 document carrying a fully-populated clusters lens. It has no typed model yet, so
+        // it must survive on the opaque-lens passthrough — the reader keeps every unknown lens key as raw JSON.
+        val clustersLens =
+            JsonParser.parseString(
+                """
+                {
+                  "clusterings": {
+                    "author-ownership": {
+                      "title": "Author ownership",
+                      "membership": "weighted",
+                      "weightBasis": "rloc",
+                      "analyzers": ["gitlogparser"],
+                      "clusters": [
+                        {
+                          "id": "team-core",
+                          "name": "Team Core",
+                          "attributes": {"commits": 214},
+                          "members": [{"nodeId": "a1b2c3d4e5f60718", "weight": 0.62}]
+                        },
+                        {
+                          "id": "author-a",
+                          "name": "Author A",
+                          "parentId": "team-core",
+                          "members": [{"nodeId": "a1b2c3d4e5f60718", "weight": 0.38}]
+                        }
+                      ],
+                      "attributeDescriptors": {},
+                      "attributeTypes": {}
+                    }
+                  }
+                }
+                """.trimIndent()
             )
+        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(sampleProject())).asJsonObject
+        with20.getAsJsonObject("lenses").add("clusters", clustersLens)
 
         // Act
-        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
+        val project = ProjectDeserializer.deserializeProject(with20.toString())
+        val reSerialized = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
 
-        // Assert: the cluster JSON survives verbatim with well-defined equality.
-        assertEquals(listOf(cluster), roundTripped.lenses.metrics.clusters)
+        // Assert: the whole nested payload survives verbatim, both on the domain object and back on the wire.
+        assertEquals(clustersLens, project.lenses.opaqueLenses["clusters"])
+        assertEquals(clustersLens, reSerialized.getAsJsonObject("lenses").get("clusters"))
     }
 
     @Test

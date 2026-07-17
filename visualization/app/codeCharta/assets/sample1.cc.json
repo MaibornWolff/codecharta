@@ -80,8 +80,7 @@
                 "functions": "absolute",
                 "sonar_complexity": "absolute",
                 "pairingRate": "relative"
-            },
-            "clusters": []
+            }
         },
         "dependency": {
             "edges": [

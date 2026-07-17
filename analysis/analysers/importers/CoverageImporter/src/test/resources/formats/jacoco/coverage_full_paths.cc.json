@@ -151,8 +151,7 @@
         "complexity_coverage": "relative",
         "method_coverage": "relative",
         "class_coverage": "relative"
-      },
-      "clusters": []
+      }
     },
     "dependency": {
       "edges": [],

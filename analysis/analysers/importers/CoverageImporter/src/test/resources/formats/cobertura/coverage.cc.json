@@ -191,8 +191,7 @@
       "attributeTypes": {
         "line_coverage": "relative",
         "branch_coverage": "relative"
-      },
-      "clusters": []
+      }
     },
     "dependency": {
       "edges": [],
