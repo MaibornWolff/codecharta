@@ -20,7 +20,8 @@ include(
     "analysers:parsers:RawTextParser",
     "analysers:parsers:GitLogParser",
     "analysers:parsers:SVNLogParser",
-    "analysers:parsers:UnifiedParser"
+    "analysers:parsers:UnifiedParser",
+    "analysers:parsers:DomainLanguageParser"
 )
 include("analysers:exporters:CSVExporter")
 include(

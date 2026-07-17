@@ -1,0 +1,83 @@
+# ABL (OpenEdge/Progress) Framework-Specific Terms
+# Only filtering Progress framework classes and built-in system objects
+# Language syntax keywords are not extracted by tree-sitter anyway
+
+# Progress.Lang namespace classes
+Progress
+Lang
+Object
+AppError
+Error
+SoapFaultError
+ProError
+StopError
+SysError
+LockConflict
+QueryOffEnd
+
+# Progress.Json namespace
+Json
+ObjectModel
+JsonObject
+JsonArray
+JsonDataType
+JsonConstruct
+
+# Progress.IO namespace
+FileInputStream
+FileOutputStream
+InputStream
+OutputStream
+BinaryReader
+BinaryWriter
+MemoryInputStream
+MemoryOutputStream
+
+# Progress.Reflect namespace
+Reflect
+Property
+Method
+Parameter
+Constructor
+DataMember
+ClassInfo
+
+# Built-in System Handles
+SESSION
+COMPILER
+DEBUGGER
+CLIPBOARD
+COLOR-TABLE
+FILE-INFO
+FONT-TABLE
+LAST-EVENT
+LOG-MANAGER
+PROFILER
+RCODE-INFO
+SECURITY-POLICY
+SELF
+SOURCE-PROCEDURE
+TARGET-PROCEDURE
+THIS-OBJECT
+THIS-PROCEDURE
+WEB-CONTEXT
+
+# OpenClient/AppServer
+AppServer
+WebService
+Server
+ServerSocket
+Socket
+
+# ProDataSet framework terms
+ProDataSet
+ProBindingSource
+DataSource
+DataRelation
+
+# Common OpenEdge annotations (4GL attributes)
+Serializable
+NonSerialized
+DefaultValue
+XMLNodeName
+XMLNodeType

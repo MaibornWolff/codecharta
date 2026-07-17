@@ -1,0 +1,53 @@
+# JavaScript Reserved Words
+# One keyword per line, case-sensitive
+# Comments start with #
+# Note: Does NOT include TypeScript-only keywords (interface, type, namespace, enum, etc.)
+
+# JavaScript reserved words
+break
+case
+catch
+class
+const
+continue
+debugger
+default
+delete
+do
+else
+export
+extends
+finally
+for
+function
+if
+import
+in
+instanceof
+new
+return
+super
+switch
+this
+throw
+try
+typeof
+var
+void
+while
+with
+yield
+
+# JavaScript strict mode reserved words (also valid in JS)
+let
+static
+
+# JavaScript literals
+true
+false
+null
+undefined
+
+# ES2017+ keywords
+async
+await

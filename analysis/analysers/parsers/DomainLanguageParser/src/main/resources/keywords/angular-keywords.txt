@@ -1,0 +1,93 @@
+# Angular Framework Keywords
+# Common Angular-specific terms to filter from word clouds
+# One keyword per line, case-insensitive
+
+# Core Angular concepts
+component
+directive
+pipe
+service
+module
+provider
+injector
+decorator
+
+# Component-related
+selector
+template
+input
+output
+viewchild
+viewchildren
+contentchild
+contentchildren
+hostbinding
+hostlistener
+
+# State management (NgRx)
+state
+store
+action
+actions
+reducer
+reducers
+effect
+effects
+selector
+selectors
+dispatch
+createaction
+createreducer
+createeffect
+createselector
+createfeature
+
+# Lifecycle hooks
+oninit
+ondestroy
+onchanges
+docheck
+afterviewinit
+afterviewchecked
+aftercontentinit
+aftercontentchecked
+
+# Routing
+route
+router
+routes
+activated
+navigation
+routerlink
+routeroutlet
+
+# Dependency injection
+injectable
+inject
+injection
+token
+
+# Forms
+formgroup
+formcontrol
+formarray
+formbuilder
+validators
+validation
+
+# HTTP
+httpclient
+observable
+subscription
+subscribe
+
+# Testing
+testbed
+fixture
+componentfixture
+debugelement
+
+# UI elements
+button
+mat
+ng

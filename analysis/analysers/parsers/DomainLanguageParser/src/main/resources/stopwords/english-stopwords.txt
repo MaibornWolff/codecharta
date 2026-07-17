@@ -1,0 +1,99 @@
+# English Stop Words
+# Common English words that should be filtered from word clouds
+# One word per line, case-insensitive
+
+# Articles
+a
+an
+the
+
+# Conjunctions
+and
+or
+but
+
+# Prepositions
+as
+at
+by
+for
+from
+in
+of
+on
+to
+with
+
+# Pronouns
+he
+i
+it
+its
+me
+my
+that
+these
+they
+this
+those
+us
+we
+you
+
+# Verbs
+are
+be
+can
+could
+do
+has
+if
+is
+may
+might
+must
+no
+not
+shall
+so
+was
+were
+will
+would
+
+# BDD/Test terminology
+given
+when
+then
+arrange
+act
+should
+describe
+expect
+mock
+spy
+stub
+
+# Test fixture placeholders
+foo
+bar
+baz
+test
+dummy
+fake
+sample
+example
+
+# Short technical noise
+src
+log
+err
+tmp
+ctx
+val
+res
+req
+cb
+fn
+idx
+obj

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Add DomainLanguageParser to extract domain vocabulary (word frequencies) from source code into a cc.json 2.0 `domain` lens
 - Add Rust support to UnifiedParser (.rs)
 - Add JSX support to UnifiedParser
 - Add TSX support to UnifiedParser

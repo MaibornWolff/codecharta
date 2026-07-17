@@ -31,7 +31,8 @@ dependencies {
             ":analysers:parsers:UnifiedParser",
             ":dialogProvider",
             ":analysers:importers:SourceMonitorImporter",
-            ":analysers:importers:DependaChartaImporter"
+            ":analysers:importers:DependaChartaImporter",
+            ":analysers:parsers:DomainLanguageParser"
         )
 
     projects.forEach {
