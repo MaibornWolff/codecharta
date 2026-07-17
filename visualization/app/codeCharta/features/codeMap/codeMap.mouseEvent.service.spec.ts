@@ -134,7 +134,7 @@ describe("codeMapMouseEventService", () => {
             idToBuildingService
         )
 
-        codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
+        Object.defineProperty(codeMapMouseEventService, "oldMouse", { value: { x: 1, y: 1 }, writable: true, configurable: true })
     }
 
     function withMockedWindow() {
@@ -142,7 +142,7 @@ describe("codeMapMouseEventService", () => {
     }
 
     function withMockedThreeRendererService() {
-        threeRendererService = codeMapMouseEventService["threeRendererService"] = jest.fn().mockReturnValue({
+        threeRendererService = jest.fn().mockReturnValue({
             renderer: {
                 domElement: {
                     addEventListener: jest.fn(),
@@ -156,18 +156,28 @@ describe("codeMapMouseEventService", () => {
             },
             render: jest.fn()
         })()
+        Object.defineProperty(codeMapMouseEventService, "threeRendererService", {
+            value: threeRendererService,
+            writable: true,
+            configurable: true
+        })
     }
 
     function withMockedThreeCameraService() {
-        threeCameraService = codeMapMouseEventService["threeCameraService"] = jest.fn().mockReturnValue({
+        threeCameraService = jest.fn().mockReturnValue({
             camera: {
                 updateMatrixWorld: jest.fn()
             }
         })()
+        Object.defineProperty(codeMapMouseEventService, "threeCameraService", {
+            value: threeCameraService,
+            writable: true,
+            configurable: true
+        })
     }
 
     function withMockedThreeSceneService() {
-        threeSceneService = codeMapMouseEventService["threeSceneService"] = jest.fn().mockReturnValue({
+        threeSceneService = jest.fn().mockReturnValue({
             getMapMesh: jest.fn().mockReturnValue({
                 clearHighlight: jest.fn(),
                 highlightSingleBuilding: jest.fn(),
@@ -190,6 +200,11 @@ describe("codeMapMouseEventService", () => {
             addBuildingsToHighlightingList: jest.fn(),
             applyHighlights: jest.fn()
         })()
+        Object.defineProperty(codeMapMouseEventService, "threeSceneService", {
+            value: threeSceneService,
+            writable: true,
+            configurable: true
+        })
     }
 
     describe("start", () => {
@@ -415,7 +430,7 @@ describe("codeMapMouseEventService", () => {
             threeSceneService.prepareHighlightTransition = jest.fn()
             ;(threeSceneService.clearHighlight as jest.Mock).mockClear()
             ;(threeSceneService.clearHoverHighlight as jest.Mock).mockClear()
-            codeMapMouseEventService["oldMouse"] = { x: 0, y: 0 }
+            Object.defineProperty(codeMapMouseEventService, "oldMouse", { value: { x: 0, y: 0 }, writable: true, configurable: true })
             Object.defineProperty(codeMapMouseEventService, "mouse", { value: { x: 5, y: 5 }, writable: true })
 
             codeMapMouseEventService.updateHovering()
@@ -443,7 +458,7 @@ describe("codeMapMouseEventService", () => {
             threeSceneService.getMapMesh = jest.fn().mockReturnValue({
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(undefined)
             })
-            codeMapMouseEventService["oldMouse"] = { x: 0, y: 0 }
+            Object.defineProperty(codeMapMouseEventService, "oldMouse", { value: { x: 0, y: 0 }, writable: true, configurable: true })
             Object.defineProperty(codeMapMouseEventService, "mouse", { value: { x: 5, y: 5 }, writable: true })
 
             // Act

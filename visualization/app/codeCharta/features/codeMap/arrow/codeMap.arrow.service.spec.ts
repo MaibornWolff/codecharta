@@ -4,6 +4,7 @@ import { Object3D, Vector3 } from "three"
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { DIFFERENT_NODE, INCOMING_NODE, OUTGOING_NODE, VALID_EDGES_DECORATED } from "../../../mocks/dataMocks"
 import { CcState, Node } from "../../../model/codeCharta.model"
+import { CodeMapBuilding } from "../../../renderer/threeViewer/rendering/codeMapBuilding"
 import {
     CODE_MAP_BUILDING,
     CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE,
@@ -159,7 +160,11 @@ describe("CodeMapArrowService", () => {
         })
         it("should debounce the edge reset of buildings to improve performance", async () => {
             const resetEdgesOfBuildingMock = jest.fn()
-            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingMock
+            Object.defineProperty(codeMapArrowService, "resetEdgesOfBuildings", {
+                value: resetEdgesOfBuildingMock,
+                writable: true,
+                configurable: true
+            })
             codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
 
             expect(resetEdgesOfBuildingMock).not.toHaveBeenCalled()
@@ -376,7 +381,11 @@ describe("CodeMapArrowService", () => {
         it("should cancel a pending debounced edge reset when a building is unhovered", async () => {
             // Arrange — a hover schedules a debounced reset that would otherwise blank the restored preview
             const resetEdgesOfBuildingsMock = jest.fn()
-            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingsMock
+            Object.defineProperty(codeMapArrowService, "resetEdgesOfBuildings", {
+                value: resetEdgesOfBuildingsMock,
+                writable: true,
+                configurable: true
+            })
             codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
 
             // Act
@@ -391,7 +400,11 @@ describe("CodeMapArrowService", () => {
         it("should cancel a pending debounced edge reset when a building is deselected", async () => {
             // Arrange
             const resetEdgesOfBuildingsMock = jest.fn()
-            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingsMock
+            Object.defineProperty(codeMapArrowService, "resetEdgesOfBuildings", {
+                value: resetEdgesOfBuildingsMock,
+                writable: true,
+                configurable: true
+            })
             codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
 
             // Act

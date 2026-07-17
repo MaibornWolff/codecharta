@@ -39,7 +39,7 @@ export class ViewCubeComponent implements OnInit {
 
     private hoverInfo = { cube: null, originalMaterial: null }
 
-    private cubeDefinition = {
+    private readonly cubeDefinition = {
         top: null,
         sides: null
     }

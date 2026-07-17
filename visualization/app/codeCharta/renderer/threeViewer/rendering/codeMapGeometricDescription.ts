@@ -36,7 +36,7 @@ interface AABB {
 export class CodeMapGeometricDescription {
     private readonly _buildings: CodeMapBuilding[] = []
     private readonly buildingsByPath: Map<string, CodeMapBuilding> = new Map()
-    private mapSize: number
+    private readonly mapSize: number
     private scales: Vector3
     private scaledBoxes: Box3[] = []
     private readonly boxTranslation = new Vector3()

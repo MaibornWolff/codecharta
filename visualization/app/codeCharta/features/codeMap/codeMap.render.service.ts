@@ -31,7 +31,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         negative: []
     }
     private unflattenedNodes
-    private subscription: Subscription
+    private readonly subscription: Subscription
 
     constructor(
         private readonly codeMapStore: CodeMapStore,

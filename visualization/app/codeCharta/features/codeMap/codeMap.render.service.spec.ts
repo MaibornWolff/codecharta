@@ -99,7 +99,11 @@ describe("codeMapRenderService", () => {
         threeStatsService = TestBed.inject(ThreeStatsService)
         threeSceneService = TestBed.inject(ThreeSceneService)
         codeMapArrowService = TestBed.inject(CodeMapArrowService)
-        codeMapMouseEventService["threeSceneService"] = threeSceneService
+        Object.defineProperty(codeMapMouseEventService, "threeSceneService", {
+            value: threeSceneService,
+            writable: true,
+            configurable: true
+        })
 
         map = klona(TEST_FILE_WITH_PATHS.map)
         NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])

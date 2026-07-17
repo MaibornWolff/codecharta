@@ -224,7 +224,7 @@ describe("ViewCubeComponent", () => {
 
         beforeEach(() => {
             threeMapControlsService.rotateCameraInVectorDirection = jest.fn()
-            viewCubeComponent["cubeDefinition"] = cubeDefinition
+            Object.defineProperty(viewCubeComponent, "cubeDefinition", { value: cubeDefinition, writable: true, configurable: true })
         })
 
         for (const test of loopTests) {

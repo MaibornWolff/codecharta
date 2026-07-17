@@ -12,16 +12,16 @@ export class FloorLabelDrawer {
     private static readonly LABEL_OUTLINE_WIDTH_RATIO = 1 / 16
     private static readonly MIN_LABEL_OUTLINE_WIDTH = 2
 
-    private floorLabelPlanes: Mesh[] = []
+    private readonly floorLabelPlanes: Mesh[] = []
     private readonly rootNode: Node
     private readonly mapSize: number
     private readonly scaling: Vector3
     private readonly maxAnisotropy: number
     readonly folderGeometryHeight: number = 2.01
     private lastScaling: Scaling = new Vector3(1, 1, 1)
-    private floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
+    private readonly floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
 
-    private floorLabelsPerLevel = new Map()
+    private readonly floorLabelsPerLevel = new Map()
 
     constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3, experimentalFeaturesEnabled: boolean, maxAnisotropy = 1) {
         this.collectLabelsPerLevel(nodes)

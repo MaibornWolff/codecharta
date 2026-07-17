@@ -4,9 +4,9 @@ import { ColorConverter } from "../../../util/color/colorConverter"
 
 export class CodeMapBuilding {
     private readonly _id: number
-    private _boundingBox: Box3
+    private readonly _boundingBox: Box3
     private _color: string
-    private _defaultColor: string
+    private readonly _defaultColor: string
     private _deltaColor: string
     private _defaultDeltaColor: string
     private _node: Node

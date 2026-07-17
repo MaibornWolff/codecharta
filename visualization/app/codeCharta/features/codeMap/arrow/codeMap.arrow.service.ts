@@ -44,7 +44,7 @@ export class CodeMapArrowService implements OnDestroy {
         this.hoveredNodeSubscription.unsubscribe()
     }
 
-    private resetEdgesOfBuildings = (hoveredBuilding: CodeMapBuilding) => {
+    private readonly resetEdgesOfBuildings = (hoveredBuilding: CodeMapBuilding) => {
         if (!this.codeMapStore.getMapState().isEdgeMetricVisible) {
             this.scale()
             return

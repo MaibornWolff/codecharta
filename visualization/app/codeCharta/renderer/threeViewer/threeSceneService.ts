@@ -33,7 +33,7 @@ export class ThreeSceneService implements OnDestroy {
 
     private readonly lights: Group
     private mapMesh: CodeMapMesh
-    private eventEmitter = new EventEmitter<BuildingSelectedEvents>()
+    private readonly eventEmitter = new EventEmitter<BuildingSelectedEvents>()
 
     private floorLabelDrawer: FloorLabelDrawer
 
@@ -41,7 +41,7 @@ export class ThreeSceneService implements OnDestroy {
     private readonly highlightedBuildingIds: Set<number> = new Set()
     private readonly highlightedNodeIds: Set<number> = new Set()
     private primaryHighlightedBuilding: CodeMapBuilding = null
-    private constantHighlight: Map<number, CodeMapBuilding> = new Map()
+    private readonly constantHighlight: Map<number, CodeMapBuilding> = new Map()
 
     // Hardcoded color values — no runtime theming system (CSS custom properties) exists in this project.
     // These do not adapt to dark mode or theme changes.
@@ -57,8 +57,8 @@ export class ThreeSceneService implements OnDestroy {
 
     constructor(
         private readonly threeSceneStore: ThreeSceneStore,
-        private idToBuilding: IdToBuildingService,
-        private threeRendererService: ThreeRendererService
+        private readonly idToBuilding: IdToBuildingService,
+        private readonly threeRendererService: ThreeRendererService
     ) {
         this.scene = new Scene()
         this.mapGeometry = new Group()

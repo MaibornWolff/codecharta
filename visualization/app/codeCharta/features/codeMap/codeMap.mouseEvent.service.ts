@@ -39,7 +39,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     private intersectedBuilding: CodeMapBuilding
 
     private readonly mouse: Coordinates = { x: 0, y: 0 }
-    private oldMouse: Coordinates = { x: 0, y: 0 }
+    private readonly oldMouse: Coordinates = { x: 0, y: 0 }
     private mouseOnLastClick: Coordinates = { x: 0, y: 0 }
     private isGrabbing = false
     private isMoving = false
@@ -62,9 +62,9 @@ export class CodeMapMouseEventService implements OnDestroy {
     ]
 
     constructor(
-        private threeCameraService: ThreeCameraService,
-        private threeRendererService: ThreeRendererService,
-        private threeSceneService: ThreeSceneService,
+        private readonly threeCameraService: ThreeCameraService,
+        private readonly threeRendererService: ThreeRendererService,
+        private readonly threeSceneService: ThreeSceneService,
         private readonly codeMapStore: CodeMapStore,
         private readonly fileStoreReadWindow: FileStoreReadWindow,
         private readonly sharedViewReadWindow: SharedViewReadWindow,

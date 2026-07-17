@@ -43,7 +43,7 @@ describe("ThreeSceneService", () => {
 
         threeSceneService = TestBed.inject(ThreeSceneService)
         threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, state.getValue(), false)
-        threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
+        Object.defineProperty(threeSceneService, "constantHighlight", { value: CONSTANT_HIGHLIGHT, writable: true, configurable: true })
     })
 
     describe("highlightBuildings", () => {
@@ -120,7 +120,7 @@ describe("ThreeSceneService", () => {
                 return idToNode
             })
             idToBuildingService.setIdToBuilding([CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE])
-            threeSceneService["constantHighlight"] = new Map()
+            Object.defineProperty(threeSceneService, "constantHighlight", { value: new Map(), writable: true, configurable: true })
         })
 
         it("should add a node into constant highlight ", () => {

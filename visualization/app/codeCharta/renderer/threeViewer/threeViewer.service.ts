@@ -10,11 +10,11 @@ export class ThreeViewerService {
     private animationFrameId: number
 
     constructor(
-        private threeSceneService: ThreeSceneService,
-        private threeCameraService: ThreeCameraService,
-        private threeMapControlsService: ThreeMapControlsService,
-        private threeRendererService: ThreeRendererService,
-        private threeStatsService: ThreeStatsService
+        private readonly threeSceneService: ThreeSceneService,
+        private readonly threeCameraService: ThreeCameraService,
+        private readonly threeMapControlsService: ThreeMapControlsService,
+        private readonly threeRendererService: ThreeRendererService,
+        private readonly threeStatsService: ThreeStatsService
     ) {}
 
     init(target: Element) {

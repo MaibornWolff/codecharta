@@ -66,9 +66,9 @@ export class CodeMapMesh {
 
     private readonly threeMesh: InstancedMesh
     private material: ShaderMaterial
-    private geomGen: GeometryGenerator
-    private mapGeomDesc: CodeMapGeometricDescription
-    private nodes: Node[]
+    private readonly geomGen: GeometryGenerator
+    private readonly mapGeomDesc: CodeMapGeometricDescription
+    private readonly nodes: Node[]
     private dirtyRange: DirtyRange | null = null
     private _prevHighlightedIds: Set<number> | null = null
     private _prevSelectedId: number | null = null

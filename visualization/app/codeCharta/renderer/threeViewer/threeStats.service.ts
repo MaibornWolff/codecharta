@@ -18,7 +18,7 @@ export class ThreeStatsService {
     prevTime: number
     isDevelopmentMode = isDevMode()
 
-    constructor(private threeRendererService: ThreeRendererService) {}
+    constructor(private readonly threeRendererService: ThreeRendererService) {}
 
     init = (canvasElement: Element) => {
         if (this.isDevelopmentMode) {
@@ -36,11 +36,11 @@ export class ThreeStatsService {
         }
     }
 
-    private getTimeFunctor = () => {
+    private readonly getTimeFunctor = () => {
         return typeof performance === "undefined" ? Date : performance
     }
 
-    private generateStatPanels = () => {
+    private readonly generateStatPanels = () => {
         this.trianglesPanel = { panel: this.stats.addPanel(new Stats.Panel("triangles", "#ff8", "#221")), maxHeight: 0 }
         this.glCallsPanel = { panel: this.stats.addPanel(new Stats.Panel("calls", "#f8f", "#212")), maxHeight: 0 }
         this.geometryMemoryPanel = { panel: this.stats.addPanel(new Stats.Panel("geo. mem", "#f08", "#221")), maxHeight: 0 }
@@ -75,7 +75,7 @@ export class ThreeStatsService {
         }
     }
 
-    private processPanel = (customPanel: CustomPanel, value: number) => {
+    private readonly processPanel = (customPanel: CustomPanel, value: number) => {
         customPanel.maxHeight = Math.max(customPanel.maxHeight, value)
         customPanel.panel.update(value, customPanel.maxHeight * 1.3)
     }

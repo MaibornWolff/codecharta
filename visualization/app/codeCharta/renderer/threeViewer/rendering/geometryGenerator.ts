@@ -26,7 +26,7 @@ interface BuildContext {
 export class GeometryGenerator {
     /** Minimum height in scene units so that every building remains visible,
      *  even when its height metric value rounds to zero. */
-    private static MINIMAL_BUILDING_HEIGHT = 1
+    private static readonly MINIMAL_BUILDING_HEIGHT = 1
 
     private floorGradient: string[]
 
