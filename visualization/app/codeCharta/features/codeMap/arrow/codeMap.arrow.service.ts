@@ -168,14 +168,19 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     private buildPairingEdges(node: Map<string, Node>) {
-        const showIncomingEdges = this.codeMapStore.getMapState().showIncomingEdges
-        const showOutgoingEdges = this.codeMapStore.getMapState().showOutgoingEdges
+        const { showIncomingEdges, showOutgoingEdges, edgeMetric } = this.codeMapStore.getMapState()
         if (!showIncomingEdges && !showOutgoingEdges) {
             return
         }
         const edges = this.codeMapStore.getEdges()
 
         for (const edge of edges) {
+            // A map can carry several edge metrics at once. Only the selected one contributes to the
+            // edge count shown for a building, so only its edges may be drawn — otherwise the arrows
+            // and the number disagree. This mirrors the predicate `setEdgeVisibility` applies to previews.
+            if (edge.attributes[edgeMetric] === undefined) {
+                continue
+            }
             const originNode = this.map.get(edge.fromNodeName)
             // TODO: Maps should only have valid edges. If that's not the case, the
             // internal decoration is likely faulty. Check if only test data is not

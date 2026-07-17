@@ -12,6 +12,7 @@ import {
 import { CodeMapMesh } from "../../../renderer/threeViewer/rendering/codeMapMesh"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeSceneService"
 import {
+    setEdgeMetric,
     setHeightMetric,
     setScaling,
     setShowIncomingEdges,
@@ -180,8 +181,9 @@ describe("CodeMapArrowService", () => {
 
             store.dispatch(setShowOutgoingEdges({ value: true }))
             store.dispatch(setShowIncomingEdges({ value: false }))
+            store.dispatch(setEdgeMetric({ value: "dependencies" }))
             ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
-                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: { dependencies: 2 } }
             ])
 
             codeMapArrowService["buildPairingEdges"](nodesMap)
@@ -203,14 +205,71 @@ describe("CodeMapArrowService", () => {
 
             store.dispatch(setShowOutgoingEdges({ value: false }))
             store.dispatch(setShowIncomingEdges({ value: true }))
+            store.dispatch(setEdgeMetric({ value: "dependencies" }))
             ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
-                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: { dependencies: 2 } }
             ])
 
             codeMapArrowService["buildPairingEdges"](nodesMap)
 
             expect(codeMapArrowService.addArrow).toHaveBeenCalledTimes(1)
             expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(outgoingNode, incomingNode, false)
+        })
+
+        it("should only add edges carrying the selected edge metric when multiple edge metrics exist", () => {
+            // Arrange
+            withMockedThreeSceneService()
+            codeMapArrowService.addArrow = jest.fn()
+
+            const outgoingNode: Node = OUTGOING_NODE
+            const incomingNode: Node = INCOMING_NODE
+            const differentNode: Node = DIFFERENT_NODE
+            const nodesMap = new Map<string, Node>()
+            nodesMap.set(outgoingNode.path, outgoingNode)
+            nodesMap.set(incomingNode.path, incomingNode)
+            nodesMap.set(differentNode.path, differentNode)
+            codeMapArrowService["map"] = nodesMap
+
+            store.dispatch(setShowOutgoingEdges({ value: true }))
+            store.dispatch(setShowIncomingEdges({ value: false }))
+            store.dispatch(setEdgeMetric({ value: "dependencies" }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: { dependencies: 2 } },
+                { fromNodeName: outgoingNode.path, toNodeName: differentNode.path, attributes: { temporal_coupling: 7 } }
+            ])
+
+            // Act
+            codeMapArrowService["buildPairingEdges"](nodesMap)
+
+            // Assert — the temporal_coupling-only edge contributes nothing to the dependencies count,
+            // so it must not be drawn either
+            expect(codeMapArrowService.addArrow).toHaveBeenCalledTimes(1)
+            expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(outgoingNode, incomingNode, true)
+        })
+
+        it("should not add any edges when no edge metric is selected", () => {
+            // Arrange
+            withMockedThreeSceneService()
+            codeMapArrowService.addArrow = jest.fn()
+
+            const outgoingNode: Node = OUTGOING_NODE
+            const incomingNode: Node = INCOMING_NODE
+            const nodesMap = new Map<string, Node>()
+            nodesMap.set(outgoingNode.path, outgoingNode)
+            nodesMap.set(incomingNode.path, incomingNode)
+            codeMapArrowService["map"] = nodesMap
+
+            store.dispatch(setShowOutgoingEdges({ value: true }))
+            store.dispatch(setShowIncomingEdges({ value: true }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: { dependencies: 2 } }
+            ])
+
+            // Act
+            codeMapArrowService["buildPairingEdges"](nodesMap)
+
+            // Assert
+            expect(codeMapArrowService.addArrow).not.toHaveBeenCalled()
         })
     })
 
