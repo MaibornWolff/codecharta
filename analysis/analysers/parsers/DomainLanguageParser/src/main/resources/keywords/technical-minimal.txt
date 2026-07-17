@@ -1,0 +1,23 @@
+# Minimal Technical Stop Words
+# Filters only the most common technical/testing words
+# One word per line, case-insensitive
+
+test
+tests
+spec
+specs
+util
+utils
+helper
+helpers
+impl
+implementation
+config
+configuration
+tmp
+temp
+temporary
+
+# Generic programming terms
+expected
+name

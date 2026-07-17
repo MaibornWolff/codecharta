@@ -1,0 +1,107 @@
+# React Framework Keywords
+# Common React-specific terms to filter from word clouds
+# One keyword per line, case-insensitive
+
+# Core React concepts
+component
+props
+state
+ref
+element
+children
+key
+
+# Class component lifecycle
+componentdidmount
+componentdidupdate
+componentwillunmount
+shouldcomponentupdate
+getderivedstatefromprops
+getsnapshotbeforeupdate
+componentdidcatch
+
+# Built-in hooks
+usestate
+useeffect
+usecontext
+usereducer
+usecallback
+usememo
+useref
+useimperativehandle
+uselayouteffect
+usedebugvalue
+useid
+usetransition
+usedeferredvalue
+usesyncexternalstore
+useinsertioneffect
+
+# State management (Redux)
+redux
+store
+action
+dispatch
+reducer
+selector
+middleware
+thunk
+saga
+slice
+createslice
+configurestore
+
+# Context API
+context
+provider
+consumer
+createcontext
+
+# React ecosystem
+jsx
+tsx
+fragment
+portal
+createportal
+suspense
+lazy
+memo
+forwardref
+createref
+cloneelement
+createelement
+isvalidelement
+children
+
+# React Router
+router
+route
+routes
+link
+navigate
+navigation
+navlink
+outlet
+params
+searchparams
+location
+history
+
+# Error boundaries
+errorboundary
+componentdidcatch
+getderivedstatefromerror
+
+# React testing
+render
+renderhook
+screen
+fireEvent
+waitfor
+userEvent
+rerender
+
+# Common patterns
+hoc
+higherordercomponent
+renderprops

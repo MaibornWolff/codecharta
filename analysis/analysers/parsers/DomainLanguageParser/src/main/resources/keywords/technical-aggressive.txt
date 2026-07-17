@@ -1,0 +1,132 @@
+# Aggressive Technical Stop Words
+# Filters extensive technical jargon including design patterns
+# One word per line, case-insensitive
+
+# Testing and utilities (from minimal)
+test
+tests
+spec
+specs
+util
+utils
+helper
+helpers
+impl
+implementation
+config
+configuration
+tmp
+temp
+temporary
+
+# CRUD operations (from moderate)
+get
+set
+create
+read
+update
+delete
+save
+load
+fetch
+find
+
+# Architectural patterns (from moderate)
+manager
+service
+handler
+controller
+processor
+factory
+builder
+
+# Error handling (from moderate)
+error
+exception
+
+# Common structure words (from moderate)
+base
+abstract
+default
+main
+index
+core
+common
+shared
+
+# Design patterns
+singleton
+adapter
+observer
+decorator
+strategy
+facade
+proxy
+command
+iterator
+mediator
+visitor
+template
+
+# Additional operations
+execute
+process
+handle
+invoke
+call
+run
+start
+stop
+init
+initialize
+finalize
+dispose
+
+# Data layer
+model
+view
+entity
+repository
+dao
+dto
+pojo
+bean
+
+# Logging and debugging
+logger
+log
+logs
+logging
+debug
+info
+warn
+warning
+trace
+context
+
+# Web/API terms
+request
+response
+endpoint
+route
+middleware
+
+# General programming
+method
+function
+param
+params
+parameter
+parameters
+arg
+args
+argument
+arguments
+result
+results
+value
+values
+type
+types
+expected
+name

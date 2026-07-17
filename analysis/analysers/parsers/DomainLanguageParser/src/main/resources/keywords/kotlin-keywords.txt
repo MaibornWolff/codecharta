@@ -1,0 +1,87 @@
+# Kotlin Keywords
+# One keyword per line, case-sensitive
+# Comments start with #
+
+# Hard keywords - always reserved
+as
+break
+class
+continue
+do
+else
+false
+for
+fun
+if
+in
+interface
+is
+null
+object
+package
+return
+super
+this
+throw
+true
+try
+typealias
+typeof
+val
+var
+when
+while
+
+# Soft keywords - contextually reserved
+by
+catch
+constructor
+delegate
+dynamic
+field
+file
+finally
+get
+import
+init
+param
+property
+receiver
+set
+setparam
+value
+where
+
+# Modifier keywords - reserved in modifier lists
+abstract
+actual
+annotation
+companion
+const
+crossinline
+data
+enum
+expect
+external
+final
+infix
+inline
+inner
+internal
+lateinit
+noinline
+open
+operator
+out
+override
+private
+protected
+public
+reified
+sealed
+suspend
+tailrec
+vararg
+
+# Special identifiers
+it

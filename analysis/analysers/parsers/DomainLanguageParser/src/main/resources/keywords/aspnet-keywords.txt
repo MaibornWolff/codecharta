@@ -1,0 +1,170 @@
+# ASP.NET Framework Keywords
+# Common ASP.NET terms to filter for cleaner domain-focused word clouds
+# One keyword per line, case-sensitive
+# Comments start with #
+
+# MVC Pattern
+Controller
+ControllerBase
+Model
+View
+ViewModel
+ViewData
+ViewBag
+TempData
+ActionResult
+IActionResult
+ViewResult
+JsonResult
+ContentResult
+RedirectResult
+PartialViewResult
+FileResult
+EmptyResult
+
+# HTTP Verbs and Attributes
+HttpGet
+HttpPost
+HttpPut
+HttpDelete
+HttpPatch
+HttpHead
+HttpOptions
+Route
+FromBody
+FromQuery
+FromRoute
+FromForm
+FromHeader
+FromServices
+Bind
+Authorize
+AllowAnonymous
+ValidateAntiForgeryToken
+
+# Middleware and Pipeline
+Middleware
+RequestDelegate
+HttpContext
+HttpRequest
+HttpResponse
+StatusCode
+UseMiddleware
+UseRouting
+UseEndpoints
+UseAuthorization
+UseAuthentication
+MapControllers
+MapRazorPages
+MapGet
+MapPost
+MapPut
+MapDelete
+
+# Web API
+ApiController
+Produces
+Consumes
+ProducesResponseType
+ResponseType
+BadRequest
+NotFound
+Ok
+Created
+NoContent
+Accepted
+Conflict
+UnprocessableEntity
+
+# Razor Pages
+PageModel
+RazorPage
+OnGet
+OnPost
+OnPut
+OnDelete
+Handler
+BindProperty
+PageContext
+
+# Filters
+ActionFilter
+ResultFilter
+ExceptionFilter
+ResourceFilter
+AuthorizationFilter
+OnActionExecuting
+OnActionExecuted
+OnResultExecuting
+OnResultExecuted
+OnException
+
+# Dependency Injection
+AddScoped
+AddTransient
+AddSingleton
+IServiceCollection
+IServiceProvider
+ServiceLifetime
+
+# Configuration
+IConfiguration
+IOptions
+ConfigureServices
+Configure
+Startup
+WebApplication
+WebApplicationBuilder
+
+# Blazor
+ComponentBase
+Parameter
+EventCallback
+StateHasChanged
+OnInitialized
+OnParametersSet
+OnAfterRender
+CascadingParameter
+RenderFragment
+MarkupString
+
+# SignalR
+Hub
+HubConnection
+HubConnectionBuilder
+OnConnectedAsync
+OnDisconnectedAsync
+SendAsync
+InvokeAsync
+
+# Authentication/Authorization
+Identity
+IdentityUser
+IdentityRole
+SignInManager
+UserManager
+RoleManager
+Claims
+ClaimsPrincipal
+ClaimsIdentity
+AuthenticationScheme
+JwtBearer
+Cookie
+
+# Session and State
+Session
+SessionState
+Cache
+MemoryCache
+DistributedCache
+ISession
+
+# Hosting
+IWebHost
+IWebHostBuilder
+WebHost
+IHostBuilder
+IHost
+HostBuilder
+IApplicationBuilder
+IEndpointRouteBuilder

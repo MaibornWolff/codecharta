@@ -1,0 +1,208 @@
+# Entity Framework Keywords
+# Common Entity Framework terms to filter for cleaner domain-focused word clouds
+# One keyword per line, case-sensitive
+# Comments start with #
+
+# Core EF Types
+DbContext
+DbSet
+DbContextOptions
+DbContextOptionsBuilder
+ModelBuilder
+EntityEntry
+EntityState
+ChangeTracker
+DatabaseFacade
+
+# Entity Configuration
+Entity
+EntityType
+EntityTypeBuilder
+HasKey
+HasIndex
+HasOne
+HasMany
+WithOne
+WithMany
+OnDelete
+IsRequired
+HasMaxLength
+HasColumnName
+HasColumnType
+HasDefaultValue
+HasPrecision
+HasConstraintName
+HasForeignKey
+HasPrincipalKey
+
+# Querying
+IQueryable
+AsQueryable
+AsNoTracking
+AsTracking
+Include
+ThenInclude
+Where
+Select
+SelectMany
+OrderBy
+OrderByDescending
+ThenBy
+ThenByDescending
+GroupBy
+Join
+FirstOrDefault
+SingleOrDefault
+ToList
+ToArray
+Any
+All
+Count
+Sum
+Average
+Min
+Max
+Skip
+Take
+Contains
+
+# Tracking and Changes
+Attach
+Add
+AddRange
+Update
+UpdateRange
+Remove
+RemoveRange
+Entry
+Modified
+Added
+Deleted
+Unchanged
+Detached
+
+# Migrations
+Migration
+MigrationBuilder
+CreateTable
+DropTable
+AddColumn
+DropColumn
+AlterColumn
+AddPrimaryKey
+DropPrimaryKey
+AddForeignKey
+DropForeignKey
+CreateIndex
+DropIndex
+RenameTable
+RenameColumn
+RenameIndex
+Up
+Down
+MigrationHistory
+Database
+EnsureCreated
+EnsureDeleted
+Migrate
+PendingMigrations
+AppliedMigrations
+
+# Conventions
+Convention
+Conventions
+IConvention
+ModelConfigurationBuilder
+
+# Relationships
+Navigation
+NavigationProperty
+ReferenceNavigation
+CollectionNavigation
+DeleteBehavior
+Cascade
+Restrict
+SetNull
+NoAction
+ClientSetNull
+
+# Fluent API
+Fluent
+FluentAPI
+HasData
+HasQueryFilter
+HasDiscriminator
+ToTable
+ToView
+UseTpcMappingStrategy
+UseTphMappingStrategy
+UseTptMappingStrategy
+
+# Inheritance
+TPC
+TPH
+TPT
+BaseType
+DerivedType
+Discriminator
+
+# Lazy Loading
+LazyLoading
+Lazy
+Proxy
+Proxies
+ProxyCreation
+
+# Performance
+Compiled
+CompiledQuery
+AsEnumerable
+SplitQuery
+AsSplitQuery
+AsSingleQuery
+EnableSensitiveDataLogging
+EnableDetailedErrors
+
+# Transactions
+Transaction
+BeginTransaction
+CommitTransaction
+RollbackTransaction
+SaveChanges
+SaveChangesAsync
+UseTransaction
+
+# Connection and Configuration
+ConnectionString
+Database
+DatabaseProvider
+UseSqlServer
+UseSqlite
+UseNpgsql
+UseMySql
+UseInMemoryDatabase
+UseLoggerFactory
+LogTo
+
+# Value Conversion
+ValueConverter
+ValueComparer
+HasConversion
+
+# Shadow Properties
+Shadow
+ShadowProperty
+Property
+
+# Owned Types
+Owned
+OwnsOne
+OwnsMany
+
+# Global Filters
+QueryFilter
+IgnoreQueryFilters
+
+# Change Detection
+DetectChanges
+AutoDetectChangesEnabled

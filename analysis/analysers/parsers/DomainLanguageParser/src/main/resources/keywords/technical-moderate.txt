@@ -1,0 +1,59 @@
+# Moderate Technical Stop Words
+# Filters common technical words, CRUD operations, and architectural patterns
+# One word per line, case-insensitive
+
+# Testing and utilities (from minimal)
+test
+tests
+spec
+specs
+util
+utils
+helper
+helpers
+impl
+implementation
+config
+configuration
+tmp
+temp
+temporary
+
+# CRUD operations
+get
+set
+create
+read
+update
+delete
+save
+load
+fetch
+find
+
+# Architectural patterns
+manager
+service
+handler
+controller
+processor
+factory
+builder
+
+# Error handling
+error
+exception
+
+# Common structure words
+base
+abstract
+default
+main
+index
+core
+common
+shared
+
+# Generic programming terms
+expected
+name
