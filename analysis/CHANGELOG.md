@@ -25,7 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     directly in the current visualization. There is no CLI flag to emit 1.5; use `ccsh convert` only to
     upgrade an existing 1.x file to 2.0.
 - The 2.0 wire format drops `blacklist` and `markedPackages`; a project read from 2.0 carries an empty
-  blacklist. Converting a 1.5 file with a non-empty blacklist to 2.0 is therefore not round-trippable.
+  blacklist. Converting a 1.5 file with a non-empty blacklist to 2.0 is therefore not round-trippable —
+  `ccsh convert` warns when it drops either, so the loss is never silent.
 - `ccsh check` validates the 2.0 format strictly: `meta.apiVersion` must be major 2 (any minor), `files`
   must contain exactly one root, and unknown properties on `meta`, file nodes, and edges are rejected.
 - **cc.json 2.x is downward-compatible and additive-only.** `apiVersion` is no longer pinned to exactly
@@ -49,25 +50,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
-- Merging projects no longer drops each merged node's content hash, so a merged 2.0 file stays usable
-  as a `--base-file` and for content-match re-merge.
-- The leaf/overlay merge strategy now unions incoming dependency edges instead of silently keeping only
-  the reference project's edges.
-- Filters (`merge`, `edgefilter`, `modify`) no longer drop the reserved `domain`/`security`/unknown
-  lenses, the metrics `clusters`, or `meta.commitHash` when rebuilding a project. On `merge` the opaque
-  lenses are unioned (the first file wins on a same-name collision), the metrics `clusters` are unioned
-  with exact duplicates dropped, and the first non-null commit hash is kept.
-- The `edgefilter` no longer drops each node's `contentHash` while aggregating edge metrics onto nodes,
-  so its 2.0 output stays usable as a `--base-file` / content-match reference.
-- `merge` no longer silently drops a legacy 1.x input. `merge` (plain, `--mimo`, and `--large`) now
-  fails with the `ccsh convert` hint and writes no output when a named input is a legacy 1.x file,
-  instead of skipping it and emitting a partial merge as if complete (or crashing with `Empty collection`
-  / `kotlin.Unit` on all-legacy input). Genuinely unreadable files are still skipped with a warning.
-- Edge-only projects keep their edges through a 2.0 round-trip. The 2.0 writer now materializes a file
-  node for every dependency edge endpoint, so the documented `codemaatimport | edgefilter` workflow no
-  longer produces an empty result when the importer's edges reference nodes absent from the file tree.
-- `convert` now warns when it drops a source file's `blacklist` or `markedPackages` — these are not part
-  of the cc.json 2.0 format, so converting a curated 1.x file discards them; the loss is no longer silent.
+- Analysers no longer scan the repository's own `.git` directory. It accounted for roughly half the nodes
+  in a map of this repository. `.github`, `.gitignore` and `.gitattributes` are untouched, and the
+  exclusion also holds under `--bypass-gitignore`.
+- `gitlogparser` no longer loses all git metrics for files whose path contains a non-ASCII character.
+  Git escapes such paths in its log output, so they never matched the file list and silently dropped out
+  of the map. A UTF-8 log is also no longer mis-detected as WINDOWS-1252.
+- `gitlogparser` no longer emits temporal coupling edges for files that were renamed or deleted before
+  HEAD, which previously grew the map ghost files that exist in no working tree. A second metric's
+  contribution to an existing edge is also no longer discarded.
+- Whole-number metrics survive a round trip. Every attribute was read back as a floating-point number, so
+  a file passed through any filter rewrote an integer `1` as `1.0`, and the drift compounded across a
+  merge chain.
+- `modify` no longer corrupts its input project while building its output — the `--move-from`/`--move-to`
+  and sub-project extraction paths rewrote the source project's edges and blacklist in place.
 - `merge` no longer copies a node into several same-named nodes at once. A File and a Folder that share a
   name are kept apart, so a third node of the same name whose type is neither File nor Folder matched both
   of them and had its attributes and children merged onto each. Such an ambiguous node is now kept as a

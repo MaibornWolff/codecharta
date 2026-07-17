@@ -21,10 +21,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Camera front view on auto-fit**: The camera reset no longer lands in a skewed "tilted diamond" view when the newly fitted map is much larger than the previous one (or the orbit target had been panned far away). The fit previously let the map controls clamp the fresh camera position against the previous map's zoom limits, locking the off-axis direction in.
 - **cc.json 2.0 map survives reload**: A cc.json **2.0** file loaded into the app is no longer replaced by the sample files on the next page load. Re-exporting a loaded map for IndexedDB persistence now stamps the flat export shape with the 1.x `apiVersion` it actually is, instead of copying `"2.0"` verbatim onto a 1.x body — which previously made the reloaded file fail validation as an outdated major version and fall back to sample files.
 
-### Chore 👨‍💻 👩‍💻
-
-- **Feature architecture migration**: Moved the remaining `app/codeCharta/ui/` components into the feature-slice architecture — `features/shared` (actionIcon, errorDialog, loadingFileProgressSpinner, resetSettingsButton), `features/fileExtensionBar`, `features/codeMap`, and `features/viewCube`. Each slice is reached through a `facade.ts`, contains no SCSS (daisyUI/Tailwind only), and accesses `@ngrx/store` only from `stores/`/`selectors/`. The `ui/` directory is gone and the dependency-cruiser SCSS rule now covers all of `app/codeCharta/`. No user-facing behavior change.
-
 ## [1.143.0] - 2026-06-23
 
 ### Added 🚀
