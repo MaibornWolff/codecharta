@@ -1,10 +1,10 @@
 import { BufferGeometry } from "three"
 import { Font } from "three/addons/loaders/FontLoader.js"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 import { CreateSvgGeometryStrategy } from "../../CreateGeometryStrategies/createSvgGeometryStrategy"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
+import { GeometryOptions } from "../../geometryOptions"
 import { MetricDescriptionBlockMesh, MetricDescriptionBlockOptions } from "./metricDescriptionBlockMesh"
-import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 
 jest.mock("../../CreateGeometryStrategies/createSvgGeometryStrategy")
 jest.mock("../../CreateGeometryStrategies/createTextGeometryStrategy")

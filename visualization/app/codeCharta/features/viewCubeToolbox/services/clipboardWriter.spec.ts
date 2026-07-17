@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import { setToClipboard, checkWriteToClipboardAllowed } from "./clipboardWriter"
+import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
 
 describe("clipboardWriter", () => {
     describe("setToClipboard", () => {

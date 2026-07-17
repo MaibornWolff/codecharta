@@ -21,7 +21,9 @@ import java.io.PrintStream
     description = [StructureModifier.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class StructureModifier(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) : AnalyserInterface {
+class StructureModifier(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) :
+    AnalyserInterface,
+    CommandLine.IExitCodeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
@@ -71,6 +73,9 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
     private var moveTo: String? = null
 
     private lateinit var project: Project
+
+    // Non-zero when a named input file could not be read, so `ccsh modify <file>` fails detectably in scripts.
+    private var exitCode = 0
 
     override val name = NAME
     override val description = DESCRIPTION
@@ -130,6 +135,8 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
         return actionCount > 1
     }
 
+    override fun getExitCode(): Int = exitCode
+
     private fun readProject(): Project? {
         if (source == null) {
             return ProjectDeserializer.deserializeProject(input)
@@ -145,8 +152,10 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
         } catch (e: Exception) {
             val sourceName = source!!.name
             Logger.error {
-                "$sourceName is not a valid project file and is therefore skipped."
+                "$sourceName could not be read and is therefore skipped: ${e.message}"
             }
+            // A named input file that cannot be read is a hard failure: signal a non-zero exit so scripts detect it.
+            exitCode = 1
             null
         }
     }

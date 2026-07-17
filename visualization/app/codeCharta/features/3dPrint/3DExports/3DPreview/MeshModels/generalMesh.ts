@@ -1,6 +1,6 @@
 import { Mesh, MeshBasicMaterial } from "three"
-import { GeometryOptions } from "../preview3DPrintMesh"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
+import { GeometryOptions } from "../geometryOptions"
 
 export interface GeneralSizeChangeMesh {
     changeSize(geometryOptions: GeometryOptions, oldWidth: number): void

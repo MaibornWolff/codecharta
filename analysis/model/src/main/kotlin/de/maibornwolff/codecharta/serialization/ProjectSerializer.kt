@@ -1,29 +1,17 @@
 package de.maibornwolff.codecharta.serialization
 
-import com.google.gson.GsonBuilder
-import de.maibornwolff.codecharta.model.AttributeType
-import de.maibornwolff.codecharta.model.AttributeTypeSerializer
-import de.maibornwolff.codecharta.model.BlacklistType
-import de.maibornwolff.codecharta.model.BlacklistTypeSerializer
+import com.google.gson.Gson
 import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectWrapper
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.io.Writer
-import java.nio.charset.StandardCharsets.UTF_8
 import java.util.zip.GZIPOutputStream
 
-/**
- * This class provides static methods and functions to convert a Project-Object to json
- */
 object ProjectSerializer {
-    private val GSON =
-        GsonBuilder()
-            .registerTypeAdapter(AttributeType::class.java, AttributeTypeSerializer())
-            .registerTypeAdapter(BlacklistType::class.java, BlacklistTypeSerializer())
-            .create()
+    /** The wire object + its GSON. Only the 2.0 format is emitted — this is the single dispatch point. */
+    private fun wire(project: Project): Pair<Gson, Any> = CcJsonV2Gson.gson to ProjectToCcJsonV2Mapper.toDto(project)
 
     /**
      * This method serializes a Project-Object to json and writes using given writer
@@ -33,8 +21,8 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer, writeToFile: Boolean = false) {
-        val wrappedProject = getWrappedProject(project)
-        GSON.toJson(wrappedProject, out)
+        val (gson, wireObject) = wire(project)
+        gson.toJson(wireObject, out)
         out.flush()
         if (writeToFile) {
             out.close()
@@ -51,9 +39,14 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: OutputStream, compress: Boolean, isOutputFileSpecified: Boolean = false) {
+        // Single-pass byte writer: the {files, lenses} body is serialized once and its bytes are reused
+        // for both the meta.checksum and the output, instead of serializing the whole body twice.
         val wrappedOut = if (compress && isOutputFileSpecified) GZIPOutputStream(out) else out
-        val writer = wrappedOut.bufferedWriter(UTF_8)
-        serializeProject(project, writer, isOutputFileSpecified)
+        ProjectToCcJsonV2Mapper.writeProject(project, wrappedOut)
+        wrappedOut.flush()
+        if (isOutputFileSpecified) {
+            wrappedOut.close()
+        }
     }
 
     /**
@@ -89,12 +82,7 @@ object ProjectSerializer {
      * @param project the Project-Object to be serialized
      */
     fun serializeToString(project: Project): String {
-        val wrappedProject = getWrappedProject(project)
-        return GSON.toJson(wrappedProject)
-    }
-
-    private fun getWrappedProject(project: Project): ProjectWrapper {
-        val projectJsonString = GSON.toJson(project, Project::class.java)
-        return ProjectWrapper(project, projectJsonString)
+        val (gson, wireObject) = wire(project)
+        return gson.toJson(wireObject)
     }
 }

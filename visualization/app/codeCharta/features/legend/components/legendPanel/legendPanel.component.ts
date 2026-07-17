@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, computed, inject, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, OnDestroy, OnInit, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { InspectorVisibilityService } from "../../../sidebarInspector/facade"
-import { LegendIsDeltaStateService } from "../../services/isDeltaState.service"
+import { InspectorVisibilityService } from "../../../../features/sidebarInspector/facade"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { LEGEND_BARS_OFFSET } from "../../models/legendPosition"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 import { LegendColorScaleSectionComponent } from "./legendColorScaleSection.component"
 import { LegendDeltaColorsSectionComponent } from "./legendDeltaColorsSection.component"
 import { LegendEdgeColorsSectionComponent } from "./legendEdgeColorsSection.component"
 import { LegendMetricsSectionComponent } from "./legendMetricsSection.component"
-import { LEGEND_BARS_OFFSET } from "./legendPosition"
 import { LegendToggleButtonComponent } from "./legendToggleButton.component"
 
 @Component({
@@ -26,10 +26,10 @@ import { LegendToggleButtonComponent } from "./legendToggleButton.component"
 export class LegendPanelComponent implements OnInit, OnDestroy {
     private readonly elementReference = inject(ElementRef<HTMLElement>)
     private readonly inspectorVisibilityService = inject(InspectorVisibilityService)
-    private readonly isDeltaStateService = inject(LegendIsDeltaStateService)
+    private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
 
     readonly isOpen = signal(false)
-    readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
+    readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { initialValue: false })
 
     readonly panelBottom = `calc(${LEGEND_BARS_OFFSET} + 12px)`
     readonly panelRight = computed(() => (this.inspectorVisibilityService.isVisible() ? "calc(var(--cc-inspector-width) + 40px)" : "40px"))

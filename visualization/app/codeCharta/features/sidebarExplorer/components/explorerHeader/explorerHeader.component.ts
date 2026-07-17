@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
-import { ExplorerCountsService } from "../../services/explorerCounts.service"
+import { SidebarExplorerReadStore } from "../../stores/sidebarExplorer.read.store"
 import { ExplorerCountChipComponent } from "../explorerCountChip/explorerCountChip.component"
 
 @Component({
@@ -11,10 +11,10 @@ import { ExplorerCountChipComponent } from "../explorerCountChip/explorerCountCh
     imports: [ExplorerCountChipComponent]
 })
 export class ExplorerHeaderComponent {
-    private readonly countsService = inject(ExplorerCountsService)
+    private readonly readStore = inject(SidebarExplorerReadStore)
     private readonly collapseService = inject(ExplorerCollapseService)
 
-    readonly counts = toSignal(this.countsService.counts$, { requireSync: true })
+    readonly counts = toSignal(this.readStore.counts$, { requireSync: true })
 
     readonly shown = computed(() => this.counts().shown)
     readonly flattened = computed(() => this.counts().flattened)

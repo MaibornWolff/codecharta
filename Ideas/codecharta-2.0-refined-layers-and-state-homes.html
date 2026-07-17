@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CodeCharta 2.0 — Refined Layers &amp; State Homes</title>
+<style>
+  :root{
+    --lens:#2563eb; --file:#059669; --shared:#d97706; --map:#7c3aed; --pref:#64748b;
+    --ink:#1f2430; --muted:#5b6472; --line:#e2e8f0; --bg:#fff; --code:#f6f8fa;
+  }
+  *{box-sizing:border-box}
+  body{font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fbfcfe;margin:0;padding:0 18px 70px}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{padding:34px 0 14px}
+  h1{font-size:28px;margin:0 0 6px}
+  .lead{font-size:17px;color:var(--muted);margin:0}
+  h2{font-size:20px;margin:42px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  h3{font-size:15.5px;margin:22px 0 8px}
+  p{margin:10px 0}
+  .pill{display:inline-block;background:#dcfce7;color:#166534;font-size:12px;font-weight:700;padding:2px 10px;border-radius:20px;margin-top:10px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:16px 0 0;font-size:13.5px}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .dot{width:13px;height:13px;border-radius:3px;display:inline-block}
+
+  .band{border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;background:#fff;position:relative;margin:0}
+  .band .bt{font-weight:700;font-size:13px;letter-spacing:.02em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .band .bt small{font-weight:500;color:var(--muted);letter-spacing:0;text-transform:none}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{flex:1 1 0;min-width:120px;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;background:#fff;text-align:center;font-size:14px}
+  .chip small{display:block;color:var(--muted);font-size:11.5px;margin-top:3px}
+  .b-page{border-color:var(--map);background:#faf7ff} .b-page .bt{color:var(--map)}
+  .b-feat{border-color:#94a3b8} .b-feat .bt{color:#475569}
+  .b-lens{border-color:var(--lens)} .b-lens .bt{color:var(--lens)}
+  .arrow{text-align:center;color:var(--muted);font-size:12.5px;line-height:1.2;margin:7px 0;font-weight:600}
+
+  table{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0 4px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f5f9;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;color:#475569}
+  tr:nth-child(even) td{background:#fbfcfe}
+
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:var(--code);padding:1px 5px;border-radius:4px}
+  .rule{font-size:15px;background:#0f172a;color:#e2e8f0;border-radius:10px;padding:14px 18px;margin:18px 0;line-height:1.55}
+  .rule b{color:#fff}
+  .rule ol{margin:8px 0 0;padding-left:22px} .rule li{margin:3px 0}
+  .callout{border-left:5px solid var(--map);background:#faf7ff;border-radius:8px;padding:12px 15px;margin:16px 0}
+  .callout.warn{border-left-color:var(--shared);background:#fffaf2}
+  .callout.data{border-left-color:var(--lens);background:#f4f8ff}
+  .callout b{display:block;margin-bottom:2px}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:20px;color:#fff;white-space:nowrap}
+  .t-map{background:var(--map)} .t-shared{background:var(--shared)} .t-pref{background:var(--pref)} .t-lens{background:var(--lens)} .t-file{background:var(--file)} .t-derived{background:#94a3b8}
+  .keep{color:#059669;font-weight:700} .move{color:#d97706;font-weight:700} .new{color:#7c3aed;font-weight:700}
+  ul{margin:8px 0;padding-left:22px} li{margin:4px 0}
+  footer{margin-top:46px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+  .decided{border:1.5px solid #22c55e;border-radius:10px;padding:12px 15px;margin:12px 0;background:#f0fdf4}
+  .decided b{color:#166534}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>CodeCharta 2.0 — Refined Layers &amp; State Homes</h1>
+  <p class="lead"><b style="color:var(--map)">Pages</b> compose <b style="color:#475569">features</b> · features read <b style="color:var(--lens)">lenses</b> (data) and write through a few <b>state homes</b> · every piece of state has exactly one home, chosen by its lifetime.</p>
+  <span class="pill">DECISION RECORD · ratified 2026-07-02 (naming · carved · per-renderer selection)</span>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--map)"></i> mapState (CodeMap renderer‑owned)</span>
+    <span><i class="dot" style="background:var(--shared)"></i> sharedView (synced across renderers)</span>
+    <span><i class="dot" style="background:var(--pref)"></i> preferences (durable global)</span>
+    <span><i class="dot" style="background:var(--lens)"></i> lens (read-only cc.json data)</span>
+    <span><i class="dot" style="background:var(--file)"></i> fileStore (raw files)</span>
+  </div>
+</header>
+
+<div class="rule">
+  <b>The refined system in one sentence:</b> a file is loaded into <b>fileStore</b>; each <b>lens</b> is a read-only projection of that cc.json; <b>features</b> (a top-level layer of components + services) read the lens facades they need and mutate state only through the <b>state-home</b> facades; <b>pages</b> compose features into a screen. <b>State is not scattered — it lives in per-renderer homes (<span style="color:#c084fc">mapState</span>, later <span style="color:#c084fc">graphState</span>), one cross-renderer <span style="color:#fbbf24">sharedView</span>, durable <span style="color:#cbd5e1">preferences</span>, read-only lenses, and the raw fileStore.</b>
+</div>
+
+<h2>Two shifts from the current draft</h2>
+<div class="row">
+  <div style="flex:1 1 340px">
+    <h3>1 · Features move <em>out</em> of lenses</h3>
+    <p>The current draft nests features <em>inside</em> lenses (<span class="mono">lenses/metrics/features/legend</span>) and invents a <b>“shell”</b> category for cross-lens UI (metrics bar, inspector). That boundary is already a fiction — the legend “inside” the metrics lens injects the store for <b>seven</b> non-metrics reads. In the refined model there is one flat <span class="mono">features/</span> layer; “a feature composes several lens facades + state” is the <em>normal</em> case, and the shell special-case disappears.</p>
+  </div>
+  <div style="flex:1 1 340px">
+    <h3>2 · State gets real homes; “lens” is reclaimed</h3>
+    <p>Today state is scattered across ~30 per-setting stores under <span class="mono">appSettings / dynamicSettings / appStatus / fileSettings</span>. The refined model gives every slice one home, carved by <b>lifetime</b> (persistence × cross-renderer-sync × owning subsystem). A <b>lens is read-only data from the file</b> — never a home for mutable map state; the CodeMap's mutable home is <span class="mono">mapState</span>.</p>
+  </div>
+</div>
+
+<h2>The layering (top = what you see, bottom = the data)</h2>
+<div class="band b-page">
+  <div class="bt"><span>PAGE — the screen</span><small>one per route/renderer · composes features, owns no logic</small></div>
+  <div class="row">
+    <div class="chip">CodeCharta&nbsp;page<small>map + navBar + bottomBar + sidebars</small></div>
+    <div class="chip" style="opacity:.55;border-style:dashed">Graph page<small>planned (LSM)</small></div>
+    <div class="chip" style="opacity:.55;border-style:dashed">Report page<small>planned</small></div>
+  </div>
+</div>
+<div class="arrow">▼ composes</div>
+<div class="band b-feat">
+  <div class="bt"><span>FEATURES — components + services (one flat layer)</span><small>services read lens facades + write via state-home facades · no more “shell” vs “in-lens” split</small></div>
+  <div class="row">
+    <div class="chip">navBar</div><div class="chip">metricsBar</div><div class="chip">inspector</div>
+    <div class="chip">legend</div><div class="chip">explorer</div><div class="chip">contextMenu</div>
+    <div class="chip">labelSettings</div><div class="chip">codeMap&nbsp;(engine seam)</div><div class="chip">…</div>
+  </div>
+</div>
+<div class="arrow">▼ read (data)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼ read + write (state)</div>
+<div class="row">
+  <div class="band b-lens" style="flex:2 1 360px">
+    <div class="bt"><span>LENSES — read-only cc.json data</span><small>repos + store + logic · read facade (+ near-empty load-time write)</small></div>
+    <div class="row">
+      <div class="chip">metrics<small>node metrics → the city</small></div><div class="chip">dependency<small>edges → the graph</small></div><div class="chip" style="opacity:.55;border-style:dashed">structure</div>
+    </div>
+  </div>
+  <div class="band" style="flex:1 1 220px;border-color:var(--file)">
+    <div class="bt" style="color:var(--file)"><span>fileStore</span><small>raw source</small></div>
+    <div class="row"><div class="chip">files · delta · provenance</div></div>
+  </div>
+</div>
+<div class="arrow">▲ the mutable state homes features write into ▲</div>
+<div class="row">
+  <div class="band" style="flex:1.4;border-color:var(--map);background:#faf7ff"><div class="bt" style="color:var(--map)"><span>PER-RENDERER — mapState · graphState<small>owned by one renderer, not shared</small></span></div><div style="font-size:12.5px;color:var(--muted)">the CodeMap's presentation + its <em>own</em> metric selection (complexity/rloc → area/height/color). The Graph gets its own <span class="mono">graphState</span> (which dependencies, LSM levels).</div></div>
+  <div class="band" style="flex:1;border-color:var(--shared);background:#fffaf2"><div class="bt" style="color:var(--shared)"><span>sharedView</span></div><div style="font-size:12.5px;color:var(--muted)">one value, synced across every renderer — focus, node selection, search, blacklist, markedPackages (the “jump” + filters)</div></div>
+  <div class="band" style="flex:.9;border-color:var(--pref)"><div class="bt" style="color:var(--pref)"><span>preferences</span></div><div style="font-size:12.5px;color:var(--muted)">durable global prefs</div></div>
+</div>
+
+<h2>Where every piece of state lives</h2>
+<p>Homes carved by an <em>observable property</em> — not by folder tidiness. Derived values are computed selectors, not a state home.</p>
+<table>
+  <tr><th style="width:132px">Home</th><th>Owns</th><th style="width:230px">Why it's its own home</th></tr>
+  <tr>
+    <td><span class="tag t-map">mapState</span><br><small>the renamed “lens”-for-state; per renderer</small></td>
+    <td>mapColors · all labels · scaling · invert* · hideFlat · whiteBackground · <b>colorMode · colorRange · margin · layoutAlgorithm</b> · edge appearance · <b>the map's metric selection</b> (area/height/color/distribution/edge) · transient <b>hover / right-click / selectedBuilding · isLoadingMap</b></td>
+    <td><b>Owned by the CodeMap renderer</b> — how it presents <em>and</em> what it maps. Remembered per renderer, not shared. A future Graph gets a sibling <span class="mono">graphState</span>. Seeded by today's <span class="mono">appearance/</span>.</td>
+  </tr>
+  <tr>
+    <td><span class="tag t-shared">sharedView</span><br><small>the tiny carve-out</small></td>
+    <td>focusedNodePath · selected node (as a renderer-agnostic id) · searchPattern · <b>blacklist · markedPackages</b></td>
+    <td><b>One value, synced across every renderer</b> — focus/select a node in the Graph and it's focused/selected in the Map (the “jump”); filters &amp; annotations apply everywhere. This is what coarse consolidation would break.</td>
+  </tr>
+  <tr>
+    <td><span class="tag t-pref">preferences</span><br><small>renamed, purged appSettings</small></td>
+    <td>experimentalFeatures · screenshotToClipboard · isColorMetricLinkedToHeight · isPresentationMode · maxTreeMapFiles · resetCameraIfNewFile · sorting</td>
+    <td>durable global preference, true regardless of file or renderer → localStorage.</td>
+  </tr>
+  <tr>
+    <td><span class="tag t-lens">lenses</span></td>
+    <td>nodeMetricData · edgeMetricData · <b>and their source</b>: edges · attributeTypes · attributeDescriptors</td>
+    <td>read-only projection of the immutable cc.json. Never holds user-editable state.</td>
+  </tr>
+  <tr>
+    <td><span class="tag t-file">fileStore</span></td>
+    <td>files (incl. <span class="mono">selectedAs</span> = single/multi/delta) · provenance · isLoadingFile</td>
+    <td>the raw loaded file(s) + selection/delta + the file-load flag.</td>
+  </tr>
+  <tr>
+    <td><span class="tag t-derived">derived</span><br><small>(no store)</small></td>
+    <td>accumulatedData · idToNode · metricData</td>
+    <td>computed selectors owned by the page/lens layer — not state at all.</td>
+  </tr>
+</table>
+
+<div class="rule">
+  <b>The litmus test — which home does a slice go in?</b> (apply top-down, first match wins)
+  <ol>
+    <li>Read-only projection of the immutable cc.json? → <b style="color:#93c5fd">lens</b></li>
+    <li>The raw file / file selection / delta mode? → <b style="color:#6ee7b7">fileStore</b></li>
+    <li>Persisted to localStorage, true regardless of file or renderer? → <b style="color:#cbd5e1">preferences</b></li>
+    <li>The <b>same value across every renderer</b> (focus, selection, search, filters)? → <b style="color:#fbbf24">sharedView</b></li>
+    <li>Otherwise — <b>owned by one renderer</b>'s presentation/selection → that renderer's state (<b style="color:#c084fc">mapState</b>, <b style="color:#c084fc">graphState</b>)</li>
+  </ol>
+</div>
+
+<h2>Read facade vs write facade — where CQRS actually pays off</h2>
+<div class="callout data">
+  <b>On the state homes, not the data lenses.</b>
+  A metrics/dependency <b>lens is read-only</b> (its only “write” is file-load seeding), so a write facade there is near-empty — do <em>not</em> let a lens own selection, that would turn “data from the file” into “mutable view-config owner” and break the <span class="mono">file-load = data · user-click = view state</span> rule. The read/write split belongs on <b>mapState / sharedView / preferences</b>: today <span class="mono">appearance.facade</span> is a single <span class="mono">export *</span> barrel that mixes selectors (read) and action creators (write). Splitting them lets dep-cruiser <b>guarantee a display-only component physically cannot dispatch</b>, and collapses the duplicated per-feature store wrappers the migration is already chasing.
+</div>
+<p><b>Lenses stay read-only <em>and parameterized.</em></b> The metrics lens exposes <span class="mono">rangeOf(metric)</span> — the map feature supplies the selected metric from <span class="mono">mapState</span>; the lens never reads a selection itself. This dissolves the deferred <span class="mono">valueOf</span> cycle and unblocks the <span class="mono">metrics-lens-ngrx-guard → error</span> flip.</p>
+
+<h2>How it lands against the migration so far</h2>
+<p>Roughly <span class="keep">~82% of the completed work is a keeper</span>. This invalidates a <em>decision</em> (features-inside-lenses), not code.</p>
+<table>
+  <tr><th style="width:220px">Done so far (Slices 1–4)</th><th>Under the refined model</th></tr>
+  <tr><td><span class="mono">lenses/metrics/{store,repos}</span>, <span class="mono">lenses/dependency/store</span></td><td><span class="keep">KEEP verbatim</span> — already “repos + store + logic over cc.json”.</td></tr>
+  <tr><td><span class="mono">metricsLens.facade</span></td><td><span class="keep">KEEP</span> — already the read facade; a write facade is additive.</td></tr>
+  <tr><td><span class="mono">appearance/</span> (Slice 4)</td><td><span class="move">RENAME → mapState</span> and absorb stragglers. NB: Slice 4 was <b>folder-only</b> — at runtime these 21 slices are <em>still combined under</em> <span class="mono">state.appSettings</span>.</td></tr>
+  <tr><td><span class="mono">lenses/metrics/features/legend/</span></td><td><span class="move">RE-HOME → features/legend/</span> — the one real reversal (git mv + rewire to the read facade). Zero logic discarded; legend was never single-lens.</td></tr>
+  <tr><td>dep-cruiser rules</td><td>Most <span class="keep">survive</span>; <span class="mono">lens-external-access</span> simplifies; the lens-internal feature rules are replaced by top-level <span class="mono">features/</span> rules + one new “feature services reach a lens only via its facade”.</td></tr>
+</table>
+
+<h3>Sequence toward the end state</h3>
+<p>The first step makes state's location <b>real at runtime</b> (today it's folder-only). This is the store-key reshape deferred in Slice 4.</p>
+<ol>
+  <li><span class="new">Keystone</span> — give <span class="mono">appearance</span>'s slices their own reducer; stop combining them under <span class="mono">appSettings</span> → creates the real <span class="mono">state.mapState.*</span> root. Pure structural, but touches <span class="mono">_applyPartialState</span> / URL / scenario / IndexedDB paths, so it's the careful one.</li>
+  <li>Move <span class="mono">colorMode · colorRange · margin · layoutAlgorithm</span> + <b>the map's metric selection</b> (area/height/color/distribution/edge) out of <span class="mono">dynamicSettings</span>, and hover / right-click / selectedBuilding / isLoadingMap out of <span class="mono">appStatus</span>/<span class="mono">appSettings</span>, into <span class="mono">mapState</span>.</li>
+  <li>Stand up <span class="mono">sharedView</span>; move <span class="mono">focusedNodePath · searchPattern · blacklist · markedPackages</span> + the selected-node id in.</li>
+  <li>Dissolve <span class="mono">fileSettings</span>: source (edges / attributeTypes / descriptors) → lenses; blacklist / markedPackages → sharedView.</li>
+  <li>Purge <span class="mono">appSettings → preferences</span>.</li>
+  <li>Genuine code refactors, last: the <span class="mono">structure</span> lens (also unblocks <span class="mono">valueOf</span>), re-expressing <span class="mono">selectedBuildingId</span> as a renderer-agnostic node id, and standing up <span class="mono">graphState</span> when the Graph renderer is built.</li>
+</ol>
+
+<h2>Kept, but deferred</h2>
+<div class="callout warn">
+  <b>A named renderer-engine seam — build the dumb-engine wrapper only when renderer #2 lands.</b>
+  Making the 3D map “just a feature” is what keeps the model flat, but swappable renderers are the stated point of 2.0 — and the ratified split confirms they're genuinely different: the <b>Map</b> shows node metrics (complexity, rloc) as a city; the <b>Graph</b> is a Structure101‑style <b>LSM</b> (levelized structure map) of dependencies between components/files. Keep the engine boundary as a <em>named</em> contract (<span class="mono">load · highlight · settings</span> + <span class="mono">onSelect · onHover</span>) so it can't silently rot; don't pay for the full dumb-engine/page-wire split against a single renderer that can't validate it.
+</div>
+
+<h2 style="border-color:#22c55e">Ratified decisions (2026-07-02)</h2>
+<div class="decided"><b>a · Naming.</b> <span class="mono">mapState</span> (the CodeMap renderer's own presentation + selection) · <span class="mono">sharedView</span> (synced across renderers) · <span class="mono">preferences</span> (durable global). Each future renderer owns a sibling <span class="mono">&lt;renderer&gt;State</span> (e.g. <span class="mono">graphState</span>).</div>
+<div class="decided"><b>b · Carved.</b> Keep <span class="mono">sharedView</span> as its own module — the upcoming migration stories are exactly this state-home split, and multi-renderer is a real commitment.</div>
+<div class="decided"><b>c · Selection is per-renderer, not global.</b> Map and Graph are fundamentally different renderers (metrics‑city vs dependency‑LSM), so they select different things. The map's metric selection lives in <span class="mono">mapState</span>; the Graph's in <span class="mono">graphState</span>. <span class="mono">sharedView</span> holds only cross-renderer state (focus, selection, search, filters). <em>Open sub-note:</em> <span class="mono">edgeMetric</span> is the one candidate for promotion to <span class="mono">sharedView</span> if a dependency-metric choice should sync between the Map's edge previews and the Graph — decide when the Graph lands.</div>
+
+<footer>
+  CodeCharta 2.0 · refined layering &amp; state-home taxonomy — the single source of truth (it supersedes the earlier
+  <span class="mono">codecharta-2.0-*</span> exploration artifacts, now removed; their still-valid design notes were salvaged
+  into <span class="mono">migration-2-0-plans/roadmap-v2-state-homes.md</span>). Migration sequence + dep-cruiser rules:
+  <span class="mono">migration-2-0-plans/roadmap-v2-state-homes.md</span> + <span class="mono">Ideas/dependency-cruiser.2.0.refined.cjs</span>.
+  Grounded in a full inventory of the ~30 current ngrx slices. Status: decisions a/b/c ratified.
+</footer>
+
+</div>
+</body>
+</html>

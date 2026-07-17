@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.filters.edgefilter
 
-import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
@@ -14,27 +13,14 @@ import de.maibornwolff.codecharta.util.Logger
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
     private val projectBuilder =
-        ProjectBuilder(
+        ProjectBuilder.fromLenses(
             listOf(MutableNode("root", NodeType.Folder)),
-            mutableListOf(),
-            getAttributeTypes(),
-            getAttributeDescriptors(),
-            getBlacklist()
+            project.lenses.metrics,
+            project.lenses.dependency.copy(edges = emptyList()),
+            getBlacklist(),
+            opaqueLenses = project.lenses.opaqueLenses,
+            commitHash = project.commitHash
         )
-
-    private fun getAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val newAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-        project.attributeTypes.forEach {
-            newAttributeTypes[it.key] = it.value
-        }
-        return newAttributeTypes
-    }
-
-    private fun getAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
-        val newAttributeDescriptor = mutableMapOf<String, AttributeDescriptor>()
-        newAttributeDescriptor.putAll(project.attributeDescriptors)
-        return newAttributeDescriptor
-    }
 
     private fun getBlacklist(): MutableList<BlacklistItem> {
         val newList = mutableListOf<BlacklistItem>()
@@ -51,13 +37,13 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     }
 
     private fun insertEdges() {
-        project.edges.forEach {
+        project.lenses.dependency.edges.forEach {
             projectBuilder.insertEdge(it)
         }
     }
 
     private fun insertEmptyNodesFromEdges() {
-        project.edges.forEach {
+        project.lenses.dependency.edges.forEach {
             insertEdgeAsNode(it.fromNodeName)
             insertEdgeAsNode(it.toNodeName)
         }
@@ -92,7 +78,9 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
 
     private fun insertEdgeAttributesIntoNodes(nodes: Set<Node>, parentPath: List<String> = listOf()) {
         nodes.forEach {
-            val node = Node(it.name, it.type, getAttributes(it, parentPath), it.link)
+            // Carry the per-file contentHash through the rebuild so it stays usable as a --base-file /
+            // content-match signal; it is the node's identity-independent checksum, not its id.
+            val node = Node(it.name, it.type, getAttributes(it, parentPath), it.link, checksum = it.checksum)
             insertNodeInProjectBuilder(node, parentPath.toList())
             if (it.children.isNotEmpty()) {
                 val newParentPath = parentPath.toMutableList() // clone object
@@ -121,7 +109,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private fun getAggregatedEdgeAttributes(node: Node, parentPath: List<String>): MutableMap<String, Any> {
         val nodePath: String = getNodePathAsString(parentPath, node.name)
         val filteredEdges: List<Edge> =
-            project.edges.filter { edge ->
+            project.lenses.dependency.edges.filter { edge ->
                 edge.fromNodeName == nodePath || edge.toNodeName == nodePath
             }
         val attributeKeys: List<String> = getAttributeKeys(filteredEdges)
@@ -166,8 +154,5 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         return aggregatedAttributes
     }
 
-    private fun getAttributeTypeByKey(key: String): AttributeType {
-        val edgeAttributeTypes: Map<String, AttributeType> = project.attributeTypes["edges"] ?: return AttributeType.ABSOLUTE
-        return edgeAttributeTypes[key] ?: AttributeType.ABSOLUTE
-    }
+    private fun getAttributeTypeByKey(key: String): AttributeType = project.lenses.dependency.attributeTypes[key] ?: AttributeType.ABSOLUTE
 }

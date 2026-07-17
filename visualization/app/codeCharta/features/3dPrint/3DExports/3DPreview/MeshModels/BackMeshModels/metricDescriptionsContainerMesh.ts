@@ -1,10 +1,10 @@
-import { GeometryOptions } from "../../preview3DPrintMesh"
 import { Mesh } from "three"
 import { Font } from "three/addons/loaders/FontLoader.js"
 import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
-import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
-import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { GeneralMesh } from "../generalMesh"
+import { ColorMetricDescriptionBlockMesh } from "./colorMetricDescriptionBlockMesh"
+import { MetricDescriptionBlockMesh } from "./metricDescriptionBlockMesh"
 
 export class MetricDescriptionsContainerMesh extends GeneralMesh {
     constructor(

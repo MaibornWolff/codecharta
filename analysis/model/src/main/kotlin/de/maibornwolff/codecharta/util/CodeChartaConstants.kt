@@ -17,5 +17,12 @@ class CodeChartaConstants {
          * Contains folders and patterns that analysers exclude by default
          */
         val BUILD_FOLDERS = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/node_modules/", "(/|^)\\..*")
+
+        /**
+         * Regex matching a repository's own `.git` directory as a whole path component — but NOT
+         * `.github`, `.gitignore`, `.gitattributes`. Applied unconditionally so the git store is
+         * excluded even under `--bypass-gitignore`, where no gitignore handler is consulted.
+         */
+        const val GIT_DIRECTORY_EXCLUDE_PATTERN = "(/|^)\\.git(/|\$)"
     }
 }

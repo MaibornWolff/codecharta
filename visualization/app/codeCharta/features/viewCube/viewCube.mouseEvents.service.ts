@@ -1,9 +1,9 @@
-import { hierarchy } from "d3-hierarchy"
-import { CodeMapMouseEventService, CursorType, ThreeMapControlsService } from "../../features/codeMap/facade"
-import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
-import { isLeaf } from "../../util/codeMapHelper"
-import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { Injectable } from "@angular/core"
+import { hierarchy } from "d3-hierarchy"
+import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
+import { OrbitControls } from "three/addons/controls/OrbitControls.js"
+import { CursorType, changeCursorIndicator, ThreeMapControlsService } from "../../renderer/threeViewer/threeViewer.facade"
+import { isLeaf } from "../../util/codeMapHelper"
 import { EventEmitter } from "../../util/EventEmitter"
 
 type ViewCubeEvents = {
@@ -143,13 +143,13 @@ export class ViewCubeMouseEventsService {
 
     private triggerViewCubeHoverEvent(cube: Mesh) {
         this.currentlyHovered = cube
-        CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+        changeCursorIndicator(CursorType.Pointer)
         this.eventEmitter.emit("viewCubeHoveredEvent", { cube })
     }
 
     private triggerViewCubeUnhoverEvent() {
         this.currentlyHovered = null
-        CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+        changeCursorIndicator(CursorType.Default)
         this.eventEmitter.emit("viewCubeUnHoveredEvent")
     }
 

@@ -1,5 +1,5 @@
+import { NodeMetricData } from "../../../../model/codeCharta.model"
 import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
-import { NodeMetricData } from "../../../../codeCharta.model"
 
 describe("FilterMetricDataBySearchTermPipe", () => {
     let pipe: FilterMetricDataBySearchTermPipe

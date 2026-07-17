@@ -1,27 +1,16 @@
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
-import { ApplicationConfig, APP_INITIALIZER } from "@angular/core"
-import { provideStore } from "@ngrx/store"
+import { APP_INITIALIZER, ApplicationConfig } from "@angular/core"
 import { provideEffects } from "@ngrx/effects"
-import { appReducers, setStateMiddleware } from "app/codeCharta/state/store/state.manager"
-import { UnfocusNodesEffect } from "app/codeCharta/state/effects/unfocusNodes/unfocusNodes.effect"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "app/codeCharta/state/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
+import { provideStore } from "@ngrx/store"
 import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
-import { AutoFitCodeMapEffect } from "app/codeCharta/state/effects/autoFitCodeMapChange/autoFitCodeMap.effect"
-import { LinkColorMetricToHeightMetricEffect } from "app/codeCharta/state/effects/linkColorMetricToHeightMetric/linkColorMetricToHeightMetric.effect"
-import { RenderCodeMapEffect } from "app/codeCharta/state/effects/renderCodeMapEffect/renderCodeMap.effect"
-import { ResetChosenMetricsEffect } from "app/codeCharta/state/effects/resetChosenMetrics/resetChosenMetrics.effect"
-import { ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect } from "app/codeCharta/state/effects/resetSelectedEdgeMetricWhenItDoesntExistAnymore/resetSelectedEdgeMetricWhenItDoesntExistAnymore.effect"
-import { SaveCcStateEffect } from "app/codeCharta/state/effects/saveCcState/saveCcState.effect"
-import { SetLoadingIndicatorEffect } from "app/codeCharta/state/effects/setLoadingIndicator/setLoadingIndicator.effect"
-import { UpdateEdgePreviewsEffect } from "app/codeCharta/state/effects/updateEdgePreviews/updateEdgePreviews.effect"
-import { UpdateFileSettingsEffect } from "app/codeCharta/state/effects/updateFileSettings/updateFileSettings.effect"
-import { UpdateMapColorsEffect } from "app/codeCharta/state/effects/updateMapColors/updateMapColors.effect"
-import { UpdateQueryParametersEffect } from "app/codeCharta/state/effects/updateQueryParameters/updateQueryParameters.effect"
-import { UpdateVisibleTopLabelsEffect } from "app/codeCharta/state/effects/updateVisibleTopLabels/updateVisibleTopLabels.effect"
-import { ResetColorRangeEffect } from "app/codeCharta/state/effects/resetColorRange/resetColorRange.effect"
-import { BlacklistSearchPatternEffect } from "app/codeCharta/state/effects/blacklistSearchPattern/blacklistSearchPattern.effect"
-import { UpdateAmountOfEdgePreviewsEffect } from "./codeCharta/state/effects/amountOfEdgePreviews/updateAmountOfEdgePreviews.effect"
-import { BlacklistExtensionEffect } from "./codeCharta/state/effects/blacklistExtension/blacklistExtension.effect"
+import { codeMapEffects } from "app/codeCharta/features/codeMap/effects/codeMap.effects"
+import { fileExtensionBarEffects } from "app/codeCharta/features/fileExtensionBar/effects/fileExtensionBar.effects"
+import { labelSettingsEffects } from "app/codeCharta/features/labelSettings/effects/labelSettings.effects"
+import { metricsBarEffects } from "app/codeCharta/features/metricsBar/effects/metricsBar.effects"
+import { sharedEffects } from "app/codeCharta/features/shared/effects/shared.effects"
+import { sidebarExplorerEffects } from "app/codeCharta/features/sidebarExplorer/effects/sidebarExplorer.effects"
+import { loadEffects } from "app/codeCharta/load/effects/load.effects"
+import { appReducers, setStateMiddleware } from "app/codeCharta/stores/rootStore/store"
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -30,24 +19,13 @@ export const appConfig: ApplicationConfig = {
         provideStore(appReducers, { metaReducers: [setStateMiddleware] }),
 
         provideEffects([
-            UnfocusNodesEffect,
-            AddBlacklistItemsIfNotResultsInEmptyMapEffect,
-            UpdateAmountOfEdgePreviewsEffect,
-            BlacklistSearchPatternEffect,
-            BlacklistExtensionEffect,
-            ResetColorRangeEffect,
-            ResetChosenMetricsEffect,
-            UpdateEdgePreviewsEffect,
-            RenderCodeMapEffect,
-            AutoFitCodeMapEffect,
-            UpdateVisibleTopLabelsEffect,
-            LinkColorMetricToHeightMetricEffect,
-            ResetSelectedEdgeMetricWhenItDoesntExistAnymoreEffect,
-            UpdateFileSettingsEffect,
-            SetLoadingIndicatorEffect,
-            SaveCcStateEffect,
-            UpdateQueryParametersEffect,
-            UpdateMapColorsEffect
+            ...codeMapEffects,
+            ...metricsBarEffects,
+            ...labelSettingsEffects,
+            ...sidebarExplorerEffects,
+            ...fileExtensionBarEffects,
+            ...sharedEffects,
+            ...loadEffects
         ]),
 
         {

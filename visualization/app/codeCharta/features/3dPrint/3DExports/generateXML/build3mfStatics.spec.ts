@@ -1,5 +1,5 @@
-import { getXMLcontentType, getXMLrelationships } from "./build3mfStatics"
 import { XMLValidator } from "fast-xml-parser"
+import { getXMLcontentType, getXMLrelationships } from "./build3mfStatics"
 
 describe("build3mfStatics", () => {
     describe("contentType", () => {

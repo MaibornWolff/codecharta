@@ -1,10 +1,10 @@
 import { Font, FontData } from "three/addons/loaders/FontLoader.js"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
+import { CustomLogoMesh } from "./customLogoMesh"
+import { FrontMWLogoMesh } from "./frontMWLogoMesh"
 import { FrontPrintContainerMesh } from "./frontPrintContainerMesh"
 import { FrontTextMesh } from "./frontTextMesh"
 import { SecondRowTextMesh } from "./secondRowTextMesh"
-import { FrontMWLogoMesh } from "./frontMWLogoMesh"
-import { CustomLogoMesh } from "./customLogoMesh"
 
 jest.mock("./frontTextMesh", () => {
     return {

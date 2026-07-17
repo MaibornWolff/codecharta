@@ -1,12 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { HexMapColor } from "../../../../codeCharta.model"
-import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
+import { HexMapColor } from "../../../../model/codeCharta.model"
+import { defaultMapColors, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { MapColorLabelPipe } from "../../../../util/pipes/mapColorLabel.pipe"
-import { LegendColorMetricService } from "../../services/colorMetric.service"
-import { LegendColorRangeService } from "../../services/colorRange.service"
-import { LegendMapColorsService } from "../../services/mapColors.service"
-import { LegendSelectedColorMetricDataService } from "../../services/selectedColorMetricData.service"
+import { LegendMetricRangeStore } from "../../stores/legendMetricRange.store"
 
 @Component({
     selector: "cc-legend-color-row",
@@ -16,20 +13,18 @@ import { LegendSelectedColorMetricDataService } from "../../services/selectedCol
 })
 export class LegendColorRowComponent {
     constructor(
-        private readonly colorMetricService: LegendColorMetricService,
-        private readonly colorRangeService: LegendColorRangeService,
-        private readonly selectedColorMetricDataService: LegendSelectedColorMetricDataService,
-        private readonly mapColorsService: LegendMapColorsService
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly legendMetricRangeStore: LegendMetricRangeStore
     ) {}
 
     readonly mapColorFor = input.required<HexMapColor>()
 
-    readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
-    readonly colorRange = toSignal(this.colorRangeService.colorRange$(), { initialValue: { from: 0, to: 0 } })
-    readonly nodeMetricRange = toSignal(this.selectedColorMetricDataService.selectedColorMetricData$(), {
+    readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { initialValue: "" })
+    readonly colorRange = toSignal(this.mapStateReadWindow.colorRange$, { initialValue: { from: 0, to: 0 } })
+    readonly nodeMetricRange = toSignal(this.legendMetricRangeStore.selectedColorMetricData$, {
         initialValue: { values: [] as number[], minValue: 0, maxValue: 0 }
     })
-    private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
+    private readonly mapColors = toSignal(this.mapStateReadWindow.mapColors$, { initialValue: defaultMapColors })
 
     readonly color = computed(() => this.mapColors()[this.mapColorFor()] as string)
 }

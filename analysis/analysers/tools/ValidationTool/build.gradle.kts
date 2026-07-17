@@ -3,6 +3,7 @@ dependencies {
     implementation(project(":dialogProvider"))
     implementation(project(":model"))
 
+    implementation(libs.gson)
     implementation(libs.json.schema)
     implementation(libs.picocli)
     implementation(libs.kotter)

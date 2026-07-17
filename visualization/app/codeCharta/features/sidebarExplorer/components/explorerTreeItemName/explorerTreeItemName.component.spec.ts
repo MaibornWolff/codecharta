@@ -1,9 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
-import { CodeMapNode, NodeType } from "../../../../codeCharta.model"
-import { searchedNodePathsSelector } from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
-import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
+import { provideMockState } from "../../../../mocks/state.mocks"
+import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
+import { searchedNodePathsSelector } from "../../../../renderer/renderModel/searchedNodes/searchedNodePaths.selector"
+import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { ExplorerTreeItemNameComponent } from "./explorerTreeItemName.component"
 
 describe("ExplorerTreeItemNameComponent", () => {
@@ -11,6 +12,7 @@ describe("ExplorerTreeItemNameComponent", () => {
         TestBed.configureTestingModule({
             imports: [ExplorerTreeItemNameComponent],
             providers: [
+                provideMockState(),
                 provideMockStore({
                     selectors: [
                         { selector: areaMetricSelector, value: "rloc" },
@@ -47,6 +49,7 @@ describe("ExplorerTreeItemNameComponent", () => {
         TestBed.configureTestingModule({
             imports: [ExplorerTreeItemNameComponent],
             providers: [
+                provideMockState(),
                 provideMockStore({
                     selectors: [
                         { selector: areaMetricSelector, value: "rloc" },

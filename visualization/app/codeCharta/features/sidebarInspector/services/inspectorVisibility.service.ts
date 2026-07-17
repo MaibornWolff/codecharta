@@ -1,15 +1,15 @@
-import { computed, inject, Injectable } from "@angular/core"
+import { computed, Injectable, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ThreeRendererService, ThreeSceneService } from "../../../features/codeMap/facade"
-import { InspectorSelectedNodeStore } from "../stores/selectedNode.store"
+import { ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { SidebarInspectorReadStore } from "../stores/sidebarInspector.read.store"
 
 @Injectable({ providedIn: "root" })
 export class InspectorVisibilityService {
-    private readonly selectedNodeStore = inject(InspectorSelectedNodeStore)
+    private readonly readStore = inject(SidebarInspectorReadStore)
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly threeRendererService = inject(ThreeRendererService)
 
-    private readonly selectedNode = toSignal(this.selectedNodeStore.selectedNode$, { initialValue: undefined })
+    private readonly selectedNode = toSignal(this.readStore.selectedNode$, { initialValue: undefined })
 
     readonly isVisible = computed(() => this.selectedNode() != null)
 

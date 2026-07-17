@@ -2,6 +2,8 @@
 codecharta-analyse.sonargraph
 auth.txt
 .cache
+# call-graph exports (e.g. analysis.cg.json) — large, generated
+*.cg.json
 **/node-wrapper/public
 .scannerwork
 

@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core"
-import { State, Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { setState } from "../../../state/store/state.actions"
-import { getPartialDefaultState } from "../../../state/store/util/getPartialDefaultState"
+import { Store } from "@ngrx/store"
+import { CcState } from "../../../model/codeCharta.model"
+import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
+import { setState } from "../../../stores/rootStore/state.actions"
+import { getPartialDefaultState } from "../getPartialDefaultState"
 
 @Injectable({
     providedIn: "root"
@@ -10,11 +11,11 @@ import { getPartialDefaultState } from "../../../state/store/util/getPartialDefa
 export class ResetSettingsButtonStore {
     constructor(
         private readonly store: Store<CcState>,
-        private readonly state: State<CcState>
+        private readonly ccStateSnapshot: CcStateSnapshot
     ) {}
 
     resetSettings(settingsKeys: string[]) {
-        const partialDefaultState = getPartialDefaultState(settingsKeys, this.state.getValue())
+        const partialDefaultState = getPartialDefaultState(settingsKeys, this.ccStateSnapshot.get())
         this.store.dispatch(setState({ value: partialDefaultState }))
     }
 }

@@ -1,4 +1,4 @@
-import { CodeMapNode, FileCount } from "../../../codeCharta.model"
+import { CodeMapNode, FileCount } from "../../../model/codeCharta.model"
 
 export const getFileCount = (node?: Pick<CodeMapNode, "attributes" | "fileCount">): FileCount | undefined => {
     if (!node) {

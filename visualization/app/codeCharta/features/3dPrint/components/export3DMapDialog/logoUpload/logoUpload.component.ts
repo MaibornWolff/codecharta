@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, input, output, viewChild } from "@angular/core"
-import { InlineColorPickerComponent } from "../../../../shared/components/inlineColorPicker/inlineColorPicker.component"
+import { InlineColorPickerComponent } from "../../../../shared/facade"
 
 @Component({
     selector: "cc-logo-upload",

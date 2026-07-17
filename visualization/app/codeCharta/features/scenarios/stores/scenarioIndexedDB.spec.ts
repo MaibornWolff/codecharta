@@ -4,7 +4,7 @@ if (typeof globalThis.structuredClone === "undefined") {
     globalThis.structuredClone = <T>(value: T): T => JSON.parse(JSON.stringify(value))
 }
 
-import { ColorMode, LabelMode } from "../../../codeCharta.model"
+import { ColorMode, LabelMode } from "../../../model/codeCharta.model"
 import { Scenario } from "../model/scenario.model"
 import { ScenarioIndexedDBService } from "./scenarioIndexedDB"
 

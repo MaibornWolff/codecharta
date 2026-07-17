@@ -1,10 +1,10 @@
-import { CodeMapNode, CCFile, NodeType } from "../codeCharta.model"
-import { FileNameHelper } from "./fileNameHelper"
-import { getUpdatedPath } from "./nodePathHelper"
 import packageJson from "../../../package.json"
-import { fileRoot } from "./fileRoot"
+import { CCFile, CodeMapNode, NodeType } from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import { clone } from "./clone"
+import { FileNameHelper } from "./fileNameHelper"
+import { fileRoot } from "./fileRoot"
+import { getUpdatedPath } from "./nodePathHelper"
 
 export class AggregationGenerator {
     private static projectNameArray: string[] = []

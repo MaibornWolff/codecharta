@@ -1,16 +1,25 @@
 import {
+    BlacklistItem,
     CCFile,
     ColorLabelOptions,
     ColorMode,
     ColorRange,
+    DependencyLensSource,
     FileSettings,
     LabelMode,
     LayoutAlgorithm,
     MapColors,
+    MarkedPackage,
+    MetricsLensSource,
     PrimaryMetrics,
     Scaling,
-    SortingOption
+    Sorting
 } from "./domain.model"
+
+// The default number of top-value labels shown on the map. A plain domain default (not ngrx state),
+// so it lives in model/ where both the mapState amountOfTopLabels reducer and the pure
+// getNumberOfTopLabels helper can read it without the helper importing a state home (util-is-a-leaf-kernel).
+export const defaultAmountOfTopLabels = 10
 
 export enum FileSelectionState {
     Reference = "Reference",
@@ -26,21 +35,39 @@ export interface FileState {
 
 export interface Settings {
     fileSettings: FileSettings
-    dynamicSettings: DynamicSettings
-    appSettings: AppSettings
+    preferences: Preferences
+    mapState: MapState
+    sharedView: SharedView
 }
 
-export interface DynamicSettings extends PrimaryMetrics {
-    colorMode: ColorMode
-    sortingOption: SortingOption
-    colorRange: ColorRange
-    distributionMetric: string
+export interface Preferences {
+    isPresentationMode: boolean
+    resetCameraIfNewFileIsLoaded: boolean
+    maxTreeMapFiles: number
+    experimentalFeaturesEnabled: boolean
+    screenshotToClipboardEnabled: boolean
+    isColorMetricLinkedToHeightMetric: boolean
+    sorting: Sorting
+}
+
+// Shared renderer view state: focus stack, search pattern, blacklist, marked packages, interaction ids.
+export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string
-    margin: number
+    blacklist: BlacklistItem[]
+    markedPackages: MarkedPackage[]
+    hoveredNodeId: string | null
+    selectedBuildingId: string | null
+    rightClickedNodeData: {
+        nodeId: string
+        xPositionOfRightClickEvent: number
+        yPositionOfRightClickEvent: number
+        origin: "codeMap" | "explorer"
+    } | null
 }
 
-export interface AppSettings {
+export interface MapState extends PrimaryMetrics {
+    distributionMetric: string
     amountOfTopLabels: number
     labelSize: number
     amountOfEdgePreviews: number
@@ -51,35 +78,32 @@ export interface AppSettings {
     invertArea: boolean
     isWhiteBackground: boolean
     mapColors: MapColors
-    isPresentationMode: boolean
     showOutgoingEdges: boolean
     showIncomingEdges: boolean
     showOnlyBuildingsWithEdges: boolean
     isEdgeMetricVisible: boolean
-    resetCameraIfNewFileIsLoaded: boolean
-    isLoadingMap: boolean
-    isLoadingFile: boolean
-    sortingOrderAscending: boolean
     showMetricLabelNameValue: boolean
     showMetricLabelNodeName: boolean
-    layoutAlgorithm: LayoutAlgorithm
-    maxTreeMapFiles: number
-    experimentalFeaturesEnabled: boolean
-    screenshotToClipboardEnabled: boolean
     colorLabels: ColorLabelOptions
     labelMode: LabelMode
     groupLabelCollisions: boolean
     labelsPerMap: boolean
-    isColorMetricLinkedToHeightMetric: boolean
     enableFloorLabels: boolean
+    colorMode: ColorMode
+    colorRange: ColorRange
+    margin: number
+    layoutAlgorithm: LayoutAlgorithm
 }
 
 export interface CcState {
-    fileSettings: FileSettings
-    dynamicSettings: DynamicSettings
-    appSettings: AppSettings
+    metricsLensSource: MetricsLensSource
+    dependencyLensSource: DependencyLensSource
+    preferences: Preferences
+    mapState: MapState
+    sharedView: SharedView
     files: FileState[]
-    appStatus: AppStatus
+    isLoadingFile: boolean
+    currentFilesAreSampleFiles: boolean
 }
 
 export function stateObjectReplacer(_, valueToReplace) {
@@ -107,16 +131,4 @@ export function stateObjectReviver(_, valueToRevive) {
     }
 
     return valueToRevive
-}
-
-export interface AppStatus {
-    currentFilesAreSampleFiles: boolean
-    hoveredNodeId: number | null
-    selectedBuildingId: number | null
-    rightClickedNodeData: {
-        nodeId: number
-        xPositionOfRightClickEvent: number
-        yPositionOfRightClickEvent: number
-        origin: "codeMap" | "explorer"
-    } | null
 }

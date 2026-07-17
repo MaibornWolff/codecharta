@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, viewChild } from "@angular/core"
 import { NgClass } from "@angular/common"
-import { ChangelogFacade } from "../../facade"
-import { ChangelogCategory } from "../../services/changelogParser.service"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, viewChild } from "@angular/core"
+import { ChangelogCategory, ChangelogParserService } from "../../services/changelogParser.service"
+import { VersionService } from "../../services/version.service"
 
 const CATEGORY_CONFIG: Record<string, { emoji: string; label: string; type: string }> = {
     "Added 🚀": { emoji: "🚀", label: "Added", type: "added" },
@@ -48,19 +48,22 @@ const CATEGORY_STYLES: Record<string, { header: string; icon: string; count: str
 export class ChangelogDialogComponent {
     dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
 
-    previousVersion = this.changelogFacade.previousVersion
-    currentVersion = this.changelogFacade.currentVersion
-    shouldShowChangelog = this.changelogFacade.shouldShowChangelog
+    previousVersion = this.versionService.previousVersion
+    currentVersion = this.versionService.currentVersion
+    shouldShowChangelog = this.versionService.shouldShowChangelog
 
     changes = computed<ChangelogCategory[]>(() => {
         const prev = this.previousVersion()
         if (!prev) {
             return []
         }
-        return this.changelogFacade.parseChangesBetweenVersions(prev, this.currentVersion)
+        return this.changelogParserService.parseChangesBetweenVersions(prev, this.currentVersion)
     })
 
-    constructor(private readonly changelogFacade: ChangelogFacade) {
+    constructor(
+        private readonly versionService: VersionService,
+        private readonly changelogParserService: ChangelogParserService
+    ) {
         effect(() => {
             if (this.shouldShowChangelog()) {
                 this.open()
@@ -73,7 +76,7 @@ export class ChangelogDialogComponent {
     }
 
     close() {
-        this.changelogFacade.acknowledgeChangelog()
+        this.versionService.acknowledgeChangelog()
         this.dialogElement().nativeElement.close()
     }
 

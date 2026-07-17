@@ -2,8 +2,8 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
-import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
+import { provideMockState } from "../../../../mocks/state.mocks"
+import { defaultMapColors, mapColorsSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { inspectorMetricRowsSelector, MetricRow } from "../../selectors/inspectorMetricRows.selector"
 import { InspectorMetricsListComponent } from "./inspectorMetricsList.component"
 
@@ -21,6 +21,7 @@ describe("InspectorMetricsListComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
+                provideMockState(),
                 provideMockStore({
                     selectors: [
                         { selector: inspectorMetricRowsSelector, value: [] },

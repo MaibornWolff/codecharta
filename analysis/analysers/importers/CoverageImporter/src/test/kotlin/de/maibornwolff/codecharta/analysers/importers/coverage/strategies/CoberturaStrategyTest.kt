@@ -27,8 +27,7 @@ class CoberturaStrategyTest {
             project
         ).usingRecursiveComparison()
             .ignoringFields(
-                "attributeDescriptors",
-                "attributeTypes",
+                "lenses",
                 "blacklist",
                 "apiVersion"
             ).isEqualTo(expectedProject)

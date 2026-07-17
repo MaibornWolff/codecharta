@@ -1,5 +1,5 @@
-import { AttributeTypeValue } from "../../../codeCharta.model"
-import { defaultState } from "../../../state/store/state.manager"
+import { AttributeTypeValue } from "../../../model/codeCharta.model"
+import { defaultState } from "../../../stores/rootStore/state.manager"
 import { clone } from "../../../util/clone"
 import { createAttributeTypeSelector } from "./createAttributeTypeSelector.selector"
 
@@ -11,16 +11,16 @@ describe("createAttributeTypeSelector", () => {
 
     it("should read nodes", () => {
         const state = clone(defaultState)
-        state.fileSettings.attributeTypes = { nodes: { rloc: AttributeTypeValue.relative } }
-        state.dynamicSettings.areaMetric = "rloc"
+        state.metricsLensSource.attributeTypes = { rloc: AttributeTypeValue.relative }
+        state.mapState.areaMetric = "rloc"
         const attributeTypeSelector = createAttributeTypeSelector("nodes", "areaMetric")
         expect(attributeTypeSelector(state)).toBe("x͂")
     })
 
     it("should read edges", () => {
         const state = clone(defaultState)
-        state.fileSettings.attributeTypes = { edges: { avgCommit: AttributeTypeValue.relative } }
-        state.dynamicSettings.edgeMetric = "avgCommit"
+        state.dependencyLensSource.attributeTypes = { avgCommit: AttributeTypeValue.relative }
+        state.mapState.edgeMetric = "avgCommit"
         const attributeTypeSelector = createAttributeTypeSelector("edges", "edgeMetric")
         expect(attributeTypeSelector(state)).toBe("x͂")
     })

@@ -4,9 +4,9 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { LoadFileService } from "../../../../features/loadFile/facade"
-import { LoadInitialFileService } from "../../../../features/loadFile/facade"
-import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
+import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
+import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
+import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
 import { GlobalConfigurationDialogComponent } from "../../../globalSettings/components/globalConfigurationDialog/globalConfigurationDialog.component"
 import { SettingsButtonComponent } from "./settingsButton.component"
 
@@ -23,12 +23,8 @@ describe("SettingsButtonComponent", () => {
         TestBed.configureTestingModule({
             imports: [SettingsButtonComponent],
             providers: [
-                provideMockStore({ initialState: { appSettings: defaultAppSettings } }),
-                { provide: State, useValue: { getValue: () => ({ appSettings: defaultAppSettings }) } },
-                {
-                    provide: LoadInitialFileService,
-                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
-                },
+                provideMockStore({ initialState: { preferences: defaultPreferences, mapState: defaultMapState } }),
+                { provide: State, useValue: { getValue: () => ({ preferences: defaultPreferences, mapState: defaultMapState }) } },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: HttpClient, useValue: {} }
             ]

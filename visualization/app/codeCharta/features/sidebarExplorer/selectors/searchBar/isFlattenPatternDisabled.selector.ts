@@ -1,6 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { searchPatternSelector } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
-import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
+import { blacklistSelector, searchPatternSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { isPatternBlacklisted } from "../../../../util/blacklist/isPatternBlacklisted"
 import { isSearchPatternEmptySelector } from "./isSearchPatternEmpty.selector"
 

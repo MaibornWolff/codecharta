@@ -1,20 +1,20 @@
 import md5 from "md5"
-import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, FixedPosition, NodeType } from "../../../../codeCharta.model"
-import { ExportWrappedCCFile } from "../../../../codeCharta.api.model"
+import { ExportWrappedCCFile } from "../../../../model/codeCharta.api.model"
+import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, FixedPosition, NodeType } from "../../../../model/codeCharta.model"
 
-export interface GameObject {
+interface GameObject {
     name: string
     position: Coordinates
     scale: Coordinates
 }
 
-export interface Coordinates {
+interface Coordinates {
     x: number
     y: number
     z: number
 }
 
-export interface Cycle {
+interface Cycle {
     from: string
     to: string
 }

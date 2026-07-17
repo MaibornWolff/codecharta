@@ -1,11 +1,10 @@
 import { Injectable } from "@angular/core"
 import { Action, Store } from "@ngrx/store"
-import { CcState } from "../../../codeCharta.model"
-import { createBlacklistItemSelector } from "../../../state/store/fileSettings/blacklist/blacklistByType.selector"
-import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
-import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
+import { CcState } from "../../../model/codeCharta.model"
+import { hoveredNodeSelector, selectedNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { createBlacklistItemSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
+import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
 
 @Injectable({
     providedIn: "root"

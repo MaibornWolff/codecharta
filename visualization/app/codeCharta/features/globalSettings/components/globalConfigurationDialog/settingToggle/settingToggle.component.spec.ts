@@ -1,4 +1,4 @@
-import { screen, render } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { SettingToggleComponent } from "./settingToggle.component"
 

@@ -1,0 +1,166 @@
+package de.maibornwolff.codecharta.model
+
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+
+class NodeIdTest {
+    @Test
+    fun `should canonicalize the root node to a single slash`() {
+        assertEquals("/", NodeId.canonicalPath(emptyList()))
+    }
+
+    @Test
+    fun `should join segments with slash and prefix with slash`() {
+        assertEquals("/src/App.kt", NodeId.canonicalPath(listOf("src", "App.kt")))
+    }
+
+    @Test
+    fun `should drop empty segments`() {
+        assertEquals("/src/App.kt", NodeId.canonicalPath(listOf("", "src", "", "App.kt")))
+    }
+
+    @Test
+    fun `should remove dot segments and collapse dot-dot segments`() {
+        assertEquals("/src/App.kt", NodeId.canonicalPath(listOf("src", ".", "main", "..", "App.kt")))
+    }
+
+    @Test
+    fun `should preserve case in the canonical path`() {
+        assertEquals("/src/App.kt", NodeId.canonicalPath(listOf("src", "App.kt")))
+        assertNotEquals("/src/app.kt", NodeId.canonicalPath(listOf("src", "App.kt")))
+    }
+
+    @Test
+    fun `should give distinct ids to names differing only in case`() {
+        assertNotEquals(NodeId.fromSegments(listOf("src", "App.kt")), NodeId.fromSegments(listOf("src", "app.kt")))
+    }
+
+    @Test
+    fun `should reject a segment that still contains a forward-slash separator`() {
+        assertThrows<IllegalArgumentException> { NodeId.fromSegments(listOf("src/App.kt")) }
+    }
+
+    @Test
+    fun `should explain that a name may not contain the path separator when rejecting a slashed segment`() {
+        // Arrange
+        val slashedName = "a/b"
+
+        // Act
+        val exception = assertThrows<IllegalArgumentException> { NodeId.fromSegments(listOf(slashedName)) }
+
+        // Assert: the message names the offending value and points at the likely cause instead of an internal precondition.
+        assertTrue(exception.message!!.contains(slashedName))
+        assertTrue(exception.message!!.contains("path separator"))
+    }
+
+    @Test
+    fun `should treat a backslash as a literal filename character`() {
+        assertEquals("/weird\\name", NodeId.canonicalPath(listOf("weird\\name")))
+    }
+
+    @Test
+    fun `should produce identical id for NFC and NFD spellings of the same name`() {
+        val nfcName = Char(0x00C4) + "pfel" // precomposed A-umlaut + "pfel"
+        val nfdName = "A" + Char(0x0308) + "pfel" // A + combining diaeresis + "pfel"
+
+        assertNotEquals(nfcName, nfdName) // the raw strings differ before normalization
+        assertEquals(NodeId.fromSegments(listOf(nfcName)), NodeId.fromSegments(listOf(nfdName)))
+    }
+
+    @Test
+    fun `should NFC-normalize a single name so NFD and NFC spellings become equal`() {
+        val nfcName = Char(0x00C4) + "pfel" // precomposed A-umlaut + "pfel"
+        val nfdName = "A" + Char(0x0308) + "pfel" // A + combining diaeresis + "pfel"
+
+        assertNotEquals(nfcName, nfdName)
+        assertEquals(NodeId.normalizeName(nfcName), NodeId.normalizeName(nfdName))
+        assertEquals(nfcName, NodeId.normalizeName(nfdName))
+    }
+
+    @Test
+    fun `should be deterministic for the same tree position`() {
+        assertEquals(NodeId.fromSegments(listOf("src", "App.kt")), NodeId.fromSegments(listOf("src", "App.kt")))
+    }
+
+    @Test
+    fun `should produce 16 lowercase hex characters`() {
+        val id = NodeId.fromSegments(listOf("src", "App.kt"))
+
+        assertEquals(16, id.length)
+        assert(id.all { it in "0123456789abcdef" }) { "id must be lowercase hex but was $id" }
+    }
+
+    @Test
+    fun `should reproduce known sha-256 anchors for cross-tool stability`() {
+        assertEquals("164ddff4bb1345e1", NodeId.fromSegments(emptyList(), NodeType.Folder))
+        assertEquals("fabeab231626f275", NodeId.fromSegments(listOf("src"), NodeType.Folder))
+        assertEquals("22952359a83b9b23", NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File))
+    }
+
+    @Test
+    fun `should give distinct ids to a File and a Folder at the same tree position`() {
+        assertNotEquals(
+            NodeId.fromSegments(listOf("src", "foo"), NodeType.File),
+            NodeId.fromSegments(listOf("src", "foo"), NodeType.Folder)
+        )
+    }
+
+    @Test
+    fun `should default to File so an endpoint id matches a File node at the same position`() {
+        assertEquals(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File), NodeId.fromSegments(listOf("src", "App.kt")))
+        assertEquals(NodeId.fromEndpoint("/root/src/App.kt", NodeType.File), NodeId.fromEndpoint("/root/src/App.kt"))
+    }
+
+    @Test
+    fun `should strip the synthetic root segment from edge endpoints so they join node ids`() {
+        val nodeId = NodeId.fromSegments(listOf("src", "App.kt"))
+
+        assertEquals(nodeId, NodeId.fromEndpoint("/root/src/App.kt"))
+    }
+
+    @Test
+    fun `should canonicalize edge endpoints with dot and dot-dot the same way as node positions`() {
+        val nodeId = NodeId.fromSegments(listOf("src", "App.kt"))
+
+        assertEquals(nodeId, NodeId.fromEndpoint("/root/src/./main/../App.kt"))
+    }
+
+    @Test
+    fun `should strip the synthetic root even when the endpoint carries leading dot or dot-dot cruft`() {
+        val nodeId = NodeId.fromSegments(listOf("src", "App.kt"))
+
+        assertEquals(nodeId, NodeId.fromEndpoint("/./root/src/App.kt"))
+        assertEquals(nodeId, NodeId.fromEndpoint("/../root/src/App.kt"))
+    }
+
+    @Test
+    fun `should round-trip a node position through endpointFromSegments and back`() {
+        val segments = listOf("src", "App.kt")
+
+        assertEquals("/root/src/App.kt", NodeId.endpointFromSegments(segments))
+        assertEquals(NodeId.fromSegments(segments), NodeId.fromEndpoint(NodeId.endpointFromSegments(segments)))
+        assertEquals("/root", NodeId.endpointFromSegments(emptyList()))
+    }
+
+    @Test
+    fun `should keep a real folder named root that is nested under the synthetic root`() {
+        assertEquals(NodeId.fromSegments(listOf("root", "App.kt")), NodeId.fromEndpoint("/root/root/App.kt"))
+    }
+
+    @Test
+    fun `should give distinct ids to identical file names at different tree positions`() {
+        assertNotEquals(NodeId.fromSegments(listOf("a", "README.md")), NodeId.fromSegments(listOf("b", "README.md")))
+    }
+
+    @Test
+    fun `should give a re-rooted tree different but deterministic ids`() {
+        val original = NodeId.fromSegments(listOf("src", "App.kt"))
+        val reRooted = NodeId.fromSegments(listOf("project", "src", "App.kt"))
+
+        assertNotEquals(original, reRooted)
+        assertEquals(reRooted, NodeId.fromSegments(listOf("project", "src", "App.kt")))
+    }
+}

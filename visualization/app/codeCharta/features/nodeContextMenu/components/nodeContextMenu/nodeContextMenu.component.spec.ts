@@ -1,16 +1,19 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { CodeMapNode, NodeType } from "../../../../codeCharta.model"
-import { IdToBuildingService } from "../../../../features/codeMap/facade"
-import { rightClickedCodeMapNodeSelector } from "../../../../state/selectors/rightClickedCodeMapNode.selector"
-import { setRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
-import { rightClickedNodeDataSelector } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
-import { currentFocusedNodePathSelector } from "../../../../state/store/dynamicSettings/focusedNodePath/currentFocused.selector"
-import { focusNode, unfocusAllNodes } from "../../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { focusedNodePathSelector } from "../../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.selector"
-import { addBlacklistItem, addBlacklistItemsIfNotResultsInEmptyMap } from "../../../../state/store/fileSettings/blacklist/blacklist.actions"
-import { ThreeSceneService } from "../../../../features/codeMap/facade"
+import { provideMockState } from "../../../../mocks/state.mocks"
+import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
+import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderModel/rightClickedCodeMapNode.selector"
+import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
+import {
+    addBlacklistItem,
+    addBlacklistItemsIfNotResultsInEmptyMap,
+    focusNode,
+    setRightClickedNodeData,
+    unfocusAllNodes
+} from "../../../../stores/sharedView/sharedView.write.facade"
+import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"
 import { NodeContextMenuComponent } from "./nodeContextMenu.component"
@@ -63,6 +66,7 @@ describe("nodeContextMenu component", () => {
         const focusedNodePaths = [focusedNodePath, previousFocusedNodePath].filter(Boolean)
         const renderResult = await render(NodeContextMenuComponent, {
             providers: [
+                provideMockState(),
                 provideMockStore({
                     selectors: [
                         { selector: rightClickedNodeDataSelector, value: rightClickedNodeData },

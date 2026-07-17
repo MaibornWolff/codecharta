@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.model
 
+import com.google.gson.JsonElement
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import org.apache.commons.text.similarity.JaccardSimilarity
@@ -38,6 +39,20 @@ open class ProjectBuilder(
         true
     }
 
+    private var opaqueLenses: Map<String, JsonElement> = emptyMap()
+
+    private var commitHash: String? = null
+
+    fun withOpaqueLenses(opaqueLenses: Map<String, JsonElement>): ProjectBuilder {
+        this.opaqueLenses = opaqueLenses
+        return this
+    }
+
+    fun withCommitHash(commitHash: String?): ProjectBuilder {
+        this.commitHash = commitHash
+        return this
+    }
+
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
         return this
@@ -55,6 +70,20 @@ open class ProjectBuilder(
     open fun build(): Project = build(false)
 
     open fun build(cleanAttributeDescriptors: Boolean = false): Project {
+        processNodesAndEdges()
+        if (cleanAttributeDescriptors) {
+            removeUnusedAttributeDescriptors()
+        }
+        val baseLenses = LensSet.fromLegacy(edges.toList(), attributeTypes.toMap(), attributeDescriptors.toMap())
+        return assembleProject(baseLenses.copy(opaqueLenses = opaqueLenses))
+    }
+
+    fun buildFromLenses(lenses: LensSet): Project {
+        processNodesAndEdges()
+        return assembleProject(lenses)
+    }
+
+    private fun processNodesAndEdges() {
         nodes
             .flatMap {
                 it.nodes.values
@@ -69,17 +98,16 @@ open class ProjectBuilder(
         }
 
         filterEmptyFolders()
-        if (cleanAttributeDescriptors) {
-            removeUnusedAttributeDescriptors()
-        }
+    }
+
+    private fun assembleProject(lenses: LensSet): Project {
         val project =
             Project(
-                edges = edges.toList(),
-                blacklist = blacklist.toList(),
                 projectName = DUMMY_PROJECT_NAME,
-                attributeTypes = attributeTypes.toMap(),
                 nodes = nodes.map { it.toNode() }.toList(),
-                attributeDescriptors = attributeDescriptors.toMap()
+                lenses = lenses,
+                blacklist = blacklist.toList(),
+                commitHash = commitHash
             )
 
         System.err.println()
@@ -271,5 +299,24 @@ open class ProjectBuilder(
 
     companion object {
         const val DUMMY_PROJECT_NAME = ""
+
+        fun fromLenses(
+            nodes: List<MutableNode>,
+            metrics: MetricsLens,
+            dependency: DependencyLens,
+            blacklist: MutableList<BlacklistItem> = mutableListOf(),
+            opaqueLenses: Map<String, JsonElement> = emptyMap(),
+            commitHash: String? = null
+        ): ProjectBuilder {
+            val lenses = LensSet(metrics = metrics, dependency = dependency)
+            return ProjectBuilder(
+                nodes,
+                dependency.edges.toMutableList(),
+                lenses.legacyAttributeTypes().toMutableMap(),
+                lenses.allAttributeDescriptors().toMutableMap(),
+                blacklist
+            ).withOpaqueLenses(opaqueLenses)
+                .withCommitHash(commitHash)
+        }
     }
 }

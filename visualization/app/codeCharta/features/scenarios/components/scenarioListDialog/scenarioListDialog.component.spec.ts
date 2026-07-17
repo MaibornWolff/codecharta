@@ -1,15 +1,16 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { BehaviorSubject } from "rxjs"
-import { defaultState } from "../../../../state/store/state.manager"
-import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
-import { ScenarioViewModelService } from "../../services/scenarioViewModel.service"
-import { ScenarioApplierService } from "../../services/scenarioApplier.service"
-import { ScenariosService } from "../../services/scenarios.service"
-import { ScenarioImportExportService } from "../../services/scenarioImportExport.service"
-import { Scenario } from "../../model/scenario.model"
-import { ColorMode, LabelMode, MetricData, NodeType } from "../../../../codeCharta.model"
+import { provideMockState } from "../../../../mocks/state.mocks"
+import { ColorMode, LabelMode, MetricData, NodeType } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { Scenario } from "../../model/scenario.model"
+import { ScenarioApplierService } from "../../services/scenarioApplier.service"
+import { ScenarioImportExportService } from "../../services/scenarioImportExport.service"
+import { ScenariosService } from "../../services/scenarios.service"
+import { ScenarioViewModelService } from "../../services/scenarioViewModel.service"
+import { ScenarioListDialogComponent } from "./scenarioListDialog.component"
 
 const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[]): Scenario => ({
     id,
@@ -28,7 +29,7 @@ const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[
         colors: {
             colorRange: { from: 1, to: 10 },
             colorMode: ColorMode.weightedGradient,
-            mapColors: defaultState.appSettings.mapColors
+            mapColors: defaultState.mapState.mapColors
         },
         camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
         filters: { blacklist: [], focusedNodePath: [] },
@@ -104,6 +105,7 @@ describe("ScenarioListDialogComponent", () => {
         TestBed.configureTestingModule({
             imports: [ScenarioListDialogComponent],
             providers: [
+                provideMockState(),
                 provideMockStore({ initialState: defaultState }),
                 { provide: ScenariosService, useValue: scenariosService },
                 { provide: ScenarioImportExportService, useValue: importExportService },

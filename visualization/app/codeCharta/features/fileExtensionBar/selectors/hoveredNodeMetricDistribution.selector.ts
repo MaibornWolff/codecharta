@@ -1,10 +1,9 @@
 import { createSelector } from "@ngrx/store"
-import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
+import { NodeType } from "../../../model/codeCharta.model"
+import { hoveredNodeSelector, selectedNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { areaMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { FileExtensionCalculator } from "../../../util/fileExtension/fileExtensionCalculator"
-import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 import { metricDistributionSelector } from "./metricDistribution.selector"
-import { NodeType } from "../../../codeCharta.model"
 
 export const hoveredNodeMetricDistributionSelector = createSelector(
     hoveredNodeSelector,

@@ -1,6 +1,6 @@
 import { Box3, BoxGeometry, Mesh, MeshBasicMaterial, Vector3 } from "three"
 import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { GeometryOptions } from "../geometryOptions"
 import { GeneralMesh } from "./generalMesh"
 
 class MockColorChangeStrategy implements ColorChangeStrategy {

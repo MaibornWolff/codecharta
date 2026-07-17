@@ -6,7 +6,7 @@ title: "Merge Filter"
 
 Reads the specified files and merges visualization data.
 
-The first file with visualisation data is used as reference for the merging strategy and a base for the output. The visualisation data in the additional json files (given they have the same API version) are fitted into this reference structure according to a specific strategy. Currently, there are two main strategies:
+The first file with visualisation data is used as reference for the merging strategy and a base for the output. The visualisation data in the additional json files are fitted into this reference structure according to a specific strategy. All inputs must be in the current cc.json 2.0 format; if you have a legacy 1.x file, upgrade it first with [`ccsh convert`](/docs/filter/convert), otherwise `merge` reports it as legacy and points you at `convert`. Currently, there are two main strategies:
 
 - recursive (default): leave structure of additional files. This will also merge optional edges.
 - leaf (beta): fit leaf nodes into reference structure according to their name (and tail of their path),

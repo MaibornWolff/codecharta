@@ -1,18 +1,18 @@
-import { inject, Injectable } from "@angular/core"
+import { Injectable, inject } from "@angular/core"
 import html2canvas from "html2canvas-pro"
 import { Color, WebGLRenderer } from "three"
 import { FileState } from "../../../model/files/files"
 import { createPNGFileName } from "../../../model/files/files.helper"
-import { ThreeCameraService, ThreeRendererService, ThreeSceneService } from "../../../features/codeMap/facade"
+import { ThreeCameraService, ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { FilesRepo } from "../../../stores/fileStore/fileStore.facade"
 import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
-import { StateAccessStore } from "../stores/stateAccess.store"
 
 @Injectable({ providedIn: "root" })
 export class ScreenshotService {
     private readonly threeRendererService = inject(ThreeRendererService)
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly threeCameraService = inject(ThreeCameraService)
-    private readonly stateAccessStore = inject(StateAccessStore)
+    private readonly filesRepo = inject(FilesRepo)
 
     readonly isWriteToClipboardAllowed = checkWriteToClipboardAllowed()
 
@@ -21,7 +21,7 @@ export class ScreenshotService {
         const renderSettings = this.saveRenderSettings(renderer)
         const canvas = await this.buildScreenShotCanvas(renderer)
 
-        this.downloadScreenshot(canvas, this.stateAccessStore.getFiles())
+        this.downloadScreenshot(canvas, this.filesRepo.getFiles())
         this.applyRenderSettings(renderer, renderSettings)
     }
 

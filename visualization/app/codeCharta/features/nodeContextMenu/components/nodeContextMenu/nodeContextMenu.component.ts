@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, HostListener, inject, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, HostListener, inject, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapNode } from "../../../../codeCharta.model"
-import { IdToBuildingService, ThreeSceneService } from "../../../../features/codeMap/facade"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
+import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
-import { ContextMenuBlacklistStore } from "../../stores/contextMenuBlacklist.store"
-import { FocusedNodeStore } from "../../stores/focusedNode.store"
-import { RightClickedNodeStore } from "../../stores/rightClickedNode.store"
+import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
+import { NodeContextMenuWriteStore } from "../../stores/nodeContextMenu.write.store"
 import { ContextMenuItemComponent } from "./contextMenuItem.component"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
 
@@ -19,9 +19,9 @@ const PATH_COPIED_FEEDBACK_DURATION_MS = 1500
     imports: [ContextMenuItemComponent, MarkFolderRowComponent]
 })
 export class NodeContextMenuComponent {
-    private readonly rightClickedNodeStore = inject(RightClickedNodeStore)
-    private readonly focusedNodeStore = inject(FocusedNodeStore)
-    private readonly blacklistStore = inject(ContextMenuBlacklistStore)
+    private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
+    private readonly readStore = inject(NodeContextMenuReadStore)
+    private readonly writeStore = inject(NodeContextMenuWriteStore)
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly idToBuildingService = inject(IdToBuildingService)
     private readonly explorerRevealService = inject(ExplorerRevealService)
@@ -30,10 +30,11 @@ export class NodeContextMenuComponent {
     private pathCopiedTimeout: ReturnType<typeof setTimeout> | null = null
     private clampAnimationFrameId: number | null = null
 
-    readonly rightClickedNodeData = toSignal(this.rightClickedNodeStore.rightClickedNodeData$, { requireSync: true })
-    readonly codeMapNode = toSignal(this.rightClickedNodeStore.rightClickedCodeMapNode$, { requireSync: true })
-    readonly currentFocusedNodePath = toSignal(this.focusedNodeStore.currentFocusedNodePath$, { requireSync: true })
-    readonly hasPreviousFocusedNodePath = toSignal(this.focusedNodeStore.hasPreviousFocusedNodePath$, { requireSync: true })
+    readonly rightClickedNodeData = toSignal(this.sharedViewReadWindow.rightClickedNodeData$, { requireSync: true })
+    readonly codeMapNode = toSignal(this.readStore.rightClickedCodeMapNode$, { requireSync: true })
+    readonly currentFocusedNodePath = toSignal(this.sharedViewReadWindow.currentFocusedNodePath$, { requireSync: true })
+    private readonly focusedNodePath = toSignal(this.sharedViewReadWindow.focusedNodePath$, { requireSync: true })
+    readonly hasPreviousFocusedNodePath = computed(() => this.focusedNodePath().length > 1)
 
     // null until the rendered menu was measured and clamped to the viewport
     readonly clampedPosition = signal<{ left: number; top: number } | null>(null)
@@ -124,18 +125,18 @@ export class NodeContextMenuComponent {
     focusNode() {
         const node = this.menuNode()
         if (node) {
-            this.focusedNodeStore.focus(node.path)
+            this.writeStore.focus(node.path)
         }
         this.close()
     }
 
     unfocusNode() {
-        this.focusedNodeStore.unfocus()
+        this.writeStore.unfocus()
         this.close()
     }
 
     unfocusAllNodes() {
-        this.focusedNodeStore.unfocusAll()
+        this.writeStore.unfocusAll()
         this.close()
     }
 
@@ -158,7 +159,7 @@ export class NodeContextMenuComponent {
     flattenNode() {
         const node = this.menuNode()
         if (node) {
-            this.blacklistStore.flattenNode(node)
+            this.writeStore.flattenNode(node)
         }
         this.close()
     }
@@ -166,7 +167,7 @@ export class NodeContextMenuComponent {
     unflattenNode() {
         const node = this.menuNode()
         if (node) {
-            this.blacklistStore.unflattenNode(node)
+            this.writeStore.unflattenNode(node)
         }
         this.close()
     }
@@ -174,13 +175,13 @@ export class NodeContextMenuComponent {
     excludeNode() {
         const node = this.menuNode()
         if (node) {
-            this.blacklistStore.excludeNode(node)
+            this.writeStore.excludeNode(node)
         }
         this.close()
     }
 
     close() {
-        this.rightClickedNodeStore.clear()
+        this.writeStore.closeMenu()
     }
 
     private closeWhenOutsideMenu(event: Event) {

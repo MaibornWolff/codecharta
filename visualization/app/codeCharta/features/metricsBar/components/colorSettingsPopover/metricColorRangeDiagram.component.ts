@@ -4,10 +4,10 @@ import {
     Component,
     ElementRef,
     Input,
+    inject,
     OnChanges,
     OnDestroy,
-    SimpleChanges,
-    inject
+    SimpleChanges
 } from "@angular/core"
 import * as d3 from "d3"
 

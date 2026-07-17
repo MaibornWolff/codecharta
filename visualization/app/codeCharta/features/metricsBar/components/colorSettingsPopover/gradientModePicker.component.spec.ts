@@ -2,9 +2,9 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { ColorMode } from "../../../../codeCharta.model"
-import { setColorMode } from "../../../../state/store/dynamicSettings/colorMode/colorMode.actions"
-import { defaultState } from "../../../../state/store/state.manager"
+import { ColorMode } from "../../../../model/codeCharta.model"
+import { setColorMode } from "../../../../stores/mapState/mapState.write.facade"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { GradientModePickerComponent } from "./gradientModePicker.component"
 
 describe("GradientModePickerComponent", () => {

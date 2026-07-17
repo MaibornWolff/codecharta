@@ -1,25 +1,12 @@
-import { Injectable } from "@angular/core"
+import { Injectable, inject } from "@angular/core"
 import { combineLatest } from "rxjs"
-import { SortingOption } from "../../../codeCharta.model"
-import { SortingOptionStore } from "../stores/sortingOption.store"
-import { SortingOrderAscendingStore } from "../stores/sortingOrderAscending.store"
+import { PreferencesReadWindow } from "../../../stores/preferences/preferences.read.facade"
 
 @Injectable({
     providedIn: "root"
 })
 export class ExplorerSortService {
-    constructor(
-        private readonly sortingOptionStore: SortingOptionStore,
-        private readonly sortingOrderAscendingStore: SortingOrderAscendingStore
-    ) {}
+    private readonly preferencesReadWindow = inject(PreferencesReadWindow)
 
-    sortState$ = combineLatest([this.sortingOptionStore.sortingOption$, this.sortingOrderAscendingStore.sortingOrderAscending$])
-
-    setSortingOption(value: SortingOption) {
-        this.sortingOptionStore.setSortingOption(value)
-    }
-
-    toggleSortingOrderAscending() {
-        this.sortingOrderAscendingStore.toggle()
-    }
+    sortState$ = combineLatest([this.preferencesReadWindow.sortingOrder$, this.preferencesReadWindow.sortingOrderAscending$])
 }

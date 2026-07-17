@@ -3,19 +3,20 @@ import { Store, StoreModule } from "@ngrx/store"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { of } from "rxjs"
-import { IdToBuildingService } from "../../../../features/codeMap/facade"
-import * as SearchedNodePathsSelector from "../../../../state/selectors/searchedNodes/searchedNodePaths.selector"
-import { setHoveredNodeId } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.actions"
-import { setRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
-import { defaultRightClickedNodeData } from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.reducer"
-import * as RightClickedNodeDataSelector from "../../../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.selector"
-import * as AreaMetricSelector from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
-import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
 import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
-import { CodeMapTooltipService } from "../../../../features/codeMap/facade"
-import { CodeMapBuilding } from "../../../../features/codeMap/facade"
-import { ThreeRendererService } from "../../../../features/codeMap/facade"
-import { ThreeSceneService } from "../../../../features/codeMap/facade"
+import * as SearchedNodePathsSelector from "../../../../renderer/renderModel/searchedNodes/searchedNodePaths.selector"
+import {
+    CodeMapBuilding,
+    CodeMapTooltipService,
+    IdToBuildingService,
+    ThreeRendererService,
+    ThreeSceneService
+} from "../../../../renderer/threeViewer/threeViewer.facade"
+import * as AreaMetricSelector from "../../../../stores/mapState/store/areaMetric/areaMetric.selector"
+import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
+import { setHoveredNodeId, setRightClickedNodeData } from "../../../../stores/sharedView/sharedView.write.facade"
+import { defaultRightClickedNodeData } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.reducer"
+import * as RightClickedNodeDataSelector from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { ExplorerTreeLevelComponent } from "./explorerTreeLevel.component"
 import { rootNode } from "./mocks"
@@ -28,6 +29,8 @@ describe("ExplorerTreeLevelComponent", () => {
 
     const rootNodeId = componentInputs.node.id
     const parentLeafId = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").id
+    const rootNodePath = componentInputs.node.path
+    const parentLeafPath = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").path
     const bigLeafId = componentInputs.node.children.find(childNode => childNode.name === "bigLeaf").id
     const smallLeafId = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").children[0].id
 
@@ -191,7 +194,7 @@ describe("ExplorerTreeLevelComponent", () => {
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(
             setRightClickedNodeData({
-                value: { nodeId: rootNodeId, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "explorer" }
+                value: { nodeId: rootNodePath, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "explorer" }
             })
         )
 
@@ -218,8 +221,8 @@ describe("ExplorerTreeLevelComponent", () => {
 
         // Assert
         await waitFor(() => {
-            expect(codeMapMouseEventService.hoverNode).toHaveBeenCalledWith(parentLeafId)
-            expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: parentLeafId }))
+            expect(codeMapMouseEventService.hoverNode).toHaveBeenCalledWith(parentLeafPath)
+            expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: parentLeafPath }))
         })
 
         // Act

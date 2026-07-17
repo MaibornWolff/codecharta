@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
-import { IsDeltaStateService } from "../../services/isDeltaState.service"
+import { ColorCategoryCountsStore } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { ColorBandRowComponent } from "./colorBandRow.component"
 
 @Component({
@@ -13,12 +13,12 @@ import { ColorBandRowComponent } from "./colorBandRow.component"
 })
 export class ColorBandsSectionComponent {
     constructor(
-        private readonly isDeltaStateService: IsDeltaStateService,
-        private readonly codeMapRenderService: CodeMapRenderService
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
+        private readonly colorCategoryCountsStore: ColorCategoryCountsStore
     ) {}
 
-    readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
-    readonly colorCategoryCounts = toSignal(this.codeMapRenderService.colorCategoryCounts$, {
+    readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { initialValue: false })
+    readonly colorCategoryCounts = toSignal(this.colorCategoryCountsStore.colorCategoryCounts$, {
         initialValue: { positive: 0, neutral: 0, negative: 0 }
     })
 }

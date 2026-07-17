@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ExplorerSearchService } from "../../services/explorerSearch.service"
+import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { debounce } from "../../../../util/debounce"
+import { SidebarExplorerReadStore } from "../../stores/sidebarExplorer.read.store"
+import { SidebarExplorerWriteStore } from "../../stores/sidebarExplorer.write.store"
 
 @Component({
     selector: "cc-explorer-search-bar",
@@ -11,15 +13,17 @@ import { debounce } from "../../../../util/debounce"
 export class ExplorerSearchBarComponent {
     private static readonly DEBOUNCE_TIME = 400
 
-    private readonly explorerSearchService = inject(ExplorerSearchService)
+    private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
+    private readonly readStore = inject(SidebarExplorerReadStore)
+    private readonly writeStore = inject(SidebarExplorerWriteStore)
 
-    readonly searchPattern = toSignal(this.explorerSearchService.searchPattern$, { requireSync: true })
-    readonly isSearchPatternEmpty = toSignal(this.explorerSearchService.isSearchPatternEmpty$, { requireSync: true })
-    readonly isFlattenPatternDisabled = toSignal(this.explorerSearchService.isFlattenPatternDisabled$, { requireSync: true })
-    readonly isExcludePatternDisabled = toSignal(this.explorerSearchService.isExcludePatternDisabled$, { requireSync: true })
+    readonly searchPattern = toSignal(this.sharedViewReadWindow.searchPattern$, { requireSync: true })
+    readonly isSearchPatternEmpty = toSignal(this.readStore.isSearchPatternEmpty$, { requireSync: true })
+    readonly isFlattenPatternDisabled = toSignal(this.readStore.isFlattenPatternDisabled$, { requireSync: true })
+    readonly isExcludePatternDisabled = toSignal(this.readStore.isExcludePatternDisabled$, { requireSync: true })
 
     private readonly applyDebouncedPattern = debounce((value: string) => {
-        this.explorerSearchService.setSearchPattern(value)
+        this.writeStore.setSearchPattern(value)
     }, ExplorerSearchBarComponent.DEBOUNCE_TIME)
 
     setSearchPattern(event: Event) {
@@ -28,14 +32,14 @@ export class ExplorerSearchBarComponent {
     }
 
     resetSearchPattern() {
-        this.explorerSearchService.resetSearchPattern()
+        this.writeStore.resetSearchPattern()
     }
 
     flattenPattern() {
-        this.explorerSearchService.blacklistSearchPattern("flatten")
+        this.writeStore.blacklistSearchPattern("flatten")
     }
 
     excludePattern() {
-        this.explorerSearchService.blacklistSearchPattern("exclude")
+        this.writeStore.blacklistSearchPattern("exclude")
     }
 }

@@ -1,4 +1,0 @@
-import { createSelector } from "@ngrx/store"
-import { appSettingsSelector } from "../appSettings.selector"
-
-export const labelModeSelector = createSelector(appSettingsSelector, appSettings => appSettings.labelMode)

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { IsEdgeMetricVisibleService } from "../../services/isEdgeMetricVisible.service"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 
 @Component({
     selector: "cc-edge-metric-toggle",
@@ -9,11 +10,12 @@ import { IsEdgeMetricVisibleService } from "../../services/isEdgeMetricVisible.s
     standalone: true
 })
 export class EdgeMetricToggleComponent {
-    private readonly isEdgeMetricVisibleService = inject(IsEdgeMetricVisibleService)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
+    private readonly metricsBarWriteStore = inject(MetricsBarWriteStore)
 
-    readonly isEdgeMetricVisible = toSignal(this.isEdgeMetricVisibleService.isEdgeMetricVisible$(), { initialValue: true })
+    readonly isEdgeMetricVisible = toSignal(this.mapStateReadWindow.isEdgeMetricVisible$, { initialValue: true })
 
     toggle() {
-        this.isEdgeMetricVisibleService.toggleEdgeMetricVisible()
+        this.metricsBarWriteStore.toggleEdgeMetricVisible()
     }
 }

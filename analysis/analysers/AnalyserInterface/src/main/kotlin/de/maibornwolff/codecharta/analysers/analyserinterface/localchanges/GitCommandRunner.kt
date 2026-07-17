@@ -9,8 +9,10 @@ class GitCommandRunner(private val repoRoot: File) {
     }
 
     fun run(vararg args: String): String {
-        val command = listOf("git") + args.toList()
-        val commandString = "git ${args.joinToString(" ")}"
+        // Keep non-ASCII paths raw and unquoted so file names reported by git status/diff match the
+        // spelling used elsewhere (git log, ls-files, the filesystem walk).
+        val command = listOf("git", "-c", "core.quotepath=off") + args.toList()
+        val commandString = command.joinToString(" ")
         val process = ProcessBuilder(command)
             .directory(repoRoot)
             .redirectError(ProcessBuilder.Redirect.DISCARD)

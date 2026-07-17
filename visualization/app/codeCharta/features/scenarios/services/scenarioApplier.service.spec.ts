@@ -1,16 +1,14 @@
 import { TestBed } from "@angular/core/testing"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { Vector3 } from "three"
-import { defaultState } from "../../../state/store/state.manager"
-import { ThreeCameraService } from "../../../features/codeMap/facade"
-import { ThreeMapControlsService } from "../../../features/codeMap/facade"
-import { ThreeRendererService } from "../../../features/codeMap/facade"
-import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { MetricsSection, Scenario, ScenarioSections, ScenarioSectionKey } from "../model/scenario.model"
+import { CcState, ColorMode, LabelMode, MetricData, RecursivePartial } from "../../../model/codeCharta.model"
+import { ThreeCameraService, ThreeMapControlsService, ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { setIsLoadingFile } from "../../../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
+import { defaultState } from "../../../stores/rootStore/state.manager"
+import { isApplyingScenario$ } from "../../../util/busy/isApplyingScenario"
+import { MetricsSection, Scenario, ScenarioSectionKey, ScenarioSections } from "../model/scenario.model"
 import { ScenarioApplierService } from "./scenarioApplier.service"
-import { ColorMode, LabelMode, MetricData, RecursivePartial, CcState } from "../../../codeCharta.model"
 
 const testSections: ScenarioSections = {
     metrics: {
@@ -63,14 +61,14 @@ const testSections: ScenarioSections = {
 function mergePatches(patches: RecursivePartial<CcState>[]): RecursivePartial<CcState> {
     const merged: RecursivePartial<CcState> = {}
     for (const patch of patches) {
-        if (patch.dynamicSettings) {
-            merged.dynamicSettings = { ...merged.dynamicSettings, ...patch.dynamicSettings }
+        if (patch.sharedView) {
+            merged.sharedView = { ...merged.sharedView, ...patch.sharedView }
         }
-        if (patch.appSettings) {
-            merged.appSettings = { ...merged.appSettings, ...patch.appSettings }
+        if (patch.preferences) {
+            merged.preferences = { ...merged.preferences, ...patch.preferences }
         }
-        if (patch.fileSettings) {
-            merged.fileSettings = { ...merged.fileSettings, ...patch.fileSettings }
+        if (patch.mapState) {
+            merged.mapState = { ...merged.mapState, ...patch.mapState }
         }
     }
     return merged
@@ -125,9 +123,9 @@ describe("ScenarioApplierService", () => {
 
             // Assert
             expect(patches).toHaveLength(1)
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.heightMetric).toBe("mcc")
-            expect(patches[0].appSettings?.isColorMetricLinkedToHeightMetric).toBe(true)
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.heightMetric).toBe("mcc")
+            expect(patches[0].preferences?.isColorMetricLinkedToHeightMetric).toBe(true)
         })
 
         it("should produce metrics before colors as separate patches", () => {
@@ -139,10 +137,10 @@ describe("ScenarioApplierService", () => {
 
             // Assert — metrics is patch 0, colors is patch 1
             expect(patches).toHaveLength(2)
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.colorRange).toBeUndefined()
-            expect(patches[1].dynamicSettings?.colorRange).toEqual({ from: 1, to: 10 })
-            expect(patches[1].appSettings?.mapColors).toEqual(testSections.colors.mapColors)
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.colorRange).toBeUndefined()
+            expect(patches[1].mapState?.colorRange).toEqual({ from: 1, to: 10 })
+            expect(patches[1].mapState?.mapColors).toEqual(testSections.colors.mapColors)
         })
 
         it("should apply filters and labels in a third patch", () => {
@@ -154,12 +152,12 @@ describe("ScenarioApplierService", () => {
 
             // Assert
             expect(patches).toHaveLength(3)
-            expect(patches[2].fileSettings?.blacklist).toEqual(testSections.filters.blacklist)
-            expect(patches[2].dynamicSettings?.focusedNodePath).toEqual(["/root/src"])
-            expect(patches[2].appSettings?.amountOfTopLabels).toBe(5)
-            expect(patches[2].appSettings?.labelMode).toBe(LabelMode.Color)
-            expect(patches[2].appSettings?.groupLabelCollisions).toBe(true)
-            expect(patches[2].fileSettings?.markedPackages).toEqual(testSections.labelsAndFolders.markedPackages)
+            expect(patches[2].sharedView?.blacklist).toEqual(testSections.filters.blacklist)
+            expect(patches[2].sharedView?.focusedNodePath).toEqual(["/root/src"])
+            expect(patches[2].mapState?.amountOfTopLabels).toBe(5)
+            expect(patches[2].mapState?.labelMode).toBe(LabelMode.Color)
+            expect(patches[2].mapState?.groupLabelCollisions).toBe(true)
+            expect(patches[2].sharedView?.markedPackages).toEqual(testSections.labelsAndFolders.markedPackages)
         })
 
         it("should apply all sections correctly when merged", () => {
@@ -171,10 +169,10 @@ describe("ScenarioApplierService", () => {
             const merged = mergePatches(patches)
 
             // Assert
-            expect(merged.dynamicSettings?.areaMetric).toBe("rloc")
-            expect(merged.dynamicSettings?.colorRange).toEqual({ from: 1, to: 10 })
-            expect(merged.fileSettings?.blacklist).toHaveLength(1)
-            expect(merged.appSettings?.amountOfTopLabels).toBe(5)
+            expect(merged.mapState?.areaMetric).toBe("rloc")
+            expect(merged.mapState?.colorRange).toEqual({ from: 1, to: 10 })
+            expect(merged.sharedView?.blacklist).toHaveLength(1)
+            expect(merged.mapState?.amountOfTopLabels).toBe(5)
         })
 
         it("should return empty array when no keys are selected", () => {
@@ -200,11 +198,11 @@ describe("ScenarioApplierService", () => {
             const patches = service.buildOrderedStatePatches(testSections, keys, metricData)
 
             // Assert — rloc is available, mcc and pairingRate are not
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.distributionMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.heightMetric).toBeUndefined()
-            expect(patches[0].dynamicSettings?.colorMetric).toBeUndefined()
-            expect(patches[0].dynamicSettings?.edgeMetric).toBeUndefined()
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.distributionMetric).toBe("rloc")
+            expect(patches[0].mapState?.heightMetric).toBeUndefined()
+            expect(patches[0].mapState?.colorMetric).toBeUndefined()
+            expect(patches[0].mapState?.edgeMetric).toBeUndefined()
         })
 
         it("should apply all metrics when metricData is not provided", () => {
@@ -215,9 +213,9 @@ describe("ScenarioApplierService", () => {
             const patches = service.buildOrderedStatePatches(testSections, keys)
 
             // Assert
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.heightMetric).toBe("mcc")
-            expect(patches[0].dynamicSettings?.edgeMetric).toBe("pairingRate")
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.heightMetric).toBe("mcc")
+            expect(patches[0].mapState?.edgeMetric).toBe("pairingRate")
         })
 
         it("should handle partial metrics section (built-in scenario)", () => {
@@ -233,13 +231,13 @@ describe("ScenarioApplierService", () => {
 
             // Assert
             expect(patches).toHaveLength(2)
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
-            expect(patches[0].dynamicSettings?.edgeMetric).toBeUndefined()
-            expect(patches[0].dynamicSettings?.distributionMetric).toBeUndefined()
-            expect(patches[0].appSettings?.isColorMetricLinkedToHeightMetric).toBeUndefined()
-            expect(patches[1].dynamicSettings?.colorRange).toEqual({ from: 250, to: 500 })
-            expect(patches[1].dynamicSettings?.colorMode).toBeUndefined()
-            expect(patches[1].appSettings).toBeUndefined()
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.edgeMetric).toBeUndefined()
+            expect(patches[0].mapState?.distributionMetric).toBeUndefined()
+            expect(patches[0].preferences?.isColorMetricLinkedToHeightMetric).toBeUndefined()
+            expect(patches[1].mapState?.colorRange).toEqual({ from: 250, to: 500 })
+            expect(patches[1].mapState?.colorMode).toBeUndefined()
+            expect(patches[1].preferences).toBeUndefined()
         })
 
         it("should skip undefined sections even if selected", () => {
@@ -254,7 +252,7 @@ describe("ScenarioApplierService", () => {
 
             // Assert — only metrics patch, no colors/filters/labels
             expect(patches).toHaveLength(1)
-            expect(patches[0].dynamicSettings?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState?.areaMetric).toBe("rloc")
         })
     })
 
@@ -289,19 +287,29 @@ describe("ScenarioApplierService", () => {
         it("should show loading spinner during application and hide it after", async () => {
             // Arrange
             const scenario = createTestScenario()
+            const flags: boolean[] = []
+            const subscription = isApplyingScenario$.subscribe(value => flags.push(value))
+
+            // Act
+            const promise = service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
+            await promise
+            subscription.unsubscribe()
+
+            // Assert — applying a scenario is not a file load, so it raises its own flag
+            expect(flags).toEqual([false, true, false])
+        })
+
+        it("should never write the file loading flag, because applying a scenario is not a file load", async () => {
+            // Arrange
+            const scenario = createTestScenario()
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
             // Act
-            expect(service.isApplying).toBe(false)
-            const promise = service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
-            expect(service.isApplying).toBe(true)
-            await promise
+            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
 
             // Assert
-            expect(service.isApplying).toBe(false)
-            expect(dispatchSpy.mock.calls[0][0]).toEqual(setIsLoadingFile({ value: true }))
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+            expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: true }))
+            expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
         })
 
         it("should dispatch setState for metrics section", async () => {
@@ -316,7 +324,7 @@ describe("ScenarioApplierService", () => {
             expect(dispatchSpy).toHaveBeenCalledWith(
                 expect.objectContaining({
                     value: expect.objectContaining({
-                        dynamicSettings: expect.objectContaining({
+                        mapState: expect.objectContaining({
                             areaMetric: scenario.sections.metrics.areaMetric
                         })
                     })
@@ -360,21 +368,21 @@ describe("ScenarioApplierService", () => {
             expect(threeRendererService.render).toHaveBeenCalled()
         })
 
-        it("should clear isApplying and loading state even when an error occurs during application", async () => {
+        it("should clear the applying flag even when an error occurs during application", async () => {
             // Arrange
             const scenario = createTestScenario()
             threeRendererService.render.mockImplementation(() => {
                 throw new Error("render failed")
             })
-            const dispatchSpy = jest.spyOn(store, "dispatch")
+            const flags: boolean[] = []
+            const subscription = isApplyingScenario$.subscribe(value => flags.push(value))
 
             // Act
             await expect(service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))).rejects.toThrow("render failed")
+            subscription.unsubscribe()
 
             // Assert
-            expect(service.isApplying).toBe(false)
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
-            expect(dispatchSpy).toHaveBeenCalledWith(setIsLoadingMap({ value: false }))
+            expect(flags.at(-1)).toBe(false)
         })
     })
 

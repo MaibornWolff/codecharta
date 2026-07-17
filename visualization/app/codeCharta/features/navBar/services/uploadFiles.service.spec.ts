@@ -1,23 +1,21 @@
 import { TestBed } from "@angular/core/testing"
-import { UploadFilesService } from "./uploadFiles.service"
-import { LoadFileService } from "../../../features/loadFile/facade"
-import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { createCCFileInput } from "./createCCFileInput"
-import { TEST_FILE_CONTENT } from "../../../mocks/dataMocks"
-import stringify from "safe-stable-stringify"
 import { EffectsModule } from "@ngrx/effects"
 import { Store, StoreModule } from "@ngrx/store"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
-import { CcState } from "../../../codeCharta.model"
-import { RenderCodeMapEffect } from "../../../state/effects/renderCodeMapEffect/renderCodeMap.effect"
-import { setFiles, setStandardByNames } from "../../../state/store/files/files.actions"
-import { UnfocusNodesEffect } from "../../../state/effects/unfocusNodes/unfocusNodes.effect"
+import stringify from "safe-stable-stringify"
+import { RenderCodeMapEffect } from "../../../features/codeMap/effects/renderCodeMapEffect/renderCodeMap.effect"
+import { TEST_FILE_CONTENT } from "../../../mocks/dataMocks"
+import { CcState } from "../../../model/codeCharta.model"
+import { LoadFileService } from "../../../stores/fileStore/fileStore.facade"
+import { setFiles, setStandardByNames } from "../../../stores/fileStore/store/files.actions"
+import { setIsLoadingFile } from "../../../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
+import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
+import { createCCFileInput } from "./createCCFileInput"
+import { UploadFilesService } from "./uploadFiles.service"
 
 jest.mock("./createCCFileInput")
 
 describe("UploadFilesService", () => {
-    let loadFileService: LoadFileService
+    let _loadFileService: LoadFileService
     let uploadFilesService: UploadFilesService
     let store: Store<CcState>
     let dispatchSpy: jest.SpyInstance
@@ -37,15 +35,13 @@ describe("UploadFilesService", () => {
         ;(createCCFileInput as jest.Mock).mockReturnValue(mockFileInput)
     })
 
-    afterEach(() => {
-        loadFileService.referenceFileSubscription.unsubscribe()
-    })
+    afterEach(() => {})
 
     function restartSystem() {
         TestBed.configureTestingModule({
             imports: [
                 StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
-                EffectsModule.forRoot([RenderCodeMapEffect, UnfocusNodesEffect])
+                EffectsModule.forRoot([RenderCodeMapEffect])
             ],
             providers: [UploadFilesService, LoadFileService]
         })
@@ -54,7 +50,7 @@ describe("UploadFilesService", () => {
 
     function rebuildServices() {
         uploadFilesService = TestBed.inject(UploadFilesService)
-        loadFileService = TestBed.inject(LoadFileService)
+        _loadFileService = TestBed.inject(LoadFileService)
     }
 
     it("should upload file", async () => {
@@ -67,20 +63,25 @@ describe("UploadFilesService", () => {
         expect(dispatchSpy).toHaveBeenCalledWith(setStandardByNames({ fileNames: ["test.cc.json"] }))
     })
 
-    it("should dispatch loading false if already loaded file is uploaded", async () => {
-        uploadFilesService.uploadFiles()
+    it("should raise the loading indicator before the files are read", async () => {
+        // Act
+        await uploadFilesService["uploadFilesOnEvent"](mockFileInput)
 
-        expect(mockFileInput.click).toHaveBeenCalled()
+        // Assert
+        expect(dispatchSpy).toHaveBeenNthCalledWith(1, setIsLoadingFile({ value: true }))
+    })
+
+    it("should still commit an already loaded file so that the loading indicator is cleared by the render", async () => {
+        // Arrange
         await uploadFilesService["uploadFilesOnEvent"](mockFileInput)
         dispatchSpy.mockClear()
 
-        uploadFilesService.uploadFiles()
-
-        expect(mockFileInput.click).toHaveBeenCalled()
+        // Act
         await uploadFilesService["uploadFilesOnEvent"](mockFileInput)
 
-        expect(dispatchSpy).toHaveBeenNthCalledWith(4, setStandardByNames({ fileNames: ["test.cc.json"] }))
-        expect(dispatchSpy).toHaveBeenNthCalledWith(5, setIsLoadingFile({ value: false }))
-        expect(dispatchSpy).toHaveBeenNthCalledWith(6, setIsLoadingMap({ value: false }))
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(setStandardByNames({ fileNames: ["test.cc.json"] }))
+        expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: "FILES_LOADED", source: "upload" }))
+        expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
     })
 })

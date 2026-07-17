@@ -1,4 +1,4 @@
-import { Edge, EdgeVisibility } from "../../../codeCharta.model"
+import { Edge, EdgeVisibility } from "../../../model/codeCharta.model"
 
 export const setEdgeVisibility = (
     edgePreviewNodes: Set<string>,

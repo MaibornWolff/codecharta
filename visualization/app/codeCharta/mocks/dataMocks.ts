@@ -1,9 +1,15 @@
+import { hierarchy } from "d3-hierarchy"
+import { Vector3 } from "three"
+import packageJson from "../../../package.json"
+import { CcJson2 } from "../model/ccjson2.model"
+import { APIVersions, ExportCCFile } from "../model/codeCharta.api.model"
 import {
-    AttributeTypeValue,
     AttributeDescriptors,
+    AttributeTypeValue,
     BlacklistItem,
     BlacklistType,
     CCFile,
+    CcState,
     CodeMapNode,
     ColorMode,
     Edge,
@@ -16,16 +22,11 @@ import {
     Node,
     NodeMetricData,
     NodeType,
-    SortingOption,
-    CcState
-} from "../codeCharta.model"
-import { Vector3 } from "three"
-import { hierarchy } from "d3-hierarchy"
+    SortingOption
+} from "../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
-import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
-import packageJson from "../../../package.json"
 import { isLeaf } from "../util/codeMapHelper"
-import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
+import { UNARY_METRIC } from "../util/metric/unaryMetric"
 
 const DEFAULT_FILE_META = {
     projectName: "Sample Project",
@@ -2007,89 +2008,6 @@ export const TEST_DELTA_MAP_F: CCFile = {
     settings: DEFAULT_SETTINGS
 }
 
-export const TEST_FILE_DATA_DOWNLOADED = {
-    projectName: "Sample Project",
-    apiVersion: packageJson.codecharta.apiVersion,
-    fileChecksum: "md5-fileA",
-    nodes: [
-        {
-            name: "root",
-            type: NodeType.FOLDER,
-            attributes: {},
-            children: [
-                {
-                    name: "big leaf",
-                    type: NodeType.FILE,
-                    attributes: {
-                        rloc: 100,
-                        functions: 10,
-                        mcc: 1
-                    },
-                    link: "https://www.google.de"
-                },
-                {
-                    name: "Parent Leaf",
-                    type: NodeType.FOLDER,
-                    attributes: {},
-                    children: [
-                        {
-                            name: "small leaf",
-                            type: NodeType.FILE,
-                            attributes: {
-                                rloc: 30,
-                                functions: 100,
-                                mcc: 100
-                            }
-                        },
-                        {
-                            name: "other small leaf",
-                            type: NodeType.FILE,
-                            attributes: {
-                                rloc: 70,
-                                functions: 1000,
-                                mcc: 10
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
-    attributeTypes: {},
-    attributeDescriptors: {},
-    edges: [
-        {
-            fromNodeName: "/root/big leaf",
-            toNodeName: "/root/Parent Leaf/small leaf",
-            attributes: {
-                pairingRate: 89,
-                avgCommits: 34
-            }
-        },
-        {
-            fromNodeName: "/root/Parent Leaf/small leaf",
-            toNodeName: "/root/different leaf",
-            attributes: {
-                pairingRate: 89,
-                avgCommits: 34
-            }
-        },
-        {
-            fromNodeName: "/root/Parent Leaf/other small leaf",
-            toNodeName: "/root/Parent Leaf/small leaf",
-            attributes: {
-                pairingRate: 89,
-                otherMetric: 34
-            }
-        }
-    ],
-    markedPackages: [],
-    blacklist: [
-        { path: "/root/bigLeaf.ts", type: "hide" },
-        { path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
-    ]
-}
-
 export const FILE_STATES: FileState[] = [
     {
         file: TEST_FILE_DATA,
@@ -2135,38 +2053,42 @@ export const EDGE_METRIC_DATA: EdgeMetricData[] = [
 ]
 
 export const STATE: CcState = {
-    fileSettings: {
+    metricsLensSource: {
         attributeTypes: {
-            nodes: {
-                rloc: AttributeTypeValue.absolute,
-                mcc: AttributeTypeValue.absolute,
-                coverage: AttributeTypeValue.relative,
-                pairing_rate: AttributeTypeValue.absolute
-            },
-            edges: {}
+            rloc: AttributeTypeValue.absolute,
+            mcc: AttributeTypeValue.absolute,
+            coverage: AttributeTypeValue.relative,
+            pairing_rate: AttributeTypeValue.absolute
         },
-        attributeDescriptors: {},
-        blacklist: [],
-        edges: VALID_EDGES,
-        markedPackages: []
+        attributeDescriptors: {}
     },
-    dynamicSettings: {
+    dependencyLensSource: {
+        attributeTypes: {}
+    },
+    sharedView: {
+        focusedNodePath: ["/root/ParentLeaf"],
+        searchPattern: "",
+        blacklist: [],
+        markedPackages: [],
+        hoveredNodeId: null,
+        selectedBuildingId: null,
+        rightClickedNodeData: null
+    },
+    preferences: {
+        isColorMetricLinkedToHeightMetric: false,
+        isPresentationMode: false,
+        resetCameraIfNewFileIsLoaded: true,
+        experimentalFeaturesEnabled: false,
+        screenshotToClipboardEnabled: false,
+        maxTreeMapFiles: 200,
+        sorting: { option: SortingOption.NAME, orderAscending: false }
+    },
+    mapState: {
         areaMetric: "rloc",
         heightMetric: "mcc",
         colorMetric: "mcc",
         distributionMetric: "mcc",
         edgeMetric: "pairingRate",
-        focusedNodePath: ["/root/ParentLeaf"],
-        searchPattern: "",
-        margin: 48,
-        colorRange: {
-            from: 19,
-            to: 67
-        },
-        colorMode: ColorMode.weightedGradient,
-        sortingOption: SortingOption.NAME
-    },
-    appSettings: {
         amountOfTopLabels: 31,
         labelSize: 1,
         amountOfEdgePreviews: 5,
@@ -2182,7 +2104,6 @@ export const STATE: CcState = {
         invertArea: false,
         isEdgeMetricVisible: true,
         isWhiteBackground: false,
-        isColorMetricLinkedToHeightMetric: false,
         enableFloorLabels: true,
         mapColors: {
             positive: "#69AE40",
@@ -2198,35 +2119,43 @@ export const STATE: CcState = {
             outgoingEdge: "#ff00ff",
             labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
         },
-        isPresentationMode: false,
         showIncomingEdges: true,
         showOutgoingEdges: true,
         showOnlyBuildingsWithEdges: false,
-        resetCameraIfNewFileIsLoaded: true,
-        isLoadingMap: true,
-        isLoadingFile: true,
-        sortingOrderAscending: false,
         showMetricLabelNameValue: true,
         showMetricLabelNodeName: true,
-        experimentalFeaturesEnabled: false,
-        screenshotToClipboardEnabled: false,
-        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        maxTreeMapFiles: 200,
         labelMode: LabelMode.Height,
         groupLabelCollisions: false,
-        labelsPerMap: false
+        labelsPerMap: false,
+        margin: 48,
+        colorRange: {
+            from: 19,
+            to: 67
+        },
+        colorMode: ColorMode.weightedGradient,
+        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap
     },
     files: [],
-    appStatus: {
-        currentFilesAreSampleFiles: false,
-        hoveredNodeId: null,
-        selectedBuildingId: null,
-        rightClickedNodeData: null
-    }
+    isLoadingFile: true,
+    currentFilesAreSampleFiles: false
 }
 
 export const DEFAULT_STATE: CcState = {
-    appSettings: {
+    preferences: {
+        isColorMetricLinkedToHeightMetric: false,
+        isPresentationMode: false,
+        resetCameraIfNewFileIsLoaded: true,
+        experimentalFeaturesEnabled: false,
+        screenshotToClipboardEnabled: false,
+        maxTreeMapFiles: 100,
+        sorting: { option: SortingOption.NAME, orderAscending: true }
+    },
+    mapState: {
+        areaMetric: null,
+        heightMetric: null,
+        colorMetric: null,
+        distributionMetric: null,
+        edgeMetric: null,
         amountOfTopLabels: 1,
         labelSize: 1,
         amountOfEdgePreviews: 1,
@@ -2241,7 +2170,6 @@ export const DEFAULT_STATE: CcState = {
         invertArea: false,
         isEdgeMetricVisible: true,
         isWhiteBackground: false,
-        isColorMetricLinkedToHeightMetric: false,
         enableFloorLabels: true,
         mapColors: {
             base: "#666666",
@@ -2258,54 +2186,41 @@ export const DEFAULT_STATE: CcState = {
             labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.7 }
         },
         scaling: new Vector3(1, 1, 1),
-        isPresentationMode: false,
         showIncomingEdges: true,
         showOutgoingEdges: true,
         showOnlyBuildingsWithEdges: false,
-        resetCameraIfNewFileIsLoaded: true,
-        isLoadingMap: true,
-        isLoadingFile: true,
-        sortingOrderAscending: true,
         showMetricLabelNameValue: false,
         showMetricLabelNodeName: true,
-        experimentalFeaturesEnabled: false,
-        screenshotToClipboardEnabled: false,
-        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
-        maxTreeMapFiles: 100,
         labelMode: LabelMode.Height,
         groupLabelCollisions: false,
-        labelsPerMap: false
-    },
-    dynamicSettings: {
-        areaMetric: null,
-        colorMetric: null,
-        focusedNodePath: [],
-        heightMetric: null,
-        distributionMetric: null,
-        edgeMetric: null,
+        labelsPerMap: false,
         margin: 50,
         colorRange: {
             from: null,
             to: null
         },
         colorMode: ColorMode.weightedGradient,
+        layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap
+    },
+    sharedView: {
+        focusedNodePath: [],
         searchPattern: "",
-        sortingOption: SortingOption.NAME
-    },
-    fileSettings: {
-        attributeTypes: { nodes: {}, edges: {} },
-        attributeDescriptors: {},
         blacklist: [],
-        edges: [],
-        markedPackages: []
-    },
-    files: [],
-    appStatus: {
-        currentFilesAreSampleFiles: false,
+        markedPackages: [],
         hoveredNodeId: null,
         selectedBuildingId: null,
         rightClickedNodeData: null
-    }
+    },
+    metricsLensSource: {
+        attributeTypes: {},
+        attributeDescriptors: {}
+    },
+    dependencyLensSource: {
+        attributeTypes: {}
+    },
+    files: [],
+    isLoadingFile: true,
+    currentFilesAreSampleFiles: false
 }
 
 export const TEST_NODE_ROOT: Node = {
@@ -2574,4 +2489,39 @@ export function setupFiles(): FileState[] {
         { file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.None },
         { file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.None }
     ]
+}
+
+export const TEST_FILE_CONTENT_CC_JSON_2: CcJson2 = {
+    meta: { projectName: "Sample 2.0 Map", apiVersion: "2.0", checksum: "valid-md5-sample-cc2" },
+    files: [
+        {
+            id: "/root",
+            name: "root",
+            type: NodeType.FOLDER,
+            children: [
+                { id: "/root/big.ts", name: "big.ts", type: NodeType.FILE, link: "http://example.com" },
+                {
+                    id: "/root/Parent",
+                    name: "Parent",
+                    type: NodeType.FOLDER,
+                    children: [{ id: "/root/Parent/small.ts", name: "small.ts", type: NodeType.FILE }]
+                }
+            ]
+        }
+    ],
+    lenses: {
+        metrics: {
+            attributes: {
+                "/root/big.ts": { rloc: 100, authors: [1, 2] },
+                "/root/Parent/small.ts": { rloc: 30 }
+            },
+            attributeDescriptors: {},
+            attributeTypes: { rloc: AttributeTypeValue.absolute }
+        },
+        dependency: {
+            edges: [{ fromId: "/root/big.ts", toId: "/root/Parent/small.ts", attributes: { pairingRate: 42 } }],
+            attributeTypes: { pairingRate: AttributeTypeValue.relative },
+            attributeDescriptors: {}
+        }
+    }
 }

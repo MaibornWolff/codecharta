@@ -1,0 +1,14 @@
+{
+  "apiVersion": "1.3",
+  "projectName": "legacy sample one",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "children": [
+        { "name": "legacyLeafA.ts", "type": "File", "attributes": { "rloc": 10 } }
+      ]
+    }
+  ]
+}

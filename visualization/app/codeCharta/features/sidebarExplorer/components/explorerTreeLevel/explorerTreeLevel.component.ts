@@ -1,20 +1,21 @@
 import { NgClass } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, OnInit, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
 import {
-    IdToBuildingService,
-    CodeMapMouseEventService,
     CodeMapTooltipService,
+    IdToBuildingService,
     ThreeRendererService,
     ThreeSceneService
-} from "../../../../features/codeMap/facade"
+} from "../../../../renderer/threeViewer/threeViewer.facade"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
 import { formatCompactNumber } from "../../formatCompactNumber"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
-import { AppStatusStore } from "../../stores/appStatus.store"
-import { ExplorerAreaMetricStore } from "../../stores/areaMetric.store"
-import { RootUnaryStore } from "../../stores/rootUnary.store"
+import { SidebarExplorerReadStore } from "../../stores/sidebarExplorer.read.store"
+import { SidebarExplorerWriteStore } from "../../stores/sidebarExplorer.write.store"
 import { ExplorerTreeItemIconComponent } from "../explorerTreeItemIcon/explorerTreeItemIcon.component"
 import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerTreeItemName.component"
 
@@ -25,9 +26,10 @@ import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerT
     imports: [NgClass, ExplorerTreeItemIconComponent, ExplorerTreeItemNameComponent]
 })
 export class ExplorerTreeLevelComponent implements OnInit {
-    private readonly appStatusStore = inject(AppStatusStore)
-    private readonly areaMetricStore = inject(ExplorerAreaMetricStore)
-    private readonly rootUnaryStore = inject(RootUnaryStore)
+    private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
+    private readonly readStore = inject(SidebarExplorerReadStore)
+    private readonly writeStore = inject(SidebarExplorerWriteStore)
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly idToBuildingService = inject(IdToBuildingService)
     private readonly threeRendererService = inject(ThreeRendererService)
@@ -43,17 +45,17 @@ export class ExplorerTreeLevelComponent implements OnInit {
 
     readonly isOpen = signal(false)
 
-    readonly hoveredNodeId = toSignal(this.appStatusStore.hoveredNodeId$, { requireSync: true })
-    readonly rightClickedNodeData = toSignal(this.appStatusStore.rightClickedNodeData$, { requireSync: true })
-    readonly selectedBuildingId = toSignal(this.appStatusStore.selectedBuildingId$, { requireSync: true })
-    readonly areaMetric = toSignal(this.areaMetricStore.areaMetric$, { requireSync: true })
-    readonly rootUnary = toSignal(this.rootUnaryStore.rootUnary$, { requireSync: true })
+    readonly hoveredNodeId = toSignal(this.sharedViewReadWindow.hoveredNodeId$, { requireSync: true })
+    readonly rightClickedNodeData = toSignal(this.sharedViewReadWindow.rightClickedNodeData$, { requireSync: true })
+    readonly selectedBuildingId = toSignal(this.sharedViewReadWindow.selectedBuildingId$, { requireSync: true })
+    readonly areaMetric = toSignal(this.mapStateReadWindow.areaMetric$, { requireSync: true })
+    readonly rootUnary = toSignal(this.readStore.rootUnary$, { requireSync: true })
     readonly buildingIds = toSignal(this.idToBuildingService.buildingIds$, { requireSync: true })
 
-    readonly isHovered = computed(() => this.hoveredNodeId() === this.node().id)
-    readonly isMarked = computed(() => this.rightClickedNodeData()?.nodeId === this.node().id)
+    readonly isHovered = computed(() => this.hoveredNodeId() === this.node().path)
+    readonly isMarked = computed(() => this.rightClickedNodeData()?.nodeId === this.node().path)
     readonly isRevealed = computed(() => this.revealService.revealedNodePath() === this.node().path)
-    readonly isSelected = computed(() => this.selectedBuildingId() === this.node().id)
+    readonly isSelected = computed(() => this.selectedBuildingId() === this.node().path)
     readonly isAreaMetricValid = computed(() => isAreaValid(this.node(), this.areaMetric()))
     readonly isLeafNode = computed(() => isLeaf(this.node()))
     readonly children = computed(() => this.node().children ?? [])
@@ -90,15 +92,15 @@ export class ExplorerTreeLevelComponent implements OnInit {
     }
 
     onMouseEnter($event: MouseEvent) {
-        this.codeMapMouseEventService.hoverNode(this.node().id)
-        this.appStatusStore.setHoveredNodeId(this.node().id)
+        this.codeMapMouseEventService.hoverNode(this.node().path)
+        this.writeStore.setHoveredNodeId(this.node().path)
         const rowRect = ($event.currentTarget as HTMLElement).getBoundingClientRect()
         this.codeMapTooltipService.show(this.node(), rowRect.right, rowRect.top)
     }
 
     onMouseLeave() {
         this.codeMapMouseEventService.unhoverNode()
-        this.appStatusStore.setHoveredNodeId(null)
+        this.writeStore.setHoveredNodeId(null)
         this.codeMapTooltipService.hide()
     }
 
@@ -127,8 +129,8 @@ export class ExplorerTreeLevelComponent implements OnInit {
             return
         }
 
-        this.appStatusStore.setRightClickedNodeData({
-            nodeId: this.node().id,
+        this.writeStore.setRightClickedNodeData({
+            nodeId: this.node().path,
             xPositionOfRightClickEvent: $event.clientX,
             yPositionOfRightClickEvent: $event.clientY,
             origin: "explorer"
@@ -157,7 +159,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
     }
 
     private readonly scrollFunction = () => {
-        this.appStatusStore.setRightClickedNodeData(null)
+        this.writeStore.setRightClickedNodeData(null)
         this.removeScrollListener()
     }
 }

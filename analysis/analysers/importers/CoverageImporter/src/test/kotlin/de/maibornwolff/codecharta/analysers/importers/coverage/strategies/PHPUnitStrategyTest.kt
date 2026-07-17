@@ -25,7 +25,7 @@ class PHPUnitStrategyTest {
 
         assertThat(project)
             .usingRecursiveComparison()
-            .ignoringFields("attributeDescriptors", "attributeTypes", "blacklist", "apiVersion")
+            .ignoringFields("lenses", "blacklist", "apiVersion")
             .isEqualTo(expectedProject)
     }
 

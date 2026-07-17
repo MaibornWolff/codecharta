@@ -10,7 +10,13 @@ class GitignoreHandler(private val root: File) {
     private val excludedFileCount = AtomicInteger(0)
 
     init {
-        root.walk().filter { it.isFile && it.name == ".gitignore" }.forEach { parseAndCacheGitignoreFile(it) }
+        // Never descend into a .git directory while discovering .gitignore files — it holds no rules
+        // that should affect a scan and can be huge.
+        root
+            .walk()
+            .onEnter { it.name != GIT_DIRECTORY_NAME }
+            .filter { it.isFile && it.name == GITIGNORE_FILE_NAME }
+            .forEach { parseAndCacheGitignoreFile(it) }
     }
 
     private fun parseAndCacheGitignoreFile(gitignoreFile: File) {
@@ -31,7 +37,18 @@ class GitignoreHandler(private val root: File) {
     }
 
     fun shouldExclude(file: File): Boolean {
-        if (gitignoreCache.isEmpty() || !isFileWithinRoot(file)) {
+        if (!isFileWithinRoot(file)) {
+            return false
+        }
+
+        // git always implicitly ignores the repository's own .git directory; the gitignore emulation must
+        // too. Checked before the empty-cache short-circuit so it still holds for a repo whose root
+        // .gitignore suppresses the build-folder fallback — otherwise the whole object store gets walked.
+        if (isWithinGitDirectory(file)) {
+            return true
+        }
+
+        if (gitignoreCache.isEmpty()) {
             return false
         }
 
@@ -50,6 +67,19 @@ class GitignoreHandler(private val root: File) {
     }
 
     private fun isFileWithinRoot(file: File): Boolean = file.absolutePath.startsWith(root.absolutePath)
+
+    // True when [file] is the scan root's .git directory or lives anywhere beneath it. The root itself
+    // is never treated as a .git dir (a scan rooted at a .git dir is nonsensical, and pruning it would
+    // just yield no files).
+    private fun isWithinGitDirectory(file: File): Boolean {
+        var current: File? = file
+        val rootPath = root.absolutePath
+        while (current != null && current.absolutePath != rootPath && current.absolutePath.startsWith(rootPath)) {
+            if (current.name == GIT_DIRECTORY_NAME) return true
+            current = current.parentFile
+        }
+        return false
+    }
 
     private fun collectAncestorGitignoreRules(file: File): List<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>> {
         val applicableRules = mutableListOf<Triple<File, GitignorePatternMatcher, List<GitignoreRule>>>()
@@ -113,4 +143,9 @@ class GitignoreHandler(private val root: File) {
     }
 
     fun getStatistics(): Pair<Int, List<String>> = Pair(excludedFileCount.get(), discoveredGitignoreFiles.toList())
+
+    companion object {
+        private const val GIT_DIRECTORY_NAME = ".git"
+        private const val GITIGNORE_FILE_NAME = ".gitignore"
+    }
 }

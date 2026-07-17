@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { combineLatest, map } from "rxjs"
-import { ColorRange } from "../../../../codeCharta.model"
+import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
+import { ColorRange } from "../../../../model/codeCharta.model"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { debounce } from "../../../../util/debounce"
-import { AttributeDescriptorsService } from "../../services/attributeDescriptors.service"
-import { ColorMetricService } from "../../services/colorMetric.service"
-import { ColorRangeService } from "../../services/colorRange.service"
+import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
 import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
 import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
@@ -19,20 +20,21 @@ import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColo
 })
 export class ColorRangeSectionComponent implements OnDestroy {
     constructor(
-        private readonly colorRangeService: ColorRangeService,
-        private readonly colorMetricService: ColorMetricService,
-        private readonly attributeDescriptorsService: AttributeDescriptorsService
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly metricsBarReadStore: MetricsBarReadStore,
+        private readonly metricsBarWriteStore: MetricsBarWriteStore,
+        private readonly metricsLensFacade: MetricsLensFacade
     ) {}
 
-    readonly colorMetric = toSignal(this.colorMetricService.colorMetric$(), { initialValue: "" })
-    readonly sliderValues = toSignal(this.colorRangeService.metricColorRangeValues$(), {
+    readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { initialValue: "" })
+    readonly sliderValues = toSignal(this.metricsBarReadStore.metricColorRangeValues$, {
         initialValue: { values: [], min: 0, max: 0, from: 0, to: 0 }
     })
-    readonly sliderColors = toSignal(this.colorRangeService.metricColorRangeColors$(), {
+    readonly sliderColors = toSignal(this.metricsBarReadStore.metricColorRangeColors$, {
         initialValue: { leftColor: "#000", middleColor: "#000", rightColor: "#000" }
     })
     readonly isAttributeDirectionInversed = toSignal(
-        combineLatest([this.colorMetricService.colorMetric$(), this.attributeDescriptorsService.attributeDescriptors$()]).pipe(
+        combineLatest([this.mapStateReadWindow.colorMetric$, this.metricsLensFacade.descriptors$]).pipe(
             map(([colorMetric, attributeDescriptors]) => attributeDescriptors[colorMetric]?.direction === 1)
         ),
         { initialValue: false }
@@ -51,7 +53,7 @@ export class ColorRangeSectionComponent implements OnDestroy {
         }
         this.pendingLeftValue = null
         this.pendingRightValue = null
-        this.colorRangeService.setColorRange(newColorRange)
+        this.metricsBarWriteStore.setColorRange(newColorRange)
     }, SETTINGS_INPUT_DEBOUNCE_MS)
 
     handleValueChange: HandleValueChange = ({ newLeftValue, newRightValue }) => {

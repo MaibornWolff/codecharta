@@ -1,8 +1,8 @@
-import { BackBelowLogoTextMesh } from "./backBelowLogoTextMesh"
-import { TextMesh } from "../textMesh"
-import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
-import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
 import { Font } from "three/addons/loaders/FontLoader.js"
+import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
+import { BackPrintColorChangeStrategy } from "../../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { TextMesh } from "../textMesh"
+import { BackBelowLogoTextMesh } from "./backBelowLogoTextMesh"
 
 jest.mock("../textMesh", () => {
     return {

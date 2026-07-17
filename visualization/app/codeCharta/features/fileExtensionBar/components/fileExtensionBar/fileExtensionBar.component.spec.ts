@@ -2,17 +2,18 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { ThreeSceneService } from "../../../../features/codeMap/facade"
-import { FileExtensionBarComponent } from "./fileExtensionBar.component"
-import { metricDistributionSelector } from "../../selectors/metricDistribution.selector"
-import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNodeMetricDistribution.selector"
+import { provideMockState } from "../../../../mocks/state.mocks"
+import { BlacklistItem } from "../../../../model/codeCharta.model"
+import { accumulatedDataSelector } from "../../../../renderer/renderModel/accumulatedData/accumulatedData.selector"
+import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { blacklistSelector } from "../../../../stores/sharedView/sharedView.read.facade"
+import { hoveredNodeIdSelector } from "../../../../stores/sharedView/store/hoveredNodeId/hoveredNodeId.selector"
+import { selectedBuildingIdSelector } from "../../../../stores/sharedView/store/selectedBuildingId/selectedBuildingId.selector"
 import { CategorizedMetricDistribution } from "../../../../util/fileExtension/fileExtensionCalculator"
-import { BlacklistItem } from "../../../../codeCharta.model"
-import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { accumulatedDataSelector } from "../../../../state/selectors/accumulatedData/accumulatedData.selector"
-import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
-import { hoveredNodeIdSelector } from "../../../../state/store/appStatus/hoveredNodeId/hoveredNodeId.selector"
-import { selectedBuildingIdSelector } from "../../../../state/store/appStatus/selectedBuildingId/selectedBuildingId.selector"
+import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNodeMetricDistribution.selector"
+import { metricDistributionSelector } from "../../selectors/metricDistribution.selector"
+import { FileExtensionBarComponent } from "./fileExtensionBar.component"
 
 describe("FileExtensionBarComponent", () => {
     let fixture: ComponentFixture<FileExtensionBarComponent>
@@ -26,6 +27,7 @@ describe("FileExtensionBarComponent", () => {
         TestBed.configureTestingModule({
             imports: [FileExtensionBarComponent],
             providers: [
+                provideMockState(),
                 provideMockStore({
                     selectors: [
                         { selector: areaMetricSelector, value: {} },

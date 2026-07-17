@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
-import { CodeMapRenderService } from "./codeMap.render.service"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
+import { State, Store, StoreModule } from "@ngrx/store"
+import { klona } from "klona"
+import { Object3D, Vector3 } from "three"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
-import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { Node, CodeMapNode, CcState, LabelMode } from "../../codeCharta.model"
+import { edgesSelector } from "../../lenses/dependency/dependencyLens.facade"
 import {
     COLOR_TEST_NODES,
     DEFAULT_STATE,
@@ -18,35 +18,53 @@ import {
     TEST_NODES,
     VALID_EDGES
 } from "../../mocks/dataMocks"
+import { CcState, CodeMapNode, LabelMode, Node } from "../../model/codeCharta.model"
+import { metricDataSelector } from "../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
+import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
+import { ColorCategoryCountsStore } from "../../renderer/threeViewer/stores/colorCategoryCounts.store"
+import { ThreeSceneService } from "../../renderer/threeViewer/threeSceneService"
+import { ThreeStatsService } from "../../renderer/threeViewer/threeStats.service"
+import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
+import { setFiles } from "../../stores/fileStore/store/files.actions"
+import {
+    setAmountOfTopLabels,
+    setColorLabels,
+    setHeightMetric,
+    setLabelMode,
+    setLabelsPerMap,
+    setShowMetricLabelNameValue,
+    setShowMetricLabelNodeName
+} from "../../stores/mapState/mapState.write.facade"
+import { setState } from "../../stores/rootStore/state.actions"
+import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { Object3D, Vector3 } from "three"
-import { setState } from "../../state/store/state.actions"
-import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
-import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
-import { klona } from "klona"
-import { ThreeStatsService } from "./threeViewer/threeStats.service"
-import { setColorLabels } from "../../state/store/appSettings/colorLabels/colorLabels.actions"
-import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
-import { setLabelsPerMap } from "../../state/store/appSettings/labelsPerMap/labelsPerMap.actions"
-import { setFiles } from "../../state/store/files/files.actions"
-import { setLabelMode } from "../../state/store/appSettings/labelMode/labelMode.actions"
-import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { State, Store, StoreModule } from "@ngrx/store"
-import { CodeMapRenderStore } from "./stores/codeMapRender.store"
-import { appReducers, setStateMiddleware } from "../../state/store/state.manager"
+import { CodeMapRenderService } from "./codeMap.render.service"
+import { CodeMapStore } from "./stores/codeMap.store"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
-jest.mock("../../state/selectors/accumulatedData/metricData/metricData.selector", () => ({
+jest.mock("../../renderer/renderModel/accumulatedData/metricData/metricData.selector", () => ({
     metricDataSelector: jest.fn()
+}))
+
+// Slice 15e: edges derives from files via the dependency lens; mock the selector to inject edges directly.
+jest.mock("../../lenses/dependency/store/edges.selector", () => ({ edgesSelector: jest.fn(() => []) }))
+
+// The render service reads node metrics via nodeMetricDataSelector(state) (Slice 12c: no longer through
+// the metrics-lens facade). Stub only that export — metricRangeSelector must stay real because
+// treeMapHelper's selectedColorMetricDataSelector aliases it for the color range.
+const mockedNodeMetricDataSelector = nodeMetricDataSelector as unknown as jest.Mock
+jest.mock("../../renderer/renderModel/nodeMetricData/nodeMetricData.selector", () => ({
+    ...jest.requireActual("../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"),
+    nodeMetricDataSelector: jest.fn()
 }))
 
 describe("codeMapRenderService", () => {
     let store: Store<CcState>
     let state: State<CcState>
-    let codeMapRenderStore: CodeMapRenderStore
+    let codeMapStore: CodeMapStore
+    let fileStoreReadWindow: FileStoreReadWindow
     let codeMapRenderService: CodeMapRenderService
     let threeSceneService: ThreeSceneService
     let labelSettingsFacade: LabelSettingsFacade
@@ -67,37 +85,50 @@ describe("codeMapRenderService", () => {
     })
 
     function restartSystem() {
+        // Default to no edges (mirrors the fresh store) so a mockReturnValue from a prior test doesn't leak.
+        ;(edgesSelector as unknown as jest.Mock).mockReturnValue([])
         TestBed.configureTestingModule({
             imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
-        codeMapRenderStore = TestBed.inject(CodeMapRenderStore)
+        codeMapStore = TestBed.inject(CodeMapStore)
+        fileStoreReadWindow = TestBed.inject(FileStoreReadWindow)
         labelSettingsFacade = TestBed.inject(LabelSettingsFacade)
         codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
         threeStatsService = TestBed.inject(ThreeStatsService)
         threeSceneService = TestBed.inject(ThreeSceneService)
         codeMapArrowService = TestBed.inject(CodeMapArrowService)
-        codeMapMouseEventService["threeSceneService"] = threeSceneService
+        Object.defineProperty(codeMapMouseEventService, "threeSceneService", {
+            value: threeSceneService,
+            writable: true,
+            configurable: true
+        })
 
         map = klona(TEST_FILE_WITH_PATHS.map)
         NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
-        NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
+        NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, {
+            nodes: DEFAULT_STATE.metricsLensSource.attributeTypes,
+            edges: DEFAULT_STATE.dependencyLensSource.attributeTypes
+        })
         store.dispatch(setState({ value: STATE }))
         mockedMetricDataSelector.mockImplementation(() => ({
             nodeMetricData: METRIC_DATA,
             edgeMetricData: []
         }))
+        mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
     }
 
     function rebuildService() {
         codeMapRenderService = new CodeMapRenderService(
-            codeMapRenderStore,
+            codeMapStore,
+            fileStoreReadWindow,
             threeSceneService,
             labelSettingsFacade,
             codeMapArrowService,
             threeStatsService,
-            codeMapMouseEventService
+            codeMapMouseEventService,
+            new ColorCategoryCountsStore()
         )
         codeMapRenderService["showCouplingArrows"] = jest.fn()
     }
@@ -111,7 +142,7 @@ describe("codeMapRenderService", () => {
     }
 
     function withMockedThreeSceneService() {
-        threeSceneService = codeMapRenderService["threeSceneService"] = jest.fn().mockReturnValue({
+        threeSceneService = jest.fn().mockReturnValue({
             scaleHeight: jest.fn(),
             mapGeometry: jest.fn().mockReturnValue({
                 scale: new Vector3(1, 2, 3)
@@ -120,16 +151,18 @@ describe("codeMapRenderService", () => {
             forceRerender: jest.fn(),
             setMapMesh: jest.fn()
         })()
+        Object.defineProperty(codeMapRenderService, "threeSceneService", { value: threeSceneService })
     }
 
     function withMockedCodeMapMouseEventService() {
-        codeMapMouseEventService = codeMapRenderService["codeMapMouseEventService"] = jest.fn().mockReturnValue({
+        codeMapMouseEventService = jest.fn().mockReturnValue({
             unhoverNode: jest.fn()
         })()
+        Object.defineProperty(codeMapRenderService, "codeMapMouseEventService", { value: codeMapMouseEventService })
     }
 
     function withMockedCodeMapArrowService() {
-        codeMapArrowService = codeMapRenderService["codeMapArrowService"] = jest.fn().mockReturnValue({
+        codeMapArrowService = jest.fn().mockReturnValue({
             scale: jest.fn(),
             clearArrows: jest.fn(),
             addEdgeArrows: jest.fn(),
@@ -138,13 +171,15 @@ describe("codeMapRenderService", () => {
             arrows: [new Object3D()],
             threeSceneService
         })()
+        Object.defineProperty(codeMapRenderService, "codeMapArrowService", { value: codeMapArrowService })
     }
 
     function withMockedStatsService() {
-        threeStatsService = codeMapRenderService["threeStatsService"] = jest.fn().mockReturnValue({
+        threeStatsService = jest.fn().mockReturnValue({
             resetPanels: jest.fn(),
             dispose: jest.fn()
         })()
+        Object.defineProperty(codeMapRenderService, "threeStatsService", { value: threeStatsService })
     }
 
     describe("onIsLoadingFileChanged", () => {
@@ -185,10 +220,25 @@ describe("codeMapRenderService", () => {
         })
 
         it("should call getNodesMatchingColorSelector and set all nodes to positive color when metric is unary", () => {
-            store.dispatch(setState({ value: { ...STATE, dynamicSettings: { ...STATE.dynamicSettings, colorMetric: "unary" } } }))
+            store.dispatch(setState({ value: { ...STATE, mapState: { ...STATE.mapState, colorMetric: "unary" } } }))
             codeMapRenderService["getNodesMatchingColorSelector"](COLOR_TEST_NODES)
 
             expect(codeMapRenderService["nodesByColor"].positive).toEqual([TEST_NODE_ROOT, TEST_NODE_LEAF, INCOMING_NODE])
+        })
+    })
+
+    describe("load (RendererEngine seam)", () => {
+        it("should compose and lay out the model by rendering then scaling", () => {
+            // Arrange
+            codeMapRenderService["render"] = jest.fn()
+            codeMapRenderService["scaleMap"] = jest.fn()
+
+            // Act
+            codeMapRenderService.load(map)
+
+            // Assert
+            expect(codeMapRenderService["render"]).toHaveBeenCalledWith(map)
+            expect(codeMapRenderService["scaleMap"]).toHaveBeenCalledTimes(1)
         })
     })
 
@@ -238,8 +288,8 @@ describe("codeMapRenderService", () => {
         it("should return nodes with length of 0 and set min length if experimental features are enabled", () => {
             const newState = {
                 ...state.getValue(),
-                appSettings: {
-                    ...state.getValue().appSettings,
+                preferences: {
+                    ...state.getValue().preferences,
                     experimentalFeaturesEnabled: true
                 }
             }
@@ -257,8 +307,8 @@ describe("codeMapRenderService", () => {
         it("should return nodes with length and width > 0 if experimental features are not enabled", () => {
             const newState = {
                 ...state.getValue(),
-                appSettings: {
-                    ...state.getValue().appSettings,
+                preferences: {
+                    ...state.getValue().preferences,
                     experimentalFeaturesEnabled: false
                 }
             }
@@ -524,7 +574,7 @@ describe("codeMapRenderService", () => {
         })
 
         it("should call codeMapArrowService.addEdgeArrows", () => {
-            store.dispatch(setEdges({ value: VALID_EDGES }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue(VALID_EDGES)
 
             codeMapRenderService["setArrows"](sortedNodes)
 

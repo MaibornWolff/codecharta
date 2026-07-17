@@ -200,6 +200,42 @@ check_rawtext() {
   validate "${ACTUAL_RAWTEXT_JSON}"
 }
 
+check_unifiedparser() {
+  echo " -- expect UnifiedParser to produce valid cc.json file"
+  ACTUAL_UNIFIED_JSON="${TEMP_DIR}/actual_unifiedparser.cc.json"
+  "${CCSH}" unifiedparser "${DATA}/sourcecode.java" -o "${ACTUAL_UNIFIED_JSON}" -nc
+  validate "${ACTUAL_UNIFIED_JSON}"
+}
+
+check_dependacharta() {
+  echo " -- expect DependaChartaImporter to produce valid cc.json file"
+  ACTUAL_DEPENDACHARTA_JSON="${TEMP_DIR}/actual_dependacharta.cc.json"
+  "${CCSH}" dependachartaimport "${DATA}/dependacharta.dc.json" -o "${ACTUAL_DEPENDACHARTA_JSON}" -nc
+  validate "${ACTUAL_DEPENDACHARTA_JSON}"
+}
+
+check_convert() {
+  echo " -- expect convert to upgrade a legacy 1.x file to a valid 2.0 cc.json file"
+  ACTUAL_CONVERT_JSON="${TEMP_DIR}/actual_convert.cc.json"
+  CONVERT_LOG="${TEMP_DIR}/actual_convert_log.txt"
+  "${CCSH}" convert "${DATA}/legacy_1_5.cc.json" -o "${ACTUAL_CONVERT_JSON}" -nc 2>"${CONVERT_LOG}"
+  validate "${ACTUAL_CONVERT_JSON}"
+  # `validate` (ccsh check) alone is blind to a wrong output format, so assert the output is genuine 2.0
+  # (meta/lenses envelope, edge carried through as fromId) and not the un-converted legacy 1.x shape.
+  if ! grep -q '"apiVersion":"2.0"' "${ACTUAL_CONVERT_JSON}" ||
+    ! grep -q '"lenses"' "${ACTUAL_CONVERT_JSON}" ||
+    ! grep -q '"fromId"' "${ACTUAL_CONVERT_JSON}"; then
+    exit_with_err "${ACTUAL_CONVERT_JSON} is not a 2.0 file carrying its edges"
+  fi
+  if grep -q '"nodes":' "${ACTUAL_CONVERT_JSON}" || grep -q '"data":' "${ACTUAL_CONVERT_JSON}"; then
+    exit_with_err "${ACTUAL_CONVERT_JSON} still carries the legacy 1.x shape"
+  fi
+  # convert drops 1.x-only blacklist/markedPackages; it must say so on stderr (#12).
+  if ! grep -q "does not carry blacklist or markedPackages" "${CONVERT_LOG}"; then
+    exit_with_err "convert did not warn about dropped blacklist/markedPackages"
+  fi
+}
+
 check_pipe() {
   echo " -- expect pipe chain from tokei, svnlogparser and modify to work"
   sh "${CCSH}" tokeiimporter "${DATA}/tokei_results.json" --path-separator \\ |
@@ -255,6 +291,9 @@ run_tests() {
   check_svnlog
   check_tokei
   check_rawtext
+  check_unifiedparser
+  check_dependacharta
+  check_convert
 
   check_pipe
 

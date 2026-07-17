@@ -3,6 +3,8 @@ dependencies {
     implementation(project(":analysers:AnalyserInterface"))
     implementation(project(":dialogProvider"))
 
+    // EdgeFilter passes the model's opaque lenses (Map<String, com.google.gson.JsonElement>) through the rebuild.
+    implementation(libs.gson)
     implementation(libs.univocity.parsers)
     implementation(libs.picocli)
     implementation(libs.boon)

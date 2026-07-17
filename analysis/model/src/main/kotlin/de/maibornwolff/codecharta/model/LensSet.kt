@@ -1,0 +1,59 @@
+package de.maibornwolff.codecharta.model
+
+import com.google.gson.JsonElement
+
+data class LensSet(
+    val metrics: MetricsLens = MetricsLens(),
+    val dependency: DependencyLens = DependencyLens(),
+    val opaqueLenses: Map<String, JsonElement> = emptyMap()
+) {
+    val domain: JsonElement? get() = opaqueLenses[DOMAIN_KEY]
+
+    val security: JsonElement? get() = opaqueLenses[SECURITY_KEY]
+
+    fun legacyAttributeTypes(): Map<String, MutableMap<String, AttributeType>> {
+        val result = mutableMapOf<String, MutableMap<String, AttributeType>>()
+        if (metrics.attributeTypes.isNotEmpty()) result[NODES_KEY] = metrics.attributeTypes.toMutableMap()
+        if (dependency.attributeTypes.isNotEmpty()) result[EDGES_KEY] = dependency.attributeTypes.toMutableMap()
+        return result
+    }
+
+    fun allAttributeDescriptors(): Map<String, AttributeDescriptor> {
+        // A metric registered on both lenses (e.g. `ccsh edgefilter` output) must not lose either side's
+        // metadata when flattened: keep the metrics-lens descriptor and union in the edge lens's analyzers,
+        // rather than letting `+` overwrite it with the dependency descriptor.
+        val merged = metrics.attributeDescriptors.toMutableMap()
+        dependency.attributeDescriptors.forEach { (metric, descriptor) ->
+            val existing = merged[metric]
+            merged[metric] =
+                if (existing == null) descriptor else existing.copy(analyzers = existing.analyzers union descriptor.analyzers)
+        }
+        return merged
+    }
+
+    companion object {
+        const val NODES_KEY = "nodes"
+        const val EDGES_KEY = "edges"
+        const val DOMAIN_KEY = "domain"
+        const val SECURITY_KEY = "security"
+
+        fun fromLegacy(
+            edges: List<Edge>,
+            attributeTypes: Map<String, Map<String, AttributeType>>,
+            attributeDescriptors: Map<String, AttributeDescriptor>
+        ): LensSet {
+            val nodeTypes = attributeTypes[NODES_KEY] ?: emptyMap()
+            val edgeTypes = attributeTypes[EDGES_KEY] ?: emptyMap()
+            // 1.5 shares one flat descriptor namespace. A descriptor whose metric is an edge type goes
+            // to the dependency lens; one whose metric is a node type (or has no matching type) goes to
+            // the metrics lens. A metric registered as both a node and an edge type — e.g. `ccsh
+            // edgefilter` output — lands in both lenses so neither side loses its metadata.
+            val edgeDescriptors = attributeDescriptors.filterKeys { it in edgeTypes.keys }
+            val metricDescriptors = attributeDescriptors.filterKeys { it in nodeTypes.keys || it !in edgeTypes.keys }
+            return LensSet(
+                metrics = MetricsLens(nodeTypes, metricDescriptors),
+                dependency = DependencyLens(edges, edgeTypes, edgeDescriptors)
+            )
+        }
+    }
+}

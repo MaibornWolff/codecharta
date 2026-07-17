@@ -6,15 +6,24 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class RecursiveNodeMergerTest {
-    private val merger = RecursiveNodeMergerStrategy()
+    private val merger = MergeResolverStrategy.recursive()
 
     @Test
     fun `should merge nodes`() {
         val node1 = MutableNode("Name", NodeType.File)
-        val node2 = MutableNode("Name", NodeType.Folder)
+        val node2 = MutableNode("Name", NodeType.File)
 
         val nodeList = merger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))
         assertEquals(nodeList.size, 1)
+    }
+
+    @Test
+    fun `should not merge a File and a Folder with the same name`() {
+        val node1 = MutableNode("Name", NodeType.File)
+        val node2 = MutableNode("Name", NodeType.Folder)
+
+        val nodeList = merger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))
+        assertEquals(2, nodeList.size)
     }
 
     @Test
@@ -53,7 +62,7 @@ class RecursiveNodeMergerTest {
     fun `should merge node list with two root nodes`() {
         val node11 = MutableNode("Name1", NodeType.File)
         val node12 = MutableNode("Name2", NodeType.File)
-        val node2 = MutableNode("Name1", NodeType.Folder)
+        val node2 = MutableNode("Name1", NodeType.File)
 
         val nodeList = merger.mergeNodeLists(listOf(listOf(node11, node12), listOf(node2)))
         assertEquals(nodeList.size, 2)

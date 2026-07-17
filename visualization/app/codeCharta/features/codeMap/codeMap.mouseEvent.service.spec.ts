@@ -1,28 +1,35 @@
 import { TestBed } from "@angular/core/testing"
-import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouseEvent.service"
-import { ThreeCameraService } from "./threeViewer/threeCamera.service"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
-import { ViewCubeMouseEventsService } from "../viewCube/facade"
-import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { BlacklistItem, CcState, CodeMapNode, Node } from "../../codeCharta.model"
-import { NodeDecorator } from "../../util/nodeDecorator"
-import { klona } from "klona"
-import { LabelSettingsFacade } from "../../features/labelSettings/facade"
-import { CodeMapTooltipService } from "./codeMap.tooltip.service"
-import { ThreeViewerService } from "./threeViewer/threeViewer.service"
-import { idToNodeSelector } from "../../state/selectors/accumulatedData/idToNode.selector"
-import { IdToBuildingService } from "./idToBuilding.service"
-import { setRightClickedNodeData } from "../../state/store/appStatus/rightClickedNodeData/rightClickedNodeData.actions"
 import { State, Store } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { CodeMapMouseEventStore } from "./stores/codeMapMouseEvent.store"
-import { defaultState } from "../../state/store/state.manager"
+import { klona } from "klona"
 import { Box3 } from "three"
+import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../mocks/dataMocks"
-import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "./rendering/codeMapBuilding.mocks"
+import { BlacklistItem, CcState, CodeMapNode, Node } from "../../model/codeCharta.model"
+import { idToNodeSelector } from "../../renderer/renderModel/renderModel.facade"
+import { CodeMapTooltipService } from "../../renderer/threeViewer/codeMap.tooltip.service"
+import { CursorType, changeCursorIndicator } from "../../renderer/threeViewer/cursorIndicator"
+import { IdToBuildingService } from "../../renderer/threeViewer/idToBuilding.service"
+import { CodeMapBuilding } from "../../renderer/threeViewer/rendering/codeMapBuilding"
+import {
+    CODE_MAP_BUILDING,
+    CODE_MAP_BUILDING_TS_NODE,
+    CONSTANT_HIGHLIGHT
+} from "../../renderer/threeViewer/rendering/codeMapBuilding.mocks"
+import { ThreeCameraService } from "../../renderer/threeViewer/threeCamera.service"
+import { ThreeRendererService } from "../../renderer/threeViewer/threeRenderer.service"
+import { ThreeSceneService } from "../../renderer/threeViewer/threeSceneService"
+import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.service"
+import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
+import { defaultState } from "../../stores/rootStore/state.manager"
+import { SharedViewReadWindow } from "../../stores/sharedView/sharedView.read.facade"
+import { setRightClickedNodeData } from "../../stores/sharedView/sharedView.write.facade"
+import { NodeDecorator } from "../../util/nodeDecorator"
+import { ViewCubeMouseEventsService } from "../viewCube/facade"
+import { ClickType, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { CodeMapStore } from "./stores/codeMap.store"
 
-jest.mock("../../state/selectors/accumulatedData/idToNode.selector", () => ({
+jest.mock("../../renderer/renderModel/accumulatedData/idToNode.selector", () => ({
     idToNodeSelector: jest.fn()
 }))
 const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)
@@ -33,7 +40,9 @@ describe("codeMapMouseEventService", () => {
     let threeRendererService: ThreeRendererService
     let threeSceneService: ThreeSceneService
     let store: Store<CcState>
-    let codeMapMouseEventStore: CodeMapMouseEventStore
+    let codeMapStore: CodeMapStore
+    let fileStoreReadWindow: FileStoreReadWindow
+    let sharedViewReadWindow: SharedViewReadWindow
     let labelSettingsFacade: LabelSettingsFacade
     let tooltipService: CodeMapTooltipService
     let viewCubeMouseEventsService: ViewCubeMouseEventsService
@@ -83,7 +92,9 @@ describe("codeMapMouseEventService", () => {
         threeSceneService.getConstantHighlight = jest.fn().mockReturnValue(new Map())
 
         store = TestBed.inject(MockStore)
-        codeMapMouseEventStore = TestBed.inject(CodeMapMouseEventStore)
+        codeMapStore = TestBed.inject(CodeMapStore)
+        fileStoreReadWindow = TestBed.inject(FileStoreReadWindow)
+        sharedViewReadWindow = TestBed.inject(SharedViewReadWindow)
         threeViewerService = TestBed.inject(ThreeViewerService)
         viewCubeMouseEventsService = {
             subscribe: jest.fn(),
@@ -113,7 +124,9 @@ describe("codeMapMouseEventService", () => {
             threeCameraService,
             threeRendererService,
             threeSceneService,
-            codeMapMouseEventStore,
+            codeMapStore,
+            fileStoreReadWindow,
+            sharedViewReadWindow,
             labelSettingsFacade,
             tooltipService,
             viewCubeMouseEventsService,
@@ -121,7 +134,7 @@ describe("codeMapMouseEventService", () => {
             idToBuildingService
         )
 
-        codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
+        Object.defineProperty(codeMapMouseEventService, "oldMouse", { value: { x: 1, y: 1 }, writable: true, configurable: true })
     }
 
     function withMockedWindow() {
@@ -129,7 +142,7 @@ describe("codeMapMouseEventService", () => {
     }
 
     function withMockedThreeRendererService() {
-        threeRendererService = codeMapMouseEventService["threeRendererService"] = jest.fn().mockReturnValue({
+        threeRendererService = jest.fn().mockReturnValue({
             renderer: {
                 domElement: {
                     addEventListener: jest.fn(),
@@ -143,18 +156,28 @@ describe("codeMapMouseEventService", () => {
             },
             render: jest.fn()
         })()
+        Object.defineProperty(codeMapMouseEventService, "threeRendererService", {
+            value: threeRendererService,
+            writable: true,
+            configurable: true
+        })
     }
 
     function withMockedThreeCameraService() {
-        threeCameraService = codeMapMouseEventService["threeCameraService"] = jest.fn().mockReturnValue({
+        threeCameraService = jest.fn().mockReturnValue({
             camera: {
                 updateMatrixWorld: jest.fn()
             }
         })()
+        Object.defineProperty(codeMapMouseEventService, "threeCameraService", {
+            value: threeCameraService,
+            writable: true,
+            configurable: true
+        })
     }
 
     function withMockedThreeSceneService() {
-        threeSceneService = codeMapMouseEventService["threeSceneService"] = jest.fn().mockReturnValue({
+        threeSceneService = jest.fn().mockReturnValue({
             getMapMesh: jest.fn().mockReturnValue({
                 clearHighlight: jest.fn(),
                 highlightSingleBuilding: jest.fn(),
@@ -177,6 +200,11 @@ describe("codeMapMouseEventService", () => {
             addBuildingsToHighlightingList: jest.fn(),
             applyHighlights: jest.fn()
         })()
+        Object.defineProperty(codeMapMouseEventService, "threeSceneService", {
+            value: threeSceneService,
+            writable: true,
+            configurable: true
+        })
     }
 
     describe("start", () => {
@@ -272,7 +300,7 @@ describe("codeMapMouseEventService", () => {
 
     describe("changeCursorIndicator", () => {
         it("should set the mouseIcon to grabbing", () => {
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+            changeCursorIndicator(CursorType.Grabbing)
 
             expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
         })
@@ -280,7 +308,7 @@ describe("codeMapMouseEventService", () => {
         it("should set the mouseIcon to default", () => {
             document.body.style.cursor = CursorType.Pointer
 
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+            changeCursorIndicator(CursorType.Default)
 
             expect(document.body.style.cursor).toEqual(CursorType.Default)
         })
@@ -348,7 +376,7 @@ describe("codeMapMouseEventService", () => {
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
             })
             codeMapMouseEventService["isGrabbing"] = true
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+            changeCursorIndicator(CursorType.Grabbing)
 
             codeMapMouseEventService.updateHovering()
 
@@ -363,7 +391,7 @@ describe("codeMapMouseEventService", () => {
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
             })
             codeMapMouseEventService["isMoving"] = true
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
+            changeCursorIndicator(CursorType.Moving)
 
             codeMapMouseEventService.updateHovering()
 
@@ -402,7 +430,7 @@ describe("codeMapMouseEventService", () => {
             threeSceneService.prepareHighlightTransition = jest.fn()
             ;(threeSceneService.clearHighlight as jest.Mock).mockClear()
             ;(threeSceneService.clearHoverHighlight as jest.Mock).mockClear()
-            codeMapMouseEventService["oldMouse"] = { x: 0, y: 0 }
+            Object.defineProperty(codeMapMouseEventService, "oldMouse", { value: { x: 0, y: 0 }, writable: true, configurable: true })
             Object.defineProperty(codeMapMouseEventService, "mouse", { value: { x: 5, y: 5 }, writable: true })
 
             codeMapMouseEventService.updateHovering()
@@ -425,12 +453,12 @@ describe("codeMapMouseEventService", () => {
         it("should force an unhover over empty area when the highlight was cleared but the store still hovers a building", () => {
             // Arrange — the highlight was nulled out-of-band (e.g. by a click or a scroll that never re-raycasts)
             // while the store still points at a building, and the cursor is now over empty map area
-            jest.spyOn(codeMapMouseEventService["codeMapMouseEventStore"], "getHoveredNodeId").mockReturnValue(codeMapBuilding.node.id)
+            jest.spyOn(codeMapMouseEventService["codeMapStore"], "getHoveredNodeId").mockReturnValue(codeMapBuilding.node.path)
             threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
             threeSceneService.getMapMesh = jest.fn().mockReturnValue({
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(undefined)
             })
-            codeMapMouseEventService["oldMouse"] = { x: 0, y: 0 }
+            Object.defineProperty(codeMapMouseEventService, "oldMouse", { value: { x: 0, y: 0 }, writable: true, configurable: true })
             Object.defineProperty(codeMapMouseEventService, "mouse", { value: { x: 5, y: 5 }, writable: true })
 
             // Act
@@ -551,7 +579,7 @@ describe("codeMapMouseEventService", () => {
 
             it("should broadcast a building-right-clicked event", () => {
                 codeMapMouseEventService.onDocumentMouseMove(event)
-                codeMapMouseEventService["intersectedBuilding"] = { node: { id: 1 } } as CodeMapBuilding
+                codeMapMouseEventService["intersectedBuilding"] = { node: { id: 1, path: "/root/File.ts" } } as CodeMapBuilding
                 codeMapMouseEventService.onDocumentMouseDown(event)
 
                 codeMapMouseEventService.onDocumentMouseUp(event)
@@ -559,7 +587,7 @@ describe("codeMapMouseEventService", () => {
                 expect(dispatchSpy).toHaveBeenCalledWith(
                     setRightClickedNodeData({
                         value: {
-                            nodeId: 1,
+                            nodeId: "/root/File.ts",
                             xPositionOfRightClickEvent: 0,
                             yPositionOfRightClickEvent: 1,
                             origin: "codeMap"

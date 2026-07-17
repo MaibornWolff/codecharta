@@ -1,0 +1,49 @@
+import { createSelector } from "@ngrx/store"
+import { edgeAttributeTypesSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { nodeAttributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
+import { structureTreeSelector } from "../../../lenses/structure/structure.facade"
+import { CodeMapNode, FileMeta } from "../../../model/codeCharta.model"
+import { fileStatesAvailable, isDeltaState } from "../../../model/files/files.helper"
+import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
+import { blacklistSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { clone } from "../../../util/clone"
+import { NodeDecorator } from "../../../util/nodeDecorator"
+import { edgeMetricNamesSelector } from "../edgeMetricData/edgeMetricData.selector"
+import { metricDataSelector } from "./metricData/metricData.selector"
+import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
+
+const accumulatedDataFallback: AccumulatedData = Object.freeze({
+    unifiedMapNode: undefined,
+    unifiedFileMeta: undefined
+})
+
+export type AccumulatedData = { unifiedMapNode: CodeMapNode | undefined; unifiedFileMeta: FileMeta | undefined }
+
+// The structure tree is cloned before decoration: the selector is memoized, so its instance is shared across recomputes and must not be mutated in place.
+export const accumulatedDataSelector = createSelector(
+    metricDataSelector,
+    visibleFileStatesSelector,
+    structureTreeSelector,
+    nodeAttributeTypesSelector,
+    edgeAttributeTypesSelector,
+    blacklistSelector,
+    edgeMetricNamesSelector,
+    (metricData, fileStates, structureTree, nodeAttributeTypes, edgeAttributeTypes, blacklist, edgeMetricNames) => {
+        if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData || !structureTree?.map) {
+            return accumulatedDataFallback
+        }
+
+        const data = clone(structureTree)
+        NodeDecorator.decorateMap(data.map, metricData, blacklist)
+        addEdgeMetricsForLeaves(metricData.nodeEdgeMetricsMap, data.map, edgeMetricNames)
+        NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), {
+            nodes: nodeAttributeTypes,
+            edges: edgeAttributeTypes
+        })
+
+        return {
+            unifiedMapNode: data.map,
+            unifiedFileMeta: data.fileMeta
+        }
+    }
+)

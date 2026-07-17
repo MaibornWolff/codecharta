@@ -1,15 +1,15 @@
 import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../mocks/dataMocks"
+import { FileSelectionState, FileState } from "./files"
 import {
     createPNGFileName,
     fileStatesAvailable,
     getCCFiles,
     getFileByFileName,
-    getVisibleFiles,
     getVisibleFileStates,
+    getVisibleFiles,
     isDeltaState,
     isPartialState
 } from "./files.helper"
-import { FileSelectionState, FileState } from "./files"
 
 describe("files", () => {
     let files: FileState[]

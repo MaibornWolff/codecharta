@@ -224,6 +224,44 @@ class MergeFilterTest {
         assertThat(errContent.toString()).contains("At least one merging strategy must be set")
     }
 
+    @Test
+    fun `should fail and write no output when a legacy 1x file is among named plain-merge inputs`() {
+        val outputFile = File("src/test/resources/legacyMergeOutput.cc.json")
+        outputFile.deleteOnExit()
+
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/legacyMerge/legacy.cc.json",
+            "src/test/resources/test.json",
+            "-nc",
+            "-o=src/test/resources/legacyMergeOutput"
+        )
+
+        assertThat(errContent.toString()).contains("convert")
+        assertThat(outputFile.exists()).isFalse
+    }
+
+    @Test
+    fun `should fail with convert hint and not crash when all plain-merge inputs are legacy`() {
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/legacyMerge/legacy.cc.json",
+            "src/test/resources/legacyMerge/legacy2.cc.json"
+        )
+
+        assertThat(errContent.toString()).contains("convert")
+        assertThat(errContent.toString()).doesNotContain("Empty collection")
+    }
+
+    @Test
+    fun `should fail cleanly when all named plain-merge inputs are corrupt`() {
+        CommandLine(MergeFilter()).execute(
+            "src/test/resources/testProject.invalid.cc.json",
+            "src/test/resources/mergeFolderTest/invalid.json"
+        )
+
+        assertThat(errContent.toString()).contains("No valid projects could be read for merging")
+        assertThat(errContent.toString()).doesNotContain("Empty collection")
+    }
+
     @Nested
     @DisplayName("MimoModeTests")
     inner class MimoModeTest {
@@ -257,6 +295,24 @@ class MergeFilterTest {
                 ).toString()
 
             assertThat(errContent.toString()).contains("Discarded 'test' of test.json as a potential group")
+        }
+
+        @Test
+        fun `should fail the mimo merge and write no group output when a group contains a legacy file`() {
+            val outputFile = File("testProject.merge.cc.json")
+            outputFile.deleteOnExit()
+
+            CommandLine(MergeFilter())
+                .execute(
+                    testProjectPathA,
+                    testProjectPathB,
+                    "src/test/resources/legacyMerge/testProject.legacy.cc.json",
+                    "--mimo",
+                    "-nc"
+                ).toString()
+
+            assertThat(errContent.toString()).contains("convert")
+            assertThat(outputFile.exists()).isFalse
         }
 
         @Nested
@@ -530,6 +586,20 @@ class MergeFilterTest {
                 ).toString()
 
             assertThat(errContent.toString()).contains("One or less projects in input, merging aborted.")
+            assertThat(errContent.toString()).doesNotContain("kotlin.Unit")
+        }
+
+        @Test
+        fun `should fail large merge with convert hint when all inputs are legacy`() {
+            CommandLine(MergeFilter())
+                .execute(
+                    "src/test/resources/legacyMerge/legacy.cc.json",
+                    "src/test/resources/legacyMerge/legacy2.cc.json",
+                    "--large"
+                ).toString()
+
+            assertThat(errContent.toString()).contains("convert")
+            assertThat(errContent.toString()).doesNotContain("kotlin.Unit")
         }
 
         @Test
@@ -544,9 +614,8 @@ class MergeFilterTest {
             val outputString = outContent.toString()
             assertThat(outputString).contains("testProject", "testEdges1")
             assertThat(outputString).contains("SourceMonCsvConverter", "number_of_commits")
-            assertThat(
-                outputString
-            ).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3", "/root/testEdges1/file1")
+            // 2.0 nests the wrapped projects as folders/files in the files tree (no /root/ path strings).
+            assertThat(outputString).contains("\"name\":\"visualization\"", "\"name\":\"file2\"", "\"name\":\"file1\"")
         }
 
         @Test
@@ -567,8 +636,11 @@ class MergeFilterTest {
             val projectInput1 = ProjectDeserializer.deserializeProject(File(testFilePath1).inputStream())
             val projectInput2 = ProjectDeserializer.deserializeProject(File(testFilePath2).inputStream())
             assertThat(project.sizeOfEdges()).isEqualTo(2)
-            assertThat(project.sizeOfBlacklist()).isEqualTo(2)
-            assertThat(project.edges.toString()).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3")
+            // blacklist is view state and is dropped from the 2.0 format, so it is empty on read-back.
+            assertThat(project.sizeOfBlacklist()).isEqualTo(0)
+            assertThat(
+                project.lenses.dependency.edges.toString()
+            ).contains("/root/testEdges1/visualization/file2", "/root/testEdges1/visualization/file3")
             assertThat(project.rootNode.children.size).isEqualTo(2)
             val outputProject1 = project.rootNode.children.first { it.name == "testEdges1" }
             val outputProject2 = project.rootNode.children.first { it.name == "testProject" }

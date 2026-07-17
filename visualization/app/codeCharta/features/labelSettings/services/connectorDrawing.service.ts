@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { BufferAttribute, BufferGeometry, LineBasicMaterial, LineSegments, Vector3 } from "three"
-import { ThreeRendererService, ThreeSceneService } from "../../../features/codeMap/facade"
-import { InternalLabel } from "./labelCreation.service"
+import { ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { BASE_OFFSET_PX, MAX_CONNECTORS, MAX_DISPLACEMENT_PX, MIN_CONNECTOR_DISTANCE } from "./label.constants"
+import { InternalLabel } from "./labelCreation.service"
 
 export interface LabelLayoutInfo {
     label: InternalLabel

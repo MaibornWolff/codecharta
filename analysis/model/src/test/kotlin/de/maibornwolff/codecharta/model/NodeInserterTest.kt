@@ -19,7 +19,9 @@ class NodeInserterTest {
     fun `double root insert should only put the first insertion as leaf`() {
         val root = MutableNode("root", NodeType.Folder)
         val nodeForInsertion = MutableNode("insertedNode", NodeType.File, link = null)
-        val secondNodeForInsertion = MutableNode("insertedNode", NodeType.Folder)
+        // Same type as nodeForInsertion: a File/Folder pair here would hit the clash guard added for
+        // finding 7e and stay separate siblings instead of merging (see the collision test below).
+        val secondNodeForInsertion = MutableNode("insertedNode", NodeType.File)
 
         NodeInserter.insertByPath(root, Path.trivialPath(), nodeForInsertion)
         NodeInserter.insertByPath(root, Path.trivialPath(), secondNodeForInsertion)
@@ -80,5 +82,22 @@ class NodeInserterTest {
         assertThat(root.children).hasSize(1)
         assertThat(root.pathsToLeaves).hasSize(1)
         assertThat(root.getNodeBy(Path("folder", "subfolder", "insertedNode"))).isEqualTo(nodeForInsertion)
+    }
+
+    @Test
+    fun `inserting a leaf under a same-named reference file should keep both as siblings instead of nesting`() {
+        val root = MutableNode("root", NodeType.Folder)
+        val referenceFile = MutableNode("foo", NodeType.File, mapOf("a" to 1.0))
+        val incomingLeaf = MutableNode("bar.kt", NodeType.File, mapOf("b" to 2.0))
+
+        NodeInserter.insertByPath(root, Path("src", "foo"), incomingLeaf)
+        NodeInserter.insertByPath(root, Path("src"), referenceFile)
+
+        val src = root.getNodeBy(Path("src")) as MutableNode
+        val foos = src.children.filter { it.name == "foo" }
+        assertThat(foos).hasSize(2)
+        assertThat(foos.map { it.type }).containsExactlyInAnyOrder(NodeType.File, NodeType.Folder)
+        assertThat(foos.single { it.type == NodeType.File }.children).isEmpty()
+        assertThat(foos.single { it.type == NodeType.Folder }.children.map { it.name }).containsExactly("bar.kt")
     }
 }

@@ -1,42 +1,34 @@
-import { HttpClient } from "@angular/common/http"
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import "fake-indexeddb/auto"
-import { getNameDataPair } from "../../../../loadFile/facade"
-import { LoadFileService } from "../../../../../features/loadFile/facade"
-import { LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../features/loadFile/facade"
-import { UrlExtractor } from "../../../../loadFile/facade"
-import * as resetChosenMetricsEffect from "../../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect"
-import { metricDataSelector } from "../../../../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { setState } from "../../../../../state/store/state.actions"
-import { defaultState } from "../../../../../state/store/state.manager"
-import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../../mocks/dataMocks"
-import * as indexedDBWriter from "../../../../../util/indexedDB/indexedDBWriter"
+import { CcStatePersistence, LoadFilesUseCase } from "../../../../../load/load.facade"
+import { METRIC_DATA } from "../../../../../mocks/dataMocks"
+import { nodeMetricDataSelector } from "../../../../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
+import { setState } from "../../../../../stores/rootStore/state.actions"
+import { defaultState } from "../../../../../stores/rootStore/state.manager"
 import { ConfirmResetMapDialogComponent } from "./confirmResetMapDialog.component"
 
-jest.mock("../../../../../util/indexedDB/indexedDBWriter")
-jest.mock("../../../../loadFile/facade")
-jest.mock("../../../../../state/effects/resetChosenMetrics/resetChosenMetrics.effect")
-
 describe("ConfirmResetMapDialogComponent", () => {
+    let mockedCcStatePersistence: { read: jest.Mock; delete: jest.Mock }
+    let mockedLoadFilesUseCase: { reloadAfterReset: jest.Mock }
+
     beforeEach(() => {
+        mockedCcStatePersistence = { read: jest.fn(), delete: jest.fn().mockResolvedValue(undefined) }
+        mockedLoadFilesUseCase = { reloadAfterReset: jest.fn().mockResolvedValue(undefined) }
+
         TestBed.configureTestingModule({
             imports: [ConfirmResetMapDialogComponent],
             providers: [
                 { provide: State, useValue: { getValue: () => defaultState } },
-                {
-                    provide: LoadInitialFileService,
-                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
-                },
-                { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
-                { provide: HttpClient, useValue: {} },
+                { provide: CcStatePersistence, useValue: mockedCcStatePersistence },
+                { provide: LoadFilesUseCase, useValue: mockedLoadFilesUseCase },
                 provideMockStore({
                     selectors: [
                         {
-                            selector: metricDataSelector,
+                            selector: nodeMetricDataSelector,
                             value: METRIC_DATA
                         }
                     ]
@@ -60,60 +52,31 @@ describe("ConfirmResetMapDialogComponent", () => {
         return renderResult
     }
 
-    it("Should reset state to default when confirm is selected and no file query parameter is specified", async () => {
+    it("should delete the persisted state, reset the map and reload the files when confirm is selected", async () => {
+        // Arrange
         await renderAndOpen()
-
         const store = TestBed.inject(MockStore)
-        const loadFileService = TestBed.inject(LoadFileService)
-        const loadInitialFileService = TestBed.inject(LoadInitialFileService)
-
         const dispatchSpy = jest.spyOn(store, "dispatch")
-        const spyDeleteCcState = jest.spyOn(indexedDBWriter, "deleteCcState")
-        const resetMetricsSpy = jest.spyOn(resetChosenMetricsEffect, "setDefaultMetrics")
 
+        // Act
         await userEvent.click(screen.getByText("Yes"))
 
-        expect(resetMetricsSpy).toHaveBeenCalled()
-        expect(spyDeleteCcState).toHaveBeenCalled()
+        // Assert
+        expect(mockedCcStatePersistence.delete).toHaveBeenCalled()
         expect(dispatchSpy).toHaveBeenCalledWith(setState({ value: defaultState }))
-        expect(loadFileService.loadFiles).toHaveBeenCalledWith([sampleFile1, sampleFile2])
-        expect(loadInitialFileService.setRenderStateFromUrl).not.toHaveBeenCalled()
+        expect(mockedLoadFilesUseCase.reloadAfterReset).toHaveBeenCalled()
     })
 
-    it("Should reset state to maps in file query parameter when confirm is selected and file query parameter is specified", async () => {
-        await renderAndOpen()
+    it("should close dialog when abort is selected", async () => {
+        // Arrange
+        const { fixture } = await renderAndOpen()
+        const closeSpy = jest.spyOn(fixture.componentInstance, "close")
 
-        const store = TestBed.inject(MockStore)
-        const loadFileService = TestBed.inject(LoadFileService)
-        const loadInitialFileService = TestBed.inject(LoadInitialFileService)
-        const mockedNameDataPairs = [getNameDataPair(TEST_DELTA_MAP_A)]
-
-        const dispatchSpy = jest.spyOn(store, "dispatch")
-        const spyDeleteCcState = jest.spyOn(indexedDBWriter, "deleteCcState")
-        const resetMetricsSpy = jest.spyOn(resetChosenMetricsEffect, "setDefaultMetrics")
-        jest.spyOn(loadInitialFileService, "checkFileQueryParameterPresent").mockImplementation(() => true)
-        jest.mocked(UrlExtractor.prototype.getFileDataFromQueryParam).mockImplementation(
-            async () => new Promise(resolve => resolve(mockedNameDataPairs))
-        )
-
-        await userEvent.click(screen.getByText("Yes"))
-
-        expect(resetMetricsSpy).toHaveBeenCalled()
-        expect(spyDeleteCcState).toHaveBeenCalled()
-        expect(dispatchSpy).toHaveBeenCalledWith(setState({ value: defaultState }))
-        expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
-        expect(loadInitialFileService.setRenderStateFromUrl).toHaveBeenCalled()
-    })
-
-    it("Should close dialog when abort is selected", async () => {
-        await renderAndOpen()
-
-        const store = TestBed.inject(MockStore)
-        const dispatchSpy = jest.spyOn(store, "dispatch")
-        const resetMetricsSpy = jest.spyOn(resetChosenMetricsEffect, "setDefaultMetrics")
+        // Act
         await userEvent.click(screen.getByText("No"))
 
-        expect(dispatchSpy).not.toHaveBeenCalled()
-        expect(resetMetricsSpy).not.toHaveBeenCalled()
+        // Assert
+        expect(closeSpy).toHaveBeenCalled()
+        expect(mockedLoadFilesUseCase.reloadAfterReset).not.toHaveBeenCalled()
     })
 })

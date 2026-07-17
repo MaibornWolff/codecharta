@@ -2,15 +2,19 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { setPresentationMode } from "../../../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
-import { isPresentationModeSelector } from "../../../../state/store/appSettings/isPresentationMode/isPresentationMode.selector"
+import { provideMockState } from "../../../../mocks/state.mocks"
+import { isPresentationModeSelector } from "../../../../stores/preferences/preferences.read.facade"
+import { setPresentationMode } from "../../../../stores/preferences/preferences.write.facade"
 import { PresentationModeButtonComponent } from "./presentationModeButton.component"
 
 describe("PresentationModeButtonComponent (toolbox)", () => {
     function configure(initialPresentationMode: boolean) {
         TestBed.configureTestingModule({
             imports: [PresentationModeButtonComponent],
-            providers: [provideMockStore({ selectors: [{ selector: isPresentationModeSelector, value: initialPresentationMode }] })]
+            providers: [
+                provideMockState(),
+                provideMockStore({ selectors: [{ selector: isPresentationModeSelector, value: initialPresentationMode }] })
+            ]
         })
     }
 

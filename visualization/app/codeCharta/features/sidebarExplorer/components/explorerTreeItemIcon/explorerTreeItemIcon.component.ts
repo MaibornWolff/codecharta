@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { getMarkingColor, isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
-import { ExplorerAreaMetricStore } from "../../stores/areaMetric.store"
-import { MarkedPackagesStore } from "../../stores/markedPackages.store"
 
 @Component({
     selector: "cc-explorer-tree-item-icon",
@@ -14,14 +14,14 @@ export class ExplorerTreeItemIconComponent {
     private static readonly DEFAULT_FOLDER_COLOR = "#000000"
     private static readonly NO_AREA_COLOR = "#BDBDBD"
 
-    private readonly areaMetricStore = inject(ExplorerAreaMetricStore)
-    private readonly markedPackagesStore = inject(MarkedPackagesStore)
+    private readonly mapStateReadWindow = inject(MapStateReadWindow)
+    private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
 
     readonly node = input.required<CodeMapNode>()
     readonly isOpen = input.required<boolean>()
 
-    readonly areaMetric = toSignal(this.areaMetricStore.areaMetric$, { requireSync: true })
-    readonly markedPackages = toSignal(this.markedPackagesStore.markedPackages$, { requireSync: true })
+    readonly areaMetric = toSignal(this.mapStateReadWindow.areaMetric$, { requireSync: true })
+    readonly markedPackages = toSignal(this.sharedViewReadWindow.markedPackages$, { requireSync: true })
 
     readonly iconClass = computed(() => {
         const node = this.node()

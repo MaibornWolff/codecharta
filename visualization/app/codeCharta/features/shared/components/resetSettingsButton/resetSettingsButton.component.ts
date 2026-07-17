@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core"
-import { ResetSettingsButtonService } from "../../services/resetSettingsButton.service"
+import { ResetSettingsButtonStore } from "../../stores/resetSettingsButton.store"
 
 @Component({
     selector: "cc-reset-settings-button",
@@ -15,10 +15,10 @@ export class ResetSettingsButtonComponent {
     @Input() callback?: () => void
     @Input() small = false
 
-    constructor(private readonly resetSettingsButtonService: ResetSettingsButtonService) {}
+    constructor(private readonly resetSettingsButtonStore: ResetSettingsButtonStore) {}
 
     applyDefaultSettings() {
-        this.resetSettingsButtonService.resetSettings(this.settingsKeys)
+        this.resetSettingsButtonStore.resetSettings(this.settingsKeys)
 
         if (this.callback) {
             this.callback()

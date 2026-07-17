@@ -1,7 +1,7 @@
-import { FrontLogo } from "./frontLogo"
-import { GeometryOptions } from "../../preview3DPrintMesh"
 import { FrontPrintColorChangeStrategy } from "../../ColorChangeStrategies/frontPrintColorChangeStrategy"
+import { GeometryOptions } from "../../geometryOptions"
 import { GeneralMesh } from "../generalMesh"
+import { FrontLogo } from "./frontLogo"
 
 jest.mock("../../ColorChangeStrategies/frontPrintColorChangeStrategy")
 

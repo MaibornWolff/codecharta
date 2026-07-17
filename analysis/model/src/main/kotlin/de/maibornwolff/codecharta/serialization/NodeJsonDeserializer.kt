@@ -6,6 +6,7 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
+import com.google.gson.ToNumberPolicy
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import java.lang.reflect.Type
@@ -28,14 +29,7 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
 
     private fun deserializeNodeType(jsonNode: JsonObject): NodeType {
         val typeElement = jsonNode["type"] ?: throw JsonParseException("Type element is missing.")
-        val nodeType: NodeType
-        try {
-            nodeType = NodeType.valueOf(typeElement.asString)
-        } catch (e: IllegalArgumentException) {
-            throw JsonParseException("Type " + typeElement.asString + " not supported.", e)
-        }
-
-        return nodeType
+        return NodeType.parse(typeElement.asString)
     }
 
     private fun deserializeName(jsonNode: JsonObject): String {
@@ -46,7 +40,9 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
     private fun deserializeAttributes(jsonNode: JsonObject): Map<String, Any> {
         val attributes = jsonNode["attributes"] ?: return mapOf()
 
-        val gson = GsonBuilder().create()
+        // Read whole-number attribute values as Long instead of GSON's default Double, so an integer
+        // metric survives a read→write round-trip as `1` rather than being widened to `1.0`.
+        val gson = GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).create()
         return gson.fromJson<Map<String, Any>>(attributes, Map::class.java)
     }
 

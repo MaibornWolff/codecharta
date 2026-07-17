@@ -12,10 +12,10 @@ import {
     signal,
     viewChild
 } from "@angular/core"
+import { Subscription } from "rxjs"
 import { MetricDistribution } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { BlackListExtensionService } from "../../services/blackListExtension.service"
 import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
-import { Subscription } from "rxjs"
 
 const MENU_WIDTH_PX = 192
 const VIEWPORT_MARGIN_PX = 4

@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { NodeType } from "../../../../codeCharta.model"
-import { InspectorHeaderService } from "../../services/inspectorHeader.service"
+import { NodeType } from "../../../../model/codeCharta.model"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { InspectorVisibilityService } from "../../services/inspectorVisibility.service"
+import { SidebarInspectorReadStore } from "../../stores/sidebarInspector.read.store"
 import { getFileCount } from "../../util/getFileCount"
 import { InspectorNodeBadgesComponent } from "../inspectorNodeBadges/inspectorNodeBadges.component"
 import { InspectorNodePathComponent } from "../inspectorNodePath/inspectorNodePath.component"
@@ -17,7 +18,8 @@ import { InspectorNodePathComponent } from "../inspectorNodePath/inspectorNodePa
 export class InspectorHeaderComponent {
     private static readonly COPY_FEEDBACK_MS = 1500
 
-    private readonly headerService = inject(InspectorHeaderService)
+    private readonly readStore = inject(SidebarInspectorReadStore)
+    private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
     private readonly visibilityService = inject(InspectorVisibilityService)
 
     private copyFeedbackTimeout?: ReturnType<typeof setTimeout>
@@ -26,8 +28,8 @@ export class InspectorHeaderComponent {
         inject(DestroyRef).onDestroy(() => clearTimeout(this.copyFeedbackTimeout))
     }
 
-    readonly selectedNode = toSignal(this.headerService.selectedNode$(), { requireSync: true })
-    readonly isDeltaState = toSignal(this.headerService.isDeltaState$(), { requireSync: true })
+    readonly selectedNode = toSignal(this.readStore.selectedNode$, { requireSync: true })
+    readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { requireSync: true })
     readonly copied = signal(false)
 
     readonly nodeName = computed(() => this.selectedNode()?.name ?? "")

@@ -2,10 +2,9 @@ import { TestBed } from "@angular/core/testing"
 import { Store, StoreModule } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { SortingOption } from "../../../../codeCharta.model"
-import { toggleSortingOrderAscending } from "../../../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
-import { setSortingOption } from "../../../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
-import { appReducers, setStateMiddleware } from "../../../../state/store/state.manager"
+import { SortingOption } from "../../../../model/codeCharta.model"
+import { setSortingOption, toggleSortingOrderAscending } from "../../../../stores/preferences/preferences.write.facade"
+import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { ExplorerSortControlComponent } from "./explorerSortControl.component"
 
 describe("ExplorerSortControlComponent", () => {

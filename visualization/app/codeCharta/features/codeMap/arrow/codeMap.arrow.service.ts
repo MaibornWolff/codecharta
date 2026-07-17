@@ -1,13 +1,12 @@
 import { Injectable, OnDestroy } from "@angular/core"
-import { ThreeSceneService } from "../threeViewer/threeSceneService"
-import { Node, EdgeVisibility } from "../../../codeCharta.model"
-import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
-import { ColorConverter } from "../../../util/color/colorConverter"
-import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { IdToBuildingService } from "../idToBuilding.service"
 import { tap } from "rxjs"
+import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
+import { EdgeVisibility, Node } from "../../../model/codeCharta.model"
+import { CodeMapBuilding, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
+import { ColorConverter } from "../../../util/color/colorConverter"
 import { debounce } from "../../../util/debounce"
-import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
+import { CodeMapStore } from "../stores/codeMap.store"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapArrowService implements OnDestroy {
@@ -19,11 +18,11 @@ export class CodeMapArrowService implements OnDestroy {
         (hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
         this.HIGHLIGHT_BUILDING_DELAY
     )
-    private readonly hoveredNodeSubscription = this.codeMapArrowStore.hoveredNodeId$
+    private readonly hoveredNodeSubscription = this.sharedViewReadWindow.hoveredNodeId$
         .pipe(
             tap(hoveredNodeId => {
                 if (hoveredNodeId !== null) {
-                    const hoveredBuilding = this.idToBuildingService.get(hoveredNodeId)
+                    const hoveredBuilding = this.threeSceneService.getMapMesh()?.getMeshDescription().getBuildingByPath(hoveredNodeId)
                     this.onBuildingHovered(hoveredBuilding)
                 } else {
                     this.onBuildingUnhovered()
@@ -33,9 +32,9 @@ export class CodeMapArrowService implements OnDestroy {
         .subscribe()
 
     constructor(
-        private readonly codeMapArrowStore: CodeMapArrowStore,
-        private threeSceneService: ThreeSceneService,
-        private readonly idToBuildingService: IdToBuildingService
+        private readonly codeMapStore: CodeMapStore,
+        private readonly sharedViewReadWindow: SharedViewReadWindow,
+        private readonly threeSceneService: ThreeSceneService
     ) {
         this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
         this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)
@@ -45,11 +44,17 @@ export class CodeMapArrowService implements OnDestroy {
         this.hoveredNodeSubscription.unsubscribe()
     }
 
-    private resetEdgesOfBuildings = (hoveredBuilding: CodeMapBuilding) => {
-        if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
-            this.clearArrows()
-            this.showEdgesOfBuildings(hoveredBuilding)
+    private readonly resetEdgesOfBuildings = (hoveredBuilding: CodeMapBuilding) => {
+        if (!this.codeMapStore.getMapState().isEdgeMetricVisible) {
+            this.scale()
+            return
         }
+        // Always clear on a hover change so arrows from the previously hovered building do not linger
+        // when moving onto a building that has no edges (e.g. a flat or hidden building). showEdgesOfBuildings
+        // then restores the selected building's edges or the edge preview, and adds the hovered building's
+        // edges only when it is edge-applicable.
+        this.clearArrows()
+        this.showEdgesOfBuildings(this.isEdgeApplicableForBuilding(hoveredBuilding) ? hoveredBuilding : undefined)
         this.scale()
     }
 
@@ -73,7 +78,7 @@ export class CodeMapArrowService implements OnDestroy {
 
     onBuildingUnhovered() {
         this.debounceCalculation.cancel()
-        const { isEdgeMetricVisible } = this.codeMapArrowStore.getAppSettings()
+        const { isEdgeMetricVisible } = this.codeMapStore.getMapState()
 
         if (isEdgeMetricVisible) {
             this.clearArrows()
@@ -98,19 +103,19 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     addArrow(arrowOriginNode: Node, arrowTargetNode: Node, buildingIsOriginNode: boolean) {
-        const appSettings = this.codeMapArrowStore.getAppSettings()
-        const curveScale = 100 * appSettings.edgeHeight
+        const mapState = this.codeMapStore.getMapState()
+        const curveScale = 100 * mapState.edgeHeight
 
         // An edge is a relationship between two files; it is drawn from the layout geometry
         // (edge points + building height) and does not depend on the selected height metric.
         const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
-        const color = ColorConverter.getNumber(appSettings.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
+        const color = ColorConverter.getNumber(mapState.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
         this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)
         this.setCurveColor(curve, color)
     }
 
     addEdgePreview() {
-        const edges = this.codeMapArrowStore.getEdgeVisibility()
+        const edges = this.codeMapStore.getEdgeVisibility()
 
         for (const edge of edges) {
             const originNode = this.map.get(edge.fromNodeName)
@@ -119,7 +124,7 @@ export class CodeMapArrowService implements OnDestroy {
                 //TODO It seems originNode or targetNode might be undefined here,
                 // I think it results from the method being called multiple times when it might not be available yet
                 // I changed that back to avoid console errors and re-enable the edge-metric, however we should investigate why this is happening
-                const curveScale = 100 * this.codeMapArrowStore.getAppSettings().edgeHeight
+                const curveScale = 100 * this.codeMapStore.getMapState().edgeHeight
                 const curve = this.createCurve(originNode, targetNode, curveScale)
                 this.previewMode(curve, edge.visible)
             }
@@ -131,7 +136,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     scale() {
-        const { scaling } = this.codeMapArrowStore.getAppSettings()
+        const { scaling } = this.codeMapStore.getMapState()
         for (const arrow of this.arrows) {
             arrow.scale.x = scaling.x
             arrow.scale.y = scaling.y
@@ -140,7 +145,7 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     private isEdgeApplicableForBuilding(codeMapBuilding: CodeMapBuilding) {
-        return this.codeMapArrowStore.getAppSettings().isEdgeMetricVisible && codeMapBuilding && !codeMapBuilding.node.flat
+        return this.codeMapStore.getMapState().isEdgeMetricVisible && codeMapBuilding && !codeMapBuilding.node.flat
     }
 
     private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {
@@ -163,14 +168,19 @@ export class CodeMapArrowService implements OnDestroy {
     }
 
     private buildPairingEdges(node: Map<string, Node>) {
-        const showIncomingEdges = this.codeMapArrowStore.getAppSettings().showIncomingEdges
-        const showOutgoingEdges = this.codeMapArrowStore.getAppSettings().showOutgoingEdges
+        const { showIncomingEdges, showOutgoingEdges, edgeMetric } = this.codeMapStore.getMapState()
         if (!showIncomingEdges && !showOutgoingEdges) {
             return
         }
-        const edges = this.codeMapArrowStore.getEdges()
+        const edges = this.codeMapStore.getEdges()
 
         for (const edge of edges) {
+            // A map can carry several edge metrics at once. Only the selected one contributes to the
+            // edge count shown for a building, so only its edges may be drawn — otherwise the arrows
+            // and the number disagree. This mirrors the predicate `setEdgeVisibility` applies to previews.
+            if (edge.attributes[edgeMetric] === undefined) {
+                continue
+            }
             const originNode = this.map.get(edge.fromNodeName)
             // TODO: Maps should only have valid edges. If that's not the case, the
             // internal decoration is likely faulty. Check if only test data is not
@@ -241,7 +251,7 @@ export class CodeMapArrowService implements OnDestroy {
 
     private makeArrowFromBezier(bezier: CubicBezierCurve3, incoming: boolean, bezierPoints = 50) {
         const points = bezier.getPoints(bezierPoints)
-        const { incomingEdge, outgoingEdge } = this.codeMapArrowStore.getAppSettings().mapColors
+        const { incomingEdge, outgoingEdge } = this.codeMapStore.getMapState().mapColors
         const arrowColor = incoming ? incomingEdge : outgoingEdge
         const pointsPreviews = incoming
             ? points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)

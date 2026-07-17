@@ -85,4 +85,26 @@ class PathFactoryTest {
             assertThat(path.tail).isEqualTo(Path(listOf("filename")))
         }
     }
+
+    @Nested
+    @DisplayName("PathFactoryTest > dot and dot-dot segments")
+    inner class DotSegments {
+        @Test
+        fun `should drop a dot segment so it does not become a phantom folder`() {
+            assertThat(PathFactory.fromFileSystemPath("src/./App.kt"))
+                .isEqualTo(PathFactory.fromFileSystemPath("src/App.kt"))
+        }
+
+        @Test
+        fun `should collapse a dot-dot segment with its previous segment`() {
+            assertThat(PathFactory.fromFileSystemPath("src/main/../App.kt"))
+                .isEqualTo(PathFactory.fromFileSystemPath("src/App.kt"))
+        }
+
+        @Test
+        fun `should drop a leading dot-dot that has no previous segment`() {
+            assertThat(PathFactory.fromFileSystemPath("../src/App.kt"))
+                .isEqualTo(PathFactory.fromFileSystemPath("src/App.kt"))
+        }
+    }
 }

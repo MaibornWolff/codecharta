@@ -1,51 +1,49 @@
 import { Injectable, OnDestroy } from "@angular/core"
-import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { createTreemapNodes } from "../../util/algorithm/treeMapLayout/treeMapGenerator"
+import { Subscription, tap } from "rxjs"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
-import { CcState, CodeMapNode, ColorLabelOptions, colorLabelTypes, LabelMode, LayoutAlgorithm, Node } from "../../codeCharta.model"
+import { CcState, CodeMapNode, ColorLabelOptions, colorLabelTypes, LabelMode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
-import { StreetLayoutGenerator } from "../../util/algorithm/streetLayout/streetLayoutGenerator"
-import { ThreeStatsService } from "./threeViewer/threeStats.service"
-import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { BehaviorSubject, Subscription, tap } from "rxjs"
-import { metricDataSelector } from "../../state/selectors/accumulatedData/metricData/metricData.selector"
-import { blacklistMatcherSelector } from "../../state/store/fileSettings/blacklist/blacklistMatcher.selector"
-import { CodeMapRenderStore } from "./stores/codeMapRender.store"
-import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
+import { labelsPerMapActiveSelector, nodeMetricDataSelector } from "../../renderer/renderModel/renderModel.facade"
+import {
+    CodeMapMesh,
+    ColorCategoryCountsStore,
+    createTreemapNodes,
+    StreetLayoutGenerator,
+    ThreeSceneService,
+    ThreeStatsService
+} from "../../renderer/threeViewer/threeViewer.facade"
+import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
+import { blacklistMatcherSelector } from "../../stores/sharedView/sharedView.read.facade"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
-import { labelsPerMapActiveSelector } from "../../state/selectors/labelsPerMapActive.selector"
-
-export interface ColorCategoryCounts {
-    positive: number
-    neutral: number
-    negative: number
-}
+import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { RendererEngine } from "./rendererEngine.contract"
+import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
+import { CodeMapStore } from "./stores/codeMap.store"
 
 const MIN_BUILDING_LENGTH = 2
 
 @Injectable({ providedIn: "root" })
-export class CodeMapRenderService implements OnDestroy {
+export class CodeMapRenderService implements OnDestroy, RendererEngine {
     private nodesByColor = {
         positive: [],
         neutral: [],
         negative: []
     }
     private unflattenedNodes
-    private subscription: Subscription
-    private readonly _colorCategoryCounts$ = new BehaviorSubject<ColorCategoryCounts>({ positive: 0, neutral: 0, negative: 0 })
-    readonly colorCategoryCounts$ = this._colorCategoryCounts$.asObservable()
+    private readonly subscription: Subscription
 
     constructor(
-        private readonly codeMapRenderStore: CodeMapRenderStore,
-        private threeSceneService: ThreeSceneService,
+        private readonly codeMapStore: CodeMapStore,
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
+        private readonly threeSceneService: ThreeSceneService,
         private readonly labelSettingsFacade: LabelSettingsFacade,
-        private codeMapArrowService: CodeMapArrowService,
-        private threeStatsService: ThreeStatsService,
-        private codeMapMouseEventService: CodeMapMouseEventService
+        private readonly codeMapArrowService: CodeMapArrowService,
+        private readonly threeStatsService: ThreeStatsService,
+        private readonly codeMapMouseEventService: CodeMapMouseEventService,
+        private readonly colorCategoryCountsStore: ColorCategoryCountsStore
     ) {
-        this.subscription = this.codeMapRenderStore.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()
+        this.subscription = this.fileStoreReadWindow.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()
     }
 
     ngOnDestroy(): void {
@@ -60,6 +58,14 @@ export class CodeMapRenderService implements OnDestroy {
         }
     }
 
+    // The RendererEngine `load` seam (Slice 14b): compose + lay out the render model. The render effect
+    // calls this, then requests a frame via ThreeRendererService — the frame scheduler is the driver's
+    // concern, not the engine's.
+    load(model: CodeMapNode) {
+        this.render(model)
+        this.scaleMap()
+    }
+
     render(map: CodeMapNode) {
         const nodes = this.getNodes(map)
         const visibleSortedNodes = this.sortVisibleNodesByHeightDescending(nodes)
@@ -72,7 +78,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
-        const state = this.codeMapRenderStore.getState() as CcState
+        const state = this.codeMapStore.getState() as CcState
         const mapMesh = new CodeMapMesh(visibleSortedNodes, state, isDeltaState(state.files))
         this.threeSceneService.setMapMesh(allMeshNodes, mapMesh)
     }
@@ -86,10 +92,10 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     getNodes(map: CodeMapNode) {
-        const state = this.codeMapRenderStore.getState() as CcState
-        const nodeMetricData = metricDataSelector(state).nodeMetricData
+        const state = this.codeMapStore.getState() as CcState
+        const nodeMetricData = nodeMetricDataSelector(state)
         const {
-            appSettings: { layoutAlgorithm },
+            mapState: { layoutAlgorithm },
             files
         } = state
         const deltaState = isDeltaState(files)
@@ -111,7 +117,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     sortVisibleNodesByHeightDescending(nodes: Node[]) {
-        const experimentalFeaturesEnabled = this.codeMapRenderStore.getState().appSettings.experimentalFeaturesEnabled
+        const experimentalFeaturesEnabled = this.codeMapStore.getState().preferences.experimentalFeaturesEnabled
         if (experimentalFeaturesEnabled) {
             this.setMinBuildingLength(nodes)
             return nodes.filter(node => node.visible && node.width > 0).sort((a, b) => b.height - a.height)
@@ -128,7 +134,8 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
-        const dynamicSettings = this.codeMapRenderStore.getState().dynamicSettings
+        const state = this.codeMapStore.getState()
+        const colorRange = state.mapState.colorRange
 
         this.nodesByColor = {
             positive: [],
@@ -138,13 +145,13 @@ export class CodeMapRenderService implements OnDestroy {
 
         for (const node of sortedNodes) {
             if (node.isLeaf) {
-                const metric = node.attributes[dynamicSettings.colorMetric]
-                if (dynamicSettings.colorMetric === "unary") {
+                const metric = node.attributes[state.mapState.colorMetric]
+                if (state.mapState.colorMetric === "unary") {
                     this.nodesByColor.positive.push(node)
                 } else if (metric !== null) {
-                    if (metric < dynamicSettings.colorRange.from) {
+                    if (metric < colorRange.from) {
                         this.nodesByColor.positive.push(node)
-                    } else if (metric < dynamicSettings.colorRange.to) {
+                    } else if (metric < colorRange.to) {
                         this.nodesByColor.neutral.push(node)
                     } else {
                         this.nodesByColor.negative.push(node)
@@ -153,7 +160,7 @@ export class CodeMapRenderService implements OnDestroy {
             }
         }
 
-        this._colorCategoryCounts$.next({
+        this.colorCategoryCountsStore.setColorCategoryCounts({
             positive: this.nodesByColor.positive.length,
             neutral: this.nodesByColor.neutral.length,
             negative: this.nodesByColor.negative.length
@@ -163,7 +170,7 @@ export class CodeMapRenderService implements OnDestroy {
     }
 
     private uncheckEmptyColorLabels() {
-        const colorLabels = this.codeMapRenderStore.getState().appSettings.colorLabels
+        const colorLabels = this.codeMapStore.getState().mapState.colorLabels
         const unchecks: Partial<ColorLabelOptions> = {}
         for (const category of colorLabelTypes) {
             if (colorLabels[category] && this.nodesByColor[category].length === 0) {
@@ -171,7 +178,7 @@ export class CodeMapRenderService implements OnDestroy {
             }
         }
         if (Object.keys(unchecks).length > 0) {
-            this.codeMapRenderStore.setColorLabels(unchecks)
+            this.codeMapStore.setColorLabels(unchecks)
         }
     }
 
@@ -188,21 +195,21 @@ export class CodeMapRenderService implements OnDestroy {
             return
         }
 
-        const state = this.codeMapRenderStore.getState() as CcState
+        const state = this.codeMapStore.getState() as CcState
         const {
             showMetricLabelNodeName,
             showMetricLabelNameValue,
             colorLabels: colorLabelOptions,
             amountOfTopLabels,
             labelMode
-        } = state.appSettings
+        } = state.mapState
 
         if (showMetricLabelNodeName || showMetricLabelNameValue) {
             const highestNodeInSet = sortedNodes[0].height
             const selectTopNodes = this.getTopNodeSelector(state, amountOfTopLabels)
 
             if (labelMode === LabelMode.Color) {
-                const { colorMetric } = state.dynamicSettings
+                const { colorMetric } = state.mapState
                 const selectedColorNodes = selectTopNodes(
                     colorLabelTypes
                         .filter(colorType => colorLabelOptions[colorType])

@@ -1,6 +1,6 @@
+import { ungzip } from "pako"
 import { parseGameObjectsFile } from "../util/gameObjectsParser/gameObjectsImporter"
 import { validateGameObjects } from "../util/gameObjectsParser/gameObjectsValidator"
-import { ungzip } from "pako"
 
 export const readFiles = (files: FileList): Promise<string>[] => {
     const readFilesPromises = []

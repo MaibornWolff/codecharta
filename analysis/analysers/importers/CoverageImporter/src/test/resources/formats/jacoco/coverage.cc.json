@@ -1,85 +1,135 @@
 {
-  "checksum": "7f29599a9c3938b82140269219409bb4",
-  "data": {
+  "meta": {
     "projectName": "",
-    "nodes": [
-      {
-        "name": "root",
-        "type": "Folder",
-        "attributes": {},
-        "link": "",
-        "children": [
-          {
-            "name": "App.java",
-            "type": "File",
-            "attributes": {
-              "line_coverage": 0.0,
-              "instruction_coverage": 0.0,
-              "complexity_coverage": 0.0,
-              "method_coverage": 0.0,
-              "class_coverage": 0.0
-            },
-            "link": "",
-            "children": []
-          },
-          {
-            "name": "Order.java",
-            "type": "File",
-            "attributes": {
-              "line_coverage": 85.71,
-              "instruction_coverage": 93.75,
-              "complexity_coverage": 75.0,
-              "method_coverage": 75.0,
-              "class_coverage": 50.0
-            },
-            "link": "",
-            "children": []
-          },
-          {
-            "name": "Calculator.java",
-            "type": "File",
-            "attributes": {
-              "line_coverage": 100.0,
-              "instruction_coverage": 100.0,
-              "complexity_coverage": 100.0,
-              "method_coverage": 100.0,
-              "class_coverage": 100.0
-            },
-            "link": "",
-            "children": []
-          },
-          {
-            "name": "User.java",
-            "type": "File",
-            "attributes": {
-              "line_coverage": 100.0,
-              "instruction_coverage": 100.0,
-              "complexity_coverage": 100.0,
-              "method_coverage": 100.0,
-              "class_coverage": 100.0
-            },
-            "link": "",
-            "children": []
-          },
-          {
-            "name": "Product.java",
-            "type": "File",
-            "attributes": {
-              "line_coverage": 100.0,
-              "instruction_coverage": 100.0,
-              "complexity_coverage": 100.0,
-              "method_coverage": 100.0,
-              "class_coverage": 100.0
-            },
-            "children": []
-          }
-        ]
-      }
-    ],
-    "apiVersion": "1.3",
-    "edges": [],
-    "attributeTypes": {
-      "nodes": {
+    "apiVersion": "2.0",
+    "checksum": "c9a4bba69902de73a71d4a5cbabe8191"
+  },
+  "files": [
+    {
+      "id": "164ddff4bb1345e1",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "4f67daa370423695",
+          "name": "App.java",
+          "type": "File",
+          "link": ""
+        },
+        {
+          "id": "94d7199d99490084",
+          "name": "Order.java",
+          "type": "File",
+          "link": ""
+        },
+        {
+          "id": "70885a7e0362468b",
+          "name": "Calculator.java",
+          "type": "File",
+          "link": ""
+        },
+        {
+          "id": "1bed8b62903b5b47",
+          "name": "User.java",
+          "type": "File",
+          "link": ""
+        },
+        {
+          "id": "f2d811ccd860f522",
+          "name": "Product.java",
+          "type": "File"
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "4f67daa370423695": {
+          "line_coverage": 0.0,
+          "instruction_coverage": 0.0,
+          "complexity_coverage": 0.0,
+          "method_coverage": 0.0,
+          "class_coverage": 0.0
+        },
+        "94d7199d99490084": {
+          "line_coverage": 85.71,
+          "instruction_coverage": 93.75,
+          "complexity_coverage": 75.0,
+          "method_coverage": 75.0,
+          "class_coverage": 50.0
+        },
+        "70885a7e0362468b": {
+          "line_coverage": 100.0,
+          "instruction_coverage": 100.0,
+          "complexity_coverage": 100.0,
+          "method_coverage": 100.0,
+          "class_coverage": 100.0
+        },
+        "1bed8b62903b5b47": {
+          "line_coverage": 100.0,
+          "instruction_coverage": 100.0,
+          "complexity_coverage": 100.0,
+          "method_coverage": 100.0,
+          "class_coverage": 100.0
+        },
+        "f2d811ccd860f522": {
+          "line_coverage": 100.0,
+          "instruction_coverage": 100.0,
+          "complexity_coverage": 100.0,
+          "method_coverage": 100.0,
+          "class_coverage": 100.0
+        }
+      },
+      "attributeDescriptors": {
+        "line_coverage": {
+          "title": "Line Coverage",
+          "description": "Percentage of lines covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        },
+        "instruction_coverage": {
+          "title": "Instruction Coverage",
+          "description": "Percentage of instructions covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        },
+        "complexity_coverage": {
+          "title": "Complexity Coverage",
+          "description": "Percentage of complexity covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        },
+        "method_coverage": {
+          "title": "Method Coverage",
+          "description": "Percentage of methods covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        },
+        "class_coverage": {
+          "title": "Class Coverage",
+          "description": "Percentage of classes covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        }
+      },
+      "attributeTypes": {
         "line_coverage": "relative",
         "instruction_coverage": "relative",
         "complexity_coverage": "relative",
@@ -87,48 +137,10 @@
         "class_coverage": "relative"
       }
     },
-    "attributeDescriptors": {
-      "line_coverage": {
-        "title": "Line Coverage",
-        "description": "Percentage of lines covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      },
-      "instruction_coverage": {
-        "title": "Instruction Coverage",
-        "description": "Percentage of instructions covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      },
-      "complexity_coverage": {
-        "title": "Complexity Coverage",
-        "description": "Percentage of complexity covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      },
-      "method_coverage": {
-        "title": "Method Coverage",
-        "description": "Percentage of methods covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      },
-      "class_coverage": {
-        "title": "Class Coverage",
-        "description": "Percentage of classes covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      }
-    },
-    "blacklist": []
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
   }
 }

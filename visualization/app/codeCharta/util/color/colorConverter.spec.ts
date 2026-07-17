@@ -1,5 +1,5 @@
-import { ColorConverter } from "./colorConverter"
 import { Vector3 } from "three"
+import { ColorConverter } from "./colorConverter"
 
 describe("colorConverter", () => {
     beforeEach(() => {

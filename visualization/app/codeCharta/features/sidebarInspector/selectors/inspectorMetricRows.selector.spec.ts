@@ -1,4 +1,4 @@
-import { AttributeDescriptors, CodeMapNode } from "../../../codeCharta.model"
+import { AttributeDescriptors, CodeMapNode } from "../../../model/codeCharta.model"
 import { _calculateMetricRows, isEmptyMetricRow, isEmptyMetricValue } from "./inspectorMetricRows.selector"
 
 describe("isEmptyMetricValue", () => {

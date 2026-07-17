@@ -1,8 +1,8 @@
 import { hierarchy } from "d3-hierarchy"
-import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData } from "../model/codeCharta.model"
 import { createBlacklistMatcher } from "./blacklist/blacklistMatcher"
 import { isLeaf } from "./codeMapHelper"
-import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
+import { UNARY_METRIC } from "./metric/unaryMetric"
 
 const enum MedianSelectors {
     MEDIAN = "MEDIAN",
@@ -28,13 +28,25 @@ export const NodeDecorator = {
         this.decorateMapWithMetricData(map, metricData)
     },
 
-    decorateMapWithMetricData(map: CodeMapNode, metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">) {
-        const { nodeMetricData, edgeMetricData } = metricData
+    // The view-state-INDEPENDENT structure pass (Slice 14e-3): assign the ordinal id and merge
+    // single-child folder chains. It reads nothing but the tree shape (no blacklist, no metrics), so
+    // it is deterministic — the structure lens runs it on its own undecorated tree to own `id -> node`
+    // resolution (`structureIdToNode`) without reaching up to the composing layer or any view state,
+    // which is what structurally breaks the CF #1 cycle. `decorateMapWithMetricData` runs it first so
+    // the decorated tree the composing layer builds carries the exact same ids and merged shape.
+    decorateMapWithStructure(map: CodeMapNode) {
         let id = 0
         for (const { data } of hierarchy(map)) {
             data.id = id
             id++
+            mergeFolderChain(data)
+        }
+    },
 
+    decorateMapWithMetricData(map: CodeMapNode, metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">) {
+        const { nodeMetricData, edgeMetricData } = metricData
+        this.decorateMapWithStructure(map)
+        for (const { data } of hierarchy(map)) {
             if (data.attributes === undefined) {
                 data.attributes = {}
             }
@@ -62,8 +74,6 @@ export const NodeDecorator = {
                     data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
                 }
             }
-
-            mergeFolderChain(data)
         }
     },
 
@@ -290,7 +300,7 @@ function collectMedians(medians: Map<string, number[]>, selector: string, child:
 // TODO: Evaluate if sorting in `getMedian` is not better than using a
 // pre-sorted array. It's a lot less code and should roughly have the same
 // performance.
-export function getMedian(numbers: number[]) {
+function getMedian(numbers: number[]) {
     if (numbers === undefined || numbers.length === 0) {
         return 0
     }
@@ -299,7 +309,7 @@ export function getMedian(numbers: number[]) {
     return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2
 }
 
-export function pushSorted(numbers: number[], number: number) {
+function pushSorted(numbers: number[], number: number) {
     let min = 0
     let max = numbers.length - 1
     let guess = 0

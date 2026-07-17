@@ -1,4 +1,4 @@
-import { BlacklistItem } from "../../codeCharta.model"
+import { BlacklistItem } from "../../model/codeCharta.model"
 import { createBlacklistMatcher, isPathHiddenOrExcluded } from "./blacklistMatcher"
 
 describe("blacklistMatcher", () => {

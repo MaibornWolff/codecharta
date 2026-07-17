@@ -1,42 +1,56 @@
 import { Injectable } from "@angular/core"
-import { State } from "@ngrx/store"
-import { AttributeDescriptors, BlacklistItem, CcState, ColorRange } from "../../../codeCharta.model"
+import { AttributeDescriptors, BlacklistItem, ColorRange, NodeMetricData } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
-import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
+import { accumulatedDataSelector, nodeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
+import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
+import { MetricsLensSourceReadWindow } from "../../../stores/metricsLensSource/metricsLensSource.read.facade"
+import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
+import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 
 @Injectable({ providedIn: "root" })
 export class Print3DStateAccessStore {
-    constructor(private readonly state: State<CcState>) {}
+    constructor(
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly metricsLensSourceReadWindow: MetricsLensSourceReadWindow,
+        private readonly sharedViewReadWindow: SharedViewReadWindow,
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
+        private readonly ccStateSnapshot: CcStateSnapshot
+    ) {}
 
     getAreaMetric(): string {
-        return this.state.getValue().dynamicSettings.areaMetric
+        return this.mapStateReadWindow.getAreaMetric()
     }
 
     getHeightMetric(): string {
-        return this.state.getValue().dynamicSettings.heightMetric
+        return this.mapStateReadWindow.getHeightMetric()
     }
 
     getColorMetric(): string {
-        return this.state.getValue().dynamicSettings.colorMetric
+        return this.mapStateReadWindow.getColorMetric()
     }
 
     getColorRange(): ColorRange {
-        return this.state.getValue().dynamicSettings.colorRange
+        return this.mapStateReadWindow.getColorRange()
     }
 
     getAttributeDescriptors(): AttributeDescriptors {
-        return this.state.getValue().fileSettings.attributeDescriptors
+        return this.metricsLensSourceReadWindow.getAttributeDescriptors()
+    }
+
+    getNodeMetricData(): NodeMetricData[] {
+        return nodeMetricDataSelector(this.ccStateSnapshot.get())
     }
 
     getBlacklist(): BlacklistItem[] {
-        return this.state.getValue().fileSettings.blacklist
+        return this.sharedViewReadWindow.getBlacklist()
     }
 
     getFiles(): FileState[] {
-        return this.state.getValue().files
+        return this.fileStoreReadWindow.getFiles()
     }
 
     getAccumulatedFileName(): string | undefined {
-        return accumulatedDataSelector(this.state.getValue()).unifiedFileMeta?.fileName
+        return accumulatedDataSelector(this.ccStateSnapshot.get()).unifiedFileMeta?.fileName
     }
 }

@@ -2,7 +2,7 @@ import { BufferGeometry } from "three"
 import { Font } from "three/addons/loaders/FontLoader.js"
 import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
 import { CreateTextGeometryStrategy } from "../../CreateGeometryStrategies/createTextGeometryStrategy"
-import { GeometryOptions } from "../../preview3DPrintMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { SecondRowTextMesh } from "./secondRowTextMesh"
 
 jest.mock("../../CreateGeometryStrategies/createTextGeometryStrategy")

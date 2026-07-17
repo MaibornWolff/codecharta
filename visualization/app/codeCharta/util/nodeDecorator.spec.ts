@@ -1,18 +1,18 @@
+import { HierarchyNode, hierarchy } from "d3-hierarchy"
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "../mocks/dataMocks"
 import {
+    AttributeTypes,
+    AttributeTypeValue,
     CCFile,
     CodeMapNode,
-    NodeType,
-    AttributeTypeValue,
-    AttributeTypes,
-    NodeMetricData,
     EdgeMetricData,
-    MetricData
-} from "../codeCharta.model"
-import { NodeDecorator } from "./nodeDecorator"
-import { HierarchyNode, hierarchy } from "d3-hierarchy"
+    MetricData,
+    NodeMetricData,
+    NodeType
+} from "../model/codeCharta.model"
 import { clone } from "./clone"
-import { UNARY_METRIC } from "../state/selectors/accumulatedData/metricData/nodeMetricData.calculator"
+import { UNARY_METRIC } from "./metric/unaryMetric"
+import { NodeDecorator } from "./nodeDecorator"
 
 describe("nodeDecorator", () => {
     let file: CCFile
@@ -312,6 +312,60 @@ describe("nodeDecorator", () => {
             for (const { data } of h.leaves()) {
                 expect(data.attributes[UNARY_METRIC]).toBe(1)
             }
+        })
+    })
+
+    describe("decorateMapWithStructure", () => {
+        it("should assign a unique id starting from 0 to every node", () => {
+            NodeDecorator.decorateMapWithStructure(map)
+
+            const h = hierarchy(map)
+            h.each(node => {
+                expect(node.data.id).toBeDefined()
+            })
+            expect(allUniqueIds(h)).toBeTruthy()
+            expect(map.id).toBe(0)
+        })
+
+        it("should merge single-child folder chains without touching attributes", () => {
+            map.children = [
+                {
+                    name: "middle",
+                    type: NodeType.FOLDER,
+                    attributes: {},
+                    isExcluded: false,
+                    isFlattened: false,
+                    children: [
+                        { name: "a", type: NodeType.FILE, attributes: {}, isExcluded: false, isFlattened: false },
+                        { name: "b", type: NodeType.FILE, attributes: {}, isExcluded: false, isFlattened: false }
+                    ]
+                }
+            ]
+
+            NodeDecorator.decorateMapWithStructure(map)
+
+            expect(map.name).toBe("root/middle")
+            expect(map.children.length).toBe(2)
+            expect(map.children[0].name).toBe("a")
+            expect(map.children[1].name).toBe("b")
+            // structure pass must not initialise metric attributes — that stays the metric pass's job
+            expect(map.children[0].attributes[UNARY_METRIC]).toBeUndefined()
+        })
+
+        it("should assign the same ids as the combined decorateMap pass", () => {
+            const structureOnly = clone(map)
+            const fullyDecorated = clone(map)
+
+            NodeDecorator.decorateMapWithStructure(structureOnly)
+            NodeDecorator.decorateMap(fullyDecorated, metricData, [])
+
+            const structureIds = hierarchy(structureOnly)
+                .descendants()
+                .map(node => `${node.data.path}:${node.data.id}`)
+            const decoratedIds = hierarchy(fullyDecorated)
+                .descendants()
+                .map(node => `${node.data.path}:${node.data.id}`)
+            expect(structureIds).toEqual(decoratedIds)
         })
     })
 

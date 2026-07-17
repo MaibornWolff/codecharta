@@ -1,5 +1,5 @@
-import { getBaseMaterialEdge, getBaseMaterialVertices, getBaseMaterialFace } from "./viewCube.materials"
 import { BoxGeometry, Group, Mesh } from "three"
+import { getBaseMaterialEdge, getBaseMaterialFace, getBaseMaterialVertices } from "./viewCube.materials"
 
 export class ViewCubemeshGenerator {
     static buildCube(edgeToFaceRatio: number) {

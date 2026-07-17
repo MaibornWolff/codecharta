@@ -1,5 +1,5 @@
 import { hierarchy } from "d3-hierarchy"
-import { CodeMapNode, MarkedPackage } from "../codeCharta.model"
+import { CodeMapNode, MarkedPackage } from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import { getSelectedFilesSize } from "./fileHelper"
 

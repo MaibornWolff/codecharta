@@ -1,10 +1,10 @@
-import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
-import { GeometryOptions } from "../preview3DPrintMesh"
-import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
-import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
-import { TextMesh } from "./textMesh"
 import { BufferGeometry, Mesh, ShaderMaterial } from "three"
 import { Font } from "three/addons/loaders/FontLoader.js"
+import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
+import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
+import { GeometryOptions } from "../geometryOptions"
+import { TextMesh } from "./textMesh"
 
 jest.mock("../CreateGeometryStrategies/createTextGeometryStrategy")
 

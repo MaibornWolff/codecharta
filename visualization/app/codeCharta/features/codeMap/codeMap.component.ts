@@ -1,10 +1,10 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy } from "@angular/core"
-import { ThreeViewerService } from "./threeViewer/threeViewer.service"
-import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
-import { CodeMapStore } from "./stores/codeMap.store"
-import { ViewCubeComponent } from "../viewCube/facade"
 import { AsyncPipe } from "@angular/common"
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy } from "@angular/core"
+import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
+import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.facade"
+import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
+import { ViewCubeComponent } from "../viewCube/facade"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 @Component({
     selector: "cc-code-map",
@@ -13,13 +13,13 @@ import { AsyncPipe } from "@angular/common"
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
-    isLoadingFile$ = this.codeMapStore.isLoadingFile$
+    isLoadingFile$ = this.fileStoreReadWindow.isLoadingFile$
 
     private barsResizeObserver?: ResizeObserver
 
     constructor(
         public inspectorVisibilityService: InspectorVisibilityService,
-        private readonly codeMapStore: CodeMapStore,
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
         private readonly threeViewerService: ThreeViewerService,
         private readonly codeMapMouseEventService: CodeMapMouseEventService,
         private readonly elementReference: ElementRef

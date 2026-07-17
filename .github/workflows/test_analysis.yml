@@ -6,11 +6,14 @@ on:
       - main
     paths:
       - 'analysis/**'
+      # the 2.0 schema source of truth is validated by the analysis drift guard (EveritValidatorTest)
+      - 'dev_docs/cc-json-2.0.schema.json'
   pull_request:
     branches:
       - main
     paths:
         - 'analysis/**'
+        - 'dev_docs/cc-json-2.0.schema.json'
 
 
 jobs:

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core"
 import { SCENARIO_SECTION_ICONS, SCENARIO_SECTION_LABELS } from "../../../../model/scenario.model"
-import { ScenarioView } from "../../scenarioView.model"
+import { ScenarioView } from "../../../../model/scenarioView.model"
 
 @Component({
     selector: "cc-scenario-item-badges",

@@ -1,4 +1,4 @@
-import { AttributeDescriptors, CodeMapNode, MapColors, NodeType } from "../../../codeCharta.model"
+import { AttributeDescriptors, CodeMapNode, MapColors, NodeType } from "../../../model/codeCharta.model"
 import { _calculateMappingBlocks } from "./inspectorMappingBlocks.selector"
 
 describe("_calculateMappingBlocks", () => {

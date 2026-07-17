@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, HostListener, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CCFile } from "../../../../codeCharta.model"
+import { CCFile } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { RemoveExtensionPipe } from "../../removeExtension.pipe"
-import { FilesSelectionStore } from "../../stores/filesSelection.store"
+import { NavBarWriteStore } from "../../stores/navBar.write.store"
 
 type FileRemovedInUIState = {
     file: CCFile
@@ -17,10 +18,11 @@ type FileRemovedInUIState = {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapSelectorComponent {
-    private readonly filesSelectionStore = inject(FilesSelectionStore)
+    private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
+    private readonly navBarWriteStore = inject(NavBarWriteStore)
     private readonly elementRef = inject(ElementRef<HTMLElement>)
 
-    private readonly filesInStore = toSignal(this.filesSelectionStore.files$, { requireSync: true })
+    private readonly filesInStore = toSignal(this.fileStoreReadWindow.files$, { requireSync: true })
 
     isOpen = signal(false)
     filesInUI = signal<FileRemovedInUIState[]>([])
@@ -127,8 +129,8 @@ export class MapSelectorComponent {
         const filesToRemove = this.filesInUI()
             .filter(file => file.isRemoved)
             .map(file => file.file.fileMeta.fileName)
-        this.filesSelectionStore.setStandard(this.selectedFilesInUI())
-        this.filesSelectionStore.removeFiles(filesToRemove)
+        this.navBarWriteStore.setStandard(this.selectedFilesInUI())
+        this.navBarWriteStore.removeFiles(filesToRemove)
         this.isOpen.set(false)
     }
 

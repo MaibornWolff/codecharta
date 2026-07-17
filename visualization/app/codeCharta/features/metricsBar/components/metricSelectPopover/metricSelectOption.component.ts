@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
-import { AttributeDescriptor, EdgeMetricData, NodeMetricData } from "../../../../codeCharta.model"
+import { AttributeDescriptor, EdgeMetricData, NodeMetricData } from "../../../../model/codeCharta.model"
 import { AttributeDescriptorTooltipPipe } from "../../../../util/pipes/attributeDescriptorTooltip.pipe"
 
 @Component({

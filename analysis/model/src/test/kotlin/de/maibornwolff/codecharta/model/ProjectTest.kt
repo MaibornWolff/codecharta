@@ -10,12 +10,17 @@ class ProjectTest {
     }
 
     @Test
-    fun `should be compatible with same major Version`() {
-        assertThat(Project.isAPIVersionCompatible("1.2")).isTrue
+    fun `should not be compatible with a legacy 1_x version`() {
+        assertThat(Project.isAPIVersionCompatible("1.2")).isFalse
     }
 
     @Test
-    fun `should not be compatible with different major version`() {
-        assertThat(Project.isAPIVersionCompatible("2.0")).isFalse
+    fun `should be compatible with the 2_0 lens format`() {
+        assertThat(Project.isAPIVersionCompatible("2.0")).isTrue
+    }
+
+    @Test
+    fun `should not be compatible with an unsupported major version`() {
+        assertThat(Project.isAPIVersionCompatible("3.0")).isFalse
     }
 }

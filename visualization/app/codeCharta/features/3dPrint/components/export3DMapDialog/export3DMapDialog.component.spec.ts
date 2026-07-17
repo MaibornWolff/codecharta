@@ -1,15 +1,15 @@
 import { State } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { AmbientLight, BufferGeometry, DirectionalLight, Group, Scene, Shape, Vector2, WebGLRenderer } from "three"
 import { DEFAULT_SETTINGS, DEFAULT_STATE, FILE_META, TEST_NODES } from "../../../../mocks/dataMocks"
-import { CodeMapMesh } from "../../../../features/codeMap/facade"
-import { ThreeSceneService } from "../../../../features/codeMap/facade"
-import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
-import { QrCodeMesh } from "../../3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
+import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
-import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../../codeCharta.model"
+import { CodeMapMesh, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { QrCodeMesh } from "../../3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
 import { Export3DMapButtonComponent } from "../export3DMapButton/export3DMapButton.component"
+import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
 
 jest.mock("three/addons/loaders/SVGLoader.js", () => {
     return {
@@ -50,11 +50,11 @@ const TestNodeMap: CodeMapNode = {
 }
 
 const TestState = { ...DEFAULT_STATE }
-TestState.dynamicSettings.areaMetric = "a"
-TestState.dynamicSettings.heightMetric = "b"
-TestState.dynamicSettings.colorMetric = "mcc"
-TestState.dynamicSettings.colorRange = { from: 4, to: 8 }
-TestState.dynamicSettings.colorMode = ColorMode.absolute
+TestState.mapState.areaMetric = "a"
+TestState.mapState.heightMetric = "b"
+TestState.mapState.colorMetric = "mcc"
+TestState.mapState.colorRange = { from: 4, to: 8 }
+TestState.mapState.colorMode = ColorMode.absolute
 const TestFile: CCFile = { fileMeta: FILE_META, map: TestNodeMap, settings: DEFAULT_SETTINGS }
 const TestFileSTate: FileState = { file: TestFile, selectedAs: FileSelectionState.Partial }
 TestState.files = [TestFileSTate]
@@ -147,6 +147,7 @@ describe("Export3DMapDialogComponent", () => {
         const renderObject = await render(Export3DMapDialogComponent, {
             imports: [Export3DMapButtonComponent],
             providers: [
+                provideMockStore({ initialState: TestState }),
                 { provide: State, useValue: { getValue: () => TestState } },
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock }
             ]

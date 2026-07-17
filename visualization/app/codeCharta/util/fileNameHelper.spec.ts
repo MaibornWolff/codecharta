@@ -1,5 +1,5 @@
-import { FileNameHelper } from "./fileNameHelper"
 import { stubDate } from "../../../mocks/dateMock.helper"
+import { FileNameHelper } from "./fileNameHelper"
 
 describe("FileNameHelper", () => {
     stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))

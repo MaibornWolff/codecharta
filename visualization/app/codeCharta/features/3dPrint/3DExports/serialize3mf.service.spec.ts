@@ -1,3 +1,7 @@
+import { resolve } from "node:path"
+import { XMLParser, XMLValidator } from "fast-xml-parser"
+import { strFromU8, unzipSync } from "fflate"
+import { readFileSync } from "fs"
 import {
     BufferAttribute,
     BufferGeometry,
@@ -9,11 +13,8 @@ import {
     ShaderMaterial,
     Uint16BufferAttribute
 } from "three"
-import { Volume, exportedForTesting, serialize3mf } from "./serialize3mf.service"
-import { readFileSync } from "fs"
-import { strFromU8, unzipSync } from "fflate"
-import { resolve } from "node:path"
-import { XMLParser, XMLValidator } from "fast-xml-parser"
+import { Volume } from "./generateXML/volume"
+import { exportedForTesting, serialize3mf } from "./serialize3mf.service"
 
 describe("serialize3mf service", () => {
     describe("serialize3mf", () => {

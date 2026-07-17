@@ -1,8 +1,8 @@
-import { BufferAttribute, BufferGeometry, Float32BufferAttribute, Mesh, MeshBasicMaterial, Box3, Vector3, ShaderMaterial } from "three"
-import { GeometryOptions } from "../preview3DPrintMesh"
+import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Mesh, MeshBasicMaterial, ShaderMaterial, Vector3 } from "three"
+import { indicesPerNode } from "../../../../../renderer/threeViewer/threeViewer.facade"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { GeometryOptions } from "../geometryOptions"
 import { MapMesh } from "./mapMesh"
-import { indicesPerNode } from "../../../../../features/codeMap/facade"
 
 describe("MapMesh", () => {
     let mapMesh: MapMesh

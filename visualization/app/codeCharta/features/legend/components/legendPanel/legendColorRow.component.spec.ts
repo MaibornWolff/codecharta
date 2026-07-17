@@ -1,8 +1,8 @@
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
-import { HexMapColor } from "../../../../codeCharta.model"
-import { defaultState } from "../../../../state/store/state.manager"
+import { HexMapColor } from "../../../../model/codeCharta.model"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 
 describe("LegendColorRowComponent", () => {
@@ -27,7 +27,7 @@ describe("LegendColorRowComponent", () => {
         const { component } = await setup({ mapColorFor: "positive" })
 
         // Assert
-        expect(component.color()).toBe(defaultState.appSettings.mapColors.positive)
+        expect(component.color()).toBe(defaultState.mapState.mapColors.positive)
         expect(screen.queryByRole("button")).toBeNull()
     })
 })

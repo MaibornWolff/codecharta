@@ -1,219 +1,229 @@
 {
-  "checksum": "b0818d8ecd9cd463eb34e0d4ff267189",
-  "data": {
+  "meta": {
     "projectName": "",
-    "nodes": [
-      {
-        "name": "root",
-        "type": "Folder",
-        "attributes": {},
-        "link": "",
-        "children": [
-          {
-            "name": "Users",
-            "type": "Folder",
-            "attributes": {},
-            "link": "",
-            "children": [
-              {
-                "name": "testuser",
-                "type": "Folder",
-                "attributes": {},
-                "link": "",
-                "children": [
-                  {
-                    "name": "path",
-                    "type": "Folder",
-                    "attributes": {},
-                    "link": "",
-                    "children": [
-                      {
-                        "name": "to",
-                        "type": "Folder",
-                        "attributes": {},
-                        "link": "",
-                        "children": [
-                          {
-                            "name": "sample-project",
-                            "type": "Folder",
-                            "attributes": {},
-                            "link": "",
-                            "children": [
-                              {
-                                "name": "src",
-                                "type": "Folder",
-                                "attributes": {},
-                                "link": "",
-                                "children": [
-                                  {
-                                    "name": "Api",
-                                    "type": "Folder",
-                                    "attributes": {},
-                                    "link": "",
-                                    "children": [
-                                      {
-                                        "name": "Controllers",
-                                        "type": "Folder",
-                                        "attributes": {},
-                                        "link": "",
-                                        "children": [
-                                          {
-                                            "name": "UserController.php",
-                                            "type": "File",
-                                            "attributes": {
-                                              "line_coverage": 100.0,
-                                              "branch_coverage": 100.0,
-                                              "method_coverage": 100.0
-                                            },
-                                            "link": "",
-                                            "children": []
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "name": "Core",
-                                    "type": "Folder",
-                                    "attributes": {},
-                                    "link": "",
-                                    "children": [
-                                      {
-                                        "name": "Models",
-                                        "type": "Folder",
-                                        "attributes": {},
-                                        "link": "",
-                                        "children": [
-                                          {
-                                            "name": "User.php",
-                                            "type": "File",
-                                            "attributes": {
-                                              "line_coverage": 100.0,
-                                              "branch_coverage": 100.0,
-                                              "method_coverage": 100.0
-                                            },
-                                            "link": "",
-                                            "children": []
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "name": "Services",
-                                        "type": "Folder",
-                                        "attributes": {},
-                                        "link": "",
-                                        "children": [
-                                          {
-                                            "name": "Database",
-                                            "type": "Folder",
-                                            "attributes": {},
-                                            "link": "",
-                                            "children": [
-                                              {
-                                                "name": "Connection.php",
-                                                "type": "File",
-                                                "attributes": {
-                                                  "line_coverage": 100.0,
-                                                  "branch_coverage": 100.0,
-                                                  "method_coverage": 100.0
-                                                },
-                                                "link": "",
-                                                "children": []
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "name": "Utils",
-                                    "type": "Folder",
-                                    "attributes": {},
-                                    "link": "",
-                                    "children": [
-                                      {
-                                        "name": "Formatters",
-                                        "type": "Folder",
-                                        "attributes": {},
-                                        "link": "",
-                                        "children": [
-                                          {
-                                            "name": "DateFormatter.php",
-                                            "type": "File",
-                                            "attributes": {
-                                              "line_coverage": 86.67,
-                                              "branch_coverage": 100.0,
-                                              "method_coverage": 66.67
-                                            },
-                                            "link": "",
-                                            "children": []
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "name": "StringUtils.php",
-                                        "type": "File",
-                                        "attributes": {
-                                          "line_coverage": 100.0,
-                                          "branch_coverage": 100.0,
-                                          "method_coverage": 100.0
-                                        },
-                                        "link": "",
-                                        "children": []
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    "apiVersion": "1.3",
-    "edges": [],
-    "attributeTypes": {
-      "nodes": {
+    "apiVersion": "2.0",
+    "checksum": "abf4ea56590ae29d1548e0178c364416"
+  },
+  "files": [
+    {
+      "id": "164ddff4bb1345e1",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "667411e34baae48b",
+          "name": "Users",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "59b7b0656d7611d8",
+              "name": "testuser",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "3868efae76c52153",
+                  "name": "path",
+                  "type": "Folder",
+                  "children": [
+                    {
+                      "id": "927b01ebd12c18a3",
+                      "name": "to",
+                      "type": "Folder",
+                      "children": [
+                        {
+                          "id": "0824fa7819069246",
+                          "name": "sample-project",
+                          "type": "Folder",
+                          "children": [
+                            {
+                              "id": "3b243948e52941a1",
+                              "name": "src",
+                              "type": "Folder",
+                              "children": [
+                                {
+                                  "id": "f053db0193fe56c8",
+                                  "name": "Api",
+                                  "type": "Folder",
+                                  "children": [
+                                    {
+                                      "id": "2f5503b1efd0f0e0",
+                                      "name": "Controllers",
+                                      "type": "Folder",
+                                      "children": [
+                                        {
+                                          "id": "82420f77b6c566c3",
+                                          "name": "UserController.php",
+                                          "type": "File",
+                                          "link": ""
+                                        }
+                                      ],
+                                      "link": ""
+                                    }
+                                  ],
+                                  "link": ""
+                                },
+                                {
+                                  "id": "b34bec4c6eb76f2b",
+                                  "name": "Core",
+                                  "type": "Folder",
+                                  "children": [
+                                    {
+                                      "id": "c6c28f5e7bd6e248",
+                                      "name": "Models",
+                                      "type": "Folder",
+                                      "children": [
+                                        {
+                                          "id": "1f8d520947b630e3",
+                                          "name": "User.php",
+                                          "type": "File",
+                                          "link": ""
+                                        }
+                                      ],
+                                      "link": ""
+                                    },
+                                    {
+                                      "id": "ab236fbbea004fa1",
+                                      "name": "Services",
+                                      "type": "Folder",
+                                      "children": [
+                                        {
+                                          "id": "fc78ff185d7a487f",
+                                          "name": "Database",
+                                          "type": "Folder",
+                                          "children": [
+                                            {
+                                              "id": "c9e80a3c29b16d96",
+                                              "name": "Connection.php",
+                                              "type": "File",
+                                              "link": ""
+                                            }
+                                          ],
+                                          "link": ""
+                                        }
+                                      ],
+                                      "link": ""
+                                    }
+                                  ],
+                                  "link": ""
+                                },
+                                {
+                                  "id": "9b6cd4507ebb110e",
+                                  "name": "Utils",
+                                  "type": "Folder",
+                                  "children": [
+                                    {
+                                      "id": "d3e43a794fcbe615",
+                                      "name": "Formatters",
+                                      "type": "Folder",
+                                      "children": [
+                                        {
+                                          "id": "9577a15fb6ed28a6",
+                                          "name": "DateFormatter.php",
+                                          "type": "File",
+                                          "link": ""
+                                        }
+                                      ],
+                                      "link": ""
+                                    },
+                                    {
+                                      "id": "139a72ae84548301",
+                                      "name": "StringUtils.php",
+                                      "type": "File",
+                                      "link": ""
+                                    }
+                                  ],
+                                  "link": ""
+                                }
+                              ],
+                              "link": ""
+                            }
+                          ],
+                          "link": ""
+                        }
+                      ],
+                      "link": ""
+                    }
+                  ],
+                  "link": ""
+                }
+              ],
+              "link": ""
+            }
+          ],
+          "link": ""
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "82420f77b6c566c3": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "method_coverage": 100.0
+        },
+        "1f8d520947b630e3": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "method_coverage": 100.0
+        },
+        "c9e80a3c29b16d96": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "method_coverage": 100.0
+        },
+        "9577a15fb6ed28a6": {
+          "line_coverage": 86.67,
+          "branch_coverage": 100.0,
+          "method_coverage": 66.67
+        },
+        "139a72ae84548301": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "method_coverage": 100.0
+        }
+      },
+      "attributeDescriptors": {
+        "line_coverage": {
+          "title": "Line Coverage",
+          "description": "Percentage of lines covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        },
+        "branch_coverage": {
+          "title": "Branch Coverage",
+          "description": "Percentage of branches covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        },
+        "method_coverage": {
+          "title": "Method Coverage",
+          "description": "Percentage of methods covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": []
+        }
+      },
+      "attributeTypes": {
         "line_coverage": "relative",
         "branch_coverage": "relative",
         "method_coverage": "relative"
       }
     },
-    "attributeDescriptors": {
-      "line_coverage": {
-        "title": "Line Coverage",
-        "description": "Percentage of lines covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      },
-      "branch_coverage": {
-        "title": "Branch Coverage",
-        "description": "Percentage of branches covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      },
-      "method_coverage": {
-        "title": "Method Coverage",
-        "description": "Percentage of methods covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1
-      }
-    },
-    "blacklist": []
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
   }
 }

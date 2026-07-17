@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { clearIndexedDB, goto } from "../../../../playwright.helper"
 import { ScenariosPageObject } from "./scenarios.po"
 
@@ -28,8 +28,7 @@ test.describe("Scenarios", () => {
         await scenarios.saveScenario("My Test Scenario", "A test description")
 
         await scenarios.openScenarioList()
-        const names = await scenarios.getScenarioNames()
-        expect(names.some(n => n.includes("My Test Scenario"))).toBe(true)
+        await expect(scenarios.scenarioListItem("My Test Scenario")).toBeVisible()
     })
 
     test("should open apply dialog with section checkboxes when clicking a scenario", async ({ page }) => {
@@ -74,14 +73,12 @@ test.describe("Scenarios", () => {
 
         // Open list and verify it exists
         await scenarios.openScenarioList()
-        let names = await scenarios.getScenarioNames()
-        expect(names.some(n => n.includes("To Be Deleted"))).toBe(true)
+        await expect(scenarios.scenarioListItem("To Be Deleted")).toBeVisible()
 
         // Delete it
         await scenarios.deleteScenarioByName("To Be Deleted")
 
         // Verify removal
-        names = await scenarios.getScenarioNames()
-        expect(names.some(n => n.includes("To Be Deleted"))).toBe(false)
+        await expect(scenarios.scenarioListItem("To Be Deleted")).toHaveCount(0)
     })
 })

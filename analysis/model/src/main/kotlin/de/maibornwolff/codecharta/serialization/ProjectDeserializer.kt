@@ -1,6 +1,9 @@
 package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
+import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypeDeserializer
 import de.maibornwolff.codecharta.model.BlacklistType
@@ -8,6 +11,7 @@ import de.maibornwolff.codecharta.model.BlacklistTypeDeserializer
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectWrapper
+import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
 import de.maibornwolff.codecharta.util.Logger
 import java.io.FileInputStream
 import java.io.InputStream
@@ -23,36 +27,68 @@ object ProjectDeserializer {
             .registerTypeAdapter(ProjectWrapper::class.java, ProjectWrapperJsonDeserializer())
             .create()
 
-    fun deserializeProject(reader: Reader): Project {
-        val projectWrapper = GSON.fromJson(reader, ProjectWrapper::class.java)
-        return projectWrapper.data
-    }
+    fun deserializeProject(reader: Reader, allowLegacy: Boolean = false): Project = parseProject(reader.readText(), allowLegacy)
 
-    fun deserializeProject(projectString: String): Project {
-        val projectWrapper = GSON.fromJson(projectString, ProjectWrapper::class.java)
-        return projectWrapper.data
-    }
+    fun deserializeProject(projectString: String, allowLegacy: Boolean = false): Project = parseProject(projectString, allowLegacy)
 
-    fun deserializeProject(input: FileInputStream): Project {
-        val projectWrapper = GSON.fromJson(CompressedStreamHandler.wrapInput(input).bufferedReader(), ProjectWrapper::class.java)
-        return projectWrapper.data
-    }
+    fun deserializeProject(input: FileInputStream, allowLegacy: Boolean = false): Project =
+        parseProject(CompressedStreamHandler.wrapInput(input).bufferedReader().readText(), allowLegacy)
 
-    fun deserializeProject(input: InputStream): Project? {
+    fun deserializeProject(input: InputStream, allowLegacy: Boolean = false): Project? {
         val content = CompressedStreamHandler.wrapInput(input)
         val projectString = ProjectInputReader.extractProjectString(content)
         if (projectString.length <= 1) return null
 
         return try {
-            deserializeProject(projectString)
+            parseProject(projectString, allowLegacy)
         } catch (e: Exception) {
+            // Surface the actionable hint (e.g. the `ccsh convert` message for a legacy 1.x pipe) without
+            // dumping the entire piped payload to stderr. Still returns null: a piped project is optional
+            // for many parsers/importers, so an unreadable pipe stays non-fatal here.
             Logger.error {
-                "Piped input: $projectString"
-            }
-            Logger.error {
-                "The piped input is not a valid project."
+                "The piped input is not a valid project: ${e.message}"
             }
             null
         }
+    }
+
+    private fun parseProject(projectString: String, allowLegacy: Boolean): Project {
+        val parsed = JsonParser.parseString(projectString)
+        if (!parsed.isJsonObject) {
+            throw JsonParseException("not a valid cc.json document: expected a JSON object at the top level")
+        }
+        val jsonObject = parsed.asJsonObject
+        return when (detectApiVersion(jsonObject)) {
+            ApiVersion.TWO_ZERO -> CcJsonV2ToProjectMapper.toProject(CcJsonV2Gson.gson.fromJson(jsonObject, CcJsonV2::class.java))
+            ApiVersion.ONE_FIVE -> {
+                if (!allowLegacy) {
+                    if (looksLikeLegacyProject(jsonObject)) {
+                        throw LegacyFileException(LegacyFileException.CONVERT_HINT)
+                    }
+                    throw JsonParseException("not a valid cc.json 2.0 document: missing the `lenses` envelope")
+                }
+                GSON.fromJson(jsonObject, ProjectWrapper::class.java).data
+            }
+        }
+    }
+
+    /**
+     * A genuine legacy 1.x project carries a flat `nodes` array, a wrapped `data` object, or a
+     * top-level `apiVersion`. Arbitrary JSON that merely lacks the 2.0 `lenses` envelope is not a
+     * cc.json at all and must not be mislabeled as legacy — otherwise `ccsh merge` would demand a
+     * pointless `convert` on plain garbage instead of skipping it as an unreadable file.
+     */
+    private fun looksLikeLegacyProject(jsonObject: JsonObject): Boolean = jsonObject.has("nodes") ||
+        jsonObject.get("data")?.isJsonObject == true ||
+        jsonObject.get("apiVersion")?.isJsonPrimitive == true
+
+    private fun detectApiVersion(jsonObject: JsonObject): ApiVersion {
+        // getAsJsonObject throws if "meta" is present but not an object, so check the type first.
+        val meta = jsonObject.get("meta")?.takeIf { it.isJsonObject }?.asJsonObject
+        val metaApiVersion = meta?.get("apiVersion")?.takeIf { it.isJsonPrimitive }?.asString
+        // No meta.apiVersion: a 2.0 file still has "lenses", a legacy 1.5 file has neither.
+        val major = metaApiVersion?.substringBefore('.') ?: if (jsonObject.has("lenses")) "2" else "1"
+        return ApiVersion.entries.firstOrNull { it.major.toString() == major }
+            ?: throw JsonParseException("unsupported cc.json version $major (supported: 1.x, 2.x)")
     }
 }

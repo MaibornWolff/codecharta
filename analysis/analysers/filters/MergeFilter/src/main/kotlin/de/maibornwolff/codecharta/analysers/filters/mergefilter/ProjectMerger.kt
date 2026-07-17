@@ -1,26 +1,54 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
-import de.maibornwolff.codecharta.model.AttributeDescriptor
-import de.maibornwolff.codecharta.model.AttributeType
+import com.google.gson.JsonElement
 import de.maibornwolff.codecharta.model.BlacklistItem
-import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.util.Logger
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
     fun merge(): Project = when {
         areAllAPIVersionsCompatible() ->
-            ProjectBuilder(
-                mergeProjectNodes(),
-                mergeEdges(),
-                mergeAttributeTypes(),
-                mergeAttributeDescriptors(),
-                mergeBlacklist()
-            ).build()
+            ProjectBuilder(nodes = mergeProjectNodes(), blacklist = mergeBlacklist())
+                .withCommitHash(mergedCommitHash)
+                .buildFromLenses(
+                    LensSet(
+                        metrics = mergedMetricsLens,
+                        dependency = mergedDependencyLens,
+                        opaqueLenses = mergedOpaqueLenses
+                    )
+                )
 
         else -> throw MergeException("API versions not supported.")
+    }
+
+    private val mergedOpaqueLenses: Map<String, JsonElement> by lazy {
+        val merged = LinkedHashMap<String, JsonElement>()
+        projects.forEach { project ->
+            project.lenses.opaqueLenses.forEach { (lensName, payload) -> mergeOpaqueLens(merged, lensName, payload) }
+        }
+        merged
+    }
+
+    private fun mergeOpaqueLens(merged: LinkedHashMap<String, JsonElement>, lensName: String, payload: JsonElement) {
+        val existing = merged[lensName]
+        when {
+            existing == null || existing == payload || !existing.carriesData() -> merged[lensName] = payload
+            !payload.carriesData() -> Unit
+            else -> throw MergeException(
+                "Opaque lens '$lensName' has conflicting payloads across inputs and cannot be merged. " +
+                    "Reconcile the inputs so this lens is identical or present in only one file, then retry."
+            )
+        }
+    }
+
+    private val mergedCommitHash: String? by lazy { projects.firstNotNullOfOrNull { it.commitHash } }
+
+    private val mergedMetricsLens by lazy { projects.map { it.lenses.metrics }.reduce { acc, lens -> acc.merge(lens) } }
+
+    private val mergedDependencyLens by lazy {
+        projects.map { it.lenses.dependency }.reduce { acc, lens -> acc.merge(lens) }
     }
 
     private fun areAllAPIVersionsCompatible(): Boolean {
@@ -46,94 +74,6 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return mergedNodes
     }
 
-    private fun mergeEdges(): MutableList<Edge> = if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
-        getMergedEdges()
-    } else {
-        getEdgesOfMainAndWarnIfDiscards()
-    }
-
-    private fun getEdgesOfMainAndWarnIfDiscards(): MutableList<Edge> {
-        projects.forEachIndexed { i, project ->
-            if (project.edges.isNotEmpty() && i > 0) {
-                Logger.warn {
-                    "Edges were not merged. Use recursive strategy to merge edges."
-                }
-            }
-        }
-        return projects.first().edges.toMutableList()
-    }
-
-    private fun getMergedEdges(): MutableList<Edge> {
-        val mergedEdges = mutableListOf<Edge>()
-        projects.forEach {
-            it.edges.forEach {
-                mergedEdges.add(it)
-            }
-        }
-        return mergedEdges
-            .distinctBy {
-                listOf(it.fromNodeName, it.toNodeName)
-            }.toMutableList()
-    }
-
-    private fun mergeAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
-
-        projects.forEach {
-            it.attributeTypes.forEach { attributeTypes ->
-                val key: String = attributeTypes.key
-                val mergedAttributeType = mergedAttributeTypes[key]
-                if (mergedAttributeType != null) {
-                    attributeTypes.value.forEach { attribute ->
-                        if (!mergedAttributeType.containsKey(attribute.key)) {
-                            mergedAttributeType[attribute.key] = attribute.value
-                        }
-                    }
-                } else {
-                    mergedAttributeTypes[key] = attributeTypes.value
-                }
-            }
-        }
-        return mergedAttributeTypes
-    }
-
-    private fun mergeAttributeDescriptors(): MutableMap<String, AttributeDescriptor> {
-        val mergedAttributeDescriptors: MutableMap<String, AttributeDescriptor> = mutableMapOf()
-        projects.forEach { project ->
-            project.attributeDescriptors.forEach {
-                val existingAttributeDescriptor = mergedAttributeDescriptors[it.key]
-                if (it.value.analyzers.isEmpty()) it.value.analyzers = setOf("Unknown")
-
-                if (existingAttributeDescriptor == null) {
-                    mergedAttributeDescriptors[it.key] = it.value
-                } else {
-                    showWarningIfAttributeDescriptorsDiffer(existingAttributeDescriptor, it.key, it.value)
-                    existingAttributeDescriptor.analyzers = existingAttributeDescriptor.analyzers union it.value.analyzers
-                }
-            }
-        }
-        return mergedAttributeDescriptors
-    }
-
-    private fun showWarningIfAttributeDescriptorsDiffer(
-        existingAttributeDescriptor: AttributeDescriptor,
-        metric: String,
-        newAttributeDescriptor: AttributeDescriptor
-    ) {
-        if (existingAttributeDescriptor.title != newAttributeDescriptor.title) {
-            Logger.info { "Title of '$metric' metric differs between files! Using value of first file..." }
-        }
-        if (existingAttributeDescriptor.description != newAttributeDescriptor.description) {
-            Logger.info { "Description of '$metric' metric differs between files! Using value of first file..." }
-        }
-        if (existingAttributeDescriptor.link != newAttributeDescriptor.link) {
-            Logger.info { "Link of '$metric' metric differs between files! Using value of first file..." }
-        }
-        if (existingAttributeDescriptor.direction != newAttributeDescriptor.direction) {
-            Logger.info { "Direction of '$metric' metric differs between files! Using value of first file..." }
-        }
-    }
-
     private fun mergeBlacklist(): MutableList<BlacklistItem> {
         val mergedBlacklist = mutableListOf<BlacklistItem>()
         projects.forEach { project ->
@@ -146,4 +86,14 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                 it.toString()
             }.toMutableList()
     }
+}
+
+// Whether an opaque JSON payload actually carries data. Empty objects/arrays and JSON null are the
+// reserved-but-unused lens slots (e.g. domain/security `{}`); they reference nothing, merge trivially,
+// and are safe to carry through a `--large` re-path unchanged.
+internal fun JsonElement.carriesData(): Boolean = when {
+    isJsonNull -> false
+    isJsonObject -> asJsonObject.size() > 0
+    isJsonArray -> asJsonArray.size() > 0
+    else -> true
 }

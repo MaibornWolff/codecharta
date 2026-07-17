@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { clearIndexedDB, clickButtonOnPageElement, goto } from "../../../../../playwright.helper"
 import { ExplorerTreeLevelPageObject } from "../../../sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
 import { SidebarInspectorPageObject } from "./sidebarInspector.po"

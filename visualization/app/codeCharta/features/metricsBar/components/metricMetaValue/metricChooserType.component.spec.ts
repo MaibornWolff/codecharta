@@ -2,10 +2,10 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { Observable, of } from "rxjs"
-import { AttributeTypeValue, CodeMapNode, Node } from "../../../../codeCharta.model"
-import { clone } from "../../../../util/clone"
-import { defaultState } from "../../../../state/store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { AttributeTypeValue, CodeMapNode, Node } from "../../../../model/codeCharta.model"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { clone } from "../../../../util/clone"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
 import { MetricChooserTypeComponent } from "./metricChooserType.component"
 
@@ -98,8 +98,8 @@ describe("MetricChooserTypeComponent", () => {
     it("should show the relative indicator 'x͂' when the attribute type is relative", async () => {
         // Arrange
         const state = clone(defaultState)
-        state.fileSettings.attributeTypes = { nodes: { rloc: AttributeTypeValue.relative } }
-        state.dynamicSettings.areaMetric = "rloc"
+        state.metricsLensSource.attributeTypes = { rloc: AttributeTypeValue.relative }
+        state.mapState.areaMetric = "rloc"
 
         // Act
         await setup({ node$: of(folderNode), state })

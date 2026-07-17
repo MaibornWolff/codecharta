@@ -2,9 +2,9 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
-import { defaultState } from "../../../../state/store/state.manager"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { ColorCategoryCountsStore } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { ColorBandsSectionComponent } from "./colorBandsSection.component"
 
 describe("ColorBandsSectionComponent", () => {
@@ -17,7 +17,7 @@ describe("ColorBandsSectionComponent", () => {
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 {
-                    provide: CodeMapRenderService,
+                    provide: ColorCategoryCountsStore,
                     useValue: { colorCategoryCounts$: of({ positive: 312, neutral: 186, negative: 98 }) }
                 }
             ]

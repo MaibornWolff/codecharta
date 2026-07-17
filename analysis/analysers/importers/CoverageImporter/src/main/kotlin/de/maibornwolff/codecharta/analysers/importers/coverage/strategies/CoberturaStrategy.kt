@@ -65,8 +65,10 @@ class CoberturaStrategy : ImporterStrategy {
         val newElementLineCoverage = classElement.getAttribute("line-rate").toDouble() * 100
         val newElementBranchCoverage = classElement.getAttribute("branch-rate").toDouble() * 100
 
-        val existingLineCoverage = fileNode.attributes[CoverageAttributes.LINE_COVERAGE.attributeName] as Double
-        val existingBranchCoverage = fileNode.attributes[CoverageAttributes.BRANCH_COVERAGE.attributeName] as Double
+        // Read via Number: a coverage value merged in from an existing cc.json may deserialize as Long
+        // (whole number) or Double, so cast to the common Number and normalize to Double.
+        val existingLineCoverage = (fileNode.attributes[CoverageAttributes.LINE_COVERAGE.attributeName] as Number).toDouble()
+        val existingBranchCoverage = (fileNode.attributes[CoverageAttributes.BRANCH_COVERAGE.attributeName] as Number).toDouble()
 
         val updatedAttributes = fileNode.attributes.toMutableMap()
         updatedAttributes[CoverageAttributes.LINE_COVERAGE.attributeName] = existingLineCoverage + newElementLineCoverage

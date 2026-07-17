@@ -1,4 +1,4 @@
-import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType } from "../../model/codeCharta.model"
 import { unifyWildCard } from "./unifyWildCard"
 
 export const isPatternBlacklisted = (blacklist: BlacklistItem[], blacklistType: BlacklistType, searchPattern: string) => {

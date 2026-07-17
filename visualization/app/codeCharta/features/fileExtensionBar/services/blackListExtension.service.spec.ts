@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing"
-
-import { addPrefixWildcard, BlackListExtensionService, buildGlobPatterns, expandExtensions } from "./blackListExtension.service"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { BlacklistItem, BlacklistType, CcState, CodeMapNode, NodeType, SortingOption } from "../../../model/codeCharta.model"
+import { hoveredNodeSelector } from "../../../renderer/renderModel/hoveredNode.selector"
+import { selectedNodeSelector } from "../../../renderer/renderModel/selectedNode.selector"
+import { defaultMapState } from "../../../stores/mapState/mapState.read.facade"
 import { CategorizedMetricDistribution, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
-import { BlacklistItem, BlacklistType, CcState, CodeMapNode, ColorMode, NodeType, SortingOption } from "../../../codeCharta.model"
+import { BlacklistExtensionAction } from "../effects/blacklistExtension/blacklistExtension.effect"
 import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
-import { BlacklistExtensionAction } from "../../../state/effects/blacklistExtension/blacklistExtension.effect"
-import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
-import { selectedNodeSelector } from "../../../state/selectors/selectedNode.selector"
+import { addPrefixWildcard, BlackListExtensionService, buildGlobPatterns, expandExtensions } from "./blackListExtension.service"
 
 class BlackListItemBuilder {
     private path = ""
@@ -71,32 +71,40 @@ describe("BlackListExtensionService", () => {
     const mockBlacklist: BlacklistItem[] = [mockFlattenedTypescriptItem, ...mockFlattenedOtherItems]
 
     const initialState: Partial<CcState> = {
-        appStatus: {
-            currentFilesAreSampleFiles: false,
+        currentFilesAreSampleFiles: false,
+        mapState: {
+            ...defaultMapState,
+            areaMetric: "rloc",
+            heightMetric: "rloc",
+            colorMetric: "rloc",
+            distributionMetric: "rloc",
+            edgeMetric: ""
+        },
+        metricsLensSource: {
+            attributeTypes: {},
+            attributeDescriptors: null
+        },
+        dependencyLensSource: {
+            attributeTypes: {}
+        },
+        files: [],
+        preferences: {
+            isPresentationMode: false,
+            resetCameraIfNewFileIsLoaded: true,
+            maxTreeMapFiles: 100,
+            experimentalFeaturesEnabled: false,
+            screenshotToClipboardEnabled: false,
+            isColorMetricLinkedToHeightMetric: false,
+            sorting: { option: SortingOption.NAME, orderAscending: true }
+        },
+        sharedView: {
+            focusedNodePath: [],
+            searchPattern: "",
+            blacklist: mockBlacklist,
+            markedPackages: [],
             hoveredNodeId: null,
             selectedBuildingId: null,
             rightClickedNodeData: null
-        },
-        fileSettings: {
-            attributeTypes: null,
-            attributeDescriptors: null,
-            blacklist: mockBlacklist,
-            edges: [],
-            markedPackages: []
-        },
-        files: [],
-        dynamicSettings: {
-            areaMetric: "rloc",
-            colorMode: ColorMode.absolute,
-            sortingOption: SortingOption.NAME,
-            colorRange: { from: null, to: null },
-            distributionMetric: "rloc",
-            focusedNodePath: [],
-            searchPattern: "",
-            margin: 0,
-            heightMetric: "rloc",
-            edgeMetric: "",
-            colorMetric: "rloc"
         }
     }
 
@@ -315,8 +323,8 @@ describe("BlackListExtensionService", () => {
 
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: [scopedItemForFolderA]
                 }
             })
@@ -350,8 +358,8 @@ describe("BlackListExtensionService", () => {
         beforeEach(() => {
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: mockScopedBlacklistItems
                 }
             })
@@ -390,8 +398,8 @@ describe("BlackListExtensionService", () => {
             const globalItem = new BlackListItemBuilder().withPath("*.ts").withType("flatten").build()
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: [...mockScopedBlacklistItems, globalItem]
                 }
             })
@@ -416,8 +424,8 @@ describe("BlackListExtensionService", () => {
 
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: mockScopedOtherItems
                 }
             })
@@ -450,8 +458,8 @@ describe("BlackListExtensionService", () => {
 
             store.setState({
                 ...initialState,
-                fileSettings: {
-                    ...initialState.fileSettings,
+                sharedView: {
+                    ...initialState.sharedView,
                     blacklist: [hoveredScopedItem, selectedScopedItem]
                 }
             })

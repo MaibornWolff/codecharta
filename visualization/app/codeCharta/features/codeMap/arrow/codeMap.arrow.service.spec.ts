@@ -1,50 +1,59 @@
 import { TestBed } from "@angular/core/testing"
-import { StoreModule, Store, State } from "@ngrx/store"
-import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapArrowStore } from "../stores/codeMapArrow.store"
-import { ThreeSceneService } from "../threeViewer/threeSceneService"
+import { State, Store, StoreModule } from "@ngrx/store"
 import { Object3D, Vector3 } from "three"
-import { OUTGOING_NODE, DIFFERENT_NODE, INCOMING_NODE, VALID_EDGES_DECORATED } from "../../../mocks/dataMocks"
+import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { DIFFERENT_NODE, INCOMING_NODE, OUTGOING_NODE, VALID_EDGES_DECORATED } from "../../../mocks/dataMocks"
+import { CcState, Node } from "../../../model/codeCharta.model"
+import { CodeMapBuilding } from "../../../renderer/threeViewer/rendering/codeMapBuilding"
 import {
     CODE_MAP_BUILDING,
     CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE,
     CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE
-} from "../rendering/codeMapBuilding.mocks"
-import { CcState, Node } from "../../../codeCharta.model"
-import { ColorConverter } from "../../../util/color/colorConverter"
-import { setScaling } from "../../../state/store/appSettings/scaling/scaling.actions"
-import { setEdges } from "../../../state/store/fileSettings/edges/edges.actions"
-import { setHeightMetric } from "../../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
-import { CodeMapMesh } from "../rendering/codeMapMesh"
-import { toggleEdgeMetricVisible } from "../../../state/store/appSettings/isEdgeMetricVisible/isEdgeMetricVisible.actions"
-import { wait } from "../../../util/testUtils/wait"
-import { IdToBuildingService } from "../idToBuilding.service"
-import { appReducers, setStateMiddleware } from "../../../state/store/state.manager"
+} from "../../../renderer/threeViewer/rendering/codeMapBuilding.mocks"
+import { CodeMapMesh } from "../../../renderer/threeViewer/rendering/codeMapMesh"
+import { ThreeSceneService } from "../../../renderer/threeViewer/threeSceneService"
+import {
+    setEdgeMetric,
+    setHeightMetric,
+    setScaling,
+    setShowIncomingEdges,
+    setShowOutgoingEdges,
+    toggleEdgeMetricVisible
+} from "../../../stores/mapState/mapState.write.facade"
+import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
+import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { clone } from "../../../util/clone"
-import { setShowOutgoingEdges } from "../../../state/store/appSettings/showEdges/outgoing/showOutgoingEdges.actions"
-import { setShowIncomingEdges } from "../../../state/store/appSettings/showEdges/incoming/showIncomingEdges.actions"
+import { ColorConverter } from "../../../util/color/colorConverter"
+import { wait } from "../../../util/testUtils/wait"
+import { CodeMapStore } from "../stores/codeMap.store"
+import { CodeMapArrowService } from "./codeMap.arrow.service"
+
+// Slice 15e: edges derives from files via the dependency lens; mock the selector to inject edges directly.
+jest.mock("../../../lenses/dependency/store/edges.selector", () => ({ edgesSelector: jest.fn(() => []) }))
 
 describe("CodeMapArrowService", () => {
     let codeMapArrowService: CodeMapArrowService
     let threeSceneService: ThreeSceneService
     let store: Store<CcState>
     let state: State<CcState>
-    let idToBuildingService: IdToBuildingService
 
     beforeEach(() => {
+        // Default to no edges (mirrors the fresh store) — the constructor subscribes immediately, and a
+        // mockReturnValue set by a prior test would otherwise leak in before this.map is populated.
+        ;(edgesSelector as unknown as jest.Mock).mockReturnValue([])
         TestBed.configureTestingModule({
             imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
         threeSceneService = TestBed.inject(ThreeSceneService)
         store = TestBed.inject(Store)
         state = TestBed.inject(State)
-        idToBuildingService = TestBed.inject(IdToBuildingService)
-        const codeMapArrowStore = TestBed.inject(CodeMapArrowStore)
-        codeMapArrowService = new CodeMapArrowService(codeMapArrowStore, threeSceneService, idToBuildingService)
+        const codeMapStore = TestBed.inject(CodeMapStore)
+        const sharedViewReadWindow = TestBed.inject(SharedViewReadWindow)
+        codeMapArrowService = new CodeMapArrowService(codeMapStore, sharedViewReadWindow, threeSceneService)
     })
 
     function withMockedThreeSceneService() {
-        threeSceneService = codeMapArrowService["threeSceneService"] = jest.fn().mockReturnValue({
+        threeSceneService = jest.fn().mockReturnValue({
             edgeArrows: {
                 children: [],
                 add: jest.fn()
@@ -63,6 +72,7 @@ describe("CodeMapArrowService", () => {
                 value: "value"
             })
         })()
+        Object.defineProperty(codeMapArrowService, "threeSceneService", { value: threeSceneService })
     }
 
     function setupEdgeArrowsWithChildren() {
@@ -113,7 +123,7 @@ describe("CodeMapArrowService", () => {
 
     describe("Arrow Behaviour when selecting and hovering a building", () => {
         it("should only highlight small leaf when big leaf is selected", async () => {
-            store.dispatch(setEdges({ value: VALID_EDGES_DECORATED }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue(VALID_EDGES_DECORATED)
             const nodes: Node[] = [
                 CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node,
                 CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node,
@@ -150,7 +160,11 @@ describe("CodeMapArrowService", () => {
         })
         it("should debounce the edge reset of buildings to improve performance", async () => {
             const resetEdgesOfBuildingMock = jest.fn()
-            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingMock
+            Object.defineProperty(codeMapArrowService, "resetEdgesOfBuildings", {
+                value: resetEdgesOfBuildingMock,
+                writable: true,
+                configurable: true
+            })
             codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
 
             expect(resetEdgesOfBuildingMock).not.toHaveBeenCalled()
@@ -172,7 +186,10 @@ describe("CodeMapArrowService", () => {
 
             store.dispatch(setShowOutgoingEdges({ value: true }))
             store.dispatch(setShowIncomingEdges({ value: false }))
-            store.dispatch(setEdges({ value: [{ fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }] }))
+            store.dispatch(setEdgeMetric({ value: "dependencies" }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: { dependencies: 2 } }
+            ])
 
             codeMapArrowService["buildPairingEdges"](nodesMap)
 
@@ -193,12 +210,71 @@ describe("CodeMapArrowService", () => {
 
             store.dispatch(setShowOutgoingEdges({ value: false }))
             store.dispatch(setShowIncomingEdges({ value: true }))
-            store.dispatch(setEdges({ value: [{ fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: {} }] }))
+            store.dispatch(setEdgeMetric({ value: "dependencies" }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: { dependencies: 2 } }
+            ])
 
             codeMapArrowService["buildPairingEdges"](nodesMap)
 
             expect(codeMapArrowService.addArrow).toHaveBeenCalledTimes(1)
             expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(outgoingNode, incomingNode, false)
+        })
+
+        it("should only add edges carrying the selected edge metric when multiple edge metrics exist", () => {
+            // Arrange
+            withMockedThreeSceneService()
+            codeMapArrowService.addArrow = jest.fn()
+
+            const outgoingNode: Node = OUTGOING_NODE
+            const incomingNode: Node = INCOMING_NODE
+            const differentNode: Node = DIFFERENT_NODE
+            const nodesMap = new Map<string, Node>()
+            nodesMap.set(outgoingNode.path, outgoingNode)
+            nodesMap.set(incomingNode.path, incomingNode)
+            nodesMap.set(differentNode.path, differentNode)
+            codeMapArrowService["map"] = nodesMap
+
+            store.dispatch(setShowOutgoingEdges({ value: true }))
+            store.dispatch(setShowIncomingEdges({ value: false }))
+            store.dispatch(setEdgeMetric({ value: "dependencies" }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: { dependencies: 2 } },
+                { fromNodeName: outgoingNode.path, toNodeName: differentNode.path, attributes: { temporal_coupling: 7 } }
+            ])
+
+            // Act
+            codeMapArrowService["buildPairingEdges"](nodesMap)
+
+            // Assert — the temporal_coupling-only edge contributes nothing to the dependencies count,
+            // so it must not be drawn either
+            expect(codeMapArrowService.addArrow).toHaveBeenCalledTimes(1)
+            expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(outgoingNode, incomingNode, true)
+        })
+
+        it("should not add any edges when no edge metric is selected", () => {
+            // Arrange
+            withMockedThreeSceneService()
+            codeMapArrowService.addArrow = jest.fn()
+
+            const outgoingNode: Node = OUTGOING_NODE
+            const incomingNode: Node = INCOMING_NODE
+            const nodesMap = new Map<string, Node>()
+            nodesMap.set(outgoingNode.path, outgoingNode)
+            nodesMap.set(incomingNode.path, incomingNode)
+            codeMapArrowService["map"] = nodesMap
+
+            store.dispatch(setShowOutgoingEdges({ value: true }))
+            store.dispatch(setShowIncomingEdges({ value: true }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
+                { fromNodeName: outgoingNode.path, toNodeName: incomingNode.path, attributes: { dependencies: 2 } }
+            ])
+
+            // Act
+            codeMapArrowService["buildPairingEdges"](nodesMap)
+
+            // Assert
+            expect(codeMapArrowService.addArrow).not.toHaveBeenCalled()
         })
     })
 
@@ -240,6 +316,41 @@ describe("CodeMapArrowService", () => {
             expect(codeMapArrowService.addEdgePreview).toHaveBeenCalledTimes(0)
         })
 
+        it("should clear arrows when hovering a flat building so previously shown edges do not linger", () => {
+            // Arrange — a flat building is not edge-applicable; the previous building's arrows must still be cleared
+            const flatBuilding = { node: { ...CODE_MAP_BUILDING.node, flat: true } } as CodeMapBuilding
+
+            // Act
+            codeMapArrowService["resetEdgesOfBuildings"](flatBuilding)
+
+            // Assert — clear runs and the selected building's edges / preview are restored via showEdgesOfBuildings
+            expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+            expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledWith(undefined)
+        })
+
+        it("should clear arrows when hovering an undefined building so previously shown edges do not linger", () => {
+            // Arrange — a building hidden from the mesh resolves to undefined; arrows must still be cleared
+            // Act
+            codeMapArrowService["resetEdgesOfBuildings"](undefined)
+
+            // Assert
+            expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+            expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledWith(undefined)
+        })
+
+        it("should not clear arrows on hover when the edge metric is disabled", () => {
+            // Arrange
+            store.dispatch(toggleEdgeMetricVisible())
+
+            // Act
+            codeMapArrowService["resetEdgesOfBuildings"](CODE_MAP_BUILDING)
+
+            // Assert
+            expect(codeMapArrowService.clearArrows).not.toHaveBeenCalled()
+            expect(codeMapArrowService["showEdgesOfBuildings"]).not.toHaveBeenCalled()
+            expect(codeMapArrowService.scale).toHaveBeenCalled()
+        })
+
         it("should call clearArrows and showEdgesOfBuildings through BuildingUnHovered when edge metric is enabled", () => {
             codeMapArrowService.onBuildingUnhovered()
 
@@ -270,7 +381,11 @@ describe("CodeMapArrowService", () => {
         it("should cancel a pending debounced edge reset when a building is unhovered", async () => {
             // Arrange — a hover schedules a debounced reset that would otherwise blank the restored preview
             const resetEdgesOfBuildingsMock = jest.fn()
-            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingsMock
+            Object.defineProperty(codeMapArrowService, "resetEdgesOfBuildings", {
+                value: resetEdgesOfBuildingsMock,
+                writable: true,
+                configurable: true
+            })
             codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
 
             // Act
@@ -285,7 +400,11 @@ describe("CodeMapArrowService", () => {
         it("should cancel a pending debounced edge reset when a building is deselected", async () => {
             // Arrange
             const resetEdgesOfBuildingsMock = jest.fn()
-            codeMapArrowService["resetEdgesOfBuildings"] = resetEdgesOfBuildingsMock
+            Object.defineProperty(codeMapArrowService, "resetEdgesOfBuildings", {
+                value: resetEdgesOfBuildingsMock,
+                writable: true,
+                configurable: true
+            })
             codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
 
             // Act
@@ -343,7 +462,7 @@ describe("CodeMapArrowService", () => {
         it("when targetNode is invalid then it should not call preview mode", () => {
             const invalidEdge = clone(VALID_EDGES_DECORATED)
             invalidEdge[0].toNodeName = "invalid"
-            store.dispatch(setEdges({ value: invalidEdge }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue(invalidEdge)
             const nodes: Node[] = [CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node]
 
             codeMapArrowService.addEdgeMapBasedOnNodes(nodes)
@@ -354,7 +473,7 @@ describe("CodeMapArrowService", () => {
         it("when originNodeName is invalid then it should not call preview mode", () => {
             const invalidEdge = clone(VALID_EDGES_DECORATED)
             invalidEdge[0].fromNodeName = "invalid"
-            store.dispatch(setEdges({ value: invalidEdge }))
+            ;(edgesSelector as unknown as jest.Mock).mockReturnValue(invalidEdge)
             const nodes: Node[] = [CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node]
 
             codeMapArrowService.addEdgeMapBasedOnNodes(nodes)
@@ -368,7 +487,7 @@ describe("CodeMapArrowService", () => {
         it("should create a curve out of the 2 Nodes", () => {
             const originNode: Node = OUTGOING_NODE
             const targetNode: Node = INCOMING_NODE
-            const curveScale = 100 * state.getValue().appSettings.edgeHeight
+            const curveScale = 100 * state.getValue().mapState.edgeHeight
 
             const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
 
@@ -395,9 +514,9 @@ describe("CodeMapArrowService", () => {
         it("should run through the function with mocked subfunctions", () => {
             const originNode: Node = OUTGOING_NODE
             const targetNode: Node = INCOMING_NODE
-            const curveScale = 100 * state.getValue().appSettings.edgeHeight
+            const curveScale = 100 * state.getValue().mapState.edgeHeight
             const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
-            const color = ColorConverter.convertHexToNumber(state.getValue().appSettings.mapColors.outgoingEdge)
+            const color = ColorConverter.convertHexToNumber(state.getValue().mapState.mapColors.outgoingEdge)
 
             codeMapArrowService["setCurveColor"](curve, color)
 

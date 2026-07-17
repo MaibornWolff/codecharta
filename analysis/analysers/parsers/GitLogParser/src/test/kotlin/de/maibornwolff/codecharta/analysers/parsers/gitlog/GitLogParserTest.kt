@@ -57,7 +57,7 @@ class GitLogParserTest {
         assertTrue(file.exists())
         val project = ProjectDeserializer.deserializeProject(file.inputStream())
         assertEquals(
-            project.attributeDescriptors,
+            project.lenses.allAttributeDescriptors(),
             getAttributeDescriptors()
         )
     }

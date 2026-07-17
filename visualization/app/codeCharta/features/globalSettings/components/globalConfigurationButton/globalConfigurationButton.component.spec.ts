@@ -1,14 +1,14 @@
 import { HttpClient } from "@angular/common/http"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { State } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { provideMockStore } from "@ngrx/store/testing"
-import { State } from "@ngrx/store"
-import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton.component"
+import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
+import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
+import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
 import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
-import { LoadFileService } from "../../../../features/loadFile/facade"
-import { LoadInitialFileService } from "../../../../features/loadFile/facade"
-import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
+import { GlobalConfigurationButtonComponent } from "./globalConfigurationButton.component"
 
 describe("GlobalConfigurationButtonComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationButtonComponent>
@@ -22,20 +22,16 @@ describe("GlobalConfigurationButtonComponent", () => {
         }
 
         mockState = {
-            getValue: jest.fn().mockReturnValue({ appSettings: defaultAppSettings })
+            getValue: jest.fn().mockReturnValue({ preferences: defaultPreferences, mapState: defaultMapState })
         }
 
         TestBed.configureTestingModule({
             imports: [GlobalConfigurationButtonComponent],
             providers: [
                 provideMockStore({
-                    initialState: { appSettings: defaultAppSettings }
+                    initialState: { preferences: defaultPreferences, mapState: defaultMapState }
                 }),
                 { provide: State, useValue: mockState },
-                {
-                    provide: LoadInitialFileService,
-                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
-                },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: HttpClient, useValue: {} }
             ]

@@ -1,4 +1,4 @@
-import { CodeMapNode, NodeType } from "../../../codeCharta.model"
+import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { _calculateMarkedPackagesWithCounts } from "./markedPackagesWithCounts.selector"
 
 describe("markedPackagesWithCountsSelector", () => {

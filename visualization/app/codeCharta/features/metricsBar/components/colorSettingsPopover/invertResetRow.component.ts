@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
-import { ResetSettingsButtonComponent } from "../../../../features/shared/components/resetSettingsButton/resetSettingsButton.component"
-import { IsDeltaStateService } from "../../services/isDeltaState.service"
-import { MapColorsService } from "../../services/mapColors.service"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { defaultMapColors, MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { ResetSettingsButtonComponent } from "../../../shared/facade"
+import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 
 @Component({
     selector: "cc-invert-reset-row",
@@ -14,39 +14,40 @@ import { MapColorsService } from "../../services/mapColors.service"
 })
 export class InvertResetRowComponent {
     constructor(
-        private readonly isDeltaStateService: IsDeltaStateService,
-        private readonly mapColorsService: MapColorsService
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
+        private readonly mapStateReadWindow: MapStateReadWindow,
+        private readonly metricsBarWriteStore: MetricsBarWriteStore
     ) {}
 
-    readonly isDeltaState = toSignal(this.isDeltaStateService.isDeltaState$(), { initialValue: false })
-    private readonly mapColors = toSignal(this.mapColorsService.mapColors$(), { initialValue: defaultMapColors })
+    readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { initialValue: false })
+    private readonly mapColors = toSignal(this.mapStateReadWindow.mapColors$, { initialValue: defaultMapColors })
 
     readonly isColorRangeInverted = computed(() => this.mapColors().isColorRangeInverted ?? false)
     readonly areDeltaColorsInverted = computed(() => this.mapColors().areDeltaColorsInverted ?? false)
 
     handleIsColorRangeInvertedChange() {
-        this.mapColorsService.invertColorRange()
+        this.metricsBarWriteStore.invertColorRange()
     }
 
     handleAreDeltaColorsInvertedChange() {
-        this.mapColorsService.invertDeltaColors()
+        this.metricsBarWriteStore.invertDeltaColors()
     }
 
     resetColorsKeys() {
         return this.isDeltaState()
             ? [
-                  "appSettings.mapColors.positiveDelta",
-                  "appSettings.mapColors.negativeDelta",
-                  "appSettings.mapColors.selected",
-                  "appSettings.mapColors.areDeltaColorsInverted"
+                  "mapState.mapColors.positiveDelta",
+                  "mapState.mapColors.negativeDelta",
+                  "mapState.mapColors.selected",
+                  "mapState.mapColors.areDeltaColorsInverted"
               ]
             : [
-                  "appSettings.mapColors.positive",
-                  "appSettings.mapColors.negative",
-                  "appSettings.mapColors.neutral",
-                  "appSettings.mapColors.selected",
-                  "appSettings.mapColors.isColorRangeInverted",
-                  "dynamicSettings.colorMode"
+                  "mapState.mapColors.positive",
+                  "mapState.mapColors.negative",
+                  "mapState.mapColors.neutral",
+                  "mapState.mapColors.selected",
+                  "mapState.mapColors.isColorRangeInverted",
+                  "mapState.colorMode"
               ]
     }
 }

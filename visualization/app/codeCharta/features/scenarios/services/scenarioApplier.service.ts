@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Vector3 } from "three"
-import { CcState, MetricData, RecursivePartial } from "../../../codeCharta.model"
-import { ThreeCameraService, ThreeMapControlsService, ThreeRendererService } from "../../../features/codeMap/facade"
+import { CcState, MetricData, RecursivePartial } from "../../../model/codeCharta.model"
+import { ThreeCameraService, ThreeMapControlsService, ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { setIsApplyingScenario } from "../../../util/busy/isApplyingScenario"
 import {
     ColorsSection,
     FiltersSection,
@@ -11,7 +12,7 @@ import {
     ScenarioSectionKey,
     ScenarioSections
 } from "../model/scenario.model"
-import { ScenarioApplierStore } from "../stores/scenarioApplier.store"
+import { ScenariosStore } from "../stores/scenarios.store"
 
 export interface MissingMetrics {
     nodeMetrics: string[]
@@ -22,10 +23,8 @@ const NODE_METRIC_KEYS = ["areaMetric", "heightMetric", "colorMetric", "distribu
 
 @Injectable({ providedIn: "root" })
 export class ScenarioApplierService {
-    isApplying = false
-
     constructor(
-        private readonly scenarioApplierStore: ScenarioApplierStore,
+        private readonly scenariosStore: ScenariosStore,
         private readonly threeCameraService: ThreeCameraService,
         private readonly threeMapControlsService: ThreeMapControlsService,
         private readonly threeRendererService: ThreeRendererService
@@ -83,8 +82,7 @@ export class ScenarioApplierService {
     }
 
     async applyScenario(scenario: Scenario, selectedKeys: Set<ScenarioSectionKey>, metricData?: MetricData): Promise<void> {
-        this.isApplying = true
-        this.scenarioApplierStore.setIsLoadingFile(true)
+        setIsApplyingScenario(true)
 
         try {
             const cameraVectors = selectedKeys.has("camera") ? this.getCameraVectors(scenario.sections) : undefined
@@ -94,18 +92,16 @@ export class ScenarioApplierService {
             // When applying camera, temporarily disable autoFit so it doesn't
             // overwrite our camera position after the render cycle completes.
             const previousResetCamera =
-                applyCamera && patches.length > 0
-                    ? this.scenarioApplierStore.getValue().appSettings.resetCameraIfNewFileIsLoaded
-                    : undefined
+                applyCamera && patches.length > 0 ? this.scenariosStore.getValue().preferences.resetCameraIfNewFileIsLoaded : undefined
             if (previousResetCamera && patches.length > 0) {
-                patches[0].appSettings = { ...patches[0].appSettings, resetCameraIfNewFileIsLoaded: false }
+                patches[0].preferences = { ...patches[0].preferences, resetCameraIfNewFileIsLoaded: false }
             }
 
             // Dispatch patches with macrotask delays so effects triggered by
             // earlier patches (e.g. resetColorRange after metric change)
             // settle before subsequent patches override their values.
             for (const patch of patches) {
-                this.scenarioApplierStore.setStatePatch(patch)
+                this.scenariosStore.setStatePatch(patch)
                 await new Promise<void>(resolve => setTimeout(resolve))
             }
 
@@ -120,16 +116,14 @@ export class ScenarioApplierService {
                 // Restore resetCameraIfNewFileIsLoaded after autoFit window has passed.
                 if (previousResetCamera) {
                     setTimeout(() => {
-                        this.scenarioApplierStore.setStatePatch({ appSettings: { resetCameraIfNewFileIsLoaded: true } })
+                        this.scenariosStore.setStatePatch({ preferences: { resetCameraIfNewFileIsLoaded: true } })
                     })
                 }
             }
 
             this.threeRendererService.render()
         } finally {
-            this.isApplying = false
-            this.scenarioApplierStore.setIsLoadingFile(false)
-            this.scenarioApplierStore.setIsLoadingMap(false)
+            setIsApplyingScenario(false)
         }
     }
 
@@ -160,36 +154,38 @@ export class ScenarioApplierService {
 
         const patch: RecursivePartial<CcState> = {}
         if (hasMetricOverrides) {
-            patch.dynamicSettings = { ...metricOverrides }
+            // Slice 7: metric selection now lives under mapState (was dynamicSettings).
+            patch.mapState = { ...metricOverrides }
             if (sections.metrics.isColorMetricLinkedToHeightMetric !== undefined) {
-                patch.appSettings = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
+                // Slice 10b: isColorMetricLinkedToHeightMetric now lives under the preferences home (was appSettings).
+                patch.preferences = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
             }
         }
         return patch
     }
 
     private buildColorsPatch(colors: ColorsSection): RecursivePartial<CcState> {
-        const dynamicSettings: RecursivePartial<CcState["dynamicSettings"]> = { colorRange: colors.colorRange }
+        const mapState: RecursivePartial<CcState["mapState"]> = { colorRange: colors.colorRange }
         if (colors.colorMode !== undefined) {
-            dynamicSettings.colorMode = colors.colorMode
+            mapState.colorMode = colors.colorMode
         }
-        const patch: RecursivePartial<CcState> = { dynamicSettings }
         if (colors.mapColors !== undefined) {
-            patch.appSettings = { mapColors: colors.mapColors }
+            mapState.mapColors = colors.mapColors
         }
-        return patch
+        return { mapState }
     }
 
     private buildFiltersPatch(filters: FiltersSection): RecursivePartial<CcState> {
         return {
-            fileSettings: { blacklist: [...filters.blacklist] },
-            dynamicSettings: { focusedNodePath: [...filters.focusedNodePath] }
+            // Slice 8: focusedNodePath and Slice 9b: blacklist now both live under the sharedView home
+            // (blacklist was under fileSettings, focusedNodePath under dynamicSettings).
+            sharedView: { blacklist: [...filters.blacklist], focusedNodePath: [...filters.focusedNodePath] }
         }
     }
 
     private buildLabelsAndFoldersPatch(labelsAndFolders: LabelsAndFoldersSection): RecursivePartial<CcState> {
         return {
-            appSettings: {
+            mapState: {
                 amountOfTopLabels: labelsAndFolders.amountOfTopLabels,
                 labelSize: labelsAndFolders.labelSize,
                 showMetricLabelNameValue: labelsAndFolders.showMetricLabelNameValue,
@@ -199,7 +195,8 @@ export class ScenarioApplierService {
                 labelMode: labelsAndFolders.labelMode,
                 groupLabelCollisions: labelsAndFolders.groupLabelCollisions
             },
-            fileSettings: { markedPackages: [...labelsAndFolders.markedPackages] }
+            // Slice 9c: markedPackages now lives under the sharedView home (was fileSettings).
+            sharedView: { markedPackages: [...labelsAndFolders.markedPackages] }
         }
     }
 
@@ -207,9 +204,9 @@ export class ScenarioApplierService {
         return {
             ...a,
             ...b,
-            ...(a.appSettings || b.appSettings ? { appSettings: { ...a.appSettings, ...b.appSettings } } : {}),
-            ...(a.dynamicSettings || b.dynamicSettings ? { dynamicSettings: { ...a.dynamicSettings, ...b.dynamicSettings } } : {}),
-            ...(a.fileSettings || b.fileSettings ? { fileSettings: { ...a.fileSettings, ...b.fileSettings } } : {})
+            ...(a.preferences || b.preferences ? { preferences: { ...a.preferences, ...b.preferences } } : {}),
+            ...(a.mapState || b.mapState ? { mapState: { ...a.mapState, ...b.mapState } } : {}),
+            ...(a.sharedView || b.sharedView ? { sharedView: { ...a.sharedView, ...b.sharedView } } : {})
         }
     }
 

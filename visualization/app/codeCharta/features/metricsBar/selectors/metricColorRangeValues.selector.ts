@@ -1,15 +1,11 @@
 import { createSelector } from "@ngrx/store"
-import { selectedColorMetricDataSelector } from "../../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
-import { colorRangeSelector } from "../../../state/store/dynamicSettings/colorRange/colorRange.selector"
+import { metricRangeSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { colorRangeSelector } from "../../../stores/mapState/mapState.read.facade"
 
-export const metricColorRangeValuesSelector = createSelector(
-    selectedColorMetricDataSelector,
-    colorRangeSelector,
-    (colorMetricData, colorRange) => ({
-        values: colorMetricData.values,
-        min: colorMetricData.minValue,
-        max: colorMetricData.maxValue,
-        from: colorRange.from,
-        to: colorRange.to
-    })
-)
+export const metricColorRangeValuesSelector = createSelector(metricRangeSelector, colorRangeSelector, (colorMetricData, colorRange) => ({
+    values: colorMetricData.values,
+    min: colorMetricData.minValue,
+    max: colorMetricData.maxValue,
+    from: colorRange.from,
+    to: colorRange.to
+}))

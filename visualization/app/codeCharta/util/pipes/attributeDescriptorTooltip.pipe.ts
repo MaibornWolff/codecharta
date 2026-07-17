@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core"
-import { AttributeDescriptor } from "../../codeCharta.model"
+import { AttributeDescriptor } from "../../model/codeCharta.model"
 import { metricTitles } from "../metric/metricTitles"
 
 @Pipe({

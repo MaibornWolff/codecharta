@@ -1,11 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
+import { ThreeCameraService, ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { defaultState } from "../../../stores/rootStore/state.manager"
 import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
-import { defaultState } from "../../../state/store/state.manager"
-import { ThreeCameraService } from "../../../features/codeMap/facade"
-import { ThreeRendererService } from "../../../features/codeMap/facade"
-import { ThreeSceneService } from "../../../features/codeMap/facade"
 import { ScreenshotService } from "./screenshot.service"
 
 jest.mock("./clipboardWriter", () => {
@@ -31,6 +30,7 @@ describe("ScreenshotService", () => {
         TestBed.configureTestingModule({
             providers: [
                 ScreenshotService,
+                provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeCameraService, useValue: {} },
                 { provide: ThreeSceneService, useValue: {} },

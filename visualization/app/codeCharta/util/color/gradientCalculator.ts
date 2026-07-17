@@ -1,7 +1,7 @@
-import { ColorMode, ColorRange, MapColors } from "../../codeCharta.model"
-import { ColorConverter } from "./colorConverter"
 import { Color } from "three"
-import { MetricMinMax } from "../../state/selectors/accumulatedData/metricData/selectedColorMetricData.selector"
+import { ColorMode, ColorRange, MapColors } from "../../model/codeCharta.model"
+import { MetricMinMax } from "../metric/metricRange"
+import { ColorConverter } from "./colorConverter"
 
 export type CategoricalMapColors = Pick<MapColors, "positive" | "neutral" | "negative">
 
@@ -36,7 +36,7 @@ export function getColorByMetricValue(
     return gradientCalculator.getColorByWeightedGradient(mapColors, colorRange, nodeMetricDataRange, metricValue)
 }
 
-export const gradientCalculator = {
+const gradientCalculator = {
     getColorByTrueGradient(
         mapColors: CategoricalMapColors,
         colorRange: ColorRange,

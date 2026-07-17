@@ -1,7 +1,7 @@
-import { CCFile } from "../codeCharta.model"
-import { getSelectedFilesSize } from "./fileHelper"
-import { FileSelectionState, FileState } from "../model/files/files"
 import packageJson from "../../../package.json"
+import { CCFile } from "../model/codeCharta.model"
+import { FileSelectionState, FileState } from "../model/files/files"
+import { getSelectedFilesSize } from "./fileHelper"
 
 describe("fileHelper", () => {
     describe("getSelectedFilesSize", () => {

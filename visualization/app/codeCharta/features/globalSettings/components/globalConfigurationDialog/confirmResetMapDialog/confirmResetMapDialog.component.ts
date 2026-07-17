@@ -1,8 +1,5 @@
-import { HttpClient } from "@angular/common/http"
 import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from "@angular/core"
-import { LoadFileService, LoadInitialFileService, sampleFile1, sampleFile2 } from "../../../../../features/loadFile/facade"
-import { UrlExtractor } from "../../../../loadFile/facade"
-import { deleteCcState } from "../../../../../util/indexedDB/indexedDBWriter"
+import { CcStatePersistence, LoadFilesUseCase } from "../../../../../load/load.facade"
 import { MapResetStore } from "../../../stores/mapReset.store"
 
 @Component({
@@ -13,13 +10,10 @@ import { MapResetStore } from "../../../stores/mapReset.store"
 export class ConfirmResetMapDialogComponent {
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
 
-    private readonly urlUtils = new UrlExtractor(this.httpClient)
-
     constructor(
         private readonly mapResetStore: MapResetStore,
-        private readonly httpClient: HttpClient,
-        private readonly loadFileService: LoadFileService,
-        private readonly loadInitialFileService: LoadInitialFileService
+        private readonly ccStatePersistence: CcStatePersistence,
+        private readonly loadFilesUseCase: LoadFilesUseCase
     ) {}
 
     open() {
@@ -36,22 +30,8 @@ export class ConfirmResetMapDialogComponent {
     }
 
     async resetMap() {
-        await deleteCcState()
+        await this.ccStatePersistence.delete()
         this.mapResetStore.resetState()
-
-        const isFileQueryParameterPresent = this.loadInitialFileService.checkFileQueryParameterPresent()
-        if (isFileQueryParameterPresent) {
-            try {
-                const urlNameDataPairs = await this.urlUtils.getFileDataFromQueryParam()
-                this.loadFileService.loadFiles(urlNameDataPairs)
-                this.loadInitialFileService.setRenderStateFromUrl()
-            } catch {
-                this.loadFileService.loadFiles([sampleFile1, sampleFile2])
-            }
-        } else {
-            this.loadFileService.loadFiles([sampleFile1, sampleFile2])
-        }
-
-        this.mapResetStore.resetMetricsToDefault()
+        await this.loadFilesUseCase.reloadAfterReset()
     }
 }

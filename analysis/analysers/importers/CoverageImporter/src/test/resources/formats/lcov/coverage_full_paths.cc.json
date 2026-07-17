@@ -1,88 +1,95 @@
 {
-  "data": {
+  "meta": {
     "projectName": "",
-    "nodes": [
-      {
-        "name": "root",
-        "type": "Folder",
-        "attributes": {},
-        "link": "",
-        "children": [
-          {
-            "name": "app",
-            "type": "Folder",
-            "attributes": {},
-            "link": "",
-            "children": [
-              {
-                "name": "codeCharta",
-                "type": "Folder",
-                "attributes": {},
-                "link": "",
-                "children": [
-                  {
-                    "name": "codeCharta.api.model.ts",
-                    "type": "File",
-                    "attributes": {
-                      "line_coverage": 100.0,
-                      "branch_coverage": 100.0,
-                      "statement_coverage": 100.0
-                    },
-                    "link": "",
-                    "children": []
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    "apiVersion": "1.5",
-    "edges": [],
-    "attributeTypes": {
-      "nodes": {
+    "apiVersion": "2.0",
+    "checksum": "a3969ebd57d1705ad252c09c2dceab66"
+  },
+  "files": [
+    {
+      "id": "164ddff4bb1345e1",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "06121309c9b10d8a",
+          "name": "app",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "132e6dd113ee5d0f",
+              "name": "codeCharta",
+              "type": "Folder",
+              "children": [
+                {
+                  "id": "fbc2a7ebf563a6f6",
+                  "name": "codeCharta.api.model.ts",
+                  "type": "File",
+                  "link": ""
+                }
+              ],
+              "link": ""
+            }
+          ],
+          "link": ""
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "fbc2a7ebf563a6f6": {
+          "line_coverage": 100.0,
+          "branch_coverage": 100.0,
+          "statement_coverage": 100.0
+        }
+      },
+      "attributeDescriptors": {
+        "line_coverage": {
+          "title": "Line Coverage",
+          "description": "Percentage of lines covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": [
+            "coverageImporter"
+          ]
+        },
+        "branch_coverage": {
+          "title": "Branch Coverage",
+          "description": "Percentage of branches covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": [
+            "coverageImporter"
+          ]
+        },
+        "statement_coverage": {
+          "title": "Statement Coverage",
+          "description": "Percentage of statements covered by tests",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "",
+          "direction": 1,
+          "analyzers": [
+            "coverageImporter"
+          ]
+        }
+      },
+      "attributeTypes": {
         "line_coverage": "relative",
         "branch_coverage": "relative",
         "statement_coverage": "relative"
       }
     },
-    "attributeDescriptors": {
-      "line_coverage": {
-        "title": "Line Coverage",
-        "description": "Percentage of lines covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1,
-        "analyzers": [
-          "coverageImporter"
-        ]
-      },
-      "branch_coverage": {
-        "title": "Branch Coverage",
-        "description": "Percentage of branches covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1,
-        "analyzers": [
-          "coverageImporter"
-        ]
-      },
-      "statement_coverage": {
-        "title": "Statement Coverage",
-        "description": "Percentage of statements covered by tests",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": 1,
-        "analyzers": [
-          "coverageImporter"
-        ]
-      }
-    },
-    "blacklist": []
-  },
-  "checksum": "adc4eae99c3dc6532f41bc38d124fd68"
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    }
+  }
 }

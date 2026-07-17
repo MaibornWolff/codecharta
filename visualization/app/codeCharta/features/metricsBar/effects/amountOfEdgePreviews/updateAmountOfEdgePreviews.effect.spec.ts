@@ -1,0 +1,69 @@
+import { TestBed } from "@angular/core/testing"
+import { EffectsModule } from "@ngrx/effects"
+import { provideMockActions } from "@ngrx/effects/testing"
+import { Action } from "@ngrx/store"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { BehaviorSubject } from "rxjs"
+import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../renderer/renderModel/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
+import { amountOfEdgePreviewsSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { UpdateAmountOfEdgePreviewsEffect } from "./updateAmountOfEdgePreviews.effect"
+
+describe("UpdateAmountOfEdgePreviewsEffect", () => {
+    let actions$: BehaviorSubject<Action>
+    let store: MockStore
+
+    beforeEach(() => {
+        actions$ = new BehaviorSubject({ type: "" })
+
+        TestBed.configureTestingModule({
+            imports: [EffectsModule.forRoot([UpdateAmountOfEdgePreviewsEffect])],
+            providers: [
+                provideMockStore({
+                    selectors: [
+                        {
+                            selector: amountOfBuildingsWithSelectedEdgeMetricSelector,
+                            value: 10
+                        },
+                        {
+                            selector: amountOfEdgePreviewsSelector,
+                            value: 9
+                        }
+                    ]
+                }),
+                provideMockActions(() => actions$)
+            ]
+        })
+        store = TestBed.inject(MockStore)
+    })
+
+    afterEach(() => {
+        actions$.complete()
+    })
+
+    it("should skip the first change of amountOfBuildingsWithSelectedEdgeMetricSelector", async () => {
+        store.overrideSelector(amountOfBuildingsWithSelectedEdgeMetricSelector, 9)
+        store.refreshState()
+        expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
+    })
+
+    it("should dispatch amount of edge preview to max", async () => {
+        store.overrideSelector(amountOfBuildingsWithSelectedEdgeMetricSelector, 7)
+        store.refreshState()
+
+        store.overrideSelector(amountOfBuildingsWithSelectedEdgeMetricSelector, 3)
+        store.refreshState()
+
+        expect(await getLastAction(store)).toEqual({ type: "SET_AMOUNT_OF_EDGE_PREVIEWS", value: 3 })
+    })
+
+    it("should not reset preview amount when it is 0", async () => {
+        store.overrideSelector(amountOfEdgePreviewsSelector, 0)
+        store.refreshState()
+
+        store.overrideSelector(amountOfBuildingsWithSelectedEdgeMetricSelector, 3)
+        store.refreshState()
+
+        expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
+    })
+})

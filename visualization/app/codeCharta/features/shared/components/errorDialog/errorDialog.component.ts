@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, OnInit, signal, viewChild } from "@angular/core"
-import { ErrorDialogService } from "./errorDialog.service"
-import { ErrorDialogData } from "./errorDialog.model"
+import { ErrorDialogData } from "../../../../util/errorDialog/errorDialog.model"
+import { ErrorDialogService } from "../../../../util/errorDialog/errorDialog.service"
 
 @Component({
     selector: "cc-error-dialog",

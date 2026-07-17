@@ -1,12 +1,13 @@
 import { Mesh, ShaderMaterial, Vector3 } from "three"
 import { Font } from "three/addons/loaders/FontLoader.js"
+import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
+import { GeometryOptions } from "./geometryOptions"
 import { BackPrintContainerMesh } from "./MeshModels/BackMeshModels/backPrintContainerMesh"
 import { BaseplateMesh } from "./MeshModels/baseplateMesh"
 import { FrontPrintContainerMesh } from "./MeshModels/FrontMeshModels/frontPrintContainerMesh"
 import { GeneralMesh } from "./MeshModels/generalMesh"
 import { MapMesh } from "./MeshModels/mapMesh"
-import { GeometryOptions, Preview3DPrintMesh } from "./preview3DPrintMesh"
-import helvetiker from "three/examples/fonts/helvetiker_regular.typeface.json"
+import { Preview3DPrintMesh } from "./preview3DPrintMesh"
 
 describe("Preview3DPrintMesh", () => {
     let geometryOptions: GeometryOptions

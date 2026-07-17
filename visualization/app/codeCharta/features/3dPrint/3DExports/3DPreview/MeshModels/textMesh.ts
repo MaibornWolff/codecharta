@@ -1,7 +1,7 @@
-import { CustomVisibilityMesh } from "./customVisibilityMesh"
-import { GeometryOptions } from "../preview3DPrintMesh"
-import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
+import { GeometryOptions } from "../geometryOptions"
+import { CustomVisibilityMesh } from "./customVisibilityMesh"
 
 export class TextMesh extends CustomVisibilityMesh {
     constructor(

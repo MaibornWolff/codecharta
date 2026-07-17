@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
-import { CodeMapNode } from "../../../codeCharta.model"
-import { hoveredNodeSelector } from "../../../state/selectors/hoveredNode.selector"
+import { CodeMapNode } from "../../../model/codeCharta.model"
+import { hoveredNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 
 export const _getHoveredNodePathPanelData = (hoveredNode?: Pick<CodeMapNode, "path" | "type">) =>
     hoveredNode && {

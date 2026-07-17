@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.Dialog.Companion.requestMimoFileSelection
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.mimo.Mimo
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.LegacyFileException
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -73,7 +74,7 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
 
         fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project = ProjectMerger(
             listOf(pipedProject, currentProject),
-            RecursiveNodeMergerStrategy(false)
+            MergeResolverStrategy.recursive(false)
         ).merge()
 
         @JvmStatic
@@ -84,9 +85,9 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
     }
 
     override fun call(): Unit? {
-        val nodeMergerStrategy = when {
-            leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
-            recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
+        val makeStrategy: () -> NodeMergerStrategy = when {
+            leafStrategySet -> { -> MergeResolverStrategy.leaf(addMissingNodes, ignoreCase) }
+            recursiveStrategySet && !leafStrategySet -> { -> MergeResolverStrategy.recursive(ignoreCase) }
             else -> throw IllegalArgumentException("At least one merging strategy must be set")
         }
 
@@ -97,15 +98,19 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
         val sourceFiles = InputHelper.getFileListFromValidatedResourceArray(sources)
 
         if (mimo) {
-            processMimoMerge(sourceFiles, nodeMergerStrategy)
+            processMimoMerge(sourceFiles, makeStrategy)
         } else if (largeMerge) {
-            processLargeMerge(sourceFiles, nodeMergerStrategy)
+            processLargeMerge(sourceFiles, makeStrategy)
         } else {
             val projects = readInputFiles(sourceFiles)
 
+            require(projects.isNotEmpty()) {
+                "No valid projects could be read for merging, stopping execution."
+            }
+
             if (!continueIfIncompatibleProjects(projects)) return null
 
-            val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
+            val mergedProject = ProjectMerger(projects, makeStrategy()).merge()
             ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
         }
 
@@ -146,9 +151,10 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
 
     override fun isApplicable(resourceToBeParsed: String): Boolean = false
 
-    private fun processMimoMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
+    private fun processMimoMerge(sourceFiles: List<File>, makeStrategy: () -> NodeMergerStrategy) {
         val groupedFiles: List<Pair<Boolean, List<File>>> = Mimo.generateProjectGroups(sourceFiles, levenshteinDistance)
 
+        var skippedGroup = false
         groupedFiles.forEach { (exactMatch, files) ->
             val confirmedFileList = if (exactMatch) {
                 files
@@ -160,37 +166,49 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
                 return@forEach
             }
 
-            val projectsFileNamePairs = readInputFilesKeepFileNames(confirmedFileList)
-            val projects = projectsFileNamePairs.map { it.second }
-            if (projectsFileNamePairs.size <= 1) {
-                Logger.warn { "After deserializing there were one or less projects. Continue with next group" }
-                return@forEach
+            try {
+                mergeMimoGroup(confirmedFileList, makeStrategy)
+            } catch (e: MergeException) {
+                Logger.error { "Skipping merge group: ${e.message}" }
+                skippedGroup = true
             }
+        }
 
-            if (!continueIfIncompatibleProjects(projects)) return@forEach
-
-            val mergedProject = ProjectMerger(projects, nodeMergerStrategy).merge()
-            val outputFilePrefix = Mimo.retrieveGroupName(projectsFileNamePairs.map { it.first })
-            val outputFileName = "$outputFilePrefix.merge.cc.json"
-            val outputFilePath = Mimo.assembleOutputFilePath(outputFile, outputFileName)
-            ProjectSerializer.serializeToFileOrStream(mergedProject, outputFilePath, output, compress)
-            Logger.info {
-                "Merged files with prefix '$outputFilePrefix' into" +
-                    " '$outputFileName${if (compress) ".gz" else ""}'"
-            }
+        require(!skippedGroup) {
+            "At least one merge group could not be merged (see the errors above). " +
+                "A legacy 1.x file is the usual cause — run `ccsh convert <file>` to upgrade it first."
         }
     }
 
-    private fun processLargeMerge(sourceFiles: List<File>, nodeMergerStrategy: NodeMergerStrategy) {
+    private fun mergeMimoGroup(confirmedFileList: List<File>, makeStrategy: () -> NodeMergerStrategy) {
+        val projectsFileNamePairs = readInputFilesKeepFileNames(confirmedFileList)
+        val projects = projectsFileNamePairs.map { it.second }
+        if (projectsFileNamePairs.size <= 1) {
+            Logger.warn { "After deserializing there were one or less projects. Continue with next group" }
+            return
+        }
+
+        if (!continueIfIncompatibleProjects(projects)) return
+
+        val mergedProject = ProjectMerger(projects, makeStrategy()).merge()
+        val outputFilePrefix = Mimo.retrieveGroupName(projectsFileNamePairs.map { it.first })
+        val outputFileName = "$outputFilePrefix.merge.cc.json"
+        val outputFilePath = Mimo.assembleOutputFilePath(outputFile, outputFileName)
+        ProjectSerializer.serializeToFileOrStream(mergedProject, outputFilePath, output, compress)
+        Logger.info {
+            "Merged files with prefix '$outputFilePrefix' into" +
+                " '$outputFileName${if (compress) ".gz" else ""}'"
+        }
+    }
+
+    private fun processLargeMerge(sourceFiles: List<File>, makeStrategy: () -> NodeMergerStrategy) {
         val projectsFileNamePairs = readInputFilesKeepFileNames(sourceFiles)
         val fileNameList = projectsFileNamePairs.map { it.first }
 
-        require(fileNameList.size > 1) {
-            Logger.warn { "One or less projects in input, merging aborted." }
-        }
+        require(fileNameList.size > 1) { "One or less projects in input, merging aborted." }
 
         require(fileNameList.groupingBy { it.substringBefore(".") }.eachCount().all { it.value == 1 }) {
-            Logger.warn { "Make sure that the input prefixes across all input files are unique!" }
+            "Make sure that the input prefixes across all input files are unique!"
         }
 
         val packagedProjects: MutableList<Project> = mutableListOf()
@@ -198,26 +216,24 @@ class MergeFilter(private val output: PrintStream = System.out) : AnalyserInterf
             packagedProjects.add(LargeMerge.wrapProjectInFolder(it.second, it.first.substringBefore(".")))
         }
 
-        val mergedProject = ProjectMerger(packagedProjects, nodeMergerStrategy).merge()
+        val mergedProject = ProjectMerger(packagedProjects, makeStrategy()).merge()
         ProjectSerializer.serializeToFileOrStream(mergedProject, outputFile, output, compress)
     }
 
-    private fun readInputFiles(files: List<File>): List<Project> = files.mapNotNull {
-        val input = it.inputStream()
-        try {
-            ProjectDeserializer.deserializeProject(input)
-        } catch (e: Exception) {
-            Logger.warn { "${it.name} is not a valid project file and will be skipped." }
-            null
-        }
-    }
+    private fun readInputFiles(files: List<File>): List<Project> = files.mapNotNull { readProjectFailingOnLegacy(it) }
 
-    private fun readInputFilesKeepFileNames(files: List<File>): List<Pair<String, Project>> = files.mapNotNull {
-        try {
-            Pair(it.name, ProjectDeserializer.deserializeProject(it.inputStream()))
-        } catch (e: Exception) {
-            Logger.warn { "${it.name} is not a valid project file and will be skipped." }
-            null
-        }
+    private fun readInputFilesKeepFileNames(files: List<File>): List<Pair<String, Project>> =
+        files.mapNotNull { file -> readProjectFailingOnLegacy(file)?.let { file.name to it } }
+
+    // A legacy 1.x file is a real project the user named; never silently drop it - fail with the
+    // convert hint so the merge is not written as a misleading partial result. Genuinely-corrupt
+    // files keep the historical skip-and-warn behaviour (a folder scan may legitimately contain them).
+    private fun readProjectFailingOnLegacy(file: File): Project? = try {
+        ProjectDeserializer.deserializeProject(file.inputStream())
+    } catch (e: LegacyFileException) {
+        throw MergeException("${file.name}: ${e.message}")
+    } catch (e: Exception) {
+        Logger.warn { "${file.name} is not a valid project file and will be skipped." }
+        null
     }
 }

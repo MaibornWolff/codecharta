@@ -53,7 +53,10 @@ class VersionControlledFile internal constructor(filename: String, private var m
         metrics.flatMap { it.getEdges() }.forEach { edge ->
             val resolvedEdge = edgeMap[edge.toNodeName]
             if (resolvedEdge != null) {
-                edge.attributes.toMutableMap().putAll(edge.attributes)
+                // Merge the incoming edge's attributes into the one already kept for this partner. The
+                // previous `edge.attributes.toMutableMap().putAll(edge.attributes)` copied a map into
+                // itself and threw the copy away, so a second metric's edge to the same partner was lost.
+                resolvedEdge.attributes = resolvedEdge.attributes + edge.attributes
             } else {
                 edgeMap[edge.toNodeName] = edge
             }

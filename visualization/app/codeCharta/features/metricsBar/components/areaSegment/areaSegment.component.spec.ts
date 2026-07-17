@@ -1,12 +1,12 @@
+import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { setAreaMetric } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { areaMetricSelector } from "../../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
-import { defaultState } from "../../../../state/store/state.manager"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { setAreaMetric } from "../../../../stores/mapState/mapState.write.facade"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { AreaSegmentComponent } from "./areaSegment.component"
 
 describe("AreaSegmentComponent", () => {

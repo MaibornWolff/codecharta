@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from "@angular/core"
+import { Injectable, inject, signal } from "@angular/core"
 import { ExplorerCollapseService } from "./explorerCollapse.service"
 
 const REVEAL_HIGHLIGHT_DURATION_MS = 1500

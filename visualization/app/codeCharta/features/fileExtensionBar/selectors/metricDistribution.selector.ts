@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
-import { accumulatedDataSelector } from "../../../state/selectors/accumulatedData/accumulatedData.selector"
+import { accumulatedDataSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { areaMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { FileExtensionCalculator } from "../../../util/fileExtension/fileExtensionCalculator"
-import { areaMetricSelector } from "../../../state/store/dynamicSettings/areaMetric/areaMetric.selector"
 
 export const metricDistributionSelector = createSelector(
     accumulatedDataSelector,

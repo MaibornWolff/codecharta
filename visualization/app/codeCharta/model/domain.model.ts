@@ -1,5 +1,5 @@
 import { Vector3 } from "three"
-import Rectangle from "../util/algorithm/streetLayout/rectangle"
+import Rectangle from "./rectangle"
 
 export type Scaling = {
     x: number
@@ -16,7 +16,12 @@ export enum LayoutAlgorithm {
 export interface CCFile {
     map: CodeMapNode
     settings: {
-        fileSettings: FileSettings
+        fileSettings: FileSettings & {
+            attributeTypes: AttributeTypes
+            attributeDescriptors: AttributeDescriptors
+            blacklist: Array<BlacklistItem>
+            markedPackages: Array<MarkedPackage>
+        }
     }
     fileMeta: FileMeta
 }
@@ -73,6 +78,11 @@ export enum SortingOption {
     AREA_SIZE = "Area Size"
 }
 
+export interface Sorting {
+    option: SortingOption
+    orderAscending: boolean
+}
+
 export interface ColorLabelOptions {
     positive: boolean
     negative: boolean
@@ -96,11 +106,16 @@ export interface FileMeta {
 }
 
 export interface FileSettings {
-    attributeTypes: AttributeTypes
-    attributeDescriptors: AttributeDescriptors
-    blacklist: Array<BlacklistItem>
     edges: Edge[]
-    markedPackages: MarkedPackage[]
+}
+
+export interface MetricsLensSource {
+    attributeTypes: AttributeTypeMap
+    attributeDescriptors: AttributeDescriptors
+}
+
+export interface DependencyLensSource {
+    attributeTypes: AttributeTypeMap
 }
 
 export interface PrimaryMetrics {
@@ -138,9 +153,11 @@ export interface ColorRange {
     to: number | null
 }
 
+export type AttributeTypeMap = { [key: string]: AttributeTypeValue }
+
 export interface AttributeTypes {
-    nodes?: { [key: string]: AttributeTypeValue }
-    edges?: { [key: string]: AttributeTypeValue }
+    nodes?: AttributeTypeMap
+    edges?: AttributeTypeMap
 }
 
 export interface AttributeDescriptors {
@@ -186,6 +203,9 @@ export interface EdgeMetricCount {
     incoming: number
     outgoing: number
 }
+
+export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
+export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 
 export interface BlacklistItem {
     path: string

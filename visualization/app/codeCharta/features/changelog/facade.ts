@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core"
-import { VersionService } from "./services/version.service"
 import { ChangelogParserService } from "./services/changelogParser.service"
+import { VersionService } from "./services/version.service"
+
+// Dialog mounted by the CodeCharta page (views/).
+export { ChangelogDialogComponent } from "./components/changelogDialog/changelogDialog.component"
 
 @Injectable({ providedIn: "root" })
 export class ChangelogFacade {

@@ -186,6 +186,10 @@ class UnifiedParser(
         val excludePatterns = specifiedExcludePatterns.toMutableList()
         val rootGitignoreExists = File(inputFile, ".gitignore").exists()
 
+        // Always exclude the repository's own .git store, even under --bypass-gitignore or when a root
+        // .gitignore suppresses the build-folder fallback below.
+        excludePatterns.add(CodeChartaConstants.GIT_DIRECTORY_EXCLUDE_PATTERN)
+
         if (useGitignore && !rootGitignoreExists) {
             Logger.warn { "No .gitignore found at root level, excluding common build folders as fallback..." }
         }

@@ -1,11 +1,11 @@
 import { TestBed } from "@angular/core/testing"
+import { State, Store } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { Vector3 } from "three"
-import { setState } from "../../../../state/store/state.actions"
+import { setState } from "../../../../stores/rootStore/state.actions"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { ResetSettingsButtonComponent } from "./resetSettingsButton.component"
-import { State, Store } from "@ngrx/store"
-import { defaultState } from "../../../../state/store/state.manager"
 
 describe("resetSettingsButtonComponent", () => {
     const mockedStore = { dispatch: jest.fn() }
@@ -22,14 +22,14 @@ describe("resetSettingsButtonComponent", () => {
     it("should reset given appSetting", async () => {
         await render(ResetSettingsButtonComponent, {
             componentProperties: {
-                settingsKeys: ["appSettings.mapColors.selected", "appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"]
+                settingsKeys: ["mapState.mapColors.selected", "mapState.scaling.x, mapState.scaling.y, mapState.scaling.z"]
             }
         })
 
         await userEvent.click(screen.getByRole("button"))
 
         expect(mockedStore.dispatch).toHaveBeenCalledWith(
-            setState({ value: { appSettings: { mapColors: { selected: "#EB8319" }, scaling: new Vector3(1, 1, 1) } } })
+            setState({ value: { mapState: { mapColors: { selected: "#EB8319" }, scaling: new Vector3(1, 1, 1) } } })
         )
     })
 
@@ -37,7 +37,7 @@ describe("resetSettingsButtonComponent", () => {
         const callback = jest.fn()
         await render(ResetSettingsButtonComponent, {
             componentProperties: {
-                settingsKeys: ["appSettings.mapColors.selected"],
+                settingsKeys: ["mapState.mapColors.selected"],
                 callback
             }
         })

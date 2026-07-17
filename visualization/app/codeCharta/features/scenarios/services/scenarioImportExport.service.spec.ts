@@ -1,14 +1,14 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
-import { defaultState } from "../../../state/store/state.manager"
-import { ThreeCameraService } from "../../../features/codeMap/facade"
-import { ThreeMapControlsService } from "../../../features/codeMap/facade"
-import { ScenariosService } from "./scenarios.service"
-import { ScenarioImportExportService } from "./scenarioImportExport.service"
-import { Scenario, ScenarioFile } from "../model/scenario.model"
-import { FileDownloader } from "../../../util/fileDownloader"
-import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
+import { provideMockStore } from "@ngrx/store/testing"
 import { Vector3 } from "three"
+import { ThreeCameraService, ThreeMapControlsService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { defaultState } from "../../../stores/rootStore/state.manager"
+import { FileDownloader } from "../../../util/fileDownloader"
+import { Scenario, ScenarioFile } from "../model/scenario.model"
+import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
+import { ScenarioImportExportService } from "./scenarioImportExport.service"
+import { ScenariosService } from "./scenarios.service"
 
 describe("ScenarioImportExportService", () => {
     let service: ScenarioImportExportService
@@ -30,6 +30,7 @@ describe("ScenarioImportExportService", () => {
 
         TestBed.configureTestingModule({
             providers: [
+                provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeCameraService, useValue: { camera: { position: new Vector3(0, 300, 1000) } } },
                 { provide: ThreeMapControlsService, useValue: { controls: { target: new Vector3(0, 0, 0) } } },

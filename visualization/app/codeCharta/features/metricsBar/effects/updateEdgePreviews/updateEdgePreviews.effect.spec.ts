@@ -1,0 +1,50 @@
+import { TestBed } from "@angular/core/testing"
+import { EffectsModule } from "@ngrx/effects"
+import { provideMockActions } from "@ngrx/effects/testing"
+import { Action } from "@ngrx/store"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { Subject } from "rxjs"
+import { edgeMetricSelector, isEdgeMetricVisibleSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { toggleEdgeMetricVisible } from "../../../../stores/mapState/mapState.write.facade"
+import { getLastAction } from "../../../../util/testUtils/store.utils"
+import { UpdateEdgePreviewsEffect } from "./updateEdgePreviews.effect"
+
+describe("updateEdgePreviewsEffect", () => {
+    let actions$: Subject<Action>
+    let store: MockStore
+
+    beforeEach(() => {
+        actions$ = new Subject()
+        TestBed.configureTestingModule({
+            imports: [EffectsModule.forRoot([UpdateEdgePreviewsEffect])],
+            providers: [
+                provideMockStore({
+                    selectors: [
+                        { selector: edgeMetricSelector, value: "loc" },
+                        { selector: isEdgeMetricVisibleSelector, value: false }
+                    ]
+                }),
+                provideMockActions(() => actions$)
+            ]
+        })
+        store = TestBed.inject(MockStore)
+    })
+
+    afterEach(() => {
+        actions$.complete()
+    })
+
+    it("should set isEdgeMetricVisible to true on edgeMetric change, if it was false", async () => {
+        store.overrideSelector(edgeMetricSelector, "rloc")
+        store.refreshState()
+
+        expect(await getLastAction(store)).toEqual(toggleEdgeMetricVisible())
+    })
+
+    it("should not set isEdgeMetricVisible to false on edgeMetric change, if it was true", async () => {
+        store.overrideSelector(isEdgeMetricVisibleSelector, true)
+        store.overrideSelector(edgeMetricSelector, "rloc")
+        store.refreshState()
+        expect(await getLastAction(store)).toEqual({ type: "@ngrx/effects/init" })
+    })
+})

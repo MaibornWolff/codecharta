@@ -1,4 +1,4 @@
-import { CCFile } from "../../codeCharta.model"
+import { CCFile } from "../codeCharta.model"
 import { FileSelectionState, FileState } from "./files"
 
 const FILE_EXTENSION_PNG = ".png"
@@ -17,10 +17,6 @@ export function fileStatesAvailable(fileStates: FileState[]) {
 export function getFileByFileName(fileStates: FileState[], fileName: string) {
     const matchingFileState = fileStates.find(x => x.file.fileMeta.fileName === fileName)
     return matchingFileState ? matchingFileState.file : undefined
-}
-
-export function getFileNameOf(fileState: FileState) {
-    return fileState.file.fileMeta.fileName
 }
 
 export function getVisibleFiles(fileStates: FileState[]) {

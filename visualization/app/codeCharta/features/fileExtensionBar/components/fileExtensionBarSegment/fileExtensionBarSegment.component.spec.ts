@@ -1,48 +1,57 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment.component"
+import { By } from "@angular/platform-browser"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { screen } from "@testing-library/angular"
+import { BlacklistItem, BlacklistType, CcState, SortingOption } from "../../../../model/codeCharta.model"
+import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
+import { blacklistSelector } from "../../../../stores/sharedView/sharedView.read.facade"
+import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
+import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNodeMetricDistribution.selector"
+import { metricDistributionSelector } from "../../selectors/metricDistribution.selector"
 import { addPrefixWildcard, BlackListExtensionService } from "../../services/blackListExtension.service"
 import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
-import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { ThreeSceneService } from "../../../../features/codeMap/facade"
-import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
-import { blacklistSelector } from "../../../../state/store/fileSettings/blacklist/blacklist.selector"
-import { BlacklistItem, BlacklistType, CcState, ColorMode, SortingOption } from "../../../../codeCharta.model"
-import { By } from "@angular/platform-browser"
-import { screen } from "@testing-library/angular"
-import { metricDistributionSelector } from "../../selectors/metricDistribution.selector"
-import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNodeMetricDistribution.selector"
+import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment.component"
 
 describe("FileExtensionBarSegment", () => {
     let fixture: ComponentFixture<FileExtensionBarSegmentComponent>
     let component: FileExtensionBarSegmentComponent
     let store: MockStore
     const initialState: Partial<CcState> = {
-        appStatus: {
-            currentFilesAreSampleFiles: false,
+        currentFilesAreSampleFiles: false,
+        mapState: {
+            ...defaultMapState,
+            areaMetric: "rloc",
+            heightMetric: "rloc",
+            colorMetric: "rloc",
+            distributionMetric: "rloc",
+            edgeMetric: ""
+        },
+        metricsLensSource: {
+            attributeTypes: {},
+            attributeDescriptors: null
+        },
+        dependencyLensSource: {
+            attributeTypes: {}
+        },
+        files: [],
+        preferences: {
+            isPresentationMode: false,
+            resetCameraIfNewFileIsLoaded: true,
+            maxTreeMapFiles: 100,
+            experimentalFeaturesEnabled: false,
+            screenshotToClipboardEnabled: false,
+            isColorMetricLinkedToHeightMetric: false,
+            sorting: { option: SortingOption.NAME, orderAscending: true }
+        },
+        sharedView: {
+            focusedNodePath: [],
+            searchPattern: "",
+            blacklist: [],
+            markedPackages: [],
             hoveredNodeId: null,
             selectedBuildingId: null,
             rightClickedNodeData: null
-        },
-        fileSettings: {
-            attributeTypes: null,
-            attributeDescriptors: null,
-            blacklist: [],
-            edges: [],
-            markedPackages: []
-        },
-        files: [],
-        dynamicSettings: {
-            areaMetric: "rloc",
-            colorMode: ColorMode.absolute,
-            sortingOption: SortingOption.NAME,
-            colorRange: { from: null, to: null },
-            distributionMetric: "rloc",
-            focusedNodePath: [],
-            searchPattern: "",
-            margin: 0,
-            heightMetric: "rloc",
-            edgeMetric: "",
-            colorMetric: "rloc"
         }
     }
     const mockItem: MetricDistribution = {

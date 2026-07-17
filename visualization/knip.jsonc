@@ -1,0 +1,24 @@
+{
+    "$schema": "https://unpkg.com/knip@6/schema.json",
+    // No "entry" is configured on purpose: the Angular plugin registers app/main.ts from
+    // angular.json, the Jest and Playwright plugins register *.spec.ts and *.e2e.ts, and the
+    // *.po.ts files are reached from the e2e files that import them.
+    //
+    // What this gate does NOT catch: in the default mode this runs in, a spec counts as a
+    // consumer, so a production export whose only remaining caller is its own test is reported
+    // as used. Surfacing those needs `knip --production` with "!"-suffixed entry and project
+    // globs. Class members are out of reach entirely — knip 6 has no such issue type.
+    //
+    // "project" deliberately covers app/ only, so script/, electron/ and the root config files
+    // are not analyzed for dead code.
+    "project": ["app/**/*.ts"],
+    "ignore": ["app/codeCharta/mocks/**"],
+    "rules": {
+        // Off because these packages are reached from sources knip does not parse: app.scss
+        // (@fortawesome/fontawesome-free), angular.json (material-icons, karma/jasmine),
+        // app/tailwind.css (daisyui) and script/*.js (@electron/get, @electron/packager, bestzip).
+        "dependencies": "off",
+        "devDependencies": "off",
+        "unlisted": "off"
+    }
+}

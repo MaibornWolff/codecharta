@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, viewChild } from "@angular/core"
+import { ActionIconComponent } from "../../../shared/facade"
 import { GlobalConfigurationDialogComponent } from "../globalConfigurationDialog/globalConfigurationDialog.component"
-import { ActionIconComponent } from "../../../../features/shared/components/actionIcon/actionIcon.component"
 
 @Component({
     selector: "cc-global-configuration-button",

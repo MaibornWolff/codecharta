@@ -1,12 +1,12 @@
 import { Font, FontData } from "three/addons/loaders/FontLoader.js"
-import { GeometryOptions } from "../../preview3DPrintMesh"
-import { BackPrintContainerMesh } from "./backPrintContainerMesh"
-import { BackMWLogoMesh } from "./backMWLogoMesh"
+import { GeometryOptions } from "../../geometryOptions"
 import { BackBelowLogoTextMesh } from "./backBelowLogoTextMesh"
-import { QrCodeMesh } from "./qrCodeMesh"
+import { BackMWLogoMesh } from "./backMWLogoMesh"
+import { BackPrintContainerMesh } from "./backPrintContainerMesh"
 import { CodeChartaLogoMesh } from "./codeChartaLogoMesh"
 import { CodeChartaTextMesh } from "./codeChartaTextMesh"
 import { MetricDescriptionsContainerMesh } from "./metricDescriptionsContainerMesh"
+import { QrCodeMesh } from "./qrCodeMesh"
 
 jest.mock("./backMWLogoMesh", () => {
     return {

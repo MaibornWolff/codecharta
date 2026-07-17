@@ -23,6 +23,32 @@ class NodeMergerTest {
     }
 
     @Test
+    fun `NodeMaxAttributeMerger should keep the content hash when the merged nodes agree`() {
+        // Arrange: two nodes for the same file, one with a checksum and one without.
+        val node1 = MutableNode("App.kt", NodeType.File, checksum = "hash-1", nodeMergingStrategy = NodeMaxAttributeMerger())
+        val node2 = MutableNode("App.kt", NodeType.File)
+
+        // Act
+        val merged = node1.merge(listOf(node2))
+
+        // Assert: the content hash survives the merge (so the result stays --base-file usable).
+        assertThat(merged.checksum).isEqualTo("hash-1")
+    }
+
+    @Test
+    fun `NodeMaxAttributeMerger should drop the content hash on a genuine conflict`() {
+        // Arrange: two nodes for the same file with differing checksums.
+        val node1 = MutableNode("App.kt", NodeType.File, checksum = "hash-1", nodeMergingStrategy = NodeMaxAttributeMerger())
+        val node2 = MutableNode("App.kt", NodeType.File, checksum = "hash-2")
+
+        // Act
+        val merged = node1.merge(listOf(node2))
+
+        // Assert: conflicting content cannot claim a single hash.
+        assertThat(merged.checksum).isNull()
+    }
+
+    @Test
     fun `NodeMaxAttributeMerger should NOT merge children when children present`() {
         val child1 = MutableNode("child1", NodeType.File)
         val child2 = MutableNode("child2", NodeType.Folder)

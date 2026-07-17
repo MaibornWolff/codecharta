@@ -7,7 +7,7 @@ import {
     VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME,
     VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
 } from "../../../mocks/dataMocks"
-import { CodeMapNode, NodeType, SortingOption } from "../../../codeCharta.model"
+import { CodeMapNode, NodeType, SortingOption } from "../../../model/codeCharta.model"
 import { sortNodesInPlace } from "./sortNodesInPlace"
 
 describe("sortNode", () => {

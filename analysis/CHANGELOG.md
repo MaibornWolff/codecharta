@@ -12,6 +12,62 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Add Rust support to UnifiedParser (.rs)
 - Add JSX support to UnifiedParser
 - Add TSX support to UnifiedParser
+- Add `convert` command that upgrades a 1.5 `.cc.json` file to the 2.0 format
+
+### Changed
+
+- **BREAKING: `ccsh` now emits the new cc.json 2.0 `{ meta, files, lenses }` format by default.**
+  Node metrics move off the file tree into a `metrics` lens keyed by a stable, content-independent
+  node `id` (`sha-256(canonicalPath)`), dependency edges move into a `dependency` lens referenced by
+  id, and reserved/unknown lenses round-trip verbatim. `ccsh` emits 2.0 only; the legacy 1.x format is
+  read exclusively by `ccsh convert` (see below). See ADR 12 and `dev_docs/cc-json-2.0-format.md`.
+  - **Interop note:** the visualization reads cc.json 2.0, so a 2.0 file produced by `ccsh` opens
+    directly in the current visualization. There is no CLI flag to emit 1.5; use `ccsh convert` only to
+    upgrade an existing 1.x file to 2.0.
+- The 2.0 wire format drops `blacklist` and `markedPackages`; a project read from 2.0 carries an empty
+  blacklist. Converting a 1.5 file with a non-empty blacklist to 2.0 is therefore not round-trippable —
+  `ccsh convert` warns when it drops either, so the loss is never silent.
+- `ccsh check` validates the 2.0 format strictly: `meta.apiVersion` must be major 2 (any minor), `files`
+  must contain exactly one root, and unknown properties on `meta`, file nodes, and edges are rejected.
+- **cc.json 2.x is downward-compatible and additive-only.** `apiVersion` is no longer pinned to exactly
+  `"2.0"` — any major-2 minor (`2.0`, `2.1`, …) is accepted. New minors may only *add* optional fields;
+  existing fields are never removed, renamed, or repurposed (a breaking change is a new major, `3.0`,
+  which major-2 tools reject). So the newest tools read every older 2.x file, but an older tool rejects a
+  newer file that uses a field it doesn't know (`additionalProperties: false` stays). See
+  `dev_docs/cc-json-2.0-format.md`.
+- **BREAKING: only `ccsh convert` reads the legacy 1.x format now.** Every other command works with 2.0
+  only — feeding a 1.x file to `merge`, `modify`, `edgefilter`, `inspect` or an importer reports that the
+  file is legacy and points at `ccsh convert <file>` to upgrade it first. The merge compatibility gate and
+  the in-memory default version are now 2.0-only.
+
+### Removed
+
+- Remove the long-deprecated `sourcecodeparser` command and its module. Use `unifiedparser` instead.
+- Remove the 1.5 **writer**: `ccsh` no longer emits the legacy 1.5 `{ checksum, data }` format from any
+  code path (the `ProjectToCcJson15Mapper`, its DTO and GSON are gone, and `ProjectSerializer` no longer
+  takes an `apiVersion`). The 1.5 format is still **read**, but only by `ccsh convert`, which upgrades it
+  to 2.0; every other command rejects a 1.x file and points at `ccsh convert`. It is never produced.
+
+### Fixed 🐞
+
+- Analysers no longer scan the repository's own `.git` directory. It accounted for roughly half the nodes
+  in a map of this repository. `.github`, `.gitignore` and `.gitattributes` are untouched, and the
+  exclusion also holds under `--bypass-gitignore`.
+- `gitlogparser` no longer loses all git metrics for files whose path contains a non-ASCII character.
+  Git escapes such paths in its log output, so they never matched the file list and silently dropped out
+  of the map. A UTF-8 log is also no longer mis-detected as WINDOWS-1252.
+- `gitlogparser` no longer emits temporal coupling edges for files that were renamed or deleted before
+  HEAD, which previously grew the map ghost files that exist in no working tree. A second metric's
+  contribution to an existing edge is also no longer discarded.
+- Whole-number metrics survive a round trip. Every attribute was read back as a floating-point number, so
+  a file passed through any filter rewrote an integer `1` as `1.0`, and the drift compounded across a
+  merge chain.
+- `modify` no longer corrupts its input project while building its output — the `--move-from`/`--move-to`
+  and sub-project extraction paths rewrote the source project's edges and blacklist in place.
+- `merge` no longer copies a node into several same-named nodes at once. A File and a Folder that share a
+  name are kept apart, so a third node of the same name whose type is neither File nor Folder matched both
+  of them and had its attributes and children merged onto each. Such an ambiguous node is now kept as a
+  node of its own with a warning, rather than being guessed onto one of them.
 
 ## [1.143.0] - 2026-04-28
 

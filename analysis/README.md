@@ -14,10 +14,10 @@ Components that generate metrics from a given source, e.g. source code or log fi
 
 | Source             | Project                                               |
 | ------------------ | ----------------------------------------------------- |
-| Git log            | [GitLogParser](import/GitLogParser/README.md)         |
-| Source Code / Text | [RawTextParser](parser/RawTextParser/README.md)       |
-| Source Code (Java) | [SourceCodeParser](import/SourceCodeParser/README.md) |
-| SVN log            | [SVNLogParser](import/SVNLogParser/README.md)         |
+| Git log            | [GitLogParser](analysers/parsers/GitLogParser/README.md)   |
+| Source Code / Text | [RawTextParser](analysers/parsers/RawTextParser/README.md) |
+| Source Code        | [UnifiedParser](analysers/parsers/UnifiedParser/README.md) |
+| SVN log            | [SVNLogParser](analysers/parsers/SVNLogParser/README.md)   |
 
 ### Importer
 
@@ -25,12 +25,12 @@ Components that import data from an external source, e.g. SonarQube, and generat
 
 | Source            | Project                                                                          |
 | ----------------- | -------------------------------------------------------------------------------- |
-| CodeMaat CSV      | [CodeMaatImporter](import/CodeMaatImporter/README.md)                            |
-| Test Coverage Reports | [CoverageImporter](import/CoverageImporter/README.md)                            |
-| generic CSV       | [CSVImporter](import/CSVImporter/README.md)                                      |
-| SonarQube         | [SonarImporter](import/SonarImporter/README.md)                                  |
-| SourceMonitor CSV | [SourceMonitorImporter](import/CSVImporter/README.md)                            |
-| Tokei             | [TokeiImporter](import/TokeiImporter/README.md)                                  |
+| CodeMaat CSV          | [CodeMaatImporter](analysers/importers/CodeMaatImporter/README.md)           |
+| Test Coverage Reports | [CoverageImporter](analysers/importers/CoverageImporter/README.md)           |
+| generic CSV           | [CSVImporter](analysers/importers/CSVImporter/README.md)                     |
+| SonarQube             | [SonarImporter](analysers/importers/SonarImporter/README.md)                 |
+| SourceMonitor CSV     | [SourceMonitorImporter](analysers/importers/SourceMonitorImporter/README.md) |
+| Tokei                 | [TokeiImporter](analysers/importers/TokeiImporter/README.md)                 |
 
 ### Filter
 
@@ -38,9 +38,9 @@ Components that take visualisation data and modifies them.
 
 | Name                                                    | Description                                                                                        |
 | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| [EdgeFilter](filter/EdgeFilter/README.md)               | aggregates edge-attributes of each appropriate node and inserts them into the nodes attribute-list |
-| [MergeFilter](filter/MergeFilter/README.md)             | merges multiple json files                                                                         |
-| [StructureModifier](filter/StructureModifier/README.md) | modifies the structure of .cc.json files                                                           |
+| [EdgeFilter](analysers/filters/EdgeFilter/README.md)               | aggregates edge-attributes of each appropriate node and inserts them into the nodes attribute-list |
+| [MergeFilter](analysers/filters/MergeFilter/README.md)             | merges multiple json files                                                                         |
+| [StructureModifier](analysers/filters/StructureModifier/README.md) | modifies the structure of .cc.json files                                                           |
 
 ### Exporter
 
@@ -48,14 +48,14 @@ Components that export data from visualisation data to other formats.
 
 | Target             | Project                                     |
 | ------------------ | ------------------------------------------- |
-| CSV (experimental) | [CSVExporter](export/CSVExporter/README.md) |
+| CSV (experimental) | [CSVExporter](analysers/exporters/CSVExporter/README.md) |
 
 ### Additional Tools
 
 | Name                                             | Description                               |
 | ------------------------------------------------ |-------------------------------------------|
-| [ValidationTool](tools/ValidationTool/README.md) | validates a given json file               |
-| [InspectionTool](tools/InspectionTool/README.md)   | shows information about a given json file |
+| [ValidationTool](analysers/tools/ValidationTool/README.md) | validates a given json file               |
+| [InspectionTool](analysers/tools/InspectionTool/README.md) | shows information about a given json file |
 
 ## Requirements
 
@@ -159,9 +159,4 @@ Via gradle:
 
 ## Code Style
 
-Please check out the [DEV_START_GUIDE](../DEV_START_GUIDE.md).
-
-## License
-
-Some parts of CodeCharta's SourceCodeParser use the [SonarJava library](https://github.com/SonarSource/sonar-java/), which is licensed
-under the GNU Lesser General Public Library, version 3.
+Please check out the [DEV_START_GUIDE](../dev_docs/DEV_START_GUIDE.md).

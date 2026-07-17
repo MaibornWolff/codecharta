@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-### Chore 👨‍💻 👩‍💻
+### Added 🚀
 
-- **Feature architecture migration**: Moved the remaining `app/codeCharta/ui/` components into the feature-slice architecture — `features/shared` (actionIcon, errorDialog, loadingFileProgressSpinner, resetSettingsButton), `features/fileExtensionBar`, `features/codeMap`, and `features/viewCube`. Each slice is reached through a `facade.ts`, contains no SCSS (daisyUI/Tailwind only), and accesses `@ngrx/store` only from `stores/`/`selectors/`. The `ui/` directory is gone and the dependency-cruiser SCSS rule now covers all of `app/codeCharta/`. No user-facing behavior change.
+- **cc.json 2.0 support**: The app now loads cc.json **2.0** files (`{ meta, files, lenses }`) in addition to the 1.x format. The 2.0 envelope is auto-detected at the load boundary, validated against the published 2.0 JSON Schema, and mapped into the internal model so the map renders identically to today (node metrics keyed by the stable node `id`; dependency edges read from `lenses.dependency`). Legacy 1.x files are unchanged.
+
+### Changed
+
+- **cc.json 2.x versioning**: the app now accepts any major-2 cc.json (`2.0`, `2.1`, …), not only `2.0`. Minors are additive-only, so a file stamped with a newer minor that only adds optional fields still loads; a file that uses a field this build doesn't know is rejected rather than partially loaded (no upward compatibility). A breaking change is a new major (`3.0`), which is refused.
+
+### Fixed 🐞
+
+- **Hovered edges respect the selected edge metric**: Hovering or selecting a building no longer draws edges belonging to other edge metrics. On a map carrying several edge metrics (e.g. `dependencies` and `temporal_coupling`), the arrows now match the edge count shown for the building, instead of showing every edge of every metric while the number only counted the selected one.
+- **Camera auto-fit after load**: Loading or importing a map and applying a scenario no longer intermittently skip the camera reset, leaving the previous view in place. The post-load auto-fit now waits for the new map mesh to be placed into the scene instead of racing the throttled render stream (which reliably missed for `.gz` files), and briefly retries while the geometry is not there yet.
+- **Camera front view on auto-fit**: The camera reset no longer lands in a skewed "tilted diamond" view when the newly fitted map is much larger than the previous one (or the orbit target had been panned far away). The fit previously let the map controls clamp the fresh camera position against the previous map's zoom limits, locking the off-axis direction in.
+- **cc.json 2.0 map survives reload**: A cc.json **2.0** file loaded into the app is no longer replaced by the sample files on the next page load. Re-exporting a loaded map for IndexedDB persistence now stamps the flat export shape with the 1.x `apiVersion` it actually is, instead of copying `"2.0"` verbatim onto a 1.x body — which previously made the reloaded file fail validation as an outdated major version and fall back to sample files.
 
 ## [1.143.0] - 2026-06-23
 

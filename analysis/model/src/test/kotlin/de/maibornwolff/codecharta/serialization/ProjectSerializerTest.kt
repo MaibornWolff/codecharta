@@ -17,11 +17,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.skyscreamer.jsonassert.JSONAssert
-import org.skyscreamer.jsonassert.JSONCompareMode
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.OutputStream
 import kotlin.io.path.absolute
 import kotlin.io.path.createTempDirectory
@@ -31,12 +28,8 @@ import kotlin.test.assertTrue
 class ProjectSerializerTest {
     private val tempDir = createTempDirectory()
     private val filename = tempDir.absolute().toString() + "test.cc.json"
-    private val project = mockk<Project>()
+    private val project = Project("test")
     private val lambdaSlot = mutableListOf<() -> String>()
-
-    companion object {
-        private const val EXAMPLE_JSON_VERSION_1_3 = "example_api_version_1.3.cc.json"
-    }
 
     @BeforeAll
     fun beforeTests() {
@@ -52,21 +45,6 @@ class ProjectSerializerTest {
     @AfterAll
     fun afterTests() {
         unmockkAll()
-    }
-
-    @Test
-    fun `should correctly serialize the specified project when provided as input`() {
-        // given
-        val jsonReader = this.javaClass.classLoader.getResourceAsStream(EXAMPLE_JSON_VERSION_1_3)!!.reader()
-        val expectedJsonString = this.javaClass.classLoader.getResource("example_api_version_1.3.cc.json")!!.readText()
-        val testProject = ProjectDeserializer.deserializeProject(jsonReader)
-
-        // when
-        ProjectSerializer.serializeProject(testProject, FileOutputStream(filename), false)
-        val testJsonString = File(filename).readText()
-
-        // then
-        JSONAssert.assertEquals(expectedJsonString, testJsonString, JSONCompareMode.NON_EXTENSIBLE)
     }
 
     @Test
@@ -160,7 +138,7 @@ class ProjectSerializerTest {
         ProjectSerializer.serializeProject(testProject, stream, false)
         val serializedJson = stream.toString("UTF-8")
 
-        // then
-        Assertions.assertThat(serializedJson).contains("\"checksum\":\"$sampleChecksum\"")
+        // then the per-file checksum is carried as contentHash on the 2.0 file node
+        Assertions.assertThat(serializedJson).contains("\"contentHash\":\"$sampleChecksum\"")
     }
 }

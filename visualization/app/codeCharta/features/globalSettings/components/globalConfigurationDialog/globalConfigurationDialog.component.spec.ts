@@ -1,74 +1,42 @@
 import { HttpClient } from "@angular/common/http"
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { of } from "rxjs"
-import { provideMockStore } from "@ngrx/store/testing"
 import { State } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
+import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
+import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
+import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
+import { GlobalSettingsWriteStore } from "../../stores/globalSettings.write.store"
 import { GlobalConfigurationDialogComponent } from "./globalConfigurationDialog.component"
-import { ScreenshotDestinationService } from "../../services/screenshotDestination.service"
-import { ExperimentalFeaturesService } from "../../services/experimentalFeatures.service"
-import { BackgroundThemeService } from "../../services/backgroundTheme.service"
-import { FlatBuildingVisibilityService } from "../../services/flatBuildingVisibility.service"
-import { AutomaticCameraResetService } from "../../services/automaticCameraReset.service"
-import { LoadFileService } from "../../../../features/loadFile/facade"
-import { LoadInitialFileService } from "../../../../features/loadFile/facade"
-import { defaultAppSettings } from "../../../../state/store/appSettings/appSettings.reducer"
 
 describe("GlobalConfigurationDialogComponent", () => {
     let fixture: ComponentFixture<GlobalConfigurationDialogComponent>
     let component: GlobalConfigurationDialogComponent
-    let mockScreenshotDestinationService: jest.Mocked<Partial<ScreenshotDestinationService>>
-    let mockExperimentalFeaturesService: jest.Mocked<Partial<ExperimentalFeaturesService>>
-    let mockBackgroundThemeService: jest.Mocked<Partial<BackgroundThemeService>>
-    let mockFlatBuildingVisibilityService: jest.Mocked<Partial<FlatBuildingVisibilityService>>
-    let mockAutomaticCameraResetService: jest.Mocked<Partial<AutomaticCameraResetService>>
+    let mockGlobalSettingsWriteStore: jest.Mocked<Partial<GlobalSettingsWriteStore>>
     let mockState: jest.Mocked<Partial<State<any>>>
 
     beforeEach(() => {
-        mockScreenshotDestinationService = {
-            screenshotToClipboardEnabled$: jest.fn().mockReturnValue(of(false)),
-            setScreenshotToClipboard: jest.fn()
-        }
-
-        mockExperimentalFeaturesService = {
-            experimentalFeaturesEnabled$: jest.fn().mockReturnValue(of(false)),
-            setExperimentalFeaturesEnabled: jest.fn()
-        }
-
-        mockBackgroundThemeService = {
-            isWhiteBackground$: jest.fn().mockReturnValue(of(false)),
-            setWhiteBackground: jest.fn()
-        }
-
-        mockFlatBuildingVisibilityService = {
-            hideFlatBuildings$: jest.fn().mockReturnValue(of(false)),
-            setHideFlatBuildings: jest.fn()
-        }
-
-        mockAutomaticCameraResetService = {
-            resetCameraIfNewFileIsLoaded$: jest.fn().mockReturnValue(of(true)),
-            setResetCameraIfNewFileIsLoaded: jest.fn()
+        mockGlobalSettingsWriteStore = {
+            setScreenshotToClipboard: jest.fn(),
+            setExperimentalFeaturesEnabled: jest.fn(),
+            setWhiteBackground: jest.fn(),
+            setHideFlatBuildings: jest.fn(),
+            setResetCameraIfNewFileIsLoaded: jest.fn(),
+            setLayoutAlgorithm: jest.fn(),
+            setMaxTreeMapFiles: jest.fn()
         }
 
         mockState = {
-            getValue: jest.fn().mockReturnValue({ appSettings: defaultAppSettings })
+            getValue: jest.fn().mockReturnValue({ preferences: defaultPreferences, mapState: defaultMapState })
         }
 
         TestBed.configureTestingModule({
             imports: [GlobalConfigurationDialogComponent],
             providers: [
                 provideMockStore({
-                    initialState: { appSettings: defaultAppSettings }
+                    initialState: { preferences: defaultPreferences, mapState: defaultMapState }
                 }),
                 { provide: State, useValue: mockState },
-                { provide: ScreenshotDestinationService, useValue: mockScreenshotDestinationService },
-                { provide: ExperimentalFeaturesService, useValue: mockExperimentalFeaturesService },
-                { provide: BackgroundThemeService, useValue: mockBackgroundThemeService },
-                { provide: FlatBuildingVisibilityService, useValue: mockFlatBuildingVisibilityService },
-                { provide: AutomaticCameraResetService, useValue: mockAutomaticCameraResetService },
-                {
-                    provide: LoadInitialFileService,
-                    useValue: { setRenderStateFromUrl: jest.fn(), checkFileQueryParameterPresent: jest.fn(() => false) }
-                },
+                { provide: GlobalSettingsWriteStore, useValue: mockGlobalSettingsWriteStore },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: HttpClient, useValue: {} }
             ]
@@ -83,15 +51,6 @@ describe("GlobalConfigurationDialogComponent", () => {
         it("should create component", () => {
             // Assert
             expect(component).toBeTruthy()
-        })
-
-        it("should inject all required services", () => {
-            // Assert
-            expect(mockScreenshotDestinationService.screenshotToClipboardEnabled$).toHaveBeenCalled()
-            expect(mockExperimentalFeaturesService.experimentalFeaturesEnabled$).toHaveBeenCalled()
-            expect(mockBackgroundThemeService.isWhiteBackground$).toHaveBeenCalled()
-            expect(mockFlatBuildingVisibilityService.hideFlatBuildings$).toHaveBeenCalled()
-            expect(mockAutomaticCameraResetService.resetCameraIfNewFileIsLoaded$).toHaveBeenCalled()
         })
 
         it("should initialize screenshotToClipboardEnabled signal", () => {
@@ -217,7 +176,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleResetCameraIfNewFileIsLoadedChanged(true)
 
             // Assert
-            expect(mockAutomaticCameraResetService.setResetCameraIfNewFileIsLoaded).toHaveBeenCalledWith(true)
+            expect(mockGlobalSettingsWriteStore.setResetCameraIfNewFileIsLoaded).toHaveBeenCalledWith(true)
         })
 
         it("should call setResetCameraIfNewFileIsLoaded when handleResetCameraIfNewFileIsLoadedChanged is called with false", () => {
@@ -225,7 +184,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleResetCameraIfNewFileIsLoadedChanged(false)
 
             // Assert
-            expect(mockAutomaticCameraResetService.setResetCameraIfNewFileIsLoaded).toHaveBeenCalledWith(false)
+            expect(mockGlobalSettingsWriteStore.setResetCameraIfNewFileIsLoaded).toHaveBeenCalledWith(false)
         })
 
         it("should call setHideFlatBuildings when handleHideFlatBuildingsChanged is called with true", () => {
@@ -233,7 +192,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleHideFlatBuildingsChanged(true)
 
             // Assert
-            expect(mockFlatBuildingVisibilityService.setHideFlatBuildings).toHaveBeenCalledWith(true)
+            expect(mockGlobalSettingsWriteStore.setHideFlatBuildings).toHaveBeenCalledWith(true)
         })
 
         it("should call setHideFlatBuildings when handleHideFlatBuildingsChanged is called with false", () => {
@@ -241,7 +200,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleHideFlatBuildingsChanged(false)
 
             // Assert
-            expect(mockFlatBuildingVisibilityService.setHideFlatBuildings).toHaveBeenCalledWith(false)
+            expect(mockGlobalSettingsWriteStore.setHideFlatBuildings).toHaveBeenCalledWith(false)
         })
 
         it("should call setWhiteBackground when handleIsWhiteBackgroundChanged is called with true", () => {
@@ -249,7 +208,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleIsWhiteBackgroundChanged(true)
 
             // Assert
-            expect(mockBackgroundThemeService.setWhiteBackground).toHaveBeenCalledWith(true)
+            expect(mockGlobalSettingsWriteStore.setWhiteBackground).toHaveBeenCalledWith(true)
         })
 
         it("should call setWhiteBackground when handleIsWhiteBackgroundChanged is called with false", () => {
@@ -257,7 +216,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleIsWhiteBackgroundChanged(false)
 
             // Assert
-            expect(mockBackgroundThemeService.setWhiteBackground).toHaveBeenCalledWith(false)
+            expect(mockGlobalSettingsWriteStore.setWhiteBackground).toHaveBeenCalledWith(false)
         })
 
         it("should call setExperimentalFeaturesEnabled when handleExperimentalFeaturesEnabledChanged is called with true", () => {
@@ -265,7 +224,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleExperimentalFeaturesEnabledChanged(true)
 
             // Assert
-            expect(mockExperimentalFeaturesService.setExperimentalFeaturesEnabled).toHaveBeenCalledWith(true)
+            expect(mockGlobalSettingsWriteStore.setExperimentalFeaturesEnabled).toHaveBeenCalledWith(true)
         })
 
         it("should call setExperimentalFeaturesEnabled when handleExperimentalFeaturesEnabledChanged is called with false", () => {
@@ -273,7 +232,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleExperimentalFeaturesEnabledChanged(false)
 
             // Assert
-            expect(mockExperimentalFeaturesService.setExperimentalFeaturesEnabled).toHaveBeenCalledWith(false)
+            expect(mockGlobalSettingsWriteStore.setExperimentalFeaturesEnabled).toHaveBeenCalledWith(false)
         })
 
         it("should call setScreenshotToClipboard when handleScreenshotToClipboardEnabledChanged is called with true", () => {
@@ -281,7 +240,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleScreenshotToClipboardEnabledChanged(true)
 
             // Assert
-            expect(mockScreenshotDestinationService.setScreenshotToClipboard).toHaveBeenCalledWith(true)
+            expect(mockGlobalSettingsWriteStore.setScreenshotToClipboard).toHaveBeenCalledWith(true)
         })
 
         it("should call setScreenshotToClipboard when handleScreenshotToClipboardEnabledChanged is called with false", () => {
@@ -289,7 +248,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             component.handleScreenshotToClipboardEnabledChanged(false)
 
             // Assert
-            expect(mockScreenshotDestinationService.setScreenshotToClipboard).toHaveBeenCalledWith(false)
+            expect(mockGlobalSettingsWriteStore.setScreenshotToClipboard).toHaveBeenCalledWith(false)
         })
     })
 })

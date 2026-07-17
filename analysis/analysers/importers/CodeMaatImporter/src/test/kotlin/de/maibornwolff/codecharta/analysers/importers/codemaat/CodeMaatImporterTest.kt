@@ -84,8 +84,24 @@ class CodeMaatImporterTest {
         assertThat(file.readText()).contains("\"avgCommits\":5")
         assertThat(file.readText()).contains(listOf("attributeDescriptors", "\"description\":\"Average"))
         file.reader().use {
-            assertEquals(ProjectDeserializer.deserializeProject(it).attributeDescriptors, getAttributeDescriptors())
+            assertEquals(ProjectDeserializer.deserializeProject(it).lenses.allAttributeDescriptors(), getAttributeDescriptors())
         }
+    }
+
+    @Test
+    fun `should keep its edges when its own 2_0 output is read back`() {
+        // given
+        val inputFilePath = "src/test/resources/coupling-codemaat.csv"
+        val outputFilePath = "src/test/resources/coupling-codemaat-roundtrip.cc.json"
+        val outputFile = File(outputFilePath)
+        outputFile.deleteOnExit()
+
+        // when: the documented `codemaatimport | edgefilter` pipeline reads this output on the next step.
+        main(arrayOf(inputFilePath, "-nc", "-o=$outputFilePath"))
+        val roundTripped = outputFile.reader().use { ProjectDeserializer.deserializeProject(it) }
+
+        // then: edges survive the write->read round-trip (they collapsed to 0 before endpoint nodes were materialized).
+        assertEquals(164, roundTripped.sizeOfEdges())
     }
 
     @Test

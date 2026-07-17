@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
-import { NavBarFolderButtonComponent } from "./navBarFolderButton.component"
 import { UploadFilesService } from "../../services/uploadFiles.service"
+import { NavBarFolderButtonComponent } from "./navBarFolderButton.component"
 
 describe("NavBarFolderButtonComponent", () => {
     let uploadFilesService: { uploadFiles: jest.Mock }

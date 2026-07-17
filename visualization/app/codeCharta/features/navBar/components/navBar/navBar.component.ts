@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { FilesSelectionStore } from "../../stores/filesSelection.store"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { DeltaSelectorComponent } from "../deltaSelector/deltaSelector.component"
 import { MapSelectorComponent } from "../mapSelector/mapSelector.component"
 import { ModeToggleComponent } from "../modeToggle/modeToggle.component"
@@ -24,7 +24,7 @@ import { SettingsButtonComponent } from "../settingsButton/settingsButton.compon
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavBarComponent {
-    private readonly filesSelectionStore = inject(FilesSelectionStore)
+    private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
 
-    isDeltaState = toSignal(this.filesSelectionStore.isDeltaState$, { requireSync: true })
+    isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { requireSync: true })
 }

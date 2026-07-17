@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
-import { CCSCENARIO_EXTENSION, fromScenarioFile, Scenario, ScenarioFile, toScenarioFile } from "../model/scenario.model"
 import { FileDownloader } from "../../../util/fileDownloader"
+import { CCSCENARIO_EXTENSION, fromScenarioFile, Scenario, ScenarioFile, toScenarioFile } from "../model/scenario.model"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
 import { ScenariosService } from "./scenarios.service"
 

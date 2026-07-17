@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { searchPatternSelector } from "../../../../state/store/dynamicSettings/searchPattern/searchPattern.selector"
+import { searchPatternSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 
 export const _isSearchPatternEmpty = (searchPattern: string) => searchPattern === "" || searchPattern === "!" || searchPattern === ","
 

@@ -1,20 +1,26 @@
 import { Injectable, OnDestroy } from "@angular/core"
-import { ThreeCameraService } from "./threeViewer/threeCamera.service"
-import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { ViewCubeMouseEventsService } from "../viewCube/facade"
-import { BlacklistItem, Node } from "../../codeCharta.model"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ThreeRendererService } from "./threeViewer/threeRenderer.service"
-import { isPathHiddenOrExcluded } from "../../util/blacklist/blacklistMatcher"
 import { hierarchy } from "d3-hierarchy"
+import { tap } from "rxjs"
 import { Raycaster, Vector2 } from "three"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
-import { CodeMapTooltipService } from "./codeMap.tooltip.service"
-import { ThreeViewerService } from "./threeViewer/threeViewer.service"
-import { IdToBuildingService } from "./idToBuilding.service"
-import { tap } from "rxjs"
+import { BlacklistItem, Node } from "../../model/codeCharta.model"
+import {
+    CodeMapBuilding,
+    CodeMapTooltipService,
+    CursorType,
+    changeCursorIndicator,
+    IdToBuildingService,
+    ThreeCameraService,
+    ThreeRendererService,
+    ThreeSceneService,
+    ThreeViewerService
+} from "../../renderer/threeViewer/threeViewer.facade"
+import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
+import { SharedViewReadWindow } from "../../stores/sharedView/sharedView.read.facade"
+import { isPathHiddenOrExcluded } from "../../util/blacklist/blacklistMatcher"
 import { debounce } from "../../util/debounce"
-import { CodeMapMouseEventStore } from "./stores/codeMapMouseEvent.store"
+import { ViewCubeMouseEventsService } from "../viewCube/facade"
+import { CodeMapStore } from "./stores/codeMap.store"
 
 interface Coordinates {
     x: number
@@ -26,13 +32,6 @@ export enum ClickType {
     RightClick = 2
 }
 
-export enum CursorType {
-    Default = "default",
-    Grabbing = "grabbing",
-    Pointer = "pointer",
-    Moving = "move"
-}
-
 @Injectable({ providedIn: "root" })
 export class CodeMapMouseEventService implements OnDestroy {
     private readonly THRESHOLD_FOR_MOUSE_MOVEMENT_TRACKING = 3
@@ -40,16 +39,16 @@ export class CodeMapMouseEventService implements OnDestroy {
     private intersectedBuilding: CodeMapBuilding
 
     private readonly mouse: Coordinates = { x: 0, y: 0 }
-    private oldMouse: Coordinates = { x: 0, y: 0 }
+    private readonly oldMouse: Coordinates = { x: 0, y: 0 }
     private mouseOnLastClick: Coordinates = { x: 0, y: 0 }
     private isGrabbing = false
     private isMoving = false
     private readonly raycaster = new Raycaster()
     private labelSelectedBuilding: Node | null = null
     private readonly subscriptions = [
-        this.codeMapMouseEventStore.visibleFileStates$.pipe(tap(() => this.onFilesSelectionChanged())).subscribe(),
-        this.codeMapMouseEventStore.blacklist$.pipe(tap(blacklist => this.onBlacklistChanged(blacklist))).subscribe(),
-        this.codeMapMouseEventStore.hoveredNodeId$
+        this.fileStoreReadWindow.visibleFileStates$.pipe(tap(() => this.onFilesSelectionChanged())).subscribe(),
+        this.sharedViewReadWindow.blacklist$.pipe(tap(blacklist => this.onBlacklistChanged(blacklist))).subscribe(),
+        this.sharedViewReadWindow.hoveredNodeId$
             .pipe(
                 tap(hoveredNodeId => {
                     if (hoveredNodeId !== null) {
@@ -63,10 +62,12 @@ export class CodeMapMouseEventService implements OnDestroy {
     ]
 
     constructor(
-        private threeCameraService: ThreeCameraService,
-        private threeRendererService: ThreeRendererService,
-        private threeSceneService: ThreeSceneService,
-        private readonly codeMapMouseEventStore: CodeMapMouseEventStore,
+        private readonly threeCameraService: ThreeCameraService,
+        private readonly threeRendererService: ThreeRendererService,
+        private readonly threeSceneService: ThreeSceneService,
+        private readonly codeMapStore: CodeMapStore,
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
+        private readonly sharedViewReadWindow: SharedViewReadWindow,
         private readonly labelSettingsFacade: LabelSettingsFacade,
         private readonly tooltipService: CodeMapTooltipService,
         private readonly viewCubeMouseEvents: ViewCubeMouseEventsService,
@@ -78,10 +79,6 @@ export class CodeMapMouseEventService implements OnDestroy {
         for (const subscription of this.subscriptions) {
             subscription.unsubscribe()
         }
-    }
-
-    static changeCursorIndicator(cursorIcon: CursorType) {
-        document.body.style.cursor = cursorIcon
     }
 
     start() {
@@ -103,14 +100,14 @@ export class CodeMapMouseEventService implements OnDestroy {
         )
     }
 
-    hoverNode(id: number) {
+    hoverNode(path: string) {
         if (this.isGrabbingOrMoving()) {
             return
         }
 
         const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
         for (const building of buildings) {
-            if (building.node.id === id) {
+            if (building.node.path === path) {
                 this.hoverBuilding(building, false)
                 break
             }
@@ -203,7 +200,7 @@ export class CodeMapMouseEventService implements OnDestroy {
                             this.hoverBuilding(to)
                         }
                     }
-                } else if (!to && this.codeMapMouseEventStore.getHoveredNodeId() !== null) {
+                } else if (!to && this.codeMapStore.getHoveredNodeId() !== null) {
                     // The highlight was cleared out-of-band (e.g. a click or a scroll that never re-raycasts)
                     // while the store still points at a building, so the from/to ids both read as undefined and
                     // the transition above is skipped. Force an unhover so the edge preview is restored instead
@@ -295,11 +292,11 @@ export class CodeMapMouseEventService implements OnDestroy {
     onDocumentMouseDown(event: MouseEvent) {
         if (event.button === ClickType.RightClick) {
             this.isMoving = true
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
+            changeCursorIndicator(CursorType.Moving)
         }
         if (event.button === ClickType.LeftClick) {
             this.isGrabbing = true
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+            changeCursorIndicator(CursorType.Grabbing)
         }
         this.labelSettingsFacade.setSuppressLayout(true)
         this.tooltipService.hide()
@@ -317,9 +314,9 @@ export class CodeMapMouseEventService implements OnDestroy {
             this.onRightClick()
         }
         if (this.intersectedBuilding !== undefined) {
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+            changeCursorIndicator(CursorType.Pointer)
         } else {
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+            changeCursorIndicator(CursorType.Default)
         }
     }
 
@@ -328,8 +325,8 @@ export class CodeMapMouseEventService implements OnDestroy {
         // Check if mouse moved to prevent the node context menu to show up
         // after moving the map, when the cursor ends on a building.
         if (this.intersectedBuilding && !this.hasMouseMovedBeyondThreshold(this.mouseOnLastClick)) {
-            this.codeMapMouseEventStore.setRightClickedNodeData({
-                nodeId: this.intersectedBuilding.node.id,
+            this.codeMapStore.setRightClickedNodeData({
+                nodeId: this.intersectedBuilding.node.path,
                 xPositionOfRightClickEvent: this.mouse.x,
                 yPositionOfRightClickEvent: this.mouse.y,
                 origin: "codeMap"
@@ -369,9 +366,9 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     private hoverBuilding(hoveredBuilding: CodeMapBuilding, updateStore = true) {
-        CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+        changeCursorIndicator(CursorType.Pointer)
 
-        const idToNode = this.codeMapMouseEventStore.getIdToNode()
+        const idToNode = this.codeMapStore.getIdToNode()
         const codeMapNode = idToNode.get(hoveredBuilding.node.id)
         for (const { data } of hierarchy(codeMapNode)) {
             const building = this.idToBuilding.get(data.id)
@@ -381,7 +378,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
         this.threeSceneService.applyHighlights()
         if (updateStore) {
-            this.codeMapMouseEventStore.setHoveredNodeId(hoveredBuilding.node.id)
+            this.codeMapStore.setHoveredNodeId(hoveredBuilding.node.path)
         }
     }
 
@@ -400,7 +397,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     private unhoverBuilding(updateStore = true) {
         if (!this.isGrabbingOrMoving()) {
-            CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+            changeCursorIndicator(CursorType.Default)
         }
 
         if (this.threeSceneService.getConstantHighlight().size > 0) {
@@ -410,7 +407,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
 
         if (updateStore) {
-            this.codeMapMouseEventStore.setHoveredNodeId(null)
+            this.codeMapStore.setHoveredNodeId(null)
         }
     }
 }

@@ -1,6 +1,6 @@
 import { XMLParser } from "fast-xml-parser"
-import { Volume } from "../serialize3mf.service"
 import { getXMLmodelConfig } from "./build3mfModelConfig"
+import { Volume } from "./volume"
 
 describe("build3mfModelConfig", () => {
     it("should return a valid xml with properly defined volumes", () => {

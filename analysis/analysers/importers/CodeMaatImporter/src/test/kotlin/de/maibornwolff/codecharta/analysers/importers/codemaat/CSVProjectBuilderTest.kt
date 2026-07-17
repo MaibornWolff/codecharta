@@ -30,7 +30,7 @@ class CSVProjectBuilderTest {
     fun `should contain specific edge and correct attributes`() {
         val edge =
             getChildByName(
-                project.edges,
+                project.lenses.dependency.edges,
                 "/root/analysis/build.gradle",
                 "/root/analysis/model/build.gradle"
             )

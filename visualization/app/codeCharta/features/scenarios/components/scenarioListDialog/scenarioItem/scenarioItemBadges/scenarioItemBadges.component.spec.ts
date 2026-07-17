@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
-import { ScenarioItemBadgesComponent } from "./scenarioItemBadges.component"
-import { ScenarioView } from "../../scenarioView.model"
 import { Scenario } from "../../../../model/scenario.model"
+import { ScenarioView } from "../../../../model/scenarioView.model"
+import { ScenarioItemBadgesComponent } from "./scenarioItemBadges.component"
 
 const createTestView = (overrides: Partial<ScenarioView> = {}): ScenarioView => {
     const scenario: Scenario = {

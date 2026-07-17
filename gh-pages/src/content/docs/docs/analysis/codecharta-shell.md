@@ -27,6 +27,10 @@ $ ccsh -h
 
 After the CodeCharta analysis has been installed, executing `ccsh -h` should show the help where all further commands are listed. Most often the CodeCharta shell is called with one of its tools to perform different actions. For example `ccsh csvimport example.csv` will use the [CSVImporter](/docs/importer/csv) to turn the given csv file into `cc.json` format. More information on how to use the CodeCharta Shell can be found in the pages of the individual analysis tools.
 
+### The cc.json format
+
+Every parser, importer and filter reads and writes CodeCharta's `cc.json` format, now at version **2.0** (`{ meta, files, lenses }`). The shell reads and writes 2.0 only. If you have an older 1.x `.cc.json` file, upgrade it once with [`ccsh convert`](/docs/filter/convert) before using it with the other tools — otherwise they stop with a hint pointing you at `convert`. The visualization opens both 1.x and 2.0 files directly.
+
 ### Interactive Shell
 
 The interactive shell aims to aid users when executing parsers by collecting all needed options and arguments for the corresponding parser.

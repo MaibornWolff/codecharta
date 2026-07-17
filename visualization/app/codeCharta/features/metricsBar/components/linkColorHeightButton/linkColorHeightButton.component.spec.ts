@@ -1,12 +1,12 @@
+import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { TestBed } from "@angular/core/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { defaultState } from "../../../../state/store/state.manager"
-import { toggleIsColorMetricLinkedToHeightMetric } from "../../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.actions"
-import { isColorMetricLinkedToHeightMetricSelector } from "../../../../state/store/appSettings/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { isColorMetricLinkedToHeightMetricSelector } from "../../../../stores/preferences/preferences.read.facade"
+import { toggleIsColorMetricLinkedToHeightMetric } from "../../../../stores/preferences/preferences.write.facade"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { LinkColorHeightButtonComponent } from "./linkColorHeightButton.component"
 
 describe("LinkColorHeightButtonComponent", () => {

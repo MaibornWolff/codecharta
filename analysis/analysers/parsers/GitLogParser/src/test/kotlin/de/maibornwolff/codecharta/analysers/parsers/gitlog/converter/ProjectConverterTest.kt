@@ -83,13 +83,54 @@ class ProjectConverterTest {
         ).isFalse
     }
 
+    // Build a fresh list each time: convert() clears each file's metrics to free memory, so a list
+    // cannot be converted twice. File 1 is committed together with File 2 five times, which pushes their
+    // temporal coupling above the highly-coupled threshold and produces one File 1 -> File 2 edge.
+    private fun coupledVcfList(): VersionControlledFilesList {
+        val realMetricsFactory = MetricsFactory()
+        val vcfList = VersionControlledFilesList(realMetricsFactory)
+        val file1 = vcfList.addFileBy("File 1")
+        repeat(5) {
+            file1.registerCommit(
+                Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()),
+                Modification("File 1")
+            )
+        }
+        return vcfList
+    }
+
+    @Test
+    fun `should drop a coupling edge whose partner is not in the git file list`() {
+        // given File 1 couples to File 2, but File 2 no longer exists at HEAD (not in the file list)
+        val projectConverter = ProjectConverter(false)
+
+        // when
+        val project = projectConverter.convert(coupledVcfList(), MetricsFactory(), listOf("File 1"))
+
+        // then
+        assertThat(project.lenses.dependency.edges).isEmpty()
+    }
+
+    @Test
+    fun `should keep a coupling edge whose partner is in the git file list`() {
+        // given File 1 couples to File 2 which still exists at HEAD
+        val projectConverter = ProjectConverter(false)
+
+        // when
+        val project = projectConverter.convert(coupledVcfList(), MetricsFactory(), listOf("File 1", "File 2"))
+
+        // then
+        assertThat(project.lenses.dependency.edges).hasSize(1)
+        assertThat(project.lenses.dependency.edges[0].toNodeName).isEqualTo("/root/File 2")
+    }
+
     @Test
     fun attributeTypesAreCreated() {
         val projectConverter = ProjectConverter(false)
         val vcfList = VersionControlledFilesList(metricsFactory)
         val project = projectConverter.convert(vcfList, MetricsFactory(), listOf())
 
-        assertThat(project.attributeTypes).containsKeys("edges", "nodes")
+        assertThat(project.lenses.legacyAttributeTypes()).containsKeys("edges", "nodes")
     }
 
     @Test
@@ -101,7 +142,7 @@ class ProjectConverterTest {
         val projectConverterWithAuthors = ProjectConverter(true)
         val project2 = projectConverterWithAuthors.convert(vcfList, MetricsFactory(), listOf())
 
-        assertThat(project.attributeDescriptors).isEqualTo(project2.attributeDescriptors)
-        assertThat(project.attributeDescriptors).isEqualTo(getAttributeDescriptors())
+        assertThat(project.lenses.allAttributeDescriptors()).isEqualTo(project2.lenses.allAttributeDescriptors())
+        assertThat(project.lenses.allAttributeDescriptors()).isEqualTo(getAttributeDescriptors())
     }
 }

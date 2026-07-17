@@ -1,9 +1,9 @@
-import { test, expect } from "@playwright/test"
+import { expect, test } from "@playwright/test"
 import { clearIndexedDB, goto } from "../../../../../playwright.helper"
-import { NavBarFolderButtonPageObject } from "./navBarFolderButton.po"
-import { MapSelectorPageObject } from "../mapSelector/mapSelector.po"
-import { ERROR_MESSAGES } from "../../../loadFile/util/fileValidator"
 import { DialogErrorPageObject } from "../../../../features/shared/components/errorDialog/errorDialog.component.po"
+import { ERROR_MESSAGES } from "../../../../stores/fileStore/loaders/ccJson/util/fileValidator"
+import { MapSelectorPageObject } from "../mapSelector/mapSelector.po"
+import { NavBarFolderButtonPageObject } from "./navBarFolderButton.po"
 
 test.describe("NavBarFolderButton", () => {
     test.beforeEach(async ({ page }) => {

@@ -1,29 +1,68 @@
 package de.maibornwolff.codecharta.analysers.importers.dependacharta
 
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeId
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.util.Logger
 
 object DcJsonParser {
-    private const val ROOT_PREFIX = "/root/"
+    const val DEPENDENCIES = "dependencies"
+    const val OUTGOING_DEPENDENCIES = "outgoing_dependencies"
+    const val INCOMING_DEPENDENCIES = "incoming_dependencies"
 
-    fun parseEdges(dcProject: DcProject): List<Edge> = dcProject.leaves.values
-        .filter { it.physicalPath.isNotBlank() }
-        .flatMap { leaf -> resolveDependencyPaths(leaf, dcProject.leaves) }
-        .groupingBy { it }
-        .eachCount()
-        .map { (paths, count) ->
-            Edge(ROOT_PREFIX + paths.first, ROOT_PREFIX + paths.second, mapOf("dependencies" to count))
-        }
+    fun canonicalSegmentsByLeafId(dcProject: DcProject): Map<String, List<String>> =
+        dcProject.leaves.mapValues { (_, leaf) -> canonicalSegments(leaf.physicalPath) }
 
-    private fun resolveDependencyPaths(leaf: DcLeaf, leaves: Map<String, DcLeaf>): List<Pair<String, String>> {
+    fun parseFileNodes(
+        dcProject: DcProject,
+        edges: List<Edge> = emptyList(),
+        segmentsByLeafId: Map<String, List<String>> = canonicalSegmentsByLeafId(dcProject)
+    ): List<Pair<Path, MutableNode>> {
+        val outgoing = edges.groupBy { it.fromNodeName }.mapValues { (_, group) -> group.sumOf { dependencyCount(it) } }
+        val incoming = edges.groupBy { it.toNodeName }.mapValues { (_, group) -> group.sumOf { dependencyCount(it) } }
+
+        return segmentsByLeafId.values
+            .filter { it.isNotEmpty() }
+            .distinct()
+            .map { segments ->
+                val endpoint = endpoint(segments)
+                val attributes = mapOf<String, Any>(
+                    OUTGOING_DEPENDENCIES to (outgoing[endpoint] ?: 0),
+                    INCOMING_DEPENDENCIES to (incoming[endpoint] ?: 0)
+                )
+                Path(segments.dropLast(1)) to MutableNode(segments.last(), NodeType.File, attributes)
+            }
+    }
+
+    private fun dependencyCount(edge: Edge): Int = (edge.attributes[DEPENDENCIES] as? Number)?.toInt() ?: 0
+
+    fun parseEdges(dcProject: DcProject, segmentsByLeafId: Map<String, List<String>> = canonicalSegmentsByLeafId(dcProject)): List<Edge> =
+        dcProject.leaves.entries
+            .flatMap { (leafId, leaf) -> resolveDependencies(leafId, leaf, segmentsByLeafId) }
+            .groupingBy { it }
+            .eachCount()
+            .map { (endpoints, count) -> Edge(endpoints.first, endpoints.second, mapOf(DEPENDENCIES to count)) }
+
+    private fun resolveDependencies(leafId: String, leaf: DcLeaf, segmentsByLeafId: Map<String, List<String>>): List<Pair<String, String>> {
+        val fromSegments = segmentsByLeafId.getValue(leafId)
+        if (fromSegments.isEmpty()) return emptyList()
+
         return leaf.dependencies.keys.mapNotNull { targetId ->
-            val targetPath = leaves[targetId]?.physicalPath
-            if (targetPath == null) {
+            val toSegments = segmentsByLeafId[targetId]
+            if (toSegments == null) {
                 Logger.warn { "Target leaf '$targetId' not found, skipping dependency" }
                 return@mapNotNull null
             }
-            if (targetPath.isBlank() || leaf.physicalPath == targetPath) return@mapNotNull null
-            Pair(leaf.physicalPath, targetPath)
+            if (toSegments.isEmpty() || fromSegments == toSegments) return@mapNotNull null
+            endpoint(fromSegments) to endpoint(toSegments)
         }
     }
+
+    /** Canonical tree-position segments of a physical path, tolerant of `/` and `\` separators. */
+    private fun canonicalSegments(physicalPath: String): List<String> =
+        if (physicalPath.isBlank()) emptyList() else NodeId.canonicalSegments(physicalPath.split('/', '\\'))
+
+    private fun endpoint(segments: List<String>): String = NodeId.endpointFromSegments(segments)
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-import * as fs from "fs"
 import { execSync } from "child_process"
+import * as fs from "fs"
 
 declare global {
     interface ImportMeta {

@@ -1,7 +1,7 @@
-import { TestBed } from "@angular/core/testing"
-import { VersionService } from "./version.service"
-import { VersionStore } from "../stores/version.store"
 import { signal } from "@angular/core"
+import { TestBed } from "@angular/core/testing"
+import { VersionStore } from "../stores/version.store"
+import { VersionService } from "./version.service"
 
 describe("VersionService", () => {
     let service: VersionService

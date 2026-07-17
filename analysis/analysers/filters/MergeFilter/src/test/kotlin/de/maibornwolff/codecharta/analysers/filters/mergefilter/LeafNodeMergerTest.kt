@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 class LeafNodeMergerTest {
     @Test
     fun `should merge nodes with same name`() {
-        val fittingMerger = LeafNodeMergerStrategy(false)
+        val fittingMerger = MergeResolverStrategy.leaf(false)
         val node1 = MutableNode("Name", NodeType.File)
         val node2 = MutableNode("Name", NodeType.Folder)
 
@@ -19,7 +19,7 @@ class LeafNodeMergerTest {
 
     @Test
     fun `should merge nodes with children and with same name`() {
-        val fittingMerger = LeafNodeMergerStrategy(false)
+        val fittingMerger = MergeResolverStrategy.leaf(false)
         val child1 = MutableNode("child1", NodeType.File)
         val child2 = MutableNode("child2", NodeType.Folder)
         val child1Modified = MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
@@ -38,7 +38,7 @@ class LeafNodeMergerTest {
 
     @Test
     fun `should merge children of nodes`() {
-        val fittingMerger = LeafNodeMergerStrategy(false)
+        val fittingMerger = MergeResolverStrategy.leaf(false)
         val childA = MutableNode("A", NodeType.File, mapOf("a" to 0))
         val childB = MutableNode("B", NodeType.Folder, mapOf(), "", setOf(MutableNode("A", NodeType.File)))
         val root1 = MutableNode("root", NodeType.Folder, mapOf(), "", setOf(childA, childB))
@@ -55,7 +55,7 @@ class LeafNodeMergerTest {
 
     @Test
     fun `should merge leafs`() {
-        val fittingMerger = LeafNodeMergerStrategy(false)
+        val fittingMerger = MergeResolverStrategy.leaf(false)
         val child1Modified = MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
         val node1 = MutableNode("root", NodeType.File, mapOf(), "", setOf(child1Modified))
         val child1 = MutableNode("child1", NodeType.File)
@@ -71,14 +71,14 @@ class LeafNodeMergerTest {
 
     @Test
     fun `should handle empty nodes`() {
-        val fittingMerger = LeafNodeMergerStrategy(false)
+        val fittingMerger = MergeResolverStrategy.leaf(false)
         val nodeList = fittingMerger.mergeNodeLists(listOf())
         assertEquals(nodeList.size, 0)
     }
 
     @Test
     fun `should merge single node list`() {
-        val fittingMerger = LeafNodeMergerStrategy(false)
+        val fittingMerger = MergeResolverStrategy.leaf(false)
         val nodeList = listOf(MutableNode("node", NodeType.File, mapOf()))
         val actualNodeList = fittingMerger.mergeNodeLists(listOf(nodeList))
 
@@ -87,7 +87,7 @@ class LeafNodeMergerTest {
 
     @Test
     fun `should merge nodes with children in misfitting mode`() {
-        val misfittingMerger = LeafNodeMergerStrategy(true)
+        val misfittingMerger = MergeResolverStrategy.leaf(true)
         val child1 = MutableNode("child1", NodeType.File)
         val child2 = MutableNode("child2", NodeType.Folder)
         val child1Modified = MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())

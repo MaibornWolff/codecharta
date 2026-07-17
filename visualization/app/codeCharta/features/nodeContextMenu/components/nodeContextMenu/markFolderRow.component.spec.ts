@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render } from "@testing-library/angular"
-import { markPackages, unmarkPackage } from "../../../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderModel/rightClickedCodeMapNode.selector"
+import { markPackages, unmarkPackage } from "../../../../stores/sharedView/sharedView.write.facade"
 import { getLastAction } from "../../../../util/testUtils/store.utils"
-import { rightClickedCodeMapNodeSelector } from "../../../../state/selectors/rightClickedCodeMapNode.selector"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
 

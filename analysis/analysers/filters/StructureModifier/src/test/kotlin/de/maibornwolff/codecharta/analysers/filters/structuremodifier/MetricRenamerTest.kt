@@ -48,12 +48,12 @@ class MetricRenamerTest {
         val result = MetricRenamer(attributeDescriptorsProject).rename()
 
         // then
-        val attributeTypeNodes = result.attributeTypes["nodes"]!!
+        val attributeTypeNodes = result.lenses.legacyAttributeTypes()["nodes"]!!
         Assertions.assertThat(attributeTypeNodes.containsKey("mcc")).isFalse()
         Assertions.assertThat(attributeTypeNodes.containsKey("complexity")).isTrue()
 
-        Assertions.assertThat(result.attributeDescriptors.containsKey("mcc")).isFalse()
-        Assertions.assertThat(result.attributeDescriptors.containsKey("complexity")).isTrue()
+        Assertions.assertThat(result.lenses.allAttributeDescriptors().containsKey("mcc")).isFalse()
+        Assertions.assertThat(result.lenses.allAttributeDescriptors().containsKey("complexity")).isTrue()
     }
 
     @Test
@@ -65,12 +65,12 @@ class MetricRenamerTest {
         Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "mcc")).isFalse()
         Assertions.assertThat(doesAttributeExistInNode(result.rootNode.toMutableNode(), "ymcc")).isTrue()
 
-        val attributeTypeNodes = result.attributeTypes["nodes"]!!
+        val attributeTypeNodes = result.lenses.legacyAttributeTypes()["nodes"]!!
         Assertions.assertThat(attributeTypeNodes.containsKey("mcc")).isFalse()
         Assertions.assertThat(attributeTypeNodes.containsKey("ymcc")).isTrue()
 
-        Assertions.assertThat(result.attributeDescriptors.containsKey("mcc")).isFalse()
-        Assertions.assertThat(result.attributeDescriptors.containsKey("ymcc")).isTrue()
+        Assertions.assertThat(result.lenses.allAttributeDescriptors().containsKey("mcc")).isFalse()
+        Assertions.assertThat(result.lenses.allAttributeDescriptors().containsKey("ymcc")).isTrue()
     }
 
     @Test

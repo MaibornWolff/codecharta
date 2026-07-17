@@ -29,8 +29,6 @@ class GitignoreHandlerTest {
         System.setErr(originalErr)
     }
 
-    // ========== DISCOVERY TESTS ==========
-
     @Test
     fun `should discover root level gitignore file`() {
         // Arrange
@@ -127,8 +125,6 @@ class GitignoreHandlerTest {
         assertThat(gitignoreFiles.size).isEqualTo(0)
     }
 
-    // ========== BASIC EXCLUSION TESTS ==========
-
     @Test
     fun `should exclude file matching simple pattern`() {
         // Arrange
@@ -163,6 +159,59 @@ class GitignoreHandlerTest {
 
         // Assert
         assertThat(shouldExclude).isFalse()
+    }
+
+    @Test
+    fun `should exclude the git directory even when a root gitignore exists`() {
+        // Arrange: git never lists .git in a .gitignore; it is implicitly ignored
+        File(rootDir, ".gitignore").writeText("*.log")
+        val handler = GitignoreHandler(rootDir)
+        val gitDir = File(rootDir, ".git")
+        gitDir.mkdirs()
+
+        // Act & Assert
+        assertThat(handler.shouldExclude(gitDir)).isTrue()
+    }
+
+    @Test
+    fun `should exclude files inside the git directory`() {
+        // Arrange
+        File(rootDir, ".gitignore").writeText("*.log")
+        val handler = GitignoreHandler(rootDir)
+        val gitInternalFile = File(rootDir, ".git/objects/pack/pack-1.idx")
+        gitInternalFile.parentFile.mkdirs()
+        gitInternalFile.createNewFile()
+
+        // Act & Assert
+        assertThat(handler.shouldExclude(gitInternalFile)).isTrue()
+    }
+
+    @Test
+    fun `should exclude the git directory even when no gitignore exists anywhere`() {
+        // Arrange: no .gitignore at all, so the rule cache is empty
+        val handler = GitignoreHandler(rootDir)
+        val gitDir = File(rootDir, ".git")
+        gitDir.mkdirs()
+
+        // Act & Assert
+        assertThat(handler.shouldExclude(gitDir)).isTrue()
+    }
+
+    @Test
+    fun `should not treat dot-git-prefixed siblings like github and gitattributes as the git directory`() {
+        // Arrange
+        File(rootDir, ".gitignore").writeText("*.log")
+        val handler = GitignoreHandler(rootDir)
+
+        val githubWorkflow = File(rootDir, ".github/workflows/ci.yml")
+        githubWorkflow.parentFile.mkdirs()
+        githubWorkflow.createNewFile()
+        val gitattributes = File(rootDir, ".gitattributes")
+        gitattributes.createNewFile()
+
+        // Act & Assert
+        assertThat(handler.shouldExclude(githubWorkflow)).isFalse()
+        assertThat(handler.shouldExclude(gitattributes)).isFalse()
     }
 
     @Test
@@ -204,8 +253,6 @@ class GitignoreHandlerTest {
         assertThat(handler.shouldExclude(debugLog)).isTrue()
         assertThat(handler.shouldExclude(importantLog)).isFalse()
     }
-
-    // ========== NESTED GITIGNORE TESTS ==========
 
     @Test
     fun `should apply nested gitignore rules`() {
@@ -291,8 +338,6 @@ class GitignoreHandlerTest {
         assertThat(handler.shouldExclude(testTxt)).isFalse() // Not matched
     }
 
-    // ========== DIRECTORY-ONLY PATTERNS ==========
-
     @Test
     fun `should exclude only directories when pattern ends with slash`() {
         // Arrange
@@ -324,8 +369,6 @@ class GitignoreHandlerTest {
         assertThat(handler.shouldExclude(buildDir)).isTrue()
         assertThat(handler.shouldExclude(fileInBuild)).isTrue()
     }
-
-    // ========== ROOTED PATTERNS ==========
 
     @Test
     fun `should apply rooted pattern only at gitignore level`() {
@@ -364,8 +407,6 @@ class GitignoreHandlerTest {
         assertThat(handler.shouldExclude(tempInSrc)).isTrue()
         assertThat(handler.shouldExclude(tempInTest)).isFalse()
     }
-
-    // ========== STATISTICS TESTS ==========
 
     @Test
     fun `should track excluded file count`() {
@@ -419,8 +460,6 @@ class GitignoreHandlerTest {
             "src${File.separator}.gitignore"
         )
     }
-
-    // ========== ERROR HANDLING TESTS ==========
 
     @Test
     fun `should handle file outside root directory`() {
@@ -496,8 +535,6 @@ class GitignoreHandlerTest {
         // Clean up
         System.setErr(originalErr)
     }
-
-    // ========== COMPREHENSIVE INTEGRATION TEST ==========
 
     @Test
     fun `should handle complex project structure with multiple gitignore files`() {

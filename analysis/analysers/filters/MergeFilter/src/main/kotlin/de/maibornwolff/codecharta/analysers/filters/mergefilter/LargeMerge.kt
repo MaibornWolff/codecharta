@@ -8,17 +8,29 @@ import de.maibornwolff.codecharta.model.Project
 
 class LargeMerge {
     companion object {
+        private const val ROOT_NODE_NAME = "root"
+
         fun wrapProjectInFolder(project: Project, prefix: String): Project {
-            val modifiedProject = Project(
-                project.projectName,
-                moveNodesIntoFolder(project.rootNode, prefix),
-                project.apiVersion,
-                addFolderToEdgePaths(project.edges, prefix),
-                project.attributeTypes,
-                project.attributeDescriptors,
-                addFolderToBlackListPaths(project.blacklist, prefix)
+            require(project.rootNode.name == ROOT_NODE_NAME) {
+                "Input project structure doesn't have '/root/' as a base folder. If that's intended open an issue."
+            }
+            // Covers every untyped lens, `clusters` included: only `metrics` and `dependency` are typed,
+            // so any other lens arrives here as an opaque payload whose node ids re-pathing would invalidate.
+            val dataBearingOpaqueLenses = project.lenses.opaqueLenses.filterValues { it.carriesData() }.keys
+            require(dataBearingOpaqueLenses.isEmpty()) {
+                "Cannot '--large' merge '${project.projectName}': opaque lens(es) ${dataBearingOpaqueLenses.joinToString()} " +
+                    "may reference node ids that re-pathing into a subfolder would invalidate. " +
+                    "Merge without '--large' or open an issue."
+            }
+            val rePathedDependency = project.lenses.dependency.copy(edges = addFolderToEdgePaths(project.lenses.dependency.edges, prefix))
+            return Project(
+                projectName = project.projectName,
+                nodes = moveNodesIntoFolder(project.rootNode, prefix),
+                apiVersion = project.apiVersion,
+                lenses = project.lenses.copy(dependency = rePathedDependency),
+                blacklist = addFolderToBlackListPaths(project.blacklist, prefix),
+                commitHash = project.commitHash
             )
-            return modifiedProject
         }
 
         private fun moveNodesIntoFolder(root: Node, folderName: String): List<Node> {

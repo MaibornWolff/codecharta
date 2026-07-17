@@ -2,13 +2,12 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { CodeMapNode } from "../../../../codeCharta.model"
-import { isDeltaStateSelector } from "../../../../state/selectors/isDeltaState.selector"
-import { selectedNodeSelector } from "../../../../state/selectors/selectedNode.selector"
-import { defaultMapColors } from "../../../../state/store/appSettings/mapColors/mapColors.reducer"
-import { mapColorsSelector } from "../../../../state/store/appSettings/mapColors/mapColors.selector"
-import { ThreeRendererService } from "../../../../features/codeMap/facade"
-import { ThreeSceneService } from "../../../../features/codeMap/facade"
+import { provideMockState } from "../../../../mocks/state.mocks"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
+import { selectedNodeSelector } from "../../../../renderer/renderModel/selectedNode.selector"
+import { ThreeRendererService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
+import { defaultMapColors, mapColorsSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { inspectorMappingBlocksSelector, MappingBlock } from "../../selectors/inspectorMappingBlocks.selector"
 import { inspectorMetricRowsSelector, MetricRow } from "../../selectors/inspectorMetricRows.selector"
 import { SidebarInspectorComponent } from "./sidebarInspector.component"
@@ -29,6 +28,7 @@ describe("SidebarInspectorComponent", () => {
         clearSelection.mockClear()
         TestBed.configureTestingModule({
             providers: [
+                provideMockState(),
                 provideMockStore({
                     selectors: [
                         { selector: selectedNodeSelector, value: undefined },

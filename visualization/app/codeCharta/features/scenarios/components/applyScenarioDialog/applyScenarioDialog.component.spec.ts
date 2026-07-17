@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing"
-import { ApplyScenarioDialogComponent } from "./applyScenarioDialog.component"
-import { ScenarioApplierService } from "../../services/scenarioApplier.service"
+import { ColorMode, LabelMode, MetricData } from "../../../../model/codeCharta.model"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { Scenario, ScenarioSectionKey } from "../../model/scenario.model"
-import { ColorMode, LabelMode, MetricData } from "../../../../codeCharta.model"
-import { defaultState } from "../../../../state/store/state.manager"
+import { ScenarioApplierService } from "../../services/scenarioApplier.service"
+import { ApplyScenarioDialogComponent } from "./applyScenarioDialog.component"
 
 const createTestScenario = (): Scenario => ({
     id: "test-id",
@@ -21,7 +21,7 @@ const createTestScenario = (): Scenario => ({
         colors: {
             colorRange: { from: 1, to: 10 },
             colorMode: ColorMode.weightedGradient,
-            mapColors: defaultState.appSettings.mapColors
+            mapColors: defaultState.mapState.mapColors
         },
         camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
         filters: { blacklist: [], focusedNodePath: [] },
