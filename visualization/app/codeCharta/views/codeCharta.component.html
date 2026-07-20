@@ -1,22 +1,10 @@
 <cc-error-dialog></cc-error-dialog>
-<cc-loading-file-progress-spinner></cc-loading-file-progress-spinner>
 @if (isInitialized()) {
     <div>
-        <cc-code-map></cc-code-map>
-        <cc-sidebar-explorer></cc-sidebar-explorer>
-        <cc-sidebar-inspector></cc-sidebar-inspector>
-        <cc-node-context-menu></cc-node-context-menu>
-
         <cc-nav-bar></cc-nav-bar>
 
-        <cc-metrics-bar></cc-metrics-bar>
-
-        <cc-legend-panel></cc-legend-panel>
+        <router-outlet></router-outlet>
 
         <cc-changelog-dialog></cc-changelog-dialog>
-
-        <cc-file-extension-bar></cc-file-extension-bar>
-
-        <cc-bottom-bar></cc-bottom-bar>
     </div>
 }

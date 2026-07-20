@@ -37,13 +37,17 @@ export class ScenariosPageObject {
         await dialog.getByRole("button", { name: new RegExp(name) }).click()
     }
 
-    async isApplyDialogVisible() {
-        const count = await this.page.locator("cc-apply-scenario-dialog dialog[open]").count()
-        return count > 0
+    /**
+     * The apply-scenario dialog and its title. Use with web-first assertions
+     * (`await expect(po.applyDialog()).toBeVisible()`): the dialog opens a change-detection tick after
+     * the scenario is clicked, so reading a count or the text once races it.
+     */
+    applyDialog(): Locator {
+        return this.page.locator("cc-apply-scenario-dialog dialog[open]")
     }
 
-    async getApplyDialogTitle() {
-        return this.page.locator("cc-apply-scenario-dialog h2").innerText()
+    applyDialogTitle(): Locator {
+        return this.page.locator("cc-apply-scenario-dialog h2")
     }
 
     async closeScenarioList() {
@@ -70,9 +74,8 @@ export class ScenariosPageObject {
         await confirmDialog.waitFor({ state: "detached", timeout: 10_000 })
     }
 
-    async isNoScenariosMessageVisible() {
-        const dialog = this.page.getByRole("dialog", { name: "Scenarios" })
-        const count = await dialog.getByText("No scenarios found.").count()
-        return count > 0
+    /** The empty-state message. Use with `await expect(po.noScenariosMessage()).toBeVisible()`. */
+    noScenariosMessage(): Locator {
+        return this.page.getByRole("dialog", { name: "Scenarios" }).getByText("No scenarios found.")
     }
 }

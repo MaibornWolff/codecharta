@@ -2,11 +2,9 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
-import { of } from "rxjs"
-import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
-import { IdToBuildingService, ThreeRendererService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { provideExplorerHostMock } from "../../explorerHost.mocks"
 import { explorerTreeNodeSelector } from "../../selectors/explorerTreeNode.selector"
 import { ExplorerTreeComponent } from "./explorerTree.component"
 
@@ -28,13 +26,7 @@ describe("ExplorerTreeComponent", () => {
                     selectors: [{ selector: explorerTreeNodeSelector, value: TEST_NODE }]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
-                { provide: ThreeSceneService, useValue: { selectBuilding: jest.fn(), clearConstantHighlight: jest.fn() } },
-                { provide: IdToBuildingService, useValue: { get: jest.fn(), has: jest.fn(), buildingIds$: of(new Set<number>()) } },
-                { provide: ThreeRendererService, useValue: { render: jest.fn() } },
-                {
-                    provide: CodeMapMouseEventService,
-                    useValue: { drawLabelSelectedBuilding: jest.fn(), hoverNode: jest.fn(), unhoverNode: jest.fn() }
-                }
+                provideExplorerHostMock()
             ]
         })
     })

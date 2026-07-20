@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test"
+import { Locator, Page } from "@playwright/test"
 
 export class SidebarInspectorPageObject {
     private readonly DEFAULT_TIMEOUT = 15000
@@ -13,8 +13,13 @@ export class SidebarInspectorPageObject {
         await this.page.locator("cc-sidebar-inspector.translate-x-full").waitFor({ state: "attached", timeout: this.DEFAULT_TIMEOUT })
     }
 
-    async getNodeName() {
-        return this.page.locator("[data-testid='inspector-node-name']").textContent()
+    /**
+     * The inspector's node-name element. Use with a web-first assertion
+     * (`await expect(po.nodeName()).toContainText(…)`) rather than reading the text: the inspector's
+     * content fills in a tick after it slides open, so a plain read races it.
+     */
+    nodeName(): Locator {
+        return this.page.locator("[data-testid='inspector-node-name']")
     }
 
     async close() {

@@ -1,0 +1,11 @@
+<cc-axis-card
+    label="Rotation"
+    [metricName]="rotationRangeLabel()"
+    [hasCog]="true"
+    [cogPopoverId]="settingsPopoverId"
+    [cogAnchorName]="settingsAnchorName"
+    testId="domain-bar-rotation-segment"
+    cogTestId="domain-bar-rotation-cog"
+    minWidthClass="min-w-[110px]"
+></cc-axis-card>
+<cc-rotation-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-rotation-settings-popover>

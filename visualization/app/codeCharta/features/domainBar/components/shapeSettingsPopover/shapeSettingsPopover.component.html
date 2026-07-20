@@ -1,0 +1,17 @@
+<cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()" ariaLabel="Shape Settings">
+    <label class="form-control w-full gap-1" title="The outline the words are laid out in">
+        <span class="text-sm">Shape</span>
+        <select class="select select-bordered select-sm w-full" data-testid="domain-bar-shape" (change)="onShapeChange($any($event.target).value)">
+            @for (shape of shapes; track shape) {
+                <option [value]="shape" [selected]="shape === settings().shape">{{ shape }}</option>
+            }
+        </select>
+    </label>
+
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        tooltip="Reset the shape to its default"
+        label="Reset shape"
+        [small]="true"
+    ></cc-reset-settings-button>
+</cc-settings-popover-shell>

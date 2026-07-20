@@ -1,0 +1,48 @@
+<cc-settings-popover-shell
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    ariaLabel="Rotation Settings"
+    widthClass="w-80"
+    contentClass="gap-3 py-3 px-4"
+>
+    <div class="flex flex-col gap-2 rounded-lg bg-base-200 p-3">
+        <div data-testid="domain-bar-rotation-min">
+            <span class="text-sm">Min Rotation</span>
+            <cc-slider-number-input
+                ariaLabel="Min Rotation in degrees"
+                [min]="-90"
+                [max]="0"
+                [value]="settings().rotationRange[0]"
+                (valueChange)="onRotationRangeMinChange($event)"
+            ></cc-slider-number-input>
+        </div>
+        <div data-testid="domain-bar-rotation-max">
+            <span class="text-sm">Max Rotation</span>
+            <cc-slider-number-input
+                ariaLabel="Max Rotation in degrees"
+                [min]="0"
+                [max]="90"
+                [value]="settings().rotationRange[1]"
+                (valueChange)="onRotationRangeMaxChange($event)"
+            ></cc-slider-number-input>
+        </div>
+        <div data-testid="domain-bar-rotation-step" title="Words are rotated in multiples of this angle">
+            <span class="text-sm">Rotation Step</span>
+            <cc-slider-number-input
+                ariaLabel="Rotation Step in degrees"
+                [min]="15"
+                [max]="90"
+                [step]="15"
+                [value]="settings().rotationStep"
+                (valueChange)="onRotationStepChange($event)"
+            ></cc-slider-number-input>
+        </div>
+    </div>
+
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        tooltip="Reset the rotation settings to their defaults"
+        label="Reset rotation"
+        [small]="true"
+    ></cc-reset-settings-button>
+</cc-settings-popover-shell>

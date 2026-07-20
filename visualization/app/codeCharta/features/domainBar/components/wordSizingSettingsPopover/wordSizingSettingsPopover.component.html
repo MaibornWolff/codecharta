@@ -1,0 +1,102 @@
+<cc-settings-popover-shell
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    ariaLabel="Word Sizing Settings"
+    widthClass="w-80"
+    contentClass="gap-3 py-3 px-4"
+>
+    <label class="form-control w-full gap-1" title="Which word metric drives a word's rendered size">
+        <span class="text-sm">Word Sizing</span>
+        <select
+            class="select select-bordered select-sm w-full"
+            data-testid="domain-bar-sizing-mode"
+            (change)="onSizingModeChange($any($event.target).value)"
+        >
+            <option
+                [value]="WordCloudSizingMode.frequency"
+                [selected]="settings().sizingMode === WordCloudSizingMode.frequency"
+                title="Frequency — sizes words by how often they occur"
+            >
+                Frequency
+            </option>
+            <option
+                [value]="WordCloudSizingMode.tfidf"
+                [selected]="settings().sizingMode === WordCloudSizingMode.tfidf"
+                [disabled]="!hasTfidfData()"
+                [title]="tfidfOptionTitle()"
+            >
+                TF-IDF
+            </option>
+        </select>
+        @if (!hasTfidfData()) {
+            <span class="text-xs opacity-70">TF-IDF is unavailable: the loaded file has no TF-IDF scores.</span>
+        }
+    </label>
+
+    <div class="rounded-lg bg-base-200 p-3" data-testid="domain-bar-top-n" title="How many of the most important words are drawn">
+        <span class="text-sm">Words</span>
+        <cc-slider-number-input
+            ariaLabel="Words"
+            [min]="10"
+            [max]="300"
+            [step]="10"
+            [value]="settings().topN"
+            (valueChange)="onTopNChange($event)"
+        ></cc-slider-number-input>
+    </div>
+
+    <div class="flex flex-col gap-2 rounded-lg bg-base-200 p-3">
+        <div data-testid="domain-bar-size-min" title="The least important word in the cloud renders at this size">
+            <span class="text-sm">Smallest Word</span>
+            <cc-slider-number-input
+                ariaLabel="Smallest Word in pixels"
+                [min]="8"
+                [max]="40"
+                [value]="settings().sizeRange[0]"
+                (valueChange)="onSizeRangeMinChange($event)"
+            ></cc-slider-number-input>
+        </div>
+        <div data-testid="domain-bar-size-max" title="The most important word in the cloud renders at this size">
+            <span class="text-sm">Largest Word</span>
+            <cc-slider-number-input
+                ariaLabel="Largest Word in pixels"
+                [min]="40"
+                [max]="120"
+                [value]="settings().sizeRange[1]"
+                (valueChange)="onSizeRangeMaxChange($event)"
+            ></cc-slider-number-input>
+        </div>
+        <label class="flex cursor-pointer items-center gap-2" data-testid="domain-bar-shrink-to-fit" [title]="shrinkToFitTitle()">
+            <input
+                type="checkbox"
+                class="checkbox checkbox-sm"
+                [checked]="settings().shrinkToFit"
+                (change)="onShrinkToFitChange($any($event.target).checked)"
+            />
+            <span class="text-sm">Fit all words</span>
+        </label>
+    </div>
+
+    <div
+        class="rounded-lg bg-base-200 p-3"
+        data-testid="domain-bar-grid-size"
+        title="Spacing between words in pixels — larger means fewer, more spread-out words"
+    >
+        <span class="text-sm">Word Spacing</span>
+        <cc-slider-number-input
+            ariaLabel="Word Spacing in pixels"
+            [min]="4"
+            [max]="16"
+            [step]="4"
+            [value]="settings().gridSize"
+            (valueChange)="onGridSizeChange($event)"
+        ></cc-slider-number-input>
+    </div>
+
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        tooltip="Reset the word sizing settings to their defaults"
+        label="Reset word sizing"
+        [small]="true"
+    ></cc-reset-settings-button>
+</cc-settings-popover-shell>

@@ -1,5 +1,9 @@
 @if (breadcrumbs().length > 0) {
-    <div class="text-xs whitespace-nowrap overflow-hidden text-ellipsis flex items-center">
+    <!--
+        A block container, not a flex one: text-overflow only ellipsises inline content, so the crumbs must
+        stay inline for a long path to end in an ellipsis instead of hard-clipping mid-glyph.
+    -->
+    <div class="text-xs leading-5 whitespace-nowrap overflow-hidden text-ellipsis" [attr.aria-live]="ariaLive()">
         @for (crumb of breadcrumbs(); track crumb.key) {
             @if (crumb.isLast) {
                 <i

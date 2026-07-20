@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy } from "@angular/core"
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, input, OnDestroy } from "@angular/core"
 import { AttributionComponent } from "../attribution/attribution.component"
 import { HoveredPathComponent } from "../hoveredPath/hoveredPath.component"
 
@@ -11,6 +11,9 @@ import { HoveredPathComponent } from "../hoveredPath/hoveredPath.component"
 export class BottomBarComponent implements AfterViewInit, OnDestroy {
     private readonly elementReference = inject(ElementRef<HTMLElement>)
     private resizeObserver?: ResizeObserver
+
+    /** Forwarded to the path breadcrumb — see HoveredPathComponent.showSelectedWhenNotHovered. */
+    readonly showSelectedWhenNotHovered = input(false)
 
     ngAfterViewInit(): void {
         const host = this.elementReference.nativeElement as HTMLElement

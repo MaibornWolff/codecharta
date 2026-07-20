@@ -5,6 +5,7 @@ describe("ExplorerCollapseService", () => {
     let service: ExplorerCollapseService
 
     beforeEach(() => {
+        localStorage.clear()
         TestBed.configureTestingModule({})
         service = TestBed.inject(ExplorerCollapseService)
     })
@@ -31,5 +32,17 @@ describe("ExplorerCollapseService", () => {
 
         // Assert
         expect(service.isCollapsed()).toBe(false)
+    })
+
+    it("should restore the collapsed state in a later session", () => {
+        // Arrange
+        service.toggle()
+
+        // Act — a fresh injector stands in for a reload
+        TestBed.resetTestingModule()
+        TestBed.configureTestingModule({})
+
+        // Assert
+        expect(TestBed.inject(ExplorerCollapseService).isCollapsed()).toBe(true)
     })
 })

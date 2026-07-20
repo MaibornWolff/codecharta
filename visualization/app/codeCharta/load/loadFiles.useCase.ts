@@ -220,7 +220,8 @@ export class LoadFilesUseCase {
         // before the reconciliation resolves it, since the persisted selection is one of the candidates.
         missingProperties.push(
             ...this.loadInitialFileStore.applyPreferences(savedCcState.preferences),
-            ...this.loadInitialFileStore.applyMapState(savedCcState.mapState)
+            ...this.loadInitialFileStore.applyMapState(savedCcState.mapState),
+            ...this.loadInitialFileStore.applyDomainBar(savedCcState.domainBar)
         )
 
         // The view slices are NOT applied here. They are carried on the provenance and applied by the
@@ -230,12 +231,14 @@ export class LoadFilesUseCase {
         const restoredSettings: RestoredSettings = {
             sharedView: savedCcState.sharedView,
             metricsLensSource: savedCcState.metricsLensSource,
-            dependencyLensSource: savedCcState.dependencyLensSource
+            dependencyLensSource: savedCcState.dependencyLensSource,
+            domainLensSource: savedCcState.domainLensSource
         }
         missingProperties.push(
             ...this.loadInitialFileStore.missingKeysOfSharedView(savedCcState.sharedView),
             ...this.loadInitialFileStore.missingKeysOfMetricsLensSource(savedCcState.metricsLensSource),
-            ...this.loadInitialFileStore.missingKeysOfDependencyLensSource(savedCcState.dependencyLensSource)
+            ...this.loadInitialFileStore.missingKeysOfDependencyLensSource(savedCcState.dependencyLensSource),
+            ...this.loadInitialFileStore.missingKeysOfDomainLensSource(savedCcState.domainLensSource)
         )
 
         this.commit(savedNameDataPairs, this.provenance(source, { areSampleFiles: false, urlMetrics, forceAutoFit, restoredSettings }))
@@ -253,6 +256,9 @@ export class LoadFilesUseCase {
         if (savedCcState.dependencyLensSource) {
             missingProperties.push(...this.loadInitialFileStore.applyDependencyLensSource(savedCcState.dependencyLensSource))
         }
+        if (savedCcState.domainLensSource) {
+            missingProperties.push(...this.loadInitialFileStore.applyDomainLensSource(savedCcState.domainLensSource))
+        }
         if (savedCcState.preferences) {
             missingProperties.push(...this.loadInitialFileStore.applyPreferences(savedCcState.preferences))
         }
@@ -261,6 +267,9 @@ export class LoadFilesUseCase {
         }
         if (savedCcState.mapState) {
             missingProperties.push(...this.loadInitialFileStore.applyMapState(savedCcState.mapState))
+        }
+        if (savedCcState.domainBar) {
+            missingProperties.push(...this.loadInitialFileStore.applyDomainBar(savedCcState.domainBar))
         }
 
         this.showMissingPropertiesDialog(missingProperties)

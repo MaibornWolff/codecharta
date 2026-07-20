@@ -1,8 +1,8 @@
 <span
     class="node-name"
     [class.line-through]="isFlattenedFile()"
-    [class.italic]="isUnclickable() || !isAreaMetricValid()"
-    [class.opacity-50]="!isAreaMetricValid()"
+    [class.italic]="isItalic()"
+    [class.opacity-50]="isDimmed()"
     [class.text-primary]="isSearchResult()"
     [class.font-semibold]="isSearchResult()"
 >

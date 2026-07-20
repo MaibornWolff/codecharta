@@ -1,9 +1,13 @@
+<!-- Active treatment (text-secondary + font-bold) is shared with the view switcher, so both binary
+     toggles in this bar read as one control idiom. text-secondary rather than the lighter text-primary
+     because only it clears 4.5:1 against base-100 and 3:1 against the inactive base-content label. -->
 <div role="tablist" class="flex items-center gap-1">
     <button
         type="button"
         role="tab"
+        [attr.aria-selected]="!isDeltaState()"
         class="btn btn-ghost btn-sm"
-        [class.text-primary]="!isDeltaState()"
+        [class.text-secondary]="!isDeltaState()"
         [class.font-bold]="!isDeltaState()"
         (click)="selectExplore()"
     >
@@ -12,8 +16,9 @@
     <button
         type="button"
         role="tab"
+        [attr.aria-selected]="isDeltaState()"
         class="btn btn-ghost btn-sm"
-        [class.text-primary]="isDeltaState()"
+        [class.text-secondary]="isDeltaState()"
         [class.font-bold]="isDeltaState()"
         (click)="selectCompare()"
     >

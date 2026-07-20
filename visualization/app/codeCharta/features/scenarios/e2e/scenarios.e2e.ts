@@ -37,9 +37,8 @@ test.describe("Scenarios", () => {
         await scenarios.openScenarioList()
         await scenarios.clickScenarioByName("Real Lines of Code")
 
-        expect(await scenarios.isApplyDialogVisible()).toBe(true)
-        const title = await scenarios.getApplyDialogTitle()
-        expect(title).toContain("Real Lines of Code")
+        await expect(scenarios.applyDialog()).toBeVisible()
+        await expect(scenarios.applyDialogTitle()).toContainText("Real Lines of Code")
     })
 
     test("should filter scenarios by search term", async ({ page }) => {
@@ -48,11 +47,13 @@ test.describe("Scenarios", () => {
         await scenarios.openScenarioList()
         await scenarios.searchScenarios("Complexity")
 
-        const names = await scenarios.getScenarioNames()
-        expect(names.length).toBeGreaterThanOrEqual(1)
-        for (const name of names) {
-            expect(name.toLowerCase()).toContain("complexity")
-        }
+        // Filtering re-renders the list asynchronously, so poll instead of reading once
+        await expect
+            .poll(async () => {
+                const names = await scenarios.getScenarioNames()
+                return names.length > 0 && names.every(name => name.toLowerCase().includes("complexity"))
+            })
+            .toBe(true)
     })
 
     test("should show no results message when search has no matches", async ({ page }) => {
@@ -61,7 +62,7 @@ test.describe("Scenarios", () => {
         await scenarios.openScenarioList()
         await scenarios.searchScenarios("zzz_nonexistent_scenario_xyz")
 
-        expect(await scenarios.isNoScenariosMessageVisible()).toBe(true)
+        await expect(scenarios.noScenariosMessage()).toBeVisible()
     })
 
     test("should delete a user scenario and verify removal", async ({ page }) => {

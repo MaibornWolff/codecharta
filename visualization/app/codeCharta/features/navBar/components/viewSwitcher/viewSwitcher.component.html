@@ -1,0 +1,33 @@
+<div class="flex items-center gap-1" role="group" aria-label="View" data-testid="view-switcher">
+    <a
+        class="btn btn-ghost btn-sm"
+        [routerLink]="routeLinks.metrics"
+        routerLinkActive="text-secondary font-bold"
+        ariaCurrentWhenActive="page"
+        [routerLinkActiveOptions]="{ exact: true }"
+        title="Show the 3D metrics map"
+        data-testid="view-switcher-metrics"
+        >Map</a
+    >
+    @if (hasDomainData()) {
+        <a
+            class="btn btn-ghost btn-sm"
+            [routerLink]="routeLinks.domain"
+            routerLinkActive="text-secondary font-bold"
+            ariaCurrentWhenActive="page"
+            title="Show the domain-language word cloud"
+            data-testid="view-switcher-domain"
+            >Domain</a
+        >
+    } @else {
+        <button
+            type="button"
+            class="btn btn-ghost btn-sm"
+            disabled
+            title="Requires a cc.json 2.0 file with domain-language data"
+            data-testid="view-switcher-domain-unavailable"
+        >
+            Domain
+        </button>
+    }
+</div>

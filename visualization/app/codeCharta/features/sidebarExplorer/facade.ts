@@ -1,2 +1,7 @@
 export { SidebarExplorerComponent } from "./components/sidebarExplorer/sidebarExplorer.component"
+export type { ExplorerHost, ExplorerHostCapabilities, ExplorerRowState } from "./explorerHost"
+export { EXPLORER_HOST } from "./explorerHost"
+export { formatCompactNumber } from "./formatCompactNumber"
+export { ExplorerCollapseService } from "./services/explorerCollapse.service"
 export { ExplorerRevealService } from "./services/explorerReveal.service"
+export { ExplorerWidthService } from "./services/explorerWidth.service"

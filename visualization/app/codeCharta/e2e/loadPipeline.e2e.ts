@@ -79,7 +79,7 @@ test.describe("load pipeline", () => {
         await goto(page, `${CC_URL}?file=fileOne.json&area=functions`)
 
         // Assert — the url wins over the computed default...
-        expect(await metricsBar.getSelectedAreaMetricName()).toEqual("functions")
+        await expect(metricsBar.selectedAreaMetricName()).toHaveText("functions")
 
         // ...and the resolved selection is written back
         await expect.poll(() => page.url()).toContain("area=functions")
@@ -109,7 +109,7 @@ test.describe("load pipeline", () => {
         const metricsBar = new MetricsBarPageObject(page)
         await metricsBar.openAreaMetricSelect()
         await metricsBar.selectAreaMetricOption("functions")
-        expect(await metricsBar.getSelectedAreaMetricName()).toEqual("functions")
+        await expect(metricsBar.selectedAreaMetricName()).toHaveText("functions")
 
         // Act — Global Configuration → Reset map to default → Yes
         await page.locator('button[title="Global Configuration"]').click()
@@ -118,7 +118,7 @@ test.describe("load pipeline", () => {
         await page.locator("#loading-gif-file").waitFor({ state: "hidden", timeout: 60_000 })
 
         // Assert — the button promises to reset the selected metrics, so it must
-        await expect.poll(() => metricsBar.getSelectedAreaMetricName()).not.toEqual("functions")
+        await expect(metricsBar.selectedAreaMetricName()).not.toHaveText("functions")
     })
 
     test("should re-run the reconciliation when the file selection changes without a load", async ({ page }) => {

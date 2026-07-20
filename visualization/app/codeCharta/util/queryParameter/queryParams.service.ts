@@ -11,8 +11,12 @@ export interface QueryParamsWrite {
 }
 
 /**
- * The single owner of the URL query string. Nothing else in the app may touch
- * window.location or window.history.
+ * The single owner of the URL QUERY STRING. Ownership of the URL is split with the Angular Router: the
+ * router owns the FRAGMENT (metrics `#/` vs domain `#/domain`, see the hash-location note in app.config),
+ * this service owns the query string that precedes it — so a deep link reads `…/index.html?file=x#/domain`.
+ * The two never conflict: the router only ever rewrites the fragment, and this service only ever
+ * `replaceState`s the query on the CURRENT href, leaving the fragment untouched, so it never desyncs the
+ * router nor pushes a history entry. Nothing else in the app may touch window.location or window.history.
  */
 @Injectable({ providedIn: "root" })
 export class QueryParamsService {

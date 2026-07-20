@@ -1,18 +1,18 @@
 import { TestBed } from "@angular/core/testing"
-import { Router } from "@angular/router"
 import { EffectsModule } from "@ngrx/effects"
 import { provideMockActions } from "@ngrx/effects/testing"
 import { Action } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { BehaviorSubject, Subject, Subscription } from "rxjs"
-import { routeLinks } from "../../../../routing/routePaths"
-import { FileStoreReadWindow, filesLoaded, setIsLoadingFile } from "../../../../stores/fileStore/fileStore.facade"
+import { Subject, Subscription } from "rxjs"
+import { filesLoaded, setIsLoadingFile } from "../../../../stores/fileStore/fileStore.facade"
 import { visibleFileStatesSelector } from "../../../../stores/fileStore/store/visibleFileStates.selector"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { addBlacklistItem } from "../../../../stores/sharedView/sharedView.write.facade"
+import { ViewReadinessStore } from "../../../../stores/viewReadiness/viewReadiness.store"
 import { NO_URL_METRICS } from "../../../../util/queryParameter/queryParameter"
 import { wait } from "../../../../util/testUtils/wait"
 import { maxFPS, RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
-import { LOADING_INDICATOR_MAX_WAIT_MS, LOADING_INDICATOR_QUIET_PERIOD_MS, LoadingIndicatorEffect } from "./setLoadingIndicator.effect"
+import { LoadingIndicatorEffect, RENDER_QUIET_PERIOD_MS } from "./setLoadingIndicator.effect"
 
 const filesLoadedAction = () =>
     filesLoaded({
@@ -28,23 +28,18 @@ describe("LoadingIndicatorEffect", () => {
     let actions$: Subject<Action>
     let store: MockStore
     let mockedRenderCodeMap$: Subject<unknown>
-    let isLoadingFile$: BehaviorSubject<boolean>
+    let viewReadinessStore: ViewReadinessStore
     let scannedActions: Action[]
     let subscription: Subscription
-    let router: { url: string }
 
     beforeEach(() => {
         actions$ = new Subject<Action>()
         mockedRenderCodeMap$ = new Subject()
-        isLoadingFile$ = new BehaviorSubject(false)
-        router = { url: routeLinks.metrics }
 
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([LoadingIndicatorEffect])],
             providers: [
                 { provide: RenderCodeMapEffect, useValue: { renderCodeMap$: mockedRenderCodeMap$ } },
-                { provide: FileStoreReadWindow, useValue: { isLoadingFile$ } },
-                { provide: Router, useValue: router },
                 provideMockStore({
                     initialState: defaultState,
                     selectors: [{ selector: visibleFileStatesSelector, value: [] }]
@@ -54,6 +49,7 @@ describe("LoadingIndicatorEffect", () => {
         })
 
         store = TestBed.inject(MockStore)
+        viewReadinessStore = TestBed.inject(ViewReadinessStore)
         scannedActions = []
         subscription = store.scannedActions$.subscribe(action => scannedActions.push(action))
     })
@@ -64,127 +60,99 @@ describe("LoadingIndicatorEffect", () => {
         store.resetSelectors()
     })
 
-    it("should show the loading indicator when the visible file set changes", () => {
+    it("should lower the loading flag once the load commits", () => {
+        // Act
+        actions$.next(filesLoadedAction())
+
+        // Assert
+        expect(scannedActions).toContainEqual(setIsLoadingFile({ value: false }))
+    })
+
+    it("should not mark views stale merely because a load started", () => {
+        // Arrange — a load that never commits (an invalid file) would otherwise leave the views waiting
+        // forever for a rebuild that has no new data to rebuild from. The spinner comes from
+        // isLoadingFile while the load is in flight instead.
+        viewReadinessStore.markReady("metrics")
+        viewReadinessStore.markReady("domain")
+
+        // Act
+        actions$.next(setIsLoadingFile({ value: true }))
+
+        // Assert
+        expect(viewReadinessStore.isStale("metrics")).toBe(false)
+        expect(viewReadinessStore.isStale("domain")).toBe(false)
+    })
+
+    it("should leave the views ready when a load fails without committing", () => {
+        // Arrange — the use-case lowers the flag on its failure path, and nothing was written
+        viewReadinessStore.markReady("metrics")
+        viewReadinessStore.markReady("domain")
+
+        // Act
+        actions$.next(setIsLoadingFile({ value: true }))
+        actions$.next(setIsLoadingFile({ value: false }))
+
+        // Assert — the content on screen is untouched and still correct
+        expect(viewReadinessStore.isStale("metrics")).toBe(false)
+        expect(viewReadinessStore.isStale("domain")).toBe(false)
+    })
+
+    it("should mark every view stale when the visible file set changes", () => {
+        // Arrange
+        viewReadinessStore.markReady("metrics")
+        viewReadinessStore.markReady("domain")
+
         // Act
         store.overrideSelector(visibleFileStatesSelector, [{}] as never)
         store.refreshState()
 
         // Assert
-        expect(scannedActions).toContainEqual(setIsLoadingFile({ value: true }))
+        expect(viewReadinessStore.isStale("metrics")).toBe(true)
+        expect(viewReadinessStore.isStale("domain")).toBe(true)
     })
 
-    it("should not show the loading indicator for the initial emission at boot", () => {
-        // Assert — the skipped first emission must not raise it
-        expect(scannedActions).not.toContainEqual(setIsLoadingFile({ value: true }))
+    it("should not mark views stale for the initial file-set emission at boot", () => {
+        // Arrange — nothing has happened yet beyond the effects registering
+        viewReadinessStore.markReady("domain")
+
+        // Assert
+        expect(viewReadinessStore.isStale("domain")).toBe(false)
     })
 
-    it("should hide the loading indicator only after a quiet period following the render", async () => {
+    it("should mark every view stale when a node is excluded, so the hidden view rebuilds on switch", () => {
         // Arrange
-        isLoadingFile$.next(true)
+        viewReadinessStore.markReady("metrics")
+        viewReadinessStore.markReady("domain")
 
-        // Act — right after the render the indicator must NOT be dismissed yet: the debounce keeps it
-        // up until the burst of late renders (blacklist apply, autoFit) settles.
+        // Act
+        actions$.next(addBlacklistItem({ item: { path: "/root/foo", type: "exclude" } }))
+
+        // Assert
+        expect(viewReadinessStore.isStale("metrics")).toBe(true)
+        expect(viewReadinessStore.isStale("domain")).toBe(true)
+    })
+
+    it("should mark the metrics view ready only after the render burst settles", async () => {
+        // Act — the map jumps if the spinner clears on the first of a burst of late renders
         mockedRenderCodeMap$.next("")
         await wait(maxFPS)
 
         // Assert
-        expect(scannedActions).not.toContainEqual(setIsLoadingFile({ value: false }))
+        expect(viewReadinessStore.isStale("metrics")).toBe(true)
 
         // Act
-        await wait(LOADING_INDICATOR_QUIET_PERIOD_MS + maxFPS)
+        await wait(RENDER_QUIET_PERIOD_MS + maxFPS)
 
         // Assert
-        expect(scannedActions).toContainEqual(setIsLoadingFile({ value: false }))
+        expect(viewReadinessStore.isStale("metrics")).toBe(false)
     })
 
-    it("should hide the loading indicator on a non-map route once the load commits and the file set settles", async () => {
-        // Arrange — a load raises the indicator before the files are even fetched, so it waits for the commit
-        router.url = routeLinks.domain
-        isLoadingFile$.next(true)
-
-        // Act
-        actions$.next(filesLoadedAction())
-        store.overrideSelector(visibleFileStatesSelector, [{}] as never)
-        store.refreshState()
-        await wait(LOADING_INDICATOR_QUIET_PERIOD_MS + maxFPS)
-
-        // Assert
-        expect(scannedActions).toContainEqual(setIsLoadingFile({ value: false }))
-    })
-
-    it("should NOT hide the loading indicator on a non-map route while the load is still in flight", async () => {
-        // Arrange — no filesLoaded yet, so the files have not reached the store
-        router.url = routeLinks.domain
-        isLoadingFile$.next(true)
-
-        // Act
-        await wait(LOADING_INDICATOR_QUIET_PERIOD_MS + maxFPS)
-
-        // Assert — clearing here would drop the spinner mid-load
-        expect(scannedActions).not.toContainEqual(setIsLoadingFile({ value: false }))
-    })
-
-    it("should hide the loading indicator on a non-map route when the file-selection change is itself the last emission", async () => {
-        // Arrange — a file-panel change raises the indicator and nothing emits after it. Waiting for a
-        // SUBSEQUENT file-set emission would hang here until the max-wait deadline.
-        router.url = routeLinks.domain
-
-        // Act
-        store.overrideSelector(visibleFileStatesSelector, [{}] as never)
-        store.refreshState()
-        isLoadingFile$.next(true)
-        await wait(LOADING_INDICATOR_QUIET_PERIOD_MS + maxFPS)
-
-        // Assert
-        expect(scannedActions).toContainEqual(setIsLoadingFile({ value: false }))
-    })
-
-    it("should NOT hide on the map route from the file-set emission alone (it waits for the render)", async () => {
-        // Arrange — on the metrics route the spinner must wait for renderCodeMap$, not the file set
-        router.url = routeLinks.metrics
-        isLoadingFile$.next(true)
-
-        // Act
-        store.overrideSelector(visibleFileStatesSelector, [{}] as never)
-        store.refreshState()
-        await wait(LOADING_INDICATOR_QUIET_PERIOD_MS + maxFPS)
-
-        // Assert — no render happened, so it stays up
-        expect(scannedActions).not.toContainEqual(setIsLoadingFile({ value: false }))
-    })
-
-    it("should not hide the loading indicator while it is already down", async () => {
-        // Act — no load is in flight, so a render must not dispatch anything
+    it("should not mark the domain view ready when the map renders", async () => {
+        // Act — the two views settle independently; a map render says nothing about the word cloud
         mockedRenderCodeMap$.next("")
-        await wait(LOADING_INDICATOR_QUIET_PERIOD_MS + maxFPS)
+        await wait(RENDER_QUIET_PERIOD_MS + maxFPS)
 
         // Assert
-        expect(scannedActions).not.toContainEqual(setIsLoadingFile({ value: false }))
-    })
-
-    it("should hide the loading indicator after the maximum wait even when no render occurs", () => {
-        // Arrange — a load that produces no renderable map must not leave the spinner up forever
-        jest.useFakeTimers()
-        isLoadingFile$.next(true)
-
-        // Act
-        jest.advanceTimersByTime(LOADING_INDICATOR_MAX_WAIT_MS + 1)
-
-        // Assert
-        expect(scannedActions).toContainEqual(setIsLoadingFile({ value: false }))
-        jest.useRealTimers()
-    })
-
-    it("should not hide the loading indicator before the maximum wait when no render occurs", () => {
-        // Arrange — the deadline must never fire while a slow load is still in flight
-        jest.useFakeTimers()
-        isLoadingFile$.next(true)
-
-        // Act
-        jest.advanceTimersByTime(LOADING_INDICATOR_MAX_WAIT_MS - 1)
-
-        // Assert
-        expect(scannedActions).not.toContainEqual(setIsLoadingFile({ value: false }))
-        jest.useRealTimers()
+        expect(viewReadinessStore.isStale("domain")).toBe(true)
     })
 })

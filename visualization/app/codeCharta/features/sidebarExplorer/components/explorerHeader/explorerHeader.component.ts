@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { EXPLORER_HOST } from "../../explorerHost"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { SidebarExplorerReadStore } from "../../stores/sidebarExplorer.read.store"
 import { ExplorerCountChipComponent } from "../explorerCountChip/explorerCountChip.component"
@@ -13,6 +14,9 @@ import { ExplorerCountChipComponent } from "../explorerCountChip/explorerCountCh
 export class ExplorerHeaderComponent {
     private readonly readStore = inject(SidebarExplorerReadStore)
     private readonly collapseService = inject(ExplorerCollapseService)
+
+    // Flattened/hidden are 3D-map concepts, so views without a map (the domain word cloud) switch them off.
+    readonly showCounts = inject(EXPLORER_HOST).capabilities.showCounts
 
     readonly counts = toSignal(this.readStore.counts$, { requireSync: true })
 
