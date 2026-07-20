@@ -4,23 +4,16 @@
         <button type="button" class="btn btn-sm btn-primary" (click)="showWholeMap()">Show whole map</button>
     </div>
 } @else {
-    <!--
-        TEMPORARY diagnostic overlay (see showLayoutBounds): the outer box is the region the layout may
-        fill, the inner shape is what the chosen cloud shape actually leaves usable. Sits behind the
-        transparent echarts canvas. Remove once the sizing is settled.
-    -->
-    @if (showLayoutBounds) {
-        <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div
-                class="flex items-center justify-center bg-gray-500/10 outline outline-1 outline-dashed outline-gray-500/40"
-                [style.width.%]="layoutAreaPercent"
-                [style.height.%]="layoutAreaPercent"
-            >
-                <div class="h-full w-full bg-gray-500/20" [style.borderRadius]="isEllipticalLayout() ? '50%' : '0'"></div>
-            </div>
+    <div #wordCloudCanvas class="word-cloud-canvas relative h-full w-full" role="img" [attr.aria-label]="ariaLabel()"></div>
+    @if (droppedWordNotice()) {
+        <div
+            class="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-base-200/90 px-3 py-1 text-xs opacity-80"
+            data-testid="word-cloud-dropped-word-notice"
+            role="status"
+        >
+            {{ droppedWordNotice() }}
         </div>
     }
-    <div #wordCloudCanvas class="word-cloud-canvas relative h-full w-full" role="img" [attr.aria-label]="ariaLabel()"></div>
     <ol class="sr-only">
         @for (word of topWordsForScreenReaders(); track word.text) {
             <li>{{ word.text }}: {{ word.frequency }}</li>

@@ -7,13 +7,33 @@ import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
 import { WordCloudWriteStore } from "../../stores/wordCloud.write.store"
 import { WordCloudComponent } from "./wordCloud.component"
 
+// The component subscribes to "finished" to report the domain view ready and count the drawn words;
+// capture the callback so tests can complete a layout deterministically.
+let finishedCallback: (() => void) | undefined
+
 const mockChart = {
     setOption: jest.fn(),
     resize: jest.fn(),
     dispose: jest.fn(),
     clear: jest.fn(),
-    // The component subscribes to "finished" to report the domain view ready once the layout is on screen.
-    on: jest.fn()
+    on: jest.fn((event: string, callback: () => void) => {
+        if (event === "finished") {
+            finishedCallback = callback
+        }
+    }),
+    getModel: jest.fn()
+}
+
+/** Lets the mocked chart report that only the first `drawnCount` of `wordCount` words got placed. */
+function mockDrawnWords(drawnCount: number, wordCount: number) {
+    mockChart.getModel.mockReturnValue({
+        getSeriesByIndex: () => ({
+            getData: () => ({
+                count: () => wordCount,
+                getItemGraphicEl: (index: number) => (index < drawnCount ? {} : null)
+            })
+        })
+    })
 }
 
 jest.mock("echarts", () => ({
@@ -32,14 +52,18 @@ class ResizeObserverMock {
     disconnect() {}
 }
 
-/** Longer than both the render and resize debounces in the component. */
+/** Longer than the component's single render debounce. */
 const DEBOUNCE_SETTLE_MS = 250
 const settle = () => new Promise(resolve => setTimeout(resolve, DEBOUNCE_SETTLE_MS))
 
-// JSDOM lays nothing out, so `clientWidth` is always 0; make it a readable, mutable measurement instead.
+// JSDOM lays nothing out, so `clientWidth`/`clientHeight` are always 0; make them readable, mutable
+// measurements instead. The height matters because a 0-height box is how the component recognises a
+// detached (kept-alive) view.
 const WIDE_CONTAINER_WIDTH = 1600
 const NARROW_CONTAINER_WIDTH = 300
+const CONTAINER_HEIGHT = 900
 let measuredContainerWidth = WIDE_CONTAINER_WIDTH
+let measuredContainerHeight = CONTAINER_HEIGHT
 
 describe("WordCloudComponent", () => {
     let words$: BehaviorSubject<DomainWord[]>
@@ -49,11 +73,22 @@ describe("WordCloudComponent", () => {
     beforeEach(() => {
         jest.clearAllMocks()
         resizeCallback = undefined
+        finishedCallback = undefined
+        mockChart.on.mockImplementation((event: string, callback: () => void) => {
+            if (event === "finished") {
+                finishedCallback = callback
+            }
+        })
         window.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
         measuredContainerWidth = WIDE_CONTAINER_WIDTH
+        measuredContainerHeight = CONTAINER_HEIGHT
         Object.defineProperty(HTMLElement.prototype, "clientWidth", {
             configurable: true,
             get: () => measuredContainerWidth
+        })
+        Object.defineProperty(HTMLElement.prototype, "clientHeight", {
+            configurable: true,
+            get: () => measuredContainerHeight
         })
         words$ = new BehaviorSubject<DomainWord[]>([{ text: "invoice", frequency: 12 }])
         selectedNodeName$ = new BehaviorSubject<string>("billing")
@@ -140,17 +175,56 @@ describe("WordCloudComponent", () => {
         expect(mockChart.setOption.mock.calls.at(-1)[0].series[0].gridSize).toBe(16)
     })
 
-    it("should debounce a resize into a single chart resize", async () => {
-        // Arrange
-        await setup()
+    it("should lay the cloud out exactly once per resize", async () => {
+        // Arrange — let the initial layout settle, so only the resize's own work is counted
+        const { fixture } = await setup()
+        await settle()
+        jest.clearAllMocks()
 
-        // Act
+        // Act — a sidebar drag narrows the container and reports repeatedly while it runs
+        measuredContainerWidth = NARROW_CONTAINER_WIDTH
         resizeCallback?.()
         resizeCallback?.()
+        fixture.detectChanges()
+        await settle()
+
+        // Assert — one layout. A resize used to lay out twice: once from a direct chart.resize() and once
+        // more from the re-render that re-fits the font clamp, which is the visible double draw.
+        expect(mockChart.setOption).toHaveBeenCalledTimes(1)
+        expect(mockChart.resize).toHaveBeenCalledTimes(1)
+    })
+
+    it("should re-render when only the container height changes", async () => {
+        // Arrange — a width-only signal would skip this, leaving the cloud laid out for the old box
+        const { fixture } = await setup()
+        await settle()
+        jest.clearAllMocks()
+
+        // Act — a bar above the cloud collapses, so the box gets taller at the same width
+        measuredContainerHeight = CONTAINER_HEIGHT * 2
+        resizeCallback?.()
+        fixture.detectChanges()
         await settle()
 
         // Assert
-        expect(mockChart.resize).toHaveBeenCalledTimes(1)
+        expect(mockChart.setOption).toHaveBeenCalledTimes(1)
+    })
+
+    it("should not lay out while the view is detached and measures zero", async () => {
+        // Arrange
+        const { fixture } = await setup()
+        await settle()
+        jest.clearAllMocks()
+
+        // Act — the kept-alive domain view is detached, so its container measures 0x0
+        measuredContainerWidth = 0
+        measuredContainerHeight = 0
+        resizeCallback?.()
+        fixture.detectChanges()
+        await settle()
+
+        // Assert — laying out into nothing would only have to be redone on the way back
+        expect(mockChart.setOption).not.toHaveBeenCalled()
     })
 
     /**
@@ -246,6 +320,65 @@ describe("WordCloudComponent", () => {
 
         // Assert
         expect(screen.getByText(/No domain words for billing/)).toBeTruthy()
+    })
+
+    it("should report how many words fit when the layout drops some", async () => {
+        // Arrange — three words requested, but the layout only found room for two
+        words$.next([
+            { text: "invoice", frequency: 12 },
+            { text: "payment", frequency: 9 },
+            { text: "ledger", frequency: 4 }
+        ])
+        const { fixture } = await setup()
+        await settle()
+        mockDrawnWords(2, 3)
+
+        // Act
+        finishedCallback?.()
+        await settle()
+        fixture.detectChanges()
+
+        // Assert
+        expect(screen.getByText(/2 of 3 words fit/)).toBeTruthy()
+    })
+
+    it("should not show a notice when every requested word fit", async () => {
+        // Arrange
+        words$.next([
+            { text: "invoice", frequency: 12 },
+            { text: "payment", frequency: 9 }
+        ])
+        const { fixture } = await setup()
+        await settle()
+        mockDrawnWords(2, 2)
+
+        // Act
+        finishedCallback?.()
+        await settle()
+        fixture.detectChanges()
+
+        // Assert
+        expect(screen.queryByText(/words fit/)).toBeNull()
+    })
+
+    it("should hide the notice while a new layout is in flight", async () => {
+        // Arrange — a shortfall notice from the previous layout is showing
+        const { fixture } = await setup()
+        await settle()
+        mockDrawnWords(0, 1)
+        finishedCallback?.()
+        await settle()
+        fixture.detectChanges()
+        expect(screen.getByText(/0 of 1 words fit/)).toBeTruthy()
+
+        // Act — the words change, so a new layout starts
+        words$.next([{ text: "payment", frequency: 5 }])
+        fixture.detectChanges()
+        await settle()
+        fixture.detectChanges()
+
+        // Assert — the stale count no longer describes the canvas
+        expect(screen.queryByText(/words fit/)).toBeNull()
     })
 
     it("should clear the selection when the whole map is requested", async () => {

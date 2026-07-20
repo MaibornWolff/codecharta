@@ -1,5 +1,6 @@
 import { combineReducers } from "@ngrx/store"
 import { WordCloudSettings } from "../../../model/wordCloud.model"
+import { defaultDrawOutOfBound, drawOutOfBound } from "./drawOutOfBound/drawOutOfBound.reducer"
 import { defaultGridSize, gridSize } from "./gridSize/gridSize.reducer"
 import { defaultRotationRange, rotationRange } from "./rotationRange/rotationRange.reducer"
 import { defaultRotationStep, rotationStep } from "./rotationStep/rotationStep.reducer"
@@ -19,7 +20,8 @@ export const domainBar = combineReducers({
     gridSize,
     sizingMode,
     topN,
-    shrinkToFit
+    shrinkToFit,
+    drawOutOfBound
 })
 
 export const defaultDomainBar: WordCloudSettings = {
@@ -30,5 +32,6 @@ export const defaultDomainBar: WordCloudSettings = {
     gridSize: defaultGridSize,
     sizingMode: defaultSizingMode,
     topN: defaultTopN,
-    shrinkToFit: defaultShrinkToFit
+    shrinkToFit: defaultShrinkToFit,
+    drawOutOfBound: defaultDrawOutOfBound
 }

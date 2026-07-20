@@ -13,6 +13,7 @@ export const wordCloudSettingsSelector = createSelector(
         gridSize: domainBar.gridSize,
         sizingMode: domainBar.sizingMode,
         topN: domainBar.topN,
-        shrinkToFit: domainBar.shrinkToFit
+        shrinkToFit: domainBar.shrinkToFit,
+        drawOutOfBound: domainBar.drawOutOfBound
     })
 )

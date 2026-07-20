@@ -17,6 +17,7 @@ import { DependencyLensSourceReadWindow } from "../stores/dependencyLensSource/d
 import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import { DomainBarReadWindow } from "../stores/domainBar/domainBar.read.facade"
 import {
+    setDomainBarDrawOutOfBound,
     setDomainBarGridSize,
     setDomainBarRotationRange,
     setDomainBarRotationStep,
@@ -270,6 +271,9 @@ export class LoadInitialFileStore {
                 break
             case "shrinkToFit":
                 this.store.dispatch(setDomainBarShrinkToFit({ value }))
+                break
+            case "drawOutOfBound":
+                this.store.dispatch(setDomainBarDrawOutOfBound({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

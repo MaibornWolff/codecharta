@@ -4,6 +4,7 @@ import { CcState, DomainLensSource } from "../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../model/wordCloud.model"
 import { DomainBarReadWindow } from "../stores/domainBar/domainBar.read.facade"
 import {
+    setDomainBarDrawOutOfBound,
     setDomainBarGridSize,
     setDomainBarRotationRange,
     setDomainBarRotationStep,
@@ -22,7 +23,7 @@ describe("LoadInitialFileStore", () => {
     let loadInitialFileStore: LoadInitialFileStore
     let dispatchSpy: jest.SpyInstance
 
-    /** Every domainBar setting differing from its default, so one apply hits all eight switch branches. */
+    /** Every domainBar setting differing from its default, so one apply hits all nine switch branches. */
     const savedDomainBar: WordCloudSettings = {
         shape: WordCloudShape.star,
         sizeRange: [20, 80],
@@ -31,7 +32,8 @@ describe("LoadInitialFileStore", () => {
         gridSize: 16,
         sizingMode: WordCloudSizingMode.tfidf,
         topN: 42,
-        shrinkToFit: true
+        shrinkToFit: false,
+        drawOutOfBound: true
     }
 
     const dispatchedActions = (): Action[] => dispatchSpy.mock.calls.map(call => call[0] as Action)
@@ -67,7 +69,8 @@ describe("LoadInitialFileStore", () => {
                 setDomainBarGridSize({ value: savedDomainBar.gridSize }),
                 setDomainBarSizingMode({ value: savedDomainBar.sizingMode }),
                 setDomainBarTopN({ value: savedDomainBar.topN }),
-                setDomainBarShrinkToFit({ value: savedDomainBar.shrinkToFit })
+                setDomainBarShrinkToFit({ value: savedDomainBar.shrinkToFit }),
+                setDomainBarDrawOutOfBound({ value: savedDomainBar.drawOutOfBound })
             ])
         })
 
@@ -93,7 +96,16 @@ describe("LoadInitialFileStore", () => {
 
             // Assert
             expect(dispatchedActions()).toEqual([setDomainBarTopN({ value: 42 })])
-            expect(missingKeys).toEqual(["shape", "sizeRange", "rotationRange", "rotationStep", "gridSize", "sizingMode", "shrinkToFit"])
+            expect(missingKeys).toEqual([
+                "shape",
+                "sizeRange",
+                "rotationRange",
+                "rotationStep",
+                "gridSize",
+                "sizingMode",
+                "shrinkToFit",
+                "drawOutOfBound"
+            ])
         })
 
         it("should throw when the current domain bar carries a key the mapper does not handle", () => {
