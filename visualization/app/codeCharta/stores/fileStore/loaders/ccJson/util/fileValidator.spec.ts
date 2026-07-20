@@ -328,6 +328,54 @@ describe("FileValidator", () => {
             expect(checkWarnings(file2_0)).toEqual([])
         })
 
+        it("should accept a 2.0 file carrying a domain lens", () => {
+            // Arrange
+            file2_0.lenses.domain = {
+                "/root": [{ text: "invoice", frequency: 12, tfidf: 0.4 }],
+                "/root/big.ts": [{ text: "payment", frequency: 5 }]
+            }
+
+            // Act
+            const errors = checkErrors(file2_0)
+
+            // Assert
+            expect(isCcJson2(file2_0)).toBe(true)
+            expect(errors).toEqual([])
+        })
+
+        it("should report an error for a domain lens whose word bank is not an array", () => {
+            // Arrange
+            ;(file2_0.lenses as Record<string, unknown>).domain = { "/root": { text: "invoice", frequency: 12 } }
+
+            // Act
+            const errors = checkErrors(file2_0)
+
+            // Assert
+            expect(errors).toEqual(["Type error: lenses/domain/~1root must be array"])
+        })
+
+        it("should report an error for a domain word missing its required fields", () => {
+            // Arrange
+            ;(file2_0.lenses as Record<string, unknown>).domain = { "/root": [{ text: "invoice" }] }
+
+            // Act
+            const errors = checkErrors(file2_0)
+
+            // Assert
+            expect(errors).toEqual(["Required error: lenses/domain/~1root/0 must have required property 'frequency'"])
+        })
+
+        it("should report an error for a domain word whose frequency is not a number", () => {
+            // Arrange
+            ;(file2_0.lenses as Record<string, unknown>).domain = { "/root": [{ text: "invoice", frequency: "many" }] }
+
+            // Act
+            const errors = checkErrors(file2_0)
+
+            // Assert
+            expect(errors).toEqual(["Type error: lenses/domain/~1root/0/frequency must be number"])
+        })
+
         it("should warn about a 2.0 dependency edge whose to endpoint id does not resolve to a node", () => {
             file2_0.lenses.dependency.edges.push({ fromId: "/root/big.ts", toId: "/does/not/exist", attributes: {} })
 
@@ -338,6 +386,24 @@ describe("FileValidator", () => {
             file2_0.lenses.dependency.edges.push({ fromId: "/does/not/exist", toId: "/root/big.ts", attributes: {} })
 
             expect(checkWarnings(file2_0)).toEqual([`${ERROR_MESSAGES.unresolvedEdgeEndpoint} /does/not/exist -> /root/big.ts`])
+        })
+
+        it("should warn about 2.0 domain-lens word banks whose node ids do not resolve to a node", () => {
+            // Arrange
+            file2_0.lenses.domain = {
+                "/root/big.ts": [{ text: "payment", frequency: 5 }],
+                "/does/not/exist": [{ text: "invoice", frequency: 12 }],
+                "/gone/too": [{ text: "refund", frequency: 3 }]
+            }
+
+            // Act
+            const warnings = checkWarnings(file2_0)
+
+            // Assert
+            expect(warnings).toEqual([
+                `${ERROR_MESSAGES.unresolvedDomainWordsNodeId} /does/not/exist`,
+                `${ERROR_MESSAGES.unresolvedDomainWordsNodeId} /gone/too`
+            ])
         })
 
         it("should report an error for two 2.0 sibling nodes sharing a name and type but with distinct ids", () => {

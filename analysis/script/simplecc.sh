@@ -55,7 +55,8 @@ ANALYSIS STEPS:
     3. Tokei            - Language statistics (requires: tokei)
     4. GitLogParser     - Git commit history metrics (requires: git, git repo)
     5. RawTextParser    - Raw text metrics (requires: ccsh)
-    6. SonarImporter    - SonarQube metrics (requires: sonar-scanner, token)
+    6. DomainLanguage   - Domain vocabulary lens (requires: ccsh)
+    7. SonarImporter    - SonarQube metrics (requires: sonar-scanner, token)
 
     Only ccsh is mandatory. All other tools are optional.
 
@@ -239,6 +240,9 @@ main() {
 
     # --- RawTextParser (mandatory with ccsh) ---
     run_rawtext_analysis
+
+    # --- DomainLanguageParser (optional, needs a ccsh that ships it) ---
+    run_domain_language_analysis
 
     # --- SonarImporter (optional) ---
     run_sonar_import
@@ -427,6 +431,25 @@ run_rawtext_analysis() {
         echo "   Generated rawtext.${FILE_EXTENSION}"
     else
         skip_step "RawText Analysis" "ccsh rawtextparser failed"
+    fi
+}
+
+run_domain_language_analysis() {
+    echo ""
+    echo "Domain Language Analysis"
+    echo "========================"
+
+    # The domain lens is a newer analyser; older ccsh installations do not ship it.
+    if ! ccsh domainlanguageparser --help >/dev/null 2>&1; then
+        skip_step "Domain Language Analysis" "ccsh does not provide domainlanguageparser (update ccsh)"
+        return
+    fi
+
+    if ccsh domainlanguageparser . -o "$TEMP_DIR/domain.${FILE_EXTENSION}"; then
+        GENERATED_FILES+=("$TEMP_DIR/domain.${FILE_EXTENSION}")
+        echo "   Generated domain.${FILE_EXTENSION}"
+    else
+        skip_step "Domain Language Analysis" "ccsh domainlanguageparser failed"
     fi
 }
 

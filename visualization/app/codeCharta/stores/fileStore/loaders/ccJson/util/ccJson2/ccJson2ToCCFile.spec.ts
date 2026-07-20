@@ -83,6 +83,48 @@ describe("mapCcJson2ToCCFile", () => {
         ])
     })
 
+    it("should re-key domain words from node id to node path", () => {
+        // Arrange
+        ;(file.lenses as Record<string, unknown>).domain = {
+            "/root": [{ text: "invoice", frequency: 12, tfidf: 0.4 }],
+            "/root/big.ts": [{ text: "payment", frequency: 5 }]
+        }
+
+        // Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.domainWords).toEqual({
+            "/root": [{ text: "invoice", frequency: 12, tfidf: 0.4 }],
+            "/root/big.ts": [{ text: "payment", frequency: 5 }]
+        })
+    })
+
+    it("should drop domain words whose node id does not resolve to a path", () => {
+        // Arrange
+        const warn = jest.spyOn(console, "warn").mockImplementation(() => undefined)
+        ;(file.lenses as Record<string, unknown>).domain = {
+            "/root/big.ts": [{ text: "payment", frequency: 5 }],
+            "/does/not/exist": [{ text: "ghost", frequency: 1 }]
+        }
+
+        // Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.domainWords).toEqual({ "/root/big.ts": [{ text: "payment", frequency: 5 }] })
+        expect(warn).toHaveBeenCalled()
+        warn.mockRestore()
+    })
+
+    it("should default domain words to an empty map when the file has no domain lens", () => {
+        // Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.domainWords).toEqual({})
+    })
+
     it("should drop edges with an unresolved endpoint", () => {
         // Arrange
         const warn = jest.spyOn(console, "warn").mockImplementation(() => undefined)

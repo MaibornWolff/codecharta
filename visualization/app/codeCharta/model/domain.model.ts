@@ -21,6 +21,8 @@ export interface CCFile {
             attributeDescriptors: AttributeDescriptors
             blacklist: Array<BlacklistItem>
             markedPackages: Array<MarkedPackage>
+            // The domain lens word bank, already re-keyed nodeId→path at load (mirrors `edges`).
+            domainWords: DomainLensData
         }
     }
     fileMeta: FileMeta
@@ -116,6 +118,24 @@ export interface MetricsLensSource {
 
 export interface DependencyLensSource {
     attributeTypes: AttributeTypeMap
+}
+
+/**
+ * The `domain` lens word bank, keyed by node PATH. The analyser emits it keyed by the 16-hex node id
+ * (see the analyser's `DomainProjectGenerator`); the reader re-keys nodeId→path at load — exactly as
+ * it does for dependency edges — because the viz addresses nodes by path and drops the analyser id.
+ */
+export type DomainLensData = Record<string, DomainWord[]>
+
+export interface DomainWord {
+    text: string
+    frequency: number
+    tfidf?: number
+}
+
+/** State home for the domain lens: the path-keyed word bank seeded from the loaded cc.json. */
+export interface DomainLensSource {
+    words: DomainLensData
 }
 
 export interface PrimaryMetrics {

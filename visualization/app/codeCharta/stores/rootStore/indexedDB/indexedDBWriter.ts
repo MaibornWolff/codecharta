@@ -1,13 +1,15 @@
 import { CcState } from "app/codeCharta/model/codeCharta.model"
 import { openDB } from "idb"
 import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
+import { defaultDomainBar } from "../../domainBar/domainBar.read.facade"
+import { defaultDomainLensSource } from "../../domainLensSource/domainLensSource.read.facade"
 import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSource.read.facade"
 import { defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 16
+export const DB_VERSION = 18
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -392,6 +394,33 @@ export function migrateCcStateRecordToV16<T>(state: T): T {
     return next as T
 }
 
+// v17: seed the domainLensSource root (the path-keyed domain word bank) so a blob written before the
+// domain lens existed still carries the root the restore path reads directly. The words are re-derived
+// from the file on every load, so an empty default is correct here.
+export function migrateCcStateRecordToV17<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    if (record["domainLensSource"]) {
+        return state
+    }
+    return { ...record, domainLensSource: defaultDomainLensSource } as T
+}
+
+// v18: seed the domainBar root (the word-cloud render controls) so a blob written before the domain
+// settings bar existed still carries the root the store expects. Defaults match the DLC render controls.
+export function migrateCcStateRecordToV18<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    if (record["domainBar"]) {
+        return state
+    }
+    return { ...record, domainBar: defaultDomainBar } as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     // Strict durability: the default (relaxed) reports success before the data reaches disk, so a
@@ -419,7 +448,7 @@ export async function deleteCcState() {
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
 // (v(N-1))-shaped blob into vN. A blob written at oldVersion runs every transform whose target version it
-// predates, in ascending order (a v2 blob runs v3→…→v16; a v15 blob runs only v16).
+// predates, in ascending order (a v2 blob runs v3→…→v18; a v17 blob runs only v18).
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -434,7 +463,9 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 13, migrate: migrateCcStateRecordToV13 },
     { version: 14, migrate: migrateCcStateRecordToV14 },
     { version: 15, migrate: migrateCcStateRecordToV15 },
-    { version: 16, migrate: migrateCcStateRecordToV16 }
+    { version: 16, migrate: migrateCcStateRecordToV16 },
+    { version: 17, migrate: migrateCcStateRecordToV17 },
+    { version: 18, migrate: migrateCcStateRecordToV18 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {
@@ -456,7 +487,7 @@ export async function openCodeChartaDB() {
             if (!database.objectStoreNames.contains(SCENARIOS_STORE_NAME)) {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
-            // Migrate persisted blobs forward through all applicable transforms (v3→…→v16).
+            // Migrate persisted blobs forward through all applicable transforms (v3→…→v18).
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)

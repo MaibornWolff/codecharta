@@ -60,6 +60,7 @@ exports[`ccFileHelper getCCFile should build a CCFile 1`] = `
         "nodes": {},
       },
       "blacklist": [],
+      "domainWords": {},
       "edges": [],
       "markedPackages": [],
     },

@@ -28,6 +28,7 @@ export const ERROR_MESSAGES = {
     nodesNotUnique: "Node names in combination with node types are not unique.",
     nodeIdsNotUnique: "Node ids are not unique.",
     unresolvedEdgeEndpoint: "Dependency edge dropped: an endpoint id does not resolve to a node.",
+    unresolvedDomainWordsNodeId: "Domain lens word bank dropped: the node id does not resolve to a node.",
     nodesEmpty: "The nodes array is empty. At least one node is required.",
     notAllFoldersAreFixed: "If at least one direct sub-folder of root is marked as fixed, all direct sub-folders of root must be fixed.",
     fixedFoldersOutOfBounds: "Coordinates of fixed folders must be within a range of 0 and 100.",
@@ -66,7 +67,7 @@ export function checkWarnings(file: CcFileContent): string[] {
         return []
     }
     if (isCcJson2(file)) {
-        return collectUnresolvedEdgeWarnings(file)
+        return collectUnresolvedNodeIdWarnings(file)
     }
     if (fileHasHigherMinorVersion(file)) {
         return [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`]
@@ -75,21 +76,35 @@ export function checkWarnings(file: CcFileContent): string[] {
 }
 
 /**
- * cc.json 2.0 dependency edges reference nodes by id; the 2.0 reader silently drops any edge whose
- * fromId/toId is absent from the file tree (mapEdges). Surface each drop as a load warning so it shows in
- * the load-warnings dialog instead of only console.warn.
+ * cc.json 2.0 dependency edges and domain-lens word banks reference nodes by id; the 2.0 reader silently
+ * drops any of them whose id is absent from the file tree (mapEdges, mapDomainWords). Surface each drop as
+ * a load warning so it shows in the load-warnings dialog instead of only console.warn.
  */
-function collectUnresolvedEdgeWarnings(file: CcJson2): string[] {
+function collectUnresolvedNodeIdWarnings(file: CcJson2): string[] {
     const root = file.files?.[0]
     if (root === undefined) {
         return []
     }
     const nodeIds = new Set<string>()
     collectFileNodeIds(root, nodeIds)
+    return [...collectUnresolvedEdgeWarnings(file, nodeIds), ...collectUnresolvedDomainWordsWarnings(file, nodeIds)]
+}
+
+function collectUnresolvedEdgeWarnings(file: CcJson2, nodeIds: Set<string>): string[] {
     const warnings: string[] = []
     for (const edge of file.lenses.dependency?.edges ?? []) {
         if (!nodeIds.has(edge.fromId) || !nodeIds.has(edge.toId)) {
             warnings.push(`${ERROR_MESSAGES.unresolvedEdgeEndpoint} ${edge.fromId} -> ${edge.toId}`)
+        }
+    }
+    return warnings
+}
+
+function collectUnresolvedDomainWordsWarnings(file: CcJson2, nodeIds: Set<string>): string[] {
+    const warnings: string[] = []
+    for (const nodeId of Object.keys(file.lenses.domain ?? {})) {
+        if (!nodeIds.has(nodeId)) {
+            warnings.push(`${ERROR_MESSAGES.unresolvedDomainWordsNodeId} ${nodeId}`)
         }
     }
     return warnings

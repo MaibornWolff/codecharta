@@ -636,6 +636,34 @@
       ],
       "type": "object"
     },
+    "DomainLens": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/definitions/DomainWord"
+        },
+        "type": "array"
+      },
+      "type": "object"
+    },
+    "DomainWord": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "frequency": {
+          "type": "number"
+        },
+        "tfidf": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "text",
+        "frequency"
+      ],
+      "type": "object"
+    },
     "Lenses": {
       "properties": {
         "metrics": {
@@ -648,7 +676,7 @@
           "$ref": "#/definitions/ClustersLens"
         },
         "domain": {
-          "type": "object"
+          "$ref": "#/definitions/DomainLens"
         },
         "security": {
           "type": "object"

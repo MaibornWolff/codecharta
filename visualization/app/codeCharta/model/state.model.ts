@@ -5,6 +5,7 @@ import {
     ColorMode,
     ColorRange,
     DependencyLensSource,
+    DomainLensSource,
     FileSettings,
     LabelMode,
     LayoutAlgorithm,
@@ -15,6 +16,7 @@ import {
     Scaling,
     Sorting
 } from "./domain.model"
+import { WordCloudSettings } from "./wordCloud.model"
 
 // The default number of top-value labels shown on the map. A plain domain default (not ngrx state),
 // so it lives in model/ where both the mapState amountOfTopLabels reducer and the pure
@@ -98,6 +100,8 @@ export interface MapState extends PrimaryMetrics {
 export interface CcState {
     metricsLensSource: MetricsLensSource
     dependencyLensSource: DependencyLensSource
+    domainLensSource: DomainLensSource
+    domainBar: WordCloudSettings
     preferences: Preferences
     mapState: MapState
     sharedView: SharedView

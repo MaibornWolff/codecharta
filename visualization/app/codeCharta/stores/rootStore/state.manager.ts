@@ -1,5 +1,7 @@
 import { CcState } from "../../model/codeCharta.model"
 import { defaultDependencyLensSource } from "../dependencyLensSource/dependencyLensSource.read.facade"
+import { defaultDomainBar } from "../domainBar/domainBar.read.facade"
+import { defaultDomainLensSource } from "../domainLensSource/domainLensSource.read.facade"
 import { defaultCurrentFilesAreSampleFiles, defaultFiles, defaultIsLoadingFile } from "../fileStore/fileStore.facade"
 import { defaultMapState } from "../mapState/mapState.read.facade"
 import { defaultMetricsLensSource } from "../metricsLensSource/metricsLensSource.read.facade"
@@ -9,6 +11,8 @@ import { defaultSharedView } from "../sharedView/sharedView.read.facade"
 export const defaultState: CcState = {
     metricsLensSource: defaultMetricsLensSource,
     dependencyLensSource: defaultDependencyLensSource,
+    domainLensSource: defaultDomainLensSource,
+    domainBar: defaultDomainBar,
     preferences: defaultPreferences,
     mapState: defaultMapState,
     sharedView: defaultSharedView,
@@ -21,6 +25,11 @@ const objectWithDynamicKeysInStore = new Set([
     "metricsLensSource.attributeTypes",
     "metricsLensSource.attributeDescriptors",
     "dependencyLensSource.attributeTypes",
+    // the whole path-keyed word bank is replaced wholesale, never deep-merged key-by-key
+    "domainLensSource.words",
+    // tuples: must be replaced wholesale, otherwise the deep-merge spread turns them into objects with numeric keys
+    "domainBar.sizeRange",
+    "domainBar.rotationRange",
     // arrays: must be replaced wholesale, otherwise the deep-merge spread turns them into objects with numeric keys
     "sharedView.blacklist",
     "sharedView.markedPackages",

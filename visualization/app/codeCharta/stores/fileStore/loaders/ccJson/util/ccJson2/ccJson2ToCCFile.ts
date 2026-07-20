@@ -6,6 +6,7 @@ import {
     AttributeTypes,
     CCFile,
     CodeMapNode,
+    DomainLensData,
     Edge,
     KeyValuePair
 } from "../../../../../../model/codeCharta.model"
@@ -29,6 +30,7 @@ export function mapCcJson2ToCCFile(file: CcJson2WithCarryover, nameDataPair: Nam
                 edges: mapEdges(file, idToPath),
                 attributeTypes: getAttributeTypes(file),
                 attributeDescriptors: getAttributeDescriptors(file),
+                domainWords: mapDomainWords(file, idToPath),
                 // 2.0 files carry neither; both are populated only when a 1.x file is normalized.
                 blacklist: file.blacklist ?? [],
                 markedPackages: file.markedPackages ?? []
@@ -88,6 +90,24 @@ function mapEdges(file: CcJson2, idToPath: Record<string, string>): Edge[] {
         edges.push({ fromNodeName, toNodeName, attributes: { ...edge.attributes } })
     }
     return edges
+}
+
+/**
+ * Re-keys the `domain` lens from the analyser's 16-hex node id to the viz path — the viz drops the id
+ * at load and addresses nodes by path, so the words must ride the same `idToPath` the edges do. A word
+ * list whose node id has no path (e.g. a stale key) is dropped with a warning, as an edge would be.
+ */
+function mapDomainWords(file: CcJson2, idToPath: Record<string, string>): DomainLensData {
+    const domainWords: DomainLensData = {}
+    for (const [nodeId, words] of Object.entries(file.lenses.domain ?? {})) {
+        const path = idToPath[nodeId]
+        if (path === undefined) {
+            console.warn(`Dropping domain-lens words with unresolved node id: ${nodeId}`)
+            continue
+        }
+        domainWords[path] = words
+    }
+    return domainWords
 }
 
 function getAttributeTypes(file: CcJson2): AttributeTypes {
