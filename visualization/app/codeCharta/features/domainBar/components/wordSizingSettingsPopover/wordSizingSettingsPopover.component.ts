@@ -22,13 +22,26 @@ export class WordSizingSettingsPopoverComponent {
     readonly hasTfidfData = this.readStore.hasTfidfData
     readonly WordCloudSizingMode = WordCloudSizingMode
 
-    readonly resetKeys = ["domainBar.sizingMode", "domainBar.topN", "domainBar.sizeRange", "domainBar.gridSize", "domainBar.shrinkToFit"]
+    readonly resetKeys = [
+        "domainBar.sizingMode",
+        "domainBar.topN",
+        "domainBar.sizeRange",
+        "domainBar.gridSize",
+        "domainBar.shrinkToFit",
+        "domainBar.drawOutOfBound"
+    ]
 
     /** Names the trade-off in whichever direction the toggle would take it, rather than only its on-state. */
     readonly shrinkToFitTitle = computed(() => {
         return this.settings().shrinkToFit
             ? "On — words that do not fit are shrunk until they do, so the full word count is drawn. Tail words can render below Smallest Word."
             : "Off — words that do not fit are left out, so Smallest Word is exact but fewer words than requested appear."
+    })
+
+    readonly drawOutOfBoundTitle = computed(() => {
+        return this.settings().drawOutOfBound
+            ? "On — words may render partially outside the layout area instead of being dropped or shrunk, so more words fit at their true size."
+            : "Off — every word is kept fully inside the layout area; words that only fit overlapping the edge are shrunk or left out."
     })
 
     readonly tfidfOptionTitle = computed(() => {
@@ -59,5 +72,9 @@ export class WordSizingSettingsPopoverComponent {
 
     onShrinkToFitChange(value: boolean) {
         this.writeStore.setShrinkToFit(value)
+    }
+
+    onDrawOutOfBoundChange(value: boolean) {
+        this.writeStore.setDrawOutOfBound(value)
     }
 }

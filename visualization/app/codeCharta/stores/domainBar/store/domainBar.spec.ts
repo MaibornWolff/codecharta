@@ -1,6 +1,8 @@
 import { STATE } from "../../../mocks/dataMocks"
 import { CcState } from "../../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../../../model/wordCloud.model"
+import { setDomainBarDrawOutOfBound } from "./drawOutOfBound/drawOutOfBound.actions"
+import { drawOutOfBound } from "./drawOutOfBound/drawOutOfBound.reducer"
 import { setDomainBarGridSize } from "./gridSize/gridSize.actions"
 import { gridSize } from "./gridSize/gridSize.reducer"
 import { setDomainBarRotationRange } from "./rotationRange/rotationRange.actions"
@@ -69,6 +71,17 @@ describe("domainBar store", () => {
         it("should reset to the default when the payload is undefined", () => {
             const value = undefined as unknown as number
             expect(topN(42, setDomainBarTopN({ value }))).toBe(defaultWordCloudSettings.topN)
+        })
+    })
+
+    describe("drawOutOfBound reducer", () => {
+        it("should set draw out of bound", () => {
+            expect(drawOutOfBound(defaultWordCloudSettings.drawOutOfBound, setDomainBarDrawOutOfBound({ value: true }))).toBe(true)
+        })
+
+        it("should reset to the default when the payload is undefined", () => {
+            const value = undefined as unknown as boolean
+            expect(drawOutOfBound(true, setDomainBarDrawOutOfBound({ value }))).toBe(defaultWordCloudSettings.drawOutOfBound)
         })
     })
 

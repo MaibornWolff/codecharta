@@ -4,6 +4,7 @@
  * only via this facade (mirrors the mapState home split).
  */
 
+export { setDomainBarDrawOutOfBound } from "./store/drawOutOfBound/drawOutOfBound.actions"
 export { setDomainBarGridSize } from "./store/gridSize/gridSize.actions"
 export { setDomainBarRotationRange } from "./store/rotationRange/rotationRange.actions"
 export { setDomainBarRotationStep } from "./store/rotationStep/rotationStep.actions"

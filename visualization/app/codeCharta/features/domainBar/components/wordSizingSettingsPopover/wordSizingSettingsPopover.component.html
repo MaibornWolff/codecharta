@@ -38,7 +38,7 @@
         <cc-slider-number-input
             ariaLabel="Words"
             [min]="10"
-            [max]="300"
+            [max]="1000"
             [step]="10"
             [value]="settings().topN"
             (valueChange)="onTopNChange($event)"
@@ -74,6 +74,19 @@
                 (change)="onShrinkToFitChange($any($event.target).checked)"
             />
             <span class="text-sm">Fit all words</span>
+        </label>
+        <label
+            class="flex cursor-pointer items-center gap-2"
+            data-testid="domain-bar-draw-out-of-bound"
+            [title]="drawOutOfBoundTitle()"
+        >
+            <input
+                type="checkbox"
+                class="checkbox checkbox-sm"
+                [checked]="settings().drawOutOfBound"
+                (change)="onDrawOutOfBoundChange($any($event.target).checked)"
+            />
+            <span class="text-sm">Draw outside bounds</span>
         </label>
     </div>
 

@@ -30,7 +30,8 @@ describe("DomainBarComponent", () => {
             setRotationRange: jest.fn(),
             setRotationStep: jest.fn(),
             setGridSize: jest.fn(),
-            setShrinkToFit: jest.fn()
+            setShrinkToFit: jest.fn(),
+            setDrawOutOfBound: jest.fn()
         }
         hasTfidfData = signal(false)
         return render(DomainBarComponent, {
@@ -169,6 +170,17 @@ describe("DomainBarComponent", () => {
 
         // Assert
         expect(writeStore.setShrinkToFit).toHaveBeenCalledWith(true)
+    })
+
+    it("should dispatch a draw-outside-bounds change", async () => {
+        // Arrange
+        await setup({ ...defaultWordCloudSettings, drawOutOfBound: false })
+
+        // Act
+        fireEvent.click(screen.getByLabelText("Draw outside bounds"))
+
+        // Assert
+        expect(writeStore.setDrawOutOfBound).toHaveBeenCalledWith(true)
     })
 
     it("should update the rotation range bounds independently", async () => {

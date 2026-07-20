@@ -8,16 +8,21 @@ const EMPHASIS_SHADOW_COLOR = "#333"
 const WORD_FONT_FAMILY = 'Roboto, "Helvetica Neue", sans-serif'
 /** Hover highlights rather than blacking out: the other words dim, but stay readable. */
 const BLURRED_WORD_OPACITY = 0.55
-/**
- * The share of the container the layout may fill. Exported so the debug overlay can outline exactly the
- * region the layout is confined to, rather than re-declaring the number and drifting from it.
- */
-export const CANVAS_FILL_RATIO = 0.9
+/** The share of the container the layout may fill. */
+const CANVAS_FILL_RATIO = 0.9
 /** Approximate width of a bold glyph as a fraction of its font size — used to fit the longest word. */
 const BOLD_GLYPH_WIDTH_RATIO = 0.62
 const TFIDF_TOOLTIP_DIGITS = 3
 /** Smallest font size the layout may fall back to; below this a word is no longer a word. */
 const MIN_RENDERABLE_FONT_SIZE = 1
+/**
+ * Share of words the layout may rotate. 1 keeps every word rotation-eligible — the look the cloud has
+ * always had. It inflates rotated words' grid bounding boxes by up to √2 and costs 20-40% packing
+ * density, so lowering this (wordcloud2's own default is 0.1) is the cheapest way to fit more words;
+ * kept at 1 deliberately because the mostly-horizontal look was not wanted. The patch in
+ * patches/echarts-wordcloud+2.1.0.patch is what makes this configurable at all.
+ */
+const ROTATE_RATIO = 1
 
 /**
  * One ECharts word-cloud datum. `textStyle.color` is baked in so each word keeps its gradient stop, and
@@ -57,8 +62,9 @@ export interface WordCloudOption {
             sizeRange: [number, number]
             rotationRange: [number, number]
             rotationStep: number
+            rotateRatio: number
             gridSize: number
-            drawOutOfBound: false
+            drawOutOfBound: boolean
             shrinkToFit: boolean
             layoutAnimation: boolean
             textStyle: { fontFamily: string; fontWeight: string }
@@ -105,13 +111,19 @@ function gradientFactorOf(text: string): number {
 }
 
 /**
- * `drawOutOfBound` is false, so echarts silently skips any word wider than the canvas — and because size
+ * With `drawOutOfBound` off, echarts silently skips any word wider than the canvas — and because size
  * maps to rank, that would be the single most important word. Shrink the range until the longest word
- * fits the drawable width.
+ * fits the drawable width. With `drawOutOfBound` on nothing is skipped, so the range is kept as-is and
+ * an oversized word overflows the edge instead.
  */
-function fitSizeRange(sizeRange: [number, number], words: DomainWord[], containerWidth?: number): [number, number] {
+function fitSizeRange(
+    sizeRange: [number, number],
+    words: DomainWord[],
+    drawOutOfBound: boolean,
+    containerWidth?: number
+): [number, number] {
     const [minSize, maxSize] = sizeRange
-    if (!containerWidth || words.length === 0) {
+    if (drawOutOfBound || !containerWidth || words.length === 0) {
         return sizeRange
     }
     const longestWordLength = Math.max(...words.map(word => word.text.length))
@@ -177,11 +189,12 @@ export function buildWordCloudOption(
                 top: "center",
                 width: `${CANVAS_FILL_RATIO * 100}%`,
                 height: `${CANVAS_FILL_RATIO * 100}%`,
-                sizeRange: fitSizeRange(settings.sizeRange, topWords, context.containerWidth),
+                sizeRange: fitSizeRange(settings.sizeRange, topWords, settings.drawOutOfBound, context.containerWidth),
                 rotationRange: settings.rotationRange,
                 rotationStep: settings.rotationStep,
+                rotateRatio: ROTATE_RATIO,
                 gridSize: settings.gridSize,
-                drawOutOfBound: false,
+                drawOutOfBound: settings.drawOutOfBound,
                 // With drawOutOfBound false, this is what decides the fate of a word that will not fit:
                 // shrink it until it does, or leave it out entirely. See WordCloudSettings.shrinkToFit.
                 shrinkToFit: settings.shrinkToFit,

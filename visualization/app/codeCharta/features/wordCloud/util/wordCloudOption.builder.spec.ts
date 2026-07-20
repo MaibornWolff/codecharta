@@ -155,6 +155,36 @@ describe("buildWordCloudOption", () => {
         expect(series.drawOutOfBound).toBe(false)
     })
 
+    it("should keep every word rotation-eligible", () => {
+        // Act
+        const option = buildWordCloudOption([], settings({}), context)
+
+        // Assert — 1 preserves the cloud's original look; lowering it packs more words but was not wanted
+        expect(option.series[0].rotateRatio).toBe(1)
+    })
+
+    it("should let words render outside the bounds when draw out of bound is enabled", () => {
+        // Act
+        const option = buildWordCloudOption([], settings({ drawOutOfBound: true }), context)
+
+        // Assert
+        expect(option.series[0].drawOutOfBound).toBe(true)
+    })
+
+    it("should keep the configured size range when draw out of bound is enabled", () => {
+        // Arrange — this word would force a clamped range in a container this narrow
+        const words: DomainWord[] = [{ text: "averylongdomainidentifier", frequency: 10 }]
+
+        // Act
+        const option = buildWordCloudOption(words, settings({ sizeRange: [12, 60], drawOutOfBound: true }), {
+            ...context,
+            containerWidth: 100
+        })
+
+        // Assert — nothing is dropped with drawOutOfBound on, so no clamp is needed
+        expect(option.series[0].sizeRange).toEqual([12, 60])
+    })
+
     it("should shrink words that do not fit when fitting all words is enabled", () => {
         // Act
         const option = buildWordCloudOption([], settings({ shrinkToFit: true }), context)

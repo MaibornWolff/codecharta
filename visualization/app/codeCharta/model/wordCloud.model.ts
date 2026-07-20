@@ -42,6 +42,11 @@ export interface WordCloudSettings {
      * fewer words than `topN` appear.
      */
     shrinkToFit: boolean
+    /**
+     * Allows words to render partially outside the layout canvas instead of being dropped or shrunk
+     * when they only fit overlapping the edge. Trades clean edges for word count.
+     */
+    drawOutOfBound: boolean
 }
 
 /** DLC-parity defaults for the word-cloud controls; the domain bar seeds its slices from these. */
@@ -53,5 +58,8 @@ export const defaultWordCloudSettings: WordCloudSettings = {
     gridSize: 8,
     sizingMode: WordCloudSizingMode.frequency,
     topN: 150,
-    shrinkToFit: false
+    // Defaults to shrinking rather than dropping: with both this and drawOutOfBound off, the layout
+    // silently leaves out every word it cannot place, so the cloud shows fewer words than topN.
+    shrinkToFit: true,
+    drawOutOfBound: false
 }

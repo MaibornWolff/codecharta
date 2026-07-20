@@ -2,6 +2,7 @@ import { Injectable, inject } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { WordCloudSettings } from "../../../model/wordCloud.model"
 import {
+    setDomainBarDrawOutOfBound,
     setDomainBarGridSize,
     setDomainBarRotationRange,
     setDomainBarRotationStep,
@@ -50,5 +51,9 @@ export class DomainBarWriteStore {
 
     setShrinkToFit(value: WordCloudSettings["shrinkToFit"]) {
         this.store.dispatch(setDomainBarShrinkToFit({ value }))
+    }
+
+    setDrawOutOfBound(value: WordCloudSettings["drawOutOfBound"]) {
+        this.store.dispatch(setDomainBarDrawOutOfBound({ value }))
     }
 }
