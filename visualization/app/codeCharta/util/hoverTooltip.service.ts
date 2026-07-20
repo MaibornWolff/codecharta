@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 
-export interface HoverTooltipRow {
+interface HoverTooltipRow {
     label: string
     value: string
 }
