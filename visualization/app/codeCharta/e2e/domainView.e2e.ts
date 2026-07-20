@@ -106,6 +106,36 @@ test.describe("DomainView", () => {
         await expect(pathBar).toContainText("sample1.cc.json")
     })
 
+    test("should hide the map-only nav bar controls on the domain view and restore them on the way back", async ({ page }) => {
+        // Arrange — 3D print exports the code map's geometry and the mode toggle drives delta mode, so
+        // neither has meaning on the domain view. Settings applies everywhere and has to survive.
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        const modeToggle = page.locator("cc-mode-toggle")
+        const print3DButton = page.locator("cc-print-3d-button")
+        const settingsButton = page.locator("cc-settings-button")
+        await expect(modeToggle).toBeVisible()
+        await expect(print3DButton).toBeVisible()
+
+        // Act
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+
+        // Assert
+        await expect(modeToggle).toHaveCount(0)
+        await expect(print3DButton).toHaveCount(0)
+        await expect(settingsButton).toBeVisible()
+
+        // Act — the round trip is the point: the route-reuse strategy keeps both views alive, so the nav
+        // bar has to follow the URL rather than any view's lifecycle. Rendering it fresh (as the unit test
+        // does) cannot catch a control that gets stuck after a real navigation.
+        await viewSwitcher.switchToMetrics()
+
+        // Assert
+        await expect(modeToggle).toBeVisible()
+        await expect(print3DButton).toBeVisible()
+        await expect(settingsButton).toBeVisible()
+    })
+
     test("should route to the domain path and back to the metrics path", async ({ page }) => {
         // Arrange
         const viewSwitcher = new ViewSwitcherPageObject(page)
