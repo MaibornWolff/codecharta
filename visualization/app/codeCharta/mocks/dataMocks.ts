@@ -25,6 +25,7 @@ import {
     SortingOption
 } from "../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
+import { defaultWordCloudSettings } from "../model/wordCloud.model"
 import { isLeaf } from "../util/codeMapHelper"
 import { UNARY_METRIC } from "../util/metric/unaryMetric"
 
@@ -80,7 +81,8 @@ export const DEFAULT_SETTINGS = {
         attributeDescriptors: {},
         blacklist: [],
         edges: VALID_EDGES,
-        markedPackages: []
+        markedPackages: [],
+        domainWords: {}
     }
 }
 export const DEFAULT_CC_FILE_MOCK: CCFile = {
@@ -1156,7 +1158,8 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
             attributeDescriptors: {},
             blacklist: [],
             edges: [],
-            markedPackages: []
+            markedPackages: [],
+            domainWords: {}
         }
     }
 }
@@ -1259,7 +1262,8 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
             attributeDescriptors: {},
             blacklist: [],
             edges: [],
-            markedPackages: []
+            markedPackages: [],
+            domainWords: {}
         }
     }
 }
@@ -2065,6 +2069,10 @@ export const STATE: CcState = {
     dependencyLensSource: {
         attributeTypes: {}
     },
+    domainLensSource: {
+        words: {}
+    },
+    domainBar: defaultWordCloudSettings,
     sharedView: {
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
@@ -2218,6 +2226,10 @@ export const DEFAULT_STATE: CcState = {
     dependencyLensSource: {
         attributeTypes: {}
     },
+    domainLensSource: {
+        words: {}
+    },
+    domainBar: defaultWordCloudSettings,
     files: [],
     isLoadingFile: true,
     currentFilesAreSampleFiles: false
@@ -2522,6 +2534,60 @@ export const TEST_FILE_CONTENT_CC_JSON_2: CcJson2 = {
             edges: [{ fromId: "/root/big.ts", toId: "/root/Parent/small.ts", attributes: { pairingRate: 42 } }],
             attributeTypes: { pairingRate: AttributeTypeValue.relative },
             attributeDescriptors: {}
+        }
+    }
+}
+
+/**
+ * A pair of cc.json 2.0 maps that both carry a `domain` lens, so a load of the two exercises the
+ * per-file re-keying and the aggregated-root fallback of the domain words merger end to end. They
+ * share the word "payment" on their roots and carry one word of their own each.
+ */
+export const TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_A: CcJson2 = {
+    meta: { projectName: "Domain Map A", apiVersion: "2.0", checksum: "valid-md5-domain-a" },
+    files: [
+        {
+            id: "/root",
+            name: "root",
+            type: NodeType.FOLDER,
+            children: [{ id: "/root/big.ts", name: "big.ts", type: NodeType.FILE }]
+        }
+    ],
+    lenses: {
+        metrics: {
+            attributes: { "/root/big.ts": { rloc: 100 } },
+            attributeDescriptors: {},
+            attributeTypes: { rloc: AttributeTypeValue.absolute }
+        },
+        domain: {
+            "/root": [{ text: "payment", frequency: 4, tfidf: 0.4 }],
+            "/root/big.ts": [{ text: "invoice", frequency: 2 }]
+        }
+    }
+}
+
+export const TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_B: CcJson2 = {
+    meta: { projectName: "Domain Map B", apiVersion: "2.0", checksum: "valid-md5-domain-b" },
+    files: [
+        {
+            id: "/root",
+            name: "root",
+            type: NodeType.FOLDER,
+            children: [{ id: "/root/small.ts", name: "small.ts", type: NodeType.FILE }]
+        }
+    ],
+    lenses: {
+        metrics: {
+            attributes: { "/root/small.ts": { rloc: 30 } },
+            attributeDescriptors: {},
+            attributeTypes: { rloc: AttributeTypeValue.absolute }
+        },
+        domain: {
+            "/root": [
+                { text: "payment", frequency: 6, tfidf: 0.2 },
+                { text: "shipping", frequency: 3 }
+            ],
+            "/root/small.ts": [{ text: "cart", frequency: 5 }]
         }
     }
 }

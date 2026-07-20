@@ -41,6 +41,7 @@ import { MetricSelection, resolveMetricSelection } from "./resolveMetricSelectio
 import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merger"
 import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
 import { getMergedBlacklist } from "./utils/blacklist.merger"
+import { getMergedDomainWords } from "./utils/domainWords.merger"
 import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
 
 /**
@@ -208,6 +209,7 @@ export class ReconcileAfterLoadEffect {
 
         this.loadInitialFileStore.applyMetricsLensSource(restoredSettings.metricsLensSource)
         this.loadInitialFileStore.applyDependencyLensSource(restoredSettings.dependencyLensSource)
+        this.loadInitialFileStore.applyDomainLensSource(restoredSettings.domainLensSource)
         this.loadInitialFileStore.applySharedView(restoredSettings.sharedView)
     }
 
@@ -235,6 +237,9 @@ export class ReconcileAfterLoadEffect {
                     },
                     dependencyLensSource: {
                         attributeTypes: mergedAttributeTypes.edges
+                    },
+                    domainLensSource: {
+                        words: getMergedDomainWords(visibleFiles, withUpdatedPath)
                     }
                 }
             })

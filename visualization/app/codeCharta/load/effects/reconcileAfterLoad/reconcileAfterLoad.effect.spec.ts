@@ -1,9 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { Action, State, Store, StoreModule } from "@ngrx/store"
-import { TEST_FILE_CONTENT } from "../../../mocks/dataMocks"
+import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_A, TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_B } from "../../../mocks/dataMocks"
 import { CcState, SharedView } from "../../../model/codeCharta.model"
 import { defaultDependencyLensSource } from "../../../stores/dependencyLensSource/dependencyLensSource.read.facade"
+import { defaultDomainLensSource } from "../../../stores/domainLensSource/domainLensSource.read.facade"
 import { LoadFileService, RestoredSettings, setDeltaReference, setStandard } from "../../../stores/fileStore/fileStore.facade"
 import { filesLoaded } from "../../../stores/fileStore/store/filesLoaded/filesLoaded.actions"
 import { defaultMetricsLensSource } from "../../../stores/metricsLensSource/metricsLensSource.read.facade"
@@ -22,6 +23,9 @@ import { ReconcileAfterLoadEffect } from "./reconcileAfterLoad.effect"
  * names the effect whose behavior it inherited.
  */
 describe("ReconcileAfterLoadEffect", () => {
+    const DOMAIN_FILE_NAME_A = "domainA.cc.json"
+    const DOMAIN_FILE_NAME_B = "domainB.cc.json"
+
     let store: Store<CcState>
     let state: State<CcState>
     let loadFileService: LoadFileService
@@ -49,7 +53,8 @@ describe("ReconcileAfterLoadEffect", () => {
     const aRestoredSettings = (sharedView: Partial<SharedView>): RestoredSettings => ({
         sharedView: { ...defaultSharedView, ...sharedView },
         metricsLensSource: defaultMetricsLensSource,
-        dependencyLensSource: defaultDependencyLensSource
+        dependencyLensSource: defaultDependencyLensSource,
+        domainLensSource: defaultDomainLensSource
     })
 
     /** The sequence is debounced onto the next macrotask; this is how a test waits for it. */
@@ -59,6 +64,16 @@ describe("ReconcileAfterLoadEffect", () => {
     const loadFileAndSignal = async (urlMetrics: UrlMetricSelection = NO_URL_METRICS, restoredSettings: RestoredSettings | null = null) => {
         loadFileService.loadFiles([{ fileName: "test.cc.json", fileSize: 42, content: clone(TEST_FILE_CONTENT) }])
         store.dispatch(aFilesLoaded(urlMetrics, restoredSettings))
+        await flushDebounce()
+    }
+
+    /** Loads the two domain-lens maps together, so the merger runs in multiple mode over both banks. */
+    const loadDomainLensFilesAndSignal = async () => {
+        loadFileService.loadFiles([
+            { fileName: DOMAIN_FILE_NAME_A, fileSize: 42, content: clone(TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_A) },
+            { fileName: DOMAIN_FILE_NAME_B, fileSize: 42, content: clone(TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_B) }
+        ])
+        store.dispatch(aFilesLoaded())
         await flushDebounce()
     }
 
@@ -110,10 +125,31 @@ describe("ReconcileAfterLoadEffect", () => {
                 value: expect.objectContaining({
                     sharedView: expect.objectContaining({ blacklist: expect.any(Array), markedPackages: expect.any(Array) }),
                     metricsLensSource: expect.objectContaining({ attributeTypes: expect.anything() }),
-                    dependencyLensSource: expect.objectContaining({ attributeTypes: expect.anything() })
+                    dependencyLensSource: expect.objectContaining({ attributeTypes: expect.anything() }),
+                    domainLensSource: expect.objectContaining({ words: expect.anything() })
                 })
             })
         )
+    })
+
+    it("should merge the domain words of all loaded files, re-keyed onto the aggregated map's paths", async () => {
+        // Act
+        await loadDomainLensFilesAndSignal()
+
+        // Assert — each file's bank under its own subtree, plus the summed bank on the aggregated root
+        expect(state.getValue().domainLensSource.words).toEqual({
+            "/root": [
+                { text: "payment", frequency: 10, tfidf: 0.4 },
+                { text: "shipping", frequency: 3 }
+            ],
+            [`/root/${DOMAIN_FILE_NAME_A}`]: [{ text: "payment", frequency: 4, tfidf: 0.4 }],
+            [`/root/${DOMAIN_FILE_NAME_A}/big.ts`]: [{ text: "invoice", frequency: 2 }],
+            [`/root/${DOMAIN_FILE_NAME_B}`]: [
+                { text: "payment", frequency: 6, tfidf: 0.2 },
+                { text: "shipping", frequency: 3 }
+            ],
+            [`/root/${DOMAIN_FILE_NAME_B}/small.ts`]: [{ text: "cart", frequency: 5 }]
+        })
     })
 
     // ── replaces LoadFileService.referenceFileSubscription ─────────────────────────────

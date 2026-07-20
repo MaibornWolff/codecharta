@@ -58,13 +58,13 @@
       "type": "string"
     },
     "Lenses": {
-      "description": "Additive overlays joined to `files` by id. `metrics`, `dependency` and `clusters` are concrete; `domain`/`security` are reserved; any unknown top-level lens is preserved verbatim on round-trip (hence no additionalProperties:false here).",
+      "description": "Additive overlays joined to `files` by id. `metrics`, `dependency`, `clusters` and `domain` are concrete; `security` is reserved; any unknown top-level lens is preserved verbatim on round-trip (hence no additionalProperties:false here).",
       "type": "object",
       "properties": {
         "metrics": { "$ref": "#/definitions/MetricsLens" },
         "dependency": { "$ref": "#/definitions/DependencyLens" },
         "clusters": { "$ref": "#/definitions/ClustersLens" },
-        "domain": { "type": "object" },
+        "domain": { "$ref": "#/definitions/DomainLens" },
         "security": { "type": "object" }
       }
     },
@@ -191,6 +191,25 @@
       "properties": {
         "nodeId": { "type": "string" },
         "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "DomainLens": {
+      "description": "Per-node domain vocabulary, keyed by node id: the word bank the domain bar and word cloud render.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "#/definitions/DomainWord" }
+      }
+    },
+    "DomainWord": {
+      "description": "One extracted domain term for a node. `frequency` is the raw occurrence count; `tfidf` is the optional corpus-relative weight.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "frequency"],
+      "properties": {
+        "text": { "type": "string" },
+        "frequency": { "type": "number" },
+        "tfidf": { "type": "number" }
       }
     },
     "AttributeDescriptor": {

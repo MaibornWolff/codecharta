@@ -123,7 +123,8 @@ describe("loadFileService", () => {
                     attributeDescriptors: {},
                     blacklist: [],
                     edges: [],
-                    markedPackages: []
+                    markedPackages: [],
+                    domainWords: {}
                 }
             }
         }

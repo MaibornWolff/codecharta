@@ -307,6 +307,47 @@ class EveritValidatorTest {
     }
 
     @Test
+    fun `should accept a 2_0 file whose domain lens maps node ids to word banks`() {
+        // Arrange: the shape DomainProjectGenerator emits — text + frequency always, tfidf optional.
+        val validDomainLens =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"app-id","name":"root","type":"Folder"}],""" +
+                """"lenses":{"domain":{"app-id":[{"text":"invoice","frequency":12,"tfidf":0.42},{"text":"customer","frequency":3}]}}}"""
+
+        // Act + Assert
+        validator.validate(ByteArrayInputStream(validDomainLens.toByteArray()))
+    }
+
+    @Test
+    fun `should reject a 2_0 file whose domain word bank is not an array`() {
+        // Arrange: a hand-edited file carrying a single word object instead of the required word array —
+        // ccsh check must refuse it rather than pass a file the visualization then fails to load.
+        val objectWordBank =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"app-id","name":"root","type":"Folder"}],""" +
+                """"lenses":{"domain":{"app-id":{"text":"invoice","frequency":12}}}}"""
+
+        // Act + Assert
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(objectWordBank.toByteArray()))
+        }
+    }
+
+    @Test
+    fun `should reject a 2_0 file whose domain word is missing its frequency`() {
+        // Arrange: every word carries a raw occurrence count; only tfidf is optional.
+        val wordWithoutFrequency =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"app-id","name":"root","type":"Folder"}],""" +
+                """"lenses":{"domain":{"app-id":[{"text":"invoice"}]}}}"""
+
+        // Act + Assert
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(wordWithoutFrequency.toByteArray()))
+        }
+    }
+
+    @Test
     fun `should reject an unwrapped legacy 1_x file with a convert hint`() {
         // Act
         val thrown =

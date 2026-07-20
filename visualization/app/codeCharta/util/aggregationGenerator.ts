@@ -51,7 +51,8 @@ export class AggregationGenerator {
                     blacklist: [],
                     attributeTypes: { nodes: {}, edges: {} },
                     attributeDescriptors: {},
-                    markedPackages: []
+                    markedPackages: [],
+                    domainWords: {}
                 }
             }
         }

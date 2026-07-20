@@ -1,4 +1,12 @@
-import { AttributeDescriptors, AttributeTypeValue, BlacklistItem, FixedPosition, MarkedPackage, NodeType } from "./domain.model"
+import {
+    AttributeDescriptors,
+    AttributeTypeValue,
+    BlacklistItem,
+    DomainLensData,
+    FixedPosition,
+    MarkedPackage,
+    NodeType
+} from "./domain.model"
 
 export interface CcJson2 {
     meta: Meta2
@@ -25,6 +33,7 @@ export interface FileNode {
 interface Lenses {
     metrics?: MetricsLensData
     dependency?: DependencyLensData
+    domain?: DomainLensData
     /*
      * Opaque passthrough — the schema defines the clusters lens, but the viz neither reads nor
      * renders it yet. The typed model lands with the first producer.
