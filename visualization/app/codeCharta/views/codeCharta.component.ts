@@ -1,34 +1,19 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from "@angular/core"
-import { BottomBarComponent } from "../features/bottomBar/facade"
+import { RouterOutlet } from "@angular/router"
 import { ChangelogDialogComponent } from "../features/changelog/facade"
-import { CodeMapComponent } from "../features/codeMap/facade"
-import { FileExtensionBarComponent } from "../features/fileExtensionBar/facade"
-import { LegendPanelComponent } from "../features/legend/facade"
-import { MetricsBarComponent } from "../features/metricsBar/facade"
 import { NavBarComponent } from "../features/navBar/facade"
-import { NodeContextMenuComponent } from "../features/nodeContextMenu/facade"
-import { ErrorDialogComponent, LoadingFileProgressSpinnerComponent } from "../features/shared/facade"
-import { SidebarExplorerComponent } from "../features/sidebarExplorer/facade"
-import { SidebarInspectorComponent } from "../features/sidebarInspector/facade"
+import { ErrorDialogComponent } from "../features/shared/facade"
 import { LoadFilesUseCase } from "../load/load.facade"
 
+/**
+ * The application shell. It owns the one-time boot (loadOnBoot), the global dialogs, the nav bar and the
+ * `<router-outlet>` the metrics/domain views render into. Each routed view owns its own busy overlay. The router owns only the
+ * path; the URL query string stays owned by QueryParamsService (see its doc comment).
+ */
 @Component({
     selector: "cc-code-charta",
     templateUrl: "./codeCharta.component.html",
-    imports: [
-        NavBarComponent,
-        FileExtensionBarComponent,
-        MetricsBarComponent,
-        NodeContextMenuComponent,
-        SidebarExplorerComponent,
-        SidebarInspectorComponent,
-        CodeMapComponent,
-        LegendPanelComponent,
-        LoadingFileProgressSpinnerComponent,
-        ChangelogDialogComponent,
-        ErrorDialogComponent,
-        BottomBarComponent
-    ],
+    imports: [NavBarComponent, ChangelogDialogComponent, ErrorDialogComponent, RouterOutlet],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeChartaComponent implements OnInit {

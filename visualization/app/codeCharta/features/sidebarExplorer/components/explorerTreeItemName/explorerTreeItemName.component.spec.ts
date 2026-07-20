@@ -23,7 +23,7 @@ describe("ExplorerTreeItemNameComponent", () => {
         })
     })
 
-    it("should not be opacity-50 when area metric is valid", async () => {
+    it("should not be opacity-50 by default", async () => {
         // Arrange & Act
         const { container } = await render(ExplorerTreeItemNameComponent, {
             inputs: { node: { path: "/x", attributes: { rloc: 2 } } as unknown as CodeMapNode }
@@ -33,14 +33,24 @@ describe("ExplorerTreeItemNameComponent", () => {
         expect(container.querySelector(".node-name")?.classList.contains("opacity-50")).toBe(false)
     })
 
-    it("should be opacity-50 when area metric is zero", async () => {
-        // Arrange & Act
+    it("should be opacity-50 when the hosting view dims the row", async () => {
+        // Arrange & Act — why a row is dimmed is the view's call, so it arrives as a plain flag
         const { container } = await render(ExplorerTreeItemNameComponent, {
-            inputs: { node: { path: "/x", attributes: { rloc: 0 } } as unknown as CodeMapNode }
+            inputs: { node: { path: "/x", attributes: { rloc: 0 } } as unknown as CodeMapNode, isDimmed: true }
         })
 
         // Assert
         expect(container.querySelector(".node-name")?.classList.contains("opacity-50")).toBe(true)
+    })
+
+    it("should be italic when the hosting view italicises the row", async () => {
+        // Arrange & Act
+        const { container } = await render(ExplorerTreeItemNameComponent, {
+            inputs: { node: { path: "/x", attributes: { rloc: 0 } } as unknown as CodeMapNode, isItalic: true }
+        })
+
+        // Assert
+        expect(container.querySelector(".node-name")?.classList.contains("italic")).toBe(true)
     })
 
     it("should be highlighted as search-result when path is in searchedNodePaths", async () => {

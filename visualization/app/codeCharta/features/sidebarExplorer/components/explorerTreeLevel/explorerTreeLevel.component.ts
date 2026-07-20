@@ -1,20 +1,12 @@
 import { NgClass } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, OnInit, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
-import {
-    CodeMapTooltipService,
-    IdToBuildingService,
-    ThreeRendererService,
-    ThreeSceneService
-} from "../../../../renderer/threeViewer/threeViewer.facade"
-import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
-import { isAreaValid, isLeaf } from "../../../../util/codeMapHelper"
-import { formatCompactNumber } from "../../formatCompactNumber"
+import { isLeaf } from "../../../../util/codeMapHelper"
+import { EXPLORER_HOST } from "../../explorerHost"
+import { scrollRowIntoViewWhenRendered } from "../../scrollRowIntoView"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
-import { SidebarExplorerReadStore } from "../../stores/sidebarExplorer.read.store"
 import { SidebarExplorerWriteStore } from "../../stores/sidebarExplorer.write.store"
 import { ExplorerTreeItemIconComponent } from "../explorerTreeItemIcon/explorerTreeItemIcon.component"
 import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerTreeItemName.component"
@@ -27,14 +19,8 @@ import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerT
 })
 export class ExplorerTreeLevelComponent implements OnInit {
     private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
-    private readonly mapStateReadWindow = inject(MapStateReadWindow)
-    private readonly readStore = inject(SidebarExplorerReadStore)
     private readonly writeStore = inject(SidebarExplorerWriteStore)
-    private readonly threeSceneService = inject(ThreeSceneService)
-    private readonly idToBuildingService = inject(IdToBuildingService)
-    private readonly threeRendererService = inject(ThreeRendererService)
-    private readonly codeMapMouseEventService = inject(CodeMapMouseEventService)
-    private readonly codeMapTooltipService = inject(CodeMapTooltipService)
+    private readonly host = inject(EXPLORER_HOST)
     private readonly revealService = inject(ExplorerRevealService)
     private readonly destroyRef = inject(DestroyRef)
 
@@ -48,30 +34,21 @@ export class ExplorerTreeLevelComponent implements OnInit {
     readonly hoveredNodeId = toSignal(this.sharedViewReadWindow.hoveredNodeId$, { requireSync: true })
     readonly rightClickedNodeData = toSignal(this.sharedViewReadWindow.rightClickedNodeData$, { requireSync: true })
     readonly selectedBuildingId = toSignal(this.sharedViewReadWindow.selectedBuildingId$, { requireSync: true })
-    readonly areaMetric = toSignal(this.mapStateReadWindow.areaMetric$, { requireSync: true })
-    readonly rootUnary = toSignal(this.readStore.rootUnary$, { requireSync: true })
-    readonly buildingIds = toSignal(this.idToBuildingService.buildingIds$, { requireSync: true })
 
     readonly isHovered = computed(() => this.hoveredNodeId() === this.node().path)
     readonly isMarked = computed(() => this.rightClickedNodeData()?.nodeId === this.node().path)
     readonly isRevealed = computed(() => this.revealService.revealedNodePath() === this.node().path)
     readonly isSelected = computed(() => this.selectedBuildingId() === this.node().path)
-    readonly isAreaMetricValid = computed(() => isAreaValid(this.node(), this.areaMetric()))
     readonly isLeafNode = computed(() => isLeaf(this.node()))
     readonly children = computed(() => this.node().children ?? [])
-    readonly isUnclickable = computed(() => this.isLeafNode() && !this.buildingIds().has(this.node().id))
-    readonly unaryPercentage = computed(() => {
-        const unary = this.node().attributes.unary
-        const root = this.rootUnary()
-        if (unary == null || !root) {
-            return 0
-        }
-        return Math.round((100 * unary) / root)
-    })
-    readonly unaryDisplay = computed(() => formatCompactNumber(this.node().attributes.unary))
 
-    // Opens this level when a node below it gets revealed via "Show in Explorer";
-    // the target level itself scrolls into view once its row exists in the DOM.
+    // Everything view-specific comes from the host, so this component stays free of map/domain concepts.
+    readonly rowState = computed(() => this.host.rowState(this.node()))
+    readonly rowDecoration = computed(() => this.host.rowDecoration(this.node()))
+    readonly isSelectable = computed(() => this.host.isSelectable(this.node()))
+    readonly hasContextMenu = computed(() => this.host.hasContextMenu(this.node()))
+
+    // Opens this level when a node below it gets revealed; the target level itself scrolls into view.
     private readonly revealEffect = effect(() => {
         const revealedNodePath = this.revealService.revealedNodePath()
         if (!revealedNodePath) {
@@ -82,7 +59,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
             this.isOpen.set(true)
         }
         if (revealedNodePath === path) {
-            requestAnimationFrame(() => document.getElementById(path)?.scrollIntoView({ block: "center" }))
+            scrollRowIntoViewWhenRendered(path, () => this.revealService.revealedNodePath() === path)
         }
     })
 
@@ -92,42 +69,42 @@ export class ExplorerTreeLevelComponent implements OnInit {
     }
 
     onMouseEnter($event: MouseEvent) {
-        this.codeMapMouseEventService.hoverNode(this.node().path)
         this.writeStore.setHoveredNodeId(this.node().path)
         const rowRect = ($event.currentTarget as HTMLElement).getBoundingClientRect()
-        this.codeMapTooltipService.show(this.node(), rowRect.right, rowRect.top)
+        this.host.onHover(this.node(), rowRect)
     }
 
     onMouseLeave() {
-        this.codeMapMouseEventService.unhoverNode()
         this.writeStore.setHoveredNodeId(null)
-        this.codeMapTooltipService.hide()
+        this.host.onHoverEnd()
     }
 
     onClick() {
-        if (this.isLeafNode() && this.isUnclickable()) {
+        if (!this.isSelectable()) {
             return
         }
         const willBeOpen = !this.isOpen()
         this.isOpen.set(willBeOpen)
         if (this.isLeafNode() || willBeOpen) {
-            const building = this.idToBuildingService.get(this.node().id)
-            this.codeMapMouseEventService.drawLabelSelectedBuilding(building)
-            this.threeSceneService.selectBuilding(building)
+            // Publish the selection by path first: this is what drives consumers such as the domain word
+            // cloud, and it works in views with no 3D map. The host then adds whatever selection means to it.
+            this.writeStore.setSelectedBuildingId(this.node().path)
+            this.host.onSelect(this.node())
         } else {
-            this.threeSceneService.clearSelection()
+            this.writeStore.setSelectedBuildingId(null)
+            this.host.onDeselect()
         }
-        this.threeSceneService.clearConstantHighlight()
-        this.threeRendererService.render()
     }
 
     openNodeContextMenu = ($event: MouseEvent) => {
-        $event.preventDefault()
-        $event.stopPropagation()
-
-        if (!this.isAreaMetricValid()) {
+        // Return before preventDefault so a view without a context menu (the domain view) leaves the
+        // event untouched rather than swallowing it into a menu that is never rendered.
+        if (!this.hasContextMenu()) {
             return
         }
+
+        $event.preventDefault()
+        $event.stopPropagation()
 
         this.writeStore.setRightClickedNodeData({
             nodeId: this.node().path,

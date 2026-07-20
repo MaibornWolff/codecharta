@@ -1,0 +1,12 @@
+<cc-axis-card
+    label="Word Sizing"
+    [metricName]="sizingModeLabel()"
+    [hasCog]="true"
+    [cogPopoverId]="settingsPopoverId"
+    [cogAnchorName]="settingsAnchorName"
+    testId="domain-bar-word-sizing-segment"
+    cogTestId="domain-bar-toggle"
+>
+    <div body class="text-xs opacity-70 text-center" data-testid="domain-bar-top-n-value">{{ settings().topN }} words</div>
+</cc-axis-card>
+<cc-word-sizing-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-word-sizing-settings-popover>

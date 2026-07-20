@@ -24,7 +24,7 @@ test.describe("ExplorerTreeLevel", () => {
             await explorerTreeLevel.openContextMenu(filePath)
             await nodeContextMenu.exclude()
 
-            expect(await explorerTreeLevel.nodeExists(filePath)).toBeFalsy()
+            await expect(explorerTreeLevel.node(filePath)).toHaveCount(0)
         })
     })
 

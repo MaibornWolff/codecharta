@@ -7,6 +7,12 @@
             <cc-delta-selector></cc-delta-selector>
         } @else {
             <cc-map-selector></cc-map-selector>
+            <div class="w-px h-4 bg-base-300 self-center mx-1"></div>
+            <!-- Hidden in delta mode: the domain view merges the word banks of both compared files into
+                 one cloud, so it carries no delta semantics and would contradict the delta chrome.
+                 RedirectAwayFromDomainViewEffect covers the other direction, so entering delta mode while
+                 the domain view is open cannot strand the user on a view with no way back. -->
+            <cc-view-switcher></cc-view-switcher>
         }
     </div>
     <div class="navbar-end gap-1">

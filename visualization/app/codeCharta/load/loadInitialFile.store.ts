@@ -1,11 +1,33 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import stringify from "safe-stable-stringify"
-import { DependencyLensSource, MapState, MetricsLensSource, Preferences, SharedView, Sorting } from "../model/codeCharta.model"
+import {
+    DependencyLensSource,
+    DomainLensSource,
+    MapState,
+    MetricsLensSource,
+    Preferences,
+    SharedView,
+    Sorting
+} from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
+import { WordCloudSettings } from "../model/wordCloud.model"
 import { DependencyLensSourceReadWindow } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
+import { DomainBarReadWindow } from "../stores/domainBar/domainBar.read.facade"
+import {
+    setDomainBarGridSize,
+    setDomainBarRotationRange,
+    setDomainBarRotationStep,
+    setDomainBarShape,
+    setDomainBarShrinkToFit,
+    setDomainBarSizeRange,
+    setDomainBarSizingMode,
+    setDomainBarTopN
+} from "../stores/domainBar/domainBar.write.facade"
+import { DomainLensSourceReadWindow } from "../stores/domainLensSource/domainLensSource.read.facade"
+import { setDomainWords } from "../stores/domainLensSource/domainLensSource.write.facade"
 import { FileStoreReadWindow, setCurrentFilesAreSampleFiles, setDelta, setFiles } from "../stores/fileStore/fileStore.facade"
 import { MapStateReadWindow } from "../stores/mapState/mapState.read.facade"
 import {
@@ -73,6 +95,8 @@ export class LoadInitialFileStore {
         private readonly preferencesReadWindow: PreferencesReadWindow,
         private readonly metricsLensSourceReadWindow: MetricsLensSourceReadWindow,
         private readonly dependencyLensSourceReadWindow: DependencyLensSourceReadWindow,
+        private readonly domainLensSourceReadWindow: DomainLensSourceReadWindow,
+        private readonly domainBarReadWindow: DomainBarReadWindow,
         private readonly sharedViewReadWindow: SharedViewReadWindow,
         private readonly mapStateReadWindow: MapStateReadWindow,
         private readonly fileStoreReadWindow: FileStoreReadWindow
@@ -104,6 +128,12 @@ export class LoadInitialFileStore {
         )
     }
 
+    applyDomainLensSource(savedDomainLensSource: DomainLensSource) {
+        return this.applySlice(this.domainLensSourceReadWindow.getDomainLensSource(), savedDomainLensSource, (key, value) =>
+            this.mapDomainLensSourceToAction(key, value)
+        )
+    }
+
     applySharedView(savedSharedView: SharedView) {
         return this.applySlice(this.sharedViewReadWindow.getSharedView(), savedSharedView, (key, value) =>
             this.mapSharedViewToAction(key, value)
@@ -119,6 +149,12 @@ export class LoadInitialFileStore {
         )
     }
 
+    applyDomainBar(savedDomainBar: WordCloudSettings) {
+        return this.applySlice(this.domainBarReadWindow.getDomainBar(), savedDomainBar, (key, value) =>
+            this.mapDomainBarToAction(key, value)
+        )
+    }
+
     missingKeysOfSharedView(savedSharedView: SharedView): string[] {
         return this.missingKeysOf(this.sharedViewReadWindow.getSharedView(), savedSharedView)
     }
@@ -129,6 +165,10 @@ export class LoadInitialFileStore {
 
     missingKeysOfDependencyLensSource(savedDependencyLensSource: DependencyLensSource): string[] {
         return this.missingKeysOf(this.dependencyLensSourceReadWindow.getDependencyLensSource(), savedDependencyLensSource)
+    }
+
+    missingKeysOfDomainLensSource(savedDomainLensSource: DomainLensSource): string[] {
+        return this.missingKeysOf(this.domainLensSourceReadWindow.getDomainLensSource(), savedDomainLensSource)
     }
 
     /** Which keys of the current slice the persisted one does not have at all. Dispatches nothing. */
@@ -195,6 +235,46 @@ export class LoadInitialFileStore {
             return
         }
         throw new Error(`Unhandled key: ${key}`)
+    }
+
+    private mapDomainLensSourceToAction(key: keyof DomainLensSource, value: any) {
+        if (key === "words") {
+            this.store.dispatch(setDomainWords({ value }))
+            return
+        }
+        throw new Error(`Unhandled key: ${key}`)
+    }
+
+    private mapDomainBarToAction(key: keyof WordCloudSettings, value: any) {
+        switch (key) {
+            case "shape":
+                this.store.dispatch(setDomainBarShape({ value }))
+                break
+            case "sizeRange":
+                this.store.dispatch(setDomainBarSizeRange({ value }))
+                break
+            case "rotationRange":
+                this.store.dispatch(setDomainBarRotationRange({ value }))
+                break
+            case "rotationStep":
+                this.store.dispatch(setDomainBarRotationStep({ value }))
+                break
+            case "gridSize":
+                this.store.dispatch(setDomainBarGridSize({ value }))
+                break
+            case "sizingMode":
+                this.store.dispatch(setDomainBarSizingMode({ value }))
+                break
+            case "topN":
+                this.store.dispatch(setDomainBarTopN({ value }))
+                break
+            case "shrinkToFit":
+                this.store.dispatch(setDomainBarShrinkToFit({ value }))
+                break
+            default: {
+                throw new Error(`Unhandled key: ${key}`)
+            }
+        }
     }
 
     private mapSharedViewToAction(key: keyof SharedView, value: any) {

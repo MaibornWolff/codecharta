@@ -1,115 +1,90 @@
 import { Injectable } from "@angular/core"
-import { Router } from "@angular/router"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
-import { debounceTime, filter, map, NEVER, Observable, race, skip, switchMap, take, tap, timer } from "rxjs"
+import { debounceTime, filter, map, merge, skip, tap } from "rxjs"
 import { CcState } from "../../../../model/codeCharta.model"
-import { routeLinks } from "../../../../routing/routePaths"
+import { filesLoaded, setIsLoadingFile, visibleFileStatesSelector } from "../../../../stores/fileStore/fileStore.facade"
 import {
-    FileStoreReadWindow,
-    filesLoaded,
-    setIsLoadingFile,
-    visibleFileStatesSelector
-} from "../../../../stores/fileStore/fileStore.facade"
+    addBlacklistItem,
+    addBlacklistItems,
+    removeBlacklistItem,
+    removeBlacklistItems
+} from "../../../../stores/sharedView/sharedView.write.facade"
+import { ViewReadinessStore } from "../../../../stores/viewReadiness/viewReadiness.store"
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 
-export const LOADING_INDICATOR_QUIET_PERIOD_MS = 350
-
 /**
- * The last-resort deadline for a load that never renders. It is deliberately far longer than any real
- * load: the indicator is armed the moment a load STARTS (before the file is even fetched), so a deadline
- * anywhere near a plausible load time would dismiss the spinner mid-load — which does not merely look
- * wrong, it tells the rest of the app the load is done while it is still writing to the store.
+ * How long the map render has to stay quiet before the metrics view counts as rendered. A load ends in a
+ * burst of late renders (blacklist apply, autoFit); clearing on the first of them makes the map visibly
+ * jump right after the spinner disappears.
  */
-export const LOADING_INDICATOR_MAX_WAIT_MS = 60_000
+export const RENDER_QUIET_PERIOD_MS = 350
 
 /**
- * Step 7 of the post-load reconciliation: the loading indicator goes down when the map it was raised
- * for is on screen.
+ * Owns two distinct things that used to be one overloaded boolean:
  *
- * Together with LoadFilesUseCase — which raises it at the start of every load, before the fetch —
- * this is the only place that writes isLoadingFile. It used to have five writers, one of them an
- * imperative boolean living outside the store.
+ * - `isLoadingFile` — literally "a file load is in flight". Raised by LoadFilesUseCase before the fetch,
+ *   lowered here when the load commits. Nothing about rendering is involved.
+ * - per-view readiness — which views still have to rebuild their content. Each view shows its own
+ *   spinner from its own flag, so the domain view never waits on the 3D map and vice versa.
+ *
+ * The old single flag could not express "domain is ready, metrics is not", so whichever view settled
+ * first cleared the spinner for both — and on a route that never rendered a map, nothing cleared it at
+ * all until a 60s deadline.
  */
 @Injectable()
 export class LoadingIndicatorEffect {
     constructor(
         private readonly store: Store<CcState>,
         private readonly actions$: Actions,
-        private readonly fileStoreReadWindow: FileStoreReadWindow,
         private readonly renderCodeMapEffect: RenderCodeMapEffect,
-        private readonly router: Router
+        private readonly viewReadinessStore: ViewReadinessStore
     ) {}
 
-    /**
-     * Which raise armed the current wait. The two raisers need opposite settle conditions on a non-map
-     * route, and they dispatch the same action, so the distinction has to be carried here: a file-panel
-     * change has ALREADY landed when it raises the indicator, while a load raises it before the files
-     * have even been fetched. Cleared whenever the wait resolves.
-     */
-    private armedByFileSelectionChange = false
-
-    /** A file-panel change (delta switch, file removal, re-selection) rebuilds the map too. */
-    showOnFileSelectionChange$ = createEffect(() =>
-        this.store.select(visibleFileStatesSelector).pipe(
-            skip(1),
-            tap(() => {
-                this.armedByFileSelectionChange = true
-            }),
-            map(() => setIsLoadingFile({ value: true }))
-        )
-    )
-
-    hideAfterRender$ = createEffect(() =>
-        this.fileStoreReadWindow.isLoadingFile$.pipe(
-            filter(Boolean),
-            switchMap(() =>
-                race(
-                    // Wait for the burst of late-arriving renders (blacklist apply, autoFit) to settle,
-                    // otherwise the user sees the map jump right after the spinner clears.
-                    this.renderCodeMapEffect.renderCodeMap$.pipe(debounceTime(LOADING_INDICATOR_QUIET_PERIOD_MS), take(1)),
-                    this.nonMapViewSettled$(),
-                    // A load that produces no renderable content at all must not leave the spinner up forever.
-                    timer(LOADING_INDICATOR_MAX_WAIT_MS)
-                )
-            ),
-            tap(() => {
-                this.armedByFileSelectionChange = false
-            }),
+    /** The load is over once its files are in the store. The views catch up on their own schedule. */
+    hideLoadingFileOnCommit$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(filesLoaded),
             map(() => setIsLoadingFile({ value: false }))
         )
     )
 
     /**
-     * A non-map view (the domain word cloud) produces no renderCodeMap$, so waiting on the map render
-     * alone would leave the spinner up until the max-wait deadline. Clear once the file data has settled
-     * instead — the same quiet period gives the view time to render its own content.
+     * Any change to the underlying data invalidates every view — a file-panel change (delta switch, file
+     * removal, re-selection) as much as a load. A view the user is not looking at stays stale silently
+     * until they switch to it; only then does its spinner appear.
+     *
+     * Deliberately NOT triggered by the START of a load: a load that fails (an invalid file, a bad URL)
+     * never commits, and marking views stale up front would leave them waiting forever for a rebuild
+     * that has no new data to rebuild from. While a load is in flight the spinner comes from
+     * `isLoadingFile` instead, which the use-case lowers on both the success and the failure path.
      */
-    private nonMapViewSettled$(): Observable<unknown> {
-        if (this.isOnMetricsRoute()) {
-            return NEVER
-        }
-        if (this.armedByFileSelectionChange) {
-            // The change is already in the store, so the CURRENT file set is the one to settle on.
-            // Waiting for a SUBSEQUENT emission would hang: the emission that raised the indicator is
-            // usually the last one there is.
-            return this.fileStatesSettled$()
-        }
-        // A load raised the indicator before the fetch, so the file set still holds the PREVIOUS files.
-        // Settling on it now would drop the spinner mid-load; wait for the commit first.
-        return this.actions$.pipe(
-            ofType(filesLoaded),
-            take(1),
-            switchMap(() => this.fileStatesSettled$())
-        )
-    }
+    markViewsStaleOnDataChange$ = createEffect(
+        () =>
+            merge(
+                this.store.select(visibleFileStatesSelector).pipe(skip(1)),
+                this.actions$.pipe(ofType(filesLoaded)),
+                // Excluding or flattening changes what BOTH views show. The view the user did it in
+                // catches up immediately; the other one rebuilds when they switch to it.
+                this.actions$.pipe(ofType(addBlacklistItem, addBlacklistItems, removeBlacklistItem, removeBlacklistItems))
+            ).pipe(
+                tap(() => {
+                    this.viewReadinessStore.markAllStale()
+                })
+            ),
+        { dispatch: false }
+    )
 
-    private fileStatesSettled$(): Observable<unknown> {
-        return this.store.select(visibleFileStatesSelector).pipe(debounceTime(LOADING_INDICATOR_QUIET_PERIOD_MS), take(1))
-    }
-
-    /** The metrics (3D map) view is the only view that produces a renderable map. */
-    private isOnMetricsRoute(): boolean {
-        return this.router.url.split("?")[0] === routeLinks.metrics
-    }
+    /** The metrics view is ready once its map has rendered and the render burst has settled. */
+    markMetricsReadyOnRender$ = createEffect(
+        () =>
+            this.renderCodeMapEffect.renderCodeMap$.pipe(
+                debounceTime(RENDER_QUIET_PERIOD_MS),
+                filter(() => this.viewReadinessStore.isStale("metrics")),
+                tap(() => {
+                    this.viewReadinessStore.markReady("metrics")
+                })
+            ),
+        { dispatch: false }
+    )
 }

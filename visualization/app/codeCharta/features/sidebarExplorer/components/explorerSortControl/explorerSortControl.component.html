@@ -1,9 +1,11 @@
-<div class="dropdown dropdown-start w-full px-2 mt-2" [class.dropdown-open]="isOpen()">
+<div class="w-full px-2 mt-2">
     <button
         type="button"
         class="btn btn-ghost btn-sm w-full justify-between normal-case font-normal"
         [title]="'Sort: ' + currentOption()"
-        (click)="toggleOpen()"
+        popovertarget="explorer-sort-menu"
+        style="anchor-name: --explorer-sort-menu"
+        data-testid="explorer-sort-trigger"
     >
         <span class="flex items-center gap-1">
             <i class="fa fa-bars text-[10px] opacity-60"></i>
@@ -12,25 +14,36 @@
         </span>
         <i class="fa fa-chevron-down text-[10px] opacity-60"></i>
     </button>
-    @if (isOpen()) {
-        <ul class="dropdown-content menu bg-base-100 rounded-box z-20 w-full mx-2 p-2 shadow">
-            @for (option of sortOptions; track option) {
-                <li>
-                    <button
-                        type="button"
-                        [class.font-semibold]="option === currentOption()"
-                        (click)="setSortingOption(option)"
-                    >
-                        {{ option }}
-                    </button>
-                </li>
-            }
-            <li class="border-t border-base-300 mt-1 pt-1">
-                <button type="button" (click)="toggleSortOrder()">
-                    <i class="fa" [class.fa-arrow-up]="!isAscending()" [class.fa-arrow-down]="isAscending()"></i>
-                    {{ isAscending() ? "Sort descending" : "Sort ascending" }}
+
+    <!--
+        A native popover rather than a plain absolutely-positioned dropdown: the panel is a clipping
+        container, so an in-flow menu gets cut off. The top layer escapes that (the search bar's menu
+        does the same).
+    -->
+    <ul
+        popover
+        id="explorer-sort-menu"
+        style="position-anchor: --explorer-sort-menu"
+        class="dropdown menu bg-base-100 rounded-box w-56 p-2 shadow-lg"
+    >
+        @for (option of sortOptions; track option) {
+            <li>
+                <button
+                    type="button"
+                    popovertarget="explorer-sort-menu"
+                    popovertargetaction="hide"
+                    [class.font-semibold]="option === currentOption()"
+                    (click)="setSortingOption(option)"
+                >
+                    {{ option }}
                 </button>
             </li>
-        </ul>
-    }
+        }
+        <li class="border-t border-base-300 mt-1 pt-1">
+            <button type="button" popovertarget="explorer-sort-menu" popovertargetaction="hide" (click)="toggleSortOrder()">
+                <i class="fa" [class.fa-arrow-up]="!isAscending()" [class.fa-arrow-down]="isAscending()"></i>
+                {{ isAscending() ? "Sort descending" : "Sort ascending" }}
+            </button>
+        </li>
+    </ul>
 </div>

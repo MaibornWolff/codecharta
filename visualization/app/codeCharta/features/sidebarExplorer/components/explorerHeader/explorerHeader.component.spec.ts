@@ -3,21 +3,28 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { provideExplorerHostMock } from "../../explorerHost.mocks"
 import { explorerCountsSelector } from "../../selectors/sidebarExplorer.selectors"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerHeaderComponent } from "./explorerHeader.component"
 
 describe("ExplorerHeaderComponent", () => {
-    beforeEach(() => {
+    const configureWithShowCounts = (showCounts: boolean) => {
         TestBed.configureTestingModule({
             imports: [ExplorerHeaderComponent],
             providers: [
                 provideMockStore({
                     initialState: defaultState,
                     selectors: [{ selector: explorerCountsSelector, value: { shown: 47, flattened: 12, hidden: 5, noArea: 3 } }]
-                })
+                }),
+                provideExplorerHostMock({ capabilities: { showRules: true, showSearch: true, showCounts } })
             ]
         })
+    }
+
+    beforeEach(() => {
+        localStorage.clear()
+        configureWithShowCounts(true)
     })
 
     it("should render the EXPLORER title", async () => {
@@ -54,6 +61,19 @@ describe("ExplorerHeaderComponent", () => {
         expect(shownChip.querySelector("[popovertarget]")).toBe(null)
         expect(flattenedChip.querySelector("[popovertarget='explorer-flatten-rules']")).not.toBe(null)
         expect(hiddenChip.querySelector("[popovertarget='explorer-hidden-rules']")).not.toBe(null)
+    })
+
+    it("should hide the count chips when the host does not want them", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        configureWithShowCounts(false)
+
+        // Act
+        const { container } = await render(ExplorerHeaderComponent)
+
+        // Assert
+        expect(container.querySelectorAll("cc-explorer-count-chip").length).toBe(0)
+        expect(screen.getByText("Explorer")).not.toBe(null)
     })
 
     it("should toggle the ExplorerCollapseService when the collapse button is clicked", async () => {

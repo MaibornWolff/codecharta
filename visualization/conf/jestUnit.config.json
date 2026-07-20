@@ -13,7 +13,10 @@
   ],
   "moduleNameMapper": {
     "\\CHANGELOG.(md)$": "<rootDir>/mocks/changelogMock.js",
-    "^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js"
+    "^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js",
+    "^app/(.*)$": "<rootDir>/app/$1",
+    "^echarts$": "<rootDir>/mocks/echartsMock.js",
+    "^echarts-wordcloud$": "<rootDir>/mocks/echartsWordcloudMock.js"
   },
   "roots": ["<rootDir>/app"],
   "moduleFileExtensions": ["js", "json", "ts", "mjs"],

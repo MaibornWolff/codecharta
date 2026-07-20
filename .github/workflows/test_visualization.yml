@@ -55,6 +55,12 @@ jobs:
         npm run lint:architecture || (echo "❌ Architecture violations detected! Check the output above for details." && exit 1)
       working-directory: ${{env.working-directory}}
 
+    - name: Check component styles
+      run: |
+        echo "Checking for component style files (no-component-scss-files)..."
+        npm run lint:styles || (echo "❌ Component style files detected! Use Tailwind utility classes instead." && exit 1)
+      working-directory: ${{env.working-directory}}
+
     - name: Check dead code
       run: |
         echo "Checking for unused exports/files (knip)..."

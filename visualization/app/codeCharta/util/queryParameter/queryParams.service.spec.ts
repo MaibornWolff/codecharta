@@ -251,4 +251,49 @@ describe("QueryParamsService", () => {
             expect(replaceStateSpy).toHaveBeenCalledTimes(1)
         })
     })
+
+    describe("coexisting with the router", () => {
+        // The router owns the FRAGMENT (`withHashLocation`, see app.config) and switches views by rewriting
+        // only the fragment — exactly what HashLocationStrategy does via `history.pushState("#/domain")`.
+        // The query string this service owns precedes the fragment and must survive that navigation.
+        const switchViewTo = (routePath: string) => {
+            window.history.pushState(null, "", `#${routePath}`)
+        }
+
+        const writeAllMetrics = () => {
+            queryParamsService.write({
+                areaMetric: "rloc",
+                heightMetric: "mcc",
+                colorMetric: "functions",
+                edgeMetric: "pairingRate",
+                isEdgeMetricDefined: true,
+                currentFilesAreSampleFiles: true
+            })
+        }
+
+        it("should keep the written metric parameters when the view is switched to the domain view", () => {
+            // Arrange
+            setUrl("http://localhost/?file=x.json#/")
+            writeAllMetrics()
+
+            // Act
+            switchViewTo("/domain")
+
+            // Assert
+            expect(window.location.search).toBe(
+                "?file=x.json&area=rloc&height=mcc&color=functions&edge=pairingRate&currentFilesAreSampleFiles=true"
+            )
+        })
+
+        it("should keep the fragment untouched when metrics are written", () => {
+            // Arrange
+            setUrl("http://localhost/?file=x.json#/domain")
+
+            // Act
+            writeAllMetrics()
+
+            // Assert
+            expect(window.location.hash).toBe("#/domain")
+        })
+    })
 })

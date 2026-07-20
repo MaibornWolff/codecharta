@@ -2,21 +2,15 @@ import { TestBed } from "@angular/core/testing"
 import { Store, StoreModule } from "@ngrx/store"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { of } from "rxjs"
-import { CodeMapMouseEventService } from "../../../../features/codeMap/facade"
+import { firstValueFrom } from "rxjs"
 import * as SearchedNodePathsSelector from "../../../../renderer/renderModel/searchedNodes/searchedNodePaths.selector"
-import {
-    CodeMapBuilding,
-    CodeMapTooltipService,
-    IdToBuildingService,
-    ThreeRendererService,
-    ThreeSceneService
-} from "../../../../renderer/threeViewer/threeViewer.facade"
-import * as AreaMetricSelector from "../../../../stores/mapState/store/areaMetric/areaMetric.selector"
 import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { setHoveredNodeId, setRightClickedNodeData } from "../../../../stores/sharedView/sharedView.write.facade"
 import { defaultRightClickedNodeData } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.reducer"
 import * as RightClickedNodeDataSelector from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
+import { selectedBuildingIdSelector } from "../../../../stores/sharedView/store/selectedBuildingId/selectedBuildingId.selector"
+import { EXPLORER_HOST, ExplorerHost } from "../../explorerHost"
+import { createExplorerHostMock } from "../../explorerHost.mocks"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { ExplorerTreeLevelComponent } from "./explorerTreeLevel.component"
 import { rootNode } from "./mocks"
@@ -27,65 +21,22 @@ describe("ExplorerTreeLevelComponent", () => {
         node: rootNode
     }
 
-    const rootNodeId = componentInputs.node.id
-    const parentLeafId = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").id
     const rootNodePath = componentInputs.node.path
     const parentLeafPath = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").path
-    const bigLeafId = componentInputs.node.children.find(childNode => childNode.name === "bigLeaf").id
-    const smallLeafId = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").children[0].id
 
-    const rootNodeBuilding = new CodeMapBuilding(rootNodeId, null, null, null)
-    const parentLeafBuilding = new CodeMapBuilding(parentLeafId, null, null, null)
-    const bigLeafBuilding = new CodeMapBuilding(bigLeafId, null, null, null)
-    const smallLeafBuilding = new CodeMapBuilding(smallLeafId, null, null, null)
+    let host: ExplorerHost
 
-    beforeEach(() => {
+    const configureWithHost = (overrides: Partial<ExplorerHost> = {}) => {
+        host = createExplorerHostMock(overrides)
         TestBed.configureTestingModule({
             imports: [ExplorerTreeLevelComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
-            providers: [
-                {
-                    provide: ThreeSceneService,
-                    useValue: { selectBuilding: jest.fn(), clearSelection: jest.fn(), clearConstantHighlight: jest.fn() }
-                },
-                {
-                    provide: IdToBuildingService,
-                    useValue: {
-                        get: jest.fn(id => {
-                            switch (id) {
-                                case rootNodeId:
-                                    return rootNodeBuilding
-                                case parentLeafId:
-                                    return parentLeafBuilding
-                                case bigLeafId:
-                                    return bigLeafBuilding
-                                case smallLeafId:
-                                    return smallLeafBuilding
-                            }
-                        }),
-                        has: jest.fn(() => true),
-                        buildingIds$: of(new Set([rootNodeId, parentLeafId, bigLeafId, smallLeafId]))
-                    }
-                },
-                { provide: ThreeRendererService, useValue: { render: jest.fn() } },
-                {
-                    provide: CodeMapMouseEventService,
-                    useValue: {
-                        drawLabelSelectedBuilding: jest.fn(),
-                        hoverNode: jest.fn(),
-                        unhoverNode: jest.fn()
-                    }
-                },
-                {
-                    provide: CodeMapTooltipService,
-                    useValue: {
-                        show: jest.fn(),
-                        hide: jest.fn()
-                    }
-                }
-            ]
+            providers: [{ provide: EXPLORER_HOST, useValue: host }]
         })
+    }
 
-        jest.spyOn(AreaMetricSelector, "areaMetricSelector").mockReturnValue("unary")
+    beforeEach(() => {
+        localStorage.clear()
+        configureWithHost()
         jest.spyOn(SearchedNodePathsSelector, "searchedNodePathsSelector").mockReturnValue(new Set<string>())
         jest.spyOn(RightClickedNodeDataSelector, "rightClickedNodeDataSelector").mockReturnValue(defaultRightClickedNodeData)
     })
@@ -133,40 +84,48 @@ describe("ExplorerTreeLevelComponent", () => {
         })
     })
 
-    it("should select corresponding building on click", async () => {
-        // Arrange
+    it("should set selectedBuildingId to the node path on click and tell the host", async () => {
+        // Arrange — the path selection is what drives consumers such as the domain word cloud
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
-        const threeSceneService = TestBed.inject(ThreeSceneService)
-        const threeRendererService = TestBed.inject(ThreeRendererService)
+        const store = TestBed.inject(Store)
         const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
         // Act
         await userEvent.click(firstLevelFolder)
 
         // Assert
-        await waitFor(() => {
-            expect(codeMapMouseEventService.drawLabelSelectedBuilding).toHaveBeenCalledWith(parentLeafBuilding)
-            expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(parentLeafBuilding)
-            expect(threeSceneService.clearConstantHighlight).toHaveBeenCalledTimes(1)
-            expect(threeRendererService.render).toHaveBeenCalledTimes(1)
-        })
+        expect(await firstValueFrom(store.select(selectedBuildingIdSelector))).toBe(parentLeafPath)
+        expect(host.onSelect).toHaveBeenCalledWith(expect.objectContaining({ path: parentLeafPath }))
     })
 
-    it("should clear selection when an open folder is clicked closed", async () => {
+    it("should clear selection and tell the host when an open folder is clicked closed", async () => {
         // Arrange
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const threeSceneService = TestBed.inject(ThreeSceneService)
+        const store = TestBed.inject(Store)
         const rootRow = container.querySelector("#\\/root")
 
         // Act
         await userEvent.click(rootRow)
 
         // Assert
-        await waitFor(() => {
-            expect(threeSceneService.clearSelection).toHaveBeenCalledTimes(1)
-            expect(threeSceneService.selectBuilding).not.toHaveBeenCalled()
-        })
+        await waitFor(() => expect(host.onDeselect).toHaveBeenCalledTimes(1))
+        expect(host.onSelect).not.toHaveBeenCalled()
+        expect(await firstValueFrom(store.select(selectedBuildingIdSelector))).toBeNull()
+    })
+
+    it("should ignore clicks on rows the host declares unselectable", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        configureWithHost({ isSelectable: () => false })
+        const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
+        const store = TestBed.inject(Store)
+
+        // Act
+        await userEvent.click(container.querySelector("#\\/root\\/bigLeaf"))
+
+        // Assert
+        expect(host.onSelect).not.toHaveBeenCalled()
+        expect(await firstValueFrom(store.select(selectedBuildingIdSelector))).toBeNull()
     })
 
     it("should clear right-clicked node data when the explorer scroll container is scrolled", async () => {
@@ -208,12 +167,31 @@ describe("ExplorerTreeLevelComponent", () => {
         scrollContainer.remove()
     })
 
-    it("should hover and unhover the corresponding building", async () => {
+    it("should not open a context menu when the host has none, leaving the event untouched", async () => {
+        // Arrange — the domain view has no context menu, so a right-click must mark nothing
+        TestBed.resetTestingModule()
+        configureWithHost({ hasContextMenu: () => false })
+        const { fixture } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
+        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
+        const contextMenuEvent = {
+            preventDefault: jest.fn(),
+            stopPropagation: jest.fn(),
+            clientX: 10,
+            clientY: 20
+        } as unknown as MouseEvent
+
+        // Act
+        fixture.componentInstance.openNodeContextMenu(contextMenuEvent)
+
+        // Assert
+        expect(dispatchSpy).not.toHaveBeenCalledWith(expect.objectContaining({ type: setRightClickedNodeData.type }))
+        expect(contextMenuEvent.preventDefault).not.toHaveBeenCalled()
+    })
+
+    it("should publish the hovered node and tell the host on hover and unhover", async () => {
         // Arrange
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const codeMapMouseEventService = TestBed.inject(CodeMapMouseEventService)
-        const store = TestBed.inject(Store)
-        const dispatchSpy = jest.spyOn(store, "dispatch")
+        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
         const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
         // Act
@@ -221,8 +199,8 @@ describe("ExplorerTreeLevelComponent", () => {
 
         // Assert
         await waitFor(() => {
-            expect(codeMapMouseEventService.hoverNode).toHaveBeenCalledWith(parentLeafPath)
             expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: parentLeafPath }))
+            expect(host.onHover).toHaveBeenCalledWith(expect.objectContaining({ name: "ParentLeaf" }), expect.any(Object))
         })
 
         // Act
@@ -230,34 +208,37 @@ describe("ExplorerTreeLevelComponent", () => {
 
         // Assert
         await waitFor(() => {
-            expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledTimes(1)
             expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: null }))
+            expect(host.onHoverEnd).toHaveBeenCalled()
         })
     })
 
-    it("should show the tooltip for the hovered row and hide it on unhover", async () => {
+    it("should render the trailing decoration the host supplies", async () => {
         // Arrange
+        TestBed.resetTestingModule()
+        configureWithHost({ rowDecoration: node => (node.name === "root" ? "42% / 2" : null) })
+
+        // Act
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const tooltipService = TestBed.inject(CodeMapTooltipService)
-        const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
-
-        // Act
-        await userEvent.hover(firstLevelFolder)
 
         // Assert
-        await waitFor(() => {
-            expect(tooltipService.show).toHaveBeenCalledWith(
-                expect.objectContaining({ name: "ParentLeaf" }),
-                expect.any(Number),
-                expect.any(Number)
-            )
-        })
+        expect(container.querySelector("#\\/root").textContent).toContain("42% / 2")
+        expect(container.querySelector("#\\/root\\/bigLeaf").textContent).not.toContain("42% / 2")
+    })
+
+    it("should dim and italicise a row the host reports as such", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        configureWithHost({ rowState: () => ({ isDimmed: true, isItalic: true, title: "No Node Area for Chosen Metric" }) })
 
         // Act
-        await userEvent.unhover(firstLevelFolder)
+        const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
 
         // Assert
-        await waitFor(() => expect(tooltipService.hide).toHaveBeenCalled())
+        const row = container.querySelector("#\\/root")
+        expect(row.getAttribute("title")).toBe("No Node Area for Chosen Metric")
+        expect(row.querySelector(".node-name").classList.contains("opacity-50")).toBe(true)
+        expect(row.querySelector(".node-name").classList.contains("italic")).toBe(true)
     })
 
     describe("reveal from show-in-explorer", () => {
@@ -301,6 +282,17 @@ describe("ExplorerTreeLevelComponent", () => {
 
             // Assert
             await waitFor(() => expect(container.querySelector("#\\/root\\/bigLeaf").classList.contains("bg-primary/20")).toBe(true))
+        })
+
+        it("should scroll a deeply revealed row into view once its ancestors have rendered it", async () => {
+            // Arrange — the row does not exist in the frame the reveal is requested
+            await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
+
+            // Act
+            TestBed.inject(ExplorerRevealService).revealNode("/root/ParentLeaf/smallLeaf")
+
+            // Assert
+            await waitFor(() => expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({ block: "center" }))
         })
     })
 })

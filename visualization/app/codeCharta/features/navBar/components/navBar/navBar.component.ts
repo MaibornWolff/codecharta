@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { DeltaSelectorComponent } from "../deltaSelector/deltaSelector.component"
@@ -8,6 +8,7 @@ import { NavBarFolderButtonComponent } from "../navBarFolderButton/navBarFolderB
 import { NavBarLogoComponent } from "../navBarLogo/navBarLogo.component"
 import { Print3DButtonComponent } from "../print3DButton/print3DButton.component"
 import { SettingsButtonComponent } from "../settingsButton/settingsButton.component"
+import { ViewSwitcherComponent } from "../viewSwitcher/viewSwitcher.component"
 
 @Component({
     selector: "cc-nav-bar",
@@ -19,12 +20,38 @@ import { SettingsButtonComponent } from "../settingsButton/settingsButton.compon
         DeltaSelectorComponent,
         ModeToggleComponent,
         Print3DButtonComponent,
-        SettingsButtonComponent
+        SettingsButtonComponent,
+        ViewSwitcherComponent
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavBarComponent {
+export class NavBarComponent implements AfterViewInit, OnDestroy {
     private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
+    private readonly elementReference = inject(ElementRef<HTMLElement>)
+    private resizeObserver?: ResizeObserver
 
     isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { requireSync: true })
+
+    /**
+     * The nav bar publishes its own height (as bottomBar and fileExtensionBar do), so every view that
+     * offsets below it gets a live value — including views that never mount the code map, which used to
+     * own this observer and left the variable unset on a direct domain-view deep link.
+     */
+    ngAfterViewInit(): void {
+        const measuredElement = this.elementReference.nativeElement as HTMLElement
+        const updateHeight = () => {
+            const height = measuredElement.getBoundingClientRect().height
+            document.documentElement.style.setProperty("--cc-bars-height", `${Math.round(height)}px`)
+        }
+        updateHeight()
+        if (typeof ResizeObserver !== "undefined") {
+            this.resizeObserver = new ResizeObserver(updateHeight)
+            this.resizeObserver.observe(measuredElement)
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.resizeObserver?.disconnect()
+        document.documentElement.style.removeProperty("--cc-bars-height")
+    }
 }

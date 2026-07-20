@@ -41,4 +41,12 @@
 /* Layout constants shared between features and legacy SCSS */
 :root {
     --cc-inspector-width: 20rem;
+
+    /* Word-cloud gradient endpoints. Deliberately the domain-language magenta→blue pair rather than the
+       daisyUI theme colors above: the cloud carries its own identity, and the theme primary (#1b9cfc)
+       could not serve here anyway — word text sits directly on the white view background, where it only
+       reaches ~2.9:1 contrast. Every stop of this gradient clears AA 4.5:1, though the magenta end sits
+       exactly on the line (4.50:1), so it is the constraint whenever these values change. */
+    --wordCloudColorStart: #e6007e;
+    --wordCloudColorEnd: #0030ff;
 }

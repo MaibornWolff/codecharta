@@ -14,21 +14,20 @@ describe("ExplorerSortControlComponent", () => {
         })
     })
 
-    it("should not render the option list initially", async () => {
-        // Arrange & Act
-        await render(ExplorerSortControlComponent)
+    it("should open its menu through the native popover API so the panel cannot clip it", async () => {
+        // Arrange & Act — an in-flow dropdown was cut off by the explorer's overflow container
+        const { container } = await render(ExplorerSortControlComponent)
 
         // Assert
-        expect(screen.queryByText(SortingOption.NUMBER_OF_FILES)).toBeNull()
-        expect(screen.queryByText(SortingOption.AREA_SIZE)).toBeNull()
+        const trigger = container.querySelector("[data-testid='explorer-sort-trigger']")
+        const menu = container.querySelector("#explorer-sort-menu")
+        expect(trigger?.getAttribute("popovertarget")).toBe("explorer-sort-menu")
+        expect(menu?.hasAttribute("popover")).toBe(true)
     })
 
-    it("should render every sorting option once the trigger is clicked", async () => {
-        // Arrange
+    it("should render every sorting option in the menu", async () => {
+        // Arrange & Act
         await render(ExplorerSortControlComponent)
-
-        // Act
-        await userEvent.click(screen.getByTitle(`Sort: ${SortingOption.NAME}`))
 
         // Assert
         expect(screen.getAllByText(SortingOption.NAME).length).toBeGreaterThan(0)
@@ -36,56 +35,38 @@ describe("ExplorerSortControlComponent", () => {
         expect(screen.getByText(SortingOption.AREA_SIZE)).not.toBeNull()
     })
 
-    it("should reveal the option list when the trigger is clicked", async () => {
-        // Arrange
-        await render(ExplorerSortControlComponent)
-        expect(screen.queryByText(SortingOption.AREA_SIZE)).toBeNull()
-
-        // Act
-        await userEvent.click(screen.getByTitle(`Sort: ${SortingOption.NAME}`))
-
-        // Assert
-        expect(screen.getByText(SortingOption.AREA_SIZE)).not.toBeNull()
-    })
-
-    it("should dispatch setSortingOption and close the menu when an option is selected", async () => {
+    it("should dispatch setSortingOption when an option is selected", async () => {
         // Arrange
         await render(ExplorerSortControlComponent)
         const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
-        await userEvent.click(screen.getByTitle(`Sort: ${SortingOption.NAME}`))
 
         // Act
         await userEvent.click(screen.getByText(SortingOption.AREA_SIZE))
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setSortingOption({ value: SortingOption.AREA_SIZE }))
-        expect(screen.queryByText(SortingOption.NUMBER_OF_FILES)).toBeNull()
     })
 
-    it("should dispatch toggleSortingOrderAscending and close the menu when the order toggle is clicked", async () => {
+    it("should dispatch toggleSortingOrderAscending when the order toggle is clicked", async () => {
         // Arrange
         await render(ExplorerSortControlComponent)
         const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
-        await userEvent.click(screen.getByTitle(`Sort: ${SortingOption.NAME}`))
 
         // Act
         await userEvent.click(screen.getByText(/Sort (ascending|descending)/))
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(toggleSortingOrderAscending())
-        expect(screen.queryByText(SortingOption.NUMBER_OF_FILES)).toBeNull()
     })
 
-    it("should close the menu when clicking outside the component", async () => {
+    it("should close the menu after acting on it", async () => {
         // Arrange
-        await render(ExplorerSortControlComponent)
-        await userEvent.click(screen.getByTitle(`Sort: ${SortingOption.NAME}`))
-        expect(screen.queryByText(SortingOption.AREA_SIZE)).not.toBeNull()
+        const { container } = await render(ExplorerSortControlComponent)
 
-        // Act
-        await userEvent.click(document.body)
-
-        // Assert
-        expect(screen.queryByText(SortingOption.AREA_SIZE)).toBeNull()
+        // Act & Assert — every menu item hides the popover it lives in
+        for (const item of container.querySelectorAll("#explorer-sort-menu button")) {
+            expect(item.getAttribute("popovertarget")).toBe("explorer-sort-menu")
+            expect(item.getAttribute("popovertargetaction")).toBe("hide")
+        }
     })
 })

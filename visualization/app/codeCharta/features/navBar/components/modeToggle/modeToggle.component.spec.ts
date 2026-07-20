@@ -33,10 +33,12 @@ describe("ModeToggleComponent", () => {
         // Assert
         const exploreButton = screen.getByRole("tab", { name: "Explore" })
         const compareButton = screen.getByRole("tab", { name: "Compare" })
-        expect(exploreButton.classList.contains("text-primary")).toBe(true)
+        expect(exploreButton.classList.contains("text-secondary")).toBe(true)
         expect(exploreButton.classList.contains("font-bold")).toBe(true)
-        expect(compareButton.classList.contains("text-primary")).toBe(false)
+        expect(exploreButton.getAttribute("aria-selected")).toBe("true")
+        expect(compareButton.classList.contains("text-secondary")).toBe(false)
         expect(compareButton.classList.contains("font-bold")).toBe(false)
+        expect(compareButton.getAttribute("aria-selected")).toBe("false")
     })
 
     it("should activate Compare tab when in delta mode", async () => {
@@ -51,10 +53,12 @@ describe("ModeToggleComponent", () => {
         // Assert
         const exploreButton = screen.getByRole("tab", { name: "Explore" })
         const compareButton = screen.getByRole("tab", { name: "Compare" })
-        expect(exploreButton.classList.contains("text-primary")).toBe(false)
+        expect(exploreButton.classList.contains("text-secondary")).toBe(false)
         expect(exploreButton.classList.contains("font-bold")).toBe(false)
-        expect(compareButton.classList.contains("text-primary")).toBe(true)
+        expect(exploreButton.getAttribute("aria-selected")).toBe("false")
+        expect(compareButton.classList.contains("text-secondary")).toBe(true)
         expect(compareButton.classList.contains("font-bold")).toBe(true)
+        expect(compareButton.getAttribute("aria-selected")).toBe("true")
     })
 
     it("should call toggle when clicking Compare while in standard mode", async () => {

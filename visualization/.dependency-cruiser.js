@@ -185,28 +185,40 @@ module.exports = {
             name: "stores-own-ccjson-source",
             severity: "error",
             comment:
-                "The cc.json SOURCE state now lives in stores/ (Slice 19b moved it OUT of the lenses so the ngrx composition root store/ no longer imports lenses/): the metricsLensSource home (node attributeTypes + attributeDescriptors + the metricsLensSource root reducer/selector) and the dependencyLensSource home (edge attributeTypes + the dependencyLensSource root). Its ngrx store/ internals are reached from outside the owning home ONLY through that home's read/write facade — so the composition root (store/), the load pipeline (load/) and the now-pure-projection lenses all go through the facades, never store/ internals. Replaces the old lens-owns-ccjson-source rule (the source is no longer lens-owned). Spec/e2e/mocks exempt.",
+                "The cc.json SOURCE state now lives in stores/ (Slice 19b moved it OUT of the lenses so the ngrx composition root store/ no longer imports lenses/): the metricsLensSource home (node attributeTypes + attributeDescriptors + the metricsLensSource root reducer/selector) the dependencyLensSource home (edge attributeTypes + the dependencyLensSource root) and the domainLensSource home (domain words + the domainLensSource root). Its ngrx store/ internals are reached from outside the owning home ONLY through that home's read/write facade — so the composition root (store/), the load pipeline (load/) and the now-pure-projection lenses all go through the facades, never store/ internals. Replaces the old lens-owns-ccjson-source rule (the source is no longer lens-owned). Spec/e2e/mocks exempt.",
             from: {
                 path: "^app/",
                 pathNot: [
                     "^app/codeCharta/stores/metricsLensSource/",
                     "^app/codeCharta/stores/dependencyLensSource/",
+                    "^app/codeCharta/stores/domainLensSource/",
                     "\\.spec\\.ts$",
                     "\\.e2e\\.ts$",
                     "\\.mocks\\.ts$"
                 ]
             },
             to: {
-                path: ["^app/codeCharta/stores/metricsLensSource/store/", "^app/codeCharta/stores/dependencyLensSource/store/"]
+                path: [
+                    "^app/codeCharta/stores/metricsLensSource/store/",
+                    "^app/codeCharta/stores/dependencyLensSource/store/",
+                    "^app/codeCharta/stores/domainLensSource/store/"
+                ]
             }
         },
         {
             name: "lens-no-view-state",
             severity: "error",
             comment:
-                "A lens is data/projection, never a reader of mutable VIEW STATE. Lens code (lenses/**) must not import a state home — stores/mapState, stores/sharedView or stores/preferences — nor any view-state selector; selection/blacklist/edge-visibility reach a lens only as explicit parameters passed by the composing layer (renderModel). This half of the lens‖home fence is why 'Lenses above Stores' is a readability order, not a real edge. Spec/e2e exempt.",
+                "A lens is data/projection, never a reader of mutable VIEW STATE. Lens code (lenses/**) must not import a state home — stores/mapState, stores/sharedView, stores/preferences or stores/domainBar — nor any view-state selector; selection/blacklist/edge-visibility reach a lens only as explicit parameters passed by the composing layer (renderModel). This half of the lens‖home fence is why 'Lenses above Stores' is a readability order, not a real edge. Spec/e2e exempt.",
             from: { path: "^app/codeCharta/lenses/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
-            to: { path: ["^app/codeCharta/stores/mapState/", "^app/codeCharta/stores/sharedView/", "^app/codeCharta/stores/preferences/"] }
+            to: {
+                path: [
+                    "^app/codeCharta/stores/mapState/",
+                    "^app/codeCharta/stores/sharedView/",
+                    "^app/codeCharta/stores/preferences/",
+                    "^app/codeCharta/stores/domainBar/"
+                ]
+            }
         },
 
         /* ───────────────────────────────── stores (state homes + the source) ───────────────────────────────── */
@@ -214,14 +226,15 @@ module.exports = {
             name: "filestore-has-no-upward-deps",
             severity: "error",
             comment:
-                "FileStore is the source: it sits below every view layer. It must not import lenses or any state home (stores/mapState, stores/sharedView, stores/preferences) so ingestion cannot read back the state they own. Spec/e2e exempt.",
+                "FileStore is the source: it sits below every view layer. It must not import lenses or any state home (stores/mapState, stores/sharedView, stores/preferences, stores/domainBar) so ingestion cannot read back the state they own. Spec/e2e exempt.",
             from: { path: "^app/codeCharta/stores/fileStore/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: {
                 path: [
                     "^app/codeCharta/lenses/",
                     "^app/codeCharta/stores/mapState/",
                     "^app/codeCharta/stores/sharedView/",
-                    "^app/codeCharta/stores/preferences/"
+                    "^app/codeCharta/stores/preferences/",
+                    "^app/codeCharta/stores/domainBar/"
                 ]
             }
         },
@@ -240,14 +253,16 @@ module.exports = {
             name: "state-home-is-leaf",
             severity: "error",
             comment:
-                "State-home modules — stores/mapState (map-view presentation + metric selection + transient interaction ids), stores/sharedView (focus + search + blacklist + markedPackages), stores/preferences (durable global prefs) — are leaves. They must not import lenses; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store.",
+                "State-home modules — stores/mapState (map-view presentation + metric selection + transient interaction ids), stores/sharedView (focus + search + blacklist + markedPackages), stores/preferences (durable global prefs), stores/domainBar (word-cloud presentation settings) — and the cc.json source stores (stores/metricsLensSource, stores/dependencyLensSource, stores/domainLensSource) are leaves. They must not import lenses; a lens/renderer/page reads the home facade, never the reverse. The home reads only the model/util kernel + its own store.",
             from: {
                 path: [
                     "^app/codeCharta/stores/mapState/",
                     "^app/codeCharta/stores/sharedView/",
                     "^app/codeCharta/stores/preferences/",
                     "^app/codeCharta/stores/metricsLensSource/",
-                    "^app/codeCharta/stores/dependencyLensSource/"
+                    "^app/codeCharta/stores/dependencyLensSource/",
+                    "^app/codeCharta/stores/domainLensSource/",
+                    "^app/codeCharta/stores/domainBar/"
                 ]
             },
             to: { path: ["^app/codeCharta/lenses/"] }
@@ -263,7 +278,9 @@ module.exports = {
                     "^app/codeCharta/stores/sharedView/",
                     "^app/codeCharta/stores/preferences/",
                     "^app/codeCharta/stores/metricsLensSource/",
-                    "^app/codeCharta/stores/dependencyLensSource/"
+                    "^app/codeCharta/stores/dependencyLensSource/",
+                    "^app/codeCharta/stores/domainLensSource/",
+                    "^app/codeCharta/stores/domainBar/"
                 ],
                 pathNot: [
                     "^app/codeCharta/stores/mapState/store/",
@@ -271,6 +288,8 @@ module.exports = {
                     "^app/codeCharta/stores/preferences/store/",
                     "^app/codeCharta/stores/metricsLensSource/store/",
                     "^app/codeCharta/stores/dependencyLensSource/store/",
+                    "^app/codeCharta/stores/domainLensSource/store/",
+                    "^app/codeCharta/stores/domainBar/store/",
                     "\\.spec\\.ts$"
                 ]
             },
@@ -280,13 +299,14 @@ module.exports = {
             name: "feature-reaches-state-home-only-via-facade",
             severity: "error",
             comment:
-                "Outside code reaches a state home only through its public facades (read/write), never its store/ internals — no raw import of a home's store/**/*.{selector,reducer,actions}. All three homes fenced. The homes' own facades + store/ are exempt (from.pathNot); spec/e2e may wire raw for tests.",
+                "Outside code reaches a state home only through its public facades (read/write), never its store/ internals — no raw import of a home's store/**/*.{selector,reducer,actions}. All four view-state homes fenced. The homes' own facades + store/ are exempt (from.pathNot); spec/e2e may wire raw for tests.",
             from: {
                 path: "^app/",
                 pathNot: [
                     "^app/codeCharta/stores/sharedView/",
                     "^app/codeCharta/stores/preferences/",
                     "^app/codeCharta/stores/mapState/",
+                    "^app/codeCharta/stores/domainBar/",
                     "\\.spec\\.ts$",
                     "\\.e2e\\.ts$"
                 ]
@@ -295,7 +315,8 @@ module.exports = {
                 path: [
                     "^app/codeCharta/stores/sharedView/store/",
                     "^app/codeCharta/stores/preferences/store/",
-                    "^app/codeCharta/stores/mapState/store/"
+                    "^app/codeCharta/stores/mapState/store/",
+                    "^app/codeCharta/stores/domainBar/store/"
                 ]
             }
         },
@@ -306,11 +327,11 @@ module.exports = {
             comment:
                 "A state home may import its OWN store/ internals (its facades re-export them) but must reach a SIBLING home only through that sibling's read/write facade — never the sibling's raw store/. Closes the home→sibling raw-store hole left by the whole-band from.pathNot exemptions in feature-reaches-state-home-only-via-facade / state-home-write-facade-is-sole-dispatch-surface / stores-own-ccjson-source (each exempts the ENTIRE home band as a source, so a sibling could reach past a facade). The $1 back-reference (home captured in from.path) exempts only the SAME home's store/. fileStore is intentionally omitted — it is fenced by filestore-external-access-only-via-facade + filestore-has-no-upward-deps.",
             from: {
-                path: "^app/codeCharta/stores/(mapState|sharedView|preferences|metricsLensSource|dependencyLensSource)/",
+                path: "^app/codeCharta/stores/(mapState|sharedView|preferences|metricsLensSource|dependencyLensSource|domainLensSource|domainBar)/",
                 pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
             to: {
-                path: "^app/codeCharta/stores/(mapState|sharedView|preferences|metricsLensSource|dependencyLensSource)/store/",
+                path: "^app/codeCharta/stores/(mapState|sharedView|preferences|metricsLensSource|dependencyLensSource|domainLensSource|domainBar)/store/",
                 pathNot: ["^app/codeCharta/stores/$1/store/"]
             }
         },
@@ -327,6 +348,7 @@ module.exports = {
                     "^app/codeCharta/stores/preferences/",
                     "^app/codeCharta/stores/sharedView/",
                     "^app/codeCharta/stores/mapState/",
+                    "^app/codeCharta/stores/domainBar/",
                     "\\.spec\\.ts$",
                     "\\.e2e\\.ts$"
                 ]
@@ -335,7 +357,8 @@ module.exports = {
                 path: [
                     "^app/codeCharta/stores/preferences/store/.*\\.actions\\.ts$",
                     "^app/codeCharta/stores/sharedView/store/.*\\.actions\\.ts$",
-                    "^app/codeCharta/stores/mapState/store/.*\\.actions\\.ts$"
+                    "^app/codeCharta/stores/mapState/store/.*\\.actions\\.ts$",
+                    "^app/codeCharta/stores/domainBar/store/.*\\.actions\\.ts$"
                 ]
             }
         },
@@ -348,14 +371,16 @@ module.exports = {
                 path: [
                     "^app/codeCharta/stores/preferences/preferences\\.read\\.facade\\.ts$",
                     "^app/codeCharta/stores/sharedView/sharedView\\.read\\.facade\\.ts$",
-                    "^app/codeCharta/stores/mapState/mapState\\.read\\.facade\\.ts$"
+                    "^app/codeCharta/stores/mapState/mapState\\.read\\.facade\\.ts$",
+                    "^app/codeCharta/stores/domainBar/domainBar\\.read\\.facade\\.ts$"
                 ]
             },
             to: {
                 path: [
                     "^app/codeCharta/stores/preferences/store/.*\\.actions\\.ts$",
                     "^app/codeCharta/stores/sharedView/store/.*\\.actions\\.ts$",
-                    "^app/codeCharta/stores/mapState/store/.*\\.actions\\.ts$"
+                    "^app/codeCharta/stores/mapState/store/.*\\.actions\\.ts$",
+                    "^app/codeCharta/stores/domainBar/store/.*\\.actions\\.ts$"
                 ]
             }
         },
@@ -363,7 +388,7 @@ module.exports = {
             name: "home-selectors-are-declared-in-their-home",
             severity: "error",
             comment:
-                "A home's ROOT selector (the raw `state => state.<home>` slice accessor: mapStateSelector, preferencesSelector, sharedViewSelector, filesSelector) is a private store/ internal. Only the owning home's own store/ folder may import it — that is where every derived leaf selector (areaMetricSelector, blacklistSelector, isDeltaStateSelector, …) and the home's read window (store/<home>.readWindow.ts) are declared. Handing the root selector out lets a consumer re-derive home state OUTSIDE the home, which duplicates the home's projection surface in feature land and defeats the read facade; this rule mechanically bans createSelector(mapStateSelector, …) in features/. Consumers get a NAMED derived selector or a read-window stream from the home's read facade instead. The facades are deliberately NOT exempt: dependency-cruiser sees only the module edge consumer→facade, so a barrel re-export of the root selector would bypass the fence — hence none of the four barrels re-exports one. Spec/e2e exempt.",
+                "A home's ROOT selector (the raw `state => state.<home>` slice accessor: mapStateSelector, preferencesSelector, sharedViewSelector, filesSelector, domainBarSelector) is a private store/ internal. Only the owning home's own store/ folder may import it — that is where every derived leaf selector (areaMetricSelector, blacklistSelector, isDeltaStateSelector, …) and the home's read window (store/<home>.readWindow.ts) are declared. Handing the root selector out lets a consumer re-derive home state OUTSIDE the home, which duplicates the home's projection surface in feature land and defeats the read facade; this rule mechanically bans createSelector(mapStateSelector, …) in features/. Consumers get a NAMED derived selector or a read-window stream from the home's read facade instead. The facades are deliberately NOT exempt: dependency-cruiser sees only the module edge consumer→facade, so a barrel re-export of the root selector would bypass the fence — hence none of the five barrels re-exports one. Spec/e2e exempt.",
             from: {
                 path: "^app/",
                 pathNot: [
@@ -371,6 +396,7 @@ module.exports = {
                     "^app/codeCharta/stores/preferences/store/",
                     "^app/codeCharta/stores/sharedView/store/",
                     "^app/codeCharta/stores/fileStore/store/",
+                    "^app/codeCharta/stores/domainBar/store/",
                     "\\.spec\\.ts$",
                     "\\.e2e\\.ts$"
                 ]
@@ -380,7 +406,8 @@ module.exports = {
                     "^app/codeCharta/stores/mapState/store/mapState\\.selector\\.ts$",
                     "^app/codeCharta/stores/preferences/store/preferences\\.selector\\.ts$",
                     "^app/codeCharta/stores/sharedView/store/sharedView\\.selector\\.ts$",
-                    "^app/codeCharta/stores/fileStore/store/files\\.selector\\.ts$"
+                    "^app/codeCharta/stores/fileStore/store/files\\.selector\\.ts$",
+                    "^app/codeCharta/stores/domainBar/store/domainBar\\.selector\\.ts$"
                 ]
             }
         },
@@ -394,7 +421,8 @@ module.exports = {
                 path: [
                     "^app/codeCharta/stores/preferences/preferences\\.write\\.facade\\.ts$",
                     "^app/codeCharta/stores/sharedView/sharedView\\.write\\.facade\\.ts$",
-                    "^app/codeCharta/stores/mapState/mapState\\.write\\.facade\\.ts$"
+                    "^app/codeCharta/stores/mapState/mapState\\.write\\.facade\\.ts$",
+                    "^app/codeCharta/stores/domainBar/domainBar\\.write\\.facade\\.ts$"
                 ]
             }
         },
@@ -404,7 +432,7 @@ module.exports = {
             name: "render-model-is-top-derived",
             severity: "error",
             comment:
-                "renderer/renderModel/ is the cross-lens composing layer: it folds the structure/metrics/dependency lenses + the view-state homes into the decorated tree and its derived read models. It sits ABOVE the lenses and homes — it reads their facades DOWNWARD — so nothing below it may import it back: lenses, stores/fileStore (the source) and the three state homes (stores/mapState, stores/sharedView, stores/preferences) must not depend on it. Consumers ABOVE it (features/, views/, load/, the renderer engine) reach every composing selector through renderModel.facade. Spec/e2e exempt.",
+                "renderer/renderModel/ is the cross-lens composing layer: it folds the structure/metrics/dependency lenses + the view-state homes into the decorated tree and its derived read models. It sits ABOVE the lenses and homes — it reads their facades DOWNWARD — so nothing below it may import it back: lenses, stores/fileStore (the source), the view-state homes (stores/mapState, stores/sharedView, stores/preferences, stores/domainBar) and the cc.json source stores (stores/metricsLensSource, stores/dependencyLensSource, stores/domainLensSource) must not depend on it. Consumers ABOVE it (features/, views/, load/, the renderer engine) reach every composing selector through renderModel.facade. Spec/e2e exempt.",
             from: {
                 path: [
                     "^app/codeCharta/lenses/",
@@ -413,7 +441,9 @@ module.exports = {
                     "^app/codeCharta/stores/sharedView/",
                     "^app/codeCharta/stores/preferences/",
                     "^app/codeCharta/stores/metricsLensSource/",
-                    "^app/codeCharta/stores/dependencyLensSource/"
+                    "^app/codeCharta/stores/dependencyLensSource/",
+                    "^app/codeCharta/stores/domainLensSource/",
+                    "^app/codeCharta/stores/domainBar/"
                 ],
                 pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
@@ -473,7 +503,7 @@ module.exports = {
             name: "load-orchestrator-not-imported-by-lower-layers",
             severity: "error",
             comment:
-                "load/ is the initial-file load orchestrator: on startup it hydrates state from a persisted/URL cc.json by driving the homes, lenses and fileStore through their public facades/actions. It is a TOP layer — nothing it writes into may import it back. Homes (stores/mapState, stores/sharedView, stores/preferences), lenses AND stores/fileStore must not depend on load/. renderer's own upward edges to load/ are fenced by renderer-does-not-import-up. Spec/e2e exempt. PARKED path.",
+                "load/ is the initial-file load orchestrator: on startup it hydrates state from a persisted/URL cc.json by driving the homes, lenses and fileStore through their public facades/actions. It is a TOP layer — nothing it writes into may import it back. Homes (stores/mapState, stores/sharedView, stores/preferences, stores/domainBar), the cc.json source stores (stores/metricsLensSource, stores/dependencyLensSource, stores/domainLensSource), lenses AND stores/fileStore must not depend on load/. renderer's own upward edges to load/ are fenced by renderer-does-not-import-up. Spec/e2e exempt. PARKED path.",
             from: {
                 path: [
                     "^app/codeCharta/stores/mapState/",
@@ -482,7 +512,9 @@ module.exports = {
                     "^app/codeCharta/lenses/",
                     "^app/codeCharta/stores/fileStore/",
                     "^app/codeCharta/stores/metricsLensSource/",
-                    "^app/codeCharta/stores/dependencyLensSource/"
+                    "^app/codeCharta/stores/dependencyLensSource/",
+                    "^app/codeCharta/stores/domainLensSource/",
+                    "^app/codeCharta/stores/domainBar/"
                 ],
                 pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
@@ -509,7 +541,9 @@ module.exports = {
                     "^app/codeCharta/lenses/",
                     "^app/codeCharta/stores/fileStore/",
                     "^app/codeCharta/stores/metricsLensSource/",
-                    "^app/codeCharta/stores/dependencyLensSource/"
+                    "^app/codeCharta/stores/dependencyLensSource/",
+                    "^app/codeCharta/stores/domainLensSource/",
+                    "^app/codeCharta/stores/domainBar/"
                 ],
                 pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
