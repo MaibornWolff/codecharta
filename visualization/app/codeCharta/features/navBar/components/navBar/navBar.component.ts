@@ -1,6 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy } from "@angular/core"
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef, inject, OnDestroy } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { viewNavBarControls } from "../../viewNavBarControls"
 import { DeltaSelectorComponent } from "../deltaSelector/deltaSelector.component"
 import { MapSelectorComponent } from "../mapSelector/mapSelector.component"
 import { ModeToggleComponent } from "../modeToggle/modeToggle.component"
@@ -27,10 +29,19 @@ import { ViewSwitcherComponent } from "../viewSwitcher/viewSwitcher.component"
 })
 export class NavBarComponent implements AfterViewInit, OnDestroy {
     private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
+    private readonly activeViewStore = inject(ActiveViewStore)
     private readonly elementReference = inject(ElementRef<HTMLElement>)
     private resizeObserver?: ResizeObserver
 
     isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { requireSync: true })
+
+    /**
+     * The active view has to come from the URL rather than from view lifecycle: the route-reuse strategy
+     * detaches views instead of destroying them, so every view stays alive once visited.
+     */
+    private readonly activeView = toSignal(this.activeViewStore.activeView$, { requireSync: true })
+
+    readonly trailingControls = computed(() => viewNavBarControls[this.activeView()])
 
     /**
      * The nav bar publishes its own height (as bottomBar and fileExtensionBar do), so every view that
