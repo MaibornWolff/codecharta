@@ -10,7 +10,7 @@ import {
     SimpleChanges,
     ViewChild
 } from "@angular/core"
-import { parseChangedNumberInput } from "../../util/settingsInput"
+import { parseChangedNumberInput } from "../../../shared/facade"
 import { RangeSliderLabelsComponent } from "./rangeSliderLabels.component"
 import {
     calculateSliderRangePosition,

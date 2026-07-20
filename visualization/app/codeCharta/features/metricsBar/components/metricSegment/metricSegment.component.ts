@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 import { PrimaryMetrics } from "../../../../model/codeCharta.model"
-import { AxisCardComponent } from "../axisCard/axisCard.component"
+import { AxisCardComponent } from "../../../shared/facade"
 import { MetricMetaValueComponent } from "../metricMetaValue/metricMetaValue.component"
 import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelectPopover.component"
 

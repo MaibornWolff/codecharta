@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from "@angular/co
 import { toSignal } from "@angular/core/rxjs-interop"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
-import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
+import { SettingsPopoverShellComponent } from "../../../shared/facade"
 import { ColorBandsSectionComponent } from "./colorBandsSection.component"
 import { ColorRangeSectionComponent } from "./colorRangeSection.component"
 import { ColorSettingsHeaderComponent } from "./colorSettingsHeader.component"

@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { AxisCardComponent, BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR, BarShellDirective } from "../../../shared/facade"
 import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
 import { AreaSegmentComponent } from "../areaSegment/areaSegment.component"
-import { AxisCardComponent } from "../axisCard/axisCard.component"
 import { ColorSegmentComponent } from "../colorSegment/colorSegment.component"
 import { ColorSettingsPopoverComponent } from "../colorSettingsPopover/colorSettingsPopover.component"
 import { EdgeSegmentComponent } from "../edgeSegment/edgeSegment.component"
@@ -26,16 +26,12 @@ import { LinkColorHeightButtonComponent } from "../linkColorHeightButton/linkCol
         LabelsScenariosSegmentComponent,
         LinkColorHeightButtonComponent
     ],
-    host: {
-        class: "fixed left-0 right-0 mx-auto flex bg-base-100 rounded-box shadow-lg border border-base-300",
-        "[style.bottom]": "'calc(var(--cc-bottom-bar-height, 32px) + var(--cc-file-extension-bar-height, 17px) + 12px)'",
-        "[style.width]": "'max-content'",
-        "[style.maxWidth]": "'min(95vw, 1200px)'",
-        "[style.zIndex]": "50",
-        "[style.pointerEvents]": "'auto'"
-    }
+    hostDirectives: [BarShellDirective],
+    host: { "[style.bottom]": "barBottom" }
 })
 export class MetricsBarComponent {
+    readonly barBottom = BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR
+
     private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
     private readonly metricsBarReadStore = inject(MetricsBarReadStore)
 

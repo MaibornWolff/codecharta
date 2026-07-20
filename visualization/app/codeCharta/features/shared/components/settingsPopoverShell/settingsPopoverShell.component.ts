@@ -1,5 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, input, OnDestroy, viewChild } from "@angular/core"
 
+const VIEWPORT_PADDING = 8
+
 @Component({
     selector: "cc-settings-popover-shell",
     templateUrl: "./settingsPopoverShell.component.html",
@@ -12,6 +14,13 @@ export class SettingsPopoverShellComponent implements AfterViewInit, OnDestroy {
     readonly widthClass = input<string>("w-72")
     readonly contentClass = input<string>("gap-2.5 py-2 px-5")
     readonly testId = input<string | null>(null)
+
+    /**
+     * The shell is a `role="dialog"`, so it needs an accessible name. Consumers that project a heading pass
+     * its id via `ariaLabelledBy`; the rest fall back to a generic name rather than opening unannounced.
+     */
+    readonly ariaLabelledBy = input<string | null>(null)
+    readonly ariaLabel = input<string>("Settings")
 
     readonly popover = viewChild.required<ElementRef<HTMLElement>>("popover")
 
@@ -40,13 +49,15 @@ export class SettingsPopoverShellComponent implements AfterViewInit, OnDestroy {
         const popover = this.popover().nativeElement
         const anchorRect = anchor.getBoundingClientRect()
         const popoverWidth = popover.getBoundingClientRect().width
-        const viewportPadding = 8
-        const left = Math.max(viewportPadding, Math.min(anchorRect.left, window.innerWidth - popoverWidth - viewportPadding))
+        const left = Math.max(VIEWPORT_PADDING, Math.min(anchorRect.left, window.innerWidth - popoverWidth - VIEWPORT_PADDING))
         popover.style.position = "fixed"
         popover.style.margin = "0"
         popover.style.left = `${left}px`
         popover.style.top = "auto"
         popover.style.bottom = `${window.innerHeight - anchorRect.top}px`
+        // Pinning only the bottom lets a tall popover grow off the top of the viewport, where it cannot be
+        // scrolled back into reach; cap it at the space actually above the anchor and let the shell scroll.
+        popover.style.maxHeight = `${Math.max(0, anchorRect.top - VIEWPORT_PADDING)}px`
     }
 }
 

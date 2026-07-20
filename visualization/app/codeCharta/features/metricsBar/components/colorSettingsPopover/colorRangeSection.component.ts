@@ -5,9 +5,9 @@ import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade
 import { ColorRange } from "../../../../model/codeCharta.model"
 import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { debounce } from "../../../../util/debounce"
+import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../../shared/facade"
 import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
-import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
 import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
 import { HandleValueChange, MetricColorRangeSliderComponent } from "./metricColorRangeSlider.component"
 
