@@ -7,7 +7,23 @@ import { CcState } from "../model/codeCharta.model"
 // by `renderCodeMap$` once the resulting render has finished.
 export const isPendingHeavyDispatch$ = new BehaviorSubject<boolean>(false)
 
+/**
+ * The backstop for a dispatch that never renders. `renderCodeMap$` is the normal clear, but it only
+ * runs when the dispatched action actually changes the accumulated data — a no-op exclude leaves
+ * nothing to render, and without this the spinner would stay up for the rest of the session.
+ *
+ * A genuinely slow render blocks the main thread, so this timer cannot fire mid-render and cut a real
+ * one short: it lands after the render has already cleared the flag, where it is a no-op.
+ */
+export const HEAVY_DISPATCH_MAX_WAIT_MS = 2_000
+
+let pendingBackstop: ReturnType<typeof setTimeout> | undefined
+
 export function clearPendingHeavyDispatch(): void {
+    if (pendingBackstop !== undefined) {
+        clearTimeout(pendingBackstop)
+        pendingBackstop = undefined
+    }
     if (isPendingHeavyDispatch$.value) {
         isPendingHeavyDispatch$.next(false)
     }
@@ -34,6 +50,7 @@ export function dispatchAfterPaint(store: Store<CcState>, action: Action | Actio
             for (const a of actions) {
                 store.dispatch(a)
             }
+            pendingBackstop = setTimeout(clearPendingHeavyDispatch, HEAVY_DISPATCH_MAX_WAIT_MS)
         })
     })
 }
