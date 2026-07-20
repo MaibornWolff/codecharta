@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
-import { ResetSettingsButtonComponent } from "../../../shared/facade"
+import { ResetSettingsButtonComponent, SettingsPopoverShellComponent, SliderNumberInputComponent } from "../../../shared/facade"
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
-import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
-import { SliderNumberInputComponent } from "../sliderNumberInput/sliderNumberInput.component"
 
 @Component({
     selector: "cc-area-settings-popover",

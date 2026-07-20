@@ -70,6 +70,37 @@ describe("SettingsPopoverShellComponent", () => {
         expect(shell.className).toContain("w-80")
     })
 
+    it("should cap its height and scroll so tall content degrades instead of clipping off-viewport", async () => {
+        // Arrange & Act
+        const { shell } = await setup()
+
+        // Assert
+        expect(shell.className).toContain("overflow-y-auto")
+        expect(shell.className).toContain("max-h-[calc(100vh-5rem)]")
+    })
+
+    it("should expose a dialog role with a fallback accessible name when no heading id is given", async () => {
+        // Arrange & Act
+        const { shell } = await setup()
+
+        // Assert
+        expect(shell.getAttribute("role")).toBe("dialog")
+        expect(shell.getAttribute("aria-label")).toBe("Settings")
+        expect(shell.hasAttribute("aria-labelledby")).toBe(false)
+    })
+
+    it("should label itself by the projected heading when ariaLabelledBy is provided", async () => {
+        // Arrange & Act
+        const renderResult = await render(SettingsPopoverShellComponent, {
+            inputs: { popoverId: "id", anchorName: "anchor", ariaLabelledBy: "word-cloud-settings-heading" }
+        })
+        const shell = renderResult.container.querySelector("[popover]") as HTMLElement
+
+        // Assert
+        expect(shell.getAttribute("aria-labelledby")).toBe("word-cloud-settings-heading")
+        expect(shell.hasAttribute("aria-label")).toBe(false)
+    })
+
     it("should not render a data-testid attribute when no testId is provided", async () => {
         // Arrange & Act
         const { shell } = await setup()

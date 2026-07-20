@@ -33,11 +33,13 @@ test.describe("MetricsBar", () => {
         await metricsBar.openAreaMetricSelect()
         await metricsBar.searchAreaMetric("functions")
 
-        const options = await metricsBar.getAreaMetricOptionNames()
-        expect(options.length).toBeGreaterThanOrEqual(1)
-        for (const option of options) {
-            expect(option.toLowerCase()).toContain("functions")
-        }
+        // Filtering re-renders the option list asynchronously, so poll instead of reading once
+        await expect
+            .poll(async () => {
+                const options = await metricsBar.getAreaMetricOptionNames()
+                return options.length > 0 && options.every(option => option.toLowerCase().includes("functions"))
+            })
+            .toBe(true)
     })
 
     test("should update the area segment when selecting a different metric", async ({ page }) => {
@@ -52,6 +54,6 @@ test.describe("MetricsBar", () => {
 
         await metricsBar.selectAreaMetricOption(otherMetric as string)
 
-        expect(await metricsBar.getSelectedAreaMetricName()).toBe(otherMetric)
+        await expect(metricsBar.selectedAreaMetricName()).toHaveText(otherMetric as string)
     })
 })

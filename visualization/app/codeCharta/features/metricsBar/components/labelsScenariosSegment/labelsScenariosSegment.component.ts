@@ -9,7 +9,7 @@ import {
     ScenarioListDialogComponent,
     ScenariosService
 } from "../../../scenarios/facade"
-import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
+import { SettingsPopoverShellComponent } from "../../../shared/facade"
 
 @Component({
     selector: "cc-labels-scenarios-segment",

@@ -1,0 +1,19 @@
+<div
+    [class]="
+        'dropdown rounded-box bg-base-100 shadow-lg flex flex-col overflow-y-auto max-h-[calc(100vh-5rem)] ' +
+        contentClass() +
+        ' ' +
+        widthClass()
+    "
+    popover
+    #popover
+    role="dialog"
+    [attr.aria-labelledby]="ariaLabelledBy()"
+    [attr.aria-label]="ariaLabelledBy() ? null : ariaLabel()"
+    [id]="popoverId()"
+    [style.position-anchor]="'--' + anchorName()"
+    [style.position-area]="'top span-right'"
+    [attr.data-testid]="testId()"
+>
+    <ng-content></ng-content>
+</div>
