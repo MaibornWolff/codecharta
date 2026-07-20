@@ -1,3 +1,4 @@
+import { TestBed } from "@angular/core/testing"
 import { Node } from "../../model/codeCharta.model"
 import { CodeMapTooltipService } from "./codeMap.tooltip.service"
 import { CodeMapTooltipStore } from "./stores/codeMapTooltip.store"
@@ -10,7 +11,10 @@ describe("CodeMapTooltipService", () => {
         const codeMapTooltipStore = {
             getSelectedMetrics: () => ({ areaMetric: "rloc", heightMetric: "mcc", colorMetric: "coverage" })
         } as unknown as CodeMapTooltipStore
-        tooltipService = new CodeMapTooltipService(codeMapTooltipStore)
+        TestBed.configureTestingModule({
+            providers: [{ provide: CodeMapTooltipStore, useValue: codeMapTooltipStore }]
+        })
+        tooltipService = TestBed.inject(CodeMapTooltipService)
 
         sampleNode = {
             name: "sample.ts",

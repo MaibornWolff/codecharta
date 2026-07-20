@@ -1,5 +1,6 @@
-import { Injectable } from "@angular/core"
+import { Injectable, inject } from "@angular/core"
 import { KeyValuePair } from "../../model/codeCharta.model"
+import { HoverTooltipContent, HoverTooltipService } from "../../util/hoverTooltip.service"
 import { CodeMapTooltipStore } from "./stores/codeMapTooltip.store"
 
 export interface TooltipNode {
@@ -8,66 +9,36 @@ export interface TooltipNode {
     attributes?: KeyValuePair
 }
 
+const MISSING_VALUE = "—"
+
+/**
+ * The 3D map's hover tooltip: the area/height/color metrics of the hovered building. Only the CONTENT
+ * is map-specific — the floating element itself is the shared HoverTooltipService, so other views can
+ * show their own content in the same tooltip without inheriting metrics semantics.
+ */
 @Injectable({ providedIn: "root" })
 export class CodeMapTooltipService {
-    private static readonly CURSOR_OFFSET_X = 12
-    private static readonly CURSOR_OFFSET_Y = 12
-    private static readonly VIEWPORT_PADDING = 8
-    private static readonly TOOLTIP_STYLE = `
-        position: fixed;
-        z-index: 1000;
-        background: rgba(255, 255, 255, 0.97);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        border-radius: 6px;
-        padding: 6px 10px;
-        font-family: Roboto, 'Helvetica Neue', sans-serif;
-        font-size: 12px;
-        line-height: 1.4;
-        color: #1a1a1a;
-        white-space: nowrap;
-        pointer-events: none;
-        user-select: none;
-        border: 1px solid #000;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-        opacity: 0;
-        transition: opacity 0.1s ease-out;
-    `
-
-    private tooltipElement: HTMLDivElement | null = null
-    private visible = false
+    private readonly hoverTooltipService = inject(HoverTooltipService)
     private currentNodeId: number | null = null
 
     constructor(private readonly codeMapTooltipStore: CodeMapTooltipStore) {}
 
     show(node: TooltipNode, clientX: number, clientY: number) {
-        if (!this.tooltipElement) {
-            this.createTooltipElement()
-        }
-
-        this.populateTooltip(node)
-        this.positionTooltip(clientX, clientY)
-        this.tooltipElement.style.opacity = "1"
-        this.visible = true
+        this.hoverTooltipService.show(this.buildContent(node), clientX, clientY)
         this.currentNodeId = node.id ?? null
     }
 
     updatePosition(clientX: number, clientY: number) {
-        if (this.visible && this.tooltipElement) {
-            this.positionTooltip(clientX, clientY)
-        }
+        this.hoverTooltipService.updatePosition(clientX, clientY)
     }
 
     hide() {
-        if (this.tooltipElement) {
-            this.tooltipElement.style.opacity = "0"
-        }
-        this.visible = false
+        this.hoverTooltipService.hide()
         this.currentNodeId = null
     }
 
     isVisible(): boolean {
-        return this.visible
+        return this.hoverTooltipService.isVisible()
     }
 
     getCurrentNodeId(): number | null {
@@ -75,73 +46,23 @@ export class CodeMapTooltipService {
     }
 
     getRect(): DOMRect | null {
-        if (!this.visible || !this.tooltipElement) {
-            return null
-        }
-        return this.tooltipElement.getBoundingClientRect()
+        return this.hoverTooltipService.getRect()
     }
 
     dispose() {
-        this.tooltipElement?.remove()
-        this.tooltipElement = null
-        this.visible = false
+        this.hoverTooltipService.dispose()
         this.currentNodeId = null
     }
 
-    private createTooltipElement() {
-        this.tooltipElement = document.createElement("div")
-        this.tooltipElement.id = "cc-hover-tooltip"
-        this.tooltipElement.style.cssText = CodeMapTooltipService.TOOLTIP_STYLE
-        document.body.appendChild(this.tooltipElement)
-    }
-
-    private populateTooltip(node: TooltipNode) {
+    private buildContent(node: TooltipNode): HoverTooltipContent {
         const { areaMetric, heightMetric, colorMetric } = this.codeMapTooltipStore.getSelectedMetrics()
 
-        const metrics = [
-            { label: areaMetric, value: node.attributes?.[areaMetric] },
-            { label: heightMetric, value: node.attributes?.[heightMetric] },
-            { label: colorMetric, value: node.attributes?.[colorMetric] }
-        ]
-
-        this.tooltipElement.textContent = ""
-
-        const nameDiv = document.createElement("div")
-        nameDiv.style.cssText = "font-weight: 500; margin-bottom: 2px;"
-        nameDiv.textContent = node.name
-        this.tooltipElement.append(nameDiv)
-
-        for (const metric of metrics) {
-            const metricDiv = document.createElement("div")
-            metricDiv.style.cssText = "font-size: 10px; color: #666;"
-            metricDiv.textContent = `${metric.label}: ${metric.value ?? "\u2014"}`
-            this.tooltipElement.append(metricDiv)
+        return {
+            title: node.name,
+            rows: [areaMetric, heightMetric, colorMetric].map(metric => ({
+                label: metric,
+                value: `${node.attributes?.[metric] ?? MISSING_VALUE}`
+            }))
         }
-    }
-
-    private positionTooltip(clientX: number, clientY: number) {
-        let x = clientX + CodeMapTooltipService.CURSOR_OFFSET_X
-        let y = clientY + CodeMapTooltipService.CURSOR_OFFSET_Y
-
-        const rect = this.tooltipElement.getBoundingClientRect()
-        const viewportWidth = window.innerWidth
-        const viewportHeight = window.innerHeight
-
-        if (x + rect.width > viewportWidth - CodeMapTooltipService.VIEWPORT_PADDING) {
-            x = clientX - rect.width - CodeMapTooltipService.CURSOR_OFFSET_X
-        }
-        if (y + rect.height > viewportHeight - CodeMapTooltipService.VIEWPORT_PADDING) {
-            y = clientY - rect.height - CodeMapTooltipService.CURSOR_OFFSET_Y
-        }
-
-        if (x < CodeMapTooltipService.VIEWPORT_PADDING) {
-            x = CodeMapTooltipService.VIEWPORT_PADDING
-        }
-        if (y < CodeMapTooltipService.VIEWPORT_PADDING) {
-            y = CodeMapTooltipService.VIEWPORT_PADDING
-        }
-
-        this.tooltipElement.style.left = `${x}px`
-        this.tooltipElement.style.top = `${y}px`
     }
 }
