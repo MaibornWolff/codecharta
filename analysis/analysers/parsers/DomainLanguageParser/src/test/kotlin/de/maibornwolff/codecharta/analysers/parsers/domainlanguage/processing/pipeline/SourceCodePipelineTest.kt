@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.p
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.ExtractionWeights
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.StopWordFilter
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.isExcluded
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import java.nio.file.Path
 import kotlin.test.Test

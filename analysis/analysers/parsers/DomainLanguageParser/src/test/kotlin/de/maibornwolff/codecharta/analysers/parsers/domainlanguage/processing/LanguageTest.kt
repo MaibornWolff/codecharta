@@ -104,7 +104,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for RUST with Rust keywords`() {
         // Arrange & Act
-        val keywords = Language.RUST.keywordFilter
+        val keywords = ResourceKeywords("keywords/rust-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -126,7 +126,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for KOTLIN with Kotlin keywords`() {
         // Arrange & Act
-        val keywords = Language.KOTLIN.keywordFilter
+        val keywords = ResourceKeywords("keywords/kotlin-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -138,7 +138,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for JAVA with Java keywords`() {
         // Arrange & Act
-        val keywords = Language.JAVA.keywordFilter
+        val keywords = ResourceKeywords("keywords/java-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -150,7 +150,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for PYTHON with Python keywords`() {
         // Arrange & Act
-        val keywords = Language.PYTHON.keywordFilter
+        val keywords = ResourceKeywords("keywords/python-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -162,7 +162,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for CSHARP with C# keywords`() {
         // Arrange & Act
-        val keywords = Language.CSHARP.keywordFilter
+        val keywords = ResourceKeywords("keywords/csharp-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -183,7 +183,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for GO with Go keywords`() {
         // Arrange & Act
-        val keywords = Language.GO.keywordFilter
+        val keywords = ResourceKeywords("keywords/go-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -205,7 +205,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for C with C keywords`() {
         // Arrange & Act
-        val keywords = Language.C.keywordFilter
+        val keywords = ResourceKeywords("keywords/c-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -235,7 +235,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for CPP with C++ keywords`() {
         // Arrange & Act
-        val keywords = Language.CPP.keywordFilter
+        val keywords = ResourceKeywords("keywords/cpp-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -257,7 +257,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for PHP with PHP keywords`() {
         // Arrange & Act
-        val keywords = Language.PHP.keywordFilter
+        val keywords = ResourceKeywords("keywords/php-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -281,7 +281,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for RUBY with Ruby keywords`() {
         // Arrange & Act
-        val keywords = Language.RUBY.keywordFilter
+        val keywords = ResourceKeywords("keywords/ruby-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -301,7 +301,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for SWIFT with Swift keywords`() {
         // Arrange & Act
-        val keywords = Language.SWIFT.keywordFilter
+        val keywords = ResourceKeywords("keywords/swift-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -325,7 +325,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for BASH with Bash keywords`() {
         // Arrange & Act
-        val keywords = Language.BASH.keywordFilter
+        val keywords = ResourceKeywords("keywords/bash-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -347,7 +347,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for OBJC with Objective-C keywords`() {
         // Arrange & Act
-        val keywords = Language.OBJC.keywordFilter
+        val keywords = ResourceKeywords("keywords/objc-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -366,7 +366,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for VUE with Vue keywords`() {
         // Arrange & Act
-        val keywords = Language.VUE.keywordFilter
+        val keywords = ResourceKeywords("keywords/vue-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -376,8 +376,8 @@ class LanguageTest {
     @Test
     fun `should have JavaScript keywords for JAVASCRIPT without TypeScript-only keywords`() {
         // Arrange & Act
-        val jsKeywords = Language.JAVASCRIPT.keywordFilter
-        val tsKeywords = Language.TYPESCRIPT.keywordFilter
+        val jsKeywords = ResourceKeywords("keywords/javascript-keywords.txt")
+        val tsKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(jsKeywords)
@@ -425,7 +425,7 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for ABL with Progress framework terms`() {
         // Arrange & Act
-        val keywords = Language.ABL.keywordFilter
+        val keywords = ResourceKeywords("keywords/abl-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
@@ -437,7 +437,7 @@ class LanguageTest {
     @Test
     fun `should have ABL system handles in keyword list`() {
         // Arrange & Act
-        val keywords = Language.ABL.keywordFilter
+        val keywords = ResourceKeywords("keywords/abl-keywords.txt")
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
