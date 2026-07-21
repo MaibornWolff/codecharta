@@ -4,13 +4,24 @@ import { Directive } from "@angular/core"
 const BAR_GAP_PX = 12
 
 /**
+ * Fallback heights (px) used only until each bar publishes its measured height as a CSS variable. Named
+ * here so every fallback for a given bar stays in step — a stray value (e.g. 28 vs 32) makes bars jump on
+ * first paint. The matching literals in templates that cannot import these (Tailwind arbitrary values)
+ * must be kept equal to them.
+ */
+export const DEFAULT_BOTTOM_BAR_HEIGHT_PX = 32
+export const DEFAULT_FILE_EXTENSION_BAR_HEIGHT_PX = 17
+
+/**
  * Bottom offset for a floating bar in a view that mounts no file-extension bar (e.g. the domain view).
  * Clears the bottom bar (and its selected-path breadcrumb) instead of straddling it.
  */
-export const BAR_BOTTOM_ABOVE_BOTTOM_BAR = `calc(var(--cc-bottom-bar-height, 32px) + ${BAR_GAP_PX}px)`
+export const BAR_BOTTOM_ABOVE_BOTTOM_BAR = `calc(var(--cc-bottom-bar-height, ${DEFAULT_BOTTOM_BAR_HEIGHT_PX}px) + ${BAR_GAP_PX}px)`
 
 /** Bottom offset for a floating bar in a view that also mounts the file-extension bar (e.g. the map view). */
-export const BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR = `calc(var(--cc-bottom-bar-height, 32px) + var(--cc-file-extension-bar-height, 17px) + ${BAR_GAP_PX}px)`
+export const BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR =
+    `calc(var(--cc-bottom-bar-height, ${DEFAULT_BOTTOM_BAR_HEIGHT_PX}px)` +
+    ` + var(--cc-file-extension-bar-height, ${DEFAULT_FILE_EXTENSION_BAR_HEIGHT_PX}px) + ${BAR_GAP_PX}px)`
 
 /**
  * Shared chrome for the floating settings bars (metricsBar, domainBar): horizontally centered card
