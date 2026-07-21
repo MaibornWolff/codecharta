@@ -30,7 +30,6 @@ import {
     migrateCcStateRecordToV16,
     migrateCcStateRecordToV17,
     migrateCcStateRecordToV18,
-    migrateCcStateRecordToV19,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -715,81 +714,33 @@ describe("migrateCcStateRecordToV17 (domain lens source seed transform)", () => 
     })
 })
 
-describe("migrateCcStateRecordToV18 (domain settings bar seed transform)", () => {
-    it("should seed the default domainBar root when the blob predates the domain settings bar", () => {
+describe("migrateCcStateRecordToV18 (domainState seed transform)", () => {
+    it("should seed the default domainState root when the blob predates the domain settings", () => {
         // Arrange
         const oldShapeState = { metricsLensSource: { attributeTypes: {}, attributeDescriptors: {} } }
 
         // Act
-        const migrated = migrateCcStateRecordToV18(oldShapeState) as unknown as { domainBar: { topN: number } }
+        const migrated = migrateCcStateRecordToV18(oldShapeState) as unknown as { domainState: { topN: number } }
 
         // Assert
-        expect(migrated.domainBar.topN).toBe(150)
+        expect(migrated.domainState.topN).toBe(150)
     })
 
-    it("should leave an existing domainBar untouched", () => {
+    it("should leave an existing domainState untouched", () => {
         // Arrange
-        const domainBar = { topN: 25 }
-        const alreadyMigrated = { domainBar }
+        const domainState = { topN: 25 }
+        const alreadyMigrated = { domainState }
 
         // Act
-        const migrated = migrateCcStateRecordToV18(alreadyMigrated) as unknown as { domainBar: unknown }
+        const migrated = migrateCcStateRecordToV18(alreadyMigrated) as unknown as { domainState: unknown }
 
         // Assert
-        expect(migrated.domainBar).toBe(domainBar)
+        expect(migrated.domainState).toBe(domainState)
     })
 
     it("should pass a nullish blob through unchanged", () => {
         // Arrange & Act & Assert
         expect(migrateCcStateRecordToV18(null)).toBeNull()
-    })
-})
-
-describe("migrateCcStateRecordToV19 (domainBar → domainState rename transform)", () => {
-    it("should carry the persisted settings over to the domainState root", () => {
-        // Arrange
-        const oldShapeState = { domainBar: { topN: 25 }, mapState: {} }
-
-        // Act
-        const migrated = migrateCcStateRecordToV19(oldShapeState) as unknown as {
-            domainState: { topN: number }
-            domainBar?: unknown
-        }
-
-        // Assert
-        expect(migrated.domainState.topN).toBe(25)
-        expect(migrated.domainBar).toBeUndefined()
-    })
-
-    it("should leave a blob that already uses domainState untouched", () => {
-        // Arrange
-        const alreadyMigrated = { domainState: { topN: 42 } }
-
-        // Act
-        const migrated = migrateCcStateRecordToV19(alreadyMigrated) as unknown as { domainState: { topN: number } }
-
-        // Assert
-        expect(migrated).toBe(alreadyMigrated)
-    })
-
-    it("should keep domainState when a blob carries both roots", () => {
-        // Arrange
-        const bothRoots = { domainBar: { topN: 25 }, domainState: { topN: 42 } }
-
-        // Act
-        const migrated = migrateCcStateRecordToV19(bothRoots) as unknown as {
-            domainState: { topN: number }
-            domainBar?: unknown
-        }
-
-        // Assert
-        expect(migrated.domainState.topN).toBe(42)
-        expect(migrated.domainBar).toBeUndefined()
-    })
-
-    it("should pass a nullish blob through unchanged", () => {
-        // Arrange & Act & Assert
-        expect(migrateCcStateRecordToV19(null)).toBeNull()
     })
 })
 
