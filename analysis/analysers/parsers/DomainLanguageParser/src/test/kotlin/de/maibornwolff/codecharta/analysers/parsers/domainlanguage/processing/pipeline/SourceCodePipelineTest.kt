@@ -4,12 +4,16 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Ex
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.StopWordFilter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
+import java.nio.file.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class SourceCodePipelineTest {
+    /** Any path works: these pipelines are built with no framework registry, so nothing is path-scoped. */
+    private val sourcePath: Path = Path.of("src", "Sample.kt")
+
     private val emptyFilter = StopWordFilter(emptyList(), emptySet())
     private val kotlinKeywordsFilter = StopWordFilter(listOf(ResourceKeywords("keywords/kotlin-keywords.txt")), emptySet())
 
@@ -31,7 +35,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("user"))
@@ -51,7 +55,7 @@ class SourceCodePipelineTest {
         val sourceCode = "   "
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.isEmpty())
@@ -68,7 +72,7 @@ class SourceCodePipelineTest {
         val sourceCode = ""
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.isEmpty())
@@ -90,7 +94,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("user"))
@@ -114,7 +118,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert - SSR removes bigrams when trigram has equal frequency
         assertTrue(result.containsKey("customer"))
@@ -153,7 +157,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("process"))
@@ -161,12 +165,12 @@ class SourceCodePipelineTest {
         assertTrue(result.containsKey("orders"))
 
         // "process" appears as:
-        // - identifier in OrderProcessor (weight 3) → "process" from "processor" split
-        // - identifier in function name (weight 3)
+        // - identifier in the function name (weight 3)
         // - comment (weight 2)
         // - string (weight 1)
-        // Total expected: 3 + 3 + 2 + 1 = 9
-        assertTrue(result["process"]!! >= 6) // At least identifier + comment
+        // OrderProcessor contributes "order" + "processor", not "process".
+        assertEquals(6, result["process"])
+        assertTrue(result.containsKey("processor"))
     }
 
     @Test
@@ -189,7 +193,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("user"))
@@ -200,35 +204,37 @@ class SourceCodePipelineTest {
     @Test
     fun `should filter Kotlin language keywords`() {
         // Arrange
-        val pipeline =
-            SourceCodePipeline(
-                Language.KOTLIN,
-                weights = ExtractionWeights(),
-                ngrams = 1,
-                stopWordFilter = kotlinKeywordsFilter
-            )
+        // Compared against an unfiltered run over the same source, so the test fails if the
+        // pipeline ever stops consulting its stopWordFilter.
         val sourceCode =
             """
-            class UserProfile {
-                val name: String
-                fun process() {}
+            class UserProfileData {
+                val customerValue: String
+                fun processObject() {}
             }
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val unfiltered = pipelineWith(emptyFilter).process(sourceCode, sourcePath)
+        val filtered = pipelineWith(kotlinKeywordsFilter).process(sourceCode, sourcePath)
 
         // Assert
-        // Should extract domain words
-        assertTrue(result.containsKey("user"))
-        assertTrue(result.containsKey("profile"))
-        assertTrue(result.containsKey("name"))
-        assertTrue(result.containsKey("process"))
+        val removedWords = unfiltered.keys - filtered.keys
+        assertTrue(removedWords.isNotEmpty(), "expected the Kotlin keyword filter to remove at least one word")
+        assertTrue(removedWords.all { kotlinKeywordsFilter.isExcluded(it) })
 
-        // Should not extract Kotlin keywords (class, val, fun are filtered)
-        // Note: These wouldn't be extracted anyway since they're keywords,
-        // but this test verifies the filter integration
+        assertTrue(filtered.containsKey("user"))
+        assertTrue(filtered.containsKey("profile"))
+        assertTrue(filtered.containsKey("customer"))
+        assertTrue(filtered.containsKey("process"))
     }
+
+    private fun pipelineWith(stopWordFilter: StopWordFilter): SourceCodePipeline = SourceCodePipeline(
+        Language.KOTLIN,
+        weights = ExtractionWeights(),
+        ngrams = 1,
+        stopWordFilter = stopWordFilter
+    )
 
     @Test
     fun `should process complex class with multiple members`() {
@@ -254,7 +260,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("customer"))
@@ -286,7 +292,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("order"))
@@ -318,7 +324,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("calculate"))
@@ -357,7 +363,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("drawable"))
@@ -383,7 +389,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("singleton"))
@@ -411,7 +417,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("outer"))
@@ -438,7 +444,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("result"))
@@ -465,7 +471,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         // Should have bigrams from identifier
@@ -492,7 +498,7 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val result = pipeline.process(sourceCode)
+        val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
         assertTrue(result.containsKey("user"))

@@ -1,6 +1,6 @@
 import { parseNumberInput } from "../../../util/parseNumberInput"
 
-/** Debounce delay (ms) shared by the metrics-bar settings popover number inputs. */
+/** Debounce delay (ms) shared by the settings popover number inputs. */
 export const SETTINGS_INPUT_DEBOUNCE_MS = 400
 
 /**

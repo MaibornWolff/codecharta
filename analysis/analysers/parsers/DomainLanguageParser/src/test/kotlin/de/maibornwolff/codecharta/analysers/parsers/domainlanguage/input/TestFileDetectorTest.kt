@@ -174,6 +174,19 @@ class TestFileDetectorTest {
     }
 
     @Test
+    fun `should detect Python test files using every extension the language declares`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val dir = tempDir.toFile()
+        val windowsScriptTest = File(dir, "test_user.pyw")
+        windowsScriptTest.createNewFile()
+
+        // Act & Assert
+        assertTrue(detector.isTestFile(windowsScriptTest))
+    }
+
+    @Test
     fun `should not detect regular Python files as tests`(
         @TempDir tempDir: Path
     ) {

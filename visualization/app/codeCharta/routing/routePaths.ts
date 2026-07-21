@@ -19,3 +19,18 @@ export const routeLinks = {
     metrics: absoluteLinkOf(routePaths.metrics),
     domain: absoluteLinkOf(routePaths.domain)
 } as const
+
+/** The routed views. Derived from `routePaths` so adding a view really is a single-file change. */
+export type ViewId = keyof typeof routePaths
+
+export const VIEW_IDS = Object.keys(routePaths) as readonly ViewId[]
+
+/** Where an unrecognized URL is treated as being — the router sends it to the default route anyway. */
+const DEFAULT_VIEW_ID: ViewId = "metrics"
+
+/** The view a router URL belongs to, or the default view when the URL matches no route. */
+export function viewIdForLink(url: string): ViewId {
+    const link = url.split("?")[0]
+    const matched = VIEW_IDS.find(viewId => routeLinks[viewId] === link)
+    return matched ?? DEFAULT_VIEW_ID
+}

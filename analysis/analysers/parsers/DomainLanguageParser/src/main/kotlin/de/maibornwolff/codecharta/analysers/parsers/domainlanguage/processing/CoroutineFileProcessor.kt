@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
-import io.github.oshai.kotlinlogging.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -9,8 +9,6 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
-
-private val logger = KotlinLogging.logger {}
 
 class CoroutineFileProcessor : FileProcessor {
     override fun processFilesIndividually(
@@ -38,7 +36,7 @@ class CoroutineFileProcessor : FileProcessor {
                             throw cancellation
                         } catch (error: Exception) {
                             failedFiles.add(relativePath)
-                            logger.warn(error) { "Skipping file due to processing error: $relativePath" }
+                            Logger.warn(error) { "Skipping file due to processing error: $relativePath" }
                         }
                         onFileProcessed?.invoke()
                     }

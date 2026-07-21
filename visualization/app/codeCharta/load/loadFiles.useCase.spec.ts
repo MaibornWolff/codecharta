@@ -21,8 +21,8 @@ import {
     defaultDependencyLensSource
 } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
-import { DomainBarReadWindow } from "../stores/domainBar/domainBar.read.facade"
 import { DomainLensSourceReadWindow } from "../stores/domainLensSource/domainLensSource.read.facade"
+import { DomainStateReadWindow } from "../stores/domainState/domainState.read.facade"
 import { FileStoreReadWindow, NO_FILES_LOADED_ERROR_MESSAGE } from "../stores/fileStore/fileStore.facade"
 import { sampleFile1, sampleFile2 } from "../stores/fileStore/loaders/ccJson/sampleFiles"
 import { LoadFileService } from "../stores/fileStore/loaders/ccJson/services/loadFile.service"
@@ -144,7 +144,7 @@ describe("LoadFilesUseCase", () => {
                     provide: DomainLensSourceReadWindow,
                     useValue: { getDomainLensSource: () => defaultState.domainLensSource }
                 },
-                { provide: DomainBarReadWindow, useValue: { getDomainBar: () => defaultState.domainBar } },
+                { provide: DomainStateReadWindow, useValue: { getDomainState: () => defaultState.domainState } },
                 { provide: SharedViewReadWindow, useValue: { getSharedView: () => defaultState.sharedView } },
                 { provide: MapStateReadWindow, useValue: { getMapState: () => defaultState.mapState } },
                 { provide: FileStoreReadWindow, useValue: { getFiles: () => defaultState.files } },

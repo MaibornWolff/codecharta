@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input
 
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.PathUtils
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
 import java.io.File
 
 class TestFileDetector {
@@ -15,7 +17,7 @@ class TestFileDetector {
     fun isTestFile(file: File): Boolean = isInTestDirectory(file) || hasTestFileName(file)
 
     private fun isInTestDirectory(file: File): Boolean {
-        val normalizedPath = file.absolutePath.replace('\\', '/')
+        val normalizedPath = PathUtils.normalizePath(file.absolutePath)
         return testDirectories.any { testDir ->
             normalizedPath.contains("/$testDir/")
         }
@@ -43,19 +45,20 @@ class TestFileDetector {
     }
 
     private fun matchesKotlinTestPattern(name: String, nameWithoutExtension: String): Boolean =
-        (name.endsWith(".kt", ignoreCase = true) || name.endsWith(".kts", ignoreCase = true)) &&
-            nameWithoutExtension.endsWith("Test")
+        hasExtensionOf(name, Language.KOTLIN) && nameWithoutExtension.endsWith("Test")
 
     private fun matchesTypeScriptJavaScriptTestPattern(name: String): Boolean {
-        val jsExtensions = listOf(".ts", ".tsx", ".js", ".jsx", ".cjs", ".mjs", ".cts", ".mts")
-        val hasJsExtension = jsExtensions.any { ext -> name.endsWith(ext, ignoreCase = true) }
-
+        val hasJsExtension = hasExtensionOf(name, Language.TYPESCRIPT) || hasExtensionOf(name, Language.JAVASCRIPT)
         return hasJsExtension && (name.contains(".test.") || name.contains(".spec."))
     }
 
     private fun matchesJavaTestPattern(name: String, nameWithoutExtension: String): Boolean =
-        name.endsWith(".java", ignoreCase = true) && nameWithoutExtension.endsWith("Test")
+        hasExtensionOf(name, Language.JAVA) && nameWithoutExtension.endsWith("Test")
 
-    private fun matchesPythonTestPattern(name: String, nameWithoutExtension: String): Boolean = name.endsWith(".py", ignoreCase = true) &&
+    private fun matchesPythonTestPattern(name: String, nameWithoutExtension: String): Boolean = hasExtensionOf(name, Language.PYTHON) &&
         (nameWithoutExtension.startsWith("test_") || nameWithoutExtension.endsWith("_test"))
+
+    /** Derived from [Language] so a newly supported extension is covered here too, rather than silently skipped. */
+    private fun hasExtensionOf(name: String, language: Language): Boolean =
+        language.extensions.any { extension -> name.endsWith(".$extension", ignoreCase = true) }
 }

@@ -1,7 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, ElementRef, inject, OnDestroy } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "../../../shared/components/publishesHeight/publishesHeight.directive"
 import { viewNavBarControls } from "../../viewNavBarControls"
 import { DeltaSelectorComponent } from "../deltaSelector/deltaSelector.component"
 import { MapSelectorComponent } from "../mapSelector/mapSelector.component"
@@ -25,13 +26,13 @@ import { ViewSwitcherComponent } from "../viewSwitcher/viewSwitcher.component"
         SettingsButtonComponent,
         ViewSwitcherComponent
     ],
+    hostDirectives: [PublishesHeightDirective],
+    providers: [{ provide: HEIGHT_CSS_VARIABLE, useValue: "--cc-bars-height" }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavBarComponent implements AfterViewInit, OnDestroy {
+export class NavBarComponent {
     private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
     private readonly activeViewStore = inject(ActiveViewStore)
-    private readonly elementReference = inject(ElementRef<HTMLElement>)
-    private resizeObserver?: ResizeObserver
 
     isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { requireSync: true })
 
@@ -42,27 +43,4 @@ export class NavBarComponent implements AfterViewInit, OnDestroy {
     private readonly activeView = toSignal(this.activeViewStore.activeView$, { requireSync: true })
 
     readonly trailingControls = computed(() => viewNavBarControls[this.activeView()])
-
-    /**
-     * The nav bar publishes its own height (as bottomBar and fileExtensionBar do), so every view that
-     * offsets below it gets a live value — including views that never mount the code map, which used to
-     * own this observer and left the variable unset on a direct domain-view deep link.
-     */
-    ngAfterViewInit(): void {
-        const measuredElement = this.elementReference.nativeElement as HTMLElement
-        const updateHeight = () => {
-            const height = measuredElement.getBoundingClientRect().height
-            document.documentElement.style.setProperty("--cc-bars-height", `${Math.round(height)}px`)
-        }
-        updateHeight()
-        if (typeof ResizeObserver !== "undefined") {
-            this.resizeObserver = new ResizeObserver(updateHeight)
-            this.resizeObserver.observe(measuredElement)
-        }
-    }
-
-    ngOnDestroy(): void {
-        this.resizeObserver?.disconnect()
-        document.documentElement.style.removeProperty("--cc-bars-height")
-    }
 }

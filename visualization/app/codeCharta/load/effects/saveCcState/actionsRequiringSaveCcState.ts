@@ -1,13 +1,13 @@
 import { setEdgeAttributeTypes } from "../../../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import {
-    setDomainBarGridSize,
-    setDomainBarRotationRange,
-    setDomainBarRotationStep,
-    setDomainBarShape,
-    setDomainBarSizeRange,
-    setDomainBarSizingMode,
-    setDomainBarTopN
-} from "../../../stores/domainBar/domainBar.write.facade"
+    setDomainStateGridSize,
+    setDomainStateRotationRange,
+    setDomainStateRotationStep,
+    setDomainStateShape,
+    setDomainStateSizeRange,
+    setDomainStateSizingMode,
+    setDomainStateTopN
+} from "../../../stores/domainState/domainState.write.facade"
 import { fileActions } from "../../../stores/fileStore/fileStore.facade"
 import {
     invertColorRange,
@@ -120,20 +120,20 @@ const metricsLensSaveActions = [setAttributeTypes, setAttributeDescriptors]
 const dependencyLensSaveActions = [setEdgeAttributeTypes]
 
 // setDomainWords is deliberately excluded: the words are re-derived from the loaded files, not persisted.
-const domainBarSaveActions = [
-    setDomainBarShape,
-    setDomainBarSizeRange,
-    setDomainBarRotationRange,
-    setDomainBarRotationStep,
-    setDomainBarGridSize,
-    setDomainBarSizingMode,
-    setDomainBarTopN
+const domainStateSaveActions = [
+    setDomainStateShape,
+    setDomainStateSizeRange,
+    setDomainStateRotationRange,
+    setDomainStateRotationStep,
+    setDomainStateGridSize,
+    setDomainStateSizingMode,
+    setDomainStateTopN
 ]
 
 export const actionsRequiringSaveCcState = [
     [...metricsLensSaveActions],
     [...dependencyLensSaveActions],
-    [...domainBarSaveActions],
+    [...domainStateSaveActions],
     [...mapStateSaveActions],
     [...sharedViewSaveActions],
     [...preferencesActions],

@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core"
 import { combineLatest, map, Observable } from "rxjs"
+import { ViewId } from "../../../routing/routePaths"
+import { ViewReadinessStore } from "../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
-import { ViewId, ViewReadinessStore } from "../../../stores/viewReadiness/viewReadiness.store"
 import { isApplyingScenario$ } from "../../../util/busy/isApplyingScenario"
 import { isPendingHeavyDispatch$ } from "../../../util/dispatchAfterPaint"
 

@@ -1,15 +1,15 @@
 import { CcState } from "app/codeCharta/model/codeCharta.model"
 import { openDB } from "idb"
 import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
-import { defaultDomainBar } from "../../domainBar/domainBar.read.facade"
 import { defaultDomainLensSource } from "../../domainLensSource/domainLensSource.read.facade"
+import { defaultDomainState } from "../../domainState/domainState.read.facade"
 import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSource.read.facade"
 import { defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 18
+export const DB_VERSION = 19
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -409,7 +409,7 @@ export function migrateCcStateRecordToV17<T>(state: T): T {
 }
 
 // v18: seed the domainBar root (the word-cloud render controls) so a blob written before the domain
-// settings bar existed still carries the root the store expects. Defaults match the DLC render controls.
+// settings bar existed still carries the root the store expects. Defaults match the DomainLanguageCharta render controls.
 export function migrateCcStateRecordToV18<T>(state: T): T {
     if (!state || typeof state !== "object") {
         return state
@@ -418,7 +418,22 @@ export function migrateCcStateRecordToV18<T>(state: T): T {
     if (record["domainBar"]) {
         return state
     }
-    return { ...record, domainBar: defaultDomainBar } as T
+    return { ...record, domainBar: defaultDomainState } as T
+}
+
+// v19: rename the domainBar root to domainState. The home was named after the settings bar that edits it
+// rather than the state it holds; domainState is the peer of mapState. v18 above still writes the old key
+// on purpose — it reshapes pre-v19 blobs, and this transform is what carries them forward.
+export function migrateCcStateRecordToV19<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    if (!record["domainBar"]) {
+        return state
+    }
+    const { domainBar, ...rest } = record
+    return { ...rest, domainState: record["domainState"] ?? domainBar } as T
 }
 
 export async function writeCcState(state: CcState) {
@@ -465,7 +480,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 15, migrate: migrateCcStateRecordToV15 },
     { version: 16, migrate: migrateCcStateRecordToV16 },
     { version: 17, migrate: migrateCcStateRecordToV17 },
-    { version: 18, migrate: migrateCcStateRecordToV18 }
+    { version: 18, migrate: migrateCcStateRecordToV18 },
+    { version: 19, migrate: migrateCcStateRecordToV19 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

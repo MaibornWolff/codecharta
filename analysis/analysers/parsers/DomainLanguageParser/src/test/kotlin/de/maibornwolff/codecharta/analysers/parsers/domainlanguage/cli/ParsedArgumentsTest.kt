@@ -14,7 +14,6 @@ class ParsedArgumentsTest {
                 limit = 100,
                 bypassGitignore = true,
                 excludeTests = false,
-                output = "output.json",
                 identifierWeight = 5,
                 commentWeight = 3,
                 stringWeight = 2,
@@ -27,7 +26,6 @@ class ParsedArgumentsTest {
         assertEquals("/path/to/dir", args.directory)
         assertEquals(100, args.limit)
         assertEquals(true, args.bypassGitignore)
-        assertEquals("output.json", args.output)
         assertEquals(5, args.identifierWeight)
         assertEquals(3, args.commentWeight)
         assertEquals(2, args.stringWeight)
@@ -43,7 +41,6 @@ class ParsedArgumentsTest {
                 limit = null,
                 bypassGitignore = false,
                 excludeTests = false,
-                output = null,
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
@@ -55,7 +52,6 @@ class ParsedArgumentsTest {
         // Assert
         assertEquals(null, args.directory)
         assertEquals(null, args.limit)
-        assertEquals(null, args.output)
     }
 
     @Test
@@ -67,7 +63,6 @@ class ParsedArgumentsTest {
                 limit = 50,
                 bypassGitignore = false,
                 excludeTests = false,
-                output = null,
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
@@ -81,7 +76,6 @@ class ParsedArgumentsTest {
                 limit = 50,
                 bypassGitignore = false,
                 excludeTests = false,
-                output = null,
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
@@ -103,7 +97,6 @@ class ParsedArgumentsTest {
                 limit = 50,
                 bypassGitignore = false,
                 excludeTests = false,
-                output = null,
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
@@ -117,7 +110,6 @@ class ParsedArgumentsTest {
                 limit = 50,
                 bypassGitignore = false,
                 excludeTests = false,
-                output = null,
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
@@ -139,7 +131,6 @@ class ParsedArgumentsTest {
                 limit = 50,
                 bypassGitignore = false,
                 excludeTests = false,
-                output = null,
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,

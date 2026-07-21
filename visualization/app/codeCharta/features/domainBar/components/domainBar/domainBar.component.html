@@ -1,3 +1,15 @@
-<cc-shape-segment></cc-shape-segment>
-<cc-word-sizing-segment></cc-word-sizing-segment>
-<cc-rotation-segment></cc-rotation-segment>
+<cc-domain-segment #shape label="Shape" [value]="settings().shape" idPrefix="domain-bar-shape" minWidthClass="min-w-[100px]">
+    <cc-shape-settings-popover [popoverId]="shape.popoverId()" [anchorName]="shape.anchorName()"></cc-shape-settings-popover>
+</cc-domain-segment>
+
+<cc-domain-segment #wordSizing label="Word Sizing" [value]="sizingModeLabel()" idPrefix="domain-bar-word-sizing">
+    <div body class="text-xs opacity-70 text-center" data-testid="domain-bar-top-n-value">{{ settings().topN }} words</div>
+    <cc-word-sizing-settings-popover
+        [popoverId]="wordSizing.popoverId()"
+        [anchorName]="wordSizing.anchorName()"
+    ></cc-word-sizing-settings-popover>
+</cc-domain-segment>
+
+<cc-domain-segment #rotation label="Rotation" [value]="rotationRangeLabel()" idPrefix="domain-bar-rotation" minWidthClass="min-w-[110px]">
+    <cc-rotation-settings-popover [popoverId]="rotation.popoverId()" [anchorName]="rotation.anchorName()"></cc-rotation-settings-popover>
+</cc-domain-segment>

@@ -9,7 +9,7 @@ import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
  *
  * Uses tree-sitter AST parsing via TreeSitterLibrary for extraction.
  */
-enum class Language(val keywordFilter: LanguageKeywords, val libraryLanguage: LibraryLanguage, private val extensions: Set<String>) {
+enum class Language(val keywordFilter: LanguageKeywords, val libraryLanguage: LibraryLanguage, internal val extensions: Set<String>) {
     KOTLIN(
         keywordFilter = ResourceKeywords("keywords/kotlin-keywords.txt"),
         libraryLanguage = LibraryLanguage.KOTLIN,

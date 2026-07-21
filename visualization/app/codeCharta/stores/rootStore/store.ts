@@ -1,8 +1,8 @@
 import { ActionReducer } from "@ngrx/store"
 import { CcState } from "../../model/codeCharta.model"
 import { dependencyLensSource } from "../dependencyLensSource/dependencyLensSource.read.facade"
-import { domainBar } from "../domainBar/domainBar.read.facade"
 import { domainLensSource } from "../domainLensSource/domainLensSource.read.facade"
+import { domainState } from "../domainState/domainState.read.facade"
 import { currentFilesAreSampleFiles, files, isLoadingFile } from "../fileStore/fileStore.facade"
 import { mapState } from "../mapState/mapState.read.facade"
 import { metricsLensSource } from "../metricsLensSource/metricsLensSource.read.facade"
@@ -15,7 +15,7 @@ export const appReducers = {
     metricsLensSource,
     dependencyLensSource,
     domainLensSource,
-    domainBar,
+    domainState,
     preferences,
     mapState,
     sharedView,

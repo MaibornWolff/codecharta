@@ -20,10 +20,9 @@ class TfIdfCalculator {
         val documentFrequency = countDocumentFrequency(perFileFrequencies)
         val termFrequency = sumTermFrequency(perFileFrequencies)
 
-        return termFrequency.mapValues { (term, tf) ->
-            val df = documentFrequency[term] ?: 0
-            val idf = calculateIdf(totalDocuments, df)
-            tf * idf
+        return termFrequency.mapValues { (term, termCount) ->
+            val documentCount = documentFrequency[term] ?: 0
+            termCount * calculateIdf(totalDocuments, documentCount)
         }
     }
 

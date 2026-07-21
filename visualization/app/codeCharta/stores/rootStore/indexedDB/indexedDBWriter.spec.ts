@@ -30,6 +30,7 @@ import {
     migrateCcStateRecordToV16,
     migrateCcStateRecordToV17,
     migrateCcStateRecordToV18,
+    migrateCcStateRecordToV19,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -741,6 +742,54 @@ describe("migrateCcStateRecordToV18 (domain settings bar seed transform)", () =>
     it("should pass a nullish blob through unchanged", () => {
         // Arrange & Act & Assert
         expect(migrateCcStateRecordToV18(null)).toBeNull()
+    })
+})
+
+describe("migrateCcStateRecordToV19 (domainBar → domainState rename transform)", () => {
+    it("should carry the persisted settings over to the domainState root", () => {
+        // Arrange
+        const oldShapeState = { domainBar: { topN: 25 }, mapState: {} }
+
+        // Act
+        const migrated = migrateCcStateRecordToV19(oldShapeState) as unknown as {
+            domainState: { topN: number }
+            domainBar?: unknown
+        }
+
+        // Assert
+        expect(migrated.domainState.topN).toBe(25)
+        expect(migrated.domainBar).toBeUndefined()
+    })
+
+    it("should leave a blob that already uses domainState untouched", () => {
+        // Arrange
+        const alreadyMigrated = { domainState: { topN: 42 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV19(alreadyMigrated) as unknown as { domainState: { topN: number } }
+
+        // Assert
+        expect(migrated).toBe(alreadyMigrated)
+    })
+
+    it("should keep domainState when a blob carries both roots", () => {
+        // Arrange
+        const bothRoots = { domainBar: { topN: 25 }, domainState: { topN: 42 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV19(bothRoots) as unknown as {
+            domainState: { topN: number }
+            domainBar?: unknown
+        }
+
+        // Assert
+        expect(migrated.domainState.topN).toBe(42)
+        expect(migrated.domainBar).toBeUndefined()
+    })
+
+    it("should pass a nullish blob through unchanged", () => {
+        // Arrange & Act & Assert
+        expect(migrateCcStateRecordToV19(null)).toBeNull()
     })
 })
 

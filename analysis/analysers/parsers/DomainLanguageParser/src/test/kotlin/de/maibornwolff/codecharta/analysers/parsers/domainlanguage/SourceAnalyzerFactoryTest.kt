@@ -56,7 +56,6 @@ class SourceAnalyzerFactoryTest {
                 frameworksByPath = mapOf(tempDir to setOf(Framework.REACT)),
                 enableSsr = false,
                 limit = 100,
-                outputFile = null,
                 enableTfidf = true
             )
 

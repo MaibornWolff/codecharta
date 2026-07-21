@@ -1,13 +1,11 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
-import io.github.oshai.kotlinlogging.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import java.nio.file.Path
 import kotlin.io.path.readText
-
-private val logger = KotlinLogging.logger {}
 
 enum class Framework {
     REACT,
@@ -49,12 +47,15 @@ class FrameworkDetector {
                     frameworksByPath[packageJsonPath.parent] = frameworks
                 }
             } catch (e: Exception) {
-                logger.warn(e) { "Failed to parse package.json at $packageJsonPath, skipping framework detection" }
+                Logger.warn(e) { "Failed to parse package.json at $packageJsonPath, skipping framework detection" }
             }
         }
         return frameworksByPath
     }
 
+    // node_modules is excluded because every dependency ships its own package.json, which would
+    // register the frameworks of libraries the project merely depends on as if they were its own.
+    // findCsprojFiles needs no such guard: NuGet restores to a global cache, not into the source tree.
     private fun findPackageJsonFiles(directoryPath: Path): List<Path> = directoryPath
         .toFile()
         .walkTopDown()
@@ -75,12 +76,11 @@ class FrameworkDetector {
                 val frameworks = identifyCSharpFrameworks(packageReferences)
                 if (frameworks.isNotEmpty()) {
                     val directory = csprojFile.parent
-                    // Merge with existing frameworks if directory already has some
                     val existing = frameworksByPath[directory] ?: emptySet()
                     frameworksByPath[directory] = existing + frameworks
                 }
             } catch (e: Exception) {
-                logger.warn(e) { "Failed to parse .csproj at $csprojFile, skipping framework detection" }
+                Logger.warn(e) { "Failed to parse .csproj at $csprojFile, skipping framework detection" }
             }
         }
         return frameworksByPath

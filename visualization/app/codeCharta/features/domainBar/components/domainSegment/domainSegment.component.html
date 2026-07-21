@@ -1,0 +1,13 @@
+<cc-axis-card
+    [label]="label()"
+    [metricName]="value()"
+    [hasCog]="true"
+    [cogPopoverId]="popoverId()"
+    [cogAnchorName]="anchorName()"
+    [testId]="segmentTestId()"
+    [cogTestId]="cogTestId()"
+    [minWidthClass]="minWidthClass()"
+>
+    <ng-content select="[body]" ngProjectAs="[body]"></ng-content>
+</cc-axis-card>
+<ng-content></ng-content>

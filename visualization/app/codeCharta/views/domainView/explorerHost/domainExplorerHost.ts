@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store"
 import { DomainBarReadStore } from "../../../features/domainBar/facade"
 import { ExplorerHost, ExplorerHostCapabilities, ExplorerRowState } from "../../../features/sidebarExplorer/facade"
 import { CodeMapNode, DomainWord } from "../../../model/codeCharta.model"
-import { WordCloudSizingMode } from "../../../model/wordCloud.model"
+import { WordCloudSizingMode, wordSizingValue } from "../../../model/wordCloud.model"
 import { domainWordsSelector } from "../../../stores/domainLensSource/domainLensSource.read.facade"
 import { HoverTooltipService } from "../../../util/hoverTooltip.service"
 
@@ -60,7 +60,7 @@ export class DomainExplorerHost implements ExplorerHost {
                 title: node.name,
                 rows:
                     words.length > 0
-                        ? words.map(word => ({ label: word.text, value: `${scoreOf(word, sizingMode)}` }))
+                        ? words.map(word => ({ label: word.text, value: `${wordSizingValue(word, sizingMode)}` }))
                         : [{ label: NO_WORDS_HINT, value: "" }]
             },
             rowRect.right,
@@ -83,13 +83,6 @@ export class DomainExplorerHost implements ExplorerHost {
     /** Ranked the same way the cloud sizes its words, so the tooltip previews what selecting will show. */
     private topWords(path: string, sizingMode: WordCloudSizingMode): DomainWord[] {
         const words = this.domainWords()[path] ?? []
-        return [...words].sort((a, b) => scoreOf(b, sizingMode) - scoreOf(a, sizingMode)).slice(0, TOOLTIP_WORD_COUNT)
+        return [...words].sort((a, b) => wordSizingValue(b, sizingMode) - wordSizingValue(a, sizingMode)).slice(0, TOOLTIP_WORD_COUNT)
     }
-}
-
-function scoreOf(word: DomainWord, sizingMode: WordCloudSizingMode): number {
-    if (sizingMode === WordCloudSizingMode.tfidf) {
-        return word.tfidf ?? 0
-    }
-    return word.frequency
 }

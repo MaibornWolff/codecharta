@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Analyzes source code files and extracts word frequencies.
  *
- * Supports Kotlin, TypeScript, and JavaScript using tree-sitter AST parsing.
+ * Dispatches on [Language], which is the source of truth for the supported extensions.
  * Unsupported file types return [FileResult.Skipped] with the extension.
  *
  * Framework-specific keywords are filtered based on the file's location
@@ -34,7 +34,8 @@ class FileAnalyzer(
         return FileResult.Processed(words)
     }
 
-    fun clearCache() {
+    /** Releases the caches that are only valid for one analysis run. The pipeline map is enum-bounded and kept. */
+    fun releasePerRunCaches() {
         stopWordFilter.clearCache()
     }
 }

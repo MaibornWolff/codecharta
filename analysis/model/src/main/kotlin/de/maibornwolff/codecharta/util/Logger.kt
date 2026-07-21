@@ -17,8 +17,20 @@ object Logger {
         }
     }
 
+    fun error(throwable: Throwable, value: () -> String) {
+        logger.error(throwable) {
+            value()
+        }
+    }
+
     fun warn(value: () -> String) {
         logger.warn {
+            value()
+        }
+    }
+
+    fun warn(throwable: Throwable, value: () -> String) {
+        logger.warn(throwable) {
             value()
         }
     }

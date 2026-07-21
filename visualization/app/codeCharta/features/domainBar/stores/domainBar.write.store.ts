@@ -1,17 +1,18 @@
 import { Injectable, inject } from "@angular/core"
 import { Store } from "@ngrx/store"
+import { CcState } from "../../../model/codeCharta.model"
 import { WordCloudSettings } from "../../../model/wordCloud.model"
 import {
-    setDomainBarDrawOutOfBound,
-    setDomainBarGridSize,
-    setDomainBarRotationRange,
-    setDomainBarRotationStep,
-    setDomainBarShape,
-    setDomainBarShrinkToFit,
-    setDomainBarSizeRange,
-    setDomainBarSizingMode,
-    setDomainBarTopN
-} from "../../../stores/domainBar/domainBar.write.facade"
+    setDomainStateDrawOutOfBound,
+    setDomainStateGridSize,
+    setDomainStateRotationRange,
+    setDomainStateRotationStep,
+    setDomainStateShape,
+    setDomainStateShrinkToFit,
+    setDomainStateSizeRange,
+    setDomainStateSizingMode,
+    setDomainStateTopN
+} from "../../../stores/domainState/domainState.write.facade"
 
 /**
  * Write surface of the domain settings bar: one setter per control. Resets are not routed through here —
@@ -19,41 +20,41 @@ import {
  */
 @Injectable({ providedIn: "root" })
 export class DomainBarWriteStore {
-    private readonly store = inject(Store)
+    private readonly store: Store<CcState> = inject(Store)
 
     setShape(value: WordCloudSettings["shape"]) {
-        this.store.dispatch(setDomainBarShape({ value }))
+        this.store.dispatch(setDomainStateShape({ value }))
     }
 
     setSizeRange(value: WordCloudSettings["sizeRange"]) {
-        this.store.dispatch(setDomainBarSizeRange({ value }))
+        this.store.dispatch(setDomainStateSizeRange({ value }))
     }
 
     setRotationRange(value: WordCloudSettings["rotationRange"]) {
-        this.store.dispatch(setDomainBarRotationRange({ value }))
+        this.store.dispatch(setDomainStateRotationRange({ value }))
     }
 
     setRotationStep(value: WordCloudSettings["rotationStep"]) {
-        this.store.dispatch(setDomainBarRotationStep({ value }))
+        this.store.dispatch(setDomainStateRotationStep({ value }))
     }
 
     setGridSize(value: WordCloudSettings["gridSize"]) {
-        this.store.dispatch(setDomainBarGridSize({ value }))
+        this.store.dispatch(setDomainStateGridSize({ value }))
     }
 
     setSizingMode(value: WordCloudSettings["sizingMode"]) {
-        this.store.dispatch(setDomainBarSizingMode({ value }))
+        this.store.dispatch(setDomainStateSizingMode({ value }))
     }
 
     setTopN(value: WordCloudSettings["topN"]) {
-        this.store.dispatch(setDomainBarTopN({ value }))
+        this.store.dispatch(setDomainStateTopN({ value }))
     }
 
     setShrinkToFit(value: WordCloudSettings["shrinkToFit"]) {
-        this.store.dispatch(setDomainBarShrinkToFit({ value }))
+        this.store.dispatch(setDomainStateShrinkToFit({ value }))
     }
 
     setDrawOutOfBound(value: WordCloudSettings["drawOutOfBound"]) {
-        this.store.dispatch(setDomainBarDrawOutOfBound({ value }))
+        this.store.dispatch(setDomainStateDrawOutOfBound({ value }))
     }
 }

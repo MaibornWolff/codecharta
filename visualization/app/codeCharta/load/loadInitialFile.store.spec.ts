@@ -2,20 +2,20 @@ import { TestBed } from "@angular/core/testing"
 import { Action, Store, StoreModule } from "@ngrx/store"
 import { CcState, DomainLensSource } from "../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../model/wordCloud.model"
-import { DomainBarReadWindow } from "../stores/domainBar/domainBar.read.facade"
-import {
-    setDomainBarDrawOutOfBound,
-    setDomainBarGridSize,
-    setDomainBarRotationRange,
-    setDomainBarRotationStep,
-    setDomainBarShape,
-    setDomainBarShrinkToFit,
-    setDomainBarSizeRange,
-    setDomainBarSizingMode,
-    setDomainBarTopN
-} from "../stores/domainBar/domainBar.write.facade"
 import { DomainLensSourceReadWindow, defaultDomainLensSource } from "../stores/domainLensSource/domainLensSource.read.facade"
 import { setDomainWords } from "../stores/domainLensSource/domainLensSource.write.facade"
+import { DomainStateReadWindow } from "../stores/domainState/domainState.read.facade"
+import {
+    setDomainStateDrawOutOfBound,
+    setDomainStateGridSize,
+    setDomainStateRotationRange,
+    setDomainStateRotationStep,
+    setDomainStateShape,
+    setDomainStateShrinkToFit,
+    setDomainStateSizeRange,
+    setDomainStateSizingMode,
+    setDomainStateTopN
+} from "../stores/domainState/domainState.write.facade"
 import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
 import { LoadInitialFileStore } from "./loadInitialFile.store"
 
@@ -23,8 +23,8 @@ describe("LoadInitialFileStore", () => {
     let loadInitialFileStore: LoadInitialFileStore
     let dispatchSpy: jest.SpyInstance
 
-    /** Every domainBar setting differing from its default, so one apply hits all nine switch branches. */
-    const savedDomainBar: WordCloudSettings = {
+    /** Every domainState setting differing from its default, so one apply hits all nine switch branches. */
+    const savedDomainState: WordCloudSettings = {
         shape: WordCloudShape.star,
         sizeRange: [20, 80],
         rotationRange: [-45, 45],
@@ -51,26 +51,26 @@ describe("LoadInitialFileStore", () => {
         jest.restoreAllMocks()
     })
 
-    describe("applyDomainBar", () => {
+    describe("applyDomainState", () => {
         it("should dispatch the matching action for every changed domain bar setting", () => {
             // Arrange
             setup()
 
             // Act
-            const missingKeys = loadInitialFileStore.applyDomainBar(savedDomainBar)
+            const missingKeys = loadInitialFileStore.applyDomainState(savedDomainState)
 
             // Assert
             expect(missingKeys).toEqual([])
             expect(dispatchedActions()).toEqual([
-                setDomainBarShape({ value: savedDomainBar.shape }),
-                setDomainBarSizeRange({ value: savedDomainBar.sizeRange }),
-                setDomainBarRotationRange({ value: savedDomainBar.rotationRange }),
-                setDomainBarRotationStep({ value: savedDomainBar.rotationStep }),
-                setDomainBarGridSize({ value: savedDomainBar.gridSize }),
-                setDomainBarSizingMode({ value: savedDomainBar.sizingMode }),
-                setDomainBarTopN({ value: savedDomainBar.topN }),
-                setDomainBarShrinkToFit({ value: savedDomainBar.shrinkToFit }),
-                setDomainBarDrawOutOfBound({ value: savedDomainBar.drawOutOfBound })
+                setDomainStateShape({ value: savedDomainState.shape }),
+                setDomainStateSizeRange({ value: savedDomainState.sizeRange }),
+                setDomainStateRotationRange({ value: savedDomainState.rotationRange }),
+                setDomainStateRotationStep({ value: savedDomainState.rotationStep }),
+                setDomainStateGridSize({ value: savedDomainState.gridSize }),
+                setDomainStateSizingMode({ value: savedDomainState.sizingMode }),
+                setDomainStateTopN({ value: savedDomainState.topN }),
+                setDomainStateShrinkToFit({ value: savedDomainState.shrinkToFit }),
+                setDomainStateDrawOutOfBound({ value: savedDomainState.drawOutOfBound })
             ])
         })
 
@@ -79,7 +79,7 @@ describe("LoadInitialFileStore", () => {
             setup()
 
             // Act
-            const missingKeys = loadInitialFileStore.applyDomainBar({ ...defaultWordCloudSettings })
+            const missingKeys = loadInitialFileStore.applyDomainState({ ...defaultWordCloudSettings })
 
             // Assert
             expect(missingKeys).toEqual([])
@@ -89,13 +89,13 @@ describe("LoadInitialFileStore", () => {
         it("should dispatch only the changed setting and report the keys the persisted state lacks", () => {
             // Arrange
             setup()
-            const partiallyPersistedDomainBar = { topN: 42 } as WordCloudSettings
+            const partiallyPersistedDomainState = { topN: 42 } as WordCloudSettings
 
             // Act
-            const missingKeys = loadInitialFileStore.applyDomainBar(partiallyPersistedDomainBar)
+            const missingKeys = loadInitialFileStore.applyDomainState(partiallyPersistedDomainState)
 
             // Assert
-            expect(dispatchedActions()).toEqual([setDomainBarTopN({ value: 42 })])
+            expect(dispatchedActions()).toEqual([setDomainStateTopN({ value: 42 })])
             expect(missingKeys).toEqual([
                 "shape",
                 "sizeRange",
@@ -112,14 +112,14 @@ describe("LoadInitialFileStore", () => {
             // Arrange
             setup([
                 {
-                    provide: DomainBarReadWindow,
-                    useValue: { getDomainBar: () => ({ ...defaultWordCloudSettings, unknownSetting: "old" }) }
+                    provide: DomainStateReadWindow,
+                    useValue: { getDomainState: () => ({ ...defaultWordCloudSettings, unknownSetting: "old" }) }
                 }
             ])
-            const savedDomainBarWithUnknownKey = { ...defaultWordCloudSettings, unknownSetting: "new" } as WordCloudSettings
+            const savedDomainStateWithUnknownKey = { ...defaultWordCloudSettings, unknownSetting: "new" } as WordCloudSettings
 
             // Act & Assert
-            expect(() => loadInitialFileStore.applyDomainBar(savedDomainBarWithUnknownKey)).toThrow("Unhandled key: unknownSetting")
+            expect(() => loadInitialFileStore.applyDomainState(savedDomainStateWithUnknownKey)).toThrow("Unhandled key: unknownSetting")
         })
     })
 

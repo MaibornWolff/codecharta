@@ -34,7 +34,6 @@ class AnalysisConfigurationTest {
                 ngrams = 1,
                 customStopWords = emptySet(),
                 limit = 100,
-                outputFile = "output.json",
                 bypassGitignore = true,
                 excludeTests = true
             )
@@ -46,7 +45,6 @@ class AnalysisConfigurationTest {
         assertEquals(3, config.weights.commentWeight)
         assertEquals(2, config.weights.stringWeight)
         assertEquals(100, config.limit)
-        assertEquals("output.json", config.outputFile)
         assertEquals(true, config.bypassGitignore)
         assertEquals(true, config.excludeTests)
     }
@@ -64,7 +62,6 @@ class AnalysisConfigurationTest {
         assertTrue(config.frameworksByPath.isEmpty())
         assertEquals(true, config.enableSsr)
         assertNull(config.limit)
-        assertNull(config.outputFile)
         assertEquals(false, config.bypassGitignore)
         assertEquals(false, config.excludeTests)
         assertEquals(true, config.enableTfidf)

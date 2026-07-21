@@ -33,7 +33,6 @@ class ConfigurationBuilder {
             frameworksByPath = frameworksByPath,
             enableSsr = !parsedArgs.noSsr,
             limit = parsedArgs.limit,
-            outputFile = parsedArgs.output,
             enableTfidf = !parsedArgs.noTfidf,
             sortBy = parsedArgs.sortBy
         )

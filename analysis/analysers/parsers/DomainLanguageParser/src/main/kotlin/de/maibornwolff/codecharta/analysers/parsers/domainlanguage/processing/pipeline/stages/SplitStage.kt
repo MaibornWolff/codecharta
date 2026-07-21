@@ -54,7 +54,11 @@ class SplitStage(private val ngrams: Int = 1) {
     private fun isSignificantWord(word: String): Boolean = word.length >= MIN_WORD_LENGTH
 
     companion object {
+        /** Shortest word the splitter may emit. */
         private const val MIN_WORD_LENGTH = 2
-        private val WORD_PATTERN = Regex("""\b[a-zA-Z]{3,}\b""")
+
+        /** Shortest letter run the splitter will even look at — gates the input, not the output. */
+        private const val MIN_MATCHED_RUN_LENGTH = 3
+        private val WORD_PATTERN = Regex("""\b[a-zA-Z]{$MIN_MATCHED_RUN_LENGTH,}\b""")
     }
 }

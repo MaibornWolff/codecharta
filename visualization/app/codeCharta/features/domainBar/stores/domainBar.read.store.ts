@@ -2,8 +2,9 @@ import { Injectable, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
 import { hasTfidfDataSelector } from "../../../lenses/domain/domainLens.facade"
+import { CcState } from "../../../model/codeCharta.model"
 import { defaultWordCloudSettings } from "../../../model/wordCloud.model"
-import { DomainBarReadWindow } from "../../../stores/domainBar/domainBar.read.facade"
+import { DomainStateReadWindow } from "../../../stores/domainState/domainState.read.facade"
 
 /**
  * Read surface of the domain settings bar: the persisted word-cloud controls as signals, plus whether
@@ -11,9 +12,9 @@ import { DomainBarReadWindow } from "../../../stores/domainBar/domainBar.read.fa
  */
 @Injectable({ providedIn: "root" })
 export class DomainBarReadStore {
-    private readonly domainBarReadWindow = inject(DomainBarReadWindow)
-    private readonly store = inject(Store)
+    private readonly domainStateReadWindow = inject(DomainStateReadWindow)
+    private readonly store: Store<CcState> = inject(Store)
 
-    readonly settings = toSignal(this.domainBarReadWindow.wordCloudSettings$, { initialValue: defaultWordCloudSettings })
+    readonly settings = toSignal(this.domainStateReadWindow.wordCloudSettings$, { initialValue: defaultWordCloudSettings })
     readonly hasTfidfData = toSignal(this.store.select(hasTfidfDataSelector), { initialValue: false })
 }
