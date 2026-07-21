@@ -12,7 +12,7 @@ import { UploadFilesService } from "../../services/uploadFiles.service"
 import { NavBarComponent } from "./navBar.component"
 
 describe("NavBarComponent", () => {
-    const TRAILING_DIVIDER_SELECTOR = ".navbar-end > div.w-px"
+    const TRAILING_DIVIDER_SELECTOR = ".navbar-end > cc-nav-divider"
 
     const providersFor = (isDeltaState: boolean, activeView: ViewId = "metrics") => [
         provideMockStore({ initialState: defaultState, selectors: [{ selector: isDeltaStateSelector, value: isDeltaState }] }),

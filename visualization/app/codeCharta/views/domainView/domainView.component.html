@@ -33,7 +33,7 @@
     its right edge instead of at 0 — see cloudLeftInset for why the cloud must not be drawn underneath it.
 -->
 <div
-    class="fixed right-0 top-[var(--cc-bars-height,49px)] bottom-[var(--cc-bottom-bar-height,28px)]"
+    class="fixed right-0 top-[var(--cc-bars-height,49px)] bottom-[var(--cc-bottom-bar-height,32px)]"
     [style.left.px]="cloudLeftInset()"
 >
     <cc-word-cloud [settings]="settings()" [selectedNodePath]="selectedNodePath()" (clearSelection)="clearSelection()"></cc-word-cloud>

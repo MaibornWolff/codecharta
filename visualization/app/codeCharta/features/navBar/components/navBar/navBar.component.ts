@@ -7,6 +7,7 @@ import { viewNavBarControls } from "../../viewNavBarControls"
 import { DeltaSelectorComponent } from "../deltaSelector/deltaSelector.component"
 import { MapSelectorComponent } from "../mapSelector/mapSelector.component"
 import { ModeToggleComponent } from "../modeToggle/modeToggle.component"
+import { NavBarDividerComponent } from "../navBarDivider/navBarDivider.component"
 import { NavBarFolderButtonComponent } from "../navBarFolderButton/navBarFolderButton.component"
 import { NavBarLogoComponent } from "../navBarLogo/navBarLogo.component"
 import { Print3DButtonComponent } from "../print3DButton/print3DButton.component"
@@ -18,6 +19,7 @@ import { ViewSwitcherComponent } from "../viewSwitcher/viewSwitcher.component"
     templateUrl: "./navBar.component.html",
     imports: [
         NavBarLogoComponent,
+        NavBarDividerComponent,
         NavBarFolderButtonComponent,
         MapSelectorComponent,
         DeltaSelectorComponent,
