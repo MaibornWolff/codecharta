@@ -13,6 +13,7 @@ import {
 } from "../../features/sidebarExplorer/facade"
 import { SortingOption } from "../../model/codeCharta.model"
 import { WordCloudComponent } from "../../renderer/wordCloud/wordCloud.facade"
+import { pathToNodeName } from "../../util/nodePathHelper"
 import { DomainExplorerRow } from "./explorer/domainExplorerRow"
 import { DomainExplorerSelection } from "./explorer/domainExplorerSelection"
 import { DomainExplorerSort } from "./explorer/domainExplorerSort"
@@ -68,7 +69,7 @@ export class DomainViewComponent {
 
     // The domain view owns its selection; collapsed the explorer names it, and the bottom bar echoes it.
     readonly selectedNodePath = this.domainSelectionStore.selectedNodePath
-    readonly selectedNodeName = computed(() => this.selectedNodePath()?.split("/").filter(Boolean).at(-1) ?? "")
+    readonly selectedNodeName = computed(() => pathToNodeName(this.selectedNodePath(), ""))
 
     /**
      * Unlike the 3D map the cloud can neither be panned nor zoomed, so whatever the explorer covers is

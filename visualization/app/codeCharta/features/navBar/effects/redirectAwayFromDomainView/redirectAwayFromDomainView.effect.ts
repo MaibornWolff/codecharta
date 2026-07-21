@@ -5,7 +5,7 @@ import { Store } from "@ngrx/store"
 import { combineLatest, filter, map, merge, tap, withLatestFrom } from "rxjs"
 import { isLoadedFileSetWithoutDomainLensSelector } from "../../../../lenses/domain/domainLens.facade"
 import { CcState } from "../../../../model/codeCharta.model"
-import { routeLinks } from "../../../../routing/routePaths"
+import { routeLinks, viewIdForLink } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 
 /**
@@ -57,6 +57,6 @@ export class RedirectAwayFromDomainViewEffect {
     )
 
     private isOnDomainRoute(): boolean {
-        return this.router.url.split("?")[0] === routeLinks.domain
+        return viewIdForLink(this.router.url) === "domain"
     }
 }

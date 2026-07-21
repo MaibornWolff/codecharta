@@ -4,6 +4,7 @@ import { Observable } from "rxjs"
 import { createWordsForSelectedNodeSelector } from "../../../lenses/domain/domainLens.facade"
 import { CcState, DomainWord } from "../../../model/codeCharta.model"
 import { fileRoot } from "../../../util/fileRoot"
+import { pathToNodeName } from "../../../util/nodePathHelper"
 
 /**
  * The read surface the word-cloud renderer composes from: the domain words of a selected node, keyed by
@@ -21,13 +22,6 @@ export class WordCloudReadStore {
 
     /** The selected node's display name, so the renderer can name the selection in its empty state. */
     selectedNodeName(selectedNodePath: string | null): string {
-        return nodeNameOfPath(selectedNodePath)
+        return pathToNodeName(selectedNodePath, fileRoot.rootName)
     }
-}
-
-function nodeNameOfPath(nodePath: string | null): string {
-    if (nodePath === null) {
-        return fileRoot.rootName
-    }
-    return nodePath.split("/").filter(Boolean).at(-1) ?? fileRoot.rootName
 }
