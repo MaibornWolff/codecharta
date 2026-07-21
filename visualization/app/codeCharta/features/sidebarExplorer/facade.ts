@@ -1,6 +1,6 @@
 export { ExplorerSearchBarComponent } from "./components/explorerSearchBar/explorerSearchBar.component"
 export { SidebarExplorerComponent } from "./components/sidebarExplorer/sidebarExplorer.component"
-export { EXPLORER_CAPABILITIES } from "./explorerCapabilities"
+export { DEFAULT_EXPLORER_CAPABILITIES, EXPLORER_CAPABILITIES } from "./explorerCapabilities"
 export type { ExplorerContextMenu } from "./explorerContextMenu"
 export { EXPLORER_CONTEXT_MENU } from "./explorerContextMenu"
 export type { ExplorerRow } from "./explorerRow"

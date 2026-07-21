@@ -7,6 +7,7 @@ import { MetricsBarComponent } from "../../features/metricsBar/facade"
 import { NodeContextMenuComponent } from "../../features/nodeContextMenu/facade"
 import { LoadingFileProgressSpinnerComponent } from "../../features/shared/facade"
 import {
+    DEFAULT_EXPLORER_CAPABILITIES,
     EXPLORER_CAPABILITIES,
     EXPLORER_CONTEXT_MENU,
     EXPLORER_ROW,
@@ -16,7 +17,6 @@ import {
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SidebarInspectorComponent } from "../../features/sidebarInspector/facade"
-import { SortingOption } from "../../model/codeCharta.model"
 import { MetricsExplorerContextMenu } from "./explorer/metricsExplorerContextMenu"
 import { MetricsExplorerRow } from "./explorer/metricsExplorerRow"
 import { MetricsExplorerSelection } from "./explorer/metricsExplorerSelection"
@@ -53,10 +53,7 @@ import { MetricsExplorerSort } from "./explorer/metricsExplorerSort"
         { provide: EXPLORER_CONTEXT_MENU, useExisting: MetricsExplorerContextMenu },
         MetricsExplorerSort,
         { provide: EXPLORER_SORT, useExisting: MetricsExplorerSort },
-        {
-            provide: EXPLORER_CAPABILITIES,
-            useValue: { showRules: true, showSearch: true, showCounts: true, sortOptions: Object.values(SortingOption) }
-        }
+        { provide: EXPLORER_CAPABILITIES, useValue: DEFAULT_EXPLORER_CAPABILITIES }
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })

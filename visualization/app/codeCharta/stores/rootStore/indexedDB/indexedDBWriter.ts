@@ -394,32 +394,31 @@ export function migrateCcStateRecordToV16<T>(state: T): T {
     return next as T
 }
 
-// v17: seed the domainLensSource root (the path-keyed domain word bank) so a blob written before the
-// domain lens existed still carries the root the restore path reads directly. The words are re-derived
-// from the file on every load, so an empty default is correct here.
-export function migrateCcStateRecordToV17<T>(state: T): T {
+// Seeds a brand-new top-level state root onto a blob written before that root existed, leaving an
+// already-present root untouched. Both domain seed transforms share this shape.
+function seedRootIfAbsent<T>(state: T, key: string, defaultValue: unknown): T {
     if (!state || typeof state !== "object") {
         return state
     }
     const record = state as Record<string, unknown>
-    if (record["domainLensSource"]) {
+    if (record[key]) {
         return state
     }
-    return { ...record, domainLensSource: defaultDomainLensSource } as T
+    return { ...record, [key]: defaultValue } as T
+}
+
+// v17: seed the domainLensSource root (the path-keyed domain word bank) so a blob written before the
+// domain lens existed still carries the root the restore path reads directly. The words are re-derived
+// from the file on every load, so an empty default is correct here.
+export function migrateCcStateRecordToV17<T>(state: T): T {
+    return seedRootIfAbsent(state, "domainLensSource", defaultDomainLensSource)
 }
 
 // v18: seed the domainState root (the word-cloud render controls, peer of mapState) so a blob written
 // before the domain settings existed still carries the root the store expects. Defaults match the
 // DomainLanguageCharta render controls.
 export function migrateCcStateRecordToV18<T>(state: T): T {
-    if (!state || typeof state !== "object") {
-        return state
-    }
-    const record = state as Record<string, unknown>
-    if (record["domainState"]) {
-        return state
-    }
-    return { ...record, domainState: defaultDomainState } as T
+    return seedRootIfAbsent(state, "domainState", defaultDomainState)
 }
 
 export async function writeCcState(state: CcState) {

@@ -5,6 +5,7 @@ import { DomainBarReadStore } from "../../../features/domainBar/facade"
 import { ExplorerSelection } from "../../../features/sidebarExplorer/facade"
 import { CodeMapNode, DomainWord } from "../../../model/codeCharta.model"
 import { WordCloudSizingMode, wordSizingValue } from "../../../model/wordCloud.model"
+import { selectTopWords } from "../../../renderer/wordCloud/wordCloud.facade"
 import { domainWordsSelector } from "../../../stores/domainLensSource/domainLensSource.read.facade"
 import { HoverTooltipService } from "../../../util/hoverTooltip.service"
 import { DomainSelectionStore } from "../stores/domainSelection.store"
@@ -68,7 +69,6 @@ export class DomainExplorerSelection implements ExplorerSelection {
 
     /** Ranked the same way the cloud sizes its words, so the tooltip previews what selecting will show. */
     private topWords(path: string, sizingMode: WordCloudSizingMode): DomainWord[] {
-        const words = this.domainWords()[path] ?? []
-        return [...words].sort((a, b) => wordSizingValue(b, sizingMode) - wordSizingValue(a, sizingMode)).slice(0, TOOLTIP_WORD_COUNT)
+        return selectTopWords(this.domainWords()[path] ?? [], sizingMode, TOOLTIP_WORD_COUNT)
     }
 }

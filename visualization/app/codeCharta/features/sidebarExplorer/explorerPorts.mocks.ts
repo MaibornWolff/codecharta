@@ -2,7 +2,7 @@ import { Provider } from "@angular/core"
 import { of } from "rxjs"
 import { ExplorerRowProjection } from "../../lenses/explorerRow/explorerRowLens.facade"
 import { CodeMapNode, SortingOption } from "../../model/codeCharta.model"
-import { EXPLORER_CAPABILITIES, ExplorerCapabilities } from "./explorerCapabilities"
+import { DEFAULT_EXPLORER_CAPABILITIES, EXPLORER_CAPABILITIES, ExplorerCapabilities } from "./explorerCapabilities"
 import { EXPLORER_CONTEXT_MENU, ExplorerContextMenu } from "./explorerContextMenu"
 import { EXPLORER_ROW, ExplorerRow } from "./explorerRow"
 import { EXPLORER_SELECTION, ExplorerSelection } from "./explorerSelection"
@@ -56,15 +56,8 @@ export function createExplorerSortMock(overrides: Partial<ExplorerSort> = {}): E
     }
 }
 
-const DEFAULT_CAPABILITIES: ExplorerCapabilities = {
-    showRules: true,
-    showSearch: true,
-    showCounts: true,
-    sortOptions: Object.values(SortingOption)
-}
-
 export function provideExplorerCapabilitiesMock(overrides: Partial<ExplorerCapabilities> = {}): Provider {
-    return { provide: EXPLORER_CAPABILITIES, useValue: { ...DEFAULT_CAPABILITIES, ...overrides } }
+    return { provide: EXPLORER_CAPABILITIES, useValue: { ...DEFAULT_EXPLORER_CAPABILITIES, ...overrides } }
 }
 
 /**

@@ -16,3 +16,11 @@ export interface ExplorerCapabilities {
 }
 
 export const EXPLORER_CAPABILITIES = new InjectionToken<ExplorerCapabilities>("EXPLORER_CAPABILITIES")
+
+/** All chrome on with every ordering offered — the full-featured default the metrics map view wants. */
+export const DEFAULT_EXPLORER_CAPABILITIES: ExplorerCapabilities = {
+    showRules: true,
+    showSearch: true,
+    showCounts: true,
+    sortOptions: Object.values(SortingOption)
+}
