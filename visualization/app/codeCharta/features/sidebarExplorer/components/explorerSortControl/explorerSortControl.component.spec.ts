@@ -3,8 +3,8 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { BehaviorSubject } from "rxjs"
 import { SortingOption } from "../../../../model/codeCharta.model"
-import { EXPLORER_SORT, ExplorerSort } from "../../explorerSort.port"
 import { createExplorerSortMock, provideExplorerCapabilitiesMock } from "../../explorerPorts.mocks"
+import { EXPLORER_SORT, ExplorerSort } from "../../explorerSort.port"
 import { ExplorerSortControlComponent } from "./explorerSortControl.component"
 
 describe("ExplorerSortControlComponent", () => {
@@ -64,7 +64,10 @@ describe("ExplorerSortControlComponent", () => {
         // Arrange — a view whose sort is Number of Files, descending
         TestBed.resetTestingModule()
         configure({
-            sort: createExplorerSortMock({ option$: new BehaviorSubject(SortingOption.NUMBER_OF_FILES), ascending$: new BehaviorSubject(false) })
+            sort: createExplorerSortMock({
+                option$: new BehaviorSubject(SortingOption.NUMBER_OF_FILES),
+                ascending$: new BehaviorSubject(false)
+            })
         })
 
         // Act

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { toSignal } from "@angular/core/rxjs-interop"
 import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
-import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "../../../shared/components/publishesHeight/publishesHeight.directive"
+import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "../../../shared/facade"
 import { viewNavBarControls } from "../../viewNavBarControls"
 import { DeltaSelectorComponent } from "../deltaSelector/deltaSelector.component"
 import { MapSelectorComponent } from "../mapSelector/mapSelector.component"

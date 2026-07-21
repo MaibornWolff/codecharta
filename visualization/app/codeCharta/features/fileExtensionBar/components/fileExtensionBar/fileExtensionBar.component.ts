@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "../../../shared/components/publishesHeight/publishesHeight.directive"
+import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "../../../shared/facade"
 import { MetricDistributionStore } from "../../stores/metricDistribution.store"
 import { DistributionMetricComponent } from "../distributionMetric/distributionMetric.component"
 import { FileExtensionBarSegmentComponent } from "../fileExtensionBarSegment/fileExtensionBarSegment.component"

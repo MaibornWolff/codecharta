@@ -9,6 +9,7 @@ export {
 export { ErrorDialogComponent } from "./components/errorDialog/errorDialog.component"
 export { InlineColorPickerComponent } from "./components/inlineColorPicker/inlineColorPicker.component"
 export { LoadingFileProgressSpinnerComponent } from "./components/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
+export { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "./components/publishesHeight/publishesHeight.directive"
 export { ResetSettingsButtonComponent } from "./components/resetSettingsButton/resetSettingsButton.component"
 export { SettingsPopoverShellComponent } from "./components/settingsPopoverShell/settingsPopoverShell.component"
 export { SliderNumberInputComponent } from "./components/sliderNumberInput/sliderNumberInput.component"
