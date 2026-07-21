@@ -22,15 +22,6 @@ class StopWordFilter(
 
     private val pathExcludedWordsCache = ConcurrentHashMap<Path, Set<String>>()
 
-    fun filter(words: List<String>): List<String> = words.filter { it !in allExcludedWords }
-
-    fun filter(words: List<String>, filePath: Path): List<String> {
-        val excludedWords = getExcludedWordsForPath(filePath)
-        return words.filter { it !in excludedWords }
-    }
-
-    fun isExcluded(word: String): Boolean = isExcludedFrom(word, allExcludedWords)
-
     fun isExcluded(word: String, filePath: Path): Boolean = isExcludedFrom(word, getExcludedWordsForPath(filePath))
 
     private fun isExcludedFrom(word: String, excludedWords: Set<String>): Boolean {
