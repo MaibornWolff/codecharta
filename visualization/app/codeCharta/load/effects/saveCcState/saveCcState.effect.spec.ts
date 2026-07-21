@@ -5,7 +5,14 @@ import { Action, State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import { Subject } from "rxjs"
-import { setDomainStateTopN } from "../../../stores/domainState/domainState.write.facade"
+import {
+    setDomainStateDrawOutOfBound,
+    setDomainStateShrinkToFit,
+    setDomainStateSortingOrder,
+    setDomainStateSortingOrderAscending,
+    setDomainStateTopN
+} from "../../../stores/domainState/domainState.write.facade"
+import { SortingOption } from "../../../model/domain.model"
 import { setFiles } from "../../../stores/fileStore/store/files.actions"
 import { setShowIncomingEdges } from "../../../stores/mapState/mapState.write.facade"
 import { writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
@@ -66,6 +73,54 @@ describe("SaveCcStateEffect", () => {
 
         // Act
         actions$.next(setDomainStateTopN({ value: 42 }))
+        store.refreshState()
+
+        // Assert
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+    })
+
+    it("should save cc-state on setDomainStateDrawOutOfBound (previously missing from the save-trigger union)", async () => {
+        // Arrange
+        const store = TestBed.inject(MockStore)
+
+        // Act
+        actions$.next(setDomainStateDrawOutOfBound({ value: true }))
+        store.refreshState()
+
+        // Assert
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+    })
+
+    it("should save cc-state on setDomainStateShrinkToFit (previously missing from the save-trigger union)", async () => {
+        // Arrange
+        const store = TestBed.inject(MockStore)
+
+        // Act
+        actions$.next(setDomainStateShrinkToFit({ value: false }))
+        store.refreshState()
+
+        // Assert
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+    })
+
+    it("should save cc-state on setDomainStateSortingOrder (previously missing from the save-trigger union)", async () => {
+        // Arrange
+        const store = TestBed.inject(MockStore)
+
+        // Act
+        actions$.next(setDomainStateSortingOrder({ value: SortingOption.NAME }))
+        store.refreshState()
+
+        // Assert
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+    })
+
+    it("should save cc-state on setDomainStateSortingOrderAscending (previously missing from the save-trigger union)", async () => {
+        // Arrange
+        const store = TestBed.inject(MockStore)
+
+        // Act
+        actions$.next(setDomainStateSortingOrderAscending({ value: true }))
         store.refreshState()
 
         // Assert

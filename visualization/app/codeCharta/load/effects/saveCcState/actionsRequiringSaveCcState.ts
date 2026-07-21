@@ -1,11 +1,15 @@
 import { setEdgeAttributeTypes } from "../../../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import {
+    setDomainStateDrawOutOfBound,
     setDomainStateGridSize,
     setDomainStateRotationRange,
     setDomainStateRotationStep,
     setDomainStateShape,
+    setDomainStateShrinkToFit,
     setDomainStateSizeRange,
     setDomainStateSizingMode,
+    setDomainStateSortingOrder,
+    setDomainStateSortingOrderAscending,
     setDomainStateTopN
 } from "../../../stores/domainState/domainState.write.facade"
 import { fileActions } from "../../../stores/fileStore/fileStore.facade"
@@ -127,7 +131,11 @@ const domainStateSaveActions = [
     setDomainStateRotationStep,
     setDomainStateGridSize,
     setDomainStateSizingMode,
-    setDomainStateTopN
+    setDomainStateTopN,
+    setDomainStateDrawOutOfBound,
+    setDomainStateShrinkToFit,
+    setDomainStateSortingOrder,
+    setDomainStateSortingOrderAscending
 ]
 
 export const actionsRequiringSaveCcState = [
