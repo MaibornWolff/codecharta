@@ -102,7 +102,7 @@ class SourceAnalyzer(
             perFileWordCounts.mapValues { (_, wordCounts) ->
                 val frequencies =
                     wordCounts.map { (word, count) ->
-                        WordFrequency(text = word, frequency = count, tfidf = tfidfScores[word])
+                        WordFrequency.withScore(word, count, tfidfScores)
                     }
                 sortAndLimit(frequencies, sortBy, limit)
             }
