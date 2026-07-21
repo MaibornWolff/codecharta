@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { of } from "rxjs"
+import { ExplorerRowProjection, projectExplorerRow } from "../../../lenses/explorerRow/explorerRowLens.facade"
 import { provideMockState } from "../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { rootUnarySelector } from "../../../renderer/renderModel/renderModel.facade"
@@ -8,23 +9,21 @@ import { IdToBuildingService } from "../../../renderer/threeViewer/threeViewer.f
 import { areaMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { MetricsExplorerRow } from "./metricsExplorerRow"
 
-const FOLDER = {
-    name: "src",
-    path: "/root/src",
-    id: 1,
-    type: NodeType.FOLDER,
-    attributes: { rloc: 10, unary: 5 },
-    children: [{ name: "a.ts", path: "/root/src/a.ts", id: 2, type: NodeType.FILE, attributes: { rloc: 4 } }]
-} as unknown as CodeMapNode
+// The projection branches (selectability, dimming, decoration) are the lens's responsibility and are
+// covered in explorerRow.projection.spec.ts. This adapter only wires the injected map inputs into the
+// lens, so the lens is mocked and only that hand-off is asserted here.
+jest.mock("../../../lenses/explorerRow/explorerRowLens.facade", () => ({
+    projectExplorerRow: jest.fn()
+}))
 
-const LEAF_WITH_BUILDING = { name: "a.ts", path: "/root/src/a.ts", id: 2, type: NodeType.FILE, attributes: { rloc: 4 } } as CodeMapNode
-const LEAF_WITHOUT_BUILDING = { name: "b.ts", path: "/root/src/b.ts", id: 9, type: NodeType.FILE, attributes: { rloc: 4 } } as CodeMapNode
-const LEAF_WITHOUT_AREA = { name: "c.ts", path: "/root/src/c.ts", id: 2, type: NodeType.FILE, attributes: { rloc: 0 } } as CodeMapNode
+const LENS_RESULT: ExplorerRowProjection = { isSelectable: true, isDimmed: false, isItalic: false, title: "", decoration: null }
+const NODE = { name: "a.ts", path: "/root/src/a.ts", id: 2, type: NodeType.FILE, attributes: { rloc: 4 } } as CodeMapNode
 
 describe("MetricsExplorerRow", () => {
     let row: MetricsExplorerRow
 
     beforeEach(() => {
+        ;(projectExplorerRow as jest.Mock).mockReturnValue(LENS_RESULT)
         TestBed.configureTestingModule({
             providers: [
                 MetricsExplorerRow,
@@ -41,44 +40,12 @@ describe("MetricsExplorerRow", () => {
         row = TestBed.inject(MetricsExplorerRow)
     })
 
-    it("should make a leaf with a building selectable", () => {
-        // Arrange & Act & Assert
-        expect(row.project(LEAF_WITH_BUILDING).isSelectable).toBe(true)
-    })
+    it("should feed the projection lens the injected area metric, building ids and root unary", () => {
+        // Act
+        const projection = row.project(NODE)
 
-    it("should not make a leaf without a building selectable", () => {
-        // Arrange & Act & Assert
-        expect(row.project(LEAF_WITHOUT_BUILDING).isSelectable).toBe(false)
-    })
-
-    it("should keep folders selectable so they can still toggle open", () => {
-        // Arrange & Act & Assert
-        expect(row.project(FOLDER).isSelectable).toBe(true)
-    })
-
-    it("should dim and italicise a row whose node has no area in the current area metric", () => {
-        // Arrange & Act
-        const projection = row.project(LEAF_WITHOUT_AREA)
-
-        // Assert
-        expect(projection).toMatchObject({ isDimmed: true, isItalic: true, title: "No Node Area for Chosen Metric" })
-    })
-
-    it("should leave a row with area undimmed and untitled", () => {
-        // Arrange & Act
-        const projection = row.project(LEAF_WITH_BUILDING)
-
-        // Assert
-        expect(projection).toMatchObject({ isDimmed: false, isItalic: false, title: "" })
-    })
-
-    it("should decorate a folder with its share of the root unary count", () => {
-        // Arrange & Act & Assert
-        expect(row.project(FOLDER).decoration).toBe("50% / 5")
-    })
-
-    it("should not decorate a leaf", () => {
-        // Arrange & Act & Assert
-        expect(row.project(LEAF_WITH_BUILDING).decoration).toBeNull()
+        // Assert — the adapter forwards its injected map inputs and returns the lens result unchanged
+        expect(projectExplorerRow).toHaveBeenCalledWith(NODE, { areaMetric: "rloc", buildingIds: new Set([1, 2]), rootUnary: 10 })
+        expect(projection).toBe(LENS_RESULT)
     })
 })

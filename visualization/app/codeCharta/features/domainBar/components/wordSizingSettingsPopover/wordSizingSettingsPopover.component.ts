@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
-import { WordCloudSizingMode } from "../../../../model/wordCloud.model"
+import { WordCloudSizingMode, withRangeMax, withRangeMin } from "../../../../model/wordCloud.model"
 import { ResetSettingsButtonComponent, SettingsPopoverShellComponent, SliderNumberInputComponent } from "../../../shared/facade"
 import { DomainBarReadStore } from "../../stores/domainBar.read.store"
 import { DomainBarWriteStore } from "../../stores/domainBar.write.store"
@@ -63,11 +63,11 @@ export class WordSizingSettingsPopoverComponent {
     }
 
     onSizeRangeMinChange(value: number) {
-        this.writeStore.setSizeRange([value, this.settings().sizeRange[1]])
+        this.writeStore.setSizeRange(withRangeMin(this.settings().sizeRange, value))
     }
 
     onSizeRangeMaxChange(value: number) {
-        this.writeStore.setSizeRange([this.settings().sizeRange[0], value])
+        this.writeStore.setSizeRange(withRangeMax(this.settings().sizeRange, value))
     }
 
     onShrinkToFitChange(value: boolean) {

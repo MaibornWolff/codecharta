@@ -81,3 +81,7 @@ export const defaultWordCloudSettings: WordCloudSettings = {
     shrinkToFit: true,
     drawOutOfBound: false
 }
+
+/** Replace one end of a [min, max] range while keeping the other — one home for the tuple-index bookkeeping. */
+export const withRangeMin = (range: [number, number], min: number): [number, number] => [min, range[1]]
+export const withRangeMax = (range: [number, number], max: number): [number, number] => [range[0], max]
