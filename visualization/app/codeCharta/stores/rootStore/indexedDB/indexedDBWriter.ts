@@ -9,7 +9,7 @@ import { defaultPreferences, defaultSorting } from "../../preferences/preference
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 19
+export const DB_VERSION = 18
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -408,32 +408,18 @@ export function migrateCcStateRecordToV17<T>(state: T): T {
     return { ...record, domainLensSource: defaultDomainLensSource } as T
 }
 
-// v18: seed the domainBar root (the word-cloud render controls) so a blob written before the domain
-// settings bar existed still carries the root the store expects. Defaults match the DomainLanguageCharta render controls.
+// v18: seed the domainState root (the word-cloud render controls, peer of mapState) so a blob written
+// before the domain settings existed still carries the root the store expects. Defaults match the
+// DomainLanguageCharta render controls.
 export function migrateCcStateRecordToV18<T>(state: T): T {
     if (!state || typeof state !== "object") {
         return state
     }
     const record = state as Record<string, unknown>
-    if (record["domainBar"]) {
+    if (record["domainState"]) {
         return state
     }
-    return { ...record, domainBar: defaultDomainState } as T
-}
-
-// v19: rename the domainBar root to domainState. The home was named after the settings bar that edits it
-// rather than the state it holds; domainState is the peer of mapState. v18 above still writes the old key
-// on purpose — it reshapes pre-v19 blobs, and this transform is what carries them forward.
-export function migrateCcStateRecordToV19<T>(state: T): T {
-    if (!state || typeof state !== "object") {
-        return state
-    }
-    const record = state as Record<string, unknown>
-    if (!record["domainBar"]) {
-        return state
-    }
-    const { domainBar, ...rest } = record
-    return { ...rest, domainState: record["domainState"] ?? domainBar } as T
+    return { ...record, domainState: defaultDomainState } as T
 }
 
 export async function writeCcState(state: CcState) {
@@ -480,8 +466,7 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 15, migrate: migrateCcStateRecordToV15 },
     { version: 16, migrate: migrateCcStateRecordToV16 },
     { version: 17, migrate: migrateCcStateRecordToV17 },
-    { version: 18, migrate: migrateCcStateRecordToV18 },
-    { version: 19, migrate: migrateCcStateRecordToV19 }
+    { version: 18, migrate: migrateCcStateRecordToV18 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {
