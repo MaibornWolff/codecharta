@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core"
-import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "../../../shared/components/publishesHeight/publishesHeight.directive"
+import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "../../../shared/facade"
 import { AttributionComponent } from "../attribution/attribution.component"
 import { HoveredPathComponent } from "../hoveredPath/hoveredPath.component"
 
