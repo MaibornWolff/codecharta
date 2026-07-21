@@ -101,4 +101,20 @@ describe("renderCodeMapEffect", () => {
         // Assert
         expect(codeMapRenderService.load).toHaveBeenCalledTimes(1)
     })
+
+    it("should keep re-rendering on-screen changes after the map has settled to ready", async () => {
+        // Arrange — the map rendered once and settled, exactly the state the app is in when the user has
+        // been looking at a finished map and then excludes a node or changes a metric.
+        actions$.next(setInvertArea({ value: true }))
+        await wait(maxFPS)
+        viewReadinessStore.markReady("metrics")
+
+        // Act — a further render-affecting change while still on the metrics view
+        actions$.next(setInvertArea({ value: false }))
+        await wait(maxFPS)
+
+        // Assert — the change is drawn; gating this render on staleness left the spinner stuck forever
+        expect(codeMapRenderService.load).toHaveBeenCalledTimes(2)
+        expect(threeRendererService.render).toHaveBeenCalledTimes(2)
+    })
 })
