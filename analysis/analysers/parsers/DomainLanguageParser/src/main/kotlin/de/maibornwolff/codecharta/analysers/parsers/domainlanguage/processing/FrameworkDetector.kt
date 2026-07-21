@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.util.Logger
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
+import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.readText
 
@@ -17,37 +18,47 @@ enum class Framework {
 class FrameworkDetector {
     fun detectFrameworks(directoryPath: Path): Map<Path, Set<Framework>> {
         val frameworksByPath = mutableMapOf<Path, Set<Framework>>()
-
-        // Detect JavaScript/TypeScript frameworks from package.json
-        detectJavaScriptFrameworks(directoryPath).forEach { (path, frameworks) ->
-            frameworksByPath.merge(path, frameworks) { existing, new -> existing + new }
+        val perEcosystem = listOf(detectJavaScriptFrameworks(directoryPath), detectCSharpFrameworks(directoryPath))
+        for (detected in perEcosystem) {
+            detected.forEach { (path, frameworks) ->
+                frameworksByPath.merge(path, frameworks) { existing, new -> existing + new }
+            }
         }
-
-        // Detect C# frameworks from .csproj files
-        detectCSharpFrameworks(directoryPath).forEach { (path, frameworks) ->
-            frameworksByPath.merge(path, frameworks) { existing, new -> existing + new }
-        }
-
         return frameworksByPath
     }
 
-    private fun detectJavaScriptFrameworks(directoryPath: Path): Map<Path, Set<Framework>> {
-        val packageJsonFiles = findPackageJsonFiles(directoryPath)
+    private fun detectJavaScriptFrameworks(directoryPath: Path): Map<Path, Set<Framework>> = detectFrameworksIn(
+        projectFiles = findPackageJsonFiles(directoryPath),
+        fileKind = "package.json",
+        extractReferences = ::extractAllDependencies,
+        identifyFrameworks = ::identifyJavaScriptFrameworks
+    )
 
-        if (packageJsonFiles.isEmpty()) {
-            return emptyMap()
-        }
+    private fun detectCSharpFrameworks(directoryPath: Path): Map<Path, Set<Framework>> = detectFrameworksIn(
+        projectFiles = findCsprojFiles(directoryPath),
+        fileKind = ".csproj",
+        extractReferences = ::extractPackageReferences,
+        identifyFrameworks = ::identifyCSharpFrameworks
+    )
 
+    // The two ecosystems share one skeleton: find the project files, read their references, map those to
+    // frameworks, and store the non-empty result under the file's directory. Keeping it in one place also
+    // keeps the per-directory merge strategy identical across ecosystems.
+    private fun detectFrameworksIn(
+        projectFiles: List<Path>,
+        fileKind: String,
+        extractReferences: (Path) -> Set<String>,
+        identifyFrameworks: (Set<String>) -> Set<Framework>
+    ): Map<Path, Set<Framework>> {
         val frameworksByPath = mutableMapOf<Path, Set<Framework>>()
-        packageJsonFiles.forEach { packageJsonPath ->
+        projectFiles.forEach { projectFile ->
             try {
-                val dependencies = extractAllDependencies(packageJsonPath)
-                val frameworks = identifyJavaScriptFrameworks(dependencies)
+                val frameworks = identifyFrameworks(extractReferences(projectFile))
                 if (frameworks.isNotEmpty()) {
-                    frameworksByPath[packageJsonPath.parent] = frameworks
+                    frameworksByPath.merge(projectFile.parent, frameworks) { existing, new -> existing + new }
                 }
             } catch (e: Exception) {
-                Logger.warn(e) { "Failed to parse package.json at $packageJsonPath, skipping framework detection" }
+                Logger.warn(e) { "Failed to parse $fileKind at $projectFile, skipping framework detection" }
             }
         }
         return frameworksByPath
@@ -56,40 +67,18 @@ class FrameworkDetector {
     // node_modules is excluded because every dependency ships its own package.json, which would
     // register the frameworks of libraries the project merely depends on as if they were its own.
     // findCsprojFiles needs no such guard: NuGet restores to a global cache, not into the source tree.
-    private fun findPackageJsonFiles(directoryPath: Path): List<Path> = directoryPath
-        .toFile()
-        .walkTopDown()
-        .filter { it.name == "package.json" && !it.path.contains("node_modules") }
-        .map { it.toPath() }
-        .toList()
-
-    private fun detectCSharpFrameworks(directoryPath: Path): Map<Path, Set<Framework>> {
-        val csprojFiles = findCsprojFiles(directoryPath)
-        if (csprojFiles.isEmpty()) {
-            return emptyMap()
-        }
-
-        val frameworksByPath = mutableMapOf<Path, Set<Framework>>()
-        csprojFiles.forEach { csprojFile ->
-            try {
-                val packageReferences = extractPackageReferences(csprojFile)
-                val frameworks = identifyCSharpFrameworks(packageReferences)
-                if (frameworks.isNotEmpty()) {
-                    val directory = csprojFile.parent
-                    val existing = frameworksByPath[directory] ?: emptySet()
-                    frameworksByPath[directory] = existing + frameworks
-                }
-            } catch (e: Exception) {
-                Logger.warn(e) { "Failed to parse .csproj at $csprojFile, skipping framework detection" }
-            }
-        }
-        return frameworksByPath
+    private fun findPackageJsonFiles(directoryPath: Path): List<Path> = walkFiles(directoryPath) { file ->
+        file.name == "package.json" && !file.path.contains("node_modules")
     }
 
-    private fun findCsprojFiles(directoryPath: Path): List<Path> = directoryPath
+    private fun findCsprojFiles(directoryPath: Path): List<Path> = walkFiles(directoryPath) { file ->
+        file.isFile && file.extension == "csproj"
+    }
+
+    private fun walkFiles(directoryPath: Path, matches: (File) -> Boolean): List<Path> = directoryPath
         .toFile()
         .walkTopDown()
-        .filter { it.isFile && it.extension == "csproj" }
+        .filter(matches)
         .map { it.toPath() }
         .toList()
 

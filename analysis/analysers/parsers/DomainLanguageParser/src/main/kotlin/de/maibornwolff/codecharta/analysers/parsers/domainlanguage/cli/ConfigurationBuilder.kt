@@ -10,7 +10,10 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.st
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class ConfigurationBuilder {
+class ConfigurationBuilder(
+    private val frameworkDetector: FrameworkDetector = FrameworkDetector(),
+    private val dlcIgnoreParser: DlcIgnoreParser = DlcIgnoreParser()
+) {
     fun build(parsedArgs: ParsedArguments): AnalysisConfiguration {
         val directory =
             requireNotNull(parsedArgs.directory) {
@@ -38,7 +41,7 @@ class ConfigurationBuilder {
         )
     }
 
-    private fun detectFrameworks(directory: String): Map<Path, Set<Framework>> = FrameworkDetector().detectFrameworks(Paths.get(directory))
+    private fun detectFrameworks(directory: String): Map<Path, Set<Framework>> = frameworkDetector.detectFrameworks(Paths.get(directory))
 
     private fun buildLanguageKeywords(excludeTechnicalStopWords: Boolean, stopWordLevel: StopWordLevel) = buildList {
         addCoreLanguageKeywords()
@@ -72,8 +75,5 @@ class ConfigurationBuilder {
         stringWeight = parsedArgs.stringWeight
     )
 
-    private fun loadCustomStopWords(directory: String): Set<String> {
-        val parser = DlcIgnoreParser()
-        return parser.loadCustomStopWords(Paths.get(directory))
-    }
+    private fun loadCustomStopWords(directory: String): Set<String> = dlcIgnoreParser.loadCustomStopWords(Paths.get(directory))
 }

@@ -21,7 +21,7 @@ object DirectoryWordAggregator {
             directories.forEach { dirPath ->
                 val dirWords = result.getOrPut(dirPath) { mutableMapOf() }
                 words.forEach { word ->
-                    dirWords[word.text] = (dirWords[word.text] ?: 0) + word.frequency
+                    dirWords.merge(word.text, word.frequency, Int::plus)
                 }
             }
         }
@@ -38,8 +38,8 @@ object DirectoryWordAggregator {
         return buildList {
             // "." is the project root node every file also rolls up into.
             add(".")
-            for (i in 0 until parts.size - 1) {
-                add(PathUtils.joinPath(*parts.subList(0, i + 1).toTypedArray()))
+            for (depth in 0 until parts.size - 1) {
+                add(PathUtils.joinPath(*parts.subList(0, depth + 1).toTypedArray()))
             }
         }
     }

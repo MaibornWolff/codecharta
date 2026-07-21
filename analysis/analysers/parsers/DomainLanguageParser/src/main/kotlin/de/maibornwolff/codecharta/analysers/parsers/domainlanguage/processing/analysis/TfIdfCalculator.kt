@@ -30,7 +30,7 @@ class TfIdfCalculator {
         val documentFrequency = mutableMapOf<String, Int>()
         for ((_, wordCounts) in perFileFrequencies) {
             for (term in wordCounts.keys) {
-                documentFrequency[term] = (documentFrequency[term] ?: 0) + 1
+                documentFrequency.merge(term, 1, Int::plus)
             }
         }
         return documentFrequency
@@ -40,7 +40,7 @@ class TfIdfCalculator {
         val termFrequency = mutableMapOf<String, Int>()
         for ((_, wordCounts) in perFileFrequencies) {
             for ((term, count) in wordCounts) {
-                termFrequency[term] = (termFrequency[term] ?: 0) + count
+                termFrequency.merge(term, count, Int::plus)
             }
         }
         return termFrequency
