@@ -36,14 +36,16 @@ class PathScopedKeywordProvider(private val frameworksByPath: Map<Path, Set<Fram
         }
     }
 
-    private fun findApplicableFrameworks(filePath: Path): Set<Framework> {
-        for ((frameworkDir, frameworks) in frameworksByPath) {
-            if (isFileUnderDirectory(filePath, frameworkDir)) {
-                return frameworks
-            }
-        }
-        return emptySet()
-    }
+    // Unions the frameworks of EVERY enclosing directory rather than returning the first match. A plain
+    // first-match would depend on frameworksByPath's (unordered) iteration order for a file nested under
+    // more than one framework directory (e.g. a monorepo with React at the root and Angular in a
+    // sub-package), making the emitted keyword set nondeterministic across runs and silently dropping the
+    // other directory's keywords. A union is order-independent, so the result is reproducible.
+    private fun findApplicableFrameworks(filePath: Path): Set<Framework> = frameworksByPath
+        .filterKeys { frameworkDir -> isFileUnderDirectory(filePath, frameworkDir) }
+        .values
+        .flatten()
+        .toSet()
 
     private fun isFileUnderDirectory(filePath: Path, directory: Path): Boolean {
         val normalizedFile = filePath.normalize()
