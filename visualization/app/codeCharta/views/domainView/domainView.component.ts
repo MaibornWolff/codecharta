@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
 import { LoadingFileProgressSpinnerComponent } from "../../features/shared/facade"
@@ -13,6 +13,7 @@ import {
 } from "../../features/sidebarExplorer/facade"
 import { SortingOption } from "../../model/codeCharta.model"
 import { WordCloudComponent } from "../../renderer/wordCloud/wordCloud.facade"
+import { CopyToClipboardService } from "../../util/copyToClipboard.service"
 import { pathToNodeName } from "../../util/nodePathHelper"
 import { DomainExplorerRow } from "./explorer/domainExplorerRow"
 import { DomainExplorerSelection } from "./explorer/domainExplorerSelection"
@@ -46,26 +47,20 @@ import { DomainSelectionStore } from "./stores/domainSelection.store"
                 showCounts: false,
                 sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
             }
-        }
+        },
+        CopyToClipboardService
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DomainViewComponent {
-    private static readonly COPY_FEEDBACK_MS = 1500
-
     private readonly domainBarReadStore = inject(DomainBarReadStore)
     private readonly explorerWidthService = inject(ExplorerWidthService)
     private readonly explorerCollapseService = inject(ExplorerCollapseService)
     private readonly domainSelectionStore = inject(DomainSelectionStore)
-
-    private copyFeedbackTimeout?: ReturnType<typeof setTimeout>
-
-    constructor() {
-        inject(DestroyRef).onDestroy(() => clearTimeout(this.copyFeedbackTimeout))
-    }
+    private readonly clipboard = inject(CopyToClipboardService)
 
     readonly settings = this.domainBarReadStore.settings
-    readonly copied = signal(false)
+    readonly copied = this.clipboard.copied
 
     // The domain view owns its selection; collapsed the explorer names it, and the bottom bar echoes it.
     readonly selectedNodePath = this.domainSelectionStore.selectedNodePath
@@ -86,12 +81,8 @@ export class DomainViewComponent {
 
     async copySelectedPath() {
         const path = this.selectedNodePath()
-        if (!path) {
-            return
+        if (path) {
+            await this.clipboard.copy(path)
         }
-        await navigator.clipboard.writeText(path)
-        this.copied.set(true)
-        clearTimeout(this.copyFeedbackTimeout)
-        this.copyFeedbackTimeout = setTimeout(() => this.copied.set(false), DomainViewComponent.COPY_FEEDBACK_MS)
     }
 }
