@@ -105,6 +105,29 @@ class PathScopedKeywordProviderTest {
     }
 
     @Test
+    fun `should union frameworks from all enclosing directories when a file is nested under several`() {
+        // Arrange: React at the repo root, Angular in a sub-package the file also lives under
+        val rootPath = Paths.get("/project")
+        val subPackagePath = Paths.get("/project/apps/angular-app")
+        val frameworksByPath =
+            mapOf(
+                rootPath to setOf(Framework.REACT),
+                subPackagePath to setOf(Framework.ANGULAR)
+            )
+        val provider = PathScopedKeywordProvider(frameworksByPath)
+        val filePath = Paths.get("/project/apps/angular-app/src/app.component.ts")
+
+        // Act
+        val keywords = provider.getFrameworkKeywordsForFile(filePath)
+
+        // Assert: both enclosing directories contribute, regardless of map iteration order
+        assertEquals(2, keywords.size)
+        val allKeywords = keywords.flatMap { it.getKeywords() }.toSet()
+        assertTrue(allKeywords.contains("component")) // Angular (sub-package)
+        assertTrue(allKeywords.contains("state")) // React (root)
+    }
+
+    @Test
     fun `should match file at root of framework directory`() {
         // Arrange
         val frontendPath = Paths.get("/project/frontend")
