@@ -8,7 +8,7 @@ import {
     ExplorerWidthService,
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
-import { WordCloudComponent } from "../../features/wordCloud/facade"
+import { WordCloudComponent } from "../../renderer/wordCloud/wordCloud.facade"
 import { DomainExplorerHost } from "./explorerHost/domainExplorerHost"
 
 /**

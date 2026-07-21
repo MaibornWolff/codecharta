@@ -5,7 +5,6 @@ data class ParsedArguments(
     val limit: Int?,
     val bypassGitignore: Boolean,
     val excludeTests: Boolean,
-    val output: String?,
     val identifierWeight: Int,
     val commentWeight: Int,
     val stringWeight: Int,
@@ -14,6 +13,5 @@ data class ParsedArguments(
     val ngrams: Int,
     val noTfidf: Boolean = false,
     val sortBy: SortBy = SortBy.FREQUENCY,
-    val noSsr: Boolean = false,
-    val quiet: Boolean = false
+    val noSsr: Boolean = false
 )

@@ -5,7 +5,7 @@ import { Action, State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
 import { Subject } from "rxjs"
-import { setDomainBarTopN } from "../../../stores/domainBar/domainBar.write.facade"
+import { setDomainStateTopN } from "../../../stores/domainState/domainState.write.facade"
 import { setFiles } from "../../../stores/fileStore/store/files.actions"
 import { setShowIncomingEdges } from "../../../stores/mapState/mapState.write.facade"
 import { writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
@@ -65,7 +65,7 @@ describe("SaveCcStateEffect", () => {
         const store = TestBed.inject(MockStore)
 
         // Act
-        actions$.next(setDomainBarTopN({ value: 42 }))
+        actions$.next(setDomainStateTopN({ value: 42 }))
         store.refreshState()
 
         // Assert

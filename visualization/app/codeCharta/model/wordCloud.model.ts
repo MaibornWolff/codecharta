@@ -1,6 +1,21 @@
 // Word-cloud render settings. Kept in the model kernel (not the wordCloud feature) so both the
-// stores/domainBar state home that owns them and the wordCloud renderer that consumes them can import
+// stores/domainState state home that owns them and the wordCloud renderer that consumes them can import
 // them without a store→feature edge.
+
+import type { DomainWord } from "./domain.model"
+
+/**
+ * The value that drives a word's size, per the sizing mode; tfidf falls back to frequency when absent.
+ *
+ * Shared so that everything ranking or sizing words agrees: tfidf mode is enabled when *any* word
+ * carries a score, so in a mixed dataset a scoreless word must still fall back to its frequency.
+ */
+export function wordSizingValue(word: DomainWord, sizingMode: WordCloudSizingMode): number {
+    if (sizingMode === WordCloudSizingMode.tfidf) {
+        return word.tfidf ?? word.frequency
+    }
+    return word.frequency
+}
 
 /** The ECharts word-cloud layout shapes (see echarts-wordcloud). */
 export enum WordCloudShape {
@@ -33,7 +48,7 @@ export interface WordCloudSettings {
     /** Layout grid spacing in px — larger means fewer, more spread-out words. */
     gridSize: number
     sizingMode: WordCloudSizingMode
-    /** Keep only the top-N words by value. DLC default. */
+    /** Keep only the top-N words by value. Matches the DomainLanguageCharta default. */
     topN: number
     /**
      * What happens to a word the layout cannot place. When true it is shrunk (repeatedly, to 3/4 its
@@ -49,7 +64,10 @@ export interface WordCloudSettings {
     drawOutOfBound: boolean
 }
 
-/** DLC-parity defaults for the word-cloud controls; the domain bar seeds its slices from these. */
+/**
+ * Defaults for the word-cloud controls, matching DomainLanguageCharta (the tool this renderer was ported
+ * from) so a project looks the same in both. The domain bar seeds its slices from these.
+ */
 export const defaultWordCloudSettings: WordCloudSettings = {
     shape: WordCloudShape.circle,
     sizeRange: [12, 60],

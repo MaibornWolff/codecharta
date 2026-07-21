@@ -44,82 +44,69 @@ class NgramsStage(private val ngrams: Int = 1, private val enableSsr: Boolean = 
     }
 
     /**
-     * Apply Statistical Substring Reduction to filter redundant n-grams.
-     *
-     * Algorithm:
-     * 1. Group weighted texts by text content, sum weights to get frequencies
-     * 2. Pre-split all n-grams into word lists (avoid repeated splitting)
-     * 3. Group n-grams by word count for efficient comparison
-     * 4. For each shorter n-gram, only check longer n-grams (reduces comparisons)
-     * 5. Use word-based subsequence check and early termination
-     * 6. If substring frequency ≤ containing n-gram frequency, mark for removal
-     * 7. Return filtered list
+     * Applies Statistical Substring Reduction: drops an n-gram when a longer n-gram contains it as a
+     * contiguous word subsequence and occurs at least as often, so the shorter one carries no
+     * information the longer one does not already carry. Unigrams are never dropped.
      */
     private fun applyStatisticalSubstringReduction(weightedTexts: List<WeightedText>): List<WeightedText> {
-        // Step 1: Calculate frequencies (sum of weights for each unique text)
-        val frequencies = weightedTexts.groupBy { it.text }.mapValues { (_, texts) -> texts.sumOf { it.weight } }
-
-        // Separate unigrams from n-grams
-        val ngramFrequencies = frequencies.filter { (text, _) -> text.contains(" ") }
-
+        val ngramFrequencies = sumFrequenciesByText(weightedTexts).filter { (text, _) -> text.contains(" ") }
         if (ngramFrequencies.size <= 1) {
             return weightedTexts
         }
 
-        // Step 2: Pre-split all n-grams into word lists (avoid repeated splitting)
-        val ngramWords: Map<String, List<String>> = ngramFrequencies.keys.associateWith { it.split(" ") }
+        val ngramsByWordCount = groupNgramsByWordCount(ngramFrequencies.keys)
+        val redundantNgrams = findRedundantNgrams(ngramsByWordCount, ngramFrequencies)
+        return weightedTexts.filter { it.text !in redundantNgrams }
+    }
 
-        // Step 3: Group n-grams by word count for efficient comparison
-        val ngramsByWordCount: Map<Int, List<Pair<String, List<String>>>> =
-            ngramWords.entries.groupBy(
-                keySelector = { it.value.size },
-                valueTransform = { it.key to it.value }
-            )
+    private fun sumFrequenciesByText(weightedTexts: List<WeightedText>): Map<String, Int> = weightedTexts
+        .groupBy {
+            it.text
+        }.mapValues { (_, texts) -> texts.sumOf { it.weight } }
+
+    /** Grouped by word count so each n-gram is only ever compared against strictly longer ones. */
+    private fun groupNgramsByWordCount(ngrams: Set<String>): Map<Int, List<Pair<String, List<String>>>> = ngrams
+        .associateWith { it.split(" ") }
+        .entries
+        .groupBy(keySelector = { it.value.size }, valueTransform = { it.key to it.value })
+
+    private fun findRedundantNgrams(
+        ngramsByWordCount: Map<Int, List<Pair<String, List<String>>>>,
+        ngramFrequencies: Map<String, Int>
+    ): Set<String> {
         val wordCounts = ngramsByWordCount.keys.sorted()
-
-        // Step 4: Find n-grams to remove (only compare shorter to longer)
-        val textsToRemove = mutableSetOf<String>()
+        val redundantNgrams = mutableSetOf<String>()
 
         for (shorterWordCount in wordCounts.dropLast(1)) {
-            val shorterNgrams = ngramsByWordCount[shorterWordCount] ?: continue
+            for ((shorterNgram, shorterWords) in ngramsByWordCount[shorterWordCount].orEmpty()) {
+                if (shorterNgram in redundantNgrams) continue
+                val shorterFrequency = ngramFrequencies[shorterNgram] ?: continue
 
-            for ((shorterNgram, shorterWords) in shorterNgrams) {
-                if (shorterNgram in textsToRemove) continue
-
-                val shorterFreq = ngramFrequencies[shorterNgram] ?: continue
-
-                // Step 5: Only check n-grams with more words, use early termination
-                val found =
+                val isSubsumed =
                     wordCounts
                         .asSequence()
                         .filter { it > shorterWordCount }
                         .any { longerWordCount ->
-                            val longerNgrams = ngramsByWordCount[longerWordCount] ?: emptyList()
-                            longerNgrams.any { (longerNgram, longerWords) ->
-                                val longerFreq = ngramFrequencies[longerNgram] ?: 0
-                                // Word-based containment check
-                                containsWordSubsequence(longerWords, shorterWords) && shorterFreq <= longerFreq
+                            ngramsByWordCount[longerWordCount].orEmpty().any { (longerNgram, longerWords) ->
+                                containsWordSubsequence(longerWords, shorterWords) &&
+                                    shorterFrequency <= (ngramFrequencies[longerNgram] ?: 0)
                             }
                         }
 
-                if (found) {
-                    textsToRemove.add(shorterNgram)
+                if (isSubsumed) {
+                    redundantNgrams.add(shorterNgram)
                 }
             }
         }
-
-        // Step 7: Filter out removed n-grams
-        return weightedTexts.filter { it.text !in textsToRemove }
+        return redundantNgrams
     }
 
     /**
      * Checks if the longer word list contains the shorter word list as a contiguous subsequence.
-     * Uses joinToString for the actual comparison to avoid character-by-character iteration.
+     * Compares whole words, so "user profile" is not considered contained in "superuser profile".
      */
     private fun containsWordSubsequence(longer: List<String>, shorter: List<String>): Boolean {
         if (shorter.size >= longer.size) return false
-        val shortStr = shorter.joinToString(" ")
-        val longStr = longer.joinToString(" ")
-        return longStr.contains(shortStr)
+        return longer.windowed(shorter.size).any { it == shorter }
     }
 }

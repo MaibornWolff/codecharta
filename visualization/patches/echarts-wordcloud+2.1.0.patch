@@ -1,16 +1,3 @@
-diff --git a/node_modules/echarts-wordcloud/src/WordCloudSeries.js b/node_modules/echarts-wordcloud/src/WordCloudSeries.js
-index a561a1c..1869c43 100644
---- a/node_modules/echarts-wordcloud/src/WordCloudSeries.js
-+++ b/node_modules/echarts-wordcloud/src/WordCloudSeries.js
-@@ -49,6 +49,8 @@ echarts.extendSeriesModel({
- 
-     gridSize: 8,
- 
-+    rotateRatio: 1,
-+
-     drawOutOfBound: false,
-     shrinkToFit: false,
- 
 diff --git a/node_modules/echarts-wordcloud/src/layout.js b/node_modules/echarts-wordcloud/src/layout.js
 index e4ee4cf..0aa3fcc 100644
 --- a/node_modules/echarts-wordcloud/src/layout.js
@@ -27,18 +14,9 @@ index e4ee4cf..0aa3fcc 100644
          });
          return !el.dispatchEvent(event);
 diff --git a/node_modules/echarts-wordcloud/src/wordCloud.js b/node_modules/echarts-wordcloud/src/wordCloud.js
-index fbdf574..e63de68 100644
+index fbdf574..1a51df7 100644
 --- a/node_modules/echarts-wordcloud/src/wordCloud.js
 +++ b/node_modules/echarts-wordcloud/src/wordCloud.js
-@@ -123,7 +123,7 @@ echarts.registerLayout(function (ecModel, api) {
- 
-       clearCanvas: !maskImage,
- 
--      rotateRatio: 1,
-+      rotateRatio: seriesModel.get('rotateRatio'),
- 
-       rotationStep: seriesModel.get('rotationStep') * DEGREE_TO_RAD,
- 
 @@ -158,6 +158,17 @@ echarts.registerLayout(function (ecModel, api) {
        seriesModel.layoutInstance.dispose();
      }

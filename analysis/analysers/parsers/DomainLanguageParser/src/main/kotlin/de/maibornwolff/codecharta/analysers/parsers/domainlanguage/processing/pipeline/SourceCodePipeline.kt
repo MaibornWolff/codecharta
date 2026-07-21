@@ -37,48 +37,20 @@ class SourceCodePipeline(
     private val aggregateStage = AggregateStage()
 
     /**
-     * Process source code through the pipeline.
-     *
-     * @param sourceCode The source code to analyze
-     * @return Map of word to frequency count
+     * Process source code through the pipeline, scoping the filter stage to the file's own path so
+     * framework keywords apply only under the directories those frameworks were detected in.
      */
-    fun process(sourceCode: String): Map<String, Int> = processWithOptionalPath(sourceCode, filePath = null)
-
-    /**
-     * Process source code through the pipeline with path-scoped framework filtering.
-     *
-     * @param sourceCode The source code to analyze
-     * @param filePath The path of the file being processed (used for path-scoped filtering)
-     * @return Map of word to frequency count
-     */
-    fun process(sourceCode: String, filePath: Path): Map<String, Int> = processWithOptionalPath(sourceCode, filePath)
-
-    private fun processWithOptionalPath(sourceCode: String, filePath: Path?): Map<String, Int> {
+    fun process(sourceCode: String, filePath: Path): Map<String, Int> {
         if (sourceCode.isBlank()) {
             return emptyMap()
         }
 
-        // Stage 1: Extract
         val extractedTexts = extractStage.extract(sourceCode)
-
-        // Stage 2: Weight
         val weightedTexts = weightStage.weight(extractedTexts)
-
-        // Stage 3: Split
         val splitResults = splitStage.split(weightedTexts)
-
-        // Stage 4: N-grams
         val ngramTexts = ngramsStage.generateNgrams(splitResults)
+        val filteredTexts = filterStage.filter(ngramTexts, filePath)
 
-        // Stage 5: Filter (with optional path-scoped framework filtering)
-        val filteredTexts =
-            if (filePath != null) {
-                filterStage.filter(ngramTexts, filePath)
-            } else {
-                filterStage.filter(ngramTexts)
-            }
-
-        // Stage 6: Aggregate
         return aggregateStage.aggregate(filteredTexts)
     }
 }

@@ -5,8 +5,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import kotlin.io.path.createTempDirectory
+import java.nio.file.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -19,9 +20,11 @@ class FileAnalyzerTest {
     }
 
     @Test
-    fun `should extract words from Kotlin file using tree-sitter`() {
+    fun `should extract words from Kotlin file using tree-sitter`(
+        @TempDir tempDirPath: Path
+    ) {
         // Arrange
-        val tempDir = createTempDirectory().toFile()
+        val tempDir = tempDirPath.toFile()
         val file = File(tempDir, "Customer.kt")
         file.writeText(
             """
@@ -47,13 +50,14 @@ class FileAnalyzerTest {
         assertTrue(wordCounts.containsKey("process"))
 
         // Cleanup
-        tempDir.deleteRecursively()
     }
 
     @Test
-    fun `should filter language keywords when provided`() {
+    fun `should filter language keywords when provided`(
+        @TempDir tempDirPath: Path
+    ) {
         // Arrange
-        val tempDir = createTempDirectory().toFile()
+        val tempDir = tempDirPath.toFile()
         val file = File(tempDir, "code.kt")
         file.writeText(
             """
@@ -80,13 +84,14 @@ class FileAnalyzerTest {
         assertTrue(!wordCounts.containsKey("fun"))
 
         // Cleanup
-        tempDir.deleteRecursively()
     }
 
     @Test
-    fun `should use custom extraction weights when provided`() {
+    fun `should use custom extraction weights when provided`(
+        @TempDir tempDirPath: Path
+    ) {
         // Arrange
-        val tempDir = createTempDirectory().toFile()
+        val tempDir = tempDirPath.toFile()
         val file = File(tempDir, "Product.kt")
         file.writeText(
             """
@@ -111,13 +116,14 @@ class FileAnalyzerTest {
         assertTrue(productCount >= 5) // At least from class name with weight 5
 
         // Cleanup
-        tempDir.deleteRecursively()
     }
 
     @Test
-    fun `should return empty map when file has no extractable words`() {
+    fun `should return empty map when file has no extractable words`(
+        @TempDir tempDirPath: Path
+    ) {
         // Arrange
-        val tempDir = createTempDirectory().toFile()
+        val tempDir = tempDirPath.toFile()
         val file = File(tempDir, "empty.kt")
         file.writeText("")
 
@@ -132,13 +138,14 @@ class FileAnalyzerTest {
         assertTrue(result.words.isEmpty())
 
         // Cleanup
-        tempDir.deleteRecursively()
     }
 
     @Test
-    fun `should return Skipped result for unsupported file extension`() {
+    fun `should return Skipped result for unsupported file extension`(
+        @TempDir tempDirPath: Path
+    ) {
         // Arrange
-        val tempDir = createTempDirectory().toFile()
+        val tempDir = tempDirPath.toFile()
         val file = File(tempDir, "readme.txt")
         file.writeText("hello world kotlin")
 
@@ -153,13 +160,14 @@ class FileAnalyzerTest {
         assertEquals("txt", result.extension)
 
         // Cleanup
-        tempDir.deleteRecursively()
     }
 
     @Test
-    fun `should extract words from TypeScript file`() {
+    fun `should extract words from TypeScript file`(
+        @TempDir tempDirPath: Path
+    ) {
         // Arrange
-        val tempDir = createTempDirectory().toFile()
+        val tempDir = tempDirPath.toFile()
         val file = File(tempDir, "user.service.ts")
         file.writeText(
             """
@@ -186,13 +194,14 @@ class FileAnalyzerTest {
         assertTrue(wordCounts.containsKey("fetch"))
 
         // Cleanup
-        tempDir.deleteRecursively()
     }
 
     @Test
-    fun `should extract words from JavaScript file`() {
+    fun `should extract words from JavaScript file`(
+        @TempDir tempDirPath: Path
+    ) {
         // Arrange
-        val tempDir = createTempDirectory().toFile()
+        val tempDir = tempDirPath.toFile()
         val file = File(tempDir, "payment.js")
         file.writeText(
             """
@@ -217,13 +226,14 @@ class FileAnalyzerTest {
         assertTrue(wordCounts.containsKey("process"), "process should be extracted from function name")
 
         // Cleanup
-        tempDir.deleteRecursively()
     }
 
     @Test
-    fun `should handle concurrent access without data corruption`() {
+    fun `should handle concurrent access without data corruption`(
+        @TempDir tempDirPath: Path
+    ) {
         // Arrange
-        val tempDir = createTempDirectory().toFile()
+        val tempDir = tempDirPath.toFile()
         val stopWordFilter = StopWordFilter(emptyList())
         val analyzer = FileAnalyzer(stopWordFilter)
 
@@ -278,6 +288,5 @@ class FileAnalyzerTest {
         )
 
         // Cleanup
-        tempDir.deleteRecursively()
     }
 }

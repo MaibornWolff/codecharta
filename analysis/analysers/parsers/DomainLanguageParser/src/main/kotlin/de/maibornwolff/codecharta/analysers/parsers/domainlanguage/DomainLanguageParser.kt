@@ -150,7 +150,6 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
         limit = limit,
         bypassGitignore = bypassGitignore,
         excludeTests = excludeTests,
-        output = null,
         identifierWeight = identifierWeight,
         commentWeight = commentWeight,
         stringWeight = stringWeight,
@@ -159,8 +158,7 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
         ngrams = ngrams,
         noTfidf = noTfidf,
         sortBy = sortBy,
-        noSsr = noSsr,
-        quiet = !verbose
+        noSsr = noSsr
     )
 
     override fun getDialog(): AnalyserDialogInterface = Dialog

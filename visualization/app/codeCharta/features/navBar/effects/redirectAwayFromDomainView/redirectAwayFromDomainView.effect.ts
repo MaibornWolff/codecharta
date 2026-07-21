@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core"
+import { Injectable, inject } from "@angular/core"
 import { NavigationEnd, Router } from "@angular/router"
 import { createEffect } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
@@ -31,10 +31,8 @@ import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.fac
  */
 @Injectable()
 export class RedirectAwayFromDomainViewEffect {
-    constructor(
-        private readonly store: Store<CcState>,
-        private readonly router: Router
-    ) {}
+    private readonly store: Store<CcState> = inject(Store)
+    private readonly router = inject(Router)
 
     private readonly isDomainViewUnreachable$ = combineLatest([
         this.store.select(isLoadedFileSetWithoutDomainLensSelector),
@@ -43,7 +41,7 @@ export class RedirectAwayFromDomainViewEffect {
 
     private readonly navigated$ = this.router.events.pipe(filter(routerEvent => routerEvent instanceof NavigationEnd))
 
-    redirectToMetricsViewWithoutDomainLens$ = createEffect(
+    redirectAwayFromUnreachableDomainView$ = createEffect(
         () =>
             merge(
                 this.isDomainViewUnreachable$,

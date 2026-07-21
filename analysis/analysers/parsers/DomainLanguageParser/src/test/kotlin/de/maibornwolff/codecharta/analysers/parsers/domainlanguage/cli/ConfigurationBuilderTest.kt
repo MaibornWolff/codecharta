@@ -18,20 +18,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should build configuration with default values`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments()
 
         // Act
         val config = builder.build(parsedArgs)
@@ -45,20 +32,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should build configuration with custom weights`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 10,
-                commentWeight = 5,
-                stringWeight = 3,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(identifierWeight = 10, commentWeight = 5, stringWeight = 3)
 
         // Act
         val config = builder.build(parsedArgs)
@@ -72,20 +46,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should include all supported file extensions`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments()
 
         // Act
         val config = builder.build(parsedArgs)
@@ -98,20 +59,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should include all language keywords by default`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments()
 
         // Act
         val config = builder.build(parsedArgs)
@@ -130,20 +78,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should include technical stop words when not excluded`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments()
 
         // Act
         val config = builder.build(parsedArgs)
@@ -155,20 +90,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should exclude technical stop words when requested`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = true,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(excludeTechnicalStopWords = true)
 
         // Act
         val config = builder.build(parsedArgs)
@@ -180,20 +102,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should use minimal technical stop words when level is minimal`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MINIMAL,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(stopWordLevel = StopWordLevel.MINIMAL)
 
         // Act
         val config = builder.build(parsedArgs)
@@ -205,20 +114,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should use moderate technical stop words when level is moderate`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments()
 
         // Act
         val config = builder.build(parsedArgs)
@@ -230,20 +126,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should use aggressive technical stop words when level is aggressive`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.AGGRESSIVE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(stopWordLevel = StopWordLevel.AGGRESSIVE)
 
         // Act
         val config = builder.build(parsedArgs)
@@ -255,20 +138,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should transfer execution settings to configuration`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = "/path",
-                limit = 50,
-                bypassGitignore = true,
-                excludeTests = true,
-                output = "output.json",
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(limit = 50, bypassGitignore = true, excludeTests = true)
 
         // Act
         val config = builder.build(parsedArgs)
@@ -277,7 +147,6 @@ class ConfigurationBuilderTest {
         assertEquals(50, config.limit)
         assertEquals(true, config.bypassGitignore)
         assertEquals(true, config.excludeTests)
-        assertEquals("output.json", config.outputFile)
     }
 
     @Test
@@ -297,20 +166,7 @@ class ConfigurationBuilderTest {
             """.trimIndent()
         )
 
-        val parsedArgs =
-            ParsedArguments(
-                directory = tempDir.toString(),
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(directory = tempDir.toString())
 
         // Act
         val config = builder.build(parsedArgs)
@@ -339,20 +195,7 @@ class ConfigurationBuilderTest {
             """.trimIndent()
         )
 
-        val parsedArgs =
-            ParsedArguments(
-                directory = tempDir.toString(),
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(directory = tempDir.toString())
 
         // Act
         val config = builder.build(parsedArgs)
@@ -382,20 +225,7 @@ class ConfigurationBuilderTest {
             """.trimIndent()
         )
 
-        val parsedArgs =
-            ParsedArguments(
-                directory = tempDir.toString(),
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(directory = tempDir.toString())
 
         // Act
         val config = builder.build(parsedArgs)
@@ -424,20 +254,7 @@ class ConfigurationBuilderTest {
             """.trimIndent()
         )
 
-        val parsedArgs =
-            ParsedArguments(
-                directory = tempDir.toString(),
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(directory = tempDir.toString())
 
         // Act
         val config = builder.build(parsedArgs)
@@ -450,20 +267,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should throw helpful error when directory is null`() {
         // Arrange
-        val parsedArgs =
-            ParsedArguments(
-                directory = null,
-                limit = null,
-                bypassGitignore = false,
-                excludeTests = false,
-                output = null,
-                identifierWeight = 3,
-                commentWeight = 2,
-                stringWeight = 1,
-                excludeTechnicalStopWords = false,
-                stopWordLevel = StopWordLevel.MODERATE,
-                ngrams = 1
-            )
+        val parsedArgs = parsedArguments(directory = null)
 
         // Act & Assert
         val exception =
@@ -472,4 +276,34 @@ class ConfigurationBuilderTest {
             }
         assertEquals("Please provide a directory with -d flag", exception.message)
     }
+
+    private fun parsedArguments(
+        directory: String? = "/path",
+        limit: Int? = null,
+        bypassGitignore: Boolean = false,
+        excludeTests: Boolean = false,
+        identifierWeight: Int = 3,
+        commentWeight: Int = 2,
+        stringWeight: Int = 1,
+        excludeTechnicalStopWords: Boolean = false,
+        stopWordLevel: StopWordLevel = StopWordLevel.MODERATE,
+        ngrams: Int = 1,
+        noTfidf: Boolean = false,
+        sortBy: SortBy = SortBy.FREQUENCY,
+        noSsr: Boolean = false
+    ) = ParsedArguments(
+        directory = directory,
+        limit = limit,
+        bypassGitignore = bypassGitignore,
+        excludeTests = excludeTests,
+        identifierWeight = identifierWeight,
+        commentWeight = commentWeight,
+        stringWeight = stringWeight,
+        excludeTechnicalStopWords = excludeTechnicalStopWords,
+        stopWordLevel = stopWordLevel,
+        ngrams = ngrams,
+        noTfidf = noTfidf,
+        sortBy = sortBy,
+        noSsr = noSsr
+    )
 }

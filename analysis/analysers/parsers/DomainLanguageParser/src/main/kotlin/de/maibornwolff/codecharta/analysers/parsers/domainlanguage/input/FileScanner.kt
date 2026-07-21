@@ -1,11 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
-import io.github.oshai.kotlinlogging.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.nio.charset.Charset
-
-private val logger = KotlinLogging.logger {}
 
 class FileScanner(private val allowedExtensions: List<String>) {
     private val fileFilter = FileFilter(allowedExtensions)
@@ -19,7 +17,7 @@ class FileScanner(private val allowedExtensions: List<String>) {
     ): List<File> {
         val directory = File(directoryPath)
         if (!directory.exists() || !directory.isDirectory) {
-            logger.warn { "Directory does not exist or is not a directory: $directoryPath" }
+            Logger.warn { "Directory does not exist or is not a directory: $directoryPath" }
             return emptyList()
         }
 
@@ -57,6 +55,6 @@ class FileScanner(private val allowedExtensions: List<String>) {
         require(file.isFile) { "Path is not a file: ${file.absolutePath}" }
         file.readText(charset)
     }.onFailure { error ->
-        logger.error(error) { "Failed to read file: ${file.absolutePath}" }
+        Logger.error(error) { "Failed to read file: ${file.absolutePath}" }
     }
 }

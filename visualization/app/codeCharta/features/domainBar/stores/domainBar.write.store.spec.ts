@@ -3,14 +3,14 @@ import { Store } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { WordCloudShape, WordCloudSizingMode } from "../../../model/wordCloud.model"
 import {
-    setDomainBarGridSize,
-    setDomainBarRotationRange,
-    setDomainBarRotationStep,
-    setDomainBarShape,
-    setDomainBarSizeRange,
-    setDomainBarSizingMode,
-    setDomainBarTopN
-} from "../../../stores/domainBar/domainBar.write.facade"
+    setDomainStateGridSize,
+    setDomainStateRotationRange,
+    setDomainStateRotationStep,
+    setDomainStateShape,
+    setDomainStateSizeRange,
+    setDomainStateSizingMode,
+    setDomainStateTopN
+} from "../../../stores/domainState/domainState.write.facade"
 import { DomainBarWriteStore } from "./domainBar.write.store"
 
 describe("DomainBarWriteStore", () => {
@@ -34,12 +34,12 @@ describe("DomainBarWriteStore", () => {
         writeStore.setTopN(42)
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(setDomainBarShape({ value: WordCloudShape.star }))
-        expect(dispatchSpy).toHaveBeenCalledWith(setDomainBarSizeRange({ value: [10, 40] }))
-        expect(dispatchSpy).toHaveBeenCalledWith(setDomainBarRotationRange({ value: [0, 0] }))
-        expect(dispatchSpy).toHaveBeenCalledWith(setDomainBarRotationStep({ value: 15 }))
-        expect(dispatchSpy).toHaveBeenCalledWith(setDomainBarGridSize({ value: 20 }))
-        expect(dispatchSpy).toHaveBeenCalledWith(setDomainBarSizingMode({ value: WordCloudSizingMode.tfidf }))
-        expect(dispatchSpy).toHaveBeenCalledWith(setDomainBarTopN({ value: 42 }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setDomainStateShape({ value: WordCloudShape.star }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setDomainStateSizeRange({ value: [10, 40] }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setDomainStateRotationRange({ value: [0, 0] }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setDomainStateRotationStep({ value: 15 }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setDomainStateGridSize({ value: 20 }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setDomainStateSizingMode({ value: WordCloudSizingMode.tfidf }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setDomainStateTopN({ value: 42 }))
     })
 })

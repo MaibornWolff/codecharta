@@ -221,7 +221,7 @@ export class LoadFilesUseCase {
         missingProperties.push(
             ...this.loadInitialFileStore.applyPreferences(savedCcState.preferences),
             ...this.loadInitialFileStore.applyMapState(savedCcState.mapState),
-            ...this.loadInitialFileStore.applyDomainBar(savedCcState.domainBar)
+            ...this.loadInitialFileStore.applyDomainState(savedCcState.domainState)
         )
 
         // The view slices are NOT applied here. They are carried on the provenance and applied by the
@@ -268,8 +268,8 @@ export class LoadFilesUseCase {
         if (savedCcState.mapState) {
             missingProperties.push(...this.loadInitialFileStore.applyMapState(savedCcState.mapState))
         }
-        if (savedCcState.domainBar) {
-            missingProperties.push(...this.loadInitialFileStore.applyDomainBar(savedCcState.domainBar))
+        if (savedCcState.domainState) {
+            missingProperties.push(...this.loadInitialFileStore.applyDomainState(savedCcState.domainState))
         }
 
         this.showMissingPropertiesDialog(missingProperties)

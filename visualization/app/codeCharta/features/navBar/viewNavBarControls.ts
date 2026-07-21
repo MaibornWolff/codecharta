@@ -1,4 +1,4 @@
-import { ViewId } from "../../stores/viewReadiness/viewReadiness.store"
+import { ViewId } from "../../routing/routePaths"
 
 /** The controls the nav bar can render on its trailing side, in the order they appear. */
 export type NavBarControlId = "modeToggle" | "print3D" | "settings"

@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core"
 import { NavigationEnd, Router } from "@angular/router"
 import { distinctUntilChanged, filter, map, Observable, shareReplay, startWith } from "rxjs"
-import { ViewId } from "../stores/viewReadiness/viewReadiness.store"
-import { routeLinks } from "./routePaths"
+import { ViewId, viewIdForLink } from "./routePaths"
 
 /**
  * Which routed view is currently on screen.
@@ -27,6 +26,6 @@ export class ActiveViewStore {
     }
 
     currentView(): ViewId {
-        return this.router.url.split("?")[0] === routeLinks.domain ? "domain" : "metrics"
+        return viewIdForLink(this.router.url)
     }
 }

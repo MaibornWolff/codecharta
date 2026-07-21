@@ -36,9 +36,9 @@
     "last 2 safari version"
   ],
   "scripts": {
-    "postinstall": "patch-package",
+    "patch": "patch-package",
     "start": "node script/ensureElectron.js && electron dist/bundler/browser",
-    "build": "ng build && cp electron/* package.json dist/bundler/browser",
+    "build": "npm run patch && ng build && cp electron/* package.json dist/bundler/browser",
     "dev": "ng serve",
     "test": "npm run test:ci -- --maxWorkers=25%",
     "test:ci": "jest --config conf/jestUnit.config.json .*\\.spec\\.ts",

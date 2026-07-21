@@ -17,10 +17,6 @@ import java.nio.file.Path
  * N-grams are filtered if ANY component word is a stop word.
  */
 class FilterStage(private val stopWordFilter: StopWordFilter) {
-    fun filter(weightedTexts: List<WeightedText>): List<WeightedText> = weightedTexts.filter { weighted ->
-        !stopWordFilter.isExcluded(weighted.text)
-    }
-
     fun filter(weightedTexts: List<WeightedText>, filePath: Path): List<WeightedText> = weightedTexts.filter { weighted ->
         !stopWordFilter.isExcluded(weighted.text, filePath)
     }

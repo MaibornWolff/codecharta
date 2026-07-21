@@ -39,17 +39,4 @@ export class QueryPreservingHashLocationStrategy extends HashLocationStrategy {
         url.hash = super.prepareExternalUrl(internal)
         return url.toString()
     }
-
-    override pushState(state: unknown, title: string, path: string, queryParameters: string): void {
-        this.platformLocation.pushState(state, title, this.toAbsoluteUrl(path, queryParameters))
-    }
-
-    override replaceState(state: unknown, title: string, path: string, queryParameters: string): void {
-        this.platformLocation.replaceState(state, title, this.toAbsoluteUrl(path, queryParameters))
-    }
-
-    private toAbsoluteUrl(path: string, queryParameters: string): string {
-        const normalizedQueryParameters = queryParameters && !queryParameters.startsWith("?") ? `?${queryParameters}` : queryParameters
-        return this.prepareExternalUrl(path + normalizedQueryParameters)
-    }
 }

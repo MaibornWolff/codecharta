@@ -1,10 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
 /**
- * A parameterized keyword provider that loads keywords from a resource file.
- *
- * This class replaces all individual language keyword classes (KotlinKeywords, JavaKeywords, etc.)
- * with a single reusable implementation that takes the resource path as a constructor parameter.
+ * A keyword provider that loads its word list from a resource file, so a new language needs a
+ * resource rather than a class.
  *
  * @param resourcePath The path to the keyword resource file (e.g., "keywords/kotlin-keywords.txt")
  */

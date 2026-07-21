@@ -12,10 +12,8 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Fi
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.analysis.TfIdfCalculator
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.ProgressReporter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.SilentProgressReporter
-import io.github.oshai.kotlinlogging.KotlinLogging
+import de.maibornwolff.codecharta.util.Logger
 import java.io.File
-
-private val logger = KotlinLogging.logger {}
 
 class SourceAnalyzer(
     private val config: AnalysisConfiguration,
@@ -24,11 +22,11 @@ class SourceAnalyzer(
     private val fileProcessor: FileProcessor,
     private val tfIdfCalculator: TfIdfCalculator,
     private val progressReporter: ProgressReporter = SilentProgressReporter
-) : WordAnalyzer {
-    override fun analyze(directoryPath: String): DomainAnalysisResult {
+) {
+    fun analyze(directoryPath: String): DomainAnalysisResult {
         val files = scanFiles(directoryPath)
         val processingResult = processFiles(files, directoryPath)
-        fileAnalyzer.clearCache()
+        fileAnalyzer.releasePerRunCaches()
         val perFileWordCounts = processingResult.perFileWordCounts
 
         logSkippedFiles(processingResult.skippedExtensions, perFileWordCounts.size)
@@ -57,7 +55,7 @@ class SourceAnalyzer(
     private fun computeTfidfScores(perFileWordCounts: Map<String, Map<String, Int>>): Map<String, Double> {
         if (!config.enableTfidf) return emptyMap()
         if (perFileWordCounts.size < MIN_FILES_FOR_TFIDF) {
-            logger.warn {
+            Logger.warn {
                 "TF-IDF requires multiple files for meaningful results. Only ${perFileWordCounts.size} file(s) found."
             }
         }
@@ -68,18 +66,18 @@ class SourceAnalyzer(
         if (skippedExtensions.isNotEmpty()) {
             val totalSkipped = skippedExtensions.values.sum()
             val extensions = skippedExtensions.keys.sorted().joinToString(", ") { ".$it" }
-            logger.info {
+            Logger.info {
                 "Analysis complete: $processedCount files processed, " +
                     "$totalSkipped files skipped (unsupported extensions: $extensions)"
             }
         } else {
-            logger.info { "Analysis complete: $processedCount files processed" }
+            Logger.info { "Analysis complete: $processedCount files processed" }
         }
     }
 
     private fun logFailedFiles(failedFiles: List<String>) {
         if (failedFiles.isEmpty()) return
-        logger.warn {
+        Logger.warn {
             "${failedFiles.size} file(s) dropped due to processing errors: " +
                 failedFiles.sorted().joinToString(", ")
         }
@@ -128,8 +126,8 @@ class SourceAnalyzer(
     }
 
     companion object {
-        // TF-IDF is only meaningful across multiple documents; below this it degenerates (every term
-        // appears in "all" files), so we warn but still compute.
+        // TF-IDF is undefined for a single document — IDF has no spread to measure — so below this
+        // the scoring is skipped entirely and only a warning is emitted.
         private const val MIN_FILES_FOR_TFIDF = 2
     }
 }

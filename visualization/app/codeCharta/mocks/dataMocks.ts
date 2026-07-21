@@ -2072,7 +2072,7 @@ export const STATE: CcState = {
     domainLensSource: {
         words: {}
     },
-    domainBar: defaultWordCloudSettings,
+    domainState: defaultWordCloudSettings,
     sharedView: {
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
@@ -2229,7 +2229,7 @@ export const DEFAULT_STATE: CcState = {
     domainLensSource: {
         words: {}
     },
-    domainBar: defaultWordCloudSettings,
+    domainState: defaultWordCloudSettings,
     files: [],
     isLoadingFile: true,
     currentFilesAreSampleFiles: false

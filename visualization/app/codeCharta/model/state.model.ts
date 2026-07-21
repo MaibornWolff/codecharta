@@ -101,7 +101,7 @@ export interface CcState {
     metricsLensSource: MetricsLensSource
     dependencyLensSource: DependencyLensSource
     domainLensSource: DomainLensSource
-    domainBar: WordCloudSettings
+    domainState: WordCloudSettings
     preferences: Preferences
     mapState: MapState
     sharedView: SharedView

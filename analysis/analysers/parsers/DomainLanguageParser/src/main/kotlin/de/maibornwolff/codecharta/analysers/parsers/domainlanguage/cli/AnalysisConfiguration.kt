@@ -19,7 +19,6 @@ data class AnalysisConfiguration(
     val enableSsr: Boolean = true,
     // Output settings
     val limit: Int? = null,
-    val outputFile: String? = null,
     val enableTfidf: Boolean = true,
     val sortBy: SortBy = SortBy.FREQUENCY
 ) {

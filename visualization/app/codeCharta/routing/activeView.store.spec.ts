@@ -66,4 +66,17 @@ describe("ActiveViewStore", () => {
         // Assert
         expect(emissions).toEqual(["metrics"])
     })
+
+    it("should fall back to the default view when the URL matches no route", () => {
+        // Arrange
+        const store = createStore()
+        const emissions: string[] = []
+        store.activeView$.subscribe(view => emissions.push(view))
+
+        // Act — the router sends an unrecognized URL to the default route anyway
+        navigateTo("/does-not-exist")
+
+        // Assert
+        expect(emissions).toEqual(["metrics"])
+    })
 })

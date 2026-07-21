@@ -2,10 +2,10 @@ import { STATE } from "../../../mocks/dataMocks"
 import { CcState, DomainLensData, DomainWord, FileSelectionState, FileState } from "../../../model/codeCharta.model"
 import { fileRoot } from "../../../util/fileRoot"
 import {
+    createWordsForSelectedNodeSelector,
     hasDomainDataSelector,
     hasTfidfDataSelector,
-    isLoadedFileSetWithoutDomainLensSelector,
-    wordsForSelectedNodeSelector
+    isLoadedFileSetWithoutDomainLensSelector
 } from "./domain.selectors"
 
 describe("domain lens selectors", () => {
@@ -76,13 +76,13 @@ describe("domain lens selectors", () => {
         })
     })
 
-    describe("wordsForSelectedNodeSelector", () => {
+    describe("createWordsForSelectedNodeSelector", () => {
         it("should return the selected node's words when an id is given", () => {
             // Arrange
             const state = stateWithWords({ "/root/leaf": leafWords })
 
             // Act
-            const result = wordsForSelectedNodeSelector("/root/leaf")(state)
+            const result = createWordsForSelectedNodeSelector("/root/leaf")(state)
 
             // Assert
             expect(result).toEqual(leafWords)
@@ -94,7 +94,7 @@ describe("domain lens selectors", () => {
             const state = stateWithWords({ [fileRoot.rootPath]: rootWords })
 
             // Act
-            const result = wordsForSelectedNodeSelector(null)(state)
+            const result = createWordsForSelectedNodeSelector(null)(state)
 
             // Assert
             expect(result).toEqual(rootWords)

@@ -18,7 +18,7 @@ export class DomainBarPageObject {
     }
 
     async openWordSizingSettings() {
-        await this.openPopover("domain-bar-toggle", "domain-bar-top-n")
+        await this.openPopover("domain-bar-word-sizing-cog", "domain-bar-top-n")
     }
 
     async selectShape(shape: WordCloudShape) {

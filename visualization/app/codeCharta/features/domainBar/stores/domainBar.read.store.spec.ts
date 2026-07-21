@@ -7,8 +7,8 @@ import { defaultWordCloudSettings, WordCloudShape } from "../../../model/wordClo
 import { DomainBarReadStore } from "./domainBar.read.store"
 
 describe("DomainBarReadStore", () => {
-    function setup(domainBar = defaultWordCloudSettings, words: Record<string, DomainWord[]> = {}) {
-        const state: CcState = { ...STATE, domainBar, domainLensSource: { words } }
+    function setup(domainState = defaultWordCloudSettings, words: Record<string, DomainWord[]> = {}) {
+        const state: CcState = { ...STATE, domainState, domainLensSource: { words } }
         TestBed.configureTestingModule({
             providers: [provideMockStore({ initialState: state }), { provide: State, useValue: { getValue: () => state } }]
         })
@@ -17,11 +17,11 @@ describe("DomainBarReadStore", () => {
 
     it("should expose the persisted settings as a signal", () => {
         // Arrange
-        const domainBar = { ...defaultWordCloudSettings, shape: WordCloudShape.star }
-        const readStore = setup(domainBar)
+        const domainState = { ...defaultWordCloudSettings, shape: WordCloudShape.star }
+        const readStore = setup(domainState)
 
         // Act & Assert
-        expect(readStore.settings()).toEqual(domainBar)
+        expect(readStore.settings()).toEqual(domainState)
     })
 
     it("should report no tfidf data when no word carries a tfidf score", () => {

@@ -17,7 +17,7 @@ export const hasTfidfDataSelector = createSelector(domainWordsSelector, words =>
  * state, before any selection) — passed in by the composing layer so the lens never reads view state
  * itself. A `null` id falls back to the root path, whose folder-aggregated words seed the initial cloud.
  */
-export const wordsForSelectedNodeSelector = (selectedBuildingId: string | null) =>
+export const createWordsForSelectedNodeSelector = (selectedBuildingId: string | null) =>
     createSelector(domainWordsSelector, words => words[selectedBuildingId ?? fileRoot.rootPath] ?? [])
 
 const carriesNoDomainLens = ({ file }: FileState) => Object.keys(file.settings.fileSettings.domainWords).length === 0

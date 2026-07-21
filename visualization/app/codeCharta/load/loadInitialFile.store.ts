@@ -15,20 +15,20 @@ import { getCCFiles } from "../model/files/files.helper"
 import { WordCloudSettings } from "../model/wordCloud.model"
 import { DependencyLensSourceReadWindow } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
-import { DomainBarReadWindow } from "../stores/domainBar/domainBar.read.facade"
-import {
-    setDomainBarDrawOutOfBound,
-    setDomainBarGridSize,
-    setDomainBarRotationRange,
-    setDomainBarRotationStep,
-    setDomainBarShape,
-    setDomainBarShrinkToFit,
-    setDomainBarSizeRange,
-    setDomainBarSizingMode,
-    setDomainBarTopN
-} from "../stores/domainBar/domainBar.write.facade"
 import { DomainLensSourceReadWindow } from "../stores/domainLensSource/domainLensSource.read.facade"
 import { setDomainWords } from "../stores/domainLensSource/domainLensSource.write.facade"
+import { DomainStateReadWindow } from "../stores/domainState/domainState.read.facade"
+import {
+    setDomainStateDrawOutOfBound,
+    setDomainStateGridSize,
+    setDomainStateRotationRange,
+    setDomainStateRotationStep,
+    setDomainStateShape,
+    setDomainStateShrinkToFit,
+    setDomainStateSizeRange,
+    setDomainStateSizingMode,
+    setDomainStateTopN
+} from "../stores/domainState/domainState.write.facade"
 import { FileStoreReadWindow, setCurrentFilesAreSampleFiles, setDelta, setFiles } from "../stores/fileStore/fileStore.facade"
 import { MapStateReadWindow } from "../stores/mapState/mapState.read.facade"
 import {
@@ -97,7 +97,7 @@ export class LoadInitialFileStore {
         private readonly metricsLensSourceReadWindow: MetricsLensSourceReadWindow,
         private readonly dependencyLensSourceReadWindow: DependencyLensSourceReadWindow,
         private readonly domainLensSourceReadWindow: DomainLensSourceReadWindow,
-        private readonly domainBarReadWindow: DomainBarReadWindow,
+        private readonly domainStateReadWindow: DomainStateReadWindow,
         private readonly sharedViewReadWindow: SharedViewReadWindow,
         private readonly mapStateReadWindow: MapStateReadWindow,
         private readonly fileStoreReadWindow: FileStoreReadWindow
@@ -150,9 +150,9 @@ export class LoadInitialFileStore {
         )
     }
 
-    applyDomainBar(savedDomainBar: WordCloudSettings) {
-        return this.applySlice(this.domainBarReadWindow.getDomainBar(), savedDomainBar, (key, value) =>
-            this.mapDomainBarToAction(key, value)
+    applyDomainState(savedDomainState: WordCloudSettings) {
+        return this.applySlice(this.domainStateReadWindow.getDomainState(), savedDomainState, (key, value) =>
+            this.mapDomainStateToAction(key, value)
         )
     }
 
@@ -246,34 +246,34 @@ export class LoadInitialFileStore {
         throw new Error(`Unhandled key: ${key}`)
     }
 
-    private mapDomainBarToAction(key: keyof WordCloudSettings, value: any) {
+    private mapDomainStateToAction(key: keyof WordCloudSettings, value: any) {
         switch (key) {
             case "shape":
-                this.store.dispatch(setDomainBarShape({ value }))
+                this.store.dispatch(setDomainStateShape({ value }))
                 break
             case "sizeRange":
-                this.store.dispatch(setDomainBarSizeRange({ value }))
+                this.store.dispatch(setDomainStateSizeRange({ value }))
                 break
             case "rotationRange":
-                this.store.dispatch(setDomainBarRotationRange({ value }))
+                this.store.dispatch(setDomainStateRotationRange({ value }))
                 break
             case "rotationStep":
-                this.store.dispatch(setDomainBarRotationStep({ value }))
+                this.store.dispatch(setDomainStateRotationStep({ value }))
                 break
             case "gridSize":
-                this.store.dispatch(setDomainBarGridSize({ value }))
+                this.store.dispatch(setDomainStateGridSize({ value }))
                 break
             case "sizingMode":
-                this.store.dispatch(setDomainBarSizingMode({ value }))
+                this.store.dispatch(setDomainStateSizingMode({ value }))
                 break
             case "topN":
-                this.store.dispatch(setDomainBarTopN({ value }))
+                this.store.dispatch(setDomainStateTopN({ value }))
                 break
             case "shrinkToFit":
-                this.store.dispatch(setDomainBarShrinkToFit({ value }))
+                this.store.dispatch(setDomainStateShrinkToFit({ value }))
                 break
             case "drawOutOfBound":
-                this.store.dispatch(setDomainBarDrawOutOfBound({ value }))
+                this.store.dispatch(setDomainStateDrawOutOfBound({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)
