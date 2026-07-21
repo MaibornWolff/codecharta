@@ -21,7 +21,7 @@ export class ShapeSettingsPopoverComponent {
     readonly settings = this.readStore.settings
     readonly shapes = Object.values(WordCloudShape)
 
-    readonly resetKeys = ["domainBar.shape"]
+    readonly resetKeys = ["domainState.shape"]
 
     onShapeChange(value: string) {
         this.writeStore.setShape(value as WordCloudShape)

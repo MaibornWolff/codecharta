@@ -13,4 +13,7 @@ import { HoveredPathComponent } from "../hoveredPath/hoveredPath.component"
 export class BottomBarComponent {
     /** Forwarded to the path breadcrumb — see HoveredPathComponent.showSelectedWhenNotHovered. */
     readonly showSelectedWhenNotHovered = input(false)
+
+    /** Forwarded to the path breadcrumb — see HoveredPathComponent.selectedNodePath (view-owned selection). */
+    readonly selectedNodePath = input<string | null | undefined>(undefined)
 }

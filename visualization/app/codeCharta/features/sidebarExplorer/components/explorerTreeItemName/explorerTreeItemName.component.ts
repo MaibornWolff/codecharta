@@ -12,7 +12,7 @@ export class ExplorerTreeItemNameComponent {
     private readonly readStore = inject(SidebarExplorerReadStore)
 
     readonly node = input.required<CodeMapNode>()
-    // Why a name is muted or italic is the hosting view's call (see ExplorerHost.rowState), so it
+    // Why a name is muted or italic is the hosting view's call (see the ExplorerRow projection), so it
     // arrives as plain presentation flags rather than being re-derived from map state here.
     readonly isDimmed = input<boolean>(false)
     readonly isItalic = input<boolean>(false)

@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { SortingOption } from "../../../../model/codeCharta.model"
-import { ExplorerSortService } from "../../services/explorerSort.service"
-import { SidebarExplorerWriteStore } from "../../stores/sidebarExplorer.write.store"
+import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
+import { EXPLORER_SORT } from "../../explorerSort.port"
 
 @Component({
     selector: "cc-explorer-sort-control",
@@ -10,20 +10,20 @@ import { SidebarExplorerWriteStore } from "../../stores/sidebarExplorer.write.st
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExplorerSortControlComponent {
-    private readonly explorerSortService = inject(ExplorerSortService)
-    private readonly writeStore = inject(SidebarExplorerWriteStore)
+    private readonly explorerSort = inject(EXPLORER_SORT)
 
-    readonly sortOptions = Object.values(SortingOption) as SortingOption[]
+    // The hosting view scopes the offered orderings — the domain view drops the map-only Area Size.
+    readonly sortOptions: SortingOption[] = inject(EXPLORER_CAPABILITIES).sortOptions
 
-    readonly sortState = toSignal(this.explorerSortService.sortState$, { requireSync: true })
-    readonly currentOption = computed(() => this.sortState()[0])
-    readonly isAscending = computed(() => this.sortState()[1])
+    // The current option/order come from the per-view sort, so the trigger always reflects THIS view's sort.
+    readonly currentOption = toSignal(this.explorerSort.option$, { requireSync: true })
+    readonly isAscending = toSignal(this.explorerSort.ascending$, { requireSync: true })
 
     setSortingOption(value: SortingOption) {
-        this.writeStore.setSortingOption(value)
+        this.explorerSort.setOption(value)
     }
 
     toggleSortOrder() {
-        this.writeStore.toggleSortingOrderAscending()
+        this.explorerSort.toggleAscending()
     }
 }

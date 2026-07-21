@@ -29,6 +29,14 @@ export class PublishesHeightDirective implements AfterViewInit, OnDestroy {
     ngAfterViewInit(): void {
         const measuredElement = this.elementReference.nativeElement as HTMLElement
         const updateHeight = () => {
+            // Under the keep-alive route reuse strategy a view is detached from the DOM but kept alive, so
+            // this ResizeObserver stays live and fires with height 0 while detached. Publishing that 0 would
+            // clobber the shared :root variable that another view's bar (e.g. the distribution bar above the
+            // bottom bar) offsets against. Skip while disconnected; the observer republishes the real height
+            // when the element is reattached.
+            if (!measuredElement.isConnected) {
+                return
+            }
             const height = measuredElement.getBoundingClientRect().height
             document.documentElement.style.setProperty(this.cssVariable, `${Math.round(height)}px`)
         }

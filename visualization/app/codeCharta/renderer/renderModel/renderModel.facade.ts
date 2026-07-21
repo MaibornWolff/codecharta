@@ -10,6 +10,7 @@ export { edgeMetricDataSelector } from "./edgeMetricData/edgeMetricData.selector
 export { sortedNodeEdgeMetricsMapSelector } from "./edgeMetricData/sortedNodeEdgeMetricsMap.selector"
 export { hoveredNodeSelector } from "./hoveredNode.selector"
 export { labelsPerMapActiveSelector } from "./labelsPerMapActive.selector"
+export { createNodeByPathSelector } from "./nodeByPath.selector"
 export { metricRangeSelector, nodeMetricDataSelector } from "./nodeMetricData/nodeMetricData.selector"
 export { primaryMetricNamesSelector } from "./primaryMetrics/primaryMetricNames.selector"
 export { rightClickedCodeMapNodeSelector } from "./rightClickedCodeMapNode.selector"

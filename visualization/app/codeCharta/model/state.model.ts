@@ -14,9 +14,19 @@ import {
     MetricsLensSource,
     PrimaryMetrics,
     Scaling,
-    Sorting
+    Sorting,
+    SortingOption
 } from "./domain.model"
 import { WordCloudSettings } from "./wordCloud.model"
+
+/**
+ * The domain view's persisted state: the word-cloud render controls PLUS the explorer sort the domain view
+ * remembers on its own, independent of the map view's global `preferences.sorting`.
+ */
+export interface DomainState extends WordCloudSettings {
+    sortingOrder: SortingOption
+    sortingOrderAscending: boolean
+}
 
 // The default number of top-value labels shown on the map. A plain domain default (not ngrx state),
 // so it lives in model/ where both the mapState amountOfTopLabels reducer and the pure
@@ -101,7 +111,7 @@ export interface CcState {
     metricsLensSource: MetricsLensSource
     dependencyLensSource: DependencyLensSource
     domainLensSource: DomainLensSource
-    domainState: WordCloudSettings
+    domainState: DomainState
     preferences: Preferences
     mapState: MapState
     sharedView: SharedView

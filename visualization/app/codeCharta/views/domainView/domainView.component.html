@@ -1,6 +1,30 @@
 <cc-loading-file-progress-spinner view="domain"></cc-loading-file-progress-spinner>
 
-<cc-sidebar-explorer></cc-sidebar-explorer>
+<cc-sidebar-explorer>
+    <!--
+        Collapsed, the tree is gone but the selection still drives the cloud, so the strip names what is
+        selected. The path is the useful identity (names repeat across folders), truncated with the full
+        value on hover.
+    -->
+    <div collapsedContent class="flex flex-1 min-w-0 items-center gap-1">
+        @if (selectedNodePath()) {
+            <span class="flex-1 min-w-0 truncate text-xs opacity-70" [title]="selectedNodePath()" data-testid="explorer-collapsed-path">
+                {{ selectedNodePath() }}
+            </span>
+            <button
+                type="button"
+                class="btn btn-ghost btn-sm btn-square shrink-0"
+                [title]="copied() ? 'Copied!' : 'Copy path'"
+                data-testid="explorer-copy-path-button"
+                (click)="copySelectedPath()"
+            >
+                <i class="fa" [class.fa-copy]="!copied()" [class.fa-check]="copied()"></i>
+            </button>
+        } @else {
+            <span class="flex-1 min-w-0 truncate text-xs opacity-50">{{ selectedNodeName() || "No selection" }}</span>
+        }
+    </div>
+</cc-sidebar-explorer>
 
 <!--
     The word cloud needs an explicitly sized container to initialize (unlike the 3D map, which mounts to
@@ -12,9 +36,9 @@
     class="fixed right-0 top-[var(--cc-bars-height,49px)] bottom-[var(--cc-bottom-bar-height,28px)]"
     [style.left.px]="cloudLeftInset()"
 >
-    <cc-word-cloud [settings]="settings()"></cc-word-cloud>
+    <cc-word-cloud [settings]="settings()" [selectedNodePath]="selectedNodePath()" (clearSelection)="clearSelection()"></cc-word-cloud>
 </div>
 
-<cc-bottom-bar [showSelectedWhenNotHovered]="true"></cc-bottom-bar>
+<cc-bottom-bar [showSelectedWhenNotHovered]="true" [selectedNodePath]="selectedNodePath()"></cc-bottom-bar>
 
 <cc-domain-bar></cc-domain-bar>

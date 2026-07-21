@@ -23,12 +23,12 @@ export class WordSizingSettingsPopoverComponent {
     readonly WordCloudSizingMode = WordCloudSizingMode
 
     readonly resetKeys = [
-        "domainBar.sizingMode",
-        "domainBar.topN",
-        "domainBar.sizeRange",
-        "domainBar.gridSize",
-        "domainBar.shrinkToFit",
-        "domainBar.drawOutOfBound"
+        "domainState.sizingMode",
+        "domainState.topN",
+        "domainState.sizeRange",
+        "domainState.gridSize",
+        "domainState.shrinkToFit",
+        "domainState.drawOutOfBound"
     ]
 
     /** Names the trade-off in whichever direction the toggle would take it, rather than only its on-state. */

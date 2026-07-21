@@ -18,6 +18,9 @@ export class UploadFilesService {
             void this.uploadFilesOnEvent(ccFileInput)
             ccFileInput.remove()
         })
+        // Dismissing the picker fires "cancel", not "change". Without this the input would be orphaned in
+        // the DOM on every cancel; removing it here keeps the page clean.
+        ccFileInput.addEventListener("cancel", () => ccFileInput.remove())
 
         ccFileInput.click()
     }

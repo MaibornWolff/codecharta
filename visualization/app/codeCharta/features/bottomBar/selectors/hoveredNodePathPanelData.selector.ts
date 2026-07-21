@@ -1,6 +1,11 @@
 import { createSelector } from "@ngrx/store"
 import { CodeMapNode } from "../../../model/codeCharta.model"
-import { accumulatedDataSelector, hoveredNodeSelector, selectedNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
+import {
+    accumulatedDataSelector,
+    createNodeByPathSelector,
+    hoveredNodeSelector,
+    selectedNodeSelector
+} from "../../../renderer/renderModel/renderModel.facade"
 
 export const _getHoveredNodePathPanelData = (hoveredNode?: Pick<CodeMapNode, "path" | "type">) =>
     hoveredNode && {
@@ -20,3 +25,13 @@ export const selectedNodePathPanelDataSelector = createSelector(
     accumulatedDataSelector,
     (selectedNode, accumulatedData) => _getHoveredNodePathPanelData(selectedNode ?? accumulatedData?.unifiedMapNode)
 )
+
+/**
+ * The same "node being looked at" panel data, but resolved from a PARAMETER path rather than the global
+ * `sharedView` selection — for a view that owns its selection (the domain word cloud). A `null` path falls
+ * back to the map root, exactly like the global variant.
+ */
+export const createSelectedNodePathPanelDataSelector = (selectedNodePath: string | null) =>
+    createSelector(createNodeByPathSelector(selectedNodePath), accumulatedDataSelector, (selectedNode, accumulatedData) =>
+        _getHoveredNodePathPanelData(selectedNode ?? accumulatedData?.unifiedMapNode)
+    )

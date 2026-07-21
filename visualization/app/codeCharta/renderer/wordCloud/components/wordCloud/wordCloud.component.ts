@@ -7,17 +7,18 @@ import {
     inject,
     input,
     OnDestroy,
+    output,
     signal,
     viewChild
 } from "@angular/core"
-import { toSignal } from "@angular/core/rxjs-interop"
+import { toObservable, toSignal } from "@angular/core/rxjs-interop"
 import * as echarts from "echarts"
 import "echarts-wordcloud"
+import { switchMap } from "rxjs"
 import { DomainWord } from "../../../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings } from "../../../../model/wordCloud.model"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
-import { WordCloudWriteStore } from "../../stores/wordCloud.write.store"
 import { buildWordCloudOption, selectTopWords, WordCloudOption } from "../../util/wordCloudOption.builder"
 
 /**
@@ -77,16 +78,24 @@ const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)"
 })
 export class WordCloudComponent implements OnDestroy {
     private readonly wordCloudReadStore = inject(WordCloudReadStore)
-    private readonly wordCloudWriteStore = inject(WordCloudWriteStore)
     private readonly viewReadinessStore = inject(ViewReadinessStore)
 
     readonly settings = input<WordCloudSettings>(defaultWordCloudSettings)
 
+    /** The node whose words to show, supplied by the composing view that owns the selection (null = root). */
+    readonly selectedNodePath = input<string | null>(null)
+
+    /** Raised by the empty state's "Show whole map" button — the owning view clears its selection. */
+    readonly clearSelection = output<void>()
+
     /** Absent while the empty state is shown, so the chart is created and destroyed with the canvas. */
     private readonly canvasRef = viewChild<ElementRef<HTMLElement>>("wordCloudCanvas")
 
-    protected readonly words = toSignal(this.wordCloudReadStore.wordsForSelectedNode$, { initialValue: [] as DomainWord[] })
-    protected readonly selectedNodeName = toSignal(this.wordCloudReadStore.selectedNodeName$, { initialValue: "" })
+    protected readonly words = toSignal(
+        toObservable(this.selectedNodePath).pipe(switchMap(path => this.wordCloudReadStore.wordsForSelectedNode(path))),
+        { initialValue: [] as DomainWord[] }
+    )
+    protected readonly selectedNodeName = computed(() => this.wordCloudReadStore.selectedNodeName(this.selectedNodePath()))
 
     /** The words handed to the chart — ranked and truncated exactly as the canvas is. */
     private readonly renderedWords = computed(() => selectTopWords(this.words(), this.settings().sizingMode, this.settings().topN))
@@ -168,7 +177,7 @@ export class WordCloudComponent implements OnDestroy {
     }
 
     protected showWholeMap(): void {
-        this.wordCloudWriteStore.clearSelectedBuilding()
+        this.clearSelection.emit()
     }
 
     private initializeChart(container: HTMLElement): void {

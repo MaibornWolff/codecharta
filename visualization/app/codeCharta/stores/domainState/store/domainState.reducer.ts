@@ -1,5 +1,5 @@
 import { combineReducers } from "@ngrx/store"
-import { WordCloudSettings } from "../../../model/wordCloud.model"
+import { DomainState } from "../../../model/codeCharta.model"
 import { defaultDrawOutOfBound, drawOutOfBound } from "./drawOutOfBound/drawOutOfBound.reducer"
 import { defaultGridSize, gridSize } from "./gridSize/gridSize.reducer"
 import { defaultRotationRange, rotationRange } from "./rotationRange/rotationRange.reducer"
@@ -8,10 +8,13 @@ import { defaultShape, shape } from "./shape/shape.reducer"
 import { defaultShrinkToFit, shrinkToFit } from "./shrinkToFit/shrinkToFit.reducer"
 import { defaultSizeRange, sizeRange } from "./sizeRange/sizeRange.reducer"
 import { defaultSizingMode, sizingMode } from "./sizingMode/sizingMode.reducer"
+import { defaultSortingOrder, sortingOrder } from "./sortingOrder/sortingOrder.reducer"
+import { defaultSortingOrderAscending, sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
 import { defaultTopN, topN } from "./topN/topN.reducer"
 
-// The domain settings bar's persisted render controls for the word cloud. Per-setting slices mirror the
-// mapState home so each control persists (via the whole-CcState indexedDBWriter) and resets independently.
+// The domain view's persisted settings: the word-cloud render controls plus the explorer sort the domain
+// view remembers on its own. Per-setting slices mirror the mapState home so each persists (via the
+// whole-CcState indexedDBWriter) and resets independently.
 export const domainState = combineReducers({
     shape,
     sizeRange,
@@ -21,10 +24,12 @@ export const domainState = combineReducers({
     sizingMode,
     topN,
     shrinkToFit,
-    drawOutOfBound
+    drawOutOfBound,
+    sortingOrder,
+    sortingOrderAscending
 })
 
-export const defaultDomainState: WordCloudSettings = {
+export const defaultDomainState: DomainState = {
     shape: defaultShape,
     sizeRange: defaultSizeRange,
     rotationRange: defaultRotationRange,
@@ -33,5 +38,7 @@ export const defaultDomainState: WordCloudSettings = {
     sizingMode: defaultSizingMode,
     topN: defaultTopN,
     shrinkToFit: defaultShrinkToFit,
-    drawOutOfBound: defaultDrawOutOfBound
+    drawOutOfBound: defaultDrawOutOfBound,
+    sortingOrder: defaultSortingOrder,
+    sortingOrderAscending: defaultSortingOrderAscending
 }

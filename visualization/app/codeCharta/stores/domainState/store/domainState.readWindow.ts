@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
-import { CcState } from "../../../model/codeCharta.model"
-import { WordCloudSettings } from "../../../model/wordCloud.model"
+import { CcState, DomainState } from "../../../model/codeCharta.model"
 import { wordCloudSettingsSelector } from "./wordCloudSettings.selector"
 
 @Injectable({
@@ -15,7 +14,7 @@ export class DomainStateReadWindow {
 
     readonly wordCloudSettings$ = this.store.select(wordCloudSettingsSelector)
 
-    getDomainState(): WordCloudSettings {
+    getDomainState(): DomainState {
         return this.state.getValue().domainState
     }
 }

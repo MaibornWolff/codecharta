@@ -2,56 +2,50 @@ import { Injectable, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
 import { DomainBarReadStore } from "../../../features/domainBar/facade"
-import { ExplorerHost, ExplorerHostCapabilities, ExplorerRowState } from "../../../features/sidebarExplorer/facade"
+import { ExplorerSelection } from "../../../features/sidebarExplorer/facade"
 import { CodeMapNode, DomainWord } from "../../../model/codeCharta.model"
 import { WordCloudSizingMode, wordSizingValue } from "../../../model/wordCloud.model"
 import { domainWordsSelector } from "../../../stores/domainLensSource/domainLensSource.read.facade"
 import { HoverTooltipService } from "../../../util/hoverTooltip.service"
+import { DomainSelectionStore } from "../stores/domainSelection.store"
 
 const TOOLTIP_WORD_COUNT = 5
 const NO_WORDS_HINT = "No domain words"
 
 /**
- * What an explorer row means in the domain view: a node in the domain word bank.
- *
- * Deliberately narrow. There is no 3D map here, so nothing gates selection on a building existing —
- * that gate is why a `#/domain` deep link (where the metrics view never mounted and no buildings were
- * ever registered) left every file row inert and unable to drive the cloud. Right-click is off for now;
- * it will later highlight the node on the map and redirect there.
+ * What selecting or hovering a row means in the domain view: a node in the word bank. Selecting drives the
+ * cloud through the view-local {@link DomainSelectionStore} — the domain view never touches the global
+ * `sharedView` selection. Hovering previews the node's top words in a tooltip. There is no map to light, so
+ * a row never reports as hovered.
  */
 @Injectable()
-export class DomainExplorerHost implements ExplorerHost {
+export class DomainExplorerSelection implements ExplorerSelection {
     private readonly store = inject(Store)
+    private readonly domainSelectionStore = inject(DomainSelectionStore)
     private readonly domainBarReadStore = inject(DomainBarReadStore)
     private readonly hoverTooltipService = inject(HoverTooltipService)
 
     private readonly domainWords = toSignal(this.store.select(domainWordsSelector), { requireSync: true })
 
-    // Flatten, exclude, the search patterns that feed them and the area-based counters are all 3D-map
-    // concepts. The tree, header and sort control carry over unchanged.
-    readonly capabilities: ExplorerHostCapabilities = {
-        showRules: false,
-        showSearch: false,
-        showCounts: false
+    isSelected(node: CodeMapNode): boolean {
+        return this.domainSelectionStore.selectedNodePath() === node.path
     }
 
-    isSelectable(): boolean {
-        return true
-    }
-
-    rowState(): ExplorerRowState {
-        return { isDimmed: false, isItalic: false, title: "" }
-    }
-
-    rowDecoration(): string | null {
-        return null
-    }
-
-    hasContextMenu(): boolean {
+    isHovered(): boolean {
+        // The domain rows do not light up on hover — there is no map hover signal, and the cloud reacts to
+        // selection, not hover.
         return false
     }
 
-    onHover(node: CodeMapNode, rowRect: DOMRect): void {
+    select(node: CodeMapNode): void {
+        this.domainSelectionStore.select(node.path)
+    }
+
+    deselect(): void {
+        this.domainSelectionStore.clear()
+    }
+
+    hover(node: CodeMapNode, rowRect: DOMRect): void {
         const sizingMode = this.domainBarReadStore.settings().sizingMode
         const words = this.topWords(node.path, sizingMode)
 
@@ -68,16 +62,8 @@ export class DomainExplorerHost implements ExplorerHost {
         )
     }
 
-    onHoverEnd(): void {
+    hoverEnd(): void {
         this.hoverTooltipService.hide()
-    }
-
-    onSelect(): void {
-        // Publishing the selection is enough — the word cloud reads it and re-renders.
-    }
-
-    onDeselect(): void {
-        // Same: clearing the selection falls back to the root's aggregated words.
     }
 
     /** Ranked the same way the cloud sizes its words, so the tooltip previews what selecting will show. */
