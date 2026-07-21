@@ -28,7 +28,7 @@ object DirectoryWordAggregator {
 
         // Convert to List<WordFrequency> with TF-IDF scores (caller handles sorting)
         return result.mapValues { (_, wordMap) ->
-            wordMap.map { (text, freq) -> WordFrequency(text = text, frequency = freq, tfidf = tfidfScores[text]) }
+            wordMap.map { (text, freq) -> WordFrequency.withScore(text, freq, tfidfScores) }
         }
     }
 
