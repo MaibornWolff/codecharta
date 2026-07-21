@@ -9,8 +9,8 @@ const BAR_GAP_PX = 12
  * first paint. The matching literals in templates that cannot import these (Tailwind arbitrary values)
  * must be kept equal to them.
  */
-export const DEFAULT_BOTTOM_BAR_HEIGHT_PX = 32
-export const DEFAULT_FILE_EXTENSION_BAR_HEIGHT_PX = 17
+const DEFAULT_BOTTOM_BAR_HEIGHT_PX = 32
+const DEFAULT_FILE_EXTENSION_BAR_HEIGHT_PX = 17
 
 /**
  * Bottom offset for a floating bar in a view that mounts no file-extension bar (e.g. the domain view).
