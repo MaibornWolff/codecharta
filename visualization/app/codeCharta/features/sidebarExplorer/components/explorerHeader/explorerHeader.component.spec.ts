@@ -3,7 +3,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { provideExplorerHostMock } from "../../explorerHost.mocks"
+import { provideExplorerCapabilitiesMock } from "../../explorerPorts.mocks"
 import { explorerCountsSelector } from "../../selectors/sidebarExplorer.selectors"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerHeaderComponent } from "./explorerHeader.component"
@@ -17,7 +17,7 @@ describe("ExplorerHeaderComponent", () => {
                     initialState: defaultState,
                     selectors: [{ selector: explorerCountsSelector, value: { shown: 47, flattened: 12, hidden: 5, noArea: 3 } }]
                 }),
-                provideExplorerHostMock({ capabilities: { showRules: true, showSearch: true, showCounts } })
+                provideExplorerCapabilitiesMock({ showCounts })
             ]
         })
     }
@@ -63,7 +63,7 @@ describe("ExplorerHeaderComponent", () => {
         expect(hiddenChip.querySelector("[popovertarget='explorer-hidden-rules']")).not.toBe(null)
     })
 
-    it("should hide the count chips when the host does not want them", async () => {
+    it("should hide the count chips when the view does not want them", async () => {
         // Arrange
         TestBed.resetTestingModule()
         configureWithShowCounts(false)

@@ -15,24 +15,24 @@
             (mouseleave)="onMouseLeave()"
             (click)="onClick()"
             (contextmenu)="openNodeContextMenu($event)"
-            [title]="rowState().title"
+            [title]="rowProjection().title"
         >
             <cc-explorer-tree-item-icon
                 [node]="node()"
                 [isOpen]="isOpen()"
-                [isDimmed]="rowState().isDimmed"
+                [isDimmed]="rowProjection().isDimmed"
             ></cc-explorer-tree-item-icon>
             <cc-explorer-tree-item-name
                 class="ml-1 flex-1 truncate"
                 [node]="node()"
-                [isDimmed]="rowState().isDimmed"
-                [isItalic]="rowState().isItalic"
+                [isDimmed]="rowProjection().isDimmed"
+                [isItalic]="rowProjection().isItalic"
             ></cc-explorer-tree-item-name>
             @if (node().isFlattened) {
                 <i class="fa fa-eye-slash text-xs opacity-60 ml-1 shrink-0" title="Flattened"></i>
             }
-            @if (rowDecoration()) {
-                <span class="text-xs opacity-60 ml-2 shrink-0 tabular-nums">{{ rowDecoration() }}</span>
+            @if (rowProjection().decoration) {
+                <span class="text-xs opacity-60 ml-2 shrink-0 tabular-nums">{{ rowProjection().decoration }}</span>
             }
         </div>
         <div class="tree-element-children tree-element-children-{{ depth() }} pl-3">

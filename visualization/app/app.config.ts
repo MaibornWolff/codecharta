@@ -18,6 +18,7 @@ import { QueryPreservingHashLocationStrategy } from "app/codeCharta/routing/quer
 import { routePaths } from "app/codeCharta/routing/routePaths"
 import { appReducers, setStateMiddleware } from "app/codeCharta/stores/rootStore/store"
 import { DomainViewComponent } from "app/codeCharta/views/domainView/domainView.component"
+import { domainViewEffects } from "app/codeCharta/views/domainView/effects/domainView.effects"
 import { MetricsViewComponent } from "app/codeCharta/views/metricsView/metricsView.component"
 
 // The metrics (3D map) view is the default path; the domain (word-cloud) view is a sibling route. The
@@ -68,7 +69,8 @@ export const appConfig: ApplicationConfig = {
             ...fileExtensionBarEffects,
             ...navBarEffects,
             ...sharedEffects,
-            ...loadEffects
+            ...loadEffects,
+            ...domainViewEffects
         ]),
 
         {

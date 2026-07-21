@@ -4,7 +4,6 @@ import { BehaviorSubject } from "rxjs"
 import { DomainWord } from "../../../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../../../../model/wordCloud.model"
 import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
-import { WordCloudWriteStore } from "../../stores/wordCloud.write.store"
 import { WordCloudComponent } from "./wordCloud.component"
 
 // The component subscribes to "finished" to report the domain view ready and count the drawn words;
@@ -67,8 +66,7 @@ let measuredContainerHeight = CONTAINER_HEIGHT
 
 describe("WordCloudComponent", () => {
     let words$: BehaviorSubject<DomainWord[]>
-    let selectedNodeName$: BehaviorSubject<string>
-    const clearSelectedBuilding = jest.fn()
+    let selectedNodeName: string
 
     beforeEach(() => {
         jest.clearAllMocks()
@@ -91,15 +89,17 @@ describe("WordCloudComponent", () => {
             get: () => measuredContainerHeight
         })
         words$ = new BehaviorSubject<DomainWord[]>([{ text: "invoice", frequency: 12 }])
-        selectedNodeName$ = new BehaviorSubject<string>("billing")
+        selectedNodeName = "billing"
     })
 
     async function setup(settingsOverrides: Partial<WordCloudSettings> = {}) {
         return render(WordCloudComponent, {
             inputs: { settings: { ...defaultWordCloudSettings, ...settingsOverrides } },
             providers: [
-                { provide: WordCloudReadStore, useValue: { wordsForSelectedNode$: words$, selectedNodeName$ } },
-                { provide: WordCloudWriteStore, useValue: { clearSelectedBuilding } }
+                {
+                    provide: WordCloudReadStore,
+                    useValue: { wordsForSelectedNode: () => words$, selectedNodeName: () => selectedNodeName }
+                }
             ]
         })
     }
@@ -381,9 +381,11 @@ describe("WordCloudComponent", () => {
         expect(screen.queryByText(/words fit/)).toBeNull()
     })
 
-    it("should clear the selection when the whole map is requested", async () => {
+    it("should raise clearSelection when the whole map is requested", async () => {
         // Arrange
+        const clearSelection = jest.fn()
         const { fixture } = await setup()
+        fixture.componentInstance.clearSelection.subscribe(clearSelection)
         words$.next([])
         fixture.detectChanges()
 
@@ -391,6 +393,6 @@ describe("WordCloudComponent", () => {
         await userEvent.click(screen.getByRole("button", { name: "Show whole map" }))
 
         // Assert
-        expect(clearSelectedBuilding).toHaveBeenCalledTimes(1)
+        expect(clearSelection).toHaveBeenCalledTimes(1)
     })
 })

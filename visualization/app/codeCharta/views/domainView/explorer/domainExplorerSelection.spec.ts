@@ -6,7 +6,8 @@ import { CodeMapNode, DomainLensData, NodeType } from "../../../model/codeCharta
 import { defaultWordCloudSettings, WordCloudSizingMode } from "../../../model/wordCloud.model"
 import { domainWordsSelector } from "../../../stores/domainLensSource/domainLensSource.read.facade"
 import { HoverTooltipService } from "../../../util/hoverTooltip.service"
-import { DomainExplorerHost } from "./domainExplorerHost"
+import { DomainSelectionStore } from "../stores/domainSelection.store"
+import { DomainExplorerSelection } from "./domainExplorerSelection"
 
 const NODE = { name: "parser", path: "/root/parser", type: NodeType.FOLDER, attributes: {} } as unknown as CodeMapNode
 const ROW_RECT = { right: 200, top: 100 } as DOMRect
@@ -22,65 +23,59 @@ const WORDS: DomainLensData = {
     ]
 }
 
-describe("DomainExplorerHost", () => {
+describe("DomainExplorerSelection", () => {
     const tooltipService = { show: jest.fn(), hide: jest.fn() }
 
     const setup = (sizingMode = WordCloudSizingMode.frequency, words = WORDS) => {
         TestBed.resetTestingModule()
         TestBed.configureTestingModule({
             providers: [
-                DomainExplorerHost,
+                DomainExplorerSelection,
                 provideMockStore({ selectors: [{ selector: domainWordsSelector, value: words }] }),
                 { provide: DomainBarReadStore, useValue: { settings: signal({ ...defaultWordCloudSettings, sizingMode }) } },
                 { provide: HoverTooltipService, useValue: tooltipService }
             ]
         })
-        return TestBed.inject(DomainExplorerHost)
+        return { selection: TestBed.inject(DomainExplorerSelection), store: TestBed.inject(DomainSelectionStore) }
     }
 
     beforeEach(() => {
         jest.clearAllMocks()
     })
 
-    it("should switch off the map-only chrome", () => {
-        // Arrange & Act
-        const host = setup()
+    it("should drive the domain-local selection store on select and clear it on deselect", () => {
+        // Arrange
+        const { selection, store } = setup()
+
+        // Act
+        selection.select(NODE)
 
         // Assert
-        expect(host.capabilities).toEqual({ showRules: false, showSearch: false, showCounts: false })
+        expect(store.selectedNodePath()).toBe("/root/parser")
+        expect(selection.isSelected(NODE)).toBe(true)
+
+        // Act
+        selection.deselect()
+
+        // Assert
+        expect(store.selectedNodePath()).toBeNull()
+        expect(selection.isSelected(NODE)).toBe(false)
     })
 
-    it("should make every row selectable, since no 3D building has to exist", () => {
-        // Arrange & Act — a #/domain deep link registers no buildings at all
-        const host = setup()
-
-        // Assert
-        expect(host.isSelectable()).toBe(true)
-    })
-
-    it("should offer no context menu", () => {
+    it("should never report a row as hovered, since there is no map hover signal", () => {
         // Arrange & Act
-        const host = setup()
+        const { selection } = setup()
 
         // Assert
-        expect(host.hasContextMenu()).toBe(false)
-    })
-
-    it("should render no row decoration and no dimming", () => {
-        // Arrange & Act
-        const host = setup()
-
-        // Assert
-        expect(host.rowDecoration()).toBeNull()
-        expect(host.rowState()).toEqual({ isDimmed: false, isItalic: false, title: "" })
+        expect(selection.isHovered()).toBe(false)
     })
 
     it("should show the node name and its top five words by frequency on hover", () => {
         // Arrange
-        const host = setup(WordCloudSizingMode.frequency)
+        const { selection } = setup(WordCloudSizingMode.frequency)
 
         // Act
-        host.onHover(NODE, ROW_RECT)
+        selection.hover(NODE, ROW_RECT)
 
         // Assert
         expect(tooltipService.show).toHaveBeenCalledWith(
@@ -101,10 +96,10 @@ describe("DomainExplorerHost", () => {
 
     it("should rank the tooltip words by tfidf when that is the active sizing mode", () => {
         // Arrange — the tooltip previews what selecting the node will show in the cloud
-        const host = setup(WordCloudSizingMode.tfidf)
+        const { selection } = setup(WordCloudSizingMode.tfidf)
 
         // Act
-        host.onHover(NODE, ROW_RECT)
+        selection.hover(NODE, ROW_RECT)
 
         // Assert
         const [content] = tooltipService.show.mock.calls[0]
@@ -113,10 +108,10 @@ describe("DomainExplorerHost", () => {
 
     it("should say so when a node carries no domain words", () => {
         // Arrange
-        const host = setup(WordCloudSizingMode.frequency, {})
+        const { selection } = setup(WordCloudSizingMode.frequency, {})
 
         // Act
-        host.onHover(NODE, ROW_RECT)
+        selection.hover(NODE, ROW_RECT)
 
         // Assert
         expect(tooltipService.show).toHaveBeenCalledWith(
@@ -128,10 +123,10 @@ describe("DomainExplorerHost", () => {
 
     it("should hide the tooltip when the hover ends", () => {
         // Arrange
-        const host = setup()
+        const { selection } = setup()
 
         // Act
-        host.onHoverEnd()
+        selection.hoverEnd()
 
         // Assert
         expect(tooltipService.hide).toHaveBeenCalled()

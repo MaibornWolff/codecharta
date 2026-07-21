@@ -1,21 +1,29 @@
-import { Component, input, signal } from "@angular/core"
+import { Component, input, output, signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { DomainBarReadStore } from "../../features/domainBar/facade"
-import { ExplorerCollapseService, ExplorerWidthService } from "../../features/sidebarExplorer/facade"
+import {
+    EXPLORER_CAPABILITIES,
+    EXPLORER_CONTEXT_MENU,
+    EXPLORER_ROW,
+    ExplorerCollapseService,
+    ExplorerWidthService
+} from "../../features/sidebarExplorer/facade"
+import { CodeMapNode, NodeType, SortingOption } from "../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings } from "../../model/wordCloud.model"
 import { defaultState } from "../../stores/rootStore/state.manager"
 import { DomainViewComponent } from "./domainView.component"
-import { DomainExplorerHost } from "./explorerHost/domainExplorerHost"
 
-@Component({ selector: "cc-sidebar-explorer", template: "", standalone: true })
+@Component({ selector: "cc-sidebar-explorer", template: "<ng-content></ng-content>", standalone: true })
 class StubExplorerComponent {}
 
 @Component({ selector: "cc-word-cloud", template: "", standalone: true })
 class StubWordCloudComponent {
     readonly settings = input<WordCloudSettings>(defaultWordCloudSettings)
+    readonly selectedNodePath = input<string | null>(null)
+    readonly clearSelection = output<void>()
 }
 
 @Component({ selector: "cc-domain-bar", template: "", standalone: true })
@@ -24,7 +32,10 @@ class StubDomainBarComponent {}
 @Component({ selector: "cc-bottom-bar", template: "", standalone: true })
 class StubBottomBarComponent {
     readonly showSelectedWhenNotHovered = input(false)
+    readonly selectedNodePath = input<string | null | undefined>(undefined)
 }
+
+const SOME_NODE = { name: "a.ts", path: "/root/a.ts", id: 1, type: NodeType.FILE, attributes: {} } as unknown as CodeMapNode
 
 describe("DomainViewComponent", () => {
     async function setup(settings = defaultWordCloudSettings) {
@@ -42,13 +53,19 @@ describe("DomainViewComponent", () => {
     it("should supply the domain reading of an explorer row, with the map-only chrome switched off", async () => {
         // Arrange & Act
         const { fixture } = await setup()
-        const host = fixture.debugElement.injector.get(DomainExplorerHost)
+        const injector = fixture.debugElement.injector
 
         // Assert
-        expect(host.capabilities).toEqual({ showRules: false, showSearch: false, showCounts: false })
-        expect(host.hasContextMenu()).toBe(false)
-        // No 3D map here, so nothing gates selection on a building existing
-        expect(host.isSelectable()).toBe(true)
+        expect(injector.get(EXPLORER_CAPABILITIES)).toEqual({
+            showRules: false,
+            showSearch: false,
+            showCounts: false,
+            sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
+        })
+        // The domain view provides NO context menu at all.
+        expect(injector.get(EXPLORER_CONTEXT_MENU, null)).toBeNull()
+        // No 3D map here, so nothing gates selection on a building existing.
+        expect(injector.get(EXPLORER_ROW).project(SOME_NODE).isSelectable).toBe(true)
     })
 
     it("should inset the cloud container by the explorer width so the explorer cannot occlude the cloud", async () => {

@@ -1,16 +1,14 @@
+import { Provider } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
-import { Store, StoreModule } from "@ngrx/store"
+import { StoreModule } from "@ngrx/store"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { firstValueFrom } from "rxjs"
 import * as SearchedNodePathsSelector from "../../../../renderer/renderModel/searchedNodes/searchedNodePaths.selector"
 import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
-import { setHoveredNodeId, setRightClickedNodeData } from "../../../../stores/sharedView/sharedView.write.facade"
-import { defaultRightClickedNodeData } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.reducer"
-import * as RightClickedNodeDataSelector from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
-import { selectedBuildingIdSelector } from "../../../../stores/sharedView/store/selectedBuildingId/selectedBuildingId.selector"
-import { EXPLORER_HOST, ExplorerHost } from "../../explorerHost"
-import { createExplorerHostMock } from "../../explorerHost.mocks"
+import { EXPLORER_CONTEXT_MENU, ExplorerContextMenu } from "../../explorerContextMenu"
+import { createExplorerContextMenuMock, createExplorerRowMock, createExplorerSelectionMock } from "../../explorerPorts.mocks"
+import { EXPLORER_ROW, ExplorerRow } from "../../explorerRow"
+import { EXPLORER_SELECTION, ExplorerSelection } from "../../explorerSelection"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { ExplorerTreeLevelComponent } from "./explorerTreeLevel.component"
 import { rootNode } from "./mocks"
@@ -24,21 +22,33 @@ describe("ExplorerTreeLevelComponent", () => {
     const rootNodePath = componentInputs.node.path
     const parentLeafPath = componentInputs.node.children.find(childNode => childNode.name === "ParentLeaf").path
 
-    let host: ExplorerHost
+    let row: ExplorerRow
+    let selection: ExplorerSelection
+    let contextMenu: ExplorerContextMenu | null
 
-    const configureWithHost = (overrides: Partial<ExplorerHost> = {}) => {
-        host = createExplorerHostMock(overrides)
+    const configureWithPorts = (
+        overrides: { row?: ExplorerRow; selection?: ExplorerSelection; contextMenu?: ExplorerContextMenu | null } = {}
+    ) => {
+        row = overrides.row ?? createExplorerRowMock()
+        selection = overrides.selection ?? createExplorerSelectionMock()
+        contextMenu = overrides.contextMenu === undefined ? createExplorerContextMenuMock() : overrides.contextMenu
+        const providers: Provider[] = [
+            { provide: EXPLORER_ROW, useValue: row },
+            { provide: EXPLORER_SELECTION, useValue: selection }
+        ]
+        if (contextMenu !== null) {
+            providers.push({ provide: EXPLORER_CONTEXT_MENU, useValue: contextMenu })
+        }
         TestBed.configureTestingModule({
             imports: [ExplorerTreeLevelComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
-            providers: [{ provide: EXPLORER_HOST, useValue: host }]
+            providers
         })
     }
 
     beforeEach(() => {
         localStorage.clear()
-        configureWithHost()
+        configureWithPorts()
         jest.spyOn(SearchedNodePathsSelector, "searchedNodePathsSelector").mockReturnValue(new Set<string>())
-        jest.spyOn(RightClickedNodeDataSelector, "rightClickedNodeDataSelector").mockReturnValue(defaultRightClickedNodeData)
     })
 
     afterEach(() => {
@@ -84,51 +94,47 @@ describe("ExplorerTreeLevelComponent", () => {
         })
     })
 
-    it("should set selectedBuildingId to the node path on click and tell the host", async () => {
-        // Arrange — the path selection is what drives consumers such as the domain word cloud
+    it("should tell the selection port to select the node on click", async () => {
+        // Arrange — the selection port publishes the path; here we only verify the delegation
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const store = TestBed.inject(Store)
         const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
         // Act
         await userEvent.click(firstLevelFolder)
 
         // Assert
-        expect(await firstValueFrom(store.select(selectedBuildingIdSelector))).toBe(parentLeafPath)
-        expect(host.onSelect).toHaveBeenCalledWith(expect.objectContaining({ path: parentLeafPath }))
+        expect(selection.select).toHaveBeenCalledWith(expect.objectContaining({ path: parentLeafPath }))
     })
 
-    it("should clear selection and tell the host when an open folder is clicked closed", async () => {
+    it("should tell the selection port to deselect when an open folder is clicked closed", async () => {
         // Arrange
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const store = TestBed.inject(Store)
         const rootRow = container.querySelector("#\\/root")
 
         // Act
         await userEvent.click(rootRow)
 
         // Assert
-        await waitFor(() => expect(host.onDeselect).toHaveBeenCalledTimes(1))
-        expect(host.onSelect).not.toHaveBeenCalled()
-        expect(await firstValueFrom(store.select(selectedBuildingIdSelector))).toBeNull()
+        await waitFor(() => expect(selection.deselect).toHaveBeenCalledTimes(1))
+        expect(selection.select).not.toHaveBeenCalled()
     })
 
-    it("should ignore clicks on rows the host declares unselectable", async () => {
+    it("should ignore clicks on rows the row projection declares unselectable", async () => {
         // Arrange
         TestBed.resetTestingModule()
-        configureWithHost({ isSelectable: () => false })
+        configureWithPorts({
+            row: createExplorerRowMock(() => ({ isSelectable: false, isDimmed: false, isItalic: false, title: "", decoration: null }))
+        })
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const store = TestBed.inject(Store)
 
         // Act
         await userEvent.click(container.querySelector("#\\/root\\/bigLeaf"))
 
         // Assert
-        expect(host.onSelect).not.toHaveBeenCalled()
-        expect(await firstValueFrom(store.select(selectedBuildingIdSelector))).toBeNull()
+        expect(selection.select).not.toHaveBeenCalled()
     })
 
-    it("should clear right-clicked node data when the explorer scroll container is scrolled", async () => {
+    it("should open the context menu on right-click and close it when the scroll container scrolls", async () => {
         // Arrange
         const scrollContainer = document.createElement("div")
         scrollContainer.id = "explorer-scroll"
@@ -138,8 +144,6 @@ describe("ExplorerTreeLevelComponent", () => {
             inputs: componentInputs,
             excludeComponentDeclaration: true
         })
-        const store = TestBed.inject(Store)
-        const dispatchSpy = jest.spyOn(store, "dispatch")
         const contextMenuEvent = {
             preventDefault: jest.fn(),
             stopPropagation: jest.fn(),
@@ -151,28 +155,23 @@ describe("ExplorerTreeLevelComponent", () => {
         fixture.componentInstance.openNodeContextMenu(contextMenuEvent)
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(
-            setRightClickedNodeData({
-                value: { nodeId: rootNodePath, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "explorer" }
-            })
-        )
+        expect(contextMenu.open).toHaveBeenCalledWith(expect.objectContaining({ path: rootNodePath }), 10, 20)
 
         // Act
         scrollContainer.dispatchEvent(new Event("scroll"))
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
+        expect(contextMenu.close).toHaveBeenCalledTimes(1)
 
         // Cleanup
         scrollContainer.remove()
     })
 
-    it("should not open a context menu when the host has none, leaving the event untouched", async () => {
-        // Arrange — the domain view has no context menu, so a right-click must mark nothing
+    it("should not open a context menu when the view provides none, leaving the event untouched", async () => {
+        // Arrange — the domain view provides no context menu, so a right-click must mark nothing
         TestBed.resetTestingModule()
-        configureWithHost({ hasContextMenu: () => false })
+        configureWithPorts({ contextMenu: null })
         const { fixture } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
         const contextMenuEvent = {
             preventDefault: jest.fn(),
             stopPropagation: jest.fn(),
@@ -184,14 +183,12 @@ describe("ExplorerTreeLevelComponent", () => {
         fixture.componentInstance.openNodeContextMenu(contextMenuEvent)
 
         // Assert
-        expect(dispatchSpy).not.toHaveBeenCalledWith(expect.objectContaining({ type: setRightClickedNodeData.type }))
         expect(contextMenuEvent.preventDefault).not.toHaveBeenCalled()
     })
 
-    it("should publish the hovered node and tell the host on hover and unhover", async () => {
+    it("should tell the selection port on hover and unhover", async () => {
         // Arrange
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
         const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
 
         // Act
@@ -199,24 +196,28 @@ describe("ExplorerTreeLevelComponent", () => {
 
         // Assert
         await waitFor(() => {
-            expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: parentLeafPath }))
-            expect(host.onHover).toHaveBeenCalledWith(expect.objectContaining({ name: "ParentLeaf" }), expect.any(Object))
+            expect(selection.hover).toHaveBeenCalledWith(expect.objectContaining({ name: "ParentLeaf" }), expect.any(Object))
         })
 
         // Act
         await userEvent.unhover(firstLevelFolder)
 
         // Assert
-        await waitFor(() => {
-            expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: null }))
-            expect(host.onHoverEnd).toHaveBeenCalled()
-        })
+        await waitFor(() => expect(selection.hoverEnd).toHaveBeenCalled())
     })
 
-    it("should render the trailing decoration the host supplies", async () => {
+    it("should render the trailing decoration the row projection supplies", async () => {
         // Arrange
         TestBed.resetTestingModule()
-        configureWithHost({ rowDecoration: node => (node.name === "root" ? "42% / 2" : null) })
+        configureWithPorts({
+            row: createExplorerRowMock(node => ({
+                isSelectable: true,
+                isDimmed: false,
+                isItalic: false,
+                title: "",
+                decoration: node.name === "root" ? "42% / 2" : null
+            }))
+        })
 
         // Act
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
@@ -226,10 +227,18 @@ describe("ExplorerTreeLevelComponent", () => {
         expect(container.querySelector("#\\/root\\/bigLeaf").textContent).not.toContain("42% / 2")
     })
 
-    it("should dim and italicise a row the host reports as such", async () => {
+    it("should dim and italicise a row the projection reports as such", async () => {
         // Arrange
         TestBed.resetTestingModule()
-        configureWithHost({ rowState: () => ({ isDimmed: true, isItalic: true, title: "No Node Area for Chosen Metric" }) })
+        configureWithPorts({
+            row: createExplorerRowMock(() => ({
+                isSelectable: true,
+                isDimmed: true,
+                isItalic: true,
+                title: "No Node Area for Chosen Metric",
+                decoration: null
+            }))
+        })
 
         // Act
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })

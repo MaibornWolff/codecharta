@@ -3,9 +3,10 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
+import { accumulatedDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
+import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { provideExplorerHostMock } from "../../explorerHost.mocks"
-import { explorerTreeNodeSelector } from "../../selectors/explorerTreeNode.selector"
+import { provideExplorerPortsMock } from "../../explorerPorts.mocks"
 import { ExplorerTreeComponent } from "./explorerTree.component"
 
 const TEST_NODE: CodeMapNode = {
@@ -23,10 +24,13 @@ describe("ExplorerTreeComponent", () => {
             providers: [
                 provideMockStore({
                     initialState: defaultState,
-                    selectors: [{ selector: explorerTreeNodeSelector, value: TEST_NODE }]
+                    selectors: [
+                        { selector: accumulatedDataSelector, value: { unifiedMapNode: TEST_NODE } },
+                        { selector: areaMetricSelector, value: "rloc" }
+                    ]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
-                provideExplorerHostMock()
+                ...provideExplorerPortsMock()
             ]
         })
     })

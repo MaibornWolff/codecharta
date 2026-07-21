@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
-import { toSignal } from "@angular/core/rxjs-interop"
+import { toObservable, toSignal } from "@angular/core/rxjs-interop"
+import { of, switchMap } from "rxjs"
 import { HoveredPathStore } from "../../stores/hoveredPath.store"
 
 @Component({
@@ -17,8 +18,24 @@ export class HoveredPathComponent {
      */
     readonly showSelectedWhenNotHovered = input(false)
 
+    /**
+     * The selected path to show, for a view that owns its selection outside the global `sharedView` (the
+     * domain word cloud). `undefined` (the default) means "use the global selection" — the map view's
+     * behavior is unchanged; a string or `null` resolves that path (null falls back to the root).
+     */
+    readonly selectedNodePath = input<string | null | undefined>(undefined)
+
     private readonly hoveredPathData = toSignal(this.hoveredPathStore.hoveredPathData$)
-    private readonly selectedPathData = toSignal(this.hoveredPathStore.selectedPathData$)
+    private readonly globalSelectedPathData = toSignal(this.hoveredPathStore.selectedPathData$)
+    private readonly ownedSelectedPathData = toSignal(
+        toObservable(this.selectedNodePath).pipe(
+            switchMap(path => (path === undefined ? of(undefined) : this.hoveredPathStore.selectedPathDataFor(path)))
+        )
+    )
+
+    private readonly selectedPathData = computed(() =>
+        this.selectedNodePath() === undefined ? this.globalSelectedPathData() : this.ownedSelectedPathData()
+    )
 
     pathData = computed(() => this.hoveredPathData() ?? (this.showSelectedWhenNotHovered() ? this.selectedPathData() : undefined))
 

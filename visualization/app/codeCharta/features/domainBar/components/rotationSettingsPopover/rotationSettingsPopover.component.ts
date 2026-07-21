@@ -19,7 +19,7 @@ export class RotationSettingsPopoverComponent {
 
     readonly settings = this.readStore.settings
 
-    readonly resetKeys = ["domainBar.rotationRange", "domainBar.rotationStep"]
+    readonly resetKeys = ["domainState.rotationRange", "domainState.rotationStep"]
 
     onRotationStepChange(value: number) {
         this.writeStore.setRotationStep(value)

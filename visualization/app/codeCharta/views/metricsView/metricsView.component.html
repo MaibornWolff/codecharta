@@ -1,7 +1,14 @@
 <cc-loading-file-progress-spinner view="metrics"></cc-loading-file-progress-spinner>
 
 <cc-code-map></cc-code-map>
-<cc-sidebar-explorer></cc-sidebar-explorer>
+<cc-sidebar-explorer>
+    <!--
+        Collapsed, the map view keeps its search + flatten/exclude reachable in the short strip. flex-1
+        makes THIS (collapsed-only) instance fill the strip so the search input grows to the edge and no
+        gap is left after the 3-dots menu. The expanded instance in the panel is a separate element.
+    -->
+    <cc-explorer-search-bar collapsedContent class="flex-1 min-w-0"></cc-explorer-search-bar>
+</cc-sidebar-explorer>
 <cc-sidebar-inspector></cc-sidebar-inspector>
 <cc-node-context-menu></cc-node-context-menu>
 

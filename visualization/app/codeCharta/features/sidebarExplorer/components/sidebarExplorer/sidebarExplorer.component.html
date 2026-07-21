@@ -11,26 +11,11 @@
         </button>
 
         <!--
-            Collapsed, the tree is gone but the selection still drives the view, so the bar names what is
-            selected. The path is the useful identity (names repeat across folders), truncated with the
-            full value on hover.
+            Collapsed, the tree is gone but the rest of the strip is the hosting view's call: the metrics
+            view keeps its search + flatten/exclude reachable, the domain view names the selected node. Each
+            view projects its own [collapsedContent]; a view that projects nothing gets just the toggle.
         -->
-        @if (selectedNodePath()) {
-            <span class="flex-1 min-w-0 truncate text-xs opacity-70" [title]="selectedNodePath()" data-testid="explorer-collapsed-path">
-                {{ selectedNodePath() }}
-            </span>
-            <button
-                type="button"
-                class="btn btn-ghost btn-sm btn-square shrink-0"
-                [title]="copied() ? 'Copied!' : 'Copy path'"
-                data-testid="explorer-copy-path-button"
-                (click)="copySelectedPath()"
-            >
-                <i class="fa" [class.fa-copy]="!copied()" [class.fa-check]="copied()"></i>
-            </button>
-        } @else {
-            <span class="flex-1 min-w-0 truncate text-xs opacity-50">{{ selectedNodeName() || "No selection" }}</span>
-        }
+        <ng-content select="[collapsedContent]"></ng-content>
     </div>
 } @else {
     <cc-explorer-header></cc-explorer-header>

@@ -1,13 +1,12 @@
 import { NgClass } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, OnInit, signal } from "@angular/core"
-import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
-import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { isLeaf } from "../../../../util/codeMapHelper"
-import { EXPLORER_HOST } from "../../explorerHost"
+import { EXPLORER_CONTEXT_MENU } from "../../explorerContextMenu"
+import { EXPLORER_ROW } from "../../explorerRow"
+import { EXPLORER_SELECTION } from "../../explorerSelection"
 import { scrollRowIntoViewWhenRendered } from "../../scrollRowIntoView"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
-import { SidebarExplorerWriteStore } from "../../stores/sidebarExplorer.write.store"
 import { ExplorerTreeItemIconComponent } from "../explorerTreeItemIcon/explorerTreeItemIcon.component"
 import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerTreeItemName.component"
 
@@ -18,9 +17,11 @@ import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerT
     imports: [NgClass, ExplorerTreeItemIconComponent, ExplorerTreeItemNameComponent]
 })
 export class ExplorerTreeLevelComponent implements OnInit {
-    private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
-    private readonly writeStore = inject(SidebarExplorerWriteStore)
-    private readonly host = inject(EXPLORER_HOST)
+    private readonly row = inject(EXPLORER_ROW)
+    private readonly selection = inject(EXPLORER_SELECTION)
+    // Optional: a view with no context menu (the domain word cloud) provides none, and the right-click is
+    // left untouched — no handler, no marker, no scroll listener.
+    private readonly contextMenu = inject(EXPLORER_CONTEXT_MENU, { optional: true })
     private readonly revealService = inject(ExplorerRevealService)
     private readonly destroyRef = inject(DestroyRef)
 
@@ -31,22 +32,16 @@ export class ExplorerTreeLevelComponent implements OnInit {
 
     readonly isOpen = signal(false)
 
-    readonly hoveredNodeId = toSignal(this.sharedViewReadWindow.hoveredNodeId$, { requireSync: true })
-    readonly rightClickedNodeData = toSignal(this.sharedViewReadWindow.rightClickedNodeData$, { requireSync: true })
-    readonly selectedBuildingId = toSignal(this.sharedViewReadWindow.selectedBuildingId$, { requireSync: true })
-
-    readonly isHovered = computed(() => this.hoveredNodeId() === this.node().path)
-    readonly isMarked = computed(() => this.rightClickedNodeData()?.nodeId === this.node().path)
+    // Everything view-specific comes from the injected ports, so this component stays free of map/domain concepts.
+    readonly rowProjection = computed(() => this.row.project(this.node()))
+    readonly isSelectable = computed(() => this.rowProjection().isSelectable)
+    readonly isHovered = computed(() => this.selection.isHovered(this.node()))
+    readonly isSelected = computed(() => this.selection.isSelected(this.node()))
+    readonly isMarked = computed(() => this.contextMenu?.isMarked(this.node()) ?? false)
+    readonly hasContextMenu = computed(() => this.contextMenu?.isEnabledFor(this.node()) ?? false)
     readonly isRevealed = computed(() => this.revealService.revealedNodePath() === this.node().path)
-    readonly isSelected = computed(() => this.selectedBuildingId() === this.node().path)
     readonly isLeafNode = computed(() => isLeaf(this.node()))
     readonly children = computed(() => this.node().children ?? [])
-
-    // Everything view-specific comes from the host, so this component stays free of map/domain concepts.
-    readonly rowState = computed(() => this.host.rowState(this.node()))
-    readonly rowDecoration = computed(() => this.host.rowDecoration(this.node()))
-    readonly isSelectable = computed(() => this.host.isSelectable(this.node()))
-    readonly hasContextMenu = computed(() => this.host.hasContextMenu(this.node()))
 
     // Opens this level when a node below it gets revealed; the target level itself scrolls into view.
     private readonly revealEffect = effect(() => {
@@ -69,14 +64,12 @@ export class ExplorerTreeLevelComponent implements OnInit {
     }
 
     onMouseEnter($event: MouseEvent) {
-        this.writeStore.setHoveredNodeId(this.node().path)
         const rowRect = ($event.currentTarget as HTMLElement).getBoundingClientRect()
-        this.host.onHover(this.node(), rowRect)
+        this.selection.hover(this.node(), rowRect)
     }
 
     onMouseLeave() {
-        this.writeStore.setHoveredNodeId(null)
-        this.host.onHoverEnd()
+        this.selection.hoverEnd()
     }
 
     onClick() {
@@ -86,13 +79,9 @@ export class ExplorerTreeLevelComponent implements OnInit {
         const willBeOpen = !this.isOpen()
         this.isOpen.set(willBeOpen)
         if (this.isLeafNode() || willBeOpen) {
-            // Publish the selection by path first: this is what drives consumers such as the domain word
-            // cloud, and it works in views with no 3D map. The host then adds whatever selection means to it.
-            this.writeStore.setSelectedBuildingId(this.node().path)
-            this.host.onSelect(this.node())
+            this.selection.select(this.node())
         } else {
-            this.writeStore.setSelectedBuildingId(null)
-            this.host.onDeselect()
+            this.selection.deselect()
         }
     }
 
@@ -106,12 +95,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
         $event.preventDefault()
         $event.stopPropagation()
 
-        this.writeStore.setRightClickedNodeData({
-            nodeId: this.node().path,
-            xPositionOfRightClickEvent: $event.clientX,
-            yPositionOfRightClickEvent: $event.clientY,
-            origin: "explorer"
-        })
+        this.contextMenu?.open(this.node(), $event.clientX, $event.clientY)
 
         this.addScrollListener()
     }
@@ -136,7 +120,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
     }
 
     private readonly scrollFunction = () => {
-        this.writeStore.setRightClickedNodeData(null)
+        this.contextMenu?.close()
         this.removeScrollListener()
     }
 }

@@ -4,6 +4,7 @@ import stringify from "safe-stable-stringify"
 import {
     DependencyLensSource,
     DomainLensSource,
+    DomainState,
     MapState,
     MetricsLensSource,
     Preferences,
@@ -12,7 +13,6 @@ import {
 } from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import { getCCFiles } from "../model/files/files.helper"
-import { WordCloudSettings } from "../model/wordCloud.model"
 import { DependencyLensSourceReadWindow } from "../stores/dependencyLensSource/dependencyLensSource.read.facade"
 import { setEdgeAttributeTypes } from "../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import { DomainLensSourceReadWindow } from "../stores/domainLensSource/domainLensSource.read.facade"
@@ -27,6 +27,8 @@ import {
     setDomainStateShrinkToFit,
     setDomainStateSizeRange,
     setDomainStateSizingMode,
+    setDomainStateSortingOrder,
+    setDomainStateSortingOrderAscending,
     setDomainStateTopN
 } from "../stores/domainState/domainState.write.facade"
 import { FileStoreReadWindow, setCurrentFilesAreSampleFiles, setDelta, setFiles } from "../stores/fileStore/fileStore.facade"
@@ -83,6 +85,10 @@ export class LoadInitialFileStore {
     private static readonly noOptionalKeys: ReadonlySet<string> = new Set()
 
     private static readonly optionalMapStateKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
+
+    // The domain view's own explorer sort was added after these homes shipped; an older persisted domainState
+    // has neither key, so they must not surface in the "could not be fully restored" dialog.
+    private static readonly optionalDomainStateKeys = new Set(["sortingOrder", "sortingOrderAscending"])
 
     // transient interaction ids; never restored from a previous session's persisted state.
     private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
@@ -150,9 +156,12 @@ export class LoadInitialFileStore {
         )
     }
 
-    applyDomainState(savedDomainState: WordCloudSettings) {
-        return this.applySlice(this.domainStateReadWindow.getDomainState(), savedDomainState, (key, value) =>
-            this.mapDomainStateToAction(key, value)
+    applyDomainState(savedDomainState: DomainState) {
+        return this.applySlice(
+            this.domainStateReadWindow.getDomainState(),
+            savedDomainState,
+            (key, value) => this.mapDomainStateToAction(key, value),
+            LoadInitialFileStore.optionalDomainStateKeys
         )
     }
 
@@ -246,10 +255,16 @@ export class LoadInitialFileStore {
         throw new Error(`Unhandled key: ${key}`)
     }
 
-    private mapDomainStateToAction(key: keyof WordCloudSettings, value: any) {
+    private mapDomainStateToAction(key: keyof DomainState, value: any) {
         switch (key) {
             case "shape":
                 this.store.dispatch(setDomainStateShape({ value }))
+                break
+            case "sortingOrder":
+                this.store.dispatch(setDomainStateSortingOrder({ value }))
+                break
+            case "sortingOrderAscending":
+                this.store.dispatch(setDomainStateSortingOrderAscending({ value }))
                 break
             case "sizeRange":
                 this.store.dispatch(setDomainStateSizeRange({ value }))

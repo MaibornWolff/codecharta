@@ -1,17 +1,28 @@
 import { TestBed } from "@angular/core/testing"
-import { Store, StoreModule } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
+import { BehaviorSubject } from "rxjs"
 import { SortingOption } from "../../../../model/codeCharta.model"
-import { setSortingOption, toggleSortingOrderAscending } from "../../../../stores/preferences/preferences.write.facade"
-import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
+import { EXPLORER_SORT, ExplorerSort } from "../../explorerSort.port"
+import { createExplorerSortMock, provideExplorerCapabilitiesMock } from "../../explorerPorts.mocks"
 import { ExplorerSortControlComponent } from "./explorerSortControl.component"
 
 describe("ExplorerSortControlComponent", () => {
-    beforeEach(() => {
+    let sort: ExplorerSort
+
+    const configure = (options?: { sortOptions?: SortingOption[]; sort?: ExplorerSort }) => {
+        sort = options?.sort ?? createExplorerSortMock()
         TestBed.configureTestingModule({
-            imports: [ExplorerSortControlComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
+            imports: [ExplorerSortControlComponent],
+            providers: [
+                { provide: EXPLORER_SORT, useValue: sort },
+                provideExplorerCapabilitiesMock(options?.sortOptions ? { sortOptions: options.sortOptions } : undefined)
+            ]
         })
+    }
+
+    beforeEach(() => {
+        configure()
     })
 
     it("should open its menu through the native popover API so the panel cannot clip it", async () => {
@@ -25,7 +36,7 @@ describe("ExplorerSortControlComponent", () => {
         expect(menu?.hasAttribute("popover")).toBe(true)
     })
 
-    it("should render every sorting option in the menu", async () => {
+    it("should render every sorting option the view allows", async () => {
         // Arrange & Act
         await render(ExplorerSortControlComponent)
 
@@ -35,28 +46,54 @@ describe("ExplorerSortControlComponent", () => {
         expect(screen.getByText(SortingOption.AREA_SIZE)).not.toBeNull()
     })
 
-    it("should dispatch setSortingOption when an option is selected", async () => {
+    it("should offer only the sort options the hosting view scopes it to", async () => {
+        // Arrange — the domain view has no area metric, so it drops Area Size
+        TestBed.resetTestingModule()
+        configure({ sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES] })
+
+        // Act
+        await render(ExplorerSortControlComponent)
+
+        // Assert
+        expect(screen.getAllByText(SortingOption.NAME).length).toBeGreaterThan(0)
+        expect(screen.getByText(SortingOption.NUMBER_OF_FILES)).not.toBeNull()
+        expect(screen.queryByText(SortingOption.AREA_SIZE)).toBeNull()
+    })
+
+    it("should show the current option and order from the per-view sort", async () => {
+        // Arrange — a view whose sort is Number of Files, descending
+        TestBed.resetTestingModule()
+        configure({
+            sort: createExplorerSortMock({ option$: new BehaviorSubject(SortingOption.NUMBER_OF_FILES), ascending$: new BehaviorSubject(false) })
+        })
+
+        // Act
+        const { container } = await render(ExplorerSortControlComponent)
+
+        // Assert — the trigger reflects THIS view's sort
+        expect(container.querySelector("[data-testid='explorer-sort-trigger']")?.textContent).toContain(SortingOption.NUMBER_OF_FILES)
+    })
+
+    it("should set the option on the per-view sort when an option is selected", async () => {
         // Arrange
         await render(ExplorerSortControlComponent)
-        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
         // Act
         await userEvent.click(screen.getByText(SortingOption.AREA_SIZE))
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(setSortingOption({ value: SortingOption.AREA_SIZE }))
+        expect(sort.setOption).toHaveBeenCalledWith(SortingOption.AREA_SIZE)
     })
 
-    it("should dispatch toggleSortingOrderAscending when the order toggle is clicked", async () => {
+    it("should toggle the order on the per-view sort when the order toggle is clicked", async () => {
         // Arrange
         await render(ExplorerSortControlComponent)
-        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
         // Act
         await userEvent.click(screen.getByText(/Sort (ascending|descending)/))
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(toggleSortingOrderAscending())
+        expect(sort.toggleAscending).toHaveBeenCalledTimes(1)
     })
 
     it("should close the menu after acting on it", async () => {

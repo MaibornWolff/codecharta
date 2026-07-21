@@ -1,5 +1,4 @@
 import { TestBed } from "@angular/core/testing"
-import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { firstValueFrom } from "rxjs"
 import { STATE } from "../../../mocks/dataMocks"
@@ -11,38 +10,44 @@ describe("WordCloudReadStore", () => {
     const rootWords: DomainWord[] = [{ text: "invoice", frequency: 12 }]
     const leafWords: DomainWord[] = [{ text: "payment", frequency: 5 }]
 
-    function setup(selectedBuildingId: string | null, words: Record<string, DomainWord[]>) {
-        const state: CcState = {
-            ...STATE,
-            sharedView: { ...STATE.sharedView, selectedBuildingId },
-            domainLensSource: { words }
-        }
+    function setup(words: Record<string, DomainWord[]>) {
+        const state: CcState = { ...STATE, domainLensSource: { words } }
         TestBed.configureTestingModule({
-            providers: [provideMockStore({ initialState: state }), { provide: State, useValue: { getValue: () => state } }]
+            providers: [provideMockStore({ initialState: state })]
         })
         return TestBed.inject(WordCloudReadStore)
     }
 
-    it("should stream the selected node's words", async () => {
+    it("should stream the words of the given node path", async () => {
         // Arrange
-        const readStore = setup("/root/leaf", { "/root/leaf": leafWords })
+        const readStore = setup({ "/root/leaf": leafWords })
 
         // Act
-        const result = await firstValueFrom(readStore.wordsForSelectedNode$)
+        const result = await firstValueFrom(readStore.wordsForSelectedNode("/root/leaf"))
 
         // Assert
         expect(result).toEqual(leafWords)
     })
 
-    it("should fall back to the root node's words when nothing is selected", async () => {
+    it("should fall back to the root node's words for a null path", async () => {
         // Arrange
         fileRoot.updateRoot("root")
-        const readStore = setup(null, { [fileRoot.rootPath]: rootWords })
+        const readStore = setup({ [fileRoot.rootPath]: rootWords })
 
         // Act
-        const result = await firstValueFrom(readStore.wordsForSelectedNode$)
+        const result = await firstValueFrom(readStore.wordsForSelectedNode(null))
 
         // Assert
         expect(result).toEqual(rootWords)
+    })
+
+    it("should name the root for a null path and the leaf name for a path", () => {
+        // Arrange
+        fileRoot.updateRoot("root")
+        const readStore = setup({})
+
+        // Act & Assert
+        expect(readStore.selectedNodeName(null)).toBe(fileRoot.rootName)
+        expect(readStore.selectedNodeName("/root/src/main.ts")).toBe("main.ts")
     })
 })
