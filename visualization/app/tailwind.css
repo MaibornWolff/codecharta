@@ -47,6 +47,8 @@
        could not serve here anyway — word text sits directly on the white view background, where it only
        reaches ~2.9:1 contrast. Every stop of this gradient clears AA 4.5:1, though the magenta end sits
        exactly on the line (4.50:1), so it is the constraint whenever these values change. */
+    /* Mirrored as DEFAULT_START_COLOR/DEFAULT_END_COLOR in renderer/wordCloud/util/color.util.ts (the
+       non-DOM fallback for tests/SSR) — keep the two in sync when changing these. */
     --wordCloudColorStart: #e6007e;
     --wordCloudColorEnd: #0030ff;
 }

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
+import { withRangeMax, withRangeMin } from "../../../../model/wordCloud.model"
 import { ResetSettingsButtonComponent, SettingsPopoverShellComponent, SliderNumberInputComponent } from "../../../shared/facade"
 import { DomainBarReadStore } from "../../stores/domainBar.read.store"
 import { DomainBarWriteStore } from "../../stores/domainBar.write.store"
@@ -26,10 +27,10 @@ export class RotationSettingsPopoverComponent {
     }
 
     onRotationRangeMinChange(value: number) {
-        this.writeStore.setRotationRange([value, this.settings().rotationRange[1]])
+        this.writeStore.setRotationRange(withRangeMin(this.settings().rotationRange, value))
     }
 
     onRotationRangeMaxChange(value: number) {
-        this.writeStore.setRotationRange([this.settings().rotationRange[0], value])
+        this.writeStore.setRotationRange(withRangeMax(this.settings().rotationRange, value))
     }
 }
