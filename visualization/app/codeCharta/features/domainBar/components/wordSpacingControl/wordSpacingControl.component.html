@@ -1,0 +1,15 @@
+<div
+    class="rounded-lg bg-base-200 p-3"
+    data-testid="domain-bar-grid-size"
+    title="Spacing between words in pixels — larger means fewer, more spread-out words"
+>
+    <span class="text-sm">Word Spacing</span>
+    <cc-slider-number-input
+        ariaLabel="Word Spacing in pixels"
+        [min]="wordSpacingBounds.min"
+        [max]="wordSpacingBounds.max"
+        [step]="wordSpacingBounds.step"
+        [value]="settings().gridSize"
+        (valueChange)="onGridSizeChange($event)"
+    ></cc-slider-number-input>
+</div>

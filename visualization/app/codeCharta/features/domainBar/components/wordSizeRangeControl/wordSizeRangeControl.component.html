@@ -1,0 +1,40 @@
+<div class="flex flex-col gap-2 rounded-lg bg-base-200 p-3">
+    <div data-testid="domain-bar-size-min" title="The least important word in the cloud renders at this size">
+        <span class="text-sm">Smallest Word</span>
+        <cc-slider-number-input
+            ariaLabel="Smallest Word in pixels"
+            [min]="smallestWordBounds.min"
+            [max]="smallestWordBounds.max"
+            [value]="settings().sizeRange[0]"
+            (valueChange)="onSizeRangeMinChange($event)"
+        ></cc-slider-number-input>
+    </div>
+    <div data-testid="domain-bar-size-max" title="The most important word in the cloud renders at this size">
+        <span class="text-sm">Largest Word</span>
+        <cc-slider-number-input
+            ariaLabel="Largest Word in pixels"
+            [min]="largestWordBounds.min"
+            [max]="largestWordBounds.max"
+            [value]="settings().sizeRange[1]"
+            (valueChange)="onSizeRangeMaxChange($event)"
+        ></cc-slider-number-input>
+    </div>
+    <label class="flex cursor-pointer items-center gap-2" data-testid="domain-bar-shrink-to-fit" [title]="shrinkToFitTitle()">
+        <input
+            type="checkbox"
+            class="checkbox checkbox-sm"
+            [checked]="settings().shrinkToFit"
+            (change)="onShrinkToFitChange($any($event.target).checked)"
+        />
+        <span class="text-sm">Fit All Words</span>
+    </label>
+    <label class="flex cursor-pointer items-center gap-2" data-testid="domain-bar-draw-out-of-bound" [title]="drawOutOfBoundTitle()">
+        <input
+            type="checkbox"
+            class="checkbox checkbox-sm"
+            [checked]="settings().drawOutOfBound"
+            (change)="onDrawOutOfBoundChange($any($event.target).checked)"
+        />
+        <span class="text-sm">Draw Outside Bounds</span>
+    </label>
+</div>
