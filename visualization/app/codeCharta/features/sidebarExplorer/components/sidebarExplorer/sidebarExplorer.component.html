@@ -10,11 +10,6 @@
             <i class="fa-solid fa-folder-tree"></i>
         </button>
 
-        <!--
-            Collapsed, the tree is gone but the rest of the strip is the hosting view's call: the metrics
-            view keeps its search + flatten/exclude reachable, the domain view names the selected node. Each
-            view projects its own [collapsedContent]; a view that projects nothing gets just the toggle.
-        -->
         <ng-content select="[collapsedContent]"></ng-content>
     </div>
 } @else {

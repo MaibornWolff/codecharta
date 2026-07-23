@@ -8,16 +8,9 @@
         } @else {
             <cc-map-selector></cc-map-selector>
             <cc-nav-divider></cc-nav-divider>
-            <!-- Hidden in delta mode: the domain view merges the word banks of both compared files into
-                 one cloud, so it carries no delta semantics and would contradict the delta chrome.
-                 RedirectAwayFromDomainViewEffect covers the other direction, so entering delta mode while
-                 the domain view is open cannot strand the user on a view with no way back. -->
             <cc-view-switcher></cc-view-switcher>
         }
     </div>
-    <!-- Rendered from the active view's declaration in viewNavBarControls, so this side names no view
-         itself. Each divider is the TRAILING separator of the control above it, which keeps a hidden
-         control from leaving a stray divider behind. -->
     <div class="navbar-end gap-1">
         @if (trailingControls().has("modeToggle")) {
             <cc-mode-toggle></cc-mode-toggle>

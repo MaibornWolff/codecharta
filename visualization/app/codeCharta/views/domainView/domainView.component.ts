@@ -21,13 +21,6 @@ import { DomainExplorerSelection } from "./explorer/domainExplorerSelection"
 import { DomainExplorerSort } from "./explorer/domainExplorerSort"
 import { DomainSelectionStore } from "./stores/domainSelection.store"
 
-/**
- * The domain (word-cloud) view — the `domain` route. Reuses the explorer, supplying the domain reading of a
- * row (every row selectable, no map semantics) and driving selection through its own ephemeral
- * DomainSelectionStore rather than the global sharedView. Pairs the word-cloud renderer with its floating
- * settings bar and reuses the bottom bar, fed that same local selection since there is no map to hover.
- * No inspector, metricsBar, legend, distribution, compare or 3d-print — and no explorer context menu.
- */
 @Component({
     selector: "cc-domain-view",
     templateUrl: "./domainView.component.html",
@@ -48,9 +41,6 @@ import { DomainSelectionStore } from "./stores/domainSelection.store"
         { provide: EXPLORER_SORT, useExisting: DomainExplorerSort },
         {
             provide: EXPLORER_CAPABILITIES,
-            // No area metric here, so Area Size is dropped; Name + Number of Files still order the file tree.
-            // The map-filtering search is off, but the tree find is on: the explorer is the only way to scope
-            // the cloud, so users still need to locate a node in a large tree.
             useValue: {
                 showRules: false,
                 showSearch: false,
@@ -73,17 +63,10 @@ export class DomainViewComponent {
     readonly settings = this.domainBarReadStore.settings
     readonly copied = this.clipboard.copied
 
-    // The domain view owns its selection; collapsed the explorer names it, and the bottom bar echoes it.
     readonly selectedNodePath = this.domainSelectionStore.selectedNodePath
     readonly selectedNodeName = computed(() => pathToNodeName(this.selectedNodePath(), ""))
 
-    /**
-     * Unlike the 3D map the cloud can neither be panned nor zoomed, so whatever the explorer covers is
-     * unrecoverable. Keeping the cloud container flush with the explorer's right edge both avoids the
-     * overlap and — because the container genuinely changes size — makes the cloud's ResizeObserver fire,
-     * re-laying the words out into the visible region. A collapsed explorer is a short bar rather than a
-     * full-height panel, so it claims no inset.
-     */
+    // The cloud can neither be panned nor zoomed, so whatever the explorer covers is unrecoverable.
     readonly cloudLeftInset = computed(() => (this.explorerCollapseService.isCollapsed() ? 0 : this.explorerWidthService.width()))
 
     clearSelection() {
