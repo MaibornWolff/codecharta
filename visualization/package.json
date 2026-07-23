@@ -39,7 +39,7 @@
     "patch": "patch-package",
     "start": "node script/ensureElectron.js && electron dist/bundler/browser",
     "build": "npm run patch && ng build && cp electron/* package.json dist/bundler/browser",
-    "dev": "ng serve",
+    "dev": "npm run patch && ng serve",
     "test": "npm run test:ci -- --maxWorkers=25%",
     "test:ci": "jest --config conf/jestUnit.config.json .*\\.spec\\.ts",
     "test:auto": "npm test -- --watch",
