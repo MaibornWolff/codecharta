@@ -2,11 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
 import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
 
-/**
- * Supported programming languages for source code analysis.
- *
- * Uses tree-sitter AST parsing via TreeSitterLibrary for extraction.
- */
+/** Uses tree-sitter AST parsing via TreeSitterLibrary for extraction. */
 enum class Language(val libraryLanguage: LibraryLanguage, internal val extensions: Set<String>) {
     KOTLIN(libraryLanguage = LibraryLanguage.KOTLIN, extensions = setOf("kt", "kts")),
     TYPESCRIPT(libraryLanguage = LibraryLanguage.TYPESCRIPT, extensions = setOf("ts", "tsx", "cts", "mts")),

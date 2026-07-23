@@ -5,8 +5,6 @@ import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Analyzes source code files and extracts word frequencies.
- *
  * Dispatches on [Language], which is the source of truth for the supported extensions.
  * Unsupported file types return [FileResult.Skipped] with the extension.
  *

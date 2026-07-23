@@ -4,13 +4,7 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.ke
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import java.nio.file.Path
 
-/**
- * Provides framework-specific keywords based on file location.
- *
- * Maintains a registry of detected frameworks by path and determines
- * which framework keywords apply to each file based on its location
- * relative to the framework directories.
- */
+/** Which framework keywords apply to a file is decided by its location relative to the framework roots. */
 class PathScopedKeywordProvider(private val frameworksByPath: Map<Path, Set<Framework>>) {
     private val keywordCache = mutableMapOf<Framework, LanguageKeywords>()
 

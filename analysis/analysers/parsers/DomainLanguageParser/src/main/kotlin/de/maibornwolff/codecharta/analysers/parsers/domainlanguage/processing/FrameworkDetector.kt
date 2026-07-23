@@ -16,57 +16,45 @@ enum class Framework {
 }
 
 class FrameworkDetector {
+    /** One ecosystem's reading of a project file: where to find them, what they reference, what that means. */
+    private data class Ecosystem(
+        val fileKind: String,
+        val findProjectFiles: (Path) -> List<Path>,
+        val extractReferences: (Path) -> Set<String>,
+        val identifyFrameworks: (Set<String>) -> Set<Framework>
+    )
+
+    private val ecosystems = listOf(
+        Ecosystem("package.json", ::findPackageJsonFiles, ::extractAllDependencies, ::identifyJavaScriptFrameworks),
+        Ecosystem(".csproj", ::findCsprojFiles, ::extractPackageReferences, ::identifyCSharpFrameworks)
+    )
+
     fun detectFrameworks(directoryPath: Path): Map<Path, Set<Framework>> {
         val frameworksByPath = mutableMapOf<Path, Set<Framework>>()
-        val perEcosystem = listOf(detectJavaScriptFrameworks(directoryPath), detectCSharpFrameworks(directoryPath))
-        for (detected in perEcosystem) {
-            detected.forEach { (path, frameworks) ->
-                frameworksByPath.merge(path, frameworks) { existing, new -> existing + new }
+        for (ecosystem in ecosystems) {
+            ecosystem.findProjectFiles(directoryPath).forEach { projectFile ->
+                addFrameworksOf(projectFile, ecosystem, frameworksByPath)
             }
         }
         return frameworksByPath
     }
 
-    private fun detectJavaScriptFrameworks(directoryPath: Path): Map<Path, Set<Framework>> = detectFrameworksIn(
-        projectFiles = findPackageJsonFiles(directoryPath),
-        fileKind = "package.json",
-        extractReferences = ::extractAllDependencies,
-        identifyFrameworks = ::identifyJavaScriptFrameworks
-    )
-
-    private fun detectCSharpFrameworks(directoryPath: Path): Map<Path, Set<Framework>> = detectFrameworksIn(
-        projectFiles = findCsprojFiles(directoryPath),
-        fileKind = ".csproj",
-        extractReferences = ::extractPackageReferences,
-        identifyFrameworks = ::identifyCSharpFrameworks
-    )
-
-    // The two ecosystems share one skeleton: find the project files, read their references, map those to
-    // frameworks, and store the non-empty result under the file's directory. Keeping it in one place also
-    // keeps the per-directory merge strategy identical across ecosystems.
-    private fun detectFrameworksIn(
-        projectFiles: List<Path>,
-        fileKind: String,
-        extractReferences: (Path) -> Set<String>,
-        identifyFrameworks: (Set<String>) -> Set<Framework>
-    ): Map<Path, Set<Framework>> {
-        val frameworksByPath = mutableMapOf<Path, Set<Framework>>()
-        projectFiles.forEach { projectFile ->
-            try {
-                val frameworks = identifyFrameworks(extractReferences(projectFile))
-                if (frameworks.isNotEmpty()) {
-                    frameworksByPath.merge(projectFile.parent, frameworks) { existing, new -> existing + new }
-                }
-            } catch (e: Exception) {
-                Logger.warn(e) { "Failed to parse $fileKind at $projectFile, skipping framework detection" }
-            }
-        }
-        return frameworksByPath
+    private fun addFrameworksOf(projectFile: Path, ecosystem: Ecosystem, frameworksByPath: MutableMap<Path, Set<Framework>>) {
+        val frameworks = identifyFrameworks(projectFile, ecosystem)
+        if (frameworks.isEmpty()) return
+        frameworksByPath.merge(projectFile.parent, frameworks) { existing, new -> existing + new }
     }
 
-    // node_modules is excluded because every dependency ships its own package.json, which would
-    // register the frameworks of libraries the project merely depends on as if they were its own.
-    // findCsprojFiles needs no such guard: NuGet restores to a global cache, not into the source tree.
+    private fun identifyFrameworks(projectFile: Path, ecosystem: Ecosystem): Set<Framework> = try {
+        ecosystem.identifyFrameworks(ecosystem.extractReferences(projectFile))
+    } catch (e: Exception) {
+        Logger.warn(e) { "Failed to parse ${ecosystem.fileKind} at $projectFile, skipping framework detection" }
+        emptySet()
+    }
+
+    // node_modules is excluded because every dependency ships its own package.json, which would register
+    // the frameworks of libraries the project merely depends on as if they were its own. findCsprojFiles
+    // needs no such guard: NuGet restores to a global cache, not into the source tree.
     private fun findPackageJsonFiles(directoryPath: Path): List<Path> = walkFiles(directoryPath) { file ->
         file.name == "package.json" && !file.path.contains("node_modules")
     }
