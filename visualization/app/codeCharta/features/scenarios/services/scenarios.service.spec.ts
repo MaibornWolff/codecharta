@@ -8,7 +8,12 @@ import { PlainPosition, Scenario } from "../model/scenario.model"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
 import { ScenariosService } from "./scenarios.service"
 
-const BUILT_IN_SCENARIO_COUNT = 6
+const BUILT_IN_SCENARIO_COUNT = 7
+const DEFAULT_MAP_COLORS = {
+    positive: "#69AE40",
+    neutral: "#ddcc00",
+    negative: "#820E0E"
+}
 
 describe("ScenariosService", () => {
     let service: ScenariosService
@@ -221,13 +226,13 @@ describe("ScenariosService", () => {
     })
 
     describe("built-in scenarios", () => {
-        it("should have exactly 6 built-in scenarios", async () => {
+        it("should have exactly 7 built-in scenarios", async () => {
             // Act
             await service.loadScenarios()
 
             // Assert
             const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
-            expect(builtIn).toHaveLength(6)
+            expect(builtIn).toHaveLength(7)
         })
 
         it("should all have isBuiltIn set to true", async () => {
@@ -296,13 +301,60 @@ describe("ScenariosService", () => {
             const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn)
             for (const scenario of builtIn) {
                 expect(scenario.sections.colors?.colorRange).toBeDefined()
-                expect(scenario.sections.colors?.colorMode).toBe("weightedGradient")
-                expect(scenario.sections.colors?.mapColors).toEqual({
-                    positive: "#69AE40",
-                    neutral: "#ddcc00",
-                    negative: "#820E0E"
-                })
+                expect(scenario.sections.colors?.colorMode).toBeDefined()
+                expect(scenario.sections.colors?.mapColors).toBeDefined()
             }
+        })
+
+        it("should use the default map colors and a weighted gradient for every scenario but Authors", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const builtIn = service.scenarios$.getValue().filter(s => s.isBuiltIn && s.id !== "built-in-authors")
+            for (const scenario of builtIn) {
+                expect(scenario.sections.colors?.colorMode).toBe("weightedGradient")
+                expect(scenario.sections.colors?.mapColors).toEqual(DEFAULT_MAP_COLORS)
+            }
+        })
+
+        it("should visualize sonar code smells in the Code Smells scenario", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const codeSmells = service.scenarios$.getValue().find(s => s.id === "built-in-code-smells")
+            expect(codeSmells?.sections.metrics).toEqual({
+                areaMetric: "rloc",
+                heightMetric: "sonar_code_smells",
+                colorMetric: "sonar_code_smells",
+                isColorMetricLinkedToHeightMetric: true
+            })
+        })
+
+        it("should visualize the number of authors with absolute inverted colors in the Authors scenario", async () => {
+            // Act
+            await service.loadScenarios()
+
+            // Assert
+            const authors = service.scenarios$.getValue().find(s => s.id === "built-in-authors")
+            expect(authors?.name).toBe("Authors")
+            expect(authors?.sections.metrics).toEqual({
+                areaMetric: "rloc",
+                heightMetric: "number_of_authors",
+                colorMetric: "number_of_authors",
+                isColorMetricLinkedToHeightMetric: true
+            })
+            expect(authors?.sections.colors).toEqual({
+                colorRange: { from: 2, to: 3 },
+                colorMode: "absolute",
+                mapColors: {
+                    positive: DEFAULT_MAP_COLORS.negative,
+                    neutral: DEFAULT_MAP_COLORS.neutral,
+                    negative: DEFAULT_MAP_COLORS.positive,
+                    isColorRangeInverted: true
+                }
+            })
         })
 
         it("should all have only areaMetric, heightMetric, colorMetric, and linking in metrics section", async () => {
