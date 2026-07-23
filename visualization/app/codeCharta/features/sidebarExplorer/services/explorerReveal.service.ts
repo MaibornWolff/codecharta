@@ -7,6 +7,8 @@ export interface RevealOptions {
     expand: boolean
 }
 
+const REVEAL_AND_EXPAND: RevealOptions = { expand: true }
+
 @Injectable({ providedIn: "root" })
 export class ExplorerRevealService {
     private readonly collapseService = inject(ExplorerCollapseService)
@@ -15,7 +17,7 @@ export class ExplorerRevealService {
 
     readonly revealedNodePath = this.internalRevealedNodePath.asReadonly()
 
-    revealNode(path: string, options: RevealOptions = { expand: true }) {
+    revealNode(path: string, options: RevealOptions = REVEAL_AND_EXPAND) {
         if (options.expand) {
             this.collapseService.expand()
         }

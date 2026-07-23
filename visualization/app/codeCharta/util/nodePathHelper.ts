@@ -30,7 +30,7 @@ export function pathToNodeName(path: string | null, fallback: string): string {
     if (path === null) {
         return fallback
     }
-    return path.split("/").filter(Boolean).at(-1) ?? fallback
+    return path.split("/").findLast(Boolean) ?? fallback
 }
 
 export function getParent<T>(hashMap: Map<string, T>, path: string): T {
