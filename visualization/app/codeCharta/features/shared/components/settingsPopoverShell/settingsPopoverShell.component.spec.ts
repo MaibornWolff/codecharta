@@ -79,12 +79,12 @@ describe("SettingsPopoverShellComponent", () => {
         expect(shell.className).toContain("max-h-[calc(100vh-5rem)]")
     })
 
-    it("should expose a dialog role with a fallback accessible name when no heading id is given", async () => {
+    it("should be a dialog with a fallback accessible name when no heading id is given", async () => {
         // Arrange & Act
         const { shell } = await setup()
 
         // Assert
-        expect(shell.getAttribute("role")).toBe("dialog")
+        expect(shell.tagName).toBe("DIALOG")
         expect(shell.getAttribute("aria-label")).toBe("Settings")
         expect(shell.hasAttribute("aria-labelledby")).toBe(false)
     })

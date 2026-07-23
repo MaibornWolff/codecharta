@@ -61,7 +61,7 @@ export class WordCloudComponent implements OnDestroy {
 
     protected readonly topWordsForScreenReaders = computed(() => this.renderedWords().slice(0, SCREEN_READER_WORD_COUNT))
 
-    protected readonly ariaLabel = computed(() => describeWordCloud(this.renderedWords(), this.selectedNodeName()))
+    protected readonly description = computed(() => describeWordCloud(this.renderedWords(), this.selectedNodeName()))
 
     private readonly prefersReducedMotion = typeof matchMedia === "function" && matchMedia(REDUCED_MOTION_QUERY).matches
 
