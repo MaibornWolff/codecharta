@@ -93,7 +93,10 @@ private fun writeOutput(data: TransformedData): Result { ... }
 
 ### 4. Comments
 
-**RULE:** Comments explain *why*, never *what*. Code should be so clear that *what* is obvious.
+**RULE:** The default is **no comment**. Make the code explain itself through naming — rename the
+method, extract a named helper, introduce a named constant or intermediate variable. Write a comment
+only when that is impossible and a reader would otherwise draw a wrong conclusion; then it explains
+*why*, never *what*.
 
 **❌ BAD:**
 ```kotlin
@@ -119,6 +122,8 @@ val compatible = projects.filter { Project.isAPIVersionCompatible(it.apiVersion)
 - ✅ Performance trade-offs
 - ❌ Explaining obvious code
 - ❌ Commented-out code (delete it)
+- ❌ Prose that narrates a class, a template section, or a sequence of steps — rename and extract instead
+- ❌ Doc comments (KDoc/JSDoc) that only repeat the signature
 
 ### 5. Function Parameters
 
