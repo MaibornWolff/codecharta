@@ -22,7 +22,7 @@ test.describe("SidebarInspector", () => {
         await clickButtonOnPageElement(page, "[id='/root/sample1.cc.json/bigLeaf.ts']")
 
         await inspector.waitUntilOpen()
-        await expect(inspector.nodeName()).toContainText("bigLeaf.ts")
+        await expect(inspector.nodeName()).toHaveText("bigLeaf.ts")
 
         await inspector.close()
         await inspector.waitUntilClosed()
@@ -41,6 +41,6 @@ test.describe("SidebarInspector", () => {
         await clickButtonOnPageElement(page, "[id='/root/sample1.cc.json/sample1OnlyLeaf.scss']")
 
         await inspector.waitUntilOpen()
-        await expect(inspector.nodeName()).toContainText("sample1OnlyLeaf.scss")
+        await expect(inspector.nodeName()).toHaveText("sample1OnlyLeaf.scss")
     })
 })
