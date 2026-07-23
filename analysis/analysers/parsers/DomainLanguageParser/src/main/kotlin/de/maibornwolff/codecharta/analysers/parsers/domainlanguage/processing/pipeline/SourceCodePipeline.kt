@@ -11,17 +11,6 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pi
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages.WeightStage
 import java.nio.file.Path
 
-/**
- * Source code analysis pipeline using tree-sitter.
- *
- * This pipeline implements a sequential architecture:
- * 1. Extract: Extract identifiers, comments, and strings using TreeSitterLibrary
- * 2. Weight: Apply weights based on extraction context
- * 3. Split: Split identifiers/text into individual words
- * 4. N-grams: Generate n-grams from identifier words
- * 5. Filter: Remove stop words (with optional path-scoped framework filtering)
- * 6. Aggregate: Sum weights to produce frequency map
- */
 class SourceCodePipeline(
     language: Language,
     weights: ExtractionWeights = ExtractionWeights(),

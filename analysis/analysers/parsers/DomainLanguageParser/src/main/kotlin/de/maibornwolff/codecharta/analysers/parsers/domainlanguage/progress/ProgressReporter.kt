@@ -20,8 +20,5 @@ interface ProgressReporter : Closeable {
      */
     fun advance(count: Long = 1)
 
-    /**
-     * Complete the current phase.
-     */
     fun completePhase()
 }

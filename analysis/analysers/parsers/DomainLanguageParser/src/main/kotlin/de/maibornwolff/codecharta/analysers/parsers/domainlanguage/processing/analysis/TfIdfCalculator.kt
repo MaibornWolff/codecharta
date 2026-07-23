@@ -10,6 +10,8 @@ import kotlin.math.log10
  * useful for identifying domain concepts in specific code areas.
  */
 class TfIdfCalculator {
+    private data class CorpusFrequencies(val perDocument: Map<String, Int>, val total: Map<String, Int>)
+
     fun calculate(perFileFrequencies: Map<String, Map<String, Int>>): Map<String, Double> {
         val totalDocuments = perFileFrequencies.size
 
@@ -17,33 +19,28 @@ class TfIdfCalculator {
             return emptyMap()
         }
 
-        val documentFrequency = countDocumentFrequency(perFileFrequencies)
-        val termFrequency = sumTermFrequency(perFileFrequencies)
+        val corpusFrequencies = aggregateCorpus(perFileFrequencies)
 
-        return termFrequency.mapValues { (term, termCount) ->
-            val documentCount = documentFrequency[term] ?: 0
+        return corpusFrequencies.total.mapValues { (term, termCount) ->
+            val documentCount = corpusFrequencies.perDocument[term] ?: 0
             termCount * calculateIdf(totalDocuments, documentCount)
         }
     }
 
-    private fun countDocumentFrequency(perFileFrequencies: Map<String, Map<String, Int>>): Map<String, Int> {
+    // Both frequencies come out of a single corpus traversal: a term in a file's map contributes one
+    // document to its document frequency and its count to its total frequency.
+    private fun aggregateCorpus(perFileFrequencies: Map<String, Map<String, Int>>): CorpusFrequencies {
         val documentFrequency = mutableMapOf<String, Int>()
-        for ((_, wordCounts) in perFileFrequencies) {
-            for (term in wordCounts.keys) {
-                documentFrequency.merge(term, 1, Int::plus)
-            }
-        }
-        return documentFrequency
-    }
-
-    private fun sumTermFrequency(perFileFrequencies: Map<String, Map<String, Int>>): Map<String, Int> {
         val termFrequency = mutableMapOf<String, Int>()
-        for ((_, wordCounts) in perFileFrequencies) {
+
+        for (wordCounts in perFileFrequencies.values) {
             for ((term, count) in wordCounts) {
+                documentFrequency.merge(term, 1, Int::plus)
                 termFrequency.merge(term, count, Int::plus)
             }
         }
-        return termFrequency
+
+        return CorpusFrequencies(perDocument = documentFrequency, total = termFrequency)
     }
 
     private fun calculateIdf(totalDocuments: Int, documentFrequency: Int): Double {

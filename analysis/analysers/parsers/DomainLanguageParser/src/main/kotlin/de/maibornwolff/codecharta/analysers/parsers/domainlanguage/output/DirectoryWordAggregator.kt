@@ -3,32 +3,37 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.PathUtils
 
 object DirectoryWordAggregator {
+    private const val PROJECT_ROOT = "."
+
     fun aggregateDirectories(
         fileWords: Map<String, List<WordFrequency>>,
         tfidfScores: Map<String, Double> = emptyMap()
     ): Map<String, List<WordFrequency>> {
-        val result = mutableMapOf<String, MutableMap<String, Int>>()
+        val wordCountsByPath = seedWithFileWords(fileWords)
+        rollUpIntoParentDirectories(fileWords, wordCountsByPath)
 
+        return wordCountsByPath.mapValues { (_, wordCounts) ->
+            wordCounts.map { (text, frequency) -> WordFrequency.withScore(text, frequency, tfidfScores) }
+        }
+    }
+
+    private fun seedWithFileWords(fileWords: Map<String, List<WordFrequency>>): MutableMap<String, MutableMap<String, Int>> {
+        val wordCountsByPath = mutableMapOf<String, MutableMap<String, Int>>()
         fileWords.forEach { (filePath, words) ->
-            result[filePath] = words.associate { it.text to it.frequency }.toMutableMap()
+            wordCountsByPath[filePath] = words.associateTo(mutableMapOf()) { it.text to it.frequency }
         }
+        return wordCountsByPath
+    }
 
-        fileWords.keys.forEach { filePath ->
-            val words = fileWords[filePath] ?: emptyList()
-
-            val directories = getParentDirectories(filePath)
-
-            directories.forEach { dirPath ->
-                val dirWords = result.getOrPut(dirPath) { mutableMapOf() }
-                words.forEach { word ->
-                    dirWords.merge(word.text, word.frequency, Int::plus)
-                }
+    private fun rollUpIntoParentDirectories(
+        fileWords: Map<String, List<WordFrequency>>,
+        wordCountsByPath: MutableMap<String, MutableMap<String, Int>>
+    ) {
+        fileWords.forEach { (filePath, words) ->
+            getParentDirectories(filePath).forEach { directoryPath ->
+                val directoryWords = wordCountsByPath.getOrPut(directoryPath) { mutableMapOf() }
+                words.forEach { word -> directoryWords.merge(word.text, word.frequency, Int::plus) }
             }
-        }
-
-        // Convert to List<WordFrequency> with TF-IDF scores (caller handles sorting)
-        return result.mapValues { (_, wordMap) ->
-            wordMap.map { (text, freq) -> WordFrequency.withScore(text, freq, tfidfScores) }
         }
     }
 
@@ -36,8 +41,8 @@ object DirectoryWordAggregator {
         val parts = PathUtils.splitPath(filePath)
 
         return buildList {
-            // "." is the project root node every file also rolls up into.
-            add(".")
+            // Every file also rolls up into the project root node.
+            add(PROJECT_ROOT)
             for (depth in 0 until parts.size - 1) {
                 add(PathUtils.joinPath(*parts.subList(0, depth + 1).toTypedArray()))
             }
