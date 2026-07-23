@@ -26,25 +26,12 @@ export class RenderCodeMapEffect {
 
     private readonly actionsRequiringRender$ = this.actions$.pipe(ofType(...actionsRequiringRerender))
 
-    /** A genuine change to what the map should show: new data, or a setting that alters the geometry. */
     private readonly mapDataChange$ = combineLatest([this.store.select(accumulatedDataSelector), this.actionsRequiringRender$]).pipe(
         map(([accumulatedData]) => accumulatedData)
     )
 
-    /**
-     * Building the map geometry is the most expensive thing the app does, and it is pointless while the
-     * user is on another view — it would make a domain-view load wait on a map nobody can see. So the
-     * render only ever runs while the metrics view is on screen, driven by two distinct triggers:
-     *
-     * - a genuine data/setting change (`mapDataChange$`) always rebuilds the visible map, and
-     * - switching back to the metrics view rebuilds only a map that went stale while it was hidden.
-     *
-     * The staleness check belongs to the second trigger alone: it keeps a switch back to an already-current
-     * map from rebuilding it for nothing. Gating the FIRST trigger on it was a bug — the flag is raised by a
-     * sibling effect that runs *after* the store has already pushed the changed data through here, so an
-     * exclude or a metric change on a settled map saw `isStale === false`, skipped its render, and then left
-     * the spinner up forever because the render that would have cleared it never happened.
-     */
+    // The staleness check gates the view-switch trigger only: the flag is raised after the store has
+    // pushed the changed data through here, so gating a data change on it skips its render for good.
     renderCodeMap$ = createEffect(
         () =>
             merge(

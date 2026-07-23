@@ -9,10 +9,6 @@ import {
 } from "../../../stores/domainState/domainState.read.facade"
 import { setDomainStateSortingOrder, setDomainStateSortingOrderAscending } from "../../../stores/domainState/domainState.write.facade"
 
-/**
- * The domain view's OWN explorer sort, persisted in `domainState` — independent of the map view's global
- * sort. This is why setting Area Size on the map no longer leaks into the domain view's tree or trigger.
- */
 @Injectable()
 export class DomainExplorerSort implements ExplorerSort {
     private readonly store = inject(Store)

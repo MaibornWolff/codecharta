@@ -8,11 +8,6 @@ import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read
 import { setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
 import { isAreaValid } from "../../../util/codeMapHelper"
 
-/**
- * The right-click menu the metrics view offers on an explorer row: the node-context menu, opened only for
- * nodes that have an area in the current area metric (a menu whose focus/flatten/exclude actions would
- * otherwise act on a node with no building). The domain view provides no context menu at all.
- */
 @Injectable()
 export class MetricsExplorerContextMenu implements ExplorerContextMenu {
     private readonly store = inject(Store)
