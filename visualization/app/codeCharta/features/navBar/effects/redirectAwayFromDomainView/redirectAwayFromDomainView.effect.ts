@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core"
 import { NavigationEnd, Router } from "@angular/router"
 import { createEffect } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
-import { combineLatest, filter, map, merge, tap, withLatestFrom } from "rxjs"
+import { combineLatest, debounceTime, filter, map, merge, tap, withLatestFrom } from "rxjs"
 import { isLoadedFileSetWithoutDomainLensSelector } from "../../../../lenses/domain/domainLens.facade"
 import { CcState } from "../../../../model/codeCharta.model"
 import { routeLinks, viewIdForLink } from "../../../../routing/routePaths"
@@ -13,6 +13,14 @@ import { ToastService } from "../../../shared/facade"
 type RedirectReason = "missing-domain-data" | "delta" | null
 
 const MISSING_DOMAIN_DATA_TOAST = "This file has no domain-language data — switched to the map view."
+
+/**
+ * The condition is only read once the file-store writes of one task have settled. A restore commits the
+ * same file TWICE in one task: first re-parsed from the persisted state, which loses the domain lens on
+ * the way through the flat 1.x export shape, and only then the persisted file state that still carries it.
+ * Reading the condition on the first of the two bounced every reload of the "#/domain" deep link.
+ */
+const SETTLE_FILE_SET_MS = 0
 
 /**
  * Sends the user back to the metrics view whenever the domain view cannot be offered — either because the
@@ -45,6 +53,7 @@ export class RedirectAwayFromDomainViewEffect {
         this.store.select(isLoadedFileSetWithoutDomainLensSelector),
         this.store.select(isDeltaStateSelector)
     ]).pipe(
+        debounceTime(SETTLE_FILE_SET_MS),
         map(([isLoadedFileSetWithoutDomainLens, isDeltaState]) => this.toRedirectReason(isLoadedFileSetWithoutDomainLens, isDeltaState))
     )
 

@@ -44,6 +44,14 @@ describe("RedirectAwayFromDomainViewEffect", () => {
     }
 
     /**
+     * The effect reads its condition only once the file-store writes of one task have settled, so every
+     * act has to hand the event loop back before the assertion.
+     */
+    function settle(): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, 0))
+    }
+
+    /**
      * Only the file states change — production writes the MERGED domain word bank a macrotask later,
      * so a redirect that waited for it would fire in between and bounce cc.json 2.0 files as well.
      */
@@ -66,113 +74,125 @@ describe("RedirectAwayFromDomainViewEffect", () => {
         router.events.next(new NavigationEnd(1, url, url))
     }
 
-    it("should redirect to the metrics view when a file without a domain lens is loaded on the domain view", () => {
+    it("should redirect to the metrics view when a file without a domain lens is loaded on the domain view", async () => {
         // Arrange
         setup(routeLinks.domain)
 
         // Act
         loadFile({})
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
     })
 
-    it("should show a toast explaining the switch when a file without domain data is loaded on the domain view", () => {
+    it("should show a toast explaining the switch when a file without domain data is loaded on the domain view", async () => {
         // Arrange
         setup(routeLinks.domain)
 
         // Act
         loadFile({})
+        await settle()
 
         // Assert
         expect(toastService.show).toHaveBeenCalledWith("This file has no domain-language data — switched to the map view.")
     })
 
-    it("should not show a toast when the loaded file keeps the domain view reachable", () => {
+    it("should not show a toast when the loaded file keeps the domain view reachable", async () => {
         // Arrange
         setup(routeLinks.domain)
 
         // Act
         loadFile(aDomainLens)
+        await settle()
 
         // Assert
         expect(toastService.show).not.toHaveBeenCalled()
     })
 
-    it("should redirect to the metrics view when the domain view is deep linked with a query string", () => {
+    it("should redirect to the metrics view when the domain view is deep linked with a query string", async () => {
         // Arrange
         setup(`${routeLinks.domain}?file=some.cc.json`)
 
         // Act
         loadFile({})
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
     })
 
-    it("should replace the history entry, so the back button cannot return to the empty domain view", () => {
+    it("should replace the history entry, so the back button cannot return to the empty domain view", async () => {
         // Arrange
         setup(routeLinks.domain)
 
         // Act
         loadFile({})
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, expect.objectContaining({ replaceUrl: true }))
     })
 
-    it("should stay on the domain view when the loaded file has a domain lens", () => {
+    it("should stay on the domain view when the loaded file has a domain lens", async () => {
         // Arrange
         setup(routeLinks.domain)
 
         // Act
         loadFile(aDomainLens)
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).not.toHaveBeenCalled()
     })
 
-    it("should not redirect before a file is loaded, so a domain deep link survives its own boot", () => {
+    it("should not redirect before a file is loaded, so a domain deep link survives its own boot", async () => {
         // Arrange
         setup(routeLinks.domain)
 
         // Act — the router settles on the deep link while the file is still being read
         navigateTo(routeLinks.domain)
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).not.toHaveBeenCalled()
     })
 
-    it("should not redirect when the user is already on the metrics view", () => {
+    it("should not redirect when the user is already on the metrics view", async () => {
         // Arrange
         setup(routeLinks.metrics)
 
         // Act
         loadFile({})
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).not.toHaveBeenCalled()
     })
 
-    it("should redirect when the domain view is opened after a file without a domain lens has settled", () => {
+    it("should redirect when the domain view is opened after a file without a domain lens has settled", async () => {
         // Arrange — the file arrives while the metrics view is open, so no redirect is due yet
         setup(routeLinks.metrics)
         loadFile({})
+        await settle()
 
         // Act — the user reaches the domain view by hash edit or shared link, without any store change
         navigateTo(routeLinks.domain)
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
     })
 
-    it("should not redirect when the domain view is opened after a file with a domain lens has settled", () => {
+    it("should not redirect when the domain view is opened after a file with a domain lens has settled", async () => {
         // Arrange
         setup(routeLinks.metrics)
         loadFile(aDomainLens)
+        await settle()
 
         // Act
         navigateTo(routeLinks.domain)
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).not.toHaveBeenCalled()
@@ -183,38 +203,44 @@ describe("RedirectAwayFromDomainViewEffect", () => {
      * view there has no Map control anywhere — the domain cloud merges both compared word banks and carries
      * no delta semantics anyway.
      */
-    it("should redirect to the metrics view when delta mode is entered on the domain view", () => {
+    it("should redirect to the metrics view when delta mode is entered on the domain view", async () => {
         // Arrange
         setup(routeLinks.domain)
         loadFile(aDomainLens)
+        await settle()
 
         // Act
         enterDeltaMode()
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
     })
 
-    it("should not show the missing-domain-data toast when the redirect is caused by delta mode", () => {
+    it("should not show the missing-domain-data toast when the redirect is caused by delta mode", async () => {
         // Arrange
         setup(routeLinks.domain)
         loadFile(aDomainLens)
+        await settle()
 
         // Act
         enterDeltaMode()
+        await settle()
 
         // Assert
         expect(toastService.show).not.toHaveBeenCalled()
     })
 
-    it("should redirect to the metrics view when the domain view is opened while delta mode is active", () => {
+    it("should redirect to the metrics view when the domain view is opened while delta mode is active", async () => {
         // Arrange
         setup(routeLinks.metrics)
         loadFile(aDomainLens)
         enterDeltaMode()
+        await settle()
 
         // Act
         navigateTo(routeLinks.domain)
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
@@ -227,16 +253,38 @@ describe("RedirectAwayFromDomainViewEffect", () => {
      * a projection memoized on visible-file checksums cannot tell the two apart and would keep answering
      * from the domain-less parse, bouncing the user out of the domain view on every restarted session.
      */
-    it("should stay on the domain view when a restore replaced the parsed file with the persisted one", () => {
+    it("should stay on the domain view when a restore replaced the parsed file with the persisted one", async () => {
         // Arrange — boot lands on the metrics view and commits the lossy re-parse, then the persisted file
         setup(routeLinks.metrics)
         loadFile({})
         loadFile(aDomainLens)
+        await settle()
 
         // Act — the user clicks Domain once the restored session has settled
         navigateTo(routeLinks.domain)
+        await settle()
 
         // Assert
         expect(router.navigateByUrl).not.toHaveBeenCalled()
+    })
+
+    /**
+     * Reloading the "#/domain" deep link: the restore's two commits land while the domain view is already
+     * on screen, so the effect sees the domain-less re-parse first. Acting on it bounced the user to the
+     * metrics view — with the "no domain-language data" toast — on every reload of a file that has data.
+     */
+    it("should stay on the domain view when a restore's lossy re-parse lands while it is on screen", async () => {
+        // Arrange — the reload restores the deep link before the files arrive
+        setup(routeLinks.domain)
+        navigateTo(routeLinks.domain)
+
+        // Act — the restore commits the re-parse and the persisted file state in the same task
+        loadFile({})
+        loadFile(aDomainLens)
+        await settle()
+
+        // Assert
+        expect(router.navigateByUrl).not.toHaveBeenCalled()
+        expect(toastService.show).not.toHaveBeenCalled()
     })
 })
