@@ -9,6 +9,10 @@ Ideas/brand.png
 # analyser output written at the analysis root (e.g. dlc.cc.json.gz) — generated, not a tracked fixture
 /analysis/*.cc.json
 /analysis/*.cc.json.gz
+# analyser output dropped at the repo root (e.g. maibornwolff-domain.cc.json) — generated, and biome
+# would otherwise try to format the minified map. Tracked fixtures all live in subdirectories.
+/*.cc.json
+/*.cc.json.gz
 **/node-wrapper/public
 .scannerwork
 
