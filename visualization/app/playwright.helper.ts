@@ -1,7 +1,7 @@
 import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { chromium, Page } from "@playwright/test"
+import { chromium, expect, Page } from "@playwright/test"
 
 // The built app is served over HTTP (see playwright.config.ts webServer) so each parallel browser
 // context gets isolated, persistent origin storage — a file:// origin shares IndexedDB across all
@@ -85,30 +85,34 @@ export async function clearIndexedDB(page: Page) {
  * `state.files[].file.fileMeta.fileName`.
  */
 export async function waitForCcStatePersisted(page: Page, expectedFileName: string) {
-    await page.waitForFunction(
-        (name: string) =>
-            new Promise<boolean>(resolve => {
+    // page.evaluate is what makes this a real wait: waitForFunction does not await a promise the
+    // predicate returns, so an async IndexedDB read there passes on the truthy promise object alone.
+    await expect.poll(() => readPersistedFileNames(page), { timeout: 60_000, intervals: [200] }).toContain(expectedFileName)
+}
+
+function readPersistedFileNames(page: Page): Promise<string[]> {
+    return page.evaluate(
+        () =>
+            new Promise<string[]>(resolve => {
                 const open = indexedDB.open("CodeCharta")
                 open.onsuccess = () => {
                     const database = open.result
                     if (!database.objectStoreNames.contains("ccstate")) {
                         database.close()
-                        return resolve(false)
+                        return resolve([])
                     }
                     const record = database.transaction("ccstate", "readonly").objectStore("ccstate").get(1001)
                     record.onsuccess = () => {
                         database.close()
                         const files = record.result?.state?.files ?? []
-                        resolve(files.some((fileState: any) => fileState?.file?.fileMeta?.fileName === name))
+                        resolve(files.map((fileState: any) => fileState?.file?.fileMeta?.fileName))
                     }
                     record.onerror = () => {
                         database.close()
-                        resolve(false)
+                        resolve([])
                     }
                 }
-                open.onerror = () => resolve(false)
-            }),
-        expectedFileName,
-        { timeout: 60_000, polling: 200 }
+                open.onerror = () => resolve([])
+            })
     )
 }
