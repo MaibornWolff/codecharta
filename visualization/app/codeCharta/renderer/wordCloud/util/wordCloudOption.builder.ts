@@ -1,5 +1,5 @@
 import { DomainWord } from "../../../model/codeCharta.model"
-import { WordCloudSettings, WordCloudSizingMode, wordSizingValue } from "../../../model/wordCloud.model"
+import { WordCloudSettings, WordCloudShape, WordCloudSizingMode, wordSizingValue } from "../../../model/wordCloud.model"
 import { getWordCloudColors, interpolateColor } from "./color.util"
 
 const EMPHASIS_SHADOW_BLUR = 10
@@ -45,7 +45,8 @@ export interface WordCloudOption {
         {
             type: "wordCloud"
             shape: string
-            keepAspect: false
+            maskImage?: object
+            keepAspect: boolean
             left: "center"
             top: "center"
             width: string
@@ -74,6 +75,12 @@ export interface WordCloudRenderContext {
     layoutAnimation?: boolean
     /** Measured container width in px; the max font size is clamped against it so no top word is dropped. */
     containerWidth?: number
+    /**
+     * The silhouette to lay the words out inside, for the `logoM` shape (the "M" mark). An opaque object
+     * (an HTMLImageElement) the component loads and passes in — kept structurally opaque here so the builder
+     * stays DOM-free and unit-testable. Absent for the geometric shapes, or while the image is still loading.
+     */
+    maskImage?: object
 }
 
 /**
@@ -162,14 +169,23 @@ export function buildWordCloudOption(
         textStyle: { color: interpolateColor(startColor, endColor, gradientFactorOf(word.text)) }
     }))
 
+    // `logoM` is not an echarts shape but a mask: echarts lays the words out inside the passed image and
+    // ignores `shape`. Until the mask image has loaded, fall back to a circle rather than an unknown shape.
+    const usesMaskImage = settings.shape === WordCloudShape.logoM
+    const maskImage = usesMaskImage ? context.maskImage : undefined
+    const shape = usesMaskImage ? WordCloudShape.circle : settings.shape
+
     return {
         aria: { enabled: true },
         tooltip: { show: true, formatter: buildTooltipFormatter() },
         series: [
             {
                 type: "wordCloud",
-                shape: settings.shape,
-                keepAspect: false,
+                shape,
+                maskImage,
+                // Only the mask has a shape worth preserving: honoring its aspect ratio keeps the M from being
+                // stretched to the container's. The geometric shapes keep filling the full stage as before.
+                keepAspect: usesMaskImage,
                 left: "center",
                 top: "center",
                 width: `${CANVAS_FILL_RATIO * 100}%`,

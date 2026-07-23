@@ -16,9 +16,10 @@ import * as echarts from "echarts"
 import "echarts-wordcloud"
 import { switchMap } from "rxjs"
 import { DomainWord } from "../../../../model/codeCharta.model"
-import { defaultWordCloudSettings, WordCloudSettings } from "../../../../model/wordCloud.model"
+import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape } from "../../../../model/wordCloud.model"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
+import { loadWordCloudMaskImage } from "../../util/wordCloudMask"
 import { buildWordCloudOption, selectTopWords, WordCloudOption } from "../../util/wordCloudOption.builder"
 
 /**
@@ -140,7 +141,20 @@ export class WordCloudComponent implements OnDestroy {
     /** WCAG 2.3.3: with up to a few hundred words flying in on every rebuild, the layout animation is motion. */
     private readonly prefersReducedMotion = typeof matchMedia === "function" && matchMedia(REDUCED_MOTION_QUERY).matches
 
+    /**
+     * The "M" mask silhouette, loaded once. Null until it resolves — the builder falls back to a circle in the
+     * meantime, and setting this signal re-runs the render effect so the mask takes over as soon as it is ready.
+     */
+    private readonly maskImage = signal<HTMLImageElement | null>(null)
+
     constructor() {
+        loadWordCloudMaskImage()
+            .then(image => this.maskImage.set(image))
+            .catch(() => {
+                // The mask is a data-URI SVG, so a failure means the environment has no image rasterization
+                // (e.g. a test DOM); the cloud simply keeps its circle fallback.
+            })
+
         effect(() => {
             const words = this.words()
             const settings = this.settings()
@@ -166,7 +180,8 @@ export class WordCloudComponent implements OnDestroy {
             this.scheduleRender(
                 buildWordCloudOption(words, settings, {
                     layoutAnimation: !this.prefersReducedMotion,
-                    containerWidth
+                    containerWidth,
+                    maskImage: settings.shape === WordCloudShape.logoM ? (this.maskImage() ?? undefined) : undefined
                 })
             )
         })
