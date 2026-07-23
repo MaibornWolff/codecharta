@@ -241,7 +241,6 @@ class VersionManager {
 }
 
 // CLI interface
-// @ts-ignore
 if (import.meta.main) {
     const [command, ...args] = process.argv.slice(2)
     const manager = new VersionManager()

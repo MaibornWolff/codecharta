@@ -131,17 +131,18 @@ describe("FileValidator", () => {
     })
 
     it("should throw if nodes is not a node and therefore has no name or id", () => {
-        file.nodes[0] = {
-            // @ts-expect-error
-            something: "something"
-        }
-        const nameDataPair: NameDataPair = { fileName: "", fileSize: 30, content: file }
+        // Arrange - checkErrors guards the load boundary, so its input is raw parsed JSON rather than a typed node
+        const contentWithMalformedNode = JSON.parse(JSON.stringify({ ...file, nodes: [{ something: "something" }] }))
         const expectedErrors = [
             "Required error: nodes/0 must have required property 'name'",
             "Required error: nodes/0 must have required property 'type'"
         ]
 
-        expect(checkErrors(nameDataPair.content)).toEqual(expectedErrors)
+        // Act
+        const errors = checkErrors(contentWithMalformedNode)
+
+        // Assert
+        expect(errors).toEqual(expectedErrors)
     })
 
     describe("fixed sub folders validation", () => {
