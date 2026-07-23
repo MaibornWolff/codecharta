@@ -1,0 +1,32 @@
+<div class="flex items-center gap-1 px-2 py-1">
+    <label class="input input-sm input-bordered flex items-center gap-1 flex-1">
+        <i class="fa fa-search opacity-60"></i>
+        <input
+            #findInput
+            type="text"
+            class="grow"
+            placeholder="Find a file or folder"
+            aria-label="Find a file or folder in the tree"
+            (input)="onInput($event)"
+            (keydown.enter)="goToNextMatch()"
+        />
+        @if (hasQuery()) {
+            <span class="text-xs opacity-60 shrink-0 tabular-nums" data-testid="explorer-find-count">
+                @if (matchCount()) {
+                    {{ currentMatchNumber() }} / {{ matchCount() }}
+                } @else {
+                    No matches
+                }
+            </span>
+            <button
+                type="button"
+                class="btn btn-ghost btn-xs btn-square"
+                data-testid="explorer-find-clear-button"
+                (click)="clear(); findInput.value = ''"
+                title="Clear find"
+            >
+                <i class="fa fa-times"></i>
+            </button>
+        }
+    </label>
+</div>

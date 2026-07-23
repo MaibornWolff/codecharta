@@ -59,6 +59,7 @@ describe("DomainViewComponent", () => {
         expect(injector.get(EXPLORER_CAPABILITIES)).toEqual({
             showRules: false,
             showSearch: false,
+            showFind: true,
             showCounts: false,
             sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
         })

@@ -4,6 +4,13 @@ export const EXPLORER_MIN_WIDTH = 240
 export const EXPLORER_MAX_WIDTH = 720
 export const EXPLORER_DEFAULT_WIDTH = 320
 
+/**
+ * :root CSS variable the explorer publishes its horizontal footprint to (0 while collapsed). The floating
+ * bottom bars center in the space to its right by reading this, so their left controls never hide behind
+ * the sidebar. The matching literal in barShell's `left` binding must be kept equal to this.
+ */
+export const EXPLORER_WIDTH_CSS_VARIABLE = "--cc-explorer-width"
+
 const LOCAL_STORAGE_KEY = "codeChartaExplorerWidth"
 
 @Injectable({ providedIn: "root" })

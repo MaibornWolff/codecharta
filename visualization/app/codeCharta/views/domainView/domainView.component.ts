@@ -41,9 +41,12 @@ import { DomainSelectionStore } from "./stores/domainSelection.store"
         {
             provide: EXPLORER_CAPABILITIES,
             // No area metric here, so Area Size is dropped; Name + Number of Files still order the file tree.
+            // The map-filtering search is off, but the tree find is on: the explorer is the only way to scope
+            // the cloud, so users still need to locate a node in a large tree.
             useValue: {
                 showRules: false,
                 showSearch: false,
+                showFind: true,
                 showCounts: false,
                 sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
             }

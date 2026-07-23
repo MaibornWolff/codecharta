@@ -31,11 +31,17 @@ export const BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR =
  * so host-element selectors (e.g. the screenshot service hiding `cc-metrics-bar`) keep working.
  * The vertical offset stays with each bar, since it depends on which other bars that view mounts;
  * bind `[style.bottom]` to one of the BAR_BOTTOM_* constants above.
+ *
+ * `left` is the explorer's published footprint (`--cc-explorer-width`, 0 while collapsed / absent), so the
+ * card centers in the space to the RIGHT of the floating sidebar instead of on the full viewport — otherwise
+ * its left controls hide behind the explorer on narrow windows. The literal here must match
+ * `EXPLORER_WIDTH_CSS_VARIABLE` in the sidebar explorer.
  */
 @Directive({
     selector: "[ccBarShell]",
     host: {
-        class: "fixed left-0 right-0 mx-auto flex items-stretch bg-base-100 rounded-box shadow-lg border border-base-300",
+        class: "fixed right-0 mx-auto flex items-stretch bg-base-100 rounded-box shadow-lg border border-base-300",
+        "[style.left]": "'var(--cc-explorer-width, 0px)'",
         "[style.width]": "'max-content'",
         "[style.maxWidth]": "'min(95vw, 1200px)'",
         "[style.zIndex]": "50",
