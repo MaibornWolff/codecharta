@@ -305,15 +305,16 @@ describe("buildWordCloudOption", () => {
         expect(option.series[0].sizeRange[1]).toBeLessThan(120)
     })
 
-    it("should keep the requested size range when the container is wide enough", () => {
-        // Arrange
-        const words: DomainWord[] = [{ text: "invoice", frequency: 12 }]
+    it("should cap the max font size so a very long word is never dropped", () => {
+        // Arrange — a very long word at the configured max must still fit the drawable width
+        const words: DomainWord[] = [{ text: "internationalizationconfiguration", frequency: 12 }]
 
         // Act
-        const option = buildWordCloudOption(words, settings({ sizeRange: [12, 60] }), { ...context, containerWidth: 2000 })
+        const option = buildWordCloudOption(words, settings({ sizeRange: [12, 60] }), { ...context, containerWidth: 800 })
 
-        // Assert
-        expect(option.series[0].sizeRange).toEqual([12, 60])
+        // Assert — the longest word at the capped max stays within the drawable width (0.9 of the container)
+        const [, maxSize] = option.series[0].sizeRange
+        expect(maxSize * "internationalizationconfiguration".length * 0.62).toBeLessThanOrEqual(800 * 0.9)
     })
 
     it("should highlight rather than black out the other words on hover", () => {
