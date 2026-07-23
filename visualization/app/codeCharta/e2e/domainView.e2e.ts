@@ -2,10 +2,13 @@ import { expect, test } from "@playwright/test"
 import { CC_URL, clearIndexedDB, goto, waitForCcStatePersisted } from "../../playwright.helper"
 import sample1 from "../assets/sample1.cc.json"
 import { DomainBarPageObject } from "../features/domainBar/domainBar.po"
-import { MapSelectorPageObject } from "../features/navBar/components/mapSelector/mapSelector.po"
 import { ViewSwitcherPageObject } from "../features/navBar/components/viewSwitcher/viewSwitcher.po"
 import { ExplorerTreeLevelPageObject } from "../features/sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
 import { defaultWordCloudSettings, WordCloudShape } from "../model/wordCloud.model"
+
+// The persisted record keys files by their file name, which is not what the map selector shows for
+// the boot pair ("sample1 +1").
+const BOOT_SAMPLE_FILE_NAME = "sample1.cc.json"
 
 test.describe("DomainView", () => {
     test.beforeEach(async ({ page }) => {
@@ -144,10 +147,9 @@ test.describe("DomainView", () => {
     test("should stay on the domain view when the page is refreshed on it", async ({ page }) => {
         // Arrange — the domain view is on screen and its state has actually reached IndexedDB (the save is
         const viewSwitcher = new ViewSwitcherPageObject(page)
-        const loadedFileName = await new MapSelectorPageObject(page).getSelectedName()
         await viewSwitcher.switchToDomain()
         await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
-        await waitForCcStatePersisted(page, loadedFileName)
+        await waitForCcStatePersisted(page, BOOT_SAMPLE_FILE_NAME)
 
         // Act
         await page.reload()
