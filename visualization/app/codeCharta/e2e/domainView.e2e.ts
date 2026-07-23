@@ -95,15 +95,15 @@ test.describe("DomainView", () => {
         const explorer = new ExplorerTreeLevelPageObject(page)
         await viewSwitcher.switchToDomain()
         // the host element is zero-height (its footer is position:fixed), so assert on the footer
-        const pathBar = page.locator("cc-bottom-bar cc-hovered-path")
+        const currentCrumb = page.locator("cc-bottom-bar cc-hovered-path [data-testid='hovered-path-current']")
         await expect(page.locator("cc-bottom-bar footer")).toBeVisible()
-        await expect(pathBar).toContainText("root")
+        await expect(currentCrumb).toHaveText("root")
 
         // Act — selecting a node in the explorer drives the cloud even without a 3D map
         await explorer.openFolder("/root/sample1.cc.json")
 
         // Assert — the status bar follows the selection
-        await expect(pathBar).toContainText("sample1.cc.json")
+        await expect(currentCrumb).toHaveText("sample1.cc.json")
     })
 
     test("should hide the map-only nav bar controls on the domain view and restore them on the way back", async ({ page }) => {

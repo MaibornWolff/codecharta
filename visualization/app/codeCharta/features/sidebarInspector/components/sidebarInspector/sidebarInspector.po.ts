@@ -15,7 +15,7 @@ export class SidebarInspectorPageObject {
 
     /**
      * The inspector's node-name element. Use with a web-first assertion
-     * (`await expect(po.nodeName()).toContainText(…)`) rather than reading the text: the inspector's
+     * (`await expect(po.nodeName()).toHaveText(…)`) rather than reading the text: the inspector's
      * content fills in a tick after it slides open, so a plain read races it.
      */
     nodeName(): Locator {

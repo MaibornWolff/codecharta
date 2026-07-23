@@ -38,7 +38,7 @@ test.describe("Scenarios", () => {
         await scenarios.clickScenarioByName("Real Lines of Code")
 
         await expect(scenarios.applyDialog()).toBeVisible()
-        await expect(scenarios.applyDialogTitle()).toContainText("Real Lines of Code")
+        await expect(scenarios.applyDialogTitle()).toHaveText("Apply: Real Lines of Code")
     })
 
     test("should filter scenarios by search term", async ({ page }) => {

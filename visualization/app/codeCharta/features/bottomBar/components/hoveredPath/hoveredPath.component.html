@@ -7,7 +7,7 @@
                     [class.fa-file-o]="isFile()"
                     [class.fa-folder]="!isFile()"
                 ></i>
-                <span class="font-semibold">{{ crumb.segment }}</span>
+                <span class="font-semibold" data-testid="hovered-path-current">{{ crumb.segment }}</span>
             } @else {
                 <span>{{ crumb.segment }}</span>
                 <i class="fa fa-angle-right text-base-content/40 mx-1"></i>
