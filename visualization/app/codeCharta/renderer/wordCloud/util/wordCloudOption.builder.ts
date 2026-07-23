@@ -149,6 +149,10 @@ export function buildWordCloudOption(
 ): WordCloudOption {
     const [startColor, endColor] = getWordCloudColors()
     const topWords = selectTopWords(words, settings.sizingMode, settings.topN)
+    // Cap the configured max so the longest word still fits the drawable width (never enlarged beyond the
+    // user's setting: bigger fonts make echarts-wordcloud's layout run much longer, especially with
+    // shrinkToFit retrying oversized words).
+    const sizeRange = fitSizeRange(settings.sizeRange, topWords, settings.drawOutOfBound, context.containerWidth)
 
     const data: WordCloudDatum[] = topWords.map(word => ({
         name: word.text,
@@ -170,7 +174,7 @@ export function buildWordCloudOption(
                 top: "center",
                 width: `${CANVAS_FILL_RATIO * 100}%`,
                 height: `${CANVAS_FILL_RATIO * 100}%`,
-                sizeRange: fitSizeRange(settings.sizeRange, topWords, settings.drawOutOfBound, context.containerWidth),
+                sizeRange,
                 rotationRange: settings.rotationRange,
                 rotationStep: settings.rotationStep,
                 gridSize: settings.gridSize,
