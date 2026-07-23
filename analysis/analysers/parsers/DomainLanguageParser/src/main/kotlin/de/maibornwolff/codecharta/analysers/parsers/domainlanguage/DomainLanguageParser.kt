@@ -105,8 +105,10 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
             val directoryPath = context.inputDir.path
             val config = buildConfiguration(directoryPath)
 
+            // Reported for every run, like the other parsers do: the bar goes to stderr, so it never
+            // mixes into a cc.json written to stdout.
             val analysisResult =
-                ProgressReporterFactory.create(quiet = !verbose).use { progressReporter ->
+                ProgressReporterFactory.create(quiet = false).use { progressReporter ->
                     SourceAnalyzerFactory.create(config, progressReporter).analyze(directoryPath)
                 }
 
