@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test"
-import { CC_URL, clearIndexedDB, goto } from "../../playwright.helper"
+import { CC_URL, clearIndexedDB, goto, waitForCcStatePersisted } from "../../playwright.helper"
 import sample1 from "../assets/sample1.cc.json"
 import { DomainBarPageObject } from "../features/domainBar/domainBar.po"
+import { MapSelectorPageObject } from "../features/navBar/components/mapSelector/mapSelector.po"
 import { ViewSwitcherPageObject } from "../features/navBar/components/viewSwitcher/viewSwitcher.po"
 import { ExplorerTreeLevelPageObject } from "../features/sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
 import { defaultWordCloudSettings, WordCloudShape } from "../model/wordCloud.model"
@@ -146,6 +147,29 @@ test.describe("DomainView", () => {
 
         await viewSwitcher.switchToMetrics()
         await expect(page).toHaveURL(/#\/$/)
+    })
+
+    /**
+     * The restore commits the loaded file twice: first re-parsed from the persisted state, which loses the
+     * domain lens, and only then the persisted file state that carries it. Reacting to the first of the two
+     * sent the user back to the metrics view — with the "no domain-language data" toast — on every refresh.
+     */
+    test("should stay on the domain view when the page is refreshed on it", async ({ page }) => {
+        // Arrange — the domain view is on screen and its state has actually reached IndexedDB (the save is
+        // debounced, so a reload can otherwise outrace the write and boot from an empty database)
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        const loadedFileName = await new MapSelectorPageObject(page).getSelectedName()
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await waitForCcStatePersisted(page, loadedFileName)
+
+        // Act
+        await page.reload()
+
+        // Assert — the restored session comes back on the domain view, not bounced to the map
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await expect(page).toHaveURL(/#\/domain$/)
+        await expect(page.getByText("This file has no domain-language data")).toHaveCount(0)
     })
 
     test("should preserve the file query parameter when switching to the domain view and back", async ({ page }) => {
