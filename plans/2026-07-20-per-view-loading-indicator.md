@@ -1,7 +1,7 @@
 ---
 name: Per-view loading indicator
 issue: <#issueid>
-state: todo
+state: complete
 version: 1
 ---
 
@@ -67,12 +67,12 @@ existing spec only fires one, which is why it passes today.
 
 ## Steps
 
-- [ ] Complete Task 1: Stop the current spinner from hanging — commit separately, tests first
-- [ ] Complete Task 2: Introduce per-view readiness
-- [ ] Complete Task 3: Defer the map render until the Metrics view is shown
-- [ ] Complete Task 4: Scope heavy dispatches to the active view
-- [ ] Update the e2e coverage (`e2e/loadPipeline.e2e.ts`, `e2e/domainView.e2e.ts`) for the split spinner
-- [ ] Update CHANGELOG.md
+- [x] Complete Task 1: Stop the current spinner from hanging — commit separately, tests first
+- [x] Complete Task 2: Introduce per-view readiness
+- [x] Complete Task 3: Defer the map render until the Metrics view is shown
+- [x] Complete Task 4: Scope heavy dispatches to the active view
+- [x] Update the e2e coverage — new `e2e/viewLoadingSpinner.e2e.ts` covers both views' spinners
+- [x] Update CHANGELOG.md
 
 ## Notes
 
@@ -94,3 +94,27 @@ Findings from the investigation that shaped this:
   `renderCodeMap$` is only true when deep-linking to `#/domain` without ever activating Metrics.
   `RenderCodeMapEffect` is global and fires on every route today. Task 3 is what actually makes that
   comment true.
+
+## Verification
+
+- Unit: 362 suites / 2465 tests green.
+- E2E: all 50 green, including `navBarFolderButton › should open an invalid file…`, which caught a
+  real regression mid-implementation (see below) — and the pre-existing `domainView › should keep the
+  metrics map rendered after switching to domain and back`, which was the stated risk of Task 3.
+- `npm run lint` (architecture / styles / dead code) and `tsc --noEmit` clean.
+
+### Regression caught during implementation
+
+Marking every view stale at the START of a load stranded a load that never commits: an invalid file
+raises `isLoadingFile`, fails validation, and dispatches no `filesLoaded` — so nothing ever marked
+the views ready again and the spinner stayed up. Staleness is now raised only when files actually
+land; while a load is in flight the spinner comes from `isLoadingFile`, which the use-case lowers on
+both the success and the failure path.
+
+## Commit status
+
+Complete and committed. The bugfix (`fix(visualization): stop the loading spinner from hanging on the
+domain view`) and the per-view readiness redesign both landed with the domain-view work — the
+`routing/viewReadiness.store.ts` (+spec), the removal of the global overlay from
+`codeCharta.component.html`, the `viewLoadingSpinner.e2e.ts` coverage and the CHANGELOG entry are all
+on the branch (see commit `7b3ee0356`). The earlier "only Task 1 committed" note was stale.
