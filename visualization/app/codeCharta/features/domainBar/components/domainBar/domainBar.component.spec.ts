@@ -9,10 +9,6 @@ import { DomainBarReadStore } from "../../stores/domainBar.read.store"
 import { DomainBarWriteStore } from "../../stores/domainBar.write.store"
 import { DomainBarComponent } from "./domainBar.component"
 
-/**
- * Renders the composed bar rather than each segment in isolation: the segments share the domainBar
- * stores, so composing them here is what proves a control still reaches the store after the split.
- */
 describe("DomainBarComponent", () => {
     let writeStore: jest.Mocked<Partial<DomainBarWriteStore>>
     let hasTfidfData: ReturnType<typeof signal<boolean>>
@@ -36,7 +32,6 @@ describe("DomainBarComponent", () => {
         hasTfidfData = signal(false)
         return render(DomainBarComponent, {
             providers: [
-                // The per-group reset buttons resolve default state from the real store.
                 provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: DomainBarReadStore, useValue: { settings: signal(settings), hasTfidfData } },
@@ -45,7 +40,6 @@ describe("DomainBarComponent", () => {
         })
     }
 
-    /** The shared slider/number input debounces its commits, so every value change must be flushed. */
     function changeSlider(accessibleName: string, value: string) {
         fireEvent.input(screen.getByRole("slider", { name: accessibleName }), { target: { value } })
         jest.advanceTimersByTime(SETTINGS_INPUT_DEBOUNCE_MS)

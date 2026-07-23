@@ -11,11 +11,6 @@ export interface TooltipNode {
 
 const MISSING_VALUE = "—"
 
-/**
- * The 3D map's hover tooltip: the area/height/color metrics of the hovered building. Only the CONTENT
- * is map-specific — the floating element itself is the shared HoverTooltipService, so other views can
- * show their own content in the same tooltip without inheriting metrics semantics.
- */
 @Injectable({ providedIn: "root" })
 export class CodeMapTooltipService {
     private readonly hoverTooltipService = inject(HoverTooltipService)

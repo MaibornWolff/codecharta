@@ -88,11 +88,9 @@ class NgramsStageTest {
 
         // Assert - SSR removes bigrams when trigram has equal frequency
         assertEquals(4, result.size)
-        // Individual words
         assertEquals("customer", result[0].text)
         assertEquals("order", result[1].text)
         assertEquals("processor", result[2].text)
-        // Trigram (bigrams removed by SSR since they have equal frequency)
         assertEquals("customer order processor", result[3].text)
     }
 
@@ -243,12 +241,10 @@ class NgramsStageTest {
 
         // Assert - SSR removes all shorter n-grams when 4-gram has equal frequency
         assertEquals(5, result.size)
-        // Individual words (4) - unigrams are never removed
         assertEquals("user", result[0].text)
         assertEquals("profile", result[1].text)
         assertEquals("data", result[2].text)
         assertEquals("manager", result[3].text)
-        // Only the longest n-gram remains (bigrams and trigrams removed by SSR)
         assertEquals("user profile data manager", result[4].text)
     }
 
@@ -285,21 +281,16 @@ class NgramsStageTest {
 
         // Assert
         assertEquals(5, result.size)
-        // From identifier
         assertEquals("user", result[0].text)
         assertEquals("profile", result[1].text)
         assertEquals("user profile", result[2].text)
-        // From comment (no ngrams)
         assertEquals("process", result[3].text)
         assertEquals("data", result[4].text)
     }
 
-    // SSR (Statistical Substring Reduction) tests
-
     @Test
     fun `should remove bigram when trigram has equal frequency via SSR`() {
         // Arrange - "customer order" and "customer order service" each appear once with weight 3
-        // When frequencies are equal, keep only the longer n-gram
         val stage = NgramsStage(ngrams = 3)
         val splitResults =
             listOf(
@@ -332,7 +323,6 @@ class NgramsStageTest {
     @Test
     fun `should keep both ngrams when shorter has higher frequency`() {
         // Arrange - "customer order" appears twice (weight=6), "customer order service" appears once (weight=3)
-        // When shorter has higher frequency, keep both
         val stage = NgramsStage(ngrams = 3)
         val splitResults =
             listOf(
@@ -398,7 +388,6 @@ class NgramsStageTest {
     @Test
     fun `should remove all substrings of longest ngram when frequencies equal`() {
         // Arrange - all ngrams appear once with same frequency
-        // SSR should keep only the longest one (plus unigrams)
         val stage = NgramsStage(ngrams = 3)
         val splitResults =
             listOf(

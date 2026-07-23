@@ -94,11 +94,9 @@ describe("ScreenshotButtonComponent (toolbox)", () => {
 
         // Act
         const button = screen.getByRole("button", { name: "Screenshot" })
-        // Even though button is disabled, programmatic call should fall through to file path
         await userEvent.click(button, { pointerEventsCheck: 0 } as never)
 
         // Assert
-        // Disabled buttons cannot be clicked, so neither service should be called
         expect(capture.makeScreenshotToClipboard).not.toHaveBeenCalled()
         expect(capture.makeScreenshotToFile).not.toHaveBeenCalled()
         expect((button as HTMLButtonElement).disabled).toBe(true)

@@ -14,10 +14,6 @@ import {
     setDomainStateTopN
 } from "../../../stores/domainState/domainState.write.facade"
 
-/**
- * Write surface of the domain settings bar: one setter per control. Resets are not routed through here —
- * each settings popover resets only its own group via the shared cc-reset-settings-button state paths.
- */
 @Injectable({ providedIn: "root" })
 export class DomainBarWriteStore {
     private readonly store: Store<CcState> = inject(Store)

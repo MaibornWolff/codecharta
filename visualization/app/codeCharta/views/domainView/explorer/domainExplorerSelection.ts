@@ -13,12 +13,6 @@ import { DomainSelectionStore } from "../stores/domainSelection.store"
 const TOOLTIP_WORD_COUNT = 5
 const NO_WORDS_HINT = "No domain words"
 
-/**
- * What selecting or hovering a row means in the domain view: a node in the word bank. Selecting drives the
- * cloud through the view-local {@link DomainSelectionStore} — the domain view never touches the global
- * `sharedView` selection. Hovering previews the node's top words in a tooltip. There is no map to light, so
- * a row never reports as hovered.
- */
 @Injectable()
 export class DomainExplorerSelection implements ExplorerSelection {
     private readonly store = inject(Store)
@@ -28,8 +22,6 @@ export class DomainExplorerSelection implements ExplorerSelection {
 
     private readonly domainWords = toSignal(this.store.select(domainWordsSelector), { requireSync: true })
 
-    // Collapsing a folder is a pure view gesture here: it must never null the selection and reset the cloud
-    // to the root word bank. Selecting still drives the cloud; only the collapse-clears coupling is opted out.
     readonly clearsSelectionOnCollapse = false
 
     isSelected(node: CodeMapNode): boolean {
@@ -37,8 +29,6 @@ export class DomainExplorerSelection implements ExplorerSelection {
     }
 
     isHovered(): boolean {
-        // The domain rows do not light up on hover — there is no map hover signal, and the cloud reacts to
-        // selection, not hover.
         return false
     }
 
@@ -71,7 +61,6 @@ export class DomainExplorerSelection implements ExplorerSelection {
         this.hoverTooltipService.hide()
     }
 
-    /** Ranked the same way the cloud sizes its words, so the tooltip previews what selecting will show. */
     private topWords(path: string, sizingMode: WordCloudSizingMode): DomainWord[] {
         return selectTopWords(this.domainWords()[path] ?? [], sizingMode, TOOLTIP_WORD_COUNT)
     }

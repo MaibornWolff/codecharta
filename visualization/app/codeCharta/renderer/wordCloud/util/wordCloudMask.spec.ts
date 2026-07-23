@@ -15,7 +15,6 @@ describe("wordCloudMask", () => {
         expect(paths).toHaveLength(2)
         expect(decodedSvg).toContain("M81.9,20.3")
         expect(decodedSvg).toContain("M122.7,20.3")
-        // ...and the wordmark path (which started at M11.3,79) is gone
         expect(decodedSvg).not.toContain("logo__text")
         expect(decodedSvg).not.toContain("M11.3,79")
     })
@@ -33,7 +32,6 @@ describe("wordCloudMask", () => {
         // Act & Assert
         await expect(loadWordCloudMaskImage()).rejects.toThrow("Image is not available")
 
-        // Cleanup
         globalThis.Image = originalImage
     })
 })

@@ -66,7 +66,6 @@ export class DomainViewComponent {
     readonly selectedNodePath = this.domainSelectionStore.selectedNodePath
     readonly selectedNodeName = computed(() => pathToNodeName(this.selectedNodePath(), ""))
 
-    // The cloud can neither be panned nor zoomed, so whatever the explorer covers is unrecoverable.
     readonly cloudLeftInset = computed(() => (this.explorerCollapseService.isCollapsed() ? 0 : this.explorerWidthService.width()))
 
     clearSelection() {

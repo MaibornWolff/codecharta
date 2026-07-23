@@ -2,7 +2,6 @@ import { createSelector } from "@ngrx/store"
 import { WordCloudSettings } from "../../../model/wordCloud.model"
 import { domainStateSelector } from "./domainState.selector"
 
-/** The domain bar's controls composed into the WordCloudSettings the renderer consumes. */
 export const wordCloudSettingsSelector = createSelector(
     domainStateSelector,
     (domainState): WordCloudSettings => ({

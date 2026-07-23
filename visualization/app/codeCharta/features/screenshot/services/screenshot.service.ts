@@ -10,7 +10,6 @@ import { cropTransparentMargins } from "./canvasCrop"
 import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
 import { downloadPng } from "./pngScreenshot"
 
-/** The metrics view's capture: the 3D map plus the overlays that are part of the picture. */
 @Injectable({ providedIn: "root" })
 export class ScreenshotService implements ScreenshotCapture {
     private readonly threeRendererService = inject(ThreeRendererService)
@@ -20,7 +19,6 @@ export class ScreenshotService implements ScreenshotCapture {
 
     readonly isWriteToClipboardAllowed = checkWriteToClipboardAllowed()
     readonly subject = "map"
-    /** The map is always there to capture — an empty map is still a legitimate screenshot. */
     readonly isCaptureAvailable = signal(true).asReadonly()
 
     async makeScreenshotToFile(): Promise<void> {
@@ -88,8 +86,6 @@ export class ScreenshotService implements ScreenshotCapture {
         const bodyHeight = document.querySelector("body")?.offsetHeight ?? 0
         const navBarHeight = (document.querySelector("cc-nav-bar") as HTMLElement | null)?.offsetHeight ?? 0
         const fileExtensionBarHeight = (document.querySelector("cc-file-extension-bar") as HTMLElement | null)?.offsetHeight ?? 0
-        // the cc-bottom-bar host has zero height (its only child is position:fixed),
-        // so measure the inner footer like bottomBar.component does
         const bottomBarElement = document.querySelector("cc-bottom-bar") as HTMLElement | null
         const bottomBarHeight = (bottomBarElement?.querySelector("footer") ?? bottomBarElement)?.offsetHeight ?? 0
         const bottomBarsHeight = fileExtensionBarHeight + bottomBarHeight
@@ -113,10 +109,6 @@ export class ScreenshotService implements ScreenshotCapture {
         return cropTransparentMargins(canvas)
     }
 
-    /**
-     * html2canvas cannot render backdrop-filter, box-shadow, or transitions.
-     * Temporarily swap to opaque backgrounds so labels look correct in screenshots.
-     */
     private prepareLabelsForScreenshot(): Map<HTMLElement, string> {
         const saved = new Map<HTMLElement, string>()
         const container = document.querySelector("#codeMapLabels")

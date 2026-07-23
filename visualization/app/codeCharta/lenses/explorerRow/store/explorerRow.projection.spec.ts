@@ -38,7 +38,7 @@ describe("projectExplorerRow", () => {
             const projection = projectExplorerRow(LEAF_WITHOUT_AREA, inputs)
 
             // Assert
-            expect(projection).toMatchObject({ isDimmed: true, isItalic: true, title: "No Node Area for Chosen Metric" })
+            expect(projection).toMatchObject({ isInactive: true, isItalic: true, title: "No Node Area for Chosen Metric" })
         })
 
         it("should leave a row with area undimmed and untitled", () => {
@@ -46,7 +46,7 @@ describe("projectExplorerRow", () => {
             const projection = projectExplorerRow(LEAF_WITH_BUILDING, inputs)
 
             // Assert
-            expect(projection).toMatchObject({ isDimmed: false, isItalic: false, title: "" })
+            expect(projection).toMatchObject({ isInactive: false, isItalic: false, title: "" })
         })
 
         it("should decorate a folder with its share of the root unary count", () => {
@@ -66,7 +66,7 @@ describe("projectExplorerRow", () => {
             const projection = projectExplorerRow(LEAF_WITHOUT_AREA, {})
 
             // Assert
-            expect(projection).toEqual({ isSelectable: true, isDimmed: false, isItalic: false, title: "", decoration: null })
+            expect(projection).toEqual({ isSelectable: true, isInactive: false, isItalic: false, title: "", decoration: null })
         })
     })
 })

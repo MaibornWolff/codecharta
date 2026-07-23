@@ -9,30 +9,19 @@ import { routeLinks, routePaths } from "../../../../routing/routePaths"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { ViewSwitcherComponent } from "./viewSwitcher.component"
 
-/** The deep-linked url the app is really opened with — the `?file=…` the hrefs must not drop. */
 const deepLinkedUrl = "http://localhost:9009/index.html?file=fileOne.json&area=functions"
 
-/**
- * QueryPreservingHashLocationStrategy puts the routed path in the URL FRAGMENT and renders routerLink
- * hrefs ABSOLUTE, so that ctrl+click / middle-click / "copy link address" keep the `?file=…` deep link
- * (a bare "#/domain" would resolve against `<base href="./" />` and lose the query — see the strategy).
- */
 const hrefOf = (routeLink: string) => `${deepLinkedUrl}#${routeLink}`
 
 describe("ViewSwitcherComponent", () => {
     async function setup(hasDomainData: boolean) {
         return render(ViewSwitcherComponent, {
             providers: [
-                // The app's own router features, so the rendered hrefs are the ones production emits.
-                // The two empty routes only exist so a navigation in the aria-current test can resolve;
-                // hrefs are serialized from the url tree and are unaffected by the route table.
                 provideRouter([
                     { path: routePaths.metrics, children: [] },
                     { path: routePaths.domain, children: [] }
                 ]),
                 locationStrategyProvider,
-                // TestBed swaps in a MockPlatformLocation, which otherwise starts at a query-less
-                // "http://_empty_/" — the query preservation below would then assert nothing.
                 { provide: MOCK_PLATFORM_LOCATION_CONFIG, useValue: { startUrl: deepLinkedUrl } },
                 provideMockStore({ initialState: defaultState, selectors: [{ selector: hasDomainDataSelector, value: hasDomainData }] })
             ]
@@ -71,7 +60,6 @@ describe("ViewSwitcherComponent", () => {
         // Assert — without this a screen reader hears two identical links and no current-page indication
         expect(screen.getByTestId("view-switcher-domain").getAttribute("aria-current")).toBe("page")
         expect(screen.getByTestId("view-switcher-metrics").getAttribute("aria-current")).toBeNull()
-        // …and visually, in the same idiom as the Explore/Compare toggle next to it
         expect(screen.getByTestId("view-switcher-domain").classList.contains("text-secondary")).toBe(true)
         expect(screen.getByTestId("view-switcher-metrics").classList.contains("text-secondary")).toBe(false)
     })

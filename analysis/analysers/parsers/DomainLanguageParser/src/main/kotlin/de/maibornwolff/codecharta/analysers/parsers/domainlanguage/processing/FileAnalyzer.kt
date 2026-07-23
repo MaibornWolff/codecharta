@@ -4,13 +4,6 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pi
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * Dispatches on [Language], which is the source of truth for the supported extensions.
- * Unsupported file types return [FileResult.Skipped] with the extension.
- *
- * Framework-specific keywords are filtered based on the file's location
- * relative to detected framework directories.
- */
 class FileAnalyzer(
     private val stopWordFilter: StopWordFilter,
     private val weights: ExtractionWeights = ExtractionWeights(),
@@ -32,7 +25,6 @@ class FileAnalyzer(
         return FileResult.Processed(words)
     }
 
-    /** Releases the caches that are only valid for one analysis run. The pipeline map is enum-bounded and kept. */
     fun releasePerRunCaches() {
         stopWordFilter.clearCache()
     }

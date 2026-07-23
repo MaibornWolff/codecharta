@@ -38,9 +38,6 @@ class TfIdfCalculatorTest {
     @Test
     fun `should calculate TF-IDF for term in one file`() {
         // Arrange
-        // "account" appears in 1 out of 2 files with frequency 10
-        // IDF = log10(2/1) = 0.301
-        // TF-IDF = 10 * 0.301 = 3.01
         val calculator = TfIdfCalculator()
         val perFileFrequencies =
             mapOf(
@@ -77,9 +74,6 @@ class TfIdfCalculatorTest {
     @Test
     fun `should sum TF across files for same term`() {
         // Arrange - "account" appears in 2 out of 3 files
-        // Total TF = 10 + 8 = 18
-        // IDF = log10(3/2) = 0.176
-        // TF-IDF = 18 * 0.176 = 3.17
         val calculator = TfIdfCalculator()
         val perFileFrequencies =
             mapOf(
@@ -101,8 +95,6 @@ class TfIdfCalculatorTest {
     @Test
     fun `should calculate higher TF-IDF for rare terms`() {
         // Arrange
-        // "domain" appears in 1 of 5 files (rare)
-        // "string" appears in 5 of 5 files (common)
         val calculator = TfIdfCalculator()
         val perFileFrequencies =
             mapOf(

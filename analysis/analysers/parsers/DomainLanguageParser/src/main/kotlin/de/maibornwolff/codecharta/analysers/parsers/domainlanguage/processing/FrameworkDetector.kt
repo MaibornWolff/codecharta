@@ -16,7 +16,6 @@ enum class Framework {
 }
 
 class FrameworkDetector {
-    /** One ecosystem's reading of a project file: where to find them, what they reference, what that means. */
     private data class Ecosystem(
         val fileKind: String,
         val findProjectFiles: (Path) -> List<Path>,
@@ -52,9 +51,6 @@ class FrameworkDetector {
         emptySet()
     }
 
-    // node_modules is excluded because every dependency ships its own package.json, which would register
-    // the frameworks of libraries the project merely depends on as if they were its own. findCsprojFiles
-    // needs no such guard: NuGet restores to a global cache, not into the source tree.
     private fun findPackageJsonFiles(directoryPath: Path): List<Path> = walkFiles(directoryPath) { file ->
         file.name == "package.json" && !file.path.contains("node_modules")
     }

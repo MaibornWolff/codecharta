@@ -2538,11 +2538,6 @@ export const TEST_FILE_CONTENT_CC_JSON_2: CcJson2 = {
     }
 }
 
-/**
- * A pair of cc.json 2.0 maps that both carry a `domain` lens, so a load of the two exercises the
- * per-file re-keying and the aggregated-root fallback of the domain words merger end to end. They
- * share the word "payment" on their roots and carry one word of their own each.
- */
 export const TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_A: CcJson2 = {
     meta: { projectName: "Domain Map A", apiVersion: "2.0", checksum: "valid-md5-domain-a" },
     files: [

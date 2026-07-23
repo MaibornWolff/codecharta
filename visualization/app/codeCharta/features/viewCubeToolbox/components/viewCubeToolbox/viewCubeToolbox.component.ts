@@ -7,7 +7,6 @@ import { PresentationModeButtonComponent } from "../presentationModeButton/prese
     selector: "cc-view-cube-toolbox",
     templateUrl: "./viewCubeToolbox.component.html",
     imports: [CenterMapButtonComponent, ScreenshotButtonComponent, PresentationModeButtonComponent],
-    // The metrics view's screenshot button captures the map.
     providers: [{ provide: SCREENSHOT_CAPTURE, useExisting: ScreenshotService }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -253,9 +253,6 @@ describe("QueryParamsService", () => {
     })
 
     describe("coexisting with the router", () => {
-        // The router owns the FRAGMENT (`withHashLocation`, see app.config) and switches views by rewriting
-        // only the fragment — exactly what HashLocationStrategy does via `history.pushState("#/domain")`.
-        // The query string this service owns precedes the fragment and must survive that navigation.
         const switchViewTo = (routePath: string) => {
             window.history.pushState(null, "", `#${routePath}`)
         }

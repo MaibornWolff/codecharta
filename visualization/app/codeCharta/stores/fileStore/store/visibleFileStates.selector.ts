@@ -58,17 +58,4 @@ export const visibleFileStatesSelector = createSelectorFactory(projection =>
     defaultMemoize(projection, _onlyVisibleFilesMatterComparer, _onlyVisibleFilesMatterComparer)
 )(filesSelector, getVisibleFileStates)
 
-/**
- * The visible file states, re-projected whenever the file store changes — same projection as
- * `visibleFileStatesSelector`, but with honest default memoization.
- *
- * Consumers that read per-file `fileSettings` need this one. `visibleFileStatesSelector` memoizes on the
- * CHECKSUMS of the visible files alone, so it reports "nothing changed" for a file set whose entries were
- * replaced by richer objects and keeps handing out its previous projection. The IndexedDB restore is
- * exactly that case: it first commits the files re-parsed from the persisted state — `getNameDataPair`
- * round-trips through the flat 1.x export shape, which carries edges, blacklist and marked packages but
- * has no slot for the domain lens, so `domainWords` comes back empty — and only then dispatches the
- * persisted file states, which do carry the words, under the very same checksums. The store therefore
- * ends up correct while a checksum-memoized projection stays stuck on the domain-less parse.
- */
 export const visibleFileStatesWithCurrentSettingsSelector = createSelector(filesSelector, getVisibleFileStates)

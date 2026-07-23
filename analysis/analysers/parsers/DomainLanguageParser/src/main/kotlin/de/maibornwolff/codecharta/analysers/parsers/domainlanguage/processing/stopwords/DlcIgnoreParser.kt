@@ -15,8 +15,6 @@ class DlcIgnoreParser {
         return parseDlcIgnoreFile(dlcIgnoreFile)
     }
 
-    // Same keyword-file format as the bundled resources, only case-folded so user stop words match
-    // regardless of how they were typed.
     private fun parseDlcIgnoreFile(file: File): Set<String> = file.bufferedReader().useLines { lines ->
         parseWordLines(lines).mapTo(mutableSetOf()) { it.lowercase() }
     }

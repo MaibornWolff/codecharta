@@ -47,7 +47,6 @@ test.describe("Scenarios", () => {
         await scenarios.openScenarioList()
         await scenarios.searchScenarios("Complexity")
 
-        // Filtering re-renders the list asynchronously, so poll instead of reading once
         await expect
             .poll(async () => {
                 const names = await scenarios.getScenarioNames()

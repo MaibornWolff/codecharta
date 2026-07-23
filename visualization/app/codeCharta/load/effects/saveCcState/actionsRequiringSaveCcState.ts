@@ -123,7 +123,6 @@ const metricsLensSaveActions = [setAttributeTypes, setAttributeDescriptors]
 
 const dependencyLensSaveActions = [setEdgeAttributeTypes]
 
-// setDomainWords is deliberately excluded: the words are re-derived from the loaded files, not persisted.
 const domainStateSaveActions = [
     setDomainStateShape,
     setDomainStateSizeRange,

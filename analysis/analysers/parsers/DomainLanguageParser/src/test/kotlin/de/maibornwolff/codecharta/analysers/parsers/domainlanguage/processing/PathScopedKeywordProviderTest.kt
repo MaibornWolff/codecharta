@@ -34,7 +34,6 @@ class PathScopedKeywordProviderTest {
         // Assert
         assertEquals(1, keywords.size)
         assertTrue(keywords[0] is ResourceKeywords)
-        // Verify Angular keywords are loaded
         assertTrue(keywords[0].getKeywords().contains("component"))
     }
 

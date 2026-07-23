@@ -48,8 +48,6 @@ class FileAnalyzerTest {
         assertTrue(wordCounts.containsKey("customer"))
         assertTrue(wordCounts.containsKey("service"))
         assertTrue(wordCounts.containsKey("process"))
-
-        // Cleanup
     }
 
     @Test
@@ -79,11 +77,8 @@ class FileAnalyzerTest {
         assertTrue(wordCounts.containsKey("customer"))
         assertTrue(wordCounts.containsKey("service"))
         assertTrue(wordCounts.containsKey("process"))
-        // class and fun are Kotlin keywords and should be filtered
         assertTrue(!wordCounts.containsKey("class"))
         assertTrue(!wordCounts.containsKey("fun"))
-
-        // Cleanup
     }
 
     @Test
@@ -111,11 +106,8 @@ class FileAnalyzerTest {
         // Assert
         assertIs<FileResult.Processed>(result)
         val wordCounts = result.words
-        // "product" should have higher count from identifier (5) vs comment (3)
         val productCount = wordCounts["product"] ?: 0
         assertTrue(productCount >= 5) // At least from class name with weight 5
-
-        // Cleanup
     }
 
     @Test
@@ -136,8 +128,6 @@ class FileAnalyzerTest {
         // Assert
         assertIs<FileResult.Processed>(result)
         assertTrue(result.words.isEmpty())
-
-        // Cleanup
     }
 
     @Test
@@ -158,8 +148,6 @@ class FileAnalyzerTest {
         // Assert - unsupported extensions return Skipped
         assertIs<FileResult.Skipped>(result)
         assertEquals("txt", result.extension)
-
-        // Cleanup
     }
 
     @Test
@@ -192,8 +180,6 @@ class FileAnalyzerTest {
         assertTrue(wordCounts.containsKey("user"))
         assertTrue(wordCounts.containsKey("service"))
         assertTrue(wordCounts.containsKey("fetch"))
-
-        // Cleanup
     }
 
     @Test
@@ -224,8 +210,6 @@ class FileAnalyzerTest {
         assertTrue(wordCounts.isNotEmpty(), "Should extract words from JavaScript")
         assertTrue(wordCounts.containsKey("payment"), "payment should be extracted from function name")
         assertTrue(wordCounts.containsKey("process"), "process should be extracted from function name")
-
-        // Cleanup
     }
 
     @Test
@@ -237,7 +221,6 @@ class FileAnalyzerTest {
         val stopWordFilter = StopWordFilter(emptyList())
         val analyzer = FileAnalyzer(stopWordFilter)
 
-        // Create files of different languages to exercise pipeline caching
         val kotlinFile =
             File(tempDir, "Service.kt").apply {
                 writeText("class CustomerService { fun process() {} }")
@@ -278,7 +261,6 @@ class FileAnalyzerTest {
         assertTrue(jsResult.containsKey("handle"))
         assertTrue(jsResult.containsKey("payment"))
 
-        // Verify pipeline count matches language count (not corrupted by race conditions)
         assertEquals(
             3,
             Language.entries
@@ -286,7 +268,5 @@ class FileAnalyzerTest {
                     files.any { Language.fromExtension(it.extension) == lang }
                 }.size
         )
-
-        // Cleanup
     }
 }

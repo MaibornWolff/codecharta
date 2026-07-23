@@ -41,7 +41,6 @@ object DirectoryWordAggregator {
         val parts = PathUtils.splitPath(filePath)
 
         return buildList {
-            // Every file also rolls up into the project root node.
             add(PROJECT_ROOT)
             for (depth in 0 until parts.size - 1) {
                 add(PathUtils.joinPath(*parts.subList(0, depth + 1).toTypedArray()))

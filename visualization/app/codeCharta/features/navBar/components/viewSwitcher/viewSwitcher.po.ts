@@ -11,7 +11,6 @@ export class ViewSwitcherPageObject {
         await this.page.locator("[data-testid=view-switcher-metrics]").click()
     }
 
-    /** True only for the navigable option — the disabled stand-in carries a different test id. */
     isDomainOptionVisible() {
         return this.page.locator("[data-testid=view-switcher-domain]").isVisible()
     }

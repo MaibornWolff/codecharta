@@ -15,7 +15,6 @@ export class ExplorerHeaderComponent {
     private readonly readStore = inject(SidebarExplorerReadStore)
     private readonly collapseService = inject(ExplorerCollapseService)
 
-    // Flattened/hidden are 3D-map concepts, so views without a map (the domain word cloud) switch them off.
     readonly showCounts = inject(EXPLORER_CAPABILITIES).showCounts
 
     readonly counts = toSignal(this.readStore.counts$, { requireSync: true })

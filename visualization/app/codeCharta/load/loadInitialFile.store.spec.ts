@@ -23,10 +23,6 @@ describe("LoadInitialFileStore", () => {
     let loadInitialFileStore: LoadInitialFileStore
     let dispatchSpy: jest.SpyInstance
 
-    /**
-     * Every word-cloud setting differs from its default, so one apply hits all nine word-cloud switch
-     * branches; the sort keys stay at their defaults, so none is dispatched for them.
-     */
     const savedDomainState: DomainState = {
         ...defaultDomainState,
         shape: WordCloudShape.star,

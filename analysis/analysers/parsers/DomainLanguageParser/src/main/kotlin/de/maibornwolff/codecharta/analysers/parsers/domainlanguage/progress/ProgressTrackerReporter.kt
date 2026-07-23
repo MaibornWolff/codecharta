@@ -4,40 +4,38 @@ import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import java.util.concurrent.atomic.AtomicLong
 
-/**
- * Progress reporter backed by codecharta's shared [ProgressTracker], replacing the mordant-based
- * implementation. It renders a determinate progress bar to stderr; indeterminate phases (unknown
- * total) report no bar, matching [ProgressTracker]'s contract.
- */
 class ProgressTrackerReporter(private val parsingUnit: ParsingUnit = ParsingUnit.Files) : ProgressReporter {
     private var progressTracker = ProgressTracker()
-    private var total: Long = 0
-    private val parsed = AtomicLong(0)
+    private var totalItemsInPhase: Long = 0
+    private val completedItemsInPhase = AtomicLong(0)
 
-    override fun startPhase(phaseName: String, total: Long?) {
-        this.total = total ?: 0
-        this.parsed.set(0)
-        // Reset the tracker so its ETA baseline restarts with each phase.
-        this.progressTracker = ProgressTracker()
+    override fun startPhase(phaseName: String, totalItems: Long?) {
+        this.totalItemsInPhase = totalItems ?: 0
+        this.completedItemsInPhase.set(0)
+        restartEtaBaseline()
         System.err.println(phaseName)
-        if (this.total > 0) {
-            progressTracker.updateProgress(this.total, 0, parsingUnit.name)
+        if (this.totalItemsInPhase > 0) {
+            progressTracker.updateProgress(this.totalItemsInPhase, 0, parsingUnit.name)
         }
     }
 
-    override fun advance(count: Long) {
-        val done = parsed.addAndGet(count)
-        if (total > 0) {
-            progressTracker.updateProgress(total, done, parsingUnit.name)
+    override fun advance(completedItems: Long) {
+        val completedSoFar = completedItemsInPhase.addAndGet(completedItems)
+        if (totalItemsInPhase > 0) {
+            progressTracker.updateProgress(totalItemsInPhase, completedSoFar, parsingUnit.name)
         }
     }
 
     override fun completePhase() {
-        if (total > 0) {
-            progressTracker.updateProgress(total, total, parsingUnit.name)
+        if (totalItemsInPhase > 0) {
+            progressTracker.updateProgress(totalItemsInPhase, totalItemsInPhase, parsingUnit.name)
             System.err.println()
         }
     }
 
     override fun close() = Unit
+
+    private fun restartEtaBaseline() {
+        this.progressTracker = ProgressTracker()
+    }
 }

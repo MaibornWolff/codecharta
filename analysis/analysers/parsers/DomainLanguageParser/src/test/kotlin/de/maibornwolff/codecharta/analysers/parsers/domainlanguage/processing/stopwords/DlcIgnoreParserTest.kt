@@ -68,7 +68,6 @@ class DlcIgnoreParserTest {
 
             word2
 
-
             word3
             """.trimIndent()
         )

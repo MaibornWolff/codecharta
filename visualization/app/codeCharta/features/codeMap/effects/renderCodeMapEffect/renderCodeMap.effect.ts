@@ -30,22 +30,21 @@ export class RenderCodeMapEffect {
         map(([accumulatedData]) => accumulatedData)
     )
 
-    // The staleness check gates the view-switch trigger only: the flag is raised after the store has
-    // pushed the changed data through here, so gating a data change on it skips its render for good.
+    private readonly dataChangedWhileMetricsViewIsShown$ = this.mapDataChange$.pipe(
+        withLatestFrom(this.activeViewStore.activeView$),
+        filter(([, activeView]) => activeView === "metrics"),
+        map(([accumulatedData]) => accumulatedData)
+    )
+
+    private readonly switchedToStaleMetricsView$ = this.activeViewStore.activeView$.pipe(
+        filter(activeView => activeView === "metrics" && this.viewReadinessStore.isStale("metrics")),
+        withLatestFrom(this.mapDataChange$),
+        map(([, accumulatedData]) => accumulatedData)
+    )
+
     renderCodeMap$ = createEffect(
         () =>
-            merge(
-                this.mapDataChange$.pipe(
-                    withLatestFrom(this.activeViewStore.activeView$),
-                    filter(([, activeView]) => activeView === "metrics"),
-                    map(([accumulatedData]) => accumulatedData)
-                ),
-                this.activeViewStore.activeView$.pipe(
-                    filter(activeView => activeView === "metrics" && this.viewReadinessStore.isStale("metrics")),
-                    withLatestFrom(this.mapDataChange$),
-                    map(([, accumulatedData]) => accumulatedData)
-                )
-            ).pipe(
+            merge(this.dataChangedWhileMetricsViewIsShown$, this.switchedToStaleMetricsView$).pipe(
                 filter((accumulatedData: AccumulatedData) => Boolean(accumulatedData.unifiedMapNode)),
                 throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
                 tap(accumulatedData => {

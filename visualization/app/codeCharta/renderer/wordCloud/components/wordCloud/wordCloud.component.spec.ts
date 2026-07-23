@@ -6,8 +6,6 @@ import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape, WordCloudS
 import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
 import { WordCloudComponent } from "./wordCloud.component"
 
-// The component subscribes to "finished" to report the domain view ready and count the drawn words;
-// capture the callback so tests can complete a layout deterministically.
 let finishedCallback: (() => void) | undefined
 
 const mockChart = {
@@ -23,7 +21,6 @@ const mockChart = {
     getModel: jest.fn()
 }
 
-/** Lets the mocked chart report that only the first `drawnCount` of `wordCount` words got placed. */
 function mockDrawnWords(drawnCount: number, wordCount: number) {
     mockChart.getModel.mockReturnValue({
         getSeriesByIndex: () => ({
@@ -40,7 +37,6 @@ jest.mock("echarts", () => ({
 }))
 jest.mock("echarts-wordcloud", () => ({}))
 
-// JSDOM has no ResizeObserver; capture the callback so tests can trigger a resize deterministically.
 let resizeCallback: (() => void) | undefined
 class ResizeObserverMock {
     constructor(callback: () => void) {
@@ -51,13 +47,9 @@ class ResizeObserverMock {
     disconnect() {}
 }
 
-/** Longer than the component's single render debounce. */
 const DEBOUNCE_SETTLE_MS = 250
 const settle = () => new Promise(resolve => setTimeout(resolve, DEBOUNCE_SETTLE_MS))
 
-// JSDOM lays nothing out, so `clientWidth`/`clientHeight` are always 0; make them readable, mutable
-// measurements instead. The height matters because a 0-height box is how the component recognises a
-// detached (kept-alive) view.
 const WIDE_CONTAINER_WIDTH = 1600
 const NARROW_CONTAINER_WIDTH = 300
 const CONTAINER_HEIGHT = 900
@@ -156,7 +148,6 @@ describe("WordCloudComponent", () => {
 
     it("should coalesce a burst of setting changes into a single render", async () => {
         // Arrange — this is what dragging a slider does; without coalescing, echarts-wordcloud paints
-        // each in-flight layout and the words visibly pile up on top of each other.
         const { fixture } = await setup()
         await settle()
         mockChart.setOption.mockClear()
@@ -189,7 +180,6 @@ describe("WordCloudComponent", () => {
         await settle()
 
         // Assert — one layout. A resize used to lay out twice: once from a direct chart.resize() and once
-        // more from the re-render that re-fits the font clamp, which is the visible double draw.
         expect(mockChart.setOption).toHaveBeenCalledTimes(1)
         expect(mockChart.resize).toHaveBeenCalledTimes(1)
     })
@@ -227,10 +217,6 @@ describe("WordCloudComponent", () => {
         expect(mockChart.setOption).not.toHaveBeenCalled()
     })
 
-    /**
-     * `drawOutOfBound` is false, so a max font size fitted to the old width makes echarts silently drop the
-     * longest — highest-ranked — word once the container narrows. Resizing the chart alone does not re-fit it.
-     */
     it("should re-fit the font size range when the container narrows", async () => {
         // Arrange — one long word, so the clamp is width-bound
         words$.next([{ text: "authorizationconfiguration", frequency: 12 }])

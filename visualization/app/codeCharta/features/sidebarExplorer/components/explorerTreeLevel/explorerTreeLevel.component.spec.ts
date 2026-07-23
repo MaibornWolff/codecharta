@@ -137,7 +137,7 @@ describe("ExplorerTreeLevelComponent", () => {
         // Arrange
         TestBed.resetTestingModule()
         configureWithPorts({
-            row: createExplorerRowMock(() => ({ isSelectable: false, isDimmed: false, isItalic: false, title: "", decoration: null }))
+            row: createExplorerRowMock(() => ({ isSelectable: false, isInactive: false, isItalic: false, title: "", decoration: null }))
         })
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
 
@@ -226,7 +226,7 @@ describe("ExplorerTreeLevelComponent", () => {
         configureWithPorts({
             row: createExplorerRowMock(node => ({
                 isSelectable: true,
-                isDimmed: false,
+                isInactive: false,
                 isItalic: false,
                 title: "",
                 decoration: node.name === "root" ? "42% / 2" : null
@@ -247,7 +247,7 @@ describe("ExplorerTreeLevelComponent", () => {
         configureWithPorts({
             row: createExplorerRowMock(() => ({
                 isSelectable: true,
-                isDimmed: true,
+                isInactive: true,
                 isItalic: true,
                 title: "No Node Area for Chosen Metric",
                 decoration: null

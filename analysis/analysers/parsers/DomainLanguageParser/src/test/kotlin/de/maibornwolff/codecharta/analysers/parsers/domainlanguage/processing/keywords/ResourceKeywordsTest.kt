@@ -74,7 +74,6 @@ class ResourceKeywordsTest {
         assertTrue(jsSet.contains("const"))
         assertTrue(jsSet.contains("let"))
 
-        // TypeScript-only keywords should be in TS but not in JS
         val tsOnlyKeywords = listOf("interface", "type", "namespace", "enum", "abstract", "declare", "never", "unknown")
         tsOnlyKeywords.forEach { keyword ->
             assertTrue(tsSet.contains(keyword), "TypeScript should contain '$keyword'")

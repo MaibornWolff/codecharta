@@ -1,20 +1,21 @@
-import { Injectable, signal } from "@angular/core"
+import { Injectable, inject, signal } from "@angular/core"
 import packageJson from "../../../../../package.json"
-
-const LOCAL_STORAGE_KEY = "codeChartaVersion"
+import { VersionRepo } from "../repos/version.repo"
 
 @Injectable({ providedIn: "root" })
 export class VersionStore {
+    private readonly versionRepo = inject(VersionRepo)
+
     readonly currentVersion = packageJson.version
     readonly previousVersion = signal<string | null>(null)
     readonly shouldShowChangelog = signal(false)
 
     getSavedVersion(): string | null {
-        return localStorage.getItem(LOCAL_STORAGE_KEY)
+        return this.versionRepo.readSavedVersion()
     }
 
     saveCurrentVersion() {
-        localStorage.setItem(LOCAL_STORAGE_KEY, this.currentVersion)
+        this.versionRepo.writeSavedVersion(this.currentVersion)
     }
 
     setPreviousVersion(version: string | null) {

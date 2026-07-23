@@ -4,10 +4,6 @@ import { getCCFileAndDecorateFileChecksum, NameDataPair } from "../../../stores/
 import { createCCFileInput } from "./createCCFileInput"
 import { readFiles } from "./readFiles"
 
-/**
- * The DOM half of an upload: it picks the files and turns them into name/data pairs.
- * LoadFilesUseCase owns everything from there — the loading indicator, the load and its errors.
- */
 @Injectable({ providedIn: "root" })
 export class UploadFilesService {
     constructor(private readonly loadFilesUseCase: LoadFilesUseCase) {}
@@ -18,8 +14,6 @@ export class UploadFilesService {
             void this.uploadFilesOnEvent(ccFileInput)
             ccFileInput.remove()
         })
-        // Dismissing the picker fires "cancel", not "change". Without this the input would be orphaned in
-        // the DOM on every cancel; removing it here keeps the page clean.
         ccFileInput.addEventListener("cancel", () => ccFileInput.remove())
 
         ccFileInput.click()

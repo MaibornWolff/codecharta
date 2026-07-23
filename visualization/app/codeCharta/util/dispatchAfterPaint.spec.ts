@@ -12,10 +12,7 @@ describe("dispatchAfterPaint", () => {
         store = { dispatch: jest.fn() } as unknown as Store<CcState>
         clearPendingHeavyDispatch()
 
-        // The production path is skipped in tests by default, but it is exactly what is under test here.
         globalThis["__TEST_ENVIRONMENT__"] = false
-        // Fake timers stub requestAnimationFrame too, so the paint deferral has to be replaced AFTER
-        // they are installed. Running the callback synchronously keeps the tests about the backstop.
         jest.useFakeTimers()
         originalRequestAnimationFrame = globalThis.requestAnimationFrame
         globalThis.requestAnimationFrame = (callback => {
@@ -42,7 +39,6 @@ describe("dispatchAfterPaint", () => {
 
     it("should clear the pending heavy dispatch when no render follows", () => {
         // Arrange — a dispatch that changes nothing produces no render, and the render is the only
-        // thing that normally clears the flag. Without a backstop the spinner would stay up forever.
         dispatchAfterPaint(store, anAction)
 
         // Act

@@ -287,7 +287,6 @@ class FileScannerTest {
         // Arrange
         val dir = tempDir.toFile()
         val file = File(dir, "large.txt")
-        // Create a file with ~1MB of content
         val largeContent = "a".repeat(1_000_000)
         file.writeText(largeContent)
 
@@ -345,7 +344,6 @@ class FileScannerTest {
         val files = scanner.scan(dir.absolutePath)
         assertEquals(1, files.size)
 
-        // Delete file after scan
         file.delete()
 
         // Assert
@@ -369,7 +367,6 @@ class FileScannerTest {
         val files = scanner.scan(dir.absolutePath)
         assertEquals(1, files.size)
 
-        // Modify file after scan
         file.writeText("modified content")
 
         // Assert - should read modified content without error
@@ -392,7 +389,6 @@ class FileScannerTest {
         val files = scanner.scan(dir.absolutePath)
         assertEquals(2, files.size)
 
-        // Add new directory and file after scan
         val newDir = File(dir, "newdir")
         newDir.mkdir()
         File(newDir, "file3.txt").writeText("content3")
@@ -401,7 +397,6 @@ class FileScannerTest {
         assertTrue(files.all { it.exists() })
         assertEquals(2, files.size)
 
-        // New scan should pick up the changes
         val newScan = scanner.scan(dir.absolutePath)
         assertEquals(3, newScan.size)
     }

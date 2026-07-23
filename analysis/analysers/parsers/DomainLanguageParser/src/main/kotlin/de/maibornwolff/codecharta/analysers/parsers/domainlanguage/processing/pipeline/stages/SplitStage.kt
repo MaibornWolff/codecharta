@@ -4,14 +4,6 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pi
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.WeightedText
 import net.pearx.kasechange.splitToWords
 
-/**
- * Split stage: Splits weighted text into individual words while preserving weights.
- *
- * For identifiers: Splits camelCase/PascalCase/snake_case into component words.
- * For comments/strings: Extracts words using regex pattern.
- *
- * Returns pairs of (individual words, original source text) to enable n-gram generation later.
- */
 class SplitStage(private val ngrams: Int = 1) {
     data class SplitResult(
         val words: List<WeightedText>,
@@ -54,10 +46,8 @@ class SplitStage(private val ngrams: Int = 1) {
     private fun isSignificantWord(word: String): Boolean = word.length >= MIN_WORD_LENGTH
 
     companion object {
-        /** Shortest word the splitter may emit. */
         private const val MIN_WORD_LENGTH = 2
 
-        /** Shortest letter run the splitter will even look at — gates the input, not the output. */
         private const val MIN_MATCHED_RUN_LENGTH = 3
         private val WORD_PATTERN = Regex("""\b[a-zA-Z]{$MIN_MATCHED_RUN_LENGTH,}\b""")
     }

@@ -65,10 +65,8 @@ class ConfigurationBuilderTest {
         val config = builder.build(parsedArgs)
 
         // Assert (no framework keywords when package.json doesn't exist)
-        // Should have 3 core language keywords + 1 technical stop words = 4
         assertEquals(4, config.languageKeywords.size)
         assertTrue(config.languageKeywords.all { it is ResourceKeywords })
-        // Verify keywords are loaded correctly
         val allKeywords = config.languageKeywords.flatMap { it.getKeywords() }
         assertTrue(allKeywords.contains("class")) // Java/Kotlin keyword
         assertTrue(allKeywords.contains("fun")) // Kotlin keyword

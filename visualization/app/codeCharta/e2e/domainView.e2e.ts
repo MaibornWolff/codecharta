@@ -54,12 +54,8 @@ test.describe("DomainView", () => {
         await domainBar.setTopN(nonDefaultTopN)
 
         // Assert — the badge is rendered FROM the domainBar store, so it only shows the new value once the
-        // slider's change has round-tripped through the store the word cloud reads its settings from.
-        // (That those settings reach the echarts option is asserted in wordCloud.component.spec.ts — the
-        // rendered cloud is a canvas, so its layout is not observable from the DOM.)
         await expect(domainBar.topNValue()).toHaveText(`${nonDefaultTopN} words`)
         // Assert the shape actually changed BEFORE the reset — `circle` is the first <option>, so the
-        // post-reset assertion below would also hold for a select that was never touched.
         await expect(domainBar.shapeSelect()).toHaveValue(WordCloudShape.star)
         await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
 
@@ -95,7 +91,6 @@ test.describe("DomainView", () => {
         const viewSwitcher = new ViewSwitcherPageObject(page)
         const explorer = new ExplorerTreeLevelPageObject(page)
         await viewSwitcher.switchToDomain()
-        // the host element is zero-height (its footer is position:fixed), so assert on the footer
         const currentCrumb = page.locator("cc-bottom-bar cc-hovered-path [data-testid='hovered-path-current']")
         await expect(page.locator("cc-bottom-bar footer")).toBeVisible()
         await expect(currentCrumb).toHaveText("root")
@@ -109,7 +104,6 @@ test.describe("DomainView", () => {
 
     test("should hide the map-only nav bar controls on the domain view and restore them on the way back", async ({ page }) => {
         // Arrange — 3D print exports the code map's geometry and the mode toggle drives delta mode, so
-        // neither has meaning on the domain view. Settings applies everywhere and has to survive.
         const viewSwitcher = new ViewSwitcherPageObject(page)
         const modeToggle = page.locator("cc-mode-toggle")
         const print3DButton = page.locator("cc-print-3d-button")
@@ -127,8 +121,6 @@ test.describe("DomainView", () => {
         await expect(settingsButton).toBeVisible()
 
         // Act — the round trip is the point: the route-reuse strategy keeps both views alive, so the nav
-        // bar has to follow the URL rather than any view's lifecycle. Rendering it fresh (as the unit test
-        // does) cannot catch a control that gets stuck after a real navigation.
         await viewSwitcher.switchToMetrics()
 
         // Assert
@@ -149,14 +141,8 @@ test.describe("DomainView", () => {
         await expect(page).toHaveURL(/#\/$/)
     })
 
-    /**
-     * The restore commits the loaded file twice: first re-parsed from the persisted state, which loses the
-     * domain lens, and only then the persisted file state that carries it. Reacting to the first of the two
-     * sent the user back to the metrics view — with the "no domain-language data" toast — on every refresh.
-     */
     test("should stay on the domain view when the page is refreshed on it", async ({ page }) => {
         // Arrange — the domain view is on screen and its state has actually reached IndexedDB (the save is
-        // debounced, so a reload can otherwise outrace the write and boot from an empty database)
         const viewSwitcher = new ViewSwitcherPageObject(page)
         const loadedFileName = await new MapSelectorPageObject(page).getSelectedName()
         await viewSwitcher.switchToDomain()
@@ -174,7 +160,6 @@ test.describe("DomainView", () => {
 
     test("should preserve the file query parameter when switching to the domain view and back", async ({ page }) => {
         // Arrange — a deep link, the headline URL contract of the view switch. sample1 carries a domain
-        // lens, without which the switcher would not even render.
         const viewSwitcher = new ViewSwitcherPageObject(page)
         await page.route("**/fileOne.json", route =>
             route.fulfill({
@@ -187,11 +172,6 @@ test.describe("DomainView", () => {
         await expect(page.locator("#codeMapScene")).toBeVisible()
 
         // Act & Assert — the router owns only the fragment, so the query string precedes it on both legs.
-        // The query string is matched loosely around `file=`: once a file is loaded,
-        // UpdateQueryParametersEffect -> QueryParamsService.write() also writes the resolved
-        // area/height/color back (and `edge`, since sample1 defines edges), exactly as
-        // loadPipeline.e2e.ts asserts. What is pinned here is that `file=` SURVIVES the switch and that
-        // the router rewrote nothing but the fragment.
         await viewSwitcher.switchToDomain()
         await expect(page).toHaveURL(/\?(?:[^#]*&)?file=fileOne\.json(?:&[^#]*)?#\/domain$/)
 
@@ -224,7 +204,6 @@ test.describe("DomainView", () => {
         await page.keyboard.press("Control+Alt+KeyS")
 
         // Assert — the kept-alive metrics view holds a binding for the same hotkey, so this also pins
-        // that the press reaches the view on screen rather than the map
         expect((await download).suggestedFilename()).toMatch(/_domain\.png$/)
     })
 })

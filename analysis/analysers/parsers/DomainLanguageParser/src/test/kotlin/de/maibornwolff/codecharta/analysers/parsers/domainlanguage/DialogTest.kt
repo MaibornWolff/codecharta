@@ -30,12 +30,10 @@ class DialogTest {
     fun `should output correct arguments when provided with valid input`(
         @TempDir tempDir: Path
     ) {
-        // arrange
         val inputFileName = sourceFile(tempDir)
         mockkObject(Dialog.Companion)
         var parserArguments: List<String> = emptyList()
 
-        // act
         testSession { terminal ->
             every { Dialog.testCallback() } returnsMany listOf(
                 terminal.typing(inputFileName),
@@ -56,7 +54,6 @@ class DialogTest {
         }
         val parseResult = CommandLine(DomainLanguageParser()).parseArgs(*parserArguments.toTypedArray())
 
-        // assert
         assertThat(parseResult.matchedOption("output-file").getValue<String>()).isEqualTo(outputFileName)
         assertThat(parseResult.hasMatchedOption("not-compressed")).isTrue()
         assertThat(parseResult.matchedOption("verbose").getValue<Boolean>()).isTrue()
@@ -77,12 +74,10 @@ class DialogTest {
     fun `should not ask about SSR when only unigrams are requested`(
         @TempDir tempDir: Path
     ) {
-        // arrange
         val inputFileName = sourceFile(tempDir)
         mockkObject(Dialog.Companion)
         var parserArguments: List<String> = emptyList()
 
-        // act
         testSession { terminal ->
             every { Dialog.testCallback() } returnsMany listOf(
                 terminal.typing(inputFileName),
@@ -100,7 +95,6 @@ class DialogTest {
             parserArguments = collectAnalyserArgs(this)
         }
 
-        // assert
         assertThat(parserArguments).noneMatch { it.startsWith("--no-ssr") }
         assertThat(parserArguments).noneMatch { it.startsWith("--limit") }
         assertThat(parserArguments).noneMatch { it.startsWith("--exclude-tests") }
@@ -111,12 +105,10 @@ class DialogTest {
     fun `should fall back to unigrams when the ngram size is not a positive number`(
         @TempDir tempDir: Path
     ) {
-        // arrange
         val inputFileName = sourceFile(tempDir)
         mockkObject(Dialog.Companion)
         var parserArguments: List<String> = emptyList()
 
-        // act
         testSession { terminal ->
             every { Dialog.testCallback() } returnsMany listOf(
                 terminal.typing(inputFileName),
@@ -134,7 +126,6 @@ class DialogTest {
             parserArguments = collectAnalyserArgs(this)
         }
 
-        // assert
         assertThat(parserArguments).contains("--ngrams=1")
     }
 
@@ -150,7 +141,6 @@ private fun InMemoryTerminal.typing(text: String): suspend RunScope.() -> Unit =
     press(Keys.ENTER)
 }
 
-/** promptConfirm starts on "yes", so ENTER alone accepts it. */
 private fun InMemoryTerminal.answeringYes(): suspend RunScope.() -> Unit = {
     press(Keys.ENTER)
 }

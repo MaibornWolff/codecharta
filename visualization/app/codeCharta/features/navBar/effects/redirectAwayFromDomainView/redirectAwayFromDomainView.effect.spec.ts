@@ -43,23 +43,14 @@ describe("RedirectAwayFromDomainViewEffect", () => {
         store = TestBed.inject(MockStore)
     }
 
-    /**
-     * The effect reads its condition only once the file-store writes of one task have settled, so every
-     * act has to hand the event loop back before the assertion.
-     */
     function settle(): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, 0))
     }
 
-    /**
-     * Only the file states change — production writes the MERGED domain word bank a macrotask later,
-     * so a redirect that waited for it would fire in between and bounce cc.json 2.0 files as well.
-     */
     function loadFile(domainWords: DomainLensData) {
         store.setState({ ...defaultState, files: aLoadedFile(domainWords) })
     }
 
-    // Selector overrides are held statically by MockStore, so they outlive the TestBed unless reset.
     afterEach(() => {
         store.resetSelectors()
     })
@@ -198,11 +189,6 @@ describe("RedirectAwayFromDomainViewEffect", () => {
         expect(router.navigateByUrl).not.toHaveBeenCalled()
     })
 
-    /**
-     * The nav bar swaps the view switcher for the delta chrome in delta mode, so a user left on the domain
-     * view there has no Map control anywhere — the domain cloud merges both compared word banks and carries
-     * no delta semantics anyway.
-     */
     it("should redirect to the metrics view when delta mode is entered on the domain view", async () => {
         // Arrange
         setup(routeLinks.domain)
@@ -246,13 +232,6 @@ describe("RedirectAwayFromDomainViewEffect", () => {
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
     })
 
-    /**
-     * The IndexedDB restore commits the same file TWICE under one checksum: first re-parsed from the
-     * persisted state, which loses the domain lens on the way through the flat 1.x export shape, and only
-     * then the persisted file state that still carries it. Reading the second write is the whole point —
-     * a projection memoized on visible-file checksums cannot tell the two apart and would keep answering
-     * from the domain-less parse, bouncing the user out of the domain view on every restarted session.
-     */
     it("should stay on the domain view when a restore replaced the parsed file with the persisted one", async () => {
         // Arrange — boot lands on the metrics view and commits the lossy re-parse, then the persisted file
         setup(routeLinks.metrics)
@@ -268,11 +247,6 @@ describe("RedirectAwayFromDomainViewEffect", () => {
         expect(router.navigateByUrl).not.toHaveBeenCalled()
     })
 
-    /**
-     * Reloading the "#/domain" deep link: the restore's two commits land while the domain view is already
-     * on screen, so the effect sees the domain-less re-parse first. Acting on it bounced the user to the
-     * metrics view — with the "no domain-language data" toast — on every reload of a file that has data.
-     */
     it("should stay on the domain view when a restore's lossy re-parse lands while it is on screen", async () => {
         // Arrange — the reload restores the deep link before the files arrive
         setup(routeLinks.domain)

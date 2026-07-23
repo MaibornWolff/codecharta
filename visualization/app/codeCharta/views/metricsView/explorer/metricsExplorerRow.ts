@@ -8,11 +8,6 @@ import { rootUnarySelector } from "../../../renderer/renderModel/renderModel.fac
 import { IdToBuildingService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 
-/**
- * How a row looks in the metrics view: it is a building in the 3D map, so the row lens is fed the current
- * area metric (dims rows with no area), the registered building ids (gates selectability) and the root
- * unary count (drives the folder decoration).
- */
 @Injectable()
 export class MetricsExplorerRow implements ExplorerRow {
     private readonly mapStateReadWindow = inject(MapStateReadWindow)

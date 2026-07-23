@@ -9,14 +9,11 @@ import { IdToBuildingService } from "../../../renderer/threeViewer/threeViewer.f
 import { areaMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { MetricsExplorerRow } from "./metricsExplorerRow"
 
-// The projection branches (selectability, dimming, decoration) are the lens's responsibility and are
-// covered in explorerRow.projection.spec.ts. This adapter only wires the injected map inputs into the
-// lens, so the lens is mocked and only that hand-off is asserted here.
 jest.mock("../../../lenses/explorerRow/explorerRowLens.facade", () => ({
     projectExplorerRow: jest.fn()
 }))
 
-const LENS_RESULT: ExplorerRowProjection = { isSelectable: true, isDimmed: false, isItalic: false, title: "", decoration: null }
+const LENS_RESULT: ExplorerRowProjection = { isSelectable: true, isInactive: false, isItalic: false, title: "", decoration: null }
 const NODE = { name: "a.ts", path: "/root/src/a.ts", id: 2, type: NodeType.FILE, attributes: { rloc: 4 } } as CodeMapNode
 
 describe("MetricsExplorerRow", () => {

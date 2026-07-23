@@ -40,7 +40,6 @@ describe("RevealSelectedNodeAfterLoadEffect", () => {
         actions$.next(filesLoaded({ payload: undefined } as never))
 
         // Assert — without expanding: a collapsed panel is a deliberate choice, and a load is not a
-        // request to see the tree
         expect(revealService.revealNode).toHaveBeenCalledWith("/root/src/main.ts", { expand: false })
     })
 

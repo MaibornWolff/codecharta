@@ -105,8 +105,6 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
             val directoryPath = context.inputDir.path
             val config = buildConfiguration(directoryPath)
 
-            // Reported for every run, like the other parsers do: the bar goes to stderr, so it never
-            // mixes into a cc.json written to stdout.
             val analysisResult =
                 ProgressReporterFactory.create(quiet = false).use { progressReporter ->
                     SourceAnalyzerFactory.create(config, progressReporter).analyze(directoryPath)
@@ -138,10 +136,6 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
         require((limit ?: 0) >= 0) { "--limit must not be negative, got $limit" }
     }
 
-    // Honors the inherited -fe/--file-extensions option: when given, only those extensions are analysed
-    // instead of the full supported set. The other purely infrastructural inherited options
-    // (-e/--exclude, -bf/--base-file, --local-changes, -ibf/--include-build-folders) do not apply to
-    // domain-vocabulary analysis and are intentionally not consumed.
     private fun buildConfiguration(directoryPath: String): AnalysisConfiguration {
         val config = ConfigurationBuilder().build(buildParsedArguments(directoryPath))
         return if (fileExtensionsToAnalyse.isEmpty()) config else config.copy(allowedExtensions = fileExtensionsToAnalyse)

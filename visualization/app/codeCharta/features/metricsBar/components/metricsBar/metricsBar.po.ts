@@ -11,9 +11,6 @@ export class MetricsBarPageObject {
     async openAreaMetricSelect() {
         await clickButtonOnPageElement(this.page, `button[popovertarget='${this.areaSearchPopoverId}']`)
         await this.page.locator(`[data-testid='${this.areaPopoverTestId}']`).waitFor({ state: "visible", timeout: 10_000 })
-        // The popover's "toggle" handler clears the search term and then focuses the input, and it runs
-        // after the popover becomes visible. Typing before it lands would have the reset overwrite the
-        // term, so wait for the focus that marks the handler as done.
         await this.areaMetricSearchInput().waitFor({ state: "visible", timeout: 10_000 })
         await this.page.waitForFunction(
             selector => document.activeElement === document.querySelector(selector),
@@ -40,11 +37,6 @@ export class MetricsBarPageObject {
         await this.page.locator(`[data-testid='${this.areaPopoverTestId}'] button[data-metric-name='${metricName}']`).click()
     }
 
-    /**
-     * The element showing the area segment's selected metric. Prefer this with a web-first assertion
-     * (`await expect(po.selectedAreaMetricName()).toHaveText(…)`) over reading the text: selecting a
-     * metric dispatches a store update that lands a tick after the click, so a plain read races it.
-     */
     selectedAreaMetricName(): Locator {
         return this.page.locator(`[data-testid='${this.areaSegmentTestId}'] .text-sm.font-semibold`).first()
     }

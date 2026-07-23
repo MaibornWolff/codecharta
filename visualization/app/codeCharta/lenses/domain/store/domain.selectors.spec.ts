@@ -152,12 +152,6 @@ describe("domain lens selectors", () => {
             expect(result).toBe(true)
         })
 
-        /**
-         * The IndexedDB restore commits the same file twice under one checksum: first re-parsed from the
-         * persisted state, which loses the domain lens on the way through the flat 1.x export shape, and
-         * only then the persisted file state that still carries it. A projection memoized on visible-file
-         * checksums cannot tell those two apart, which is why this selector must not be built on one.
-         */
         it("should re-project when a restore replaces the parsed file with the persisted one", () => {
             // Arrange — the lossy re-parse is read first, exactly as the restore commits it
             const parsedState = stateWithFiles([aFileState({}, FileSelectionState.Partial)])

@@ -25,10 +25,6 @@ class SourceCodePipeline(
     private val filterStage = FilterStage(stopWordFilter)
     private val aggregateStage = AggregateStage()
 
-    /**
-     * Process source code through the pipeline, scoping the filter stage to the file's own path so
-     * framework keywords apply only under the directories those frameworks were detected in.
-     */
     fun process(sourceCode: String, filePath: Path): Map<String, Int> {
         if (sourceCode.isBlank()) {
             return emptyMap()

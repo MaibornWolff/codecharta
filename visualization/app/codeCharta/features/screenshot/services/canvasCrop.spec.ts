@@ -3,7 +3,6 @@ import { cropTransparentMargins } from "./canvasCrop"
 const CANVAS_WIDTH = 10
 const CANVAS_HEIGHT = 8
 
-/** An image whose only opaque pixels form the given inclusive box. */
 function imageDataWithOpaqueBox(box: { minX: number; minY: number; maxX: number; maxY: number }) {
     const data = new Uint8ClampedArray(CANVAS_WIDTH * CANVAS_HEIGHT * 4)
     for (let y = box.minY; y <= box.maxY; y++) {

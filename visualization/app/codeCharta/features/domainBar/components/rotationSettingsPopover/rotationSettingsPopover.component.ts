@@ -20,7 +20,6 @@ export class RotationSettingsPopoverComponent {
 
     readonly settings = this.readStore.settings
 
-    // Each end of the range is capped at 0 so the two sliders cannot cross.
     readonly minRotationBounds = { min: -90, max: 0 }
     readonly maxRotationBounds = { min: 0, max: 90 }
     readonly rotationStepBounds = { min: 15, max: 90, step: 15 }

@@ -11,7 +11,7 @@ import { provideExplorerPortsMock } from "../../explorerPorts.mocks"
 import { explorerCountsSelector } from "../../selectors/sidebarExplorer.selectors"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { EXPLORER_DEFAULT_WIDTH, EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
-import { COLLAPSED_WIDTH, SidebarExplorerComponent } from "./sidebarExplorer.component"
+import { COLLAPSED_STRIP_WIDTH_PX, SidebarExplorerComponent } from "./sidebarExplorer.component"
 
 const ROOT: CodeMapNode = {
     name: "root",
@@ -46,7 +46,6 @@ describe("SidebarExplorerComponent", () => {
     }
 
     beforeEach(() => {
-        // The collapse and width services persist to localStorage, which jsdom keeps across tests in a file.
         localStorage.clear()
         configureWithCapabilities()
     })
@@ -81,7 +80,6 @@ describe("SidebarExplorerComponent", () => {
 
         // Assert
         expect(container.querySelectorAll("cc-rules-popover").length).toBe(0)
-        // header, sort control and tree stay on
         expect(container.querySelector("cc-explorer-header")).not.toBe(null)
         expect(container.querySelector("cc-explorer-sort-control")).not.toBe(null)
         expect(container.querySelector("cc-explorer-tree")).not.toBe(null)
@@ -247,7 +245,7 @@ describe("SidebarExplorerComponent", () => {
         detectChanges()
 
         // Assert — the strip is the fixed collapsed width, but the stored dragged width is untouched
-        expect(host.style.width).toBe(`${COLLAPSED_WIDTH}px`)
+        expect(host.style.width).toBe(`${COLLAPSED_STRIP_WIDTH_PX}px`)
         expect(widthService.width()).toBe(600)
     })
 
@@ -262,11 +260,11 @@ describe("SidebarExplorerComponent", () => {
         // Act & Assert — narrow or wide, the collapsed strip stays the fixed width
         widthService.setWidth(260)
         detectChanges()
-        expect(host.style.width).toBe(`${COLLAPSED_WIDTH}px`)
+        expect(host.style.width).toBe(`${COLLAPSED_STRIP_WIDTH_PX}px`)
 
         widthService.setWidth(700)
         detectChanges()
-        expect(host.style.width).toBe(`${COLLAPSED_WIDTH}px`)
+        expect(host.style.width).toBe(`${COLLAPSED_STRIP_WIDTH_PX}px`)
     })
 
     it("should restore the resized width when expanded again", async () => {

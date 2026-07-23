@@ -12,9 +12,6 @@ import { defaultSortingOrder, sortingOrder } from "./sortingOrder/sortingOrder.r
 import { defaultSortingOrderAscending, sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
 import { defaultTopN, topN } from "./topN/topN.reducer"
 
-// The domain view's persisted settings: the word-cloud render controls plus the explorer sort the domain
-// view remembers on its own. Per-setting slices mirror the mapState home so each persists (via the
-// whole-CcState indexedDBWriter) and resets independently.
 export const domainState = combineReducers({
     shape,
     sizeRange,

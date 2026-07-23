@@ -5,7 +5,6 @@ interface HoverTooltipRow {
     value: string
 }
 
-/** A title line plus any number of muted label/value rows. */
 export interface HoverTooltipContent {
     title: string
     rows: HoverTooltipRow[]
@@ -15,9 +14,6 @@ const CURSOR_OFFSET_X = 12
 const CURSOR_OFFSET_Y = 12
 const VIEWPORT_PADDING = 8
 
-// Themed via the daisyUI custom properties rather than literal colours, so the tooltip follows the
-// active theme. It is appended to document.body (it must escape the explorer's overflow clipping),
-// which puts it outside every component's style scope — hence inline styles rather than a class.
 const TOOLTIP_STYLE = `
     position: fixed;
     z-index: 1000;
@@ -39,11 +35,6 @@ const TOOLTIP_STYLE = `
     transition: opacity 0.1s ease-out;
 `
 
-/**
- * The single floating hover tooltip, shared by everything that needs one (the 3D map's buildings and
- * the explorer's rows). It renders whatever title/rows it is handed and knows nothing about metrics,
- * domain words or any other content — callers compose the content.
- */
 @Injectable({ providedIn: "root" })
 export class HoverTooltipService {
     private tooltipElement: HTMLDivElement | null = null

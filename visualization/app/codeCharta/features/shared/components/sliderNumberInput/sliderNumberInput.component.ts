@@ -2,14 +2,6 @@ import { ChangeDetectionStrategy, Component, input, OnDestroy, output } from "@a
 import { debounce } from "../../../../util/debounce"
 import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../util/settingsInput"
 
-/**
- * Linked range slider + number input shared by the metrics-bar settings popovers.
- *
- * Values are rounded to `step` and clamped to [min, max] before being emitted,
- * debounced by SETTINGS_INPUT_DEBOUNCE_MS. The number field is never overwritten
- * while the user is typing (intermediate values may be out of range); it is
- * normalized on change (blur/Enter), which also flushes the pending value.
- */
 @Component({
     selector: "cc-slider-number-input",
     templateUrl: "./sliderNumberInput.component.html",
@@ -41,13 +33,10 @@ export class SliderNumberInputComponent implements OnDestroy {
             return
         }
         if (value === this.value()) {
-            // typed back to the committed value: drop the pending intermediate instead of committing it
             this.scheduledValue = undefined
             this.emitValueDebounced.cancel()
             return
         }
-        // re-arm on every keystroke (even when the value matches the pending one):
-        // the user is still typing, so the commit must keep moving out
         this.scheduledValue = value
         this.emitValueDebounced(value)
     }
@@ -74,6 +63,5 @@ function roundToStep(value: number, step: number): number {
     if (step <= 0) {
         return value
     }
-    // toPrecision avoids floating point artifacts like 0.30000000000000004 for fractional steps
     return Number((Math.round(value / step) * step).toPrecision(12))
 }

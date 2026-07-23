@@ -38,10 +38,6 @@ export class NavBarComponent {
 
     isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { requireSync: true })
 
-    /**
-     * The active view has to come from the URL rather than from view lifecycle: the route-reuse strategy
-     * detaches views instead of destroying them, so every view stays alive once visited.
-     */
     private readonly activeView = toSignal(this.activeViewStore.activeView$, { requireSync: true })
 
     readonly trailingControls = computed(() => viewNavBarControls[this.activeView()])

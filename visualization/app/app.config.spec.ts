@@ -22,9 +22,6 @@ describe("app routes", () => {
         expect(domainRoute?.component).toBe(DomainViewComponent)
     })
 
-    // The published entry is "…/app/index.html?file=…", which path routing resolves to the location
-    // "/index.html?file=…" — matching no route, leaving the outlet empty — and static hosting cannot
-    // rewrite unknown paths, so reloading "/domain" would 404. See the note in app.config.
     it("should keep the routed path in the fragment so file and static-host entry URLs resolve", () => {
         // Arrange
         TestBed.configureTestingModule({ providers: [...routerProviders] })

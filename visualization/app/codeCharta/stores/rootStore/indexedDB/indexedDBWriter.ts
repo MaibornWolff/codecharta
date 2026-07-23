@@ -394,8 +394,6 @@ export function migrateCcStateRecordToV16<T>(state: T): T {
     return next as T
 }
 
-// Seeds a brand-new top-level state root onto a blob written before that root existed, leaving an
-// already-present root untouched. Both domain seed transforms share this shape.
 function seedRootIfAbsent<T>(state: T, key: string, defaultValue: unknown): T {
     if (!state || typeof state !== "object") {
         return state
@@ -407,16 +405,10 @@ function seedRootIfAbsent<T>(state: T, key: string, defaultValue: unknown): T {
     return { ...record, [key]: defaultValue } as T
 }
 
-// v17: seed the domainLensSource root (the path-keyed domain word bank) so a blob written before the
-// domain lens existed still carries the root the restore path reads directly. The words are re-derived
-// from the file on every load, so an empty default is correct here.
 export function migrateCcStateRecordToV17<T>(state: T): T {
     return seedRootIfAbsent(state, "domainLensSource", defaultDomainLensSource)
 }
 
-// v18: seed the domainState root (the word-cloud render controls, peer of mapState) so a blob written
-// before the domain settings existed still carries the root the store expects. Defaults match the
-// DomainLanguageCharta render controls.
 export function migrateCcStateRecordToV18<T>(state: T): T {
     return seedRootIfAbsent(state, "domainState", defaultDomainState)
 }
@@ -448,7 +440,6 @@ export async function deleteCcState() {
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
 // (v(N-1))-shaped blob into vN. A blob written at oldVersion runs every transform whose target version it
-// predates, in ascending order (a v2 blob runs v3→…→v18; a v17 blob runs only v18).
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -487,7 +478,6 @@ export async function openCodeChartaDB() {
             if (!database.objectStoreNames.contains(SCENARIOS_STORE_NAME)) {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
-            // Migrate persisted blobs forward through all applicable transforms (v3→…→v18).
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)

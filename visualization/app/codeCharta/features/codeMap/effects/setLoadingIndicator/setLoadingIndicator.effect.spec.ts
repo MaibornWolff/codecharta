@@ -70,8 +70,6 @@ describe("LoadingIndicatorEffect", () => {
 
     it("should not mark views stale merely because a load started", () => {
         // Arrange — a load that never commits (an invalid file) would otherwise leave the views waiting
-        // forever for a rebuild that has no new data to rebuild from. The spinner comes from
-        // isLoadingFile while the load is in flight instead.
         viewReadinessStore.markReady("metrics")
         viewReadinessStore.markReady("domain")
 

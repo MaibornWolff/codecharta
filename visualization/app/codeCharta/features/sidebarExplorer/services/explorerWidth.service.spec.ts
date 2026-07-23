@@ -1,10 +1,13 @@
+import { TestBed } from "@angular/core/testing"
 import { EXPLORER_DEFAULT_WIDTH, EXPLORER_MAX_WIDTH, EXPLORER_MIN_WIDTH, ExplorerWidthService } from "./explorerWidth.service"
 
 describe("ExplorerWidthService", () => {
     let service: ExplorerWidthService
 
     beforeEach(() => {
-        service = new ExplorerWidthService()
+        localStorage.clear()
+        TestBed.configureTestingModule({})
+        service = TestBed.inject(ExplorerWidthService)
     })
 
     it("should start at the default width", () => {

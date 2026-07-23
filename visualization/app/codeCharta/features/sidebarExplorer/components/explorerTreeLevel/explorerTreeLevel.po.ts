@@ -51,11 +51,6 @@ export class ExplorerTreeLevelPageObject {
         await this.page.locator(`${selector}.hovered`).waitFor({ state: "attached", timeout: this.DEFAULT_TIMEOUT })
     }
 
-    /**
-     * The tree node for `path`. Use with a web-first assertion
-     * (`await expect(po.node(path)).toHaveCount(0)`) rather than reading a count: excluding a node
-     * re-renders the tree a tick after the click, so a plain count races it.
-     */
     node(path: string): Locator {
         return this.page.locator(`[id='${path}']`)
     }

@@ -4,15 +4,10 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.ke
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import java.nio.file.Path
 
-/** Which framework keywords apply to a file is decided by its location relative to the framework roots. */
 class PathScopedKeywordProvider(private val frameworksByPath: Map<Path, Set<Framework>>) {
     private val keywordCache = mutableMapOf<Framework, LanguageKeywords>()
 
     companion object {
-        /**
-         * A null-object instance that provides no framework keywords.
-         * Use this instead of null when no path-scoped filtering is needed.
-         */
         val NONE: PathScopedKeywordProvider = PathScopedKeywordProvider(emptyMap())
     }
 
@@ -30,11 +25,6 @@ class PathScopedKeywordProvider(private val frameworksByPath: Map<Path, Set<Fram
         }
     }
 
-    // Unions the frameworks of EVERY enclosing directory rather than returning the first match. A plain
-    // first-match would depend on frameworksByPath's (unordered) iteration order for a file nested under
-    // more than one framework directory (e.g. a monorepo with React at the root and Angular in a
-    // sub-package), making the emitted keyword set nondeterministic across runs and silently dropping the
-    // other directory's keywords. A union is order-independent, so the result is reproducible.
     private fun findApplicableFrameworks(filePath: Path): Set<Framework> = frameworksByPath
         .filterKeys { frameworkDir -> isFileUnderDirectory(filePath, frameworkDir) }
         .values

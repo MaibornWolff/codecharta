@@ -1,9 +1,3 @@
-/**
- * WRITE surface of the domainState state home — the per-setting actions the domain settings bar dispatches.
- * Kept separate from the read facade so a read-only consumer physically cannot dispatch; external access
- * only via this facade (mirrors the mapState home split).
- */
-
 export { setDomainStateDrawOutOfBound } from "./store/drawOutOfBound/drawOutOfBound.actions"
 export { setDomainStateGridSize } from "./store/gridSize/gridSize.actions"
 export { setDomainStateRotationRange } from "./store/rotationRange/rotationRange.actions"

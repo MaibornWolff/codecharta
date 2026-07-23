@@ -20,7 +20,6 @@ export class WordSizeRangeControlComponent {
     readonly smallestWordBounds = { min: 10, max: 40 }
     readonly largestWordBounds = { min: 40, max: 120 }
 
-    /** Names the trade-off in whichever direction the toggle would take it, rather than only its on-state. */
     readonly shrinkToFitTitle = computed(() => {
         return this.settings().shrinkToFit
             ? "On — words that do not fit are shrunk until they do, so the full word count is drawn. Tail words can render below Smallest Word."

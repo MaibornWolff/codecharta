@@ -29,7 +29,6 @@ class ResourceKeywordLoaderTest {
         val keywords = loader.loadFromResource("keywords/kotlin-keywords.txt")
 
         // Assert
-        // Should not contain any lines starting with #
         keywords.forEach { keyword ->
             assertTrue(!keyword.startsWith("#"))
         }

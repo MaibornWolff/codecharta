@@ -28,14 +28,11 @@ class TestFileDetector {
         val nameWithoutExtension = name.substringBeforeLast('.')
 
         return when {
-            // Kotlin: UserTest.kt, ServiceTest.kts — and Java: UserTest.java (same TypeName+Test convention)
             matchesTypeNameTestPattern(name, nameWithoutExtension, Language.KOTLIN) -> true
             matchesTypeNameTestPattern(name, nameWithoutExtension, Language.JAVA) -> true
 
-            // TypeScript/JavaScript: user.test.ts, service.spec.js
             matchesTypeScriptJavaScriptTestPattern(name) -> true
 
-            // Python: test_user.py, user_test.py
             matchesPythonTestPattern(name, nameWithoutExtension) -> true
 
             else -> false
@@ -53,6 +50,5 @@ class TestFileDetector {
     private fun matchesPythonTestPattern(name: String, nameWithoutExtension: String): Boolean = hasExtensionOf(name, Language.PYTHON) &&
         (nameWithoutExtension.startsWith("test_") || nameWithoutExtension.endsWith("_test"))
 
-    /** Derived from [Language] so a newly supported extension is covered here too, rather than silently skipped. */
     private fun hasExtensionOf(name: String, language: Language): Boolean = matchesAnyExtension(name, language.extensions)
 }
