@@ -12,6 +12,13 @@ const DEFAULT_MAP_COLORS = {
     negative: "#820E0E"
 }
 
+const INVERTED_MAP_COLORS = {
+    positive: DEFAULT_MAP_COLORS.negative,
+    neutral: DEFAULT_MAP_COLORS.neutral,
+    negative: DEFAULT_MAP_COLORS.positive,
+    isColorRangeInverted: true
+}
+
 const BUILT_IN_SCENARIOS: Scenario[] = [
     {
         id: "built-in-rloc",
@@ -65,8 +72,8 @@ const BUILT_IN_SCENARIOS: Scenario[] = [
         sections: {
             metrics: {
                 areaMetric: "rloc",
-                heightMetric: "code_smell",
-                colorMetric: "code_smell",
+                heightMetric: "sonar_code_smells",
+                colorMetric: "sonar_code_smells",
                 isColorMetricLinkedToHeightMetric: true
             },
             colors: { colorRange: { from: 10, to: 50 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
@@ -102,6 +109,22 @@ const BUILT_IN_SCENARIOS: Scenario[] = [
                 isColorMetricLinkedToHeightMetric: true
             },
             colors: { colorRange: { from: 10, to: 20 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
+        }
+    },
+    {
+        id: "built-in-authors",
+        name: "Authors",
+        description: "Visualize the number of authors per file",
+        createdAt: 0,
+        isBuiltIn: true,
+        sections: {
+            metrics: {
+                areaMetric: "rloc",
+                heightMetric: "number_of_authors",
+                colorMetric: "number_of_authors",
+                isColorMetricLinkedToHeightMetric: true
+            },
+            colors: { colorRange: { from: 2, to: 3 }, colorMode: ColorMode.absolute, mapColors: INVERTED_MAP_COLORS }
         }
     }
 ]
