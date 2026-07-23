@@ -3,7 +3,7 @@
         <span class="text-sm">Shape</span>
         <select class="select select-bordered select-sm w-full" data-testid="domain-bar-shape" (change)="onShapeChange($any($event.target).value)">
             @for (shape of shapes; track shape) {
-                <option [value]="shape" [selected]="shape === settings().shape">{{ shape }}</option>
+                <option [value]="shape" [selected]="shape === settings().shape">{{ shapeLabels[shape] }}</option>
             }
         </select>
     </label>

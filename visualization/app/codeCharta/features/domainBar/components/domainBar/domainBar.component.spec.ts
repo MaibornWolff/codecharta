@@ -2,7 +2,7 @@ import { signal } from "@angular/core"
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { defaultWordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../../../../model/wordCloud.model"
+import { defaultWordCloudSettings, WordCloudShape, WordCloudSizingMode, wordCloudShapeLabels } from "../../../../model/wordCloud.model"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../../shared/facade"
 import { DomainBarReadStore } from "../../stores/domainBar.read.store"
@@ -87,12 +87,12 @@ describe("DomainBarComponent", () => {
         expect(screen.getByTestId("domain-bar-top-n-value").textContent.trim()).toBe("42 words")
     })
 
-    it("should show the current shape inline on the bar", async () => {
+    it("should show the current shape inline on the bar with its display label", async () => {
         // Arrange & Act
         await setup({ ...defaultWordCloudSettings, shape: WordCloudShape.star })
 
         // Assert
-        expect(screen.getByTestId("domain-bar-shape-segment").textContent).toContain(WordCloudShape.star)
+        expect(screen.getByTestId("domain-bar-shape-segment").textContent).toContain(wordCloudShapeLabels[WordCloudShape.star])
     })
 
     it("should summarize the current rotation range inline on the bar", async () => {
@@ -166,7 +166,7 @@ describe("DomainBarComponent", () => {
         await setup({ ...defaultWordCloudSettings, shrinkToFit: false })
 
         // Act
-        fireEvent.click(screen.getByLabelText("Fit all words"))
+        fireEvent.click(screen.getByLabelText("Fit All Words"))
 
         // Assert
         expect(writeStore.setShrinkToFit).toHaveBeenCalledWith(true)
@@ -177,7 +177,7 @@ describe("DomainBarComponent", () => {
         await setup({ ...defaultWordCloudSettings, drawOutOfBound: false })
 
         // Act
-        fireEvent.click(screen.getByLabelText("Draw outside bounds"))
+        fireEvent.click(screen.getByLabelText("Draw Outside Bounds"))
 
         // Assert
         expect(writeStore.setDrawOutOfBound).toHaveBeenCalledWith(true)

@@ -56,7 +56,7 @@ describe("ViewSwitcherComponent", () => {
         // Arrange & Act
         await setup(true)
 
-        // Assert — two bare links "Map" and "Domain" are meaningless without a group name
+        // Assert — two bare links "Metrics" and "Domain" are meaningless without a group name
         expect(screen.getByRole("group", { name: "View" })).not.toBeNull()
     })
 

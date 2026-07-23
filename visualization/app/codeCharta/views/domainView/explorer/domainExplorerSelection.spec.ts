@@ -62,6 +62,14 @@ describe("DomainExplorerSelection", () => {
         expect(selection.isSelected(NODE)).toBe(false)
     })
 
+    it("should not clear the selection on collapse, so a tidy-the-tree gesture keeps the cloud scope", () => {
+        // Arrange & Act
+        const { selection } = setup()
+
+        // Assert
+        expect(selection.clearsSelectionOnCollapse).toBe(false)
+    })
+
     it("should never report a row as hovered, since there is no map hover signal", () => {
         // Arrange & Act
         const { selection } = setup()

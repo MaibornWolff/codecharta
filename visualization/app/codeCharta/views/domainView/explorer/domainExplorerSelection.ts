@@ -28,6 +28,10 @@ export class DomainExplorerSelection implements ExplorerSelection {
 
     private readonly domainWords = toSignal(this.store.select(domainWordsSelector), { requireSync: true })
 
+    // Collapsing a folder is a pure view gesture here: it must never null the selection and reset the cloud
+    // to the root word bank. Selecting still drives the cloud; only the collapse-clears coupling is opted out.
+    readonly clearsSelectionOnCollapse = false
+
     isSelected(node: CodeMapNode): boolean {
         return this.domainSelectionStore.selectedNodePath() === node.path
     }

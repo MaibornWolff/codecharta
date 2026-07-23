@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
-import { WordCloudSizingMode } from "../../../../model/wordCloud.model"
+import { WordCloudSizingMode, wordCloudShapeLabels } from "../../../../model/wordCloud.model"
 import { BAR_BOTTOM_ABOVE_BOTTOM_BAR, BarShellDirective } from "../../../shared/facade"
 import { DomainBarReadStore } from "../../stores/domainBar.read.store"
 import { DomainSegmentComponent } from "../domainSegment/domainSegment.component"
@@ -29,6 +29,8 @@ export class DomainBarComponent {
     private readonly readStore = inject(DomainBarReadStore)
 
     readonly settings = this.readStore.settings
+
+    readonly shapeLabel = computed(() => wordCloudShapeLabels[this.settings().shape])
 
     readonly sizingModeLabel = computed(() => (this.settings().sizingMode === WordCloudSizingMode.tfidf ? "TF-IDF" : "Frequency"))
 

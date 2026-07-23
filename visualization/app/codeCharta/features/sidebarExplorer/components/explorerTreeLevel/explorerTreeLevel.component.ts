@@ -80,7 +80,12 @@ export class ExplorerTreeLevelComponent implements OnInit {
         this.isOpen.set(willBeOpen)
         if (this.isLeafNode() || willBeOpen) {
             this.selection.select(this.node())
-        } else {
+            return
+        }
+        // Collapsing a parent. The selection port owns whether that clears the selection: the metrics map
+        // deselects so the 3D highlight follows the open folder, while the domain word cloud keeps its scope
+        // so a tidy-the-tree gesture never resets the cloud. Omitting the flag keeps the metrics behavior.
+        if (this.selection.clearsSelectionOnCollapse ?? true) {
             this.selection.deselect()
         }
     }
