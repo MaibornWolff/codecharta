@@ -2,8 +2,13 @@
 codecharta-analyse.sonargraph
 auth.txt
 .cache
+# brand reference — internal corporate palette, must not be committed
+Ideas/brand.png
 # call-graph exports (e.g. analysis.cg.json) — large, generated
 *.cg.json
+# analyser output written at the analysis root (e.g. dlc.cc.json.gz) — generated, not a tracked fixture
+/analysis/*.cc.json
+/analysis/*.cc.json.gz
 **/node-wrapper/public
 .scannerwork
 
