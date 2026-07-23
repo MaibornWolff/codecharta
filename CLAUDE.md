@@ -291,7 +291,10 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 - Based on official Kotlin Coding Conventions
 - Auto-formatted via `./gradlew ktlintFormat`
 - Rules defined in `.editorconfig`
-- **Function syntax**: Use block-body style with braces `{ }` consistently, not expression-body style with `=`
+- **Function syntax**: Follow ktlint (`ktlint_code_style = ktlint_official`), which requires an
+  expression body (`=`) for a function whose body is a single expression, and a block body `{ }` for
+  everything else. `./gradlew ktlintFormat` rewrites this for you — do not hand-write the other form,
+  `ktlintCheck` fails it.
 - **Guard clauses**: Use early returns for error conditions and edge cases to reduce nesting
 - **If expressions**: Prefer concise single-line style when possible:
   - ✅ `val x = if (condition) valueA else valueB`
