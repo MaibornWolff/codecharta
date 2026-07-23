@@ -17,20 +17,25 @@ export function wordSizingValue(word: DomainWord, sizingMode: WordCloudSizingMod
     return word.frequency
 }
 
-/** The ECharts word-cloud layout shapes (see echarts-wordcloud). */
+/**
+ * The word-cloud layout shapes. `circle`…`star` are the raw echarts-wordcloud geometric shapes; `logoM`
+ * is ours — it renders words inside the MaibornWolff "M" silhouette via a mask image rather than a built-in
+ * shape (the renderer swaps it for a mask and echarts ignores the shape string).
+ */
 export enum WordCloudShape {
     circle = "circle",
     cardioid = "cardioid",
     diamond = "diamond",
     triangle = "triangle",
     pentagon = "pentagon",
-    star = "star"
+    star = "star",
+    logoM = "logoM"
 }
 
 /**
- * User-facing labels for the layout shapes. The enum values are the raw echarts-wordcloud API strings;
- * 'cardioid' in particular is math jargon (heart-shaped) that no user vocabulary contains, so the UI
- * shows these instead of the enum value verbatim.
+ * User-facing labels for the layout shapes. The enum values are the raw echarts-wordcloud API strings (or,
+ * for `logoM`, our own marker); 'cardioid' in particular is math jargon (heart-shaped) that no user
+ * vocabulary contains, so the UI shows these instead of the enum value verbatim.
  */
 export const wordCloudShapeLabels: Record<WordCloudShape, string> = {
     [WordCloudShape.circle]: "Circle",
@@ -38,7 +43,8 @@ export const wordCloudShapeLabels: Record<WordCloudShape, string> = {
     [WordCloudShape.diamond]: "Diamond",
     [WordCloudShape.triangle]: "Triangle",
     [WordCloudShape.pentagon]: "Pentagon",
-    [WordCloudShape.star]: "Star"
+    [WordCloudShape.star]: "Star",
+    [WordCloudShape.logoM]: "M"
 }
 
 /** Which word metric drives a word's rendered size. `tfidf` is only offered when the data carries it. */

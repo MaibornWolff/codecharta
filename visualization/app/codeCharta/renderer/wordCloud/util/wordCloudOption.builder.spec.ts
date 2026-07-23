@@ -1,5 +1,5 @@
 import { DomainWord } from "../../../model/codeCharta.model"
-import { defaultWordCloudSettings, WordCloudSettings, WordCloudSizingMode } from "../../../model/wordCloud.model"
+import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../../../model/wordCloud.model"
 import { buildWordCloudOption, selectTopWords } from "./wordCloudOption.builder"
 
 // The builder reads its palette from the DOM. Stubbed here so the colour assertions stay
@@ -158,6 +158,36 @@ describe("buildWordCloudOption", () => {
         expect(series.gridSize).toBe(16)
         expect(series.rotationStep).toBe(30)
         expect(series.drawOutOfBound).toBe(false)
+    })
+
+    it("should lay the words out inside the mask when the shape is the M logo", () => {
+        // Arrange — the component passes the loaded silhouette in as an opaque object
+        const maskImage = { tag: "the-M-mask" }
+
+        // Act
+        const option = buildWordCloudOption([], settings({ shape: WordCloudShape.logoM }), { ...context, maskImage })
+
+        // Assert — echarts ignores `shape` under a mask, so a circle is emitted as the harmless fallback
+        expect(option.series[0].maskImage).toBe(maskImage)
+        expect(option.series[0].shape).toBe(WordCloudShape.circle)
+    })
+
+    it("should fall back to a circle with no mask while the M silhouette is still loading", () => {
+        // Act — shape is the M logo but the component has not supplied the mask image yet
+        const option = buildWordCloudOption([], settings({ shape: WordCloudShape.logoM }), context)
+
+        // Assert
+        expect(option.series[0].maskImage).toBeUndefined()
+        expect(option.series[0].shape).toBe(WordCloudShape.circle)
+    })
+
+    it("should not set a mask image for a geometric shape", () => {
+        // Act
+        const option = buildWordCloudOption([], settings({ shape: WordCloudShape.star }), { ...context, maskImage: {} })
+
+        // Assert
+        expect(option.series[0].maskImage).toBeUndefined()
+        expect(option.series[0].shape).toBe(WordCloudShape.star)
     })
 
     it("should let words render outside the bounds when draw out of bound is enabled", () => {
