@@ -3,10 +3,9 @@ import { parseGameObjectsFile } from "../util/gameObjectsParser/gameObjectsImpor
 import { validateGameObjects } from "../util/gameObjectsParser/gameObjectsValidator"
 
 export const readFiles = (files: FileList): Promise<string>[] => {
-    const readFilesPromises = []
-    // biome-ignore lint/style/useForOf: FileList is not iterable, therefore we cannot use for-of loop
-    for (let index = 0; index < files.length; index++) {
-        readFilesPromises.push(readFile(files[index]))
+    const readFilesPromises: Promise<string>[] = []
+    for (const file of files) {
+        readFilesPromises.push(readFile(file))
     }
     return readFilesPromises
 }
