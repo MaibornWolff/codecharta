@@ -49,3 +49,10 @@ if (typeof HTMLElement.prototype.togglePopover === "undefined") {
         return false
     }
 }
+
+// JSDOM applies the UA rule `dialog:not([open]) { display: none }` but loads none of the app's
+// stylesheets, so a popover built on <dialog> would hide its content from accessible queries.
+// In the browser the app's own display declaration wins over that UA rule, so mirror it here.
+const dialogPopoverStyle = document.createElement("style")
+dialogPopoverStyle.textContent = "dialog[popover] { display: flex }"
+document.head.append(dialogPopoverStyle)

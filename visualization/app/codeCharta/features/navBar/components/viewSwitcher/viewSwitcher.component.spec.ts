@@ -41,12 +41,12 @@ describe("ViewSwitcherComponent", () => {
         expect(unavailableDomainOption.hasAttribute("href")).toBe(false)
     })
 
-    it("should name the switcher group for assistive technology", async () => {
+    it("should name the switcher for assistive technology", async () => {
         // Arrange & Act
         await setup(true)
 
-        // Assert — two bare links "Metrics" and "Domain" are meaningless without a group name
-        expect(screen.getByRole("group", { name: "View" })).not.toBeNull()
+        // Assert — two bare links "Metrics" and "Domain" are meaningless without a name for the landmark
+        expect(screen.getByRole("navigation", { name: "View" })).not.toBeNull()
     })
 
     it("should mark the active view with aria-current for assistive technology", async () => {

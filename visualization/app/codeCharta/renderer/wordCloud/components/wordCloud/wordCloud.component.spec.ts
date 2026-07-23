@@ -50,6 +50,8 @@ class ResizeObserverMock {
 const DEBOUNCE_SETTLE_MS = 250
 const settle = () => new Promise(resolve => setTimeout(resolve, DEBOUNCE_SETTLE_MS))
 
+const screenReaderDescription = () => screen.getByRole("figure").querySelector("figcaption").textContent
+
 const WIDE_CONTAINER_WIDTH = 1600
 const NARROW_CONTAINER_WIDTH = 300
 const CONTAINER_HEIGHT = 900
@@ -252,7 +254,7 @@ describe("WordCloudComponent", () => {
         await setup()
 
         // Assert
-        expect(screen.getByRole("img").getAttribute("aria-label")).toBe("Word cloud of 1 domain term for billing; largest: invoice")
+        expect(screenReaderDescription()).toBe("Word cloud of 1 domain term for billing; largest: invoice")
     })
 
     it("should announce the drawn word count rather than the unlimited total", async () => {
@@ -270,7 +272,7 @@ describe("WordCloudComponent", () => {
         fixture.detectChanges()
 
         // Assert
-        expect(screen.getByRole("img").getAttribute("aria-label")).toContain("Word cloud of 2 domain terms")
+        expect(screenReaderDescription()).toContain("Word cloud of 2 domain terms")
     })
 
     it("should rank the text alternative by tfidf when tfidf drives the sizing", async () => {
@@ -285,7 +287,7 @@ describe("WordCloudComponent", () => {
         fixture.detectChanges()
 
         // Assert
-        expect(screen.getByRole("img").getAttribute("aria-label")).toContain("largest: distinctive, common")
+        expect(screenReaderDescription()).toContain("largest: distinctive, common")
     })
 
     it("should list the top words as a text alternative", async () => {

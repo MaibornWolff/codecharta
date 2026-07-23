@@ -4,15 +4,17 @@
         <button type="button" class="btn btn-sm btn-primary" (click)="showWholeMap()">Show whole map</button>
     </div>
 } @else {
-    <div #wordCloudCanvas class="word-cloud-canvas relative h-full w-full" role="img" [attr.aria-label]="ariaLabel()"></div>
+    <figure class="h-full w-full">
+        <figcaption class="sr-only">{{ description() }}</figcaption>
+        <div #wordCloudCanvas class="word-cloud-canvas relative h-full w-full"></div>
+    </figure>
     @if (droppedWordNotice()) {
-        <div
+        <output
             class="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-base-200/90 px-3 py-1 text-xs opacity-80"
             data-testid="word-cloud-dropped-word-notice"
-            role="status"
         >
             {{ droppedWordNotice() }}
-        </div>
+        </output>
     }
     <ol class="sr-only">
         @for (word of topWordsForScreenReaders(); track word.text) {
