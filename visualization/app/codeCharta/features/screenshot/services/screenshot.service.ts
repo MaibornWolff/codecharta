@@ -1,20 +1,27 @@
-import { Injectable, inject } from "@angular/core"
+import { Injectable, inject, signal } from "@angular/core"
 import html2canvas from "html2canvas-pro"
 import { Color, WebGLRenderer } from "three"
 import { FileState } from "../../../model/files/files"
 import { createPNGFileName } from "../../../model/files/files.helper"
 import { ThreeCameraService, ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { FilesRepo } from "../../../stores/fileStore/fileStore.facade"
+import { ScreenshotCapture } from "../screenshotCapture"
+import { cropTransparentMargins } from "./canvasCrop"
 import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
+import { downloadPng } from "./pngScreenshot"
 
+/** The metrics view's capture: the 3D map plus the overlays that are part of the picture. */
 @Injectable({ providedIn: "root" })
-export class ScreenshotService {
+export class ScreenshotService implements ScreenshotCapture {
     private readonly threeRendererService = inject(ThreeRendererService)
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly threeCameraService = inject(ThreeCameraService)
     private readonly filesRepo = inject(FilesRepo)
 
     readonly isWriteToClipboardAllowed = checkWriteToClipboardAllowed()
+    readonly subject = "map"
+    /** The map is always there to capture — an empty map is still a legitimate screenshot. */
+    readonly isCaptureAvailable = signal(true).asReadonly()
 
     async makeScreenshotToFile(): Promise<void> {
         const renderer = this.threeRendererService.renderer
@@ -40,13 +47,7 @@ export class ScreenshotService {
     }
 
     private downloadScreenshot(canvas: HTMLCanvasElement, files: FileState[]) {
-        const dataUrl = canvas.toDataURL("image/png")
-        const downloadLink = document.createElement("a")
-        downloadLink.download = createPNGFileName(files, "map")
-        downloadLink.href = dataUrl
-        document.body.appendChild(downloadLink)
-        downloadLink.click()
-        downloadLink.remove()
+        downloadPng(canvas.toDataURL("image/png"), createPNGFileName(files, "map"))
     }
 
     private saveRenderSettings(renderer: WebGLRenderer) {
@@ -109,7 +110,7 @@ export class ScreenshotService {
 
         this.restoreLabelsAfterScreenshot(savedLabelStyles)
 
-        return this.getCroppedCanvas(canvas)
+        return cropTransparentMargins(canvas)
     }
 
     /**
@@ -143,51 +144,5 @@ export class ScreenshotService {
         for (const [el, cssText] of saved) {
             el.style.cssText = cssText
         }
-    }
-
-    private getCroppedCanvas(canvas: HTMLCanvasElement) {
-        const context = canvas.getContext("2d")
-        const width = canvas.width
-        const height = canvas.height
-
-        const imageData = context.getImageData(0, 0, width, height)
-        const data = imageData.data
-
-        let minX = width,
-            minY = height,
-            maxX = 0,
-            maxY = 0
-
-        for (let x = 0; x < width; x++) {
-            for (let y = 0; y < height; y++) {
-                const alpha = data[(width * y + x) * 4 + 3]
-                if (alpha > 0) {
-                    minX = Math.min(minX, x)
-                    maxX = Math.max(maxX, x)
-                    minY = Math.min(minY, y)
-                    maxY = Math.max(maxY, y)
-                }
-            }
-        }
-
-        const croppedCanvas = document.createElement("canvas")
-        const croppedContext = croppedCanvas.getContext("2d")
-
-        croppedCanvas.width = maxX - minX + 1
-        croppedCanvas.height = maxY - minY + 1
-
-        croppedContext.drawImage(
-            canvas,
-            minX,
-            minY,
-            croppedCanvas.width,
-            croppedCanvas.height,
-            0,
-            0,
-            croppedCanvas.width,
-            croppedCanvas.height
-        )
-
-        return croppedCanvas
     }
 }

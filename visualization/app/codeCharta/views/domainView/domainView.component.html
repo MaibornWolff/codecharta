@@ -37,6 +37,8 @@
     [style.left.px]="cloudLeftInset()"
 >
     <cc-word-cloud [settings]="settings()" [selectedNodePath]="selectedNodePath()" (clearSelection)="clearSelection()"></cc-word-cloud>
+    <!-- Floats over the cloud, centered on the visible area rather than the window, so it stays clear of the explorer. -->
+    <cc-domain-toolbox class="absolute left-1/2 top-[10px] z-10 -translate-x-1/2"></cc-domain-toolbox>
 </div>
 
 <cc-bottom-bar [showSelectedWhenNotHovered]="true" [selectedNodePath]="selectedNodePath()"></cc-bottom-bar>

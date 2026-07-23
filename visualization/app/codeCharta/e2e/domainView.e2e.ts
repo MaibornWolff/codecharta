@@ -174,4 +174,33 @@ test.describe("DomainView", () => {
         await viewSwitcher.switchToMetrics()
         await expect(page).toHaveURL(/\?(?:[^#]*&)?file=fileOne\.json(?:&[^#]*)?#\/$/)
     })
+
+    test("should download a png of the word cloud from the domain toolbox", async ({ page }) => {
+        // Arrange
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+
+        // Act
+        const download = page.waitForEvent("download")
+        await page.locator("cc-domain-toolbox button[aria-label='Screenshot']").click()
+
+        // Assert — the domain suffix distinguishes it from the metrics view's "_map" screenshot
+        expect((await download).suggestedFilename()).toMatch(/_domain\.png$/)
+    })
+
+    test("should take the word-cloud screenshot on the Ctrl+Alt+S hotkey", async ({ page }) => {
+        // Arrange
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+
+        // Act
+        const download = page.waitForEvent("download")
+        await page.keyboard.press("Control+Alt+KeyS")
+
+        // Assert — the kept-alive metrics view holds a binding for the same hotkey, so this also pins
+        // that the press reaches the view on screen rather than the map
+        expect((await download).suggestedFilename()).toMatch(/_domain\.png$/)
+    })
 })

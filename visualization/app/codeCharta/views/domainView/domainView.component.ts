@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
+import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
 import { LoadingFileProgressSpinnerComponent } from "../../features/shared/facade"
 import {
     EXPLORER_CAPABILITIES,
@@ -30,7 +31,14 @@ import { DomainSelectionStore } from "./stores/domainSelection.store"
 @Component({
     selector: "cc-domain-view",
     templateUrl: "./domainView.component.html",
-    imports: [SidebarExplorerComponent, WordCloudComponent, DomainBarComponent, BottomBarComponent, LoadingFileProgressSpinnerComponent],
+    imports: [
+        SidebarExplorerComponent,
+        WordCloudComponent,
+        DomainBarComponent,
+        DomainToolboxComponent,
+        BottomBarComponent,
+        LoadingFileProgressSpinnerComponent
+    ],
     providers: [
         DomainExplorerRow,
         { provide: EXPLORER_ROW, useExisting: DomainExplorerRow },

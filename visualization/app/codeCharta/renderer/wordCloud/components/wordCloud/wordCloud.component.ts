@@ -18,6 +18,7 @@ import { switchMap } from "rxjs"
 import { DomainWord } from "../../../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape } from "../../../../model/wordCloud.model"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
+import { WordCloudChartRegistry } from "../../services/wordCloudChart.registry"
 import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
 import { loadWordCloudMaskImage } from "../../util/wordCloudMask"
 import { buildWordCloudOption, selectTopWords, WordCloudOption } from "../../util/wordCloudOption.builder"
@@ -80,6 +81,7 @@ const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)"
 export class WordCloudComponent implements OnDestroy {
     private readonly wordCloudReadStore = inject(WordCloudReadStore)
     private readonly viewReadinessStore = inject(ViewReadinessStore)
+    private readonly chartRegistry = inject(WordCloudChartRegistry)
 
     readonly settings = input<WordCloudSettings>(defaultWordCloudSettings)
 
@@ -206,6 +208,8 @@ export class WordCloudComponent implements OnDestroy {
             this.viewReadinessStore.markReady("domain")
             this.scheduleDrawnCountUpdate()
         })
+        // Published so the screenshot capture can read the canvas; withdrawn again in disposeChart.
+        this.chartRegistry.register(this.chart)
         this.containerSize.set({ width: container.clientWidth, height: container.clientHeight })
         this.observeResize(container)
     }
@@ -220,6 +224,9 @@ export class WordCloudComponent implements OnDestroy {
             clearTimeout(this.drawnCountTimeout)
         }
         this.drawnWordCount.set(null)
+        if (this.chart) {
+            this.chartRegistry.unregister(this.chart)
+        }
         this.chart?.dispose()
         this.chart = undefined
     }

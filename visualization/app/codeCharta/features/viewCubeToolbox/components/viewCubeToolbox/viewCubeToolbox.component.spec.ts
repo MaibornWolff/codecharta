@@ -6,7 +6,7 @@ import { of } from "rxjs"
 import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { GlobalSettingsFacade } from "../../../globalSettings/facade"
-import { ScreenshotService } from "../../services/screenshot.service"
+import { ScreenshotService } from "../../../screenshot/facade"
 import { ViewCubeToolboxComponent } from "./viewCubeToolbox.component"
 
 describe("ViewCubeToolboxComponent", () => {
@@ -23,7 +23,9 @@ describe("ViewCubeToolboxComponent", () => {
                     useValue: {
                         makeScreenshotToFile: jest.fn(),
                         makeScreenshotToClipboard: jest.fn(),
-                        isWriteToClipboardAllowed: true
+                        isWriteToClipboardAllowed: true,
+                        subject: "map",
+                        isCaptureAvailable: () => true
                     }
                 }
             ]

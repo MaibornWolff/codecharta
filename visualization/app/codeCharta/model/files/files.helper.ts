@@ -68,4 +68,4 @@ function createCappedFileName(fileNameCombined: string, state: string, screensho
         : [fileName.slice(0, maxLength - 1), SCREENSHOT_FILE_NAME_SHORTENER, screenshotFileNameSuffix, FILE_EXTENSION_PNG].join("")
 }
 
-type FileNameSuffixScreenshot = "legend" | "map"
+type FileNameSuffixScreenshot = "legend" | "map" | "domain"
