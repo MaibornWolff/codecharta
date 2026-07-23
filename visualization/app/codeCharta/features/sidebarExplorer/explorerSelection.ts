@@ -16,6 +16,14 @@ export interface ExplorerSelection {
     select(node: CodeMapNode): void
     deselect(): void
 
+    /**
+     * Whether collapsing a folder row clears the current selection. The metrics map treats collapse as a
+     * deselect — the 3D highlight follows the open folder — so that is the default when a port omits this.
+     * The domain word cloud sets it `false`: collapsing is a pure tidy-the-tree gesture and must never
+     * reset the cloud's scope. Optional so the metrics port keeps its behavior without opting in.
+     */
+    readonly clearsSelectionOnCollapse?: boolean
+
     /** `rowRect` is the row's bounding box, so the view can anchor a tooltip to it. */
     hover(node: CodeMapNode, rowRect: DOMRect): void
     hoverEnd(): void

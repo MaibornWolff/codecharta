@@ -50,7 +50,7 @@
             <span class="text-sm">Smallest Word</span>
             <cc-slider-number-input
                 ariaLabel="Smallest Word in pixels"
-                [min]="8"
+                [min]="10"
                 [max]="40"
                 [value]="settings().sizeRange[0]"
                 (valueChange)="onSizeRangeMinChange($event)"
@@ -73,7 +73,7 @@
                 [checked]="settings().shrinkToFit"
                 (change)="onShrinkToFitChange($any($event.target).checked)"
             />
-            <span class="text-sm">Fit all words</span>
+            <span class="text-sm">Fit All Words</span>
         </label>
         <label
             class="flex cursor-pointer items-center gap-2"
@@ -86,7 +86,7 @@
                 [checked]="settings().drawOutOfBound"
                 (change)="onDrawOutOfBoundChange($any($event.target).checked)"
             />
-            <span class="text-sm">Draw outside bounds</span>
+            <span class="text-sm">Draw Outside Bounds</span>
         </label>
     </div>
 

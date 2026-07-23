@@ -119,6 +119,20 @@ describe("ExplorerTreeLevelComponent", () => {
         expect(selection.select).not.toHaveBeenCalled()
     })
 
+    it("should keep the selection when collapsing a folder for a view that opts out of collapse-clears", async () => {
+        // Arrange — the domain word cloud keeps its scope on collapse, so its selection port opts out
+        TestBed.resetTestingModule()
+        configureWithPorts({ selection: createExplorerSelectionMock({ clearsSelectionOnCollapse: false }) })
+        const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
+        const rootRow = container.querySelector("#\\/root")
+
+        // Act — root renders open at depth 0, so this click collapses it
+        await userEvent.click(rootRow)
+
+        // Assert
+        expect(selection.deselect).not.toHaveBeenCalled()
+    })
+
     it("should ignore clicks on rows the row projection declares unselectable", async () => {
         // Arrange
         TestBed.resetTestingModule()

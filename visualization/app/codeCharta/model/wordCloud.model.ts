@@ -27,6 +27,20 @@ export enum WordCloudShape {
     star = "star"
 }
 
+/**
+ * User-facing labels for the layout shapes. The enum values are the raw echarts-wordcloud API strings;
+ * 'cardioid' in particular is math jargon (heart-shaped) that no user vocabulary contains, so the UI
+ * shows these instead of the enum value verbatim.
+ */
+export const wordCloudShapeLabels: Record<WordCloudShape, string> = {
+    [WordCloudShape.circle]: "Circle",
+    [WordCloudShape.cardioid]: "Heart",
+    [WordCloudShape.diamond]: "Diamond",
+    [WordCloudShape.triangle]: "Triangle",
+    [WordCloudShape.pentagon]: "Pentagon",
+    [WordCloudShape.star]: "Star"
+}
+
 /** Which word metric drives a word's rendered size. `tfidf` is only offered when the data carries it. */
 export enum WordCloudSizingMode {
     frequency = "frequency",
@@ -65,14 +79,22 @@ export interface WordCloudSettings {
 }
 
 /**
- * Defaults for the word-cloud controls, matching DomainLanguageCharta (the tool this renderer was ported
- * from) so a project looks the same in both. The domain bar seeds its slices from these.
+ * Defaults for the word-cloud controls. Most values match DomainLanguageCharta (the tool this renderer
+ * was ported from) so a project looks the same in both. The domain bar seeds its slices from these.
+ *
+ * Rotation intentionally diverges from that parity for legibility: DomainLanguageCharta's `rotationStep`
+ * of 45° makes four of five reachable angles diagonal, so nearly every word is tilted and hard to read.
+ * Widening the step to 90° over the same [-90, 90] range leaves only -90°, 0° and 90° — words are drawn
+ * horizontal or vertical, never diagonally. Because echarts-wordcloud picks the angle by rounding a
+ * uniform draw onto the step grid, 0° sits in the fat middle bucket and lands ~50% of the time, so
+ * horizontal is the dominant orientation and the rest split evenly between the two vertical directions
+ * (the standard word-cloud convention: mostly horizontal with a few vertical).
  */
 export const defaultWordCloudSettings: WordCloudSettings = {
     shape: WordCloudShape.circle,
     sizeRange: [12, 60],
     rotationRange: [-90, 90],
-    rotationStep: 45,
+    rotationStep: 90,
     gridSize: 8,
     sizingMode: WordCloudSizingMode.frequency,
     topN: 150,

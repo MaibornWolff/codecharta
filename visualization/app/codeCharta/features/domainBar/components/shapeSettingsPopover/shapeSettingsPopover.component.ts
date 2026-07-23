@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
-import { WordCloudShape } from "../../../../model/wordCloud.model"
+import { WordCloudShape, wordCloudShapeLabels } from "../../../../model/wordCloud.model"
 import { ResetSettingsButtonComponent, SettingsPopoverShellComponent } from "../../../shared/facade"
 import { DomainBarReadStore } from "../../stores/domainBar.read.store"
 import { DomainBarWriteStore } from "../../stores/domainBar.write.store"
@@ -20,6 +20,7 @@ export class ShapeSettingsPopoverComponent {
 
     readonly settings = this.readStore.settings
     readonly shapes = Object.values(WordCloudShape)
+    readonly shapeLabels = wordCloudShapeLabels
 
     readonly resetKeys = ["domainState.shape"]
 
