@@ -1,0 +1,27 @@
+<label class="form-control w-full gap-1" title="Which word metric drives a word's rendered size">
+    <span class="text-sm">Word Sizing</span>
+    <select
+        class="select select-bordered select-sm w-full"
+        data-testid="domain-bar-sizing-mode"
+        (change)="onSizingModeChange($any($event.target).value)"
+    >
+        <option
+            [value]="WordCloudSizingMode.frequency"
+            [selected]="settings().sizingMode === WordCloudSizingMode.frequency"
+            title="Frequency — sizes words by how often they occur"
+        >
+            Frequency
+        </option>
+        <option
+            [value]="WordCloudSizingMode.tfidf"
+            [selected]="settings().sizingMode === WordCloudSizingMode.tfidf"
+            [disabled]="!hasTfidfData()"
+            [title]="tfidfOptionTitle()"
+        >
+            TF-IDF
+        </option>
+    </select>
+    @if (!hasTfidfData()) {
+        <span class="text-xs opacity-70">TF-IDF is unavailable: the loaded file has no TF-IDF scores.</span>
+    }
+</label>

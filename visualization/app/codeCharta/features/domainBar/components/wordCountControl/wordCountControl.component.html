@@ -1,0 +1,11 @@
+<div class="rounded-lg bg-base-200 p-3" data-testid="domain-bar-top-n" title="How many of the most important words are drawn">
+    <span class="text-sm">Words</span>
+    <cc-slider-number-input
+        ariaLabel="Words"
+        [min]="wordCountBounds.min"
+        [max]="wordCountBounds.max"
+        [step]="wordCountBounds.step"
+        [value]="settings().topN"
+        (valueChange)="onTopNChange($event)"
+    ></cc-slider-number-input>
+</div>

@@ -10,8 +10,8 @@
             <span class="text-sm">Min Rotation</span>
             <cc-slider-number-input
                 ariaLabel="Min Rotation in degrees"
-                [min]="-90"
-                [max]="0"
+                [min]="minRotationBounds.min"
+                [max]="minRotationBounds.max"
                 [value]="settings().rotationRange[0]"
                 (valueChange)="onRotationRangeMinChange($event)"
             ></cc-slider-number-input>
@@ -20,8 +20,8 @@
             <span class="text-sm">Max Rotation</span>
             <cc-slider-number-input
                 ariaLabel="Max Rotation in degrees"
-                [min]="0"
-                [max]="90"
+                [min]="maxRotationBounds.min"
+                [max]="maxRotationBounds.max"
                 [value]="settings().rotationRange[1]"
                 (valueChange)="onRotationRangeMaxChange($event)"
             ></cc-slider-number-input>
@@ -30,9 +30,9 @@
             <span class="text-sm">Rotation Step</span>
             <cc-slider-number-input
                 ariaLabel="Rotation Step in degrees"
-                [min]="15"
-                [max]="90"
-                [step]="15"
+                [min]="rotationStepBounds.min"
+                [max]="rotationStepBounds.max"
+                [step]="rotationStepBounds.step"
                 [value]="settings().rotationStep"
                 (valueChange)="onRotationStepChange($event)"
             ></cc-slider-number-input>
