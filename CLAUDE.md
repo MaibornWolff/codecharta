@@ -301,7 +301,8 @@ Example: `feat(visualization): add dark mode toggle (#123)`
   - ❌ `val x = if (condition) { valueA } else { valueB }`
   - Use multi-line only when branches contain multiple statements or complex logic
 - **Magic strings/numbers**: Extract repeated literals to constants in `companion object`
-- **Function organization**: Group related functions with section comments
+- **Function organization**: Keep related functions next to each other; order them top-down (callers
+  before callees) instead of labelling groups with section comments
 - **Parameter naming**: Use consistent, descriptive names across related functions
 
 **Visualization (TypeScript)**:
@@ -325,7 +326,12 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 - **Expressive Naming**: Descriptive names that reveal intent (>2 chars, avoid abbreviations)
 - **Fix Warnings**: Never suppress, always resolve
 - **Consistent Style**: Match existing patterns; follow language conventions
-- **Comments**: Use sparingly; explain *why* not *what*. Prefer clear function names over comments.
+- **Comments**: Default to **no comment**. Write one only when the code cannot be made to explain
+  itself and a reader would otherwise draw a wrong conclusion — a non-obvious constraint, a
+  workaround (reference the issue), a deliberate trade-off. Never restate what the code does.
+  Naming is the tool: rename the method, extract a named helper, introduce a named constant or
+  intermediate variable instead of writing a sentence. Prose blocks that narrate a class, a
+  template section, or a sequence of steps do not belong in the code — delete them.
 - **Method Size**: Keep methods <25 lines; split complex logic into focused helpers
 - **Parameter Lists**: Max 3-4 parameters; use data classes for related groups
 - **Metric Accuracy**: All metrics must be deterministic and reproducible across runs
