@@ -5,11 +5,14 @@ import { firstValueFrom } from "rxjs"
 import { STATE } from "../../../mocks/dataMocks"
 import { CcState } from "../../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudShape } from "../../../model/wordCloud.model"
+import { defaultDomainState } from "../domainState.read.facade"
 import { DomainStateReadWindow } from "./domainState.readWindow"
 
 describe("DomainStateReadWindow", () => {
     function setup(domainState = defaultWordCloudSettings) {
-        const state: CcState = { ...STATE, domainState }
+        // The read window projects only the word-cloud subset; carry the sort keys from the full default
+        // so the mocked CcState is a valid DomainState.
+        const state: CcState = { ...STATE, domainState: { ...defaultDomainState, ...domainState } }
         TestBed.configureTestingModule({
             providers: [provideMockStore({ initialState: state }), { provide: State, useValue: { getValue: () => state } }]
         })
@@ -17,8 +20,8 @@ describe("DomainStateReadWindow", () => {
     }
 
     it("should read the current domain bar settings synchronously", () => {
-        // Arrange
-        const domainState = { ...defaultWordCloudSettings, shape: WordCloudShape.diamond }
+        // Arrange — getDomainState returns the whole DomainState (sort keys included), so expect the full state
+        const domainState = { ...defaultDomainState, shape: WordCloudShape.diamond }
         const readWindow = setup(domainState)
 
         // Act & Assert

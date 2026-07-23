@@ -1,6 +1,7 @@
 import { STATE } from "../../../mocks/dataMocks"
 import { CcState } from "../../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../../../model/wordCloud.model"
+import { defaultDomainState } from "../domainState.read.facade"
 import { setDomainStateDrawOutOfBound } from "./drawOutOfBound/drawOutOfBound.actions"
 import { drawOutOfBound } from "./drawOutOfBound/drawOutOfBound.reducer"
 import { setDomainStateGridSize } from "./gridSize/gridSize.actions"
@@ -90,13 +91,13 @@ describe("domainState store", () => {
             // Arrange
             const state: CcState = {
                 ...STATE,
-                domainState: { ...defaultWordCloudSettings, shape: WordCloudShape.diamond, topN: 25 }
+                domainState: { ...defaultDomainState, shape: WordCloudShape.diamond, topN: 25 }
             }
 
             // Act
             const result = wordCloudSettingsSelector(state)
 
-            // Assert
+            // Assert — the selector projects only the word-cloud subset, dropping the sort keys
             expect(result).toEqual({ ...defaultWordCloudSettings, shape: WordCloudShape.diamond, topN: 25 })
         })
     })
