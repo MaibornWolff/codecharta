@@ -13,6 +13,8 @@ export { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "./components/publ
 export { ResetSettingsButtonComponent } from "./components/resetSettingsButton/resetSettingsButton.component"
 export { SettingsPopoverShellComponent } from "./components/settingsPopoverShell/settingsPopoverShell.component"
 export { SliderNumberInputComponent } from "./components/sliderNumberInput/sliderNumberInput.component"
+export { ToastComponent } from "./components/toast/toast.component"
 export { BlacklistExclusionGuard } from "./effects/addBlacklistItemsIfNotResultsInEmptyMap/blacklistExclusionGuard"
 export { getPartialDefaultState } from "./getPartialDefaultState"
+export { ToastService } from "./services/toast.service"
 export { parseChangedNumberInput, SETTINGS_INPUT_DEBOUNCE_MS } from "./util/settingsInput"

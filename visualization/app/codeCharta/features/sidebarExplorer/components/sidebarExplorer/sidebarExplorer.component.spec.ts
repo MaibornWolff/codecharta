@@ -10,7 +10,7 @@ import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { provideExplorerPortsMock } from "../../explorerPorts.mocks"
 import { explorerCountsSelector } from "../../selectors/sidebarExplorer.selectors"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
-import { EXPLORER_DEFAULT_WIDTH, ExplorerWidthService } from "../../services/explorerWidth.service"
+import { EXPLORER_DEFAULT_WIDTH, EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
 import { COLLAPSED_WIDTH, SidebarExplorerComponent } from "./sidebarExplorer.component"
 
 const ROOT: CodeMapNode = {
@@ -22,7 +22,12 @@ const ROOT: CodeMapNode = {
 }
 
 describe("SidebarExplorerComponent", () => {
-    const configureWithCapabilities = (capabilities?: { showRules?: boolean; showSearch?: boolean; showCounts?: boolean }) => {
+    const configureWithCapabilities = (capabilities?: {
+        showRules?: boolean
+        showSearch?: boolean
+        showFind?: boolean
+        showCounts?: boolean
+    }) => {
         TestBed.configureTestingModule({
             imports: [SidebarExplorerComponent],
             providers: [
@@ -94,6 +99,20 @@ describe("SidebarExplorerComponent", () => {
         expect(container.querySelector("cc-explorer-search-bar")).toBe(null)
     })
 
+    it("should render the tree find bar only when the view wants it", async () => {
+        // Arrange — off by default (the metrics view uses the map-filtering search instead)
+        const { container: withoutFind } = await render(SidebarExplorerComponent)
+        expect(withoutFind.querySelector("cc-explorer-find-bar")).toBe(null)
+        TestBed.resetTestingModule()
+        configureWithCapabilities({ showFind: true })
+
+        // Act
+        const { container: withFind } = await render(SidebarExplorerComponent)
+
+        // Assert
+        expect(withFind.querySelector("cc-explorer-find-bar")).not.toBe(null)
+    })
+
     it("should hide the count chips when the view does not want them", async () => {
         // Arrange
         TestBed.resetTestingModule()
@@ -160,6 +179,27 @@ describe("SidebarExplorerComponent", () => {
 
         // Assert
         expect(host.style.width).toBe(`${EXPLORER_DEFAULT_WIDTH}px`)
+    })
+
+    it("should publish its expanded footprint so the floating bars center clear of the sidebar", async () => {
+        // Arrange & Act
+        await render(SidebarExplorerComponent)
+
+        // Assert
+        expect(document.documentElement.style.getPropertyValue(EXPLORER_WIDTH_CSS_VARIABLE)).toBe(`${EXPLORER_DEFAULT_WIDTH}px`)
+    })
+
+    it("should publish a zero footprint when collapsed so a bar can span the full width", async () => {
+        // Arrange
+        const { detectChanges } = await render(SidebarExplorerComponent)
+        const collapseService = TestBed.inject(ExplorerCollapseService)
+
+        // Act
+        collapseService.toggle()
+        detectChanges()
+
+        // Assert — a collapsed explorer is a short top strip that overlaps nothing at the viewport bottom
+        expect(document.documentElement.style.getPropertyValue(EXPLORER_WIDTH_CSS_VARIABLE)).toBe("0px")
     })
 
     it("should resize the explorer when dragging the resize handle", async () => {

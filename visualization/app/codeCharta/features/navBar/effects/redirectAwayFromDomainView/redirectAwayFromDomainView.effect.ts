@@ -7,6 +7,12 @@ import { isLoadedFileSetWithoutDomainLensSelector } from "../../../../lenses/dom
 import { CcState } from "../../../../model/codeCharta.model"
 import { routeLinks, viewIdForLink } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
+import { ToastService } from "../../../shared/facade"
+
+/** Why the domain view had to be left — `null` means it is still reachable. */
+type RedirectReason = "missing-domain-data" | "delta" | null
+
+const MISSING_DOMAIN_DATA_TOAST = "This file has no domain-language data — switched to the map view."
 
 /**
  * Sends the user back to the metrics view whenever the domain view cannot be offered — either because the
@@ -33,28 +39,49 @@ import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.fac
 export class RedirectAwayFromDomainViewEffect {
     private readonly store: Store<CcState> = inject(Store)
     private readonly router = inject(Router)
+    private readonly toastService = inject(ToastService)
 
-    private readonly isDomainViewUnreachable$ = combineLatest([
+    private readonly redirectReason$ = combineLatest([
         this.store.select(isLoadedFileSetWithoutDomainLensSelector),
         this.store.select(isDeltaStateSelector)
-    ]).pipe(map(([isLoadedFileSetWithoutDomainLens, isDeltaState]) => isLoadedFileSetWithoutDomainLens || isDeltaState))
+    ]).pipe(
+        map(([isLoadedFileSetWithoutDomainLens, isDeltaState]) => this.toRedirectReason(isLoadedFileSetWithoutDomainLens, isDeltaState))
+    )
 
     private readonly navigated$ = this.router.events.pipe(filter(routerEvent => routerEvent instanceof NavigationEnd))
 
     redirectAwayFromUnreachableDomainView$ = createEffect(
         () =>
             merge(
-                this.isDomainViewUnreachable$,
+                this.redirectReason$,
                 this.navigated$.pipe(
-                    withLatestFrom(this.isDomainViewUnreachable$),
-                    map(([, isDomainViewUnreachable]) => isDomainViewUnreachable)
+                    withLatestFrom(this.redirectReason$),
+                    map(([, redirectReason]) => redirectReason)
                 )
             ).pipe(
-                filter(isDomainViewUnreachable => isDomainViewUnreachable && this.isOnDomainRoute()),
-                tap(() => this.router.navigateByUrl(routeLinks.metrics, { replaceUrl: true }))
+                filter(redirectReason => redirectReason !== null && this.isOnDomainRoute()),
+                tap(redirectReason => this.redirectToMetricsView(redirectReason))
             ),
         { dispatch: false }
     )
+
+    private toRedirectReason(isLoadedFileSetWithoutDomainLens: boolean, isDeltaState: boolean): RedirectReason {
+        if (isLoadedFileSetWithoutDomainLens) {
+            return "missing-domain-data"
+        }
+        if (isDeltaState) {
+            return "delta"
+        }
+        return null
+    }
+
+    private redirectToMetricsView(redirectReason: RedirectReason): void {
+        this.router.navigateByUrl(routeLinks.metrics, { replaceUrl: true })
+        // Only the missing-data case is silent enough to blindside the user; delta mode is their own toggle.
+        if (redirectReason === "missing-domain-data") {
+            this.toastService.show(MISSING_DOMAIN_DATA_TOAST)
+        }
+    }
 
     private isOnDomainRoute(): boolean {
         return viewIdForLink(this.router.url) === "domain"

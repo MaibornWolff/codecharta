@@ -1,0 +1,14 @@
+<div class="toast toast-top toast-end z-[2000]" role="status" aria-live="polite" aria-atomic="true">
+    @for (message of messages(); track message.id) {
+        <div
+            class="alert shadow-lg"
+            [class.alert-info]="message.severity === 'info'"
+            [class.alert-success]="message.severity === 'success'"
+            [class.alert-warning]="message.severity === 'warning'"
+            [class.alert-error]="message.severity === 'error'"
+        >
+            <span>{{ message.text }}</span>
+            <button class="btn btn-circle btn-ghost btn-xs" (click)="dismiss(message.id)" aria-label="Dismiss notification">✕</button>
+        </div>
+    }
+</div>

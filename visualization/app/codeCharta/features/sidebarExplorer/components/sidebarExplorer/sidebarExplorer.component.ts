@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy } from "@angular/core"
 import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
-import { ExplorerWidthService } from "../../services/explorerWidth.service"
+import { EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
+import { ExplorerFindBarComponent } from "../explorerFindBar/explorerFindBar.component"
 import { ExplorerHeaderComponent } from "../explorerHeader/explorerHeader.component"
 import { ExplorerSearchBarComponent } from "../explorerSearchBar/explorerSearchBar.component"
 import { ExplorerSortControlComponent } from "../explorerSortControl/explorerSortControl.component"
@@ -22,6 +23,7 @@ export const COLLAPSED_WIDTH = 300
     imports: [
         ExplorerHeaderComponent,
         ExplorerSearchBarComponent,
+        ExplorerFindBarComponent,
         ExplorerSortControlComponent,
         ExplorerTreeComponent,
         RulesPopoverComponent
@@ -56,6 +58,18 @@ export class SidebarExplorerComponent implements OnDestroy {
     // Collapsed → a fixed strip width; expanded → the width the user dragged.
     readonly displayWidth = computed(() => (this.isCollapsed() ? COLLAPSED_WIDTH : this.width()))
 
+    constructor() {
+        // Publish the horizontal footprint the expanded panel occupies so the floating bottom bars can
+        // center in the space to its right instead of hiding their left controls behind the sidebar.
+        // Collapsed the explorer is a short top strip that overlaps nothing at the viewport bottom, so it
+        // claims 0. Both views share the width/collapse root services, so a kept-alive detached instance
+        // publishing the same value is harmless.
+        effect(() => {
+            const inset = this.isCollapsed() ? 0 : this.width()
+            document.documentElement.style.setProperty(EXPLORER_WIDTH_CSS_VARIABLE, `${inset}px`)
+        })
+    }
+
     private isResizing = false
     private readonly onPointerMove = (event: PointerEvent) => this.resize(event)
     private readonly onPointerUp = () => this.stopResize()
@@ -79,6 +93,9 @@ export class SidebarExplorerComponent implements OnDestroy {
 
     ngOnDestroy() {
         this.stopResize()
+        // Only fires on genuine teardown (the keep-alive strategy detaches rather than destroys views), so
+        // there is no live sibling explorer whose published inset this would clobber.
+        document.documentElement.style.removeProperty(EXPLORER_WIDTH_CSS_VARIABLE)
     }
 
     private resize(event: PointerEvent) {

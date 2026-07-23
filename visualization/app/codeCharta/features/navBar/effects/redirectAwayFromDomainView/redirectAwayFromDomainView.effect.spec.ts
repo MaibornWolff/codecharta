@@ -7,11 +7,13 @@ import { DomainLensData, FileSelectionState, FileState } from "../../../../model
 import { routeLinks } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { ToastService } from "../../../shared/facade"
 import { RedirectAwayFromDomainViewEffect } from "./redirectAwayFromDomainView.effect"
 
 describe("RedirectAwayFromDomainViewEffect", () => {
     let store: MockStore
     let router: { url: string; events: Subject<unknown>; navigateByUrl: jest.Mock }
+    let toastService: { show: jest.Mock }
 
     const aDomainLens: DomainLensData = { "/root": [{ text: "invoice", frequency: 3 }] }
     const persistedFileChecksum = "checksum-of-the-one-loaded-file"
@@ -27,10 +29,15 @@ describe("RedirectAwayFromDomainViewEffect", () => {
 
     function setup(currentUrl: string) {
         router = { url: currentUrl, events: new Subject(), navigateByUrl: jest.fn() }
+        toastService = { show: jest.fn() }
 
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([RedirectAwayFromDomainViewEffect])],
-            providers: [{ provide: Router, useValue: router }, provideMockStore({ initialState: defaultState })]
+            providers: [
+                { provide: Router, useValue: router },
+                { provide: ToastService, useValue: toastService },
+                provideMockStore({ initialState: defaultState })
+            ]
         })
 
         store = TestBed.inject(MockStore)
@@ -68,6 +75,28 @@ describe("RedirectAwayFromDomainViewEffect", () => {
 
         // Assert
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
+    })
+
+    it("should show a toast explaining the switch when a file without domain data is loaded on the domain view", () => {
+        // Arrange
+        setup(routeLinks.domain)
+
+        // Act
+        loadFile({})
+
+        // Assert
+        expect(toastService.show).toHaveBeenCalledWith("This file has no domain-language data — switched to the map view.")
+    })
+
+    it("should not show a toast when the loaded file keeps the domain view reachable", () => {
+        // Arrange
+        setup(routeLinks.domain)
+
+        // Act
+        loadFile(aDomainLens)
+
+        // Assert
+        expect(toastService.show).not.toHaveBeenCalled()
     })
 
     it("should redirect to the metrics view when the domain view is deep linked with a query string", () => {
@@ -164,6 +193,18 @@ describe("RedirectAwayFromDomainViewEffect", () => {
 
         // Assert
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
+    })
+
+    it("should not show the missing-domain-data toast when the redirect is caused by delta mode", () => {
+        // Arrange
+        setup(routeLinks.domain)
+        loadFile(aDomainLens)
+
+        // Act
+        enterDeltaMode()
+
+        // Assert
+        expect(toastService.show).not.toHaveBeenCalled()
     })
 
     it("should redirect to the metrics view when the domain view is opened while delta mode is active", () => {
