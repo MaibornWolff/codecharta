@@ -13,11 +13,6 @@ export class SidebarInspectorPageObject {
         await this.page.locator("cc-sidebar-inspector.translate-x-full").waitFor({ state: "attached", timeout: this.DEFAULT_TIMEOUT })
     }
 
-    /**
-     * The inspector's node-name element. Use with a web-first assertion
-     * (`await expect(po.nodeName()).toHaveText(…)`) rather than reading the text: the inspector's
-     * content fills in a tick after it slides open, so a plain read races it.
-     */
     nodeName(): Locator {
         return this.page.locator("[data-testid='inspector-node-name']")
     }

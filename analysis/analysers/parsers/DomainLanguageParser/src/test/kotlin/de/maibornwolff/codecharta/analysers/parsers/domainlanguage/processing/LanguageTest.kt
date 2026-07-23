@@ -383,15 +383,12 @@ class LanguageTest {
         assertIs<ResourceKeywords>(jsKeywords)
         assertIs<ResourceKeywords>(tsKeywords)
 
-        // JS should have common keywords
         assertTrue(jsKeywords.getKeywords().contains("function"))
         assertTrue(jsKeywords.getKeywords().contains("const"))
 
-        // TS should have TypeScript-specific keywords
         assertTrue(tsKeywords.getKeywords().contains("interface"))
         assertTrue(tsKeywords.getKeywords().contains("type"))
 
-        // JS should NOT have TypeScript-only keywords
         assertTrue(!jsKeywords.getKeywords().contains("interface"))
         assertTrue(!jsKeywords.getKeywords().contains("type"))
     }

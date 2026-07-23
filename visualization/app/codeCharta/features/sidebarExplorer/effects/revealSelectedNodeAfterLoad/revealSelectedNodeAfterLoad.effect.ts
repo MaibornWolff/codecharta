@@ -5,20 +5,8 @@ import { filesLoaded } from "../../../../stores/fileStore/fileStore.facade"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 
-/**
- * How long after a load to keep waiting for a selection to appear. The selection is restored a few
- * dispatches after `filesLoaded`, so the value is generally not in the store yet when the load lands;
- * a load that simply has no selection must not leave the subscription open indefinitely.
- */
 const AWAIT_RESTORED_SELECTION_MS = 2000
 
-/**
- * Scrolls the selected node back into view after a file is loaded.
- *
- * Without this the tree re-renders around a selection the user cannot see — the row exists, is
- * highlighted, and sits somewhere off-screen. Reveal does NOT force the panel open here: the user may
- * have collapsed it deliberately, and a load is not a request to see the tree.
- */
 @Injectable()
 export class RevealSelectedNodeAfterLoadEffect {
     private readonly actions$ = inject(Actions)

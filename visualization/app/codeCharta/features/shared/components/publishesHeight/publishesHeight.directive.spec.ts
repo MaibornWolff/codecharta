@@ -2,7 +2,6 @@ import { Component } from "@angular/core"
 import { render } from "@testing-library/angular"
 import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "./publishesHeight.directive"
 
-// JSDOM has no ResizeObserver; capture the callback so tests can trigger a resize deterministically.
 let resizeCallback: (() => void) | undefined
 class ResizeObserverMock {
     constructor(callback: () => void) {
@@ -15,7 +14,6 @@ class ResizeObserverMock {
 
 const CSS_VARIABLE = "--cc-test-bar-height"
 
-// JSDOM lays nothing out, so getBoundingClientRect always reports 0; make the measured height mutable.
 let measuredHeight = 0
 
 @Component({

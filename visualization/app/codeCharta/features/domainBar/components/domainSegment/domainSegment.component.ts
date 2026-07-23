@@ -1,13 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
 import { AxisCardComponent } from "../../../shared/facade"
 
-/**
- * One area of the domain bar: a labelled value with a cog that opens its settings popover.
- *
- * All four ids (popover, cog anchor, and the two test ids) are derived from a single `idPrefix` so they
- * cannot drift apart. The popover itself is projected, because each segment has its own — bind it to the
- * exposed `popoverId`/`anchorName` via a template reference variable.
- */
 @Component({
     selector: "cc-domain-segment",
     templateUrl: "./domainSegment.component.html",

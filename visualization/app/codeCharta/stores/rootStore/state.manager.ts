@@ -25,9 +25,7 @@ const objectWithDynamicKeysInStore = new Set([
     "metricsLensSource.attributeTypes",
     "metricsLensSource.attributeDescriptors",
     "dependencyLensSource.attributeTypes",
-    // the whole path-keyed word bank is replaced wholesale, never deep-merged key-by-key
     "domainLensSource.words",
-    // tuples: must be replaced wholesale, otherwise the deep-merge spread turns them into objects with numeric keys
     "domainState.sizeRange",
     "domainState.rotationRange",
     // arrays: must be replaced wholesale, otherwise the deep-merge spread turns them into objects with numeric keys

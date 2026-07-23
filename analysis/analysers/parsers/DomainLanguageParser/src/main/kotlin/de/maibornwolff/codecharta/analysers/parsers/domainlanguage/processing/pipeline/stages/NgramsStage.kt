@@ -3,14 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.p
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionContext
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.WeightedText
 
-/**
- * Generates n-grams from identifier words while preserving individual words, then reduces the redundant
- * ones away (see [StatisticalSubstringReduction]). Comments and strings contribute individual words only.
- *
- * Example with ngrams=2:
- *   Input: "userProfile" (split to ["user", "profile"])
- *   Output: ["user", "profile", "user profile"]
- */
 class NgramsStage(private val ngrams: Int = 1, private val enableSsr: Boolean = true) {
     private val substringReduction = StatisticalSubstringReduction()
 

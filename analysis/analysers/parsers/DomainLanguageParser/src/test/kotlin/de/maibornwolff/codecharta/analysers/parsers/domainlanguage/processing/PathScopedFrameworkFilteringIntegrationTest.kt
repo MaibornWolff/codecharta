@@ -9,28 +9,19 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-/**
- * Integration tests for path-scoped framework keyword filtering.
- *
- * Verifies that framework keywords (Angular, React, etc.) are only filtered
- * from files within the framework's directory scope, not globally.
- */
 class PathScopedFrameworkFilteringIntegrationTest {
     @Test
     fun `should filter Angular keywords only from files under Angular directory`(
         @TempDir tempDir: Path
     ) {
         // Arrange: monorepo structure with Angular frontend and Kotlin backend
-        // Create Angular frontend directory with package.json
         val frontendDir = tempDir.resolve("frontend").createDirectories()
         frontendDir.resolve("package.json").writeText(
             """{"dependencies": {"@angular/core": "^17.0.0"}}"""
         )
 
-        // Create backend directory (no package.json)
         val backendDir = tempDir.resolve("backend").createDirectories()
 
-        // Setup framework detection
         val frameworksByPath = mapOf(frontendDir to setOf(Framework.ANGULAR))
         val provider = PathScopedKeywordProvider(frameworksByPath)
         val stopWordFilter =
@@ -43,7 +34,6 @@ class PathScopedFrameworkFilteringIntegrationTest {
                 pathScopedKeywordProvider = provider
             )
 
-        // Test words - "component" and "selector" are Angular keywords
         val testWords = listOf("component", "selector", "user", "profile", "class")
 
         // Act: Filter for frontend TypeScript file
@@ -86,7 +76,6 @@ class PathScopedFrameworkFilteringIntegrationTest {
         val provider = PathScopedKeywordProvider(frameworksByPath)
         val stopWordFilter = StopWordFilter(pathScopedKeywordProvider = provider)
 
-        // "usestate" is a React keyword, "directive" is Angular-only (not in React)
         val testWords = listOf("usestate", "directive", "user")
 
         // Act
@@ -122,7 +111,6 @@ class PathScopedFrameworkFilteringIntegrationTest {
         val provider = PathScopedKeywordProvider(frameworksByPath)
         val stopWordFilter = StopWordFilter(pathScopedKeywordProvider = provider)
 
-        // ASP.NET keywords use title case: "Controller", "Authorize"
         val testWords = listOf("Controller", "Authorize", "user", "service")
 
         // Act
@@ -154,7 +142,6 @@ class PathScopedFrameworkFilteringIntegrationTest {
             )
         val fileAnalyzer = FileAnalyzer(stopWordFilter)
 
-        // Create a TypeScript file with Angular-specific identifiers
         val tsFile = frontendDir.resolve("app.component.ts").toFile()
         tsFile.parentFile.mkdirs()
         tsFile.writeText(

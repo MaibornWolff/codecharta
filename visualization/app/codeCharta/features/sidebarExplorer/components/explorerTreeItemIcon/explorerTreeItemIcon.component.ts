@@ -17,8 +17,7 @@ export class ExplorerTreeItemIconComponent {
 
     readonly node = input.required<CodeMapNode>()
     readonly isOpen = input.required<boolean>()
-    /** Muted rendering, decided by the hosting view (see the ExplorerRow projection). */
-    readonly isDimmed = input<boolean>(false)
+    readonly isInactive = input<boolean>(false)
 
     readonly markedPackages = toSignal(this.sharedViewReadWindow.markedPackages$, { requireSync: true })
 
@@ -32,7 +31,7 @@ export class ExplorerTreeItemIconComponent {
 
     readonly iconColor = computed((): string | undefined => {
         const node = this.node()
-        if (this.isDimmed()) {
+        if (this.isInactive()) {
             return ExplorerTreeItemIconComponent.NO_AREA_COLOR
         }
         if (isLeaf(node)) {

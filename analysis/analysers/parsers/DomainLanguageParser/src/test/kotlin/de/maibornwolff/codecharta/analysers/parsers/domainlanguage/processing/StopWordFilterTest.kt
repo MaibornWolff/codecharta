@@ -468,7 +468,6 @@ class StopWordFilterTest {
         assertFalse(filter.isExcluded("user profile data"))
     }
 
-    // Path-scoped framework keyword tests
     @Test
     fun `should exclude framework keyword when file is under framework directory`() {
         // Arrange
@@ -479,7 +478,6 @@ class StopWordFilterTest {
         val filePath = Paths.get("/project/frontend/src/app.component.ts")
 
         // Act & Assert
-        // "component" is an Angular keyword
         assertTrue(filter.isExcluded("component", filePath))
     }
 
@@ -493,7 +491,6 @@ class StopWordFilterTest {
         val filePath = Paths.get("/project/backend/src/Main.kt")
 
         // Act & Assert
-        // "component" should NOT be filtered for files outside Angular directory
         assertFalse(filter.isExcluded("component", filePath))
     }
 
@@ -508,9 +505,7 @@ class StopWordFilterTest {
         val backendPath = Paths.get("/project/backend/src/Main.kt")
 
         // Act & Assert
-        // "class" is a Kotlin keyword - should be filtered everywhere
         assertTrue(filter.isExcluded("class", backendPath))
-        // English stop words should also be filtered everywhere
         assertTrue(filter.isExcluded("the", backendPath))
     }
 
@@ -536,9 +531,7 @@ class StopWordFilterTest {
             )
 
         // Assert
-        // Frontend: Angular keywords should be filtered
         assertEquals(listOf("user", "profile"), filteredFrontend)
-        // Backend: Angular keywords should NOT be filtered
         assertEquals(listOf("component", "user", "selector", "profile"), filteredBackend)
     }
 
@@ -565,9 +558,7 @@ class StopWordFilterTest {
             )
 
         // Assert
-        // Frontend: Angular + Kotlin + English stop words filtered
         assertEquals(listOf("user"), filteredFrontend)
-        // Backend: Only Kotlin + English stop words filtered (not Angular)
         assertEquals(listOf("component", "user"), filteredBackend)
     }
 }

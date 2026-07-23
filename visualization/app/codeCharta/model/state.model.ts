@@ -19,18 +19,11 @@ import {
 } from "./domain.model"
 import { WordCloudSettings } from "./wordCloud.model"
 
-/**
- * The domain view's persisted state: the word-cloud render controls PLUS the explorer sort the domain view
- * remembers on its own, independent of the map view's global `preferences.sorting`.
- */
 export interface DomainState extends WordCloudSettings {
     sortingOrder: SortingOption
     sortingOrderAscending: boolean
 }
 
-// The default number of top-value labels shown on the map. A plain domain default (not ngrx state),
-// so it lives in model/ where both the mapState amountOfTopLabels reducer and the pure
-// getNumberOfTopLabels helper can read it without the helper importing a state home (util-is-a-leaf-kernel).
 export const defaultAmountOfTopLabels = 10
 
 export enum FileSelectionState {
@@ -62,7 +55,6 @@ export interface Preferences {
     sorting: Sorting
 }
 
-// Shared renderer view state: focus stack, search pattern, blacklist, marked packages, interaction ids.
 export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string

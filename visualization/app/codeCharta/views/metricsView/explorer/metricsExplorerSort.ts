@@ -5,10 +5,6 @@ import { SortingOption } from "../../../model/codeCharta.model"
 import { PreferencesReadWindow } from "../../../stores/preferences/preferences.read.facade"
 import { setSortingOption, toggleSortingOrderAscending } from "../../../stores/preferences/preferences.write.facade"
 
-/**
- * The metrics view's explorer sort: the global `preferences.sorting`, unchanged. Reading and writing the
- * same slice as before keeps the map view's sort behavior (and its persistence) byte-identical.
- */
 @Injectable()
 export class MetricsExplorerSort implements ExplorerSort {
     private readonly store = inject(Store)

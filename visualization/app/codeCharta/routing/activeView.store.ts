@@ -3,14 +3,6 @@ import { NavigationEnd, Router } from "@angular/router"
 import { distinctUntilChanged, filter, map, Observable, shareReplay, startWith } from "rxjs"
 import { ViewId, viewIdForLink } from "./routePaths"
 
-/**
- * Which routed view is currently on screen.
- *
- * The route-reuse strategy detaches views instead of destroying them, so a view cannot tell from its own
- * lifecycle whether the user is looking at it — the component instance outlives the navigation. The URL
- * is the only source of truth, and work that is only worth doing for a visible view (above all the 3D
- * map's render) reads it from here.
- */
 @Injectable({ providedIn: "root" })
 export class ActiveViewStore {
     readonly activeView$: Observable<ViewId>

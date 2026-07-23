@@ -1,10 +1,11 @@
-import { Injectable, signal } from "@angular/core"
-
-const LOCAL_STORAGE_KEY = "codeChartaExplorerCollapsed"
+import { Injectable, inject, signal } from "@angular/core"
+import { ExplorerCollapseRepo } from "../repos/explorerCollapse.repo"
 
 @Injectable({ providedIn: "root" })
 export class ExplorerCollapseService {
-    readonly isCollapsed = signal(localStorage.getItem(LOCAL_STORAGE_KEY) === "true")
+    private readonly explorerCollapseRepo = inject(ExplorerCollapseRepo)
+
+    readonly isCollapsed = signal(this.explorerCollapseRepo.readIsCollapsed())
 
     toggle() {
         this.isCollapsed.update(value => !value)
@@ -17,6 +18,6 @@ export class ExplorerCollapseService {
     }
 
     private persist() {
-        localStorage.setItem(LOCAL_STORAGE_KEY, String(this.isCollapsed()))
+        this.explorerCollapseRepo.writeIsCollapsed(this.isCollapsed())
     }
 }

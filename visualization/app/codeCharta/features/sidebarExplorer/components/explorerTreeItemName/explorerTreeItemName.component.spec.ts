@@ -36,7 +36,7 @@ describe("ExplorerTreeItemNameComponent", () => {
     it("should be opacity-50 when the hosting view dims the row", async () => {
         // Arrange & Act — why a row is dimmed is the view's call, so it arrives as a plain flag
         const { container } = await render(ExplorerTreeItemNameComponent, {
-            inputs: { node: { path: "/x", attributes: { rloc: 0 } } as unknown as CodeMapNode, isDimmed: true }
+            inputs: { node: { path: "/x", attributes: { rloc: 0 } } as unknown as CodeMapNode, isInactive: true }
         })
 
         // Assert

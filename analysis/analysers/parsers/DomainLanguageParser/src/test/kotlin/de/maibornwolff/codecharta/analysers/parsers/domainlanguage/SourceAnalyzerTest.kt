@@ -21,7 +21,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-// The root aggregation node produced by DirectoryWordAggregator.
 private const val ROOT_KEY = "."
 
 private fun DomainAnalysisResult.allWords(): List<WordFrequency> = wordsByPath.values.flatten()
@@ -109,7 +108,6 @@ class SourceAnalyzerTest {
     ) {
         // Arrange
         val dir = tempDir.toFile()
-        // Use separate files to ensure clear frequency differences
         File(dir, "file1.kt").writeText("class Apple {}")
         File(dir, "file2.kt").writeText("class Apple {}")
         File(dir, "file3.kt").writeText("class Apple {}")
@@ -318,7 +316,6 @@ class SourceAnalyzerTest {
         val file = File(dir, "temporary.kt")
         file.writeText("class Temporary")
 
-        // A FileProcessor that deletes the file before reading and reports no words
         val deletingProcessor =
             object : FileProcessor {
                 override fun processFilesIndividually(
@@ -585,7 +582,6 @@ class SourceAnalyzerTest {
     ) {
         // Arrange
         val dir = tempDir.toFile()
-        // "rare" appears in 1 file, "common" appears in all 5 files
         File(dir, "file1.kt").writeText("class Rare { fun common() {} }")
         File(dir, "file2.kt").writeText("class Other { fun common() {} }")
         File(dir, "file3.kt").writeText("class Third { fun common() {} }")

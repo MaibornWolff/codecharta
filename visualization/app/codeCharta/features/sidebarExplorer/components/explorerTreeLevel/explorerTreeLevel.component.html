@@ -20,12 +20,12 @@
             <cc-explorer-tree-item-icon
                 [node]="node()"
                 [isOpen]="isOpen()"
-                [isDimmed]="rowProjection().isDimmed"
+                [isInactive]="rowProjection().isInactive"
             ></cc-explorer-tree-item-icon>
             <cc-explorer-tree-item-name
                 class="ml-1 flex-1 truncate"
                 [node]="node()"
-                [isDimmed]="rowProjection().isDimmed"
+                [isInactive]="rowProjection().isInactive"
                 [isItalic]="rowProjection().isItalic"
             ></cc-explorer-tree-item-name>
             @if (node().isFlattened) {

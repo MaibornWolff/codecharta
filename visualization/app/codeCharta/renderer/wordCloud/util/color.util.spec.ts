@@ -15,7 +15,6 @@ describe("color.util", () => {
         })
 
         it("should interpolate the word cloud gradient endpoints", () => {
-            // #e6007e (230,0,126) → #0030ff (0,48,255) at the midpoint = (115,24,191)
             expect(interpolateColor("#e6007e", "#0030ff", 0.5)).toBe("#7318bf")
         })
 
@@ -28,7 +27,6 @@ describe("color.util", () => {
         })
 
         it("should fall back to the default start color for a malformed start color", () => {
-            // "#e6007e" → white at factor 0 yields the default start color
             expect(interpolateColor("not-a-color", "#ffffff", 0)).toBe("#e6007e")
         })
     })

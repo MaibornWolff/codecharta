@@ -39,14 +39,14 @@ class SourceAnalyzer(
     }
 
     private fun scanFiles(directoryPath: String): List<File> {
-        progressReporter.startPhase("Scanning files", total = null)
+        progressReporter.startPhase("Scanning files", totalItems = null)
         val files = fileScanner.scan(directoryPath, config.bypassGitignore, config.excludeTests) { progressReporter.advance() }
         progressReporter.completePhase()
         return files
     }
 
     private fun processFiles(files: List<File>, directoryPath: String): FileProcessingResult {
-        progressReporter.startPhase("Processing files", total = files.size.toLong())
+        progressReporter.startPhase("Processing files", totalItems = files.size.toLong())
         val processingResult = processFilesIndividually(files, directoryPath) { progressReporter.advance() }
         progressReporter.completePhase()
         return processingResult
@@ -107,7 +107,6 @@ class SourceAnalyzer(
                 sortAndLimit(frequencies, sortBy, limit)
             }
 
-        // Aggregates the per-file words up to every ancestor directory and the root ".".
         val wordsPerPath = DirectoryWordAggregator.aggregateDirectories(fileWords, tfidfScores)
 
         return wordsPerPath.mapValues { (_, words) -> sortAndLimit(words, sortBy, limit) }
@@ -118,16 +117,12 @@ class SourceAnalyzer(
         return if (limit != null) sorted.take(limit) else sorted
     }
 
-    // `text` ascending is the deterministic tie-break so equal-ranked words keep a stable order and the
-    // emitted cc.json stays reproducible across runs.
     private fun sortWordFrequencies(frequencies: List<WordFrequency>, sortBy: SortBy): List<WordFrequency> = when (sortBy) {
         SortBy.FREQUENCY -> frequencies.sortedWith(compareByDescending<WordFrequency> { it.frequency }.thenBy { it.text })
         SortBy.TFIDF -> frequencies.sortedWith(compareByDescending<WordFrequency> { it.tfidf ?: 0.0 }.thenBy { it.text })
     }
 
     companion object {
-        // TF-IDF is undefined for a single document — IDF has no spread to measure — so below this
-        // the scoring is skipped entirely and only a warning is emitted.
         private const val MIN_FILES_FOR_TFIDF = 2
     }
 }

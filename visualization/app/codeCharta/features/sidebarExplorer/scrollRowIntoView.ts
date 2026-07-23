@@ -1,17 +1,9 @@
-const MAX_ATTEMPTS = 30
+const MAX_FRAMES_TO_WAIT_FOR_ROW = 30
 
-/**
- * Centres the tree row for `path` once it exists in the DOM.
- *
- * Revealing a node opens its ancestors, and each level opens in its own change-detection pass, so the
- * target row is generally NOT rendered yet in the frame the reveal is requested — a single
- * requestAnimationFrame misses it and the row silently never scrolls. Retry across frames instead,
- * bounded so a path that never renders (excluded, or filtered out by a search) cannot spin forever.
- */
 export function scrollRowIntoViewWhenRendered(path: string, isStillRequested: () => boolean = () => true) {
-    let attemptsLeft = MAX_ATTEMPTS
+    let framesLeft = MAX_FRAMES_TO_WAIT_FOR_ROW
 
-    const attempt = () => {
+    const scrollOrRetryNextFrame = () => {
         if (!isStillRequested()) {
             return
         }
@@ -20,11 +12,11 @@ export function scrollRowIntoViewWhenRendered(path: string, isStillRequested: ()
             row.scrollIntoView({ block: "center" })
             return
         }
-        attemptsLeft -= 1
-        if (attemptsLeft > 0) {
-            requestAnimationFrame(attempt)
+        framesLeft -= 1
+        if (framesLeft > 0) {
+            requestAnimationFrame(scrollOrRetryNextFrame)
         }
     }
 
-    requestAnimationFrame(attempt)
+    requestAnimationFrame(scrollOrRetryNextFrame)
 }

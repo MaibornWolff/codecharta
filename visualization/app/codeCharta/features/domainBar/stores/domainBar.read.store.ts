@@ -6,10 +6,6 @@ import { CcState } from "../../../model/codeCharta.model"
 import { defaultWordCloudSettings } from "../../../model/wordCloud.model"
 import { DomainStateReadWindow } from "../../../stores/domainState/domainState.read.facade"
 
-/**
- * Read surface of the domain settings bar: the persisted word-cloud controls as signals, plus whether
- * the loaded data carries tfidf (which gates the tfidf sizing option).
- */
 @Injectable({ providedIn: "root" })
 export class DomainBarReadStore {
     private readonly domainStateReadWindow = inject(DomainStateReadWindow)

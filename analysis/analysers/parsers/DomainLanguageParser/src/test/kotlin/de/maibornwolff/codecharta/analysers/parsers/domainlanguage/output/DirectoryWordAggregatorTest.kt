@@ -85,24 +85,20 @@ class DirectoryWordAggregatorTest {
         val result = DirectoryWordAggregator.aggregateDirectories(fileWords)
 
         // Assert
-        // Root should have all words aggregated
         val rootWords = result["."]
         assertEquals(3, rootWords?.size)
         assertEquals(10, rootWords?.find { it.text == "file" }?.frequency)
         assertEquals(8, rootWords?.find { it.text == "main" }?.frequency) // 5 + 3
         assertEquals(8, rootWords?.find { it.text == "test" }?.frequency)
 
-        // src should have all words
         val srcWords = result["src"]
         assertEquals(3, srcWords?.size)
 
-        // src/main should only have main branch words
         val mainWords = result["src/main"]
         assertEquals(2, mainWords?.size)
         assertEquals(10, mainWords?.find { it.text == "file" }?.frequency)
         assertEquals(5, mainWords?.find { it.text == "main" }?.frequency)
 
-        // src/test should only have test branch words
         val testWords = result["src/test"]
         assertEquals(2, testWords?.size)
         assertEquals(8, testWords?.find { it.text == "test" }?.frequency)

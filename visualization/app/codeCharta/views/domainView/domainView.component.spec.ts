@@ -63,9 +63,7 @@ describe("DomainViewComponent", () => {
             showCounts: false,
             sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
         })
-        // The domain view provides NO context menu at all.
         expect(injector.get(EXPLORER_CONTEXT_MENU, null)).toBeNull()
-        // No 3D map here, so nothing gates selection on a building existing.
         expect(injector.get(EXPLORER_ROW).project(SOME_NODE).isSelectable).toBe(true)
     })
 

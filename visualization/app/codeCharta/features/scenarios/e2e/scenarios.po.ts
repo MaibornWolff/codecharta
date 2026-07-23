@@ -14,16 +14,12 @@ export class ScenariosPageObject {
         await this.page.getByRole("dialog", { name: "Save Scenario" }).waitFor({ state: "attached", timeout: 10_000 })
     }
 
-    /** A scenario row by name. `hasText` matches on textContent, so it finds rows in collapsed groups too. */
     scenarioListItem(name: string): Locator {
         return this.page.getByRole("dialog", { name: "Scenarios" }).locator("cc-scenario-item", { hasText: name })
     }
 
     async getScenarioNames() {
         const names = this.page.getByRole("dialog", { name: "Scenarios" }).locator("cc-scenario-item .font-medium")
-        // The list is a radio-accordion — only the first group is expanded. Its items paint a change-detection
-        // tick after the dialog attaches, so wait for the first one to have text before reading (every caller
-        // of this method expects at least one visible scenario; the "no results" case checks the message instead).
         await expect(names.first()).not.toHaveText("", { timeout: 10_000 })
         return names.allInnerTexts()
     }
@@ -37,11 +33,6 @@ export class ScenariosPageObject {
         await dialog.getByRole("button", { name: new RegExp(name) }).click()
     }
 
-    /**
-     * The apply-scenario dialog and its title. Use with web-first assertions
-     * (`await expect(po.applyDialog()).toBeVisible()`): the dialog opens a change-detection tick after
-     * the scenario is clicked, so reading a count or the text once races it.
-     */
     applyDialog(): Locator {
         return this.page.locator("cc-apply-scenario-dialog dialog[open]")
     }
@@ -74,7 +65,6 @@ export class ScenariosPageObject {
         await confirmDialog.waitFor({ state: "detached", timeout: 10_000 })
     }
 
-    /** The empty-state message. Use with `await expect(po.noScenariosMessage()).toBeVisible()`. */
     noScenariosMessage(): Locator {
         return this.page.getByRole("dialog", { name: "Scenarios" }).getByText("No scenarios found.")
     }

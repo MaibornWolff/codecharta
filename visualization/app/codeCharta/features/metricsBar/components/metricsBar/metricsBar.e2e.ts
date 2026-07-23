@@ -33,7 +33,6 @@ test.describe("MetricsBar", () => {
         await metricsBar.openAreaMetricSelect()
         await metricsBar.searchAreaMetric("functions")
 
-        // Filtering re-renders the option list asynchronously, so poll instead of reading once
         await expect
             .poll(async () => {
                 const options = await metricsBar.getAreaMetricOptionNames()

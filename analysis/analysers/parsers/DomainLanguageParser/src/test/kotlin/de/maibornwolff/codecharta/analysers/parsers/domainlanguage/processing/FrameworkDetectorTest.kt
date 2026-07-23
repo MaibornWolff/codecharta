@@ -438,7 +438,6 @@ class FrameworkDetectorTest {
         val frameworksByPath = detector.detectFrameworks(tempDir)
 
         // Assert
-        // Both frameworks should be mapped to the same tempDir
         assertEquals(1, frameworksByPath.size)
         assertTrue(frameworksByPath[tempDir]?.contains(Framework.REACT) == true)
         assertTrue(frameworksByPath[tempDir]?.contains(Framework.ASPNET) == true)

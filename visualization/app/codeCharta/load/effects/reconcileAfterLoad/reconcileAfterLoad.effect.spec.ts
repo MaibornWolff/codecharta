@@ -67,7 +67,6 @@ describe("ReconcileAfterLoadEffect", () => {
         await flushDebounce()
     }
 
-    /** Loads the two domain-lens maps together, so the merger runs in multiple mode over both banks. */
     const loadDomainLensFilesAndSignal = async () => {
         loadFileService.loadFiles([
             { fileName: DOMAIN_FILE_NAME_A, fileSize: 42, content: clone(TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_A) },

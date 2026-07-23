@@ -2,13 +2,6 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.a
 
 import kotlin.math.log10
 
-/**
- * Calculates TF-IDF scores using corpus-level aggregation.
- *
- * Design: Aggregates term frequencies across all files rather than
- * normalizing per-file. This emphasizes globally distinctive terms,
- * useful for identifying domain concepts in specific code areas.
- */
 class TfIdfCalculator {
     private data class CorpusFrequencies(val perDocument: Map<String, Int>, val total: Map<String, Int>)
 
@@ -27,8 +20,6 @@ class TfIdfCalculator {
         }
     }
 
-    // Both frequencies come out of a single corpus traversal: a term in a file's map contributes one
-    // document to its document frequency and its count to its total frequency.
     private fun aggregateCorpus(perFileFrequencies: Map<String, Map<String, Int>>): CorpusFrequencies {
         val documentFrequency = mutableMapOf<String, Int>()
         val termFrequency = mutableMapOf<String, Int>()

@@ -21,33 +21,13 @@ import { DomainViewComponent } from "app/codeCharta/views/domainView/domainView.
 import { domainViewEffects } from "app/codeCharta/views/domainView/effects/domainView.effects"
 import { MetricsViewComponent } from "app/codeCharta/views/metricsView/metricsView.component"
 
-// The metrics (3D map) view is the default path; the domain (word-cloud) view is a sibling route. The
-// routed path lives in the URL FRAGMENT (`withHashLocation`), not in the pathname, for two reasons:
-//
-// 1. The published entry is `…/app/index.html?file=…`. `Location.normalize` only strips a trailing
-//    "/index.html" (its regex is $-anchored), so with path routing a trailing query string leaves the
-//    location as "/index.html?file=…" — matching no route, so the outlet stays empty. (Entries without a
-//    query — Electron's `loadFile(…/index.html)`, the e2e static server's "/" — did resolve correctly.)
-// 2. The app is served from static hosting that cannot rewrite unknown paths, so reloading "/domain" 404s.
-//    A fragment is never sent to the server.
-//
-// Ownership of the URL is split with QueryParamsService: the router only ever rewrites the FRAGMENT, that
-// service only ever rewrites the QUERY STRING, so the ?file=… deep link survives a metrics↔domain switch
-// without any router-level query handling.
-//
-// That split only holds with QueryPreservingHashLocationStrategy in place of the stock
-// `withHashLocation()`: Angular's HashLocationStrategy writes a fragment-only RELATIVE url ("#/"), which
-// `replaceState` resolves against `document.baseURI` — and `<base href="./" />` in index.html strips the
-// query from baseURI, so the stock strategy destroyed `?file=…` on the first navigation. See the strategy.
 export const routes: Routes = [
     { path: routePaths.metrics, component: MetricsViewComponent },
     { path: routePaths.domain, component: DomainViewComponent }
 ]
 
-/** Replaces the stock `withHashLocation()` strategy — see QueryPreservingHashLocationStrategy. */
 export const locationStrategyProvider = { provide: LocationStrategy, useClass: QueryPreservingHashLocationStrategy }
 
-/** The complete router wiring — always provide these together; the strategy is not optional. */
 export const routerProviders = [provideRouter(routes), locationStrategyProvider] as const
 
 export const appConfig: ApplicationConfig = {
@@ -58,7 +38,6 @@ export const appConfig: ApplicationConfig = {
 
         ...routerProviders,
 
-        // Keep the metrics (3D map) and domain views alive across a switch — see the strategy's doc.
         { provide: RouteReuseStrategy, useClass: KeepAliveRouteReuseStrategy },
 
         provideEffects([

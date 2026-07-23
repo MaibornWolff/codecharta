@@ -26,11 +26,6 @@ export function getTopLevelMapName(path: string) {
     return end === -1 ? path.slice(start) : path.slice(start, end)
 }
 
-/**
- * The display name of a node path: its last non-empty segment, or `fallback` when the path is null or has
- * no usable segment. Single-sources the "leaf name of a path" idiom shared by the domain view (collapsed
- * explorer name) and the word-cloud renderer (empty-state name), which had drifted to different fallbacks.
- */
 export function pathToNodeName(path: string | null, fallback: string): string {
     if (path === null) {
         return fallback

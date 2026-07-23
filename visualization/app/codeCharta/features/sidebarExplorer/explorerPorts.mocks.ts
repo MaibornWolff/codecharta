@@ -10,18 +10,16 @@ import { EXPLORER_SORT, ExplorerSort } from "./explorerSort.port"
 
 const TRIVIAL_PROJECTION: ExplorerRowProjection = {
     isSelectable: true,
-    isDimmed: false,
+    isInactive: false,
     isItalic: false,
     title: "",
     decoration: null
 }
 
-/** A neutral row projection for specs: everything selectable, nothing dimmed, no decoration. */
 export function createExplorerRowMock(project: (node: CodeMapNode) => ExplorerRowProjection = () => TRIVIAL_PROJECTION): ExplorerRow {
     return { project }
 }
 
-/** A neutral selection port for specs: nothing selected or hovered; the writes are jest spies. */
 export function createExplorerSelectionMock(overrides: Partial<ExplorerSelection> = {}): ExplorerSelection {
     return {
         isSelected: () => false,
@@ -34,7 +32,6 @@ export function createExplorerSelectionMock(overrides: Partial<ExplorerSelection
     }
 }
 
-/** A neutral context menu for specs: enabled for every node, nothing marked; the writes are jest spies. */
 export function createExplorerContextMenuMock(overrides: Partial<ExplorerContextMenu> = {}): ExplorerContextMenu {
     return {
         isEnabledFor: () => true,
@@ -45,7 +42,6 @@ export function createExplorerContextMenuMock(overrides: Partial<ExplorerContext
     }
 }
 
-/** A neutral sort port for specs: sorts by Name ascending; the writes are jest spies. */
 export function createExplorerSortMock(overrides: Partial<ExplorerSort> = {}): ExplorerSort {
     return {
         option$: of(SortingOption.NAME),
@@ -60,11 +56,6 @@ export function provideExplorerCapabilitiesMock(overrides: Partial<ExplorerCapab
     return { provide: EXPLORER_CAPABILITIES, useValue: { ...DEFAULT_EXPLORER_CAPABILITIES, ...overrides } }
 }
 
-/**
- * Provides all explorer ports for specs that render explorer components. Individual ports can be overridden
- * — pass the instance a spec wants to assert against (e.g. `{ selection: createExplorerSelectionMock(...) }`).
- * Context menu can be dropped with `{ contextMenu: null }` to exercise the no-menu path.
- */
 export function provideExplorerPortsMock(
     overrides: {
         row?: ExplorerRow

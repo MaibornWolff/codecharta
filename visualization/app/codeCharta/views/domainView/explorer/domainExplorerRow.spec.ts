@@ -12,6 +12,6 @@ describe("DomainExplorerRow", () => {
         const projection = row.project(LEAF)
 
         // Assert
-        expect(projection).toEqual({ isSelectable: true, isDimmed: false, isItalic: false, title: "", decoration: null })
+        expect(projection).toEqual({ isSelectable: true, isInactive: false, isItalic: false, title: "", decoration: null })
     })
 })

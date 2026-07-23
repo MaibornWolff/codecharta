@@ -26,7 +26,6 @@ export class SidebarExplorerReadStore {
     readonly isFlattenPatternDisabled$ = this.store.select(isFlattenPatternDisabledSelector)
     readonly isExcludePatternDisabled$ = this.store.select(isExcludePatternDisabledSelector)
 
-    /** The explorer tree sorted by the hosting view's own order (supplied via the EXPLORER_SORT port). */
     rootNodeFor(sortingOrder: SortingOption, sortingOrderAscending: boolean) {
         return this.store.select(createExplorerTreeNodeSelector(sortingOrder, sortingOrderAscending))
     }

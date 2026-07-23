@@ -12,7 +12,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class SourceCodePipelineTest {
-    /** Any path works: these pipelines are built with no framework registry, so nothing is path-scoped. */
     private val sourcePath: Path = Path.of("src", "Sample.kt")
 
     private val emptyFilter = StopWordFilter(emptyList(), emptySet())
@@ -125,7 +124,6 @@ class SourceCodePipelineTest {
         assertTrue(result.containsKey("customer"))
         assertTrue(result.containsKey("order"))
         assertTrue(result.containsKey("processor"))
-        // Bigrams removed by SSR (contained in trigram with equal frequency)
         assertFalse(result.containsKey("customer order"))
         assertFalse(result.containsKey("order processor"))
         assertTrue(result.containsKey("customer order processor"))
@@ -165,11 +163,6 @@ class SourceCodePipelineTest {
         assertTrue(result.containsKey("order"))
         assertTrue(result.containsKey("orders"))
 
-        // "process" appears as:
-        // - identifier in the function name (weight 3)
-        // - comment (weight 2)
-        // - string (weight 1)
-        // OrderProcessor contributes "order" + "processor", not "process".
         assertEquals(6, result["process"])
         assertTrue(result.containsKey("processor"))
     }
@@ -198,15 +191,12 @@ class SourceCodePipelineTest {
 
         // Assert
         assertTrue(result.containsKey("user"))
-        // "user" appears 4 times (class name + 3 properties) with weight 3 each = 12
         assertEquals(12, result["user"])
     }
 
     @Test
     fun `should filter Kotlin language keywords`() {
         // Arrange
-        // Compared against an unfiltered run over the same source, so the test fails if the
-        // pipeline ever stops consulting its stopWordFilter.
         val sourceCode =
             """
             class UserProfileData {
@@ -269,7 +259,6 @@ class SourceCodePipelineTest {
         assertTrue(result.containsKey("email"))
         assertTrue(result.containsKey("validate"))
 
-        // "customer" appears 5 times (class + 3 properties + 1 function) with weight 3 each = 15
         assertEquals(15, result["customer"])
     }
 
@@ -332,16 +321,8 @@ class SourceCodePipelineTest {
         assertTrue(result.containsKey("total"))
         assertTrue(result.containsKey("amount"))
 
-        // "calculate" appears as:
-        // - identifier (weight 3)
-        // - comment (weight 2)
-        // Total: 5
         assertEquals(5, result["calculate"])
 
-        // "total" appears as:
-        // - comment (weight 2)
-        // - string (weight 1)
-        // Total: 3
         assertEquals(3, result["total"])
     }
 
@@ -475,10 +456,8 @@ class SourceCodePipelineTest {
         val result = pipeline.process(sourceCode, sourcePath)
 
         // Assert
-        // Should have bigrams from identifier
         assertTrue(result.containsKey("user profile"))
 
-        // Should NOT have bigrams from comment
         assertTrue(!result.containsKey("comment with") || result["comment with"] == null)
     }
 

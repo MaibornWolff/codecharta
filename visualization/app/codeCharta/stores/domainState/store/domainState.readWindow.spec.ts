@@ -10,8 +10,6 @@ import { DomainStateReadWindow } from "./domainState.readWindow"
 
 describe("DomainStateReadWindow", () => {
     function setup(domainState = defaultWordCloudSettings) {
-        // The read window projects only the word-cloud subset; carry the sort keys from the full default
-        // so the mocked CcState is a valid DomainState.
         const state: CcState = { ...STATE, domainState: { ...defaultDomainState, ...domainState } }
         TestBed.configureTestingModule({
             providers: [provideMockStore({ initialState: state }), { provide: State, useValue: { getValue: () => state } }]

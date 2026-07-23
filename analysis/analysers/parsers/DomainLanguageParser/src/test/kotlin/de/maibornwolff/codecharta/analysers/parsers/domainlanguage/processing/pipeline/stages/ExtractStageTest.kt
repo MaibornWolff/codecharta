@@ -104,8 +104,6 @@ class ExtractStageTest {
         val result = stage.extract(sourceCode)
 
         // Assert
-        // Note: Single character literals in Kotlin are char types, not strings
-        // The library may or may not extract these depending on the tree-sitter grammar
         val identifiers = result.filter { it.context == ExtractionContext.IDENTIFIER }
         assertTrue(identifiers.any { it.text == "char" })
     }
@@ -144,8 +142,6 @@ class ExtractStageTest {
         val result = stage.extract(sourceCode)
 
         // Assert
-        // Note: The library extracts all strings regardless of length
-        // Filtering by length is done in later pipeline stages if needed
         val strings = result.filter { it.context == ExtractionContext.STRING }
         assertTrue(strings.any { it.text == "Hello" })
         assertTrue(strings.any { it.text == "ab" })

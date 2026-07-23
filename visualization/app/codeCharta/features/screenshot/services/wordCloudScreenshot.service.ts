@@ -9,12 +9,6 @@ import { downloadPng } from "./pngScreenshot"
 
 const PNG_MIME_TYPE = "image/png"
 
-/**
- * The domain view's capture: the word cloud alone. Unlike the map — which is rasterized out of the DOM
- * with html2canvas because its picture includes overlays — the cloud IS a canvas, so ECharts renders the
- * export itself. That keeps the words crisp at the device pixel ratio and keeps explorer, bars and
- * notices out of the image.
- */
 @Injectable({ providedIn: "root" })
 export class WordCloudScreenshotService implements ScreenshotCapture {
     private readonly chartRegistry = inject(WordCloudChartRegistry)
@@ -22,7 +16,6 @@ export class WordCloudScreenshotService implements ScreenshotCapture {
 
     readonly isWriteToClipboardAllowed = checkWriteToClipboardAllowed()
     readonly subject = "word cloud"
-    /** No chart while the empty state is shown — there is genuinely nothing to export then. */
     readonly isCaptureAvailable = this.chartRegistry.hasChart
 
     async makeScreenshotToFile(): Promise<void> {
@@ -45,10 +38,6 @@ export class WordCloudScreenshotService implements ScreenshotCapture {
         await setToClipboard(blob)
     }
 
-    /**
-     * A transparent background so the export drops onto any slide or document, and cropped to the words
-     * because the cloud is laid out into a container far wider than it fills.
-     */
     private renderScreenshotCanvas(): HTMLCanvasElement | null {
         const canvas = this.chartRegistry.current()?.getRenderedCanvas({
             pixelRatio: window.devicePixelRatio || 1,

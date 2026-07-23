@@ -86,8 +86,6 @@ export class LoadInitialFileStore {
 
     private static readonly optionalMapStateKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
 
-    // The domain view's own explorer sort was added after these homes shipped; an older persisted domainState
-    // has neither key, so they must not surface in the "could not be fully restored" dialog.
     private static readonly optionalDomainStateKeys = new Set(["sortingOrder", "sortingOrderAscending"])
 
     // transient interaction ids; never restored from a previous session's persisted state.

@@ -19,7 +19,6 @@ describe("NavBarComponent", () => {
         { provide: State, useValue: { getValue: () => defaultState } },
         { provide: UploadFilesService, useValue: { uploadFiles: jest.fn() } },
         { provide: ActiveViewStore, useValue: { activeView$: of(activeView), currentView: () => activeView } },
-        // The view switcher renders routerLinks, which need a router even when no route is exercised.
         provideRouter([])
     ]
 
@@ -43,7 +42,6 @@ describe("NavBarComponent", () => {
         expect(container.querySelectorAll("cc-print-3d-button").length).toBe(1)
         expect(container.querySelectorAll("cc-settings-button").length).toBe(1)
         expect(container.querySelectorAll("cc-view-switcher").length).toBe(1)
-        // Both trailing dividers belong to controls that only the metrics view renders
         expect(container.querySelectorAll(TRAILING_DIVIDER_SELECTOR).length).toBe(2)
     })
 
@@ -69,7 +67,6 @@ describe("NavBarComponent", () => {
         const { container } = await render(NavBarComponent, { providers: providersFor(false, "domain") })
 
         // Assert — 3D print exports the code map's geometry and the mode toggle drives delta mode,
-        // neither of which the domain view has any meaning for
         expect(container.querySelectorAll("cc-mode-toggle").length).toBe(0)
         expect(container.querySelectorAll("cc-print-3d-button").length).toBe(0)
         expect(container.querySelectorAll("cc-settings-button").length).toBe(1)
@@ -80,7 +77,6 @@ describe("NavBarComponent", () => {
         const { container } = await render(NavBarComponent, { providers: providersFor(false, "domain") })
 
         // Assert — a divider is the trailing separator of the control before it, so hiding both
-        // map-only controls has to take their dividers with them
         expect(container.querySelectorAll(TRAILING_DIVIDER_SELECTOR).length).toBe(0)
     })
 

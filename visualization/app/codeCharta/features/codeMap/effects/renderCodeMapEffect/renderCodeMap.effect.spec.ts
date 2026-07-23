@@ -104,7 +104,6 @@ describe("renderCodeMapEffect", () => {
 
     it("should keep re-rendering on-screen changes after the map has settled to ready", async () => {
         // Arrange — the map rendered once and settled, exactly the state the app is in when the user has
-        // been looking at a finished map and then excludes a node or changes a metric.
         actions$.next(setInvertArea({ value: true }))
         await wait(maxFPS)
         viewReadinessStore.markReady("metrics")

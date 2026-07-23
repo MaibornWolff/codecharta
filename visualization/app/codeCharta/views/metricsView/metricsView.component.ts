@@ -22,13 +22,6 @@ import { MetricsExplorerRow } from "./explorer/metricsExplorerRow"
 import { MetricsExplorerSelection } from "./explorer/metricsExplorerSelection"
 import { MetricsExplorerSort } from "./explorer/metricsExplorerSort"
 
-/**
- * The metrics (3D treemap) view — the default route. Owns the map, its inspector/legend/context menu and
- * the metricsBar, plus the file-extension and bottom bars. The explorer keeps its full controls (rules +
- * search) and gets the map reading of a row: selection drives the 3D scene, hovering shows the metric
- * tooltip, and right-click opens the node-context menu. The shell owns loadOnBoot, the nav bar and the
- * global dialogs.
- */
 @Component({
     selector: "cc-metrics-view",
     templateUrl: "./metricsView.component.html",

@@ -1,11 +1,3 @@
-/**
- * Trims the fully transparent margins off a canvas, so a screenshot is the picture and nothing else —
- * both captures draw onto a transparent surface that is as large as the viewport (or the cloud's
- * container), and the drawn content rarely fills it.
- *
- * A canvas without a single opaque pixel is returned untouched: there is no content to frame, and the
- * cropped box would come out empty.
- */
 export function cropTransparentMargins(canvas: HTMLCanvasElement): HTMLCanvasElement {
     const width = canvas.width
     const height = canvas.height
