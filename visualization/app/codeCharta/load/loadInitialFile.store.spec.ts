@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing"
 import { Action, Store, StoreModule } from "@ngrx/store"
-import { CcState, DomainLensSource } from "../model/codeCharta.model"
-import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../model/wordCloud.model"
+import { CcState, DomainLensSource, DomainState } from "../model/codeCharta.model"
+import { WordCloudShape, WordCloudSizingMode } from "../model/wordCloud.model"
 import { DomainLensSourceReadWindow, defaultDomainLensSource } from "../stores/domainLensSource/domainLensSource.read.facade"
 import { setDomainWords } from "../stores/domainLensSource/domainLensSource.write.facade"
-import { DomainStateReadWindow } from "../stores/domainState/domainState.read.facade"
+import { DomainStateReadWindow, defaultDomainState } from "../stores/domainState/domainState.read.facade"
 import {
     setDomainStateDrawOutOfBound,
     setDomainStateGridSize,
@@ -23,8 +23,12 @@ describe("LoadInitialFileStore", () => {
     let loadInitialFileStore: LoadInitialFileStore
     let dispatchSpy: jest.SpyInstance
 
-    /** Every domainState setting differing from its default, so one apply hits all nine switch branches. */
-    const savedDomainState: WordCloudSettings = {
+    /**
+     * Every word-cloud setting differs from its default, so one apply hits all nine word-cloud switch
+     * branches; the sort keys stay at their defaults, so none is dispatched for them.
+     */
+    const savedDomainState: DomainState = {
+        ...defaultDomainState,
         shape: WordCloudShape.star,
         sizeRange: [20, 80],
         rotationRange: [-45, 45],
@@ -79,7 +83,7 @@ describe("LoadInitialFileStore", () => {
             setup()
 
             // Act
-            const missingKeys = loadInitialFileStore.applyDomainState({ ...defaultWordCloudSettings })
+            const missingKeys = loadInitialFileStore.applyDomainState({ ...defaultDomainState })
 
             // Assert
             expect(missingKeys).toEqual([])
@@ -89,7 +93,7 @@ describe("LoadInitialFileStore", () => {
         it("should dispatch only the changed setting and report the keys the persisted state lacks", () => {
             // Arrange
             setup()
-            const partiallyPersistedDomainState = { topN: 42 } as WordCloudSettings
+            const partiallyPersistedDomainState = { topN: 42 } as DomainState
 
             // Act
             const missingKeys = loadInitialFileStore.applyDomainState(partiallyPersistedDomainState)
@@ -113,10 +117,10 @@ describe("LoadInitialFileStore", () => {
             setup([
                 {
                     provide: DomainStateReadWindow,
-                    useValue: { getDomainState: () => ({ ...defaultWordCloudSettings, unknownSetting: "old" }) }
+                    useValue: { getDomainState: () => ({ ...defaultDomainState, unknownSetting: "old" }) }
                 }
             ])
-            const savedDomainStateWithUnknownKey = { ...defaultWordCloudSettings, unknownSetting: "new" } as WordCloudSettings
+            const savedDomainStateWithUnknownKey = { ...defaultDomainState, unknownSetting: "new" } as DomainState
 
             // Act & Assert
             expect(() => loadInitialFileStore.applyDomainState(savedDomainStateWithUnknownKey)).toThrow("Unhandled key: unknownSetting")

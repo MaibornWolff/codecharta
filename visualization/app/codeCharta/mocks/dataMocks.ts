@@ -25,7 +25,7 @@ import {
     SortingOption
 } from "../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
-import { defaultWordCloudSettings } from "../model/wordCloud.model"
+import { defaultDomainState } from "../stores/domainState/domainState.read.facade"
 import { isLeaf } from "../util/codeMapHelper"
 import { UNARY_METRIC } from "../util/metric/unaryMetric"
 
@@ -2072,7 +2072,7 @@ export const STATE: CcState = {
     domainLensSource: {
         words: {}
     },
-    domainState: defaultWordCloudSettings,
+    domainState: defaultDomainState,
     sharedView: {
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
@@ -2229,7 +2229,7 @@ export const DEFAULT_STATE: CcState = {
     domainLensSource: {
         words: {}
     },
-    domainState: defaultWordCloudSettings,
+    domainState: defaultDomainState,
     files: [],
     isLoadingFile: true,
     currentFilesAreSampleFiles: false

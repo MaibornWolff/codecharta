@@ -4,11 +4,14 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { STATE } from "../../../mocks/dataMocks"
 import { CcState, DomainWord } from "../../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudShape } from "../../../model/wordCloud.model"
+import { defaultDomainState } from "../../../stores/domainState/domainState.read.facade"
 import { DomainBarReadStore } from "./domainBar.read.store"
 
 describe("DomainBarReadStore", () => {
     function setup(domainState = defaultWordCloudSettings, words: Record<string, DomainWord[]> = {}) {
-        const state: CcState = { ...STATE, domainState, domainLensSource: { words } }
+        // The word-cloud settings are the subset of DomainState under test; carry the sort keys from the
+        // full default so the mocked CcState is a valid DomainState.
+        const state: CcState = { ...STATE, domainState: { ...defaultDomainState, ...domainState }, domainLensSource: { words } }
         TestBed.configureTestingModule({
             providers: [provideMockStore({ initialState: state }), { provide: State, useValue: { getValue: () => state } }]
         })
