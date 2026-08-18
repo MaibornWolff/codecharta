@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { Store } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { firstValueFrom } from "rxjs"
+import { EXPLORER_SORT, ExplorerSort, provideExplorerSort } from "../../../features/sidebarExplorer/facade"
 import { provideMockState } from "../../../mocks/state.mocks"
 import { SortingOption } from "../../../model/codeCharta.model"
 import {
@@ -9,13 +10,13 @@ import {
     domainStateSortingOrderSelector
 } from "../../../stores/domainState/domainState.read.facade"
 import { setDomainStateSortingOrder, setDomainStateSortingOrderAscending } from "../../../stores/domainState/domainState.write.facade"
-import { DomainExplorerSort } from "./domainExplorerSort"
+import { DOMAIN_EXPLORER_SORT } from "./domainExplorerSort"
 
-describe("DomainExplorerSort", () => {
+describe("DOMAIN_EXPLORER_SORT", () => {
     function setup(ascending = true) {
         TestBed.configureTestingModule({
             providers: [
-                DomainExplorerSort,
+                provideExplorerSort(DOMAIN_EXPLORER_SORT),
                 provideMockState(),
                 provideMockStore({
                     selectors: [
@@ -25,7 +26,8 @@ describe("DomainExplorerSort", () => {
                 })
             ]
         })
-        return { sort: TestBed.inject(DomainExplorerSort), dispatchSpy: jest.spyOn(TestBed.inject(Store), "dispatch") }
+        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
+        return { sort: TestBed.inject<ExplorerSort>(EXPLORER_SORT), dispatchSpy }
     }
 
     it("should stream the domain view's OWN sort option and order", async () => {

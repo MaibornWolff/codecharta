@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing"
+import { provideViewScopedExplorerState } from "../provideViewScopedExplorerState"
 import { ExplorerCollapseService } from "./explorerCollapse.service"
 import { ExplorerRevealService } from "./explorerReveal.service"
 
@@ -8,6 +9,8 @@ describe("ExplorerRevealService", () => {
 
     beforeEach(() => {
         jest.useFakeTimers()
+        localStorage.clear()
+        TestBed.configureTestingModule({ providers: provideViewScopedExplorerState("metrics") })
         revealService = TestBed.inject(ExplorerRevealService)
         collapseService = TestBed.inject(ExplorerCollapseService)
     })

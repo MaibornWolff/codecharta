@@ -31,7 +31,7 @@ test.describe("DomainView", () => {
         await expect(page.locator("cc-domain-bar")).toBeVisible()
     })
 
-    test("should render the explorer without the rules popovers and search bar in the domain view", async ({ page }) => {
+    test("should search files and folders in the domain view, but without the map-only blacklist rules", async ({ page }) => {
         // Arrange
         const viewSwitcher = new ViewSwitcherPageObject(page)
 
@@ -40,7 +40,8 @@ test.describe("DomainView", () => {
 
         // Assert
         await expect(page.locator("cc-sidebar-explorer")).toBeVisible()
-        await expect(page.locator("cc-sidebar-explorer cc-explorer-search-bar")).toHaveCount(0)
+        await expect(page.locator("cc-sidebar-explorer cc-explorer-search-bar")).toBeVisible()
+        await expect(page.locator("cc-sidebar-explorer cc-explorer-search-actions")).toHaveCount(0)
         await expect(page.locator("cc-sidebar-explorer cc-rules-popover")).toHaveCount(0)
     })
 

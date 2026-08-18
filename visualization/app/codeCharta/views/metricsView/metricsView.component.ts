@@ -5,22 +5,26 @@ import { FileExtensionBarComponent } from "../../features/fileExtensionBar/facad
 import { LegendPanelComponent } from "../../features/legend/facade"
 import { MetricsBarComponent } from "../../features/metricsBar/facade"
 import { NodeContextMenuComponent } from "../../features/nodeContextMenu/facade"
-import { LoadingFileProgressSpinnerComponent } from "../../features/shared/facade"
+import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
 import {
     DEFAULT_EXPLORER_CAPABILITIES,
     EXPLORER_CAPABILITIES,
     EXPLORER_CONTEXT_MENU,
     EXPLORER_ROW,
     EXPLORER_SELECTION,
-    EXPLORER_SORT,
     ExplorerSearchBarComponent,
+    provideExplorerSearch,
+    provideExplorerSort,
+    provideViewScopedExplorerState,
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SidebarInspectorComponent } from "../../features/sidebarInspector/facade"
 import { MetricsExplorerContextMenu } from "./explorer/metricsExplorerContextMenu"
 import { MetricsExplorerRow } from "./explorer/metricsExplorerRow"
+import { METRICS_EXPLORER_SEARCH } from "./explorer/metricsExplorerSearch"
 import { MetricsExplorerSelection } from "./explorer/metricsExplorerSelection"
-import { MetricsExplorerSort } from "./explorer/metricsExplorerSort"
+import { METRICS_EXPLORER_SORT } from "./explorer/metricsExplorerSort"
+import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelectedNodeAfterLoad.directive"
 
 @Component({
     selector: "cc-metrics-view",
@@ -44,10 +48,13 @@ import { MetricsExplorerSort } from "./explorer/metricsExplorerSort"
         { provide: EXPLORER_SELECTION, useExisting: MetricsExplorerSelection },
         MetricsExplorerContextMenu,
         { provide: EXPLORER_CONTEXT_MENU, useExisting: MetricsExplorerContextMenu },
-        MetricsExplorerSort,
-        { provide: EXPLORER_SORT, useExisting: MetricsExplorerSort },
-        { provide: EXPLORER_CAPABILITIES, useValue: DEFAULT_EXPLORER_CAPABILITIES }
+        provideExplorerSort(METRICS_EXPLORER_SORT),
+        provideExplorerSearch(METRICS_EXPLORER_SEARCH),
+        { provide: EXPLORER_CAPABILITIES, useValue: DEFAULT_EXPLORER_CAPABILITIES },
+        provideViewScopedExplorerState("metrics"),
+        provideViewScopedCssVariables()
     ],
+    hostDirectives: [RevealsSelectedNodeAfterLoadDirective],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MetricsViewComponent {}

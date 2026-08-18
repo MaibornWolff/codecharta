@@ -13,7 +13,14 @@ jest.mock("../../../lenses/explorerRow/explorerRowLens.facade", () => ({
     projectExplorerRow: jest.fn()
 }))
 
-const LENS_RESULT: ExplorerRowProjection = { isSelectable: true, isInactive: false, isItalic: false, title: "", decoration: null }
+const LENS_RESULT: ExplorerRowProjection = {
+    isSelectable: true,
+    isInactive: false,
+    isItalic: false,
+    isFlattened: false,
+    title: "",
+    decoration: null
+}
 const NODE = { name: "a.ts", path: "/root/src/a.ts", id: 2, type: NodeType.FILE, attributes: { rloc: 4 } } as CodeMapNode
 
 describe("MetricsExplorerRow", () => {
@@ -42,7 +49,12 @@ describe("MetricsExplorerRow", () => {
         const projection = row.project(NODE)
 
         // Assert — the adapter forwards its injected map inputs and returns the lens result unchanged
-        expect(projectExplorerRow).toHaveBeenCalledWith(NODE, { areaMetric: "rloc", buildingIds: new Set([1, 2]), rootUnary: 10 })
+        expect(projectExplorerRow).toHaveBeenCalledWith(NODE, {
+            areaMetric: "rloc",
+            buildingIds: new Set([1, 2]),
+            rootUnary: 10,
+            showsFlattenedState: true
+        })
         expect(projection).toBe(LENS_RESULT)
     })
 })

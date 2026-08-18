@@ -22,6 +22,7 @@ import { WordCloudSettings } from "./wordCloud.model"
 export interface DomainState extends WordCloudSettings {
     sortingOrder: SortingOption
     sortingOrderAscending: boolean
+    searchPattern: string
 }
 
 export const defaultAmountOfTopLabels = 10

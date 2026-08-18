@@ -22,12 +22,7 @@ const ROOT: CodeMapNode = {
 }
 
 describe("SidebarExplorerComponent", () => {
-    const configureWithCapabilities = (capabilities?: {
-        showRules?: boolean
-        showSearch?: boolean
-        showFind?: boolean
-        showCounts?: boolean
-    }) => {
+    const configureWithCapabilities = (capabilities?: { showRules?: boolean; showSearch?: boolean; showCounts?: boolean }) => {
         TestBed.configureTestingModule({
             imports: [SidebarExplorerComponent],
             providers: [
@@ -95,20 +90,6 @@ describe("SidebarExplorerComponent", () => {
 
         // Assert
         expect(container.querySelector("cc-explorer-search-bar")).toBe(null)
-    })
-
-    it("should render the tree find bar only when the view wants it", async () => {
-        // Arrange — off by default (the metrics view uses the map-filtering search instead)
-        const { container: withoutFind } = await render(SidebarExplorerComponent)
-        expect(withoutFind.querySelector("cc-explorer-find-bar")).toBe(null)
-        TestBed.resetTestingModule()
-        configureWithCapabilities({ showFind: true })
-
-        // Act
-        const { container: withFind } = await render(SidebarExplorerComponent)
-
-        // Assert
-        expect(withFind.querySelector("cc-explorer-find-bar")).not.toBe(null)
     })
 
     it("should hide the count chips when the view does not want them", async () => {

@@ -3,12 +3,19 @@ import { TestBed } from "@angular/core/testing"
 import { StoreModule } from "@ngrx/store"
 import { render, screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import * as SearchedNodePathsSelector from "../../../../renderer/renderModel/searchedNodes/searchedNodePaths.selector"
+import { of } from "rxjs"
 import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
 import { EXPLORER_CONTEXT_MENU, ExplorerContextMenu } from "../../explorerContextMenu"
-import { createExplorerContextMenuMock, createExplorerRowMock, createExplorerSelectionMock } from "../../explorerPorts.mocks"
+import {
+    createExplorerContextMenuMock,
+    createExplorerRowMock,
+    createExplorerSearchMock,
+    createExplorerSelectionMock
+} from "../../explorerPorts.mocks"
 import { EXPLORER_ROW, ExplorerRow } from "../../explorerRow"
+import { EXPLORER_SEARCH } from "../../explorerSearch.port"
 import { EXPLORER_SELECTION, ExplorerSelection } from "../../explorerSelection"
+import { provideViewScopedExplorerState } from "../../provideViewScopedExplorerState"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { ExplorerTreeLevelComponent } from "./explorerTreeLevel.component"
 import { rootNode } from "./mocks"
@@ -27,14 +34,24 @@ describe("ExplorerTreeLevelComponent", () => {
     let contextMenu: ExplorerContextMenu | null
 
     const configureWithPorts = (
-        overrides: { row?: ExplorerRow; selection?: ExplorerSelection; contextMenu?: ExplorerContextMenu | null } = {}
+        overrides: {
+            row?: ExplorerRow
+            selection?: ExplorerSelection
+            contextMenu?: ExplorerContextMenu | null
+            searchedNodePaths?: Set<string>
+        } = {}
     ) => {
         row = overrides.row ?? createExplorerRowMock()
         selection = overrides.selection ?? createExplorerSelectionMock()
         contextMenu = overrides.contextMenu === undefined ? createExplorerContextMenuMock() : overrides.contextMenu
         const providers: Provider[] = [
+            ...provideViewScopedExplorerState("metrics"),
             { provide: EXPLORER_ROW, useValue: row },
-            { provide: EXPLORER_SELECTION, useValue: selection }
+            { provide: EXPLORER_SELECTION, useValue: selection },
+            {
+                provide: EXPLORER_SEARCH,
+                useValue: createExplorerSearchMock({ searchedNodePaths$: of(overrides.searchedNodePaths ?? new Set<string>()) })
+            }
         ]
         if (contextMenu !== null) {
             providers.push({ provide: EXPLORER_CONTEXT_MENU, useValue: contextMenu })
@@ -48,7 +65,6 @@ describe("ExplorerTreeLevelComponent", () => {
     beforeEach(() => {
         localStorage.clear()
         configureWithPorts()
-        jest.spyOn(SearchedNodePathsSelector, "searchedNodePathsSelector").mockReturnValue(new Set<string>())
     })
 
     afterEach(() => {
@@ -82,7 +98,7 @@ describe("ExplorerTreeLevelComponent", () => {
 
     it("should mark search-result rows", async () => {
         // Arrange
-        jest.spyOn(SearchedNodePathsSelector, "searchedNodePathsSelector").mockReturnValue(new Set(["/root/bigLeaf"]))
+        configureWithPorts({ searchedNodePaths: new Set(["/root/bigLeaf"]) })
 
         // Act
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
@@ -137,7 +153,14 @@ describe("ExplorerTreeLevelComponent", () => {
         // Arrange
         TestBed.resetTestingModule()
         configureWithPorts({
-            row: createExplorerRowMock(() => ({ isSelectable: false, isInactive: false, isItalic: false, title: "", decoration: null }))
+            row: createExplorerRowMock(() => ({
+                isSelectable: false,
+                isInactive: false,
+                isItalic: false,
+                isFlattened: false,
+                title: "",
+                decoration: null
+            }))
         })
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
 
@@ -228,6 +251,7 @@ describe("ExplorerTreeLevelComponent", () => {
                 isSelectable: true,
                 isInactive: false,
                 isItalic: false,
+                isFlattened: false,
                 title: "",
                 decoration: node.name === "root" ? "42% / 2" : null
             }))
@@ -249,6 +273,7 @@ describe("ExplorerTreeLevelComponent", () => {
                 isSelectable: true,
                 isInactive: true,
                 isItalic: true,
+                isFlattened: false,
                 title: "No Node Area for Chosen Metric",
                 decoration: null
             }))

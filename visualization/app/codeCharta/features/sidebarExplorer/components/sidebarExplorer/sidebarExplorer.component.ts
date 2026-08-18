@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy } from "@angular/core"
+import { CSS_VARIABLE_HOST } from "../../../shared/facade"
 import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
-import { ExplorerFindBarComponent } from "../explorerFindBar/explorerFindBar.component"
 import { ExplorerHeaderComponent } from "../explorerHeader/explorerHeader.component"
 import { ExplorerSearchBarComponent } from "../explorerSearchBar/explorerSearchBar.component"
 import { ExplorerSortControlComponent } from "../explorerSortControl/explorerSortControl.component"
@@ -18,7 +18,6 @@ export const COLLAPSED_STRIP_WIDTH_PX = 300
     imports: [
         ExplorerHeaderComponent,
         ExplorerSearchBarComponent,
-        ExplorerFindBarComponent,
         ExplorerSortControlComponent,
         ExplorerTreeComponent,
         RulesPopoverComponent
@@ -36,6 +35,7 @@ export const COLLAPSED_STRIP_WIDTH_PX = 300
 export class SidebarExplorerComponent implements OnDestroy {
     private readonly collapseService = inject(ExplorerCollapseService)
     private readonly widthService = inject(ExplorerWidthService)
+    private readonly cssVariableHost = inject(CSS_VARIABLE_HOST)
 
     readonly capabilities = inject(EXPLORER_CAPABILITIES)
 
@@ -49,7 +49,7 @@ export class SidebarExplorerComponent implements OnDestroy {
 
     private publishWidthTheBottomBarsMustAvoid() {
         const occupiedWidth = this.isCollapsed() ? 0 : this.width()
-        document.documentElement.style.setProperty(EXPLORER_WIDTH_CSS_VARIABLE, `${occupiedWidth}px`)
+        this.cssVariableHost.style.setProperty(EXPLORER_WIDTH_CSS_VARIABLE, `${occupiedWidth}px`)
     }
 
     private isResizing = false
@@ -75,7 +75,7 @@ export class SidebarExplorerComponent implements OnDestroy {
 
     ngOnDestroy() {
         this.stopResize()
-        document.documentElement.style.removeProperty(EXPLORER_WIDTH_CSS_VARIABLE)
+        this.cssVariableHost.style.removeProperty(EXPLORER_WIDTH_CSS_VARIABLE)
     }
 
     private resize(event: PointerEvent) {

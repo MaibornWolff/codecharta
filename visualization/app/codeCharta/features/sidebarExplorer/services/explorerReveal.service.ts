@@ -9,7 +9,7 @@ export interface RevealOptions {
 
 const REVEAL_AND_EXPAND: RevealOptions = { expand: true }
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class ExplorerRevealService {
     private readonly collapseService = inject(ExplorerCollapseService)
     private readonly internalRevealedNodePath = signal<string | null>(null)

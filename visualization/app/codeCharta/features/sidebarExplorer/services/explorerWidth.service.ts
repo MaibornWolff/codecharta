@@ -7,7 +7,7 @@ export const EXPLORER_DEFAULT_WIDTH = 320
 
 export const EXPLORER_WIDTH_CSS_VARIABLE = "--cc-explorer-width"
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class ExplorerWidthService {
     private readonly explorerWidthRepo = inject(ExplorerWidthRepo)
 
