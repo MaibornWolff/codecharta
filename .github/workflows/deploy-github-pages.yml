@@ -5,6 +5,9 @@ on:
   push:
     paths:
       - 'gh-pages/**'
+      # Changes to the deploy step itself must republish, otherwise a fixed workflow
+      # only takes effect on the next unrelated docs change.
+      - '.github/workflows/deploy-github-pages.yml'
     branches:
       - main
 
@@ -34,10 +37,15 @@ jobs:
         run: npm run build
 
       # Publishes the built static site (gh-pages/dist) to the gh-pages branch.
-      # The Web Studio app (visualization/) and staging (stg/) are deployed to the same
-      # branch by other workflows, so they are preserved via clean-exclude.
+      # The Web Studio app (visualization/app/), the archived visualization coverage report
+      # (visualization/coverage/, linked from the README) and staging (stg/) live on the same
+      # branch but are not built here, so they are preserved via clean-exclude.
       # dist/ already contains CNAME and .nojekyll (from public/), the latter stops
       # GitHub Pages from running Jekyll over the _astro/ asset directory.
+      # The clean-exclude patterns must be anchored with a leading slash and name the folder
+      # exactly: they are passed to rsync, which matches an unanchored pattern against the
+      # end of every path, so `visualization/**` also excluded docs/visualization/** and the
+      # site's own /visualization redirect from the upload.
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.8.0
         with:
@@ -45,5 +53,6 @@ jobs:
           branch: gh-pages
           folder: gh-pages/dist
           clean-exclude: |
-            stg/**
-            visualization/**
+            /stg
+            /visualization/app
+            /visualization/coverage
