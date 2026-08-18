@@ -9,7 +9,7 @@ import { defaultPreferences, defaultSorting } from "../../preferences/preference
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 18
+export const DB_VERSION = 19
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -413,6 +413,35 @@ export function migrateCcStateRecordToV18<T>(state: T): T {
     return seedRootIfAbsent(state, "domainState", defaultDomainState)
 }
 
+// v19: file states persisted before the domain lens carry no fileSettings.domainWords
+export function migrateCcStateRecordToV19<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const files = record["files"]
+    if (!Array.isArray(files)) {
+        return state
+    }
+    return { ...record, files: files.map(withSeededDomainWords) } as T
+}
+
+type PersistedFileState = { file?: { settings?: { fileSettings?: Record<string, unknown> } } }
+
+function withSeededDomainWords(fileState: unknown): unknown {
+    const fileSettings = (fileState as PersistedFileState)?.file?.settings?.fileSettings
+    if (!fileSettings || typeof fileSettings !== "object" || fileSettings["domainWords"]) {
+        return fileState
+    }
+    const state = fileState as Record<string, unknown>
+    const file = state["file"] as Record<string, unknown>
+    const settings = file["settings"] as Record<string, unknown>
+    return {
+        ...state,
+        file: { ...file, settings: { ...settings, fileSettings: { ...fileSettings, domainWords: {} } } }
+    }
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     // Strict durability: the default (relaxed) reports success before the data reaches disk, so a
@@ -456,7 +485,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 15, migrate: migrateCcStateRecordToV15 },
     { version: 16, migrate: migrateCcStateRecordToV16 },
     { version: 17, migrate: migrateCcStateRecordToV17 },
-    { version: 18, migrate: migrateCcStateRecordToV18 }
+    { version: 18, migrate: migrateCcStateRecordToV18 },
+    { version: 19, migrate: migrateCcStateRecordToV19 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {
