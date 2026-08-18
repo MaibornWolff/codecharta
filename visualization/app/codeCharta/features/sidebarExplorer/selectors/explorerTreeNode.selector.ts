@@ -6,7 +6,14 @@ import { accumulatedDataSelector } from "../../../renderer/renderModel/renderMod
 import { areaMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { sortNodesInPlace } from "./sortNodesInPlace"
 
-export const createExplorerTreeNodeSelector = (sortingOrder: SortingOption, sortingOrderAscending: boolean) =>
-    createSelector(accumulatedDataSelector, areaMetricSelector, (accumulatedData, areaMetric) =>
+// Only area sorting reads the area metric; the other orders must not rebuild the tree when the map view picks another metric.
+export const createExplorerTreeNodeSelector = (sortingOrder: SortingOption, sortingOrderAscending: boolean) => {
+    if (sortingOrder !== SortingOption.AREA_SIZE) {
+        return createSelector(accumulatedDataSelector, accumulatedData =>
+            sortNodesInPlace(klona(accumulatedData.unifiedMapNode), sortingOrder, sortingOrderAscending)
+        )
+    }
+    return createSelector(accumulatedDataSelector, areaMetricSelector, (accumulatedData, areaMetric) =>
         sortNodesInPlace(klona(accumulatedData.unifiedMapNode), sortingOrder, sortingOrderAscending, areaMetric)
     )
+}

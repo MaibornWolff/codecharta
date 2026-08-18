@@ -1,10 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
+import { of } from "rxjs"
 import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
-import { searchedNodePathsSelector } from "../../../../renderer/renderModel/searchedNodes/searchedNodePaths.selector"
 import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { createExplorerSearchMock } from "../../explorerPorts.mocks"
+import { EXPLORER_SEARCH } from "../../explorerSearch.port"
 import { ExplorerTreeItemNameComponent } from "./explorerTreeItemName.component"
 
 describe("ExplorerTreeItemNameComponent", () => {
@@ -14,11 +16,9 @@ describe("ExplorerTreeItemNameComponent", () => {
             providers: [
                 provideMockState(),
                 provideMockStore({
-                    selectors: [
-                        { selector: areaMetricSelector, value: "rloc" },
-                        { selector: searchedNodePathsSelector, value: new Set() }
-                    ]
-                })
+                    selectors: [{ selector: areaMetricSelector, value: "rloc" }]
+                }),
+                { provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock() }
             ]
         })
     })
@@ -61,11 +61,12 @@ describe("ExplorerTreeItemNameComponent", () => {
             providers: [
                 provideMockState(),
                 provideMockStore({
-                    selectors: [
-                        { selector: areaMetricSelector, value: "rloc" },
-                        { selector: searchedNodePathsSelector, value: new Set(["/needle"]) }
-                    ]
-                })
+                    selectors: [{ selector: areaMetricSelector, value: "rloc" }]
+                }),
+                {
+                    provide: EXPLORER_SEARCH,
+                    useValue: createExplorerSearchMock({ searchedNodePaths$: of(new Set(["/needle"])) })
+                }
             ]
         })
 
@@ -91,7 +92,10 @@ describe("ExplorerTreeItemNameComponent", () => {
     it("should line through a flattened file", async () => {
         // Arrange & Act
         const { container } = await render(ExplorerTreeItemNameComponent, {
-            inputs: { node: { path: "/x", type: NodeType.FILE, isFlattened: true, attributes: { rloc: 1 } } as unknown as CodeMapNode }
+            inputs: {
+                node: { path: "/x", type: NodeType.FILE, isFlattened: true, attributes: { rloc: 1 } } as unknown as CodeMapNode,
+                isFlattened: true
+            }
         })
 
         // Assert
@@ -101,7 +105,10 @@ describe("ExplorerTreeItemNameComponent", () => {
     it("should not line through a flattened folder", async () => {
         // Arrange & Act
         const { container } = await render(ExplorerTreeItemNameComponent, {
-            inputs: { node: { path: "/x", type: NodeType.FOLDER, isFlattened: true, attributes: { rloc: 1 } } as unknown as CodeMapNode }
+            inputs: {
+                node: { path: "/x", type: NodeType.FOLDER, isFlattened: true, attributes: { rloc: 1 } } as unknown as CodeMapNode,
+                isFlattened: true
+            }
         })
 
         // Assert

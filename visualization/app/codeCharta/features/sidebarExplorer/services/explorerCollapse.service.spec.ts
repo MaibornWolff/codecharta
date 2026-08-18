@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing"
+import { provideViewScopedExplorerState } from "../provideViewScopedExplorerState"
 import { ExplorerCollapseService } from "./explorerCollapse.service"
 
 describe("ExplorerCollapseService", () => {
@@ -6,7 +7,7 @@ describe("ExplorerCollapseService", () => {
 
     beforeEach(() => {
         localStorage.clear()
-        TestBed.configureTestingModule({})
+        TestBed.configureTestingModule({ providers: provideViewScopedExplorerState("metrics") })
         service = TestBed.inject(ExplorerCollapseService)
     })
 
@@ -40,7 +41,7 @@ describe("ExplorerCollapseService", () => {
 
         // Act — a fresh injector stands in for a reload
         TestBed.resetTestingModule()
-        TestBed.configureTestingModule({})
+        TestBed.configureTestingModule({ providers: provideViewScopedExplorerState("metrics") })
 
         // Assert
         expect(TestBed.inject(ExplorerCollapseService).isCollapsed()).toBe(true)

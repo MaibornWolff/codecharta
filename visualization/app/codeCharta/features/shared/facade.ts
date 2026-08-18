@@ -14,6 +14,7 @@ export { ResetSettingsButtonComponent } from "./components/resetSettingsButton/r
 export { SettingsPopoverShellComponent } from "./components/settingsPopoverShell/settingsPopoverShell.component"
 export { SliderNumberInputComponent } from "./components/sliderNumberInput/sliderNumberInput.component"
 export { ToastComponent } from "./components/toast/toast.component"
+export { CSS_VARIABLE_HOST, provideViewScopedCssVariables } from "./cssVariableHost"
 export { BlacklistExclusionGuard } from "./effects/addBlacklistItemsIfNotResultsInEmptyMap/blacklistExclusionGuard"
 export { getPartialDefaultState } from "./getPartialDefaultState"
 export { ToastService } from "./services/toast.service"

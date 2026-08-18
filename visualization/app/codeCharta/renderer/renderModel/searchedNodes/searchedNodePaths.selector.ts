@@ -1,4 +1,10 @@
-import { createSelector } from "@ngrx/store"
-import { searchedNodesSelector } from "./searchedNodes.selector"
+import { createSelector, MemoizedSelector } from "@ngrx/store"
+import { CcState, CodeMapNode } from "../../../model/codeCharta.model"
+import { createSearchedNodesSelector, searchedNodesSelector } from "./searchedNodes.selector"
 
-export const searchedNodePathsSelector = createSelector(searchedNodesSelector, searchedNodes => new Set(searchedNodes.map(x => x.path)))
+const toNodePaths = (searchedNodes: CodeMapNode[]) => new Set(searchedNodes.map(node => node.path))
+
+export const createSearchedNodePathsSelector = (patternSelector: MemoizedSelector<CcState, string>) =>
+    createSelector(createSearchedNodesSelector(patternSelector), toNodePaths)
+
+export const searchedNodePathsSelector = createSelector(searchedNodesSelector, toNodePaths)

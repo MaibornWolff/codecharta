@@ -4,6 +4,7 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { provideExplorerCapabilitiesMock } from "../../explorerPorts.mocks"
+import { provideViewScopedExplorerState } from "../../provideViewScopedExplorerState"
 import { explorerCountsSelector } from "../../selectors/sidebarExplorer.selectors"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerHeaderComponent } from "./explorerHeader.component"
@@ -17,7 +18,8 @@ describe("ExplorerHeaderComponent", () => {
                     initialState: defaultState,
                     selectors: [{ selector: explorerCountsSelector, value: { shown: 47, flattened: 12, hidden: 5, noArea: 3 } }]
                 }),
-                provideExplorerCapabilitiesMock({ showCounts })
+                provideExplorerCapabilitiesMock({ showCounts }),
+                ...provideViewScopedExplorerState("metrics")
             ]
         })
     }

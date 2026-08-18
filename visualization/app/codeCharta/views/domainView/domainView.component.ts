@@ -2,14 +2,16 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
 import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
-import { LoadingFileProgressSpinnerComponent } from "../../features/shared/facade"
+import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
 import {
     EXPLORER_CAPABILITIES,
     EXPLORER_ROW,
     EXPLORER_SELECTION,
-    EXPLORER_SORT,
     ExplorerCollapseService,
     ExplorerWidthService,
+    provideExplorerSearch,
+    provideExplorerSort,
+    provideViewScopedExplorerState,
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SortingOption } from "../../model/codeCharta.model"
@@ -17,8 +19,9 @@ import { WordCloudComponent } from "../../renderer/wordCloud/wordCloud.facade"
 import { CopyToClipboardService } from "../../util/copyToClipboard.service"
 import { pathToNodeName } from "../../util/nodePathHelper"
 import { DomainExplorerRow } from "./explorer/domainExplorerRow"
+import { DOMAIN_EXPLORER_SEARCH } from "./explorer/domainExplorerSearch"
 import { DomainExplorerSelection } from "./explorer/domainExplorerSelection"
-import { DomainExplorerSort } from "./explorer/domainExplorerSort"
+import { DOMAIN_EXPLORER_SORT } from "./explorer/domainExplorerSort"
 import { DomainSelectionStore } from "./stores/domainSelection.store"
 
 @Component({
@@ -37,19 +40,20 @@ import { DomainSelectionStore } from "./stores/domainSelection.store"
         { provide: EXPLORER_ROW, useExisting: DomainExplorerRow },
         DomainExplorerSelection,
         { provide: EXPLORER_SELECTION, useExisting: DomainExplorerSelection },
-        DomainExplorerSort,
-        { provide: EXPLORER_SORT, useExisting: DomainExplorerSort },
+        provideExplorerSort(DOMAIN_EXPLORER_SORT),
+        provideExplorerSearch(DOMAIN_EXPLORER_SEARCH),
         {
             provide: EXPLORER_CAPABILITIES,
             useValue: {
                 showRules: false,
-                showSearch: false,
-                showFind: true,
+                showSearch: true,
                 showCounts: false,
                 sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
             }
         },
-        CopyToClipboardService
+        CopyToClipboardService,
+        provideViewScopedExplorerState("domain"),
+        provideViewScopedCssVariables()
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })

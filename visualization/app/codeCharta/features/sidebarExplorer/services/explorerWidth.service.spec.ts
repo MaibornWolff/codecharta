@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing"
+import { provideViewScopedExplorerState } from "../provideViewScopedExplorerState"
 import { EXPLORER_DEFAULT_WIDTH, EXPLORER_MAX_WIDTH, EXPLORER_MIN_WIDTH, ExplorerWidthService } from "./explorerWidth.service"
 
 describe("ExplorerWidthService", () => {
@@ -6,7 +7,7 @@ describe("ExplorerWidthService", () => {
 
     beforeEach(() => {
         localStorage.clear()
-        TestBed.configureTestingModule({})
+        TestBed.configureTestingModule({ providers: provideViewScopedExplorerState("metrics") })
         service = TestBed.inject(ExplorerWidthService)
     })
 

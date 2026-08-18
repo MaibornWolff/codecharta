@@ -2,17 +2,18 @@ import { TestBed } from "@angular/core/testing"
 import { Store } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { firstValueFrom } from "rxjs"
+import { EXPLORER_SORT, ExplorerSort, provideExplorerSort } from "../../../features/sidebarExplorer/facade"
 import { provideMockState } from "../../../mocks/state.mocks"
 import { SortingOption } from "../../../model/codeCharta.model"
 import { sortingOrderAscendingSelector, sortingOrderSelector } from "../../../stores/preferences/preferences.read.facade"
 import { setSortingOption, toggleSortingOrderAscending } from "../../../stores/preferences/preferences.write.facade"
-import { MetricsExplorerSort } from "./metricsExplorerSort"
+import { METRICS_EXPLORER_SORT } from "./metricsExplorerSort"
 
-describe("MetricsExplorerSort", () => {
+describe("METRICS_EXPLORER_SORT", () => {
     function setup() {
         TestBed.configureTestingModule({
             providers: [
-                MetricsExplorerSort,
+                provideExplorerSort(METRICS_EXPLORER_SORT),
                 provideMockState(),
                 provideMockStore({
                     selectors: [
@@ -22,7 +23,8 @@ describe("MetricsExplorerSort", () => {
                 })
             ]
         })
-        return { sort: TestBed.inject(MetricsExplorerSort), dispatchSpy: jest.spyOn(TestBed.inject(Store), "dispatch") }
+        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
+        return { sort: TestBed.inject<ExplorerSort>(EXPLORER_SORT), dispatchSpy }
     }
 
     it("should stream the global preferences sort option and order", async () => {

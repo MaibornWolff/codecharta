@@ -27,8 +27,9 @@
                 [node]="node()"
                 [isInactive]="rowProjection().isInactive"
                 [isItalic]="rowProjection().isItalic"
+                [isFlattened]="rowProjection().isFlattened"
             ></cc-explorer-tree-item-name>
-            @if (node().isFlattened) {
+            @if (rowProjection().isFlattened) {
                 <i class="fa fa-eye-slash text-xs opacity-60 ml-1 shrink-0" title="Flattened"></i>
             }
             @if (rowProjection().decoration) {

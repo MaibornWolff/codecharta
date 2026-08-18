@@ -66,7 +66,14 @@ describe("projectExplorerRow", () => {
             const projection = projectExplorerRow(LEAF_WITHOUT_AREA, {})
 
             // Assert
-            expect(projection).toEqual({ isSelectable: true, isInactive: false, isItalic: false, title: "", decoration: null })
+            expect(projection).toEqual({
+                isSelectable: true,
+                isInactive: false,
+                isItalic: false,
+                isFlattened: false,
+                title: "",
+                decoration: null
+            })
         })
     })
 })

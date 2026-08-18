@@ -1,5 +1,6 @@
-import { Component } from "@angular/core"
+import { Component, ElementRef } from "@angular/core"
 import { render } from "@testing-library/angular"
+import { CSS_VARIABLE_HOST, provideViewScopedCssVariables } from "../../cssVariableHost"
 import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "./publishesHeight.directive"
 
 let resizeCallback: (() => void) | undefined
@@ -23,6 +24,16 @@ let measuredHeight = 0
     providers: [{ provide: HEIGHT_CSS_VARIABLE, useValue: CSS_VARIABLE }]
 })
 class HostComponent {}
+
+@Component({
+    selector: "cc-view-scoped-host",
+    template: `<div ccPublishesHeight></div>`,
+    imports: [PublishesHeightDirective],
+    providers: [{ provide: HEIGHT_CSS_VARIABLE, useValue: CSS_VARIABLE }, provideViewScopedCssVariables()]
+})
+class ViewScopedHostComponent {
+    constructor(readonly elementReference: ElementRef<HTMLElement>) {}
+}
 
 describe("PublishesHeightDirective", () => {
     beforeEach(() => {
@@ -61,6 +72,24 @@ describe("PublishesHeightDirective", () => {
 
         // Assert: the previously published height is preserved for the still-active view below
         expect(publishedHeight()).toBe("28px")
+    })
+
+    it("should publish onto the view host instead of the document when the view scopes its css variables", async () => {
+        // Arrange & Act
+        const { fixture } = await render(ViewScopedHostComponent)
+
+        // Assert
+        const viewHost = fixture.componentInstance.elementReference.nativeElement
+        expect(viewHost.style.getPropertyValue(CSS_VARIABLE)).toBe("28px")
+        expect(publishedHeight()).toBe("")
+    })
+
+    it("should default the css variable host to the document element", async () => {
+        // Arrange & Act
+        const { fixture } = await render(HostComponent)
+
+        // Assert
+        expect(fixture.debugElement.injector.get(CSS_VARIABLE_HOST)).toBe(document.documentElement)
     })
 
     it("should republish the real height when the element is reattached", async () => {

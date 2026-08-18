@@ -58,8 +58,7 @@ describe("DomainViewComponent", () => {
         // Assert
         expect(injector.get(EXPLORER_CAPABILITIES)).toEqual({
             showRules: false,
-            showSearch: false,
-            showFind: true,
+            showSearch: true,
             showCounts: false,
             sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
         })
@@ -70,7 +69,7 @@ describe("DomainViewComponent", () => {
     it("should inset the cloud container by the explorer width so the explorer cannot occlude the cloud", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
-        const widthService = TestBed.inject(ExplorerWidthService)
+        const widthService = fixture.debugElement.injector.get(ExplorerWidthService)
 
         // Act
         widthService.setWidth(480)
@@ -84,7 +83,7 @@ describe("DomainViewComponent", () => {
     it("should drop the inset while the explorer is collapsed, since it then only covers a short bar", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
-        const collapseService = TestBed.inject(ExplorerCollapseService)
+        const collapseService = fixture.debugElement.injector.get(ExplorerCollapseService)
 
         // Act
         collapseService.toggle()

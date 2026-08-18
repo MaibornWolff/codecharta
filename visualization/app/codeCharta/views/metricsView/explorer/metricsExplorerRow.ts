@@ -22,7 +22,8 @@ export class MetricsExplorerRow implements ExplorerRow {
         return projectExplorerRow(node, {
             areaMetric: this.areaMetric(),
             buildingIds: this.buildingIds(),
-            rootUnary: this.rootUnary()
+            rootUnary: this.rootUnary(),
+            showsFlattenedState: true
         })
     }
 }

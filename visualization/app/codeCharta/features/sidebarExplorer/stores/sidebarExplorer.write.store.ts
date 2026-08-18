@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { BlacklistItem, BlacklistType, CcState } from "../../../model/codeCharta.model"
-import { removeBlacklistItem, setSearchPattern } from "../../../stores/sharedView/sharedView.write.facade"
+import { removeBlacklistItem } from "../../../stores/sharedView/sharedView.write.facade"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 import { blacklistSearchPattern } from "../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 
@@ -13,14 +13,6 @@ export class SidebarExplorerWriteStore {
 
     removeBlacklistItem(item: BlacklistItem) {
         dispatchAfterPaint(this.store, removeBlacklistItem({ item }))
-    }
-
-    setSearchPattern(value: string) {
-        this.store.dispatch(setSearchPattern({ value }))
-    }
-
-    resetSearchPattern() {
-        this.store.dispatch(setSearchPattern({ value: "" }))
     }
 
     blacklistSearchPattern(type: BlacklistType) {

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from "@angular/core"
 import { ExplorerCollapseRepo } from "../repos/explorerCollapse.repo"
 
-@Injectable({ providedIn: "root" })
+@Injectable()
 export class ExplorerCollapseService {
     private readonly explorerCollapseRepo = inject(ExplorerCollapseRepo)
 

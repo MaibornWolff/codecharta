@@ -23,6 +23,7 @@ import {
     setDomainStateGridSize,
     setDomainStateRotationRange,
     setDomainStateRotationStep,
+    setDomainStateSearchPattern,
     setDomainStateShape,
     setDomainStateShrinkToFit,
     setDomainStateSizeRange,
@@ -86,7 +87,7 @@ export class LoadInitialFileStore {
 
     private static readonly optionalMapStateKeys = new Set(["labelMode", "groupLabelCollisions", "labelSize", "labelsPerMap"])
 
-    private static readonly optionalDomainStateKeys = new Set(["sortingOrder", "sortingOrderAscending"])
+    private static readonly optionalDomainStateKeys = new Set(["sortingOrder", "sortingOrderAscending", "searchPattern"])
 
     // transient interaction ids; never restored from a previous session's persisted state.
     private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
@@ -263,6 +264,9 @@ export class LoadInitialFileStore {
                 break
             case "sortingOrderAscending":
                 this.store.dispatch(setDomainStateSortingOrderAscending({ value }))
+                break
+            case "searchPattern":
+                this.store.dispatch(setDomainStateSearchPattern({ value }))
                 break
             case "sizeRange":
                 this.store.dispatch(setDomainStateSizeRange({ value }))

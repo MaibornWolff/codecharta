@@ -4,6 +4,7 @@ import { defaultDrawOutOfBound, drawOutOfBound } from "./drawOutOfBound/drawOutO
 import { defaultGridSize, gridSize } from "./gridSize/gridSize.reducer"
 import { defaultRotationRange, rotationRange } from "./rotationRange/rotationRange.reducer"
 import { defaultRotationStep, rotationStep } from "./rotationStep/rotationStep.reducer"
+import { defaultSearchPattern, searchPattern } from "./searchPattern/searchPattern.reducer"
 import { defaultShape, shape } from "./shape/shape.reducer"
 import { defaultShrinkToFit, shrinkToFit } from "./shrinkToFit/shrinkToFit.reducer"
 import { defaultSizeRange, sizeRange } from "./sizeRange/sizeRange.reducer"
@@ -23,7 +24,8 @@ export const domainState = combineReducers({
     shrinkToFit,
     drawOutOfBound,
     sortingOrder,
-    sortingOrderAscending
+    sortingOrderAscending,
+    searchPattern
 })
 
 export const defaultDomainState: DomainState = {
@@ -37,5 +39,6 @@ export const defaultDomainState: DomainState = {
     shrinkToFit: defaultShrinkToFit,
     drawOutOfBound: defaultDrawOutOfBound,
     sortingOrder: defaultSortingOrder,
-    sortingOrderAscending: defaultSortingOrderAscending
+    sortingOrderAscending: defaultSortingOrderAscending,
+    searchPattern: defaultSearchPattern
 }

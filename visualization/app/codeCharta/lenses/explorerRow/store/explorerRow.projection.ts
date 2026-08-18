@@ -8,6 +8,7 @@ export interface ExplorerRowProjection {
     isSelectable: boolean
     isInactive: boolean
     isItalic: boolean
+    isFlattened: boolean
     title: string
     decoration: string | null
 }
@@ -16,6 +17,7 @@ export interface ExplorerRowInputs {
     areaMetric?: string
     buildingIds?: ReadonlySet<number>
     rootUnary?: number | null
+    showsFlattenedState?: boolean
 }
 
 export function projectExplorerRow(node: CodeMapNode, inputs: ExplorerRowInputs): ExplorerRowProjection {
@@ -25,6 +27,7 @@ export function projectExplorerRow(node: CodeMapNode, inputs: ExplorerRowInputs)
         isSelectable,
         isInactive: !hasArea,
         isItalic: !hasArea || !isSelectable,
+        isFlattened: Boolean(inputs.showsFlattenedState && node.isFlattened),
         title: hasArea ? "" : NO_AREA_HINT,
         decoration: computeDecoration(node, inputs.rootUnary)
     }
