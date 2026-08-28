@@ -8,12 +8,14 @@ import { routeLinks } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { ToastService } from "../../../shared/facade"
+import { FileSelectionModeService } from "../../services/fileSelectionMode.service"
 import { RedirectAwayFromDomainViewEffect } from "./redirectAwayFromDomainView.effect"
 
 describe("RedirectAwayFromDomainViewEffect", () => {
     let store: MockStore
     let router: { url: string; events: Subject<unknown>; navigateByUrl: jest.Mock }
     let toastService: { show: jest.Mock }
+    let fileSelectionModeService: { toggle: jest.Mock }
 
     const aDomainLens: DomainLensData = { "/root": [{ text: "invoice", frequency: 3 }] }
     const persistedFileChecksum = "checksum-of-the-one-loaded-file"
@@ -30,12 +32,14 @@ describe("RedirectAwayFromDomainViewEffect", () => {
     function setup(currentUrl: string) {
         router = { url: currentUrl, events: new Subject(), navigateByUrl: jest.fn() }
         toastService = { show: jest.fn() }
+        fileSelectionModeService = { toggle: jest.fn() }
 
         TestBed.configureTestingModule({
             imports: [EffectsModule.forRoot([RedirectAwayFromDomainViewEffect])],
             providers: [
                 { provide: Router, useValue: router },
                 { provide: ToastService, useValue: toastService },
+                { provide: FileSelectionModeService, useValue: fileSelectionModeService },
                 provideMockStore({ initialState: defaultState })
             ]
         })
@@ -217,7 +221,38 @@ describe("RedirectAwayFromDomainViewEffect", () => {
         expect(toastService.show).not.toHaveBeenCalled()
     })
 
-    it("should redirect to the metrics view when the domain view is opened while delta mode is active", async () => {
+    it("should leave compare mode instead of redirecting when the domain view is opened while it is active", async () => {
+        // Arrange
+        setup(routeLinks.metrics)
+        loadFile(aDomainLens)
+        enterDeltaMode()
+        await settle()
+
+        // Act
+        navigateTo(routeLinks.domain)
+        await settle()
+
+        // Assert — compare is a mode of the metric view, so asking for the domain view ends it
+        expect(fileSelectionModeService.toggle).toHaveBeenCalledTimes(1)
+        expect(router.navigateByUrl).not.toHaveBeenCalled()
+    })
+
+    it("should still leave compare mode when the domain view is opened before the first reason has settled", async () => {
+        // Arrange — no settling, so the navigation beats the debounced reason it has to be judged against
+        setup(routeLinks.metrics)
+        loadFile(aDomainLens)
+        enterDeltaMode()
+
+        // Act
+        navigateTo(routeLinks.domain)
+        await settle()
+
+        // Assert
+        expect(fileSelectionModeService.toggle).toHaveBeenCalledTimes(1)
+        expect(router.navigateByUrl).not.toHaveBeenCalled()
+    })
+
+    it("should explain the dropped compare mode with a toast", async () => {
         // Arrange
         setup(routeLinks.metrics)
         loadFile(aDomainLens)
@@ -229,6 +264,22 @@ describe("RedirectAwayFromDomainViewEffect", () => {
         await settle()
 
         // Assert
+        expect(toastService.show).toHaveBeenCalledWith("Left compare mode — the domain view shows a single word cloud.")
+    })
+
+    it("should redirect rather than leave compare mode when the opened domain view has no data to show", async () => {
+        // Arrange
+        setup(routeLinks.metrics)
+        loadFile({})
+        enterDeltaMode()
+        await settle()
+
+        // Act
+        navigateTo(routeLinks.domain)
+        await settle()
+
+        // Assert
+        expect(fileSelectionModeService.toggle).not.toHaveBeenCalled()
         expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
     })
 

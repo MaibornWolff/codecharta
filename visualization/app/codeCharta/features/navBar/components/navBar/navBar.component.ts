@@ -1,16 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { Export3DMapDialogComponent, Export3DMapDialogStore } from "../../../3dPrint/facade"
 import { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "../../../shared/facade"
-import { viewNavBarControls } from "../../viewNavBarControls"
 import { DeltaSelectorComponent } from "../deltaSelector/deltaSelector.component"
 import { MapSelectorComponent } from "../mapSelector/mapSelector.component"
-import { ModeToggleComponent } from "../modeToggle/modeToggle.component"
-import { NavBarDividerComponent } from "../navBarDivider/navBarDivider.component"
 import { NavBarFolderButtonComponent } from "../navBarFolderButton/navBarFolderButton.component"
 import { NavBarLogoComponent } from "../navBarLogo/navBarLogo.component"
-import { Print3DButtonComponent } from "../print3DButton/print3DButton.component"
 import { SettingsButtonComponent } from "../settingsButton/settingsButton.component"
 import { ViewSwitcherComponent } from "../viewSwitcher/viewSwitcher.component"
 
@@ -18,13 +14,11 @@ import { ViewSwitcherComponent } from "../viewSwitcher/viewSwitcher.component"
     selector: "cc-nav-bar",
     templateUrl: "./navBar.component.html",
     imports: [
+        Export3DMapDialogComponent,
         NavBarLogoComponent,
-        NavBarDividerComponent,
         NavBarFolderButtonComponent,
         MapSelectorComponent,
         DeltaSelectorComponent,
-        ModeToggleComponent,
-        Print3DButtonComponent,
         SettingsButtonComponent,
         ViewSwitcherComponent
     ],
@@ -34,11 +28,14 @@ import { ViewSwitcherComponent } from "../viewSwitcher/viewSwitcher.component"
 })
 export class NavBarComponent {
     private readonly fileStoreReadWindow = inject(FileStoreReadWindow)
-    private readonly activeViewStore = inject(ActiveViewStore)
+    private readonly export3DMapDialogStore = inject(Export3DMapDialogStore)
 
     isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { requireSync: true })
 
-    private readonly activeView = toSignal(this.activeViewStore.activeView$, { requireSync: true })
+    /** Hosted here rather than in the print button, which the mode bar unmounts on mouse-out. */
+    readonly isExportDialogOpen = this.export3DMapDialogStore.isDialogOpen
 
-    readonly trailingControls = computed(() => viewNavBarControls[this.activeView()])
+    closeExportDialog() {
+        this.export3DMapDialogStore.closeDialog()
+    }
 }

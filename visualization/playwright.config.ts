@@ -9,7 +9,11 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 1 : undefined,
     reporter: "html",
-    timeout: 10_000,
+    // Long enough for the waits the suite deliberately performs: goto() gives the boot 60s and
+    // waitForCcStatePersisted gives the debounced IndexedDB write 60s so it stays "immune to
+    // machine speed". A 10s budget expired before any of them could, so a boot merely made slow
+    // by parallel workers failed the test instead of being waited out.
+    timeout: 60_000,
 
     // Serve the built app over HTTP rather than opening it from a file:// URL. A file:// origin's
     // IndexedDB is shared across all parallel browser contexts, so a concurrent test's storage clear

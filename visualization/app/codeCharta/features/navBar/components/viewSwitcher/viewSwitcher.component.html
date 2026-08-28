@@ -1,33 +1,67 @@
-<nav class="flex items-center gap-1" aria-label="View" data-testid="view-switcher">
-    <a
-        class="btn btn-ghost btn-sm"
-        [routerLink]="routeLinks.metrics"
-        routerLinkActive="text-secondary font-bold"
-        ariaCurrentWhenActive="page"
-        [routerLinkActiveOptions]="{ exact: true }"
-        title="Show the 3D metrics map"
-        data-testid="view-switcher-metrics"
-        >Metrics</a
-    >
-    @if (hasDomainData()) {
+<div
+    class="flex items-center"
+    (click)="closeModeBar()"
+    (mouseleave)="scheduleClosingModeBar()"
+    (focusout)="closeModeBarWhenFocusLeaves($event)"
+>
+    <nav class="flex items-center gap-1" aria-label="View" data-testid="view-switcher">
         <a
-            class="btn btn-ghost btn-sm"
-            [routerLink]="routeLinks.domain"
-            routerLinkActive="text-secondary font-bold"
+            #metricsTab="routerLinkActive"
+            class="btn btn-ghost btn-sm relative"
+            [class.font-bold]="metricsTab.isActive"
+            [routerLink]="routeLinks.metrics"
+            routerLinkActive
             ariaCurrentWhenActive="page"
-            title="Show the domain-language word cloud"
-            data-testid="view-switcher-domain"
-            >Domain</a
+            [routerLinkActiveOptions]="{ exact: true }"
+            title="Show the 3D metrics map"
+            data-testid="view-switcher-metrics"
+            (mouseenter)="openModeBar('metrics')"
+            (focusin)="openModeBar('metrics')"
         >
+            Metric
+            @if (metricsTab.isActive) {
+                <span class="cc-current-underline"></span>
+            }
+        </a>
+        @if (isDomainViewAvailable()) {
+            <a
+                #domainTab="routerLinkActive"
+                class="btn btn-ghost btn-sm relative"
+                [class.font-bold]="domainTab.isActive"
+                [routerLink]="routeLinks.domain"
+                routerLinkActive
+                ariaCurrentWhenActive="page"
+                title="Show the domain-language word cloud"
+                data-testid="view-switcher-domain"
+                (mouseenter)="openModeBar('domain')"
+                (focusin)="openModeBar('domain')"
+            >
+                Domain
+                @if (domainTab.isActive) {
+                    <span class="cc-current-underline"></span>
+                }
+            </a>
+        }
+    </nav>
+    @if (previewedView(); as previewed) {
+        <div
+            class="absolute inset-x-0 top-full z-[70] border-b border-base-300 bg-base-100 shadow-md"
+            data-testid="view-mode-bar-overlay"
+            (mouseenter)="cancelPendingClose()"
+            (mouseleave)="scheduleClosingModeBar()"
+        >
+            <cc-view-mode-bar [view]="previewed" />
+        </div>
     } @else {
-        <button
-            type="button"
-            class="btn btn-ghost btn-sm"
-            disabled
-            title="Requires a cc.json 2.0 file with domain-language data"
-            data-testid="view-switcher-domain-unavailable"
+        <span
+            class="absolute left-1/2 top-full z-[70] mt-px flex -translate-x-1/2 cursor-pointer items-center rounded-b-md border border-t-0 border-base-300 bg-base-100 px-2.5 pb-1 pt-0.5 text-base-content/40 shadow-sm hover:text-base-content/70"
+            aria-hidden="true"
+            data-testid="view-mode-bar-handle"
+            (mouseenter)="openModeBar(activeView())"
         >
-            Domain
-        </button>
+            <svg class="block h-1.5 w-2.5" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 1 5 5 9 1" />
+            </svg>
+        </span>
     }
-</nav>
+</div>
