@@ -53,8 +53,16 @@ class FileScanner(private val allowedExtensions: List<String>) {
     fun readFileContent(file: File, charset: Charset = Charsets.UTF_8): Result<String> = runCatching {
         require(file.exists()) { "File does not exist: ${file.absolutePath}" }
         require(file.isFile) { "Path is not a file: ${file.absolutePath}" }
-        file.readText(charset)
+        file.readText(charset).withoutByteOrderMarks()
     }.onFailure { error ->
         Logger.error(error) { "Failed to read file: ${file.absolutePath}" }
+    }
+
+    // TreeSitter treats a byte order mark as source text and mis-tokenizes the identifiers around it,
+    // which extracts "class" as the two words "cla" and "ss".
+    private fun String.withoutByteOrderMarks(): String = replace(BYTE_ORDER_MARK, "")
+
+    companion object {
+        private const val BYTE_ORDER_MARK = "\uFEFF"
     }
 }
