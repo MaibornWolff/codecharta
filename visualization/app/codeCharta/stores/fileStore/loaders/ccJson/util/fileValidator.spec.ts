@@ -332,8 +332,10 @@ describe("FileValidator", () => {
         it("should accept a 2.0 file carrying a domain lens", () => {
             // Arrange
             file2_0.lenses.domain = {
-                "/root": [{ text: "invoice", frequency: 12, tfidf: 0.4 }],
-                "/root/big.ts": [{ text: "payment", frequency: 5 }]
+                nodes: {
+                    "/root": { words: [{ text: "invoice", frequency: 12, tfidf: 0.4 }] },
+                    "/root/big.ts": { words: [{ text: "payment", frequency: 5 }] }
+                }
             }
 
             // Act
@@ -346,35 +348,37 @@ describe("FileValidator", () => {
 
         it("should report an error for a domain lens whose word bank is not an array", () => {
             // Arrange
-            ;(file2_0.lenses as Record<string, unknown>).domain = { "/root": { text: "invoice", frequency: 12 } }
+            ;(file2_0.lenses as Record<string, unknown>).domain = { nodes: { "/root": { words: { text: "invoice", frequency: 12 } } } }
 
             // Act
             const errors = checkErrors(file2_0)
 
             // Assert
-            expect(errors).toEqual(["Type error: lenses/domain/~1root must be array"])
+            expect(errors).toEqual(["Type error: lenses/domain/nodes/~1root/words must be array"])
         })
 
         it("should report an error for a domain word missing its required fields", () => {
             // Arrange
-            ;(file2_0.lenses as Record<string, unknown>).domain = { "/root": [{ text: "invoice" }] }
+            ;(file2_0.lenses as Record<string, unknown>).domain = { nodes: { "/root": { words: [{ text: "invoice" }] } } }
 
             // Act
             const errors = checkErrors(file2_0)
 
             // Assert
-            expect(errors).toEqual(["Required error: lenses/domain/~1root/0 must have required property 'frequency'"])
+            expect(errors).toEqual(["Required error: lenses/domain/nodes/~1root/words/0 must have required property 'frequency'"])
         })
 
         it("should report an error for a domain word whose frequency is not a number", () => {
             // Arrange
-            ;(file2_0.lenses as Record<string, unknown>).domain = { "/root": [{ text: "invoice", frequency: "many" }] }
+            ;(file2_0.lenses as Record<string, unknown>).domain = {
+                nodes: { "/root": { words: [{ text: "invoice", frequency: "many" }] } }
+            }
 
             // Act
             const errors = checkErrors(file2_0)
 
             // Assert
-            expect(errors).toEqual(["Type error: lenses/domain/~1root/0/frequency must be number"])
+            expect(errors).toEqual(["Type error: lenses/domain/nodes/~1root/words/0/frequency must be number"])
         })
 
         it("should warn about a 2.0 dependency edge whose to endpoint id does not resolve to a node", () => {
@@ -392,9 +396,11 @@ describe("FileValidator", () => {
         it("should warn about 2.0 domain-lens word banks whose node ids do not resolve to a node", () => {
             // Arrange
             file2_0.lenses.domain = {
-                "/root/big.ts": [{ text: "payment", frequency: 5 }],
-                "/does/not/exist": [{ text: "invoice", frequency: 12 }],
-                "/gone/too": [{ text: "refund", frequency: 3 }]
+                nodes: {
+                    "/root/big.ts": { words: [{ text: "payment", frequency: 5 }] },
+                    "/does/not/exist": { words: [{ text: "invoice", frequency: 12 }] },
+                    "/gone/too": { words: [{ text: "refund", frequency: 3 }] }
+                }
             }
 
             // Act

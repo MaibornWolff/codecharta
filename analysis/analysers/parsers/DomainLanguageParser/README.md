@@ -8,7 +8,8 @@ technical stop words, and counts how often each (optionally n-gram) word occurs.
 word-frequency data is written into the reserved cc.json 2.0 **`domain` lens**, keyed by node id, for
 every file and aggregated for every folder (and the project root).
 
-The `domain` lens payload is a bare map `{ "<nodeId>": [{ "text", "frequency", "tfidf"? }, ...] }`.
+The `domain` lens payload keys its entries under `nodes`:
+`{ "nodes": { "<nodeId>": { "words": [{ "text", "frequency", "tfidf"? }, ...] } } }`.
 `tfidf` is only present when TF-IDF scoring is enabled and defined.
 
 ## Supported Languages

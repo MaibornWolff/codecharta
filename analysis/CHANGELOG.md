@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Add `domainlanguageparser`, which extracts the domain vocabulary of a codebase into the cc.json 2.0 `domain` lens: for every file and folder the
+- Add `domainlanguageparser`, which extracts the domain vocabulary of a codebase into the cc.json 2.0 `domain` lens
+  (`domain.nodes.<node id>.words`): for every file and folder the
   words used in identifiers, comments and string literals, with their frequency and TF-IDF score. It parses 17 languages (Kotlin, Java, TypeScript,
   JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Bash, Objective-C, Vue, ABL) and filters out language and framework keywords, English
   stop words and technical noise. Options: `--stop-word-level MINIMAL|MODERATE|AGGRESSIVE` (default `MODERATE`), `--exclude-technical-stopwords`,

@@ -224,20 +224,26 @@
       "attributeDescriptors": {}
     },
     "domain": {
-      "8a5edab282632443": [
-        {
-          "text": "invoice",
-          "frequency": 12,
-          "tfidf": 0.42
+      "nodes": {
+        "8a5edab282632443": {
+          "words": [
+            {
+              "text": "invoice",
+              "frequency": 12,
+              "tfidf": 0.42
+            }
+          ]
+        },
+        "12410d52f26789e9": {
+          "words": [
+            {
+              "text": "customer",
+              "frequency": 7,
+              "tfidf": 0.31
+            }
+          ]
         }
-      ],
-      "12410d52f26789e9": [
-        {
-          "text": "customer",
-          "frequency": 7,
-          "tfidf": 0.31
-        }
-      ]
+      }
     }
   }
 }

@@ -637,12 +637,30 @@
       "type": "object"
     },
     "DomainLens": {
-      "additionalProperties": {
-        "items": {
-          "$ref": "#/definitions/DomainWord"
-        },
-        "type": "array"
+      "additionalProperties": false,
+      "properties": {
+        "nodes": {
+          "additionalProperties": {
+            "$ref": "#/definitions/DomainNode"
+          },
+          "type": "object"
+        }
       },
+      "type": "object"
+    },
+    "DomainNode": {
+      "additionalProperties": false,
+      "properties": {
+        "words": {
+          "items": {
+            "$ref": "#/definitions/DomainWord"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "words"
+      ],
       "type": "object"
     },
     "DomainWord": {

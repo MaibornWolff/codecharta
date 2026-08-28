@@ -94,13 +94,13 @@ function mapEdges(file: CcJson2, idToPath: Record<string, string>): Edge[] {
 
 function mapDomainWords(file: CcJson2, idToPath: Record<string, string>): DomainLensData {
     const domainWords: DomainLensData = {}
-    for (const [nodeId, words] of Object.entries(file.lenses.domain ?? {})) {
+    for (const [nodeId, node] of Object.entries(file.lenses.domain?.nodes ?? {})) {
         const path = idToPath[nodeId]
         if (path === undefined) {
             console.warn(`Dropping domain-lens words with unresolved node id: ${nodeId}`)
             continue
         }
-        domainWords[path] = words
+        domainWords[path] = node.words
     }
     return domainWords
 }

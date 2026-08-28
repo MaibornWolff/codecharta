@@ -2555,8 +2555,10 @@ export const TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_A: CcJson2 = {
             attributeTypes: { rloc: AttributeTypeValue.absolute }
         },
         domain: {
-            "/root": [{ text: "payment", frequency: 4, tfidf: 0.4 }],
-            "/root/big.ts": [{ text: "invoice", frequency: 2 }]
+            nodes: {
+                "/root": { words: [{ text: "payment", frequency: 4, tfidf: 0.4 }] },
+                "/root/big.ts": { words: [{ text: "invoice", frequency: 2 }] }
+            }
         }
     }
 }
@@ -2578,11 +2580,15 @@ export const TEST_FILE_CONTENT_CC_JSON_2_DOMAIN_B: CcJson2 = {
             attributeTypes: { rloc: AttributeTypeValue.absolute }
         },
         domain: {
-            "/root": [
-                { text: "payment", frequency: 6, tfidf: 0.2 },
-                { text: "shipping", frequency: 3 }
-            ],
-            "/root/small.ts": [{ text: "cart", frequency: 5 }]
+            nodes: {
+                "/root": {
+                    words: [
+                        { text: "payment", frequency: 6, tfidf: 0.2 },
+                        { text: "shipping", frequency: 3 }
+                    ]
+                },
+                "/root/small.ts": { words: [{ text: "cart", frequency: 5 }] }
+            }
         }
     }
 }

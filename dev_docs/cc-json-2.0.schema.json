@@ -194,11 +194,28 @@
       }
     },
     "DomainLens": {
-      "description": "Per-node domain vocabulary, keyed by node id: the word bank the domain bar and word cloud render.",
+      "description": "Domain vocabulary extracted from the source. `nodes` maps a node id to that node's entry; lens-wide data (corpus weights, producer provenance) belongs beside `nodes`, never inside it. `nodes` is optional so an unused lens slot stays `{}` — the form `carriesData()` treats as carrying nothing, like `security`.",
       "type": "object",
-      "additionalProperties": {
-        "type": "array",
-        "items": { "$ref": "#/definitions/DomainWord" }
+      "additionalProperties": false,
+      "properties": {
+        "nodes": {
+          "description": "Map of node id -> that node's domain entry.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/DomainNode" }
+        }
+      }
+    },
+    "DomainNode": {
+      "description": "One node's domain entry. An object rather than a bare word array so per-node facts (dominant term, token count, detected language) can be added later without a breaking change.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["words"],
+      "properties": {
+        "words": {
+          "description": "The node's word bank, in producer-controlled order.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/DomainWord" }
+        }
       }
     },
     "DomainWord": {

@@ -34,8 +34,14 @@ class DomainProjectGenerator(private val projectBuilder: ProjectBuilder = Projec
     }
 
     private fun buildDomainLens(result: DomainAnalysisResult): JsonObject {
-        val fileKeys = result.filePaths.toSet()
         val domainLens = JsonObject()
+        domainLens.add(NODES_KEY, buildDomainNodes(result))
+        return domainLens
+    }
+
+    private fun buildDomainNodes(result: DomainAnalysisResult): JsonObject {
+        val fileKeys = result.filePaths.toSet()
+        val domainNodes = JsonObject()
 
         result.wordsByPath.entries
             .map { (path, words) ->
@@ -43,9 +49,15 @@ class DomainProjectGenerator(private val projectBuilder: ProjectBuilder = Projec
                 val type = if (path in fileKeys) NodeType.File else NodeType.Folder
                 DomainNode(NodeId.fromSegments(segments, type), segments, words)
             }.sortedWith(compareBy({ it.segments.size }, { it.segments.joinToString(SEGMENT_SEPARATOR) }))
-            .forEach { node -> domainLens.add(node.id, toWordArray(node.words)) }
+            .forEach { node -> domainNodes.add(node.id, toDomainNodeObject(node.words)) }
 
-        return domainLens
+        return domainNodes
+    }
+
+    private fun toDomainNodeObject(words: List<WordFrequency>): JsonObject {
+        val domainNode = JsonObject()
+        domainNode.add(WORDS_KEY, toWordArray(words))
+        return domainNode
     }
 
     private fun toWordArray(words: List<WordFrequency>): JsonArray {
@@ -69,6 +81,8 @@ class DomainProjectGenerator(private val projectBuilder: ProjectBuilder = Projec
     companion object {
         private const val SEGMENT_SEPARATOR = "/"
 
+        private const val NODES_KEY = "nodes"
+        private const val WORDS_KEY = "words"
         private const val TEXT_KEY = "text"
         private const val FREQUENCY_KEY = "frequency"
         private const val TFIDF_KEY = "tfidf"
