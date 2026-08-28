@@ -9,6 +9,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+private const val BYTE_ORDER_MARK = "\uFEFF"
+
 class FileScannerTest {
     @Test
     fun `should scan files with allowed extensions recursively`(
@@ -278,6 +280,44 @@ class FileScannerTest {
 
         // Assert
         assertEquals(content, result)
+    }
+
+    @Test
+    fun `should strip byte order mark when reading a UTF-8 file that starts with one`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val dir = tempDir.toFile()
+        val file = File(dir, "Class1.cs")
+        val content = "namespace IntegrationTests\n{\n    public class Class1\n    {\n    }\n}\n"
+        file.writeBytes(BYTE_ORDER_MARK.toByteArray(Charsets.UTF_8) + content.toByteArray(Charsets.UTF_8))
+
+        val scanner = FileScanner(allowedExtensions = listOf("cs"))
+
+        // Act
+        val result = scanner.readFileContent(file).getOrThrow()
+
+        // Assert
+        assertEquals(content, result)
+    }
+
+    @Test
+    fun `should strip byte order mark when it occurs in the middle of a file`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val dir = tempDir.toFile()
+        val file = File(dir, "Marker.cs")
+        val content = "public class Class1$BYTE_ORDER_MARK { }"
+        file.writeText(content, Charsets.UTF_8)
+
+        val scanner = FileScanner(allowedExtensions = listOf("cs"))
+
+        // Act
+        val result = scanner.readFileContent(file).getOrThrow()
+
+        // Assert
+        assertEquals("public class Class1 { }", result)
     }
 
     @Test

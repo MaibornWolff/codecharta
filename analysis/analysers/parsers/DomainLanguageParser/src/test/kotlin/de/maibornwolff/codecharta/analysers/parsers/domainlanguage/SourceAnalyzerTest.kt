@@ -29,7 +29,31 @@ private fun DomainAnalysisResult.hasWord(text: String): Boolean = allWords().any
 
 private fun DomainAnalysisResult.rootWordOrder(): List<String> = (wordsByPath[ROOT_KEY] ?: emptyList()).map { it.text }
 
+private fun writeWithByteOrderMark(file: File, sourceCode: String) =
+    file.writeBytes("\uFEFF".toByteArray(Charsets.UTF_8) + sourceCode.toByteArray(Charsets.UTF_8))
+
 class SourceAnalyzerTest {
+    @Test
+    fun `should extract whole identifiers from source files that start with a byte order mark`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val dir = tempDir.toFile()
+        writeWithByteOrderMark(File(dir, "OrderShipmentTracker.cs"), "namespace Billing { public class OrderShipmentTracker { } }")
+        writeWithByteOrderMark(File(dir, "InvoiceService.cs"), "namespace Billing { public class InvoiceService { } }")
+
+        val analyzer = SourceAnalyzerFactory.create(AnalysisConfiguration(allowedExtensions = listOf("cs")))
+
+        // Act
+        val result = analyzer.analyze(dir.absolutePath)
+
+        // Assert
+        assertTrue(result.hasWord("shipment"))
+        assertTrue(result.hasWord("invoice"))
+        assertFalse(result.hasWord("ss"))
+        assertFalse(result.hasWord("shipm"))
+    }
+
     @Test
     fun `should analyze directory and return domain words`(
         @TempDir tempDir: Path
