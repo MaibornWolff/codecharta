@@ -17,6 +17,7 @@ interface EchartsWithModel {
 
 export class WordCloudChartHost {
     private chart?: echarts.ECharts
+    private attachedContainer?: HTMLElement
     private resizeObserver?: ResizeObserver
     private renderTimeout?: ReturnType<typeof setTimeout>
     private drawnCountTimeout?: ReturnType<typeof setTimeout>
@@ -35,10 +36,14 @@ export class WordCloudChartHost {
         private readonly onLayoutFinished: () => void
     ) {}
 
+    /** The empty state destroys the container element, so the one handed in on the way back is a new
+     * element. A chart kept on the replaced one would keep drawing where nobody can see it. */
     attachTo(container: HTMLElement): void {
-        if (this.chart) {
+        if (this.chart && this.attachedContainer === container) {
             return
         }
+        this.dispose()
+        this.attachedContainer = container
         this.chart = echarts.init(container)
         this.chart.on("finished", () => {
             this.onLayoutFinished()
@@ -49,25 +54,39 @@ export class WordCloudChartHost {
         this.publishEveryMeasuredSize(container)
     }
 
-    render(option: WordCloudOption): void {
-        if (this.renderTimeout !== undefined) {
-            clearTimeout(this.renderTimeout)
-        }
+    /** `onRendered` runs only when the layout actually reaches the chart. The caller uses it to record
+     * what is on the canvas, which a queued render must never claim on its behalf: the view can be left
+     * inside the debounce window, and a render that never happened would otherwise be skipped forever. */
+    render(option: WordCloudOption, onRendered: () => void): void {
+        this.cancelPendingRender()
         this.renderTimeout = setTimeout(() => {
             this.renderTimeout = undefined
+            if (!this.hasMeasurableContainer()) {
+                return
+            }
             this.drawnWords.set(null)
             this.chart?.clear()
             this.chart?.resize()
             this.chart?.setOption(option as unknown as echarts.EChartsCoreOption, true)
+            onRendered()
         }, RENDER_DEBOUNCE_MS)
+    }
+
+    cancelPendingRender(): void {
+        if (this.renderTimeout !== undefined) {
+            clearTimeout(this.renderTimeout)
+            this.renderTimeout = undefined
+        }
+    }
+
+    private hasMeasurableContainer(): boolean {
+        return this.attachedContainer !== undefined && this.attachedContainer.clientWidth > 0 && this.attachedContainer.clientHeight > 0
     }
 
     dispose(): void {
         this.resizeObserver?.disconnect()
         this.resizeObserver = undefined
-        if (this.renderTimeout !== undefined) {
-            clearTimeout(this.renderTimeout)
-        }
+        this.cancelPendingRender()
         if (this.drawnCountTimeout !== undefined) {
             clearTimeout(this.drawnCountTimeout)
         }
@@ -77,6 +96,7 @@ export class WordCloudChartHost {
         }
         this.chart?.dispose()
         this.chart = undefined
+        this.attachedContainer = undefined
     }
 
     private publishEveryMeasuredSize(container: HTMLElement): void {
