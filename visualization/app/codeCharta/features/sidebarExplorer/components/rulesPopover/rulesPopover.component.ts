@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { SidebarExplorerReadStore } from "../../stores/sidebarExplorer.read.store"
+import { EXPLORER_RULES } from "../../explorerRules.port"
 import { RuleRowComponent } from "../ruleRow/ruleRow.component"
 
 @Component({
@@ -10,16 +10,16 @@ import { RuleRowComponent } from "../ruleRow/ruleRow.component"
     imports: [RuleRowComponent]
 })
 export class RulesPopoverComponent {
-    private readonly readStore = inject(SidebarExplorerReadStore)
+    private readonly rules = inject(EXPLORER_RULES)
 
     readonly kind = input.required<"flatten" | "exclude">()
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
 
-    private readonly flattenRules = toSignal(this.readStore.flattenRulesWithCount$, { requireSync: true })
-    private readonly excludeRules = toSignal(this.readStore.excludeRulesWithCount$, { requireSync: true })
+    private readonly flattenRules = toSignal(this.rules.flattenRules$, { requireSync: true })
+    private readonly excludeRules = toSignal(this.rules.excludeRules$, { requireSync: true })
 
-    readonly rules = computed(() => (this.kind() === "flatten" ? this.flattenRules() : this.excludeRules()))
+    readonly rulesOfKind = computed(() => (this.kind() === "flatten" ? this.flattenRules() : this.excludeRules()))
     readonly title = computed(() => (this.kind() === "flatten" ? "Flattening Rules" : "Hidden Rules"))
 
     readonly popover = viewChild.required<ElementRef<HTMLElement>>("popover")

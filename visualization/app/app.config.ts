@@ -11,7 +11,6 @@ import { labelSettingsEffects } from "app/codeCharta/features/labelSettings/effe
 import { metricsBarEffects } from "app/codeCharta/features/metricsBar/effects/metricsBar.effects"
 import { navBarEffects } from "app/codeCharta/features/navBar/effects/navBar.effects"
 import { sharedEffects } from "app/codeCharta/features/shared/effects/shared.effects"
-import { sidebarExplorerEffects } from "app/codeCharta/features/sidebarExplorer/effects/sidebarExplorer.effects"
 import { loadEffects } from "app/codeCharta/load/effects/load.effects"
 import { KeepAliveRouteReuseStrategy } from "app/codeCharta/routing/keepAliveRouteReuse.strategy"
 import { QueryPreservingHashLocationStrategy } from "app/codeCharta/routing/queryPreservingHashLocation.strategy"
@@ -19,6 +18,7 @@ import { routePaths } from "app/codeCharta/routing/routePaths"
 import { appReducers, setStateMiddleware } from "app/codeCharta/stores/rootStore/store"
 import { DomainViewComponent } from "app/codeCharta/views/domainView/domainView.component"
 import { domainViewEffects } from "app/codeCharta/views/domainView/effects/domainView.effects"
+import { metricsViewEffects } from "app/codeCharta/views/metricsView/effects/metricsView.effects"
 import { MetricsViewComponent } from "app/codeCharta/views/metricsView/metricsView.component"
 
 export const routes: Routes = [
@@ -44,12 +44,12 @@ export const appConfig: ApplicationConfig = {
             ...codeMapEffects,
             ...metricsBarEffects,
             ...labelSettingsEffects,
-            ...sidebarExplorerEffects,
             ...fileExtensionBarEffects,
             ...navBarEffects,
             ...sharedEffects,
             ...loadEffects,
-            ...domainViewEffects
+            ...domainViewEffects,
+            ...metricsViewEffects
         ]),
 
         {

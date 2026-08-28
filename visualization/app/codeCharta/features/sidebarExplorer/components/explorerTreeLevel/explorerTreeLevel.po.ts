@@ -1,13 +1,22 @@
 import { Locator, Page } from "@playwright/test"
 import { clickButtonOnPageElement } from "../../../../../playwright.helper"
+import { explorerRowId } from "../../explorerRowId"
+import { ExplorerStorageScope } from "../../explorerStorageScope"
 
 export class ExplorerTreeLevelPageObject {
     private readonly DEFAULT_TIMEOUT = 15000
 
-    constructor(private page: Page) {}
+    constructor(
+        private page: Page,
+        private scope: ExplorerStorageScope = "metrics"
+    ) {}
+
+    private rowSelector(path: string) {
+        return `[id='${explorerRowId(this.scope, path)}']`
+    }
 
     async openContextMenu(path: string) {
-        const selector = `[id='${path}']`
+        const selector = this.rowSelector(path)
         await this.page.locator(selector).waitFor({ state: "visible", timeout: this.DEFAULT_TIMEOUT })
         await this.scrollElementIntoView(selector)
         await clickButtonOnPageElement(this.page, selector, { button: "right" })
@@ -16,15 +25,15 @@ export class ExplorerTreeLevelPageObject {
     }
 
     async openFolder(path: string) {
-        const selector = `[id='${path}']`
+        const selector = this.rowSelector(path)
         await this.page.locator(selector).waitFor({ state: "visible", timeout: this.DEFAULT_TIMEOUT })
         await this.scrollElementIntoView(selector)
         await clickButtonOnPageElement(this.page, selector)
         await this.page.locator(`${selector} span.fa.fa-folder-open`).waitFor({ state: "attached", timeout: this.DEFAULT_TIMEOUT })
 
         await this.page.waitForFunction(
-            parentPath => {
-                const elements = document.querySelectorAll(`[id^="${parentPath}/"]`)
+            parentRowId => {
+                const elements = document.querySelectorAll(`[id^="${parentRowId}/"]`)
                 if (elements.length === 0) {
                     return false
                 }
@@ -36,15 +45,22 @@ export class ExplorerTreeLevelPageObject {
                 }
                 return false
             },
-            path,
+            explorerRowId(this.scope, path),
             { timeout: this.DEFAULT_TIMEOUT }
         )
 
         await this.page.waitForTimeout(150)
     }
 
+    async selectNode(path: string) {
+        const selector = this.rowSelector(path)
+        await this.page.locator(selector).waitFor({ state: "visible", timeout: this.DEFAULT_TIMEOUT })
+        await this.scrollElementIntoView(selector)
+        await clickButtonOnPageElement(this.page, selector)
+    }
+
     async hoverNode(path: string) {
-        const selector = `[id='${path}']`
+        const selector = this.rowSelector(path)
         await this.page.locator(selector).waitFor({ state: "visible", timeout: this.DEFAULT_TIMEOUT })
         await this.scrollElementIntoView(selector)
         await this.page.locator(selector).hover()
@@ -52,15 +68,15 @@ export class ExplorerTreeLevelPageObject {
     }
 
     node(path: string): Locator {
-        return this.page.locator(`[id='${path}']`)
+        return this.page.locator(this.rowSelector(path))
     }
 
     async isNodeMarked(path: string) {
-        return this.page.locator(`[id='${path}'].marked`).waitFor({ state: "attached", timeout: this.DEFAULT_TIMEOUT })
+        return this.page.locator(`${this.rowSelector(path)}.marked`).waitFor({ state: "attached", timeout: this.DEFAULT_TIMEOUT })
     }
 
     async hasMarkedClass(path: string): Promise<boolean> {
-        const selector = `[id='${path}']`
+        const selector = this.rowSelector(path)
         const count = await this.page.locator(selector).count()
         if (count === 0) {
             return false
@@ -70,7 +86,7 @@ export class ExplorerTreeLevelPageObject {
     }
 
     async hoverNodeWithoutScrolling(path: string) {
-        const selector = `[id='${path}']`
+        const selector = this.rowSelector(path)
         await this.page.locator(selector).waitFor({ state: "visible", timeout: this.DEFAULT_TIMEOUT })
         await this.page.locator(selector).hover({ force: true })
     }

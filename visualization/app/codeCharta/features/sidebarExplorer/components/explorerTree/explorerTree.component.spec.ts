@@ -2,9 +2,8 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
+import { of } from "rxjs"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
-import { accumulatedDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
-import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { provideExplorerPortsMock } from "../../explorerPorts.mocks"
 import { ExplorerTreeComponent } from "./explorerTree.component"
@@ -18,28 +17,37 @@ const TEST_NODE: CodeMapNode = {
 }
 
 describe("ExplorerTreeComponent", () => {
-    beforeEach(() => {
+    const configureWithTree = (rootNode: CodeMapNode | undefined) => {
         TestBed.configureTestingModule({
             imports: [ExplorerTreeComponent],
             providers: [
-                provideMockStore({
-                    initialState: defaultState,
-                    selectors: [
-                        { selector: accumulatedDataSelector, value: { unifiedMapNode: TEST_NODE } },
-                        { selector: areaMetricSelector, value: "rloc" }
-                    ]
-                }),
+                provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
-                ...provideExplorerPortsMock()
+                ...provideExplorerPortsMock({ tree: { rootNodeFor: () => of(rootNode) } })
             ]
         })
-    })
+    }
 
-    it("should render a single root tree level when root node is provided", async () => {
-        // Arrange & Act
+    it("should render the root node the view's tree port supplies", async () => {
+        // Arrange
+        configureWithTree(TEST_NODE)
+
+        // Act
         const { container } = await render(ExplorerTreeComponent)
 
         // Assert
-        expect(container.querySelectorAll("cc-explorer-tree-level").length).toBeGreaterThanOrEqual(1)
+        expect(container.querySelector("#metrics\\:\\/root")).toBeTruthy()
+    })
+
+    it("should render nothing when the view's tree port has no root node", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        configureWithTree(undefined)
+
+        // Act
+        const { container } = await render(ExplorerTreeComponent)
+
+        // Assert
+        expect(container.querySelectorAll("cc-explorer-tree-level").length).toBe(0)
     })
 })

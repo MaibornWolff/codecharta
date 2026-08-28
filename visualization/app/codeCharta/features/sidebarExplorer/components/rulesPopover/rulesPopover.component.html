@@ -17,11 +17,11 @@
             <i class="fa fa-times"></i>
         </button>
     </div>
-    @if (rules().length === 0) {
+    @if (rulesOfKind().length === 0) {
         <div class="text-xs opacity-60 px-2 py-3">No rules</div>
     } @else {
         <ul class="flex flex-col max-h-[60vh] overflow-y-auto m-0 p-0 list-none">
-            @for (rule of rules(); track rule.item.path) {
+            @for (rule of rulesOfKind(); track rule.item.path) {
                 <li>
                     <cc-rule-row [item]="rule.item" [affectedCount]="rule.affectedCount" [kind]="rule.kind"></cc-rule-row>
                 </li>

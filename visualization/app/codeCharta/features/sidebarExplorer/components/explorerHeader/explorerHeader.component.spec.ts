@@ -1,11 +1,9 @@
 import { TestBed } from "@angular/core/testing"
-import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { provideExplorerCapabilitiesMock } from "../../explorerPorts.mocks"
+import { EXPLORER_COUNTS } from "../../explorerCounts.port"
+import { createExplorerCountsMock, provideExplorerCapabilitiesMock } from "../../explorerPorts.mocks"
 import { provideViewScopedExplorerState } from "../../provideViewScopedExplorerState"
-import { explorerCountsSelector } from "../../selectors/sidebarExplorer.selectors"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerHeaderComponent } from "./explorerHeader.component"
 
@@ -14,10 +12,10 @@ describe("ExplorerHeaderComponent", () => {
         TestBed.configureTestingModule({
             imports: [ExplorerHeaderComponent],
             providers: [
-                provideMockStore({
-                    initialState: defaultState,
-                    selectors: [{ selector: explorerCountsSelector, value: { shown: 47, flattened: 12, hidden: 5, noArea: 3 } }]
-                }),
+                {
+                    provide: EXPLORER_COUNTS,
+                    useValue: createExplorerCountsMock({ shown: 47, flattened: 12, hidden: 5, noArea: 3 })
+                },
                 provideExplorerCapabilitiesMock({ showCounts }),
                 ...provideViewScopedExplorerState("metrics")
             ]
@@ -37,7 +35,7 @@ describe("ExplorerHeaderComponent", () => {
         expect(screen.getByText("Explorer")).not.toBe(null)
     })
 
-    it("should render three count chips with the values from the counts selector", async () => {
+    it("should render three count chips with the values from the counts port", async () => {
         // Arrange & Act
         await render(ExplorerHeaderComponent)
 
@@ -69,6 +67,22 @@ describe("ExplorerHeaderComponent", () => {
         // Arrange
         TestBed.resetTestingModule()
         configureWithShowCounts(false)
+
+        // Act
+        const { container } = await render(ExplorerHeaderComponent)
+
+        // Assert
+        expect(container.querySelectorAll("cc-explorer-count-chip").length).toBe(0)
+        expect(screen.getByText("Explorer")).not.toBe(null)
+    })
+
+    it("should render without a counts port when the view provides none", async () => {
+        // Arrange — the domain view turns counts off and provides no EXPLORER_COUNTS adapter
+        TestBed.resetTestingModule()
+        TestBed.configureTestingModule({
+            imports: [ExplorerHeaderComponent],
+            providers: [provideExplorerCapabilitiesMock({ showCounts: false }), ...provideViewScopedExplorerState("domain")]
+        })
 
         // Act
         const { container } = await render(ExplorerHeaderComponent)

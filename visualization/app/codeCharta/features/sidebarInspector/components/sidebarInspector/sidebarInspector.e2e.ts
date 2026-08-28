@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { clearIndexedDB, clickButtonOnPageElement, goto } from "../../../../../playwright.helper"
+import { clearIndexedDB, goto } from "../../../../../playwright.helper"
 import { ExplorerTreeLevelPageObject } from "../../../sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
 import { SidebarInspectorPageObject } from "./sidebarInspector.po"
 
@@ -19,7 +19,7 @@ test.describe("SidebarInspector", () => {
         await inspector.waitUntilClosed()
 
         await explorerTreeLevel.openFolder("/root/sample1.cc.json")
-        await clickButtonOnPageElement(page, "[id='/root/sample1.cc.json/bigLeaf.ts']")
+        await explorerTreeLevel.selectNode("/root/sample1.cc.json/bigLeaf.ts")
 
         await inspector.waitUntilOpen()
         await expect(inspector.nodeName()).toHaveText("bigLeaf.ts")
@@ -33,12 +33,12 @@ test.describe("SidebarInspector", () => {
         const inspector = new SidebarInspectorPageObject(page)
 
         await explorerTreeLevel.openFolder("/root/sample1.cc.json")
-        await clickButtonOnPageElement(page, "[id='/root/sample1.cc.json/bigLeaf.ts']")
+        await explorerTreeLevel.selectNode("/root/sample1.cc.json/bigLeaf.ts")
         await inspector.waitUntilOpen()
         await inspector.close()
         await inspector.waitUntilClosed()
 
-        await clickButtonOnPageElement(page, "[id='/root/sample1.cc.json/sample1OnlyLeaf.scss']")
+        await explorerTreeLevel.selectNode("/root/sample1.cc.json/sample1OnlyLeaf.scss")
 
         await inspector.waitUntilOpen()
         await expect(inspector.nodeName()).toHaveText("sample1OnlyLeaf.scss")

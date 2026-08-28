@@ -1,5 +1,5 @@
-import { CodeMapNode } from "../../../model/codeCharta.model"
-import { isAreaValid, isLeaf } from "../../../util/codeMapHelper"
+import { CodeMapNode, MarkedPackage } from "../../../model/codeCharta.model"
+import { getMarkingColor, isAreaValid, isLeaf } from "../../../util/codeMapHelper"
 import { formatCompactNumber } from "../../../util/formatCompactNumber"
 
 const NO_AREA_HINT = "No Node Area for Chosen Metric"
@@ -9,8 +9,10 @@ export interface ExplorerRowProjection {
     isInactive: boolean
     isItalic: boolean
     isFlattened: boolean
+    isHidden: boolean
     title: string
     decoration: string | null
+    markingColor: string | null
 }
 
 export interface ExplorerRowInputs {
@@ -18,6 +20,8 @@ export interface ExplorerRowInputs {
     buildingIds?: ReadonlySet<number>
     rootUnary?: number | null
     showsFlattenedState?: boolean
+    hidesExcludedNodes?: boolean
+    markedPackages?: MarkedPackage[]
 }
 
 export function projectExplorerRow(node: CodeMapNode, inputs: ExplorerRowInputs): ExplorerRowProjection {
@@ -28,8 +32,10 @@ export function projectExplorerRow(node: CodeMapNode, inputs: ExplorerRowInputs)
         isInactive: !hasArea,
         isItalic: !hasArea || !isSelectable,
         isFlattened: Boolean(inputs.showsFlattenedState && node.isFlattened),
+        isHidden: Boolean(inputs.hidesExcludedNodes && node.isExcluded),
         title: hasArea ? "" : NO_AREA_HINT,
-        decoration: computeDecoration(node, inputs.rootUnary)
+        decoration: computeDecoration(node, inputs.rootUnary),
+        markingColor: computeMarkingColor(node, inputs.markedPackages)
     }
 }
 
@@ -50,4 +56,11 @@ function computeDecoration(node: CodeMapNode, rootUnary: number | null | undefin
     }
     const percentage = rootUnary ? Math.round((100 * unary) / rootUnary) : 0
     return `${percentage}% / ${formatCompactNumber(unary)}`
+}
+
+function computeMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[] | undefined): string | null {
+    if (markedPackages === undefined || isLeaf(node)) {
+        return null
+    }
+    return getMarkingColor(node, markedPackages) || null
 }

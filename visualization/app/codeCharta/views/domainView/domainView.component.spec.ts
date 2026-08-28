@@ -3,16 +3,20 @@ import { TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
+import { firstValueFrom } from "rxjs"
 import { DomainBarReadStore } from "../../features/domainBar/facade"
 import {
     EXPLORER_CAPABILITIES,
     EXPLORER_CONTEXT_MENU,
     EXPLORER_ROW,
+    EXPLORER_TREE,
     ExplorerCollapseService,
     ExplorerWidthService
 } from "../../features/sidebarExplorer/facade"
+import { viewIndependentTreeSelector } from "../../lenses/structure/structure.facade"
 import { CodeMapNode, NodeType, SortingOption } from "../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings } from "../../model/wordCloud.model"
+import { accumulatedDataSelector } from "../../renderer/renderModel/renderModel.facade"
 import { defaultState } from "../../stores/rootStore/state.manager"
 import { DomainViewComponent } from "./domainView.component"
 
@@ -36,6 +40,8 @@ class StubBottomBarComponent {
 }
 
 const SOME_NODE = { name: "a.ts", path: "/root/a.ts", id: 1, type: NodeType.FILE, attributes: {} } as unknown as CodeMapNode
+const VIEW_INDEPENDENT_ROOT = { name: "root", path: "/root", type: NodeType.FOLDER, attributes: {}, children: [] } as CodeMapNode
+const RENDER_MODEL_ROOT = { name: "map", path: "/map", type: NodeType.FOLDER, attributes: {}, children: [] } as CodeMapNode
 
 describe("DomainViewComponent", () => {
     async function setup(settings = defaultWordCloudSettings) {
@@ -44,7 +50,13 @@ describe("DomainViewComponent", () => {
         })
         return render(DomainViewComponent, {
             providers: [
-                provideMockStore({ initialState: defaultState }),
+                provideMockStore({
+                    initialState: defaultState,
+                    selectors: [
+                        { selector: viewIndependentTreeSelector, value: VIEW_INDEPENDENT_ROOT },
+                        { selector: accumulatedDataSelector, value: { unifiedMapNode: RENDER_MODEL_ROOT } }
+                    ]
+                }),
                 { provide: DomainBarReadStore, useValue: { settings: signal(settings) } }
             ]
         })
@@ -64,6 +76,18 @@ describe("DomainViewComponent", () => {
         })
         expect(injector.get(EXPLORER_CONTEXT_MENU, null)).toBeNull()
         expect(injector.get(EXPLORER_ROW).project(SOME_NODE).isSelectable).toBe(true)
+    })
+
+    it("should read the view-independent tree, so the map's blacklist cannot shape the domain explorer", async () => {
+        // Arrange
+        const { fixture } = await setup()
+        const explorerTree = fixture.debugElement.injector.get(EXPLORER_TREE)
+
+        // Act
+        const rootNode = await firstValueFrom(explorerTree.rootNodeFor(SortingOption.NAME, true))
+
+        // Assert
+        expect(rootNode.path).toBe(VIEW_INDEPENDENT_ROOT.path)
     })
 
     it("should inset the cloud container by the explorer width so the explorer cannot occlude the cloud", async () => {

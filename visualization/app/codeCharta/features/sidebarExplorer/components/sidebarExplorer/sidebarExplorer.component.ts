@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, OnDestroy, viewChild } from "@angular/core"
 import { CSS_VARIABLE_HOST } from "../../../shared/facade"
 import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
+import { ExplorerScrollHostService } from "../../services/explorerScrollHost.service"
 import { EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
 import { ExplorerHeaderComponent } from "../explorerHeader/explorerHeader.component"
 import { ExplorerSearchBarComponent } from "../explorerSearchBar/explorerSearchBar.component"
@@ -36,6 +37,9 @@ export class SidebarExplorerComponent implements OnDestroy {
     private readonly collapseService = inject(ExplorerCollapseService)
     private readonly widthService = inject(ExplorerWidthService)
     private readonly cssVariableHost = inject(CSS_VARIABLE_HOST)
+    private readonly scrollHostService = inject(ExplorerScrollHostService)
+
+    private readonly scrollHost = viewChild<ElementRef<HTMLElement>>("scrollHost")
 
     readonly capabilities = inject(EXPLORER_CAPABILITIES)
 
@@ -45,6 +49,7 @@ export class SidebarExplorerComponent implements OnDestroy {
 
     constructor() {
         effect(() => this.publishWidthTheBottomBarsMustAvoid())
+        effect(() => this.scrollHostService.register(this.scrollHost()?.nativeElement ?? null))
     }
 
     private publishWidthTheBottomBarsMustAvoid() {

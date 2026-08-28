@@ -1,8 +1,12 @@
 import { Injector } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { StoreModule } from "@ngrx/store"
+import { provideMockStore } from "@ngrx/store/testing"
 import { firstValueFrom } from "rxjs"
 import { EXPLORER_SEARCH, ExplorerSearch, provideExplorerSearch } from "../../../features/sidebarExplorer/facade"
+import { viewIndependentTreeSelector } from "../../../lenses/structure/structure.facade"
+import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
+import { domainStateSearchPatternSelector } from "../../../stores/domainState/domainState.read.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
 import { METRICS_EXPLORER_SEARCH } from "../../metricsView/explorer/metricsExplorerSearch"
 import { DOMAIN_EXPLORER_SEARCH } from "./domainExplorerSearch"
@@ -60,5 +64,49 @@ describe("DOMAIN_EXPLORER_SEARCH", () => {
         // Assert
         expect(await firstValueFrom(domainSearch.pattern$)).toBe("")
         expect(await firstValueFrom(metricsSearch.pattern$)).toBe("*.java")
+    })
+})
+
+describe("DOMAIN_EXPLORER_SEARCH searched nodes", () => {
+    const TREE = {
+        name: "root",
+        path: "/root",
+        type: NodeType.FOLDER,
+        attributes: {},
+        children: [
+            { name: "Main.kt", path: "/root/Main.kt", type: NodeType.FILE, attributes: {} },
+            { name: "Main.java", path: "/root/Main.java", type: NodeType.FILE, attributes: {} }
+        ]
+    } as CodeMapNode
+
+    const searchedPathsFor = async (searchPattern: string) => {
+        TestBed.configureTestingModule({
+            providers: [
+                provideMockStore({
+                    selectors: [
+                        { selector: viewIndependentTreeSelector, value: TREE },
+                        { selector: domainStateSearchPatternSelector, value: searchPattern }
+                    ]
+                }),
+                provideExplorerSearch(DOMAIN_EXPLORER_SEARCH)
+            ]
+        })
+        return firstValueFrom(TestBed.inject(EXPLORER_SEARCH).searchedNodePaths$)
+    }
+
+    it("should match against the view-independent tree the domain explorer renders", async () => {
+        // Arrange & Act
+        const searchedNodePaths = await searchedPathsFor("*.kt")
+
+        // Assert
+        expect([...searchedNodePaths]).toEqual(["/root/Main.kt"])
+    })
+
+    it("should match nothing while the pattern is empty", async () => {
+        // Arrange & Act
+        const searchedNodePaths = await searchedPathsFor("")
+
+        // Assert
+        expect(searchedNodePaths.size).toBe(0)
     })
 })

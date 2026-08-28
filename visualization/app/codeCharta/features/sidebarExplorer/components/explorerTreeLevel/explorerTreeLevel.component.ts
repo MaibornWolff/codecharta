@@ -4,13 +4,14 @@ import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { isLeaf } from "../../../../util/codeMapHelper"
 import { EXPLORER_CONTEXT_MENU } from "../../explorerContextMenu"
 import { EXPLORER_ROW } from "../../explorerRow"
+import { explorerRowId } from "../../explorerRowId"
 import { EXPLORER_SELECTION } from "../../explorerSelection"
+import { EXPLORER_STORAGE_SCOPE } from "../../explorerStorageScope"
 import { scrollRowIntoViewWhenRendered } from "../../scrollRowIntoView"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
+import { ExplorerScrollHostService } from "../../services/explorerScrollHost.service"
 import { ExplorerTreeItemIconComponent } from "../explorerTreeItemIcon/explorerTreeItemIcon.component"
 import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerTreeItemName.component"
-
-const EXPLORER_SCROLL_HOST_SELECTOR = "#explorer-scroll"
 
 @Component({
     selector: "cc-explorer-tree-level",
@@ -23,15 +24,18 @@ export class ExplorerTreeLevelComponent implements OnInit {
     private readonly selection = inject(EXPLORER_SELECTION)
     private readonly contextMenu = inject(EXPLORER_CONTEXT_MENU, { optional: true })
     private readonly revealService = inject(ExplorerRevealService)
+    private readonly scrollHostService = inject(ExplorerScrollHostService)
+    private readonly storageScope = inject(EXPLORER_STORAGE_SCOPE)
     private readonly destroyRef = inject(DestroyRef)
 
-    private isScrollListenerRegistered = false
+    private scrollHostWithListener: HTMLElement | null = null
 
     readonly node = input.required<CodeMapNode>()
     readonly depth = input.required<number>()
 
     readonly isOpen = signal(false)
 
+    readonly rowId = computed(() => explorerRowId(this.storageScope, this.node().path))
     readonly rowProjection = computed(() => this.row.project(this.node()))
     readonly isSelectable = computed(() => this.rowProjection().isSelectable)
     readonly isHovered = computed(() => this.selection.isHovered(this.node()))
@@ -54,7 +58,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
             this.isOpen.set(true)
         }
         if (revealedNodePath === path) {
-            scrollRowIntoViewWhenRendered(path, () => this.revealService.revealedNodePath() === path)
+            scrollRowIntoViewWhenRendered(this.rowId(), () => this.revealService.revealedNodePath() === path)
         }
     }
 
@@ -102,23 +106,17 @@ export class ExplorerTreeLevelComponent implements OnInit {
     }
 
     private addScrollListener() {
-        if (this.isScrollListenerRegistered) {
+        if (this.scrollHostWithListener) {
             return
         }
-        this.scrollHost()?.addEventListener("scroll", this.closeContextMenuOnScroll)
-        this.isScrollListenerRegistered = true
+        const scrollHost = this.scrollHostService.element()
+        scrollHost?.addEventListener("scroll", this.closeContextMenuOnScroll)
+        this.scrollHostWithListener = scrollHost
     }
 
     private removeScrollListener() {
-        if (!this.isScrollListenerRegistered) {
-            return
-        }
-        this.scrollHost()?.removeEventListener("scroll", this.closeContextMenuOnScroll)
-        this.isScrollListenerRegistered = false
-    }
-
-    private scrollHost(): Element | null {
-        return document.querySelector(EXPLORER_SCROLL_HOST_SELECTOR)
+        this.scrollHostWithListener?.removeEventListener("scroll", this.closeContextMenuOnScroll)
+        this.scrollHostWithListener = null
     }
 
     private readonly closeContextMenuOnScroll = () => {
