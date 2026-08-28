@@ -34,7 +34,7 @@ backend and a frontend built separately, or a coverage report rooted by package)
     "metrics":    { "attributes": { "<id>": { "rloc": 120, "mcc": 8 } }, "attributeDescriptors": {}, "attributeTypes": {} },
     "dependency": { "edges": [ { "fromId": "<id>", "toId": "<id>", "attributes": { "pairingRate": 42 } } ], "attributeTypes": {}, "attributeDescriptors": {} },
     "clusters":   { "clusterings": { "author-ownership": { "title": "Author ownership", "membership": "weighted", "weightBasis": "rloc", "analyzers": ["gitlogparser"], "clusters": [ { "id": "author-a", "name": "Author A", "members": [ { "nodeId": "<id>", "weight": 0.62 } ] } ] } } },
-    "domain":     { "<id>": [ { "text": "invoice", "frequency": 12, "tfidf": 0.42 } ] },
+    "domain":     { "nodes": { "<id>": { "words": [ { "text": "invoice", "frequency": 12, "tfidf": 0.42 } ] } } },
     "security":   {}
   }
 }
@@ -45,8 +45,10 @@ backend and a frontend built separately, or a coverage report rooted by package)
 - **`lenses`** are additive overlays joined to `files` by `id`. `metrics` and `dependency` are
   concrete; `clusters` is optional and fully defined by the schema but has no producer or
   visualization support yet — see [the `clusters` lens](cc-json-2.0-clusters-lens.md) for its full
-  definition and merge semantics; `domain` maps a node id to its word bank (each word carrying `text`,
-  `frequency` and an optional `tfidf`); `security` is reserved. **Unknown top-level lenses
+  definition and merge semantics; `domain` carries a `nodes` map from node id to that node's entry, each
+  entry holding a `words` bank (each word carrying `text`, `frequency` and an optional `tfidf`) — the
+  envelope keeps room for lens-wide data beside `nodes` and per-node data beside `words`, and an unused
+  lens slot stays `{}`; `security` is reserved. **Unknown top-level lenses
   are preserved verbatim** on round-trip, so a newer tool's lens survives an older tool.
 - **`meta.checksum`** is an MD5 over the serialized `files` + `lenses` payload (folded into `meta`,
   unlike the 1.5 `{ checksum, data }` wrapper). `commitHash` is an optional short git SHA.

@@ -116,40 +116,54 @@
             "attributeDescriptors": {}
         },
         "domain": {
-            "164ddff4bb1345e1": [
-                { "text": "invoice", "frequency": 42, "tfidf": 0.81 },
-                { "text": "payment", "frequency": 30, "tfidf": 0.64 },
-                { "text": "customer", "frequency": 25, "tfidf": 0.55 },
-                { "text": "account", "frequency": 20, "tfidf": 0.52 },
-                { "text": "order", "frequency": 18, "tfidf": 0.41 },
-                { "text": "ledger", "frequency": 16, "tfidf": 0.44 },
-                { "text": "balance", "frequency": 14, "tfidf": 0.37 },
-                { "text": "shipment", "frequency": 12, "tfidf": 0.28 },
-                { "text": "transaction", "frequency": 9, "tfidf": 0.22 }
-            ],
-            "1ae98c1a93690d75": [
-                { "text": "account", "frequency": 20, "tfidf": 0.52 },
-                { "text": "balance", "frequency": 14, "tfidf": 0.37 }
-            ],
-            "7de6343f370ff7cf": [
-                { "text": "ledger", "frequency": 16, "tfidf": 0.44 },
-                { "text": "transaction", "frequency": 9, "tfidf": 0.22 }
-            ],
-            "3d6521b0884ce9f4": [
-                { "text": "invoice", "frequency": 42, "tfidf": 0.81 },
-                { "text": "payment", "frequency": 30, "tfidf": 0.64 },
-                { "text": "customer", "frequency": 25, "tfidf": 0.55 },
-                { "text": "order", "frequency": 18, "tfidf": 0.41 },
-                { "text": "shipment", "frequency": 12, "tfidf": 0.28 }
-            ],
-            "ea70504d5daa3547": [
-                { "text": "account", "frequency": 12, "tfidf": 0.52 },
-                { "text": "balance", "frequency": 5, "tfidf": 0.37 }
-            ],
-            "120a1569e3556450": [
-                { "text": "balance", "frequency": 9, "tfidf": 0.37 },
-                { "text": "account", "frequency": 8, "tfidf": 0.52 }
-            ]
+            "nodes": {
+                "164ddff4bb1345e1": {
+                    "words": [
+                        { "text": "invoice", "frequency": 42, "tfidf": 0.81 },
+                        { "text": "payment", "frequency": 30, "tfidf": 0.64 },
+                        { "text": "customer", "frequency": 25, "tfidf": 0.55 },
+                        { "text": "account", "frequency": 20, "tfidf": 0.52 },
+                        { "text": "order", "frequency": 18, "tfidf": 0.41 },
+                        { "text": "ledger", "frequency": 16, "tfidf": 0.44 },
+                        { "text": "balance", "frequency": 14, "tfidf": 0.37 },
+                        { "text": "shipment", "frequency": 12, "tfidf": 0.28 },
+                        { "text": "transaction", "frequency": 9, "tfidf": 0.22 }
+                    ]
+                },
+                "1ae98c1a93690d75": {
+                    "words": [
+                        { "text": "account", "frequency": 20, "tfidf": 0.52 },
+                        { "text": "balance", "frequency": 14, "tfidf": 0.37 }
+                    ]
+                },
+                "7de6343f370ff7cf": {
+                    "words": [
+                        { "text": "ledger", "frequency": 16, "tfidf": 0.44 },
+                        { "text": "transaction", "frequency": 9, "tfidf": 0.22 }
+                    ]
+                },
+                "3d6521b0884ce9f4": {
+                    "words": [
+                        { "text": "invoice", "frequency": 42, "tfidf": 0.81 },
+                        { "text": "payment", "frequency": 30, "tfidf": 0.64 },
+                        { "text": "customer", "frequency": 25, "tfidf": 0.55 },
+                        { "text": "order", "frequency": 18, "tfidf": 0.41 },
+                        { "text": "shipment", "frequency": 12, "tfidf": 0.28 }
+                    ]
+                },
+                "ea70504d5daa3547": {
+                    "words": [
+                        { "text": "account", "frequency": 12, "tfidf": 0.52 },
+                        { "text": "balance", "frequency": 5, "tfidf": 0.37 }
+                    ]
+                },
+                "120a1569e3556450": {
+                    "words": [
+                        { "text": "balance", "frequency": 9, "tfidf": 0.37 },
+                        { "text": "account", "frequency": 8, "tfidf": 0.52 }
+                    ]
+                }
+            }
         }
     }
 }

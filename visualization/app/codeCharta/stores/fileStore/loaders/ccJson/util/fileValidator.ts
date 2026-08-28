@@ -102,7 +102,7 @@ function collectUnresolvedEdgeWarnings(file: CcJson2, nodeIds: Set<string>): str
 
 function collectUnresolvedDomainWordsWarnings(file: CcJson2, nodeIds: Set<string>): string[] {
     const warnings: string[] = []
-    for (const nodeId of Object.keys(file.lenses.domain ?? {})) {
+    for (const nodeId of Object.keys(file.lenses.domain?.nodes ?? {})) {
         if (!nodeIds.has(nodeId)) {
             warnings.push(`${ERROR_MESSAGES.unresolvedDomainWordsNodeId} ${nodeId}`)
         }

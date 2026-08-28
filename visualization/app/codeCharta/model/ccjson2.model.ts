@@ -1,12 +1,4 @@
-import {
-    AttributeDescriptors,
-    AttributeTypeValue,
-    BlacklistItem,
-    DomainLensData,
-    FixedPosition,
-    MarkedPackage,
-    NodeType
-} from "./domain.model"
+import { AttributeDescriptors, AttributeTypeValue, BlacklistItem, DomainWord, FixedPosition, MarkedPackage, NodeType } from "./domain.model"
 
 export interface CcJson2 {
     meta: Meta2
@@ -33,12 +25,21 @@ export interface FileNode {
 interface Lenses {
     metrics?: MetricsLensData
     dependency?: DependencyLensData
-    domain?: DomainLensData
+    domain?: DomainLens
     /*
      * Opaque passthrough — the schema defines the clusters lens, but the viz neither reads nor
      * renders it yet. The typed model lands with the first producer.
      */
     clusters?: unknown
+}
+
+interface DomainLens {
+    /** Optional so an unused lens slot stays `{}`, the form the analysis side treats as carrying nothing. */
+    nodes?: Record<string, DomainNode>
+}
+
+interface DomainNode {
+    words: DomainWord[]
 }
 
 interface MetricsLensData {

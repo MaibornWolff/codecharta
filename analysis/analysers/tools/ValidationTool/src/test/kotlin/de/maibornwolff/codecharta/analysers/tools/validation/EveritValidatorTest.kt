@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.tools.validation
 
+import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
@@ -106,8 +107,9 @@ class EveritValidatorTest {
     @Test
     fun `should keep the bundled and published 2_0 schemas in sync with a representative project`() {
         // Arrange: a 2.0 project exercising meta.commitHash, per-node contentHash, node + edge metrics,
-        // attribute types and descriptors. Because the strict 2.0 schema forbids unknown properties, a new
-        // field on the CcJsonV2 DTO would serialize here and fail both validations until the schemas catch up.
+        // attribute types and descriptors, and an opaque domain lens. Because the strict 2.0 schema forbids
+        // unknown properties, a new field on the CcJsonV2 DTO would serialize here and fail both validations
+        // until the schemas catch up.
         val appNode = Node("App.kt", NodeType.File, mapOf("rloc" to 120.0, "mcc" to 8.0), "", setOf(), checksum = "abc123")
         val otherNode = Node("Other.kt", NodeType.File, mapOf("rloc" to 30.0), "", setOf(), checksum = "def456")
         val srcNode = Node("src", NodeType.Folder, emptyMap(), "", setOf(appNode, otherNode))
@@ -123,12 +125,15 @@ class EveritValidatorTest {
                 "rloc" to AttributeDescriptor(title = "Real Lines of Code", direction = 1, analyzers = setOf("UnifiedParser")),
                 "pairingRate" to AttributeDescriptor(title = "Pairing Rate", direction = -1)
             )
+        val domainLens = """{"nodes":{"app-id":{"words":[{"text":"invoice","frequency":12,"tfidf":0.42}]}}}"""
         val project =
             Project(
                 "my-project",
                 listOf(root),
                 Project.API_VERSION,
-                LensSet.fromLegacy(edges, attributeTypes, attributeDescriptors),
+                LensSet
+                    .fromLegacy(edges, attributeTypes, attributeDescriptors)
+                    .copy(opaqueLenses = mapOf("domain" to JsonParser.parseString(domainLens))),
                 commitHash = "a1b2c3d"
             )
         val json = ProjectSerializer.serializeToString(project)
@@ -308,14 +313,31 @@ class EveritValidatorTest {
 
     @Test
     fun `should accept a 2_0 file whose domain lens maps node ids to word banks`() {
-        // Arrange: the shape DomainProjectGenerator emits — text + frequency always, tfidf optional.
+        // Arrange: the shape DomainProjectGenerator emits — node ids live under `nodes`, each carrying a
+        // `words` bank whose entries always have text + frequency and optionally tfidf.
         val validDomainLens =
             """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
                 """"files":[{"id":"app-id","name":"root","type":"Folder"}],""" +
-                """"lenses":{"domain":{"app-id":[{"text":"invoice","frequency":12,"tfidf":0.42},{"text":"customer","frequency":3}]}}}"""
+                """"lenses":{"domain":{"nodes":{"app-id":{"words":""" +
+                """[{"text":"invoice","frequency":12,"tfidf":0.42},{"text":"customer","frequency":3}]}}}}}"""
 
         // Act + Assert
         validator.validate(ByteArrayInputStream(validDomainLens.toByteArray()))
+    }
+
+    @Test
+    fun `should reject a 2_0 file whose domain lens skips the nodes envelope`() {
+        // Arrange: the pre-envelope shape, where node ids sat directly on the lens. Rejecting it keeps a
+        // stale producer from silently emitting a domain lens the reader would drop.
+        val unwrappedDomainLens =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"app-id","name":"root","type":"Folder"}],""" +
+                """"lenses":{"domain":{"app-id":[{"text":"invoice","frequency":12}]}}}"""
+
+        // Act + Assert
+        assertFailsWith(ValidationException::class) {
+            validator.validate(ByteArrayInputStream(unwrappedDomainLens.toByteArray()))
+        }
     }
 
     @Test
@@ -324,7 +346,7 @@ class EveritValidatorTest {
         val objectWordBank =
             """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
                 """"files":[{"id":"app-id","name":"root","type":"Folder"}],""" +
-                """"lenses":{"domain":{"app-id":{"text":"invoice","frequency":12}}}}"""
+                """"lenses":{"domain":{"nodes":{"app-id":{"words":{"text":"invoice","frequency":12}}}}}}"""
 
         // Act + Assert
         assertFailsWith(ValidationException::class) {
@@ -338,7 +360,7 @@ class EveritValidatorTest {
         val wordWithoutFrequency =
             """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
                 """"files":[{"id":"app-id","name":"root","type":"Folder"}],""" +
-                """"lenses":{"domain":{"app-id":[{"text":"invoice"}]}}}"""
+                """"lenses":{"domain":{"nodes":{"app-id":{"words":[{"text":"invoice"}]}}}}}"""
 
         // Act + Assert
         assertFailsWith(ValidationException::class) {

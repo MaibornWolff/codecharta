@@ -86,8 +86,10 @@ describe("mapCcJson2ToCCFile", () => {
     it("should re-key domain words from node id to node path", () => {
         // Arrange
         ;(file.lenses as Record<string, unknown>).domain = {
-            "/root": [{ text: "invoice", frequency: 12, tfidf: 0.4 }],
-            "/root/big.ts": [{ text: "payment", frequency: 5 }]
+            nodes: {
+                "/root": { words: [{ text: "invoice", frequency: 12, tfidf: 0.4 }] },
+                "/root/big.ts": { words: [{ text: "payment", frequency: 5 }] }
+            }
         }
 
         // Act
@@ -104,8 +106,10 @@ describe("mapCcJson2ToCCFile", () => {
         // Arrange
         const warn = jest.spyOn(console, "warn").mockImplementation(() => undefined)
         ;(file.lenses as Record<string, unknown>).domain = {
-            "/root/big.ts": [{ text: "payment", frequency: 5 }],
-            "/does/not/exist": [{ text: "ghost", frequency: 1 }]
+            nodes: {
+                "/root/big.ts": { words: [{ text: "payment", frequency: 5 }] },
+                "/does/not/exist": { words: [{ text: "ghost", frequency: 1 }] }
+            }
         }
 
         // Act

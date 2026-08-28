@@ -30,6 +30,13 @@ class DomainProjectGeneratorTest {
 
     private fun serialize(project: Project): JsonObject = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
 
+    private fun domainNodes(json: JsonObject): JsonObject = json
+        .getAsJsonObject("lenses")
+        .getAsJsonObject(LensSet.DOMAIN_KEY)
+        .getAsJsonObject("nodes")
+
+    private fun wordsOf(json: JsonObject, nodeId: String): JsonArray = domainNodes(json).getAsJsonObject(nodeId).getAsJsonArray("words")
+
     private fun collectFileIds(files: JsonArray): Set<String> {
         val ids = mutableSetOf<String>()
         files.forEach { element ->
@@ -50,7 +57,7 @@ class DomainProjectGeneratorTest {
 
         // Assert
         assertEquals("2.0", json.getAsJsonObject("meta").get("apiVersion").asString)
-        assertTrue(json.getAsJsonObject("lenses").has(LensSet.DOMAIN_KEY))
+        assertTrue(json.getAsJsonObject("lenses").getAsJsonObject(LensSet.DOMAIN_KEY).has("nodes"))
     }
 
     @Test
@@ -61,7 +68,7 @@ class DomainProjectGeneratorTest {
         // Act
         val json = serialize(DomainProjectGenerator().generate(result))
         val fileIds = collectFileIds(json.getAsJsonArray("files"))
-        val domainKeys = json.getAsJsonObject("lenses").getAsJsonObject(LensSet.DOMAIN_KEY).keySet()
+        val domainKeys = domainNodes(json).keySet()
 
         // Assert - every domain lens key is an id emitted into the files tree
         assertTrue(domainKeys.isNotEmpty())
@@ -74,10 +81,7 @@ class DomainProjectGeneratorTest {
         val result = sampleResult()
 
         // Act
-        val domainKeys = serialize(DomainProjectGenerator().generate(result))
-            .getAsJsonObject("lenses")
-            .getAsJsonObject(LensSet.DOMAIN_KEY)
-            .keySet()
+        val domainKeys = domainNodes(serialize(DomainProjectGenerator().generate(result))).keySet()
 
         // Assert - leaf keyed as File, directory keyed as Folder, root keyed as empty-segment Folder
         assertTrue(domainKeys.contains(NodeId.fromSegments(listOf("src", "main", "App.kt"), NodeType.File)))
@@ -92,10 +96,7 @@ class DomainProjectGeneratorTest {
         val appId = NodeId.fromSegments(listOf("src", "main", "App.kt"), NodeType.File)
 
         // Act
-        val words = serialize(DomainProjectGenerator().generate(result))
-            .getAsJsonObject("lenses")
-            .getAsJsonObject(LensSet.DOMAIN_KEY)
-            .getAsJsonArray(appId)
+        val words = wordsOf(serialize(DomainProjectGenerator().generate(result)), appId)
 
         // Assert
         val firstWord = words.first().asJsonObject
@@ -109,10 +110,9 @@ class DomainProjectGeneratorTest {
         val result = sampleResult()
 
         // Act
-        val domain = serialize(DomainProjectGenerator().generate(result)).getAsJsonObject("lenses").getAsJsonObject(LensSet.DOMAIN_KEY)
-        val rootWord = domain.getAsJsonArray(NodeId.fromSegments(emptyList(), NodeType.Folder)).first().asJsonObject
-        val appWord =
-            domain.getAsJsonArray(NodeId.fromSegments(listOf("src", "main", "App.kt"), NodeType.File)).first().asJsonObject
+        val json = serialize(DomainProjectGenerator().generate(result))
+        val rootWord = wordsOf(json, NodeId.fromSegments(emptyList(), NodeType.Folder)).first().asJsonObject
+        val appWord = wordsOf(json, NodeId.fromSegments(listOf("src", "main", "App.kt"), NodeType.File)).first().asJsonObject
 
         // Assert
         assertTrue(rootWord.has("tfidf"))
@@ -151,7 +151,7 @@ class DomainProjectGeneratorTest {
         // Act
         val json = serialize(DomainProjectGenerator().generate(result))
         val fileIds = collectFileIds(json.getAsJsonArray("files"))
-        val domainKeys = json.getAsJsonObject("lenses").getAsJsonObject(LensSet.DOMAIN_KEY).keySet()
+        val domainKeys = domainNodes(json).keySet()
 
         // Assert - the backslash file path builds a nested tree and every domain key resolves against it
         assertTrue(fileIds.contains(NodeId.fromSegments(listOf("src", "main", "App.kt"), NodeType.File)))
@@ -168,7 +168,7 @@ class DomainProjectGeneratorTest {
         val json = serialize(DomainProjectGenerator().generate(result))
 
         // Assert - no domain entries, and the tree carries only the root folder (no leaves)
-        assertTrue(json.getAsJsonObject("lenses").getAsJsonObject(LensSet.DOMAIN_KEY).keySet().isEmpty())
+        assertTrue(domainNodes(json).keySet().isEmpty())
         assertEquals(setOf(NodeId.fromSegments(emptyList(), NodeType.Folder)), collectFileIds(json.getAsJsonArray("files")))
     }
 }
