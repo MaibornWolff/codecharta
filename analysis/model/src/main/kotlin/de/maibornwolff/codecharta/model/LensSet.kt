@@ -11,6 +11,11 @@ data class LensSet(
 
     val security: JsonElement? get() = opaqueLenses[SECURITY_KEY]
 
+    // Only `metrics` and `dependency` are typed, so every other lens arrives as an opaque payload whose
+    // node ids a filter can invalidate. Filters that re-path or drop nodes ask for these names to refuse
+    // rather than emit a lens that references nodes the output no longer has.
+    val dataBearingOpaqueLensNames: Set<String> get() = opaqueLenses.filterValues { it.carriesData() }.keys
+
     fun legacyAttributeTypes(): Map<String, MutableMap<String, AttributeType>> {
         val result = mutableMapOf<String, MutableMap<String, AttributeType>>()
         if (metrics.attributeTypes.isNotEmpty()) result[NODES_KEY] = metrics.attributeTypes.toMutableMap()
@@ -56,4 +61,14 @@ data class LensSet(
             )
         }
     }
+}
+
+// Whether an opaque JSON payload actually carries data. Empty objects/arrays and JSON null are the
+// reserved-but-unused lens slots (e.g. domain/security `{}`); they reference nothing and are safe to
+// carry through a re-path unchanged.
+fun JsonElement.carriesData(): Boolean = when {
+    isJsonNull -> false
+    isJsonObject -> asJsonObject.size() > 0
+    isJsonArray -> asJsonArray.size() > 0
+    else -> true
 }

@@ -14,9 +14,7 @@ class LargeMerge {
             require(project.rootNode.name == ROOT_NODE_NAME) {
                 "Input project structure doesn't have '/root/' as a base folder. If that's intended open an issue."
             }
-            // Covers every untyped lens, `clusters` included: only `metrics` and `dependency` are typed,
-            // so any other lens arrives here as an opaque payload whose node ids re-pathing would invalidate.
-            val dataBearingOpaqueLenses = project.lenses.opaqueLenses.filterValues { it.carriesData() }.keys
+            val dataBearingOpaqueLenses = project.lenses.dataBearingOpaqueLensNames
             require(dataBearingOpaqueLenses.isEmpty()) {
                 "Cannot '--large' merge '${project.projectName}': opaque lens(es) ${dataBearingOpaqueLenses.joinToString()} " +
                     "may reference node ids that re-pathing into a subfolder would invalidate. " +

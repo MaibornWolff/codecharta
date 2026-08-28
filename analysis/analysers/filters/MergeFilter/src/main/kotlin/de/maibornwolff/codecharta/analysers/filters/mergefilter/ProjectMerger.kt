@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.carriesData
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
     fun merge(): Project = when {
@@ -86,14 +87,4 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                 it.toString()
             }.toMutableList()
     }
-}
-
-// Whether an opaque JSON payload actually carries data. Empty objects/arrays and JSON null are the
-// reserved-but-unused lens slots (e.g. domain/security `{}`); they reference nothing, merge trivially,
-// and are safe to carry through a `--large` re-path unchanged.
-internal fun JsonElement.carriesData(): Boolean = when {
-    isJsonNull -> false
-    isJsonObject -> asJsonObject.size() > 0
-    isJsonArray -> asJsonArray.size() > 0
-    else -> true
 }
