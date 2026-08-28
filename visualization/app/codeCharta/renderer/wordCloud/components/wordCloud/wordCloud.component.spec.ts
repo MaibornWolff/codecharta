@@ -1,8 +1,10 @@
+import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { BehaviorSubject } from "rxjs"
 import { DomainWord } from "../../../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../../../../model/wordCloud.model"
+import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
 import { WordCloudComponent } from "./wordCloud.component"
 
@@ -217,6 +219,92 @@ describe("WordCloudComponent", () => {
 
         // Assert — laying out into nothing would only have to be redone on the way back
         expect(mockChart.setOption).not.toHaveBeenCalled()
+    })
+
+    it("should not lay the cloud out again when the view comes back unchanged", async () => {
+        // Arrange
+        const { fixture } = await setup()
+        await settle()
+        jest.clearAllMocks()
+
+        // Act — leaving the view detaches it (0x0) and coming back measures the very same box again
+        measuredContainerWidth = 0
+        measuredContainerHeight = 0
+        resizeCallback?.()
+        fixture.detectChanges()
+        await settle()
+        measuredContainerWidth = WIDE_CONTAINER_WIDTH
+        measuredContainerHeight = CONTAINER_HEIGHT
+        resizeCallback?.()
+        fixture.detectChanges()
+        await settle()
+
+        // Assert — the canvas still holds that exact cloud, so a fresh layout would only replay the animation
+        expect(mockChart.setOption).not.toHaveBeenCalled()
+    })
+
+    it("should lay the cloud out on the way back when the view was left before the layout ran", async () => {
+        // Arrange — no settling, so the debounced layout is still queued when the view is left
+        const { fixture } = await setup()
+        jest.clearAllMocks()
+
+        // Act — detached (0x0) inside the debounce window, then back to the very same box
+        measuredContainerWidth = 0
+        measuredContainerHeight = 0
+        resizeCallback?.()
+        fixture.detectChanges()
+        await settle()
+        measuredContainerWidth = WIDE_CONTAINER_WIDTH
+        measuredContainerHeight = CONTAINER_HEIGHT
+        resizeCallback?.()
+        fixture.detectChanges()
+        await settle()
+
+        // Assert — nothing ever reached the canvas, so the return may not be treated as unchanged
+        expect(mockChart.setOption).toHaveBeenCalled()
+    })
+
+    it("should lay the cloud out again after the empty state took the container away", async () => {
+        // Arrange
+        const sameWords = [{ text: "invoice", frequency: 12 }]
+        words$.next(sameWords)
+        const { fixture } = await setup()
+        await settle()
+        jest.clearAllMocks()
+
+        // Act — an empty emission swaps in the empty state, which disposes the chart, and the very same words return
+        words$.next([])
+        fixture.detectChanges()
+        await settle()
+        words$.next(sameWords)
+        fixture.detectChanges()
+        await settle()
+
+        // Assert — the disposed chart took the drawn cloud with it, so identical inputs still have to be drawn
+        expect(mockChart.setOption).toHaveBeenCalled()
+    })
+
+    it("should report the view ready when it comes back with nothing to lay out", async () => {
+        // Arrange
+        const { fixture } = await setup()
+        await settle()
+        const viewReadinessStore = TestBed.inject(ViewReadinessStore)
+        viewReadinessStore.markAllStale()
+
+        // Act
+        measuredContainerWidth = 0
+        measuredContainerHeight = 0
+        resizeCallback?.()
+        fixture.detectChanges()
+        await settle()
+        measuredContainerWidth = WIDE_CONTAINER_WIDTH
+        measuredContainerHeight = CONTAINER_HEIGHT
+        resizeCallback?.()
+        fixture.detectChanges()
+        await settle()
+
+        // Assert — without this the spinner would wait forever for a layout that is not needed
+        expect(viewReadinessStore.isStale("domain")).toBe(false)
     })
 
     it("should re-fit the font size range when the container narrows", async () => {

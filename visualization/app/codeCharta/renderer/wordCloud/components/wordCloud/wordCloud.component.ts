@@ -26,6 +26,32 @@ import { describeDroppedWords, describeWordCloud, SCREEN_READER_WORD_COUNT } fro
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)"
 
+interface WordCloudRenderInputs {
+    container: HTMLElement
+    words: DomainWord[]
+    settings: WordCloudSettings
+    maskImage: HTMLImageElement | undefined
+    containerWidth: number
+    containerHeight: number
+}
+
+/** Leaving the view detaches its DOM, which measures as a zero-sized container and measures back to
+ * the old size on return. The canvas keeps the cloud it already drew, so re-laying it out for the
+ * very same inputs would only replay the animation — unless the container itself was replaced, which
+ * takes the drawn cloud with it. Compared against what actually reached the chart, never against a
+ * layout that was merely queued. */
+function isSameRender(previous: WordCloudRenderInputs | null, next: WordCloudRenderInputs): boolean {
+    return (
+        previous !== null &&
+        previous.container === next.container &&
+        previous.words === next.words &&
+        previous.settings === next.settings &&
+        previous.maskImage === next.maskImage &&
+        previous.containerWidth === next.containerWidth &&
+        previous.containerHeight === next.containerHeight
+    )
+}
+
 @Component({
     selector: "cc-word-cloud",
     templateUrl: "./wordCloud.component.html",
@@ -67,13 +93,22 @@ export class WordCloudComponent implements OnDestroy {
 
     private readonly maskImage = signal<HTMLImageElement | null>(null)
 
+    private lastRenderedInputs: WordCloudRenderInputs | null = null
+
     constructor() {
         this.loadMaskImageAndKeepCircleFallbackOnFailure()
         effect(() => this.renderIntoTheChartOnceTheContainerIsMeasured())
     }
 
     ngOnDestroy(): void {
+        this.disposeChart()
+    }
+
+    /** Disposing drops the drawn cloud and cancels a render that was still debounced, so nothing that
+     * was skippable before it stays skippable after. */
+    private disposeChart(): void {
         this.chartHost.dispose()
+        this.lastRenderedInputs = null
     }
 
     protected showWholeMap(): void {
@@ -83,23 +118,35 @@ export class WordCloudComponent implements OnDestroy {
     private renderIntoTheChartOnceTheContainerIsMeasured(): void {
         const words = this.words()
         const settings = this.settings()
+        const maskImage = settings.shape === WordCloudShape.logoM ? (this.maskImage() ?? undefined) : undefined
         const container = this.canvasRef()?.nativeElement
         if (!container) {
-            this.chartHost.dispose()
+            this.disposeChart()
             this.viewReadinessStore.markReady("domain")
             return
         }
         this.chartHost.attachTo(container)
         const { width: containerWidth, height: containerHeight } = this.chartHost.containerSize()
         if (containerWidth === 0 || containerHeight === 0) {
+            // A queued layout would land on the detached container and wipe the cloud drawn for the
+            // size this view still comes back to.
+            this.chartHost.cancelPendingRender()
+            return
+        }
+        const inputs: WordCloudRenderInputs = { container, words, settings, maskImage, containerWidth, containerHeight }
+        if (isSameRender(this.lastRenderedInputs, inputs)) {
+            this.viewReadinessStore.markReady("domain")
             return
         }
         this.chartHost.render(
             buildWordCloudOption(words, settings, {
                 layoutAnimation: !this.prefersReducedMotion,
                 containerWidth,
-                maskImage: settings.shape === WordCloudShape.logoM ? (this.maskImage() ?? undefined) : undefined
-            })
+                maskImage
+            }),
+            () => {
+                this.lastRenderedInputs = inputs
+            }
         )
     }
 
