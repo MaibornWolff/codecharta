@@ -17,6 +17,7 @@ import { EXPLORER_SEARCH } from "../../explorerSearch.port"
 import { EXPLORER_SELECTION, ExplorerSelection } from "../../explorerSelection"
 import { provideViewScopedExplorerState } from "../../provideViewScopedExplorerState"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
+import { ExplorerScrollHostService } from "../../services/explorerScrollHost.service"
 import { ExplorerTreeLevelComponent } from "./explorerTreeLevel.component"
 import { rootNode } from "./mocks"
 
@@ -86,14 +87,14 @@ describe("ExplorerTreeLevelComponent", () => {
     it("should render first level folder closed initially and open it on click", async () => {
         // Arrange
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
-        expect(container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")).toBeFalsy()
+        const firstLevelFolder = container.querySelector("#metrics\\:\\/root\\/ParentLeaf")
+        expect(container.querySelector("#metrics\\:\\/root\\/ParentLeaf\\/smallLeaf")).toBeFalsy()
 
         // Act
         await userEvent.click(firstLevelFolder)
 
         // Assert
-        await waitFor(() => expect(container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")).toBeTruthy())
+        await waitFor(() => expect(container.querySelector("#metrics\\:\\/root\\/ParentLeaf\\/smallLeaf")).toBeTruthy())
     })
 
     it("should mark search-result rows", async () => {
@@ -105,7 +106,7 @@ describe("ExplorerTreeLevelComponent", () => {
 
         // Assert
         await waitFor(() => {
-            const span = container.querySelector("#\\/root\\/bigLeaf .node-name")
+            const span = container.querySelector("#metrics\\:\\/root\\/bigLeaf .node-name")
             expect(span?.classList.contains("text-primary")).toBe(true)
         })
     })
@@ -113,7 +114,7 @@ describe("ExplorerTreeLevelComponent", () => {
     it("should tell the selection port to select the node on click", async () => {
         // Arrange — the selection port publishes the path; here we only verify the delegation
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+        const firstLevelFolder = container.querySelector("#metrics\\:\\/root\\/ParentLeaf")
 
         // Act
         await userEvent.click(firstLevelFolder)
@@ -125,7 +126,7 @@ describe("ExplorerTreeLevelComponent", () => {
     it("should tell the selection port to deselect when an open folder is clicked closed", async () => {
         // Arrange
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const rootRow = container.querySelector("#\\/root")
+        const rootRow = container.querySelector("#metrics\\:\\/root")
 
         // Act
         await userEvent.click(rootRow)
@@ -140,7 +141,7 @@ describe("ExplorerTreeLevelComponent", () => {
         TestBed.resetTestingModule()
         configureWithPorts({ selection: createExplorerSelectionMock({ clearsSelectionOnCollapse: false }) })
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const rootRow = container.querySelector("#\\/root")
+        const rootRow = container.querySelector("#metrics\\:\\/root")
 
         // Act — root renders open at depth 0, so this click collapses it
         await userEvent.click(rootRow)
@@ -158,14 +159,16 @@ describe("ExplorerTreeLevelComponent", () => {
                 isInactive: false,
                 isItalic: false,
                 isFlattened: false,
+                isHidden: false,
                 title: "",
-                decoration: null
+                decoration: null,
+                markingColor: null
             }))
         })
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
 
         // Act
-        await userEvent.click(container.querySelector("#\\/root\\/bigLeaf"))
+        await userEvent.click(container.querySelector("#metrics\\:\\/root\\/bigLeaf"))
 
         // Assert
         expect(selection.select).not.toHaveBeenCalled()
@@ -174,13 +177,13 @@ describe("ExplorerTreeLevelComponent", () => {
     it("should open the context menu on right-click and close it when the scroll container scrolls", async () => {
         // Arrange
         const scrollContainer = document.createElement("div")
-        scrollContainer.id = "explorer-scroll"
         document.body.append(scrollContainer)
 
         const { fixture } = await render(ExplorerTreeLevelComponent, {
             inputs: componentInputs,
             excludeComponentDeclaration: true
         })
+        TestBed.inject(ExplorerScrollHostService).register(scrollContainer)
         const contextMenuEvent = {
             preventDefault: jest.fn(),
             stopPropagation: jest.fn(),
@@ -226,7 +229,7 @@ describe("ExplorerTreeLevelComponent", () => {
     it("should tell the selection port on hover and unhover", async () => {
         // Arrange
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-        const firstLevelFolder = container.querySelector("#\\/root\\/ParentLeaf")
+        const firstLevelFolder = container.querySelector("#metrics\\:\\/root\\/ParentLeaf")
 
         // Act
         await userEvent.hover(firstLevelFolder)
@@ -252,8 +255,10 @@ describe("ExplorerTreeLevelComponent", () => {
                 isInactive: false,
                 isItalic: false,
                 isFlattened: false,
+                isHidden: false,
                 title: "",
-                decoration: node.name === "root" ? "42% / 2" : null
+                decoration: node.name === "root" ? "42% / 2" : null,
+                markingColor: null
             }))
         })
 
@@ -261,8 +266,32 @@ describe("ExplorerTreeLevelComponent", () => {
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
 
         // Assert
-        expect(container.querySelector("#\\/root").textContent).toContain("42% / 2")
-        expect(container.querySelector("#\\/root\\/bigLeaf").textContent).not.toContain("42% / 2")
+        expect(container.querySelector("#metrics\\:\\/root").textContent).toContain("42% / 2")
+        expect(container.querySelector("#metrics\\:\\/root\\/bigLeaf").textContent).not.toContain("42% / 2")
+    })
+
+    it("should not render a row the projection reports as hidden", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        configureWithPorts({
+            row: createExplorerRowMock(node => ({
+                isSelectable: true,
+                isInactive: false,
+                isItalic: false,
+                isFlattened: false,
+                isHidden: node.name === "bigLeaf",
+                title: "",
+                decoration: null,
+                markingColor: null
+            }))
+        })
+
+        // Act
+        const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
+
+        // Assert
+        expect(container.querySelector("#metrics\\:\\/root\\/bigLeaf")).toBeFalsy()
+        expect(container.querySelector("#metrics\\:\\/root\\/ParentLeaf")).toBeTruthy()
     })
 
     it("should dim and italicise a row the projection reports as such", async () => {
@@ -274,8 +303,10 @@ describe("ExplorerTreeLevelComponent", () => {
                 isInactive: true,
                 isItalic: true,
                 isFlattened: false,
+                isHidden: false,
                 title: "No Node Area for Chosen Metric",
-                decoration: null
+                decoration: null,
+                markingColor: null
             }))
         })
 
@@ -283,7 +314,7 @@ describe("ExplorerTreeLevelComponent", () => {
         const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
 
         // Assert
-        const row = container.querySelector("#\\/root")
+        const row = container.querySelector("#metrics\\:\\/root")
         expect(row.getAttribute("title")).toBe("No Node Area for Chosen Metric")
         expect(row.querySelector(".node-name").classList.contains("opacity-50")).toBe(true)
         expect(row.querySelector(".node-name").classList.contains("italic")).toBe(true)
@@ -297,13 +328,13 @@ describe("ExplorerTreeLevelComponent", () => {
         it("should open the ancestor levels of a revealed node", async () => {
             // Arrange
             const { container } = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
-            expect(container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")).toBeFalsy()
+            expect(container.querySelector("#metrics\\:\\/root\\/ParentLeaf\\/smallLeaf")).toBeFalsy()
 
             // Act
             TestBed.inject(ExplorerRevealService).revealNode("/root/ParentLeaf/smallLeaf")
 
             // Assert
-            await waitFor(() => expect(container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")).toBeTruthy())
+            await waitFor(() => expect(container.querySelector("#metrics\\:\\/root\\/ParentLeaf\\/smallLeaf")).toBeTruthy())
         })
 
         it("should not open a folder whose path is only a prefix of the revealed path", async () => {
@@ -318,7 +349,7 @@ describe("ExplorerTreeLevelComponent", () => {
             detectChanges()
 
             // Assert
-            expect(container.querySelector("#\\/root\\/ParentLeaf\\/smallLeaf")).toBeFalsy()
+            expect(container.querySelector("#metrics\\:\\/root\\/ParentLeaf\\/smallLeaf")).toBeFalsy()
         })
 
         it("should flash the revealed row", async () => {
@@ -329,7 +360,9 @@ describe("ExplorerTreeLevelComponent", () => {
             TestBed.inject(ExplorerRevealService).revealNode("/root/bigLeaf")
 
             // Assert
-            await waitFor(() => expect(container.querySelector("#\\/root\\/bigLeaf").classList.contains("bg-primary/20")).toBe(true))
+            await waitFor(() =>
+                expect(container.querySelector("#metrics\\:\\/root\\/bigLeaf").classList.contains("bg-primary/20")).toBe(true)
+            )
         })
 
         it("should scroll a deeply revealed row into view once its ancestors have rendered it", async () => {

@@ -427,20 +427,22 @@ module.exports = {
             }
         },
         {
-            name: "sidebar-explorer-does-not-write-view-selection",
+            name: "sidebar-explorer-is-view-agnostic",
             severity: "error",
             comment:
-                "The generic sidebar explorer no longer broadcasts metrics-view state: selection, hover and right-click are owned by the per-view EXPLORER_SELECTION / EXPLORER_CONTEXT_MENU ports (which live in views/, not the feature) and are never written into sharedView from features/sidebarExplorer/. Only the explorer's own chrome writers — its write store and the blacklist-search-pattern effect — may still reach the sharedView write facade, and only for the search pattern and blacklist, which ARE explorer chrome. Everything else in the feature is fenced off the write facade so a selection/hover/mark write cannot creep back in. Spec/e2e exempt.",
+                "The sidebar explorer is shared by the map and domain views, so it must not read or write EITHER view's state: no sharedView/mapState/domainState, no renderModel, no threeViewer. Everything view-specific arrives through the per-view ports (EXPLORER_ROW / SELECTION / CONTEXT_MENU / TREE / SORT / SEARCH / COUNTS / RULES), which live in views/ and are implemented per view — that is what keeps the domain explorer from inheriting the map's marked packages, blacklist, counts and searched nodes. The provideExplorerSearch/Sort factories take a per-view selector+action config, so they never name a home themselves. Spec/e2e exempt.",
             from: {
                 path: "^app/codeCharta/features/sidebarExplorer/",
-                pathNot: [
-                    "\\.spec\\.ts$",
-                    "\\.e2e\\.ts$",
-                    "^app/codeCharta/features/sidebarExplorer/stores/sidebarExplorer\\.write\\.store\\.ts$",
-                    "^app/codeCharta/features/sidebarExplorer/effects/blacklistSearchPattern/blacklistSearchPattern\\.effect\\.ts$"
-                ]
+                pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]
             },
-            to: { path: ["^app/codeCharta/stores/sharedView/sharedView\\.write\\.facade\\.ts$"] }
+            to: {
+                path: [
+                    "^app/codeCharta/stores/sharedView/",
+                    "^app/codeCharta/stores/mapState/",
+                    "^app/codeCharta/stores/domainState/",
+                    "^app/codeCharta/renderer/"
+                ]
+            }
         },
 
         /* ───────────────────────────────── renderer (engine + derived read-model) ───────────────────────────────── */

@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { EXPLORER_RULES } from "../../explorerRules.port"
 import { EXPLORER_SEARCH } from "../../explorerSearch.port"
-import { SidebarExplorerReadStore } from "../../stores/sidebarExplorer.read.store"
-import { SidebarExplorerWriteStore } from "../../stores/sidebarExplorer.write.store"
 
 @Component({
     selector: "cc-explorer-search-actions",
@@ -10,18 +9,17 @@ import { SidebarExplorerWriteStore } from "../../stores/sidebarExplorer.write.st
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExplorerSearchActionsComponent {
-    private readonly readStore = inject(SidebarExplorerReadStore)
-    private readonly writeStore = inject(SidebarExplorerWriteStore)
+    private readonly rules = inject(EXPLORER_RULES)
 
     readonly isSearchPatternEmpty = toSignal(inject(EXPLORER_SEARCH).isPatternEmpty$, { requireSync: true })
-    readonly isFlattenPatternDisabled = toSignal(this.readStore.isFlattenPatternDisabled$, { requireSync: true })
-    readonly isExcludePatternDisabled = toSignal(this.readStore.isExcludePatternDisabled$, { requireSync: true })
+    readonly isFlattenPatternDisabled = toSignal(this.rules.isFlattenPatternDisabled$, { requireSync: true })
+    readonly isExcludePatternDisabled = toSignal(this.rules.isExcludePatternDisabled$, { requireSync: true })
 
     flattenPattern() {
-        this.writeStore.blacklistSearchPattern("flatten")
+        this.rules.ruleFromSearchPattern("flatten")
     }
 
     excludePattern() {
-        this.writeStore.blacklistSearchPattern("exclude")
+        this.rules.ruleFromSearchPattern("exclude")
     }
 }

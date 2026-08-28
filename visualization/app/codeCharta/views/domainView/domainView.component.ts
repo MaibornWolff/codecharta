@@ -7,6 +7,7 @@ import {
     EXPLORER_CAPABILITIES,
     EXPLORER_ROW,
     EXPLORER_SELECTION,
+    EXPLORER_TREE,
     ExplorerCollapseService,
     ExplorerWidthService,
     provideExplorerSearch,
@@ -22,6 +23,7 @@ import { DomainExplorerRow } from "./explorer/domainExplorerRow"
 import { DOMAIN_EXPLORER_SEARCH } from "./explorer/domainExplorerSearch"
 import { DomainExplorerSelection } from "./explorer/domainExplorerSelection"
 import { DOMAIN_EXPLORER_SORT } from "./explorer/domainExplorerSort"
+import { DomainExplorerTree } from "./explorer/domainExplorerTree"
 import { DomainSelectionStore } from "./stores/domainSelection.store"
 
 @Component({
@@ -40,6 +42,8 @@ import { DomainSelectionStore } from "./stores/domainSelection.store"
         { provide: EXPLORER_ROW, useExisting: DomainExplorerRow },
         DomainExplorerSelection,
         { provide: EXPLORER_SELECTION, useExisting: DomainExplorerSelection },
+        DomainExplorerTree,
+        { provide: EXPLORER_TREE, useExisting: DomainExplorerTree },
         provideExplorerSort(DOMAIN_EXPLORER_SORT),
         provideExplorerSearch(DOMAIN_EXPLORER_SEARCH),
         {

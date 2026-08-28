@@ -1,7 +1,7 @@
-@if (!node().isExcluded) {
+@if (!rowProjection().isHidden) {
     <div class="tree-element-{{ depth() }} {{ isLeafNode() ? 'tree-leaf' : 'tree-parent' }}">
         <div
-            id="{{ node().path }}"
+            id="{{ rowId() }}"
             class="tree-element-label-{{ depth() }} tree-element-label flex items-center px-1 py-0.5 cursor-pointer"
             [class.hovered]="isHovered()"
             [class.bg-base-200]="isHovered() && !isSelected()"
@@ -21,6 +21,7 @@
                 [node]="node()"
                 [isOpen]="isOpen()"
                 [isInactive]="rowProjection().isInactive"
+                [markingColor]="rowProjection().markingColor"
             ></cc-explorer-tree-item-icon>
             <cc-explorer-tree-item-name
                 class="ml-1 flex-1 truncate"

@@ -1,29 +1,26 @@
 import { TestBed } from "@angular/core/testing"
-import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
-import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "../../selectors/sidebarExplorer.selectors"
+import { of } from "rxjs"
+import { createExplorerRulesMock } from "../../explorerPorts.mocks"
+import { EXPLORER_RULES, RuleWithCount } from "../../explorerRules.port"
 import { RulesPopoverComponent } from "./rulesPopover.component"
 
-const FLATTEN_RULES = [
-    { item: { type: "flatten", path: "**/*.spec.ts" }, affectedCount: 4, kind: "RULE" as const },
-    { item: { type: "flatten", path: "apps/foo" }, affectedCount: 1, kind: "MANUAL" as const }
+const FLATTEN_RULES: RuleWithCount[] = [
+    { item: { type: "flatten", path: "**/*.spec.ts" }, affectedCount: 4, kind: "RULE" },
+    { item: { type: "flatten", path: "apps/foo" }, affectedCount: 1, kind: "MANUAL" }
 ]
 
-const EXCLUDE_RULES = [{ item: { type: "exclude", path: "node_modules" }, affectedCount: 5, kind: "MANUAL" as const }]
+const EXCLUDE_RULES: RuleWithCount[] = [{ item: { type: "exclude", path: "node_modules" }, affectedCount: 5, kind: "MANUAL" }]
 
 describe("RulesPopoverComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [RulesPopoverComponent],
             providers: [
-                provideMockStore({
-                    initialState: defaultState,
-                    selectors: [
-                        { selector: flattenRulesWithCountSelector, value: FLATTEN_RULES },
-                        { selector: excludeRulesWithCountSelector, value: EXCLUDE_RULES }
-                    ]
-                })
+                {
+                    provide: EXPLORER_RULES,
+                    useValue: createExplorerRulesMock({ flattenRules$: of(FLATTEN_RULES), excludeRules$: of(EXCLUDE_RULES) })
+                }
             ]
         })
     })
@@ -73,12 +70,7 @@ describe("RulesPopoverComponent", () => {
         TestBed.resetTestingModule()
         TestBed.configureTestingModule({
             imports: [RulesPopoverComponent],
-            providers: [
-                provideMockStore({
-                    initialState: defaultState,
-                    selectors: [{ selector: flattenRulesWithCountSelector, value: [] }]
-                })
-            ]
+            providers: [{ provide: EXPLORER_RULES, useValue: createExplorerRulesMock() }]
         })
 
         // Act

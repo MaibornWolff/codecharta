@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { filter, map, share, take, tap, withLatestFrom } from "rxjs"
+import { BlacklistExclusionGuard } from "../../../../features/shared/facade"
 import { BlacklistType, CcState } from "../../../../model/codeCharta.model"
 import { searchPatternSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
@@ -10,7 +11,6 @@ import {
     setSearchPattern
 } from "../../../../stores/sharedView/sharedView.write.facade"
 import { parseBlacklistItems } from "../../../../util/blacklist/parseBlacklistItems"
-import { BlacklistExclusionGuard } from "../../../shared/facade"
 
 type BlacklistSearchPatternAction = {
     type: "BlacklistSearchPatternAction"

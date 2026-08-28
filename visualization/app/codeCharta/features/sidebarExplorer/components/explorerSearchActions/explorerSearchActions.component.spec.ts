@@ -1,80 +1,80 @@
 import { TestBed } from "@angular/core/testing"
-import { EffectsModule } from "@ngrx/effects"
-import { Store, StoreModule } from "@ngrx/store"
-import { render, screen, waitFor } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { of } from "rxjs"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../../features/shared/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
-import { CcState } from "../../../../model/codeCharta.model"
-import { appReducers, setStateMiddleware } from "../../../../stores/rootStore/store"
-import { blacklistSelector } from "../../../../stores/sharedView/sharedView.read.facade"
-import { setSearchPattern } from "../../../../stores/sharedView/sharedView.write.facade"
-import { resultsInEmptyMap } from "../../../../util/blacklist/resultsInEmptyMap"
-import { BlacklistSearchPatternEffect } from "../../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
-import { createExplorerSearchMock } from "../../explorerPorts.mocks"
+import { createExplorerRulesMock, createExplorerSearchMock } from "../../explorerPorts.mocks"
+import { EXPLORER_RULES, ExplorerRules } from "../../explorerRules.port"
 import { EXPLORER_SEARCH } from "../../explorerSearch.port"
 import { ExplorerSearchActionsComponent } from "./explorerSearchActions.component"
 
-jest.mock("../../../../util/blacklist/resultsInEmptyMap", () => ({
-    resultsInEmptyMap: jest.fn()
-}))
-const mockedResultsInEmptyMap = jest.mocked(resultsInEmptyMap)
-
 describe("ExplorerSearchActionsComponent", () => {
-    const blacklistOf = (type: "flatten" | "exclude") => {
-        let blacklist: { path: string; type: string }[] = []
-        TestBed.inject<Store<CcState>>(Store)
-            .select(blacklistSelector)
-            .subscribe(items => (blacklist = items))
-        return blacklist.filter(item => item.type === type)
-    }
+    let rules: ExplorerRules
 
-    const renderWithSearchPattern = async () => {
-        const rendered = await render(ExplorerSearchActionsComponent)
-        TestBed.inject(Store).dispatch(setSearchPattern({ value: "needle" }))
-        return rendered
+    const configureWithEnabledActions = () => {
+        rules = createExplorerRulesMock({ isFlattenPatternDisabled$: of(false), isExcludePatternDisabled$: of(false) })
+        TestBed.configureTestingModule({
+            imports: [ExplorerSearchActionsComponent],
+            providers: [
+                { provide: EXPLORER_RULES, useValue: rules },
+                { provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock({ isPatternEmpty$: of(false) }) }
+            ]
+        })
     }
 
     beforeEach(() => {
-        mockedResultsInEmptyMap.mockImplementation(() => false)
-        TestBed.configureTestingModule({
-            imports: [
-                ExplorerSearchActionsComponent,
-                StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
-                EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect])
-            ],
-            providers: [{ provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock({ isPatternEmpty$: of(false) }) }]
-        })
+        configureWithEnabledActions()
     })
 
-    it("should flatten the current search pattern", async () => {
+    it("should ask the rules port to flatten the current search pattern", async () => {
         // Arrange
-        await renderWithSearchPattern()
+        await render(ExplorerSearchActionsComponent)
 
         // Act
         await userEvent.click(await screen.findByTestId("search-bar-flatten-button"))
 
         // Assert
-        await waitFor(() => expect(blacklistOf("flatten")).toEqual([{ path: "*needle*", type: "flatten" }]))
+        expect(rules.ruleFromSearchPattern).toHaveBeenCalledWith("flatten")
     })
 
-    it("should exclude the current search pattern", async () => {
+    it("should ask the rules port to exclude the current search pattern", async () => {
         // Arrange
-        await renderWithSearchPattern()
+        await render(ExplorerSearchActionsComponent)
 
         // Act
         await userEvent.click(await screen.findByTestId("search-bar-exclude-button"))
 
         // Assert
-        await waitFor(() => expect(blacklistOf("exclude")).toEqual([{ path: "*needle*", type: "exclude" }]))
+        expect(rules.ruleFromSearchPattern).toHaveBeenCalledWith("exclude")
+    })
+
+    it("should disable both actions while the rules port reports the pattern unusable", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        TestBed.configureTestingModule({
+            imports: [ExplorerSearchActionsComponent],
+            providers: [
+                { provide: EXPLORER_RULES, useValue: createExplorerRulesMock() },
+                { provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock() }
+            ]
+        })
+
+        // Act
+        await render(ExplorerSearchActionsComponent)
+
+        // Assert
+        expect(screen.getByTestId<HTMLButtonElement>("search-bar-flatten-button").disabled).toBe(true)
+        expect(screen.getByTestId<HTMLButtonElement>("search-bar-exclude-button").disabled).toBe(true)
     })
 
     it("should hint at entering a pattern while the search is empty", async () => {
         // Arrange
         TestBed.resetTestingModule()
         TestBed.configureTestingModule({
-            imports: [ExplorerSearchActionsComponent, StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })],
-            providers: [{ provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock() }]
+            imports: [ExplorerSearchActionsComponent],
+            providers: [
+                { provide: EXPLORER_RULES, useValue: createExplorerRulesMock() },
+                { provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock() }
+            ]
         })
 
         // Act

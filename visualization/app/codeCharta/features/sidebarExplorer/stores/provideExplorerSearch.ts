@@ -1,25 +1,24 @@
 import { inject, Provider } from "@angular/core"
 import { Action, createSelector, MemoizedSelector, Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { createSearchedNodePathsSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { EXPLORER_SEARCH, ExplorerSearch } from "../explorerSearch.port"
-import { _isSearchPatternEmpty } from "../selectors/searchBar/isSearchPatternEmpty.selector"
+import { isSearchPatternEmpty } from "../selectors/isSearchPatternEmpty"
 
 export interface ExplorerSearchConfig {
     patternSelector: MemoizedSelector<CcState, string>
     setPattern: (props: { value: string }) => Action
-    // A view whose pattern also drives other features passes their selectors, so the matching is memoized once for both.
+    // Every view states which tree its pattern matches against, so no view inherits another view's node set.
+    searchedNodePathsSelector: (state: CcState) => ReadonlySet<string>
+    // A view whose pattern also drives other features passes their selector, so the emptiness check is memoized once for both.
     isPatternEmptySelector?: (state: CcState) => boolean
-    searchedNodePathsSelector?: (state: CcState) => ReadonlySet<string>
 }
 
 const createExplorerSearch = (store: Store<CcState>, config: ExplorerSearchConfig): ExplorerSearch => {
-    const isPatternEmptySelector = config.isPatternEmptySelector ?? createSelector(config.patternSelector, _isSearchPatternEmpty)
-    const searchedNodePathsSelector = config.searchedNodePathsSelector ?? createSearchedNodePathsSelector(config.patternSelector)
+    const isPatternEmptySelector = config.isPatternEmptySelector ?? createSelector(config.patternSelector, isSearchPatternEmpty)
     return {
         pattern$: store.select(config.patternSelector),
         isPatternEmpty$: store.select(isPatternEmptySelector),
-        searchedNodePaths$: store.select(searchedNodePathsSelector),
+        searchedNodePaths$: store.select(config.searchedNodePathsSelector),
         setPattern: value => store.dispatch(config.setPattern({ value })),
         resetPattern: () => store.dispatch(config.setPattern({ value: "" }))
     }

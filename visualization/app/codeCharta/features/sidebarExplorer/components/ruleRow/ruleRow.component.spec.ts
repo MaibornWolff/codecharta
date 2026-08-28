@@ -1,21 +1,22 @@
 import { TestBed } from "@angular/core/testing"
-import { Store } from "@ngrx/store"
-import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { BlacklistItem } from "../../../../model/codeCharta.model"
-import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { removeBlacklistItem } from "../../../../stores/sharedView/sharedView.write.facade"
+import { createExplorerRulesMock } from "../../explorerPorts.mocks"
+import { EXPLORER_RULES, ExplorerRules } from "../../explorerRules.port"
 import { RuleRowComponent } from "./ruleRow.component"
 
 const flattenItem: BlacklistItem = { type: "flatten", path: "**/*.spec.ts" }
 const manualItem: BlacklistItem = { type: "flatten", path: "apps/foo" }
 
 describe("RuleRowComponent", () => {
+    let rules: ExplorerRules
+
     beforeEach(() => {
+        rules = createExplorerRulesMock()
         TestBed.configureTestingModule({
             imports: [RuleRowComponent],
-            providers: [provideMockStore({ initialState: defaultState })]
+            providers: [{ provide: EXPLORER_RULES, useValue: rules }]
         })
     })
 
@@ -41,17 +42,16 @@ describe("RuleRowComponent", () => {
         expect(screen.getByText("MANUAL")).not.toBe(null)
     })
 
-    it("should dispatch removeBlacklistItem when remove button is clicked", async () => {
+    it("should ask the rules port to remove the rule when the remove button is clicked", async () => {
         // Arrange
         await render(RuleRowComponent, {
             inputs: { item: flattenItem, affectedCount: 6, kind: "RULE" }
         })
-        const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
         // Act
         await userEvent.click(screen.getByTestId("rule-row-remove-button"))
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(removeBlacklistItem({ item: flattenItem }))
+        expect(rules.removeRule).toHaveBeenCalledWith(flattenItem)
     })
 })

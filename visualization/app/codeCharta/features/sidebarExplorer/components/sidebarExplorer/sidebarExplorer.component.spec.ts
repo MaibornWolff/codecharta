@@ -1,42 +1,16 @@
 import { TestBed } from "@angular/core/testing"
-import { State } from "@ngrx/store"
-import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
-import { accumulatedDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
-import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
-import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { provideExplorerPortsMock } from "../../explorerPorts.mocks"
-import { explorerCountsSelector } from "../../selectors/sidebarExplorer.selectors"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { EXPLORER_DEFAULT_WIDTH, EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
 import { COLLAPSED_STRIP_WIDTH_PX, SidebarExplorerComponent } from "./sidebarExplorer.component"
-
-const ROOT: CodeMapNode = {
-    name: "root",
-    path: "/root",
-    type: NodeType.FOLDER,
-    attributes: { unary: 0 },
-    children: []
-}
 
 describe("SidebarExplorerComponent", () => {
     const configureWithCapabilities = (capabilities?: { showRules?: boolean; showSearch?: boolean; showCounts?: boolean }) => {
         TestBed.configureTestingModule({
             imports: [SidebarExplorerComponent],
-            providers: [
-                provideMockStore({
-                    initialState: defaultState,
-                    selectors: [
-                        { selector: accumulatedDataSelector, value: { unifiedMapNode: ROOT } },
-                        { selector: areaMetricSelector, value: "rloc" },
-                        { selector: explorerCountsSelector, value: { shown: 0, flattened: 0, hidden: 0, noArea: 0 } }
-                    ]
-                }),
-                { provide: State, useValue: { getValue: () => defaultState } },
-                ...provideExplorerPortsMock({ capabilities })
-            ]
+            providers: [...provideExplorerPortsMock({ capabilities })]
         })
     }
 

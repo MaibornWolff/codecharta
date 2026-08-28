@@ -4,6 +4,7 @@ import { ExplorerCollapseRepo } from "./repos/explorerCollapse.repo"
 import { ExplorerWidthRepo } from "./repos/explorerWidth.repo"
 import { ExplorerCollapseService } from "./services/explorerCollapse.service"
 import { ExplorerRevealService } from "./services/explorerReveal.service"
+import { ExplorerScrollHostService } from "./services/explorerScrollHost.service"
 import { ExplorerWidthService } from "./services/explorerWidth.service"
 
 export const provideViewScopedExplorerState = (scope: ExplorerStorageScope): Provider[] => [
@@ -12,5 +13,6 @@ export const provideViewScopedExplorerState = (scope: ExplorerStorageScope): Pro
     ExplorerCollapseService,
     ExplorerWidthRepo,
     ExplorerWidthService,
-    ExplorerRevealService
+    ExplorerRevealService,
+    ExplorerScrollHostService
 ]
