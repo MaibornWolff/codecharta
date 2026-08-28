@@ -207,6 +207,13 @@ check_unifiedparser() {
   validate "${ACTUAL_UNIFIED_JSON}"
 }
 
+check_domainlanguage() {
+  echo " -- expect DomainLanguageParser to produce valid cc.json file"
+  ACTUAL_DOMAINLANGUAGE_JSON="${TEMP_DIR}/actual_domainlanguageparser.cc.json"
+  "${CCSH}" domainlanguageparser "${DATA}/sourcecode.java" -o "${ACTUAL_DOMAINLANGUAGE_JSON}" -nc
+  validate "${ACTUAL_DOMAINLANGUAGE_JSON}"
+}
+
 check_dependacharta() {
   echo " -- expect DependaChartaImporter to produce valid cc.json file"
   ACTUAL_DEPENDACHARTA_JSON="${TEMP_DIR}/actual_dependacharta.cc.json"
@@ -292,6 +299,7 @@ run_tests() {
   check_tokei
   check_rawtext
   check_unifiedparser
+  check_domainlanguage
   check_dependacharta
   check_convert
 
