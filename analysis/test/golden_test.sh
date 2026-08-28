@@ -210,8 +210,16 @@ check_unifiedparser() {
 check_domainlanguage() {
   echo " -- expect DomainLanguageParser to produce valid cc.json file"
   ACTUAL_DOMAINLANGUAGE_JSON="${TEMP_DIR}/actual_domainlanguageparser.cc.json"
-  "${CCSH}" domainlanguageparser "${DATA}/sourcecode.java" -o "${ACTUAL_DOMAINLANGUAGE_JSON}" -nc
+  # The parser scans a directory, not a single file: pointing it at a file processes 0 files and yields an
+  # empty lens, which `validate` happily accepts — so the check has to start from the data directory.
+  "${CCSH}" domainlanguageparser "${DATA}" -o "${ACTUAL_DOMAINLANGUAGE_JSON}" -nc
   validate "${ACTUAL_DOMAINLANGUAGE_JSON}"
+  # An empty domain lens is also legal, so assert the lens really wraps its node ids in the `nodes`
+  # envelope and that each node carries a word bank.
+  if ! grep -q '"domain":{"nodes":{' "${ACTUAL_DOMAINLANGUAGE_JSON}" ||
+    ! grep -q '"words":\[{"text"' "${ACTUAL_DOMAINLANGUAGE_JSON}"; then
+    exit_with_err "${ACTUAL_DOMAINLANGUAGE_JSON} does not carry an enveloped domain lens"
+  fi
 }
 
 check_dependacharta() {
