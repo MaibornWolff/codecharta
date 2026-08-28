@@ -15,7 +15,7 @@ The `domain` lens payload is a bare map `{ "<nodeId>": [{ "text", "frequency", "
 
 ### Supported Languages
 
-Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Objective-C and shell.
+Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Objective-C, Vue, ABL and shell.
 
 ### Usage and Parameters
 
