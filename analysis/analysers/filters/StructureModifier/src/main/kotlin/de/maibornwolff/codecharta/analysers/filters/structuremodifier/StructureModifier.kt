@@ -100,6 +100,8 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
 
         project = readProject() ?: return null
 
+        if (isRestructuringAction() && refuseToInvalidateOpaqueLenses()) return null
+
         when {
             printLevels != null -> {
                 ProjectStructurePrinter(project, output).printProjectStructure(printLevels!!)
@@ -124,6 +126,24 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, false)
 
         return null
+    }
+
+    // Only `metrics` and `dependency` survive a re-path: every other lens is opaque and keyed by node id,
+    // which extracting, removing or moving nodes silently invalidates. Refusing mirrors the guard
+    // `--large` merging already applies. Renaming a metric and printing levels leave the paths alone.
+    private fun isRestructuringAction(): Boolean = setRoot != null || remove.isNotEmpty() || moveFrom != null
+
+    private fun refuseToInvalidateOpaqueLenses(): Boolean {
+        val invalidatedLenses = project.lenses.dataBearingOpaqueLensNames
+        if (invalidatedLenses.isEmpty()) return false
+
+        Logger.error {
+            "Cannot restructure this project: opaque lens(es) ${invalidatedLenses.joinToString()} reference " +
+                "node ids that this change would invalidate. Restructure first and run the analyser that " +
+                "produces them afterwards, or open an issue."
+        }
+        exitCode = 1
+        return true
     }
 
     private fun isMoreThanOneActionSpecified(): Boolean {

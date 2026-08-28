@@ -274,6 +274,84 @@ class StructureModifierTest {
     }
 
     @Test
+    fun `should refuse to set a new root when a data-bearing opaque lens would be invalidated`() {
+        // given
+        System.setErr(PrintStream(errContent))
+
+        // when
+        val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-s=/root/src"))
+
+        // then
+        assertThat(errContent.toString()).contains(
+            "Cannot restructure this project: opaque lens(es) domain reference node ids"
+        )
+        assertThat(cliResult).isEmpty()
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should refuse to move nodes when a data-bearing opaque lens would be invalidated`() {
+        // given
+        System.setErr(PrintStream(errContent))
+
+        // when
+        val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-f=/root/src/main", "-t=/root/moved"))
+
+        // then
+        assertThat(errContent.toString()).contains("Cannot restructure this project")
+        assertThat(cliResult).isEmpty()
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should refuse to remove nodes when a data-bearing opaque lens would be invalidated`() {
+        // given
+        System.setErr(PrintStream(errContent))
+
+        // when
+        val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-r=/root/src/main"))
+
+        // then
+        assertThat(errContent.toString()).contains("Cannot restructure this project")
+        assertThat(cliResult).isEmpty()
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should exit non-zero when it refuses to restructure`() {
+        // when
+        val exitCode = CommandLine(StructureModifier()).execute(DOMAIN_PROJECT, "-s=/root/src")
+
+        // then
+        assertThat(exitCode).isEqualTo(1)
+    }
+
+    @Test
+    fun `should restructure a project whose opaque lens is an empty reserved slot`() {
+        // when
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project_with_empty_domain.cc.json", "-s=/root/src"))
+
+        // then
+        assertThat(cliResult).contains("otherFile.java")
+    }
+
+    @Test
+    fun `should rename a metric on a project carrying a data-bearing opaque lens`() {
+        // when
+        val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "--rename-mcc"))
+
+        // then
+        assertThat(cliResult).contains("invoice")
+        assertThat(cliResult).doesNotContain("Cannot restructure")
+    }
+
+    @Test
     fun `should throw Exception when rename flag is specified with an invalid option`() {
         // given
         System.setErr(PrintStream(errContent))
@@ -286,5 +364,9 @@ class StructureModifierTest {
 
         // clean up
         System.setErr(originalErr)
+    }
+
+    companion object {
+        private const val DOMAIN_PROJECT = "src/test/resources/sample_project_with_domain.cc.json"
     }
 }
