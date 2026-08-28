@@ -8,7 +8,6 @@ import { CCFile, CodeMapNode, ColorMode, NodeType } from "../../../../model/code
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { CodeMapMesh, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { QrCodeMesh } from "../../3DExports/3DPreview/MeshModels/BackMeshModels/qrCodeMesh"
-import { Export3DMapButtonComponent } from "../export3DMapButton/export3DMapButton.component"
 import { Export3DMapDialogComponent } from "./export3DMapDialog.component"
 
 jest.mock("three/addons/loaders/SVGLoader.js", () => {
@@ -145,7 +144,6 @@ describe("Export3DMapDialogComponent", () => {
 
     async function setup() {
         const renderObject = await render(Export3DMapDialogComponent, {
-            imports: [Export3DMapButtonComponent],
             providers: [
                 provideMockStore({ initialState: TestState }),
                 { provide: State, useValue: { getValue: () => TestState } },

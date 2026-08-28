@@ -93,7 +93,7 @@ test.describe("DomainView", () => {
     test("should reuse the map's bottom bar and reflect the explorer selection in it", async ({ page }) => {
         // Arrange — the domain view reuses cc-bottom-bar, showing the selected node (no map to hover)
         const viewSwitcher = new ViewSwitcherPageObject(page)
-        const explorer = new ExplorerTreeLevelPageObject(page)
+        const explorer = new ExplorerTreeLevelPageObject(page, "domain")
         await viewSwitcher.switchToDomain()
         const currentCrumb = page.locator("cc-bottom-bar cc-hovered-path [data-testid='hovered-path-current']")
         await expect(page.locator("cc-bottom-bar footer")).toBeVisible()
@@ -106,31 +106,34 @@ test.describe("DomainView", () => {
         await expect(currentCrumb).toHaveText("sample1.cc.json")
     })
 
-    test("should hide the map-only nav bar controls on the domain view and restore them on the way back", async ({ page }) => {
-        // Arrange — 3D print exports the code map's geometry and the mode toggle drives delta mode, so
+    test("should keep the map modes in the metric tab's mode bar while the domain view is shown", async ({ page }) => {
+        // Arrange — the mode bar only exists while a tab is hovered, so nothing but settings sits in the bar
         const viewSwitcher = new ViewSwitcherPageObject(page)
         const modeToggle = page.locator("cc-mode-toggle")
-        const print3DButton = page.locator("cc-print-3d-button")
-        const settingsButton = page.locator("cc-settings-button")
-        await expect(modeToggle).toBeVisible()
-        await expect(print3DButton).toBeVisible()
+        const print3DButton = page.getByRole("button", { name: "3D Print" })
+        await expect(page.locator("cc-settings-button")).toBeVisible()
+        await expect(modeToggle).toHaveCount(0)
 
         // Act
         await viewSwitcher.switchToDomain()
         await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await viewSwitcher.hoverMetricsTab()
 
-        // Assert
-        await expect(modeToggle).toHaveCount(0)
-        await expect(print3DButton).toHaveCount(0)
-        await expect(settingsButton).toBeVisible()
+        // Assert — the metric modes stay reachable, and the export offers the metric view it needs
+        // rather than sitting there dead
+        await expect(modeToggle).toBeVisible()
+        await expect(print3DButton).toBeEnabled()
+        await print3DButton.click()
+        await expect(page.getByRole("button", { name: "Switch and continue" })).toBeVisible()
+        await page.getByRole("button", { name: "Stay here" }).click()
 
-        // Act — the round trip is the point: the route-reuse strategy keeps both views alive, so the nav
+        // Act — the round trip is the point: the route-reuse strategy keeps both views alive
         await viewSwitcher.switchToMetrics()
+        await viewSwitcher.hoverMetricsTab()
 
         // Assert
         await expect(modeToggle).toBeVisible()
-        await expect(print3DButton).toBeVisible()
-        await expect(settingsButton).toBeVisible()
+        await expect(print3DButton).toBeEnabled()
     })
 
     test("should route to the domain path and back to the metrics path", async ({ page }) => {

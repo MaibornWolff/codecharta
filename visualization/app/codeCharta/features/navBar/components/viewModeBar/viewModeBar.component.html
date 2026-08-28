@@ -1,0 +1,19 @@
+<div class="flex items-center justify-center gap-1 py-0.5" role="group" [attr.aria-label]="groupLabel()">
+    @if (view() === "metrics") {
+        <cc-mode-toggle></cc-mode-toggle>
+        <cc-print-3d-button></cc-print-3d-button>
+    } @else {
+        <a
+            #domainExplore="routerLinkActive"
+            class="btn btn-ghost btn-sm relative"
+            [routerLink]="routeLinks.domain"
+            routerLinkActive="font-bold"
+            data-testid="view-mode-domain-explore"
+        >
+            Explore
+            @if (domainExplore.isActive) {
+                <span class="cc-current-underline"></span>
+            }
+        </a>
+    }
+</div>

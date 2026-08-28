@@ -1,7 +1,3 @@
-<button type="button" class="btn btn-ghost btn-sm" (click)="export3DMap()" title="Download 3MF code file">
+<button type="button" class="btn btn-ghost btn-sm" title="Download 3MF code file" (click)="export3DMap()">
     3D Print
 </button>
-@if (showDialog()) {
-    <cc-export-3D-map-dialog (closed)="handleDialogClosed()" />
-}
-<cc-error-dialog #errorDialog />

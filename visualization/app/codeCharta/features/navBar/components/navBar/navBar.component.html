@@ -1,4 +1,4 @@
-<div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+<div class="navbar relative bg-base-100 border-b border-base-300 min-h-12 px-2">
     <div class="navbar-start gap-1">
         <cc-nav-bar-logo></cc-nav-bar-logo>
         <div class="divider divider-horizontal mx-0"></div>
@@ -7,21 +7,15 @@
             <cc-delta-selector></cc-delta-selector>
         } @else {
             <cc-map-selector></cc-map-selector>
-            <cc-nav-divider></cc-nav-divider>
-            <cc-view-switcher></cc-view-switcher>
         }
     </div>
-    <div class="navbar-end gap-1">
-        @if (trailingControls().has("modeToggle")) {
-            <cc-mode-toggle></cc-mode-toggle>
-            <cc-nav-divider></cc-nav-divider>
-        }
-        @if (trailingControls().has("print3D")) {
-            <cc-print-3d-button></cc-print-3d-button>
-            <cc-nav-divider></cc-nav-divider>
-        }
-        @if (trailingControls().has("settings")) {
-            <cc-settings-button></cc-settings-button>
-        }
+    <div class="navbar-center self-stretch">
+        <cc-view-switcher></cc-view-switcher>
+    </div>
+    <div class="navbar-end">
+        <cc-settings-button></cc-settings-button>
     </div>
 </div>
+@if (isExportDialogOpen()) {
+    <cc-export-3D-map-dialog (closed)="closeExportDialog()" />
+}

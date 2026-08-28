@@ -9,7 +9,7 @@
                         {{ dialogData.resolveErrorData.buttonText }}
                     </button>
                 }
-                <button class="btn" (click)="close()">OK</button>
+                <button class="btn" (click)="close()">{{ dialogData.dismissButtonText ?? "OK" }}</button>
             </div>
         }
     </div>

@@ -57,3 +57,17 @@ body {
 cc-metrics-bar > cc-link-color-height-button {
     border-inline-end-width: 0;
 }
+
+// Marks the current item in the top bar: the Metric/Domain tabs and the modes in the bar below them
+// all wear the same primary underline hugging their bottom edge. Extracted from the templates
+// because five copies of the utility chain drift apart, and the marker has to stay identical for
+// the two rows to read as one selection language. Draw it on a `relative` parent.
+.cc-current-underline {
+    position: absolute;
+    inset-inline: 0.5rem;
+    bottom: 0;
+    height: 0.125rem;
+    border-start-start-radius: 9999px;
+    border-start-end-radius: 9999px;
+    background-color: var(--color-primary);
+}
