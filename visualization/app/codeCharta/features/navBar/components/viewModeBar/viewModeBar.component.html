@@ -1,4 +1,4 @@
-<div class="flex items-center justify-center gap-1 py-0.5" role="group" [attr.aria-label]="groupLabel()">
+<fieldset class="flex items-center justify-center gap-1 py-0.5 border-0 m-0 px-0 min-w-0" [attr.aria-label]="groupLabel()">
     @if (view() === "metrics") {
         <cc-mode-toggle></cc-mode-toggle>
         <cc-print-3d-button></cc-print-3d-button>
@@ -16,4 +16,4 @@
             }
         </a>
     }
-</div>
+</fieldset>
