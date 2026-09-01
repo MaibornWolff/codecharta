@@ -1,7 +1,8 @@
 import { TestBed } from "@angular/core/testing"
 import { Router } from "@angular/router"
-import { BehaviorSubject, Observable, of } from "rxjs"
+import { BehaviorSubject, Observable, of, Subject } from "rxjs"
 import { ColorMode } from "../../../model/codeCharta.model"
+import { ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { ActiveViewStore } from "../../../routing/activeView.store"
 import { routeLinks, ViewId } from "../../../routing/routePaths"
 import { ViewReadinessStore } from "../../../routing/viewReadiness.store"
@@ -16,6 +17,7 @@ describe("Export3DMapDialogStore", () => {
     let router: { navigateByUrl: jest.Mock }
     let activeView: ViewId
     let isMetricsViewStale: BehaviorSubject<boolean>
+    let afterRender: Subject<void>
 
     function setup(colorMode: ColorMode, view: ViewId = "metrics", hasNavigationSucceeded = true) {
         colorModeStore = {
@@ -26,6 +28,7 @@ describe("Export3DMapDialogStore", () => {
         errorDialogService = { open: jest.fn() }
         activeView = view
         isMetricsViewStale = new BehaviorSubject(false)
+        afterRender = new Subject()
         router = {
             navigateByUrl: jest.fn(() => {
                 activeView = hasNavigationSucceeded ? "metrics" : activeView
@@ -38,7 +41,8 @@ describe("Export3DMapDialogStore", () => {
                 { provide: ErrorDialogService, useValue: errorDialogService },
                 { provide: Router, useValue: router },
                 { provide: ActiveViewStore, useValue: { currentView: () => activeView } },
-                { provide: ViewReadinessStore, useValue: { isStale$: () => isMetricsViewStale } }
+                { provide: ViewReadinessStore, useValue: { isStale$: () => isMetricsViewStale } },
+                { provide: ThreeRendererService, useValue: { afterRender$: afterRender.asObservable() } }
             ]
         })
         return TestBed.inject(Export3DMapDialogStore)
@@ -70,20 +74,19 @@ describe("Export3DMapDialogStore", () => {
         expect(errorDialogService.open).toHaveBeenCalledWith(expect.objectContaining({ title: "Map could not be exported" }))
     })
 
-    it("should switch to absolute color mode and open the dialog when the error is resolved", () => {
+    it("should switch to absolute color mode and open the dialog once the map has re-rendered", () => {
         // Arrange
-        jest.useFakeTimers()
         const store = setup(ColorMode.weightedGradient)
         store.requestExport()
 
         // Act
         openedDialogData().resolveErrorData.onResolveErrorClick()
-        jest.runAllTimers()
+        expect(store.isDialogOpen()).toBe(false)
+        afterRender.next()
 
         // Assert
         expect(colorModeStore.setAbsoluteColorMode).toHaveBeenCalledTimes(1)
         expect(store.isDialogOpen()).toBe(true)
-        jest.useRealTimers()
     })
 
     it("should offer to switch views instead of exporting from another view", async () => {

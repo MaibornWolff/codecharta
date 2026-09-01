@@ -2,15 +2,13 @@ import { Injectable, inject, signal } from "@angular/core"
 import { Router } from "@angular/router"
 import { filter, take } from "rxjs"
 import { ColorMode } from "../../../model/codeCharta.model"
+import { ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { ActiveViewStore } from "../../../routing/activeView.store"
 import { routeLinks } from "../../../routing/routePaths"
 import { ViewReadinessStore } from "../../../routing/viewReadiness.store"
 import { ErrorDialogData } from "../../../util/errorDialog/errorDialog.model"
 import { ErrorDialogService } from "../../../util/errorDialog/errorDialog.service"
 import { Export3DColorModeStore } from "./colorMode.store"
-
-//TODO: find a better way to wait for the colors to update without using setTimeout
-const AWAIT_RECOLORED_MAP_MS = 100
 
 /** The export button lives in the nav bar's mode bar, which is unmounted as soon as the pointer
  * leaves it. Keeping the "is the dialog open" state out here lets the always-mounted nav bar host
@@ -21,6 +19,7 @@ export class Export3DMapDialogStore {
     private readonly errorDialogService = inject(ErrorDialogService)
     private readonly activeViewStore = inject(ActiveViewStore)
     private readonly viewReadinessStore = inject(ViewReadinessStore)
+    private readonly threeRendererService = inject(ThreeRendererService)
     private readonly router = inject(Router)
 
     private readonly dialogOpen = signal(false)
@@ -88,11 +87,7 @@ export class Export3DMapDialogStore {
     }
 
     private recolorTheMapAndExportIt(): void {
+        this.threeRendererService.afterRender$.pipe(take(1)).subscribe(() => this.dialogOpen.set(true))
         this.colorModeStore.setAbsoluteColorMode()
-        this.colorModeStore.colorMode$.pipe(take(1)).subscribe(colorMode => {
-            if (colorMode === ColorMode.absolute) {
-                setTimeout(() => this.dialogOpen.set(true), AWAIT_RECOLORED_MAP_MS)
-            }
-        })
     }
 }
