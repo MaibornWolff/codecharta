@@ -26,8 +26,7 @@
     [style.left.px]="cloudLeftInset()"
 >
     <cc-word-cloud [settings]="settings()" [selectedNodePath]="selectedNodePath()" (clearSelection)="clearSelection()"></cc-word-cloud>
-    <!-- Same screen position as the metrics view's toolbox, which is centered over the 200px view cube. -->
-    <cc-domain-toolbox class="absolute right-0 top-[10px] z-10 flex w-[200px] justify-center"></cc-domain-toolbox>
+    <cc-domain-toolbox class="absolute right-[10px] top-[10px] z-10 flex"></cc-domain-toolbox>
 </div>
 
 <cc-bottom-bar [showSelectedWhenNotHovered]="true" [selectedNodePath]="selectedNodePath()"></cc-bottom-bar>
