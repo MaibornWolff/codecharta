@@ -11,8 +11,11 @@ json = "20251224"
 juniversalchardet = "1.0.3"
 kotlin = "2.3.10"
 kotlinx-coroutines = "1.10.2"
+kasechange = "1.4.1"
+kotlinx-serialization-json = "1.7.3"
 kotter = "1.2.1"
 picocli = "4.7.7"
+tree-sitter-excavation-site = "v0.12.0"
 slf4j = "2.0.17"
 sonarqube = "7.2.2.6593"
 univocity-parsers = "2.9.1"
@@ -52,6 +55,9 @@ json = { group = "org.json", name = "json", version.ref = "json" }
 commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.15.0" }
 json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.json.schema", version.ref = "json-schema" }
 appmattus-crypto = { group = "com.appmattus.crypto", name = "cryptohash", version.ref = "appmattus-crypto"}
+tree-sitter-excavation-site = { group = "com.github.MaibornWolff", name = "TreeSitterExcavationSite", version.ref = "tree-sitter-excavation-site" }
+kasechange = { group = "net.pearx.kasechange", name = "kasechange", version.ref = "kasechange" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 
 [plugins]
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

@@ -15,7 +15,7 @@ class StatisticalSubstringReduction {
             return weightedTexts
         }
 
-        val redundantNgrams = ngrams.filter { candidate -> ngrams.any { it.subsumes(candidate) } }.mapTo(mutableSetOf()) { it.text }
+        val redundantNgrams = ngrams.filter { candidate -> ngrams.any { it.subsumes(candidate) } }.map { it.text }.toSet()
         return weightedTexts.filter { it.text !in redundantNgrams }
     }
 

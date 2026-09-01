@@ -12,7 +12,7 @@ object DirectoryWordAggregator {
         val wordCountsByPath = seedWithFileWords(fileWords)
         rollUpIntoParentDirectories(fileWords, wordCountsByPath)
 
-        return wordCountsByPath.mapValues { (_, wordCounts) ->
+        return wordCountsByPath.mapValues { (_, wordCounts: Map<String, Int>) ->
             wordCounts.map { (text, frequency) -> WordFrequency.withScore(text, frequency, tfidfScores) }
         }
     }
