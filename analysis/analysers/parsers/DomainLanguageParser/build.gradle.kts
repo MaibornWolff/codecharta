@@ -9,11 +9,11 @@ dependencies {
     implementation(libs.kotter)
     implementation(libs.kotter.test)
 
-    implementation("com.github.MaibornWolff:TreeSitterExcavationSite:v0.12.0")
+    implementation(libs.tree.sitter.excavation.site)
 
-    implementation("net.pearx.kasechange:kasechange:1.4.1")
+    implementation(libs.kasechange)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(kotlin("test"))
 }
