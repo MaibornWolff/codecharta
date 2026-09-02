@@ -1,6 +1,6 @@
 # ASP.NET Framework Keywords
 # Common ASP.NET terms to filter for cleaner domain-focused word clouds
-# One keyword per line, case-sensitive
+# One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
 # Comments start with #
 
 # MVC Pattern

@@ -111,19 +111,20 @@ class PathScopedFrameworkFilteringIntegrationTest {
         val provider = PathScopedKeywordProvider(frameworksByPath)
         val stopWordFilter = StopWordFilter(pathScopedKeywordProvider = provider)
 
-        val testWords = listOf("Controller", "Authorize", "user", "service")
+        // Lowercase because that is what SplitStage emits; the filter never sees a capitalized word.
+        val testWords = listOf("controller", "authorize", "user", "service")
 
         // Act
         val filteredBackend = stopWordFilter.filter(testWords, backendDir.resolve("Controllers/UserController.cs"))
         val filteredFrontend = stopWordFilter.filter(testWords, frontendDir.resolve("src/App.tsx"))
 
         // Assert: Backend should have ASP.NET keywords filtered
-        assertFalse(filteredBackend.contains("Controller"), "ASP.NET keyword 'Controller' should be filtered in backend")
-        assertFalse(filteredBackend.contains("Authorize"), "ASP.NET keyword 'Authorize' should be filtered in backend")
+        assertFalse(filteredBackend.contains("controller"), "ASP.NET keyword 'controller' should be filtered in backend")
+        assertFalse(filteredBackend.contains("authorize"), "ASP.NET keyword 'authorize' should be filtered in backend")
 
         // Assert: Frontend should NOT have ASP.NET keywords filtered
-        assertTrue(filteredFrontend.contains("Controller"), "ASP.NET keyword should NOT be filtered in frontend")
-        assertTrue(filteredFrontend.contains("Authorize"), "ASP.NET keyword should NOT be filtered in frontend")
+        assertTrue(filteredFrontend.contains("controller"), "ASP.NET keyword should NOT be filtered in frontend")
+        assertTrue(filteredFrontend.contains("authorize"), "ASP.NET keyword should NOT be filtered in frontend")
     }
 
     @Test

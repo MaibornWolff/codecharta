@@ -1,5 +1,5 @@
 # JavaScript Reserved Words
-# One keyword per line, case-sensitive
+# One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
 # Comments start with #
 # Note: Does NOT include TypeScript-only keywords (interface, type, namespace, enum, etc.)
 

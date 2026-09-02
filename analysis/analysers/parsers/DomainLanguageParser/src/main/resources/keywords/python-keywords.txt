@@ -1,5 +1,5 @@
 # Python Keywords and Built-in Types
-# One keyword per line, case-sensitive
+# One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
 # Comments start with #
 
 # Keywords
@@ -142,3 +142,9 @@ TypeError
 ValueError
 UnicodeError
 Warning
+
+# Implicit parameters and dunder-derived tokens. `__init__` splits to `init`, which is otherwise the
+# single most common non-domain word in any Python codebase.
+self
+cls
+init

@@ -107,4 +107,20 @@ class ResourceKeywordsTest {
         assertTrue(ResourceKeywords("keywords/aspnet-keywords.txt").getKeywords().isNotEmpty())
         assertTrue(ResourceKeywords("keywords/entityframework-keywords.txt").getKeywords().isNotEmpty())
     }
+
+    @Test
+    fun `should lowercase every entry so it can match a word the pipeline emits`() {
+        // Arrange - the Python list carries capitalized entries (False, None, True)
+        val keywords = ResourceKeywords("keywords/python-keywords.txt")
+
+        // Act
+        val loaded = keywords.getKeywords()
+
+        // Assert - SplitStage sanitizes every word to lower case, so a capitalized entry could never
+        // match. Loading normalizes instead, which is what keeps those entries doing their job.
+        assertTrue(loaded.none { it != it.lowercase() }, "keyword entries must be lowercased on load")
+        assertTrue(loaded.contains("false"))
+        assertTrue(loaded.contains("none"))
+        assertTrue(loaded.contains("true"))
+    }
 }

@@ -1,6 +1,6 @@
 # Angular Framework Keywords
 # Common Angular-specific terms to filter from word clouds
-# One keyword per line, case-insensitive
+# One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
 
 # Core Angular concepts
 component

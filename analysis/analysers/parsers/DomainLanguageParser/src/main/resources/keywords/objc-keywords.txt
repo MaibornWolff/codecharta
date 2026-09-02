@@ -1,5 +1,5 @@
 # Objective-C Keywords and Common Types
-# One keyword per line, case-sensitive
+# One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
 # Comments start with #
 
 # Objective-C specific keywords
