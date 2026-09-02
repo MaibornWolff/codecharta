@@ -3,8 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.p
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.ExtractionWeights
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.StopWordFilter
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.isExcluded
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import java.nio.file.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -15,7 +13,6 @@ class SourceCodePipelineTest {
     private val sourcePath: Path = Path.of("src", "Sample.kt")
 
     private val emptyFilter = StopWordFilter(emptyList(), emptySet())
-    private val kotlinKeywordsFilter = StopWordFilter(listOf(ResourceKeywords("keywords/kotlin-keywords.txt")), emptySet())
 
     @Test
     fun `should process simple class through entire pipeline`() {
@@ -206,13 +203,13 @@ class SourceCodePipelineTest {
             """.trimIndent()
 
         // Act
-        val unfiltered = pipelineWith(emptyFilter).process(sourceCode, sourcePath)
-        val filtered = pipelineWith(kotlinKeywordsFilter).process(sourceCode, sourcePath)
+        val filtered = pipelineWith(emptyFilter).process(sourceCode, sourcePath)
 
         // Assert
-        val removedWords = unfiltered.keys - filtered.keys
-        assertTrue(removedWords.isNotEmpty(), "expected the Kotlin keyword filter to remove at least one word")
-        assertTrue(removedWords.all { kotlinKeywordsFilter.isExcluded(it) })
+        // Language keywords are intrinsic to the pipeline's language, so a Kotlin pipeline drops them
+        // even when no global keyword list is configured.
+        assertFalse(filtered.containsKey("val"))
+        assertFalse(filtered.containsKey("fun"))
 
         assertTrue(filtered.containsKey("user"))
         assertTrue(filtered.containsKey("profile"))
@@ -391,10 +388,10 @@ class SourceCodePipelineTest {
         val sourceCode =
             """
             class Outer {
-                class Inner {
-                    val innerProperty = "test"
+                class Nested {
+                    val nestedAmount = "test"
                 }
-                val outerProperty = "test"
+                val outerAmount = "test"
             }
             """.trimIndent()
 
@@ -403,8 +400,8 @@ class SourceCodePipelineTest {
 
         // Assert
         assertTrue(result.containsKey("outer"))
-        assertTrue(result.containsKey("inner"))
-        assertTrue(result.containsKey("property"))
+        assertTrue(result.containsKey("nested"))
+        assertTrue(result.containsKey("amount"))
     }
 
     @Test
@@ -432,7 +429,6 @@ class SourceCodePipelineTest {
         assertTrue(result.containsKey("result"))
         assertTrue(result.containsKey("success"))
         assertTrue(result.containsKey("error"))
-        assertTrue(result.containsKey("data"))
         assertTrue(result.containsKey("message"))
     }
 

@@ -21,7 +21,7 @@ class ConfigurationBuilder(
             }
         val allowedExtensions = Language.allExtensions()
         val frameworksByPath = detectFrameworks(directory)
-        val languageKeywords = buildLanguageKeywords(parsedArgs.noTechnicalStopWords, parsedArgs.stopWordLevel)
+        val globalKeywords = buildGlobalKeywords(parsedArgs.noTechnicalStopWords, parsedArgs.stopWordLevel)
         val weights = buildExtractionWeights(parsedArgs)
         val customStopWords = loadCustomStopWords(directory)
 
@@ -29,7 +29,7 @@ class ConfigurationBuilder(
             allowedExtensions = allowedExtensions,
             bypassGitignore = parsedArgs.bypassGitignore,
             excludeTests = parsedArgs.excludeTests,
-            languageKeywords = languageKeywords,
+            globalKeywords = globalKeywords,
             weights = weights,
             ngrams = parsedArgs.ngrams,
             customStopWords = customStopWords,
@@ -43,30 +43,17 @@ class ConfigurationBuilder(
 
     private fun detectFrameworks(directory: String): Map<Path, Set<Framework>> = frameworkDetector.detectFrameworks(Paths.get(directory))
 
-    private fun buildLanguageKeywords(noTechnicalStopWords: Boolean, stopWordLevel: StopWordLevel) = buildList {
-        addCoreLanguageKeywords()
-        addTechnicalStopWordsIfEnabled(noTechnicalStopWords, stopWordLevel)
+    // Only the technical stop words are global. Per-language keywords are scoped to the files of that
+    // language by `StopWordFilter`, so a Go file's `func` does not disappear from a Kotlin one.
+    private fun buildGlobalKeywords(noTechnicalStopWords: Boolean, stopWordLevel: StopWordLevel): List<LanguageKeywords> {
+        if (noTechnicalStopWords) return emptyList()
+        return listOf(technicalStopWordsFor(stopWordLevel))
     }
 
-    private fun MutableList<LanguageKeywords>.addCoreLanguageKeywords() {
-        add(ResourceKeywords("keywords/java-keywords.txt"))
-        add(ResourceKeywords("keywords/kotlin-keywords.txt"))
-        add(ResourceKeywords("keywords/typescript-keywords.txt"))
-    }
-
-    private fun MutableList<LanguageKeywords>.addTechnicalStopWordsIfEnabled(
-        noTechnicalStopWords: Boolean,
-        stopWordLevel: StopWordLevel
-    ) {
-        if (!noTechnicalStopWords) {
-            val stopWords =
-                when (stopWordLevel) {
-                    StopWordLevel.MINIMAL -> ResourceKeywords("keywords/technical-minimal.txt")
-                    StopWordLevel.MODERATE -> ResourceKeywords("keywords/technical-moderate.txt")
-                    StopWordLevel.AGGRESSIVE -> ResourceKeywords("keywords/technical-aggressive.txt")
-                }
-            add(stopWords)
-        }
+    private fun technicalStopWordsFor(stopWordLevel: StopWordLevel): LanguageKeywords = when (stopWordLevel) {
+        StopWordLevel.MINIMAL -> ResourceKeywords("keywords/technical-minimal.txt")
+        StopWordLevel.MODERATE -> ResourceKeywords("keywords/technical-moderate.txt")
+        StopWordLevel.AGGRESSIVE -> ResourceKeywords("keywords/technical-aggressive.txt")
     }
 
     private fun buildExtractionWeights(parsedArgs: ParsedArguments) = ExtractionWeights(

@@ -12,7 +12,7 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pi
 import java.nio.file.Path
 
 class SourceCodePipeline(
-    language: Language,
+    private val language: Language,
     weights: ExtractionWeights = ExtractionWeights(),
     ngrams: Int = 1,
     private val stopWordFilter: StopWordFilter,
@@ -34,7 +34,7 @@ class SourceCodePipeline(
         val weightedTexts = weightStage.weight(extractedTexts)
         val splitResults = splitStage.split(weightedTexts)
         val ngramTexts = ngramsStage.generateNgrams(splitResults)
-        val filteredTexts = filterStage.filter(ngramTexts, filePath)
+        val filteredTexts = filterStage.filter(ngramTexts, filePath, language)
 
         return aggregateStage.aggregate(filteredTexts)
     }

@@ -26,7 +26,7 @@ class PathScopedFrameworkFilteringIntegrationTest {
         val provider = PathScopedKeywordProvider(frameworksByPath)
         val stopWordFilter =
             StopWordFilter(
-                languageKeywords =
+                globalKeywords =
                     listOf(
                         ResourceKeywords("keywords/kotlin-keywords.txt"),
                         ResourceKeywords("keywords/typescript-keywords.txt")
@@ -138,7 +138,7 @@ class PathScopedFrameworkFilteringIntegrationTest {
         val provider = PathScopedKeywordProvider(frameworksByPath)
         val stopWordFilter =
             StopWordFilter(
-                languageKeywords = listOf(ResourceKeywords("keywords/typescript-keywords.txt")),
+                globalKeywords = listOf(ResourceKeywords("keywords/typescript-keywords.txt")),
                 pathScopedKeywordProvider = provider
             )
         val fileAnalyzer = FileAnalyzer(stopWordFilter)

@@ -16,7 +16,7 @@ object SourceAnalyzerFactory {
         val pathScopedKeywordProvider = PathScopedKeywordProvider(config.frameworksByPath)
         val stopWordFilter =
             StopWordFilter(
-                languageKeywords = config.languageKeywords,
+                globalKeywords = config.globalKeywords,
                 customStopWords = config.customStopWords,
                 pathScopedKeywordProvider = pathScopedKeywordProvider
             )

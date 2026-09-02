@@ -6,7 +6,7 @@ import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 
 class StopWordFilter(
-    private val languageKeywords: List<LanguageKeywords> = emptyList(),
+    private val globalKeywords: List<LanguageKeywords> = emptyList(),
     private val customStopWords: Set<String> = emptySet(),
     private val keywordLoader: ResourceKeywordLoader = ResourceKeywordLoader(),
     private val pathScopedKeywordProvider: PathScopedKeywordProvider = PathScopedKeywordProvider.NONE
@@ -16,13 +16,16 @@ class StopWordFilter(
     }
 
     private val allExcludedWords: Set<String> by lazy {
-        val languageKeywordSet = languageKeywords.flatMap { it.getKeywords() }.toSet()
-        stopWords + languageKeywordSet + customStopWords
+        val globalKeywordSet = globalKeywords.flatMap { it.getKeywords() }.toSet()
+        stopWords + globalKeywordSet + customStopWords
     }
 
-    private val pathExcludedWordsCache = ConcurrentHashMap<Path, Set<String>>()
+    private data class ExclusionScope(val filePath: Path, val language: Language?)
 
-    fun isExcluded(word: String, filePath: Path): Boolean = isExcludedFrom(word, getExcludedWordsForPath(filePath))
+    private val excludedWordsCache = ConcurrentHashMap<ExclusionScope, Set<String>>()
+
+    fun isExcluded(word: String, filePath: Path, language: Language? = null): Boolean =
+        isExcludedFrom(word, getExcludedWordsFor(ExclusionScope(filePath, language)))
 
     private fun isExcludedFrom(word: String, excludedWords: Set<String>): Boolean {
         if (word in excludedWords) return true
@@ -32,16 +35,16 @@ class StopWordFilter(
         return false
     }
 
-    private fun getExcludedWordsForPath(filePath: Path): Set<String> = pathExcludedWordsCache.computeIfAbsent(filePath) { path ->
+    private fun getExcludedWordsFor(scope: ExclusionScope): Set<String> = excludedWordsCache.computeIfAbsent(scope) {
         val frameworkKeywords =
             pathScopedKeywordProvider
-                .getFrameworkKeywordsForFile(path)
-                .flatMap { it.getKeywords() }
+                .getFrameworkKeywordsForFile(it.filePath)
+                .flatMap { keywords -> keywords.getKeywords() }
                 .toSet()
-        allExcludedWords + frameworkKeywords
+        allExcludedWords + frameworkKeywords + (it.language?.keywords?.getKeywords() ?: emptySet())
     }
 
     fun clearCache() {
-        pathExcludedWordsCache.clear()
+        excludedWordsCache.clear()
     }
 }

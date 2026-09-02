@@ -10,6 +10,7 @@ import java.io.File
 import java.nio.file.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
@@ -17,6 +18,51 @@ class FileAnalyzerTest {
     private fun FileResult.wordsOrEmpty(): Map<String, Int> = when (this) {
         is FileResult.Processed -> words
         is FileResult.Skipped -> emptyMap()
+    }
+
+    @Test
+    fun `should drop the keywords of the file's own language`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val goFile = File(tempDirPath.toFile(), "inventory.go")
+        goFile.writeText(
+            """
+            package inventory
+
+            func ReserveInventoryItem(warehouseId string) error {
+                defer releaseWarehouseLock(warehouseId)
+                return nil
+            }
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(goFile, goFile.readText()).wordsOrEmpty()
+
+        // Assert - Go keywords go, domain words stay
+        assertFalse(words.containsKey("func"))
+        assertFalse(words.containsKey("defer"))
+        assertTrue(words.containsKey("inventory"))
+        assertTrue(words.containsKey("warehouse"))
+    }
+
+    @Test
+    fun `should not drop another language's keywords`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange - `func` is a Go keyword, but a plain identifier in Kotlin
+        val kotlinFile = File(tempDirPath.toFile(), "Scheduler.kt")
+        kotlinFile.writeText("class Scheduler { fun runFuncInvoice() {} }")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(kotlinFile, kotlinFile.readText()).wordsOrEmpty()
+
+        // Assert
+        assertTrue(words.containsKey("func"))
+        assertTrue(words.containsKey("invoice"))
     }
 
     @Test
