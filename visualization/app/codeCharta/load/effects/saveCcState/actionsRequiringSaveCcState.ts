@@ -4,6 +4,7 @@ import {
     setDomainStateGridSize,
     setDomainStateRotationRange,
     setDomainStateRotationStep,
+    setDomainStateSearchPattern,
     setDomainStateShape,
     setDomainStateShrinkToFit,
     setDomainStateSizeRange,
@@ -134,7 +135,8 @@ const domainStateSaveActions = [
     setDomainStateDrawOutOfBound,
     setDomainStateShrinkToFit,
     setDomainStateSortingOrder,
-    setDomainStateSortingOrderAscending
+    setDomainStateSortingOrderAscending,
+    setDomainStateSearchPattern
 ]
 
 export const actionsRequiringSaveCcState = [
