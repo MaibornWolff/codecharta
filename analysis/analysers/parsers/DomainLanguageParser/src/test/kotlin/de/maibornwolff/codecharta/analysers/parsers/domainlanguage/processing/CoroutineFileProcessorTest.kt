@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
 import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -52,7 +53,7 @@ class CoroutineFileProcessorTest {
         // Arrange
         val processor = CoroutineFileProcessor()
         val files = listOf(File("ok.kt"), File("broken.kt"))
-        var callbackCount = 0
+        val callbackCount = AtomicInteger()
         val contentReader: (File) -> String = { "content" }
         val wordExtractor: (File, String) -> FileResult = { file, _ ->
             if (file.name == "broken.kt") throw RuntimeException("boom") else FileResult.Processed(emptyMap())
@@ -60,11 +61,11 @@ class CoroutineFileProcessorTest {
 
         // Act
         processor.processFilesIndividually(files, ".", contentReader, wordExtractor) {
-            callbackCount++
+            callbackCount.incrementAndGet()
         }
 
         // Assert
-        assertEquals(2, callbackCount)
+        assertEquals(2, callbackCount.get())
     }
 
     @Test
@@ -128,7 +129,7 @@ class CoroutineFileProcessorTest {
         val processor = CoroutineFileProcessor()
         val files = listOf(File("test1.kt"), File("test2.kt"), File("test3.kt"))
         val basePath = "."
-        var callbackCount = 0
+        val callbackCount = AtomicInteger()
         val contentReader: (File) -> String = { "content" }
         val wordExtractor: (File, String) -> FileResult = { _, _ ->
             FileResult.Processed(mapOf("word" to 1))
@@ -136,11 +137,11 @@ class CoroutineFileProcessorTest {
 
         // Act
         processor.processFilesIndividually(files, basePath, contentReader, wordExtractor) {
-            callbackCount++
+            callbackCount.incrementAndGet()
         }
 
         // Assert
-        assertEquals(3, callbackCount)
+        assertEquals(3, callbackCount.get())
     }
 
     @Test
