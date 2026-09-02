@@ -5,51 +5,51 @@
   },
   "files": [
     {
-      "id": "8a5edab282632443",
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
       "children": [
         {
-          "id": "56c9e1c4b5360a5b",
+          "id": "fabeab231626f275",
           "name": "src",
           "type": "Folder",
           "children": [
             {
-              "id": "e1584b1fb8bf5d36",
+              "id": "5a49618736a14b4c",
               "name": "main",
               "type": "Folder",
               "children": [
                 {
-                  "id": "12410d52f26789e9",
+                  "id": "2f6cb0760e30e5d6",
                   "name": "file1.java",
                   "type": "File"
                 },
                 {
-                  "id": "c9c306b207796fdc",
+                  "id": "59690b3e49b79bb1",
                   "name": "file2.java",
                   "type": "File"
                 }
               ]
             },
             {
-              "id": "7b132a5d2c95af90",
+              "id": "bd9e7e1effe8c340",
               "name": "test",
               "type": "Folder",
               "children": [
                 {
-                  "id": "f9ce1ea61e7eb901",
+                  "id": "b2b4d567edf4cea5",
                   "name": "otherFile.java",
                   "type": "File"
                 }
               ]
             },
             {
-              "id": "1995ac3b8047e31d",
+              "id": "b843373ed21f54b2",
               "name": "folder3",
               "type": "Folder",
               "children": [
                 {
-                  "id": "57a6b260c24d0598",
+                  "id": "a92b30d94d09a0a6",
                   "name": "otherFile2.java",
                   "type": "File"
                 }
@@ -58,36 +58,36 @@
           ]
         },
         {
-          "id": "7c9d66ac57c9fa91",
+          "id": "67b244db227eade7",
           "name": "file1",
           "type": "File",
           "link": ""
         },
         {
-          "id": "a23eaeb64fff1004",
+          "id": "6b3af9761a62ef20",
           "name": "file2",
           "type": "File",
           "link": ""
         },
         {
-          "id": "6f64c6e6261f492a",
+          "id": "fa66e6a27b38b5d6",
           "name": "foo",
           "type": "Folder",
           "children": [
             {
-              "id": "e9bf0a5d768f77b6",
+              "id": "4b1c000f72e63906",
               "name": "file1",
               "type": "File",
               "link": ""
             },
             {
-              "id": "3850e1dfb86a522b",
+              "id": "63365a07b92031da",
               "name": "file2",
               "type": "File",
               "link": ""
             },
             {
-              "id": "d6e59716e582677b",
+              "id": "4054fc8c29bc976b",
               "name": "file3",
               "type": "File",
               "link": ""
@@ -96,12 +96,12 @@
           "link": ""
         },
         {
-          "id": "e46248af1e2b38cc",
+          "id": "9ddf1ca1f8fac423",
           "name": "something",
           "type": "Folder",
           "children": [
             {
-              "id": "4e2fd354a665546c",
+              "id": "008e5faf226cb4c3",
               "name": "file2",
               "type": "File",
               "link": ""
@@ -110,12 +110,12 @@
           "link": ""
         },
         {
-          "id": "6f6ab6f7f4b3f2f2",
+          "id": "529d2f58d41525ba",
           "name": "else",
           "type": "Folder",
           "children": [
             {
-              "id": "4297e5d43000a0c9",
+              "id": "f8d959dac7424a5d",
               "name": "file3",
               "type": "File",
               "link": ""
@@ -124,12 +124,12 @@
           "link": ""
         },
         {
-          "id": "be7b2e02c1f5c857",
+          "id": "623cd5bbc533da43",
           "name": "whatever",
           "type": "Folder",
           "children": [
             {
-              "id": "eb53b3b1d19df56e",
+              "id": "e8c35cda7e9ec606",
               "name": "file2",
               "type": "File",
               "link": ""
@@ -143,40 +143,40 @@
   "lenses": {
     "metrics": {
       "attributes": {
-        "12410d52f26789e9": {
+        "2f6cb0760e30e5d6": {
           "nloc": 80.0
         },
-        "c9c306b207796fdc": {
+        "59690b3e49b79bb1": {
           "nloc": 80.0
         },
-        "f9ce1ea61e7eb901": {
+        "b2b4d567edf4cea5": {
           "nloc": 80.0
         },
-        "57a6b260c24d0598": {
+        "a92b30d94d09a0a6": {
           "nloc": 80.0
         },
-        "7c9d66ac57c9fa91": {
+        "67b244db227eade7": {
           "rloc": 1.0
         },
-        "a23eaeb64fff1004": {
+        "6b3af9761a62ef20": {
           "rloc": 1.0
         },
-        "e9bf0a5d768f77b6": {
+        "4b1c000f72e63906": {
           "rloc": 1.0
         },
-        "3850e1dfb86a522b": {
+        "63365a07b92031da": {
           "rloc": 1.0
         },
-        "d6e59716e582677b": {
+        "4054fc8c29bc976b": {
           "rloc": 1.0
         },
-        "4e2fd354a665546c": {
+        "008e5faf226cb4c3": {
           "rloc": 1.0
         },
-        "4297e5d43000a0c9": {
+        "f8d959dac7424a5d": {
           "rloc": 1.0
         },
-        "eb53b3b1d19df56e": {
+        "e8c35cda7e9ec606": {
           "rloc": 1.0
         }
       },
@@ -186,8 +186,8 @@
     "dependency": {
       "edges": [
         {
-          "fromId": "7c9d66ac57c9fa91",
-          "toId": "3850e1dfb86a522b",
+          "fromId": "67b244db227eade7",
+          "toId": "63365a07b92031da",
           "attributes": {
             "pairingRate": 90.0,
             "avgCommits": 5.0,
@@ -195,8 +195,8 @@
           }
         },
         {
-          "fromId": "e9bf0a5d768f77b6",
-          "toId": "a23eaeb64fff1004",
+          "fromId": "4b1c000f72e63906",
+          "toId": "6b3af9761a62ef20",
           "attributes": {
             "pairingRate": 90.0,
             "avgCommits": 5.0,
@@ -204,16 +204,16 @@
           }
         },
         {
-          "fromId": "3850e1dfb86a522b",
-          "toId": "d6e59716e582677b",
+          "fromId": "63365a07b92031da",
+          "toId": "4054fc8c29bc976b",
           "attributes": {
             "pairingRate": 42.0,
             "avgCommits": 3.0
           }
         },
         {
-          "fromId": "4e2fd354a665546c",
-          "toId": "4297e5d43000a0c9",
+          "fromId": "008e5faf226cb4c3",
+          "toId": "f8d959dac7424a5d",
           "attributes": {
             "pairingRate": 80.0,
             "avgCommits": 3.0

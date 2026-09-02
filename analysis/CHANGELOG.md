@@ -24,13 +24,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- `ccsh modify` refuses to restructure a file that carries a data-bearing opaque lens (today: the `domain`
-  lens) instead of silently emitting a broken one. `--set-root`, `--move-from`/`--move-to` and `--remove`
-  re-path or drop nodes, which invalidates the node ids such a lens is keyed by — previously the surviving
-  nodes lost their words and the dropped ones left keys pointing at nothing, with no warning. Restructure
-  first and run `domainlanguageparser` on the result, or keep the lens and skip the restructuring.
-  `--rename-mcc` and `--print-levels` leave paths alone and are unaffected. This mirrors the guard
-  `ccsh merge --large` already applies.
+- `ccsh modify` now re-keys the `domain` lens onto the paths a restructure produces, instead of emitting a
+  broken one. `--set-root`, `--move-from`/`--move-to` and `--remove` re-path or drop nodes, which invalidates
+  the node ids the lens is keyed by; each surviving node's word bank now moves to its new id, and entries for
+  nodes the change removed are dropped rather than left pointing at nothing. `--rename-mcc` and
+  `--print-levels` leave paths alone and are unaffected. Any *other* data-bearing opaque lens still refuses
+  the restructure, because its shape is unknown and its ids cannot be rewritten safely — the same guard
+  `ccsh merge --large` applies.
 - **BREAKING: `ccsh` now emits the new cc.json 2.0 `{ meta, files, lenses }` format by default.**
   Node metrics move off the file tree into a `metrics` lens keyed by a stable, content-independent
   node `id` (`sha-256(canonicalPath)`), dependency edges move into a `dependency` lens referenced by
