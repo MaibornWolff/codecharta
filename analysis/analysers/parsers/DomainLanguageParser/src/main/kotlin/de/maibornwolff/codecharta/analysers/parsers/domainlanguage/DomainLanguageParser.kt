@@ -31,7 +31,13 @@ import java.io.PrintStream
 class DomainLanguageParser(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) :
     CommonAnalyserParameters(),
     AnalyserInterface {
-    @CommandLine.Option(names = ["--limit"], description = ["limit each node to its top X words (all words if not set)"])
+    @CommandLine.Option(
+        names = ["--limit"],
+        description = [
+            "limit each node to its top X words (all words if not set); a folder aggregates the words that " +
+                "survived each of its files' limit, so its frequencies are not full corpus totals"
+        ]
+    )
     private var limit: Int? = null
 
     @CommandLine.Option(names = ["--ngrams"], description = ["generate n-grams up to size N (1=words, 2=bigrams, 3=trigrams)"])

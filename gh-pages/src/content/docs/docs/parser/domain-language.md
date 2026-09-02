@@ -40,6 +40,10 @@ Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, 
 | `--no-tfidf`                              | disable TF-IDF scoring (enabled by default)                                                     |
 | `-h, --help`                              | displays this help and exits                                                                    |
 
+`--limit` is applied per node **before** folders aggregate their files, so a folder's word frequencies
+are the sum of the words that survived each file's limit, not full corpus totals. Leave it unset when
+you need exact folder counts.
+
 The input may be a folder or a single source file. Either way the surrounding directory defines the
 analysis — `.dlcignore`, framework detection and the paths words are keyed by are relative to it. A run
 that finds no analysable file fails rather than writing an empty lens.
