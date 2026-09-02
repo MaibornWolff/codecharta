@@ -14,6 +14,20 @@ import { WordCloudOption } from "../../util/wordCloudOption.model"
 const RENDER_DEBOUNCE_MS = 150
 const DRAWN_COUNT_SETTLE_MS = 200
 
+export interface WordCloudChartHandlers {
+    onLayoutFinished: () => void
+    onWordRightClicked: (word: string, clientX: number, clientY: number) => void
+}
+
+interface EchartsContextMenuParams {
+    name?: string
+    event?: { event?: MouseEvent }
+}
+
+function suppressBrowserMenu(event: Event): void {
+    event.preventDefault()
+}
+
 interface EchartsWithModel {
     getModel?: () => {
         getSeriesByIndex: (
@@ -40,7 +54,7 @@ export class WordCloudChartHost {
 
     constructor(
         private readonly chartRegistry: WordCloudChartRegistry,
-        private readonly onLayoutFinished: () => void
+        private readonly handlers: WordCloudChartHandlers
     ) {}
 
     /** The empty state destroys the container element, so the one handed in on the way back is a new
@@ -53,12 +67,23 @@ export class WordCloudChartHost {
         this.attachedContainer = container
         this.chart = echarts.init(container)
         this.chart.on("finished", () => {
-            this.onLayoutFinished()
+            this.handlers.onLayoutFinished()
             this.scheduleDrawnCountUpdate()
         })
+        this.chart.on("contextmenu", (params: unknown) => this.reportRightClickedWord(params as EchartsContextMenuParams))
+        container.addEventListener("contextmenu", suppressBrowserMenu)
         this.chartRegistry.register(this.chart)
         this.measuredContainerSize.set({ width: container.clientWidth, height: container.clientHeight })
         this.publishEveryMeasuredSize(container)
+    }
+
+    /** Echarts reports the right click on the word, the browser its own menu on the canvas below it. */
+    private reportRightClickedWord({ name, event }: EchartsContextMenuParams): void {
+        const nativeEvent = event?.event
+        if (!name || !nativeEvent) {
+            return
+        }
+        this.handlers.onWordRightClicked(name, nativeEvent.clientX, nativeEvent.clientY)
     }
 
     /** `onRendered` runs only when the layout actually reaches the chart. The caller uses it to record
@@ -91,6 +116,7 @@ export class WordCloudChartHost {
     }
 
     dispose(): void {
+        this.attachedContainer?.removeEventListener("contextmenu", suppressBrowserMenu)
         this.resizeObserver?.disconnect()
         this.resizeObserver = undefined
         this.cancelPendingRender()
