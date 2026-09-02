@@ -3,9 +3,10 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.LanguageKeywords
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import java.nio.file.Path
+import java.util.concurrent.ConcurrentHashMap
 
 class PathScopedKeywordProvider(private val frameworksByPath: Map<Path, Set<Framework>>) {
-    private val keywordCache = mutableMapOf<Framework, LanguageKeywords>()
+    private val keywordCache = ConcurrentHashMap<Framework, LanguageKeywords>()
 
     companion object {
         val NONE: PathScopedKeywordProvider = PathScopedKeywordProvider(emptyMap())
