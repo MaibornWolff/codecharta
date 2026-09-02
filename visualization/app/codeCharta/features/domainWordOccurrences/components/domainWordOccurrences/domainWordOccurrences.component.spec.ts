@@ -36,7 +36,7 @@ const WORDS: DomainLensData = {
 }
 
 function revealedPathsOf(container: Element): string[] {
-    return [...container.querySelectorAll("[title^='Reveal ']")].map(row => row.getAttribute("title")!.split(" ")[1])
+    return [...container.querySelectorAll("[title^='Reveal ']")].map(row => (row.getAttribute("title") ?? "").split(" ")[1])
 }
 
 describe("DomainWordOccurrencesComponent", () => {
