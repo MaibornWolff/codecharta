@@ -10,29 +10,40 @@ class FileScanner(private val allowedExtensions: List<String>) {
     private val testFileDetector = TestFileDetector()
 
     fun scan(
-        directoryPath: String,
+        inputPath: String,
         bypassGitignore: Boolean = false,
         excludeTests: Boolean = false,
         onFileFound: (() -> Unit)? = null
     ): List<File> {
-        val directory = File(directoryPath)
-        if (!directory.exists() || !directory.isDirectory) {
-            Logger.warn { "Directory does not exist or is not a directory: $directoryPath" }
+        val input = File(inputPath)
+        if (!input.exists()) {
+            Logger.warn { "Input does not exist: $inputPath" }
             return emptyList()
+        }
+        if (input.isFile) {
+            return scanSingleFile(input, excludeTests, onFileFound)
         }
 
         return if (bypassGitignore) {
-            scanWithoutGitignore(directory, excludeTests, onFileFound)
+            scanWithoutGitignore(input, excludeTests, onFileFound)
         } else {
-            scanWithGitignore(directory, excludeTests, onFileFound)
+            scanWithGitignore(input, excludeTests, onFileFound)
         }
     }
+
+    private fun scanSingleFile(file: File, excludeTests: Boolean, onFileFound: (() -> Unit)?): List<File> {
+        if (!isAnalysable(file, excludeTests)) return emptyList()
+        onFileFound?.invoke()
+        return listOf(file)
+    }
+
+    private fun isAnalysable(file: File, excludeTests: Boolean): Boolean = fileFilter.matchesExtension(file) &&
+        (!excludeTests || !testFileDetector.isTestFile(file))
 
     private fun scanWithoutGitignore(directory: File, excludeTests: Boolean, onFileFound: (() -> Unit)?): List<File> = directory
         .walkTopDown()
         .filter { it.isFile }
-        .filter { file -> fileFilter.matchesExtension(file) }
-        .filter { file -> !excludeTests || !testFileDetector.isTestFile(file) }
+        .filter { file -> isAnalysable(file, excludeTests) }
         .onEach { onFileFound?.invoke() }
         .toList()
 
@@ -44,8 +55,7 @@ class FileScanner(private val allowedExtensions: List<String>) {
             .onEnter { dir -> !gitignoreHandler.shouldExclude(dir) }
             .filter { it.isFile }
             .filter { file -> !gitignoreHandler.shouldExclude(file) }
-            .filter { file -> fileFilter.matchesExtension(file) }
-            .filter { file -> !excludeTests || !testFileDetector.isTestFile(file) }
+            .filter { file -> isAnalysable(file, excludeTests) }
             .onEach { onFileFound?.invoke() }
             .toList()
     }
