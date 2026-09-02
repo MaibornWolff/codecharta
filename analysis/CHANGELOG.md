@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.0.0] - 2026-09-02
+
 ### Added 🚀
 
 - Add `domainlanguageparser`, which extracts the domain vocabulary of a codebase into the cc.json 2.0 `domain` lens
