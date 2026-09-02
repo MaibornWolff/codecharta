@@ -274,62 +274,59 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should refuse to set a new root when a data-bearing opaque lens would be invalidated`() {
-        // given
-        System.setErr(PrintStream(errContent))
-
+    fun `should re-key the domain lens onto the new paths when setting a new root`() {
         // when
         val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-s=/root/src"))
 
-        // then
-        assertThat(errContent.toString()).contains(
-            "Cannot restructure this project: opaque lens(es) domain reference node ids"
-        )
-        assertThat(cliResult).isEmpty()
-
-        // clean up
-        System.setErr(originalErr)
+        // then - src/main/file1.java becomes main/file1.java, so its words move to that path's id
+        assertThat(cliResult).contains(ID_OF_MAIN_FILE1_AFTER_SET_ROOT)
+        assertThat(cliResult).contains("customer")
+        // the folder's own aggregate follows the re-path too
+        assertThat(cliResult).contains(ID_OF_MAIN_FOLDER_AFTER_SET_ROOT)
+        assertThat(cliResult).contains("warehouse")
+        assertThat(cliResult).doesNotContain(ID_OF_SRC_MAIN_FILE1)
+        // the old project root is not part of the extracted subtree, so its entry is dropped with it
+        assertThat(cliResult).doesNotContain("invoice")
     }
 
     @Test
-    fun `should refuse to move nodes when a data-bearing opaque lens would be invalidated`() {
-        // given
-        System.setErr(PrintStream(errContent))
-
+    fun `should re-key the domain lens onto the new paths when moving nodes`() {
         // when
         val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-f=/root/src/main", "-t=/root/moved"))
 
-        // then
-        assertThat(errContent.toString()).contains("Cannot restructure this project")
-        assertThat(cliResult).isEmpty()
-
-        // clean up
-        System.setErr(originalErr)
+        // then - the moved file's words follow it to moved/file1.java
+        assertThat(cliResult).contains(ID_OF_MAIN_FILE1_AFTER_MOVE)
+        assertThat(cliResult).contains("customer")
+        assertThat(cliResult).doesNotContain(ID_OF_SRC_MAIN_FILE1)
+        // the untouched root keeps its own entry and its words
+        assertThat(cliResult).contains(ID_OF_ROOT)
+        assertThat(cliResult).contains("invoice")
+        // the destination inherits the moved folder's aggregate rather than losing it
+        assertThat(cliResult).contains(ID_OF_DESTINATION_FOLDER)
+        assertThat(cliResult).contains("warehouse")
     }
 
     @Test
-    fun `should refuse to remove nodes when a data-bearing opaque lens would be invalidated`() {
-        // given
-        System.setErr(PrintStream(errContent))
-
+    fun `should drop domain lens entries for nodes that removal took away`() {
         // when
         val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-r=/root/src/main"))
 
-        // then
-        assertThat(errContent.toString()).contains("Cannot restructure this project")
-        assertThat(cliResult).isEmpty()
-
-        // clean up
-        System.setErr(originalErr)
+        // then - removal does not re-path survivors, so the root entry keeps its id and words
+        assertThat(cliResult).contains(ID_OF_ROOT)
+        assertThat(cliResult).contains("invoice")
+        // the removed file leaves no key pointing at a node that is gone, and no orphaned words
+        assertThat(cliResult).doesNotContain(ID_OF_SRC_MAIN_FILE1)
+        assertThat(cliResult).doesNotContain("customer")
+        assertThat(cliResult).doesNotContain("warehouse")
     }
 
     @Test
-    fun `should exit non-zero when it refuses to restructure`() {
+    fun `should exit zero when restructuring a project carrying a domain lens`() {
         // when
         val exitCode = CommandLine(StructureModifier()).execute(DOMAIN_PROJECT, "-s=/root/src")
 
         // then
-        assertThat(exitCode).isEqualTo(1)
+        assertThat(exitCode).isZero()
     }
 
     @Test
@@ -368,5 +365,13 @@ class StructureModifierTest {
 
     companion object {
         private const val DOMAIN_PROJECT = "src/test/resources/sample_project_with_domain.cc.json"
+
+        // sha-256("<type><canonical path>") truncated to 16 chars, the same rule the 2.0 writer applies.
+        private const val ID_OF_ROOT = "164ddff4bb1345e1"
+        private const val ID_OF_SRC_MAIN_FILE1 = "2f6cb0760e30e5d6"
+        private const val ID_OF_MAIN_FILE1_AFTER_SET_ROOT = "3ef1feb3dccb9d3a"
+        private const val ID_OF_MAIN_FILE1_AFTER_MOVE = "adee3d15532612ca"
+        private const val ID_OF_DESTINATION_FOLDER = "5e80db0a535168ab"
+        private const val ID_OF_MAIN_FOLDER_AFTER_SET_ROOT = "71997f35bfdaa2ce"
     }
 }
