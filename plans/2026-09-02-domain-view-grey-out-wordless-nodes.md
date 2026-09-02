@@ -1,7 +1,7 @@
 ---
 name: Grey out wordless folders and files in the domain view
 issue: <#issueid>
-state: todo
+state: complete
 version: 1
 ---
 
@@ -46,14 +46,18 @@ glance which parts of the tree the domain lens actually says something about.
 
 ## Steps
 
-- [ ] Complete Task 4: Tidy first — rename the reason-specific inactive colour constant
-- [ ] Complete Task 1: Selector for paths carrying domain words (+ tests)
-- [ ] Complete Task 2: Explorer row lens dims wordless rows (+ tests)
-- [ ] Complete Task 3: Domain view row projection feeds the set (+ tests)
-- [ ] Run the visualization test suite and format
+- [x] Complete Task 4: Tidy first — rename the reason-specific inactive colour constant
+- [x] Complete Task 1: Selector for paths carrying domain words (+ tests)
+- [x] Complete Task 2: Explorer row lens dims wordless rows (+ tests)
+- [x] Complete Task 3: Domain view row projection feeds the set (+ tests)
+- [x] Run the visualization test suite and format
 
 ## Notes
 
+- Implemented in two commits, structural first: the icon component's `NO_AREA_COLOR` rename, then the
+  behavioural change.
+- Verified: full visualization unit suite green (398 suites, 2684 tests), `tsc --noEmit` clean,
+  `npm run format:check` clean.
 - The domain view has no 3D map; "folders/files" here are the sidebar explorer tree rows.
 - Decisions taken with the user: metrics-identical look (dim + italic + title), rows stay selectable,
   dim everything when no domain data is present, no hide-toggle setting.
