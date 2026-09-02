@@ -28,7 +28,7 @@ class Dialog {
             val limit = limitQuestion(session)
             val sortBy = sortByQuestion(session)
             val stopWordLevel = stopWordLevelQuestion(session)
-            val excludeTechnicalStopwords = excludeTechnicalStopwordsQuestion(session)
+            val noTechnicalStopWords = noTechnicalStopWordsQuestion(session)
             val noTfidf = noTfidfQuestion(session)
 
             return listOfNotNull(
@@ -43,7 +43,7 @@ class Dialog {
                 if (limit.isNotEmpty()) "--limit=$limit" else null,
                 "--sort-by=$sortBy",
                 "--stop-word-level=$stopWordLevel",
-                if (excludeTechnicalStopwords) "--exclude-technical-stopwords" else null,
+                if (noTechnicalStopWords) "--no-technical-stopwords" else null,
                 if (noTfidf) "--no-tfidf" else null
             )
         }
@@ -113,7 +113,7 @@ class Dialog {
             onInputReady = testCallback()
         )
 
-        private fun excludeTechnicalStopwordsQuestion(session: Session): Boolean = session.promptConfirm(
+        private fun noTechnicalStopWordsQuestion(session: Session): Boolean = session.promptConfirm(
             message = "Do you want to disable technical stop word filtering (e.g. 'test', 'util', 'handler')?",
             onInputReady = testCallback()
         )

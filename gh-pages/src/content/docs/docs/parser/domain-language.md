@@ -33,7 +33,7 @@ Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, 
 | `--limit=<limit>`                         | limit each node to its top X words (all words if not set)                                      |
 | `--sort-by=<FREQUENCY\|TFIDF>`            | sort words by frequency (default) or TF-IDF score                                              |
 | `--stop-word-level=<MINIMAL\|MODERATE\|AGGRESSIVE>` | technical stop word filtering level (default MODERATE)                               |
-| `--exclude-technical-stopwords`           | disable filtering of common technical words (e.g. `test`, `util`, `handler`)                  |
+| `--no-technical-stopwords`                | disable filtering of common technical words (e.g. `test`, `util`, `handler`)                  |
 | `--identifier-weight=<n>`                 | weight for identifier words (class/function/variable names; default 3)                         |
 | `--comment-weight=<n>`                    | weight for words in comments (default 2)                                                        |
 | `--string-weight=<n>`                     | weight for words in string literals (default 1)                                                |

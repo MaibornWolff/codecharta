@@ -88,7 +88,7 @@ class ConfigurationBuilderTest {
     @Test
     fun `should exclude technical stop words when requested`() {
         // Arrange
-        val parsedArgs = parsedArguments(excludeTechnicalStopWords = true)
+        val parsedArgs = parsedArguments(noTechnicalStopWords = true)
 
         // Act
         val config = builder.build(parsedArgs)
@@ -283,7 +283,7 @@ class ConfigurationBuilderTest {
         identifierWeight: Int = 3,
         commentWeight: Int = 2,
         stringWeight: Int = 1,
-        excludeTechnicalStopWords: Boolean = false,
+        noTechnicalStopWords: Boolean = false,
         stopWordLevel: StopWordLevel = StopWordLevel.MODERATE,
         ngrams: Int = 1,
         noTfidf: Boolean = false,
@@ -297,7 +297,7 @@ class ConfigurationBuilderTest {
         identifierWeight = identifierWeight,
         commentWeight = commentWeight,
         stringWeight = stringWeight,
-        excludeTechnicalStopWords = excludeTechnicalStopWords,
+        noTechnicalStopWords = noTechnicalStopWords,
         stopWordLevel = stopWordLevel,
         ngrams = ngrams,
         noTfidf = noTfidf,

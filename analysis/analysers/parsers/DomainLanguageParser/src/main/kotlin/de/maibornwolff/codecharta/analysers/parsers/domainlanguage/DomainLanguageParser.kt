@@ -58,10 +58,10 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
     private var excludeTests: Boolean = false
 
     @CommandLine.Option(
-        names = ["--exclude-technical-stopwords"],
+        names = ["--no-technical-stopwords"],
         description = ["disable filtering of common technical words (e.g. 'test', 'util', 'handler')"]
     )
-    private var excludeTechnicalStopwords: Boolean = false
+    private var noTechnicalStopWords: Boolean = false
 
     @CommandLine.Option(names = ["--no-tfidf"], description = ["disable TF-IDF scoring (enabled by default)"])
     private var noTfidf: Boolean = false
@@ -149,7 +149,7 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
         identifierWeight = identifierWeight,
         commentWeight = commentWeight,
         stringWeight = stringWeight,
-        excludeTechnicalStopWords = excludeTechnicalStopwords,
+        noTechnicalStopWords = noTechnicalStopWords,
         stopWordLevel = stopWordLevel,
         ngrams = ngrams,
         noTfidf = noTfidf,

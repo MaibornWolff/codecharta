@@ -21,7 +21,7 @@ class ConfigurationBuilder(
             }
         val allowedExtensions = Language.allExtensions()
         val frameworksByPath = detectFrameworks(directory)
-        val languageKeywords = buildLanguageKeywords(parsedArgs.excludeTechnicalStopWords, parsedArgs.stopWordLevel)
+        val languageKeywords = buildLanguageKeywords(parsedArgs.noTechnicalStopWords, parsedArgs.stopWordLevel)
         val weights = buildExtractionWeights(parsedArgs)
         val customStopWords = loadCustomStopWords(directory)
 
@@ -43,9 +43,9 @@ class ConfigurationBuilder(
 
     private fun detectFrameworks(directory: String): Map<Path, Set<Framework>> = frameworkDetector.detectFrameworks(Paths.get(directory))
 
-    private fun buildLanguageKeywords(excludeTechnicalStopWords: Boolean, stopWordLevel: StopWordLevel) = buildList {
+    private fun buildLanguageKeywords(noTechnicalStopWords: Boolean, stopWordLevel: StopWordLevel) = buildList {
         addCoreLanguageKeywords()
-        addTechnicalStopWordsIfEnabled(excludeTechnicalStopWords, stopWordLevel)
+        addTechnicalStopWordsIfEnabled(noTechnicalStopWords, stopWordLevel)
     }
 
     private fun MutableList<LanguageKeywords>.addCoreLanguageKeywords() {
@@ -55,10 +55,10 @@ class ConfigurationBuilder(
     }
 
     private fun MutableList<LanguageKeywords>.addTechnicalStopWordsIfEnabled(
-        excludeTechnicalStopWords: Boolean,
+        noTechnicalStopWords: Boolean,
         stopWordLevel: StopWordLevel
     ) {
-        if (!excludeTechnicalStopWords) {
+        if (!noTechnicalStopWords) {
             val stopWords =
                 when (stopWordLevel) {
                     StopWordLevel.MINIMAL -> ResourceKeywords("keywords/technical-minimal.txt")

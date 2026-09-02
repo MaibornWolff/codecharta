@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   (`domain.nodes.<node id>.words`): for every file and folder the
   words used in identifiers, comments and string literals, with their frequency and TF-IDF score. It parses 17 languages (Kotlin, Java, TypeScript,
   JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Bash, Objective-C, Vue, ABL) and filters out language and framework keywords, English
-  stop words and technical noise. Options: `--stop-word-level MINIMAL|MODERATE|AGGRESSIVE` (default `MODERATE`), `--exclude-technical-stopwords`,
+  stop words and technical noise. Options: `--stop-word-level MINIMAL|MODERATE|AGGRESSIVE` (default `MODERATE`), `--no-technical-stopwords`,
   `--ngrams N` for bigrams and trigrams, `--limit N` to cap the words per node, `--identifier-weight`/`--comment-weight`/`--string-weight` to weight
   where a word came from, `--exclude-tests`, `--sort-by FREQUENCY|TFIDF` and `--no-tfidf`. A `.dlcignore` file in the analysed directory lists further
   words to drop, one per line.

@@ -8,7 +8,7 @@ data class ParsedArguments(
     val identifierWeight: Int,
     val commentWeight: Int,
     val stringWeight: Int,
-    val excludeTechnicalStopWords: Boolean,
+    val noTechnicalStopWords: Boolean,
     val stopWordLevel: StopWordLevel,
     val ngrams: Int,
     val noTfidf: Boolean = false,
