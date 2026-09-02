@@ -16,6 +16,9 @@
     "^d3$": "<rootDir>/node_modules/d3/dist/d3.min.js",
     "^app/(.*)$": "<rootDir>/app/$1",
     "^echarts$": "<rootDir>/mocks/echartsMock.js",
+    "^echarts/core$": "<rootDir>/mocks/echartsMock.js",
+    "^echarts/renderers$": "<rootDir>/mocks/echartsRenderersMock.js",
+    "^echarts/components$": "<rootDir>/mocks/echartsComponentsMock.js",
     "^echarts-wordcloud$": "<rootDir>/mocks/echartsWordcloudMock.js"
   },
   "roots": ["<rootDir>/app"],

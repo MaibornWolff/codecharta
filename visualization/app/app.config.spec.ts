@@ -14,12 +14,13 @@ describe("app routes", () => {
         expect(defaultRoute?.component).toBe(MetricsViewComponent)
     })
 
-    it("should render the domain view at the domain path", () => {
+    it("should lazy load the domain view at the domain path", async () => {
         // Arrange & Act
         const domainRoute = routes.find(route => route.path === routePaths.domain)
 
         // Assert
-        expect(domainRoute?.component).toBe(DomainViewComponent)
+        expect(domainRoute?.component).toBeUndefined()
+        expect(await domainRoute?.loadComponent?.()).toBe(DomainViewComponent)
     })
 
     it("should keep the routed path in the fragment so file and static-host entry URLs resolve", () => {

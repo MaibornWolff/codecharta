@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core"
 import { createPNGFileName } from "../../../model/files/files.helper"
-import { WordCloudChartRegistry } from "../../../renderer/wordCloud/wordCloud.facade"
+import { WordCloudChartRegistry } from "../../../renderer/wordCloud/wordCloudRegistry.facade"
 import { FilesRepo } from "../../../stores/fileStore/fileStore.facade"
 import { ScreenshotCapture } from "../screenshotCapture"
 import { cropTransparentMargins } from "./canvasCrop"
