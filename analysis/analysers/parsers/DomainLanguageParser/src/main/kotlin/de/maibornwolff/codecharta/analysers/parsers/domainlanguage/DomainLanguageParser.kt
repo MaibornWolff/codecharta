@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.Configura
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.ParsedArguments
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.SortBy
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.StopWordLevel
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.rootDirectoryOf
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DomainProjectGenerator
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.ProgressReporterFactory
@@ -102,12 +103,12 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
 
         val context = resolveEffectiveInput(inputFile)
         try {
-            val directoryPath = context.inputDir.path
-            val config = buildConfiguration(directoryPath)
+            val inputPath = context.inputDir
+            val config = buildConfiguration(rootDirectoryOf(inputPath).path)
 
             val analysisResult =
                 ProgressReporterFactory.create(quiet = false).use { progressReporter ->
-                    SourceAnalyzerFactory.create(config, progressReporter).analyze(directoryPath)
+                    SourceAnalyzerFactory.create(config, progressReporter).analyze(inputPath.path)
                 }
 
             val project = DomainProjectGenerator().generate(analysisResult, resolvePipedProject())

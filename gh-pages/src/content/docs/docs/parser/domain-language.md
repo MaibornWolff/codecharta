@@ -40,6 +40,10 @@ Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, 
 | `--no-tfidf`                              | disable TF-IDF scoring (enabled by default)                                                     |
 | `-h, --help`                              | displays this help and exits                                                                    |
 
+The input may be a folder or a single source file. Either way the surrounding directory defines the
+analysis — `.dlcignore`, framework detection and the paths words are keyed by are relative to it. A run
+that finds no analysable file fails rather than writing an empty lens.
+
 ### Examples
 
 Analyze a project folder and write a compressed cc.json:

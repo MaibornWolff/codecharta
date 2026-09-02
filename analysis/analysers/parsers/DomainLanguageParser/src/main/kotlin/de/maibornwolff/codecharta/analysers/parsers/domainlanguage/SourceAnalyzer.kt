@@ -3,12 +3,14 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.SortBy
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.FileScanner
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.rootDirectoryOf
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DirectoryWordAggregator
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DomainAnalysisResult
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.WordFrequency
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessingResult
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessor
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.analysis.TfIdfCalculator
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.ProgressReporter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.SilentProgressReporter
@@ -23,9 +25,14 @@ class SourceAnalyzer(
     private val tfIdfCalculator: TfIdfCalculator,
     private val progressReporter: ProgressReporter = SilentProgressReporter
 ) {
-    fun analyze(directoryPath: String): DomainAnalysisResult {
-        val files = scanFiles(directoryPath)
-        val processingResult = processFiles(files, directoryPath)
+    fun analyze(inputPath: String): DomainAnalysisResult {
+        val files = scanFiles(inputPath)
+        require(files.isNotEmpty()) {
+            "No analysable source files found in '$inputPath'. Supported extensions: " +
+                "${Language.allExtensions().sorted().joinToString(", ") { ".$it" }}. " +
+                "Check the path, and whether .gitignore (--bypass-gitignore) or --exclude-tests excluded everything."
+        }
+        val processingResult = processFiles(files, rootDirectoryOf(File(inputPath)).path)
         fileAnalyzer.releasePerRunCaches()
         val perFileWordCounts = processingResult.perFileWordCounts
 

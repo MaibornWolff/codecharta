@@ -86,12 +86,29 @@ class FileScannerTest {
     }
 
     @Test
-    fun `should return empty list when path is a file not a directory`(
+    fun `should scan a single file when the input path is a file`(
         @TempDir tempDir: Path
     ) {
         // Arrange
         val dir = tempDir.toFile()
         val file = File(dir, "test.txt")
+        file.writeText("content")
+
+        val scanner = FileScanner(allowedExtensions = listOf("txt"))
+
+        // Act
+        val files = scanner.scan(file.absolutePath)
+
+        // Assert
+        assertEquals(listOf(file), files)
+    }
+
+    @Test
+    fun `should return empty list when the input file has an unsupported extension`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val file = File(tempDir.toFile(), "notes.md")
         file.writeText("content")
 
         val scanner = FileScanner(allowedExtensions = listOf("txt"))

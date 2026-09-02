@@ -18,6 +18,7 @@ import java.io.File
 import java.nio.file.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -111,7 +112,7 @@ class SourceAnalyzerTest {
     }
 
     @Test
-    fun `should handle empty directory`(
+    fun `should fail with a helpful message when no analysable file is found`(
         @TempDir tempDir: Path
     ) {
         // Arrange
@@ -119,11 +120,29 @@ class SourceAnalyzerTest {
         val analyzer = SourceAnalyzerFactory.create(AnalysisConfiguration(allowedExtensions = listOf("kt")))
 
         // Act
-        val result = analyzer.analyze(dir.absolutePath)
+        val error = assertFailsWith<IllegalArgumentException> { analyzer.analyze(dir.absolutePath) }
 
-        // Assert
-        assertTrue(result.filePaths.isEmpty())
-        assertTrue(result.wordsByPath.isEmpty())
+        // Assert - an empty lens written with exit 0 would look like a successful run that found nothing
+        assertTrue(error.message!!.contains("No analysable source files found"))
+    }
+
+    @Test
+    fun `should analyse a single file when the input is a file`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val dir = tempDir.toFile()
+        val sourceFile = File(dir, "CustomerService.kt")
+        sourceFile.writeText("class CustomerService { fun processInvoice() {} }")
+        val analyzer = SourceAnalyzerFactory.create(AnalysisConfiguration(allowedExtensions = listOf("kt")))
+
+        // Act
+        val result = analyzer.analyze(sourceFile.absolutePath)
+
+        // Assert - keyed relative to the containing directory, not the file itself
+        assertEquals(listOf("CustomerService.kt"), result.filePaths)
+        assertTrue(result.hasWord("customer"))
+        assertTrue(result.hasWord("invoice"))
     }
 
     @Test

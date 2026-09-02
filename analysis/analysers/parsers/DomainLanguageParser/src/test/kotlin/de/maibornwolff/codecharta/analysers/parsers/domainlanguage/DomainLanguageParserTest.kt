@@ -144,14 +144,25 @@ class DomainLanguageParserTest {
     }
 
     @Test
-    fun `should skip files whose extension is excluded by the file extension option`(
+    fun `should fail when the file extension option leaves nothing to analyse`(
         @TempDir tempDir: Path
     ) {
         val projectDir = sourceProject(tempDir)
 
-        val result = runParser(projectDir, "-fe", "java")
+        val exitCode = runParserExpectingFailure(projectDir, "-fe", "java")
 
-        assertThat(result).doesNotContain("inventory")
+        assertThat(exitCode).isNotZero()
+    }
+
+    @Test
+    fun `should analyse a single file passed as the input`(
+        @TempDir tempDir: Path
+    ) {
+        sourceProject(tempDir)
+
+        val result = runParser(tempDir.resolve("InventoryService.kt").toString())
+
+        assertThat(result).contains("inventory")
     }
 
     @Test
@@ -185,5 +196,10 @@ class DomainLanguageParserTest {
         val exitCode = CommandLine(parser).execute(projectDir, "-nc", *options)
         assertThat(exitCode).isZero()
         return outputStream.toString()
+    }
+
+    private fun runParserExpectingFailure(projectDir: String, vararg options: String): Int {
+        val parser = DomainLanguageParser(ByteArrayInputStream(ByteArray(0)), PrintStream(ByteArrayOutputStream()))
+        return CommandLine(parser).execute(projectDir, "-nc", *options)
     }
 }
