@@ -17,7 +17,7 @@ class ParsedArgumentsTest {
                 identifierWeight = 5,
                 commentWeight = 3,
                 stringWeight = 2,
-                excludeTechnicalStopWords = true,
+                noTechnicalStopWords = true,
                 stopWordLevel = StopWordLevel.MODERATE,
                 ngrams = 1
             )
@@ -29,7 +29,7 @@ class ParsedArgumentsTest {
         assertEquals(5, args.identifierWeight)
         assertEquals(3, args.commentWeight)
         assertEquals(2, args.stringWeight)
-        assertEquals(true, args.excludeTechnicalStopWords)
+        assertEquals(true, args.noTechnicalStopWords)
     }
 
     @Test
@@ -44,7 +44,7 @@ class ParsedArgumentsTest {
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
-                excludeTechnicalStopWords = false,
+                noTechnicalStopWords = false,
                 stopWordLevel = StopWordLevel.MODERATE,
                 ngrams = 1
             )
@@ -66,7 +66,7 @@ class ParsedArgumentsTest {
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
-                excludeTechnicalStopWords = false,
+                noTechnicalStopWords = false,
                 stopWordLevel = StopWordLevel.MODERATE,
                 ngrams = 1
             )
@@ -79,7 +79,7 @@ class ParsedArgumentsTest {
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
-                excludeTechnicalStopWords = false,
+                noTechnicalStopWords = false,
                 stopWordLevel = StopWordLevel.MODERATE,
                 ngrams = 1
             )
@@ -100,7 +100,7 @@ class ParsedArgumentsTest {
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
-                excludeTechnicalStopWords = false,
+                noTechnicalStopWords = false,
                 stopWordLevel = StopWordLevel.MODERATE,
                 ngrams = 1
             )
@@ -113,7 +113,7 @@ class ParsedArgumentsTest {
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
-                excludeTechnicalStopWords = false,
+                noTechnicalStopWords = false,
                 stopWordLevel = StopWordLevel.MODERATE,
                 ngrams = 1
             )
@@ -134,7 +134,7 @@ class ParsedArgumentsTest {
                 identifierWeight = 3,
                 commentWeight = 2,
                 stringWeight = 1,
-                excludeTechnicalStopWords = false,
+                noTechnicalStopWords = false,
                 stopWordLevel = StopWordLevel.MODERATE,
                 ngrams = 1
             )

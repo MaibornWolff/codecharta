@@ -64,7 +64,7 @@ class DialogTest {
         assertThat(parseResult.matchedOption("limit").getValue<Int>()).isEqualTo(50)
         assertThat(parseResult.matchedOption("sort-by").getValue<SortBy>()).isEqualTo(SortBy.entries.first())
         assertThat(parseResult.matchedOption("stop-word-level").getValue<StopWordLevel>()).isEqualTo(StopWordLevel.entries.first())
-        assertThat(parseResult.hasMatchedOption("exclude-technical-stopwords")).isTrue()
+        assertThat(parseResult.hasMatchedOption("no-technical-stopwords")).isTrue()
         assertThat(parseResult.hasMatchedOption("no-tfidf")).isTrue()
         assertThat(parseResult.matchedPositional(0).getValue<List<File>>().first().name)
             .isEqualTo(File(inputFileName).name)
