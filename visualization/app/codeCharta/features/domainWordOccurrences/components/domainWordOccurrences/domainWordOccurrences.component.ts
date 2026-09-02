@@ -1,12 +1,11 @@
 import { NgTemplateOutlet } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from "@angular/core"
 import { toObservable, toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
 import { switchMap } from "rxjs"
-import { createWordOccurrencesSelector, WordOccurrenceNode } from "../../../../lenses/domain/domainLens.facade"
-import { CcState } from "../../../../model/codeCharta.model"
+import { WordOccurrenceNode } from "../../../../lenses/domain/domainLens.facade"
 import { fileRoot } from "../../../../util/fileRoot"
 import { pathToNodeName } from "../../../../util/nodePathHelper"
+import { DomainWordOccurrencesReadStore } from "../../stores/domainWordOccurrences.read.store"
 import { DomainWordOccurrenceRowComponent } from "../domainWordOccurrenceRow/domainWordOccurrenceRow.component"
 
 export const DOMAIN_WORD_OCCURRENCES_WIDTH_PX = 320
@@ -24,7 +23,7 @@ export const DOMAIN_WORD_OCCURRENCES_WIDTH_PX = 320
     }
 })
 export class DomainWordOccurrencesComponent {
-    private readonly store = inject<Store<CcState>>(Store)
+    private readonly readStore = inject(DomainWordOccurrencesReadStore)
 
     readonly word = input.required<string>()
     readonly scopePath = input<string | null>(null)
@@ -36,7 +35,7 @@ export class DomainWordOccurrencesComponent {
 
     private readonly occurrences = toSignal(
         toObservable(computed(() => ({ scopePath: this.scopePath(), word: this.word() }))).pipe(
-            switchMap(({ scopePath, word }) => this.store.select(createWordOccurrencesSelector(scopePath, word)))
+            switchMap(({ scopePath, word }) => this.readStore.occurrencesOf(word, scopePath))
         ),
         { initialValue: null as WordOccurrenceNode | null }
     )
