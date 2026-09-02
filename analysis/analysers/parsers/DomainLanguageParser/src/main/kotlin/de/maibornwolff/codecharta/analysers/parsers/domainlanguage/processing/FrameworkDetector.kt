@@ -18,23 +18,28 @@ enum class Framework {
 class FrameworkDetector {
     private data class Ecosystem(
         val fileKind: String,
-        val findProjectFiles: (Path) -> List<Path>,
+        val matchesProjectFile: (File) -> Boolean,
         val extractReferences: (Path) -> Set<String>,
         val identifyFrameworks: (Set<String>) -> Set<Framework>
     )
 
     private val ecosystems = listOf(
-        Ecosystem("package.json", ::findPackageJsonFiles, ::extractAllDependencies, ::identifyJavaScriptFrameworks),
-        Ecosystem(".csproj", ::findCsprojFiles, ::extractPackageReferences, ::identifyCSharpFrameworks)
+        Ecosystem("package.json", ::isPackageJson, ::extractAllDependencies, ::identifyJavaScriptFrameworks),
+        Ecosystem(".csproj", ::isCsproj, ::extractPackageReferences, ::identifyCSharpFrameworks)
     )
 
+    // One walk for every ecosystem: the tree is walked again by FileScanner, so a walk per ecosystem on
+    // top of that is the difference between two and three full traversals of a large repository.
     fun detectFrameworks(directoryPath: Path): Map<Path, Set<Framework>> {
         val frameworksByPath = mutableMapOf<Path, Set<Framework>>()
-        for (ecosystem in ecosystems) {
-            ecosystem.findProjectFiles(directoryPath).forEach { projectFile ->
-                addFrameworksOf(projectFile, ecosystem, frameworksByPath)
+        directoryPath
+            .toFile()
+            .walkTopDown()
+            .forEach { file ->
+                ecosystems
+                    .filter { ecosystem -> ecosystem.matchesProjectFile(file) }
+                    .forEach { ecosystem -> addFrameworksOf(file.toPath(), ecosystem, frameworksByPath) }
             }
-        }
         return frameworksByPath
     }
 
@@ -51,20 +56,11 @@ class FrameworkDetector {
         emptySet()
     }
 
-    private fun findPackageJsonFiles(directoryPath: Path): List<Path> = walkFiles(directoryPath) { file ->
-        file.name == "package.json" && !file.path.contains("node_modules")
-    }
+    private fun isPackageJson(file: File): Boolean = file.isFile &&
+        file.name == "package.json" &&
+        !file.path.contains("node_modules")
 
-    private fun findCsprojFiles(directoryPath: Path): List<Path> = walkFiles(directoryPath) { file ->
-        file.isFile && file.extension == "csproj"
-    }
-
-    private fun walkFiles(directoryPath: Path, matches: (File) -> Boolean): List<Path> = directoryPath
-        .toFile()
-        .walkTopDown()
-        .filter(matches)
-        .map { it.toPath() }
-        .toList()
+    private fun isCsproj(file: File): Boolean = file.isFile && file.extension == "csproj"
 
     private fun extractPackageReferences(csprojPath: Path): Set<String> {
         val csprojContent = csprojPath.readText()
