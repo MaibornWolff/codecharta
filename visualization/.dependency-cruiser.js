@@ -502,11 +502,14 @@ module.exports = {
             name: "wordcloud-external-access-only-via-facade",
             severity: "error",
             comment:
-                "Outside code may touch the word-cloud engine (renderer/wordCloud/ — the ECharts + echarts-wordcloud 2D canvas host, its pure option builder and its read/write stores) ONLY through its public surface, renderer/wordCloud/wordCloud.facade.ts. This is the SECOND rendering engine and a peer of threeViewer: an engine belongs in renderer/, behind a facade, below the features that drive it — it was promoted out of features/wordCloud/ where it had landed during the as-is port from DomainLanguageCharta. Mirrors threeviewer-external-access-only-via-facade. The layer's own files (from.pathNot) and spec/e2e are exempt.",
+                "Outside code may touch the word-cloud engine (renderer/wordCloud/ — the ECharts + echarts-wordcloud 2D canvas host, its pure option builder and its read/write stores) ONLY through its public surfaces: renderer/wordCloud/wordCloud.facade.ts (the engine, including the component) and renderer/wordCloud/wordCloudRegistry.facade.ts (the chart handle alone). The second, narrower facade exists because the first re-exports WordCloudComponent, whose static echarts import would pull the whole charting library out of the lazy domain-view chunk into the initial bundle for any eagerly loaded consumer that only wanted the registry. This is the SECOND rendering engine and a peer of threeViewer: an engine belongs in renderer/, behind a facade, below the features that drive it — it was promoted out of features/wordCloud/ where it had landed during the as-is port from DomainLanguageCharta. Mirrors threeviewer-external-access-only-via-facade. The layer's own files (from.pathNot) and spec/e2e are exempt.",
             from: { path: "^app/", pathNot: ["^app/codeCharta/renderer/wordCloud/", "\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: {
                 path: "^app/codeCharta/renderer/wordCloud/",
-                pathNot: ["^app/codeCharta/renderer/wordCloud/wordCloud\\.facade\\.ts$"]
+                pathNot: [
+                    "^app/codeCharta/renderer/wordCloud/wordCloud\\.facade\\.ts$",
+                    "^app/codeCharta/renderer/wordCloud/wordCloudRegistry\\.facade\\.ts$"
+                ]
             }
         },
 

@@ -1,6 +1,13 @@
 import { signal } from "@angular/core"
-import * as echarts from "echarts"
+import { AriaComponent, TooltipComponent } from "echarts/components"
+// Only the pieces the cloud actually draws. The `echarts` barrel pulls every chart type it ships
+// (sankey, gauge, radar, …) into the bundle; echarts-wordcloud registers against the core itself.
+import * as echarts from "echarts/core"
+import { CanvasRenderer } from "echarts/renderers"
 import "echarts-wordcloud"
+
+echarts.use([CanvasRenderer, TooltipComponent, AriaComponent])
+
 import { WordCloudChartRegistry } from "../../services/wordCloudChart.registry"
 import { WordCloudOption } from "../../util/wordCloudOption.model"
 

@@ -1,4 +1,4 @@
-import * as echarts from "echarts"
+import * as echarts from "echarts/core"
 import { WordCloudChartRegistry } from "../../services/wordCloudChart.registry"
 import { WordCloudChartHost } from "./wordCloudChartHost"
 
@@ -11,9 +11,12 @@ const mockChart = {
     getModel: jest.fn()
 }
 
-jest.mock("echarts", () => ({
-    init: jest.fn(() => mockChart)
+jest.mock("echarts/core", () => ({
+    init: jest.fn(() => mockChart),
+    use: jest.fn()
 }))
+jest.mock("echarts/renderers", () => ({ CanvasRenderer: {} }))
+jest.mock("echarts/components", () => ({ TooltipComponent: {}, AriaComponent: {} }))
 jest.mock("echarts-wordcloud", () => ({}))
 
 class ResizeObserverMock {

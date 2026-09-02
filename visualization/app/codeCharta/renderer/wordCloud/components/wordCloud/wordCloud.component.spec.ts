@@ -34,9 +34,12 @@ function mockDrawnWords(drawnCount: number, wordCount: number) {
     })
 }
 
-jest.mock("echarts", () => ({
-    init: jest.fn(() => mockChart)
+jest.mock("echarts/core", () => ({
+    init: jest.fn(() => mockChart),
+    use: jest.fn()
 }))
+jest.mock("echarts/renderers", () => ({ CanvasRenderer: {} }))
+jest.mock("echarts/components", () => ({ TooltipComponent: {}, AriaComponent: {} }))
 jest.mock("echarts-wordcloud", () => ({}))
 
 let resizeCallback: (() => void) | undefined

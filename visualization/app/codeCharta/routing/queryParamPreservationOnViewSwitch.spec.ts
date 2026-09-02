@@ -29,7 +29,12 @@ const stubComponentByPath = {
     [routePaths.domain]: DomainViewStubComponent
 }
 
-const stubbedRoutes: Route[] = routes.map(route => ({ ...route, component: stubComponentByPath[route.path] }))
+// The domain route is lazy, so `loadComponent` has to go with it — Angular rejects a route that
+// carries both it and a `component`.
+const stubbedRoutes: Route[] = routes.map(({ loadComponent, ...route }) => ({
+    ...route,
+    component: stubComponentByPath[route.path]
+}))
 
 const deepLinkPathname = "/index.html"
 const deepLinkQueryString = "?file=fileOne.json&area=functions"
