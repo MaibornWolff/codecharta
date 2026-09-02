@@ -9,7 +9,7 @@ import { isLeaf } from "../../../../util/codeMapHelper"
 })
 export class ExplorerTreeItemIconComponent {
     private static readonly DEFAULT_FOLDER_COLOR = "#000000"
-    private static readonly NO_AREA_COLOR = "#BDBDBD"
+    private static readonly INACTIVE_ROW_COLOR = "#BDBDBD"
 
     readonly node = input.required<CodeMapNode>()
     readonly isOpen = input.required<boolean>()
@@ -26,7 +26,7 @@ export class ExplorerTreeItemIconComponent {
 
     readonly iconColor = computed((): string | undefined => {
         if (this.isInactive()) {
-            return ExplorerTreeItemIconComponent.NO_AREA_COLOR
+            return ExplorerTreeItemIconComponent.INACTIVE_ROW_COLOR
         }
         if (isLeaf(this.node())) {
             return undefined
