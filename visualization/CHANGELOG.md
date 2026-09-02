@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Domain view marks nodes without domain words**: Folders and files the domain lens has no words for are now greyed out and italicised in the domain view's file explorer, the same way the metric view marks nodes without area for the chosen metric, with a "No domain words" hint on hover. They stay selectable.
+
 ## [2.0.0] - 2026-09-02
 
 ### Added 🚀
