@@ -36,9 +36,10 @@
     "last 2 safari version"
   ],
   "scripts": {
+    "patch": "patch-package",
     "start": "node script/ensureElectron.js && electron dist/bundler/browser",
-    "build": "ng build && cp electron/* package.json dist/bundler/browser",
-    "dev": "ng serve",
+    "build": "npm run patch && ng build && cp electron/* package.json dist/bundler/browser",
+    "dev": "npm run patch && ng serve",
     "test": "npm run test:ci -- --maxWorkers=25%",
     "test:ci": "jest --config conf/jestUnit.config.json .*\\.spec\\.ts",
     "test:auto": "npm test -- --watch",
@@ -51,8 +52,9 @@
     "package": "node script/ensureElectron.js && node script/appMain.js",
     "package:local": "npm run package -- --local",
     "schema:generate": "typescript-json-schema ./app/codeCharta/model/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json",
-    "lint": "npm run lint:architecture && npm run lint:deadcode",
+    "lint": "npm run lint:architecture && npm run lint:styles && npm run lint:deadcode",
     "lint:architecture": "depcruise app --config .dependency-cruiser.js",
+    "lint:styles": "node script/lintComponentStyles.js",
     "lint:architecture:graph": "depcruise app --include-only '^app/codeCharta/features' --config .dependency-cruiser.js --output-type html > dependency-graph.html",
     "lint:deadcode": "knip --no-config-hints",
     "sbom": "cyclonedx-npm --omit dev --gather-license-texts --spec-version 1.6 --output-format json --output-file build/reports/sbom_visualization.cdx.json"
@@ -79,6 +81,8 @@
     "d3": "^7.9.0",
     "d3-hierarchy": "^3.1.2",
     "dequal": "^2.0.3",
+    "echarts": "5.6.0",
+    "echarts-wordcloud": "2.1.0",
     "electron": "40.6.1",
     "fake-indexeddb": "^6.2.5",
     "fflate": "^0.8.2",
@@ -124,6 +128,7 @@
     "jest-preset-angular": "16.1.1",
     "knip": "^6.25.0",
     "marked": "^17.0.6",
+    "patch-package": "^8.0.1",
     "postcss": "^8.5.9",
     "typescript": "5.9.3"
   },
