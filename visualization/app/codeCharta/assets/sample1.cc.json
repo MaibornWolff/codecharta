@@ -1,97 +1,169 @@
 {
-	"projectName": "Sample Project with Edges",
-	"apiVersion": "1.2",
-	"fileChecksum": "valid-md5-sample1",
-	"nodes": [
-		{
-			"name": "root",
-			"type": "Folder",
-			"attributes": {},
-			"children": [
-				{
-					"name": "sample1OnlyLeaf.scss",
-					"type": "File",
-					"attributes": {
-						"rloc": 400,
-						"functions": 10,
-						"sonar_complexity": 100,
-						"pairingRate": 32,
-						"avgCommits": 17
-					},
-					"link": "http://www.google.de"
-				},
-				{
-					"name": "bigLeaf.ts",
-					"type": "File",
-					"attributes": {
-						"rloc": 100,
-						"functions": 10,
-						"sonar_complexity": 1,
-						"pairingRate": 77,
-						"avgCommits": 56
-					},
-					"link": "http://www.google.de"
-				},
-				{
-					"name": "ParentLeaf",
-					"type": "Folder",
-					"attributes": {},
-					"children": [
-						{
-							"name": "smallLeaf.html",
-							"type": "File",
-							"attributes": {
-								"rloc": 30,
-								"functions": 100,
-								"sonar_complexity": 100,
-								"pairingRate": 60,
-								"avgCommits": 51
-							}
-						},
-						{
-							"name": "otherSmallLeaf.ts",
-							"type": "File",
-							"attributes": {
-								"rloc": 70,
-								"functions": 1000,
-								"sonar_complexity": 10,
-								"pairingRate": 65,
-								"avgCommits": 22
-							}
-						}
-					]
-				}
-			]
-		}
-	],
-	"edges": [
-		{
-			"fromNodeName": "/root/bigLeaf.ts",
-			"toNodeName": "/root/ParentLeaf/smallLeaf.html",
-			"attributes": {
-				"pairingRate": 89,
-				"avgCommits": 34
-			}
-		},
-		{
-			"fromNodeName": "/root/sample1OnlyLeaf.scss",
-			"toNodeName": "/root/ParentLeaf/smallLeaf.html",
-			"attributes": {
-				"pairingRate": 32,
-				"avgCommits": 17
-			}
-		},
-		{
-			"fromNodeName": "/root/ParentLeaf/otherSmallLeaf.ts",
-			"toNodeName": "/root/bigLeaf.ts",
-			"attributes": {
-				"pairingRate": 65,
-				"avgCommits": 22
-			}
-		}
-	],
-	"attributeTypes": {
-		"nodes": { "rloc": "absolute", "functions": "absolute", "sonar_complexity": "absolute", "pairingRate": "relative" },
-		"edges": { "pairingRate": "relative", "avgCommits": "absolute" }
-	}
+    "meta": {
+        "projectName": "Sample Project with Edges",
+        "apiVersion": "2.0",
+        "checksum": "06a21f72c5b644784f7c2b0fa6abca21"
+    },
+    "files": [
+        {
+            "id": "164ddff4bb1345e1",
+            "name": "root",
+            "type": "Folder",
+            "children": [
+                {
+                    "id": "1ae98c1a93690d75",
+                    "name": "ParentLeaf",
+                    "type": "Folder",
+                    "children": [
+                        {
+                            "id": "ea70504d5daa3547",
+                            "name": "otherSmallLeaf.ts",
+                            "type": "File"
+                        },
+                        {
+                            "id": "120a1569e3556450",
+                            "name": "smallLeaf.html",
+                            "type": "File"
+                        }
+                    ]
+                },
+                {
+                    "id": "7de6343f370ff7cf",
+                    "name": "bigLeaf.ts",
+                    "type": "File",
+                    "link": "http://www.google.de"
+                },
+                {
+                    "id": "3d6521b0884ce9f4",
+                    "name": "sample1OnlyLeaf.scss",
+                    "type": "File",
+                    "link": "http://www.google.de"
+                }
+            ]
+        }
+    ],
+    "lenses": {
+        "metrics": {
+            "attributes": {
+                "ea70504d5daa3547": {
+                    "rloc": 70,
+                    "functions": 1000,
+                    "sonar_complexity": 10,
+                    "pairingRate": 65,
+                    "avgCommits": 22
+                },
+                "120a1569e3556450": {
+                    "rloc": 30,
+                    "functions": 100,
+                    "sonar_complexity": 100,
+                    "pairingRate": 60,
+                    "avgCommits": 51
+                },
+                "7de6343f370ff7cf": {
+                    "rloc": 100,
+                    "functions": 10,
+                    "sonar_complexity": 1,
+                    "pairingRate": 77,
+                    "avgCommits": 56
+                },
+                "3d6521b0884ce9f4": {
+                    "rloc": 400,
+                    "functions": 10,
+                    "sonar_complexity": 100,
+                    "pairingRate": 32,
+                    "avgCommits": 17
+                }
+            },
+            "attributeDescriptors": {},
+            "attributeTypes": {
+                "rloc": "absolute",
+                "functions": "absolute",
+                "sonar_complexity": "absolute",
+                "pairingRate": "relative"
+            }
+        },
+        "dependency": {
+            "edges": [
+                {
+                    "fromId": "7de6343f370ff7cf",
+                    "toId": "120a1569e3556450",
+                    "attributes": {
+                        "pairingRate": 89,
+                        "avgCommits": 34
+                    }
+                },
+                {
+                    "fromId": "3d6521b0884ce9f4",
+                    "toId": "120a1569e3556450",
+                    "attributes": {
+                        "pairingRate": 32,
+                        "avgCommits": 17
+                    }
+                },
+                {
+                    "fromId": "ea70504d5daa3547",
+                    "toId": "7de6343f370ff7cf",
+                    "attributes": {
+                        "pairingRate": 65,
+                        "avgCommits": 22
+                    }
+                }
+            ],
+            "attributeTypes": {
+                "pairingRate": "relative",
+                "avgCommits": "absolute"
+            },
+            "attributeDescriptors": {}
+        },
+        "domain": {
+            "nodes": {
+                "164ddff4bb1345e1": {
+                    "words": [
+                        { "text": "invoice", "frequency": 42, "tfidf": 0.81 },
+                        { "text": "payment", "frequency": 30, "tfidf": 0.64 },
+                        { "text": "customer", "frequency": 25, "tfidf": 0.55 },
+                        { "text": "account", "frequency": 20, "tfidf": 0.52 },
+                        { "text": "order", "frequency": 18, "tfidf": 0.41 },
+                        { "text": "ledger", "frequency": 16, "tfidf": 0.44 },
+                        { "text": "balance", "frequency": 14, "tfidf": 0.37 },
+                        { "text": "shipment", "frequency": 12, "tfidf": 0.28 },
+                        { "text": "transaction", "frequency": 9, "tfidf": 0.22 }
+                    ]
+                },
+                "1ae98c1a93690d75": {
+                    "words": [
+                        { "text": "account", "frequency": 20, "tfidf": 0.52 },
+                        { "text": "balance", "frequency": 14, "tfidf": 0.37 }
+                    ]
+                },
+                "7de6343f370ff7cf": {
+                    "words": [
+                        { "text": "ledger", "frequency": 16, "tfidf": 0.44 },
+                        { "text": "transaction", "frequency": 9, "tfidf": 0.22 }
+                    ]
+                },
+                "3d6521b0884ce9f4": {
+                    "words": [
+                        { "text": "invoice", "frequency": 42, "tfidf": 0.81 },
+                        { "text": "payment", "frequency": 30, "tfidf": 0.64 },
+                        { "text": "customer", "frequency": 25, "tfidf": 0.55 },
+                        { "text": "order", "frequency": 18, "tfidf": 0.41 },
+                        { "text": "shipment", "frequency": 12, "tfidf": 0.28 }
+                    ]
+                },
+                "ea70504d5daa3547": {
+                    "words": [
+                        { "text": "account", "frequency": 12, "tfidf": 0.52 },
+                        { "text": "balance", "frequency": 5, "tfidf": 0.37 }
+                    ]
+                },
+                "120a1569e3556450": {
+                    "words": [
+                        { "text": "balance", "frequency": 9, "tfidf": 0.37 },
+                        { "text": "account", "frequency": 8, "tfidf": 0.52 }
+                    ]
+                }
+            }
+        }
+    }
 }
