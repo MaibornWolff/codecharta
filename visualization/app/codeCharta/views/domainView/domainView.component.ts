@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
 import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
+import { DomainWordMenuComponent } from "../../features/domainWordMenu/facade"
+import { DOMAIN_WORD_OCCURRENCES_WIDTH_PX, DomainWordOccurrencesComponent } from "../../features/domainWordOccurrences/facade"
 import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
 import {
     EXPLORER_CAPABILITIES,
@@ -9,6 +11,7 @@ import {
     EXPLORER_SELECTION,
     EXPLORER_TREE,
     ExplorerCollapseService,
+    ExplorerRevealService,
     ExplorerWidthService,
     provideExplorerSearch,
     provideExplorerSort,
@@ -16,7 +19,7 @@ import {
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SortingOption } from "../../model/codeCharta.model"
-import { WordCloudComponent } from "../../renderer/wordCloud/wordCloud.facade"
+import { RightClickedWord, WordCloudComponent } from "../../renderer/wordCloud/wordCloud.facade"
 import { CopyToClipboardService } from "../../util/copyToClipboard.service"
 import { pathToNodeName } from "../../util/nodePathHelper"
 import { DomainExplorerRow } from "./explorer/domainExplorerRow"
@@ -25,6 +28,7 @@ import { DomainExplorerSelection } from "./explorer/domainExplorerSelection"
 import { DOMAIN_EXPLORER_SORT } from "./explorer/domainExplorerSort"
 import { DomainExplorerTree } from "./explorer/domainExplorerTree"
 import { DomainSelectionStore } from "./stores/domainSelection.store"
+import { DomainWordInspectionStore } from "./stores/domainWordInspection.store"
 
 @Component({
     selector: "cc-domain-view",
@@ -34,6 +38,8 @@ import { DomainSelectionStore } from "./stores/domainSelection.store"
         WordCloudComponent,
         DomainBarComponent,
         DomainToolboxComponent,
+        DomainWordMenuComponent,
+        DomainWordOccurrencesComponent,
         BottomBarComponent,
         LoadingFileProgressSpinnerComponent
     ],
@@ -66,6 +72,8 @@ export class DomainViewComponent {
     private readonly explorerWidthService = inject(ExplorerWidthService)
     private readonly explorerCollapseService = inject(ExplorerCollapseService)
     private readonly domainSelectionStore = inject(DomainSelectionStore)
+    private readonly domainWordInspectionStore = inject(DomainWordInspectionStore)
+    private readonly explorerRevealService = inject(ExplorerRevealService)
     private readonly clipboard = inject(CopyToClipboardService)
 
     readonly settings = this.domainBarReadStore.settings
@@ -75,6 +83,26 @@ export class DomainViewComponent {
     readonly selectedNodeName = computed(() => pathToNodeName(this.selectedNodePath(), ""))
 
     readonly cloudLeftInset = computed(() => (this.explorerCollapseService.isCollapsed() ? 0 : this.explorerWidthService.width()))
+
+    readonly rightClickedWord = signal<RightClickedWord | null>(null)
+    readonly inspectedWord = this.domainWordInspectionStore.inspectedWord
+    readonly cloudRightInset = computed(() => (this.inspectedWord() ? DOMAIN_WORD_OCCURRENCES_WIDTH_PX : 0))
+
+    inspectWord(word: string) {
+        this.domainWordInspectionStore.inspect(word)
+    }
+
+    stopInspectingWord() {
+        this.domainWordInspectionStore.clear()
+    }
+
+    closeWordMenu() {
+        this.rightClickedWord.set(null)
+    }
+
+    revealNode(path: string) {
+        this.explorerRevealService.revealNode(path)
+    }
 
     clearSelection() {
         this.domainSelectionStore.clear()
