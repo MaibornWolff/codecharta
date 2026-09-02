@@ -1,3 +1,12 @@
+# echarts-wordcloud 2.1.0 is effectively unmaintained (last release 2022-08), so these two upstream
+# defects are patched here rather than waited on. Both are reproducible in the published 2.1.0 source
+# and are re-verified by the domain-view e2e suite; re-check them before bumping the dependency.
+#
+#   1. src/layout.js  - sendEvent() builds a CustomEvent without `cancelable`, so preventDefault() is
+#                       inert and the abort check can never fire (upstream: ecomfe/echarts-wordcloud).
+#   2. src/wordCloud.js - a notMerge setOption replaces the series model, orphaning a running layout
+#                       that then competes with its successor for the canvas.
+#
 diff --git a/node_modules/echarts-wordcloud/src/layout.js b/node_modules/echarts-wordcloud/src/layout.js
 index e4ee4cf..0aa3fcc 100644
 --- a/node_modules/echarts-wordcloud/src/layout.js
