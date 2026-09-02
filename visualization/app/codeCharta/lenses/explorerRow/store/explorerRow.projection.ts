@@ -3,6 +3,7 @@ import { getMarkingColor, isAreaValid, isLeaf } from "../../../util/codeMapHelpe
 import { formatCompactNumber } from "../../../util/formatCompactNumber"
 
 const NO_AREA_HINT = "No Node Area for Chosen Metric"
+const NO_DOMAIN_WORDS_HINT = "No domain words"
 
 export interface ExplorerRowProjection {
     isSelectable: boolean
@@ -17,6 +18,7 @@ export interface ExplorerRowProjection {
 
 export interface ExplorerRowInputs {
     areaMetric?: string
+    pathsWithDomainWords?: ReadonlySet<string>
     buildingIds?: ReadonlySet<number>
     rootUnary?: number | null
     showsFlattenedState?: boolean
@@ -26,17 +28,28 @@ export interface ExplorerRowInputs {
 
 export function projectExplorerRow(node: CodeMapNode, inputs: ExplorerRowInputs): ExplorerRowProjection {
     const isSelectable = computeSelectable(node, inputs.buildingIds)
-    const hasArea = inputs.areaMetric === undefined || isAreaValid(node, inputs.areaMetric)
+    const inactiveHint = computeInactiveHint(node, inputs)
+    const isInactive = inactiveHint !== ""
     return {
         isSelectable,
-        isInactive: !hasArea,
-        isItalic: !hasArea || !isSelectable,
+        isInactive,
+        isItalic: isInactive || !isSelectable,
         isFlattened: Boolean(inputs.showsFlattenedState && node.isFlattened),
         isHidden: Boolean(inputs.hidesExcludedNodes && node.isExcluded),
-        title: hasArea ? "" : NO_AREA_HINT,
+        title: inactiveHint,
         decoration: computeDecoration(node, inputs.rootUnary),
         markingColor: computeMarkingColor(node, inputs.markedPackages)
     }
+}
+
+function computeInactiveHint(node: CodeMapNode, inputs: ExplorerRowInputs): string {
+    if (inputs.areaMetric !== undefined && !isAreaValid(node, inputs.areaMetric)) {
+        return NO_AREA_HINT
+    }
+    if (inputs.pathsWithDomainWords !== undefined && !inputs.pathsWithDomainWords.has(node.path)) {
+        return NO_DOMAIN_WORDS_HINT
+    }
+    return ""
 }
 
 function computeSelectable(node: CodeMapNode, buildingIds: ReadonlySet<number> | undefined): boolean {

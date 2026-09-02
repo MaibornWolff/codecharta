@@ -5,7 +5,8 @@ import {
     createWordsForSelectedNodeSelector,
     hasDomainDataSelector,
     hasTfidfDataSelector,
-    isLoadedFileSetWithoutDomainLensSelector
+    isLoadedFileSetWithoutDomainLensSelector,
+    pathsWithDomainWordsSelector
 } from "./domain.selectors"
 
 describe("domain lens selectors", () => {
@@ -49,6 +50,41 @@ describe("domain lens selectors", () => {
 
             // Assert
             expect(result).toBe(true)
+        })
+    })
+
+    describe("pathsWithDomainWordsSelector", () => {
+        it("should be empty when no domain words are present", () => {
+            // Arrange
+            const state = stateWithWords({})
+
+            // Act
+            const result = pathsWithDomainWordsSelector(state)
+
+            // Assert
+            expect(result).toEqual(new Set())
+        })
+
+        it("should list every path carrying at least one word", () => {
+            // Arrange
+            const state = stateWithWords({ "/root": rootWords, "/root/nodeA": leafWords })
+
+            // Act
+            const result = pathsWithDomainWordsSelector(state)
+
+            // Assert
+            expect(result).toEqual(new Set(["/root", "/root/nodeA"]))
+        })
+
+        it("should not list a path whose word list is empty", () => {
+            // Arrange
+            const state = stateWithWords({ "/root": rootWords, "/root/nodeA": [] })
+
+            // Act
+            const result = pathsWithDomainWordsSelector(state)
+
+            // Assert
+            expect(result).toEqual(new Set(["/root"]))
         })
     })
 

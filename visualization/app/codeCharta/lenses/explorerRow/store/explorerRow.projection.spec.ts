@@ -104,6 +104,39 @@ describe("projectExplorerRow", () => {
         })
     })
 
+    describe("with the domain inputs", () => {
+        const inputs = { pathsWithDomainWords: new Set([LEAF_WITH_BUILDING.path]) }
+
+        it("should dim and italicize a row whose node carries no domain words", () => {
+            // Arrange & Act
+            const projection = projectExplorerRow(LEAF_WITHOUT_BUILDING, inputs)
+
+            // Assert
+            expect(projection).toMatchObject({ isInactive: true, isItalic: true, title: "No domain words" })
+        })
+
+        it("should leave a row carrying domain words undimmed and untitled", () => {
+            // Arrange & Act
+            const projection = projectExplorerRow(LEAF_WITH_BUILDING, inputs)
+
+            // Assert
+            expect(projection).toMatchObject({ isInactive: false, isItalic: false, title: "" })
+        })
+
+        it("should keep a row carrying no domain words selectable", () => {
+            // Arrange & Act & Assert
+            expect(projectExplorerRow(LEAF_WITHOUT_BUILDING, inputs).isSelectable).toBe(true)
+        })
+
+        it("should dim every row when no path carries domain words", () => {
+            // Arrange & Act
+            const projection = projectExplorerRow(LEAF_WITH_BUILDING, { pathsWithDomainWords: new Set<string>() })
+
+            // Assert
+            expect(projection).toMatchObject({ isInactive: true, isItalic: true, title: "No domain words" })
+        })
+    })
+
     describe("with no inputs (a view with no 3D map)", () => {
         it("should render the trivial projection: selectable, undimmed, no decoration", () => {
             // Arrange & Act
