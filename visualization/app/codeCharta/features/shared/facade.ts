@@ -1,12 +1,12 @@
 // Reusable presentational UI kit — the public surface other features compose in their templates.
 export { ActionIconComponent } from "./components/actionIcon/actionIcon.component"
 export { AxisCardComponent } from "./components/axisCard/axisCard.component"
-export { ContextMenuItemComponent } from "./components/contextMenuItem/contextMenuItem.component"
 export {
     BAR_BOTTOM_ABOVE_BOTTOM_BAR,
     BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR,
     BarShellDirective
 } from "./components/barShell/barShell.directive"
+export { ContextMenuItemComponent } from "./components/contextMenuItem/contextMenuItem.component"
 export { ErrorDialogComponent } from "./components/errorDialog/errorDialog.component"
 export { InlineColorPickerComponent } from "./components/inlineColorPicker/inlineColorPicker.component"
 export { LoadingFileProgressSpinnerComponent } from "./components/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
