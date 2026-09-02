@@ -1,7 +1,7 @@
 ---
 name: Show where a domain word occurs when it is right-clicked in the word cloud
 issue: <#issueid>
-state: todo
+state: complete
 version: 1
 ---
 
@@ -64,7 +64,7 @@ occurrences in the current scope.
 - Header: the word, its total count in scope, and the scope's node name, plus a close button.
 - Body: recursive rows for the occurrence tree — indent by depth, folders expandable (top level
   expanded, deeper levels collapsed), each row showing name, count and percentage. Clicking a row
-  selects that node in the explorer via the existing selection store.
+  reveals that node in the explorer.
 - Empty state when the word has no recorded occurrences in scope.
 
 ### 7. Wire into the domain view
@@ -78,15 +78,15 @@ occurrences in the current scope.
 
 ## Steps
 
-- [ ] Complete Task 1: Move `ContextMenuItemComponent` into shared
-- [ ] Complete Task 2: Occurrence tree derivation in the domain lens
-- [ ] Complete Task 3: Inspected-word store
-- [ ] Complete Task 4: Right-click event from the word cloud
-- [ ] Complete Task 5: Word context menu
-- [ ] Complete Task 6: Docked occurrence panel
-- [ ] Complete Task 7: Wire into the domain view
-- [ ] Complete Task 8: Docs
-- [ ] `npm test` green, `npm run format` clean
+- [x] Complete Task 1: Move `ContextMenuItemComponent` into shared
+- [x] Complete Task 2: Occurrence tree derivation in the domain lens
+- [x] Complete Task 3: Inspected-word store
+- [x] Complete Task 4: Right-click event from the word cloud
+- [x] Complete Task 5: Word context menu
+- [x] Complete Task 6: Docked occurrence panel
+- [x] Complete Task 7: Wire into the domain view
+- [x] Complete Task 8: Docs
+- [x] `npm test` green, `npm run format` clean
 
 ## Notes
 
@@ -94,3 +94,7 @@ occurrences in the current scope.
   panel, expandable tree, percentage = share of the word's total occurrences in scope.
 - Scope follows the explorer selection, matching what the cloud already shows.
 - Tidy first: Task 1 is structural and ships as its own commit before any behavioural change.
+- A row reveals its node in the explorer rather than selecting it: selecting would change the cloud's
+  scope, which closes the panel the reader is using.
+- The panel is a plain docked panel rather than a sliding one — it only exists while a word is
+  inspected, so there is nothing to slide out.

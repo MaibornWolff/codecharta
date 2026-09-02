@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- **Word occurrences in the domain view**: Right-clicking a word in the word cloud opens a small menu offering **Show occurrences** and **Copy word**. Show occurrences opens a panel at the right edge that breaks the word down over the file tree of the node the cloud is currently showing: an expandable folder/file tree, each entry with the word's count there and its share of the word's occurrences in that scope, most frequent first, with a bar behind each row for the share. Clicking an entry reveals that node in the file explorer without changing what the cloud shows, and picking another node in the explorer closes the panel, since the scope it reported on is gone.
 - **Domain view marks nodes without domain words**: Folders and files the domain lens has no words for are now greyed out and italicised in the domain view's file explorer, the same way the metric view marks nodes without area for the chosen metric, with a "No domain words" hint on hover. They stay selectable.
 
 ## [2.0.0] - 2026-09-02
