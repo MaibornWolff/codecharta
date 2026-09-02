@@ -16,6 +16,6 @@ class DlcIgnoreParser {
     }
 
     private fun parseDlcIgnoreFile(file: File): Set<String> = file.bufferedReader().useLines { lines ->
-        parseWordLines(lines).mapTo(mutableSetOf()) { it.lowercase() }
+        parseWordLines(lines)
     }
 }

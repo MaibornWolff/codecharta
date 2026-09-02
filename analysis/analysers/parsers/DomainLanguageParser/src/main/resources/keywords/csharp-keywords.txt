@@ -1,5 +1,5 @@
 # C# Keywords (C# 1.0 through C# 11.0)
-# One keyword per line, case-sensitive
+# One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
 # Comments start with #
 
 # Core Keywords (C# 1.0-2.0)

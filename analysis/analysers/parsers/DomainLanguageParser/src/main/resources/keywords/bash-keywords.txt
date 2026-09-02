@@ -1,5 +1,5 @@
 # Bash Keywords
-# One keyword per line, case-sensitive
+# One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
 # Comments start with #
 
 # Reserved words
@@ -94,3 +94,11 @@ PS1
 PS2
 PWD
 SHELL
+
+# Interpreter path from the shebang every script carries: `#!/usr/bin/env bash` contributes these to
+# the vocabulary of the whole corpus.
+usr
+bin
+env
+sh
+zsh

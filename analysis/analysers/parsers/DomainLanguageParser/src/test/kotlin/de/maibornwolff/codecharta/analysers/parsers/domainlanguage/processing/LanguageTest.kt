@@ -426,9 +426,10 @@ class LanguageTest {
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
-        assertTrue(keywords.getKeywords().contains("Progress"))
-        assertTrue(keywords.getKeywords().contains("JsonObject"))
-        assertTrue(keywords.getKeywords().contains("AppError"))
+        // Lowercased on load, because that is the form SplitStage produces and compares against.
+        assertTrue(keywords.getKeywords().contains("progress"))
+        assertTrue(keywords.getKeywords().contains("jsonobject"))
+        assertTrue(keywords.getKeywords().contains("apperror"))
     }
 
     @Test
@@ -438,8 +439,8 @@ class LanguageTest {
 
         // Assert
         assertIs<ResourceKeywords>(keywords)
-        assertTrue(keywords.getKeywords().contains("SESSION"))
-        assertTrue(keywords.getKeywords().contains("THIS-OBJECT"))
-        assertTrue(keywords.getKeywords().contains("THIS-PROCEDURE"))
+        assertTrue(keywords.getKeywords().contains("session"))
+        assertTrue(keywords.getKeywords().contains("this-object"))
+        assertTrue(keywords.getKeywords().contains("this-procedure"))
     }
 }
