@@ -24,7 +24,7 @@ class AnalysisConfigurationTest {
         val config =
             AnalysisConfiguration(
                 allowedExtensions = extensions,
-                languageKeywords = keywords,
+                globalKeywords = keywords,
                 weights =
                     ExtractionWeights(
                         identifierWeight = 5,
@@ -40,7 +40,7 @@ class AnalysisConfigurationTest {
 
         // Assert
         assertEquals(extensions, config.allowedExtensions)
-        assertEquals(keywords, config.languageKeywords)
+        assertEquals(keywords, config.globalKeywords)
         assertEquals(5, config.weights.identifierWeight)
         assertEquals(3, config.weights.commentWeight)
         assertEquals(2, config.weights.stringWeight)
@@ -55,7 +55,7 @@ class AnalysisConfigurationTest {
         val config = AnalysisConfiguration(allowedExtensions = listOf("kt"))
 
         // Assert
-        assertTrue(config.languageKeywords.isEmpty())
+        assertTrue(config.globalKeywords.isEmpty())
         assertEquals(ExtractionWeights(), config.weights)
         assertEquals(1, config.ngrams)
         assertTrue(config.customStopWords.isEmpty())
@@ -109,7 +109,7 @@ class AnalysisConfigurationTest {
         val config1 =
             AnalysisConfiguration(
                 allowedExtensions = extensions,
-                languageKeywords = keywords,
+                globalKeywords = keywords,
                 weights = ExtractionWeights(),
                 ngrams = 1,
                 customStopWords = emptySet()
@@ -117,7 +117,7 @@ class AnalysisConfigurationTest {
         val config2 =
             AnalysisConfiguration(
                 allowedExtensions = extensions,
-                languageKeywords = keywords,
+                globalKeywords = keywords,
                 weights = ExtractionWeights(),
                 ngrams = 1,
                 customStopWords = emptySet()
@@ -143,7 +143,7 @@ class AnalysisConfigurationTest {
         val original =
             AnalysisConfiguration(
                 allowedExtensions = listOf("kt"),
-                languageKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt")),
+                globalKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt")),
                 weights = ExtractionWeights(),
                 ngrams = 1,
                 customStopWords = emptySet()

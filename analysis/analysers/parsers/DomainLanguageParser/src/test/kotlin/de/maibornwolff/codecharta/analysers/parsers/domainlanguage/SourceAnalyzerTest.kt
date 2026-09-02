@@ -223,7 +223,7 @@ class SourceAnalyzerTest {
             SourceAnalyzerFactory.create(
                 AnalysisConfiguration(
                     allowedExtensions = listOf("ts"),
-                    languageKeywords = listOf(ResourceKeywords("keywords/typescript-keywords.txt"))
+                    globalKeywords = listOf(ResourceKeywords("keywords/typescript-keywords.txt"))
                 )
             )
 
@@ -283,7 +283,7 @@ class SourceAnalyzerTest {
             SourceAnalyzerFactory.create(
                 AnalysisConfiguration(
                     allowedExtensions = listOf("kt"),
-                    languageKeywords =
+                    globalKeywords =
                         listOf(
                             ResourceKeywords("keywords/typescript-keywords.txt"),
                             ResourceKeywords("keywords/kotlin-keywords.txt")
@@ -328,7 +328,6 @@ class SourceAnalyzerTest {
         assertTrue(result.hasWord("customer"))
         assertTrue(result.hasWord("service"))
         assertTrue(result.hasWord("process"))
-        assertTrue(result.hasWord("data"))
     }
 
     @Test
@@ -358,7 +357,7 @@ class SourceAnalyzerTest {
         val fileScanner = FileScanner(config.allowedExtensions)
         val stopWordFilter =
             StopWordFilter(
-                languageKeywords = emptyList(),
+                globalKeywords = emptyList(),
                 customStopWords = emptySet(),
                 pathScopedKeywordProvider = PathScopedKeywordProvider(emptyMap())
             )
@@ -477,7 +476,7 @@ class SourceAnalyzerTest {
             SourceAnalyzerFactory.create(
                 AnalysisConfiguration(
                     allowedExtensions = listOf("kt"),
-                    languageKeywords =
+                    globalKeywords =
                         listOf(
                             ResourceKeywords("keywords/kotlin-keywords.txt"),
                             ResourceKeywords("keywords/technical-moderate.txt")
@@ -514,7 +513,7 @@ class SourceAnalyzerTest {
             SourceAnalyzerFactory.create(
                 AnalysisConfiguration(
                     allowedExtensions = listOf("kt"),
-                    languageKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"))
+                    globalKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"))
                 )
             )
 

@@ -9,7 +9,7 @@ data class AnalysisConfiguration(
     val allowedExtensions: List<String>,
     val bypassGitignore: Boolean = false,
     val excludeTests: Boolean = false,
-    val languageKeywords: List<LanguageKeywords> = emptyList(),
+    val globalKeywords: List<LanguageKeywords> = emptyList(),
     val weights: ExtractionWeights = ExtractionWeights(),
     val ngrams: Int = 1,
     val customStopWords: Set<String> = emptySet(),

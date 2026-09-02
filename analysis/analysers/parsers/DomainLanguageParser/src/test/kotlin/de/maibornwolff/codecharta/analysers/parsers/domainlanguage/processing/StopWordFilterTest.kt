@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.LanguageKeywords
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywordLoader
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import java.nio.file.Paths
@@ -52,8 +53,8 @@ class StopWordFilterTest {
     @Test
     fun `should filter language keywords when provided`() {
         // Arrange
-        val languageKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(languageKeywords))
+        val globalKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
+        val filter = StopWordFilter(globalKeywords = listOf(globalKeywords))
         val words = listOf("function", "hello", "const", "world", "if", "kotlin")
 
         // Act
@@ -66,8 +67,8 @@ class StopWordFilterTest {
     @Test
     fun `should filter both stop words and language keywords`() {
         // Arrange
-        val languageKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(languageKeywords))
+        val globalKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
+        val filter = StopWordFilter(globalKeywords = listOf(globalKeywords))
         val words = listOf("the", "function", "hello", "a", "const", "world")
 
         // Act
@@ -80,7 +81,7 @@ class StopWordFilterTest {
     @Test
     fun `should work with empty language keywords list`() {
         // Arrange
-        val filter = StopWordFilter(languageKeywords = emptyList())
+        val filter = StopWordFilter(globalKeywords = emptyList<LanguageKeywords>())
         val words = listOf("the", "function", "hello", "const", "world")
 
         // Act
@@ -95,7 +96,7 @@ class StopWordFilterTest {
         // Arrange
         val tsKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
         val ktKeywords = ResourceKeywords("keywords/kotlin-keywords.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(tsKeywords, ktKeywords))
+        val filter = StopWordFilter(globalKeywords = listOf(tsKeywords, ktKeywords))
         val words = listOf("function", "hello", "const", "fun", "world", "class", "kotlin")
 
         // Act
@@ -130,8 +131,8 @@ class StopWordFilterTest {
     @Test
     fun `should return true when word is a language keyword`() {
         // Arrange
-        val languageKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(languageKeywords))
+        val globalKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
+        val filter = StopWordFilter(globalKeywords = listOf(globalKeywords))
 
         // Act & Assert
         assertTrue(filter.isExcluded("function"))
@@ -142,8 +143,8 @@ class StopWordFilterTest {
     @Test
     fun `should return false when word is not a stop word or keyword`() {
         // Arrange
-        val languageKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(languageKeywords))
+        val globalKeywords = ResourceKeywords("keywords/typescript-keywords.txt")
+        val filter = StopWordFilter(globalKeywords = listOf(globalKeywords))
 
         // Act & Assert
         assertFalse(filter.isExcluded("hello"))
@@ -259,7 +260,7 @@ class StopWordFilterTest {
     fun `should exclude bigram when component is technical stop word`() {
         // Arrange
         val technicalStopWords = ResourceKeywords("keywords/technical-moderate.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(technicalStopWords))
+        val filter = StopWordFilter(globalKeywords = listOf(technicalStopWords))
 
         // Act & Assert
         assertTrue(filter.isExcluded("user handler"))
@@ -271,7 +272,7 @@ class StopWordFilterTest {
     fun `should not exclude bigram with valid domain terms`() {
         // Arrange
         val technicalStopWords = ResourceKeywords("keywords/technical-moderate.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(technicalStopWords))
+        val filter = StopWordFilter(globalKeywords = listOf(technicalStopWords))
 
         // Act & Assert
         assertFalse(filter.isExcluded("user profile"))
@@ -310,9 +311,9 @@ class StopWordFilterTest {
     @Test
     fun `should merge custom stop words with language keywords`() {
         // Arrange
-        val languageKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"))
+        val globalKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"))
         val customStopWords = setOf("custom")
-        val filter = StopWordFilter(languageKeywords, customStopWords)
+        val filter = StopWordFilter(globalKeywords, customStopWords)
         val words = listOf("class", "custom", "hello", "fun", "world")
 
         // Act
@@ -325,9 +326,9 @@ class StopWordFilterTest {
     @Test
     fun `should merge custom stop words with all filtering sources`() {
         // Arrange
-        val languageKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"), ResourceKeywords("keywords/technical-moderate.txt"))
+        val globalKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"), ResourceKeywords("keywords/technical-moderate.txt"))
         val customStopWords = setOf("custom", "domain")
-        val filter = StopWordFilter(languageKeywords, customStopWords)
+        val filter = StopWordFilter(globalKeywords, customStopWords)
         val words = listOf("the", "class", "test", "custom", "hello", "domain", "world")
 
         // Act
@@ -401,7 +402,7 @@ class StopWordFilterTest {
     fun `should exclude trigram when component is technical stop word`() {
         // Arrange
         val technicalStopWords = ResourceKeywords("keywords/technical-moderate.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(technicalStopWords))
+        val filter = StopWordFilter(globalKeywords = listOf(technicalStopWords))
 
         // Act & Assert
         assertTrue(filter.isExcluded("user profile handler"))
@@ -413,7 +414,7 @@ class StopWordFilterTest {
     fun `should not exclude trigram with valid domain terms`() {
         // Arrange
         val technicalStopWords = ResourceKeywords("keywords/technical-moderate.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(technicalStopWords))
+        val filter = StopWordFilter(globalKeywords = listOf(technicalStopWords))
 
         // Act & Assert
         assertFalse(filter.isExcluded("customer order payment"))
@@ -447,7 +448,7 @@ class StopWordFilterTest {
     fun `should exclude 4-gram when component is technical stop word`() {
         // Arrange
         val technicalStopWords = ResourceKeywords("keywords/technical-moderate.txt")
-        val filter = StopWordFilter(languageKeywords = listOf(technicalStopWords))
+        val filter = StopWordFilter(globalKeywords = listOf(technicalStopWords))
 
         // Act & Assert
         assertTrue(filter.isExcluded("user profile data handler"))
@@ -500,8 +501,8 @@ class StopWordFilterTest {
         val frontendPath = Paths.get("/project/frontend")
         val frameworksByPath = mapOf(frontendPath to setOf(Framework.ANGULAR))
         val provider = PathScopedKeywordProvider(frameworksByPath)
-        val languageKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"))
-        val filter = StopWordFilter(languageKeywords, pathScopedKeywordProvider = provider)
+        val globalKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"))
+        val filter = StopWordFilter(globalKeywords, pathScopedKeywordProvider = provider)
         val backendPath = Paths.get("/project/backend/src/Main.kt")
 
         // Act & Assert
@@ -541,8 +542,8 @@ class StopWordFilterTest {
         val frontendPath = Paths.get("/project/frontend")
         val frameworksByPath = mapOf(frontendPath to setOf(Framework.ANGULAR))
         val provider = PathScopedKeywordProvider(frameworksByPath)
-        val languageKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"))
-        val filter = StopWordFilter(languageKeywords, pathScopedKeywordProvider = provider)
+        val globalKeywords = listOf(ResourceKeywords("keywords/kotlin-keywords.txt"))
+        val filter = StopWordFilter(globalKeywords, pathScopedKeywordProvider = provider)
         val words = listOf("component", "class", "the", "user", "fun")
 
         // Act

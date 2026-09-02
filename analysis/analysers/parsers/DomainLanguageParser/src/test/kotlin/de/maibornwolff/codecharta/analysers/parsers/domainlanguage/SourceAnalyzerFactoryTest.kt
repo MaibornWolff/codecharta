@@ -40,7 +40,7 @@ class SourceAnalyzerFactoryTest {
                 allowedExtensions = listOf("kt", "java", "ts"),
                 bypassGitignore = true,
                 excludeTests = true,
-                languageKeywords =
+                globalKeywords =
                     listOf(
                         ResourceKeywords("keywords/kotlin-keywords.txt"),
                         ResourceKeywords("keywords/java-keywords.txt")

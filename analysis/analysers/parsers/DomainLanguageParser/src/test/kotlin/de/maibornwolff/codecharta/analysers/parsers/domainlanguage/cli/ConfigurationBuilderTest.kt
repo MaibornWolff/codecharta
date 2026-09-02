@@ -57,20 +57,32 @@ class ConfigurationBuilderTest {
     }
 
     @Test
-    fun `should include all language keywords by default`() {
+    fun `should keep language keywords out of the global list`() {
         // Arrange
         val parsedArgs = parsedArguments()
 
         // Act
         val config = builder.build(parsedArgs)
 
-        // Assert (no framework keywords when package.json doesn't exist)
-        assertEquals(4, config.languageKeywords.size)
-        assertTrue(config.languageKeywords.all { it is ResourceKeywords })
-        val allKeywords = config.languageKeywords.flatMap { it.getKeywords() }
-        assertTrue(allKeywords.contains("class")) // Java/Kotlin keyword
-        assertTrue(allKeywords.contains("fun")) // Kotlin keyword
-        assertTrue(allKeywords.contains("interface")) // TypeScript keyword
+        // Assert - language keywords are scoped per language by StopWordFilter, so the only global
+        // list is the technical stop words for the configured level
+        assertEquals(1, config.globalKeywords.size)
+        assertTrue(config.globalKeywords.all { it is ResourceKeywords })
+        val allKeywords = config.globalKeywords.flatMap { it.getKeywords() }
+        assertFalse(allKeywords.contains("fun")) // Kotlin keyword, scoped to .kt files
+        assertFalse(allKeywords.contains("interface")) // TypeScript keyword, scoped to .ts files
+    }
+
+    @Test
+    fun `should scope every supported language to its own keyword list`() {
+        // Arrange / Act
+        val keywordsByLanguage = Language.entries.associateWith { it.keywords.getKeywords() }
+
+        // Assert - every language contributes keywords, and they stay language-specific
+        assertTrue(keywordsByLanguage.values.all { it.isNotEmpty() })
+        assertTrue(keywordsByLanguage.getValue(Language.GO).contains("func"))
+        assertTrue(keywordsByLanguage.getValue(Language.PYTHON).contains("elif"))
+        assertFalse(keywordsByLanguage.getValue(Language.KOTLIN).contains("elif"))
     }
 
     @Test
@@ -81,8 +93,8 @@ class ConfigurationBuilderTest {
         // Act
         val config = builder.build(parsedArgs)
 
-        // Assert - 4 keywords providers (3 languages + 1 technical stop words)
-        assertEquals(4, config.languageKeywords.size)
+        // Assert - the technical stop word list is the only global provider
+        assertEquals(1, config.globalKeywords.size)
     }
 
     @Test
@@ -93,8 +105,8 @@ class ConfigurationBuilderTest {
         // Act
         val config = builder.build(parsedArgs)
 
-        // Assert - only 3 core language keywords, no technical stop words
-        assertEquals(3, config.languageKeywords.size)
+        // Assert - nothing global is left once technical stop words are off
+        assertEquals(0, config.globalKeywords.size)
     }
 
     @Test
@@ -105,8 +117,8 @@ class ConfigurationBuilderTest {
         // Act
         val config = builder.build(parsedArgs)
 
-        // Assert - 4 keyword providers including minimal stop words
-        assertEquals(4, config.languageKeywords.size)
+        // Assert - the minimal technical stop word list
+        assertEquals(1, config.globalKeywords.size)
     }
 
     @Test
@@ -118,7 +130,7 @@ class ConfigurationBuilderTest {
         val config = builder.build(parsedArgs)
 
         // Assert - 4 keyword providers including moderate stop words
-        assertEquals(4, config.languageKeywords.size)
+        assertEquals(1, config.globalKeywords.size)
     }
 
     @Test
@@ -130,7 +142,7 @@ class ConfigurationBuilderTest {
         val config = builder.build(parsedArgs)
 
         // Assert - 4 keyword providers including aggressive stop words
-        assertEquals(4, config.languageKeywords.size)
+        assertEquals(1, config.globalKeywords.size)
     }
 
     @Test
@@ -169,8 +181,8 @@ class ConfigurationBuilderTest {
         // Act
         val config = builder.build(parsedArgs)
 
-        // Assert - framework keywords are now path-scoped, not in languageKeywords
-        assertEquals(4, config.languageKeywords.size) // 3 core languages + 1 technical stop words
+        // Assert - framework keywords are now path-scoped, not in globalKeywords
+        assertEquals(1, config.globalKeywords.size) // technical stop words only; language keywords are scoped per language
         assertTrue(config.frameworksByPath.isNotEmpty())
         assertTrue(config.frameworksByPath[tempDir]?.contains(Framework.REACT) == true)
         assertFalse(config.frameworksByPath[tempDir]?.contains(Framework.ANGULAR) == true)
@@ -198,8 +210,8 @@ class ConfigurationBuilderTest {
         // Act
         val config = builder.build(parsedArgs)
 
-        // Assert - framework keywords are now path-scoped, not in languageKeywords
-        assertEquals(4, config.languageKeywords.size) // 3 core languages + 1 technical stop words
+        // Assert - framework keywords are now path-scoped, not in globalKeywords
+        assertEquals(1, config.globalKeywords.size) // technical stop words only; language keywords are scoped per language
         assertTrue(config.frameworksByPath.isNotEmpty())
         assertTrue(config.frameworksByPath[tempDir]?.contains(Framework.ANGULAR) == true)
         assertFalse(config.frameworksByPath[tempDir]?.contains(Framework.REACT) == true)
@@ -228,8 +240,8 @@ class ConfigurationBuilderTest {
         // Act
         val config = builder.build(parsedArgs)
 
-        // Assert - framework keywords are now path-scoped, not in languageKeywords
-        assertEquals(4, config.languageKeywords.size) // 3 core languages + 1 technical stop words
+        // Assert - framework keywords are now path-scoped, not in globalKeywords
+        assertEquals(1, config.globalKeywords.size) // technical stop words only; language keywords are scoped per language
         assertTrue(config.frameworksByPath.isNotEmpty())
         assertTrue(config.frameworksByPath[tempDir]?.contains(Framework.REACT) == true)
         assertTrue(config.frameworksByPath[tempDir]?.contains(Framework.ANGULAR) == true)
@@ -258,7 +270,7 @@ class ConfigurationBuilderTest {
         val config = builder.build(parsedArgs)
 
         // Assert - no frameworks detected, frameworksByPath should be empty
-        assertEquals(4, config.languageKeywords.size) // 3 core languages + 1 technical stop words
+        assertEquals(1, config.globalKeywords.size) // technical stop words only; language keywords are scoped per language
         assertTrue(config.frameworksByPath.isEmpty())
     }
 
