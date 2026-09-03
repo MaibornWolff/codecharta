@@ -1,4 +1,1 @@
-export {
-    DOMAIN_WORD_OCCURRENCES_WIDTH_PX,
-    DomainWordOccurrencesComponent
-} from "./components/domainWordOccurrences/domainWordOccurrences.component"
+export { DomainWordListComponent } from "./components/domainWordList/domainWordList.component"

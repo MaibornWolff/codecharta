@@ -17,6 +17,8 @@ export const hasTfidfDataSelector = createSelector(domainWordsSelector, words =>
     Object.values(words).some(wordList => wordList.some(word => word.tfidf !== undefined))
 )
 
+export const projectWordsSelector = createSelector(domainWordsSelector, words => words[fileRoot.rootPath] ?? [])
+
 export const createWordsForSelectedNodeSelector = (selectedNodePath: string | null) =>
     createSelector(domainWordsSelector, words => words[selectedNodePath ?? fileRoot.rootPath] ?? [])
 

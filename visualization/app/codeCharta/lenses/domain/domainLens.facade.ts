@@ -4,6 +4,7 @@ export {
     hasDomainDataSelector,
     hasTfidfDataSelector,
     isLoadedFileSetWithoutDomainLensSelector,
-    pathsWithDomainWordsSelector
+    pathsWithDomainWordsSelector,
+    projectWordsSelector
 } from "./store/domain.selectors"
 export type { WordOccurrenceNode } from "./store/wordOccurrences"

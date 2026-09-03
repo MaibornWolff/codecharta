@@ -45,6 +45,53 @@ test.describe("DomainView", () => {
         await expect(page.locator("cc-sidebar-explorer cc-rules-popover")).toHaveCount(0)
     })
 
+    test("should browse the project's words in the explorer, filter them and break one down", async ({ page }) => {
+        // Arrange
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+
+        // Act — the explorer browses files by default, so the words are one toggle away
+        await page.getByTestId("explorer-mode-words").click()
+
+        // Assert — the node tree and its sort options give way to the word list
+        await expect(page.locator("cc-domain-word-list cc-domain-word-row").first()).toBeVisible()
+        await expect(page.locator("cc-sidebar-explorer cc-explorer-tree")).toHaveCount(0)
+        await expect(page.locator("cc-sidebar-explorer cc-explorer-sort-control")).toHaveCount(0)
+
+        // Act — the search box now searches words instead of paths
+        const mostFrequentWord = (await page.locator("cc-domain-word-row").first().innerText()).split("\n")[0]
+        await page.getByLabel("Search words").fill(mostFrequentWord)
+
+        // Assert
+        await expect(page.getByTestId(`domain-word-row-${mostFrequentWord}`)).toBeVisible()
+
+        // Act
+        await page.getByTestId(`domain-word-row-${mostFrequentWord}`).click()
+
+        // Assert — the breakdown that used to occupy the right-hand panel now hangs under the word
+        await expect(page.locator("cc-domain-word-occurrence-tree [data-testid='domain-word-occurrences-tree']")).toBeVisible()
+    })
+
+    test("should select a node from the word breakdown, so the cloud scopes to it", async ({ page }) => {
+        // Arrange
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.getByTestId("explorer-mode-words").click()
+        await page.locator("cc-domain-word-row").first().click()
+        const occurrenceRow = page.locator("cc-domain-word-occurrence-row").first()
+        await expect(occurrenceRow).toBeVisible()
+        const occurrenceName = (await occurrenceRow.locator(".node-name").innerText()).trim()
+
+        // Act — the breakdown's rows are explorer rows, so a click selects the node
+        await occurrenceRow.click()
+
+        // Assert
+        await expect(page.locator("cc-bottom-bar cc-hovered-path [data-testid='hovered-path-current']")).toHaveText(occurrenceName)
+        await expect(occurrenceRow.locator(".selected")).toBeVisible()
+    })
+
     test("should apply a settings change from the domain bar to the state that drives the cloud", async ({ page }) => {
         // Arrange — a top-N that is neither the default nor the slider's min/max
         const nonDefaultTopN = 30
@@ -227,6 +274,27 @@ test.describe("DomainView", () => {
         // Assert — the map view is reached with the node picked up as its selection
         await expect(page).toHaveURL(/#\/$/)
         await expect(metricsExplorer.node("/root")).toHaveClass(/selected/)
+    })
+
+    test("should put the explorer back on its file tree when a node is handed over to the domain view", async ({ page }) => {
+        // Arrange — the domain explorer is left browsing words, where no node row exists
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        const domainExplorer = new ExplorerTreeLevelPageObject(page, "domain")
+        const metricsExplorer = new ExplorerTreeLevelPageObject(page, "metrics")
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.getByTestId("explorer-mode-words").click()
+        await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
+        await viewSwitcher.switchToMetrics()
+
+        // Act
+        await metricsExplorer.openContextMenu("/root")
+        await page.locator("#codemap-context-menu").getByText("Show in Domain").click()
+
+        // Assert — the handed-over node is on screen, not hidden behind the word list
+        await expect(page).toHaveURL(/#\/domain$/)
+        await expect(page.getByTestId("explorer-mode-files")).toHaveAttribute("aria-pressed", "true")
+        await expect(domainExplorer.node("/root")).toHaveClass(/selected/)
     })
 
     test("should jump back to the domain view from the node it was left on", async ({ page }) => {

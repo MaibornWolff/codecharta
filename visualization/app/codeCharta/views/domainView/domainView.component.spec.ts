@@ -12,8 +12,9 @@ import {
     EXPLORER_CONTEXT_MENU,
     EXPLORER_ROW,
     EXPLORER_TREE,
+    EXPLORER_WORD_SEARCH,
     ExplorerCollapseService,
-    ExplorerRevealService,
+    ExplorerModeService,
     ExplorerWidthService
 } from "../../features/sidebarExplorer/facade"
 import { viewIndependentTreeSelector } from "../../lenses/structure/structure.facade"
@@ -24,6 +25,7 @@ import { accumulatedDataSelector } from "../../renderer/renderModel/renderModel.
 import { RightClickedWord } from "../../renderer/wordCloud/wordCloud.facade"
 import { defaultState } from "../../stores/rootStore/state.manager"
 import { DomainViewComponent } from "./domainView.component"
+import { DOMAIN_EXPLORER_MODES, WORDS_EXPLORER_MODE } from "./explorer/domainExplorerModes"
 
 @Component({ selector: "cc-sidebar-explorer", template: "<ng-content></ng-content>", standalone: true })
 class StubExplorerComponent {}
@@ -43,12 +45,13 @@ class StubWordMenuComponent {
     readonly closed = output<void>()
 }
 
-@Component({ selector: "cc-domain-word-occurrences", template: "", standalone: true })
-class StubWordOccurrencesComponent {
-    readonly word = input.required<string>()
-    readonly scopePath = input<string | null>(null)
-    readonly closed = output<void>()
-    readonly revealNode = output<string>()
+@Component({ selector: "cc-domain-word-list", template: "", standalone: true })
+class StubWordListComponent {
+    readonly query = input("")
+    readonly expandedWord = input<string | null>(null)
+    readonly selectedNodePath = input<string | null>(null)
+    readonly wordToggled = output<string>()
+    readonly nodeClicked = output<string>()
 }
 
 @Component({ selector: "cc-node-context-menu", template: "", standalone: true })
@@ -72,6 +75,10 @@ function inspectWordThroughTheMenu(fixture: { debugElement: DebugElement }, dete
     detectChanges()
 }
 
+function wordList(fixture: { debugElement: DebugElement }) {
+    return fixture.debugElement.query(By.directive(StubWordListComponent)).componentInstance
+}
+
 describe("DomainViewComponent", () => {
     async function setup(settings = defaultWordCloudSettings) {
         TestBed.overrideComponent(DomainViewComponent, {
@@ -82,7 +89,7 @@ describe("DomainViewComponent", () => {
                     StubDomainBarComponent,
                     StubBottomBarComponent,
                     StubWordMenuComponent,
-                    StubWordOccurrencesComponent,
+                    StubWordListComponent,
                     StubNodeContextMenuComponent
                 ]
             }
@@ -113,7 +120,8 @@ describe("DomainViewComponent", () => {
             showRules: false,
             showSearch: true,
             showCounts: false,
-            sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
+            sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES],
+            modes: DOMAIN_EXPLORER_MODES
         })
         expect(injector.get(NODE_CONTEXT_MENU_CAPABILITIES)).toEqual({ showMapActions: false, jumpTargetView: "metrics" })
         expect(injector.get(EXPLORER_ROW).project(SOME_NODE).isSelectable).toBe(true)
@@ -195,15 +203,15 @@ describe("DomainViewComponent", () => {
         expect(fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.rightClickedWord()).toBe(rightClickedWord)
     })
 
-    it("should show no occurrences before a word is inspected", async () => {
+    it("should expand no word in the list before one is inspected", async () => {
         // Arrange & Act
         const { fixture } = await setup()
 
         // Assert
-        expect(fixture.debugElement.query(By.directive(StubWordOccurrencesComponent))).toBeNull()
+        expect(wordList(fixture).expandedWord()).toBeNull()
     })
 
-    it("should break down the word the menu asks about, scoped to the selected node", async () => {
+    it("should expand the word the menu asks about in the explorer's word list", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
 
@@ -211,48 +219,82 @@ describe("DomainViewComponent", () => {
         inspectWordThroughTheMenu(fixture, detectChanges)
 
         // Assert
-        const occurrences = fixture.debugElement.query(By.directive(StubWordOccurrencesComponent)).componentInstance
-        expect(occurrences.word()).toBe("invoice")
-        expect(occurrences.scopePath()).toBeNull()
+        expect(wordList(fixture).expandedWord()).toBe("invoice")
     })
 
-    it("should inset the cloud by the panel, so the panel cannot occlude the cloud", async () => {
+    it("should switch the explorer to its word mode when the menu asks about a word", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
+        const modeService = fixture.debugElement.injector.get(ExplorerModeService)
 
         // Act
         inspectWordThroughTheMenu(fixture, detectChanges)
 
         // Assert
-        const cloudContainer = fixture.debugElement.query(By.directive(StubWordCloudComponent)).nativeElement.parentElement
-        expect(cloudContainer.style.right).toBe("320px")
+        expect(modeService.activeMode()).toBe(WORDS_EXPLORER_MODE)
     })
 
-    it("should drop the breakdown when the panel is closed", async () => {
+    it("should expand a collapsed explorer when the menu asks about a word, so the list is in sight", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        const collapseService = fixture.debugElement.injector.get(ExplorerCollapseService)
+        collapseService.toggle()
 
         // Act
-        fixture.debugElement.query(By.directive(StubWordOccurrencesComponent)).componentInstance.closed.emit()
+        inspectWordThroughTheMenu(fixture, detectChanges)
+
+        // Assert
+        expect(collapseService.isCollapsed()).toBe(false)
+    })
+
+    it("should search for the word the menu asks about, so the list narrows to it", async () => {
+        // Arrange — whatever was searched before must not keep the word out of the list
+        const { fixture, detectChanges } = await setup()
+        fixture.debugElement.injector.get(EXPLORER_WORD_SEARCH).setPattern("billing")
+
+        // Act
+        inspectWordThroughTheMenu(fixture, detectChanges)
+
+        // Assert
+        expect(wordList(fixture).query()).toBe("invoice")
+    })
+
+    it("should filter the word list by the explorer's word search", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+
+        // Act
+        fixture.debugElement.injector.get(EXPLORER_WORD_SEARCH).setPattern("invo")
         detectChanges()
 
         // Assert
-        expect(fixture.debugElement.query(By.directive(StubWordOccurrencesComponent))).toBeNull()
+        expect(wordList(fixture).query()).toBe("invo")
     })
 
-    it("should reveal the node the breakdown points at", async () => {
+    it("should collapse an expanded word when its row is toggled again", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
         inspectWordThroughTheMenu(fixture, detectChanges)
-        const revealService = fixture.debugElement.injector.get(ExplorerRevealService)
 
         // Act
-        fixture.debugElement.query(By.directive(StubWordOccurrencesComponent)).componentInstance.revealNode.emit("/root/billing")
+        wordList(fixture).wordToggled.emit("invoice")
         detectChanges()
 
         // Assert
-        expect(revealService.revealedNodePath()).toBe("/root/billing")
+        expect(wordList(fixture).expandedWord()).toBeNull()
+    })
+
+    it("should select the node the word list was clicked on, so the cloud scopes to it", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        inspectWordThroughTheMenu(fixture, detectChanges)
+
+        // Act
+        wordList(fixture).nodeClicked.emit("/root/billing")
+        detectChanges()
+
+        // Assert
+        expect(wordList(fixture).selectedNodePath()).toBe("/root/billing")
     })
 
     it("should render the domain settings bar", async () => {

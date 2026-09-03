@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
 import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
 import { DomainWordMenuComponent } from "../../features/domainWordMenu/facade"
-import { DOMAIN_WORD_OCCURRENCES_WIDTH_PX, DomainWordOccurrencesComponent } from "../../features/domainWordOccurrences/facade"
+import { DomainWordListComponent } from "../../features/domainWordOccurrences/facade"
 import {
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuCapabilities,
@@ -17,8 +18,9 @@ import {
     EXPLORER_ROW,
     EXPLORER_SELECTION,
     EXPLORER_TREE,
+    EXPLORER_WORD_SEARCH,
     ExplorerCollapseService,
-    ExplorerRevealService,
+    ExplorerModeService,
     ExplorerWidthService,
     provideExplorerSearch,
     provideExplorerSort,
@@ -29,6 +31,7 @@ import { SortingOption } from "../../model/codeCharta.model"
 import { RightClickedWord, WordCloudComponent } from "../../renderer/wordCloud/wordCloud.facade"
 import { CopyToClipboardService } from "../../util/copyToClipboard.service"
 import { pathToNodeName } from "../../util/nodePathHelper"
+import { DOMAIN_EXPLORER_MODES, WORDS_EXPLORER_MODE } from "./explorer/domainExplorerModes"
 import { DomainExplorerRow } from "./explorer/domainExplorerRow"
 import { DOMAIN_EXPLORER_SEARCH } from "./explorer/domainExplorerSearch"
 import { DomainExplorerSelection } from "./explorer/domainExplorerSelection"
@@ -37,6 +40,7 @@ import { DomainExplorerTree } from "./explorer/domainExplorerTree"
 import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.directive"
 import { DomainSelectionStore } from "./stores/domainSelection.store"
 import { DomainWordInspectionStore } from "./stores/domainWordInspection.store"
+import { DomainWordQueryStore } from "./stores/domainWordQuery.store"
 
 @Component({
     selector: "cc-domain-view",
@@ -48,7 +52,7 @@ import { DomainWordInspectionStore } from "./stores/domainWordInspection.store"
         DomainToolboxComponent,
         DomainWordMenuComponent,
         NodeContextMenuComponent,
-        DomainWordOccurrencesComponent,
+        DomainWordListComponent,
         BottomBarComponent,
         LoadingFileProgressSpinnerComponent
     ],
@@ -69,9 +73,12 @@ import { DomainWordInspectionStore } from "./stores/domainWordInspection.store"
                 showRules: false,
                 showSearch: true,
                 showCounts: false,
-                sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
+                sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES],
+                modes: DOMAIN_EXPLORER_MODES
             }
         },
+        DomainWordQueryStore,
+        { provide: EXPLORER_WORD_SEARCH, useExisting: DomainWordQueryStore },
         {
             provide: NODE_CONTEXT_MENU_CAPABILITIES,
             useValue: { showMapActions: false, jumpTargetView: "metrics" } satisfies NodeContextMenuCapabilities
@@ -87,9 +94,10 @@ export class DomainViewComponent {
     private readonly domainBarReadStore = inject(DomainBarReadStore)
     private readonly explorerWidthService = inject(ExplorerWidthService)
     private readonly explorerCollapseService = inject(ExplorerCollapseService)
+    private readonly explorerModeService = inject(ExplorerModeService)
     private readonly domainSelectionStore = inject(DomainSelectionStore)
     private readonly domainWordInspectionStore = inject(DomainWordInspectionStore)
-    private readonly explorerRevealService = inject(ExplorerRevealService)
+    private readonly domainWordQueryStore = inject(DomainWordQueryStore)
     private readonly clipboard = inject(CopyToClipboardService)
 
     readonly settings = this.domainBarReadStore.settings
@@ -102,22 +110,26 @@ export class DomainViewComponent {
 
     readonly rightClickedWord = signal<RightClickedWord | null>(null)
     readonly inspectedWord = this.domainWordInspectionStore.inspectedWord
-    readonly cloudRightInset = computed(() => (this.inspectedWord() ? DOMAIN_WORD_OCCURRENCES_WIDTH_PX : 0))
+    readonly wordQuery = toSignal(this.domainWordQueryStore.pattern$, { requireSync: true })
 
-    inspectWord(word: string) {
+    /** Searching for the word narrows the list to it, which says why the list is short and needs no scrolling. */
+    showWordOccurrences(word: string) {
+        this.explorerModeService.activate(WORDS_EXPLORER_MODE.id)
+        this.explorerCollapseService.expand()
+        this.domainWordQueryStore.setPattern(word)
         this.domainWordInspectionStore.inspect(word)
     }
 
-    stopInspectingWord() {
-        this.domainWordInspectionStore.clear()
+    toggleInspectedWord(word: string) {
+        this.domainWordInspectionStore.toggle(word)
     }
 
     closeWordMenu() {
         this.rightClickedWord.set(null)
     }
 
-    revealNode(path: string) {
-        this.explorerRevealService.revealNode(path)
+    selectNode(path: string) {
+        this.domainSelectionStore.select(path)
     }
 
     clearSelection() {

@@ -1,12 +1,11 @@
 import { TestBed } from "@angular/core/testing"
-import { DomainSelectionStore } from "./domainSelection.store"
 import { DomainWordInspectionStore } from "./domainWordInspection.store"
 
 describe("DomainWordInspectionStore", () => {
     const setup = () => {
         TestBed.resetTestingModule()
         TestBed.configureTestingModule({})
-        return { inspection: TestBed.inject(DomainWordInspectionStore), selection: TestBed.inject(DomainSelectionStore) }
+        return { inspection: TestBed.inject(DomainWordInspectionStore) }
     }
 
     it("should inspect no word initially", () => {
@@ -40,13 +39,24 @@ describe("DomainWordInspectionStore", () => {
         expect(inspection.inspectedWord()).toBeNull()
     })
 
-    it("should stop inspecting when another node is selected, because the scope it reported on is gone", () => {
+    it("should inspect a toggled word", () => {
         // Arrange
-        const { inspection, selection } = setup()
+        const { inspection } = setup()
+
+        // Act
+        inspection.toggle("invoice")
+
+        // Assert
+        expect(inspection.inspectedWord()).toBe("invoice")
+    })
+
+    it("should stop inspecting when the inspected word is toggled again", () => {
+        // Arrange
+        const { inspection } = setup()
         inspection.inspect("invoice")
 
         // Act
-        selection.select("/root/billing")
+        inspection.toggle("invoice")
 
         // Assert
         expect(inspection.inspectedWord()).toBeNull()
