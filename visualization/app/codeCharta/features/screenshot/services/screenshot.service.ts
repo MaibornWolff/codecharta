@@ -72,11 +72,12 @@ export class ScreenshotService implements ScreenshotCapture {
         const tagsNamesToIgnore = new Set([
             "cc-logo",
             "cc-tool-bar",
+            "cc-nav-bar",
             "cc-view-cube",
             "cc-metrics-bar",
             "cc-file-extension-bar",
             "cc-sidebar-inspector",
-            "cc-loading-file-progess-spinner",
+            "cc-loading-file-progress-spinner",
             "cc-bottom-bar",
             "cc-sidebar-explorer"
         ])

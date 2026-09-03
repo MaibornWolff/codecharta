@@ -149,6 +149,20 @@ describe("ScreenshotService", () => {
         )
     })
 
+    it("should ignore cc-nav-bar in screenshots so its view-mode-bar handle is not captured", async () => {
+        // Arrange
+        configure()
+        jest.spyOn(CanvasRenderingContext2D.prototype, "getImageData").mockImplementation(() => createMockImageData().imageData)
+
+        // Act
+        await service.makeScreenshotToFile()
+
+        // Assert
+        const ignoreElements = mockHtml2Canvas.mock.calls[0][1].ignoreElements as (element: Element) => boolean
+        const fakeNavBar = document.createElement("cc-nav-bar")
+        expect(ignoreElements(fakeNavBar)).toBe(true)
+    })
+
     it("should ignore cc-bottom-bar in screenshots", async () => {
         // Arrange
         configure()
