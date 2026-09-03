@@ -17,11 +17,16 @@ const DRAWN_COUNT_SETTLE_MS = 200
 export interface WordCloudChartHandlers {
     onLayoutFinished: () => void
     onWordRightClicked: (word: string, clientX: number, clientY: number) => void
+    onWordClicked: (word: string) => void
 }
 
 interface EchartsContextMenuParams {
     name?: string
     event?: { event?: MouseEvent }
+}
+
+interface EchartsClickParams {
+    name?: string
 }
 
 function suppressBrowserMenu(event: Event): void {
@@ -42,6 +47,7 @@ export class WordCloudChartHost {
     private resizeObserver?: ResizeObserver
     private renderTimeout?: ReturnType<typeof setTimeout>
     private drawnCountTimeout?: ReturnType<typeof setTimeout>
+    private highlightedWord: string | null = null
 
     private readonly measuredContainerSize = signal(
         { width: 0, height: 0 },
@@ -68,8 +74,11 @@ export class WordCloudChartHost {
         this.chart = echarts.init(container)
         this.chart.on("finished", () => {
             this.handlers.onLayoutFinished()
+            // A fresh layout draws every word unemphasised, so the highlight has to be put back on.
+            this.applyHighlight()
             this.scheduleDrawnCountUpdate()
         })
+        this.chart.on("click", (params: unknown) => this.reportClickedWord(params as EchartsClickParams))
         this.chart.on("contextmenu", (params: unknown) => this.reportRightClickedWord(params as EchartsContextMenuParams))
         container.addEventListener("contextmenu", suppressBrowserMenu)
         this.chartRegistry.register(this.chart)
@@ -84,6 +93,30 @@ export class WordCloudChartHost {
             return
         }
         this.handlers.onWordRightClicked(name, nativeEvent.clientX, nativeEvent.clientY)
+    }
+
+    /** Marks one word as the one the explorer is showing the breakdown of. Emphasis is dispatched rather
+     * than rendered into the option, because re-rendering would lay the whole cloud out again and every
+     * word would jump to a new place just because a different one was picked. */
+    highlightWord(word: string | null): void {
+        this.highlightedWord = word
+        this.applyHighlight()
+    }
+
+    private applyHighlight(): void {
+        if (!this.chart) {
+            return
+        }
+        this.chart.dispatchAction({ type: "downplay", seriesIndex: 0 })
+        if (this.highlightedWord !== null) {
+            this.chart.dispatchAction({ type: "highlight", seriesIndex: 0, name: this.highlightedWord })
+        }
+    }
+
+    private reportClickedWord({ name }: EchartsClickParams): void {
+        if (name) {
+            this.handlers.onWordClicked(name)
+        }
     }
 
     /** `onRendered` runs only when the layout actually reaches the chart. The caller uses it to record

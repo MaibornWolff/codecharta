@@ -12,6 +12,7 @@ let finishedCallback: (() => void) | undefined
 
 const mockChart = {
     setOption: jest.fn(),
+    dispatchAction: jest.fn(),
     resize: jest.fn(),
     dispose: jest.fn(),
     clear: jest.fn(),

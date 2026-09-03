@@ -36,8 +36,10 @@ class StubExplorerComponent {}
 class StubWordCloudComponent {
     readonly settings = input<WordCloudSettings>(defaultWordCloudSettings)
     readonly selectedNodePath = input<string | null>(null)
+    readonly inspectedWord = input<string | null>(null)
     readonly clearSelection = output<void>()
     readonly wordRightClicked = output<RightClickedWord>()
+    readonly wordClicked = output<string>()
 }
 
 @Component({ selector: "cc-domain-word-menu", template: "", standalone: true })
@@ -80,6 +82,10 @@ function inspectWordThroughTheMenu(fixture: { debugElement: DebugElement }, dete
 
 function wordList(fixture: { debugElement: DebugElement }) {
     return fixture.debugElement.query(By.directive(StubWordListComponent)).componentInstance
+}
+
+function wordCloud(fixture: { debugElement: DebugElement }) {
+    return fixture.debugElement.query(By.directive(StubWordCloudComponent)).componentInstance
 }
 
 describe("DomainViewComponent", () => {
@@ -283,6 +289,43 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(wordList(fixture).sorting()).toEqual({ option: WordSortingOption.NAME, ascending: true })
+    })
+
+    it("should inspect the word that was clicked in the cloud", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+
+        // Act
+        wordCloud(fixture).wordClicked.emit("invoice")
+        detectChanges()
+
+        // Assert
+        expect(wordList(fixture).expandedWord()).toBe("invoice")
+    })
+
+    it("should mark the inspected word in the cloud, so both halves of the view say the same thing", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+
+        // Act
+        inspectWordThroughTheMenu(fixture, detectChanges)
+
+        // Assert
+        expect(wordCloud(fixture).inspectedWord()).toBe("invoice")
+    })
+
+    it("should drop the inspection when the clicked word is clicked again", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        wordCloud(fixture).wordClicked.emit("invoice")
+        detectChanges()
+
+        // Act
+        wordCloud(fixture).wordClicked.emit("invoice")
+        detectChanges()
+
+        // Assert
+        expect(wordCloud(fixture).inspectedWord()).toBeNull()
     })
 
     it("should collapse an expanded word when its row is toggled again", async () => {
