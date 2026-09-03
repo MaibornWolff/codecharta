@@ -26,6 +26,12 @@ import { describeDroppedWords, describeWordCloud, SCREEN_READER_WORD_COUNT } fro
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)"
 
+export interface RightClickedWord {
+    word: string
+    clientX: number
+    clientY: number
+}
+
 interface WordCloudRenderInputs {
     container: HTMLElement
     words: DomainWord[]
@@ -69,9 +75,14 @@ export class WordCloudComponent implements OnDestroy {
 
     readonly clearSelection = output<void>()
 
+    readonly wordRightClicked = output<RightClickedWord>()
+
     private readonly canvasRef = viewChild<ElementRef<HTMLElement>>("wordCloudCanvas")
 
-    private readonly chartHost = new WordCloudChartHost(inject(WordCloudChartRegistry), () => this.viewReadinessStore.markReady("domain"))
+    private readonly chartHost = new WordCloudChartHost(inject(WordCloudChartRegistry), {
+        onLayoutFinished: () => this.viewReadinessStore.markReady("domain"),
+        onWordRightClicked: (word, clientX, clientY) => this.wordRightClicked.emit({ word, clientX, clientY })
+    })
 
     protected readonly words = toSignal(
         toObservable(this.selectedNodePath).pipe(switchMap(path => this.wordCloudReadStore.wordsForSelectedNode(path))),

@@ -1,0 +1,34 @@
+<header class="flex items-start gap-2 border-b border-base-300 px-3 py-2">
+    <div class="min-w-0 flex-1">
+        <p class="truncate text-sm font-semibold" [title]="word()">{{ word() }}</p>
+        <p class="truncate text-xs opacity-60">{{ totalCount() }} occurrences in {{ scopeName() }}</p>
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm btn-square shrink-0" title="Close" aria-label="Close occurrences" (click)="closed.emit()">
+        <i class="fa fa-times"></i>
+    </button>
+</header>
+
+@if (topLevelOccurrences().length === 0) {
+    <p class="px-3 py-4 text-sm opacity-60" data-testid="domain-word-occurrences-empty">
+        {{ word() }} does not occur anywhere below {{ scopeName() }}.
+    </p>
+} @else {
+    <div class="min-h-0 flex-1 overflow-y-auto py-1" data-testid="domain-word-occurrences-tree">
+        <ng-container *ngTemplateOutlet="subtree; context: { $implicit: topLevelOccurrences(), depth: 0 }"></ng-container>
+    </div>
+}
+
+<ng-template #subtree let-occurrences let-depth="depth">
+    @for (occurrence of occurrences; track occurrence.path) {
+        <cc-domain-word-occurrence-row
+            [node]="occurrence"
+            [depth]="depth"
+            [isExpanded]="isExpanded(occurrence.path)"
+            (toggled)="toggle(occurrence.path)"
+            (revealed)="revealNode.emit(occurrence.path)"
+        ></cc-domain-word-occurrence-row>
+        @if (isExpanded(occurrence.path)) {
+            <ng-container *ngTemplateOutlet="subtree; context: { $implicit: occurrence.children, depth: depth + 1 }"></ng-container>
+        }
+    }
+</ng-template>

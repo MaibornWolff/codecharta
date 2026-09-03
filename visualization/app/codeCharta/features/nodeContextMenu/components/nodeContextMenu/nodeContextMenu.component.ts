@@ -3,10 +3,10 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
+import { ContextMenuItemComponent } from "../../../shared/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
 import { NodeContextMenuWriteStore } from "../../stores/nodeContextMenu.write.store"
-import { ContextMenuItemComponent } from "./contextMenuItem.component"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
 
 const VIEWPORT_MARGIN = 4

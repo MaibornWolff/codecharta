@@ -22,12 +22,33 @@
 </cc-sidebar-explorer>
 
 <div
-    class="fixed right-0 top-[var(--cc-bars-height,49px)] bottom-[var(--cc-bottom-bar-height,32px)]"
+    class="fixed top-[var(--cc-bars-height,49px)] bottom-[var(--cc-bottom-bar-height,32px)]"
     [style.left.px]="cloudLeftInset()"
+    [style.right.px]="cloudRightInset()"
 >
-    <cc-word-cloud [settings]="settings()" [selectedNodePath]="selectedNodePath()" (clearSelection)="clearSelection()"></cc-word-cloud>
+    <cc-word-cloud
+        [settings]="settings()"
+        [selectedNodePath]="selectedNodePath()"
+        (clearSelection)="clearSelection()"
+        (wordRightClicked)="rightClickedWord.set($event)"
+    ></cc-word-cloud>
     <cc-domain-toolbox class="absolute right-[10px] top-[10px] z-10 flex"></cc-domain-toolbox>
 </div>
+
+<cc-domain-word-menu
+    [rightClickedWord]="rightClickedWord()"
+    (showOccurrences)="inspectWord($event)"
+    (closed)="closeWordMenu()"
+></cc-domain-word-menu>
+
+@if (inspectedWord(); as inspectedWord) {
+    <cc-domain-word-occurrences
+        [word]="inspectedWord"
+        [scopePath]="selectedNodePath()"
+        (closed)="stopInspectingWord()"
+        (revealNode)="revealNode($event)"
+    ></cc-domain-word-occurrences>
+}
 
 <cc-bottom-bar [showSelectedWhenNotHovered]="true" [selectedNodePath]="selectedNodePath()"></cc-bottom-bar>
 

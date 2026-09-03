@@ -2,6 +2,7 @@ import { STATE } from "../../../mocks/dataMocks"
 import { CcState, DomainLensData, DomainWord, FileSelectionState, FileState } from "../../../model/codeCharta.model"
 import { fileRoot } from "../../../util/fileRoot"
 import {
+    createWordOccurrencesSelector,
     createWordsForSelectedNodeSelector,
     hasDomainDataSelector,
     hasTfidfDataSelector,
@@ -134,6 +135,30 @@ describe("domain lens selectors", () => {
 
             // Assert
             expect(result).toEqual(rootWords)
+        })
+    })
+
+    describe("createWordOccurrencesSelector", () => {
+        it("should report nothing while no word is inspected", () => {
+            // Arrange
+            const state = stateWithWords({ "/root": rootWords })
+
+            // Act
+            const result = createWordOccurrencesSelector("/root", null)(state)
+
+            // Assert
+            expect(result).toBeNull()
+        })
+
+        it("should report nothing while no map is loaded", () => {
+            // Arrange
+            const state = stateWithWords({ "/root": rootWords })
+
+            // Act
+            const result = createWordOccurrencesSelector("/root", "invoice")(state)
+
+            // Assert
+            expect(result).toBeNull()
         })
     })
 

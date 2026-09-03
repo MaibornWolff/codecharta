@@ -3,6 +3,8 @@ import { DomainLensData, FileState } from "../../../model/codeCharta.model"
 import { domainWordsSelector } from "../../../stores/domainLensSource/domainLensSource.read.facade"
 import { visibleFileStatesWithCurrentSettingsSelector } from "../../../stores/fileStore/fileStore.facade"
 import { fileRoot } from "../../../util/fileRoot"
+import { viewIndependentTreeSelector } from "../../structure/structure.facade"
+import { buildWordOccurrenceTree } from "./wordOccurrences"
 
 export const hasDomainDataSelector = createSelector(domainWordsSelector, words => Object.keys(words).length > 0)
 
@@ -17,6 +19,11 @@ export const hasTfidfDataSelector = createSelector(domainWordsSelector, words =>
 
 export const createWordsForSelectedNodeSelector = (selectedNodePath: string | null) =>
     createSelector(domainWordsSelector, words => words[selectedNodePath ?? fileRoot.rootPath] ?? [])
+
+export const createWordOccurrencesSelector = (scopePath: string | null, word: string | null) =>
+    createSelector(viewIndependentTreeSelector, domainWordsSelector, (tree, words) =>
+        word === null ? null : buildWordOccurrenceTree(tree, words, scopePath ?? fileRoot.rootPath, word)
+    )
 
 const carriesNoDomainLens = ({ file }: FileState) => Object.keys(file.settings.fileSettings.domainWords).length === 0
 

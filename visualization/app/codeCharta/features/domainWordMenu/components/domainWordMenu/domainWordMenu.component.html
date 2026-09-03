@@ -1,0 +1,31 @@
+@if (rightClickedWord(); as rightClickedWord) {
+    <div
+        #menu
+        class="fixed z-[100] w-56 rounded-box border border-base-300 bg-base-100 py-1 text-base-content shadow-lg"
+        data-testid="domain-word-menu"
+        [style.left.px]="clampedPosition()?.left ?? rightClickedWord.clientX"
+        [style.top.px]="clampedPosition()?.top ?? rightClickedWord.clientY"
+        [style.visibility]="clampedPosition() ? 'visible' : 'hidden'"
+        (contextmenu)="$event.preventDefault()"
+    >
+        <div class="truncate px-4 py-2.5 text-sm font-semibold tracking-wide">{{ rightClickedWord.word }}</div>
+
+        <div class="my-1 border-t border-base-300"></div>
+
+        <cc-context-menu-item
+            icon="fa-solid fa-magnifying-glass-chart"
+            hoverHint="List the folders and files this word occurs in"
+            (itemClick)="inspectWord()"
+        >
+            Show occurrences
+        </cc-context-menu-item>
+
+        <cc-context-menu-item
+            [icon]="wasWordCopied() ? 'fa-solid fa-check text-success' : 'fa-regular fa-copy'"
+            hoverHint="Copy the word to the clipboard"
+            (itemClick)="copyWord()"
+        >
+            Copy word
+        </cc-context-menu-item>
+    </div>
+}

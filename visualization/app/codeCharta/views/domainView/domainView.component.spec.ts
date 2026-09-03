@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from "@angular/core"
+import { Component, DebugElement, input, output, signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
 import { provideMockStore } from "@ngrx/store/testing"
@@ -11,12 +11,14 @@ import {
     EXPLORER_ROW,
     EXPLORER_TREE,
     ExplorerCollapseService,
+    ExplorerRevealService,
     ExplorerWidthService
 } from "../../features/sidebarExplorer/facade"
 import { viewIndependentTreeSelector } from "../../lenses/structure/structure.facade"
 import { CodeMapNode, NodeType, SortingOption } from "../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings } from "../../model/wordCloud.model"
 import { accumulatedDataSelector } from "../../renderer/renderModel/renderModel.facade"
+import { RightClickedWord } from "../../renderer/wordCloud/wordCloud.facade"
 import { defaultState } from "../../stores/rootStore/state.manager"
 import { DomainViewComponent } from "./domainView.component"
 
@@ -28,6 +30,22 @@ class StubWordCloudComponent {
     readonly settings = input<WordCloudSettings>(defaultWordCloudSettings)
     readonly selectedNodePath = input<string | null>(null)
     readonly clearSelection = output<void>()
+    readonly wordRightClicked = output<RightClickedWord>()
+}
+
+@Component({ selector: "cc-domain-word-menu", template: "", standalone: true })
+class StubWordMenuComponent {
+    readonly rightClickedWord = input<RightClickedWord | null>(null)
+    readonly showOccurrences = output<string>()
+    readonly closed = output<void>()
+}
+
+@Component({ selector: "cc-domain-word-occurrences", template: "", standalone: true })
+class StubWordOccurrencesComponent {
+    readonly word = input.required<string>()
+    readonly scopePath = input<string | null>(null)
+    readonly closed = output<void>()
+    readonly revealNode = output<string>()
 }
 
 @Component({ selector: "cc-domain-bar", template: "", standalone: true })
@@ -43,10 +61,24 @@ const SOME_NODE = { name: "a.ts", path: "/root/a.ts", id: 1, type: NodeType.FILE
 const VIEW_INDEPENDENT_ROOT = { name: "root", path: "/root", type: NodeType.FOLDER, attributes: {}, children: [] } as CodeMapNode
 const RENDER_MODEL_ROOT = { name: "map", path: "/map", type: NodeType.FOLDER, attributes: {}, children: [] } as CodeMapNode
 
+function inspectWordThroughTheMenu(fixture: { debugElement: DebugElement }, detectChanges: () => void) {
+    fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.showOccurrences.emit("invoice")
+    detectChanges()
+}
+
 describe("DomainViewComponent", () => {
     async function setup(settings = defaultWordCloudSettings) {
         TestBed.overrideComponent(DomainViewComponent, {
-            set: { imports: [StubExplorerComponent, StubWordCloudComponent, StubDomainBarComponent, StubBottomBarComponent] }
+            set: {
+                imports: [
+                    StubExplorerComponent,
+                    StubWordCloudComponent,
+                    StubDomainBarComponent,
+                    StubBottomBarComponent,
+                    StubWordMenuComponent,
+                    StubWordOccurrencesComponent
+                ]
+            }
         })
         return render(DomainViewComponent, {
             providers: [
@@ -127,6 +159,79 @@ describe("DomainViewComponent", () => {
         // Assert
         expect(wordCloud).not.toBe(null)
         expect(wordCloud.componentInstance.settings()).toBe(settings)
+    })
+
+    it("should hand a right-clicked word to the word menu, so it opens at the pointer", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        const rightClickedWord: RightClickedWord = { word: "invoice", clientX: 40, clientY: 80 }
+
+        // Act
+        fixture.debugElement.query(By.directive(StubWordCloudComponent)).componentInstance.wordRightClicked.emit(rightClickedWord)
+        detectChanges()
+
+        // Assert
+        expect(fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.rightClickedWord()).toBe(rightClickedWord)
+    })
+
+    it("should show no occurrences before a word is inspected", async () => {
+        // Arrange & Act
+        const { fixture } = await setup()
+
+        // Assert
+        expect(fixture.debugElement.query(By.directive(StubWordOccurrencesComponent))).toBeNull()
+    })
+
+    it("should break down the word the menu asks about, scoped to the selected node", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+
+        // Act
+        inspectWordThroughTheMenu(fixture, detectChanges)
+
+        // Assert
+        const occurrences = fixture.debugElement.query(By.directive(StubWordOccurrencesComponent)).componentInstance
+        expect(occurrences.word()).toBe("invoice")
+        expect(occurrences.scopePath()).toBeNull()
+    })
+
+    it("should inset the cloud by the panel, so the panel cannot occlude the cloud", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+
+        // Act
+        inspectWordThroughTheMenu(fixture, detectChanges)
+
+        // Assert
+        const cloudContainer = fixture.debugElement.query(By.directive(StubWordCloudComponent)).nativeElement.parentElement
+        expect(cloudContainer.style.right).toBe("320px")
+    })
+
+    it("should drop the breakdown when the panel is closed", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        inspectWordThroughTheMenu(fixture, detectChanges)
+
+        // Act
+        fixture.debugElement.query(By.directive(StubWordOccurrencesComponent)).componentInstance.closed.emit()
+        detectChanges()
+
+        // Assert
+        expect(fixture.debugElement.query(By.directive(StubWordOccurrencesComponent))).toBeNull()
+    })
+
+    it("should reveal the node the breakdown points at", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        inspectWordThroughTheMenu(fixture, detectChanges)
+        const revealService = fixture.debugElement.injector.get(ExplorerRevealService)
+
+        // Act
+        fixture.debugElement.query(By.directive(StubWordOccurrencesComponent)).componentInstance.revealNode.emit("/root/billing")
+        detectChanges()
+
+        // Assert
+        expect(revealService.revealedNodePath()).toBe("/root/billing")
     })
 
     it("should render the domain settings bar", async () => {
