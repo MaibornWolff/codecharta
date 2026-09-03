@@ -6,6 +6,7 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { STATE } from "../../../../mocks/dataMocks"
 import { CcState, DomainLensData } from "../../../../model/codeCharta.model"
+import { ExplorerScrollHostService } from "../../../sidebarExplorer/facade"
 import { WordSorting, WordSortingOption } from "../../util/sortWords"
 import { DomainWordRowComponent } from "../domainWordRow/domainWordRow.component"
 import { DomainWordListComponent } from "./domainWordList.component"
@@ -42,7 +43,7 @@ describe("DomainWordListComponent", () => {
         return render(DomainWordListComponent, {
             inputs: { query: "", expandedWord: null, ...inputs },
             on: { wordToggled, nodeClicked },
-            providers: [provideMockStore({ initialState: { ...STATE, domainLensSource: { words } } as CcState })]
+            providers: [provideMockStore({ initialState: { ...STATE, domainLensSource: { words } } as CcState }), ExplorerScrollHostService]
         })
     }
 

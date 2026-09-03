@@ -1,7 +1,6 @@
 import { signal } from "@angular/core"
 
 const DEFAULT_ROW_HEIGHT = 28
-const MAX_FRAMES_TO_WAIT_FOR_A_LAID_OUT_PANEL = 30
 const WORD_ROW_SELECTOR = "cc-domain-word-row"
 const BREAKDOWN_SELECTOR = "[data-word-breakdown]"
 
@@ -12,6 +11,8 @@ export interface MeasuredViewport {
     expandedHeight: number
 }
 
+const UNMEASURED: MeasuredViewport = { scrolledPast: 0, viewportHeight: 0, rowHeight: DEFAULT_ROW_HEIGHT, expandedHeight: 0 }
+
 /**
  * Reads how much of the word list is actually on screen. The list can be far taller than its panel, so
  * only the measured slice is rendered; everything here is DOM measurement, kept out of the component so
@@ -19,47 +20,39 @@ export interface MeasuredViewport {
  */
 export class WordListViewport {
     private host?: HTMLElement
-    private scrollHost?: HTMLElement
+    private scrollHost: HTMLElement | null = null
     private resizeObserver?: ResizeObserver
-    private readonly measured = signal<MeasuredViewport>(
-        { scrolledPast: 0, viewportHeight: 0, rowHeight: DEFAULT_ROW_HEIGHT, expandedHeight: 0 },
-        {
-            equal: (a, b) =>
-                a.scrolledPast === b.scrolledPast &&
-                a.viewportHeight === b.viewportHeight &&
-                a.rowHeight === b.rowHeight &&
-                a.expandedHeight === b.expandedHeight
-        }
-    )
+    private openBreakdownWord: string | null = null
+    private openBreakdownHeight = 0
+
+    private readonly measured = signal<MeasuredViewport>(UNMEASURED, {
+        equal: (one, other) =>
+            one.scrolledPast === other.scrolledPast &&
+            one.viewportHeight === other.viewportHeight &&
+            one.rowHeight === other.rowHeight &&
+            one.expandedHeight === other.expandedHeight
+    })
 
     readonly geometry = this.measured.asReadonly()
 
     private readonly remeasure = () => this.measure()
 
-    attachTo(host: HTMLElement): void {
-        if (this.host === host) {
+    /**
+     * The panel is handed in rather than searched for: the explorer destroys and re-creates it as the mode
+     * switches or the sidebar collapses, and this list outlives all of that. Searching for it once left the
+     * list unmeasured — and therefore rendering every row — for the rest of the session.
+     */
+    attachTo(host: HTMLElement, scrollHost: HTMLElement | null): void {
+        if (this.host === host && this.scrollHost === scrollHost) {
             return
         }
-        this.dispose()
+        this.stopObserving()
         this.host = host
-        this.observeThePanelOnceItIsLaidOut(MAX_FRAMES_TO_WAIT_FOR_A_LAID_OUT_PANEL)
-    }
-
-    /** The panel is measurable a frame or more after the list is put into it, so keep looking until it is:
-     * an unmeasured list falls back to rendering every row, which is what the window exists to avoid. */
-    private observeThePanelOnceItIsLaidOut(framesLeft: number): void {
-        const host = this.host
-        if (!host) {
-            return
-        }
-        const scrollHost = findScrollHost(host)
-        if (!scrollHost || scrollHost.clientHeight === 0) {
-            if (framesLeft > 0) {
-                requestAnimationFrame(() => this.observeThePanelOnceItIsLaidOut(framesLeft - 1))
-            }
-            return
-        }
         this.scrollHost = scrollHost
+        if (!scrollHost) {
+            this.measured.set(UNMEASURED)
+            return
+        }
         scrollHost.addEventListener("scroll", this.remeasure, { passive: true })
         // The list's own height changes when a breakdown opens; the panel's when the window is resized.
         if (typeof ResizeObserver !== "undefined") {
@@ -70,47 +63,57 @@ export class WordListViewport {
         this.measure()
     }
 
+    /**
+     * Which word's breakdown is open. Its height has to be remembered rather than re-read every time: the
+     * breakdown is only rendered while its own row is inside the window, so measuring it as zero once that
+     * row scrolls out would pull every row below it upwards mid-scroll.
+     */
+    trackOpenBreakdown(word: string | null): void {
+        if (this.openBreakdownWord === word) {
+            return
+        }
+        this.openBreakdownWord = word
+        this.openBreakdownHeight = 0
+        this.measure()
+    }
+
     measure(): void {
         const { host, scrollHost } = this
         if (!host || !scrollHost) {
             return
         }
+        const renderedBreakdownHeight = host.querySelector<HTMLElement>(BREAKDOWN_SELECTOR)?.offsetHeight
+        if (renderedBreakdownHeight !== undefined) {
+            this.openBreakdownHeight = renderedBreakdownHeight
+        }
         this.measured.set({
             scrolledPast: Math.max(0, scrollHost.getBoundingClientRect().top - host.getBoundingClientRect().top),
             viewportHeight: scrollHost.clientHeight,
             rowHeight: host.querySelector<HTMLElement>(WORD_ROW_SELECTOR)?.offsetHeight || DEFAULT_ROW_HEIGHT,
-            expandedHeight: host.querySelector<HTMLElement>(BREAKDOWN_SELECTOR)?.offsetHeight ?? 0
+            expandedHeight: this.openBreakdownWord === null ? 0 : this.openBreakdownHeight
         })
     }
 
-    /** Puts the given offset within the list at the top of the panel, so an unrendered row can be reached. */
+    /** Scrolls the panel to an offset within the list, so a row that is not rendered can still be reached. */
     scrollTo(offsetWithinTheList: number): void {
         const { host, scrollHost } = this
         if (!host || !scrollHost) {
             return
         }
         const listTopWithinScrollHost = host.getBoundingClientRect().top - scrollHost.getBoundingClientRect().top + scrollHost.scrollTop
-        scrollHost.scrollTop = listTopWithinScrollHost + offsetWithinTheList
+        scrollHost.scrollTop = Math.max(0, listTopWithinScrollHost + offsetWithinTheList)
         this.measure()
     }
 
     dispose(): void {
+        this.stopObserving()
+        this.host = undefined
+        this.scrollHost = null
+    }
+
+    private stopObserving(): void {
         this.scrollHost?.removeEventListener("scroll", this.remeasure)
         this.resizeObserver?.disconnect()
         this.resizeObserver = undefined
-        this.host = undefined
-        this.scrollHost = undefined
     }
-}
-
-function findScrollHost(element: HTMLElement): HTMLElement | undefined {
-    let candidate = element.parentElement
-    while (candidate) {
-        const { overflowY } = getComputedStyle(candidate)
-        if (overflowY === "auto" || overflowY === "scroll") {
-            return candidate
-        }
-        candidate = candidate.parentElement
-    }
-    return undefined
 }
