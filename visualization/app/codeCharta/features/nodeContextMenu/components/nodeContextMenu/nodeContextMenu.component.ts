@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@a
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { ViewId } from "../../../../routing/routePaths"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { ContextMenuItemComponent, FloatingMenuComponent } from "../../../shared/facade"
@@ -10,6 +11,11 @@ import { NODE_CONTEXT_MENU_CAPABILITIES } from "../../nodeContextMenuCapabilitie
 import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
 import { NodeContextMenuWriteStore } from "../../stores/nodeContextMenu.write.store"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
+
+const JUMP_TARGETS: Record<ViewId, { label: string; icon: string; hoverHint: string }> = {
+    metrics: { label: "Show in Metrics", icon: "fa-solid fa-cubes", hoverHint: "Select this node on the metrics map" },
+    domain: { label: "Show in Domain", icon: "fa-solid fa-cloud", hoverHint: "Show the domain words below this node" }
+}
 
 @Component({
     selector: "cc-node-context-menu",
@@ -27,7 +33,9 @@ export class NodeContextMenuComponent {
     private readonly explorerRevealService = inject(ExplorerRevealService)
     private readonly clipboard = inject(CopyToClipboardService)
 
-    readonly showMapActions = inject(NODE_CONTEXT_MENU_CAPABILITIES).showMapActions
+    private readonly capabilities = inject(NODE_CONTEXT_MENU_CAPABILITIES)
+
+    readonly showMapActions = this.capabilities.showMapActions
 
     readonly rightClickedNodeData = toSignal(this.sharedViewReadWindow.rightClickedNodeData$, { requireSync: true })
     readonly codeMapNode = toSignal(this.readStore.rightClickedCodeMapNode$, { requireSync: true })
@@ -49,6 +57,15 @@ export class NodeContextMenuComponent {
         }
     })
     readonly menuNode = computed(() => this.openMenu()?.node ?? null)
+    private readonly hasDomainData = toSignal(this.readStore.hasDomainData$, { requireSync: true })
+    readonly jumpTarget = computed(() => {
+        const view = this.capabilities.jumpTargetView
+        if (!view || (view === "domain" && !this.hasDomainData())) {
+            return null
+        }
+        return { view, ...JUMP_TARGETS[view] }
+    })
+
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
     readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin === "codeMap")
     readonly displayPath = computed(() => {
@@ -86,6 +103,15 @@ export class NodeContextMenuComponent {
         if (node) {
             await this.clipboard.copy(this.pathWithoutRootSegment(node))
         }
+    }
+
+    showInJumpTargetView() {
+        const node = this.menuNode()
+        const jumpTarget = this.jumpTarget()
+        if (node && jumpTarget) {
+            this.writeStore.showNodeInView(jumpTarget.view, node.path)
+        }
+        this.close()
     }
 
     showInExplorer() {

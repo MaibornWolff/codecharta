@@ -35,6 +35,7 @@ import { MetricsExplorerSelection } from "./explorer/metricsExplorerSelection"
 import { METRICS_EXPLORER_SORT } from "./explorer/metricsExplorerSort"
 import { MetricsExplorerTree } from "./explorer/metricsExplorerTree"
 import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelectedNodeAfterLoad.directive"
+import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.directive"
 
 @Component({
     selector: "cc-metrics-view",
@@ -71,7 +72,7 @@ import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelecte
         provideViewScopedExplorerState("metrics"),
         provideViewScopedCssVariables()
     ],
-    hostDirectives: [RevealsSelectedNodeAfterLoadDirective],
+    hostDirectives: [RevealsSelectedNodeAfterLoadDirective, ShowsHandedOverNodeDirective],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MetricsViewComponent {}

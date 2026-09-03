@@ -1,6 +1,7 @@
 import { Component, DebugElement, input, output, signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
+import { provideRouter } from "@angular/router"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { firstValueFrom } from "rxjs"
@@ -88,6 +89,7 @@ describe("DomainViewComponent", () => {
         })
         return render(DomainViewComponent, {
             providers: [
+                provideRouter([]),
                 provideMockState(),
                 provideMockStore({
                     initialState: defaultState,
@@ -113,7 +115,7 @@ describe("DomainViewComponent", () => {
             showCounts: false,
             sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
         })
-        expect(injector.get(NODE_CONTEXT_MENU_CAPABILITIES)).toEqual({ showMapActions: false })
+        expect(injector.get(NODE_CONTEXT_MENU_CAPABILITIES)).toEqual({ showMapActions: false, jumpTargetView: "metrics" })
         expect(injector.get(EXPLORER_ROW).project(SOME_NODE).isSelectable).toBe(true)
     })
 

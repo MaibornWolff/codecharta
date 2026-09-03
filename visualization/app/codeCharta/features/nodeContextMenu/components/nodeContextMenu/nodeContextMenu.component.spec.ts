@@ -1,10 +1,14 @@
 import { TestBed } from "@angular/core/testing"
+import { provideRouter, Router } from "@angular/router"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
+import { hasDomainDataSelector } from "../../../../lenses/domain/domainLens.facade"
 import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderModel/rightClickedCodeMapNode.selector"
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { routeLinks } from "../../../../routing/routePaths"
+import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
 import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
     addBlacklistItem,
@@ -63,6 +67,7 @@ describe("nodeContextMenu component", () => {
         focusedNodePath?: string
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
+        hasDomainData?: boolean
     }
 
     async function renderMenu({
@@ -70,7 +75,8 @@ describe("nodeContextMenu component", () => {
         origin = "codeMap",
         focusedNodePath,
         previousFocusedNodePath,
-        capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES
+        capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
+        hasDomainData = true
     }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
@@ -78,6 +84,7 @@ describe("nodeContextMenu component", () => {
         const focusedNodePaths = [focusedNodePath, previousFocusedNodePath].filter(Boolean)
         const renderResult = await render(NodeContextMenuComponent, {
             providers: [
+                provideRouter([]),
                 provideMockState(),
                 provideMockStore({
                     selectors: [
@@ -86,7 +93,8 @@ describe("nodeContextMenu component", () => {
                         { selector: currentFocusedNodePathSelector, value: focusedNodePath },
                         { selector: focusedNodePathSelector, value: focusedNodePaths },
                         { selector: markFolderItemsSelector, value: [{ color: "red", isMarked: false }] },
-                        { selector: currentMarkColorSelector, value: null }
+                        { selector: currentMarkColorSelector, value: null },
+                        { selector: hasDomainDataSelector, value: hasDomainData }
                     ]
                 }),
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock },
@@ -141,6 +149,36 @@ describe("nodeContextMenu component", () => {
         expect(screen.queryByText("Flatten")).toBe(null)
         expect(screen.queryByText("Exclude")).toBe(null)
         expect(container.querySelector(".colorButton")).toBe(null)
+    })
+
+    it("should hand the node over to the jump target view and close", async () => {
+        // Arrange
+        await renderMenu({ capabilities: { showMapActions: false, jumpTargetView: "metrics" } })
+        const viewHandoffStore = TestBed.inject(ViewHandoffStore)
+        const navigateByUrl = jest.spyOn(TestBed.inject(Router), "navigateByUrl").mockResolvedValue(true)
+
+        // Act
+        fireEvent.click(screen.getByText("Show in Metrics"))
+
+        // Assert
+        expect(viewHandoffStore.takeNodeFor("metrics")).toBe("/root/src/RatingBean.java")
+        expect(navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics)
+    })
+
+    it("should hide the jump to the domain view while no domain data is loaded", async () => {
+        // Arrange & Act
+        await renderMenu({ hasDomainData: false })
+
+        // Assert
+        expect(screen.queryByText("Show in Domain")).toBe(null)
+    })
+
+    it("should offer the jump to the domain view once domain data is loaded", async () => {
+        // Arrange & Act
+        await renderMenu()
+
+        // Assert
+        expect(screen.getByText("Show in Domain")).not.toBe(null)
     })
 
     it("should show the color row for folders", async () => {

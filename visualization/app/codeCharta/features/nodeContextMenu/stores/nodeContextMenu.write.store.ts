@@ -1,6 +1,9 @@
-import { Injectable } from "@angular/core"
+import { Injectable, inject } from "@angular/core"
+import { Router } from "@angular/router"
 import { Store } from "@ngrx/store"
 import { CcState, CodeMapNode } from "../../../model/codeCharta.model"
+import { routeLinks, ViewId } from "../../../routing/routePaths"
+import { ViewHandoffStore } from "../../../routing/viewHandoff.store"
 import {
     addBlacklistItem,
     addBlacklistItemsIfNotResultsInEmptyMap,
@@ -20,7 +23,15 @@ type BlacklistableNode = Pick<CodeMapNode, "path" | "type">
     providedIn: "root"
 })
 export class NodeContextMenuWriteStore {
+    private readonly router = inject(Router)
+    private readonly viewHandoffStore = inject(ViewHandoffStore)
+
     constructor(private readonly store: Store<CcState>) {}
+
+    showNodeInView(view: ViewId, nodePath: string) {
+        this.viewHandoffStore.handOverNode(view, nodePath)
+        void this.router.navigateByUrl(routeLinks[view])
+    }
 
     focus(path: string) {
         this.store.dispatch(focusNode({ value: path }))
