@@ -1,7 +1,7 @@
 ---
 name: domain-explorer-context-menu
 issue: none
-state: todo
+state: complete
 version: 1
 ---
 
@@ -44,13 +44,17 @@ with that node selected and revealed there.
 
 ## Steps
 
-- [ ] Complete Task 1: Extract the floating menu shell
-- [ ] Complete Task 2: Capability-driven node context menu
-- [ ] Complete Task 3: Cross-view node handoff
-- [ ] Complete Task 4: Domain explorer menu + jumps
-- [ ] Update CHANGELOG.md and the domain view docs
+- [x] Complete Task 1: Extract the floating menu shell
+- [x] Complete Task 2: Capability-driven node context menu
+- [x] Complete Task 3: Cross-view node handoff
+- [x] Complete Task 4: Domain explorer menu + jumps
+- [x] Update CHANGELOG.md
 
 ## Notes
 
 - Both views resolve nodes from the same structure tree, so a path handed over always resolves
 - A node excluded from the metrics map has no explorer row there; the reveal then just does nothing
+- The sidebar explorer must stay view-agnostic (dependency-cruiser rule), so the arrival handling lives
+  per view and only its subscription plumbing is shared, in routing/showHandedOverNodeOnArrival
+- Jumping to a metrics map that was never rendered leaves the building unhighlighted; the explorer
+  selection and the bottom bar still name the node
