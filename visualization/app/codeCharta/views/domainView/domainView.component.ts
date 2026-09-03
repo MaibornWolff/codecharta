@@ -27,7 +27,6 @@ import {
     provideViewScopedExplorerState,
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
-import { SortingOption } from "../../model/codeCharta.model"
 import { RightClickedWord, WordCloudComponent } from "../../renderer/wordCloud/wordCloud.facade"
 import { CopyToClipboardService } from "../../util/copyToClipboard.service"
 import { pathToNodeName } from "../../util/nodePathHelper"
@@ -73,7 +72,6 @@ import { DomainWordQueryStore } from "./stores/domainWordQuery.store"
                 showRules: false,
                 showSearch: true,
                 showCounts: false,
-                sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES],
                 modes: DOMAIN_EXPLORER_MODES
             }
         },

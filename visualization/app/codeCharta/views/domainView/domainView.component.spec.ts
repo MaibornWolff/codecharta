@@ -120,7 +120,6 @@ describe("DomainViewComponent", () => {
             showRules: false,
             showSearch: true,
             showCounts: false,
-            sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES],
             modes: DOMAIN_EXPLORER_MODES
         })
         expect(injector.get(NODE_CONTEXT_MENU_CAPABILITIES)).toEqual({ showMapActions: false, jumpTargetView: "metrics" })

@@ -4,6 +4,7 @@ import { CcState, SortingOption } from "../../../model/codeCharta.model"
 import { EXPLORER_SORT, ExplorerSort } from "../explorerSort.port"
 
 export interface ExplorerSortConfig {
+    options: SortingOption[]
     optionSelector: (state: CcState) => SortingOption
     ascendingSelector: (state: CcState) => boolean
     setOption: (props: { value: SortingOption }) => Action
@@ -11,9 +12,10 @@ export interface ExplorerSortConfig {
     toggleAscending: (currentAscending: boolean) => Action
 }
 
-const createExplorerSort = (store: Store<CcState>, config: ExplorerSortConfig): ExplorerSort => {
+const createExplorerSort = (store: Store<CcState>, config: ExplorerSortConfig): ExplorerSort<SortingOption> => {
     const ascending = store.selectSignal(config.ascendingSelector)
     return {
+        options: config.options,
         option$: store.select(config.optionSelector),
         ascending$: store.select(config.ascendingSelector),
         setOption: option => store.dispatch(config.setOption({ value: option })),

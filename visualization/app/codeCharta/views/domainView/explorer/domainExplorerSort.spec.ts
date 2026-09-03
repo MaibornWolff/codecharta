@@ -30,6 +30,14 @@ describe("DOMAIN_EXPLORER_SORT", () => {
         return { sort: TestBed.inject<ExplorerSort>(EXPLORER_SORT), dispatchSpy }
     }
 
+    it("should offer only the sort options the domain view can answer for", () => {
+        // Arrange — the domain view has no area metric
+        const { sort } = setup()
+
+        // Act & Assert
+        expect(sort.options).toEqual([SortingOption.NAME, SortingOption.NUMBER_OF_FILES])
+    })
+
     it("should stream the domain view's OWN sort option and order", async () => {
         // Arrange
         const { sort } = setup(false)

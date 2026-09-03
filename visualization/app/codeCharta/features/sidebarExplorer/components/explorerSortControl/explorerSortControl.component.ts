@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { SortingOption } from "../../../../model/codeCharta.model"
-import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
-import { EXPLORER_SORT } from "../../explorerSort.port"
+import { EXPLORER_SORT, EXPLORER_WORD_SORT, ExplorerSort } from "../../explorerSort.port"
+import { ExplorerModeService } from "../../services/explorerMode.service"
 
 @Component({
     selector: "cc-explorer-sort-control",
@@ -10,18 +9,27 @@ import { EXPLORER_SORT } from "../../explorerSort.port"
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExplorerSortControlComponent {
-    private readonly explorerSort = inject(EXPLORER_SORT)
+    private readonly modeService = inject(ExplorerModeService)
+    private readonly fileSort: ExplorerSort = inject(EXPLORER_SORT)
+    // A view without a second mode never asks for the word sort, so the file sort stands in for it.
+    private readonly wordSort = inject(EXPLORER_WORD_SORT, { optional: true }) ?? this.fileSort
 
-    readonly sortOptions: SortingOption[] = inject(EXPLORER_CAPABILITIES).sortOptions
+    private readonly sortInUse = computed(() => (this.modeService.isFilesMode() ? this.fileSort : this.wordSort))
 
-    readonly currentOption = toSignal(this.explorerSort.option$, { requireSync: true })
-    readonly isAscending = toSignal(this.explorerSort.ascending$, { requireSync: true })
+    private readonly fileOption = toSignal(this.fileSort.option$, { requireSync: true })
+    private readonly isFileAscending = toSignal(this.fileSort.ascending$, { requireSync: true })
+    private readonly wordOption = toSignal(this.wordSort.option$, { requireSync: true })
+    private readonly isWordAscending = toSignal(this.wordSort.ascending$, { requireSync: true })
 
-    setSortingOption(value: SortingOption) {
-        this.explorerSort.setOption(value)
+    readonly sortOptions = computed(() => this.sortInUse().options)
+    readonly currentOption = computed(() => (this.modeService.isFilesMode() ? this.fileOption() : this.wordOption()))
+    readonly isAscending = computed(() => (this.modeService.isFilesMode() ? this.isFileAscending() : this.isWordAscending()))
+
+    setSortingOption(value: string) {
+        this.sortInUse().setOption(value)
     }
 
     toggleSortOrder() {
-        this.explorerSort.toggleAscending()
+        this.sortInUse().toggleAscending()
     }
 }
