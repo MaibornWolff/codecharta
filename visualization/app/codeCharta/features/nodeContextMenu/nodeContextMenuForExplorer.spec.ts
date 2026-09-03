@@ -27,7 +27,7 @@ describe("NodeContextMenuForExplorer", () => {
         const contextMenu = setup()
 
         // Act & Assert
-        expect(contextMenu.isEnabledFor(NODE)).toBe(true)
+        expect(contextMenu.isEnabledFor(NODE.path)).toBe(true)
     })
 
     it("should mark the node the open menu is anchored to", () => {
@@ -35,8 +35,8 @@ describe("NodeContextMenuForExplorer", () => {
         const contextMenu = setup({ nodeId: NODE.path })
 
         // Assert
-        expect(contextMenu.isMarked(NODE)).toBe(true)
-        expect(contextMenu.isMarked(OTHER_NODE)).toBe(false)
+        expect(contextMenu.isMarked(NODE.path)).toBe(true)
+        expect(contextMenu.isMarked(OTHER_NODE.path)).toBe(false)
     })
 
     it("should publish the right-clicked node data on open, from the explorer", () => {
@@ -45,7 +45,7 @@ describe("NodeContextMenuForExplorer", () => {
         const dispatchSpy = jest.spyOn(TestBed.inject(Store), "dispatch")
 
         // Act
-        contextMenu.open(NODE, 10, 20)
+        contextMenu.open(NODE.path, 10, 20)
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(

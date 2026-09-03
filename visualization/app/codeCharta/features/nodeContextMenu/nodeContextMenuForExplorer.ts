@@ -1,6 +1,5 @@
 import { Injectable, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { CodeMapNode } from "../../model/codeCharta.model"
 import { SharedViewReadWindow } from "../../stores/sharedView/sharedView.read.facade"
 import { ExplorerContextMenu } from "../sidebarExplorer/facade"
 import { NodeContextMenuWriteStore } from "./stores/nodeContextMenu.write.store"
@@ -12,16 +11,16 @@ export class NodeContextMenuForExplorer implements ExplorerContextMenu {
     private readonly writeStore = inject(NodeContextMenuWriteStore)
     private readonly rightClickedNodeData = toSignal(inject(SharedViewReadWindow).rightClickedNodeData$, { requireSync: true })
 
-    isEnabledFor(_node: CodeMapNode): boolean {
+    isEnabledFor(_nodePath: string): boolean {
         return true
     }
 
-    isMarked(node: CodeMapNode): boolean {
-        return this.rightClickedNodeData()?.nodeId === node.path
+    isMarked(nodePath: string): boolean {
+        return this.rightClickedNodeData()?.nodeId === nodePath
     }
 
-    open(node: CodeMapNode, xPosition: number, yPosition: number): void {
-        this.writeStore.openMenuForExplorerRow(node.path, xPosition, yPosition)
+    open(nodePath: string, xPosition: number, yPosition: number): void {
+        this.writeStore.openMenuForExplorerRow(nodePath, xPosition, yPosition)
     }
 
     close(): void {

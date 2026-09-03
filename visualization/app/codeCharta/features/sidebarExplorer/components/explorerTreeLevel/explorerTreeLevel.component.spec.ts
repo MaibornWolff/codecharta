@@ -195,7 +195,7 @@ describe("ExplorerTreeLevelComponent", () => {
         fixture.componentInstance.openNodeContextMenu(contextMenuEvent)
 
         // Assert
-        expect(contextMenu.open).toHaveBeenCalledWith(expect.objectContaining({ path: rootNodePath }), 10, 20)
+        expect(contextMenu.open).toHaveBeenCalledWith(rootNodePath, 10, 20)
 
         // Act
         scrollContainer.dispatchEvent(new Event("scroll"))

@@ -1,11 +1,11 @@
 import { InjectionToken } from "@angular/core"
-import { CodeMapNode } from "../../model/codeCharta.model"
 
+/** Every explorer row is addressed by the path of the node it stands for, whatever the row lists. */
 export interface ExplorerContextMenu {
-    isEnabledFor(node: CodeMapNode): boolean
-    isMarked(node: CodeMapNode): boolean
+    isEnabledFor(nodePath: string): boolean
+    isMarked(nodePath: string): boolean
 
-    open(node: CodeMapNode, xPosition: number, yPosition: number): void
+    open(nodePath: string, xPosition: number, yPosition: number): void
     close(): void
 }
 
