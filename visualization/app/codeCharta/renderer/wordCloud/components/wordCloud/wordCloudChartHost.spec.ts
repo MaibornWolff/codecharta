@@ -4,6 +4,7 @@ import { WordCloudChartHost } from "./wordCloudChartHost"
 
 const mockChart = {
     setOption: jest.fn(),
+    dispatchAction: jest.fn(),
     resize: jest.fn(),
     dispose: jest.fn(),
     clear: jest.fn(),
@@ -28,14 +29,78 @@ class ResizeObserverMock {
 describe("WordCloudChartHost", () => {
     let host: WordCloudChartHost
     const onWordRightClicked = jest.fn()
+    const onWordClicked = jest.fn()
 
     beforeEach(() => {
         jest.clearAllMocks()
         window.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
         host = new WordCloudChartHost(new WordCloudChartRegistry(), {
             onLayoutFinished: () => undefined,
-            onWordRightClicked: onWordRightClicked
+            onWordRightClicked: onWordRightClicked,
+            onWordClicked: onWordClicked
         })
+    })
+
+    it("should report a clicked word, so the explorer can follow the cloud", () => {
+        // Arrange
+        host.attachTo(document.createElement("div"))
+        const [, handleClick] = mockChart.on.mock.calls.find(([eventName]) => eventName === "click")
+
+        // Act
+        handleClick({ name: "invoice" })
+
+        // Assert
+        expect(onWordClicked).toHaveBeenCalledWith("invoice")
+    })
+
+    it("should ignore a click that did not land on a word", () => {
+        // Arrange
+        host.attachTo(document.createElement("div"))
+        const [, handleClick] = mockChart.on.mock.calls.find(([eventName]) => eventName === "click")
+
+        // Act
+        handleClick({})
+
+        // Assert
+        expect(onWordClicked).not.toHaveBeenCalled()
+    })
+
+    it("should emphasise the highlighted word and drop the emphasis of everything else", () => {
+        // Arrange
+        host.attachTo(document.createElement("div"))
+
+        // Act
+        host.highlightWord("invoice")
+
+        // Assert
+        expect(mockChart.dispatchAction).toHaveBeenNthCalledWith(1, { type: "downplay", seriesIndex: 0 })
+        expect(mockChart.dispatchAction).toHaveBeenNthCalledWith(2, { type: "highlight", seriesIndex: 0, name: "invoice" })
+    })
+
+    it("should drop every emphasis when no word is highlighted", () => {
+        // Arrange
+        host.attachTo(document.createElement("div"))
+
+        // Act
+        host.highlightWord(null)
+
+        // Assert
+        expect(mockChart.dispatchAction).toHaveBeenCalledTimes(1)
+        expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "downplay", seriesIndex: 0 })
+    })
+
+    it("should re-apply the highlight once a new layout has been drawn", () => {
+        // Arrange: a layout wipes the emphasis, so the word the explorer expanded has to be marked again.
+        host.attachTo(document.createElement("div"))
+        host.highlightWord("invoice")
+        mockChart.dispatchAction.mockClear()
+        const [, handleFinished] = mockChart.on.mock.calls.find(([eventName]) => eventName === "finished")
+
+        // Act
+        handleFinished()
+
+        // Assert
+        expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: "invoice" })
     })
 
     it("should keep the chart when attaching to the same container again", () => {

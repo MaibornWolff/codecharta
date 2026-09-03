@@ -10,6 +10,9 @@ import { defaultWordCloudSettings, WordCloudShape } from "../model/wordCloud.mod
 // the boot pair ("sample1 +1").
 const BOOT_SAMPLE_FILE_NAME = "sample1.cc.json"
 
+// The cloud debounces its render and then lays the words out asynchronously.
+const WORD_CLOUD_LAYOUT_MS = 2500
+
 test.describe("DomainView", () => {
     test.beforeEach(async ({ page }) => {
         await goto(page)
@@ -71,6 +74,23 @@ test.describe("DomainView", () => {
 
         // Assert — the breakdown that used to occupy the right-hand panel now hangs under the word
         await expect(page.locator("cc-domain-word-occurrence-tree [data-testid='domain-word-occurrences-tree']")).toBeVisible()
+    })
+
+    test("should expand the word that was clicked in the cloud, so the explorer follows the picture", async ({ page }) => {
+        // Arrange — word mode open beside the cloud, with the layout settled.
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await page.getByTestId("explorer-mode-words").click()
+        const canvas = page.locator("cc-word-cloud canvas")
+        await expect(canvas).toBeVisible()
+        await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+
+        // Act — the cloud lays its largest word out at the centre.
+        const cloud = await canvas.boundingBox()
+        await page.mouse.click(cloud!.x + cloud!.width / 2, cloud!.y + cloud!.height / 2)
+
+        // Assert — the clicked word is the one the list broke down.
+        await expect(page.locator("cc-domain-word-occurrence-tree")).toHaveCount(1)
     })
 
     test("should reorder the word list from the sort control", async ({ page }) => {

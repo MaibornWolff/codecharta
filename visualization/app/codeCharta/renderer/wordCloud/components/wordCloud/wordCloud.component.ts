@@ -73,15 +73,21 @@ export class WordCloudComponent implements OnDestroy {
 
     readonly selectedNodePath = input<string | null>(null)
 
+    /** The word whose occurrences the explorer is showing; the cloud marks it so both say the same thing. */
+    readonly inspectedWord = input<string | null>(null)
+
     readonly clearSelection = output<void>()
 
     readonly wordRightClicked = output<RightClickedWord>()
+
+    readonly wordClicked = output<string>()
 
     private readonly canvasRef = viewChild<ElementRef<HTMLElement>>("wordCloudCanvas")
 
     private readonly chartHost = new WordCloudChartHost(inject(WordCloudChartRegistry), {
         onLayoutFinished: () => this.viewReadinessStore.markReady("domain"),
-        onWordRightClicked: (word, clientX, clientY) => this.wordRightClicked.emit({ word, clientX, clientY })
+        onWordRightClicked: (word, clientX, clientY) => this.wordRightClicked.emit({ word, clientX, clientY }),
+        onWordClicked: word => this.wordClicked.emit(word)
     })
 
     protected readonly words = toSignal(
@@ -109,6 +115,7 @@ export class WordCloudComponent implements OnDestroy {
     constructor() {
         this.loadMaskImageAndKeepCircleFallbackOnFailure()
         effect(() => this.renderIntoTheChartOnceTheContainerIsMeasured())
+        effect(() => this.chartHost.highlightWord(this.inspectedWord()))
     }
 
     ngOnDestroy(): void {

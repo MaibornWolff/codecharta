@@ -63,7 +63,7 @@ cannot be dropped from the UI, and the word list renders every word it has.
 
 - [x] Complete Task 1: type the `domain` lens
 - [x] Complete Task 2: merge two domain maps
-- [ ] Complete Task 3: cloud and explorer point at each other
+- [x] Complete Task 3: cloud and explorer point at each other
 - [ ] Complete Task 4: hide a word
 - [ ] Complete Task 5: window the word list
 

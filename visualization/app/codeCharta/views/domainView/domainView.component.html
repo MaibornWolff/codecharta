@@ -35,7 +35,9 @@
     <cc-word-cloud
         [settings]="settings()"
         [selectedNodePath]="selectedNodePath()"
+        [inspectedWord]="inspectedWord()"
         (clearSelection)="clearSelection()"
+        (wordClicked)="toggleInspectedWord($event)"
         (wordRightClicked)="rightClickedWord.set($event)"
     ></cc-word-cloud>
     <cc-domain-toolbox class="absolute right-[10px] top-[10px] z-10 flex"></cc-domain-toolbox>
