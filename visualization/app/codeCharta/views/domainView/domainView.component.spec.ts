@@ -138,7 +138,7 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(contextMenu).toBeInstanceOf(NodeContextMenuForExplorer)
-        expect(contextMenu.isEnabledFor(SOME_NODE)).toBe(true)
+        expect(contextMenu.isEnabledFor(SOME_NODE.path)).toBe(true)
     })
 
     it("should read the view-independent tree, so the map's blacklist cannot shape the domain explorer", async () => {

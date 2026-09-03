@@ -40,8 +40,8 @@ export class ExplorerTreeLevelComponent implements OnInit {
     readonly isSelectable = computed(() => this.rowProjection().isSelectable)
     readonly isHovered = computed(() => this.selection.isHovered(this.node()))
     readonly isSelected = computed(() => this.selection.isSelected(this.node()))
-    readonly isMarked = computed(() => this.contextMenu?.isMarked(this.node()) ?? false)
-    readonly hasContextMenu = computed(() => this.contextMenu?.isEnabledFor(this.node()) ?? false)
+    readonly isMarked = computed(() => this.contextMenu?.isMarked(this.node().path) ?? false)
+    readonly hasContextMenu = computed(() => this.contextMenu?.isEnabledFor(this.node().path) ?? false)
     readonly isRevealed = computed(() => this.revealService.revealedNodePath() === this.node().path)
     readonly isLeafNode = computed(() => isLeaf(this.node()))
     readonly children = computed(() => this.node().children ?? [])
@@ -100,7 +100,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
         $event.preventDefault()
         $event.stopPropagation()
 
-        this.contextMenu?.open(this.node(), $event.clientX, $event.clientY)
+        this.contextMenu?.open(this.node().path, $event.clientX, $event.clientY)
 
         this.addScrollListener()
     }
