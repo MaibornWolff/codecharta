@@ -90,6 +90,28 @@ test.describe("DomainView", () => {
         expect(wordsByName).toEqual([...wordsByName].sort((one, other) => one.localeCompare(other)))
     })
 
+    test("should jump to the metrics view from a node in a word's breakdown", async ({ page }) => {
+        // Arrange — a word's breakdown lists nodes, so it offers the node menu the file tree offers
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        const metricsExplorer = new ExplorerTreeLevelPageObject(page, "metrics")
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.getByTestId("explorer-mode-words").click()
+        await page.locator("cc-domain-word-row").first().click()
+        const occurrence = page.locator("cc-domain-word-occurrence-row").first()
+        await expect(occurrence).toBeVisible()
+        const occurrenceName = (await occurrence.locator(".node-name").innerText()).trim()
+
+        // Act
+        await occurrence.click({ button: "right" })
+        await expect(page.locator("#codemap-context-menu")).toBeVisible()
+        await page.locator("#codemap-context-menu").getByText("Show in Metrics").click()
+
+        // Assert — the map view is reached with that node picked up as its selection
+        await expect(page).toHaveURL(/#\/$/)
+        await expect(metricsExplorer.node(`/root/${occurrenceName}`)).toHaveClass(/selected/)
+    })
+
     test("should select a node from the word breakdown, so the cloud scopes to it", async ({ page }) => {
         // Arrange
         const viewSwitcher = new ViewSwitcherPageObject(page)
