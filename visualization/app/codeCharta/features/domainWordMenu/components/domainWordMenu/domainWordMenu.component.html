@@ -1,14 +1,6 @@
-@if (rightClickedWord(); as rightClickedWord) {
-    <div
-        #menu
-        class="fixed z-[100] w-56 rounded-box border border-base-300 bg-base-100 py-1 text-base-content shadow-lg"
-        data-testid="domain-word-menu"
-        [style.left.px]="clampedPosition()?.left ?? rightClickedWord.clientX"
-        [style.top.px]="clampedPosition()?.top ?? rightClickedWord.clientY"
-        [style.visibility]="clampedPosition() ? 'visible' : 'hidden'"
-        (contextmenu)="$event.preventDefault()"
-    >
-        <div class="truncate px-4 py-2.5 text-sm font-semibold tracking-wide">{{ rightClickedWord.word }}</div>
+@if (anchor(); as anchor) {
+    <cc-floating-menu class="w-56" data-testid="domain-word-menu" [anchor]="anchor" (dismissed)="close()">
+        <div class="truncate px-4 py-2.5 text-sm font-semibold tracking-wide">{{ rightClickedWord()?.word }}</div>
 
         <div class="my-1 border-t border-base-300"></div>
 
@@ -27,5 +19,5 @@
         >
             Copy word
         </cc-context-menu-item>
-    </div>
+    </cc-floating-menu>
 }

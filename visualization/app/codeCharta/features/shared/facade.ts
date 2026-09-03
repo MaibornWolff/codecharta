@@ -8,6 +8,7 @@ export {
 } from "./components/barShell/barShell.directive"
 export { ContextMenuItemComponent } from "./components/contextMenuItem/contextMenuItem.component"
 export { ErrorDialogComponent } from "./components/errorDialog/errorDialog.component"
+export { FloatingMenuComponent } from "./components/floatingMenu/floatingMenu.component"
 export { InlineColorPickerComponent } from "./components/inlineColorPicker/inlineColorPicker.component"
 export { LoadingFileProgressSpinnerComponent } from "./components/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 export { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "./components/publishesHeight/publishesHeight.directive"

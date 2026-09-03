@@ -1,13 +1,5 @@
-@if (menuNode(); as node) {
-    <div
-        #menu
-        id="codemap-context-menu"
-        class="fixed z-[100] w-64 rounded-box border border-base-300 bg-base-100 py-1 text-base-content shadow-lg"
-        [style.left.px]="clampedPosition()?.left ?? rightClickedNodeData()?.xPositionOfRightClickEvent"
-        [style.top.px]="clampedPosition()?.top ?? rightClickedNodeData()?.yPositionOfRightClickEvent"
-        [style.visibility]="clampedPosition() ? 'visible' : 'hidden'"
-        (contextmenu)="$event.preventDefault()"
-    >
+@if (openMenu(); as menu) {
+    <cc-floating-menu id="codemap-context-menu" class="w-64" [anchor]="menu.anchor" (dismissed)="close()">
         <button
             type="button"
             class="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-base-200"
@@ -63,7 +55,7 @@
 
         <div class="my-1 border-t border-base-300"></div>
 
-        @if (!node.isFlattened) {
+        @if (!menu.node.isFlattened) {
             <cc-context-menu-item
                 icon="fa-solid fa-arrows-down-to-line"
                 hoverHint="Flatten node and its children, keeping an empty space"
@@ -89,5 +81,5 @@
             <div class="my-1 border-t border-base-300"></div>
             <cc-mark-folder-row (folderMarked)="close()"></cc-mark-folder-row>
         }
-    </div>
+    </cc-floating-menu>
 }
