@@ -1,4 +1,3 @@
-import { NgClass } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, OnInit, signal } from "@angular/core"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { isLeaf } from "../../../../util/codeMapHelper"
@@ -10,6 +9,7 @@ import { EXPLORER_STORAGE_SCOPE } from "../../explorerStorageScope"
 import { scrollRowIntoViewWhenRendered } from "../../scrollRowIntoView"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { ExplorerScrollHostService } from "../../services/explorerScrollHost.service"
+import { ExplorerRowComponent } from "../explorerRow/explorerRow.component"
 import { ExplorerTreeItemIconComponent } from "../explorerTreeItemIcon/explorerTreeItemIcon.component"
 import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerTreeItemName.component"
 
@@ -17,7 +17,7 @@ import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerT
     selector: "cc-explorer-tree-level",
     templateUrl: "./explorerTreeLevel.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgClass, ExplorerTreeItemIconComponent, ExplorerTreeItemNameComponent]
+    imports: [ExplorerRowComponent, ExplorerTreeItemIconComponent, ExplorerTreeItemNameComponent]
 })
 export class ExplorerTreeLevelComponent implements OnInit {
     private readonly row = inject(EXPLORER_ROW)

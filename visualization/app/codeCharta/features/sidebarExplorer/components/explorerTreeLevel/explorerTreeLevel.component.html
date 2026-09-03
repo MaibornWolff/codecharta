@@ -1,24 +1,21 @@
 @if (!rowProjection().isHidden) {
     <div class="tree-element-{{ depth() }} {{ isLeafNode() ? 'tree-leaf' : 'tree-parent' }}">
-        <div
-            id="{{ rowId() }}"
-            class="tree-element-label-{{ depth() }} tree-element-label flex items-center px-1 py-0.5 cursor-pointer"
-            [class.hovered]="isHovered()"
-            [class.bg-base-200]="isHovered() && !isSelected()"
-            [class.marked]="isMarked()"
-            [class.selected]="isSelected()"
-            [class.font-semibold]="isSelected()"
-            [class.ring-2]="isMarked()"
-            [class.ring-primary]="isMarked()"
-            [ngClass]="{ 'bg-error/20': isSelected(), 'bg-primary/20': isRevealed() }"
+        <cc-explorer-row
+            class="tree-element-label-{{ depth() }}"
+            [rowId]="rowId()"
+            [hint]="rowProjection().title"
+            [isSelected]="isSelected()"
+            [isHovered]="isHovered()"
+            [isMarked]="isMarked()"
+            [isRevealed]="isRevealed()"
+            [decoration]="rowProjection().decoration"
             (mouseenter)="onMouseEnter($event)"
             (mouseleave)="onMouseLeave()"
             (click)="onClick()"
             (contextmenu)="openNodeContextMenu($event)"
-            [title]="rowProjection().title"
         >
             <cc-explorer-tree-item-icon
-                [node]="node()"
+                [isFolder]="!isLeafNode()"
                 [isOpen]="isOpen()"
                 [isInactive]="rowProjection().isInactive"
                 [markingColor]="rowProjection().markingColor"
@@ -33,10 +30,7 @@
             @if (rowProjection().isFlattened) {
                 <i class="fa fa-eye-slash text-xs opacity-60 ml-1 shrink-0" title="Flattened"></i>
             }
-            @if (rowProjection().decoration) {
-                <span class="text-xs opacity-60 ml-2 shrink-0 tabular-nums">{{ rowProjection().decoration }}</span>
-            }
-        </div>
+        </cc-explorer-row>
         <div class="tree-element-children tree-element-children-{{ depth() }} pl-3">
             @if (isOpen()) {
                 @for (childNode of children(); track childNode.path) {

@@ -1,0 +1,16 @@
+<div
+    [attr.id]="rowId()"
+    class="tree-element-label relative flex items-center px-1 py-0.5 cursor-pointer"
+    [ngClass]="stateClasses()"
+    [title]="hint()"
+>
+    @if (barPercent() > 0) {
+        <div class="pointer-events-none absolute inset-y-0 left-0 bg-primary/10" [style.width.%]="barPercent()"></div>
+    }
+    <div class="relative flex min-w-0 flex-1 items-center">
+        <ng-content></ng-content>
+        @if (decoration()) {
+            <span class="text-xs opacity-60 ml-2 shrink-0 tabular-nums">{{ decoration() }}</span>
+        }
+    </div>
+</div>
