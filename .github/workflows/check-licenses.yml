@@ -38,7 +38,7 @@ jobs:
           so_api_token: ${{ secrets.SO_API_TOKEN }}
       - 
         name: Check licenses for analysis
-        uses: MaibornWolff/purl-patrol@fe0da8d7c02235dfdf3c52ec936873e57e37203d # v1.6.2
+        uses: MaibornWolff/purl-patrol@7d1eb703de44cd8961c4e4d321670567d523ae3c # v1.6.6
         with:
           SBOM_PATH: 'analysis/build/reports/sbom_analysis.cdx.json'
           LICENSE_POLICY_PATH: 'license_policy.json'
@@ -72,7 +72,7 @@ jobs:
           so_api_token: ${{ secrets.SO_API_TOKEN }}
       - 
         name: Check licenses for visualization
-        uses: MaibornWolff/purl-patrol@fe0da8d7c02235dfdf3c52ec936873e57e37203d # v1.6.2
+        uses: MaibornWolff/purl-patrol@7d1eb703de44cd8961c4e4d321670567d523ae3c # v1.6.6
         with:
           SBOM_PATH: 'visualization/build/reports/sbom_visualization.cdx.json'
           LICENSE_POLICY_PATH: 'license_policy.json'
