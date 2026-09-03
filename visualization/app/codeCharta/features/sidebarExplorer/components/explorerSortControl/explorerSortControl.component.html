@@ -21,7 +21,7 @@
         style="position-anchor: --explorer-sort-menu"
         class="dropdown menu bg-base-100 rounded-box w-56 p-2 shadow-lg"
     >
-        @for (option of sortOptions; track option) {
+        @for (option of sortOptions(); track option) {
             <li>
                 <button
                     type="button"

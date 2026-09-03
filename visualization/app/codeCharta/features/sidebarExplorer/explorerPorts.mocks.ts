@@ -10,7 +10,7 @@ import { EXPLORER_ROW, ExplorerRow } from "./explorerRow"
 import { EXPLORER_RULES, ExplorerRules } from "./explorerRules.port"
 import { EXPLORER_SEARCH, EXPLORER_WORD_SEARCH, ExplorerSearch, ExplorerSearchInput } from "./explorerSearch.port"
 import { EXPLORER_SELECTION, ExplorerSelection } from "./explorerSelection"
-import { EXPLORER_SORT, ExplorerSort } from "./explorerSort.port"
+import { EXPLORER_SORT, EXPLORER_WORD_SORT, ExplorerSort } from "./explorerSort.port"
 import { ExplorerStorageScope } from "./explorerStorageScope"
 import { EXPLORER_TREE, ExplorerTree } from "./explorerTree.port"
 import { provideViewScopedExplorerState } from "./provideViewScopedExplorerState"
@@ -87,6 +87,7 @@ export function createExplorerSearchInputMock(overrides: Partial<ExplorerSearchI
 
 export function createExplorerSortMock(overrides: Partial<ExplorerSort> = {}): ExplorerSort {
     return {
+        options: Object.values(SortingOption),
         option$: of(SortingOption.NAME),
         ascending$: of(true),
         setOption: jest.fn(),
@@ -123,6 +124,7 @@ export function provideExplorerPortsMock(
         selection?: ExplorerSelection
         contextMenu?: ExplorerContextMenu | null
         sort?: ExplorerSort
+        wordSort?: ExplorerSort
         search?: ExplorerSearch
         wordSearch?: ExplorerSearchInput
         tree?: ExplorerTree
@@ -145,6 +147,9 @@ export function provideExplorerPortsMock(
     ]
     if (overrides.wordSearch) {
         providers.push({ provide: EXPLORER_WORD_SEARCH, useValue: overrides.wordSearch })
+    }
+    if (overrides.wordSort) {
+        providers.push({ provide: EXPLORER_WORD_SORT, useValue: overrides.wordSort })
     }
     if (overrides.contextMenu !== null) {
         providers.push({ provide: EXPLORER_CONTEXT_MENU, useValue: overrides.contextMenu ?? createExplorerContextMenuMock() })

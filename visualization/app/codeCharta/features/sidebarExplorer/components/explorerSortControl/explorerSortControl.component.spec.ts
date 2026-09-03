@@ -5,19 +5,17 @@ import { BehaviorSubject } from "rxjs"
 import { SortingOption } from "../../../../model/codeCharta.model"
 import { createExplorerSortMock, provideExplorerCapabilitiesMock } from "../../explorerPorts.mocks"
 import { EXPLORER_SORT, ExplorerSort } from "../../explorerSort.port"
+import { ExplorerModeService } from "../../services/explorerMode.service"
 import { ExplorerSortControlComponent } from "./explorerSortControl.component"
 
 describe("ExplorerSortControlComponent", () => {
     let sort: ExplorerSort
 
-    const configure = (options?: { sortOptions?: SortingOption[]; sort?: ExplorerSort }) => {
+    const configure = (options?: { sort?: ExplorerSort }) => {
         sort = options?.sort ?? createExplorerSortMock()
         TestBed.configureTestingModule({
             imports: [ExplorerSortControlComponent],
-            providers: [
-                { provide: EXPLORER_SORT, useValue: sort },
-                provideExplorerCapabilitiesMock(options?.sortOptions ? { sortOptions: options.sortOptions } : undefined)
-            ]
+            providers: [{ provide: EXPLORER_SORT, useValue: sort }, provideExplorerCapabilitiesMock(), ExplorerModeService]
         })
     }
 
@@ -49,7 +47,7 @@ describe("ExplorerSortControlComponent", () => {
     it("should offer only the sort options the hosting view scopes it to", async () => {
         // Arrange — the domain view has no area metric, so it drops Area Size
         TestBed.resetTestingModule()
-        configure({ sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES] })
+        configure({ sort: createExplorerSortMock({ options: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES] }) })
 
         // Act
         await render(ExplorerSortControlComponent)
