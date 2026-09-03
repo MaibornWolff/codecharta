@@ -5,6 +5,7 @@ import { ExplorerWidthRepo } from "./repos/explorerWidth.repo"
 import { ExplorerCollapseService } from "./services/explorerCollapse.service"
 import { ExplorerModeService } from "./services/explorerMode.service"
 import { ExplorerRevealService } from "./services/explorerReveal.service"
+import { ExplorerRowContextMenuService } from "./services/explorerRowContextMenu.service"
 import { ExplorerScrollHostService } from "./services/explorerScrollHost.service"
 import { ExplorerWidthService } from "./services/explorerWidth.service"
 
@@ -16,5 +17,6 @@ export const provideViewScopedExplorerState = (scope: ExplorerStorageScope): Pro
     ExplorerWidthRepo,
     ExplorerWidthService,
     ExplorerRevealService,
-    ExplorerScrollHostService
+    ExplorerScrollHostService,
+    ExplorerRowContextMenuService
 ]
