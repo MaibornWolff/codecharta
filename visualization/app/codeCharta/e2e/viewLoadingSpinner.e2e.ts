@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { clearIndexedDB, goto } from "../../playwright.helper"
+import { clearIndexedDB, goto, waitForCcStatePersisted } from "../../playwright.helper"
 import { ViewSwitcherPageObject } from "../features/navBar/components/viewSwitcher/viewSwitcher.po"
 
 const SPINNER_SETTLE_TIMEOUT_MS = 8_000
@@ -84,5 +84,24 @@ test.describe("view loading spinner", () => {
         // Assert
         await expect(page.locator(spinnerOf("domain"))).toBeHidden({ timeout: SPINNER_SETTLE_TIMEOUT_MS })
         await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+    })
+
+    test("should clear the metrics view's spinner when the session started on the domain view", async ({ page }) => {
+        // Arrange — the session is persisted on the domain view and the app is started again there, so
+        // the metrics view has never been shown and its canvas does not exist yet
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible({ timeout: SPINNER_SETTLE_TIMEOUT_MS })
+        await waitForCcStatePersisted(page, "sample1.cc.json")
+        await page.reload()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible({ timeout: SPINNER_SETTLE_TIMEOUT_MS })
+
+        // Act
+        await viewSwitcher.switchToMetrics()
+
+        // Assert — the deferred map waits for the canvas this first visit mounts; building it before
+        // that threw where the floor labels measure the canvas, which left the spinner up for good
+        await expect(page.locator(spinnerOf("metrics"))).toBeHidden({ timeout: SPINNER_SETTLE_TIMEOUT_MS })
+        await expect(page.locator("#codeMapScene")).toBeVisible()
     })
 })

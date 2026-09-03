@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core"
+import { BehaviorSubject, distinctUntilChanged } from "rxjs"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
@@ -8,6 +9,12 @@ import { ThreeStatsService } from "./threeStats.service"
 @Injectable({ providedIn: "root" })
 export class ThreeViewerService {
     private animationFrameId: number
+
+    private readonly isMapCanvasMounted = new BehaviorSubject(false)
+
+    /** The map is drawn into a canvas this service mounts, so whatever reads that canvas — the floor
+     * labels measure it — has to wait for a view that is only created when it is first shown. */
+    readonly isMapCanvasMounted$ = this.isMapCanvasMounted.pipe(distinctUntilChanged())
 
     constructor(
         private readonly threeSceneService: ThreeSceneService,
@@ -37,6 +44,8 @@ export class ThreeViewerService {
 
         this.animate()
         this.animateStats()
+
+        this.isMapCanvasMounted.next(true)
     }
 
     onWindowResize = () => {
@@ -99,6 +108,7 @@ export class ThreeViewerService {
     }
 
     destroy() {
+        this.isMapCanvasMounted.next(false)
         window.removeEventListener("resize", this.onWindowResize)
         window.removeEventListener("focusin", this.onFocusIn)
         window.removeEventListener("focusout", this.onFocusOut)
