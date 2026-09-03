@@ -1,10 +1,14 @@
 import { TestBed } from "@angular/core/testing"
+import { provideRouter, Router } from "@angular/router"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
+import { hasDomainDataSelector } from "../../../../lenses/domain/domainLens.facade"
 import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderModel/rightClickedCodeMapNode.selector"
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { routeLinks } from "../../../../routing/routePaths"
+import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
 import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
     addBlacklistItem,
@@ -15,6 +19,11 @@ import {
 } from "../../../../stores/sharedView/sharedView.write.facade"
 import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
+import {
+    DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
+    NODE_CONTEXT_MENU_CAPABILITIES,
+    NodeContextMenuCapabilities
+} from "../../nodeContextMenuCapabilities"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"
 import { NodeContextMenuComponent } from "./nodeContextMenu.component"
 
@@ -57,15 +66,25 @@ describe("nodeContextMenu component", () => {
         origin?: "codeMap" | "explorer"
         focusedNodePath?: string
         previousFocusedNodePath?: string
+        capabilities?: NodeContextMenuCapabilities
+        hasDomainData?: boolean
     }
 
-    async function renderMenu({ node = fileNode, origin = "codeMap", focusedNodePath, previousFocusedNodePath }: RenderMenuOptions = {}) {
+    async function renderMenu({
+        node = fileNode,
+        origin = "codeMap",
+        focusedNodePath,
+        previousFocusedNodePath,
+        capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
+        hasDomainData = true
+    }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
             : null
         const focusedNodePaths = [focusedNodePath, previousFocusedNodePath].filter(Boolean)
         const renderResult = await render(NodeContextMenuComponent, {
             providers: [
+                provideRouter([]),
                 provideMockState(),
                 provideMockStore({
                     selectors: [
@@ -74,12 +93,14 @@ describe("nodeContextMenu component", () => {
                         { selector: currentFocusedNodePathSelector, value: focusedNodePath },
                         { selector: focusedNodePathSelector, value: focusedNodePaths },
                         { selector: markFolderItemsSelector, value: [{ color: "red", isMarked: false }] },
-                        { selector: currentMarkColorSelector, value: null }
+                        { selector: currentMarkColorSelector, value: null },
+                        { selector: hasDomainDataSelector, value: hasDomainData }
                     ]
                 }),
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock },
                 { provide: IdToBuildingService, useValue: idToBuildingServiceMock },
-                { provide: ExplorerRevealService, useValue: explorerRevealServiceMock }
+                { provide: ExplorerRevealService, useValue: explorerRevealServiceMock },
+                { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: capabilities }
             ]
         })
         const store = TestBed.inject(MockStore)
@@ -115,6 +136,49 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(screen.queryByText("Show in Explorer")).toBe(null)
+    })
+
+    it("should offer nothing but the path where the view has no map to shape", async () => {
+        // Arrange & Act
+        const { container } = await renderMenu({ node: folderNode, origin: "explorer", capabilities: { showMapActions: false } })
+
+        // Assert
+        expect(screen.getByText("…/src")).not.toBe(null)
+        expect(screen.queryByText("Focus")).toBe(null)
+        expect(screen.queryByText("Keep Highlight")).toBe(null)
+        expect(screen.queryByText("Flatten")).toBe(null)
+        expect(screen.queryByText("Exclude")).toBe(null)
+        expect(container.querySelector(".colorButton")).toBe(null)
+    })
+
+    it("should hand the node over to the jump target view and close", async () => {
+        // Arrange
+        await renderMenu({ capabilities: { showMapActions: false, jumpTargetView: "metrics" } })
+        const viewHandoffStore = TestBed.inject(ViewHandoffStore)
+        const navigateByUrl = jest.spyOn(TestBed.inject(Router), "navigateByUrl").mockResolvedValue(true)
+
+        // Act
+        fireEvent.click(screen.getByText("Show in Metrics"))
+
+        // Assert
+        expect(viewHandoffStore.takeNodeFor("metrics")).toBe("/root/src/RatingBean.java")
+        expect(navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics)
+    })
+
+    it("should hide the jump to the domain view while no domain data is loaded", async () => {
+        // Arrange & Act
+        await renderMenu({ hasDomainData: false })
+
+        // Assert
+        expect(screen.queryByText("Show in Domain")).toBe(null)
+    })
+
+    it("should offer the jump to the domain view once domain data is loaded", async () => {
+        // Arrange & Act
+        await renderMenu()
+
+        // Assert
+        expect(screen.getByText("Show in Domain")).not.toBe(null)
     })
 
     it("should show the color row for folders", async () => {

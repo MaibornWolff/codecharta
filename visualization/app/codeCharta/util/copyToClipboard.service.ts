@@ -11,6 +11,11 @@ export class CopyToClipboardService {
         inject(DestroyRef).onDestroy(() => clearTimeout(this.resetTimeout))
     }
 
+    reset(): void {
+        clearTimeout(this.resetTimeout)
+        this.copied.set(false)
+    }
+
     async copy(text: string): Promise<void> {
         await navigator.clipboard.writeText(text)
         this.copied.set(true)

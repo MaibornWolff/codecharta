@@ -4,7 +4,11 @@ import { CodeMapComponent } from "../../features/codeMap/facade"
 import { FileExtensionBarComponent } from "../../features/fileExtensionBar/facade"
 import { LegendPanelComponent } from "../../features/legend/facade"
 import { MetricsBarComponent } from "../../features/metricsBar/facade"
-import { NodeContextMenuComponent } from "../../features/nodeContextMenu/facade"
+import {
+    DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
+    NODE_CONTEXT_MENU_CAPABILITIES,
+    NodeContextMenuComponent
+} from "../../features/nodeContextMenu/facade"
 import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
 import {
     DEFAULT_EXPLORER_CAPABILITIES,
@@ -31,6 +35,7 @@ import { MetricsExplorerSelection } from "./explorer/metricsExplorerSelection"
 import { METRICS_EXPLORER_SORT } from "./explorer/metricsExplorerSort"
 import { MetricsExplorerTree } from "./explorer/metricsExplorerTree"
 import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelectedNodeAfterLoad.directive"
+import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.directive"
 
 @Component({
     selector: "cc-metrics-view",
@@ -63,10 +68,11 @@ import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelecte
         provideExplorerSort(METRICS_EXPLORER_SORT),
         provideExplorerSearch(METRICS_EXPLORER_SEARCH),
         { provide: EXPLORER_CAPABILITIES, useValue: DEFAULT_EXPLORER_CAPABILITIES },
+        { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES },
         provideViewScopedExplorerState("metrics"),
         provideViewScopedCssVariables()
     ],
-    hostDirectives: [RevealsSelectedNodeAfterLoadDirective],
+    hostDirectives: [RevealsSelectedNodeAfterLoadDirective, ShowsHandedOverNodeDirective],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MetricsViewComponent {}

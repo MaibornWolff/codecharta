@@ -9,8 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- **Jump between the views from a node**: Right-clicking a folder or file in the domain view's file explorer now opens the same node context menu the metric view has, reduced to what the word cloud can answer for: the node's path, which copies on click, and **Show in Metrics**, which switches to the 3D map with that node selected and revealed in its explorer. The metric view's menu — both on the map and in its explorer — gained the reciprocal **Show in Domain**, offered whenever the loaded file carries domain data.
 - **Word occurrences in the domain view**: Right-clicking a word in the word cloud opens a small menu offering **Show occurrences** and **Copy word**. Show occurrences opens a panel at the right edge that breaks the word down over the file tree of the node the cloud is currently showing: an expandable folder/file tree, each entry with the word's count there and its share of the word's occurrences in that scope, most frequent first, with a bar behind each row for the share. Clicking an entry reveals that node in the file explorer without changing what the cloud shows, and picking another node in the explorer closes the panel, since the scope it reported on is gone.
 - **Domain view marks nodes without domain words**: Folders and files the domain lens has no words for are now greyed out and italicised in the domain view's file explorer, the same way the metric view marks nodes without area for the chosen metric, with a "No domain words" hint on hover. They stay selectable.
+
+### Fixed 🐞
+
+- **Context menu actions were swallowed after a view switch**: once a view had been left with its node context menu open, the router kept that view — and its rendered menu — alive off screen, where it closed the menu of the view on screen on the first click. Picking an entry there did nothing, so "Show in Domain" appeared to be ignored. A menu that is off screen no longer dismisses anything.
+- **Endless spinner on the first visit to the metric view**: starting the app on the domain view and then switching to the metric view left its loading spinner up for the rest of the session, with the map never drawn. The deferred map build ran before the view had mounted the canvas the floor labels measure, and the resulting error ended the render stream that both the map and the spinner hang off. The build now waits for that canvas, reads the current map data rather than the last data-plus-action pair, and reports a failed render instead of ending the stream.
 
 ## [2.0.0] - 2026-09-02
 

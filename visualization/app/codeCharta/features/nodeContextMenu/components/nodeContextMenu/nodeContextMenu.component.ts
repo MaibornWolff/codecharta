@@ -1,22 +1,28 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, HostListener, inject, signal, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { ViewId } from "../../../../routing/routePaths"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
-import { ContextMenuItemComponent } from "../../../shared/facade"
+import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
+import { ContextMenuItemComponent, FloatingMenuComponent } from "../../../shared/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
+import { NODE_CONTEXT_MENU_CAPABILITIES } from "../../nodeContextMenuCapabilities"
 import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
 import { NodeContextMenuWriteStore } from "../../stores/nodeContextMenu.write.store"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
 
-const VIEWPORT_MARGIN = 4
-const PATH_COPIED_FEEDBACK_DURATION_MS = 1500
+const JUMP_TARGETS: Record<ViewId, { label: string; icon: string; hoverHint: string }> = {
+    metrics: { label: "Show in Metrics", icon: "fa-solid fa-cubes", hoverHint: "Select this node on the metrics map" },
+    domain: { label: "Show in Domain", icon: "fa-solid fa-cloud", hoverHint: "Show the domain words below this node" }
+}
 
 @Component({
     selector: "cc-node-context-menu",
     templateUrl: "./nodeContextMenu.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ContextMenuItemComponent, MarkFolderRowComponent]
+    imports: [ContextMenuItemComponent, FloatingMenuComponent, MarkFolderRowComponent],
+    providers: [CopyToClipboardService]
 })
 export class NodeContextMenuComponent {
     private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
@@ -25,10 +31,11 @@ export class NodeContextMenuComponent {
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly idToBuildingService = inject(IdToBuildingService)
     private readonly explorerRevealService = inject(ExplorerRevealService)
+    private readonly clipboard = inject(CopyToClipboardService)
 
-    private readonly menuRef = viewChild<ElementRef<HTMLElement>>("menu")
-    private pathCopiedTimeout: ReturnType<typeof setTimeout> | null = null
-    private clampAnimationFrameId: number | null = null
+    private readonly capabilities = inject(NODE_CONTEXT_MENU_CAPABILITIES)
+
+    readonly showMapActions = this.capabilities.showMapActions
 
     readonly rightClickedNodeData = toSignal(this.sharedViewReadWindow.rightClickedNodeData$, { requireSync: true })
     readonly codeMapNode = toSignal(this.readStore.rightClickedCodeMapNode$, { requireSync: true })
@@ -36,11 +43,29 @@ export class NodeContextMenuComponent {
     private readonly focusedNodePath = toSignal(this.sharedViewReadWindow.focusedNodePath$, { requireSync: true })
     readonly hasPreviousFocusedNodePath = computed(() => this.focusedNodePath().length > 1)
 
-    // null until the rendered menu was measured and clamped to the viewport
-    readonly clampedPosition = signal<{ left: number; top: number } | null>(null)
-    readonly wasPathCopied = signal(false)
+    readonly wasPathCopied = this.clipboard.copied
 
-    readonly menuNode = computed(() => (this.rightClickedNodeData() ? (this.codeMapNode() ?? null) : null))
+    readonly openMenu = computed(() => {
+        const rightClickedNodeData = this.rightClickedNodeData()
+        const node = this.codeMapNode()
+        if (!rightClickedNodeData || !node) {
+            return null
+        }
+        return {
+            node,
+            anchor: { x: rightClickedNodeData.xPositionOfRightClickEvent, y: rightClickedNodeData.yPositionOfRightClickEvent }
+        }
+    })
+    readonly menuNode = computed(() => this.openMenu()?.node ?? null)
+    private readonly hasDomainData = toSignal(this.readStore.hasDomainData$, { requireSync: true })
+    readonly jumpTarget = computed(() => {
+        const view = this.capabilities.jumpTargetView
+        if (!view || (view === "domain" && !this.hasDomainData())) {
+            return null
+        }
+        return { view, ...JUMP_TARGETS[view] }
+    })
+
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
     readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin === "codeMap")
     readonly displayPath = computed(() => {
@@ -66,52 +91,27 @@ export class NodeContextMenuComponent {
     })
 
     constructor() {
+        // a menu opened for another node must not still show the previous node's copy confirmation
         effect(() => {
-            const rightClickedNodeData = this.rightClickedNodeData()
-            this.clampedPosition.set(null)
-            this.wasPathCopied.set(false)
-            // a pending measurement from a previous open would clamp the new menu to stale coordinates
-            if (this.clampAnimationFrameId !== null) {
-                cancelAnimationFrame(this.clampAnimationFrameId)
-                this.clampAnimationFrameId = null
-            }
-            if (rightClickedNodeData && this.menuNode()) {
-                this.clampAnimationFrameId = requestAnimationFrame(() => {
-                    this.clampAnimationFrameId = null
-                    this.clampToViewport(rightClickedNodeData.xPositionOfRightClickEvent, rightClickedNodeData.yPositionOfRightClickEvent)
-                })
-            }
+            this.rightClickedNodeData()
+            this.clipboard.reset()
         })
-    }
-
-    @HostListener("document:pointerdown", ["$event"])
-    onDocumentPointerDown(event: Event) {
-        this.closeWhenOutsideMenu(event)
-    }
-
-    @HostListener("document:wheel", ["$event"])
-    onDocumentWheel(event: Event) {
-        this.closeWhenOutsideMenu(event)
-    }
-
-    @HostListener("window:resize")
-    onWindowResize() {
-        if (this.menuNode()) {
-            this.close()
-        }
     }
 
     async copyPath() {
         const node = this.menuNode()
-        if (!node) {
-            return
+        if (node) {
+            await this.clipboard.copy(this.pathWithoutRootSegment(node))
         }
-        await navigator.clipboard.writeText(this.pathWithoutRootSegment(node))
-        this.wasPathCopied.set(true)
-        if (this.pathCopiedTimeout) {
-            clearTimeout(this.pathCopiedTimeout)
+    }
+
+    showInJumpTargetView() {
+        const node = this.menuNode()
+        const jumpTarget = this.jumpTarget()
+        if (node && jumpTarget) {
+            this.writeStore.showNodeInView(jumpTarget.view, node.path)
         }
-        this.pathCopiedTimeout = setTimeout(() => this.wasPathCopied.set(false), PATH_COPIED_FEEDBACK_DURATION_MS)
+        this.close()
     }
 
     showInExplorer() {
@@ -182,29 +182,6 @@ export class NodeContextMenuComponent {
 
     close() {
         this.writeStore.closeMenu()
-    }
-
-    private closeWhenOutsideMenu(event: Event) {
-        const menuElement = this.menuRef()?.nativeElement
-        if (!this.menuNode() || !menuElement) {
-            return
-        }
-        if (event.target instanceof Node && menuElement.contains(event.target)) {
-            return
-        }
-        this.close()
-    }
-
-    private clampToViewport(x: number, y: number) {
-        const menuElement = this.menuRef()?.nativeElement
-        if (!menuElement) {
-            return
-        }
-        const { width, height } = menuElement.getBoundingClientRect()
-        this.clampedPosition.set({
-            left: Math.max(VIEWPORT_MARGIN, Math.min(x, window.innerWidth - width - VIEWPORT_MARGIN)),
-            top: Math.max(VIEWPORT_MARGIN, Math.min(y, window.innerHeight - height - VIEWPORT_MARGIN))
-        })
     }
 
     private pathWithoutRootSegment(node: Pick<CodeMapNode, "path" | "name">) {

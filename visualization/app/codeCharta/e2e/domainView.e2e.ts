@@ -212,4 +212,42 @@ test.describe("DomainView", () => {
         // Assert — the kept-alive metrics view holds a binding for the same hotkey, so this also pins
         expect((await download).suggestedFilename()).toMatch(/_domain\.png$/)
     })
+    test("should jump from a node in the domain explorer to the metrics view", async ({ page }) => {
+        // Arrange
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        const domainExplorer = new ExplorerTreeLevelPageObject(page, "domain")
+        const metricsExplorer = new ExplorerTreeLevelPageObject(page, "metrics")
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+
+        // Act
+        await domainExplorer.openContextMenu("/root")
+        await page.locator("#codemap-context-menu").getByText("Show in Metrics").click()
+
+        // Assert — the map view is reached with the node picked up as its selection
+        await expect(page).toHaveURL(/#\/$/)
+        await expect(metricsExplorer.node("/root")).toHaveClass(/selected/)
+    })
+
+    test("should jump back to the domain view from the node it was left on", async ({ page }) => {
+        // Arrange — the user jumped to the metrics view from the domain explorer, which leaves the
+        // domain view kept alive off screen with the menu it had rendered
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        const domainExplorer = new ExplorerTreeLevelPageObject(page, "domain")
+        const metricsExplorer = new ExplorerTreeLevelPageObject(page, "metrics")
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await domainExplorer.openContextMenu("/root")
+        await page.locator("#codemap-context-menu").getByText("Show in Metrics").click()
+        await expect(page).toHaveURL(/#\/$/)
+
+        // Act
+        await metricsExplorer.openContextMenu("/root")
+        await page.locator("#codemap-context-menu").getByText("Show in Domain").click()
+
+        // Assert — the menu of the view on screen acts, rather than being closed by the one the
+        // router is keeping alive off screen
+        await expect(page).toHaveURL(/#\/domain$/)
+        await expect(domainExplorer.node("/root")).toHaveClass(/selected/)
+    })
 })

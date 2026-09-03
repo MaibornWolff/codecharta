@@ -118,3 +118,14 @@ domain view`) and the per-view readiness redesign both landed with the domain-vi
 `routing/viewReadiness.store.ts` (+spec), the removal of the global overlay from
 `codeCharta.component.html`, the `viewLoadingSpinner.e2e.ts` coverage and the CHANGELOG entry are all
 on the branch (see commit `7b3ee0356`). The earlier "only Task 1 committed" note was stale.
+
+## Follow-up found on 2026-09-03
+
+Task 3's deferred render had one more hole: a session that starts on the domain view shows the metric
+view for the first time on the switch, so the catch-up render ran before `CodeMapComponent` had
+mounted the map canvas. `FloorLabelHelper.getMapResolutionScaling` reads that canvas by id and threw
+on it, which ended `renderCodeMap$` — and with it the readiness that clears the spinner — for the rest
+of the session. The catch-up render now waits for `ThreeViewerService.isMapCanvasMounted$`, reads the
+current accumulated data instead of the last data-plus-action pair, and reports a failing render
+through `ErrorHandler` rather than ending the stream. Covered by `viewLoadingSpinner.e2e.ts` and three
+new cases in `renderCodeMap.effect.spec.ts`.
