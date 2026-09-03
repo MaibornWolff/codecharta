@@ -167,8 +167,8 @@ class DomainProjectGeneratorTest {
         // Act
         val json = serialize(DomainProjectGenerator().generate(result))
 
-        // Assert - no domain entries, and the tree carries only the root folder (no leaves)
-        assertTrue(domainNodes(json).keySet().isEmpty())
+        // Assert - the lens stays the reserved empty slot, and the tree carries only the root folder
+        assertTrue(json.getAsJsonObject("lenses").getAsJsonObject(LensSet.DOMAIN_KEY).keySet().isEmpty())
         assertEquals(setOf(NodeId.fromSegments(emptyList(), NodeType.Folder)), collectFileIds(json.getAsJsonArray("files")))
     }
 }

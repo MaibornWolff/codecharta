@@ -41,10 +41,17 @@ open class ProjectBuilder(
 
     private var opaqueLenses: Map<String, JsonElement> = emptyMap()
 
+    private var domainLens: DomainLens? = null
+
     private var commitHash: String? = null
 
     fun withOpaqueLenses(opaqueLenses: Map<String, JsonElement>): ProjectBuilder {
         this.opaqueLenses = opaqueLenses
+        return this
+    }
+
+    fun withDomainLens(domainLens: DomainLens): ProjectBuilder {
+        this.domainLens = domainLens
         return this
     }
 
@@ -75,7 +82,7 @@ open class ProjectBuilder(
             removeUnusedAttributeDescriptors()
         }
         val baseLenses = LensSet.fromLegacy(edges.toList(), attributeTypes.toMap(), attributeDescriptors.toMap())
-        return assembleProject(baseLenses.copy(opaqueLenses = opaqueLenses))
+        return assembleProject(baseLenses.copy(domain = domainLens, opaqueLenses = opaqueLenses))
     }
 
     fun buildFromLenses(lenses: LensSet): Project {
@@ -300,23 +307,24 @@ open class ProjectBuilder(
     companion object {
         const val DUMMY_PROJECT_NAME = ""
 
+        // Takes the whole lens set rather than its parts, so a filter that rebuilds a project carries
+        // every lens it does not touch — including the ones added after the filter was written.
         fun fromLenses(
             nodes: List<MutableNode>,
-            metrics: MetricsLens,
-            dependency: DependencyLens,
+            lenses: LensSet,
             blacklist: MutableList<BlacklistItem> = mutableListOf(),
-            opaqueLenses: Map<String, JsonElement> = emptyMap(),
             commitHash: String? = null
         ): ProjectBuilder {
-            val lenses = LensSet(metrics = metrics, dependency = dependency)
-            return ProjectBuilder(
-                nodes,
-                dependency.edges.toMutableList(),
-                lenses.legacyAttributeTypes().toMutableMap(),
-                lenses.allAttributeDescriptors().toMutableMap(),
-                blacklist
-            ).withOpaqueLenses(opaqueLenses)
-                .withCommitHash(commitHash)
+            val builder =
+                ProjectBuilder(
+                    nodes,
+                    lenses.dependency.edges.toMutableList(),
+                    lenses.legacyAttributeTypes().toMutableMap(),
+                    lenses.allAttributeDescriptors().toMutableMap(),
+                    blacklist
+                ).withOpaqueLenses(lenses.opaqueLenses)
+                    .withCommitHash(commitHash)
+            return lenses.domain?.let { builder.withDomainLens(it) } ?: builder
         }
     }
 }

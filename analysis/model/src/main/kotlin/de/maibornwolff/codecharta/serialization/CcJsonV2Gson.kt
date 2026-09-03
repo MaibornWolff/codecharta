@@ -12,6 +12,7 @@ import com.google.gson.ToNumberPolicy
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypeDeserializer
 import de.maibornwolff.codecharta.model.AttributeTypeSerializer
+import de.maibornwolff.codecharta.model.DomainLens
 import de.maibornwolff.codecharta.serialization.dto.DependencyLensDto
 import de.maibornwolff.codecharta.serialization.dto.LensesDto
 import de.maibornwolff.codecharta.serialization.dto.MetricsLensDto
@@ -30,15 +31,27 @@ object CcJsonV2Gson {
 
     const val METRICS_KEY = "metrics"
     const val DEPENDENCY_KEY = "dependency"
+    const val DOMAIN_KEY = "domain"
 
-    private val TYPED_LENS_KEYS = setOf(METRICS_KEY, DEPENDENCY_KEY)
+    private const val NODES_KEY = "nodes"
+
+    private val TYPED_LENS_KEYS = setOf(METRICS_KEY, DEPENDENCY_KEY, DOMAIN_KEY)
 
     private class LensesDtoSerializer : JsonSerializer<LensesDto> {
         override fun serialize(src: LensesDto, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
             val result = JsonObject()
             result.add(METRICS_KEY, context.serialize(src.metrics))
             result.add(DEPENDENCY_KEY, context.serialize(src.dependency))
+            src.domain?.let { result.add(DOMAIN_KEY, serializeDomain(it, context)) }
             src.opaqueLenses.forEach { (lensName, lensValue) -> result.add(lensName, lensValue) }
+            return result
+        }
+
+        // A lens without nodes stays the reserved `{}` slot rather than growing an empty `nodes` object,
+        // so a file that reserved the key round-trips unchanged.
+        private fun serializeDomain(domain: DomainLens, context: JsonSerializationContext): JsonElement {
+            val result = JsonObject()
+            if (domain.carriesData) result.add(NODES_KEY, context.serialize(domain.nodes))
             return result
         }
     }
@@ -52,12 +65,13 @@ object CcJsonV2Gson {
             val dependency =
                 jsonObject.get(DEPENDENCY_KEY)?.let { context.deserialize<DependencyLensDto>(it, DependencyLensDto::class.java) }
                     ?: DependencyLensDto()
+            val domain = jsonObject.get(DOMAIN_KEY)?.let { context.deserialize<DomainLens>(it, DomainLens::class.java) }
             val opaqueLenses =
                 jsonObject
                     .entrySet()
                     .filter { it.key !in TYPED_LENS_KEYS }
                     .associate { it.key to it.value }
-            return LensesDto(metrics, dependency, opaqueLenses)
+            return LensesDto(metrics, dependency, domain, opaqueLenses)
         }
     }
 }

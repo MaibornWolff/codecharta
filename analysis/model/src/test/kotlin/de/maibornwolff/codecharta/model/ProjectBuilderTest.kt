@@ -360,24 +360,26 @@ class ProjectBuilderTest {
     }
 
     @Test
-    fun `fromLenses should preserve opaque lenses and commit hash`() {
+    fun `fromLenses should preserve every lens it is handed and the commit hash`() {
         // given
         val securityLens = JsonParser.parseString("""{"cves":3}""")
-        val metrics = MetricsLens(attributeTypes = mapOf("rloc" to AttributeType.ABSOLUTE))
+        val domainLens = DomainLens(mapOf("node-id" to DomainNode(listOf(DomainWord("order", 4)))))
+        val lenses =
+            LensSet(
+                metrics = MetricsLens(attributeTypes = mapOf("rloc" to AttributeType.ABSOLUTE)),
+                domain = domainLens,
+                opaqueLenses = mapOf("security" to securityLens)
+            )
 
         // when
         val project =
             ProjectBuilder
-                .fromLenses(
-                    listOf(MutableNode("root", NodeType.Folder)),
-                    metrics,
-                    DependencyLens(),
-                    opaqueLenses = mapOf("security" to securityLens),
-                    commitHash = "deadbee"
-                ).build()
+                .fromLenses(listOf(MutableNode("root", NodeType.Folder)), lenses, commitHash = "deadbee")
+                .build()
 
         // then
         assertThat(project.lenses.opaqueLenses).containsEntry("security", securityLens)
+        assertThat(project.lenses.domain).isEqualTo(domainLens)
         assertThat(project.lenses.metrics.attributeTypes).containsEntry("rloc", AttributeType.ABSOLUTE)
         assertThat(project.commitHash).isEqualTo("deadbee")
     }

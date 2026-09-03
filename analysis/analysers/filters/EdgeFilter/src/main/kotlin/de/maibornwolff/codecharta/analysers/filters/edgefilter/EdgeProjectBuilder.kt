@@ -15,10 +15,8 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private val projectBuilder =
         ProjectBuilder.fromLenses(
             listOf(MutableNode("root", NodeType.Folder)),
-            project.lenses.metrics,
-            project.lenses.dependency.copy(edges = emptyList()),
+            project.lenses.copy(dependency = project.lenses.dependency.copy(edges = emptyList())),
             getBlacklist(),
-            opaqueLenses = project.lenses.opaqueLenses,
             commitHash = project.commitHash
         )
 

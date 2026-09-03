@@ -22,10 +22,8 @@ class FolderMover(private val project: Project) {
         return ProjectBuilder
             .fromLenses(
                 moveNodes(moveFrom, moveTo),
-                project.lenses.metrics,
-                project.lenses.dependency.copy(edges = extractEdges(moveFrom, moveTo)),
+                project.lenses.copy(dependency = project.lenses.dependency.copy(edges = extractEdges(moveFrom, moveTo))),
                 copyBlacklist(moveFrom, moveTo),
-                opaqueLenses = project.lenses.opaqueLenses,
                 commitHash = project.commitHash
             ).build()
     }

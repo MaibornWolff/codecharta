@@ -330,7 +330,7 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should restructure a project whose opaque lens is an empty reserved slot`() {
+    fun `should restructure a project whose domain lens is an empty reserved slot`() {
         // when
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project_with_empty_domain.cc.json", "-s=/root/src"))
 
@@ -339,13 +339,22 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should rename a metric on a project carrying a data-bearing opaque lens`() {
+    fun `should rename a metric on a project carrying a domain lens`() {
         // when
         val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "--rename-mcc"))
 
         // then
         assertThat(cliResult).contains("invoice")
         assertThat(cliResult).doesNotContain("Cannot restructure")
+    }
+
+    @Test
+    fun `should refuse to restructure a project carrying an opaque lens that references node ids`() {
+        // when
+        val exitCode = CommandLine(StructureModifier()).execute(SECURITY_PROJECT, "-s=/root/src")
+
+        // then - only `domain` can be re-keyed; a lens of unknown shape refuses rather than orphan its ids
+        assertThat(exitCode).isEqualTo(1)
     }
 
     @Test
@@ -365,6 +374,7 @@ class StructureModifierTest {
 
     companion object {
         private const val DOMAIN_PROJECT = "src/test/resources/sample_project_with_domain.cc.json"
+        private const val SECURITY_PROJECT = "src/test/resources/sample_project_with_security.cc.json"
 
         // sha-256("<type><canonical path>") truncated to 16 chars, the same rule the 2.0 writer applies.
         private const val ID_OF_ROOT = "164ddff4bb1345e1"

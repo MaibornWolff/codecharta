@@ -19,10 +19,8 @@ class SubProjectExtractor(private val project: Project) {
         return ProjectBuilder
             .fromLenses(
                 addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
-                project.lenses.metrics,
-                project.lenses.dependency.copy(edges = extractEdges(path)),
+                project.lenses.copy(dependency = project.lenses.dependency.copy(edges = extractEdges(path))),
                 copyBlacklist(),
-                opaqueLenses = project.lenses.opaqueLenses,
                 commitHash = project.commitHash
             ).build(cleanAttributeDescriptors = true)
     }

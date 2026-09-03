@@ -3,6 +3,9 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.DependencyLens
+import de.maibornwolff.codecharta.model.DomainLens
+import de.maibornwolff.codecharta.model.DomainNode
+import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
@@ -224,16 +227,16 @@ class ProjectMergerTest {
 
     @Test
     fun `should union opaque lenses across inputs and keep the first non-null commit hash`() {
-        val domain = JsonParser.parseString("""{"layer":"backend"}""")
+        val clusters = JsonParser.parseString("""{"layer":"backend"}""")
         val security = JsonParser.parseString("""{"cves":2}""")
         val projectA =
-            Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to domain)), commitHash = "aaa111")
+            Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("clusters" to clusters)), commitHash = "aaa111")
         val projectB =
             Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to security)), commitHash = "bbb222")
 
         val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
 
-        assertTrue(merged.lenses.opaqueLenses.containsKey("domain"))
+        assertTrue(merged.lenses.opaqueLenses.containsKey("clusters"))
         assertTrue(merged.lenses.opaqueLenses.containsKey("security"))
         assertEquals("aaa111", merged.commitHash)
     }
@@ -267,10 +270,10 @@ class ProjectMergerTest {
 
     @Test
     fun `should fail loudly when an opaque lens has conflicting payloads across inputs`() {
-        val firstDomain = JsonParser.parseString("""{"layer":"first"}""")
-        val secondDomain = JsonParser.parseString("""{"layer":"second"}""")
-        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to firstDomain)))
-        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to secondDomain)))
+        val firstSecurity = JsonParser.parseString("""{"layer":"first"}""")
+        val secondSecurity = JsonParser.parseString("""{"layer":"second"}""")
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to firstSecurity)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to secondSecurity)))
 
         assertFailsWith(MergeException::class) {
             ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
@@ -279,25 +282,65 @@ class ProjectMergerTest {
 
     @Test
     fun `should preserve a single copy of an identical opaque lens present in multiple inputs`() {
-        val domain = JsonParser.parseString("""{"layer":"backend"}""")
-        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to domain)))
-        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to domain)))
+        val security = JsonParser.parseString("""{"layer":"backend"}""")
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to security)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to security)))
 
         val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
 
-        assertEquals(domain, merged.lenses.opaqueLenses["domain"])
+        assertEquals(security, merged.lenses.opaqueLenses["security"])
     }
 
     @Test
     fun `should let a data-bearing opaque lens win over an empty reserved slot of the same name`() {
-        val emptyDomain = JsonParser.parseString("{}")
-        val populatedDomain = JsonParser.parseString("""{"layer":"backend"}""")
-        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to emptyDomain)))
-        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("domain" to populatedDomain)))
+        val emptySecurity = JsonParser.parseString("{}")
+        val populatedSecurity = JsonParser.parseString("""{"layer":"backend"}""")
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to emptySecurity)))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(opaqueLenses = mapOf("security" to populatedSecurity)))
 
         val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
 
-        assertEquals(populatedDomain, merged.lenses.opaqueLenses["domain"])
+        assertEquals(populatedSecurity, merged.lenses.opaqueLenses["security"])
+    }
+
+    @Test
+    fun `should fail loudly when two inputs carry different domain lenses`() {
+        // Arrange
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(domain = DomainLens(mapOf("a" to DomainNode()))))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(domain = DomainLens(mapOf("b" to DomainNode()))))
+
+        // Act & Assert
+        assertFailsWith(MergeException::class) {
+            ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+        }
+    }
+
+    @Test
+    fun `should carry the domain lens of the only input that has one into the merge`() {
+        // Arrange
+        val domain = DomainLens(mapOf("node-id" to DomainNode(listOf(DomainWord("order", 12, 0.42)))))
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(domain = domain))
+        val projectB = Project("b", apiVersion = "2.0")
+
+        // Act
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        // Assert
+        assertEquals(domain, merged.lenses.domain)
+    }
+
+    @Test
+    fun `should let a populated domain lens win over an empty reserved one`() {
+        // Arrange
+        val domain = DomainLens(mapOf("node-id" to DomainNode(listOf(DomainWord("order", 12)))))
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(domain = DomainLens()))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(domain = domain))
+
+        // Act
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        // Assert
+        assertEquals(domain, merged.lenses.domain)
     }
 
     private fun compareProjectStrings(project: Project, equalProject: Project, except: List<String> = listOf()): Boolean {

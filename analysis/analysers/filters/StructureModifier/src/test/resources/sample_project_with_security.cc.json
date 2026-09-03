@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "projectName": "sampleProjectWithSecurity",
+    "apiVersion": "2.0"
+  },
+  "files": [
+    {
+      "id": "164ddff4bb1345e1",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "fabeab231626f275",
+          "name": "src",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "2f6cb0760e30e5d6",
+              "name": "file1.java",
+              "type": "File"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "2f6cb0760e30e5d6": {
+          "nloc": 80.0
+        }
+      },
+      "attributeDescriptors": {},
+      "attributeTypes": {}
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {},
+      "attributeDescriptors": {}
+    },
+    "security": {
+      "nodes": {
+        "2f6cb0760e30e5d6": {
+          "findings": 3
+        }
+      }
+    }
+  }
+}

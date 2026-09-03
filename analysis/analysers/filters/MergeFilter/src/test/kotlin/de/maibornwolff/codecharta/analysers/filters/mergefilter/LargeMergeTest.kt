@@ -2,6 +2,9 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.DependencyLens
+import de.maibornwolff.codecharta.model.DomainLens
+import de.maibornwolff.codecharta.model.DomainNode
+import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
@@ -47,21 +50,44 @@ class LargeMergeTest {
     @Test
     fun `should preserve empty reserved opaque slots when wrapping`() {
         // Arrange
-        val project = rootProject(lenses = LensSet(opaqueLenses = mapOf("domain" to JsonParser.parseString("{}"))))
+        val project = rootProject(lenses = LensSet(opaqueLenses = mapOf("security" to JsonParser.parseString("{}"))))
 
         // Act
         val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
 
         // Assert
-        assertEquals(JsonParser.parseString("{}"), wrapped.lenses.opaqueLenses["domain"])
+        assertEquals(JsonParser.parseString("{}"), wrapped.lenses.opaqueLenses["security"])
+    }
+
+    @Test
+    fun `should preserve an empty reserved domain lens when wrapping`() {
+        // Arrange
+        val project = rootProject(lenses = LensSet(domain = DomainLens()))
+
+        // Act
+        val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
+
+        // Assert
+        assertEquals(DomainLens(), wrapped.lenses.domain)
     }
 
     @Test
     fun `should fail loudly when a data-bearing opaque lens cannot be re-pathed`() {
         // Arrange
         val project = rootProject(
-            lenses = LensSet(opaqueLenses = mapOf("domain" to JsonParser.parseString("""{"nodeId":"/root/file.kt"}""")))
+            lenses = LensSet(opaqueLenses = mapOf("security" to JsonParser.parseString("""{"nodeId":"/root/file.kt"}""")))
         )
+
+        // Act & Assert
+        assertFailsWith(IllegalArgumentException::class) {
+            LargeMerge.wrapProjectInFolder(project, "alpha")
+        }
+    }
+
+    @Test
+    fun `should fail loudly when a populated domain lens cannot be re-pathed`() {
+        // Arrange
+        val project = rootProject(lenses = LensSet(domain = DomainLens(mapOf("node-id" to DomainNode(listOf(DomainWord("order", 4)))))))
 
         // Act & Assert
         assertFailsWith(IllegalArgumentException::class) {

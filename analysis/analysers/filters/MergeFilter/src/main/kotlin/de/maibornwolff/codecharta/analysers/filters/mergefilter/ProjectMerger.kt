@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonElement
 import de.maibornwolff.codecharta.model.BlacklistItem
+import de.maibornwolff.codecharta.model.DomainLens
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Project
@@ -17,6 +18,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                     LensSet(
                         metrics = mergedMetricsLens,
                         dependency = mergedDependencyLens,
+                        domain = mergedDomainLens,
                         opaqueLenses = mergedOpaqueLenses
                     )
                 )
@@ -40,6 +42,19 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
             else -> throw MergeException(
                 "Opaque lens '$lensName' has conflicting payloads across inputs and cannot be merged. " +
                     "Reconcile the inputs so this lens is identical or present in only one file, then retry."
+            )
+        }
+    }
+
+    private val mergedDomainLens: DomainLens? by lazy {
+        val domainLenses = projects.mapNotNull { it.lenses.domain }
+        val dataBearing = domainLenses.filter { it.carriesData }
+        when {
+            dataBearing.isEmpty() -> domainLenses.firstOrNull()
+            dataBearing.size == 1 || dataBearing.all { it == dataBearing.first() } -> dataBearing.first()
+            else -> throw MergeException(
+                "The domain lenses of these inputs differ and cannot be merged. " +
+                    "Reconcile the inputs so the lens is identical or present in only one file, then retry."
             )
         }
     }

@@ -78,6 +78,7 @@ object ProjectToCcJsonV2Mapper {
             LensesDto(
                 metrics = metricsLens,
                 dependency = dependencyLens,
+                domain = project.lenses.domain,
                 opaqueLenses = project.lenses.opaqueLenses
             )
     }

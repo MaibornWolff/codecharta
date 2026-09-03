@@ -5,6 +5,9 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.BlacklistType
+import de.maibornwolff.codecharta.model.DomainLens
+import de.maibornwolff.codecharta.model.DomainNode
+import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
@@ -156,19 +159,49 @@ class CcJsonV2SerializationTest {
     }
 
     @Test
-    fun `should preserve a reserved domain lens verbatim through a 2_0 round-trip`() {
-        // Arrange: a project carrying a non-empty domain lens.
-        val domainLens = JsonParser.parseString("""{"team":"core","score":7}""")
-        val project =
-            Project("p", listOf(Node("root", NodeType.Folder)), Project.API_VERSION, LensSet(opaqueLenses = mapOf("domain" to domainLens)))
+    fun `should preserve a populated domain lens through a 2_0 round-trip`() {
+        // Arrange: a project carrying words for one node, one of them without a tfidf score.
+        val domainLens =
+            DomainLens(
+                mapOf(
+                    "node-id" to DomainNode(listOf(DomainWord("order", 12, 0.42), DomainWord("customer", 3)))
+                )
+            )
+        val project = Project("p", listOf(Node("root", NodeType.Folder)), Project.API_VERSION, LensSet(domain = domainLens))
 
         // Act
         val json = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
         val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
 
-        // Assert: the domain lens is emitted verbatim and survives the round-trip with value equality.
-        assertEquals("core", json.getAsJsonObject("lenses").getAsJsonObject("domain").get("team").asString)
+        // Assert: the words are emitted under nodes/words and survive the round-trip with value equality.
+        val emittedWords =
+            json
+                .getAsJsonObject("lenses")
+                .getAsJsonObject("domain")
+                .getAsJsonObject("nodes")
+                .getAsJsonObject("node-id")
+                .getAsJsonArray("words")
+        assertEquals("order", emittedWords[0].asJsonObject.get("text").asString)
+        assertEquals(12, emittedWords[0].asJsonObject.get("frequency").asInt)
+        assertEquals(0.42, emittedWords[0].asJsonObject.get("tfidf").asDouble)
+        // A word without a score stays without one rather than gaining a null.
+        assertFalse(emittedWords[1].asJsonObject.has("tfidf"))
         assertEquals(domainLens, roundTripped.lenses.domain)
+    }
+
+    @Test
+    fun `should keep an empty domain lens as the reserved empty form`() {
+        // Arrange: a project whose domain lens is present but carries nothing.
+        val project = Project("p", listOf(Node("root", NodeType.Folder)), Project.API_VERSION, LensSet(domain = DomainLens()))
+
+        // Act
+        val json = JsonParser.parseString(ProjectSerializer.serializeToString(project)).asJsonObject
+        val roundTripped = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(project))
+
+        // Assert: it stays the reserved `{}` slot instead of growing an empty nodes object.
+        val emittedDomain = json.getAsJsonObject("lenses").getAsJsonObject("domain")
+        assertEquals(0, emittedDomain.size())
+        assertEquals(DomainLens(), roundTripped.lenses.domain)
     }
 
     @Test

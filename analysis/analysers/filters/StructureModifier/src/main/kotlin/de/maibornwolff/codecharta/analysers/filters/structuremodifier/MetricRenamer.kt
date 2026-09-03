@@ -19,10 +19,8 @@ class MetricRenamer(private val project: Project, private val newName: String = 
         return ProjectBuilder
             .fromLenses(
                 listOf(updatedRoot),
-                renameMccInMetricsLens(project.lenses.metrics),
-                project.lenses.dependency,
+                project.lenses.copy(metrics = renameMccInMetricsLens(project.lenses.metrics)),
                 copyBlacklist(),
-                opaqueLenses = project.lenses.opaqueLenses,
                 commitHash = project.commitHash
             ).build()
     }

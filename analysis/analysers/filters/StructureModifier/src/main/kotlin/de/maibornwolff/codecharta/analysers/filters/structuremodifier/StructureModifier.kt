@@ -5,9 +5,9 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.tools.inspection.ProjectStructurePrinter
-import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.SegmentRemapping
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -105,7 +105,7 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
         if (isRestructuringAction() && refuseToInvalidateUnknownOpaqueLenses()) return null
 
         val treeBeforeRestructuring = project.rootNode
-        var domainLensRekeyer: DomainLensRekeyer? = null
+        var domainPathRemapping: SegmentRemapping? = null
 
         when {
             printLevels != null -> {
@@ -114,7 +114,7 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
             }
 
             setRoot != null -> {
-                domainLensRekeyer = DomainLensRekeyer.forSetRoot(setRoot!!)
+                domainPathRemapping = DomainPathRemapper.forSetRoot(setRoot!!)
                 project = SubProjectExtractor(project).extract(setRoot!!)
             }
             renameMcc != null -> {
@@ -128,39 +128,42 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
                     }
             }
             remove.isNotEmpty() -> {
-                domainLensRekeyer = DomainLensRekeyer.forRemove(remove)
+                domainPathRemapping = DomainPathRemapper.forRemove(remove)
                 project = NodeRemover(project).remove(remove)
             }
             moveFrom != null -> {
                 // FolderMover rejects a missing destination itself, so both paths are known good after it.
                 project = FolderMover(project).move(moveFrom, moveTo) ?: return null
-                domainLensRekeyer = DomainLensRekeyer.forMove(moveFrom!!, moveTo!!)
+                domainPathRemapping = DomainPathRemapper.forMove(moveFrom!!, moveTo!!)
             }
         }
 
-        domainLensRekeyer?.let { project = withRekeyedDomainLens(project, it, treeBeforeRestructuring) }
+        domainPathRemapping?.let { project = withRekeyedDomainLens(project, it, treeBeforeRestructuring) }
 
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, false)
 
         return null
     }
 
-    private fun withRekeyedDomainLens(project: Project, rekeyer: DomainLensRekeyer, treeBeforeRestructuring: Node): Project = Project(
-        projectName = project.projectName,
-        nodes = listOf(project.rootNode),
-        apiVersion = project.apiVersion,
-        lenses = project.lenses.copy(opaqueLenses = rekeyer.rekey(treeBeforeRestructuring, project.lenses.opaqueLenses)),
-        blacklist = project.blacklist,
-        commitHash = project.commitHash
-    )
+    private fun withRekeyedDomainLens(project: Project, remapping: SegmentRemapping, treeBeforeRestructuring: Node): Project {
+        val domain = project.lenses.domain ?: return project
+        return Project(
+            projectName = project.projectName,
+            nodes = listOf(project.rootNode),
+            apiVersion = project.apiVersion,
+            lenses = project.lenses.copy(domain = domain.rekeyed(treeBeforeRestructuring, remapping)),
+            blacklist = project.blacklist,
+            commitHash = project.commitHash
+        )
+    }
 
     private fun isRestructuringAction(): Boolean = setRoot != null || remove.isNotEmpty() || moveFrom != null
 
-    // `domain` is re-keyed onto the new paths, so it survives a restructure. Every other opaque lens has
-    // an unknown shape whose node ids cannot be rewritten safely, so those still refuse rather than emit
+    // The typed `domain` lens is re-keyed onto the new paths, so it survives a restructure. An opaque lens
+    // has an unknown shape whose node ids cannot be rewritten safely, so those still refuse rather than emit
     // a lens referencing nodes the output no longer has — the guard `--large` merging also applies.
     private fun refuseToInvalidateUnknownOpaqueLenses(): Boolean {
-        val invalidatedLenses = project.lenses.dataBearingOpaqueLensNames - LensSet.DOMAIN_KEY
+        val invalidatedLenses = project.lenses.dataBearingOpaqueLensNames
         if (invalidatedLenses.isEmpty()) return false
 
         Logger.error {

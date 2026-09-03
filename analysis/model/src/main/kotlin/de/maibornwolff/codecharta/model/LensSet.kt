@@ -5,15 +5,15 @@ import com.google.gson.JsonElement
 data class LensSet(
     val metrics: MetricsLens = MetricsLens(),
     val dependency: DependencyLens = DependencyLens(),
+    // Null means the file carries no domain lens at all; an empty one is the reserved-but-unused slot.
+    val domain: DomainLens? = null,
     val opaqueLenses: Map<String, JsonElement> = emptyMap()
 ) {
-    val domain: JsonElement? get() = opaqueLenses[DOMAIN_KEY]
-
     val security: JsonElement? get() = opaqueLenses[SECURITY_KEY]
 
-    // Only `metrics` and `dependency` are typed, so every other lens arrives as an opaque payload whose
-    // node ids a filter can invalidate. Filters that re-path or drop nodes ask for these names to refuse
-    // rather than emit a lens that references nodes the output no longer has.
+    // Only `metrics`, `dependency` and `domain` are typed, so every other lens arrives as an opaque
+    // payload whose node ids a filter can invalidate. Filters that re-path or drop nodes ask for these
+    // names to refuse rather than emit a lens that references nodes the output no longer has.
     val dataBearingOpaqueLensNames: Set<String> get() = opaqueLenses.filterValues { it.carriesData() }.keys
 
     fun legacyAttributeTypes(): Map<String, MutableMap<String, AttributeType>> {
