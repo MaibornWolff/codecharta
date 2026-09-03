@@ -28,6 +28,8 @@ const objectWithDynamicKeysInStore = new Set([
     "domainLensSource.words",
     "domainState.sizeRange",
     "domainState.rotationRange",
+    // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
+    "domainState.hiddenWords",
     // arrays: must be replaced wholesale, otherwise the deep-merge spread turns them into objects with numeric keys
     "sharedView.blacklist",
     "sharedView.markedPackages",

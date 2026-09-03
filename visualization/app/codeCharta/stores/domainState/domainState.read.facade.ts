@@ -1,3 +1,4 @@
+export { domainStateHiddenWordsSelector } from "./store/domainHiddenWords.selectors"
 export { domainStateSearchPatternSelector } from "./store/domainSearch.selectors"
 export { domainStateSortingOrderAscendingSelector, domainStateSortingOrderSelector } from "./store/domainSorting.selectors"
 export { DomainStateReadWindow } from "./store/domainState.readWindow"

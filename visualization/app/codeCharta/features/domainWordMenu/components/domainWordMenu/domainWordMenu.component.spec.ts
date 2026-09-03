@@ -5,6 +5,7 @@ import { DomainWordMenuComponent } from "./domainWordMenu.component"
 
 describe("DomainWordMenuComponent", () => {
     const showOccurrences = jest.fn()
+    const hideWord = jest.fn()
     const closed = jest.fn()
 
     async function setup(
@@ -13,7 +14,7 @@ describe("DomainWordMenuComponent", () => {
         jest.clearAllMocks()
         return render(DomainWordMenuComponent, {
             inputs: { rightClickedWord },
-            on: { showOccurrences, closed },
+            on: { showOccurrences, hideWord, closed },
             providers: [CopyToClipboardService]
         })
     }
@@ -53,6 +54,18 @@ describe("DomainWordMenuComponent", () => {
 
         // Assert
         expect(showOccurrences).toHaveBeenCalledWith("invoice")
+        expect(closed).toHaveBeenCalled()
+    })
+
+    it("should report the word to hide and close, since the menu's word is gone from the cloud", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        await userEvent.click(screen.getByText("Hide word"))
+
+        // Assert
+        expect(hideWord).toHaveBeenCalledWith("invoice")
         expect(closed).toHaveBeenCalled()
     })
 

@@ -23,6 +23,8 @@ export interface DomainState extends WordCloudSettings {
     sortingOrder: SortingOption
     sortingOrderAscending: boolean
     searchPattern: string
+    /** Words the reader dropped from the domain view; they leave the cloud and the explorer's word list alike. */
+    hiddenWords: string[]
 }
 
 export const defaultAmountOfTopLabels = 10

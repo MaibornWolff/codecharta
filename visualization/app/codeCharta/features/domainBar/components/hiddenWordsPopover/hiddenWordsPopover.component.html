@@ -1,0 +1,34 @@
+<cc-settings-popover-shell
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    ariaLabel="Hidden Words"
+    widthClass="w-72"
+    contentClass="gap-3 py-3 px-4"
+>
+    @if (hiddenWords().length === 0) {
+        <p class="text-sm opacity-60" data-testid="domain-bar-hidden-words-empty">
+            Right-click a word in the cloud to drop it from the cloud and the word list.
+        </p>
+    } @else {
+        <ul class="flex flex-col gap-1" data-testid="domain-bar-hidden-words-list">
+            @for (word of hiddenWords(); track word) {
+                <li class="flex items-center gap-2 rounded bg-base-200 py-1 pl-3 pr-1">
+                    <span class="flex-1 min-w-0 truncate text-sm">{{ word }}</span>
+                    <button
+                        type="button"
+                        class="btn btn-ghost btn-xs btn-square"
+                        [title]="'Show ' + word + ' again'"
+                        [attr.aria-label]="'Show ' + word + ' again'"
+                        [attr.data-testid]="'domain-bar-restore-' + word"
+                        (click)="restore(word)"
+                    >
+                        <i class="fa fa-eye"></i>
+                    </button>
+                </li>
+            }
+        </ul>
+        <button type="button" class="btn btn-sm btn-block" data-testid="domain-bar-restore-all-words" (click)="restoreAll()">
+            Show all words again
+        </button>
+    }
+</cc-settings-popover-shell>

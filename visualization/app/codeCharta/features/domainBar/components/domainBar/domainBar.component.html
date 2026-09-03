@@ -10,6 +10,10 @@
     ></cc-word-sizing-settings-popover>
 </cc-domain-segment>
 
+<cc-domain-segment #hiddenWords label="Hidden Words" [value]="hiddenWordsLabel()" idPrefix="domain-bar-hidden-words" minWidthClass="min-w-[110px]">
+    <cc-hidden-words-popover [popoverId]="hiddenWords.popoverId()" [anchorName]="hiddenWords.anchorName()"></cc-hidden-words-popover>
+</cc-domain-segment>
+
 <cc-domain-segment #rotation label="Rotation" [value]="rotationRangeLabel()" idPrefix="domain-bar-rotation" minWidthClass="min-w-[110px]">
     <cc-rotation-settings-popover [popoverId]="rotation.popoverId()" [anchorName]="rotation.anchorName()"></cc-rotation-settings-popover>
 </cc-domain-segment>
