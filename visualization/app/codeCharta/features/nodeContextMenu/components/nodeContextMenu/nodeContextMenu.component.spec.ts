@@ -15,6 +15,11 @@ import {
 } from "../../../../stores/sharedView/sharedView.write.facade"
 import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
+import {
+    DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
+    NODE_CONTEXT_MENU_CAPABILITIES,
+    NodeContextMenuCapabilities
+} from "../../nodeContextMenuCapabilities"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"
 import { NodeContextMenuComponent } from "./nodeContextMenu.component"
 
@@ -57,9 +62,16 @@ describe("nodeContextMenu component", () => {
         origin?: "codeMap" | "explorer"
         focusedNodePath?: string
         previousFocusedNodePath?: string
+        capabilities?: NodeContextMenuCapabilities
     }
 
-    async function renderMenu({ node = fileNode, origin = "codeMap", focusedNodePath, previousFocusedNodePath }: RenderMenuOptions = {}) {
+    async function renderMenu({
+        node = fileNode,
+        origin = "codeMap",
+        focusedNodePath,
+        previousFocusedNodePath,
+        capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES
+    }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
             : null
@@ -79,7 +91,8 @@ describe("nodeContextMenu component", () => {
                 }),
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock },
                 { provide: IdToBuildingService, useValue: idToBuildingServiceMock },
-                { provide: ExplorerRevealService, useValue: explorerRevealServiceMock }
+                { provide: ExplorerRevealService, useValue: explorerRevealServiceMock },
+                { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: capabilities }
             ]
         })
         const store = TestBed.inject(MockStore)
@@ -115,6 +128,19 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(screen.queryByText("Show in Explorer")).toBe(null)
+    })
+
+    it("should offer nothing but the path where the view has no map to shape", async () => {
+        // Arrange & Act
+        const { container } = await renderMenu({ node: folderNode, origin: "explorer", capabilities: { showMapActions: false } })
+
+        // Assert
+        expect(screen.getByText("…/src")).not.toBe(null)
+        expect(screen.queryByText("Focus")).toBe(null)
+        expect(screen.queryByText("Keep Highlight")).toBe(null)
+        expect(screen.queryByText("Flatten")).toBe(null)
+        expect(screen.queryByText("Exclude")).toBe(null)
+        expect(container.querySelector(".colorButton")).toBe(null)
     })
 
     it("should show the color row for folders", async () => {

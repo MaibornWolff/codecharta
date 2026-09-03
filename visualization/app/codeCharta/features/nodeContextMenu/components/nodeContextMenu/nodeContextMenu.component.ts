@@ -6,6 +6,7 @@ import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.r
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { ContextMenuItemComponent, FloatingMenuComponent } from "../../../shared/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
+import { NODE_CONTEXT_MENU_CAPABILITIES } from "../../nodeContextMenuCapabilities"
 import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
 import { NodeContextMenuWriteStore } from "../../stores/nodeContextMenu.write.store"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
@@ -25,6 +26,8 @@ export class NodeContextMenuComponent {
     private readonly idToBuildingService = inject(IdToBuildingService)
     private readonly explorerRevealService = inject(ExplorerRevealService)
     private readonly clipboard = inject(CopyToClipboardService)
+
+    readonly showMapActions = inject(NODE_CONTEXT_MENU_CAPABILITIES).showMapActions
 
     readonly rightClickedNodeData = toSignal(this.sharedViewReadWindow.rightClickedNodeData$, { requireSync: true })
     readonly codeMapNode = toSignal(this.readStore.rightClickedCodeMapNode$, { requireSync: true })
