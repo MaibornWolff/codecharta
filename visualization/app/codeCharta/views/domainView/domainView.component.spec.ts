@@ -5,6 +5,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { firstValueFrom } from "rxjs"
 import { DomainBarReadStore } from "../../features/domainBar/facade"
+import { NODE_CONTEXT_MENU_CAPABILITIES, NodeContextMenuForExplorer } from "../../features/nodeContextMenu/facade"
 import {
     EXPLORER_CAPABILITIES,
     EXPLORER_CONTEXT_MENU,
@@ -15,6 +16,7 @@ import {
     ExplorerWidthService
 } from "../../features/sidebarExplorer/facade"
 import { viewIndependentTreeSelector } from "../../lenses/structure/structure.facade"
+import { provideMockState } from "../../mocks/state.mocks"
 import { CodeMapNode, NodeType, SortingOption } from "../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings } from "../../model/wordCloud.model"
 import { accumulatedDataSelector } from "../../renderer/renderModel/renderModel.facade"
@@ -48,6 +50,9 @@ class StubWordOccurrencesComponent {
     readonly revealNode = output<string>()
 }
 
+@Component({ selector: "cc-node-context-menu", template: "", standalone: true })
+class StubNodeContextMenuComponent {}
+
 @Component({ selector: "cc-domain-bar", template: "", standalone: true })
 class StubDomainBarComponent {}
 
@@ -76,12 +81,14 @@ describe("DomainViewComponent", () => {
                     StubDomainBarComponent,
                     StubBottomBarComponent,
                     StubWordMenuComponent,
-                    StubWordOccurrencesComponent
+                    StubWordOccurrencesComponent,
+                    StubNodeContextMenuComponent
                 ]
             }
         })
         return render(DomainViewComponent, {
             providers: [
+                provideMockState(),
                 provideMockStore({
                     initialState: defaultState,
                     selectors: [
@@ -106,8 +113,20 @@ describe("DomainViewComponent", () => {
             showCounts: false,
             sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
         })
-        expect(injector.get(EXPLORER_CONTEXT_MENU, null)).toBeNull()
+        expect(injector.get(NODE_CONTEXT_MENU_CAPABILITIES)).toEqual({ showMapActions: false })
         expect(injector.get(EXPLORER_ROW).project(SOME_NODE).isSelectable).toBe(true)
+    })
+
+    it("should offer the node context menu on every explorer row", async () => {
+        // Arrange
+        const { fixture } = await setup()
+
+        // Act
+        const contextMenu = fixture.debugElement.injector.get(EXPLORER_CONTEXT_MENU)
+
+        // Assert
+        expect(contextMenu).toBeInstanceOf(NodeContextMenuForExplorer)
+        expect(contextMenu.isEnabledFor(SOME_NODE)).toBe(true)
     })
 
     it("should read the view-independent tree, so the map's blacklist cannot shape the domain explorer", async () => {

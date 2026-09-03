@@ -57,6 +57,19 @@ export class NodeContextMenuWriteStore {
         this.store.dispatch(unmarkPackage({ path }))
     }
 
+    openMenuForExplorerRow(nodePath: string, xPosition: number, yPosition: number) {
+        this.store.dispatch(
+            setRightClickedNodeData({
+                value: {
+                    nodeId: nodePath,
+                    xPositionOfRightClickEvent: xPosition,
+                    yPositionOfRightClickEvent: yPosition,
+                    origin: "explorer"
+                }
+            })
+        )
+    }
+
     closeMenu() {
         this.store.dispatch(setRightClickedNodeData({ value: null }))
     }

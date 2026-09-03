@@ -4,9 +4,11 @@ import { DomainBarComponent, DomainBarReadStore } from "../../features/domainBar
 import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
 import { DomainWordMenuComponent } from "../../features/domainWordMenu/facade"
 import { DOMAIN_WORD_OCCURRENCES_WIDTH_PX, DomainWordOccurrencesComponent } from "../../features/domainWordOccurrences/facade"
+import { NODE_CONTEXT_MENU_CAPABILITIES, NodeContextMenuComponent, NodeContextMenuForExplorer } from "../../features/nodeContextMenu/facade"
 import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
 import {
     EXPLORER_CAPABILITIES,
+    EXPLORER_CONTEXT_MENU,
     EXPLORER_ROW,
     EXPLORER_SELECTION,
     EXPLORER_TREE,
@@ -39,6 +41,7 @@ import { DomainWordInspectionStore } from "./stores/domainWordInspection.store"
         DomainBarComponent,
         DomainToolboxComponent,
         DomainWordMenuComponent,
+        NodeContextMenuComponent,
         DomainWordOccurrencesComponent,
         BottomBarComponent,
         LoadingFileProgressSpinnerComponent
@@ -48,6 +51,8 @@ import { DomainWordInspectionStore } from "./stores/domainWordInspection.store"
         { provide: EXPLORER_ROW, useExisting: DomainExplorerRow },
         DomainExplorerSelection,
         { provide: EXPLORER_SELECTION, useExisting: DomainExplorerSelection },
+        NodeContextMenuForExplorer,
+        { provide: EXPLORER_CONTEXT_MENU, useExisting: NodeContextMenuForExplorer },
         DomainExplorerTree,
         { provide: EXPLORER_TREE, useExisting: DomainExplorerTree },
         provideExplorerSort(DOMAIN_EXPLORER_SORT),
@@ -61,6 +66,7 @@ import { DomainWordInspectionStore } from "./stores/domainWordInspection.store"
                 sortOptions: [SortingOption.NAME, SortingOption.NUMBER_OF_FILES]
             }
         },
+        { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: { showMapActions: false } },
         CopyToClipboardService,
         provideViewScopedExplorerState("domain"),
         provideViewScopedCssVariables()
