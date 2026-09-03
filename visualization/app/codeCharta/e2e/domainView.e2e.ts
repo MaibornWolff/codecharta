@@ -212,4 +212,20 @@ test.describe("DomainView", () => {
         // Assert — the kept-alive metrics view holds a binding for the same hotkey, so this also pins
         expect((await download).suggestedFilename()).toMatch(/_domain\.png$/)
     })
+    test("should jump from a node in the domain explorer to the metrics view", async ({ page }) => {
+        // Arrange
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        const domainExplorer = new ExplorerTreeLevelPageObject(page, "domain")
+        const metricsExplorer = new ExplorerTreeLevelPageObject(page, "metrics")
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+
+        // Act
+        await domainExplorer.openContextMenu("/root")
+        await page.locator("#codemap-context-menu").getByText("Show in Metrics").click()
+
+        // Assert — the map view is reached with the node picked up as its selection
+        await expect(page).toHaveURL(/#\/$/)
+        await expect(metricsExplorer.node("/root")).toHaveClass(/selected/)
+    })
 })
