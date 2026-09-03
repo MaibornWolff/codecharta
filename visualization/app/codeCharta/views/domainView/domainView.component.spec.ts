@@ -6,6 +6,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { firstValueFrom } from "rxjs"
 import { DomainBarReadStore } from "../../features/domainBar/facade"
+import { WordSorting, WordSortingOption } from "../../features/domainWordOccurrences/facade"
 import { NODE_CONTEXT_MENU_CAPABILITIES, NodeContextMenuForExplorer } from "../../features/nodeContextMenu/facade"
 import {
     EXPLORER_CAPABILITIES,
@@ -13,6 +14,7 @@ import {
     EXPLORER_ROW,
     EXPLORER_TREE,
     EXPLORER_WORD_SEARCH,
+    EXPLORER_WORD_SORT,
     ExplorerCollapseService,
     ExplorerModeService,
     ExplorerWidthService
@@ -48,6 +50,7 @@ class StubWordMenuComponent {
 @Component({ selector: "cc-domain-word-list", template: "", standalone: true })
 class StubWordListComponent {
     readonly query = input("")
+    readonly sorting = input<WordSorting | null>(null)
     readonly expandedWord = input<string | null>(null)
     readonly selectedNodePath = input<string | null>(null)
     readonly wordToggled = output<string>()
@@ -268,6 +271,18 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(wordList(fixture).query()).toBe("invo")
+    })
+
+    it("should order the word list by the explorer's word sort", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+
+        // Act
+        fixture.debugElement.injector.get(EXPLORER_WORD_SORT).setOption(WordSortingOption.NAME)
+        detectChanges()
+
+        // Assert
+        expect(wordList(fixture).sorting()).toEqual({ option: WordSortingOption.NAME, ascending: true })
     })
 
     it("should collapse an expanded word when its row is toggled again", async () => {

@@ -310,9 +310,9 @@ describe("SidebarExplorerComponent", () => {
         TestBed.inject(ExplorerModeService).activate(WORDS_MODE.id)
         detectChanges()
 
-        // Assert — the node sort options cannot sort what the other mode lists
+        // Assert — search and sort stay up, acting on whatever the active mode browses
         expect(container.querySelector("cc-explorer-tree")).toBe(null)
-        expect(container.querySelector("cc-explorer-sort-control")).toBe(null)
+        expect(container.querySelector("cc-explorer-sort-control")).not.toBe(null)
         expect(container.querySelector("cc-explorer-search-bar")).not.toBe(null)
     })
 })

@@ -17,9 +17,7 @@
     @if (capabilities.showSearch) {
         <cc-explorer-search-bar></cc-explorer-search-bar>
     }
-    @if (isFilesMode()) {
-        <cc-explorer-sort-control></cc-explorer-sort-control>
-    }
+    <cc-explorer-sort-control></cc-explorer-sort-control>
     <div #scrollHost class="flex-1 overflow-auto px-1 py-1">
         @if (isFilesMode()) {
             <cc-explorer-tree></cc-explorer-tree>

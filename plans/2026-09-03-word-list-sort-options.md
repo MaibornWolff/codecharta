@@ -1,7 +1,7 @@
 ---
 name: word list sort options
 issue: <#issueid>
-state: todo
+state: complete
 version: 1
 ---
 
@@ -43,11 +43,14 @@ ascending/descending toggle.
 
 ## Steps
 
-- [ ] Complete Task 1: Sort options move into the sort port
-- [ ] Complete Task 2: Word sorting
-- [ ] Complete Task 3: Wiring
-- [ ] Complete Task 4: Documentation
+- [x] Complete Task 1: Sort options move into the sort port
+- [x] Complete Task 2: Word sorting
+- [x] Complete Task 3: Wiring
+- [x] Complete Task 4: Documentation
 
 ## Notes
 
 - Tie-break stays word text ascending in every option and direction, so equal counts read alphabetically.
+- A picked option starts in its natural direction (names A to Z, numbers biggest first), so the word
+  list never opens a name sort backwards.
+- Verified with the unit suite, the domain e2e suite and a screenshot of the control in word mode.

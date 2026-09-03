@@ -19,6 +19,7 @@ import {
     EXPLORER_SELECTION,
     EXPLORER_TREE,
     EXPLORER_WORD_SEARCH,
+    EXPLORER_WORD_SORT,
     ExplorerCollapseService,
     ExplorerModeService,
     ExplorerWidthService,
@@ -40,6 +41,7 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
 import { DomainSelectionStore } from "./stores/domainSelection.store"
 import { DomainWordInspectionStore } from "./stores/domainWordInspection.store"
 import { DomainWordQueryStore } from "./stores/domainWordQuery.store"
+import { DomainWordSortStore } from "./stores/domainWordSort.store"
 
 @Component({
     selector: "cc-domain-view",
@@ -77,6 +79,8 @@ import { DomainWordQueryStore } from "./stores/domainWordQuery.store"
         },
         DomainWordQueryStore,
         { provide: EXPLORER_WORD_SEARCH, useExisting: DomainWordQueryStore },
+        DomainWordSortStore,
+        { provide: EXPLORER_WORD_SORT, useExisting: DomainWordSortStore },
         {
             provide: NODE_CONTEXT_MENU_CAPABILITIES,
             useValue: { showMapActions: false, jumpTargetView: "metrics" } satisfies NodeContextMenuCapabilities
@@ -96,6 +100,7 @@ export class DomainViewComponent {
     private readonly domainSelectionStore = inject(DomainSelectionStore)
     private readonly domainWordInspectionStore = inject(DomainWordInspectionStore)
     private readonly domainWordQueryStore = inject(DomainWordQueryStore)
+    private readonly domainWordSortStore = inject(DomainWordSortStore)
     private readonly clipboard = inject(CopyToClipboardService)
 
     readonly settings = this.domainBarReadStore.settings
@@ -109,6 +114,7 @@ export class DomainViewComponent {
     readonly rightClickedWord = signal<RightClickedWord | null>(null)
     readonly inspectedWord = this.domainWordInspectionStore.inspectedWord
     readonly wordQuery = toSignal(this.domainWordQueryStore.pattern$, { requireSync: true })
+    readonly wordSorting = toSignal(this.domainWordSortStore.sorting$, { requireSync: true })
 
     /** Searching for the word narrows the list to it, which says why the list is short and needs no scrolling. */
     showWordOccurrences(word: string) {
