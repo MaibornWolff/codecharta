@@ -1,6 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
-import { CodeMapNode } from "../../../../model/codeCharta.model"
-import { isLeaf } from "../../../../util/codeMapHelper"
 
 @Component({
     selector: "cc-explorer-tree-item-icon",
@@ -11,14 +9,13 @@ export class ExplorerTreeItemIconComponent {
     private static readonly DEFAULT_FOLDER_COLOR = "#000000"
     private static readonly INACTIVE_ROW_COLOR = "#BDBDBD"
 
-    readonly node = input.required<CodeMapNode>()
+    readonly isFolder = input.required<boolean>()
     readonly isOpen = input.required<boolean>()
     readonly isInactive = input<boolean>(false)
     readonly markingColor = input<string | null>(null)
 
     readonly iconClass = computed(() => {
-        const node = this.node()
-        if (isLeaf(node)) {
+        if (!this.isFolder()) {
             return "fa fa-file-o"
         }
         return this.isOpen() ? "fa fa-folder-open" : "fa fa-folder"
@@ -28,7 +25,7 @@ export class ExplorerTreeItemIconComponent {
         if (this.isInactive()) {
             return ExplorerTreeItemIconComponent.INACTIVE_ROW_COLOR
         }
-        if (isLeaf(this.node())) {
+        if (!this.isFolder()) {
             return undefined
         }
         return this.markingColor() ?? ExplorerTreeItemIconComponent.DEFAULT_FOLDER_COLOR
