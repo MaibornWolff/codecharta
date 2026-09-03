@@ -67,6 +67,25 @@ cannot be dropped from the UI, and the word list renders every word it has.
 - [x] Complete Task 4: hide a word
 - [x] Complete Task 5: window the word list
 
+## Review Feedback Addressed
+
+1. **Windowing never engaged in the real flow (HIGH)**: the viewport searched for its scroll panel by
+   walking the DOM on a 30-frame budget. The word list is projected into the explorer's `@if` branch, so
+   Angular creates it while the panel does not exist; the budget expired and the list rendered every row
+   for the rest of the session. Confirmed in a browser — a three-second pause before opening word mode
+   gave all 3000 rows. The panel is now handed over by `ExplorerScrollHostService`, which the explorer
+   already registers reactively.
+2. **A collapse round trip left a destroyed panel behind (MEDIUM)**: same cause, same fix — the service's
+   signal goes null on teardown and carries the new element on re-creation, so the viewport re-attaches.
+3. **An open breakdown's height collapsed to 0 (MEDIUM)**: it was re-measured from the DOM, but the
+   breakdown only exists while its own row is inside the window. Its height is remembered while that row
+   is out of view, and forgotten when the breakdown closes.
+4. **"In the window" is not "on screen" (MEDIUM)**: the guard counted the overscan rows, so a picked word
+   could open just off screen. It now tests real visibility and centres the row like the file tree does.
+   Fixing this exposed a second bug of my own: the effect re-ran on every scroll, dragging the list back
+   whenever the reader scrolled an open word out of sight. It follows a *newly* expanded word only.
+5. **Dead `index` on a hot computed (LOW)**: removed.
+
 ## Notes
 
 - Each task is tested and committed on its own before the next one starts.
@@ -87,6 +106,8 @@ cannot be dropped from the UI, and the word list renders every word it has.
   kept on every collision, schema-valid; `--large` yields 0 keys pointing at nodes the output lacks.
 - Visualization: 419 unit suites (2847 tests), `tsc`, dependency-cruiser, knip, style lint and all 72 e2e
   tests green.
+- Review round: two e2e tests now cover the realistic flow (open the view, pause, then open word mode) and
+  the collapse round trip. Both fail against the old attach mechanism and pass with the new one.
 - In a browser: the clicked cloud word opens its breakdown and is marked in the cloud; hiding a word takes it
   out of both the cloud and the list and survives a reload; a 3000-word list renders 23 rows instead of 3000,
   keeps its 84008px scroll height, and jumps to a word picked far outside the rendered slice.

@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test"
-import { CC_URL, clearIndexedDB, goto, waitForCcStatePersisted } from "../../playwright.helper"
+import { CC_URL, clearIndexedDB, collapseExplorer, goto, waitForCcStatePersisted } from "../../playwright.helper"
 import sample1 from "../assets/sample1.cc.json"
 import { DomainBarPageObject } from "../features/domainBar/domainBar.po"
+import { NavBarFolderButtonPageObject } from "../features/navBar/components/navBarFolderButton/navBarFolderButton.po"
 import { ViewSwitcherPageObject } from "../features/navBar/components/viewSwitcher/viewSwitcher.po"
 import { ExplorerTreeLevelPageObject } from "../features/sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
 import { defaultWordCloudSettings, WordCloudShape } from "../model/wordCloud.model"
@@ -12,6 +13,11 @@ const BOOT_SAMPLE_FILE_NAME = "sample1.cc.json"
 
 // The cloud debounces its render and then lays the words out asynchronously.
 const WORD_CLOUD_LAYOUT_MS = 2500
+
+const MANY_WORDS_FILE = "./app/codeCharta/resources/sample_with_many_domain_words.cc.json"
+
+// The panel fits 17 rows, and the window carries 6 overscan rows below them.
+const RENDERED_ROWS_OF_A_LONG_LIST = 23
 
 test.describe("DomainView", () => {
     test.beforeEach(async ({ page }) => {
@@ -118,6 +124,41 @@ test.describe("DomainView", () => {
 
         // Assert
         await expect(page.locator("cc-domain-word-row")).toHaveCount(wordCountBeforeHiding)
+    })
+
+    test("should render only the visible slice of a long word list", async ({ page }) => {
+        // Arrange — a project with 300 words, opened the way a reader would: the view first, its word
+        // list a moment later. Attaching to the panel before it exists is what made every row render.
+        await new NavBarFolderButtonPageObject(page).openFiles([MANY_WORDS_FILE])
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+
+        // Act
+        await page.getByTestId("explorer-mode-words").click()
+        await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
+
+        // Assert — a fraction of the 300 rows is rendered, while the panel still scrolls the whole list.
+        await expect(page.locator("cc-domain-word-row")).toHaveCount(RENDERED_ROWS_OF_A_LONG_LIST)
+        const panel = page.locator("cc-sidebar-explorer .overflow-auto")
+        expect(await panel.evaluate(element => element.scrollHeight)).toBeGreaterThan(300 * 20)
+    })
+
+    test("should keep rendering only a slice after the explorer is collapsed and re-opened", async ({ page }) => {
+        // Arrange — collapsing destroys the panel the list measures itself against.
+        await new NavBarFolderButtonPageObject(page).openFiles([MANY_WORDS_FILE])
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+        await page.getByTestId("explorer-mode-words").click()
+        await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
+
+        // Act
+        await collapseExplorer(page)
+        await page.getByTestId("explorer-expand-button").click()
+
+        // Assert
+        await expect(page.locator("cc-domain-word-row")).toHaveCount(RENDERED_ROWS_OF_A_LONG_LIST)
     })
 
     test("should reorder the word list from the sort control", async ({ page }) => {

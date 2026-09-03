@@ -41,6 +41,17 @@ export function wordListWindow(geometry: WordListGeometry): WordListWindow {
     }
 }
 
+/** Whether a row is fully inside the panel, which the overscan rows around the window are not. */
+export function isRowOnScreen(index: number, geometry: WordListGeometry): boolean {
+    const rowTop = offsetOf(index, geometry)
+    return rowTop >= geometry.scrolledPast && rowTop + geometry.rowHeight <= geometry.scrolledPast + geometry.viewportHeight
+}
+
+/** The offset that puts a row in the middle of the panel, the way the file tree reveals a node. */
+export function offsetThatCentres(index: number, geometry: WordListGeometry): number {
+    return offsetOf(index, geometry) - (geometry.viewportHeight - geometry.rowHeight) / 2
+}
+
 function everyRow({ rowCount }: WordListGeometry): WordListWindow {
     return { firstIndex: 0, lastIndex: rowCount - 1, topSpacerHeight: 0, bottomSpacerHeight: 0 }
 }

@@ -2,17 +2,17 @@
     <p class="px-3 py-4 text-sm opacity-60" data-testid="domain-word-list-empty">{{ emptyHint() }}</p>
 } @else {
     <div [style.height.px]="window().topSpacerHeight"></div>
-    @for (rendered of renderedWords(); track rendered.word.text) {
+    @for (word of renderedWords(); track word.text) {
         <cc-domain-word-row
-            [word]="rendered.word"
-            [share]="shareOf(rendered.word)"
-            [isExpanded]="isExpanded(rendered.word)"
-            (toggled)="wordToggled.emit(rendered.word.text)"
+            [word]="word"
+            [share]="shareOf(word)"
+            [isExpanded]="isExpanded(word)"
+            (toggled)="wordToggled.emit(word.text)"
         ></cc-domain-word-row>
-        @if (isExpanded(rendered.word)) {
+        @if (isExpanded(word)) {
             <div class="pl-3" data-word-breakdown>
                 <cc-domain-word-occurrence-tree
-                    [word]="rendered.word.text"
+                    [word]="word.text"
                     [selectedNodePath]="selectedNodePath()"
                     (nodeClicked)="nodeClicked.emit($event)"
                 ></cc-domain-word-occurrence-tree>
