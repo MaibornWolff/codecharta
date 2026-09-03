@@ -47,16 +47,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
     }
 
     private val mergedDomainLens: DomainLens? by lazy {
-        val domainLenses = projects.mapNotNull { it.lenses.domain }
-        val dataBearing = domainLenses.filter { it.carriesData }
-        when {
-            dataBearing.isEmpty() -> domainLenses.firstOrNull()
-            dataBearing.size == 1 || dataBearing.all { it == dataBearing.first() } -> dataBearing.first()
-            else -> throw MergeException(
-                "The domain lenses of these inputs differ and cannot be merged. " +
-                    "Reconcile the inputs so the lens is identical or present in only one file, then retry."
-            )
-        }
+        projects.mapNotNull { it.lenses.domain }.reduceOrNull { merged, lens -> merged.merge(lens) }
     }
 
     private val mergedCommitHash: String? by lazy { projects.firstNotNullOfOrNull { it.commitHash } }

@@ -304,15 +304,33 @@ class ProjectMergerTest {
     }
 
     @Test
-    fun `should fail loudly when two inputs carry different domain lenses`() {
-        // Arrange
-        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(domain = DomainLens(mapOf("a" to DomainNode()))))
-        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(domain = DomainLens(mapOf("b" to DomainNode()))))
+    fun `should union the domain lenses of inputs that describe different parts of the tree`() {
+        // Arrange: the shape of a monorepo scanned one subproject at a time.
+        val backend = DomainLens(mapOf("backend-id" to DomainNode(listOf(DomainWord("invoice", 12)))))
+        val frontend = DomainLens(mapOf("frontend-id" to DomainNode(listOf(DomainWord("checkout", 5)))))
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(domain = backend))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(domain = frontend))
 
-        // Act & Assert
-        assertFailsWith(MergeException::class) {
-            ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
-        }
+        // Act
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        // Assert
+        assertEquals(setOf("backend-id", "frontend-id"), merged.lenses.domain!!.nodes.keys)
+    }
+
+    @Test
+    fun `should keep the strongest reading of a word two inputs both scored`() {
+        // Arrange: two scans of the same node disagreeing on frequency and tfidf.
+        val first = DomainLens(mapOf("node-id" to DomainNode(listOf(DomainWord("order", 12, 0.31)))))
+        val second = DomainLens(mapOf("node-id" to DomainNode(listOf(DomainWord("order", 7, 0.44)))))
+        val projectA = Project("a", apiVersion = "2.0", lenses = LensSet(domain = first))
+        val projectB = Project("b", apiVersion = "2.0", lenses = LensSet(domain = second))
+
+        // Act
+        val merged = ProjectMerger(listOf(projectA, projectB), nodeMergerStrategy).merge()
+
+        // Assert
+        assertEquals(listOf(DomainWord("order", 12, 0.44)), merged.lenses.domain!!.nodes["node-id"]!!.words)
     }
 
     @Test

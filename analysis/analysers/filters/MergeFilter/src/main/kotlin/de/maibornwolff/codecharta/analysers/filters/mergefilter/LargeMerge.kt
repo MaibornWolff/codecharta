@@ -2,10 +2,10 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
-import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.SegmentRemapping
 
 class LargeMerge {
     companion object {
@@ -15,23 +15,27 @@ class LargeMerge {
             require(project.rootNode.name == ROOT_NODE_NAME) {
                 "Input project structure doesn't have '/root/' as a base folder. If that's intended open an issue."
             }
-            val invalidatedLenses = project.lenses.dataBearingOpaqueLensNames +
-                if (project.lenses.domain?.carriesData == true) setOf(LensSet.DOMAIN_KEY) else emptySet()
+            val invalidatedLenses = project.lenses.dataBearingOpaqueLensNames
             require(invalidatedLenses.isEmpty()) {
-                "Cannot '--large' merge '${project.projectName}': lens(es) ${invalidatedLenses.joinToString()} " +
-                    "reference node ids that re-pathing into a subfolder would invalidate. " +
+                "Cannot '--large' merge '${project.projectName}': opaque lens(es) ${invalidatedLenses.joinToString()} " +
+                    "may reference node ids that re-pathing into a subfolder would invalidate. " +
                     "Merge without '--large' or open an issue."
             }
             val rePathedDependency = project.lenses.dependency.copy(edges = addFolderToEdgePaths(project.lenses.dependency.edges, prefix))
+            val rePathedDomain = project.lenses.domain?.rekeyed(project.rootNode, movedIntoFolder(prefix))
             return Project(
                 projectName = project.projectName,
                 nodes = moveNodesIntoFolder(project.rootNode, prefix),
                 apiVersion = project.apiVersion,
-                lenses = project.lenses.copy(dependency = rePathedDependency),
+                lenses = project.lenses.copy(dependency = rePathedDependency, domain = rePathedDomain),
                 blacklist = addFolderToBlackListPaths(project.blacklist, prefix),
                 commitHash = project.commitHash
             )
         }
+
+        // The root itself stays the root and keeps its id; everything below it gains the prefix folder.
+        private fun movedIntoFolder(folderName: String): SegmentRemapping =
+            { segments -> if (segments.isEmpty()) segments else listOf(folderName) + segments }
 
         private fun moveNodesIntoFolder(root: Node, folderName: String): List<Node> {
             val folderNode = Node(

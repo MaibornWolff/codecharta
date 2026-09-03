@@ -222,6 +222,22 @@ check_domainlanguage() {
   fi
 }
 
+check_domainlanguage_merge() {
+  echo " -- expect two domain maps of the same tree to merge into one"
+  # Two scans of the same code that disagree on the word banks: the same node ids on both sides, with
+  # different words under them. Before the lens could be merged this combination failed outright.
+  MODERATE_DOMAIN_JSON="${TEMP_DIR}/domain_moderate.cc.json"
+  MINIMAL_DOMAIN_JSON="${TEMP_DIR}/domain_minimal.cc.json"
+  MERGED_DOMAIN_JSON="${TEMP_DIR}/actual_domain_merged.cc.json"
+  "${CCSH}" domainlanguageparser "${DATA}" -o "${MODERATE_DOMAIN_JSON}" -nc
+  "${CCSH}" domainlanguageparser "${DATA}" --stop-word-level=MINIMAL -o "${MINIMAL_DOMAIN_JSON}" -nc
+  "${CCSH}" merge "${MODERATE_DOMAIN_JSON}" "${MINIMAL_DOMAIN_JSON}" -o "${MERGED_DOMAIN_JSON}" -nc
+  validate "${MERGED_DOMAIN_JSON}"
+  if ! grep -q '"domain":{"nodes":{' "${MERGED_DOMAIN_JSON}"; then
+    exit_with_err "${MERGED_DOMAIN_JSON} lost its domain lens in the merge"
+  fi
+}
+
 check_dependacharta() {
   echo " -- expect DependaChartaImporter to produce valid cc.json file"
   ACTUAL_DEPENDACHARTA_JSON="${TEMP_DIR}/actual_dependacharta.cc.json"
@@ -308,6 +324,7 @@ run_tests() {
   check_rawtext
   check_unifiedparser
   check_domainlanguage
+  check_domainlanguage_merge
   check_dependacharta
   check_convert
 

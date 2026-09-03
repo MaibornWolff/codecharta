@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- **Two domain maps can now be merged.** `ccsh merge` refused any pair of inputs that both carried domain words
+  (`Opaque lens 'domain' has conflicting payloads`), so domain-parsing a monorepo one subproject at a time and
+  merging the results was impossible. The lenses are now unioned by node id, and a word both inputs describe keeps
+  the higher `frequency` and the higher `tfidf` independently — the same "highest value wins" rule `ccsh merge`
+  already applies to metrics. A word only one input scored keeps its score. `--large` merging no longer refuses
+  either: it re-keys the domain lens onto the wrapped paths instead of failing, so the words follow the files
+  into their prefix folder.
+
 ### Chore 👨‍💻 👩‍💻
 
 - The `domain` lens is now a typed part of the model alongside `metrics` and `dependency` instead of an opaque JSON payload, so
