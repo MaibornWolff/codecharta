@@ -4,6 +4,7 @@ import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
 import { EXPLORER_COUNTS, ExplorerCounts } from "../../explorerCounts.port"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerCountChipComponent } from "../explorerCountChip/explorerCountChip.component"
+import { ExplorerModeToggleComponent } from "../explorerModeToggle/explorerModeToggle.component"
 
 const NO_COUNTS: ExplorerCounts = { shown: 0, flattened: 0, hidden: 0, noArea: 0 }
 
@@ -11,12 +12,15 @@ const NO_COUNTS: ExplorerCounts = { shown: 0, flattened: 0, hidden: 0, noArea: 0
     selector: "cc-explorer-header",
     templateUrl: "./explorerHeader.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ExplorerCountChipComponent]
+    imports: [ExplorerCountChipComponent, ExplorerModeToggleComponent]
 })
 export class ExplorerHeaderComponent {
     private readonly collapseService = inject(ExplorerCollapseService)
 
-    readonly showCounts = inject(EXPLORER_CAPABILITIES).showCounts
+    private readonly capabilities = inject(EXPLORER_CAPABILITIES)
+
+    readonly showCounts = this.capabilities.showCounts
+    readonly showModeToggle = this.capabilities.modes.length > 1
 
     private readonly countsSource = this.showCounts ? inject(EXPLORER_COUNTS) : null
 

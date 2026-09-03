@@ -4,8 +4,8 @@
         <input
             type="text"
             class="grow"
-            placeholder="*.js, **/app/*"
-            aria-label="Search files and folders"
+            [placeholder]="activeMode().searchPlaceholder"
+            [attr.aria-label]="activeMode().searchAriaLabel"
             [value]="searchPattern()"
             (input)="setSearchPattern($event)"
         />

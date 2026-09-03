@@ -1,0 +1,23 @@
+@if (topLevelOccurrences().length === 0) {
+    <p class="px-3 py-2 text-sm opacity-60" data-testid="domain-word-occurrences-empty">{{ word() }} does not occur in any file.</p>
+} @else {
+    <div data-testid="domain-word-occurrences-tree">
+        <ng-container *ngTemplateOutlet="subtree; context: { $implicit: topLevelOccurrences() }"></ng-container>
+    </div>
+}
+
+<ng-template #subtree let-occurrences>
+    @for (occurrence of occurrences; track occurrence.path) {
+        <cc-domain-word-occurrence-row
+            [node]="occurrence"
+            [isExpanded]="isExpanded(occurrence.path)"
+            [isSelected]="occurrence.path === selectedNodePath()"
+            (clicked)="clickRow(occurrence)"
+        ></cc-domain-word-occurrence-row>
+        <div class="pl-3">
+            @if (isExpanded(occurrence.path)) {
+                <ng-container *ngTemplateOutlet="subtree; context: { $implicit: occurrence.children }"></ng-container>
+            }
+        </div>
+    }
+</ng-template>

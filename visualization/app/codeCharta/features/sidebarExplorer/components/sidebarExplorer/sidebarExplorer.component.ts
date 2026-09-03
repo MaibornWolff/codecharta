@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, injec
 import { CSS_VARIABLE_HOST } from "../../../shared/facade"
 import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
+import { ExplorerModeService } from "../../services/explorerMode.service"
 import { ExplorerScrollHostService } from "../../services/explorerScrollHost.service"
 import { EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
 import { ExplorerHeaderComponent } from "../explorerHeader/explorerHeader.component"
@@ -38,12 +39,14 @@ export class SidebarExplorerComponent implements OnDestroy {
     private readonly widthService = inject(ExplorerWidthService)
     private readonly cssVariableHost = inject(CSS_VARIABLE_HOST)
     private readonly scrollHostService = inject(ExplorerScrollHostService)
+    private readonly modeService = inject(ExplorerModeService)
 
     private readonly scrollHost = viewChild<ElementRef<HTMLElement>>("scrollHost")
 
     readonly capabilities = inject(EXPLORER_CAPABILITIES)
 
     readonly isCollapsed = this.collapseService.isCollapsed
+    readonly isFilesMode = this.modeService.isFilesMode
     readonly width = this.widthService.width
     readonly displayWidth = computed(() => (this.isCollapsed() ? COLLAPSED_STRIP_WIDTH_PX : this.width()))
 

@@ -1,0 +1,15 @@
+<div class="join mx-2 mt-2 flex" role="group" aria-label="Explorer mode">
+    @for (mode of modes; track mode.id) {
+        <button
+            type="button"
+            class="btn btn-sm join-item flex-1 normal-case font-normal"
+            [class.btn-active]="mode.id === activeMode().id"
+            [attr.aria-pressed]="mode.id === activeMode().id"
+            [attr.data-testid]="'explorer-mode-' + mode.id"
+            (click)="activate(mode.id)"
+        >
+            <i [class]="mode.icon" class="text-xs opacity-70"></i>
+            <span class="text-xs">{{ mode.label }}</span>
+        </button>
+    }
+</div>

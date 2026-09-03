@@ -8,7 +8,7 @@ import { EXPLORER_CONTEXT_MENU, ExplorerContextMenu } from "./explorerContextMen
 import { EXPLORER_COUNTS, ExplorerCounts, ExplorerCountsSource } from "./explorerCounts.port"
 import { EXPLORER_ROW, ExplorerRow } from "./explorerRow"
 import { EXPLORER_RULES, ExplorerRules } from "./explorerRules.port"
-import { EXPLORER_SEARCH, ExplorerSearch } from "./explorerSearch.port"
+import { EXPLORER_SEARCH, EXPLORER_WORD_SEARCH, ExplorerSearch, ExplorerSearchInput } from "./explorerSearch.port"
 import { EXPLORER_SELECTION, ExplorerSelection } from "./explorerSelection"
 import { EXPLORER_SORT, ExplorerSort } from "./explorerSort.port"
 import { ExplorerStorageScope } from "./explorerStorageScope"
@@ -75,6 +75,16 @@ export function createExplorerSearchMock(overrides: Partial<ExplorerSearch> = {}
     }
 }
 
+export function createExplorerSearchInputMock(overrides: Partial<ExplorerSearchInput> = {}): ExplorerSearchInput {
+    return {
+        pattern$: of(""),
+        isPatternEmpty$: of(true),
+        setPattern: jest.fn(),
+        resetPattern: jest.fn(),
+        ...overrides
+    }
+}
+
 export function createExplorerSortMock(overrides: Partial<ExplorerSort> = {}): ExplorerSort {
     return {
         option$: of(SortingOption.NAME),
@@ -114,6 +124,7 @@ export function provideExplorerPortsMock(
         contextMenu?: ExplorerContextMenu | null
         sort?: ExplorerSort
         search?: ExplorerSearch
+        wordSearch?: ExplorerSearchInput
         tree?: ExplorerTree
         counts?: ExplorerCountsSource
         rules?: ExplorerRules
@@ -132,6 +143,9 @@ export function provideExplorerPortsMock(
         { provide: EXPLORER_RULES, useValue: overrides.rules ?? createExplorerRulesMock() },
         provideExplorerCapabilitiesMock(overrides.capabilities)
     ]
+    if (overrides.wordSearch) {
+        providers.push({ provide: EXPLORER_WORD_SEARCH, useValue: overrides.wordSearch })
+    }
     if (overrides.contextMenu !== null) {
         providers.push({ provide: EXPLORER_CONTEXT_MENU, useValue: overrides.contextMenu ?? createExplorerContextMenuMock() })
     }

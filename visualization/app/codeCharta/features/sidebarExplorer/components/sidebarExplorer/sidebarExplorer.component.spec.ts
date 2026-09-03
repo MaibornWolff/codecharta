@@ -1,13 +1,28 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
+import { ExplorerMode, FILES_EXPLORER_MODE } from "../../explorerModes"
 import { provideExplorerPortsMock } from "../../explorerPorts.mocks"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
+import { ExplorerModeService } from "../../services/explorerMode.service"
 import { EXPLORER_DEFAULT_WIDTH, EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
 import { COLLAPSED_STRIP_WIDTH_PX, SidebarExplorerComponent } from "./sidebarExplorer.component"
 
+const WORDS_MODE: ExplorerMode = {
+    id: "words",
+    label: "Words",
+    icon: "fa-solid fa-font",
+    searchPlaceholder: "payment, invoice",
+    searchAriaLabel: "Search words"
+}
+
 describe("SidebarExplorerComponent", () => {
-    const configureWithCapabilities = (capabilities?: { showRules?: boolean; showSearch?: boolean; showCounts?: boolean }) => {
+    const configureWithCapabilities = (capabilities?: {
+        showRules?: boolean
+        showSearch?: boolean
+        showCounts?: boolean
+        modes?: ExplorerMode[]
+    }) => {
         TestBed.configureTestingModule({
             imports: [SidebarExplorerComponent],
             providers: [...provideExplorerPortsMock({ capabilities })]
@@ -283,5 +298,21 @@ describe("SidebarExplorerComponent", () => {
         expect(collapseService.isCollapsed()).toBe(false)
         expect(container.querySelector("cc-explorer-header")).not.toBe(null)
         expect(container.querySelector("cc-explorer-tree")).not.toBe(null)
+    })
+
+    it("should render the projected body instead of the tree while browsing another mode", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        configureWithCapabilities({ modes: [FILES_EXPLORER_MODE, WORDS_MODE] })
+        const { container, detectChanges } = await render(SidebarExplorerComponent)
+
+        // Act
+        TestBed.inject(ExplorerModeService).activate(WORDS_MODE.id)
+        detectChanges()
+
+        // Assert — the node sort options cannot sort what the other mode lists
+        expect(container.querySelector("cc-explorer-tree")).toBe(null)
+        expect(container.querySelector("cc-explorer-sort-control")).toBe(null)
+        expect(container.querySelector("cc-explorer-search-bar")).not.toBe(null)
     })
 })

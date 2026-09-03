@@ -17,9 +17,15 @@
     @if (capabilities.showSearch) {
         <cc-explorer-search-bar></cc-explorer-search-bar>
     }
-    <cc-explorer-sort-control></cc-explorer-sort-control>
+    @if (isFilesMode()) {
+        <cc-explorer-sort-control></cc-explorer-sort-control>
+    }
     <div #scrollHost class="flex-1 overflow-auto px-1 py-1">
-        <cc-explorer-tree></cc-explorer-tree>
+        @if (isFilesMode()) {
+            <cc-explorer-tree></cc-explorer-tree>
+        } @else {
+            <ng-content select="[modeBody]"></ng-content>
+        }
     </div>
     @if (capabilities.showRules) {
         <cc-rules-popover kind="flatten" popoverId="explorer-flatten-rules" anchorName="explorer-flat-chip"></cc-rules-popover>
