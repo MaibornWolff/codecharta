@@ -1,7 +1,7 @@
 ---
 name: Domain view follow-ups
 issue: <#issueid>
-state: progress
+state: complete
 version: 1
 ---
 
@@ -65,9 +65,28 @@ cannot be dropped from the UI, and the word list renders every word it has.
 - [x] Complete Task 2: merge two domain maps
 - [x] Complete Task 3: cloud and explorer point at each other
 - [x] Complete Task 4: hide a word
-- [ ] Complete Task 5: window the word list
+- [x] Complete Task 5: window the word list
 
 ## Notes
 
 - Each task is tested and committed on its own before the next one starts.
 - Branch: `feature/domain-view-follow-ups`, off `main` after the word-mode work landed there.
+- The visualization keeps *summing* frequencies when it unions separately loaded files, while `ccsh merge`
+  now takes the maximum. Deliberate: they are different operations, and the merge rule was chosen to match
+  how metrics reconcile.
+- `emphasis.focus: "self"` does nothing in echarts-wordcloud — checked in a browser, the other words do not
+  dim — so the inspected word is marked by the emphasis shadow alone.
+- The word list's viewport has to wait for the panel to be laid out before it can measure: attaching in
+  `afterNextRender` alone found a panel of height 0 and fell back to rendering all 3000 rows.
+
+## Verification performed
+
+- Analysis: full `./gradlew test` and `ktlintCheck` green on JDK 17; `integrationTest` (golden test) green,
+  including a new step that merges two domain maps.
+- Merging two real domain maps through the built `ccsh`: 65 + 18 nodes with 5 shared → 78, higher frequency
+  kept on every collision, schema-valid; `--large` yields 0 keys pointing at nodes the output lacks.
+- Visualization: 419 unit suites (2847 tests), `tsc`, dependency-cruiser, knip, style lint and all 72 e2e
+  tests green.
+- In a browser: the clicked cloud word opens its breakdown and is marked in the cloud; hiding a word takes it
+  out of both the cloud and the list and survives a reload; a 3000-word list renders 23 rows instead of 3000,
+  keeps its 84008px scroll height, and jumps to a word picked far outside the rendered slice.
